@@ -9,6 +9,10 @@
 (function($) {
     'use strict';
 
+    const parkingsConfig = typeof flavorParkingsData !== 'undefined'
+        ? flavorParkingsData
+        : (typeof flavorParkingsConfig !== 'undefined' ? flavorParkingsConfig : (typeof flavorParkings !== 'undefined' ? flavorParkings : {}));
+
     // Objeto principal del módulo
     window.FlavorParkings = {
 
@@ -40,7 +44,7 @@
             $(document).on('click', '.btn-ver-parking', this.handleVerDisponibilidad.bind(this));
 
             // Actualizar disponibilidad en tiempo real
-            if (typeof flavorParkingsData !== 'undefined' && flavorParkingsData.autoRefresh) {
+            if (parkingsConfig.autoRefresh) {
                 setInterval(this.actualizarDisponibilidad.bind(this), 30000);
             }
         },
@@ -56,8 +60,8 @@
 
             // Crear mapa
             this.map = L.map('flavor-parkings-map').setView(
-                [flavorParkingsData.defaultLat || 40.4168, flavorParkingsData.defaultLng || -3.7038],
-                flavorParkingsData.defaultZoom || 13
+                [parkingsConfig.defaultLat || 40.4168, parkingsConfig.defaultLng ||  -3.7038],
+                parkingsConfig.defaultZoom || 13
             );
 
             // Añadir capa de tiles
@@ -76,7 +80,7 @@
             var self = this;
 
             $.ajax({
-                url: flavorParkingsData.ajaxUrl,
+                url: parkingsConfig.ajaxUrl,
                 type: 'GET',
                 data: {
                     action: 'flavor_parkings_lista'
@@ -152,14 +156,14 @@
             var $button = $form.find('button[type="submit"]');
             var originalText = $button.text();
 
-            $button.prop('disabled', true).text(flavorParkingsData.i18n.procesando || 'Procesando...');
+            $button.prop('disabled', true).text((parkingsConfig.i18n || parkingsConfig.strings || {}).procesando || 'Procesando...');
 
             $.ajax({
-                url: flavorParkingsData.ajaxUrl,
+                url: parkingsConfig.ajaxUrl,
                 type: 'POST',
                 data: {
                     action: 'flavor_parking_reservar',
-                    nonce: flavorParkingsData.nonce,
+                    nonce: parkingsConfig.nonce,
                     parking_id: $form.find('[name="parking_id"]').val(),
                     fecha_entrada: $form.find('[name="fecha_entrada"]').val(),
                     fecha_salida: $form.find('[name="fecha_salida"]').val(),
@@ -172,11 +176,11 @@
                             window.location.href = response.data.redirect;
                         }
                     } else {
-                        FlavorParkings.mostrarMensaje('error', response.data.mensaje || flavorParkingsData.i18n.error);
+                        FlavorParkings.mostrarMensaje('error', response.data.mensaje || (parkingsConfig.i18n || parkingsConfig.strings || {}).error);
                     }
                 },
                 error: function() {
-                    FlavorParkings.mostrarMensaje('error', flavorParkingsData.i18n.errorConexion || 'Error de conexión');
+                    FlavorParkings.mostrarMensaje('error', (parkingsConfig.i18n || parkingsConfig.strings || {}).errorConexion || 'Error de conexión');
                 },
                 complete: function() {
                     $button.prop('disabled', false).text(originalText);
@@ -190,7 +194,7 @@
         handleCancelacion: function(e) {
             e.preventDefault();
 
-            if (!confirm(flavorParkingsData.i18n.confirmarCancelacion || '¿Seguro que quieres cancelar esta reserva?')) {
+            if (!confirm((parkingsConfig.i18n || parkingsConfig.strings || {}).confirmarCancelacion || '¿Seguro que quieres cancelar esta reserva?')) {
                 return;
             }
 
@@ -200,11 +204,11 @@
             $button.prop('disabled', true);
 
             $.ajax({
-                url: flavorParkingsData.ajaxUrl,
+                url: parkingsConfig.ajaxUrl,
                 type: 'POST',
                 data: {
                     action: 'flavor_parking_cancelar',
-                    nonce: flavorParkingsData.nonce,
+                    nonce: parkingsConfig.nonce,
                     reserva_id: reservaId
                 },
                 success: function(response) {
@@ -217,7 +221,7 @@
                     }
                 },
                 error: function() {
-                    FlavorParkings.mostrarMensaje('error', flavorParkingsData.i18n.errorConexion);
+                    FlavorParkings.mostrarMensaje('error', (parkingsConfig.i18n || parkingsConfig.strings || {}).errorConexion);
                     $button.prop('disabled', false);
                 }
             });
@@ -246,7 +250,7 @@
             $lista.addClass('loading');
 
             $.ajax({
-                url: flavorParkingsData.ajaxUrl,
+                url: parkingsConfig.ajaxUrl,
                 type: 'GET',
                 data: $.extend({
                     action: 'flavor_parkings_lista'
@@ -270,7 +274,7 @@
          */
         actualizarDisponibilidad: function() {
             $.ajax({
-                url: flavorParkingsData.ajaxUrl,
+                url: parkingsConfig.ajaxUrl,
                 type: 'GET',
                 data: {
                     action: 'flavor_parkings_disponibilidad'
@@ -331,7 +335,7 @@
             $modal.fadeIn();
 
             $.ajax({
-                url: flavorParkingsData.ajaxUrl,
+                url: parkingsConfig.ajaxUrl,
                 type: 'GET',
                 data: {
                     action: 'flavor_parkings_disponibilidad',

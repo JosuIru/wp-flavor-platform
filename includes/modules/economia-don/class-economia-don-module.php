@@ -1339,7 +1339,48 @@ KNOWLEDGE;
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
-        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+        $aliases = [
+            'listar' => 'ofertas_disponibles',
+            'listado' => 'ofertas_disponibles',
+            'buscar' => 'ofertas_disponibles',
+            'mis_items' => 'mis_intercambios',
+            'mis-dones' => 'mis_intercambios',
+            'crear' => 'ofrecer_don',
+            'nuevo' => 'ofrecer_don',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $method = 'action_' . $action_name;
+
+        if (method_exists($this, $method)) {
+            return $this->$method($params);
+        }
+
+        return [
+            'success' => false,
+            'error' => __('Acción no implementada', 'flavor-chat-ia'),
+        ];
+    }
+
+    private function action_ofertas_disponibles($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[economia_don]'),
+        ];
+    }
+
+    private function action_mis_intercambios($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[mis_dones]'),
+        ];
+    }
+
+    private function action_ofrecer_don($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[ofrecer_don]'),
+        ];
     }
 
     /**

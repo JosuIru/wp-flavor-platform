@@ -209,11 +209,11 @@ class Flavor_Foros_Frontend_Controller {
         global $wpdb;
         $foros = $wpdb->get_results("
             SELECT f.*,
-                   (SELECT COUNT(*) FROM {$this->tabla_temas} WHERE foro_id = f.id AND estado = 'publicado') as total_temas,
+                   (SELECT COUNT(*) FROM {$this->tabla_temas} WHERE foro_id = f.id AND estado != 'eliminado') as total_temas,
                    (SELECT COUNT(*) FROM {$this->tabla_respuestas} r
-                    INNER JOIN {$this->tabla_temas} t ON r.tema_id = t.id
+                    INNER JOIN {$this->tabla_temas} t ON r.hilo_id = t.id
                     WHERE t.foro_id = f.id) as total_respuestas,
-                   (SELECT MAX(t.fecha_actividad) FROM {$this->tabla_temas} t WHERE t.foro_id = f.id) as ultima_actividad
+                   (SELECT MAX(t.ultima_actividad) FROM {$this->tabla_temas} t WHERE t.foro_id = f.id) as ultima_actividad
             FROM {$this->tabla_foros} f
             WHERE f.estado = 'activo'
             ORDER BY f.orden ASC, f.nombre ASC
@@ -322,17 +322,24 @@ class Flavor_Foros_Frontend_Controller {
         $temas = $wpdb->get_results($wpdb->prepare("
             SELECT t.*,
                    u.display_name as autor_nombre,
-                   (SELECT COUNT(*) FROM {$this->tabla_respuestas} WHERE tema_id = t.id) as total_respuestas,
-                   (SELECT SUM(votos) FROM {$this->tabla_respuestas} WHERE tema_id = t.id) as total_votos_respuestas
+                   EXISTS(
+                       SELECT 1
+                       FROM {$this->tabla_respuestas} rs
+                       WHERE rs.hilo_id = t.id
+                         AND rs.es_solucion = 1
+                         AND rs.estado != 'eliminado'
+                   ) as tiene_solucion,
+                   (SELECT COUNT(*) FROM {$this->tabla_respuestas} WHERE hilo_id = t.id AND estado != 'eliminado') as total_respuestas,
+                   (SELECT SUM(votos) FROM {$this->tabla_respuestas} WHERE hilo_id = t.id AND estado != 'eliminado') as total_votos_respuestas
             FROM {$this->tabla_temas} t
             LEFT JOIN {$wpdb->users} u ON t.autor_id = u.ID
-            WHERE t.foro_id = %d AND t.estado = 'publicado'
-            ORDER BY t.es_fijado DESC, t.fecha_actividad DESC
+            WHERE t.foro_id = %d AND t.estado != 'eliminado'
+            ORDER BY t.es_fijado DESC, t.ultima_actividad DESC
             LIMIT %d OFFSET %d
         ", $foro_id, $atts['por_pagina'], $offset));
 
         $total_temas = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$this->tabla_temas} WHERE foro_id = %d AND estado = 'publicado'",
+            "SELECT COUNT(*) FROM {$this->tabla_temas} WHERE foro_id = %d AND estado != 'eliminado'",
             $foro_id
         ));
 
@@ -391,7 +398,7 @@ class Flavor_Foros_Frontend_Controller {
                                         <?php echo esc_html($tema->autor_nombre); ?>
                                     </span>
                                     <span class="flavor-tema-fecha">
-                                        <?php echo human_time_diff(strtotime($tema->fecha_creacion)); ?>
+                                        <?php echo human_time_diff(strtotime($tema->created_at)); ?>
                                     </span>
                                 </div>
                             </div>
@@ -443,11 +450,18 @@ class Flavor_Foros_Frontend_Controller {
 
         $tema = $wpdb->get_row($wpdb->prepare("
             SELECT t.*, f.nombre as foro_nombre, f.id as foro_id,
-                   u.display_name as autor_nombre
+                   u.display_name as autor_nombre,
+                   EXISTS(
+                       SELECT 1
+                       FROM {$this->tabla_respuestas} rs
+                       WHERE rs.hilo_id = t.id
+                         AND rs.es_solucion = 1
+                         AND rs.estado != 'eliminado'
+                   ) as tiene_solucion
             FROM {$this->tabla_temas} t
             LEFT JOIN {$this->tabla_foros} f ON t.foro_id = f.id
             LEFT JOIN {$wpdb->users} u ON t.autor_id = u.ID
-            WHERE t.id = %d AND t.estado = 'publicado'
+            WHERE t.id = %d AND t.estado != 'eliminado'
         ", $tema_id));
 
         if (!$tema) {
@@ -464,13 +478,13 @@ class Flavor_Foros_Frontend_Controller {
                    (SELECT COUNT(*) FROM {$this->tabla_votos} WHERE respuesta_id = r.id AND tipo = 'negativo') as votos_negativos
             FROM {$this->tabla_respuestas} r
             LEFT JOIN {$wpdb->users} u ON r.autor_id = u.ID
-            WHERE r.tema_id = %d AND r.estado = 'publicado' AND r.padre_id IS NULL
-            ORDER BY r.es_solucion DESC, r.votos DESC, r.fecha_creacion ASC
+            WHERE r.hilo_id = %d AND r.estado != 'eliminado' AND (r.parent_id IS NULL OR r.parent_id = 0)
+            ORDER BY r.es_solucion DESC, r.votos DESC, r.created_at ASC
             LIMIT %d OFFSET %d
         ", $tema_id, $atts['respuestas_por_pagina'], $offset));
 
         $total_respuestas = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$this->tabla_respuestas} WHERE tema_id = %d AND estado = 'publicado' AND padre_id IS NULL",
+            "SELECT COUNT(*) FROM {$this->tabla_respuestas} WHERE hilo_id = %d AND estado != 'eliminado' AND (parent_id IS NULL OR parent_id = 0)",
             $tema_id
         ));
 
@@ -500,7 +514,7 @@ class Flavor_Foros_Frontend_Controller {
                             <?php echo esc_html($tema->autor_nombre); ?>
                         </span>
                         <span class="flavor-tema-fecha">
-                            <?php echo date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($tema->fecha_creacion)); ?>
+                            <?php echo date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($tema->created_at)); ?>
                         </span>
                         <?php if ($tema->tiene_solucion): ?>
                             <span class="flavor-badge flavor-badge-success">
@@ -516,7 +530,7 @@ class Flavor_Foros_Frontend_Controller {
                 <footer class="flavor-tema-footer">
                     <div class="flavor-tema-tags">
                         <?php
-                        $etiquetas = maybe_unserialize($tema->etiquetas);
+                        $etiquetas = isset($tema->etiquetas) ? maybe_unserialize($tema->etiquetas) : [];
                         if (!empty($etiquetas) && is_array($etiquetas)):
                             foreach ($etiquetas as $etiqueta): ?>
                                 <span class="flavor-tag"><?php echo esc_html($etiqueta); ?></span>
@@ -613,7 +627,7 @@ class Flavor_Foros_Frontend_Controller {
                         <?php echo esc_html($respuesta->autor_nombre); ?>
                     </span>
                     <span class="flavor-respuesta-fecha">
-                        <?php echo human_time_diff(strtotime($respuesta->fecha_creacion)); ?>
+                        <?php echo human_time_diff(strtotime($respuesta->created_at)); ?>
                     </span>
                 </div>
                 <div class="flavor-respuesta-texto">
@@ -726,11 +740,18 @@ class Flavor_Foros_Frontend_Controller {
         global $wpdb;
         $temas = $wpdb->get_results($wpdb->prepare("
             SELECT t.*, f.nombre as foro_nombre,
-                   (SELECT COUNT(*) FROM {$this->tabla_respuestas} WHERE tema_id = t.id) as total_respuestas
+                   EXISTS(
+                       SELECT 1
+                       FROM {$this->tabla_respuestas} rs
+                       WHERE rs.hilo_id = t.id
+                         AND rs.es_solucion = 1
+                         AND rs.estado != 'eliminado'
+                   ) as tiene_solucion,
+                   (SELECT COUNT(*) FROM {$this->tabla_respuestas} WHERE hilo_id = t.id AND estado != 'eliminado') as total_respuestas
             FROM {$this->tabla_temas} t
             LEFT JOIN {$this->tabla_foros} f ON t.foro_id = f.id
             WHERE t.autor_id = %d
-            ORDER BY t.fecha_creacion DESC
+            ORDER BY t.created_at DESC
         ", $usuario_id));
 
         ob_start();
@@ -771,7 +792,7 @@ class Flavor_Foros_Frontend_Controller {
                                             <span class="flavor-badge flavor-badge-info"><?php _e('Abierto', 'flavor-chat-ia'); ?></span>
                                         <?php endif; ?>
                                     </td>
-                                    <td><?php echo human_time_diff(strtotime($tema->fecha_creacion)); ?></td>
+                                    <td><?php echo human_time_diff(strtotime($tema->created_at)); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -798,9 +819,9 @@ class Flavor_Foros_Frontend_Controller {
         $respuestas = $wpdb->get_results($wpdb->prepare("
             SELECT r.*, t.titulo as tema_titulo, t.id as tema_id
             FROM {$this->tabla_respuestas} r
-            LEFT JOIN {$this->tabla_temas} t ON r.tema_id = t.id
+            LEFT JOIN {$this->tabla_temas} t ON r.hilo_id = t.id
             WHERE r.autor_id = %d
-            ORDER BY r.fecha_creacion DESC
+            ORDER BY r.created_at DESC
             LIMIT 50
         ", $usuario_id));
 
@@ -821,7 +842,7 @@ class Flavor_Foros_Frontend_Controller {
                                 <a href="<?php echo esc_url(add_query_arg('tema_id', $respuesta->tema_id)); ?>">
                                     <?php echo esc_html($respuesta->tema_titulo); ?>
                                 </a>
-                                <span class="flavor-respuesta-fecha"><?php echo human_time_diff(strtotime($respuesta->fecha_creacion)); ?></span>
+                                <span class="flavor-respuesta-fecha"><?php echo human_time_diff(strtotime($respuesta->created_at)); ?></span>
                             </div>
                             <p class="flavor-respuesta-extracto">
                                 <?php echo esc_html(wp_trim_words($respuesta->contenido, 20)); ?>
@@ -886,18 +907,18 @@ class Flavor_Foros_Frontend_Controller {
 
         global $wpdb;
         $actividad = $wpdb->get_results($wpdb->prepare("
-            (SELECT 'tema' as tipo, t.id, t.titulo as titulo, t.fecha_creacion as fecha,
+            (SELECT 'tema' as tipo, t.id, t.titulo as titulo, t.created_at as fecha,
                     u.display_name as autor, t.id as tema_id
              FROM {$this->tabla_temas} t
              LEFT JOIN {$wpdb->users} u ON t.autor_id = u.ID
-             WHERE t.estado = 'publicado')
+             WHERE t.estado != 'eliminado')
             UNION ALL
-            (SELECT 'respuesta' as tipo, r.id, t.titulo as titulo, r.fecha_creacion as fecha,
-                    u.display_name as autor, r.tema_id
+            (SELECT 'respuesta' as tipo, r.id, t.titulo as titulo, r.created_at as fecha,
+                    u.display_name as autor, r.hilo_id as tema_id
              FROM {$this->tabla_respuestas} r
-             LEFT JOIN {$this->tabla_temas} t ON r.tema_id = t.id
+             LEFT JOIN {$this->tabla_temas} t ON r.hilo_id = t.id
              LEFT JOIN {$wpdb->users} u ON r.autor_id = u.ID
-             WHERE r.estado = 'publicado')
+             WHERE r.estado != 'eliminado')
             ORDER BY fecha DESC
             LIMIT %d
         ", $atts['limite']));
@@ -966,12 +987,12 @@ class Flavor_Foros_Frontend_Controller {
 
         // Actividad reciente
         $actividad = $wpdb->get_results($wpdb->prepare("
-            (SELECT 'tema' as tipo, t.id, t.titulo, t.fecha_creacion as fecha
+            (SELECT 'tema' as tipo, t.id, t.titulo, t.created_at as fecha
              FROM {$this->tabla_temas} t WHERE t.autor_id = %d ORDER BY fecha DESC LIMIT 5)
             UNION ALL
-            (SELECT 'respuesta' as tipo, t.id, t.titulo, r.fecha_creacion as fecha
+            (SELECT 'respuesta' as tipo, t.id, t.titulo, r.created_at as fecha
              FROM {$this->tabla_respuestas} r
-             LEFT JOIN {$this->tabla_temas} t ON r.tema_id = t.id
+             LEFT JOIN {$this->tabla_temas} t ON r.hilo_id = t.id
              WHERE r.autor_id = %d ORDER BY fecha DESC LIMIT 5)
             ORDER BY fecha DESC LIMIT 10
         ", $usuario_id, $usuario_id));
@@ -1073,17 +1094,15 @@ class Flavor_Foros_Frontend_Controller {
             wp_send_json_error(['message' => __('Foro no válido.', 'flavor-chat-ia')]);
         }
 
-        $etiquetas_array = !empty($etiquetas) ? array_map('trim', explode(',', $etiquetas)) : [];
-
         $resultado = $wpdb->insert($this->tabla_temas, [
             'foro_id' => $foro_id,
             'autor_id' => get_current_user_id(),
             'titulo' => $titulo,
             'contenido' => $contenido,
-            'etiquetas' => maybe_serialize($etiquetas_array),
-            'estado' => 'publicado',
-            'fecha_creacion' => current_time('mysql'),
-            'fecha_actividad' => current_time('mysql'),
+            'estado' => 'abierto',
+            'created_at' => current_time('mysql'),
+            'updated_at' => current_time('mysql'),
+            'ultima_actividad' => current_time('mysql'),
         ]);
 
         if ($resultado) {
@@ -1120,7 +1139,7 @@ class Flavor_Foros_Frontend_Controller {
 
         // Verificar tema
         $tema = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_temas} WHERE id = %d AND estado = 'publicado'",
+            "SELECT * FROM {$this->tabla_temas} WHERE id = %d AND estado IN ('abierto', 'fijado')",
             $tema_id
         ));
 
@@ -1129,19 +1148,23 @@ class Flavor_Foros_Frontend_Controller {
         }
 
         $resultado = $wpdb->insert($this->tabla_respuestas, [
-            'tema_id' => $tema_id,
-            'padre_id' => $padre_id ?: null,
+            'hilo_id' => $tema_id,
+            'parent_id' => $padre_id ?: 0,
             'autor_id' => get_current_user_id(),
             'contenido' => $contenido,
-            'estado' => 'publicado',
-            'fecha_creacion' => current_time('mysql'),
+            'estado' => 'visible',
+            'created_at' => current_time('mysql'),
+            'updated_at' => current_time('mysql'),
         ]);
 
         if ($resultado) {
             // Actualizar fecha de actividad del tema
             $wpdb->update(
                 $this->tabla_temas,
-                ['fecha_actividad' => current_time('mysql')],
+                [
+                    'ultima_actividad' => current_time('mysql'),
+                    'respuestas_count' => max(0, intval($tema->respuestas_count) + 1),
+                ],
                 ['id' => $tema_id]
             );
 
@@ -1243,7 +1266,7 @@ class Flavor_Foros_Frontend_Controller {
         $respuesta = $wpdb->get_row($wpdb->prepare(
             "SELECT r.*, t.autor_id as tema_autor_id, t.id as tema_id
              FROM {$this->tabla_respuestas} r
-             LEFT JOIN {$this->tabla_temas} t ON r.tema_id = t.id
+             LEFT JOIN {$this->tabla_temas} t ON r.hilo_id = t.id
              WHERE r.id = %d",
             $respuesta_id
         ));
@@ -1265,12 +1288,6 @@ class Flavor_Foros_Frontend_Controller {
         );
 
         // Marcar tema como resuelto
-        $wpdb->update(
-            $this->tabla_temas,
-            ['tiene_solucion' => 1],
-            ['id' => $respuesta->tema_id]
-        );
-
         wp_send_json_success([
             'message' => __('Respuesta marcada como solución.', 'flavor-chat-ia'),
         ]);
@@ -1300,19 +1317,26 @@ class Flavor_Foros_Frontend_Controller {
 
         global $wpdb;
 
-        $where = "t.estado = 'publicado'";
+        $where = "t.estado != 'eliminado'";
         if ($foro_id) {
             $where .= $wpdb->prepare(" AND t.foro_id = %d", $foro_id);
         }
 
         $temas = $wpdb->get_results("
             SELECT t.*, f.nombre as foro_nombre, u.display_name as autor_nombre,
-                   (SELECT COUNT(*) FROM {$this->tabla_respuestas} WHERE tema_id = t.id) as total_respuestas
+                   EXISTS(
+                       SELECT 1
+                       FROM {$this->tabla_respuestas} rs
+                       WHERE rs.hilo_id = t.id
+                         AND rs.es_solucion = 1
+                         AND rs.estado != 'eliminado'
+                   ) as tiene_solucion,
+                   (SELECT COUNT(*) FROM {$this->tabla_respuestas} WHERE hilo_id = t.id AND estado != 'eliminado') as total_respuestas
             FROM {$this->tabla_temas} t
             LEFT JOIN {$this->tabla_foros} f ON t.foro_id = f.id
             LEFT JOIN {$wpdb->users} u ON t.autor_id = u.ID
             WHERE {$where}
-            ORDER BY t.es_fijado DESC, t.fecha_actividad DESC
+            ORDER BY t.es_fijado DESC, t.ultima_actividad DESC
             LIMIT {$por_pagina} OFFSET " . (($pagina - 1) * $por_pagina)
         );
 
@@ -1357,14 +1381,14 @@ class Flavor_Foros_Frontend_Controller {
         $like = '%' . $wpdb->esc_like($busqueda) . '%';
 
         $resultados = $wpdb->get_results($wpdb->prepare("
-            SELECT t.id, t.titulo, t.contenido, t.fecha_creacion, f.nombre as foro_nombre,
+            SELECT t.id, t.titulo, t.contenido, t.created_at, f.nombre as foro_nombre,
                    u.display_name as autor_nombre
             FROM {$this->tabla_temas} t
             LEFT JOIN {$this->tabla_foros} f ON t.foro_id = f.id
             LEFT JOIN {$wpdb->users} u ON t.autor_id = u.ID
-            WHERE t.estado = 'publicado'
+            WHERE t.estado != 'eliminado'
               AND (t.titulo LIKE %s OR t.contenido LIKE %s)
-            ORDER BY t.fecha_actividad DESC
+            ORDER BY t.ultima_actividad DESC
             LIMIT 50
         ", $like, $like));
 
@@ -1388,7 +1412,7 @@ class Flavor_Foros_Frontend_Controller {
                 esc_html(wp_trim_words($tema->contenido, 30)),
                 esc_html($tema->foro_nombre),
                 esc_html($tema->autor_nombre),
-                human_time_diff(strtotime($tema->fecha_creacion))
+                human_time_diff(strtotime($tema->created_at))
             );
         }
         $html .= '</div>';

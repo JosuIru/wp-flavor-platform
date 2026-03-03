@@ -94,7 +94,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         return [
             [
                 'type'    => 'table',
-                'table'   => $wpdb->prefix . 'flavor_puntos_reciclaje',
+                'table'   => $wpdb->prefix . 'flavor_reciclaje_puntos',
                 'context' => 'side',
             ],
         ];
@@ -409,6 +409,16 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'puntos_cercanos',
+            'listado' => 'puntos_cercanos',
+            'mapa' => 'puntos_cercanos',
+            'puntos' => 'puntos_cercanos',
+            'buscar' => 'puntos_cercanos',
+            'explorar' => 'puntos_cercanos',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -1952,7 +1962,7 @@ KNOWLEDGE;
             'color'    => 'success', // Usa variable CSS --flavor-success del tema
 
             'database' => [
-                'table'       => 'flavor_puntos_reciclaje',
+                'table'       => 'flavor_reciclaje_puntos',
                 'primary_key' => 'id',
             ],
 

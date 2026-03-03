@@ -36,12 +36,11 @@ class Flavor_Red_Social_Dashboard_Tab {
     }
 
     public function render_tab() {
-        $datos = $this->obtener_datos_usuario();
         $subtab = isset($_GET['subtab']) ? sanitize_text_field($_GET['subtab']) : 'feed';
+        $this->enqueue_assets();
 
         ?>
         <div class="flavor-red-social-dashboard">
-            <!-- Navegación interna -->
             <div class="flavor-dashboard-subtabs">
                 <a href="?tab=red-social&subtab=feed" class="subtab <?php echo $subtab === 'feed' ? 'active' : ''; ?>">
                     <span class="dashicons dashicons-rss"></span> Feed
@@ -51,9 +50,6 @@ class Flavor_Red_Social_Dashboard_Tab {
                 </a>
                 <a href="?tab=red-social&subtab=amigos" class="subtab <?php echo $subtab === 'amigos' ? 'active' : ''; ?>">
                     <span class="dashicons dashicons-groups"></span> Conexiones
-                    <?php if ($datos['solicitudes_pendientes'] > 0): ?>
-                        <span class="badge"><?php echo $datos['solicitudes_pendientes']; ?></span>
-                    <?php endif; ?>
                 </a>
                 <a href="?tab=red-social&subtab=actividad" class="subtab <?php echo $subtab === 'actividad' ? 'active' : ''; ?>">
                     <span class="dashicons dashicons-chart-line"></span> Mi Actividad
@@ -67,24 +63,52 @@ class Flavor_Red_Social_Dashboard_Tab {
                 <?php
                 switch ($subtab) {
                     case 'perfil':
-                        $this->render_perfil($datos);
+                        echo do_shortcode('[rs_perfil]');
                         break;
                     case 'amigos':
-                        $this->render_amigos($datos);
+                        echo do_shortcode('[rs_explorar]');
                         break;
                     case 'actividad':
-                        $this->render_actividad($datos);
+                        echo do_shortcode('[rs_mi_actividad]');
                         break;
                     case 'reputacion':
-                        $this->render_reputacion($datos);
+                        echo do_shortcode('[rs_reputacion]');
                         break;
                     default:
-                        $this->render_feed($datos);
+                        echo do_shortcode('[rs_feed]');
                 }
                 ?>
             </div>
         </div>
         <?php
+    }
+
+    private function enqueue_assets() {
+        $module_url = plugin_dir_url(__FILE__);
+        $version = defined('Flavor_Chat_Red_Social_Module::VERSION') ? Flavor_Chat_Red_Social_Module::VERSION : '2.0.0';
+
+        wp_enqueue_style(
+            'flavor-red-social',
+            $module_url . 'assets/css/red-social.css',
+            [],
+            $version
+        );
+
+        wp_enqueue_script(
+            'flavor-red-social',
+            $module_url . 'assets/js/red-social.js',
+            ['jquery'],
+            $version,
+            true
+        );
+
+        wp_localize_script('flavor-red-social', 'flavorRedSocial', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('rs_nonce'),
+            'userId' => get_current_user_id(),
+            'maxCaracteres' => 5000,
+            'maxImagenes' => 10,
+        ]);
     }
 
     private function render_feed($datos) {

@@ -39,6 +39,8 @@ $tipos_colors = [
 ];
 ?>
 
+<div class="gc-trueques-notice" id="gc-trueques-notice" style="display:none;"></div>
+
 <div class="gc-trueques" data-nonce="<?php echo esc_attr($nonce); ?>">
     <div class="gc-trueques__header">
         <h3 class="gc-trueques__titulo">
@@ -196,7 +198,7 @@ $tipos_colors = [
                                 <?php esc_html_e('Completar', 'flavor-chat-ia'); ?>
                             </button>
                         <?php else: ?>
-                            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="gc-btn gc-btn--outline">
+                            <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/'))); ?>" class="gc-btn gc-btn--outline">
                                 <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
                             </a>
                         <?php endif; ?>
@@ -297,6 +299,26 @@ $tipos_colors = [
 </div>
 
 <style>
+.gc-trueques-notice {
+    display: none;
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.gc-trueques-notice.error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.gc-trueques-notice.success {
+    display: block;
+    background: #dcfce7;
+    color: #166534;
+}
+
 .gc-trueques {
     --gc-primary: #1976d2;
     --gc-success: #2e7d32;
@@ -723,9 +745,17 @@ $tipos_colors = [
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.querySelector('.gc-trueques');
         if (!container) return;
+        const notice = document.getElementById('gc-trueques-notice');
 
         const nonce = container.dataset.nonce;
         const ajaxUrl = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>';
+
+        function mostrarAviso(mensaje, tipo) {
+            if (!notice) return;
+            notice.className = 'gc-trueques-notice ' + (tipo || 'error');
+            notice.textContent = mensaje;
+            notice.style.display = 'block';
+        }
 
         // Filtro por tipo
         const tipoBtns = container.querySelectorAll('.gc-trueques__tipo-btn');
@@ -808,16 +838,16 @@ $tipos_colors = [
                 .then(r => r.json())
                 .then(data => {
                     if (data.success) {
-                        alert(data.data.message);
+                        mostrarAviso(data.data.message, 'success');
                         location.reload();
                     } else {
-                        alert(data.data.message || '<?php echo esc_js(__('Error al publicar', 'flavor-chat-ia')); ?>');
+                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Error al publicar', 'flavor-chat-ia')); ?>', 'error');
                         btn.disabled = false;
                         btn.textContent = '<?php echo esc_js(__('Publicar', 'flavor-chat-ia')); ?>';
                     }
                 })
                 .catch(() => {
-                    alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                    mostrarAviso('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
                     btn.disabled = false;
                     btn.textContent = '<?php echo esc_js(__('Publicar', 'flavor-chat-ia')); ?>';
                 });
@@ -860,17 +890,17 @@ $tipos_colors = [
                 .then(r => r.json())
                 .then(data => {
                     if (data.success) {
-                        alert(data.data.message);
+                        mostrarAviso(data.data.message, 'success');
                         modalContactar.style.display = 'none';
                         this.reset();
                     } else {
-                        alert(data.data.message || '<?php echo esc_js(__('Error al enviar', 'flavor-chat-ia')); ?>');
+                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Error al enviar', 'flavor-chat-ia')); ?>', 'error');
                     }
                     btn.disabled = false;
                     btn.textContent = '<?php echo esc_js(__('Enviar', 'flavor-chat-ia')); ?>';
                 })
                 .catch(() => {
-                    alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                    mostrarAviso('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
                     btn.disabled = false;
                     btn.textContent = '<?php echo esc_js(__('Enviar', 'flavor-chat-ia')); ?>';
                 });

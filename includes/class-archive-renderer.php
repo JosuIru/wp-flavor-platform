@@ -2653,6 +2653,8 @@ class Flavor_Archive_Renderer {
             // Fecha formateada
             if (isset($row->created_at)) {
                 $item['fecha'] = date_i18n(get_option('date_format'), strtotime($row->created_at));
+            } elseif (isset($row->fecha_creacion)) {
+                $item['fecha'] = date_i18n(get_option('date_format'), strtotime($row->fecha_creacion));
             }
 
             $items[] = $item;
@@ -2682,7 +2684,12 @@ class Flavor_Archive_Renderer {
 
             if (!empty($stat_config['query'])) {
                 // Query personalizada
-                $value = $wpdb->get_var(str_replace('{table}', $table, $stat_config['query']));
+                $query = str_replace(
+                    ['{table}', '{prefix}'],
+                    [$table, $wpdb->prefix],
+                    $stat_config['query']
+                );
+                $value = $wpdb->get_var($query);
             } elseif (!empty($stat_config['count_where'])) {
                 // Conteo con condición
                 $value = (int) $wpdb->get_var(
@@ -2710,6 +2717,8 @@ class Flavor_Archive_Renderer {
      * @return array Configuración de la tabla
      */
     private function get_module_table_config(string $module): array {
+        global $wpdb;
+
         $configs = [
             'incidencias' => [
                 'table'          => 'flavor_incidencias',
@@ -2777,20 +2786,20 @@ class Flavor_Archive_Renderer {
 
             'banco-tiempo' => [
                 'table'          => 'flavor_banco_tiempo_servicios',
-                'filter_field'   => 'tipo',
-                'order_by'       => 'created_at DESC',
+                'filter_field'   => 'categoria',
+                'order_by'       => 'fecha_publicacion DESC',
                 'fields'         => [
                     'id'          => 'id',
                     'titulo'      => 'titulo',
                     'descripcion' => 'descripcion',
-                    'tipo'        => 'tipo',
+                    'tipo'        => 'categoria',
                     'horas'       => 'horas_estimadas',
                     'categoria'   => 'categoria',
                 ],
                 'stats' => [
-                    ['label' => __('Ofertas', 'flavor-chat-ia'), 'icon' => '🤝', 'color' => 'green', 'count_where' => "tipo = 'oferta'"],
-                    ['label' => __('Demandas', 'flavor-chat-ia'), 'icon' => '🔍', 'color' => 'blue', 'count_where' => "tipo = 'demanda'"],
-                    ['label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => '🔄', 'color' => 'purple', 'query' => "SELECT COUNT(*) FROM {table} WHERE estado = 'completado'"],
+                    ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => '🤝', 'color' => 'green', 'count_where' => "estado = 'activo'"],
+                    ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => '🗂️', 'color' => 'blue', 'query' => "SELECT COUNT(DISTINCT categoria) FROM {table} WHERE estado = 'activo'"],
+                    ['label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => '🔄', 'color' => 'purple', 'query' => "SELECT COUNT(*) FROM {prefix}flavor_banco_tiempo_transacciones WHERE estado = 'completado'"],
                 ],
             ],
 
@@ -2900,18 +2909,19 @@ class Flavor_Archive_Renderer {
             'grupos-consumo' => [
                 'table'          => 'flavor_gc_grupos',
                 'filter_field'   => 'estado',
-                'order_by'       => 'miembros_count DESC, created_at DESC',
+                'order_by'       => 'fecha_creacion DESC',
                 'fields'         => [
                     'id'          => 'id',
                     'titulo'      => 'nombre',
                     'descripcion' => 'descripcion',
                     'imagen'      => 'imagen',
                     'estado'      => 'estado',
-                    'miembros'    => 'miembros_count',
+                    'miembros'    => 'max_miembros',
+                    'fecha'       => 'fecha_creacion',
                 ],
                 'stats' => [
                     ['label' => __('Grupos activos', 'flavor-chat-ia'), 'icon' => '🥬', 'color' => 'green', 'count_where' => "estado = 'activo'"],
-                    ['label' => __('Consumidores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COALESCE(SUM(miembros_count), 0) FROM {table}"],
+                    ['label' => __('Consumidores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COUNT(*) FROM {prefix}flavor_gc_consumidores WHERE estado = 'activo'"],
                 ],
             ],
 

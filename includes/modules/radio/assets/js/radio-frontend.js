@@ -6,12 +6,16 @@
 (function($) {
     'use strict';
 
+    const radioConfig = typeof flavorRadioConfig !== 'undefined'
+        ? flavorRadioConfig
+        : (typeof flavorRadio !== 'undefined' ? flavorRadio : {});
+
     const FlavorRadio = {
-        ajaxurl: typeof flavorRadio !== 'undefined' ? flavorRadio.ajaxurl : '/wp-admin/admin-ajax.php',
-        resturl: typeof flavorRadio !== 'undefined' ? flavorRadio.resturl : '/wp-json/flavor/v1/radio/',
-        nonce: typeof flavorRadio !== 'undefined' ? flavorRadio.nonce : '',
-        user_id: typeof flavorRadio !== 'undefined' ? flavorRadio.user_id : 0,
-        strings: typeof flavorRadio !== 'undefined' ? flavorRadio.strings : {},
+        ajaxurl: radioConfig.ajaxurl || radioConfig.ajaxUrl || '/wp-admin/admin-ajax.php',
+        resturl: radioConfig.resturl || radioConfig.restUrl || '/wp-json/flavor/v1/radio/',
+        nonce: radioConfig.nonce || '',
+        user_id: radioConfig.user_id || radioConfig.userId || 0,
+        strings: radioConfig.strings || radioConfig.i18n || {},
         audio: null,
         sessionId: null,
         heartbeatInterval: null,
@@ -19,6 +23,19 @@
         lastChatId: 0,
         currentEmisionId: 0,
     };
+
+    if (radioConfig.streamUrl) {
+        FlavorRadio.streamUrl = radioConfig.streamUrl;
+    }
+    if (radioConfig.streamHdUrl) {
+        FlavorRadio.streamHdUrl = radioConfig.streamHdUrl;
+    }
+    if (radioConfig.nombreRadio) {
+        FlavorRadio.nombreRadio = radioConfig.nombreRadio;
+    }
+    if (typeof radioConfig.chatHabilitado !== 'undefined') {
+        FlavorRadio.chatHabilitado = radioConfig.chatHabilitado;
+    }
 
     $(document).ready(function() {
         FlavorRadio.init();

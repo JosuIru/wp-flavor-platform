@@ -1120,6 +1120,19 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'mi_perfil_socio',
+            'perfil' => 'mi_perfil_socio',
+            'mi-perfil' => 'mi_perfil_socio',
+            'mis_items' => 'mis_cuotas',
+            'mis-cuotas' => 'mis_cuotas',
+            'cuotas' => 'mis_cuotas',
+            'actualizar' => 'actualizar_datos',
+            'editar' => 'actualizar_datos',
+            'stats' => 'estadisticas_socios',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -1313,6 +1326,68 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
                             'enum' => ['pendiente', 'pagada', 'vencida'],
                         ],
                     ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Configuración del renderer para navegación moderna del portal.
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'socios',
+            'title'    => __('Socios', 'flavor-chat-ia'),
+            'subtitle' => __('Gestiona tu membresía y tus cuotas', 'flavor-chat-ia'),
+            'icon'     => '🪪',
+            'color'    => 'emerald',
+
+            'database' => [
+                'table'         => 'flavor_socios',
+                'status_field'  => 'estado',
+                'order_by'      => 'fecha_creacion DESC',
+                'filter_fields' => ['tipo_socio', 'estado'],
+            ],
+
+            'fields' => [
+                'titulo'      => 'numero_socio',
+                'descripcion' => 'notas',
+                'estado'      => 'estado',
+                'fecha'       => 'fecha_alta',
+                'tipo'        => 'tipo_socio',
+            ],
+
+            'tabs' => [
+                'socios' => [
+                    'label'   => __('Socios', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-groups',
+                    'content' => 'template:_archive.php',
+                ],
+                'unirse' => [
+                    'label'   => __('Unirse', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-plus-alt',
+                    'content' => '[flavor_module_form module="socios" action="dar_alta_socio"]',
+                    'public'  => true,
+                ],
+                'mi-perfil' => [
+                    'label'          => __('Mi perfil', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-id',
+                    'content'        => '[socios_mi_perfil]',
+                    'requires_login' => true,
+                ],
+                'mis-cuotas' => [
+                    'label'          => __('Mis cuotas', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-media-spreadsheet',
+                    'content'        => '[socios_mis_cuotas]',
+                    'requires_login' => true,
+                ],
+                'pagar-cuota' => [
+                    'label'          => __('Pagar cuota', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-money-alt',
+                    'content'        => '[socios_pagar_cuota]',
+                    'requires_login' => true,
                 ],
             ],
         ];

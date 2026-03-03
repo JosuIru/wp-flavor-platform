@@ -82,7 +82,7 @@ class Flavor_Socios_Dashboard_Tab {
                     <span class="dashicons dashicons-id"></span>
                     <h3><?php esc_html_e('¡Únete como socio!', 'flavor-chat-ia'); ?></h3>
                     <p><?php esc_html_e('Accede a beneficios exclusivos, descuentos y participa activamente.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/socios/inscripcion/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/socios/unirse/')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -239,7 +239,7 @@ class Flavor_Socios_Dashboard_Tab {
                                     </td>
                                     <td>
                                         <?php if ($cuota->estado === 'pendiente' || $cuota->estado === 'vencida'): ?>
-                                            <a href="<?php echo esc_url(home_url('/mi-portal/socios/pagar/' . $cuota->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
+                                            <a href="<?php echo esc_url(add_query_arg('cuota_id', $cuota->id, home_url('/mi-portal/socios/pagar-cuota/'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
                                                 <?php esc_html_e('Pagar', 'flavor-chat-ia'); ?>
                                             </a>
                                         <?php elseif ($cuota->factura_url): ?>

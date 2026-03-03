@@ -240,7 +240,7 @@ function flavor_register_integration_config() {
         // Presupuestos participativos
         'presupuestos_participativos' => [
             'targets' => [
-                ['type' => 'table', 'table' => 'flavor_presupuestos_proyectos', 'context' => 'side'],
+                ['type' => 'table', 'table' => 'flavor_pp_proyectos', 'context' => 'side'],
             ],
             'accepts' => ['multimedia'],
         ],
@@ -280,7 +280,7 @@ function flavor_register_integration_config() {
         // Reciclaje
         'reciclaje' => [
             'targets' => [
-                ['type' => 'table', 'table' => 'flavor_puntos_reciclaje', 'context' => 'side'],
+                ['type' => 'table', 'table' => 'flavor_reciclaje_puntos', 'context' => 'side'],
             ],
             'accepts' => ['multimedia'],
         ],

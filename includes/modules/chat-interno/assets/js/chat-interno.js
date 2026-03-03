@@ -228,6 +228,15 @@
         $(document).on('click', '.ci-btn-buscar', function() {
             self.mostrarBusquedaEnChat();
         });
+
+        $(document).on('input', '.ci-chat-search-input', debounce(function() {
+            self.buscarEnConversacion($(this).val());
+        }, 150));
+
+        $(document).on('click', '.ci-chat-search-close', function() {
+            $(this).closest('.ci-chat-searchbar').remove();
+            self.buscarEnConversacion('');
+        });
     };
 
     /**
@@ -348,6 +357,30 @@
         });
 
         container.html(html);
+        this.aplicarDeepLinkConversacion();
+    };
+
+    /**
+     * Abrir automaticamente una conversacion indicada por query string.
+     */
+    FlavorChatInterno.aplicarDeepLinkConversacion = function() {
+        const params = new URLSearchParams(window.location.search);
+        const conversacionId = parseInt(params.get('conversacion_id') || params.get('conv') || '0', 10);
+
+        if (!conversacionId || this.conversacionActual === conversacionId) {
+            return;
+        }
+
+        const $item = $(`.ci-conversacion-item[data-id="${conversacionId}"]`).first();
+        if (!$item.length) {
+            return;
+        }
+
+        $item.addClass('active');
+        setTimeout(() => {
+            $item[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            this.abrirConversacion(conversacionId);
+        }, 100);
     };
 
     /**
@@ -1104,9 +1137,13 @@
      * Confirmar eliminar mensaje
      */
     FlavorChatInterno.confirmarEliminarMensaje = function(mensajeId) {
-        if (confirm(this.strings.confirmar_eliminar || 'Eliminar este mensaje?')) {
-            this.eliminarMensaje(mensajeId);
-        }
+        const self = this;
+        this.mostrarConfirmacion(
+            this.strings.confirmar_eliminar || 'Eliminar este mensaje?',
+            function() {
+                self.eliminarMensaje(mensajeId);
+            }
+        );
     };
 
     /**
@@ -1134,7 +1171,13 @@
                         </span>
                     `);
                     mensaje.find('.ci-mensaje-adjunto, .ci-mensaje-acciones').remove();
+                    self.mostrarAviso(self.strings.mensaje_eliminado || 'Mensaje eliminado', 'success');
+                } else {
+                    self.mostrarError(response.error || self.strings.error);
                 }
+            },
+            error: function() {
+                self.mostrarError(self.strings.error);
             }
         });
     };
@@ -1424,11 +1467,13 @@
      * Confirmar bloquear usuario
      */
     FlavorChatInterno.confirmarBloquear = function() {
-        if (!confirm(this.strings.confirmar_bloquear || 'Bloquear a este usuario?')) {
-            return;
-        }
-
-        this.bloquearUsuario();
+        const self = this;
+        this.mostrarConfirmacion(
+            this.strings.confirmar_bloquear || 'Bloquear a este usuario?',
+            function() {
+                self.bloquearUsuario();
+            }
+        );
     };
 
     /**
@@ -1436,9 +1481,6 @@
      */
     FlavorChatInterno.bloquearUsuario = function() {
         const self = this;
-
-        // Obtener ID del otro usuario de los datos
-        const nombre = $('#ci-chat-nombre').text();
 
         $.ajax({
             url: this.ajaxurl,
@@ -1451,9 +1493,15 @@
             },
             success: function(response) {
                 if (response.success) {
+                    self.mostrarAviso(response.message || self.strings.usuario_bloqueado || 'Usuario bloqueado', 'success');
                     self.volverALista();
                     self.loadConversaciones();
+                } else {
+                    self.mostrarError(response.error || self.strings.error);
                 }
+            },
+            error: function() {
+                self.mostrarError(self.strings.error);
             }
         });
     };
@@ -1514,6 +1562,76 @@
     };
 
     /**
+     * Mostrar buscador dentro de la conversación actual
+     */
+    FlavorChatInterno.mostrarBusquedaEnChat = function() {
+        const container = $('#ci-chat-container');
+        const existente = container.find('.ci-chat-searchbar');
+
+        if (existente.length) {
+            existente.find('.ci-chat-search-input').focus();
+            return;
+        }
+
+        const searchBar = $(`
+            <div class="ci-chat-searchbar">
+                <span class="dashicons dashicons-search"></span>
+                <input type="text" class="ci-chat-search-input" placeholder="${this.escapeHtml(this.strings.buscar || 'Buscar en la conversación...')}">
+                <button type="button" class="ci-chat-search-close" aria-label="${this.escapeHtml(this.strings.cancelar || 'Cerrar')}">
+                    <span class="dashicons dashicons-no-alt"></span>
+                </button>
+            </div>
+        `);
+
+        container.find('.ci-mensajes-container').before(searchBar);
+        searchBar.find('.ci-chat-search-input').focus();
+    };
+
+    /**
+     * Filtrar mensajes por texto
+     */
+    FlavorChatInterno.buscarEnConversacion = function(query) {
+        const mensajes = $('#ci-mensajes .ci-mensaje').not('.ci-mensaje-sistema');
+        const termino = (query || '').trim().toLowerCase();
+
+        mensajes.removeClass('ci-mensaje-match');
+
+        if (!termino) {
+            mensajes.show();
+            return;
+        }
+
+        let primerMatch = null;
+
+        mensajes.each(function() {
+            const mensaje = $(this);
+            const texto = mensaje.find('.ci-mensaje-texto').text().toLowerCase();
+            const coincide = texto.includes(termino);
+
+            mensaje.toggle(coincide);
+
+            if (coincide) {
+                mensaje.addClass('ci-mensaje-match');
+                if (!primerMatch) {
+                    primerMatch = mensaje;
+                }
+            }
+        });
+
+        $('#ci-mensajes .ci-fecha-separador').each(function() {
+            const separador = $(this);
+            const tieneMensajesVisibles = separador.nextUntil('.ci-fecha-separador', '.ci-mensaje:visible').length > 0;
+            separador.toggle(tieneMensajesVisibles);
+        });
+
+        if (primerMatch && $('.ci-mensajes-container').length) {
+            $('.ci-mensajes-container').scrollTop(
+                primerMatch.position().top + $('.ci-mensajes-container').scrollTop() - 80
+            );
+        }
+    };
+
+    /**
      * Volver a lista (mobile)
      */
     FlavorChatInterno.volverALista = function() {
@@ -1535,6 +1653,10 @@
 
         btn.toggleClass('activo');
         this.loadConversaciones(!mostrandoArchivados);
+    };
+
+    window.ciToggleArchivados = function() {
+        FlavorChatInterno.toggleArchivados();
     };
 
     /**
@@ -1648,9 +1770,75 @@
     /**
      * Mostrar error
      */
+    FlavorChatInterno.mostrarAviso = function(mensaje, tipo = 'error') {
+        let notice = document.getElementById('ci-inline-notice');
+        if (!notice) {
+            notice = document.createElement('div');
+            notice.id = 'ci-inline-notice';
+            const app = document.getElementById('flavor-chat-interno-app');
+            if (app && app.parentNode) {
+                app.parentNode.insertBefore(notice, app);
+            } else {
+                document.body.appendChild(notice);
+            }
+        }
+
+        notice.className = 'ci-inline-notice ci-inline-notice--' + (tipo === 'success' ? 'success' : 'error');
+        notice.textContent = mensaje;
+        notice.style.display = 'block';
+        window.clearTimeout(this.noticeTimer);
+        this.noticeTimer = window.setTimeout(function() {
+            notice.style.display = 'none';
+        }, 3500);
+    };
+
+    /**
+     * Mostrar error
+     */
     FlavorChatInterno.mostrarError = function(mensaje) {
-        // Puedes reemplazar esto con un sistema de notificaciones mas elegante
-        alert(mensaje);
+        this.mostrarAviso(mensaje, 'error');
+    };
+
+    /**
+     * Mostrar confirmacion inline
+     */
+    FlavorChatInterno.mostrarConfirmacion = function(mensaje, onConfirm) {
+        let confirmBox = document.getElementById('ci-inline-confirm');
+        if (!confirmBox) {
+            confirmBox = document.createElement('div');
+            confirmBox.id = 'ci-inline-confirm';
+            confirmBox.className = 'ci-inline-confirm';
+            const app = document.getElementById('flavor-chat-interno-app');
+            if (app && app.parentNode) {
+                app.parentNode.insertBefore(confirmBox, app);
+            } else {
+                document.body.appendChild(confirmBox);
+            }
+        }
+
+        confirmBox.innerHTML = `
+            <div>${this.escapeHtml(mensaje || this.strings.confirmar || 'Confirmar accion')}</div>
+            <div class="ci-inline-confirm__actions">
+                <button type="button" class="ci-inline-confirm__btn ci-inline-confirm__btn--primary" id="ci-inline-confirm-ok">
+                    ${this.escapeHtml(this.strings.confirmar || 'Confirmar')}
+                </button>
+                <button type="button" class="ci-inline-confirm__btn ci-inline-confirm__btn--secondary" id="ci-inline-confirm-cancel">
+                    ${this.escapeHtml(this.strings.cancelar || 'Cancelar')}
+                </button>
+            </div>
+        `;
+        confirmBox.style.display = 'block';
+
+        document.getElementById('ci-inline-confirm-ok').onclick = function() {
+            confirmBox.style.display = 'none';
+            if (typeof onConfirm === 'function') {
+                onConfirm();
+            }
+        };
+
+        document.getElementById('ci-inline-confirm-cancel').onclick = function() {
+            confirmBox.style.display = 'none';
+        };
     };
 
     /**

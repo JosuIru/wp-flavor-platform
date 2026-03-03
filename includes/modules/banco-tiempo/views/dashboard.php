@@ -98,14 +98,14 @@ $actividad_mensual = $wpdb->get_results(
             <span class="dashicons dashicons-groups" style="font-size: 24px; color: #8c52ff;"></span>
             <span><?php echo esc_html__('Usuarios', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=bt-categorias'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+        <div class="bt-quick-link bt-quick-link--disabled" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #f6f7f7; border: 1px solid #dcdcde; border-radius: 4px; color: #646970; cursor: default;">
             <span class="dashicons dashicons-category" style="font-size: 24px; color: #dba617;"></span>
-            <span><?php echo esc_html__('Categorías', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=bt-valoraciones'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
+            <span><?php echo esc_html__('Categorías', 'flavor-chat-ia'); ?><br><small><?php echo esc_html__('No disponible en esta versión', 'flavor-chat-ia'); ?></small></span>
+        </div>
+        <div class="bt-quick-link bt-quick-link--disabled" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #f6f7f7; border: 1px solid #dcdcde; border-radius: 4px; color: #646970; cursor: default;">
             <span class="dashicons dashicons-star-filled" style="font-size: 24px; color: #f59e0b;"></span>
-            <span><?php echo esc_html__('Valoraciones', 'flavor-chat-ia'); ?></span>
-        </a>
+            <span><?php echo esc_html__('Valoraciones', 'flavor-chat-ia'); ?><br><small><?php echo esc_html__('No disponible en esta versión', 'flavor-chat-ia'); ?></small></span>
+        </div>
         <a href="<?php echo admin_url('admin.php?page=banco-tiempo-config'); ?>" class="bt-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
             <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
             <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>

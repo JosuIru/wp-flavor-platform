@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 }
 
 global $wpdb;
-$tabla_puntos = $wpdb->prefix . 'flavor_puntos_reciclaje';
+$tabla_puntos = $wpdb->prefix . 'flavor_reciclaje_puntos';
 
 // Filtros
 $tipo_filtro = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';

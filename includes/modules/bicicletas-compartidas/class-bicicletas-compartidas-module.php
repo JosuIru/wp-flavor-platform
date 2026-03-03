@@ -2164,6 +2164,15 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'estaciones',
+            'listado' => 'estaciones',
+            'mapa' => 'estaciones',
+            'explorar' => 'estaciones',
+            'buscar' => 'estaciones',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {

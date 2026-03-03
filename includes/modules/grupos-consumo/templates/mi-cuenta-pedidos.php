@@ -16,7 +16,7 @@ $pedido_actual = $args['pedido_actual'] ?? null;
 
 <div class="gc-dashboard-pedidos">
     <div class="gc-dashboard-header">
-        <h2><?php _e('Mis Pedidos', 'flavor-chat-ia'); ?></h2>
+        <h2><?php _e('Historial', 'flavor-chat-ia'); ?></h2>
     </div>
 
     <?php if ($pedido_actual): ?>
@@ -76,9 +76,9 @@ $pedido_actual = $args['pedido_actual'] ?? null;
             <p><?php _e('Tu historial de pedidos aparecerá aquí.', 'flavor-chat-ia'); ?></p>
         </div>
     <?php elseif (!empty($pedidos)): ?>
-        <!-- Historial de pedidos -->
+        <!-- Historial -->
         <div class="gc-pedidos-historial">
-            <h3><?php _e('Historial de pedidos', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Historial', 'flavor-chat-ia'); ?></h3>
 
             <div class="gc-pedidos-lista">
                 <?php foreach ($pedidos as $pedido): ?>

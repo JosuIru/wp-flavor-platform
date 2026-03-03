@@ -173,6 +173,11 @@ class Flavor_Widgets_Loader {
                 'archivo' => 'class-bicicletas-dashboard-widget.php',
                 'clase' => 'Flavor_Bicicletas_Dashboard_Widget',
             ],
+            'energia-comunitaria' => [
+                'modulo' => 'energia-comunitaria',
+                'archivo' => 'class-energia-dashboard-widget.php',
+                'clase' => 'Flavor_Energia_Comunitaria_Dashboard_Widget',
+            ],
 
             // Comunicación
             'podcast' => [

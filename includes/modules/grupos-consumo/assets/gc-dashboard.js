@@ -17,6 +17,28 @@
             this.initCharts();
         },
 
+        mostrarAviso: function(mensaje, tipo) {
+            tipo = tipo || 'error';
+            var $contenedor = $('.gc-dashboard-notice-container');
+            if (!$contenedor.length) {
+                $contenedor = $('<div class="gc-dashboard-notice-container"></div>').appendTo('body');
+            }
+
+            var $aviso = $('<div class="gc-dashboard-notice gc-dashboard-notice-' + tipo + '"></div>').text(mensaje);
+            $contenedor.append($aviso);
+
+            setTimeout(function() {
+                $aviso.addClass('is-visible');
+            }, 10);
+
+            setTimeout(function() {
+                $aviso.removeClass('is-visible');
+                setTimeout(function() {
+                    $aviso.remove();
+                }, 200);
+            }, 3000);
+        },
+
         /**
          * Vincula eventos
          */
@@ -220,32 +242,30 @@
          * Vacía la lista completa
          */
         vaciarLista: function() {
-            if (!confirm(gcDashboardData.i18n.confirmar_vaciar)) {
-                return;
-            }
-
             var $btn = $(this);
-            $btn.prop('disabled', true);
+            GCDashboard.solicitarConfirmacion(gcDashboardData.i18n.confirmar_vaciar, function() {
+                $btn.prop('disabled', true);
 
-            $.ajax({
-                url: gcDashboardData.ajax_url,
-                type: 'POST',
-                data: {
-                    action: 'gc_vaciar_lista_compra',
-                    nonce: gcDashboardData.nonce
-                },
-                success: function(response) {
-                    if (response.success) {
-                        location.reload();
-                    } else {
+                $.ajax({
+                    url: gcDashboardData.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'gc_vaciar_lista_compra',
+                        nonce: gcDashboardData.nonce
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            $btn.prop('disabled', false);
+                            GCDashboard.mostrarError(response.data.mensaje || response.data.error);
+                        }
+                    },
+                    error: function() {
                         $btn.prop('disabled', false);
-                        GCDashboard.mostrarError(response.data.mensaje || response.data.error);
+                        GCDashboard.mostrarError(gcDashboardData.i18n.error_generico);
                     }
-                },
-                error: function() {
-                    $btn.prop('disabled', false);
-                    GCDashboard.mostrarError(gcDashboardData.i18n.error_generico);
-                }
+                });
             });
         },
 
@@ -253,33 +273,31 @@
          * Convierte la lista a pedido
          */
         convertirAPedido: function() {
-            if (!confirm(gcDashboardData.i18n.confirmar_convertir)) {
-                return;
-            }
-
             var $btn = $(this);
-            $btn.prop('disabled', true).text('Procesando...');
+            GCDashboard.solicitarConfirmacion(gcDashboardData.i18n.confirmar_convertir, function() {
+                $btn.prop('disabled', true).text('Procesando...');
 
-            $.ajax({
-                url: gcDashboardData.ajax_url,
-                type: 'POST',
-                data: {
-                    action: 'gc_convertir_lista_pedido',
-                    nonce: gcDashboardData.nonce
-                },
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.data.mensaje);
-                        location.reload();
-                    } else {
+                $.ajax({
+                    url: gcDashboardData.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'gc_convertir_lista_pedido',
+                        nonce: gcDashboardData.nonce
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            GCDashboard.mostrarAviso(response.data.mensaje, 'success');
+                            location.reload();
+                        } else {
+                            $btn.prop('disabled', false).text('Hacer Pedido');
+                            GCDashboard.mostrarError(response.data.mensaje || response.data.error);
+                        }
+                    },
+                    error: function() {
                         $btn.prop('disabled', false).text('Hacer Pedido');
-                        GCDashboard.mostrarError(response.data.mensaje || response.data.error);
+                        GCDashboard.mostrarError(gcDashboardData.i18n.error_generico);
                     }
-                },
-                error: function() {
-                    $btn.prop('disabled', false).text('Hacer Pedido');
-                    GCDashboard.mostrarError(gcDashboardData.i18n.error_generico);
-                }
+                });
             });
         },
 
@@ -307,20 +325,19 @@
          * Cancela una suscripción
          */
         cancelarSuscripcion: function() {
-            if (!confirm('¿Estás seguro de cancelar esta suscripción? Esta acción no se puede deshacer.')) {
-                return;
-            }
-
             var suscripcionId = $(this).data('suscripcion-id');
             var $card = $(this).closest('.gc-suscripcion-card');
-
-            GCDashboard.accionSuscripcion('gc_cancelar_suscripcion', suscripcionId, $card);
+            GCDashboard.solicitarConfirmacion('¿Estás seguro de cancelar esta suscripción? Esta acción no se puede deshacer.', function() {
+                GCDashboard.accionSuscripcion('gc_cancelar_suscripcion', suscripcionId, $card);
+            });
         },
 
         /**
          * Ejecuta acción sobre suscripción
          */
         accionSuscripcion: function(accion, suscripcionId, $card) {
+            var nonce = gcDashboardData.suscripcion_nonce || gcDashboardData.nonce;
+
             GCDashboard.mostrarCargando($card);
 
             $.ajax({
@@ -328,7 +345,7 @@
                 type: 'POST',
                 data: {
                     action: accion,
-                    nonce: gcDashboardData.nonce,
+                    nonce: nonce,
                     suscripcion_id: suscripcionId
                 },
                 success: function(response) {
@@ -369,19 +386,21 @@
 
             $btn.prop('disabled', true).text('Procesando...');
 
+            var nonce = gcDashboardData.suscripcion_nonce || gcDashboardData.nonce;
+
             $.ajax({
                 url: gcDashboardData.ajax_url,
                 type: 'POST',
                 data: {
                     action: 'gc_crear_suscripcion',
-                    nonce: gcDashboardData.nonce,
+                    nonce: nonce,
                     consumidor_id: consumidorId,
                     tipo_cesta_id: cestaId,
                     frecuencia: frecuencia
                 },
                 success: function(response) {
                     if (response.success) {
-                        alert(response.data.mensaje);
+                        GCDashboard.mostrarAviso(response.data.mensaje, 'success');
                         location.reload();
                     } else {
                         $btn.prop('disabled', false).text('Suscribirse');
@@ -453,7 +472,38 @@
          * Muestra mensaje de error
          */
         mostrarError: function(mensaje) {
-            alert(mensaje);
+            this.mostrarAviso(mensaje, 'error');
+        },
+
+        solicitarConfirmacion: function(mensaje, onConfirm) {
+            $('.gc-notificacion-confirm').remove();
+
+            var $notif = $(`
+                <div class="gc-notificacion gc-notificacion-warning gc-notificacion-confirm visible">
+                    <span class="gc-notificacion-texto"></span>
+                    <div class="gc-notificacion-acciones">
+                        <button type="button" class="gc-notificacion-btn gc-notificacion-btn-primary"></button>
+                        <button type="button" class="gc-notificacion-btn gc-notificacion-btn-secondary"></button>
+                    </div>
+                </div>
+            `);
+
+            $notif.find('.gc-notificacion-texto').text(mensaje || '¿Confirmar acción?');
+            $notif.find('.gc-notificacion-btn-primary').text((gcDashboardData.i18n && gcDashboardData.i18n.confirmar) || 'Confirmar');
+            $notif.find('.gc-notificacion-btn-secondary').text((gcDashboardData.i18n && gcDashboardData.i18n.cancelar) || 'Cancelar');
+
+            $notif.find('.gc-notificacion-btn-primary').on('click', function() {
+                $notif.remove();
+                if (typeof onConfirm === 'function') {
+                    onConfirm();
+                }
+            });
+
+            $notif.find('.gc-notificacion-btn-secondary').on('click', function() {
+                $notif.remove();
+            });
+
+            $('body').append($notif);
         }
     };
 
@@ -463,3 +513,16 @@
     });
 
 })(jQuery);
+
+(function() {
+    var css = [
+        '.gc-dashboard-notice-container{position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:10px;max-width:360px}',
+        '.gc-dashboard-notice{opacity:0;transform:translateY(-6px);transition:all .2s ease;padding:12px 14px;border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.12);font-size:14px}',
+        '.gc-dashboard-notice.is-visible{opacity:1;transform:translateY(0)}',
+        '.gc-dashboard-notice-error{background:#fee2e2;color:#991b1b}',
+        '.gc-dashboard-notice-success{background:#dcfce7;color:#166534}'
+    ].join('');
+    var style = document.createElement('style');
+    style.textContent = css;
+    document.head.appendChild(style);
+})();

@@ -39,6 +39,13 @@ class Flavor_Recetas_Frontend_Controller {
     ];
 
     /**
+     * Indica si las recetas creadas desde frontend requieren moderación.
+     *
+     * @var bool
+     */
+    private $frontend_requires_moderation = true;
+
+    /**
      * Constructor privado
      */
     private function __construct() {
@@ -115,9 +122,11 @@ class Flavor_Recetas_Frontend_Controller {
         wp_localize_script('flavor-recetas-frontend', 'flavorRecetasConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_recetas_nonce'),
+            'requiresModeration' => $this->frontend_requires_moderation,
             'dificultades' => $this->dificultades,
             'strings' => [
                 'guardado' => __('Receta guardada', 'flavor-chat-ia'),
+                'guardado_pendiente' => __('Receta enviada para revisión', 'flavor-chat-ia'),
                 'error' => __('Error al procesar', 'flavor-chat-ia'),
                 'confirmar_eliminar' => __('¿Eliminar esta receta?', 'flavor-chat-ia'),
                 'eliminado' => __('Receta eliminada', 'flavor-chat-ia'),
@@ -752,7 +761,13 @@ class Flavor_Recetas_Frontend_Controller {
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                         <span class="dashicons dashicons-saved"></span>
-                        <?php esc_html_e('Guardar Receta', 'flavor-chat-ia'); ?>
+                        <?php
+                        echo esc_html(
+                            $this->frontend_requires_moderation
+                                ? __('Enviar Receta', 'flavor-chat-ia')
+                                : __('Guardar Receta', 'flavor-chat-ia')
+                        );
+                        ?>
                     </button>
                 </div>
             </form>
@@ -933,12 +948,14 @@ class Flavor_Recetas_Frontend_Controller {
 
         $user_id = get_current_user_id();
         $receta_id = intval($_POST['receta_id'] ?? 0);
+        $can_publish_directly = current_user_can('edit_posts');
+        $post_status = $can_publish_directly ? 'publish' : ($this->frontend_requires_moderation ? 'pending' : 'publish');
 
         $datos_receta = [
             'post_title' => $titulo,
             'post_content' => wp_kses_post($_POST['descripcion'] ?? ''),
             'post_type' => $this->post_type,
-            'post_status' => 'publish',
+            'post_status' => $post_status,
             'post_author' => $user_id,
         ];
 
@@ -988,10 +1005,19 @@ class Flavor_Recetas_Frontend_Controller {
             }
         }
 
+        $message = $post_status === 'pending'
+            ? __('Receta enviada para revisión. Aparecerá publicada cuando un moderador la apruebe.', 'flavor-chat-ia')
+            : __('Receta guardada correctamente', 'flavor-chat-ia');
+
+        $redirect_url = $post_status === 'publish'
+            ? get_permalink($receta_id)
+            : home_url('/mi-portal/recetas/mis-recetas/');
+
         wp_send_json_success([
-            'message' => __('Receta guardada correctamente', 'flavor-chat-ia'),
+            'message' => $message,
             'receta_id' => $receta_id,
-            'url' => get_permalink($receta_id),
+            'status' => $post_status,
+            'url' => $redirect_url,
         ]);
     }
 

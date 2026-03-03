@@ -1243,10 +1243,47 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'catalogo_especies',
+            'listado' => 'catalogo_especies',
+            'catalogo' => 'catalogo_especies',
+            'explorar' => 'catalogo_especies',
+            'buscar' => 'catalogo_especies',
+            'mapa' => 'ver_mapa',
+            'crear' => 'registrar_avistamiento',
+            'registrar' => 'registrar_avistamiento',
+            'mis_items' => 'mis_avistamientos',
+            'avistamientos' => 'mis_avistamientos',
+            'proyectos' => 'ver_proyectos',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $method = 'action_' . $action_name;
+
+        if (method_exists($this, $method)) {
+            return $this->$method($params);
+        }
+
         return [
             'success' => false,
             'message' => __('Acción no implementada', 'flavor-chat-ia'),
         ];
+    }
+
+    private function action_catalogo_especies($params) {
+        return ['success' => true, 'html' => do_shortcode('[biodiversidad_catalogo]')];
+    }
+
+    private function action_ver_mapa($params) {
+        return ['success' => true, 'html' => do_shortcode('[biodiversidad_mapa]')];
+    }
+
+    private function action_mis_avistamientos($params) {
+        return ['success' => true, 'html' => do_shortcode('[biodiversidad_mis_avistamientos]')];
+    }
+
+    private function action_ver_proyectos($params) {
+        return ['success' => true, 'html' => do_shortcode('[biodiversidad_proyectos]')];
     }
 
     /**
@@ -1316,7 +1353,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
                 'avistamientos' => [
                     'label'   => __('Avistamientos', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-visibility',
-                    'content' => 'shortcode:biodiversidad_avistamientos',
+                    'content' => 'shortcode:biodiversidad_mis_avistamientos',
                     'public'  => true,
                 ],
                 'registrar' => [

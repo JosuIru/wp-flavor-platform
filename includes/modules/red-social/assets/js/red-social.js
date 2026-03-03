@@ -256,7 +256,7 @@
 
         compartirPost: function($btn) {
             const postId = $btn.closest('.rs-post').data('post-id');
-            const postUrl = window.location.origin + '/?rs_post=' + postId;
+            const postUrl = window.location.origin + '/mi-portal/red-social/?publicacion_id=' + postId;
 
             if (navigator.share) {
                 navigator.share({
@@ -682,7 +682,7 @@
         },
 
         buscarHashtag: function(tag) {
-            window.location.href = '?rs_hashtag=' + encodeURIComponent(tag);
+            window.location.href = '/mi-portal/red-social/explorar/?hashtag=' + encodeURIComponent(tag);
         },
 
         // ========================================
@@ -776,7 +776,7 @@
         },
 
         verPerfil: function(usuarioId) {
-            window.location.href = '?rs_perfil=' + usuarioId;
+            window.location.href = '/mi-portal/red-social/perfil/?usuario_id=' + usuarioId;
         },
 
         toggleMenuPost: function($btn) {

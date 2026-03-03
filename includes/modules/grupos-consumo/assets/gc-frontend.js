@@ -45,7 +45,7 @@
         $(document).on('click', '#gc-convertir-pedido', convertirEnPedido);
 
         // Suscripciones
-        $(document).on('click', '.gc-btn-suscribirse', mostrarModalSuscripcion);
+        $(document).on('click', '.gc-btn-suscribirse, .gc-btn-suscribir', mostrarModalSuscripcion);
         $(document).on('click', '.gc-btn-pausar-suscripcion', pausarSuscripcion);
         $(document).on('click', '.gc-btn-reanudar-suscripcion', reanudarSuscripcion);
         $(document).on('click', '.gc-btn-cancelar-suscripcion', cancelarSuscripcion);
@@ -235,9 +235,18 @@
             success: function(response) {
                 if (response.success) {
                     $card.addClass('en-lista');
-                    $btn.addClass('en-lista')
-                        .find('.dashicons').removeClass('dashicons-cart').addClass('dashicons-yes');
-                    $btn.find('.gc-btn-texto').text(config.i18n.agregado || 'En lista');
+                    $btn.addClass('en-lista');
+                    $btn.find('.dashicons').removeClass('dashicons-plus dashicons-cart').addClass('dashicons-yes');
+
+                    const $texto = $btn.find('.gc-btn-texto');
+                    if ($texto.length) {
+                        $texto.text(config.i18n.agregado || 'En lista');
+                    } else {
+                        $btn.contents().filter(function() {
+                            return this.nodeType === 3;
+                        }).remove();
+                        $btn.append(document.createTextNode(' ' + (config.i18n.agregado || 'En lista')));
+                    }
 
                     mostrarNotificacion(config.i18n.agregado, 'success');
                     actualizarContadorCarrito(1);
@@ -272,9 +281,18 @@
             success: function(response) {
                 if (response.success) {
                     $card.removeClass('en-lista');
-                    $btn.removeClass('en-lista')
-                        .find('.dashicons').removeClass('dashicons-yes').addClass('dashicons-cart');
-                    $btn.find('.gc-btn-texto').text('Agregar');
+                    $btn.removeClass('en-lista');
+                    $btn.find('.dashicons').removeClass('dashicons-yes dashicons-cart').addClass('dashicons-plus');
+
+                    const $texto = $btn.find('.gc-btn-texto');
+                    if ($texto.length) {
+                        $texto.text('Añadir');
+                    } else {
+                        $btn.contents().filter(function() {
+                            return this.nodeType === 3;
+                        }).remove();
+                        $btn.append(document.createTextNode(' Añadir'));
+                    }
 
                     mostrarNotificacion(config.i18n.eliminado, 'success');
                     actualizarContadorCarrito(-1);
@@ -360,9 +378,9 @@
         let cantidad = parseInt($item.find('.gc-item-qty').text()) - 1;
 
         if (cantidad < 1) {
-            if (confirm(config.i18n.confirmarEliminar)) {
+            solicitarConfirmacion(config.i18n.confirmarEliminar, function() {
                 eliminarItemCarrito(itemId, $item);
-            }
+            });
             return;
         }
 
@@ -376,30 +394,30 @@
         const $item = $(this).closest('.gc-carrito-item');
         const productoId = $item.data('producto-id');
 
-        if (!confirm(config.i18n.confirmarEliminar)) return;
+        solicitarConfirmacion(config.i18n.confirmarEliminar, function() {
+            $.ajax({
+                url: config.ajaxUrl,
+                method: 'POST',
+                data: {
+                    action: 'gc_quitar_lista',
+                    nonce: config.nonce,
+                    producto_id: productoId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $item.slideUp(200, function() {
+                            $(this).remove();
+                            recalcularTotalCarrito();
+                            actualizarContadorCarrito(-1);
 
-        $.ajax({
-            url: config.ajaxUrl,
-            method: 'POST',
-            data: {
-                action: 'gc_quitar_lista',
-                nonce: config.nonce,
-                producto_id: productoId
-            },
-            success: function(response) {
-                if (response.success) {
-                    $item.slideUp(200, function() {
-                        $(this).remove();
-                        recalcularTotalCarrito();
-                        actualizarContadorCarrito(-1);
-
-                        // Actualizar card si está visible
-                        $(`.gc-producto-card[data-producto-id="${productoId}"]`).removeClass('en-lista')
-                            .find('.gc-btn-agregar-lista').removeClass('en-lista')
-                            .find('.dashicons').removeClass('dashicons-yes').addClass('dashicons-cart');
-                    });
+                            // Actualizar card si está visible
+                            $(`.gc-producto-card[data-producto-id="${productoId}"]`).removeClass('en-lista')
+                                .find('.gc-btn-agregar-lista').removeClass('en-lista')
+                                .find('.dashicons').removeClass('dashicons-yes').addClass('dashicons-cart');
+                        });
+                    }
                 }
-            }
+            });
         });
     }
 
@@ -601,7 +619,7 @@
                     <button class="gc-modal-cerrar">&times;</button>
                     <h3>Suscribirse a cesta</h3>
                     <form id="gc-form-suscripcion">
-                        <input type="hidden" name="cesta" value="${cesta}">
+                        <input type="hidden" name="tipo_cesta_id" value="${cesta}">
                         <div class="gc-form-field">
                             <label>Frecuencia</label>
                             <select name="frecuencia">
@@ -696,21 +714,18 @@
      */
     function cancelarSuscripcion(e) {
         e.preventDefault();
-
-        if (!confirm('¿Estás seguro de que quieres cancelar tu suscripción?')) {
-            return;
-        }
-
         const id = $(this).data('suscripcion');
 
-        $.ajax({
-            url: config.restUrl + 'suscripciones/' + id + '/cancelar',
-            method: 'POST',
-            headers: { 'X-WP-Nonce': config.restNonce },
-            success: function() {
-                mostrarNotificacion('Suscripción cancelada', 'success');
-                location.reload();
-            }
+        solicitarConfirmacion('¿Estás seguro de que quieres cancelar tu suscripción?', function() {
+            $.ajax({
+                url: config.restUrl + 'suscripciones/' + id + '/cancelar',
+                method: 'POST',
+                headers: { 'X-WP-Nonce': config.restNonce },
+                success: function() {
+                    mostrarNotificacion('Suscripción cancelada', 'success');
+                    location.reload();
+                }
+            });
         });
     }
 
@@ -762,6 +777,37 @@
                 $notif.remove();
             }, 300);
         });
+    }
+
+    function solicitarConfirmacion(mensaje, onConfirm) {
+        $('.gc-notificacion-confirm').remove();
+
+        const $notif = $(`
+            <div class="gc-notificacion gc-notificacion-warning gc-notificacion-confirm visible">
+                <span class="gc-notificacion-texto"></span>
+                <div class="gc-notificacion-acciones">
+                    <button type="button" class="gc-notificacion-btn gc-notificacion-btn-primary"></button>
+                    <button type="button" class="gc-notificacion-btn gc-notificacion-btn-secondary"></button>
+                </div>
+            </div>
+        `);
+
+        $notif.find('.gc-notificacion-texto').text(mensaje || '¿Confirmar acción?');
+        $notif.find('.gc-notificacion-btn-primary').text((config.i18n && config.i18n.confirmar) || 'Confirmar');
+        $notif.find('.gc-notificacion-btn-secondary').text((config.i18n && config.i18n.cancelar) || 'Cancelar');
+
+        $notif.find('.gc-notificacion-btn-primary').on('click', function() {
+            $notif.remove();
+            if (typeof onConfirm === 'function') {
+                onConfirm();
+            }
+        });
+
+        $notif.find('.gc-notificacion-btn-secondary').on('click', function() {
+            $notif.remove();
+        });
+
+        $('body').append($notif);
     }
 
     /**

@@ -62,9 +62,9 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
     <h1 class="wp-heading-inline">
         <?php _e('Gestión de Suscripciones', 'flavor-chat-ia'); ?>
     </h1>
-    <a href="#" class="page-title-action gc-modal-trigger" data-modal="modal-gestionar-cestas">
+    <button type="button" class="page-title-action gc-modal-trigger" data-modal="modal-gestionar-cestas">
         <?php _e('Gestionar Cestas', 'flavor-chat-ia'); ?>
-    </a>
+    </button>
     <hr class="wp-header-end">
 
     <!-- Estadísticas -->
@@ -266,6 +266,30 @@ $tipos_cestas = $suscripciones_manager->listar_tipos_cestas(true);
 
 <script>
 jQuery(document).ready(function($) {
+    function gcAviso(mensaje, tipo) {
+        tipo = tipo || 'error';
+        $('.gc-inline-notice').remove();
+        $('<div class="gc-inline-notice gc-inline-notice-' + tipo + '"><p>' + mensaje + '</p></div>').insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
+    }
+
+    function gcConfirmar(mensaje, onConfirm) {
+        $('.gc-inline-confirm').remove();
+        var $confirm = $('<div class="gc-inline-confirm"><p></p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div></div>');
+        $confirm.find('p').text(mensaje);
+        $confirm.insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
+
+        $confirm.on('click', '.gc-inline-confirm-ok', function() {
+            $confirm.remove();
+            if (typeof onConfirm === 'function') {
+                onConfirm();
+            }
+        });
+
+        $confirm.on('click', '.gc-inline-confirm-cancel', function() {
+            $confirm.remove();
+        });
+    }
+
     // Modal
     $('.gc-modal-trigger').on('click', function(e) {
         e.preventDefault();
@@ -286,7 +310,7 @@ jQuery(document).ready(function($) {
     // Acciones suscripción
     $('.gc-pausar-suscripcion').on('click', function() {
         var id = $(this).data('id');
-        if (confirm('<?php _e('¿Pausar esta suscripción?', 'flavor-chat-ia'); ?>')) {
+        gcConfirmar('<?php echo esc_js(__('¿Pausar esta suscripción?', 'flavor-chat-ia')); ?>', function() {
             $.post(ajaxurl, {
                 action: 'gc_pausar_suscripcion',
                 suscripcion_id: id,
@@ -295,10 +319,10 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data.mensaje || response.data.error);
+                    gcAviso(response.data.mensaje || response.data.error, 'error');
                 }
             });
-        }
+        });
     });
 
     $('.gc-reanudar-suscripcion').on('click', function() {
@@ -311,14 +335,14 @@ jQuery(document).ready(function($) {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data.mensaje || response.data.error);
+                gcAviso(response.data.mensaje || response.data.error, 'error');
             }
         });
     });
 
     $('.gc-cancelar-suscripcion').on('click', function() {
         var id = $(this).data('id');
-        if (confirm('<?php _e('¿Cancelar esta suscripción? Esta acción no se puede deshacer.', 'flavor-chat-ia'); ?>')) {
+        gcConfirmar('<?php echo esc_js(__('¿Cancelar esta suscripción? Esta acción no se puede deshacer.', 'flavor-chat-ia')); ?>', function() {
             $.post(ajaxurl, {
                 action: 'gc_cancelar_suscripcion',
                 suscripcion_id: id,
@@ -327,13 +351,22 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data.mensaje || response.data.error);
+                    gcAviso(response.data.mensaje || response.data.error, 'error');
                 }
             });
-        }
+        });
     });
 });
 </script>
+
+<style>
+.gc-inline-notice{margin:16px 0;padding:12px 14px;border-left:4px solid #d63638;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.gc-inline-notice-success{border-left-color:#00a32a}
+.gc-inline-notice-error{border-left-color:#d63638}
+.gc-inline-confirm{margin:16px 0;padding:12px 14px;border-left:4px solid #dba617;background:#fff8e1;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.gc-inline-confirm p{margin:0 0 10px}
+.gc-inline-confirm-actions{display:flex;gap:8px;flex-wrap:wrap}
+</style>
 
 <style>
 .gc-stats-grid {

@@ -12,6 +12,7 @@
     var GCTrueques = {
         config: window.gcTruequesConfig || {},
         filterTimeout: null,
+        confirmacionActual: null,
 
         init: function() {
             this.bindEvents();
@@ -84,9 +85,9 @@
             $(document).on('click', '.tr-btn-eliminar-trueque', function(e) {
                 e.preventDefault();
                 var truequeId = $(this).data('trueque-id');
-                if (confirm(self.config.i18n?.confirmarEliminar || '¿Eliminar este trueque?')) {
-                    self.eliminarTrueque(truequeId, $(this));
-                }
+                self.solicitarConfirmacion(self.config.i18n?.confirmarEliminar || '¿Eliminar este trueque?', function() {
+                    self.eliminarTrueque(truequeId, $(e.currentTarget));
+                });
             });
 
             // Marcar como intercambiado
@@ -111,6 +112,35 @@
                 if (e.key === 'Escape') {
                     self.cerrarModal();
                 }
+            });
+        },
+
+        solicitarConfirmacion: function(mensaje, onConfirm) {
+            if (this.confirmacionActual) {
+                this.confirmacionActual.remove();
+            }
+
+            this.confirmacionActual = $(`
+                <div class="trueque-inline-confirm">
+                    <span class="trueque-inline-confirm-texto">${mensaje}</span>
+                    <div class="trueque-inline-confirm-actions">
+                        <button type="button" class="tr-btn tr-btn-primary trueque-confirmar">Confirmar</button>
+                        <button type="button" class="tr-btn tr-btn-secondary trueque-cancelar">Cancelar</button>
+                    </div>
+                </div>
+            `);
+
+            $('.trueques-contenedor, .trueques-grid, body').first().prepend(this.confirmacionActual);
+
+            this.confirmacionActual.on('click', '.trueque-confirmar', () => {
+                this.confirmacionActual.remove();
+                this.confirmacionActual = null;
+                onConfirm();
+            });
+
+            this.confirmacionActual.on('click', '.trueque-cancelar', () => {
+                this.confirmacionActual.remove();
+                this.confirmacionActual = null;
             });
         },
 

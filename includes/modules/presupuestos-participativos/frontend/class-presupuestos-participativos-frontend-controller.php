@@ -59,19 +59,19 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
      * Registrar assets
      */
     public function registrar_assets() {
-        $base_url = plugins_url('assets/', dirname(__FILE__));
+        $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-presupuestos',
-            $base_url . 'css/presupuestos-participativos.css',
+            $base_url . 'css/presupuestos.css',
             [],
             $version
         );
 
         wp_register_script(
             'flavor-presupuestos',
-            $base_url . 'js/presupuestos-participativos.js',
+            $base_url . 'js/presupuestos.js',
             ['jquery'],
             $version,
             true

@@ -1492,6 +1492,26 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = [
+            'listar' => 'listar_colectivos',
+            'listado' => 'listar_colectivos',
+            'explorar' => 'listar_colectivos',
+            'buscar' => 'listar_colectivos',
+            'crear' => 'crear_colectivo',
+            'nuevo' => 'crear_colectivo',
+            'detalle' => 'ver_colectivo',
+            'ver' => 'ver_colectivo',
+            'unirse' => 'unirse',
+            'mis_items' => 'mis_colectivos',
+            'mis-colectivos' => 'mis_colectivos',
+            'proyectos' => 'listar_proyectos',
+            'crear_proyecto' => 'crear_proyecto',
+            'convocar' => 'convocar_asamblea',
+            'asambleas' => 'ver_asambleas',
+            'stats' => 'estadisticas',
+        ];
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         $metodo_accion = 'action_' . $nombre_accion;
 
         if (method_exists($this, $metodo_accion)) {

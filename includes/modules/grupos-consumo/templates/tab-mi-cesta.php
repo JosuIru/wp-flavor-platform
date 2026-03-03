@@ -1,8 +1,8 @@
 <?php
 /**
- * Template: Mi Cesta - Grupos de Consumo
+ * Template: Mi Pedido - Grupos de Consumo
  *
- * Lista de productos en la cesta del usuario.
+ * Lista de productos del pedido manual del usuario.
  *
  * @package FlavorChatIA
  * @subpackage Modules\GruposConsumo\Templates
@@ -15,8 +15,8 @@ if (!defined('ABSPATH')) {
 
 if (!is_user_logged_in()) {
     echo '<div class="gc-cesta-login">';
-    echo '<p>' . esc_html__('Inicia sesión para ver tu cesta.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="gc-btn gc-btn-primary">';
+    echo '<p>' . esc_html__('Inicia sesión para ver tu pedido.', 'flavor-chat-ia') . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/mi-pedido/'))) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Iniciar sesión', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -66,8 +66,9 @@ if ($query->have_posts()) {
 <div class="gc-cesta-container">
     <h2 class="gc-cesta-title">
         <span class="dashicons dashicons-cart"></span>
-        <?php esc_html_e('Mi Cesta', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Pedido actual', 'flavor-chat-ia'); ?>
     </h2>
+    <div class="gc-inline-notice" id="gc-cesta-notice" style="display:none;"></div>
 
     <?php if (!$ciclo_activo) : ?>
     <div class="gc-cesta-notice gc-notice-warning">
@@ -109,9 +110,9 @@ if ($query->have_posts()) {
     <?php if (empty($items)) : ?>
     <div class="gc-cesta-empty">
         <span class="dashicons dashicons-products"></span>
-        <p><?php esc_html_e('Tu cesta está vacía.', 'flavor-chat-ia'); ?></p>
-        <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/catalogo/')); ?>" class="gc-btn gc-btn-primary">
-            <?php esc_html_e('Ver catálogo', 'flavor-chat-ia'); ?>
+        <p><?php esc_html_e('Tu pedido está vacío.', 'flavor-chat-ia'); ?></p>
+        <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
+            <?php esc_html_e('Ver productos', 'flavor-chat-ia'); ?>
         </a>
     </div>
     <?php else : ?>
@@ -181,14 +182,14 @@ if ($query->have_posts()) {
         </table>
 
         <div class="gc-cesta-actions">
-            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/catalogo/')); ?>" class="gc-btn gc-btn-secondary">
+            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-secondary">
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
-                <?php esc_html_e('Seguir comprando', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Seguir añadiendo productos', 'flavor-chat-ia'); ?>
             </a>
 
             <div class="gc-cesta-actions-right">
                 <button type="button" id="gc-btn-actualizar" class="gc-btn gc-btn-secondary">
-                    <?php esc_html_e('Actualizar cesta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Actualizar pedido', 'flavor-chat-ia'); ?>
                 </button>
 
                 <?php if ($ciclo_activo && $tiempo_restante > 0) : ?>
@@ -209,6 +210,31 @@ if ($query->have_posts()) {
     'use strict';
 
     var $form = $('#gc-cesta-form');
+
+    function gcTabCestaNotice() {
+        var $notice = $('#gc-tab-cesta-notice');
+        if (!$notice.length) {
+            $notice = $('<div id="gc-tab-cesta-notice" class="gc-cesta-inline-notice" style="display:none;"></div>').prependTo('.gc-cesta-container');
+        }
+        return $notice;
+    }
+
+    function gcTabCestaConfirmar(mensaje, onConfirm) {
+        var $notice = gcTabCestaNotice();
+        $notice.removeClass('success error')
+            .addClass('error')
+            .html('<p>' + mensaje + '</p><div class="gc-cesta-inline-confirm-actions"><button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div>')
+            .show();
+
+        $notice.off('click', '.gc-confirmar').on('click', '.gc-confirmar', function() {
+            $notice.hide().empty();
+            onConfirm();
+        });
+
+        $notice.off('click', '.gc-cancelar').on('click', '.gc-cancelar', function() {
+            $notice.hide().empty();
+        });
+    }
 
     // Recalcular totales
     function recalcularTotales() {
@@ -253,7 +279,7 @@ if ($query->have_posts()) {
         var $row = $(this).closest('.gc-cesta-item');
         var itemId = $row.data('item-id');
 
-        if (confirm('<?php echo esc_js(__('¿Eliminar este producto de la cesta?', 'flavor-chat-ia')); ?>')) {
+        gcTabCestaConfirmar('<?php echo esc_js(__('¿Eliminar este producto del pedido actual?', 'flavor-chat-ia')); ?>', function() {
             $.ajax({
                 url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
                 type: 'POST',
@@ -274,10 +300,10 @@ if ($query->have_posts()) {
                     }
                 }
             });
-        }
+        });
     });
 
-    // Actualizar cesta
+    // Actualizar pedido actual
     $('#gc-btn-actualizar').on('click', function() {
         var $btn = $(this);
         $btn.prop('disabled', true).text('<?php echo esc_js(__('Actualizando...', 'flavor-chat-ia')); ?>');
@@ -298,7 +324,7 @@ if ($query->have_posts()) {
                 items: items
             },
             success: function(response) {
-                $btn.prop('disabled', false).text('<?php echo esc_js(__('Actualizar cesta', 'flavor-chat-ia')); ?>');
+                $btn.prop('disabled', false).text('<?php echo esc_js(__('Actualizar pedido', 'flavor-chat-ia')); ?>');
                 if (response.success) {
                     location.reload();
                 }
@@ -311,6 +337,12 @@ if ($query->have_posts()) {
         e.preventDefault();
 
         var $btn = $('#gc-btn-confirmar');
+        var $notice = $('#gc-cesta-notice');
+
+        function gcAviso(mensaje) {
+            $notice.addClass('error').text(mensaje).show();
+        }
+
         $btn.prop('disabled', true).text('<?php echo esc_js(__('Procesando...', 'flavor-chat-ia')); ?>');
 
         $.ajax({
@@ -321,12 +353,12 @@ if ($query->have_posts()) {
                 if (response.success && response.data.entrega_id) {
                     window.location.href = '<?php echo esc_url(home_url('/mi-portal/grupos-consumo/checkout/')); ?>?entrega_id=' + response.data.entrega_id;
                 } else {
-                    alert(response.data.error || '<?php echo esc_js(__('Error al confirmar el pedido.', 'flavor-chat-ia')); ?>');
+                    gcAviso(response.data.error || '<?php echo esc_js(__('Error al confirmar el pedido.', 'flavor-chat-ia')); ?>');
                     $btn.prop('disabled', false).text('<?php echo esc_js(__('Confirmar pedido', 'flavor-chat-ia')); ?>');
                 }
             },
             error: function() {
-                alert('<?php echo esc_js(__('Error de conexión.', 'flavor-chat-ia')); ?>');
+                gcAviso('<?php echo esc_js(__('Error de conexión.', 'flavor-chat-ia')); ?>');
                 $btn.prop('disabled', false).text('<?php echo esc_js(__('Confirmar pedido', 'flavor-chat-ia')); ?>');
             }
         });
@@ -336,6 +368,17 @@ if ($query->have_posts()) {
 </script>
 
 <style>
+.gc-inline-notice {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+.gc-inline-notice.error {
+    display: block !important;
+    background: #fee2e2;
+    color: #991b1b;
+}
 .gc-cesta-container {
     max-width: 900px;
 }
@@ -433,7 +476,11 @@ if ($query->have_posts()) {
     background: #eee;
 }
 .gc-input-cantidad {
-    width: 50px;
+    width: 65px;
+    min-width: 65px;
+    max-width: 65px;
+    flex: 0 0 65px;
+    box-sizing: border-box;
     text-align: center;
     border: none;
     padding: 5px;

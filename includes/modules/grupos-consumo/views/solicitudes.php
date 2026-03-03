@@ -321,24 +321,45 @@ $clases_estado = [
 jQuery(document).ready(function($) {
     var gcNonce = '<?php echo wp_create_nonce('gc_admin_nonce'); ?>';
     var solicitudActual = null;
+    var $notice = $('<div class="gc-inline-notice"></div>').insertBefore('.wrap h1').hide();
+
+    function gcAviso(mensaje, tipo) {
+        $notice.removeClass('success error').addClass(tipo || 'error').text(mensaje).show();
+    }
+
+    function gcConfirmar(mensaje, onConfirm) {
+        $('.gc-inline-confirm').remove();
+        var $confirm = $('<div class="gc-inline-confirm"><p></p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div></div>').insertBefore('.wrap h1').hide();
+        $confirm.find('p').text(mensaje);
+        $confirm.fadeIn(150);
+
+        $confirm.on('click', '.gc-inline-confirm-ok', function() {
+            $confirm.remove();
+            if (typeof onConfirm === 'function') {
+                onConfirm();
+            }
+        });
+
+        $confirm.on('click', '.gc-inline-confirm-cancel', function() {
+            $confirm.remove();
+        });
+    }
 
     // Aprobar solicitud
     function aprobarSolicitud(solicitudId) {
-        if (!confirm('<?php _e('Aprobar esta solicitud? El usuario sera notificado por email.', 'flavor-chat-ia'); ?>')) {
-            return;
-        }
-
-        $.post(ajaxurl, {
-            action: 'gc_aprobar_solicitud',
-            solicitud_id: solicitudId,
-            nonce: gcNonce
-        }, function(response) {
-            if (response.success) {
-                alert(response.data.mensaje || '<?php _e('Solicitud aprobada correctamente.', 'flavor-chat-ia'); ?>');
-                location.reload();
-            } else {
-                alert(response.data.error || '<?php _e('Error al aprobar la solicitud.', 'flavor-chat-ia'); ?>');
-            }
+        gcConfirmar('<?php echo esc_js(__('Aprobar esta solicitud? El usuario sera notificado por email.', 'flavor-chat-ia')); ?>', function() {
+            $.post(ajaxurl, {
+                action: 'gc_aprobar_solicitud',
+                solicitud_id: solicitudId,
+                nonce: gcNonce
+            }, function(response) {
+                if (response.success) {
+                    gcAviso(response.data.mensaje || '<?php _e('Solicitud aprobada correctamente.', 'flavor-chat-ia'); ?>', 'success');
+                    location.reload();
+                } else {
+                    gcAviso(response.data.error || '<?php _e('Error al aprobar la solicitud.', 'flavor-chat-ia'); ?>', 'error');
+                }
+            });
         });
     }
 
@@ -371,10 +392,10 @@ jQuery(document).ready(function($) {
             nonce: gcNonce
         }, function(response) {
             if (response.success) {
-                alert(response.data.mensaje || '<?php _e('Solicitud rechazada correctamente.', 'flavor-chat-ia'); ?>');
+                gcAviso(response.data.mensaje || '<?php _e('Solicitud rechazada correctamente.', 'flavor-chat-ia'); ?>', 'success');
                 location.reload();
             } else {
-                alert(response.data.error || '<?php _e('Error al rechazar la solicitud.', 'flavor-chat-ia'); ?>');
+                gcAviso(response.data.error || '<?php _e('Error al rechazar la solicitud.', 'flavor-chat-ia'); ?>', 'error');
             }
         });
     });
@@ -486,6 +507,17 @@ jQuery(document).ready(function($) {
     });
 });
 </script>
+
+<style>
+.gc-inline-notice {
+    margin: 12px 0 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+.gc-inline-notice.error { background: #fee2e2; color: #991b1b; }
+.gc-inline-notice.success { background: #dcfce7; color: #166534; }
+</style>
 
 <style>
 /* Badge de solicitudes pendientes */

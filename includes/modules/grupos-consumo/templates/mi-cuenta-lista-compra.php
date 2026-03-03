@@ -30,7 +30,7 @@ $ciclo_actual = $args['ciclo'] ?? null;
             <div class="gc-empty-icon">🛒</div>
             <h3><?php _e('Tu lista está vacía', 'flavor-chat-ia'); ?></h3>
             <p><?php _e('Añade productos para preparar tu próximo pedido.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(get_post_type_archive_link('gc_producto')); ?>" class="gc-btn gc-btn-primary">
+            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
                 <span class="dashicons dashicons-cart"></span>
                 <?php _e('Explorar productos', 'flavor-chat-ia'); ?>
             </a>

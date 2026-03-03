@@ -568,6 +568,27 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         $metodo_accion = 'action_' . $action_name;
 
+        $aliases = [
+            'listar' => 'talleres_disponibles',
+            'listado' => 'talleres_disponibles',
+            'explorar' => 'talleres_disponibles',
+            'buscar' => 'talleres_disponibles',
+            'detalle' => 'detalle_taller',
+            'ver' => 'detalle_taller',
+            'crear' => 'proponer_taller',
+            'nuevo' => 'proponer_taller',
+            'mis_items' => 'mis_talleres_inscritos',
+            'mis-talleres' => 'mis_talleres_inscritos',
+            'calendario' => 'calendario_talleres',
+            'inscribirse' => 'inscribirse',
+            'cancelar' => 'cancelar_inscripcion',
+            'valorar' => 'valorar_taller',
+            'certificado' => 'descargar_certificado',
+            'stats' => 'estadisticas_taller',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $metodo_accion = 'action_' . $action_name;
         if (method_exists($this, $metodo_accion)) {
             return $this->$metodo_accion($params);
         }

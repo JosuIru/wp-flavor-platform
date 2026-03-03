@@ -1155,6 +1155,21 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'ver_fichajes_hoy',
+            'listado' => 'ver_fichajes_hoy',
+            'mis_items' => 'ver_fichajes_hoy',
+            'mis-fichajes' => 'ver_fichajes_hoy',
+            'estado' => 'estado_actual',
+            'fichar' => 'fichar',
+            'entrada' => 'fichar_entrada',
+            'salida' => 'fichar_salida',
+            'pausar' => 'pausar_jornada',
+            'reanudar' => 'reanudar_jornada',
+            'solicitar-cambio' => 'solicitar_cambio',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -1565,6 +1580,73 @@ KNOWLEDGE;
         ];
 
         return $configs[$action_name] ?? [];
+    }
+
+    /**
+     * Configuración del renderer para navegación moderna del portal.
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'fichaje_empleados',
+            'title'    => __('Fichaje de Empleados', 'flavor-chat-ia'),
+            'subtitle' => __('Control de presencia, historial y correcciones', 'flavor-chat-ia'),
+            'icon'     => '🕒',
+            'color'    => 'slate',
+
+            'database' => [
+                'table'         => 'flavor_fichajes',
+                'status_field'  => 'estado',
+                'order_by'      => 'fecha_hora DESC',
+                'filter_fields' => ['tipo', 'estado'],
+            ],
+
+            'fields' => [
+                'titulo'      => 'tipo',
+                'descripcion' => 'notas',
+                'estado'      => 'estado',
+                'fecha'       => 'fecha_hora',
+            ],
+
+            'tabs' => [
+                'estado-actual' => [
+                    'label'          => __('Estado actual', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-clock',
+                    'content'        => '[fichaje_panel]',
+                    'requires_login' => true,
+                    'cap'            => 'flavor_fichaje_acceso',
+                ],
+                'entrada' => [
+                    'label'          => __('Fichar entrada', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-arrow-right-alt',
+                    'content'        => '[flavor_module_form module="fichaje_empleados" action="fichar_entrada"]',
+                    'requires_login' => true,
+                    'cap'            => 'flavor_fichaje_acceso',
+                ],
+                'salida' => [
+                    'label'          => __('Fichar salida', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-arrow-left-alt',
+                    'content'        => '[flavor_module_form module="fichaje_empleados" action="fichar_salida"]',
+                    'requires_login' => true,
+                    'cap'            => 'flavor_fichaje_acceso',
+                ],
+                'mis-fichajes' => [
+                    'label'          => __('Mis fichajes', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-list-view',
+                    'content'        => '[fichaje_historial periodo="semana"]',
+                    'requires_login' => true,
+                    'cap'            => 'flavor_fichaje_acceso',
+                ],
+                'solicitar-cambio' => [
+                    'label'          => __('Solicitar corrección', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-edit',
+                    'content'        => '[fichaje_solicitar_cambio]',
+                    'requires_login' => true,
+                    'cap'            => 'flavor_fichaje_acceso',
+                ],
+            ],
+        ];
     }
 
     /**

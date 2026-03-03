@@ -2167,6 +2167,23 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'listar_propuestas',
+            'listado' => 'listar_propuestas',
+            'explorar' => 'listar_propuestas',
+            'buscar' => 'listar_propuestas',
+            'propuestas' => 'listar_propuestas',
+            'crear' => 'crear_propuesta',
+            'nueva' => 'crear_propuesta',
+            'votaciones' => 'votacion_activa',
+            'votar' => 'votacion_activa',
+            'resultados' => 'resultados',
+            'debates' => 'fases',
+            'reuniones' => 'fases',
+            'presupuesto' => 'presupuesto',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -2175,7 +2192,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => "Accion no implementada: {$action_name}",
+            'error' => __('La vista solicitada no esta disponible en Participacion.', 'flavor-chat-ia'),
         ];
     }
 
@@ -2207,6 +2224,38 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                 ];
             }, $propuestas),
         ];
+    }
+
+    private function action_crear_propuesta($params) {
+        return do_shortcode('[crear_propuesta]');
+    }
+
+    private function action_votacion_activa($params) {
+        $atts = [];
+
+        if (!empty($params['id'])) {
+            $atts[] = 'id="' . absint($params['id']) . '"';
+        }
+
+        return do_shortcode('[votacion_activa ' . implode(' ', $atts) . ']');
+    }
+
+    private function action_resultados($params) {
+        $atts = [];
+
+        if (!empty($params['id'])) {
+            $atts[] = 'id="' . absint($params['id']) . '"';
+        }
+
+        return do_shortcode('[resultados_participacion ' . implode(' ', $atts) . ']');
+    }
+
+    private function action_fases($params) {
+        return do_shortcode('[fases_participacion]');
+    }
+
+    private function action_presupuesto($params) {
+        return do_shortcode('[presupuesto_participativo]');
     }
 
     /**

@@ -459,6 +459,26 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'buscar_viajes',
+            'listado' => 'buscar_viajes',
+            'buscar' => 'buscar_viajes',
+            'explorar' => 'buscar_viajes',
+            'crear' => 'publicar_viaje',
+            'publicar' => 'publicar_viaje',
+            'reservar' => 'reservar_plaza',
+            'confirmar' => 'confirmar_reserva',
+            'cancelar' => 'cancelar_reserva',
+            'valorar' => 'valorar_viaje',
+            'mis_items' => 'mis_viajes_pasajero',
+            'mis-viajes' => 'mis_viajes_pasajero',
+            'mis-viajes-conductor' => 'mis_viajes_conductor',
+            'vehiculo' => 'gestionar_vehiculo',
+            'ruta-recurrente' => 'crear_ruta_recurrente',
+            'stats' => 'estadisticas_carpooling',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {

@@ -57,7 +57,7 @@ class Flavor_Socios_Frontend_Controller {
      * Registrar assets
      */
     public function registrar_assets() {
-        $base_url = plugins_url('assets/', dirname(__FILE__));
+        $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         wp_register_style(
@@ -327,7 +327,7 @@ class Flavor_Socios_Frontend_Controller {
         if (!$socio) {
             return '<div class="flavor-empty-state"><p>' .
                 __('No eres socio/a todavía.', 'flavor-chat-ia') . '</p>' .
-                '<a href="' . esc_url(home_url('/socios/alta/')) . '" class="flavor-btn flavor-btn-primary">' .
+                '<a href="' . esc_url(home_url('/mi-portal/socios/unirse/')) . '" class="flavor-btn flavor-btn-primary">' .
                 __('Hacerse Socio/a', 'flavor-chat-ia') . '</a></div>';
         }
 
@@ -765,7 +765,7 @@ class Flavor_Socios_Frontend_Controller {
             <?php endif; ?>
 
             <div class="socios-cta">
-                <a href="<?php echo esc_url(home_url('/socios/alta/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
+                <a href="<?php echo esc_url(home_url('/mi-portal/socios/unirse/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                     <?php esc_html_e('Hazte Socio/a', 'flavor-chat-ia'); ?>
                 </a>
             </div>

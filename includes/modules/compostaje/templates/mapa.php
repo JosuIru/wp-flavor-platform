@@ -242,8 +242,10 @@ function filtrarPuntos(tipo) {
 }
 
 function centrarMapa(lat, lng) {
-    // Implementar con API de mapas (Leaflet, Google Maps, etc.)
-    alert('Ubicación: ' + lat + ', ' + lng);
+    const mapa = document.getElementById('flavor-compostaje-mapa') || document.querySelector('[id^="flavor-compostaje-mapa-"]');
+    if (mapa) {
+        mapa.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 // Datos de puntos para JS

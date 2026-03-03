@@ -289,7 +289,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
      */
     public function registrar_tabs($tabs) {
         $tabs['bt-mi-balance'] = [
-            'label' => __('Mi Balance', 'flavor-chat-ia'),
+            'label' => __('Mi Saldo', 'flavor-chat-ia'),
             'icon' => 'clock',
             'callback' => [$this, 'render_tab_mi_balance'],
             'orden' => 50,
@@ -307,6 +307,20 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
             'icon' => 'randomize',
             'callback' => [$this, 'render_tab_mis_intercambios'],
             'orden' => 52,
+        ];
+
+        $tabs['bt-mi-reputacion'] = [
+            'label' => __('Mi Reputación', 'flavor-chat-ia'),
+            'icon' => 'star-filled',
+            'callback' => [$this, 'render_tab_mi_reputacion'],
+            'orden' => 53,
+        ];
+
+        $tabs['bt-ranking'] = [
+            'label' => __('Ranking', 'flavor-chat-ia'),
+            'icon' => 'awards',
+            'callback' => [$this, 'render_tab_ranking'],
+            'orden' => 54,
         ];
 
         return $tabs;
@@ -460,11 +474,11 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
 
             <!-- Acciones -->
             <div class="flavor-panel-actions" style="margin-top: 1.5rem;">
-                <a href="<?php echo esc_url(home_url('/banco-tiempo/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Ofrecer Servicio', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/banco-tiempo/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/servicios/')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Buscar Servicios', 'flavor-chat-ia'); ?>
                 </a>
@@ -510,7 +524,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
         <div class="flavor-panel flavor-bt-servicios-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-hammer"></span> <?php esc_html_e('Mis Servicios', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/banco-tiempo/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?>
                 </a>
@@ -521,7 +535,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                     <span class="dashicons dashicons-clock"></span>
                     <p><?php esc_html_e('Aun no has publicado ningun servicio.', 'flavor-chat-ia'); ?></p>
                     <p><?php esc_html_e('Comparte tus habilidades con la comunidad y gana horas.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/banco-tiempo/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Ofrecer mi primer servicio', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -540,16 +554,32 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                                     <?php echo esc_html(number_format((float)$servicio->horas_estimadas, 1)); ?>h
                                 </div>
                             </div>
-                            <span class="bt-servicio-estado <?php echo esc_attr($servicio->estado); ?>">
-                                <?php echo esc_html(ucfirst($servicio->estado)); ?>
-                            </span>
+                            <div class="bt-servicio-side">
+                                <span class="bt-servicio-estado <?php echo esc_attr($servicio->estado); ?>">
+                                    <?php echo esc_html(ucfirst($servicio->estado)); ?>
+                                </span>
+                                <div class="bt-servicio-acciones">
+                                    <button type="button" class="flavor-btn flavor-btn-outline flavor-btn-sm bt-btn-editar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>">
+                                        <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
+                                    </button>
+                                    <?php if ($servicio->estado === 'activo') : ?>
+                                        <button type="button" class="flavor-btn flavor-btn-secondary flavor-btn-sm bt-btn-pausar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>">
+                                            <?php esc_html_e('Pausar', 'flavor-chat-ia'); ?>
+                                        </button>
+                                    <?php else : ?>
+                                        <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-sm bt-btn-activar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>">
+                                            <?php esc_html_e('Activar', 'flavor-chat-ia'); ?>
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
 
                 <div class="flavor-panel-footer">
-                    <a href="<?php echo esc_url(home_url('/banco-tiempo/mis-servicios/')); ?>" class="flavor-btn flavor-btn-outline">
-                        <?php esc_html_e('Ver todos mis servicios', 'flavor-chat-ia'); ?>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/servicios/')); ?>" class="flavor-btn flavor-btn-outline">
+                        <?php esc_html_e('Ver mis servicios', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -603,7 +633,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                     <span class="dashicons dashicons-randomize"></span>
                     <p><?php esc_html_e('No tienes intercambios registrados.', 'flavor-chat-ia'); ?></p>
                     <p><?php esc_html_e('Busca servicios que necesites o publica los tuyos.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/banco-tiempo/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/servicios/')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar servicios', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -641,20 +671,117 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                                     </span>
                                 </div>
                             </div>
-                            <span class="bt-intercambio-horas <?php echo esc_attr($tipo_intercambio); ?>">
-                                <?php echo esc_html(($es_proveedor ? '+' : '-') . number_format((float)$intercambio->horas, 1)); ?>h
-                            </span>
+                            <div class="bt-intercambio-side">
+                                <span class="bt-intercambio-horas <?php echo esc_attr($tipo_intercambio); ?>">
+                                    <?php echo esc_html(($es_proveedor ? '+' : '-') . number_format((float)$intercambio->horas, 1)); ?>h
+                                </span>
+                                <div class="bt-intercambio-acciones">
+                                    <?php if ($intercambio->estado === 'pendiente' && $es_proveedor) : ?>
+                                        <button type="button" class="flavor-btn flavor-btn-primary flavor-btn-sm bt-btn-aceptar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
+                                            <?php esc_html_e('Aceptar', 'flavor-chat-ia'); ?>
+                                        </button>
+                                        <button type="button" class="flavor-btn flavor-btn-danger flavor-btn-sm bt-btn-rechazar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
+                                            <?php esc_html_e('Rechazar', 'flavor-chat-ia'); ?>
+                                        </button>
+                                    <?php elseif ($intercambio->estado === 'pendiente' && !$es_proveedor) : ?>
+                                        <button type="button" class="flavor-btn flavor-btn-outline flavor-btn-sm bt-btn-cancelar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
+                                            <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
+                                        </button>
+                                    <?php elseif (in_array($intercambio->estado, ['aceptado', 'en_curso'], true)) : ?>
+                                        <button type="button" class="flavor-btn flavor-btn-success flavor-btn-sm bt-btn-completar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
+                                            <?php esc_html_e('Completar', 'flavor-chat-ia'); ?>
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
 
                 <div class="flavor-panel-footer">
-                    <a href="<?php echo esc_url(home_url('/banco-tiempo/mis-intercambios/')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/intercambios/')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php esc_html_e('Ver historial completo', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             <?php endif; ?>
         </div>
         <?php
+    }
+
+    /**
+     * Renderiza el tab de Mi Reputación
+     */
+    public function render_tab_mi_reputacion() {
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            echo '<p>' . esc_html__('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $reputacion = null;
+        if (Flavor_Chat_Helpers::tabla_existe($this->tabla_reputacion)) {
+            $reputacion = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM {$this->tabla_reputacion} WHERE usuario_id = %d LIMIT 1", $user_id),
+                ARRAY_A
+            );
+        }
+
+        if (!$reputacion) {
+            $user = wp_get_current_user();
+            $reputacion = [
+                'usuario_id' => $user_id,
+                'nombre' => $user ? $user->display_name : '',
+                'avatar' => get_avatar_url($user_id),
+                'nivel' => 1,
+                'puntos_confianza' => 0,
+                'rating_promedio' => 0,
+                'total_intercambios_completados' => 0,
+                'total_horas_dadas' => 0,
+                'total_horas_recibidas' => 0,
+                'rating_puntualidad' => 0,
+                'rating_calidad' => 0,
+                'rating_comunicacion' => 0,
+                'badges' => '',
+                'estado_verificacion' => 'pendiente',
+                'fecha_primer_intercambio' => '',
+            ];
+        } else {
+            $reputacion['avatar'] = get_avatar_url($user_id);
+            $reputacion['nombre'] = $reputacion['nombre'] ?? wp_get_current_user()->display_name;
+        }
+
+        $badges_info = [];
+        if (!empty($reputacion['badges'])) {
+            $badges = is_array($reputacion['badges']) ? $reputacion['badges'] : json_decode($reputacion['badges'], true);
+            if (is_array($badges)) {
+                foreach ($badges as $badge_id) {
+                    $badges_info[] = [
+                        'nombre' => ucwords(str_replace('_', ' ', (string) $badge_id)),
+                        'descripcion' => (string) $badge_id,
+                        'icono' => 'awards',
+                    ];
+                }
+            }
+        }
+
+        $template = dirname(__FILE__) . '/templates/mi-reputacion.php';
+        if (!file_exists($template)) {
+            $template = dirname(__FILE__) . '/../banco-tiempo/templates/mi-reputacion.php';
+        }
+
+        if (file_exists($template)) {
+            include $template;
+            return;
+        }
+
+        echo '<p>' . esc_html__('La vista de reputación no está disponible.', 'flavor-chat-ia') . '</p>';
+    }
+
+    /**
+     * Renderiza el tab de Ranking
+     */
+    public function render_tab_ranking() {
+        echo do_shortcode('[banco_tiempo_ranking limite="10"]');
     }
 }

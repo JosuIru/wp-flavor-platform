@@ -6,12 +6,16 @@
 (function($) {
     'use strict';
 
+    const multimediaConfig = typeof flavorMultimediaConfig !== 'undefined'
+        ? flavorMultimediaConfig
+        : (typeof flavorMultimedia !== 'undefined' ? flavorMultimedia : {});
+
     const FlavorMultimedia = {
-        ajaxurl: typeof flavorMultimedia !== 'undefined' ? flavorMultimedia.ajaxurl : '/wp-admin/admin-ajax.php',
-        resturl: typeof flavorMultimedia !== 'undefined' ? flavorMultimedia.resturl : '/wp-json/flavor/v1/multimedia/',
-        nonce: typeof flavorMultimedia !== 'undefined' ? flavorMultimedia.nonce : '',
-        user_id: typeof flavorMultimedia !== 'undefined' ? flavorMultimedia.user_id : 0,
-        strings: typeof flavorMultimedia !== 'undefined' ? flavorMultimedia.strings : {},
+        ajaxurl: multimediaConfig.ajaxurl || multimediaConfig.ajaxUrl || '/wp-admin/admin-ajax.php',
+        resturl: multimediaConfig.resturl || multimediaConfig.restUrl || '/wp-json/flavor/v1/multimedia/',
+        nonce: multimediaConfig.nonce || '',
+        user_id: multimediaConfig.user_id || multimediaConfig.userId || 0,
+        strings: multimediaConfig.strings || multimediaConfig.i18n || {},
         currentArchivos: [],
         currentIndex: 0,
     };
@@ -911,9 +915,12 @@
         container.on('click', '.mm-btn-eliminar-archivo', function(e) {
             e.stopPropagation();
             const id = $(this).closest('.mm-item').data('id');
-            if (confirm(self.strings.confirm_delete || '¿Eliminar este archivo?')) {
-                self.eliminarArchivo(id, container);
-            }
+            self.showConfirm(
+                self.strings.confirm_delete || '¿Eliminar este archivo?',
+                function() {
+                    self.eliminarArchivo(id, container);
+                }
+            );
         });
 
         // Crear álbum
@@ -968,11 +975,55 @@
                         `;
                     });
                     grid.html(html);
+                    self.handleGaleriaDeepLinks();
                 } else {
                     grid.html('<div class="mm-empty"><span class="dashicons dashicons-format-gallery"></span><h3>Sin archivos</h3><p>No tienes archivos subidos</p></div>');
                 }
             }
         });
+    };
+
+    FlavorMultimedia.handleGaleriaDeepLinks = function() {
+        if (!window.URLSearchParams || !Array.isArray(this.currentArchivos) || !this.currentArchivos.length) {
+            return;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const archivoId = parseInt(params.get('archivo_id') || '', 10);
+        const editarArchivoId = parseInt(params.get('editar_archivo') || '', 10);
+
+        if (archivoId) {
+            const index = this.currentArchivos.findIndex(function(archivo) {
+                return parseInt(archivo.id, 10) === archivoId;
+            });
+
+            if (index >= 0) {
+                this.consumeGaleriaParam('archivo_id');
+                this.openLightbox(index);
+                return;
+            }
+        }
+
+        if (editarArchivoId) {
+            const exists = this.currentArchivos.some(function(archivo) {
+                return parseInt(archivo.id, 10) === editarArchivoId;
+            });
+
+            if (exists) {
+                this.consumeGaleriaParam('editar_archivo');
+                this.showEditarArchivoModal(editarArchivoId);
+            }
+        }
+    };
+
+    FlavorMultimedia.consumeGaleriaParam = function(paramName) {
+        if (!window.history || !window.history.replaceState || !window.URLSearchParams) {
+            return;
+        }
+
+        const url = new URL(window.location.href);
+        url.searchParams.delete(paramName);
+        window.history.replaceState({}, document.title, url.toString());
     };
 
     FlavorMultimedia.loadMisAlbumes = function(container) {
@@ -992,15 +1043,20 @@
             },
             success: function(response) {
                 if (response.success && response.albumes.length) {
+                    self.currentAlbumes = response.albumes;
                     self.renderAlbumes(grid, response.albumes, 3);
+                    self.handleMiGaleriaAlbumDeepLinks(container);
                 } else {
+                    self.currentAlbumes = [];
                     grid.html('<div class="mm-empty"><span class="dashicons dashicons-images-alt2"></span><h3>Sin álbumes</h3><p>Crea tu primer álbum</p></div>');
+                    self.handleMiGaleriaAlbumDeepLinks(container);
                 }
             }
         });
     };
 
     FlavorMultimedia.loadAlbumesParaFiltro = function(container) {
+        const self = this;
         const select = container.find('.mm-filtro-album');
 
         $.ajax({
@@ -1018,9 +1074,143 @@
                         select.append(`<option value="${album.id}">${album.nombre}</option>`);
                     });
                 }
+
+                self.handleMiGaleriaAlbumDeepLinks(container);
             }
         });
     };
+
+    FlavorMultimedia.handleMiGaleriaAlbumDeepLinks = function(container) {
+        if (!window.URLSearchParams) {
+            return;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const tab = params.get('tab') || '';
+        const crearAlbum = parseInt(params.get('crear_album') || '', 10);
+        const editarAlbumId = parseInt(params.get('editar_album') || '', 10);
+        const albumId = parseInt(params.get('album_id') || '', 10);
+
+        if (tab === 'albumes') {
+            container.find('.mm-tab').removeClass('active');
+            container.find('.mm-tab-content').removeClass('active');
+            container.find('.mm-tab[data-tab="albumes"]').addClass('active');
+            container.find('.mm-tab-content[data-tab="albumes"]').addClass('active');
+        }
+
+        if (albumId && container.find('.mm-filtro-album').length) {
+            const select = container.find('.mm-filtro-album');
+            if (select.find(`option[value="${albumId}"]`).length) {
+                if (select.val() !== String(albumId)) {
+                    select.val(String(albumId));
+                    this.consumeGaleriaParam('album_id');
+                    this.loadMisArchivos(container);
+                    return;
+                }
+            }
+        }
+
+        if (crearAlbum) {
+            this.consumeGaleriaParam('crear_album');
+            this.consumeGaleriaParam('tab');
+            this.showCrearAlbumModal();
+            return;
+        }
+
+        if (editarAlbumId && Array.isArray(this.currentAlbumes) && this.currentAlbumes.length) {
+            const album = this.currentAlbumes.find(function(item) {
+                return parseInt(item.id, 10) === editarAlbumId;
+            });
+
+            if (album) {
+                this.consumeGaleriaParam('editar_album');
+                this.consumeGaleriaParam('tab');
+                this.showEditarAlbumModal(album);
+            }
+        }
+    };
+
+    FlavorMultimedia.showEditarAlbumModal = function(album) {
+        const self = this;
+        if (!album) {
+            return;
+        }
+
+        $('#mm-modal-editar-album').remove();
+
+        const html = `
+            <div class="mm-modal" id="mm-modal-editar-album">
+                <div class="mm-modal-overlay"></div>
+                <div class="mm-modal-content">
+                    <div class="mm-modal-header">
+                        <h3>${self.strings.edit_album || 'Editar álbum'}</h3>
+                        <button class="mm-modal-close">&times;</button>
+                    </div>
+                    <form id="mm-form-editar-album" class="mm-form">
+                        <input type="hidden" name="album_id" value="${album.id}">
+                        <div class="mm-campo">
+                            <label>${self.strings.title || 'Título'}</label>
+                            <input type="text" name="nombre" value="${self.escapeHtml(album.nombre || album.titulo || '')}" required>
+                        </div>
+                        <div class="mm-campo">
+                            <label>${self.strings.description || 'Descripción'}</label>
+                            <textarea name="descripcion" rows="3">${self.escapeHtml(album.descripcion || '')}</textarea>
+                        </div>
+                        <div class="mm-campo">
+                            <label>${self.strings.privacy || 'Privacidad'}</label>
+                            <select name="privacidad">
+                                <option value="comunidad" ${(album.privacidad === 'comunidad') ? 'selected' : ''}>Comunidad</option>
+                                <option value="publico" ${(album.privacidad === 'publico') ? 'selected' : ''}>Público</option>
+                                <option value="privado" ${(album.privacidad === 'privado') ? 'selected' : ''}>Privado</option>
+                            </select>
+                        </div>
+                        <div class="mm-acciones">
+                            <button type="submit" class="btn btn-primary">${self.strings.save || 'Guardar cambios'}</button>
+                            <button type="button" class="btn btn-outline mm-modal-close">${self.strings.cancel || 'Cancelar'}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+
+        $('body').append(html);
+    };
+
+    $(document).on('click', '#mm-modal-editar-album .mm-modal-overlay, #mm-modal-editar-album .mm-modal-close', function() {
+        $('#mm-modal-editar-album').remove();
+    });
+
+    $(document).on('submit', '#mm-form-editar-album', function(e) {
+        e.preventDefault();
+
+        const self = FlavorMultimedia;
+        const form = $(this);
+
+        $.ajax({
+            url: self.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'flavor_mm_editar_album',
+                nonce: self.nonce,
+                album_id: form.find('[name="album_id"]').val(),
+                nombre: form.find('[name="nombre"]').val(),
+                descripcion: form.find('[name="descripcion"]').val(),
+                privacidad: form.find('[name="privacidad"]').val()
+            },
+            success: function(response) {
+                if (response.success) {
+                    self.showToast((response.data && response.data.mensaje) || self.strings.saved || 'Álbum actualizado', 'success');
+                    $('#mm-modal-editar-album').remove();
+                    self.loadMisAlbumes($('.flavor-mm-mi-galeria'));
+                } else {
+                    self.showToast(response.data || self.strings.error || 'Error', 'error');
+                }
+            },
+            error: function() {
+                self.showToast(self.strings.error || 'Error al guardar', 'error');
+            }
+        });
+    });
 
     FlavorMultimedia.eliminarArchivo = function(id, container) {
         const self = this;
@@ -1045,8 +1235,6 @@
     };
 
     FlavorMultimedia.showEditarArchivoModal = function(id) {
-        // Implementación similar a crear álbum modal
-        // Por brevedad, aquí solo mostramos la estructura
         const self = this;
 
         $.ajax({
@@ -1059,11 +1247,119 @@
             success: function(response) {
                 if (response.success) {
                     const archivo = response.data.archivo;
-                    // Mostrar modal con los datos
-                    self.showToast('Función de edición en desarrollo', 'info');
+                    const modal = `
+                        <div class="mm-modal" id="mm-modal-editar-archivo">
+                            <div class="mm-modal-overlay"></div>
+                            <div class="mm-modal-content">
+                                <div class="mm-modal-header">
+                                    <h3>${self.strings.edit_file || 'Editar archivo'}</h3>
+                                    <button class="mm-modal-close">&times;</button>
+                                </div>
+                                <form id="mm-form-editar-archivo" class="mm-form">
+                                    <input type="hidden" name="archivo_id" value="${archivo.id}">
+                                    <div class="mm-form-group">
+                                        <label>${self.strings.title || 'Título'}</label>
+                                        <input type="text" name="titulo" value="${self.escapeHtml(archivo.titulo || '')}">
+                                    </div>
+                                    <div class="mm-form-group">
+                                        <label>${self.strings.description || 'Descripción'}</label>
+                                        <textarea name="descripcion" rows="4">${self.escapeHtml(archivo.descripcion || '')}</textarea>
+                                    </div>
+                                    <div class="mm-form-group">
+                                        <label>${self.strings.privacy || 'Privacidad'}</label>
+                                        <select name="privacidad">
+                                            <option value="publico" ${archivo.estado === 'publico' ? 'selected' : ''}>Público</option>
+                                            <option value="comunidad" ${archivo.estado === 'comunidad' ? 'selected' : ''}>Comunidad</option>
+                                            <option value="privado" ${archivo.estado === 'privado' ? 'selected' : ''}>Privado</option>
+                                            <option value="pendiente" ${archivo.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                                        </select>
+                                    </div>
+                                    <div class="mm-form-group mm-form-group-check">
+                                        <label>
+                                            <input type="checkbox" name="permite_comentarios" value="1" ${parseInt(archivo.permite_comentarios || 0, 10) ? 'checked' : ''}>
+                                            ${self.strings.allow_comments || 'Permitir comentarios'}
+                                        </label>
+                                    </div>
+                                    <div class="mm-form-group mm-form-group-check">
+                                        <label>
+                                            <input type="checkbox" name="permite_descargas" value="1" ${parseInt(archivo.permite_descargas || 0, 10) ? 'checked' : ''}>
+                                            ${self.strings.allow_downloads || 'Permitir descargas'}
+                                        </label>
+                                    </div>
+                                    <div class="mm-form-actions">
+                                        <button type="button" class="btn btn-outline mm-modal-close">${self.strings.cancel || 'Cancelar'}</button>
+                                        <button type="submit" class="btn btn-primary">${self.strings.save || 'Guardar cambios'}</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    `;
+
+                    $('#mm-modal-editar-archivo').remove();
+                    $('body').append(modal);
                 }
+                else {
+                    self.showToast(response.data || 'Error', 'error');
+                }
+            },
+            error: function() {
+                self.showToast(self.strings.error || 'Error al cargar', 'error');
             }
         });
+    };
+
+    $(document).on('click', '#mm-modal-editar-archivo .mm-modal-overlay, #mm-modal-editar-archivo .mm-modal-close', function() {
+        $('#mm-modal-editar-archivo').remove();
+    });
+
+    $(document).on('submit', '#mm-form-editar-archivo', function(e) {
+        e.preventDefault();
+
+        const self = FlavorMultimedia;
+        const form = $(this);
+        const archivoId = form.find('[name="archivo_id"]').val();
+        const submitBtn = form.find('[type="submit"]');
+
+        submitBtn.prop('disabled', true);
+
+        $.ajax({
+            url: self.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'flavor_mm_editar',
+                nonce: self.nonce,
+                archivo_id: archivoId,
+                titulo: form.find('[name="titulo"]').val(),
+                descripcion: form.find('[name="descripcion"]').val(),
+                privacidad: form.find('[name="privacidad"]').val(),
+                permite_comentarios: form.find('[name="permite_comentarios"]').is(':checked') ? 1 : 0,
+                permite_descargas: form.find('[name="permite_descargas"]').is(':checked') ? 1 : 0,
+            },
+            success: function(response) {
+                if (response.success) {
+                    self.showToast((response.data && response.data.mensaje) || self.strings.saved || 'Archivo actualizado', 'success');
+                    $('#mm-modal-editar-archivo').remove();
+                    self.loadMisArchivos($('.flavor-mm-mi-galeria'));
+                } else {
+                    self.showToast(response.data || self.strings.error || 'Error', 'error');
+                }
+            },
+            error: function() {
+                self.showToast(self.strings.error || 'Error al guardar', 'error');
+            },
+            complete: function() {
+                submitBtn.prop('disabled', false);
+            }
+        });
+    });
+
+    FlavorMultimedia.escapeHtml = function(text) {
+        return String(text || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     };
 
     // =========================================================================
@@ -1180,6 +1476,36 @@
                 $(this).remove();
             });
         }, 4000);
+    };
+
+    FlavorMultimedia.showConfirm = function(message, onConfirm) {
+        if (!$('.mm-toast-container').length) {
+            $('body').append('<div class="mm-toast-container"></div>');
+        }
+
+        const toast = $(`
+            <div class="mm-toast info" style="opacity:1;">
+                <div class="mm-confirm-text"></div>
+                <div class="mm-confirm-actions" style="margin-top:10px;display:flex;gap:8px;">
+                    <button type="button" class="mm-confirm-ok" style="border:0;border-radius:8px;padding:8px 12px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer;">Confirmar</button>
+                    <button type="button" class="mm-confirm-cancel" style="border:0;border-radius:8px;padding:8px 12px;background:#e5e7eb;color:#111827;font-weight:600;cursor:pointer;">Cancelar</button>
+                </div>
+            </div>
+        `);
+
+        toast.find('.mm-confirm-text').text(message);
+        $('.mm-toast-container').append(toast);
+
+        toast.find('.mm-confirm-ok').on('click', function() {
+            toast.remove();
+            if (typeof onConfirm === 'function') {
+                onConfirm();
+            }
+        });
+
+        toast.find('.mm-confirm-cancel').on('click', function() {
+            toast.remove();
+        });
     };
 
     // Exponer globalmente

@@ -195,7 +195,7 @@ class Flavor_Comunidades_Dashboard_Tab {
         <div class="flavor-dashboard-comunidades">
             <div class="flavor-dashboard-section-header">
                 <h3><?php _e('Mis Comunidades', 'flavor-chat-ia'); ?></h3>
-                <a href="<?php echo esc_url(home_url('/comunidades/')); ?>" class="flavor-btn-secondary flavor-btn-sm">
+                <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/')); ?>" class="flavor-btn-secondary flavor-btn-sm">
                     <span class="dashicons dashicons-search"></span>
                     <?php _e('Explorar más', 'flavor-chat-ia'); ?>
                 </a>
@@ -205,7 +205,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                 <div class="flavor-dashboard-empty">
                     <span class="dashicons dashicons-groups"></span>
                     <p><?php _e('Aún no perteneces a ninguna comunidad.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/comunidades/')); ?>" class="flavor-btn-primary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/')); ?>" class="flavor-btn-primary">
                         <?php _e('Explorar comunidades', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -230,7 +230,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                             <div class="flavor-comunidad-content">
                                 <div class="flavor-comunidad-header">
                                     <h4 class="flavor-comunidad-nombre">
-                                        <a href="<?php echo esc_url(home_url('/comunidades/?comunidad=' . $comunidad->id)); ?>">
+                                        <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $comunidad->id . '/')); ?>">
                                             <?php echo esc_html($comunidad->nombre); ?>
                                         </a>
                                     </h4>
@@ -267,7 +267,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                                         );
                                         ?>
                                     </span>
-                                    <a href="<?php echo esc_url(home_url('/comunidades/?comunidad=' . $comunidad->id)); ?>" class="flavor-btn-link">
+                                    <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $comunidad->id . '/')); ?>" class="flavor-btn-link">
                                         <?php _e('Ver comunidad', 'flavor-chat-ia'); ?>
                                         <span class="dashicons dashicons-arrow-right-alt2"></span>
                                     </a>
@@ -434,7 +434,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                                         <?php echo esc_html(wp_trim_words($actividad->contenido, 25, '...')); ?>
                                     </p>
                                     <div class="flavor-actividad-meta">
-                                        <a href="<?php echo esc_url(home_url('/comunidades/?comunidad=' . $actividad->comunidad_id)); ?>" class="flavor-actividad-comunidad">
+                                        <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $actividad->comunidad_id . '/')); ?>" class="flavor-actividad-comunidad">
                                             <span class="dashicons dashicons-groups"></span>
                                             <?php echo esc_html($actividad->comunidad_nombre); ?>
                                         </a>
@@ -480,7 +480,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                                         <span class="flavor-feed-accion">
                                             <?php echo esc_html($this->obtener_texto_accion($entrada->tipo)); ?>
                                         </span>
-                                        <a href="<?php echo esc_url(home_url('/comunidades/?comunidad=' . $entrada->comunidad_id)); ?>">
+                                        <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $entrada->comunidad_id . '/')); ?>">
                                             <?php echo esc_html($entrada->comunidad_nombre); ?>
                                         </a>
                                     </div>
@@ -686,6 +686,12 @@ class Flavor_Comunidades_Dashboard_Tab {
 
         <script>
         jQuery(document).ready(function($) {
+            var $notice = $('<div class="flavor-dashboard-notice"></div>').insertBefore('.flavor-preferencias-grid').hide();
+
+            function mostrarAviso(mensaje, tipo) {
+                $notice.removeClass('success error').addClass(tipo || 'success').text(mensaje).show();
+            }
+
             // Marcar todas como leídas
             $('#marcar-todas-leidas').on('click', function() {
                 $.post(ajaxurl, {
@@ -715,12 +721,22 @@ class Flavor_Comunidades_Dashboard_Tab {
                     nonce: '<?php echo wp_create_nonce('comunidades_dashboard_nonce'); ?>'
                 }, function(response) {
                     if (response.success) {
-                        alert('<?php echo esc_js(__('Preferencias guardadas', 'flavor-chat-ia')); ?>');
+                        mostrarAviso('<?php echo esc_js(__('Preferencias guardadas', 'flavor-chat-ia')); ?>', 'success');
                     }
                 });
             });
         });
         </script>
+        <style>
+            .flavor-dashboard-notice {
+                margin: 0 0 12px;
+                padding: 12px 14px;
+                border-radius: 8px;
+                font-size: 14px;
+            }
+            .flavor-dashboard-notice.success { background: #dcfce7; color: #166534; }
+            .flavor-dashboard-notice.error { background: #fee2e2; color: #991b1b; }
+        </style>
         <?php
     }
 
@@ -810,7 +826,7 @@ class Flavor_Comunidades_Dashboard_Tab {
                 ),
                 'mensaje'    => !empty($actividad->titulo) ? $actividad->titulo : wp_trim_words($actividad->contenido, 10, '...'),
                 'created_at' => $actividad->fecha,
-                'link'       => home_url('/comunidades/?comunidad=' . $actividad->comunidad_id),
+                'link'       => home_url('/mi-portal/comunidades/' . $actividad->comunidad_id . '/'),
                 'leida'      => false,
             ];
         }

@@ -63,10 +63,10 @@ class Flavor_Fichaje_Empleados_Dashboard_Tab {
                 <?php
                 switch ($subtab) {
                     case 'historial':
-                        $this->render_historial($datos);
+                        echo do_shortcode('[fichaje_historial]');
                         break;
                     case 'resumen':
-                        $this->render_resumen($datos);
+                        echo do_shortcode('[fichaje_resumen]');
                         break;
                     case 'admin':
                         if (current_user_can('manage_options')) {
@@ -74,7 +74,7 @@ class Flavor_Fichaje_Empleados_Dashboard_Tab {
                         }
                         break;
                     default:
-                        $this->render_fichar($datos);
+                        echo do_shortcode('[fichaje_panel]');
                 }
                 ?>
             </div>

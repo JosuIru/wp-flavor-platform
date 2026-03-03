@@ -584,6 +584,9 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         add_shortcode('flavor_grupos_lista', [$this, 'shortcode_grupos_lista']);
         add_shortcode('flavor_grupos_explorar', [$this, 'shortcode_grupos_explorar']);
         add_shortcode('flavor_grupos_crear', [$this, 'shortcode_crear_grupo']);
+        add_shortcode('chat_grupos_crear', [$this, 'shortcode_chat_grupos_crear_alias']);
+        add_shortcode('chat_grupos_mis_grupos', [$this, 'shortcode_chat_grupos_mis_grupos_alias']);
+        add_shortcode('chat_grupos_mensajes', [$this, 'shortcode_chat_grupos_mensajes_alias']);
         add_shortcode('chat_grupos_sin_leer', [$this, 'shortcode_sin_leer']);
         add_shortcode('chat_mensajes_sin_leer', [$this, 'shortcode_mensajes_sin_leer']);
         // Shortcode de integración para tabs de otros módulos
@@ -758,6 +761,23 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'grupos_publicos',
+            'listado' => 'grupos_publicos',
+            'explorar' => 'grupos_publicos',
+            'crear' => 'crear_grupo',
+            'mis_items' => 'mis_grupos',
+            'mis-grupos' => 'mis_grupos',
+            'miembros' => 'miembros_grupo',
+            'detalle' => 'info_grupo',
+            'ver' => 'info_grupo',
+            'mensajes' => 'mensajes',
+            'buscar' => 'buscar_mensajes',
+            'unirse' => 'unirse_grupo',
+            'salir' => 'salir_grupo',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -766,8 +786,38 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => "Acción no implementada: {$action_name}",
+            'error' => __('La vista solicitada no está disponible en Chat Grupos.', 'flavor-chat-ia'),
         ];
+    }
+
+    /**
+     * Wrapper del renderer: crear grupo.
+     *
+     * @param array $atts
+     * @return string
+     */
+    public function shortcode_chat_grupos_crear_alias($atts) {
+        return $this->shortcode_crear_grupo($atts);
+    }
+
+    /**
+     * Wrapper del renderer: mis grupos.
+     *
+     * @param array $atts
+     * @return string
+     */
+    public function shortcode_chat_grupos_mis_grupos_alias($atts) {
+        return $this->shortcode_chat_grupos($atts);
+    }
+
+    /**
+     * Wrapper del renderer: mensajes de grupos.
+     *
+     * @param array $atts
+     * @return string
+     */
+    public function shortcode_chat_grupos_mensajes_alias($atts) {
+        return $this->shortcode_chat_grupos($atts);
     }
 
     /**
@@ -2022,7 +2072,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         register_rest_route('flavor/v1', '/chat-grupos', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_mis_grupos'],
-            'permission_callback' => 'is_user_logged_in',
+            'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
         register_rest_route('flavor/v1', '/chat-grupos/explorar', [
@@ -2087,7 +2137,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     }
 
     public function rest_mis_grupos($request) {
-        return rest_ensure_response($this->action_mis_grupos([]));
+        return rest_ensure_response($this->sanitize_public_chat_response($this->action_mis_grupos([])));
     }
 
     public function rest_explorar_grupos($request) {
@@ -2186,6 +2236,10 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     private function sanitize_public_chat_response($respuesta) {
         if (is_user_logged_in() || empty($respuesta['success'])) {
             return $respuesta;
+        }
+
+        if (!empty($respuesta['grupos']) && is_array($respuesta['grupos'])) {
+            $respuesta['grupos'] = array_map([$this, 'sanitize_public_group'], $respuesta['grupos']);
         }
 
         if (!empty($respuesta['mensajes']) && is_array($respuesta['mensajes'])) {
@@ -2559,8 +2613,17 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
     // ==================== Shortcodes ====================
 
     public function shortcode_chat_grupos($atts) {
+        $atts = shortcode_atts([
+            'grupo_id' => 0,
+        ], $atts);
+
         if (!is_user_logged_in()) {
             return '<div class="cg-login-required"><p>' . __('Inicia sesión para acceder al chat de grupos.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $grupo_id_inicial = absint($atts['grupo_id'] ?? 0);
+        if ($grupo_id_inicial <= 0) {
+            $grupo_id_inicial = absint($_GET['grupo_id'] ?? 0);
         }
 
         ob_start();
@@ -2628,6 +2691,15 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 <!-- Panel lateral de info del grupo -->
             </div>
         </div>
+        <?php if ($grupo_id_inicial > 0): ?>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.FlavorChatGrupos && typeof window.FlavorChatGrupos.abrirGrupo === 'function') {
+                window.FlavorChatGrupos.abrirGrupo(<?php echo intval($grupo_id_inicial); ?>);
+            }
+        });
+        </script>
+        <?php endif; ?>
         <?php
         return ob_get_clean();
     }
@@ -2985,7 +3057,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 </div>
                 <div class="cg-grupo-card-footer">
                     <?php if ($grupo['es_miembro']): ?>
-                        <a href="<?php echo esc_url(add_query_arg('grupo', $grupo['slug'], get_permalink())); ?>" class="cg-btn cg-btn-primary"><?php _e('Abrir', 'flavor-chat-ia'); ?></a>
+                        <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/mensajes/?grupo_id=' . intval($grupo['id']))); ?>" class="cg-btn cg-btn-primary"><?php _e('Abrir', 'flavor-chat-ia'); ?></a>
                     <?php else: ?>
                         <button class="cg-btn cg-btn-outline cg-btn-unirse" data-id="<?php echo $grupo['id']; ?>"><?php _e('Unirse', 'flavor-chat-ia'); ?></button>
                     <?php endif; ?>
@@ -3141,7 +3213,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             <ul class="grupos-sin-leer-lista">
                 <?php foreach ($grupos_sin_leer as $grupo): ?>
                 <li>
-                    <a href="<?php echo esc_url(home_url('/chat-grupos/grupo/?id=' . $grupo->id)); ?>">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/mensajes/?grupo_id=' . $grupo->id)); ?>">
                         <span class="grupo-color" style="background:<?php echo esc_attr($grupo->color ?: '#2271b1'); ?>"></span>
                         <span class="grupo-nombre"><?php echo esc_html($grupo->nombre); ?></span>
                         <span class="grupo-sin-leer"><?php echo esc_html($grupo->sin_leer); ?></span>
@@ -3880,6 +3952,7 @@ KNOWLEDGE;
                     'icon'       => 'dashicons-email',
                     'content'    => 'shortcode:chat_grupos_mensajes',
                     'requires_login' => true,
+                    'hidden_nav' => true,
                 ],
             ],
 

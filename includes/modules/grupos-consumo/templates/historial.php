@@ -21,7 +21,7 @@ $filtros = $args['filtros'] ?? [];
         <div class="gc-historial-login-requerido">
             <span class="dashicons dashicons-lock"></span>
             <p><?php _e('Inicia sesión para ver tu historial de pedidos.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo wp_login_url(get_permalink()); ?>" class="gc-btn gc-btn-primary">
+            <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/'))); ?>" class="gc-btn gc-btn-primary">
                 <?php _e('Iniciar sesión', 'flavor-chat-ia'); ?>
             </a>
         </div>
@@ -63,8 +63,8 @@ $filtros = $args['filtros'] ?? [];
                 <span class="gc-historial-icono-vacio">📋</span>
                 <h3><?php _e('No tienes pedidos', 'flavor-chat-ia'); ?></h3>
                 <p><?php _e('Cuando hagas tu primer pedido, aparecerá aquí.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo esc_url(get_post_type_archive_link('gc_producto')); ?>" class="gc-btn gc-btn-primary">
-                    <?php _e('Ver catálogo', 'flavor-chat-ia'); ?>
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
+                    <?php _e('Ver productos', 'flavor-chat-ia'); ?>
                 </a>
             </div>
         <?php else: ?>

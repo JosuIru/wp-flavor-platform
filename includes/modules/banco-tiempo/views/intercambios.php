@@ -24,7 +24,7 @@ if (isset($_POST['accion']) && check_admin_referer('banco_tiempo_intercambios'))
         case 'aprobar':
             $wpdb->update(
                 $tabla_transacciones,
-                ['estado' => 'completado', 'fecha_completado' => current_time('mysql')],
+                ['estado' => 'aceptado', 'fecha_aceptacion' => current_time('mysql')],
                 ['id' => $intercambio_id]
             );
             break;
@@ -165,10 +165,10 @@ $stats = [
 
                 <select name="estado">
                     <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('pendiente', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('aceptado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'aceptado'); ?>><?php echo esc_html__('Aceptado', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('completado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'completado'); ?>><?php echo esc_html__('Completado', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('cancelado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'cancelado'); ?>><?php echo esc_html__('Cancelado', 'flavor-chat-ia'); ?></option>
+                    <option value="pendiente" <?php selected($filtro_estado, 'pendiente'); ?>><?php echo esc_html__('Pendiente', 'flavor-chat-ia'); ?></option>
+                    <option value="aceptado" <?php selected($filtro_estado, 'aceptado'); ?>><?php echo esc_html__('Aceptado', 'flavor-chat-ia'); ?></option>
+                    <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php echo esc_html__('Completado', 'flavor-chat-ia'); ?></option>
+                    <option value="cancelado" <?php selected($filtro_estado, 'cancelado'); ?>><?php echo esc_html__('Cancelado', 'flavor-chat-ia'); ?></option>
                 </select>
 
                 <input type="date" name="fecha_desde" value="<?php echo esc_attr($filtro_fecha_desde); ?>"
@@ -271,10 +271,10 @@ $stats = [
                         <?php if ($intercambio->estado === 'pendiente'): ?>
                             <form method="post" style="display: inline;">
                                 <?php wp_nonce_field('banco_tiempo_intercambios'); ?>
-                                <input type="hidden" name="accion" value="<?php echo esc_attr__('aprobar', 'flavor-chat-ia'); ?>">
+                                <input type="hidden" name="accion" value="aprobar">
                                 <input type="hidden" name="intercambio_id" value="<?php echo $intercambio->id; ?>">
                                 <button type="submit" class="button button-small button-primary"
-                                        onclick="return confirm('¿Aprobar este intercambio?');">
+                                        onclick="return window.confirm('<?php echo esc_js(__('¿Aprobar este intercambio?', 'flavor-chat-ia')); ?>');">
                                     <?php echo esc_html__('Aprobar', 'flavor-chat-ia'); ?>
                                 </button>
                             </form>

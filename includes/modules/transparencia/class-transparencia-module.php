@@ -183,12 +183,37 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     public function register_shortcodes() {
         add_shortcode('transparencia_portal', [$this, 'shortcode_portal']);
         add_shortcode('transparencia_presupuesto_actual', [$this, 'shortcode_presupuesto_actual']);
+        add_shortcode('transparencia_presupuestos', [$this, 'shortcode_presupuesto_actual']);
         add_shortcode('transparencia_ultimos_gastos', [$this, 'shortcode_ultimos_gastos']);
         add_shortcode('transparencia_buscador_docs', [$this, 'shortcode_buscador_docs']);
         add_shortcode('transparencia_solicitar_info', [$this, 'shortcode_solicitar_info']);
+        add_shortcode('transparencia_solicitar', [$this, 'shortcode_solicitar_info']);
         add_shortcode('transparencia_actas', [$this, 'shortcode_actas']);
         add_shortcode('transparencia_grafico_presupuesto', [$this, 'shortcode_grafico_presupuesto']);
         add_shortcode('transparencia_indicadores', [$this, 'shortcode_indicadores']);
+        add_shortcode('transparencia_mis_solicitudes', [$this, 'shortcode_mis_solicitudes_alias']);
+    }
+
+    /**
+     * Wrapper para reutilizar el shortcode frontend de mis solicitudes.
+     *
+     * @param array $atributos
+     * @return string
+     */
+    public function shortcode_mis_solicitudes_alias($atributos = []) {
+        if (shortcode_exists('flavor_transparencia_mis_solicitudes')) {
+            return do_shortcode('[flavor_transparencia_mis_solicitudes]');
+        }
+
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-alert flavor-alert-warning">' .
+                __('Debes iniciar sesión para ver tus solicitudes.', 'flavor-chat-ia') .
+                '</div>';
+        }
+
+        return '<div class="flavor-alert flavor-alert-info">' .
+            __('El panel de seguimiento de solicitudes no está disponible en este momento.', 'flavor-chat-ia') .
+            '</div>';
     }
 
     /**
@@ -1215,13 +1240,13 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         }
 
         if (empty($datos['email']) || !is_email($datos['email'])) {
-            return ['success' => false, 'error' => __('El titulo y la descripcion son obligatorios.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes indicar un correo electrónico válido.', 'flavor-chat-ia')];
         }
 
         $usuario_actual_id = get_current_user_id();
 
         if (!$usuario_actual_id && !$configuracion['permite_solicitudes_anonimas']) {
-            return ['success' => false, 'error' => __('email', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión para solicitar información.', 'flavor-chat-ia')];
         }
 
         // Generar numero de expediente
@@ -1262,7 +1287,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ]);
 
         if ($resultado_insercion === false) {
-            return ['success' => false, 'error' => __('dias_tramitacion', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No se pudo registrar la solicitud de información.', 'flavor-chat-ia')];
         }
 
         $solicitud_id = $wpdb->insert_id;
@@ -1273,7 +1298,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => true,
-            'mensaje' => __('solicitudes_info', 'flavor-chat-ia'),
+            'mensaje' => __('Solicitud registrada correctamente.', 'flavor-chat-ia'),
             'solicitud_id' => $solicitud_id,
             'numero_expediente' => $numero_expediente,
             'fecha_limite' => date_i18n('d/m/Y', strtotime($fecha_limite)),
@@ -1505,7 +1530,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $documento = $this->obtener_documento_por_id($documento_id);
 
         if (!$documento) {
-            wp_send_json_error(['mensaje' => __(__('Documento no encontrado', 'flavor-chat-ia'), 'flavor-chat-ia')]);
+            wp_send_json_error(['mensaje' => __('Documento no encontrado', 'flavor-chat-ia')]);
         }
 
         $this->incrementar_visitas($documento_id);
@@ -2200,6 +2225,18 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = [
+            'listar' => 'consultar_datos',
+            'documentos' => 'consultar_datos',
+            'buscar' => 'consultar_datos',
+            'crear' => 'solicitar_informacion',
+            'solicitar' => 'solicitar_informacion',
+            'mis_items' => 'consultar_datos',
+            'mis-solicitudes' => 'consultar_datos',
+            'indicadores' => 'ver_indicadores',
+        ];
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         $metodo_accion = 'action_' . $nombre_accion;
 
         if (method_exists($this, $metodo_accion)) {
@@ -2208,7 +2245,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => "Accion no implementada: {$nombre_accion}",
+            'error' => __('La vista solicitada no está disponible en Transparencia.', 'flavor-chat-ia'),
         ];
     }
 

@@ -15,6 +15,25 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+$reputacion = is_array($reputacion ?? null) ? $reputacion : [];
+$badges_info = is_array($badges_info ?? null) ? $badges_info : [];
+
+$reputacion = array_merge([
+    'nombre' => is_user_logged_in() ? wp_get_current_user()->display_name : '',
+    'avatar' => is_user_logged_in() ? get_avatar_url(get_current_user_id(), ['size' => 96]) : '',
+    'nivel' => 1,
+    'estado_verificacion' => 'pendiente',
+    'puntos_confianza' => 0,
+    'rating_promedio' => 0,
+    'total_intercambios_completados' => 0,
+    'total_horas_dadas' => 0,
+    'total_horas_recibidas' => 0,
+    'rating_puntualidad' => 0,
+    'rating_calidad' => 0,
+    'rating_comunicacion' => 0,
+    'fecha_primer_intercambio' => null,
+], $reputacion);
+
 $nivel = intval($reputacion['nivel'] ?? 1);
 $estado = $reputacion['estado_verificacion'] ?? 'pendiente';
 $rating = floatval($reputacion['rating_promedio'] ?? 0);

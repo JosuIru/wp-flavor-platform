@@ -151,7 +151,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
         if ($saldo_horas === 0.0 && $this->table_exists($tabla_transacciones)) {
             $horas_recibidas = (float) $wpdb->get_var($wpdb->prepare(
                 "SELECT COALESCE(SUM(horas), 0) FROM {$tabla_transacciones}
-                 WHERE receptor_id = %d AND estado = 'completada'",
+                 WHERE usuario_solicitante_id = %d AND estado = 'completado'",
                 $user_id
             ));
 
@@ -214,7 +214,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
             'valor' => number_format(abs($saldo_horas), 1, ',', '.') . 'h',
             'label' => $saldo_horas >= 0 ? __('Saldo positivo', 'flavor-chat-ia') : __('Saldo negativo', 'flavor-chat-ia'),
             'color' => $color_saldo,
-            'url' => $es_admin ? admin_url('admin.php?page=banco-tiempo') : home_url('/mi-portal/banco-tiempo/mi-cuenta/'),
+            'url' => $es_admin ? admin_url('admin.php?page=banco-tiempo') : home_url('/mi-portal/banco-tiempo/mi-saldo/'),
         ];
 
         // Stat 2: Mis servicios
@@ -223,7 +223,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
             'valor' => $mis_servicios,
             'label' => __('Mis servicios', 'flavor-chat-ia'),
             'color' => $mis_servicios > 0 ? 'primary' : 'gray',
-            'url' => $es_admin ? admin_url('admin.php?page=banco-tiempo&tab=servicios') : home_url('/mi-portal/banco-tiempo/mis-servicios/'),
+            'url' => $es_admin ? admin_url('admin.php?page=bt-servicios') : home_url('/mi-portal/banco-tiempo/servicios/'),
         ];
 
         // Stat 3: Intercambios pendientes
@@ -233,7 +233,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
                 'valor' => $intercambios_pendientes,
                 'label' => __('En proceso', 'flavor-chat-ia'),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=banco-tiempo&tab=intercambios') : home_url('/mi-portal/banco-tiempo/intercambios/'),
+                'url' => $es_admin ? admin_url('admin.php?page=bt-intercambios') : home_url('/mi-portal/banco-tiempo/intercambios/'),
             ];
         }
 
@@ -243,7 +243,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
             'valor' => $intercambios_completados,
             'label' => __('Completados', 'flavor-chat-ia'),
             'color' => 'info',
-            'url' => $es_admin ? admin_url('admin.php?page=banco-tiempo&tab=historial') : home_url('/mi-portal/banco-tiempo/historial/'),
+            'url' => $es_admin ? admin_url('admin.php?page=bt-intercambios') : home_url('/mi-portal/banco-tiempo/intercambios/'),
         ];
 
         // Items: servicios disponibles
@@ -256,7 +256,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
             'footer' => [
                 [
                     'label' => __('Ver todos los servicios', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=banco-tiempo') : home_url('/mi-portal/banco-tiempo/explorar/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=bt-servicios') : home_url('/mi-portal/banco-tiempo/servicios/'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -285,7 +285,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
              LEFT JOIN {$wpdb->users} u ON s.usuario_id = u.ID
              WHERE s.estado = 'activo'
              AND s.usuario_id != %d
-             ORDER BY s.fecha_creacion DESC
+             ORDER BY s.fecha_publicacion DESC
              LIMIT %d",
             $user_id,
             $limite
@@ -299,7 +299,7 @@ class Flavor_Banco_Tiempo_Dashboard_Widget extends Flavor_Dashboard_Widget_Base 
                 'icon' => 'dashicons-hammer',
                 'title' => wp_trim_words($servicio->titulo, 5, '...'),
                 'meta' => $servicio->nombre_usuario ?: __('Usuario', 'flavor-chat-ia'),
-                'url' => $es_admin ? admin_url('admin.php?page=banco-tiempo&servicio=' . $servicio->id) : home_url('/mi-portal/banco-tiempo/servicio/' . $servicio->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=bt-servicios') : add_query_arg('servicio_id', $servicio->id, home_url('/mi-portal/banco-tiempo/servicios/')),
             ];
         }
 

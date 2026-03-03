@@ -55,6 +55,7 @@ foreach ($grupos as $grupo) {
 ?>
 
 <div class="gc-grupos-lista-container">
+    <div class="gc-inline-notice" id="gc-grupos-lista-notice" style="display:none;"></div>
     <div class="gc-grupos-header">
         <h2>
             <span class="dashicons dashicons-groups"></span>
@@ -117,6 +118,7 @@ foreach ($grupos as $grupo) {
             $es_miembro = in_array($grupo->ID, $grupos_usuario);
             $estado_usuario = $estadisticas['estado_usuario'];
             $admite_nuevos = $meta_grupo['admite_nuevos'] !== '0';
+            $url_portal_grupo = add_query_arg('grupo', $grupo->ID, home_url('/mi-portal/grupos-consumo/unirme/'));
         ?>
         <div class="gc-grupo-card <?php echo $es_miembro ? 'gc-grupo-miembro' : ''; ?> <?php echo !$admite_nuevos ? 'gc-grupo-cerrado' : ''; ?>"
              data-nombre="<?php echo esc_attr(strtolower($grupo->post_title)); ?>"
@@ -155,7 +157,7 @@ foreach ($grupos as $grupo) {
 
             <div class="gc-grupo-content">
                 <h3 class="gc-grupo-nombre">
-                    <a href="<?php echo esc_url(get_permalink($grupo->ID)); ?>">
+                    <a href="<?php echo esc_url($url_portal_grupo); ?>">
                         <?php echo esc_html($grupo->post_title); ?>
                     </a>
                 </h3>
@@ -214,7 +216,7 @@ foreach ($grupos as $grupo) {
                         <?php esc_html_e('Solicitud pendiente', 'flavor-chat-ia'); ?>
                     </span>
                     <?php else : ?>
-                    <a href="<?php echo esc_url(get_permalink($grupo->ID)); ?>" class="gc-btn gc-btn-primary">
+                    <a href="<?php echo esc_url($url_portal_grupo); ?>" class="gc-btn gc-btn-primary">
                         <span class="dashicons dashicons-arrow-right-alt2"></span>
                         <?php esc_html_e('Acceder', 'flavor-chat-ia'); ?>
                     </a>
@@ -227,7 +229,7 @@ foreach ($grupos as $grupo) {
                         <?php esc_html_e('Unirse', 'flavor-chat-ia'); ?>
                     </button>
                     <?php else : ?>
-                    <a href="<?php echo esc_url(wp_login_url(get_permalink($grupo->ID))); ?>" class="gc-btn gc-btn-secondary">
+                    <a href="<?php echo esc_url(wp_login_url($url_portal_grupo)); ?>" class="gc-btn gc-btn-secondary">
                         <?php esc_html_e('Inicia sesion para unirte', 'flavor-chat-ia'); ?>
                     </a>
                     <?php endif; ?>
@@ -237,7 +239,7 @@ foreach ($grupos as $grupo) {
                 </span>
                 <?php endif; ?>
 
-                <a href="<?php echo esc_url(get_permalink($grupo->ID)); ?>" class="gc-btn gc-btn-text">
+                <a href="<?php echo esc_url($url_portal_grupo); ?>" class="gc-btn gc-btn-text">
                     <?php esc_html_e('Ver detalles', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -283,6 +285,11 @@ foreach ($grupos as $grupo) {
     $('.gc-btn-unirse').on('click', function() {
         var $btn = $(this);
         var grupoId = $btn.data('grupo-id');
+        var $notice = $('#gc-grupos-lista-notice');
+
+        function gcAviso(mensaje) {
+            $notice.addClass('error').text(mensaje).show();
+        }
 
         if ($btn.prop('disabled')) return;
 
@@ -302,12 +309,12 @@ foreach ($grupos as $grupo) {
                         .html('<span class="dashicons dashicons-clock"></span> <?php echo esc_js(__('Solicitud pendiente', 'flavor-chat-ia')); ?>');
                     $btn.closest('.gc-grupo-card').addClass('gc-grupo-miembro');
                 } else {
-                    alert(response.data.message || '<?php echo esc_js(__('Error al procesar la solicitud.', 'flavor-chat-ia')); ?>');
+                    gcAviso(response.data.message || '<?php echo esc_js(__('Error al procesar la solicitud.', 'flavor-chat-ia')); ?>');
                     $btn.prop('disabled', false).html('<span class="dashicons dashicons-plus"></span> <?php echo esc_js(__('Unirse', 'flavor-chat-ia')); ?>');
                 }
             },
             error: function() {
-                alert('<?php echo esc_js(__('Error de conexion.', 'flavor-chat-ia')); ?>');
+                gcAviso('<?php echo esc_js(__('Error de conexion.', 'flavor-chat-ia')); ?>');
                 $btn.prop('disabled', false).html('<span class="dashicons dashicons-plus"></span> <?php echo esc_js(__('Unirse', 'flavor-chat-ia')); ?>');
             }
         });
@@ -317,6 +324,17 @@ foreach ($grupos as $grupo) {
 </script>
 
 <style>
+.gc-inline-notice {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+.gc-inline-notice.error {
+    display: block !important;
+    background: #fee2e2;
+    color: #991b1b;
+}
 .gc-grupos-lista-container {
     max-width: 1000px;
 }

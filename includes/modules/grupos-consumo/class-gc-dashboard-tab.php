@@ -95,9 +95,9 @@ class Flavor_GC_Dashboard_Tab {
             'badge' => $this->obtener_count_lista_compra(),
         ];
 
-        // Tab: Mis Pedidos
+        // Tab: Historial
         $tabs['gc-mis-pedidos'] = [
-            'label' => __('Mis Pedidos', 'flavor-chat-ia'),
+            'label' => __('Historial', 'flavor-chat-ia'),
             'icon' => 'box',
             'callback' => [$this, 'render_tab_mis_pedidos'],
             'orden' => 26,
@@ -409,7 +409,7 @@ class Flavor_GC_Dashboard_Tab {
 
             <?php if ($ciclo || $filtro_ciclo): ?>
                 <div class="gc-panel-section">
-                    <h3><?php _e('Mi pedido en el ciclo seleccionado', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Pedido actual en el ciclo seleccionado', 'flavor-chat-ia'); ?></h3>
                     <p><?php printf(__('Importe: %s', 'flavor-chat-ia'), number_format_i18n($importe_ciclo_activo, 2) . ' €'); ?></p>
                     <?php if ($filtro_ciclo): ?>
                         <a class="gc-btn gc-btn-secondary" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_ciclo_usuario&ciclo_id=' . $filtro_ciclo), 'gc_exportar_ciclo_usuario')); ?>">
@@ -470,13 +470,13 @@ class Flavor_GC_Dashboard_Tab {
 
             <div class="gc-panel-actions">
                 <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>">
-                    <?php _e('Ver catálogo', 'flavor-chat-ia'); ?>
+                    <?php _e('Ver productos', 'flavor-chat-ia'); ?>
                 </a>
                 <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')); ?>">
-                    <?php _e('Mi pedido', 'flavor-chat-ia'); ?>
+                    <?php _e('Pedido actual', 'flavor-chat-ia'); ?>
                 </a>
                 <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/')); ?>">
-                    <?php _e('Mis pedidos', 'flavor-chat-ia'); ?>
+                    <?php _e('Historial', 'flavor-chat-ia'); ?>
                 </a>
                 <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/suscripciones/')); ?>">
                     <?php _e('Suscripciones', 'flavor-chat-ia'); ?>
@@ -503,8 +503,8 @@ class Flavor_GC_Dashboard_Tab {
             ['label' => __('Panel', 'flavor-chat-ia'), 'path' => 'grupos-consumo/panel'],
             ['label' => __('Catálogo', 'flavor-chat-ia'), 'path' => 'grupos-consumo/productos'],
             ['label' => __('Mi cesta', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mi-cesta'],
-            ['label' => __('Mi pedido', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mi-pedido'],
-            ['label' => __('Mis pedidos', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mis-pedidos'],
+            ['label' => __('Pedido actual', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mi-pedido'],
+            ['label' => __('Historial', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mis-pedidos'],
             ['label' => __('Suscripciones', 'flavor-chat-ia'), 'path' => 'grupos-consumo/suscripciones'],
             ['label' => __('Productores', 'flavor-chat-ia'), 'path' => 'grupos-consumo/productores-cercanos'],
             ['label' => __('Ciclo', 'flavor-chat-ia'), 'path' => 'grupos-consumo/ciclo'],
@@ -514,11 +514,7 @@ class Flavor_GC_Dashboard_Tab {
         $current = trim(parse_url(home_url(add_query_arg([])), PHP_URL_PATH), '/');
         $links = [];
         foreach ($items as $item) {
-            $page = get_page_by_path($item['path']);
-            if (!$page) {
-                continue;
-            }
-            $url = get_permalink($page);
+            $url = home_url('/mi-portal/' . trim($item['path'], '/') . '/');
             $links[] = [
                 'label' => $item['label'],
                 'url' => $url,
@@ -944,7 +940,7 @@ class Flavor_GC_Dashboard_Tab {
             'gc-dashboard',
             plugins_url('assets/gc-dashboard.js', __FILE__),
             ['jquery', 'chartjs'],
-            '1.0.0',
+            '1.0.1',
             true
         );
 
@@ -952,6 +948,7 @@ class Flavor_GC_Dashboard_Tab {
         wp_localize_script('gc-dashboard', 'gcDashboardData', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('gc_lista_compra_nonce'),
+            'suscripcion_nonce' => wp_create_nonce('gc_suscripcion_nonce'),
             'charts' => [
                 'labels' => $this->get_chart_labels_last_months(6),
                 'series' => $this->get_chart_series_user_pedidos(6),
@@ -1119,7 +1116,7 @@ class Flavor_GC_Dashboard_Tab {
                 <div class="gc-empty-state">
                     <span class="gc-empty-icon dashicons dashicons-cart"></span>
                     <p><?php _e('Tu lista de la compra está vacía.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(get_post_type_archive_link('gc_producto')); ?>" class="gc-btn gc-btn-primary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
                         <?php _e('Ver Productos', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -1446,7 +1443,7 @@ class Flavor_GC_Dashboard_Tab {
         if ($pedido_existente > 0) {
             return [
                 'success' => false,
-                'error' => __('Ya tienes un pedido en este ciclo. Modifícalo desde Mis Pedidos.', 'flavor-chat-ia'),
+                'error' => __('Ya tienes un pedido en este ciclo. Modifícalo desde Historial.', 'flavor-chat-ia'),
             ];
         }
 
@@ -1487,7 +1484,7 @@ class Flavor_GC_Dashboard_Tab {
     }
 
     // ========================================
-    // Tab: Mis Pedidos
+    // Tab: Historial
     // ========================================
 
     /**
@@ -1500,7 +1497,7 @@ class Flavor_GC_Dashboard_Tab {
         ?>
         <div class="gc-dashboard-tab gc-mis-pedidos">
             <div class="gc-tab-header">
-                <h2><?php _e('Mis Pedidos', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Historial', 'flavor-chat-ia'); ?></h2>
             </div>
 
             <?php if (empty($pedidos)): ?>
@@ -1653,19 +1650,38 @@ class Flavor_GC_Dashboard_Tab {
      */
     public function render_tab_mi_cesta() {
         $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            echo '<p>' . __('Debes iniciar sesión para ver este contenido.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
 
         // Obtener consumidor
         $consumidor_manager = Flavor_GC_Consumidor_Manager::get_instance();
-        // Por ahora buscar grupo por defecto (primer grupo)
-        $grupos = get_posts([
-            'post_type' => 'gc_grupo',
-            'posts_per_page' => 1,
-            'post_status' => 'publish',
-        ]);
-
         $consumidor = null;
-        if (!empty($grupos)) {
-            $consumidor = $consumidor_manager->obtener_consumidor($usuario_id, $grupos[0]->ID);
+        global $wpdb;
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+            $consumidor = $wpdb->get_row($wpdb->prepare(
+                "SELECT *
+                 FROM {$tabla_consumidores}
+                 WHERE usuario_id = %d
+                 ORDER BY (estado = 'activo') DESC, fecha_alta DESC, id DESC
+                 LIMIT 1",
+                $usuario_id
+            ));
+        }
+
+        if (!$consumidor) {
+            $grupos = get_posts([
+                'post_type' => 'gc_grupo',
+                'posts_per_page' => 1,
+                'post_status' => 'publish',
+            ]);
+
+            if (!empty($grupos)) {
+                $consumidor = $consumidor_manager->obtener_consumidor($usuario_id, $grupos[0]->ID);
+            }
         }
 
         // Obtener suscripciones
@@ -1940,7 +1956,7 @@ class Flavor_GC_Dashboard_Tab {
                                 <?php endif; ?>
                             </div>
                             <div class="gc-grupo-acciones">
-                                <a href="<?php echo esc_url(get_permalink($membresia->grupo_id)); ?>" class="gc-btn gc-btn-outline">
+                                <a href="<?php echo esc_url(add_query_arg('grupo', intval($membresia->grupo_id), home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-outline">
                                     <?php _e('Ver Grupo', 'flavor-chat-ia'); ?>
                                 </a>
                                 <?php if ($membresia->estado === 'activo'): ?>
@@ -1986,7 +2002,7 @@ class Flavor_GC_Dashboard_Tab {
                                         <?php printf(_n('%d miembro', '%d miembros', $num_miembros, 'flavor-chat-ia'), $num_miembros); ?>
                                     </p>
                                 </div>
-                                <a href="<?php echo esc_url(get_permalink($grupo->ID)); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
+                                <a href="<?php echo esc_url(add_query_arg('grupo', intval($grupo->ID), home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
                                     <?php _e('Ver Detalles', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
@@ -2139,7 +2155,7 @@ class Flavor_GC_Dashboard_Tab {
                                     </p>
                                     <?php if ($entrega->total_pedido > 0): ?>
                                         <p class="gc-entrega-importe">
-                                            <strong><?php _e('Mi pedido:', 'flavor-chat-ia'); ?></strong>
+                                            <strong><?php _e('Pedido actual:', 'flavor-chat-ia'); ?></strong>
                                             <?php echo number_format_i18n($entrega->total_pedido, 2); ?> EUR
                                             <?php if ($entrega->estado_pago === 'pendiente'): ?>
                                                 <span class="gc-badge gc-badge-warning"><?php _e('Pago pendiente', 'flavor-chat-ia'); ?></span>
@@ -2530,7 +2546,7 @@ class Flavor_GC_Dashboard_Tab {
         <div class="gc-calendario-leyenda">
             <span class="gc-leyenda-item"><span class="gc-leyenda-color gc-leyenda-entrega"></span> <?php _e('Entrega', 'flavor-chat-ia'); ?></span>
             <span class="gc-leyenda-item"><span class="gc-leyenda-color gc-leyenda-cierre"></span> <?php _e('Cierre pedidos', 'flavor-chat-ia'); ?></span>
-            <span class="gc-leyenda-item"><span class="gc-leyenda-color gc-leyenda-mi-pedido"></span> <?php _e('Mi pedido', 'flavor-chat-ia'); ?></span>
+            <span class="gc-leyenda-item"><span class="gc-leyenda-color gc-leyenda-mi-pedido"></span> <?php _e('Pedido actual', 'flavor-chat-ia'); ?></span>
         </div>
         <?php
     }

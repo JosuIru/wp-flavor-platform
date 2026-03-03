@@ -48,9 +48,9 @@ $categorias = $wpdb->get_col("SELECT DISTINCT categoria FROM $tabla_multimedia W
     <h1>
         <span class="dashicons dashicons-format-gallery"></span>
         <?php echo esc_html__('Galería Multimedia', 'flavor-chat-ia'); ?>
-        <a href="#" class="page-title-action" onclick="abrirModalSubir(); return false;">
+        <button type="button" class="page-title-action" onclick="abrirModalSubir();">
             <span class="dashicons dashicons-upload"></span> <?php echo esc_html__('Subir Archivo', 'flavor-chat-ia'); ?>
-        </a>
+        </button>
     </h1>
 
     <!-- Filtros -->

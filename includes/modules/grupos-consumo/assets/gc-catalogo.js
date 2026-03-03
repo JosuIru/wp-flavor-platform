@@ -18,6 +18,27 @@
     // Configuracion global del modulo
     const GCConfig = window.gcFrontend || {};
 
+    function solicitarConfirmacion(mensaje, onConfirm) {
+        $('.flavor-gc-notificacion-confirm').remove();
+        const aviso = $(`
+            <div class="flavor-gc-notificacion flavor-gc-notificacion-warning flavor-gc-notificacion-confirm visible">
+                <span class="flavor-gc-notificacion-texto">${mensaje}</span>
+                <div class="flavor-gc-confirm-actions">
+                    <button type="button" class="flavor-gc-confirmar">Confirmar</button>
+                    <button type="button" class="flavor-gc-cancelar">Cancelar</button>
+                </div>
+            </div>
+        `);
+        $('body').append(aviso);
+        aviso.on('click', '.flavor-gc-confirmar', function() {
+            aviso.remove();
+            onConfirm();
+        });
+        aviso.on('click', '.flavor-gc-cancelar', function() {
+            aviso.remove();
+        });
+    }
+
     // Estado del carrito local
     const CarritoLocal = {
         KEY: 'gc_carrito_local',
@@ -131,6 +152,7 @@
             this.cachearFiltros();
             this.vincularEventos();
             this.iniciarCountdown();
+            this.aplicarDeepLinkProducto();
         },
 
         /**
@@ -227,9 +249,9 @@
             });
 
             // Productos: agregar/quitar
-            $(document).on('click', '.flavor-gc-btn-agregar', function(e) {
+            $(document).on('click', '.flavor-gc-btn-agregar, .gc-agregar-lista', function(e) {
                 e.preventDefault();
-                const $card = $(this).closest('.flavor-gc-producto-card');
+                const $card = $(this).closest('.flavor-gc-producto-card, .gc-producto-card');
                 const productoId = $card.data('producto-id');
                 const cantidad = parseFloat($card.find('.flavor-gc-cantidad-input').val()) || 1;
 
@@ -436,6 +458,28 @@
             $(`.flavor-gc-vista-btn[data-vista="${vista}"]`).addClass('active');
 
             this.$grid.toggleClass('vista-lista', vista === 'lista');
+        },
+
+        aplicarDeepLinkProducto: function() {
+            const productoDestacadoId = parseInt(this.$contenedor.data('producto-destacado'), 10) || 0;
+            if (!productoDestacadoId) {
+                return;
+            }
+
+            const $card = this.$grid.find(`.flavor-gc-producto-card[data-producto-id="${productoDestacadoId}"]`).first();
+            if (!$card.length) {
+                return;
+            }
+
+            this.limpiarFiltros();
+            $card.addClass('producto-destacado-activo');
+            $card.css({
+                borderColor: '#2271b1',
+                boxShadow: '0 0 0 4px rgba(34, 113, 177, 0.14)'
+            });
+            setTimeout(function() {
+                $card[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 150);
         },
 
         /**
@@ -657,8 +701,45 @@
                 return;
             }
 
-            const $btn = $card.find('.flavor-gc-btn-agregar');
+            const esCatalogoSimple = $card.hasClass('gc-producto-card');
+            const $btn = esCatalogoSimple
+                ? $card.find('.gc-agregar-lista')
+                : $card.find('.flavor-gc-btn-agregar');
             $btn.prop('disabled', true);
+
+            if (esCatalogoSimple) {
+                $.ajax({
+                    url: GCConfig.ajaxUrl,
+                    method: 'POST',
+                    data: {
+                        action: 'gc_agregar_lista',
+                        nonce: GCConfig.nonce,
+                        producto_id: productoId,
+                        cantidad: cantidad
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $card.addClass('en-lista');
+                            $btn.addClass('en-lista');
+                            $btn.find('.dashicons').removeClass('dashicons-plus').addClass('dashicons-yes');
+                            $btn.contents().filter(function() {
+                                return this.nodeType === 3;
+                            }).remove();
+                            $btn.append(document.createTextNode(' En lista'));
+                            Notificacion.mostrar(response.data.message || GCConfig.i18n.agregado || 'Producto agregado a la lista', 'success');
+                        } else {
+                            Notificacion.mostrar(response.data.message || GCConfig.i18n.error || 'Error', 'error');
+                        }
+                    },
+                    error: function() {
+                        Notificacion.mostrar(GCConfig.i18n.error || 'Error de conexion', 'error');
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false);
+                    }
+                });
+                return;
+            }
 
             $.ajax({
                 url: GCConfig.ajaxUrl,
@@ -829,9 +910,9 @@
 
             // Vaciar carrito
             $('#gc-vaciar-carrito').on('click', function() {
-                if (confirm(GCConfig.i18n.confirmarVaciar || 'Seguro que deseas vaciar el pedido?')) {
+                solicitarConfirmacion(GCConfig.i18n.confirmarVaciar || 'Seguro que deseas vaciar el pedido?', function() {
                     self.vaciar();
-                }
+                });
             });
 
             // Confirmar pedido desde flotante
@@ -1155,9 +1236,9 @@
 
             // Vaciar pedido
             $('#gc-vaciar-pedido').on('click', function() {
-                if (confirm(GCConfig.i18n.confirmarVaciar || 'Seguro que deseas vaciar el pedido?')) {
+                solicitarConfirmacion(GCConfig.i18n.confirmarVaciar || 'Seguro que deseas vaciar el pedido?', function() {
                     self.vaciar();
-                }
+                });
             });
 
             // Confirmar pedido

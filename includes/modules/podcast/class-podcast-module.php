@@ -2350,6 +2350,19 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'listar_series',
+            'listado' => 'listar_series',
+            'series' => 'listar_series',
+            'programas' => 'listar_series',
+            'mis_items' => 'listar_series',
+            'favoritos' => 'listar_series',
+            'explorar' => 'listar_series',
+            'buscar' => 'listar_series',
+            'episodios' => 'listar_series',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
         if (method_exists($this, $metodo_accion)) {
             return $this->$metodo_accion($params);

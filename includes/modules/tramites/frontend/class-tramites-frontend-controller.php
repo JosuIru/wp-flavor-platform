@@ -60,7 +60,7 @@ class Flavor_Tramites_Frontend_Controller {
 
     public function enqueue_assets() {
         if ($this->is_tramites_page()) {
-            $base_url = plugins_url('', dirname(__FILE__));
+            $base_url = plugins_url('', dirname(dirname(__FILE__)));
             $version = defined('FLAVOR_VERSION') ? FLAVOR_VERSION : '1.0.0';
 
             wp_enqueue_style(

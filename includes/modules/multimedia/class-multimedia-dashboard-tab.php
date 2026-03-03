@@ -242,11 +242,11 @@ class Flavor_Multimedia_Dashboard_Tab {
                                         </span>
                                     </div>
                                     <div class="flavor-galeria-actions">
-                                        <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/ver/' . $foto->id)); ?>"
+                                        <a href="<?php echo esc_url(add_query_arg('archivo_id', $foto->id, home_url('/mi-portal/multimedia/mi-galeria/'))); ?>"
                                            class="flavor-btn-icon" title="<?php esc_attr_e('Ver', 'flavor-chat-ia'); ?>">
                                             <span class="dashicons dashicons-visibility"></span>
                                         </a>
-                                        <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/editar/' . $foto->id)); ?>"
+                                        <a href="<?php echo esc_url(add_query_arg('editar_archivo', $foto->id, home_url('/mi-portal/multimedia/mi-galeria/'))); ?>"
                                            class="flavor-btn-icon" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
                                             <span class="dashicons dashicons-edit"></span>
                                         </a>
@@ -322,7 +322,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <span class="dashicons dashicons-portfolio"></span>
                     <?php esc_html_e('Mis Albumes', 'flavor-chat-ia'); ?>
                 </h2>
-                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/crear-album/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'crear_album' => 1], home_url('/mi-portal/multimedia/mi-galeria/'))); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Crear Album', 'flavor-chat-ia'); ?>
                 </a>
@@ -334,7 +334,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <p><?php esc_html_e('Aun no has creado ningun album.', 'flavor-chat-ia'); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('Organiza tus fotos en albumes tematicos.', 'flavor-chat-ia'); ?></p>
                     <div class="flavor-empty-actions">
-                        <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/crear-album/')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'crear_album' => 1], home_url('/mi-portal/multimedia/mi-galeria/'))); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-plus-alt"></span>
                             <?php esc_html_e('Crear mi primer album', 'flavor-chat-ia'); ?>
                         </a>
@@ -374,11 +374,11 @@ class Flavor_Multimedia_Dashboard_Tab {
                                 </div>
                             </div>
                             <div class="flavor-card-footer">
-                                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/album/' . $album->id)); ?>"
+                                <a href="<?php echo esc_url(add_query_arg('album_id', $album->id, home_url('/mi-portal/multimedia/mi-galeria/'))); ?>"
                                    class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver Album', 'flavor-chat-ia'); ?>
                                 </a>
-                                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/editar-album/' . $album->id)); ?>"
+                                <a href="<?php echo esc_url(add_query_arg(['tab' => 'albumes', 'editar_album' => $album->id], home_url('/mi-portal/multimedia/mi-galeria/'))); ?>"
                                    class="flavor-btn-icon" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
                                     <span class="dashicons dashicons-edit"></span>
                                 </a>
@@ -444,7 +444,7 @@ class Flavor_Multimedia_Dashboard_Tab {
                     <p><?php esc_html_e('Aun no has marcado contenido como favorito.', 'flavor-chat-ia'); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('Explora la galeria y dale "me gusta" al contenido que te interese.', 'flavor-chat-ia'); ?></p>
                     <div class="flavor-empty-actions">
-                        <a href="<?php echo esc_url(home_url('/multimedia/')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/galeria/')); ?>" class="flavor-btn flavor-btn-primary">
                             <span class="dashicons dashicons-search"></span>
                             <?php esc_html_e('Explorar Galeria', 'flavor-chat-ia'); ?>
                         </a>
@@ -834,7 +834,7 @@ class Flavor_Multimedia_Dashboard_Tab {
         ?>
         <div class="flavor-panel flavor-panel-warning">
             <p><?php esc_html_e('Debes iniciar sesion para ver este contenido.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-btn flavor-btn-primary">
+            <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/multimedia/mi-galeria/'))); ?>" class="flavor-btn flavor-btn-primary">
                 <?php esc_html_e('Iniciar Sesion', 'flavor-chat-ia'); ?>
             </a>
         </div>

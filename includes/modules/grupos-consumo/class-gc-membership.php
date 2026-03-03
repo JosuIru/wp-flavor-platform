@@ -1025,7 +1025,7 @@ class Flavor_GC_Membership {
                 esc_html($grupo->post_title)
             ); ?></p>
             <div class="gc-union-acciones">
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="gc-btn gc-btn-primary">
+                <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-primary">
                     <?php _e('Iniciar sesion', 'flavor-chat-ia'); ?>
                 </a>
                 <?php if (get_option('users_can_register')): ?>
@@ -1055,7 +1055,7 @@ class Flavor_GC_Membership {
                 esc_html($grupo->post_title)
             ); ?></p>
             <div class="gc-union-acciones">
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/')); ?>" class="gc-btn gc-btn-primary">
+                <a href="<?php echo esc_url(add_query_arg('grupo', $grupo->ID, home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-primary">
                     <?php _e('Ir a mi grupo', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -1756,7 +1756,7 @@ class Flavor_GC_Membership {
                             </div>
                             <div class="gc-grupo-acciones">
                                 <?php if ($es_miembro): ?>
-                                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/')); ?>" class="gc-btn gc-btn-primary">
+                                    <a href="<?php echo esc_url(add_query_arg('grupo', $grupo_id, home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-primary">
                                         <?php esc_html_e('Ir al grupo', 'flavor-chat-ia'); ?>
                                     </a>
                                 <?php elseif ($tiene_solicitud_pendiente): ?>

@@ -127,7 +127,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         return [
             [
                 'type'    => 'table',
-                'table'   => $wpdb->prefix . 'flavor_presupuestos_proyectos',
+                'table'   => $wpdb->prefix . 'flavor_pp_proyectos',
                 'context' => 'side',
             ],
         ];
@@ -2208,6 +2208,21 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'listar_proyectos',
+            'listado' => 'listar_proyectos',
+            'explorar' => 'listar_proyectos',
+            'buscar' => 'listar_proyectos',
+            'proyectos' => 'listar_proyectos',
+            'proponer' => 'proponer_proyecto',
+            'crear' => 'proponer_proyecto',
+            'votar' => 'votar_proyectos',
+            'resultados' => 'info_edicion_actual',
+            'estado_actual' => 'info_edicion_actual',
+            'seguimiento' => 'seguimiento_proyecto',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {

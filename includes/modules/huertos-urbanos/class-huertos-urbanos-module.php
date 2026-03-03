@@ -2682,6 +2682,20 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'listar_huertos',
+            'listado' => 'listar_huertos',
+            'mapa' => 'listar_huertos',
+            'explorar' => 'listar_huertos',
+            'buscar' => 'listar_huertos',
+            'detalle' => 'detalle_huerto',
+            'ver' => 'detalle_huerto',
+            'mis_items' => 'mi_parcela',
+            'mi-parcela' => 'mi_parcela',
+            'guia' => 'guia_cultivos',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {

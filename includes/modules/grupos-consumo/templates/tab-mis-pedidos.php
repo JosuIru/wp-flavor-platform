@@ -1,6 +1,6 @@
 <?php
 /**
- * Template: Mis Pedidos - Grupos de Consumo
+ * Template: Historial - Grupos de Consumo
  *
  * Listado de pedidos del usuario con historial.
  *
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="gc-pedidos-login">';
     echo '<p>' . esc_html__('Inicia sesión para ver tus pedidos.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/'))) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Iniciar sesión', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -43,6 +43,7 @@ $entregas = $wpdb->get_results($wpdb->prepare(
 // Mensaje de éxito/error
 $mensaje = '';
 $payment_status = isset($_GET['payment']) ? sanitize_key($_GET['payment']) : '';
+$pedido_destacado_id = isset($_GET['order']) ? absint($_GET['order']) : 0;
 if ($payment_status === 'success') {
     $mensaje = '<div class="gc-notice gc-notice-success"><span class="dashicons dashicons-yes"></span> ' . esc_html__('Pago realizado correctamente.', 'flavor-chat-ia') . '</div>';
 } elseif ($payment_status === 'cancelled') {
@@ -53,7 +54,7 @@ if ($payment_status === 'success') {
 <div class="gc-pedidos-container">
     <h2 class="gc-pedidos-title">
         <span class="dashicons dashicons-clipboard"></span>
-        <?php esc_html_e('Mis Pedidos', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Historial', 'flavor-chat-ia'); ?>
     </h2>
 
     <?php echo $mensaje; ?>
@@ -62,8 +63,8 @@ if ($payment_status === 'success') {
     <div class="gc-pedidos-empty">
         <span class="dashicons dashicons-clipboard"></span>
         <p><?php esc_html_e('Aún no tienes ningún pedido.', 'flavor-chat-ia'); ?></p>
-        <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/catalogo/')); ?>" class="gc-btn gc-btn-primary">
-            <?php esc_html_e('Explorar catálogo', 'flavor-chat-ia'); ?>
+        <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
+            <?php esc_html_e('Ver productos', 'flavor-chat-ia'); ?>
         </a>
     </div>
     <?php else : ?>
@@ -117,7 +118,8 @@ if ($payment_status === 'success') {
                     $estado_recogida_label = ucfirst($entrega->estado_recogida ?? 'pendiente');
             }
         ?>
-        <div class="gc-pedido-card">
+        <div class="gc-pedido-card <?php echo $pedido_destacado_id === (int) $entrega->id ? 'gc-pedido-card--destacado' : ''; ?>"
+             data-order-id="<?php echo esc_attr($entrega->id); ?>">
             <div class="gc-pedido-header">
                 <div class="gc-pedido-info">
                     <span class="gc-pedido-id">#<?php echo esc_html($entrega->id); ?></span>
@@ -240,6 +242,7 @@ if ($payment_status === 'success') {
 <script>
 (function($) {
     'use strict';
+    var pedidoDestacadoId = <?php echo (int) $pedido_destacado_id; ?>;
 
     // Toggle detalles
     $('.gc-btn-toggle-details').on('click', function() {
@@ -255,6 +258,20 @@ if ($payment_status === 'success') {
             }
         });
     });
+
+    if (pedidoDestacadoId) {
+        var $pedidoDestacado = $('.gc-pedido-card[data-order-id="' + pedidoDestacadoId + '"]');
+        if ($pedidoDestacado.length) {
+            var $botonDetalle = $pedidoDestacado.find('.gc-btn-toggle-details').first();
+            if ($botonDetalle.length) {
+                $botonDetalle.trigger('click');
+            }
+            $pedidoDestacado.addClass('gc-pedido-card--destacado-activo');
+            setTimeout(function() {
+                $pedidoDestacado[0].scrollIntoView({behavior: 'smooth', block: 'start'});
+            }, 120);
+        }
+    }
 
 })(jQuery);
 </script>
@@ -307,6 +324,11 @@ if ($payment_status === 'success') {
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     overflow: hidden;
+}
+.gc-pedido-card--destacado,
+.gc-pedido-card--destacado-activo {
+    border: 2px solid #2271b1;
+    box-shadow: 0 0 0 4px rgba(34, 113, 177, 0.12);
 }
 .gc-pedido-header {
     display: flex;

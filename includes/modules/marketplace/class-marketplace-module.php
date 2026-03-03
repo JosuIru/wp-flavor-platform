@@ -760,6 +760,14 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
                 'description' => 'Ver mis anuncios publicados',
                 'params' => ['estado'],
             ],
+            'favoritos' => [
+                'description' => 'Ver anuncios guardados en favoritos',
+                'params' => [],
+            ],
+            'categorias' => [
+                'description' => 'Explorar categorías del marketplace',
+                'params' => [],
+            ],
             'contactar_vendedor' => [
                 'description' => 'Iniciar contacto con el vendedor de un anuncio',
                 'params' => ['anuncio_id', 'mensaje'],
@@ -771,6 +779,23 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'buscar_anuncios',
+            'listado' => 'buscar_anuncios',
+            'buscar' => 'buscar_anuncios',
+            'explorar' => 'buscar_anuncios',
+            'detalle' => 'ver_anuncio',
+            'ver' => 'ver_anuncio',
+            'crear' => 'publicar_anuncio',
+            'nuevo' => 'publicar_anuncio',
+            'mis_items' => 'mis_anuncios',
+            'mis-anuncios' => 'mis_anuncios',
+            'favoritos' => 'favoritos',
+            'categorias' => 'categorias',
+            'contactar' => 'contactar_vendedor',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -780,6 +805,73 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         return [
             'success' => false,
             'error' => "Acción no implementada: {$action_name}",
+        ];
+    }
+
+    /**
+     * Acción: Ver un anuncio concreto.
+     */
+    private function action_ver_anuncio($params) {
+        $anuncio_id = absint($params['id'] ?? $params['anuncio_id'] ?? 0);
+
+        return [
+            'success' => true,
+            'html' => do_shortcode('[marketplace_detalle id="' . $anuncio_id . '"]'),
+        ];
+    }
+
+    /**
+     * Acción: Publicar anuncio.
+     */
+    private function action_publicar_anuncio($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[marketplace_formulario]'),
+        ];
+    }
+
+    /**
+     * Acción: Mis anuncios.
+     */
+    private function action_mis_anuncios($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[marketplace_mis_anuncios]'),
+        ];
+    }
+
+    /**
+     * Acción: Favoritos.
+     */
+    private function action_favoritos($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[marketplace_favoritos]'),
+        ];
+    }
+
+    /**
+     * Acción: Categorías.
+     */
+    private function action_categorias($params) {
+        ob_start();
+        self::render_tab_categorias();
+
+        return [
+            'success' => true,
+            'html' => ob_get_clean(),
+        ];
+    }
+
+    /**
+     * Acción: Contactar con vendedor.
+     */
+    private function action_contactar_vendedor($params) {
+        $anuncio_id = absint($params['id'] ?? $params['anuncio_id'] ?? 0);
+
+        return [
+            'success' => true,
+            'html' => do_shortcode('[marketplace_detalle id="' . $anuncio_id . '"]'),
         ];
     }
 

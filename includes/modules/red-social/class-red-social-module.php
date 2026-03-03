@@ -1736,6 +1736,37 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         $usuario_id = get_current_user_id();
+        $publicacion_destacada = 0;
+        if (isset($_GET['rs_publicacion'])) {
+            $publicacion_destacada = absint($_GET['rs_publicacion']);
+        } elseif (isset($_GET['publicacion_id'])) {
+            $publicacion_destacada = absint($_GET['publicacion_id']);
+        }
+
+        if ($publicacion_destacada) {
+            $publicacion_html = $this->renderizar_publicacion($publicacion_destacada);
+            if (!empty($publicacion_html)) {
+                ob_start();
+                ?>
+                <div class="rs-container">
+                    <div class="rs-layout rs-layout-two-col">
+                        <main class="rs-feed-main">
+                            <div class="rs-feed">
+                                <?php echo $publicacion_html; ?>
+                            </div>
+                        </main>
+
+                        <aside class="rs-sidebar-right">
+                            <?php echo $this->renderizar_widget_sugerencias(); ?>
+                            <?php echo $this->renderizar_widget_trending(); ?>
+                        </aside>
+                    </div>
+                </div>
+                <?php
+                return ob_get_clean();
+            }
+        }
+
         $publicaciones = $this->obtener_publicaciones_feed($atts['tipo'], $usuario_id, 0, $atts['limite']);
 
         ob_start();
@@ -1787,6 +1818,8 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         // Permitir parametro GET
         if (isset($_GET['rs_perfil'])) {
             $atts['usuario_id'] = absint($_GET['rs_perfil']);
+        } elseif (isset($_GET['usuario_id'])) {
+            $atts['usuario_id'] = absint($_GET['usuario_id']);
         }
 
         $perfil = $this->obtener_perfil_completo($atts['usuario_id']);
@@ -1868,7 +1901,12 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         ], $atts);
 
         // Si hay hashtag en URL
-        $hashtag_filtro = isset($_GET['rs_hashtag']) ? sanitize_text_field($_GET['rs_hashtag']) : '';
+        $hashtag_filtro = '';
+        if (isset($_GET['rs_hashtag'])) {
+            $hashtag_filtro = sanitize_text_field($_GET['rs_hashtag']);
+        } elseif (isset($_GET['hashtag'])) {
+            $hashtag_filtro = sanitize_text_field($_GET['hashtag']);
+        }
 
         ob_start();
         ?>
@@ -2679,7 +2717,11 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         $autor = get_userdata($publicacion->autor_id);
         $usuario_actual = get_current_user_id();
-        $adjuntos = json_decode($publicacion->adjuntos, true);
+        $adjuntos_raw = is_string($publicacion->adjuntos) ? $publicacion->adjuntos : '';
+        $adjuntos = $adjuntos_raw !== '' ? json_decode($adjuntos_raw, true) : [];
+        if (!is_array($adjuntos)) {
+            $adjuntos = [];
+        }
 
         // Verificar si el usuario actual dio like
         $usuario_dio_like = false;
@@ -2703,7 +2745,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                          src="<?php echo esc_url(get_avatar_url($publicacion->autor_id, ['size' => 50])); ?>"
                          alt="">
                     <div class="rs-post-autor-info">
-                        <h4><a href="?rs_perfil=<?php echo esc_attr($publicacion->autor_id); ?>">
+                        <h4><a href="<?php echo esc_url(add_query_arg('usuario_id', intval($publicacion->autor_id), home_url('/mi-portal/red-social/perfil/'))); ?>">
                             <?php echo esc_html($autor ? $autor->display_name : 'Usuario'); ?>
                         </a></h4>
                         <div class="rs-post-meta">
@@ -2947,7 +2989,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             <h3 class="rs-widget-titulo"><?php echo esc_html__('Tendencias', 'flavor-chat-ia'); ?></h3>
             <div class="rs-trending-lista">
                 <?php foreach ($trending as $index => $hashtag): ?>
-                    <div class="rs-trending-item" onclick="window.location='?rs_hashtag=<?php echo esc_attr($hashtag->hashtag); ?>'">
+                    <div class="rs-trending-item" onclick="window.location='<?php echo esc_url(add_query_arg('hashtag', $hashtag->hashtag, home_url('/mi-portal/red-social/explorar/'))); ?>'">
                         <div class="rs-trending-categoria"><?php echo $index + 1; ?>. Tendencia</div>
                         <div class="rs-trending-hashtag">#<?php echo esc_html($hashtag->hashtag); ?></div>
                         <div class="rs-trending-posts"><?php echo number_format($hashtag->total_usos); ?> publicaciones</div>
@@ -3025,6 +3067,29 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'timeline',
+            'listado' => 'timeline',
+            'feed' => 'timeline',
+            'explorar' => 'timeline',
+            'buscar' => 'timeline',
+            'perfil' => 'perfil',
+            'mi-perfil' => 'perfil',
+            'mensajes' => 'mensajes',
+            'notificaciones' => 'notificaciones',
+            'historias' => 'historias',
+            'actividad' => 'mi_actividad',
+            'mi-actividad' => 'mi_actividad',
+            'reputacion' => 'reputacion',
+            'ranking' => 'ranking',
+            'badges' => 'badges',
+            'crear' => 'crear_publicacion',
+            'publicar' => 'crear_publicacion',
+            'nuevo' => 'crear_publicacion',
+            'trending' => 'explorar',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -3033,7 +3098,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => "Accion no implementada: {$action_name}",
+            'error' => __('La vista solicitada no esta disponible en Red Social.', 'flavor-chat-ia'),
         ];
     }
 
@@ -3044,7 +3109,7 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('fields', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión para ver tu timeline.', 'flavor-chat-ia')];
         }
 
         $limite = absint($params['limite'] ?? 20);
@@ -3056,6 +3121,54 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'publicaciones' => array_map([$this, 'formatear_publicacion_api'], $publicaciones),
         ];
+    }
+
+    private function action_perfil($params) {
+        $usuario_id = absint($params['usuario_id'] ?? get_current_user_id());
+        return do_shortcode('[rs_perfil usuario_id="' . $usuario_id . '"]');
+    }
+
+    private function action_explorar($params) {
+        $limite = absint($params['limite'] ?? 20);
+        return do_shortcode('[rs_explorar limite="' . $limite . '"]');
+    }
+
+    private function action_crear_publicacion($params) {
+        return do_shortcode('[rs_crear_publicacion]');
+    }
+
+    private function action_notificaciones($params) {
+        return do_shortcode('[rs_notificaciones]');
+    }
+
+    private function action_mensajes($params) {
+        if (!is_user_logged_in()) {
+            return ['success' => false, 'error' => __('Debes iniciar sesión para ver tus mensajes.', 'flavor-chat-ia')];
+        }
+
+        return do_shortcode('[chat_interno_conversaciones]');
+    }
+
+    private function action_historias($params) {
+        return do_shortcode('[rs_historias]');
+    }
+
+    private function action_reputacion($params) {
+        $usuario_id = absint($params['usuario_id'] ?? get_current_user_id());
+        return do_shortcode('[rs_reputacion usuario_id="' . $usuario_id . '"]');
+    }
+
+    private function action_ranking($params) {
+        $limite = absint($params['limite'] ?? 10);
+        return do_shortcode('[rs_ranking limite="' . $limite . '"]');
+    }
+
+    private function action_badges($params) {
+        return do_shortcode('[rs_badges]');
+    }
+
+    private function action_mi_actividad($params) {
+        return do_shortcode('[rs_mi_actividad]');
     }
 
     /**
@@ -3421,9 +3534,19 @@ KNOWLEDGE;
                                 </td>
                                 <td><?php echo esc_html(date_i18n(get_option('date_format'), strtotime($publicacion->fecha_creacion))); ?></td>
                                 <td>
-                                    <button class="button button-small" onclick="alert('Ver publicación #<?php echo esc_js($publicacion->id); ?>')">
+                                    <button class="button button-small rs-toggle-detalle-publicacion" type="button" data-target="rs-publicacion-<?php echo esc_attr($publicacion->id); ?>">
                                         <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                                     </button>
+                                </td>
+                            </tr>
+                            <tr id="rs-publicacion-<?php echo esc_attr($publicacion->id); ?>" class="rs-detalle-publicacion" style="display:none;">
+                                <td colspan="6">
+                                    <div class="rs-detalle-publicacion__body">
+                                        <h4><?php esc_html_e('Detalle de la publicación', 'flavor-chat-ia'); ?></h4>
+                                        <div class="rs-detalle-publicacion__content">
+                                            <?php echo wp_kses_post(wpautop($publicacion->contenido)); ?>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -3431,6 +3554,32 @@ KNOWLEDGE;
                 </tbody>
             </table>
         </div>
+        <style>
+            .rs-detalle-publicacion__body {
+                padding: 12px 4px;
+            }
+            .rs-detalle-publicacion__body h4 {
+                margin: 0 0 8px;
+            }
+            .rs-detalle-publicacion__content {
+                background: #fff;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 12px;
+                color: #1f2937;
+            }
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.rs-toggle-detalle-publicacion').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var target = document.getElementById(btn.dataset.target);
+                        if (!target) return;
+                        target.style.display = target.style.display === 'none' ? 'table-row' : 'none';
+                    });
+                });
+            });
+        </script>
         <?php
     }
 
@@ -4662,7 +4811,7 @@ KNOWLEDGE;
             <p class="rs-sin-actividad"><?php esc_html_e('Aún no has publicado nada.', 'flavor-chat-ia'); ?></p>
             <?php endif; ?>
 
-            <a href="<?php echo esc_url(home_url('/red-social/perfil/')); ?>" class="rs-ver-perfil">
+            <a href="<?php echo esc_url(home_url('/mi-portal/red-social/perfil/')); ?>" class="rs-ver-perfil">
                 <?php esc_html_e('Ver mi perfil completo', 'flavor-chat-ia'); ?>
             </a>
         </div>
@@ -4756,7 +4905,7 @@ KNOWLEDGE;
                 ?>
                 <article class="feed-post" data-post-id="<?php echo esc_attr($publicacion->id); ?>">
                     <header class="post-header">
-                        <a href="<?php echo esc_url(home_url('/mi-portal/perfil/' . $publicacion->usuario_id)); ?>" class="post-avatar">
+                        <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($publicacion->usuario_id), home_url('/mi-portal/red-social/perfil/'))); ?>" class="post-avatar">
                             <?php echo get_avatar($publicacion->usuario_id, 44); ?>
                         </a>
                         <div class="post-meta">
@@ -4864,6 +5013,9 @@ KNOWLEDGE;
         .form-publicar { flex: 1; }
         .form-publicar textarea { width: 100%; border: 1px solid var(--flavor-border, #ddd); border-radius: 20px; padding: 0.75rem 1rem; resize: none; font-family: inherit; }
         .form-publicar textarea:focus { outline: none; border-color: var(--flavor-primary, #4f46e5); }
+        .rs-inline-notice { display: none; margin-bottom: 0.75rem; padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.95rem; }
+        .rs-inline-notice--error { background: #fee2e2; color: #991b1b; }
+        .rs-inline-notice--success { background: #dcfce7; color: #166534; }
         .publicacion-acciones { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
         .publicacion-adjuntos { display: flex; gap: 0.5rem; }
         .publicacion-adjuntos button { background: none; border: none; cursor: pointer; padding: 0.5rem; border-radius: 50%; color: var(--flavor-text-secondary, #666); }
@@ -4975,6 +5127,19 @@ KNOWLEDGE;
                 $container.find('.preview-imagen').hide();
             });
 
+            function mostrarAviso(mensaje, tipo) {
+                var $notice = $container.find('.rs-inline-notice');
+                if (!$notice.length) {
+                    $notice = $('<div class="rs-inline-notice" />').prependTo($container);
+                }
+
+                $notice
+                    .removeClass('rs-inline-notice--error rs-inline-notice--success')
+                    .addClass(tipo === 'success' ? 'rs-inline-notice--success' : 'rs-inline-notice--error')
+                    .text(mensaje)
+                    .show();
+            }
+
             // Publicar
             $container.find('.form-publicar').on('submit', function(e) {
                 e.preventDefault();
@@ -5000,8 +5165,11 @@ KNOWLEDGE;
                         if (response.success) {
                             location.reload();
                         } else {
-                            alert(response.data?.message || 'Error al publicar');
+                            mostrarAviso(response.data?.message || 'Error al publicar', 'error');
                         }
+                    },
+                    error: function() {
+                        mostrarAviso('Error de conexion al publicar.', 'error');
                     }
                 });
             });

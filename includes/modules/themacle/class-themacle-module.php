@@ -56,9 +56,20 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
     public function init() {
         // Registrar REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
+        add_action('init', [$this, 'register_shortcodes']);
 
         // Registrar en Panel Unificado de Gestión
         $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Registra shortcodes frontend mínimos para el renderer del portal.
+     *
+     * @return void
+     */
+    public function register_shortcodes() {
+        add_shortcode('themacle_mis_temas', [$this, 'shortcode_mis_temas']);
+        add_shortcode('themacle_formulario', [$this, 'shortcode_formulario']);
     }
 
     /**
@@ -430,11 +441,76 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
      * Ejecutar acción
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = [
+            'listar' => 'listar_componentes_web',
+            'listado' => 'listar_componentes_web',
+            'mis_items' => 'listar_componentes_web',
+            'mis-temas' => 'listar_componentes_web',
+            'crear' => 'formulario',
+            'nuevo' => 'formulario',
+            'formulario' => 'formulario',
+        ];
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
+
         if ($nombre_accion === 'listar_componentes_web') {
             return $this->action_listar_componentes_web();
         }
 
+        if ($nombre_accion === 'formulario') {
+            return [
+                'success' => true,
+                'html' => $this->shortcode_formulario(),
+            ];
+        }
+
         return ['success' => false, 'error' => "Acción no encontrada: {$nombre_accion}"];
+    }
+
+    /**
+     * Shortcode: listado de componentes disponibles.
+     *
+     * @return string
+     */
+    public function shortcode_mis_temas() {
+        $resultado = $this->action_listar_componentes_web();
+        $componentes = $resultado['componentes'] ?? [];
+
+        if (empty($componentes)) {
+            return '<div class="flavor-alert flavor-alert-info">' .
+                __('No hay componentes Themacle disponibles todavía.', 'flavor-chat-ia') .
+                '</div>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-themacle-grid">
+            <?php foreach ($componentes as $componente): ?>
+                <article class="flavor-themacle-card">
+                    <h3><?php echo esc_html($componente['label']); ?></h3>
+                    <p><?php echo esc_html($componente['description']); ?></p>
+                    <div class="flavor-themacle-meta">
+                        <span class="flavor-badge flavor-badge-info"><?php echo esc_html($componente['category']); ?></span>
+                        <code><?php echo esc_html($componente['id']); ?></code>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: ayuda de uso para insertar componentes Themacle.
+     *
+     * @return string
+     */
+    public function shortcode_formulario() {
+        return '<div class="flavor-panel flavor-panel-info">' .
+            '<h3>' . esc_html__('Insertar componente Themacle', 'flavor-chat-ia') . '</h3>' .
+            '<p>' . esc_html__('Themacle actúa como librería de componentes reutilizables. Selecciona un componente desde la API o el panel de administración y úsalo en tus páginas o layouts.', 'flavor-chat-ia') . '</p>' .
+            '<p><code>/wp-json/flavor/v1/themacle/componentes</code></p>' .
+            '</div>';
     }
 
     /**

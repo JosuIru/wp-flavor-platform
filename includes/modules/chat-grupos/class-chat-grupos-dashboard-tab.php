@@ -67,16 +67,16 @@ class Flavor_Chat_Grupos_Dashboard_Tab {
                 <?php
                 switch ($subtab) {
                     case 'explorar':
-                        $this->render_explorar($datos);
+                        echo do_shortcode('[flavor_grupos_explorar]');
                         break;
                     case 'crear':
-                        $this->render_crear();
+                        echo do_shortcode('[chat_grupos_crear]');
                         break;
                     case 'invitaciones':
                         $this->render_invitaciones($datos);
                         break;
                     default:
-                        $this->render_mis_grupos($datos);
+                        echo do_shortcode('[chat_grupos_mis_grupos]');
                 }
                 ?>
             </div>
@@ -151,7 +151,7 @@ class Flavor_Chat_Grupos_Dashboard_Tab {
                             </div>
                         </div>
                         <div class="grupo-acciones">
-                            <a href="<?php echo home_url('/mi-portal/chat-grupos/' . $grupo->id . '/'); ?>"
+                            <a href="<?php echo home_url('/mi-portal/chat-grupos/mensajes/?grupo_id=' . $grupo->id); ?>"
                                class="flavor-btn flavor-btn-primary flavor-btn-sm">
                                 Abrir Chat
                             </a>

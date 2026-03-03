@@ -1329,10 +1329,49 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'ver_ofertas',
+            'listado' => 'ver_ofertas',
+            'ofertas' => 'ver_ofertas',
+            'emprendimientos' => 'ver_emprendimientos',
+            'crear' => 'publicar_oferta',
+            'nuevo' => 'publicar_oferta',
+            'mis_items' => 'ver_mi_perfil',
+            'mi-cv' => 'ver_mi_perfil',
+            'mis-postulaciones' => 'ver_mis_postulaciones',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $method = 'action_' . $action_name;
+
+        if (method_exists($this, $method)) {
+            return $this->$method($params);
+        }
+
         return [
             'success' => false,
             'message' => __('Acción no implementada', 'flavor-chat-ia'),
         ];
+    }
+
+    private function action_ver_ofertas($params) {
+        return ['success' => true, 'html' => do_shortcode('[trabajo_digno_ofertas]')];
+    }
+
+    private function action_ver_emprendimientos($params) {
+        return ['success' => true, 'html' => do_shortcode('[trabajo_digno_emprendimientos]')];
+    }
+
+    private function action_publicar_oferta($params) {
+        return ['success' => true, 'html' => do_shortcode('[trabajo_digno_publicar]')];
+    }
+
+    private function action_ver_mi_perfil($params) {
+        return ['success' => true, 'html' => do_shortcode('[trabajo_digno_mi_perfil]')];
+    }
+
+    private function action_ver_mis_postulaciones($params) {
+        return ['success' => true, 'data' => $this->api_get_mis_postulaciones(new \WP_REST_Request('GET'))->get_data()];
     }
 
     /**
@@ -1397,25 +1436,25 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
                 'emprendimientos' => [
                     'label'   => __('Emprendimientos', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-lightbulb',
-                    'content' => 'shortcode:trabajo_emprendimientos',
+                    'content' => 'shortcode:trabajo_digno_emprendimientos',
                     'public'  => true,
                 ],
                 'publicar' => [
                     'label'      => __('Publicar oferta', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-plus-alt',
-                    'content'    => 'shortcode:trabajo_publicar',
+                    'content'    => 'shortcode:trabajo_digno_publicar',
                     'requires_login' => true,
                 ],
                 'mis-postulaciones' => [
                     'label'      => __('Mis postulaciones', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-admin-users',
-                    'content'    => 'shortcode:trabajo_mis_postulaciones',
+                    'content'    => 'callback:render_tab_mis_postulaciones',
                     'requires_login' => true,
                 ],
                 'mi-cv' => [
                     'label'      => __('Mi CV', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-id',
-                    'content'    => 'shortcode:trabajo_mi_cv',
+                    'content'    => 'shortcode:trabajo_digno_mi_perfil',
                     'requires_login' => true,
                 ],
             ],
@@ -1444,6 +1483,30 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
                 'alertas'          => true,
             ],
         ];
+    }
+
+    public function render_tab_mis_postulaciones(): string {
+        $response = $this->api_get_mis_postulaciones(new \WP_REST_Request('GET'))->get_data();
+        $postulaciones = $response['postulaciones'] ?? [];
+
+        ob_start();
+        ?>
+        <div class="td-mis-postulaciones">
+            <?php if (empty($postulaciones)) : ?>
+                <p><?php esc_html_e('No tienes postulaciones registradas todavía.', 'flavor-chat-ia'); ?></p>
+            <?php else : ?>
+                <ul class="td-postulaciones-lista">
+                    <?php foreach ($postulaciones as $postulacion) : ?>
+                        <li>
+                            <strong><?php echo esc_html($postulacion['oferta_titulo'] ?? __('Oferta', 'flavor-chat-ia')); ?></strong>
+                            <span><?php echo esc_html($postulacion['fecha'] ?? ''); ?></span>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 
 

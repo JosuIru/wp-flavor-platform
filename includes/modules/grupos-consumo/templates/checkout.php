@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="gc-checkout-error">';
     echo '<p>' . esc_html__('Debes iniciar sesión para continuar.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/checkout/'))) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Iniciar sesión', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -31,7 +31,7 @@ $entrega_id = isset($entrega_id) ? absint($entrega_id) : absint($_GET['entrega_i
 if (!$entrega_id) {
     echo '<div class="gc-checkout-error">';
     echo '<p>' . esc_html__('No se especificó una entrega válida.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(home_url('/mi-portal/grupos-consumo/mi-cesta/')) . '" class="gc-btn gc-btn-secondary">';
+    echo '<a href="' . esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')) . '" class="gc-btn gc-btn-secondary">';
     echo esc_html__('Ir a mi cesta', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -169,7 +169,7 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
                 </div>
 
                 <div class="gc-checkout-actions">
-                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-cesta/')); ?>" class="gc-btn gc-btn-secondary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')); ?>" class="gc-btn gc-btn-secondary">
                         <?php esc_html_e('Volver a la cesta', 'flavor-chat-ia'); ?>
                     </a>
                     <button type="submit" class="gc-btn gc-btn-primary gc-btn-pay" id="gc-btn-pay">
@@ -275,14 +275,14 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
                         window.location.href = '<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/?payment=success')); ?>';
                     }
                 } else {
-                    alert(response.data.error || '<?php echo esc_js(__('Error al procesar el pago.', 'flavor-chat-ia')); ?>');
+                    mostrarAviso(response.data.error || '<?php echo esc_js(__('Error al procesar el pago.', 'flavor-chat-ia')); ?>', 'error');
                     $btn.prop('disabled', false);
                     $btn.find('.gc-btn-text').show();
                     $btn.find('.gc-btn-loading').hide();
                 }
             },
             error: function() {
-                alert('<?php echo esc_js(__('Error de conexión. Inténtalo de nuevo.', 'flavor-chat-ia')); ?>');
+                mostrarAviso('<?php echo esc_js(__('Error de conexión. Inténtalo de nuevo.', 'flavor-chat-ia')); ?>', 'error');
                 $btn.prop('disabled', false);
                 $btn.find('.gc-btn-text').show();
                 $btn.find('.gc-btn-loading').hide();
@@ -300,7 +300,7 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
                 }
             }).then(function(result) {
                 if (result.error) {
-                    alert(result.error.message);
+                    mostrarAviso(result.error.message, 'error');
                     $btnPay.prop('disabled', false);
                     $btnPay.find('.gc-btn-text').show();
                     $btnPay.find('.gc-btn-loading').hide();

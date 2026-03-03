@@ -1781,6 +1781,16 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = [
+            'listar' => 'evaluar',
+            'estado' => 'evaluar',
+            'resumen' => 'evaluar',
+            'premisas' => 'ver_premisas',
+            'detalle' => 'ver_valoracion_modulo',
+            'ver' => 'ver_valoracion_modulo',
+        ];
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         switch ($nombre_accion) {
             case 'evaluar':
                 return [

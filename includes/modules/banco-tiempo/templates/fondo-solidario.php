@@ -316,6 +316,25 @@ $usuario_logueado = is_user_logged_in();
     color: var(--bt-primary);
 }
 
+.bt-fondo__notice {
+    margin: 0 0 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.bt-fondo__notice--success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.bt-fondo__notice--error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
 /* Modal */
 .bt-modal {
     position: fixed;
@@ -424,6 +443,16 @@ $usuario_logueado = is_user_logged_in();
             e.preventDefault();
             const formData = new FormData(this);
             const btn = this.querySelector('button[type="submit"]');
+            let notice = this.querySelector('.bt-fondo__notice');
+            if (!notice) {
+                notice = document.createElement('div');
+                notice.className = 'bt-fondo__notice';
+                this.prepend(notice);
+            }
+            const showNotice = (message, type = 'info') => {
+                notice.className = 'bt-fondo__notice bt-fondo__notice--' + type;
+                notice.textContent = message;
+            };
             btn.disabled = true;
 
             fetch(ajaxUrl, {
@@ -439,7 +468,7 @@ $usuario_logueado = is_user_logged_in();
             })
             .then(r => r.json())
             .then(data => {
-                alert(data.success ? data.data.message : (data.data.message || 'Error'));
+                showNotice(data.success ? data.data.message : (data.data.message || 'Error'), data.success ? 'success' : 'error');
                 if (data.success) location.reload();
                 btn.disabled = false;
             });
@@ -450,6 +479,16 @@ $usuario_logueado = is_user_logged_in();
             e.preventDefault();
             const formData = new FormData(this);
             const btn = this.querySelector('button[type="submit"]');
+            let notice = this.querySelector('.bt-fondo__notice');
+            if (!notice) {
+                notice = document.createElement('div');
+                notice.className = 'bt-fondo__notice';
+                this.prepend(notice);
+            }
+            const showNotice = (message, type = 'info') => {
+                notice.className = 'bt-fondo__notice bt-fondo__notice--' + type;
+                notice.textContent = message;
+            };
             btn.disabled = true;
 
             fetch(ajaxUrl, {
@@ -464,7 +503,7 @@ $usuario_logueado = is_user_logged_in();
             })
             .then(r => r.json())
             .then(data => {
-                alert(data.success ? data.data.message : (data.data.message || 'Error'));
+                showNotice(data.success ? data.data.message : (data.data.message || 'Error'), data.success ? 'success' : 'error');
                 if (data.success) modalSolicitar.style.display = 'none';
                 btn.disabled = false;
             });

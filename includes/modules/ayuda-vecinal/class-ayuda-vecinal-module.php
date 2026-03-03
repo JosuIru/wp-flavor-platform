@@ -385,6 +385,16 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'listar_solicitudes',
+            'listado' => 'listar_solicitudes',
+            'buscar' => 'listar_solicitudes',
+            'activas' => 'solicitudes_activas',
+            'mis_items' => 'listar_solicitudes',
+            'mis-ayudas' => 'listar_solicitudes',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -1282,6 +1292,38 @@ KNOWLEDGE;
             ],
         ]);
 
+        // POST /flavor/v1/ayuda-vecinal/respuestas/{id}/retirar - Retirar una oferta enviada
+        register_rest_route($namespace, '/ayuda-vecinal/respuestas/(?P<id>\d+)/retirar', [
+            'methods' => \WP_REST_Server::CREATABLE,
+            'callback' => [$this, 'api_retirar_respuesta'],
+            'permission_callback' => [$this, 'api_verificar_usuario_autenticado'],
+            'args' => [
+                'id' => [
+                    'type' => 'integer',
+                    'required' => true,
+                    'sanitize_callback' => 'absint',
+                ],
+            ],
+        ]);
+
+        // PUT /flavor/v1/ayuda-vecinal/ofertas/{id} - Activar/desactivar oferta propia
+        register_rest_route($namespace, '/ayuda-vecinal/ofertas/(?P<id>\d+)', [
+            'methods' => \WP_REST_Server::EDITABLE,
+            'callback' => [$this, 'api_actualizar_oferta'],
+            'permission_callback' => [$this, 'api_verificar_usuario_autenticado'],
+            'args' => [
+                'id' => [
+                    'type' => 'integer',
+                    'required' => true,
+                    'sanitize_callback' => 'absint',
+                ],
+                'activa' => [
+                    'type' => 'boolean',
+                    'required' => true,
+                ],
+            ],
+        ]);
+
         // GET /flavor/v1/ayuda-vecinal/categorias - Listar categorias disponibles
         register_rest_route($namespace, '/ayuda-vecinal/categorias', [
             'methods' => \WP_REST_Server::READABLE,
@@ -1705,6 +1747,133 @@ KNOWLEDGE;
         }
 
         return new \WP_REST_Response($resultado, 200);
+    }
+
+    /**
+     * API: Retirar una respuesta enviada por el usuario actual
+     *
+     * @param \WP_REST_Request $request Solicitud REST
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function api_retirar_respuesta($request) {
+        global $wpdb;
+        $tabla_respuestas = $wpdb->prefix . 'flavor_ayuda_respuestas';
+
+        $respuesta_id = absint($request->get_param('id'));
+        $usuario_id = get_current_user_id();
+
+        $respuesta = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_respuestas} WHERE id = %d",
+            $respuesta_id
+        ));
+
+        if (!$respuesta) {
+            return new \WP_Error(
+                'rest_respuesta_not_found',
+                __('Oferta de ayuda no encontrada.', 'flavor-chat-ia'),
+                ['status' => 404]
+            );
+        }
+
+        if ((int) $respuesta->ayudante_id !== $usuario_id) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __('No tienes permiso para retirar esta oferta.', 'flavor-chat-ia'),
+                ['status' => 403]
+            );
+        }
+
+        if ($respuesta->estado !== 'pendiente') {
+            return new \WP_Error(
+                'rest_invalid_state',
+                __('Solo puedes retirar ofertas que aún estén pendientes.', 'flavor-chat-ia'),
+                ['status' => 400]
+            );
+        }
+
+        $actualizado = $wpdb->update(
+            $tabla_respuestas,
+            ['estado' => 'retirada'],
+            ['id' => $respuesta_id],
+            ['%s'],
+            ['%d']
+        );
+
+        if ($actualizado === false) {
+            return new \WP_Error(
+                'rest_db_error',
+                __('No se pudo retirar la oferta en este momento.', 'flavor-chat-ia'),
+                ['status' => 500]
+            );
+        }
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'message' => __('Tu oferta de ayuda ha sido retirada.', 'flavor-chat-ia'),
+        ], 200);
+    }
+
+    /**
+     * API: Activar o desactivar oferta del usuario actual
+     *
+     * @param \WP_REST_Request $request Solicitud REST
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function api_actualizar_oferta($request) {
+        global $wpdb;
+        $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
+
+        $oferta_id = absint($request->get_param('id'));
+        $usuario_id = get_current_user_id();
+        $activa = $request->get_param('activa') ? 1 : 0;
+
+        $oferta = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, usuario_id, activa FROM {$tabla_ofertas} WHERE id = %d",
+            $oferta_id
+        ));
+
+        if (!$oferta) {
+            return new \WP_Error(
+                'rest_offer_not_found',
+                __('Oferta no encontrada.', 'flavor-chat-ia'),
+                ['status' => 404]
+            );
+        }
+
+        if ((int) $oferta->usuario_id !== $usuario_id) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __('No tienes permiso para modificar esta oferta.', 'flavor-chat-ia'),
+                ['status' => 403]
+            );
+        }
+
+        $actualizado = $wpdb->update(
+            $tabla_ofertas,
+            [
+                'activa' => $activa,
+                'fecha_actualizacion' => current_time('mysql'),
+            ],
+            ['id' => $oferta_id],
+            ['%d', '%s'],
+            ['%d']
+        );
+
+        if ($actualizado === false) {
+            return new \WP_Error(
+                'rest_db_error',
+                __('No se pudo actualizar la oferta en este momento.', 'flavor-chat-ia'),
+                ['status' => 500]
+            );
+        }
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'message' => $activa
+                ? __('Tu oferta ha sido reactivada.', 'flavor-chat-ia')
+                : __('Tu oferta ha sido desactivada.', 'flavor-chat-ia'),
+            'activa' => (bool) $activa,
+        ], 200);
     }
 
     /**
@@ -2747,6 +2916,8 @@ KNOWLEDGE;
         wp_localize_script('ayuda-vecinal-frontend', 'ayudaVecinalData', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ayuda_vecinal_frontend'),
+            'rest_url' => rest_url('flavor/v1/ayuda-vecinal/'),
+            'rest_nonce' => wp_create_nonce('wp_rest'),
             'user_logged_in' => is_user_logged_in(),
             'user_id' => get_current_user_id(),
             'categorias' => $this->get_categorias_ayuda(),
@@ -2756,6 +2927,11 @@ KNOWLEDGE;
                 'solicitud_enviada' => __('Tu solicitud ha sido enviada correctamente.', 'flavor-chat-ia'),
                 'oferta_enviada' => __('Tu oferta de ayuda ha sido registrada.', 'flavor-chat-ia'),
                 'login_requerido' => __('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'),
+                'sin_respuestas' => __('Todavía no hay respuestas para esta solicitud.', 'flavor-chat-ia'),
+                'solicitud_cancelada' => __('Solicitud cancelada correctamente.', 'flavor-chat-ia'),
+                'solicitud_completada' => __('Solicitud marcada como completada.', 'flavor-chat-ia'),
+                'respuesta_aceptada' => __('Respuesta aceptada correctamente.', 'flavor-chat-ia'),
+                'accion_no_disponible' => __('Esta acción aún no está disponible en el frontend moderno.', 'flavor-chat-ia'),
             ]
         ]);
 

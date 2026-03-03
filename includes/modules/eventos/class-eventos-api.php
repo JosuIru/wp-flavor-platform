@@ -166,6 +166,7 @@ class Flavor_Eventos_API {
             'imagen'         => $request->get_param('imagen') ?: '',
             'estado'         => 'publicado',
             'organizador_id' => $usuario_id,
+            'comunidad_id'   => absint($request->get_param('comunidad_id') ?: 0) ?: null,
             'created_at'     => current_time('mysql'),
             'updated_at'     => current_time('mysql'),
         ];
@@ -237,6 +238,7 @@ class Flavor_Eventos_API {
             'imagen'         => isset($_POST['imagen']) ? esc_url_raw($_POST['imagen']) : '',
             'estado'         => 'publicado',
             'organizador_id' => $usuario_id,
+            'comunidad_id'   => absint($_POST['comunidad_id'] ?? 0) ?: null,
             'created_at'     => current_time('mysql'),
             'updated_at'     => current_time('mysql'),
         ];

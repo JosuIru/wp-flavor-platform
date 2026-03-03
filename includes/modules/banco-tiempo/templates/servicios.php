@@ -12,6 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 $usuario_id = get_current_user_id();
+$mostrar_propios = !empty($atts['mostrar_propios']);
 
 global $wpdb;
 $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
@@ -64,17 +65,17 @@ $total_categorias = $wpdb->get_var("SELECT COUNT(DISTINCT categoria) FROM $tabla
 
 <div class="fl-banco-tiempo-servicios">
     <!-- Mis Servicios -->
-    <?php if ($usuario_id && !empty($mis_servicios)) : ?>
+    <?php if ($mostrar_propios && $usuario_id && !empty($mis_servicios)) : ?>
     <div class="fl-section">
         <div class="fl-section-header">
             <h3 class="fl-section-title">
                 <span class="dashicons dashicons-businessman"></span>
                 <?php esc_html_e('Mis Servicios', 'flavor-chat-ia'); ?>
             </h3>
-            <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/crear/')); ?>" class="fl-btn fl-btn-primary fl-btn-sm">
+            <button type="button" class="fl-btn fl-btn-primary fl-btn-sm bt-btn-nuevo-servicio">
                 <span class="dashicons dashicons-plus-alt"></span>
                 <?php esc_html_e('Ofrecer servicio', 'flavor-chat-ia'); ?>
-            </a>
+            </button>
         </div>
         <div class="fl-services-grid fl-services-mine">
             <?php foreach ($mis_servicios as $servicio) : ?>
@@ -96,24 +97,24 @@ $total_categorias = $wpdb->get_var("SELECT COUNT(DISTINCT categoria) FROM $tabla
                         <?php echo number_format($servicio->horas_estimadas, 1); ?>h
                     </span>
                     <div class="fl-service-actions">
-                        <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/editar/' . $servicio->id . '/')); ?>" class="fl-btn-icon" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                        <button type="button" class="fl-btn-icon bt-btn-editar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
                             <span class="dashicons dashicons-edit"></span>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
             <?php endforeach; ?>
         </div>
     </div>
-    <?php elseif ($usuario_id) : ?>
+    <?php elseif ($mostrar_propios && $usuario_id) : ?>
     <div class="fl-empty-cta">
         <span class="dashicons dashicons-admin-tools"></span>
         <h4><?php esc_html_e('¿Qué sabes hacer?', 'flavor-chat-ia'); ?></h4>
         <p><?php esc_html_e('Comparte tus habilidades con la comunidad y empieza a acumular horas.', 'flavor-chat-ia'); ?></p>
-        <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/crear/')); ?>" class="fl-btn fl-btn-primary">
+        <button type="button" class="fl-btn fl-btn-primary bt-btn-nuevo-servicio">
             <span class="dashicons dashicons-plus-alt"></span>
             <?php esc_html_e('Ofrecer mi primer servicio', 'flavor-chat-ia'); ?>
-        </a>
+        </button>
     </div>
     <?php endif; ?>
 
@@ -163,9 +164,9 @@ $total_categorias = $wpdb->get_var("SELECT COUNT(DISTINCT categoria) FROM $tabla
                         <?php echo number_format($servicio->horas_estimadas, 1); ?>h
                     </span>
                     <?php if ($usuario_id) : ?>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/solicitar/' . $servicio->id . '/')); ?>" class="fl-btn fl-btn-primary fl-btn-sm">
+                    <button type="button" class="fl-btn fl-btn-primary fl-btn-sm bt-btn-solicitar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>">
                         <?php esc_html_e('Solicitar', 'flavor-chat-ia'); ?>
-                    </a>
+                    </button>
                     <?php else : ?>
                     <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="fl-btn fl-btn-outline fl-btn-sm">
                         <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
@@ -522,6 +523,8 @@ $total_categorias = $wpdb->get_var("SELECT COUNT(DISTINCT categoria) FROM $tabla
 document.addEventListener('DOMContentLoaded', function() {
     const filterBtns = document.querySelectorAll('.fl-filter-btn');
     const serviceCards = document.querySelectorAll('.fl-service-card:not(.fl-service-mine)');
+    const params = new URLSearchParams(window.location.search);
+    const servicioId = params.get('servicio_id');
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -541,5 +544,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+    if (servicioId && window.BancoTiempo && BancoTiempo.Servicios && typeof BancoTiempo.Servicios.verDetalle === 'function') {
+        setTimeout(function() {
+            BancoTiempo.Servicios.verDetalle(servicioId);
+        }, 150);
+    }
 });
 </script>

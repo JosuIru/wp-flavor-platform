@@ -164,7 +164,7 @@ class Flavor_Seguimiento_Denuncias_Frontend_Controller {
      * Registra assets del frontend
      */
     public function register_assets() {
-        $modulo_url = plugins_url('', dirname(__FILE__));
+        $modulo_url = plugins_url('', dirname(dirname(__FILE__)));
 
         wp_register_style(
             'flavor-seguimiento-denuncias',

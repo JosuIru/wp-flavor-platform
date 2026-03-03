@@ -57,19 +57,19 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
     public function enqueue_assets() {
         if ($this->is_trabajo_page()) {
-            $base_url = plugins_url('', dirname(__FILE__));
+            $base_url = plugins_url('', dirname(dirname(__FILE__)));
             $version = defined('FLAVOR_VERSION') ? FLAVOR_VERSION : '1.0.0';
 
             wp_enqueue_style(
                 'flavor-trabajo-frontend',
-                $base_url . '/assets/css/trabajo-frontend.css',
+                $base_url . '/assets/css/trabajo-digno.css',
                 [],
                 $version
             );
 
             wp_enqueue_script(
                 'flavor-trabajo-frontend',
-                $base_url . '/assets/js/trabajo-frontend.js',
+                $base_url . '/assets/js/trabajo-digno.js',
                 ['jquery'],
                 $version,
                 true

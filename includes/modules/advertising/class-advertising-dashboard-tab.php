@@ -52,6 +52,7 @@ class Flavor_Advertising_Dashboard_Tab {
     public function render_tab() {
         $datos = $this->obtener_datos_usuario();
         $subtab = isset($_GET['subtab']) ? sanitize_text_field($_GET['subtab']) : 'mis-anuncios';
+        $anuncio_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
 
         ?>
         <div class="flavor-publicidad-dashboard">
@@ -74,21 +75,31 @@ class Flavor_Advertising_Dashboard_Tab {
                 <?php
                 switch ($subtab) {
                     case 'crear':
-                        $this->render_crear_anuncio();
+                        $this->render_native_shortcode('flavor_ads_crear');
+                        break;
+                    case 'editar':
+                        $this->render_editar_anuncio($anuncio_id);
+                        break;
+                    case 'stats':
+                        $this->render_stats_anuncio($anuncio_id);
                         break;
                     case 'estadisticas':
                         $this->render_estadisticas($datos);
                         break;
                     case 'facturacion':
-                        $this->render_facturacion($datos);
+                        $this->render_native_shortcode('flavor_ads_ingresos');
                         break;
                     default:
-                        $this->render_mis_anuncios($datos);
+                        $this->render_native_shortcode('flavor_ads_dashboard');
                 }
                 ?>
             </div>
         </div>
         <?php
+    }
+
+    private function render_native_shortcode($shortcode) {
+        echo do_shortcode(sprintf('[%s]', sanitize_key($shortcode)));
     }
 
     private function render_mis_anuncios($datos) {
@@ -161,9 +172,9 @@ class Flavor_Advertising_Dashboard_Tab {
                         </div>
                         <div class="anuncio-acciones">
                             <?php if ($anuncio->estado === 'activo'): ?>
-                                <button class="flavor-btn flavor-btn-sm pausar-anuncio" data-id="<?php echo $anuncio->id; ?>">Pausar</button>
+                                <button class="flavor-btn flavor-btn-sm pausar-anuncio btn-pausar-anuncio" data-id="<?php echo $anuncio->id; ?>" data-ad-id="<?php echo $anuncio->id; ?>">Pausar</button>
                             <?php elseif ($anuncio->estado === 'pausado'): ?>
-                                <button class="flavor-btn flavor-btn-sm activar-anuncio" data-id="<?php echo $anuncio->id; ?>">Activar</button>
+                                <button class="flavor-btn flavor-btn-sm activar-anuncio btn-activar-anuncio btn-reanudar-anuncio" data-id="<?php echo $anuncio->id; ?>" data-ad-id="<?php echo $anuncio->id; ?>">Activar</button>
                             <?php endif; ?>
                             <a href="?tab=publicidad&subtab=editar&id=<?php echo $anuncio->id; ?>" class="flavor-btn flavor-btn-sm">Editar</a>
                             <a href="?tab=publicidad&subtab=stats&id=<?php echo $anuncio->id; ?>" class="flavor-btn flavor-btn-sm">Ver Stats</a>
@@ -180,8 +191,8 @@ class Flavor_Advertising_Dashboard_Tab {
         <div class="crear-anuncio">
             <h3>Crear nuevo anuncio</h3>
 
-            <form id="form-crear-anuncio" method="post" enctype="multipart/form-data">
-                <?php wp_nonce_field('flavor_crear_anuncio', 'anuncio_nonce'); ?>
+            <form id="crear-anuncio-form" method="post" enctype="multipart/form-data">
+                <?php wp_nonce_field('flavor_ads_nonce', 'nonce'); ?>
 
                 <!-- Tipo de anuncio -->
                 <div class="form-group">
@@ -223,7 +234,7 @@ class Flavor_Advertising_Dashboard_Tab {
                     </div>
                     <div class="form-group">
                         <label>URL de destino *</label>
-                        <input type="url" name="url" required>
+                        <input type="url" name="url_destino" required>
                     </div>
                 </div>
 
@@ -277,7 +288,7 @@ class Flavor_Advertising_Dashboard_Tab {
                 <div class="form-row">
                     <div class="form-group">
                         <label>Presupuesto diario (€)</label>
-                        <input type="number" name="presupuesto_diario" min="1" step="0.5" value="5">
+                        <input type="number" name="presupuesto" min="1" step="0.5" value="5">
                     </div>
                     <div class="form-group">
                         <label>Fecha inicio</label>
@@ -361,6 +372,136 @@ class Flavor_Advertising_Dashboard_Tab {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <?php
+    }
+
+    private function render_editar_anuncio($anuncio_id) {
+        global $wpdb;
+        $tabla_anuncios = $wpdb->prefix . 'flavor_anuncios';
+        $user_id = get_current_user_id();
+
+        if (!$anuncio_id) {
+            echo '<div class="flavor-error">Anuncio no especificado</div>';
+            return;
+        }
+
+        $anuncio = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_anuncios WHERE id = %d AND anunciante_id = %d",
+            $anuncio_id,
+            $user_id
+        ));
+
+        if (!$anuncio && current_user_can('edit_posts')) {
+            $anuncio = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM $tabla_anuncios WHERE id = %d",
+                $anuncio_id
+            ));
+        }
+
+        if (!$anuncio) {
+            echo '<div class="flavor-error">Anuncio no encontrado</div>';
+            return;
+        }
+        ?>
+        <div class="crear-anuncio">
+            <h3>Editar anuncio</h3>
+            <div class="notice notice-info inline">
+                <p>La edicion completa del anuncio sigue el flujo nativo del modulo. Este panel deja el detalle en modo lectura para no duplicar formularios con contratos distintos.</p>
+            </div>
+
+            <div class="anuncio-card" style="margin-top: 16px;">
+                <div class="anuncio-info">
+                    <h4><?php echo esc_html($anuncio->titulo); ?></h4>
+                    <p><?php echo esc_html($anuncio->descripcion); ?></p>
+                    <div class="anuncio-meta">
+                        <span class="badge badge-<?php echo esc_attr($anuncio->estado); ?>">
+                            <?php echo esc_html(ucfirst($anuncio->estado)); ?>
+                        </span>
+                        <span class="tipo"><?php echo esc_html(ucfirst($anuncio->tipo)); ?></span>
+                        <span class="ubicacion"><?php echo esc_html(ucfirst($anuncio->ubicacion)); ?></span>
+                    </div>
+                    <p><strong>URL:</strong> <a href="<?php echo esc_url($anuncio->url); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html($anuncio->url); ?></a></p>
+                </div>
+            </div>
+
+            <div class="form-actions" style="margin-top: 16px;">
+                <a href="?tab=publicidad&subtab=mis-anuncios" class="flavor-btn">Volver</a>
+                <a href="?tab=publicidad&subtab=stats&id=<?php echo esc_attr($anuncio->id); ?>" class="flavor-btn flavor-btn-primary">Ver estadisticas</a>
+            </div>
+        </div>
+        <?php
+    }
+
+    private function render_stats_anuncio($anuncio_id) {
+        global $wpdb;
+        $tabla_anuncios = $wpdb->prefix . 'flavor_anuncios';
+        $tabla_stats = $wpdb->prefix . 'flavor_anuncios_stats';
+        $user_id = get_current_user_id();
+
+        if (!$anuncio_id) {
+            echo '<div class="flavor-error">Anuncio no especificado</div>';
+            return;
+        }
+
+        $anuncio = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_anuncios WHERE id = %d AND anunciante_id = %d",
+            $anuncio_id,
+            $user_id
+        ));
+
+        if (!$anuncio && current_user_can('edit_posts')) {
+            $anuncio = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM $tabla_anuncios WHERE id = %d",
+                $anuncio_id
+            ));
+        }
+
+        if (!$anuncio) {
+            echo '<div class="flavor-error">Anuncio no encontrado</div>';
+            return;
+        }
+
+        $stats = $wpdb->get_row($wpdb->prepare(
+            "SELECT COALESCE(SUM(impresiones), 0) AS impresiones,
+                    COALESCE(SUM(clicks), 0) AS clicks,
+                    COALESCE(SUM(gasto), 0) AS gasto
+             FROM $tabla_stats
+             WHERE anuncio_id = %d",
+            $anuncio_id
+        ));
+        ?>
+        <div class="publicidad-estadisticas">
+            <h3>Estadísticas de anuncio</h3>
+
+            <div class="flavor-card">
+                <h4><?php echo esc_html($anuncio->titulo); ?></h4>
+                <p><?php echo esc_html(wp_trim_words($anuncio->descripcion, 30)); ?></p>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-valor"><?php echo number_format($stats->impresiones ?? 0); ?></span>
+                        <span class="stat-label">Impresiones</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-valor"><?php echo number_format($stats->clicks ?? 0); ?></span>
+                        <span class="stat-label">Clicks</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-valor"><?php echo ($stats->impresiones ?? 0) > 0 ? round((($stats->clicks ?? 0) / $stats->impresiones) * 100, 2) : 0; ?>%</span>
+                        <span class="stat-label">CTR</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-valor"><?php echo number_format($stats->gasto ?? 0, 2); ?>€</span>
+                        <span class="stat-label">Gasto</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="?tab=publicidad&subtab=editar&id=<?php echo esc_attr($anuncio->id); ?>" class="flavor-btn">Editar anuncio</a>
+                    <a href="?tab=publicidad&subtab=mis-anuncios" class="flavor-btn">Volver</a>
+                </div>
             </div>
         </div>
         <?php

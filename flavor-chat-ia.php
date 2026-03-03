@@ -789,8 +789,10 @@ final class Flavor_Chat_IA {
      * Inicialización del plugin
      */
     public function init() {
-        // Ensure shortcodes render in content even if another theme/plugin removed the filter.
-        add_filter('the_content', 'do_shortcode', 99);
+        // Re-add shortcode rendering only if another plugin/theme removed the core filter.
+        if (false === has_filter('the_content', 'do_shortcode')) {
+            add_filter('the_content', 'do_shortcode', 99);
+        }
 
         // Verificar e instalar tablas de módulos si no existen
         $this->maybe_install_module_tables();
@@ -2011,22 +2013,32 @@ function flavor_chat_ia() {
 /**
  * Inicialización del plugin usando hooks de WordPress.
  *
- * WordPress 6.7+ muestra el notice "_load_textdomain_just_in_time" cuando
- * se usa __() antes del hook 'init' y el textdomain no está cargado.
+ * El plugin sigue teniendo bastante carga y registro de clases durante
+ * `plugins_loaded`, así que dejar el textdomain para un callback posterior
+ * puede hacer que WordPress intente resolver traducciones "just in time"
+ * demasiado pronto y termine inyectando notices en el HTML.
  *
- * Para evitar esto:
- * 1. Cargamos el textdomain en 'plugins_loaded' con prioridad 0 (muy temprano)
- * 2. Inicializamos el plugin en 'plugins_loaded' con prioridad 1 (justo después)
+ * Lo cargamos aquí, en el bootstrap del archivo principal, para asegurar que
+ * cualquier __()/esc_html__() posterior ya encuentre el dominio registrado.
  */
 
-// Cargar textdomain lo más temprano posible durante plugins_loaded
-add_action('plugins_loaded', function() {
-    load_plugin_textdomain(
-        'flavor-chat-ia',
-        false,
-        dirname(FLAVOR_CHAT_IA_BASENAME) . '/languages/'
-    );
-}, 0);
+load_plugin_textdomain(
+    'flavor-chat-ia',
+    false,
+    dirname(FLAVOR_CHAT_IA_BASENAME) . '/languages/'
+);
+
+// Algunos modulos y dependencias cargan demasiado pronto y WordPress 6.7+
+// inyecta notices de `_load_textdomain_just_in_time` en el HTML. Mientras se
+// completa la refactorizacion del arranque, evitamos que ese warning rompa
+// frontend, AJAX y REST.
+add_filter('doing_it_wrong_trigger_error', function($trigger, $function_name) {
+    if ($function_name === '_load_textdomain_just_in_time') {
+        return false;
+    }
+
+    return $trigger;
+}, 10, 2);
 
 // Inicializar el plugin después de cargar el textdomain
 add_action('plugins_loaded', 'flavor_chat_ia', 1);

@@ -24,7 +24,10 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
     protected $default_visibility = 'public';
     protected $required_capability = 'read';
 
-    public function __construct() { parent::__construct(); }
+    public function __construct() {
+        parent::__construct();
+        add_action('init', [$this, 'ensure_comunidad_schema'], 1);
+    }
 
     public function can_activate() {
         global $wpdb;
@@ -45,6 +48,25 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
      */
     public function is_active() {
         return $this->can_activate();
+    }
+
+    /**
+     * Garantiza la columna de relacion con comunidades en instalaciones existentes.
+     */
+    public function ensure_comunidad_schema() {
+        global $wpdb;
+
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            return;
+        }
+
+        $columna = $wpdb->get_var("SHOW COLUMNS FROM {$tabla_eventos} LIKE 'comunidad_id'");
+        if (!$columna) {
+            $wpdb->query("ALTER TABLE {$tabla_eventos} ADD COLUMN comunidad_id bigint(20) unsigned DEFAULT NULL AFTER organizador_id");
+            $wpdb->query("ALTER TABLE {$tabla_eventos} ADD KEY comunidad_id (comunidad_id)");
+        }
     }
 
     protected function get_default_settings() {
@@ -200,7 +222,12 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                     ['id' => 'networking', 'label' => __('Networking', 'flavor-chat-ia')],
                 ],
                 'cta_text' => __('Crear Evento', 'flavor-chat-ia'),
-                'cta_url'  => home_url('/mi-portal/eventos/crear-evento/'),
+                'cta_url'  => add_query_arg(
+                    array_filter([
+                        'comunidad_id' => ($comunidad_id = $this->resolve_contextual_comunidad_id()) > 0 ? $comunidad_id : null,
+                    ]),
+                    home_url('/mi-portal/eventos/crear-evento/')
+                ),
                 'cta_icon' => 'dashicons-plus-alt',
             ],
 
@@ -589,6 +616,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                 <?php wp_nonce_field('eventos_crear', 'eventos_nonce'); ?>
                 <input type="hidden" name="action" value="eventos_crear_evento">
                 <input type="hidden" name="organizador_id" value="<?php echo esc_attr($usuario_id); ?>">
+                <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($this->resolve_contextual_comunidad_id()); ?>">
 
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="titulo" style="display: block; margin-bottom: 6px; font-weight: 500;"><?php esc_html_e('Titulo del evento', 'flavor-chat-ia'); ?> <span style="color: red;">*</span></label>
@@ -781,6 +809,23 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Obtiene una comunidad contextual desde query args o ruta del portal.
+     */
+    private function resolve_contextual_comunidad_id(): int {
+        $comunidad_id = absint($_GET['comunidad_id'] ?? $_GET['comunidad'] ?? $_GET['id'] ?? 0);
+        if ($comunidad_id > 0) {
+            return $comunidad_id;
+        }
+
+        $request_path = (string) wp_parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+        if (preg_match('#/mi-portal/comunidades/(\d+)(?:/|$)#', $request_path, $matches)) {
+            return absint($matches[1]);
+        }
+
+        return 0;
     }
 
     public function init() {
@@ -1557,6 +1602,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             'es_online'     => !empty($params['es_online']) ? 1 : 0,
             'url_online'    => isset($params['url_online']) ? esc_url_raw($params['url_online']) : null,
             'organizador_id' => get_current_user_id(),
+            'comunidad_id'  => !empty($params['comunidad_id']) ? absint($params['comunidad_id']) : null,
             'estado'        => 'borrador',
         ];
         $resultado = $wpdb->insert($tabla, $datos);

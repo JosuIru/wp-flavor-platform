@@ -437,6 +437,8 @@ class Flavor_Compostaje_Dashboard_Tab {
         $nivel_actual = $this->calcular_nivel_usuario($balance['total_kg']);
         $impacto_ambiental = $this->calcular_impacto_ambiental($balance);
         $historial_puntos = $this->obtener_historial_puntos($usuario_id);
+        $solicitudes_compost = $this->obtener_solicitudes_compost_usuario($usuario_id, 5);
+        $resumen_solicitudes = $this->obtener_resumen_solicitudes_compost($usuario_id);
         ?>
         <div class="flavor-dashboard-tab flavor-compostaje-balance">
             <!-- Tarjeta de nivel y progreso -->
@@ -506,6 +508,78 @@ class Flavor_Compostaje_Dashboard_Tab {
                         <span class="flavor-kpi-valor"><?php echo intval($balance['turnos_completados']); ?></span>
                         <span class="flavor-kpi-label"><?php esc_html_e('Turnos Completados', 'flavor-chat-ia'); ?></span>
                     </div>
+                </div>
+            </div>
+
+            <div class="flavor-panel">
+                <div class="flavor-panel-header">
+                    <h3>
+                        <span class="dashicons dashicons-download"></span>
+                        <?php esc_html_e('Mis Solicitudes de Compost', 'flavor-chat-ia'); ?>
+                    </h3>
+                </div>
+                <div class="flavor-panel-body">
+                    <div class="flavor-kpi-grid flavor-grid-3">
+                        <div class="flavor-kpi-card">
+                            <div class="flavor-kpi-icon verde">
+                                <span class="dashicons dashicons-hourglass"></span>
+                            </div>
+                            <div class="flavor-kpi-content">
+                                <span class="flavor-kpi-valor"><?php echo intval($resumen_solicitudes['pendientes']); ?></span>
+                                <span class="flavor-kpi-label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></span>
+                            </div>
+                        </div>
+                        <div class="flavor-kpi-card">
+                            <div class="flavor-kpi-icon azul">
+                                <span class="dashicons dashicons-yes-alt"></span>
+                            </div>
+                            <div class="flavor-kpi-content">
+                                <span class="flavor-kpi-valor"><?php echo intval($resumen_solicitudes['aprobadas']); ?></span>
+                                <span class="flavor-kpi-label"><?php esc_html_e('Aprobadas', 'flavor-chat-ia'); ?></span>
+                            </div>
+                        </div>
+                        <div class="flavor-kpi-card">
+                            <div class="flavor-kpi-icon morado">
+                                <span class="dashicons dashicons-chart-bar"></span>
+                            </div>
+                            <div class="flavor-kpi-content">
+                                <span class="flavor-kpi-valor"><?php echo number_format($resumen_solicitudes['kg_solicitados'], 1); ?> kg</span>
+                                <span class="flavor-kpi-label"><?php esc_html_e('Solicitados', 'flavor-chat-ia'); ?></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php if (!empty($solicitudes_compost)): ?>
+                        <div class="flavor-lista-simple">
+                            <?php foreach ($solicitudes_compost as $solicitud): ?>
+                                <?php
+                                $estado_clase = sanitize_html_class((string) $solicitud->estado);
+                                $estado_label = ucfirst((string) $solicitud->estado);
+                                ?>
+                                <div class="flavor-item-simple">
+                                    <div class="flavor-item-simple__main">
+                                        <strong><?php echo esc_html($solicitud->nombre_punto ?: __('Punto de compostaje', 'flavor-chat-ia')); ?></strong>
+                                        <span>
+                                            <?php
+                                            printf(
+                                                esc_html__('%1$s kg solicitados el %2$s', 'flavor-chat-ia'),
+                                                number_format((float) $solicitud->cantidad_kg, 1),
+                                                esc_html(date_i18n(get_option('date_format'), strtotime($solicitud->fecha_solicitud)))
+                                            );
+                                            ?>
+                                        </span>
+                                    </div>
+                                    <div class="flavor-item-simple__meta">
+                                        <span class="flavor-badge flavor-badge-<?php echo esc_attr($estado_clase); ?>">
+                                            <?php echo esc_html($estado_label); ?>
+                                        </span>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <p class="flavor-texto-muted"><?php esc_html_e('Aún no has solicitado compost maduro.', 'flavor-chat-ia'); ?></p>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -1196,6 +1270,71 @@ class Flavor_Compostaje_Dashboard_Tab {
             'puntos_totales' => intval($stats_aportaciones->puntos_aportaciones ?? 0) + intval($stats_aportaciones->puntos_bonus ?? 0) + intval($stats_turnos->puntos_turnos ?? 0),
             'co2_total' => floatval($stats_aportaciones->co2_total ?? 0),
             'turnos_completados' => intval($stats_turnos->turnos_completados ?? 0),
+        ];
+    }
+
+    /**
+     * Obtiene las solicitudes de compost del usuario
+     *
+     * @param int $usuario_id ID del usuario.
+     * @param int $limite Limite de resultados.
+     * @return array
+     */
+    private function obtener_solicitudes_compost_usuario($usuario_id, $limite = 5) {
+        global $wpdb;
+
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_solicitudes_compost';
+        $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+            return [];
+        }
+
+        return $wpdb->get_results($wpdb->prepare(
+            "SELECT s.*, p.nombre AS nombre_punto
+             FROM {$tabla_solicitudes} s
+             LEFT JOIN {$tabla_puntos} p ON s.punto_id = p.id
+             WHERE s.usuario_id = %d
+             ORDER BY s.fecha_solicitud DESC
+             LIMIT %d",
+            $usuario_id,
+            $limite
+        ));
+    }
+
+    /**
+     * Obtiene un resumen de solicitudes de compost del usuario
+     *
+     * @param int $usuario_id ID del usuario.
+     * @return array
+     */
+    private function obtener_resumen_solicitudes_compost($usuario_id) {
+        global $wpdb;
+
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_solicitudes_compost';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
+            return [
+                'pendientes' => 0,
+                'aprobadas' => 0,
+                'kg_solicitados' => 0,
+            ];
+        }
+
+        $resumen = $wpdb->get_row($wpdb->prepare(
+            "SELECT
+                SUM(CASE WHEN estado = 'pendiente' THEN 1 ELSE 0 END) AS pendientes,
+                SUM(CASE WHEN estado = 'aprobada' THEN 1 ELSE 0 END) AS aprobadas,
+                COALESCE(SUM(cantidad_kg), 0) AS kg_solicitados
+             FROM {$tabla_solicitudes}
+             WHERE usuario_id = %d",
+            $usuario_id
+        ), ARRAY_A);
+
+        return [
+            'pendientes' => intval($resumen['pendientes'] ?? 0),
+            'aprobadas' => intval($resumen['aprobadas'] ?? 0),
+            'kg_solicitados' => floatval($resumen['kg_solicitados'] ?? 0),
         ];
     }
 

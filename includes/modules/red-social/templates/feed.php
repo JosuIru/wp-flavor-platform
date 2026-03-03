@@ -14,6 +14,9 @@ if (!defined('ABSPATH')) {
 
 global $wpdb;
 
+$rs_url_explorar = home_url('/mi-portal/red-social/explorar/');
+$rs_url_perfil = home_url('/mi-portal/red-social/perfil/');
+
 $usuario_id = get_current_user_id();
 $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
 $tabla_seguimientos = $wpdb->prefix . 'flavor_social_seguimientos';
@@ -240,7 +243,7 @@ if ($usuario_id) {
             <?php else: ?>
                 <div class="rs-login-prompt">
                     <p><?php echo esc_html__('Inicia sesion para compartir con la comunidad.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="rs-btn-primary">
+                    <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/red-social/'))); ?>" class="rs-btn-primary">
                         <?php echo esc_html__('Iniciar sesion', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -284,7 +287,7 @@ if ($usuario_id) {
                             </svg>
                             <p><?php echo esc_html__('Aun no sigues a nadie.', 'flavor-chat-ia'); ?></p>
                             <span><?php echo esc_html__('Explora la comunidad y sigue a personas interesantes.', 'flavor-chat-ia'); ?></span>
-                            <a href="?page=explorar" class="rs-btn-primary"><?php echo esc_html__('Explorar', 'flavor-chat-ia'); ?></a>
+                            <a href="<?php echo esc_url($rs_url_explorar); ?>" class="rs-btn-primary"><?php echo esc_html__('Explorar', 'flavor-chat-ia'); ?></a>
                         <?php elseif ($tipo_feed === 'guardados'): ?>
                             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                 <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
@@ -327,26 +330,26 @@ if ($usuario_id) {
                         $contenido_html = esc_html($publicacion->contenido);
                         $contenido_html = preg_replace(
                             '/#([a-zA-Z0-9_\p{L}]+)/u',
-                            '<a href="?rs_hashtag=$1" class="rs-hashtag">#$1</a>',
+                            '<a href="' . esc_url($rs_url_explorar) . '?hashtag=$1" class="rs-hashtag">#$1</a>',
                             $contenido_html
                         );
                         $contenido_html = preg_replace(
                             '/@([a-zA-Z0-9_]+)/',
-                            '<a href="?rs_perfil_username=$1" class="rs-mencion">@$1</a>',
+                            '<a href="' . esc_url($rs_url_explorar) . '?q=$1" class="rs-mencion">@$1</a>',
                             $contenido_html
                         );
                         ?>
                         <article class="rs-post" data-post-id="<?php echo esc_attr($publicacion->id); ?>">
                             <header class="rs-post-header">
                                 <div class="rs-post-autor">
-                                    <a href="?rs_perfil=<?php echo esc_attr($publicacion->autor_id); ?>">
+                                    <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($publicacion->autor_id), $rs_url_perfil)); ?>">
                                         <img class="rs-post-avatar"
                                              src="<?php echo esc_url(get_avatar_url($publicacion->autor_id, ['size' => 50])); ?>"
                                              alt="">
                                     </a>
                                     <div class="rs-post-autor-info">
                                         <h4>
-                                            <a href="?rs_perfil=<?php echo esc_attr($publicacion->autor_id); ?>">
+                                            <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($publicacion->autor_id), $rs_url_perfil)); ?>">
                                                 <?php echo esc_html($autor ? $autor->display_name : 'Usuario'); ?>
                                             </a>
                                         </h4>
@@ -504,7 +507,7 @@ if ($usuario_id) {
                     <div class="rs-sugerencias-lista">
                         <?php foreach ($sugerencias_usuarios as $sugerencia): ?>
                             <div class="rs-sugerencia">
-                                <a href="?rs_perfil=<?php echo esc_attr($sugerencia->ID); ?>" class="rs-sugerencia-link">
+                                <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($sugerencia->ID), $rs_url_perfil)); ?>" class="rs-sugerencia-link">
                                     <img class="rs-sugerencia-avatar"
                                          src="<?php echo esc_url(get_avatar_url($sugerencia->ID, ['size' => 50])); ?>"
                                          alt="">
@@ -528,7 +531,7 @@ if ($usuario_id) {
                     <h3 class="rs-widget-titulo"><?php echo esc_html__('Tendencias', 'flavor-chat-ia'); ?></h3>
                     <div class="rs-trending-lista">
                         <?php foreach ($hashtags_trending as $indice => $hashtag): ?>
-                            <a href="?rs_hashtag=<?php echo esc_attr($hashtag->hashtag); ?>" class="rs-trending-item">
+                            <a href="<?php echo esc_url(add_query_arg('hashtag', $hashtag->hashtag, $rs_url_explorar)); ?>" class="rs-trending-item">
                                 <div class="rs-trending-categoria"><?php echo $indice + 1; ?>. <?php echo esc_html__('Tendencia', 'flavor-chat-ia'); ?></div>
                                 <div class="rs-trending-hashtag">#<?php echo esc_html($hashtag->hashtag); ?></div>
                                 <div class="rs-trending-posts"><?php echo number_format($hashtag->total_usos); ?> <?php echo esc_html__('publicaciones', 'flavor-chat-ia'); ?></div>
@@ -542,9 +545,9 @@ if ($usuario_id) {
             <div class="rs-sidebar-footer">
                 <p><?php echo esc_html__('Red social comunitaria sin publicidad.', 'flavor-chat-ia'); ?></p>
                 <nav class="rs-sidebar-nav">
-                    <a href="#"><?php echo esc_html__('Acerca de', 'flavor-chat-ia'); ?></a>
-                    <a href="#"><?php echo esc_html__('Privacidad', 'flavor-chat-ia'); ?></a>
-                    <a href="#"><?php echo esc_html__('Terminos', 'flavor-chat-ia'); ?></a>
+                    <span><?php echo esc_html__('Acerca de', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Privacidad', 'flavor-chat-ia'); ?></span>
+                    <span><?php echo esc_html__('Terminos', 'flavor-chat-ia'); ?></span>
                 </nav>
             </div>
         </aside>

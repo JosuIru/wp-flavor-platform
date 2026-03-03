@@ -243,6 +243,20 @@ class Flavor_Grupos_Consumo_API {
             ],
         ]);
 
+        // POST /gc/suscripciones/{id}/reanudar - Reanudar
+        register_rest_route(self::NAMESPACE, '/gc/suscripciones/(?P<id>\d+)/reanudar', [
+            'methods' => 'POST',
+            'callback' => [$this, 'reanudar_suscripcion'],
+            'permission_callback' => [$this, 'check_authentication'],
+            'args' => [
+                'id' => [
+                    'validate_callback' => function($param) {
+                        return is_numeric($param);
+                    },
+                ],
+            ],
+        ]);
+
         // POST /gc/suscripciones/{id}/cancelar - Cancelar
         register_rest_route(self::NAMESPACE, '/gc/suscripciones/(?P<id>\d+)/cancelar', [
             'methods' => 'POST',
@@ -875,21 +889,27 @@ class Flavor_Grupos_Consumo_API {
     public function crear_suscripcion($request) {
         $usuario_id = get_current_user_id();
         $tipo_cesta_id = absint($request->get_param('tipo_cesta_id'));
-        $frecuencia = $request->get_param('frecuencia');
-
-        // Buscar consumidor
-        $consumidor_manager = Flavor_GC_Consumidor_Manager::get_instance();
-        $grupos = get_posts([
-            'post_type' => 'gc_grupo',
-            'posts_per_page' => 1,
-            'post_status' => 'publish',
-        ]);
-
-        if (empty($grupos)) {
-            return new WP_Error('no_grupo', __('No hay grupos disponibles', 'flavor-chat-ia'), ['status' => 404]);
+        if (!$tipo_cesta_id) {
+            $tipo_cesta_id = absint($request->get_param('cesta_id'));
         }
 
-        $consumidor = $consumidor_manager->obtener_consumidor($usuario_id, $grupos[0]->ID);
+        if (!$tipo_cesta_id) {
+            $cesta = $request->get_param('cesta');
+            if (is_numeric($cesta)) {
+                $tipo_cesta_id = absint($cesta);
+            } elseif (is_string($cesta) && $cesta !== '') {
+                $suscripciones_manager = Flavor_GC_Subscriptions::get_instance();
+                $tipo_cesta_id = (int) $suscripciones_manager->obtener_tipo_cesta_por_slug(sanitize_title($cesta));
+            }
+        }
+
+        $frecuencia = $request->get_param('frecuencia');
+
+        if (!$tipo_cesta_id) {
+            return new WP_Error('missing_basket', __('Debes seleccionar una cesta valida', 'flavor-chat-ia'), ['status' => 400]);
+        }
+
+        $consumidor = $this->obtener_consumidor_actual($usuario_id);
 
         if (!$consumidor) {
             return new WP_Error('no_miembro', __('No eres miembro del grupo', 'flavor-chat-ia'), ['status' => 403]);
@@ -923,6 +943,26 @@ class Flavor_Grupos_Consumo_API {
             return new WP_REST_Response($resultado, 200);
         } else {
             return new WP_Error('pause_failed', $resultado['error'], ['status' => 400]);
+        }
+    }
+
+    /**
+     * POST /gc/suscripciones/{id}/reanudar - Reanudar
+     */
+    public function reanudar_suscripcion($request) {
+        $suscripcion_id = absint($request->get_param('id'));
+
+        if (!$this->verificar_propiedad_suscripcion($suscripcion_id)) {
+            return new WP_Error('not_owner', __('No tienes permisos', 'flavor-chat-ia'), ['status' => 403]);
+        }
+
+        $suscripciones_manager = Flavor_GC_Subscriptions::get_instance();
+        $resultado = $suscripciones_manager->reanudar_suscripcion($suscripcion_id);
+
+        if ($resultado['success']) {
+            return new WP_REST_Response($resultado, 200);
+        } else {
+            return new WP_Error('resume_failed', $resultado['error'], ['status' => 400]);
         }
     }
 
@@ -1199,6 +1239,30 @@ class Flavor_Grupos_Consumo_API {
     }
 
     /**
+     * Obtiene la membresia activa mas reciente del usuario autenticado.
+     *
+     * @param int $usuario_id ID del usuario.
+     * @return object|null
+     */
+    private function obtener_consumidor_actual($usuario_id) {
+        global $wpdb;
+
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+            return null;
+        }
+
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT *
+             FROM {$tabla_consumidores}
+             WHERE usuario_id = %d
+             ORDER BY (estado = 'activo') DESC, fecha_alta DESC, id DESC
+             LIMIT 1",
+            $usuario_id
+        ));
+    }
+
+    /**
      * GET /gc/productores-cercanos - Obtiene productores que entregan en la ubicación del usuario
      *
      * Usa la fórmula Haversine para calcular la distancia entre el usuario y cada productor,
@@ -1303,7 +1367,7 @@ class Flavor_Grupos_Consumo_API {
                 ],
                 'imagen' => $imagen_url ?: null,
                 'cantidad_productos' => (int) $cantidad_productos,
-                'url' => get_permalink($productor->ID),
+                'url' => add_query_arg('productor', intval($productor->ID), home_url('/mi-portal/grupos-consumo/productores-cercanos/')),
                 'entrega_disponible' => true, // Siempre true porque solo devolvemos los que pueden entregar
             ];
         }
@@ -1387,7 +1451,7 @@ class Flavor_Grupos_Consumo_API {
                     'email' => get_post_meta($post->ID, '_gc_contacto_email', true),
                 ],
                 'imagen' => get_the_post_thumbnail_url($post->ID, 'medium'),
-                'url' => get_permalink($post->ID),
+                'url' => add_query_arg('productor', intval($post->ID), home_url('/mi-portal/grupos-consumo/productores-cercanos/')),
             ];
         }
 

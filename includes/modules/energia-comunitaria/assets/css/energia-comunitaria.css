@@ -1,0 +1,126 @@
+.flavor-energia-panel,
+.flavor-energia-listado,
+.flavor-energia-balance,
+.flavor-energia-mantenimiento,
+.flavor-energia-proyectos,
+.flavor-energia-liquidaciones,
+.flavor-energia-cierres,
+.flavor-energia-participantes {
+    background: #fff;
+    border: 1px solid #f3f4f6;
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.flavor-energia-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.flavor-energia-kpis > div {
+    background: linear-gradient(135deg, #fff7ed, #fef3c7);
+    border-radius: 14px;
+    padding: 0.9rem 1rem;
+}
+
+.flavor-energia-kpis strong {
+    display: block;
+    color: #92400e;
+    font-size: 1.35rem;
+}
+
+.flavor-energia-listado ul,
+.flavor-energia-mantenimiento ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.flavor-energia-listado li,
+.flavor-energia-mantenimiento li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.flavor-energia-form-wrapper {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+}
+
+.flavor-energia-form-wrapper .flavor-form-group {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.9rem;
+}
+
+.flavor-energia-form-wrapper input,
+.flavor-energia-form-wrapper select,
+.flavor-energia-form-wrapper textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 0.7rem 0.8rem;
+    background: #fff;
+}
+
+.flavor-energia-form-wrapper .flavor-form-help {
+    color: #6b7280;
+    font-size: 0.92rem;
+}
+
+.flavor-energia-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+    align-items: end;
+}
+
+.flavor-energia-filters-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.flavor-energia-inline-form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flavor-energia-inline-form select {
+    min-width: 120px;
+}
+
+.flavor-energia-status {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.flavor-energia-status-generada {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.flavor-energia-status-notificada {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.flavor-energia-status-aceptada {
+    background: #dcfce7;
+    color: #166534;
+}

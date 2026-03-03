@@ -1124,7 +1124,44 @@ KNOWLEDGE;
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
-        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+        $aliases = [
+            'listar' => 'informacion_general',
+            'listado' => 'informacion_general',
+            'informacion' => 'informacion_general',
+            'crear' => 'solicitar_proceso',
+            'nuevo' => 'solicitar_proceso',
+            'mis_items' => 'ver_mis_procesos',
+            'mis-procesos' => 'ver_mis_procesos',
+            'mediadores' => 'listar_mediadores',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $method = 'action_' . $action_name;
+
+        if (method_exists($this, $method)) {
+            return $this->$method($params);
+        }
+
+        return [
+            'success' => false,
+            'error' => __('Acción no implementada', 'flavor-chat-ia'),
+        ];
+    }
+
+    private function action_informacion_general($params) {
+        return ['success' => true, 'html' => do_shortcode('[justicia_restaurativa]')];
+    }
+
+    private function action_solicitar_proceso($params) {
+        return ['success' => true, 'html' => do_shortcode('[solicitar_mediacion]')];
+    }
+
+    private function action_ver_mis_procesos($params) {
+        return ['success' => true, 'html' => do_shortcode('[mis_procesos]')];
+    }
+
+    private function action_listar_mediadores($params) {
+        return ['success' => true, 'html' => do_shortcode('[mediadores]')];
     }
 
     /**
@@ -1190,25 +1227,25 @@ KNOWLEDGE;
                 'informacion' => [
                     'label'   => __('Información', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-info',
-                    'content' => 'shortcode:justicia_informacion',
+                    'content' => 'shortcode:justicia_restaurativa',
                     'public'  => true,
                 ],
                 'mediadores' => [
                     'label'   => __('Mediadores', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-groups',
-                    'content' => 'shortcode:justicia_mediadores',
+                    'content' => 'shortcode:mediadores',
                     'public'  => true,
                 ],
                 'solicitar' => [
                     'label'      => __('Solicitar proceso', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-plus-alt',
-                    'content'    => 'shortcode:justicia_solicitar',
+                    'content'    => 'shortcode:solicitar_mediacion',
                     'requires_login' => true,
                 ],
                 'mis-procesos' => [
                     'label'      => __('Mis procesos', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-admin-users',
-                    'content'    => 'shortcode:justicia_mis_procesos',
+                    'content'    => 'shortcode:mis_procesos',
                     'requires_login' => true,
                 ],
             ],

@@ -36,128 +36,36 @@ class Flavor_Chat_Interno_Dashboard_Tab {
     }
 
     public function render_tab() {
-        $datos = $this->obtener_datos_usuario();
         $conversacion_id = isset($_GET['conv']) ? absint($_GET['conv']) : null;
 
         ?>
         <div class="flavor-chat-interno-dashboard">
-            <div class="chat-layout">
-                <!-- Sidebar conversaciones -->
-                <div class="chat-sidebar">
-                    <div class="chat-sidebar-header">
-                        <h3>Conversaciones</h3>
-                        <button class="nueva-conversacion" title="Nueva conversación">
-                            <span class="dashicons dashicons-plus-alt"></span>
-                        </button>
-                    </div>
-
-                    <div class="chat-buscar">
-                        <input type="text" placeholder="Buscar conversaciones..." id="buscar-conversacion">
-                    </div>
-
-                    <div class="conversaciones-lista">
-                        <?php if (empty($datos['conversaciones'])): ?>
-                            <div class="sin-conversaciones">
-                                <span class="dashicons dashicons-format-chat"></span>
-                                <p>No tienes conversaciones</p>
-                            </div>
-                        <?php else: ?>
-                            <?php foreach ($datos['conversaciones'] as $conv): ?>
-                                <a href="?tab=chat-interno&conv=<?php echo $conv->id; ?>"
-                                   class="conversacion-item <?php echo $conversacion_id == $conv->id ? 'activa' : ''; ?>
-                                          <?php echo $conv->sin_leer > 0 ? 'sin-leer' : ''; ?>">
-                                    <div class="conv-avatar">
-                                        <?php echo get_avatar($conv->otro_usuario_id, 40); ?>
-                                        <?php if ($conv->esta_online): ?>
-                                            <span class="estado-online"></span>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="conv-info">
-                                        <span class="conv-nombre"><?php echo esc_html($conv->otro_usuario_nombre); ?></span>
-                                        <span class="conv-ultimo">
-                                            <?php echo esc_html(wp_trim_words($conv->ultimo_mensaje, 8)); ?>
-                                        </span>
-                                    </div>
-                                    <div class="conv-meta">
-                                        <span class="conv-fecha"><?php echo $this->formato_fecha($conv->ultimo_mensaje_fecha); ?></span>
-                                        <?php if ($conv->sin_leer > 0): ?>
-                                            <span class="badge-sin-leer"><?php echo $conv->sin_leer; ?></span>
-                                        <?php endif; ?>
-                                    </div>
-                                </a>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <!-- Panel principal -->
-                <div class="chat-principal">
-                    <?php if ($conversacion_id && isset($datos['conversacion_actual'])): ?>
-                        <?php $this->render_conversacion($datos['conversacion_actual']); ?>
-                    <?php else: ?>
-                        <div class="chat-vacio">
-                            <span class="dashicons dashicons-format-chat"></span>
-                            <h3>Selecciona una conversación</h3>
-                            <p>Elige una conversación de la lista o inicia una nueva</p>
-                            <button class="flavor-btn flavor-btn-primary nueva-conversacion">
-                                Nueva conversación
-                            </button>
-                        </div>
-                    <?php endif; ?>
-                </div>
+            <div class="flavor-dashboard-subtabs">
+                <a href="?tab=chat-interno" class="subtab <?php echo !$conversacion_id ? 'active' : ''; ?>">
+                    <span class="dashicons dashicons-email-alt2"></span> <?php esc_html_e('Conversaciones', 'flavor-chat-ia'); ?>
+                </a>
+                <a href="?tab=chat-interno&subtab=nuevo" class="subtab <?php echo (isset($_GET['subtab']) && $_GET['subtab'] === 'nuevo') ? 'active' : ''; ?>">
+                    <span class="dashicons dashicons-plus-alt"></span> <?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?>
+                </a>
+                <a href="?tab=chat-interno&subtab=archivados" class="subtab <?php echo (isset($_GET['subtab']) && $_GET['subtab'] === 'archivados') ? 'active' : ''; ?>">
+                    <span class="dashicons dashicons-archive"></span> <?php esc_html_e('Archivados', 'flavor-chat-ia'); ?>
+                </a>
             </div>
 
-            <!-- Modal nueva conversación -->
-            <div id="modal-nueva-conversacion" class="flavor-modal" style="display:none;">
-                <div class="flavor-modal-content">
-                    <div class="flavor-modal-header">
-                        <h3>Nueva conversación</h3>
-                        <button class="cerrar-modal">&times;</button>
-                    </div>
-                    <div class="flavor-modal-body">
-                        <div class="form-group">
-                            <label>Buscar usuario</label>
-                            <input type="text" id="buscar-usuario" placeholder="Nombre o email...">
-                        </div>
-                        <div id="resultados-usuarios"></div>
-                    </div>
-                </div>
+            <div class="flavor-dashboard-content">
+                <?php
+                if ($conversacion_id) {
+                    echo do_shortcode('[chat_interno_mensajes id="' . absint($conversacion_id) . '"]');
+                } elseif (isset($_GET['subtab']) && $_GET['subtab'] === 'nuevo') {
+                    echo do_shortcode('[chat_interno_nuevo]');
+                } elseif (isset($_GET['subtab']) && $_GET['subtab'] === 'archivados') {
+                    echo do_shortcode('[chat_interno_archivados]');
+                } else {
+                    echo do_shortcode('[chat_interno_conversaciones]');
+                }
+                ?>
             </div>
         </div>
-
-        <style>
-            .chat-layout { display: flex; height: 70vh; gap: 0; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
-            .chat-sidebar { width: 320px; background: #f8f9fa; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
-            .chat-sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #ddd; }
-            .chat-sidebar-header h3 { margin: 0; font-size: 16px; }
-            .chat-buscar { padding: 10px; }
-            .chat-buscar input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 20px; }
-            .conversaciones-lista { flex: 1; overflow-y: auto; }
-            .conversacion-item { display: flex; padding: 12px 15px; border-bottom: 1px solid #eee; cursor: pointer; text-decoration: none; color: inherit; }
-            .conversacion-item:hover { background: #e9ecef; }
-            .conversacion-item.activa { background: #e3f2fd; }
-            .conversacion-item.sin-leer { background: #fff3e0; }
-            .conv-avatar { position: relative; margin-right: 12px; }
-            .estado-online { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: #4caf50; border-radius: 50%; border: 2px solid #fff; }
-            .conv-info { flex: 1; min-width: 0; }
-            .conv-nombre { display: block; font-weight: 600; margin-bottom: 4px; }
-            .conv-ultimo { display: block; font-size: 13px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .conv-meta { text-align: right; }
-            .conv-fecha { font-size: 11px; color: #999; }
-            .badge-sin-leer { display: inline-block; min-width: 20px; padding: 2px 6px; background: #ff5722; color: #fff; border-radius: 10px; font-size: 11px; text-align: center; margin-top: 4px; }
-            .chat-principal { flex: 1; display: flex; flex-direction: column; background: #fff; }
-            .chat-vacio { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #666; }
-            .chat-vacio .dashicons { font-size: 64px; width: 64px; height: 64px; color: #ddd; margin-bottom: 20px; }
-            .chat-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #ddd; background: #f8f9fa; }
-            .chat-mensajes { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-            .mensaje { max-width: 70%; padding: 10px 15px; border-radius: 18px; }
-            .mensaje.enviado { align-self: flex-end; background: #0084ff; color: #fff; }
-            .mensaje.recibido { align-self: flex-start; background: #e4e6eb; }
-            .mensaje-fecha { font-size: 11px; margin-top: 4px; opacity: 0.7; }
-            .chat-input { display: flex; padding: 15px; border-top: 1px solid #ddd; gap: 10px; }
-            .chat-input textarea { flex: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; resize: none; }
-            .sin-conversaciones { text-align: center; padding: 40px 20px; color: #999; }
-        </style>
         <?php
     }
 

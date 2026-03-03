@@ -23,6 +23,9 @@ $tabla_perfiles = $wpdb->prefix . 'flavor_social_perfiles';
 
 // Parametros de filtrado
 $hashtag_filtro = isset($_GET['rs_hashtag']) ? sanitize_text_field($_GET['rs_hashtag']) : '';
+if (!$hashtag_filtro && isset($_GET['hashtag'])) {
+    $hashtag_filtro = sanitize_text_field($_GET['hashtag']);
+}
 $busqueda = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : '';
 $seccion_activa = isset($_GET['seccion']) ? sanitize_text_field($_GET['seccion']) : 'tendencias';
 
@@ -178,7 +181,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                          src="<?php echo esc_url(get_avatar_url($publicacion->autor_id, ['size' => 50])); ?>"
                                          alt="">
                                     <div class="rs-post-autor-info">
-                                        <h4><a href="?rs_perfil=<?php echo esc_attr($publicacion->autor_id); ?>">
+                                        <h4><a href="<?php echo esc_url(add_query_arg('usuario_id', intval($publicacion->autor_id), home_url('/mi-portal/red-social/perfil/'))); ?>">
                                             <?php echo esc_html($autor ? $autor->display_name : 'Usuario'); ?>
                                         </a></h4>
                                         <span class="rs-post-tiempo"><?php echo human_time_diff(strtotime($publicacion->fecha_publicacion), current_time('timestamp')); ?></span>
@@ -238,7 +241,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                 }
                                 ?>
                                 <div class="rs-resultado-usuario">
-                                    <a href="?rs_perfil=<?php echo esc_attr($usuario_encontrado->ID); ?>" class="rs-resultado-usuario-link">
+                                    <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($usuario_encontrado->ID), home_url('/mi-portal/red-social/perfil/'))); ?>" class="rs-resultado-usuario-link">
                                         <img class="rs-resultado-avatar"
                                              src="<?php echo esc_url(get_avatar_url($usuario_encontrado->ID, ['size' => 56])); ?>"
                                              alt="">
@@ -315,7 +318,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                         </h3>
                         <div class="rs-tendencias-lista">
                             <?php foreach ($hashtags_trending as $indice => $hashtag): ?>
-                                <a href="?rs_hashtag=<?php echo esc_attr($hashtag->hashtag); ?>" class="rs-tendencia-item">
+                                <a href="<?php echo esc_url(add_query_arg('hashtag', rawurlencode($hashtag->hashtag), home_url('/mi-portal/red-social/explorar/'))); ?>" class="rs-tendencia-item">
                                     <span class="rs-tendencia-numero"><?php echo $indice + 1; ?></span>
                                     <div class="rs-tendencia-info">
                                         <span class="rs-tendencia-hashtag">#<?php echo esc_html($hashtag->hashtag); ?></span>
@@ -353,7 +356,7 @@ if ($busqueda && strlen($busqueda) >= 2) {
                                 }
                                 ?>
                                 <div class="rs-popular-item">
-                                    <a href="?rs_perfil=<?php echo esc_attr($popular->usuario_id); ?>" class="rs-popular-link">
+                                    <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($popular->usuario_id), home_url('/mi-portal/red-social/perfil/'))); ?>" class="rs-popular-link">
                                         <img class="rs-popular-avatar"
                                              src="<?php echo esc_url(get_avatar_url($popular->usuario_id, ['size' => 48])); ?>"
                                              alt="">

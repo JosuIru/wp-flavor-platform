@@ -2631,6 +2631,22 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'listar_facturas',
+            'listado' => 'listar_facturas',
+            'mis_items' => 'listar_facturas',
+            'mis-facturas' => 'listar_facturas',
+            'detalle' => 'ver_factura',
+            'ver' => 'ver_factura',
+            'nueva' => 'nueva_factura',
+            'crear' => 'nueva_factura',
+            'pagar' => 'pagar_factura',
+            'historial' => 'historial_pagos',
+            'pagos' => 'historial_pagos',
+            'stats' => 'estadisticas',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -2639,7 +2655,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => "Accion no implementada: {$action_name}",
+            'error' => __('La vista solicitada no esta disponible en Facturas.', 'flavor-chat-ia'),
         ];
     }
 
@@ -2722,6 +2738,29 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
                 }, $factura->pagos),
             ],
         ];
+    }
+
+    /**
+     * Accion: Nueva factura
+     */
+    private function action_nueva_factura($params) {
+        return do_shortcode('[flavor_nueva_factura]');
+    }
+
+    /**
+     * Accion: Pagar factura
+     */
+    private function action_pagar_factura($params) {
+        $factura_id = absint($params['factura_id'] ?? $params['id'] ?? 0);
+        $atts = $factura_id ? ' factura_id="' . $factura_id . '"' : '';
+        return do_shortcode('[flavor_pagar_factura' . $atts . ']');
+    }
+
+    /**
+     * Accion: Historial de pagos
+     */
+    private function action_historial_pagos($params) {
+        return do_shortcode('[flavor_historial_pagos]');
     }
 
     /**

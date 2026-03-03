@@ -23,7 +23,7 @@ $items_carrito = $args['items_carrito'] ?? [];
 $total_carrito = $args['total_carrito'] ?? 0;
 $total_items = $args['total_items'] ?? 0;
 $ciclo_activo = $args['ciclo_activo'] ?? null;
-$url_carrito = $args['url_carrito'] ?? Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-cesta');
+$url_carrito = $args['url_carrito'] ?? Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-pedido');
 $porcentaje_gestion = $args['porcentaje_gestion'] ?? 0;
 $gastos_gestion = $total_carrito * ($porcentaje_gestion / 100);
 $total_final = $total_carrito + $gastos_gestion;
@@ -46,7 +46,7 @@ $total_final = $total_carrito + $gastos_gestion;
         <header class="flavor-gc-carrito-panel-header">
             <h3>
                 <span class="dashicons dashicons-cart"></span>
-                <?php _e('Mi pedido', 'flavor-chat-ia'); ?>
+                <?php _e('Pedido actual', 'flavor-chat-ia'); ?>
             </h3>
             <button type="button" class="flavor-gc-carrito-cerrar" id="gc-carrito-cerrar" aria-label="<?php esc_attr_e('Cerrar', 'flavor-chat-ia'); ?>">
                 <span class="dashicons dashicons-no-alt"></span>

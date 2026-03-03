@@ -112,7 +112,7 @@ $por_categoria = $wpdb->get_results("
                     <div>
                         <p style="margin: 0; color: #666; font-size: 14px;"><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></p>
                         <h2 style="margin: 10px 0; font-size: 32px; color: #d63638;"><?php echo number_format($pendientes_moderacion); ?></h2>
-                        <a href="?page=flavor-chat-multimedia-moderacion" class="button button-small" style="margin-top: 10px;">
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=multimedia-moderacion')); ?>" class="button button-small" style="margin-top: 10px;">
                             <?php echo esc_html__('Moderar', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
@@ -184,7 +184,7 @@ jQuery(document).ready(function($) {
 });
 
 function verMultimedia(id) {
-    window.location.href = '<?php echo admin_url('admin.php?page=flavor-multimedia&tab=galeria&ver='); ?>' + id;
+    window.location.href = '<?php echo admin_url('admin.php?page=multimedia-galeria&ver='); ?>' + id;
 }
 </script>
 

@@ -210,24 +210,30 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
      * @return int Número de temas
      */
     public function contar_temas_entidad($tipo_entidad, $entidad_id) {
-        global $wpdb;
-
         if (!$entidad_id) {
             return 0;
         }
 
-        $tabla_temas = $wpdb->prefix . 'flavor_foros_temas';
+        if (!$this->has_integrated_forum_mapping($tipo_entidad, $entidad_id)) {
+            return 0;
+        }
 
-        // Verificar si la tabla existe
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_temas)) {
+        global $wpdb;
+        $foro_id = $this->resolve_integrated_forum_id($tipo_entidad, $entidad_id);
+        if (!$foro_id) {
+            return 0;
+        }
+
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_hilos)) {
             return 0;
         }
 
         $total = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$tabla_temas}
-             WHERE entidad_tipo = %s AND entidad_id = %d AND estado = 'activo'",
-            $tipo_entidad,
-            $entidad_id
+            "SELECT COUNT(*) FROM {$tabla_hilos}
+             WHERE foro_id = %d AND estado != 'eliminado'",
+            $foro_id
         ));
 
         return intval($total);
@@ -303,40 +309,67 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         $atts = shortcode_atts([
             'entidad'    => '',
             'entidad_id' => 0,
+            'foro_id'    => 0,
             'limite'     => 10,
         ], $atts);
 
         $entidad_tipo = sanitize_key($atts['entidad']);
         $entidad_id = absint($atts['entidad_id']);
+        $foro_id = absint($atts['foro_id']);
 
-        if (!$entidad_tipo || !$entidad_id) {
+        if (!$foro_id && !$entidad_tipo && !$entidad_id) {
             return '<p class="foros-aviso">' . __('Configuración del foro incompleta.', 'flavor-chat-ia') . '</p>';
         }
 
         global $wpdb;
-        $tabla_temas = $wpdb->prefix . 'flavor_foros_temas';
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
         $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
 
-        // Obtener temas de esta entidad
-        $temas = $wpdb->get_results($wpdb->prepare(
+        $resolved_foro_id = $foro_id ?: $this->resolve_integrated_forum_id($entidad_tipo, $entidad_id);
+        if (!$resolved_foro_id) {
+            return '<p class="foros-aviso">' . esc_html__('No hay un foro disponible para este contexto todavía.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $foro = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_foros} WHERE id = %d AND estado = 'activo'",
+            $resolved_foro_id
+        ));
+
+        if (!$foro) {
+            return '<p class="foros-aviso">' . esc_html__('El foro asociado no está disponible.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $hilos = $wpdb->get_results($wpdb->prepare(
             "SELECT t.*, u.display_name as autor_nombre,
-                    (SELECT COUNT(*) FROM {$tabla_respuestas} r WHERE r.tema_id = t.id) as num_respuestas,
-                    (SELECT MAX(r.fecha_creacion) FROM {$tabla_respuestas} r WHERE r.tema_id = t.id) as ultima_respuesta
-             FROM {$tabla_temas} t
-             LEFT JOIN {$wpdb->users} u ON t.usuario_id = u.ID
-             WHERE t.entidad_tipo = %s AND t.entidad_id = %d AND t.estado = 'activo'
-             ORDER BY t.fijado DESC, COALESCE(ultima_respuesta, t.fecha_creacion) DESC
+                    (SELECT COUNT(*) FROM {$tabla_respuestas} r WHERE r.hilo_id = t.id AND r.estado != 'eliminado') as num_respuestas,
+                    (SELECT MAX(r.created_at) FROM {$tabla_respuestas} r WHERE r.hilo_id = t.id AND r.estado != 'eliminado') as ultima_respuesta
+             FROM {$tabla_hilos} t
+             LEFT JOIN {$wpdb->users} u ON t.autor_id = u.ID
+             WHERE t.foro_id = %d AND t.estado != 'eliminado'
+             ORDER BY t.es_fijado DESC, COALESCE(ultima_respuesta, t.ultima_actividad, t.created_at) DESC
              LIMIT %d",
-            $entidad_tipo,
-            $entidad_id,
+            $resolved_foro_id,
             intval($atts['limite'])
         ));
 
         $puede_crear = is_user_logged_in();
+        $is_fallback = empty($foro_id) && !$this->has_integrated_forum_mapping($entidad_tipo, $entidad_id);
 
         ob_start();
         ?>
-        <div class="flavor-foros-integrado" data-entidad="<?php echo esc_attr($entidad_tipo); ?>" data-entidad-id="<?php echo esc_attr($entidad_id); ?>">
+        <div class="flavor-foros-integrado" data-foro-id="<?php echo esc_attr($resolved_foro_id); ?>">
+
+            <?php if ($is_fallback): ?>
+            <div class="foros-aviso-contexto" style="margin-bottom:16px;padding:12px 14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1d4ed8;">
+                <?php
+                printf(
+                    esc_html__('Mostrando el foro general "%s" mientras se define un mapeo específico para este módulo.', 'flavor-chat-ia'),
+                    esc_html($foro->nombre)
+                );
+                ?>
+            </div>
+            <?php endif; ?>
 
             <?php if ($puede_crear): ?>
             <div class="foros-acciones-header">
@@ -347,7 +380,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
             </div>
             <?php endif; ?>
 
-            <?php if (empty($temas)): ?>
+            <?php if (empty($hilos)): ?>
                 <div class="foros-vacio">
                     <span class="dashicons dashicons-format-chat"></span>
                     <p><?php _e('Aún no hay temas de discusión.', 'flavor-chat-ia'); ?></p>
@@ -357,14 +390,14 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                 </div>
             <?php else: ?>
                 <div class="foros-lista-temas">
-                    <?php foreach ($temas as $tema): ?>
-                    <article class="foros-tema <?php echo $tema->fijado ? 'foros-tema--fijado' : ''; ?>">
+                    <?php foreach ($hilos as $tema): ?>
+                    <article class="foros-tema <?php echo !empty($tema->es_fijado) ? 'foros-tema--fijado' : ''; ?>">
                         <div class="foros-tema-avatar">
-                            <?php echo get_avatar($tema->usuario_id, 40); ?>
+                            <?php echo get_avatar($tema->autor_id, 40); ?>
                         </div>
                         <div class="foros-tema-contenido">
                             <h4 class="foros-tema-titulo">
-                                <?php if ($tema->fijado): ?>
+                                <?php if (!empty($tema->es_fijado)): ?>
                                     <span class="dashicons dashicons-admin-post" title="<?php esc_attr_e('Fijado', 'flavor-chat-ia'); ?>"></span>
                                 <?php endif; ?>
                                 <a href="<?php echo esc_url(home_url('/mi-portal/foros/tema/' . $tema->id . '/')); ?>">
@@ -373,7 +406,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                             </h4>
                             <div class="foros-tema-meta">
                                 <span class="foros-tema-autor"><?php echo esc_html($tema->autor_nombre); ?></span>
-                                <span class="foros-tema-fecha"><?php echo esc_html(human_time_diff(strtotime($tema->fecha_creacion), current_time('timestamp'))); ?></span>
+                                <span class="foros-tema-fecha"><?php echo esc_html(human_time_diff(strtotime($tema->created_at), current_time('timestamp'))); ?></span>
                                 <span class="foros-tema-respuestas">
                                     <span class="dashicons dashicons-admin-comments"></span>
                                     <?php echo intval($tema->num_respuestas); ?>
@@ -384,9 +417,9 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                     <?php endforeach; ?>
                 </div>
 
-                <?php if (count($temas) >= intval($atts['limite'])): ?>
+                <?php if (count($hilos) >= intval($atts['limite'])): ?>
                 <div class="foros-ver-mas">
-                    <a href="<?php echo esc_url(home_url('/mi-portal/foros/?entidad=' . $entidad_tipo . '&entidad_id=' . $entidad_id)); ?>" class="foros-btn-ver-todos">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/foros/')); ?>" class="foros-btn-ver-todos">
                         <?php _e('Ver todos los temas', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -402,8 +435,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                     <h3><?php _e('Nuevo tema de discusión', 'flavor-chat-ia'); ?></h3>
                     <form class="foros-form-tema">
                         <?php wp_nonce_field('flavor_foros_nonce', 'foros_nonce'); ?>
-                        <input type="hidden" name="entidad_tipo" value="<?php echo esc_attr($entidad_tipo); ?>">
-                        <input type="hidden" name="entidad_id" value="<?php echo esc_attr($entidad_id); ?>">
+                        <input type="hidden" name="foro_id" value="<?php echo esc_attr($resolved_foro_id); ?>">
 
                         <div class="foros-form-campo">
                             <label><?php _e('Título', 'flavor-chat-ia'); ?></label>
@@ -472,7 +504,8 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                     formData.append('action', 'flavor_foros_crear_tema');
 
                     try {
-                        const response = await fetch(ajaxurl || '/wp-admin/admin-ajax.php', {
+                        const ajaxEndpoint = (window.flavorForosConfig && window.flavorForosConfig.ajaxUrl) || '/wp-admin/admin-ajax.php';
+                        const response = await fetch(ajaxEndpoint, {
                             method: 'POST',
                             body: formData
                         });
@@ -480,7 +513,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                         if (data.success) {
                             location.reload();
                         } else {
-                            alert(data.data || 'Error al crear el tema');
+                            alert((data.data && data.data.message) || 'Error al crear el tema');
                         }
                     } catch (err) {
                         console.error(err);
@@ -492,6 +525,262 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         </script>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Resuelve el foro usado por una integración embebida.
+     *
+     * Mientras no exista mapeo real por entidad, usa un foro activo general.
+     *
+     * @param string $entidad_tipo
+     * @param int    $entidad_id
+     * @return int
+     */
+    private function resolve_integrated_forum_id($entidad_tipo, $entidad_id) {
+        global $wpdb;
+
+        $mapped_forum_id = $this->get_integrated_forum_id($entidad_tipo, $entidad_id, true);
+        if ($mapped_forum_id > 0) {
+            return $mapped_forum_id;
+        }
+
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
+            return 0;
+        }
+
+        return (int) $wpdb->get_var(
+            "SELECT id FROM {$tabla_foros} WHERE estado = 'activo' ORDER BY orden ASC, id ASC LIMIT 1"
+        );
+    }
+
+    /**
+     * Indica si existe mapeo explícito para una integración embebida.
+     *
+     * @param string $entidad_tipo
+     * @param int    $entidad_id
+     * @return bool
+     */
+    private function has_integrated_forum_mapping($entidad_tipo, $entidad_id) {
+        return $this->get_integrated_forum_id($entidad_tipo, $entidad_id, false) > 0;
+    }
+
+    /**
+     * Obtiene el foro contextual para una entidad integrada.
+     *
+     * @param string $entidad_tipo
+     * @param int    $entidad_id
+     * @param bool   $auto_create
+     * @return int
+     */
+    private function get_integrated_forum_id($entidad_tipo, $entidad_id, $auto_create = false) {
+        $entidad_tipo = sanitize_key($entidad_tipo);
+        $entidad_id = absint($entidad_id);
+
+        if (!$entidad_tipo || !$entidad_id) {
+            return 0;
+        }
+
+        $stored_forum_id = $this->get_stored_integrated_forum_id($entidad_tipo, $entidad_id);
+        $mapped_forum_id = (int) apply_filters(
+            'flavor_foros_resolve_integrated_forum_id',
+            $stored_forum_id,
+            $entidad_tipo,
+            $entidad_id
+        );
+
+        if ($mapped_forum_id > 0) {
+            return $mapped_forum_id;
+        }
+
+        if ($stored_forum_id > 0) {
+            return $stored_forum_id;
+        }
+
+        if ($auto_create) {
+            return $this->maybe_provision_integrated_forum($entidad_tipo, $entidad_id);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Obtiene el mapeo persistido entidad -> foro.
+     *
+     * @param string $entidad_tipo
+     * @param int    $entidad_id
+     * @return int
+     */
+    private function get_stored_integrated_forum_id($entidad_tipo, $entidad_id) {
+        $map = get_option('flavor_foros_entity_forum_map', []);
+        if (!is_array($map)) {
+            return 0;
+        }
+
+        return absint($map[$entidad_tipo][$entidad_id] ?? 0);
+    }
+
+    /**
+     * Guarda el mapeo persistido entidad -> foro.
+     *
+     * @param string $entidad_tipo
+     * @param int    $entidad_id
+     * @param int    $foro_id
+     * @return void
+     */
+    private function save_integrated_forum_mapping($entidad_tipo, $entidad_id, $foro_id) {
+        $entidad_tipo = sanitize_key($entidad_tipo);
+        $entidad_id = absint($entidad_id);
+        $foro_id = absint($foro_id);
+
+        if (!$entidad_tipo || !$entidad_id || !$foro_id) {
+            return;
+        }
+
+        $map = get_option('flavor_foros_entity_forum_map', []);
+        if (!is_array($map)) {
+            $map = [];
+        }
+
+        if (!isset($map[$entidad_tipo]) || !is_array($map[$entidad_tipo])) {
+            $map[$entidad_tipo] = [];
+        }
+
+        $map[$entidad_tipo][$entidad_id] = $foro_id;
+        update_option('flavor_foros_entity_forum_map', $map, false);
+    }
+
+    /**
+     * Crea un foro dedicado para una entidad si aún no existe mapeo.
+     *
+     * @param string $entidad_tipo
+     * @param int    $entidad_id
+     * @return int
+     */
+    private function maybe_provision_integrated_forum($entidad_tipo, $entidad_id) {
+        global $wpdb;
+
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_foros)) {
+            return 0;
+        }
+
+        $entity = $this->resolve_integrated_entity_context($entidad_tipo, $entidad_id);
+        if (empty($entity['label'])) {
+            return 0;
+        }
+
+        $foro_id = absint($wpdb->get_var($wpdb->prepare(
+            "SELECT id
+             FROM {$tabla_foros}
+             WHERE nombre = %s AND estado = 'activo'
+             ORDER BY id ASC
+             LIMIT 1",
+            $entity['forum_name']
+        )));
+
+        if (!$foro_id) {
+            $max_orden = (int) $wpdb->get_var("SELECT COALESCE(MAX(orden), 0) FROM {$tabla_foros}");
+            $inserted = $wpdb->insert(
+                $tabla_foros,
+                [
+                    'nombre' => $entity['forum_name'],
+                    'descripcion' => $entity['description'],
+                    'icono' => 'forum',
+                    'orden' => $max_orden + 1,
+                    'estado' => 'activo',
+                    'moderadores' => null,
+                    'created_at' => current_time('mysql'),
+                ],
+                ['%s', '%s', '%s', '%d', '%s', '%s', '%s']
+            );
+
+            if (!$inserted) {
+                return 0;
+            }
+
+            $foro_id = (int) $wpdb->insert_id;
+        }
+
+        if ($foro_id > 0) {
+            $this->save_integrated_forum_mapping($entidad_tipo, $entidad_id, $foro_id);
+        }
+
+        return $foro_id;
+    }
+
+    /**
+     * Resuelve la etiqueta de una entidad integrada para crear un foro contextual.
+     *
+     * @param string $entidad_tipo
+     * @param int    $entidad_id
+     * @return array{label:string,forum_name:string,description:string}
+     */
+    private function resolve_integrated_entity_context($entidad_tipo, $entidad_id) {
+        global $wpdb;
+
+        $label = '';
+        $description = '';
+
+        switch ($entidad_tipo) {
+            case 'comunidad':
+                $tabla = $wpdb->prefix . 'flavor_comunidades';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT nombre, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->nombre;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'evento':
+                $tabla = $wpdb->prefix . 'flavor_eventos';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'grupo_consumo':
+                $post = get_post($entidad_id);
+                if ($post && $post->post_type === 'gc_grupo') {
+                    $label = get_the_title($post);
+                    $description = wp_trim_words((string) $post->post_content, 30);
+                }
+                break;
+
+            default:
+                $post = get_post($entidad_id);
+                if ($post instanceof WP_Post) {
+                    $label = get_the_title($post);
+                    $description = wp_trim_words((string) $post->post_content, 30);
+                }
+                break;
+        }
+
+        if (!$label) {
+            return [
+                'label' => '',
+                'forum_name' => '',
+                'description' => '',
+            ];
+        }
+
+        return [
+            'label' => $label,
+            'forum_name' => sprintf(__('Foro: %s', 'flavor-chat-ia'), $label),
+            'description' => $description ?: sprintf(__('Espacio de debate para %s.', 'flavor-chat-ia'), $label),
+        ];
     }
 
     /**
@@ -2871,7 +3160,7 @@ KNOWLEDGE;
             $hilos_activos = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM {$tabla_hilos}
                  WHERE estado = 'abierto'
-                 AND fecha_creacion >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
+                 AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
             );
 
             if ($hilos_activos > 0) {

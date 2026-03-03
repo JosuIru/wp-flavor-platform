@@ -84,6 +84,12 @@ class Flavor_GC_Frontend_Controller {
     public function registrar_assets() {
         $plugin_url = plugins_url('/', dirname(__FILE__));
         $version = defined('FLAVOR_VERSION') ? FLAVOR_VERSION : '1.0.0';
+        $gc_frontend_version = file_exists(dirname(dirname(__FILE__)) . '/assets/gc-frontend.js')
+            ? (string) filemtime(dirname(dirname(__FILE__)) . '/assets/gc-frontend.js')
+            : $version;
+        $gc_catalogo_version = file_exists(dirname(dirname(__FILE__)) . '/assets/gc-catalogo.js')
+            ? (string) filemtime(dirname(dirname(__FILE__)) . '/assets/gc-catalogo.js')
+            : $version;
 
         // CSS base
         wp_register_style(
@@ -106,7 +112,7 @@ class Flavor_GC_Frontend_Controller {
             'gc-frontend',
             $plugin_url . 'assets/gc-frontend.js',
             ['jquery'],
-            $version,
+            $gc_frontend_version,
             true
         );
 
@@ -115,7 +121,7 @@ class Flavor_GC_Frontend_Controller {
             'gc-catalogo',
             $plugin_url . 'assets/gc-catalogo.js',
             ['jquery', 'gc-frontend'],
-            $version,
+            $gc_catalogo_version,
             true
         );
 
@@ -126,8 +132,8 @@ class Flavor_GC_Frontend_Controller {
             'nonce' => wp_create_nonce('gc_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
-            'loginUrl' => wp_login_url(get_permalink()),
-            'carritoUrl' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-cesta'),
+            'loginUrl' => wp_login_url(home_url('/mi-portal/grupos-consumo/productos/')),
+            'carritoUrl' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-pedido'),
             'i18n' => [
                 'agregado' => __('Producto agregado al pedido', 'flavor-chat-ia'),
                 'eliminado' => __('Producto eliminado del pedido', 'flavor-chat-ia'),
@@ -462,7 +468,7 @@ class Flavor_GC_Frontend_Controller {
                         <span class="gc-btn-texto"><?php echo $en_lista ? __('En lista', 'flavor-chat-ia') : __('Agregar', 'flavor-chat-ia'); ?></span>
                     </button>
                 <?php else: ?>
-                    <a href="<?php echo wp_login_url(get_permalink()); ?>" class="gc-btn-login">
+                    <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/productos/'))); ?>" class="gc-btn-login">
                         <?php _e('Iniciar sesión para agregar', 'flavor-chat-ia'); ?>
                     </a>
                 <?php endif; ?>
@@ -579,7 +585,7 @@ class Flavor_GC_Frontend_Controller {
             'ciclo' => $ciclo,
             'porcentaje_gestion' => $porcentaje_gestion,
             'notas_ciclo' => $ciclo ? $ciclo['notas'] : '',
-            'url_catalogo' => get_post_type_archive_link('gc_producto'),
+            'url_catalogo' => home_url('/mi-portal/grupos-consumo/productos/'),
         ];
     }
 
@@ -742,7 +748,7 @@ class Flavor_GC_Frontend_Controller {
                                     <?php echo esc_html(ucfirst($ciclo->estado ?: 'pendiente')); ?>
                                 </span>
                                 <?php if ($es_abierto): ?>
-                                    <a href="<?php echo get_permalink($ciclo->ID); ?>" class="gc-btn-ver-ciclo">
+                                    <a href="<?php echo esc_url(add_query_arg('ciclo', intval($ciclo->ID), home_url('/mi-portal/grupos-consumo/ciclo/'))); ?>" class="gc-btn-ver-ciclo">
                                         <?php _e('Ver productos', 'flavor-chat-ia'); ?>
                                     </a>
                                 <?php endif; ?>
@@ -893,11 +899,11 @@ class Flavor_GC_Frontend_Controller {
                         </div>
                         <div class="gc-cesta-acciones">
                             <?php if (is_user_logged_in()): ?>
-                                <button type="button" class="gc-btn-suscribirse" data-cesta="<?php echo $cesta->slug; ?>">
+                                <button type="button" class="gc-btn-suscribirse" data-cesta="<?php echo esc_attr($cesta->id); ?>">
                                     <?php _e('Suscribirse', 'flavor-chat-ia'); ?>
                                 </button>
                             <?php else: ?>
-                                <a href="<?php echo wp_login_url(get_permalink()); ?>" class="gc-btn-login">
+                                <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/suscripciones/'))); ?>" class="gc-btn-login">
                                     <?php _e('Inicia sesión', 'flavor-chat-ia'); ?>
                                 </a>
                             <?php endif; ?>
@@ -943,7 +949,7 @@ class Flavor_GC_Frontend_Controller {
         $suscripcion = $wpdb->get_row($wpdb->prepare(
             "SELECT s.*, c.nombre as cesta_nombre, c.descripcion as cesta_descripcion
              FROM {$wpdb->prefix}flavor_gc_suscripciones s
-             LEFT JOIN {$wpdb->prefix}flavor_gc_cestas_tipo c ON s.tipo_cesta = c.slug
+             LEFT JOIN {$wpdb->prefix}flavor_gc_cestas_tipo c ON s.tipo_cesta_id = c.id
              WHERE s.consumidor_id = %d AND s.estado IN ('activa', 'pausada')
              ORDER BY s.fecha_inicio DESC
              LIMIT 1",
@@ -953,7 +959,7 @@ class Flavor_GC_Frontend_Controller {
         if (!$suscripcion): ?>
             <div class="gc-sin-suscripcion">
                 <p><?php _e('No tienes una suscripción activa.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo home_url('/mi-portal/grupos-consumo/cestas/'); ?>" class="gc-btn-ver-cestas">
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/suscripciones/')); ?>" class="gc-btn-ver-cestas">
                     <?php _e('Ver cestas disponibles', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -1400,7 +1406,7 @@ class Flavor_GC_Frontend_Controller {
                 'total_items' => intval($total_items),
                 'ciclo_activo' => $ciclo_activo,
                 'porcentaje_gestion' => $porcentaje_gestion,
-                'url_carrito' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-cesta'),
+                'url_carrito' => Flavor_Chat_Helpers::get_action_url('grupos-consumo', 'mi-pedido'),
             ];
             include $ruta_template;
         }

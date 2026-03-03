@@ -57,7 +57,7 @@ class Flavor_Participacion_Frontend_Controller {
      * Registrar assets
      */
     public function registrar_assets() {
-        $base_url = plugins_url('assets/', dirname(__FILE__));
+        $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         wp_register_style(

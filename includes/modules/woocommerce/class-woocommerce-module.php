@@ -314,6 +314,24 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'buscar_productos',
+            'listado' => 'buscar_productos',
+            'explorar' => 'buscar_productos',
+            'buscar' => 'buscar_productos',
+            'detalle' => 'ver_producto',
+            'ver' => 'ver_producto',
+            'carrito' => 'ver_carrito',
+            'anadir' => 'anadir_al_carrito',
+            'agregar' => 'anadir_al_carrito',
+            'eliminar' => 'eliminar_del_carrito',
+            'actualizar' => 'actualizar_cantidad',
+            'cupon' => 'aplicar_cupon',
+            'pedido' => 'consultar_pedido',
+            'categorias' => 'ver_categorias',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $method = 'action_' . $action_name;
 
         if (method_exists($this, $method)) {
@@ -1418,12 +1436,23 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
      * @param string $titulo_pagina Título de la página
      */
     private function render_vista_placeholder($titulo_pagina) {
+        $estadisticas = $this->get_estadisticas_tienda();
         ?>
         <div class="wrap flavor-admin-page">
             <?php $this->render_page_header($titulo_pagina); ?>
-            <div class="notice notice-info">
-                <p><?php esc_html_e('Esta vista está en desarrollo.', 'flavor-chat-ia'); ?></p>
+            <div class="notice notice-warning">
+                <p><?php esc_html_e('La plantilla específica no está disponible en esta instalación. Se muestra un resumen operativo para mantener el módulo utilizable.', 'flavor-chat-ia'); ?></p>
             </div>
+            <div class="flavor-woo-fallback-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:20px 0;">
+                <div class="card"><h3><?php esc_html_e('Pedidos hoy', 'flavor-chat-ia'); ?></h3><p><?php echo esc_html($estadisticas['pedidos_hoy']); ?></p></div>
+                <div class="card"><h3><?php esc_html_e('Ventas hoy', 'flavor-chat-ia'); ?></h3><p><?php echo esc_html($estadisticas['ventas_hoy_formateado']); ?></p></div>
+                <div class="card"><h3><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></h3><p><?php echo esc_html($estadisticas['pendientes']); ?></p></div>
+            </div>
+            <p>
+                <a class="button button-primary" href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-dashboard')); ?>"><?php esc_html_e('Dashboard', 'flavor-chat-ia'); ?></a>
+                <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-pedidos')); ?>"><?php esc_html_e('Pedidos', 'flavor-chat-ia'); ?></a>
+                <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=flavor-woocommerce-productos')); ?>"><?php esc_html_e('Productos', 'flavor-chat-ia'); ?></a>
+            </p>
         </div>
         <?php
     }

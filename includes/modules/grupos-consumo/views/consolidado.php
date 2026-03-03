@@ -611,6 +611,30 @@ if ($ciclo_id && isset($_GET['marcar_visto']) && wp_verify_nonce($_GET['_wpnonce
 
 <script>
 jQuery(document).ready(function($) {
+    function gcConsolidadoAviso(mensaje, tipo) {
+        tipo = tipo || 'error';
+        $('.gc-inline-notice').remove();
+        $('<div class="gc-inline-notice gc-inline-notice-' + tipo + '"><p>' + mensaje + '</p></div>').insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
+    }
+
+    function gcConsolidadoConfirmar(mensaje, onConfirm) {
+        $('.gc-inline-confirm').remove();
+        var $confirm = $('<div class="gc-inline-confirm"><p></p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div></div>');
+        $confirm.find('p').text(mensaje);
+        $confirm.insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
+
+        $confirm.on('click', '.gc-inline-confirm-ok', function() {
+            $confirm.remove();
+            if (typeof onConfirm === 'function') {
+                onConfirm();
+            }
+        });
+
+        $confirm.on('click', '.gc-inline-confirm-cancel', function() {
+            $confirm.remove();
+        });
+    }
+
     // Toggle detalle productor
     $('.gc-toggle-detalle').on('click', function() {
         var $card = $(this).closest('.gc-productor-card');
@@ -630,19 +654,19 @@ jQuery(document).ready(function($) {
     // Enviar a productores
     $('.gc-btn-enviar-productores').on('click', function() {
         var cicloId = $(this).data('ciclo');
-        if (confirm('<?php _e('¿Enviar el consolidado a todos los productores?', 'flavor-chat-ia'); ?>')) {
+        gcConsolidadoConfirmar('<?php echo esc_js(__('¿Enviar el consolidado a todos los productores?', 'flavor-chat-ia')); ?>', function() {
             $.post(ajaxurl, {
                 action: 'gc_enviar_consolidado_productores',
                 ciclo_id: cicloId,
                 nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
             }, function(response) {
                 if (response.success) {
-                    alert('<?php _e('Consolidado enviado correctamente', 'flavor-chat-ia'); ?>');
+                    gcConsolidadoAviso('<?php echo esc_js(__('Consolidado enviado correctamente', 'flavor-chat-ia')); ?>', 'success');
                 } else {
-                    alert(response.data.message || '<?php _e('Error al enviar', 'flavor-chat-ia'); ?>');
+                    gcConsolidadoAviso(response.data.message || '<?php echo esc_js(__('Error al enviar', 'flavor-chat-ia')); ?>', 'error');
                 }
             });
-        }
+        });
     });
 
     // Gráfico de productores
@@ -684,3 +708,11 @@ jQuery(document).ready(function($) {
     <?php endif; ?>
 });
 </script>
+<style>
+.gc-inline-notice{margin:16px 0;padding:12px 14px;border-left:4px solid #d63638;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.gc-inline-notice-success{border-left-color:#00a32a}
+.gc-inline-notice-error{border-left-color:#d63638}
+.gc-inline-confirm{margin:16px 0;padding:12px 14px;border-left:4px solid #dba617;background:#fff8e1;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.gc-inline-confirm p{margin:0 0 10px}
+.gc-inline-confirm-actions{display:flex;gap:8px;flex-wrap:wrap}
+</style>

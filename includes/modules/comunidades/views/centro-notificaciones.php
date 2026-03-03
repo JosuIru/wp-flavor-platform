@@ -66,6 +66,7 @@ $tipos_notificacion = [
 ?>
 
 <div class="flavor-centro-notificaciones" data-nonce="<?php echo esc_attr(wp_create_nonce('flavor_comunidades_nonce')); ?>">
+    <div class="flavor-notif-notice" id="centro-notificaciones-notice" style="display:none;"></div>
 
     <!-- Cabecera -->
     <header class="flavor-notif-header">
@@ -355,6 +356,23 @@ $tipos_notificacion = [
     color: var(--gc-gray-300, #d1d5db);
 }
 
+.flavor-notif-notice {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.95em;
+}
+
+.flavor-notif-notice.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.flavor-notif-notice.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
 /* Modal */
 .flavor-modal {
     position: fixed;
@@ -550,6 +568,7 @@ $tipos_notificacion = [
         var contadorBadge = document.getElementById('contador-no-leidas');
         var modalPreferencias = document.getElementById('modal-preferencias');
         var formPreferencias = document.getElementById('form-preferencias');
+        var notice = document.getElementById('centro-notificaciones-notice');
 
         // Cargar notificaciones al inicio
         cargarNotificaciones();
@@ -576,6 +595,13 @@ $tipos_notificacion = [
             modalPreferencias.style.display = 'none';
         }
 
+        function mostrarAviso(mensaje, tipo) {
+            if (!notice) return;
+            notice.className = 'flavor-notif-notice ' + (tipo || 'error');
+            notice.textContent = mensaje;
+            notice.style.display = 'block';
+        }
+
         function cargarNotificaciones() {
             var formData = new FormData();
             formData.append('action', 'comunidades_obtener_notificaciones');
@@ -600,6 +626,7 @@ $tipos_notificacion = [
             })
             .catch(function(err) {
                 console.error('Error:', err);
+                mostrarAviso('<?php echo esc_js(__('Error al cargar notificaciones', 'flavor-chat-ia')); ?>', 'error');
             });
         }
 
@@ -693,9 +720,13 @@ $tipos_notificacion = [
             .then(function(data) {
                 if (data.success) {
                     cerrarModal();
-                    // Mostrar feedback
-                    alert('<?php echo esc_js(__('Preferencias guardadas', 'flavor-chat-ia')); ?>');
+                    mostrarAviso('<?php echo esc_js(__('Preferencias guardadas', 'flavor-chat-ia')); ?>', 'success');
+                } else {
+                    mostrarAviso(data.data?.message || '<?php echo esc_js(__('No se pudieron guardar las preferencias', 'flavor-chat-ia')); ?>', 'error');
                 }
+            })
+            .catch(function() {
+                mostrarAviso('<?php echo esc_js(__('Error de conexión al guardar preferencias', 'flavor-chat-ia')); ?>', 'error');
             });
         }
 

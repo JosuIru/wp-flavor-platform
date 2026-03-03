@@ -120,7 +120,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     private function fetch_widget_data(int $user_id): array {
         global $wpdb;
 
-        $tabla_temas = $this->prefix_tabla . 'temas';
+        $tabla_hilos = $this->prefix_tabla . 'hilos';
         $tabla_respuestas = $this->prefix_tabla . 'respuestas';
         $tabla_suscripciones = $this->prefix_tabla . 'suscripciones';
 
@@ -128,18 +128,18 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
         // Total temas activos
         $total_temas = 0;
-        if ($this->table_exists($tabla_temas)) {
+        if ($this->table_exists($tabla_hilos)) {
             $total_temas = (int) $wpdb->get_var(
-                "SELECT COUNT(*) FROM {$tabla_temas}
+                "SELECT COUNT(*) FROM {$tabla_hilos}
                  WHERE estado = 'abierto'"
             );
         }
 
         // Mis temas
         $mis_temas = 0;
-        if ($user_id && $this->table_exists($tabla_temas)) {
+        if ($user_id && $this->table_exists($tabla_hilos)) {
             $mis_temas = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$tabla_temas}
+                "SELECT COUNT(*) FROM {$tabla_hilos}
                  WHERE autor_id = %d",
                 $user_id
             ));
@@ -160,9 +160,9 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         if ($user_id && $this->table_exists($tabla_suscripciones) && $this->table_exists($tabla_respuestas)) {
             $respuestas_nuevas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_respuestas} r
-                 INNER JOIN {$tabla_suscripciones} s ON r.tema_id = s.tema_id
+                 INNER JOIN {$tabla_suscripciones} s ON r.hilo_id = s.hilo_id
                  WHERE s.usuario_id = %d
-                 AND r.fecha_creacion > s.ultima_lectura
+                 AND r.created_at > s.ultima_lectura
                  AND r.autor_id != %d",
                 $user_id,
                 $user_id
@@ -241,22 +241,22 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
     private function get_temas_recientes(int $limite = 5): array {
         global $wpdb;
 
-        $tabla_temas = $this->prefix_tabla . 'temas';
+        $tabla_hilos = $this->prefix_tabla . 'hilos';
         $tabla_respuestas = $this->prefix_tabla . 'respuestas';
 
-        if (!$this->table_exists($tabla_temas)) {
+        if (!$this->table_exists($tabla_hilos)) {
             return [];
         }
 
         // Obtener temas con actividad reciente
         $temas = $wpdb->get_results($wpdb->prepare(
-            "SELECT t.id, t.titulo, t.autor_id, t.fecha_creacion, t.total_respuestas,
+            "SELECT t.id, t.titulo, t.autor_id, t.created_at, t.respuestas_count,
                     u.display_name as nombre_autor,
-                    (SELECT MAX(fecha_creacion) FROM {$tabla_respuestas} WHERE tema_id = t.id) as ultima_actividad
-             FROM {$tabla_temas} t
+                    (SELECT MAX(created_at) FROM {$tabla_respuestas} WHERE hilo_id = t.id AND estado != 'eliminado') as ultima_actividad
+             FROM {$tabla_hilos} t
              LEFT JOIN {$wpdb->users} u ON t.autor_id = u.ID
              WHERE t.estado = 'abierto'
-             ORDER BY COALESCE(ultima_actividad, t.fecha_creacion) DESC
+             ORDER BY COALESCE(ultima_actividad, t.ultima_actividad, t.created_at) DESC
              LIMIT %d",
             $limite
         ));
@@ -265,14 +265,14 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $items = [];
 
         foreach ($temas as $tema) {
-            $respuestas_texto = sprintf(_n('%d respuesta', '%d respuestas', $tema->total_respuestas ?? 0, 'flavor-chat-ia'), $tema->total_respuestas ?? 0);
+            $total_respuestas = (int) ($tema->respuestas_count ?? 0);
 
             $items[] = [
                 'icon' => 'dashicons-format-chat',
                 'title' => wp_trim_words($tema->titulo, 6, '...'),
                 'meta' => $tema->nombre_autor ?: __('Anónimo', 'flavor-chat-ia'),
                 'url' => $es_admin ? admin_url('admin.php?page=foros&tema=' . $tema->id) : home_url('/mi-portal/foros/tema/' . $tema->id . '/'),
-                'badge' => $tema->total_respuestas > 0 ? $tema->total_respuestas : null,
+                'badge' => $total_respuestas > 0 ? $total_respuestas : null,
             ];
         }
 

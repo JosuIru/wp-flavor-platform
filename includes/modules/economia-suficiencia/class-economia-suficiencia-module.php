@@ -743,10 +743,68 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
 
         // Notificar al propietario
         $propietario_id = $recurso->post_author;
-        // TODO: Enviar notificación
+        $this->notificar_prestamo_recurso($propietario_id, $user_id, $recurso, $dias, $mensaje);
 
         wp_send_json_success([
             'message' => __('Préstamo solicitado. El propietario ha sido notificado.', 'flavor-chat-ia'),
+        ]);
+    }
+
+    /**
+     * Notifica al propietario cuando un recurso ha sido prestado.
+     *
+     * @param int     $propietario_id
+     * @param int     $solicitante_id
+     * @param WP_Post $recurso
+     * @param int     $dias
+     * @param string  $mensaje
+     * @return void
+     */
+    private function notificar_prestamo_recurso($propietario_id, $solicitante_id, $recurso, $dias, $mensaje = ''): void {
+        $propietario_id = absint($propietario_id);
+        $solicitante_id = absint($solicitante_id);
+
+        if (!$propietario_id || !$solicitante_id || $propietario_id === $solicitante_id) {
+            return;
+        }
+
+        $propietario = get_userdata($propietario_id);
+        $solicitante = get_userdata($solicitante_id);
+
+        if (!$propietario || empty($propietario->user_email) || !$solicitante) {
+            return;
+        }
+
+        $subject = sprintf(
+            __('Nuevo préstamo solicitado para "%s"', 'flavor-chat-ia'),
+            $recurso->post_title
+        );
+
+        $body_lines = [
+            sprintf(__('Hola %s,', 'flavor-chat-ia'), $propietario->display_name ?: __('propietario', 'flavor-chat-ia')),
+            '',
+            sprintf(
+                __('%s ha solicitado el recurso "%s" durante %d días.', 'flavor-chat-ia'),
+                $solicitante->display_name ?: __('Un usuario', 'flavor-chat-ia'),
+                $recurso->post_title,
+                max(1, $dias)
+            ),
+        ];
+
+        if ($mensaje !== '') {
+            $body_lines[] = '';
+            $body_lines[] = __('Mensaje del solicitante:', 'flavor-chat-ia');
+            $body_lines[] = $mensaje;
+        }
+
+        $body_lines[] = '';
+        $body_lines[] = __('Puedes revisar el recurso desde tu panel de economía de suficiencia.', 'flavor-chat-ia');
+
+        wp_mail($propietario->user_email, $subject, implode("\n", $body_lines));
+
+        do_action('flavor_es_recurso_prestado_notificado', $propietario_id, $solicitante_id, $recurso->ID, [
+            'dias' => max(1, $dias),
+            'mensaje' => $mensaje,
         ]);
     }
 
@@ -1033,7 +1091,58 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
-        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+        $aliases = [
+            'listar' => 'mis_compromisos',
+            'listado' => 'mis_compromisos',
+            'mis_items' => 'mis_compromisos',
+            'mis-compromisos' => 'mis_compromisos',
+            'crear' => 'registrar_practica',
+            'nuevo' => 'registrar_practica',
+            'nivel' => 'ver_nivel',
+            'mi_camino' => 'ver_nivel',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $method = 'action_' . $action_name;
+
+        if (method_exists($this, $method)) {
+            return $this->$method($params);
+        }
+
+        return [
+            'success' => false,
+            'error' => __('Acción no implementada', 'flavor-chat-ia'),
+        ];
+    }
+
+    /**
+     * Acción: ver compromisos.
+     */
+    private function action_mis_compromisos($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[flavor_suficiencia_compromisos]'),
+        ];
+    }
+
+    /**
+     * Acción: registrar práctica o mostrar evaluación.
+     */
+    private function action_registrar_practica($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[flavor_suficiencia_evaluacion]'),
+        ];
+    }
+
+    /**
+     * Acción: ver nivel/camino.
+     */
+    private function action_ver_nivel($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[flavor_suficiencia_mi_camino]'),
+        ];
     }
 
     /**

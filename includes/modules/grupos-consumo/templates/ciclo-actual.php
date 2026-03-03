@@ -230,14 +230,14 @@ if ($ciclo_activo) {
             </div>
 
             <div class="gc-ciclo-footer">
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/catalogo/')); ?>" class="gc-btn gc-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
                     <span class="dashicons dashicons-products"></span>
                     <?php esc_html_e('Ver catalogo', 'flavor-chat-ia'); ?>
                 </a>
                 <?php if (is_user_logged_in()) : ?>
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-cesta/')); ?>" class="gc-btn gc-btn-secondary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')); ?>" class="gc-btn gc-btn-secondary">
                     <span class="dashicons dashicons-cart"></span>
-                    <?php esc_html_e('Mi cesta', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Pedido actual', 'flavor-chat-ia'); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -295,7 +295,7 @@ if ($ciclo_activo) {
             </div>
 
             <div class="gc-ciclo-footer">
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/catalogo/')); ?>" class="gc-btn gc-btn-secondary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-secondary">
                     <span class="dashicons dashicons-visibility"></span>
                     <?php esc_html_e('Ver productos disponibles', 'flavor-chat-ia'); ?>
                 </a>

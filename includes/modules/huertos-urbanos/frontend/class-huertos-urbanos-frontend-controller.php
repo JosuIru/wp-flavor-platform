@@ -57,19 +57,19 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
      * Registrar assets
      */
     public function registrar_assets() {
-        $base_url = plugins_url('assets/', dirname(__FILE__));
+        $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         wp_register_style(
             'flavor-huertos-urbanos',
-            $base_url . 'css/huertos-urbanos.css',
+            $base_url . 'css/huertos.css',
             [],
             $version
         );
 
         wp_register_script(
             'flavor-huertos-urbanos',
-            $base_url . 'js/huertos-urbanos.js',
+            $base_url . 'js/huertos.js',
             ['jquery'],
             $version,
             true

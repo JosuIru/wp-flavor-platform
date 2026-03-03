@@ -504,6 +504,25 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
             KEY idx_tipo (tipo_logro)
         ) $charset_collate;";
 
+        // Tabla de solicitudes de compost maduro
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_solicitudes_compost';
+        $sql_solicitudes = "CREATE TABLE IF NOT EXISTS $tabla_solicitudes (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            punto_id bigint(20) unsigned NOT NULL,
+            usuario_id bigint(20) unsigned NOT NULL,
+            cantidad_kg decimal(10,3) NOT NULL,
+            estado enum('pendiente','aprobada','entregada','rechazada','cancelada') DEFAULT 'pendiente',
+            notas_usuario text DEFAULT NULL,
+            notas_admin text DEFAULT NULL,
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_resolucion datetime DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY idx_punto (punto_id),
+            KEY idx_usuario (usuario_id),
+            KEY idx_estado (estado),
+            KEY idx_fecha (fecha_solicitud)
+        ) $charset_collate;";
+
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta($sql_puntos);
         dbDelta($sql_aportaciones);
@@ -512,6 +531,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         dbDelta($sql_materiales);
         dbDelta($sql_estadisticas);
         dbDelta($sql_logros);
+        dbDelta($sql_solicitudes);
 
         $this->insertar_materiales_iniciales();
     }
@@ -2108,6 +2128,31 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $action_map = [
+            'listar' => 'puntos',
+            'listado' => 'puntos',
+            'explorar' => 'puntos',
+            'buscar' => 'puntos',
+            'mapa' => 'puntos',
+            'puntos' => 'puntos',
+            'registrar' => 'registrar',
+            'crear' => 'registrar',
+            'nuevo' => 'registrar',
+            'mis_items' => 'mis_aportes',
+            'mis-aportes' => 'mis_aportes',
+            'mis_aportes' => 'mis_aportes',
+            'turnos' => 'turnos',
+            'guia' => 'guia',
+            'ranking' => 'ranking',
+            'balance' => 'mi_balance',
+            'mi_balance' => 'mi_balance',
+            'dashboard' => 'dashboard',
+            'impacto' => 'impacto_ambiental',
+            'estadisticas' => 'mis_estadisticas_compostaje',
+            'stats' => 'mis_estadisticas_compostaje',
+        ];
+
+        $action_name = $action_map[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -2116,8 +2161,64 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => "Accion no implementada: {$action_name}",
+            'error' => __('La vista solicitada no esta disponible en Compostaje.', 'flavor-chat-ia'),
         ];
+    }
+
+    /**
+     * Accion: Render del mapa/listado principal
+     */
+    private function action_puntos($params) {
+        return do_shortcode('[flavor_compostaje_puntos]');
+    }
+
+    /**
+     * Accion: Registro de aportaciones
+     */
+    private function action_registrar($params) {
+        return do_shortcode('[flavor_compostaje_registrar]');
+    }
+
+    /**
+     * Accion: Mis aportes
+     */
+    private function action_mis_aportes($params) {
+        return do_shortcode('[flavor_compostaje_mis_aportaciones]');
+    }
+
+    /**
+     * Accion: Turnos
+     */
+    private function action_turnos($params) {
+        return do_shortcode('[flavor_compostaje_turnos]');
+    }
+
+    /**
+     * Accion: Guia
+     */
+    private function action_guia($params) {
+        return do_shortcode('[flavor_compostaje_guia]');
+    }
+
+    /**
+     * Accion: Ranking
+     */
+    private function action_ranking($params) {
+        return do_shortcode('[flavor_compostaje_ranking]');
+    }
+
+    /**
+     * Accion: Mi balance
+     */
+    private function action_mi_balance($params) {
+        return do_shortcode('[flavor_compostaje_mi_balance]');
+    }
+
+    /**
+     * Accion: Dashboard
+     */
+    private function action_dashboard($params) {
+        return do_shortcode('[flavor_compostaje_dashboard]');
     }
 
     /**
@@ -2732,27 +2833,27 @@ KNOWLEDGE;
                 'puntos' => [
                     'label'   => __('Composteras', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-carrot',
-                    'content' => 'template:_archive.php',
+                    'content' => '[flavor_compostaje_puntos]',
                 ],
                 'registrar' => [
                     'label'   => __('Registrar aporte', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-plus-alt',
-                    'content' => 'template:registrar.php',
+                    'content' => '[flavor_compostaje_registrar]',
                 ],
                 'mis-aportes' => [
                     'label'   => __('Mis aportes', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-chart-bar',
-                    'content' => 'template:mis-aportes.php',
+                    'content' => '[flavor_compostaje_mis_aportaciones]',
                 ],
                 'turnos' => [
                     'label'   => __('Turnos', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-calendar-alt',
-                    'content' => 'template:turnos.php',
+                    'content' => '[flavor_compostaje_turnos]',
                 ],
                 'ranking' => [
                     'label'   => __('Ranking', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-awards',
-                    'content' => 'template:ranking.php',
+                    'content' => '[flavor_compostaje_ranking]',
                 ],
             ],
 

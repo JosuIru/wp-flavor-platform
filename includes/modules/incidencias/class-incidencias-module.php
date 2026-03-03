@@ -2785,6 +2785,19 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = [
+            'listar' => 'listar_incidencias',
+            'listado' => 'listar_incidencias',
+            'buscar' => 'listar_incidencias',
+            'crear' => 'reportar_incidencia',
+            'nuevo' => 'reportar_incidencia',
+            'detalle' => 'ver_incidencia',
+            'ver' => 'ver_incidencia',
+            'mis_items' => 'listar_incidencias',
+            'stats' => 'estadisticas_incidencias',
+        ];
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         $metodo = 'action_' . $nombre_accion;
 
         if (method_exists($this, $metodo)) {

@@ -2209,7 +2209,15 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         $entidad_id = absint($atts['entidad_id']);
 
         if (!$entidad_tipo || !$entidad_id) {
-            return '<p class="mm-aviso">' . __('Configuración de galería incompleta.', 'flavor-chat-ia') . '</p>';
+            return $this->shortcode_galeria([
+                'tipo' => '',
+                'album_id' => 0,
+                'limite' => $atts['limite'],
+                'columnas' => $atts['columnas'],
+                'orden' => 'recientes',
+                'mostrar_filtros' => $atts['mostrar_filtros'],
+                'lightbox' => 'true',
+            ]);
         }
 
         // Verificar si el usuario puede subir
@@ -2339,11 +2347,32 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'galeria',
+            'listado' => 'galeria',
+            'explorar' => 'galeria',
+            'buscar' => 'buscar',
+            'crear' => 'subir',
+            'nuevo' => 'subir',
+            'albumes' => 'albumes',
+            'galeria' => 'galeria',
+            'crear_album' => 'crear_album',
+            'detalle' => 'detalle',
+            'ver' => 'detalle',
+            'mis_items' => 'mis_archivos',
+            'mis-archivos' => 'mis_archivos',
+            'mi-galeria' => 'mis_archivos',
+            'favoritos' => 'me_gusta',
+            'me-gusta' => 'me_gusta',
+            'tags' => 'tags_populares',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
         if (method_exists($this, $metodo_accion)) {
             return $this->$metodo_accion($params);
         }
-        return ['success' => false, 'error' => "Acción no implementada: {$action_name}"];
+        return ['success' => false, 'error' => __('La vista solicitada no está disponible en Multimedia.', 'flavor-chat-ia')];
     }
 
     private function action_galeria($params) {
@@ -2359,11 +2388,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
     }
 
     private function action_subir($params) {
-        // Esta acción requiere archivo real, se usa vía AJAX/REST
-        return [
-            'success' => false,
-            'error' => __('Usa el formulario de subida o la API REST para subir archivos', 'flavor-chat-ia'),
-        ];
+        return do_shortcode('[flavor_subir_multimedia]');
     }
 
     private function action_albumes($params) {
@@ -2402,17 +2427,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
     }
 
     private function action_mis_archivos($params) {
-        if (!is_user_logged_in()) {
-            return ['success' => false, 'error' => __('Debes iniciar sesión', 'flavor-chat-ia')];
-        }
-
-        $request = new WP_REST_Request('GET');
-        $request->set_param('tipo', $params['tipo'] ?? '');
-        $request->set_param('album_id', $params['album_id'] ?? 0);
-        $request->set_param('limite', $params['limite'] ?? 20);
-
-        $response = $this->rest_mis_archivos($request);
-        return $response->get_data();
+        return do_shortcode('[flavor_mi_galeria]');
     }
 
     private function action_me_gusta($params) {

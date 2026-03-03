@@ -1257,7 +1257,50 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
-        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+        $aliases = [
+            'listar' => 'catalogo_saberes',
+            'listado' => 'catalogo_saberes',
+            'catalogo' => 'catalogo_saberes',
+            'talleres' => 'talleres_transmision',
+            'guardianes' => 'guardianes_saber',
+            'portadores' => 'guardianes_saber',
+            'crear' => 'compartir_saber',
+            'documentar' => 'compartir_saber',
+            'mis_items' => 'mis_aprendizajes',
+            'aprender' => 'mis_aprendizajes',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $method = 'action_' . $action_name;
+
+        if (method_exists($this, $method)) {
+            return $this->$method($params);
+        }
+
+        return [
+            'success' => false,
+            'error' => __('Acción no implementada', 'flavor-chat-ia'),
+        ];
+    }
+
+    private function action_catalogo_saberes($params) {
+        return ['success' => true, 'html' => do_shortcode('[saberes_catalogo]')];
+    }
+
+    private function action_talleres_transmision($params) {
+        return ['success' => true, 'html' => do_shortcode('[saberes_talleres]')];
+    }
+
+    private function action_guardianes_saber($params) {
+        return ['success' => true, 'html' => do_shortcode('[saberes_portadores]')];
+    }
+
+    private function action_compartir_saber($params) {
+        return ['success' => true, 'html' => do_shortcode('[saberes_compartir]')];
+    }
+
+    private function action_mis_aprendizajes($params) {
+        return ['success' => true, 'html' => do_shortcode('[saberes_mis_aprendizajes]')];
     }
 
     /**
@@ -1334,7 +1377,7 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
                 'guardianes' => [
                     'label'   => __('Guardianes', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-admin-users',
-                    'content' => 'shortcode:saberes_guardianes',
+                    'content' => 'shortcode:saberes_portadores',
                     'public'  => true,
                 ],
                 'talleres' => [
@@ -1346,13 +1389,13 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
                 'documentar' => [
                     'label'      => __('Documentar', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-plus-alt',
-                    'content'    => 'shortcode:saberes_documentar',
+                    'content'    => 'shortcode:saberes_compartir',
                     'requires_login' => true,
                 ],
                 'aprender' => [
                     'label'      => __('Aprender', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-book',
-                    'content'    => 'shortcode:saberes_aprender',
+                    'content'    => 'shortcode:saberes_mis_aprendizajes',
                     'requires_login' => true,
                 ],
             ],

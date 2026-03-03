@@ -62,6 +62,17 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Red de seguridad para el registro en panel unificado.
+     *
+     * El trait ya aporta este método, pero se deja una implementación
+     * explícita aquí para evitar fatales si en runtime existe alguna
+     * desalineación de carga de traits o clases cacheadas.
+     */
+    protected function registrar_en_panel_unificado() {
+        add_filter('flavor_admin_panel_modules', [$this, 'registrar_modulo_admin']);
+    }
+
+    /**
      * Notificación: Reserva creada
      */
     public function notify_reservation_created($reservation_id, $user_id) {
@@ -568,6 +579,26 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'listar_espacios',
+            'listado' => 'listar_espacios',
+            'buscar' => 'listar_espacios',
+            'detalle' => 'detalle_espacio',
+            'ver' => 'detalle_espacio',
+            'calendario' => 'disponibilidad',
+            'disponibilidad' => 'disponibilidad',
+            'crear' => 'crear_reserva',
+            'reservar' => 'crear_reserva',
+            'mis_items' => 'mis_reservas',
+            'mis-reservas' => 'mis_reservas',
+            'cancelar' => 'cancelar_reserva',
+            'valorar' => 'valorar_espacio',
+            'equipamiento' => 'equipamiento_disponible',
+            'reportar' => 'reportar_incidencia',
+            'stats' => 'estadisticas_espacios',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {

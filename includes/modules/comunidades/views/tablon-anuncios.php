@@ -29,6 +29,7 @@ $categorias = [
 ?>
 
 <div class="flavor-tablon-anuncios" data-nonce="<?php echo esc_attr(wp_create_nonce('flavor_comunidades_nonce')); ?>">
+    <div class="flavor-inline-notice" id="tablon-anuncios-notice" style="display:none;"></div>
 
     <!-- Cabecera -->
     <header class="flavor-tablon-header">
@@ -453,6 +454,23 @@ $categorias = [
     margin-bottom: 16px;
 }
 
+.flavor-inline-notice {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.95em;
+}
+
+.flavor-inline-notice.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.flavor-inline-notice.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
 /* Modal */
 .flavor-modal {
     position: fixed;
@@ -743,6 +761,7 @@ $categorias = [
         var listaAnuncios = document.getElementById('lista-anuncios');
         var modalNuevoAnuncio = document.getElementById('modal-nuevo-anuncio');
         var formNuevoAnuncio = document.getElementById('form-nuevo-anuncio');
+        var notice = document.getElementById('tablon-anuncios-notice');
         var categoriaActual = 'todos';
 
         // Categorías con colores
@@ -783,6 +802,13 @@ $categorias = [
         function cerrarModal() {
             modalNuevoAnuncio.style.display = 'none';
             formNuevoAnuncio.reset();
+        }
+
+        function mostrarAviso(mensaje, tipo) {
+            if (!notice) return;
+            notice.className = 'flavor-inline-notice ' + (tipo || 'error');
+            notice.textContent = mensaje;
+            notice.style.display = 'block';
         }
 
         function cargarAnuncios() {
@@ -903,7 +929,7 @@ $categorias = [
 
             // Validación básica
             if (!formData.get('comunidad_id') || !formData.get('titulo') || !formData.get('contenido')) {
-                alert('<?php echo esc_js(__('Por favor completa todos los campos obligatorios', 'flavor-chat-ia')); ?>');
+                mostrarAviso('<?php echo esc_js(__('Por favor completa todos los campos obligatorios', 'flavor-chat-ia')); ?>', 'error');
                 return;
             }
 
@@ -922,10 +948,14 @@ $categorias = [
 
                 if (data.success) {
                     cerrarModal();
+                    mostrarAviso('<?php echo esc_js(__('Anuncio publicado correctamente', 'flavor-chat-ia')); ?>', 'success');
                     cargarAnuncios();
                 } else {
-                    alert(data.data?.message || '<?php echo esc_js(__('Error al publicar', 'flavor-chat-ia')); ?>');
+                    mostrarAviso(data.data?.message || '<?php echo esc_js(__('Error al publicar', 'flavor-chat-ia')); ?>', 'error');
                 }
+            })
+            .catch(function() {
+                mostrarAviso('<?php echo esc_js(__('Error de conexión al publicar', 'flavor-chat-ia')); ?>', 'error');
             });
         }
 

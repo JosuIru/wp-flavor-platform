@@ -58,19 +58,19 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
 
     public function enqueue_assets() {
         if ($this->is_saberes_page()) {
-            $base_url = plugins_url('', dirname(__FILE__));
+            $base_url = plugins_url('', dirname(dirname(__FILE__)));
             $version = defined('FLAVOR_VERSION') ? FLAVOR_VERSION : '1.0.0';
 
             wp_enqueue_style(
                 'flavor-saberes-frontend',
-                $base_url . '/assets/css/saberes-frontend.css',
+                $base_url . '/assets/css/saberes-ancestrales.css',
                 [],
                 $version
             );
 
             wp_enqueue_script(
                 'flavor-saberes-frontend',
-                $base_url . '/assets/js/saberes-frontend.js',
+                $base_url . '/assets/js/saberes-ancestrales.js',
                 ['jquery'],
                 $version,
                 true

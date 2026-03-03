@@ -39,6 +39,12 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         $this->name = 'Comunidades'; // Translation loaded on init
         $this->description = 'Crea y gestiona comunidades tematicas con miembros, actividades y contenido compartido'; // Translation loaded on init
 
+        if (did_action('init')) {
+            $this->register_shortcodes();
+        } else {
+            add_action('init', [$this, 'register_shortcodes']);
+        }
+
         parent::__construct();
     }
 
@@ -98,7 +104,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
      * @return array IDs de providers aceptados
      */
     protected function get_accepted_integrations() {
-        return ['multimedia', 'podcast', 'publicaciones', 'biblioteca', 'recetas'];
+        return ['multimedia', 'podcast', 'articulos_social', 'biblioteca', 'recetas'];
     }
 
     /**
@@ -145,7 +151,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 'titulo'      => 'nombre',
                 'descripcion' => 'descripcion',
                 'estado'      => 'estado',
-                'imagen'      => 'imagen_portada',
+                'imagen'      => 'imagen',
                 'categoria'   => 'categoria',
             ],
 
@@ -178,20 +184,27 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'comunidades' => [
-                    'label'   => __('Comunidades', 'flavor-chat-ia'),
-                    'icon'    => 'dashicons-networking',
-                    'content' => '[comunidades_listar]',
+                    'label'   => __('Ver todas', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-list-view',
+                    'content' => 'callback:render_tab_comunidades',
                 ],
-                'mi-comunidad' => [
+                'crear' => [
+                    'label'   => __('Crear', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-plus-alt',
+                    'content' => '[comunidades_crear]',
+                    'requires_login' => true,
+                ],
+                'mis-comunidades' => [
                     'label'   => __('Mis Comunidades', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-admin-multisite',
-                    'content' => '[comunidades_mis_comunidades]',
+                    'content' => 'callback:render_tab_mis_comunidades',
                     'requires_login' => true,
                 ],
                 'miembros' => [
                     'label'   => __('Miembros', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-groups',
                     'content' => 'callback:render_tab_miembros',
+                    'hidden_nav' => true,
                 ],
                 'actividad' => [
                     'label'   => __('Actividad', 'flavor-chat-ia'),
@@ -203,14 +216,45 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 'foros' => [
                     'label'         => __('Foros', 'flavor-chat-ia'),
                     'icon'          => 'dashicons-admin-comments',
-                    'is_integration'=> true,
-                    'source_module' => 'foros',
+                    'content'       => 'callback:render_tab_foros',
+                ],
+                'chat' => [
+                    'label'         => __('Chat', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-format-chat',
+                    'content'       => 'callback:render_tab_chat',
+                    'requires_login' => true,
+                ],
+                'multimedia' => [
+                    'label'         => __('Multimedia', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-format-gallery',
+                    'content'       => 'callback:render_tab_multimedia',
+                ],
+                'red-social' => [
+                    'label'         => __('Red social', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-share',
+                    'content'       => 'callback:render_tab_red_social',
+                    'requires_login' => true,
                 ],
                 'eventos' => [
-                    'label'         => __('Eventos', 'flavor-chat-ia'),
-                    'icon'          => 'dashicons-calendar-alt',
-                    'is_integration'=> true,
-                    'source_module' => 'eventos',
+                    'label'   => __('Eventos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-calendar-alt',
+                    'content' => 'callback:render_tab_eventos',
+                ],
+                'grupos-consumo' => [
+                    'label'   => __('Consumo', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-carrot',
+                    'content' => 'callback:render_tab_grupos_consumo',
+                    'requires_login' => true,
+                ],
+                'anuncios' => [
+                    'label'   => __('Anuncios', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-megaphone',
+                    'content' => '[comunidades_tablon limite="20" incluir_red="true"]',
+                ],
+                'recursos' => [
+                    'label'   => __('Recursos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-media-document',
+                    'content' => '[comunidades_recursos_compartidos]',
                 ],
             ],
 
@@ -224,7 +268,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                     'id'       => 'id',
                     'title'    => 'nombre',
                     'subtitle' => 'descripcion',
-                    'image'    => 'imagen_portada',
+                    'image'    => 'imagen',
                 ],
 
                 'badge' => [
@@ -401,7 +445,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 <div class="flavor-login-required bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
                     <span class="text-4xl mb-3 block">🔒</span>
                     <p class="text-amber-800 mb-4"><?php esc_html_e('Inicia sesion para ver los miembros de tus comunidades.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
+                    <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/comunidades/'))); ?>" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
                         <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -457,11 +501,17 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
     public function get_dashboard_tabs() {
         return [
             'comunidades' => [
-                'label'   => __('Comunidades', 'flavor-chat-ia'),
-                'icon'    => 'dashicons-networking',
+                'label'   => __('Ver todas', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-list-view',
                 'content' => 'callback:render_tab_comunidades',
             ],
-            'mi-comunidad' => [
+            'crear' => [
+                'label'   => __('Crear', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-plus-alt',
+                'content' => '[comunidades_crear]',
+                'requires_login' => true,
+            ],
+            'mis-comunidades' => [
                 'label'   => __('Mis Comunidades', 'flavor-chat-ia'),
                 'icon'    => 'dashicons-admin-multisite',
                 'content' => 'callback:render_tab_mis_comunidades',
@@ -483,14 +533,45 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             'foros' => [
                 'label'         => __('Foros', 'flavor-chat-ia'),
                 'icon'          => 'dashicons-admin-comments',
-                'is_integration'=> true,
-                'source_module' => 'foros',
+                'content'       => 'callback:render_tab_foros',
+            ],
+            'chat' => [
+                'label'         => __('Chat', 'flavor-chat-ia'),
+                'icon'          => 'dashicons-format-chat',
+                'content'       => 'callback:render_tab_chat',
+                'requires_login' => true,
+            ],
+            'multimedia' => [
+                'label'         => __('Multimedia', 'flavor-chat-ia'),
+                'icon'          => 'dashicons-format-gallery',
+                'content'       => 'callback:render_tab_multimedia',
+            ],
+            'red-social' => [
+                'label'         => __('Red social', 'flavor-chat-ia'),
+                'icon'          => 'dashicons-share',
+                'content'       => 'callback:render_tab_red_social',
+                'requires_login' => true,
             ],
             'eventos' => [
-                'label'         => __('Eventos', 'flavor-chat-ia'),
-                'icon'          => 'dashicons-calendar-alt',
-                'is_integration'=> true,
-                'source_module' => 'eventos',
+                'label'   => __('Eventos', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-calendar-alt',
+                'content' => 'callback:render_tab_eventos',
+            ],
+            'grupos-consumo' => [
+                'label'   => __('Consumo', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-carrot',
+                'content' => 'callback:render_tab_grupos_consumo',
+                'requires_login' => true,
+            ],
+            'anuncios' => [
+                'label'   => __('Anuncios', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-megaphone',
+                'content' => '[comunidades_tablon limite="20" incluir_red="true"]',
+            ],
+            'recursos' => [
+                'label'   => __('Recursos', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-media-document',
+                'content' => '[comunidades_recursos_compartidos]',
             ],
         ];
     }
@@ -613,7 +694,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             return '<div class="flavor-login-required bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
                 <span class="text-4xl mb-3 block">🔒</span>
                 <p class="text-amber-800 mb-4">' . esc_html__('Inicia sesion para ver tus comunidades.', 'flavor-chat-ia') . '</p>
-                <a href="' . esc_url(wp_login_url(get_permalink())) . '" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
+                <a href="' . esc_url(wp_login_url(home_url('/mi-portal/comunidades/'))) . '" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
                     ' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '
                 </a>
             </div>';
@@ -633,7 +714,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             return '<div class="flavor-login-required bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
                 <span class="text-4xl mb-3 block">🔒</span>
                 <p class="text-amber-800 mb-4">' . esc_html__('Inicia sesion para ver la actividad de tus comunidades.', 'flavor-chat-ia') . '</p>
-                <a href="' . esc_url(wp_login_url(get_permalink())) . '" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
+                <a href="' . esc_url(wp_login_url(home_url('/mi-portal/comunidades/'))) . '" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
                     ' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '
                 </a>
             </div>';
@@ -648,6 +729,335 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Renderiza eventos vinculados a la comunidad actual o a las comunidades del usuario.
+     *
+     * @return string HTML del tab
+     */
+    public function render_tab_eventos() {
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+
+        if (empty($comunidad_ids)) {
+            if (!is_user_logged_in()) {
+                return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                    <span class="text-5xl mb-4 block">📅</span>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Eventos de comunidades', 'flavor-chat-ia') . '</h3>
+                    <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesion o accede a una comunidad concreta para ver sus eventos.', 'flavor-chat-ia') . '</p>
+                </div>';
+            }
+
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">📅</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Sin comunidades vinculadas', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Aun no perteneces a ninguna comunidad con eventos asociados.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        if (count($comunidad_ids) === 1) {
+            $comunidad_id = absint($comunidad_ids[0]);
+            $comunidad = $this->obtener_comunidad($comunidad_id);
+            $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+            $header .= '<div>';
+            $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Eventos de la comunidad', 'flavor-chat-ia') . '</h3>';
+            if (!empty($comunidad->nombre)) {
+                $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+            }
+            $header .= '</div>';
+            if (current_user_can('edit_posts')) {
+                $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['comunidad_id' => $comunidad_id], home_url('/mi-portal/eventos/crear-evento/'))) . '">';
+                $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+                $header .= esc_html__('Crear evento', 'flavor-chat-ia');
+                $header .= '</a>';
+            }
+            $header .= '</div>';
+
+            return $header . do_shortcode('[eventos_listado limite="12" mostrar_filtros="false" comunidad_id="' . $comunidad_id . '"]');
+        }
+
+        return do_shortcode('[eventos_listado limite="12" mostrar_filtros="false" comunidad_ids="' . esc_attr(implode(',', $comunidad_ids)) . '"]');
+    }
+
+    /**
+     * Renderiza el chat asociado a una comunidad concreta.
+     *
+     * @return string HTML del tab
+     */
+    public function render_tab_chat() {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">💬</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Chat de la comunidad', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesión para acceder al chat de tu comunidad.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+        if (empty($comunidad_ids)) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">💬</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Sin comunidad contextual', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a una comunidad concreta para entrar en su chat.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_id = absint($comunidad_ids[0]);
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+        $grupo_chat_id = $this->obtener_grupo_chat_comunidad($comunidad_id);
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Chat de la comunidad', 'flavor-chat-ia') . '</h3>';
+        if (!empty($comunidad->nombre)) {
+            $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+        }
+        $header .= '</div>';
+        if ($grupo_chat_id) {
+            $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => $grupo_chat_id], home_url('/mi-portal/chat-grupos/mensajes/'))) . '">';
+            $header .= '<span class="dashicons dashicons-external" style="font-size:16px;width:16px;height:16px;"></span>';
+            $header .= esc_html__('Abrir chat completo', 'flavor-chat-ia');
+            $header .= '</a>';
+        }
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor_chat_grupo_integrado entidad="comunidad" entidad_id="' . $comunidad_id . '" altura="560px"]');
+    }
+
+    /**
+     * Renderiza el foro asociado a una comunidad concreta.
+     *
+     * @return string HTML del tab
+     */
+    public function render_tab_foros() {
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+        if (empty($comunidad_ids)) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">💭</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Foro de la comunidad', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a una comunidad concreta para ver su foro asociado.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_id = absint($comunidad_ids[0]);
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100">';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Foro de la comunidad', 'flavor-chat-ia') . '</h3>';
+        if (!empty($comunidad->nombre)) {
+            $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+        }
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor_foros_integrado entidad="comunidad" entidad_id="' . $comunidad_id . '"]');
+    }
+
+    /**
+     * Renderiza la galería multimedia asociada a una comunidad concreta.
+     *
+     * @return string HTML del tab
+     */
+    public function render_tab_multimedia() {
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+
+        if (empty($comunidad_ids)) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🖼️</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Galería de la comunidad', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a una comunidad concreta para ver su galería multimedia.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_id = absint($comunidad_ids[0]);
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Galería de la comunidad', 'flavor-chat-ia') . '</h3>';
+        if (!empty($comunidad->nombre)) {
+            $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+        }
+        $header .= '</div>';
+        if (is_user_logged_in()) {
+            $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['comunidad_id' => $comunidad_id], home_url('/mi-portal/multimedia/subir/'))) . '">';
+            $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+            $header .= esc_html__('Subir archivo', 'flavor-chat-ia');
+            $header .= '</a>';
+        }
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor_multimedia_galeria entidad="comunidad" entidad_id="' . $comunidad_id . '" limite="12" columnas="4" mostrar_filtros="true"]');
+    }
+
+    /**
+     * Renderiza el feed social asociado a una comunidad concreta.
+     *
+     * @return string HTML del tab
+     */
+    public function render_tab_red_social() {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🫂</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Actividad social de la comunidad', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesión para ver las publicaciones y actividad de tu comunidad.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+        if (empty($comunidad_ids)) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🫂</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Sin comunidad contextual', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a una comunidad concreta para ver su actividad social.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_id = absint($comunidad_ids[0]);
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Actividad social de la comunidad', 'flavor-chat-ia') . '</h3>';
+        if (!empty($comunidad->nombre)) {
+            $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+        }
+        $header .= '</div>';
+        $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['comunidad_id' => $comunidad_id], home_url('/mi-portal/red-social/crear/'))) . '">';
+        $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+        $header .= esc_html__('Publicar', 'flavor-chat-ia');
+        $header .= '</a>';
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor_social_feed entidad="comunidad" entidad_id="' . $comunidad_id . '"]');
+    }
+
+    /**
+     * Renderiza el grupo de consumo asociado a una comunidad concreta.
+     *
+     * @return string HTML del tab
+     */
+    public function render_tab_grupos_consumo() {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🥬</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Grupo de consumo de la comunidad', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesión para acceder al grupo de consumo de tu comunidad.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+        if (empty($comunidad_ids)) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🥬</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Sin comunidad contextual', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a una comunidad concreta para ver su grupo de consumo asociado.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_id = absint($comunidad_ids[0]);
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+        $grupo = $this->obtener_grupo_consumo_comunidad($comunidad_id);
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Grupo de consumo de la comunidad', 'flavor-chat-ia') . '</h3>';
+        if (!empty($comunidad->nombre)) {
+            $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+        }
+        $header .= '</div>';
+
+        if ($grupo instanceof WP_Post) {
+            $header .= '<div class="flex items-center gap-2 flex-wrap">';
+            $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo' => $grupo->ID], home_url('/mi-portal/grupos-consumo/unirme/'))) . '">';
+            $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+            $header .= esc_html__('Unirme', 'flavor-chat-ia');
+            $header .= '</a>';
+            $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-indigo-700 text-sm font-medium border border-indigo-200 hover:bg-indigo-50" href="' . esc_url(add_query_arg(['comunidad_id' => $comunidad_id], home_url('/mi-portal/grupos-consumo/grupos/'))) . '">';
+            $header .= '<span class="dashicons dashicons-external" style="font-size:16px;width:16px;height:16px;"></span>';
+            $header .= esc_html__('Abrir módulo completo', 'flavor-chat-ia');
+            $header .= '</a>';
+            $header .= '</div>';
+        }
+        $header .= '</div>';
+
+        return $header . do_shortcode('[gc_grupos_lista columnas="1" limite="6" comunidad_id="' . $comunidad_id . '"]');
+    }
+
+    /**
+     * Obtiene el grupo de consumo principal asociado a una comunidad.
+     *
+     * @param int $comunidad_id ID de la comunidad.
+     * @return WP_Post|null
+     */
+    private function obtener_grupo_consumo_comunidad($comunidad_id) {
+        $comunidad_id = absint($comunidad_id);
+        if ($comunidad_id <= 0) {
+            return null;
+        }
+
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $loader = Flavor_Chat_Module_Loader::get_instance();
+            if ($loader && method_exists($loader, 'get_module_instance')) {
+                $modulo = $loader->get_module_instance('grupos_consumo');
+                if ($modulo && method_exists($modulo, 'obtener_grupo_principal_comunidad')) {
+                    $grupo = $modulo->obtener_grupo_principal_comunidad($comunidad_id);
+                    if ($grupo instanceof WP_Post) {
+                        return $grupo;
+                    }
+                }
+            }
+        }
+
+        $grupos = get_posts([
+            'post_type' => 'gc_grupo',
+            'post_status' => 'publish',
+            'posts_per_page' => 1,
+            'meta_query' => [
+                [
+                    'key' => '_flavor_comunidad_id',
+                    'value' => $comunidad_id,
+                    'compare' => '=',
+                    'type' => 'NUMERIC',
+                ],
+            ],
+        ]);
+
+        return !empty($grupos) ? $grupos[0] : null;
+    }
+
+    /**
+     * Obtiene el contexto de comunidad aplicable al tab de eventos.
+     *
+     * @return int[]
+     */
+    private function get_contextual_comunidad_ids_for_eventos_tab() {
+        global $wpdb;
+
+        $direct_id = absint($_GET['comunidad_id'] ?? $_GET['comunidad'] ?? $_GET['id'] ?? 0);
+        if ($direct_id > 0) {
+            return [$direct_id];
+        }
+
+        $request_path = (string) wp_parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+        if (preg_match('#/mi-portal/comunidades/(\d+)(?:/|$)#', $request_path, $matches)) {
+            return [absint($matches[1])];
+        }
+
+        if (!is_user_logged_in()) {
+            return [];
+        }
+
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+        $usuario_id = get_current_user_id();
+
+        return array_map('intval', (array) $wpdb->get_col($wpdb->prepare(
+            "SELECT comunidad_id
+             FROM {$tabla_miembros}
+             WHERE user_id = %d AND estado = 'activo'
+             ORDER BY joined_at DESC
+             LIMIT 12",
+            $usuario_id
+        )));
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
@@ -656,7 +1066,6 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
-        add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         $this->register_ajax_handlers();
@@ -781,7 +1190,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="flavor-login-requerido">' .
                    '<p>' . __('Inicia sesión para ver tus notificaciones.', 'flavor-chat-ia') . '</p>' .
-                   '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn-primario">' .
+                   '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/comunidades/'))) . '" class="flavor-btn-primario">' .
                    __('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
         }
 
@@ -959,7 +1368,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             return '<div class="flavor-com-notice flavor-com-notice-warning">' .
                    sprintf(
                        __('Debes <a href="%s">iniciar sesión</a> para crear una comunidad.', 'flavor-chat-ia'),
-                       wp_login_url(get_permalink())
+                       wp_login_url(home_url('/mi-portal/comunidades/'))
                    ) .
                    '</div>';
         }
@@ -1052,7 +1461,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             return '<div class="flavor-com-notice flavor-com-notice-warning">' .
                    sprintf(
                        __('Debes <a href="%s">iniciar sesión</a> para ver tus comunidades.', 'flavor-chat-ia'),
-                       wp_login_url(get_permalink())
+                       wp_login_url(home_url('/mi-portal/comunidades/'))
                    ) .
                    '</div>';
         }
@@ -1080,7 +1489,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             return '<div class="flavor-com-notice flavor-com-notice-warning">' .
                    sprintf(
                        __('Debes <a href="%s">iniciar sesión</a> para ver el feed unificado.', 'flavor-chat-ia'),
-                       wp_login_url(get_permalink())
+                       wp_login_url(home_url('/mi-portal/comunidades/'))
                    ) .
                    '</div>';
         }
@@ -1367,7 +1776,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 'fecha_fin'   => $evento->fecha_fin ?? '',
                 'ubicacion'   => $evento->ubicacion ?? '',
                 'origen'      => 'local',
-                'url'         => get_permalink($evento->id ?? 0),
+                'url'         => home_url('/mi-portal/eventos/' . intval($evento->id ?? 0) . '/'),
                 'color'       => '#3b82f6',
             ];
         }
@@ -1480,7 +1889,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                     'titulo'      => $post->post_title,
                     'descripcion' => wp_trim_words($post->post_content, 20),
                     'imagen'      => get_the_post_thumbnail_url($post->ID, 'medium'),
-                    'url'         => get_permalink($post->ID),
+                    'url'         => $this->obtener_url_recurso_integrado($tipo, $post->ID),
                     'tipo'        => $tipo,
                     'fecha'       => $post->post_date,
                     'autor'       => get_the_author_meta('display_name', $post->post_author),
@@ -1490,6 +1899,27 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         }
 
         return $recursos;
+    }
+
+    private function obtener_url_recurso_integrado($tipo, $post_id) {
+        $post_id = absint($post_id);
+
+        switch ($tipo) {
+            case 'multimedia':
+                return add_query_arg('archivo_id', $post_id, home_url('/mi-portal/multimedia/mi-galeria/'));
+
+            case 'biblioteca':
+                return add_query_arg('libro_id', $post_id, home_url('/mi-portal/biblioteca/'));
+
+            case 'podcast':
+                return add_query_arg('episodio_id', $post_id, home_url('/mi-portal/podcast/'));
+
+            case 'recetas':
+                return add_query_arg('id', $post_id, home_url('/mi-portal/recetas/'));
+
+            default:
+                return get_permalink($post_id);
+        }
     }
 
     // =========================================================================
@@ -3100,10 +3530,32 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         echo '<div class="postbox-header" style="background: #fef1f1;"><h2 style="color: #dc3232;">' . __('Zona Peligrosa', 'flavor-chat-ia') . '</h2></div>';
         echo '<div class="inside">';
         echo '<p>' . __('Expulsar al miembro lo eliminara permanentemente de la comunidad.', 'flavor-chat-ia') . '</p>';
-        echo '<form method="post" action="" onsubmit="return confirm(\'' . esc_js(__('Estas seguro de expulsar a este miembro?', 'flavor-chat-ia')) . '\');">';
+        echo '<form method="post" action="" class="com-expulsar-miembro-form">';
         wp_nonce_field('expulsar_miembro_admin', 'expulsar_nonce');
         echo '<input type="submit" name="expulsar_miembro" class="button button-link-delete" value="' . __('Expulsar Miembro', 'flavor-chat-ia') . '">';
         echo '</form>';
+        echo '<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".com-expulsar-miembro-form").forEach(function(form) {
+                form.addEventListener("submit", function(e) {
+                    e.preventDefault();
+                    var notice = document.createElement("div");
+                    notice.className = "notice notice-warning";
+                    notice.innerHTML = "<p>' . esc_js(__('Estas seguro de expulsar a este miembro?', 'flavor-chat-ia')) . '</p><p style=\"display:flex;gap:8px;margin-top:8px;\"><button type=\"button\" class=\"button button-primary com-expulsar-confirmar\">' . esc_js(__('Confirmar', 'flavor-chat-ia')) . '</button><button type=\"button\" class=\"button com-expulsar-cancelar\">' . esc_js(__('Cancelar', 'flavor-chat-ia')) . '</button></p>";
+                    var current = form.parentNode.querySelector(".notice.notice-warning");
+                    if (current) current.remove();
+                    form.parentNode.insertBefore(notice, form);
+                    notice.querySelector(".com-expulsar-confirmar").addEventListener("click", function() {
+                        notice.remove();
+                        form.submit();
+                    });
+                    notice.querySelector(".com-expulsar-cancelar").addEventListener("click", function() {
+                        notice.remove();
+                    });
+                });
+            });
+        });
+        </script>';
         echo '</div></div>';
 
         echo '</div>';
@@ -3530,16 +3982,63 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = [
+            'listar' => 'listar_comunidades',
+            'listado' => 'listar_comunidades',
+            'explorar' => 'listar_comunidades',
+            'buscar' => 'listar_comunidades',
+            'actividad' => 'feed_actividad',
+            'feed' => 'feed_actividad',
+            'crear' => 'render_crear',
+            'nueva' => 'render_crear',
+            'mis_items' => 'mis_comunidades',
+            'mis-comunidades' => 'mis_comunidades',
+            'detalle' => 'ver_comunidad',
+            'ver' => 'ver_comunidad',
+            'miembros' => 'miembros',
+            'publicar' => 'publicar',
+            'unirse' => 'unirse',
+            'salir' => 'salir',
+        ];
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         $metodo_accion = 'action_' . $nombre_accion;
 
         if (method_exists($this, $metodo_accion)) {
             return $this->$metodo_accion($parametros);
         }
 
+        switch ($nombre_accion) {
+            case 'foros':
+                $entity_id = absint($parametros['comunidad_id'] ?? $parametros['id'] ?? 0);
+                if ($entity_id > 0) {
+                    return do_shortcode(sprintf(
+                        '[flavor_foros_integrado entidad="comunidad" entidad_id="%d"]',
+                        $entity_id
+                    ));
+                }
+                return do_shortcode('[foros_actividad_reciente limit="8"]');
+            case 'multimedia':
+                return do_shortcode('[flavor module="multimedia" view="galeria" header="no" limit="12"]');
+            case 'eventos':
+                return $this->render_tab_eventos();
+            case 'anuncios':
+                return do_shortcode('[comunidades_tablon limite="20" incluir_red="true"]');
+            case 'recursos':
+                return do_shortcode('[comunidades_recursos_compartidos]');
+        }
+
         return [
             'success' => false,
-            'error'   => sprintf(__('Accion no implementada: %s', 'flavor-chat-ia'), $nombre_accion),
+            'error'   => __('La vista solicitada no está disponible en Comunidades.', 'flavor-chat-ia'),
         ];
+    }
+
+    /**
+     * Render del formulario de creación para el portal.
+     */
+    private function action_render_crear($parametros) {
+        return do_shortcode('[comunidades_crear]');
     }
 
     // =========================================================================
@@ -5217,7 +5716,7 @@ KNOWLEDGE;
                  LEFT JOIN $tabla_miembros m ON m.comunidad_id = a.comunidad_id AND m.user_id = %d
                  WHERE a.estado = 'publicado'
                    AND (a.fecha_expiracion IS NULL OR a.fecha_expiracion >= NOW())
-                   AND (c.visibilidad = 'publica' OR m.user_id IS NOT NULL)
+                   AND (c.tipo = 'abierta' OR m.user_id IS NOT NULL)
                    {$where_categoria}
                  ORDER BY a.destacado DESC, a.created_at DESC
                  LIMIT %d",
@@ -5231,7 +5730,7 @@ KNOWLEDGE;
                  FROM $tabla_anuncios a
                  INNER JOIN $tabla_comunidades c ON c.id = a.comunidad_id
                  WHERE a.estado = 'publicado'
-                   AND c.visibilidad = 'publica'
+                   AND c.tipo = 'abierta'
                    AND (a.fecha_expiracion IS NULL OR a.fecha_expiracion >= NOW())
                    {$where_categoria}
                  ORDER BY a.destacado DESC, a.created_at DESC
@@ -5253,7 +5752,7 @@ KNOWLEDGE;
                 'comunidad_id'     => $anuncio->comunidad_id,
                 'comunidad_nombre' => $anuncio->comunidad_nombre,
                 'comunidad_imagen' => $anuncio->comunidad_imagen,
-                'url'              => home_url("/comunidades/{$anuncio->comunidad_slug}/"),
+                'url'              => home_url('/mi-portal/comunidades/' . intval($anuncio->comunidad_id) . '/'),
                 'origen'           => 'local',
             ];
         }
@@ -5466,7 +5965,7 @@ KNOWLEDGE;
         $query = $wpdb->prepare(
             "SELECT s.*, n.nombre AS nodo_nombre
              FROM $tabla_shared s
-             LEFT JOIN {$wpdb->prefix}flavor_network_directory n ON n.id = s.nodo_id
+             LEFT JOIN {$wpdb->prefix}flavor_network_nodes n ON n.id = s.nodo_id
              WHERE s.tipo_contenido = 'anuncio'
                AND s.estado = 'activo'
                AND s.visible_red = 1
@@ -5527,7 +6026,7 @@ KNOWLEDGE;
             'tipo_contenido' => 'anuncio',
             'titulo'         => $anuncio->titulo,
             'descripcion'    => $anuncio->contenido,
-            'url_externa'    => home_url("/comunidades/{$anuncio->comunidad_slug}/"),
+            'url_externa'    => home_url('/mi-portal/comunidades/' . intval($anuncio->comunidad_id) . '/'),
             'metadata'       => [
                 'categoria'  => $anuncio->categoria,
                 'destacado'  => (bool) $anuncio->destacado,
@@ -5696,7 +6195,7 @@ KNOWLEDGE;
         ];
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_shared'") === $tabla_shared) {
-            $tabla_nodos = $wpdb->prefix . 'flavor_network_directory';
+            $tabla_nodos = $wpdb->prefix . 'flavor_network_nodes';
 
             if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_nodos'") === $tabla_nodos) {
                 $federado['nodos_conectados'] = (int) $wpdb->get_var(
@@ -5846,7 +6345,7 @@ KNOWLEDGE;
             ));
 
             foreach ($comunidades as $comunidad) {
-                $comunidad->url = home_url('/comunidades/' . $comunidad->slug . '/');
+                $comunidad->url = home_url('/mi-portal/comunidades/' . $comunidad->id . '/');
                 $resultados[] = $comunidad;
             }
         }
@@ -5858,7 +6357,7 @@ KNOWLEDGE;
 
             $publicaciones = $wpdb->get_results($wpdb->prepare(
                 "SELECT a.id, a.titulo, a.contenido AS descripcion, a.imagen, a.created_at AS fecha,
-                        'publicaciones' AS tipo, c.slug AS comunidad_slug, u.display_name AS autor
+                        'publicaciones' AS tipo, c.id AS comunidad_id, c.slug AS comunidad_slug, u.display_name AS autor
                  FROM $tabla_actividad a
                  INNER JOIN $tabla_comunidades c ON c.id = a.comunidad_id
                  LEFT JOIN {$wpdb->users} u ON u.ID = a.user_id
@@ -5869,7 +6368,7 @@ KNOWLEDGE;
             ));
 
             foreach ($publicaciones as $pub) {
-                $pub->url = home_url('/comunidades/' . $pub->comunidad_slug . '/#actividad-' . $pub->id);
+                $pub->url = home_url('/mi-portal/comunidades/' . $pub->comunidad_id . '/#actividad-' . $pub->id);
                 $resultados[] = $pub;
             }
         }
@@ -5888,7 +6387,7 @@ KNOWLEDGE;
                 ));
 
                 foreach ($eventos as $evento) {
-                    $evento->url = home_url('/eventos/' . $evento->slug . '/');
+                    $evento->url = home_url('/mi-portal/eventos/' . $evento->id . '/');
                     $resultados[] = $evento;
                 }
             }
@@ -5908,7 +6407,7 @@ KNOWLEDGE;
                 ));
 
                 foreach ($recetas as $receta) {
-                    $receta->url = home_url('/recetas/' . $receta->slug . '/');
+                    $receta->url = add_query_arg('id', $receta->id, home_url('/mi-portal/recetas/'));
                     $resultados[] = $receta;
                 }
             }
@@ -5928,7 +6427,7 @@ KNOWLEDGE;
                 ));
 
                 foreach ($documentos as $doc) {
-                    $doc->url = home_url('/biblioteca/' . $doc->slug . '/');
+                    $doc->url = add_query_arg('libro_id', $doc->id, home_url('/mi-portal/biblioteca/'));
                     $resultados[] = $doc;
                 }
             }
@@ -5948,7 +6447,11 @@ KNOWLEDGE;
                 ));
 
                 foreach ($multimedia as $media) {
-                    $media->url = home_url('/multimedia/' . $media->slug . '/');
+                    $media->url = add_query_arg(
+                        'archivo_id',
+                        intval($media->id),
+                        home_url('/mi-portal/multimedia/mi-galeria/')
+                    );
                     $resultados[] = $media;
                 }
             }
@@ -5993,7 +6496,7 @@ KNOWLEDGE;
         $query = $wpdb->prepare(
             "SELECT s.*, n.nombre AS nodo_nombre, n.logo_url AS nodo_logo
              FROM $tabla_shared s
-             LEFT JOIN {$wpdb->prefix}flavor_network_directory n ON n.id = s.nodo_id
+             LEFT JOIN {$wpdb->prefix}flavor_network_nodes n ON n.id = s.nodo_id
              WHERE (s.titulo LIKE %s OR s.descripcion LIKE %s)
                AND s.tipo_contenido IN ($placeholders)
                AND s.estado = 'activo'
@@ -6112,7 +6615,7 @@ KNOWLEDGE;
                         $comunidad->nombre
                     ),
                     [
-                        'link' => home_url("/comunidades/{$comunidad->slug}/"),
+                        'link' => home_url('/mi-portal/comunidades/' . intval($comunidad->id) . '/'),
                         'icon' => '🏘️',
                     ]
                 );
@@ -6130,7 +6633,7 @@ KNOWLEDGE;
                 $comunidad->nombre
             ),
             [
-                'link' => home_url("/comunidades/{$comunidad->slug}/#actividad-{$publicacion_id}"),
+                'link' => home_url('/mi-portal/comunidades/' . intval($comunidad->id) . '/#actividad-' . intval($publicacion_id)),
                 'icon' => '📝',
                 'excluir_usuario' => $publicacion->user_id ?? 0,
             ]
@@ -6166,7 +6669,7 @@ KNOWLEDGE;
                 $comunidad->nombre
             ),
             [
-                'link' => home_url("/eventos/{$evento_id}/"),
+                'link' => home_url('/mi-portal/eventos/' . intval($evento_id) . '/'),
                 'icon' => '📅',
             ]
         );
@@ -6191,7 +6694,7 @@ KNOWLEDGE;
                         $fecha_evento
                     ),
                     [
-                        'link' => home_url("/eventos/{$evento_id}/"),
+                        'link' => home_url('/mi-portal/eventos/' . intval($evento_id) . '/'),
                         'icon' => '🗓️',
                     ]
                 );
@@ -6233,7 +6736,7 @@ KNOWLEDGE;
                     $comunidad->nombre
                 ),
                 [
-                    'link' => home_url("/comunidades/{$comunidad->slug}/miembros/"),
+                    'link' => add_query_arg(['comunidad_id' => intval($comunidad->id), 'tab' => 'miembros'], home_url('/mi-portal/comunidades/')),
                     'icon' => '👋',
                 ]
             );
@@ -6256,7 +6759,7 @@ KNOWLEDGE;
                     implode(', ', $nombres_comunidades)
                 ),
                 [
-                    'link' => home_url('/comunidades/'),
+                    'link' => home_url('/mi-portal/comunidades/'),
                     'icon' => '🎯',
                 ]
             );
@@ -6300,7 +6803,7 @@ KNOWLEDGE;
                 $recurso->titulo ?? $tipo_recurso
             ),
             [
-                'link' => home_url("/comunidades/{$comunidad_destino->slug}/recursos/"),
+                'link' => add_query_arg(['comunidad_id' => intval($comunidad_destino->id), 'tab' => 'recursos'], home_url('/mi-portal/comunidades/')),
                 'icon' => $icono,
             ]
         );
@@ -6336,7 +6839,7 @@ KNOWLEDGE;
                 $comunidad->nombre
             ),
             [
-                'link' => $contexto->url ?? home_url("/comunidades/{$comunidad->slug}/"),
+                'link' => $contexto->url ?? home_url('/mi-portal/comunidades/' . intval($comunidad->id) . '/'),
                 'icon' => '💬',
             ]
         );
@@ -6403,7 +6906,7 @@ KNOWLEDGE;
                 $comunidad_origen->nombre
             ),
             [
-                'link' => home_url("/comunidades/{$comunidad_destino->slug}/"),
+                'link' => home_url('/mi-portal/comunidades/' . intval($comunidad_destino->id) . '/'),
                 'icon' => '🔄',
                 'excluir_usuario' => $usuario_id,
             ]

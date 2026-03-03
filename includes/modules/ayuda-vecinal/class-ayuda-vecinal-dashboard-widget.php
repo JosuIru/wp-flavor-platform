@@ -17,12 +17,21 @@ if (!class_exists('Flavor_Dashboard_Widget_Base')) {
 
 class Flavor_Ayuda_Vecinal_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
+    private static $instance = null;
     protected $widget_id = 'ayuda-vecinal';
     protected $icon = 'dashicons-heart';
     protected $size = 'medium';
     protected $category = 'servicios';
     protected $priority = 10;
     private $prefix_tabla;
+
+    public static function get_instance(): self {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
 
     public function __construct() {
         global $wpdb;

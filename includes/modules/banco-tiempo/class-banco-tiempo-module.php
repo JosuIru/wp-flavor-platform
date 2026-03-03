@@ -95,6 +95,9 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
 
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
+
+        // Cargar frontend controller para registrar shortcodes y assets reales
+        $this->inicializar_frontend_controller();
     }
 
     /**
@@ -106,6 +109,19 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
             require_once $archivo;
             if (class_exists('Flavor_Banco_Tiempo_Dashboard_Tab')) {
                 Flavor_Banco_Tiempo_Dashboard_Tab::get_instance();
+            }
+        }
+    }
+
+    /**
+     * Inicializa el controlador frontend del módulo
+     */
+    private function inicializar_frontend_controller() {
+        $archivo = dirname(__FILE__) . '/frontend/class-banco-tiempo-frontend-controller.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Banco_Tiempo_Frontend_Controller')) {
+                Flavor_Banco_Tiempo_Frontend_Controller::get_instance();
             }
         }
     }
@@ -403,10 +419,26 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
-        // Alias: crear_servicio es lo mismo que ofrecer_servicio
-        if ($action_name === 'crear_servicio') {
-            $action_name = 'ofrecer_servicio';
-        }
+        $aliases = [
+            'crear_servicio' => 'ofrecer_servicio',
+            'listar' => 'servicios',
+            'listado' => 'servicios',
+            'buscar' => 'servicios',
+            'explorar' => 'servicios',
+            'servicios' => 'servicios',
+            'crear' => 'ofrecer_servicio',
+            'nuevo' => 'ofrecer_servicio',
+            'mis_items' => 'ver_saldo',
+            'saldo' => 'ver_saldo',
+            'mi-saldo' => 'ver_saldo',
+            'intercambios' => 'intercambios',
+            'mis_intercambios' => 'intercambios',
+            'ranking' => 'ranking',
+            'reputacion' => 'reputacion',
+            'ofrecer' => 'ofrecer_servicio',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
 
         $metodo_accion = 'action_' . $action_name;
 
@@ -416,8 +448,102 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => "Acción no implementada: {$action_name}",
+            'error' => __('La vista solicitada no está disponible en Banco de Tiempo.', 'flavor-chat-ia'),
         ];
+    }
+
+    /**
+     * Acción: Render del listado frontend de servicios
+     */
+    private function action_servicios($params) {
+        $categoria = sanitize_text_field($params['categoria'] ?? '');
+        $limite = absint($params['limite'] ?? 12);
+
+        return do_shortcode(sprintf(
+            '[banco_tiempo_servicios categoria="%s" limite="%d"]',
+            esc_attr($categoria),
+            $limite
+        ));
+    }
+
+    /**
+     * Acción: Render de mis intercambios
+     */
+    private function action_intercambios($params) {
+        $estado = sanitize_text_field($params['estado'] ?? '');
+        $limite = absint($params['limite'] ?? 20);
+
+        return do_shortcode(sprintf(
+            '[banco_tiempo_mis_intercambios estado="%s" limite="%d"]',
+            esc_attr($estado),
+            $limite
+        ));
+    }
+
+    /**
+     * Acción: Render de reputación
+     */
+    private function action_reputacion($params) {
+        $template = dirname(__FILE__) . '/templates/mi-reputacion.php';
+        if (!file_exists($template)) {
+            return '<p>' . esc_html__('La vista de reputación no está disponible.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $usuario_id = get_current_user_id();
+        if (!$usuario_id) {
+            return '<p>' . esc_html__('Debes iniciar sesión para ver tu reputación.', 'flavor-chat-ia') . '</p>';
+        }
+
+        global $wpdb;
+        $tabla_reputacion = $wpdb->prefix . 'flavor_banco_tiempo_reputacion';
+        $reputacion = null;
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_reputacion)) {
+            $reputacion = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM {$tabla_reputacion} WHERE usuario_id = %d LIMIT 1", $usuario_id),
+                ARRAY_A
+            );
+        }
+
+        if (!$reputacion) {
+            $user = wp_get_current_user();
+            $reputacion = [
+                'usuario_id' => $usuario_id,
+                'nombre' => $user ? $user->display_name : '',
+                'avatar' => get_avatar_url($usuario_id),
+                'nivel' => 1,
+                'puntos_confianza' => 0,
+                'rating_promedio' => 0,
+                'total_intercambios_completados' => 0,
+                'total_horas_dadas' => 0,
+                'total_horas_recibidas' => 0,
+                'rating_puntualidad' => 0,
+                'rating_calidad' => 0,
+                'rating_comunicacion' => 0,
+                'badges' => '',
+                'estado_verificacion' => 'pendiente',
+                'fecha_primer_intercambio' => '',
+            ];
+        } else {
+            $reputacion['avatar'] = get_avatar_url($usuario_id);
+            $reputacion['nombre'] = $reputacion['nombre'] ?? wp_get_current_user()->display_name;
+        }
+
+        ob_start();
+        include $template;
+        return ob_get_clean();
+    }
+
+    /**
+     * Acción: Render del ranking comunitario
+     */
+    private function action_ranking($params) {
+        $limite = absint($params['limite'] ?? 10);
+
+        return do_shortcode(sprintf(
+            '[banco_tiempo_ranking limite="%d"]',
+            $limite
+        ));
     }
 
     /**
@@ -1022,7 +1148,7 @@ KNOWLEDGE;
             'valor' => $intercambios_activos,
             'label' => __('Intercambios activos', 'flavor-chat-ia'),
             'color' => $intercambios_activos > 0 ? 'blue' : 'gray',
-            'enlace' => admin_url('admin.php?page=banco-tiempo-intercambios'),
+            'enlace' => admin_url('admin.php?page=bt-intercambios'),
         ];
 
         // Total de miembros participantes
@@ -1034,7 +1160,7 @@ KNOWLEDGE;
             'valor' => $total_miembros,
             'label' => __('Miembros', 'flavor-chat-ia'),
             'color' => $total_miembros > 0 ? 'green' : 'gray',
-            'enlace' => admin_url('admin.php?page=banco-tiempo-miembros'),
+            'enlace' => admin_url('admin.php?page=bt-usuarios'),
         ];
 
         return $estadisticas;
@@ -1050,7 +1176,7 @@ KNOWLEDGE;
 
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(__('Dashboard de Banco de Tiempo', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Servicio', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
+            ['label' => __('Nuevo Servicio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bt-servicios&nuevo=1'), 'class' => 'button-primary'],
         ]);
 
         // Estadísticas generales
@@ -1269,16 +1395,60 @@ KNOWLEDGE;
     public function render_admin_servicios() {
         global $wpdb;
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
+        $mensaje_exito = '';
+        $mensaje_error = '';
+
+        if (
+            isset($_POST['bt_guardar_servicio']) &&
+            check_admin_referer('bt_editar_servicio', 'bt_nonce')
+        ) {
+            $servicio_id = absint($_POST['servicio_id'] ?? 0);
+            $datos_servicio = [
+                'titulo' => sanitize_text_field($_POST['titulo'] ?? ''),
+                'categoria' => sanitize_text_field($_POST['categoria'] ?? 'otros'),
+                'horas_estimadas' => max(0.5, (float) ($_POST['horas_estimadas'] ?? 1)),
+                'estado' => sanitize_text_field($_POST['estado'] ?? 'activo'),
+            ];
+
+            if ($servicio_id > 0) {
+                $actualizado = $wpdb->update($tabla_servicios, $datos_servicio, ['id' => $servicio_id]);
+                if ($actualizado !== false) {
+                    $mensaje_exito = __('Servicio actualizado correctamente.', 'flavor-chat-ia');
+                } else {
+                    $mensaje_error = __('No se pudo actualizar el servicio.', 'flavor-chat-ia');
+                }
+            } else {
+                $datos_servicio['usuario_id'] = get_current_user_id();
+                $datos_servicio['descripcion'] = sanitize_textarea_field($_POST['descripcion'] ?? '');
+                $datos_servicio['fecha_publicacion'] = current_time('mysql');
+
+                if (empty($datos_servicio['titulo']) || empty($datos_servicio['descripcion'])) {
+                    $mensaje_error = __('Debes completar título y descripción para crear el servicio.', 'flavor-chat-ia');
+                } elseif ($wpdb->insert($tabla_servicios, $datos_servicio)) {
+                    $mensaje_exito = __('Servicio creado correctamente.', 'flavor-chat-ia');
+                } else {
+                    $mensaje_error = __('No se pudo crear el servicio.', 'flavor-chat-ia');
+                }
+            }
+        }
 
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(__('Servicios del Banco de Tiempo', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Servicio', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
+            ['label' => __('Nuevo Servicio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bt-servicios&nuevo=1'), 'class' => 'button-primary'],
         ]);
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
             echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
             echo '</div>';
             return;
+        }
+
+        if ($mensaje_exito) {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html($mensaje_exito) . '</p></div>';
+        }
+
+        if ($mensaje_error) {
+            echo '<div class="notice notice-error is-dismissible"><p>' . esc_html($mensaje_error) . '</p></div>';
         }
 
         $servicios = $wpdb->get_results(
@@ -1310,7 +1480,7 @@ KNOWLEDGE;
                 echo '<td>' . esc_html(number_format((float)$servicio['horas_estimadas'], 1)) . 'h</td>';
                 echo '<td><span class="' . esc_attr($clase_estado) . '">' . esc_html(ucfirst($servicio['estado'])) . '</span></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($servicio['fecha_publicacion']))) . '</td>';
-                echo '<td><a href="#" class="button button-small bt-editar-servicio" data-id="' . esc_attr($servicio['id']) . '" data-titulo="' . esc_attr($servicio['titulo']) . '" data-categoria="' . esc_attr($servicio['categoria']) . '" data-horas="' . esc_attr($servicio['horas_estimadas']) . '" data-estado="' . esc_attr($servicio['estado']) . '">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small bt-editar-servicio" data-id="' . esc_attr($servicio['id']) . '" data-titulo="' . esc_attr($servicio['titulo']) . '" data-descripcion="' . esc_attr($servicio['descripcion']) . '" data-categoria="' . esc_attr($servicio['categoria']) . '" data-horas="' . esc_attr($servicio['horas_estimadas']) . '" data-estado="' . esc_attr($servicio['estado']) . '">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
 
@@ -1324,14 +1494,19 @@ KNOWLEDGE;
         <div id="modal-editar-servicio" style="display:none;">
             <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100000;">
                 <div class="modal-content" style="position:relative;max-width:500px;margin:50px auto;background:#fff;padding:20px;border-radius:4px;">
-                    <h2><?php _e('Editar Servicio', 'flavor-chat-ia'); ?></h2>
+                    <h2 id="bt-modal-servicio-titulo"><?php _e('Editar Servicio', 'flavor-chat-ia'); ?></h2>
                     <form id="form-editar-servicio" method="post">
                         <?php wp_nonce_field('bt_editar_servicio', 'bt_nonce'); ?>
+                        <input type="hidden" name="bt_guardar_servicio" value="1" />
                         <input type="hidden" name="servicio_id" id="edit-servicio-id" />
                         <table class="form-table">
                             <tr>
                                 <th><label for="edit-titulo"><?php _e('Título', 'flavor-chat-ia'); ?></label></th>
                                 <td><input type="text" id="edit-titulo" name="titulo" class="regular-text" required /></td>
+                            </tr>
+                            <tr id="bt-row-descripcion">
+                                <th><label for="edit-descripcion"><?php _e('Descripción', 'flavor-chat-ia'); ?></label></th>
+                                <td><textarea id="edit-descripcion" name="descripcion" rows="4" class="large-text"></textarea></td>
                             </tr>
                             <tr>
                                 <th><label for="edit-categoria"><?php _e('Categoría', 'flavor-chat-ia'); ?></label></th>
@@ -1370,13 +1545,28 @@ KNOWLEDGE;
         </div>
         <script>
         jQuery(document).ready(function($) {
+            function abrirModalNuevoServicio() {
+                $('#bt-modal-servicio-titulo').text('<?php echo esc_js(__('Nuevo Servicio', 'flavor-chat-ia')); ?>');
+                $('#edit-servicio-id').val('');
+                $('#edit-titulo').val('');
+                $('#edit-descripcion').val('');
+                $('#edit-categoria').val('otros');
+                $('#edit-horas').val('1');
+                $('#edit-estado').val('activo');
+                $('#bt-row-descripcion').show();
+                $('#modal-editar-servicio').fadeIn();
+            }
+
             $('.bt-editar-servicio').on('click', function(e) {
                 e.preventDefault();
+                $('#bt-modal-servicio-titulo').text('<?php echo esc_js(__('Editar Servicio', 'flavor-chat-ia')); ?>');
                 $('#edit-servicio-id').val($(this).data('id'));
                 $('#edit-titulo').val($(this).data('titulo'));
+                $('#edit-descripcion').val($(this).data('descripcion'));
                 $('#edit-categoria').val($(this).data('categoria'));
                 $('#edit-horas').val($(this).data('horas'));
                 $('#edit-estado').val($(this).data('estado'));
+                $('#bt-row-descripcion').show();
                 $('#modal-editar-servicio').fadeIn();
             });
 
@@ -1385,6 +1575,10 @@ KNOWLEDGE;
                     $('#modal-editar-servicio').fadeOut();
                 }
             });
+
+            if (window.location.search.indexOf('nuevo=1') !== -1) {
+                abrirModalNuevoServicio();
+            }
         });
         </script>
         <?php
@@ -1395,12 +1589,34 @@ KNOWLEDGE;
      * Renderiza la configuración del módulo
      */
     public function render_admin_config() {
+        $option_name = 'flavor_chat_ia_module_' . $this->id;
+        $configuracion_actual = wp_parse_args(
+            get_option($option_name, []),
+            $this->get_default_settings()
+        );
+
+        if (
+            isset($_POST['guardar_config']) &&
+            check_admin_referer('flavor_banco_tiempo_config', 'flavor_banco_tiempo_config_nonce')
+        ) {
+            $configuracion_actual = [
+                'hora_minima_intercambio' => max(0.5, (float) ($_POST['hora_minima_intercambio'] ?? 0.5)),
+                'hora_maxima_intercambio' => max(1, (float) ($_POST['hora_maxima_intercambio'] ?? 8)),
+                'requiere_validacion' => !empty($_POST['requiere_validacion']),
+                'categorias_servicios' => $configuracion_actual['categorias_servicios'] ?? $this->get_default_settings()['categorias_servicios'],
+            ];
+
+            update_option($option_name, $configuracion_actual);
+            $this->settings = $configuracion_actual;
+
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'flavor-chat-ia') . '</p></div>';
+        }
+
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(__('Configuración de Banco de Tiempo', 'flavor-chat-ia'));
 
-        $configuracion_actual = $this->get_default_settings();
-
         echo '<form method="post" action="">';
+        wp_nonce_field('flavor_banco_tiempo_config', 'flavor_banco_tiempo_config_nonce');
         echo '<table class="form-table">';
 
         echo '<tr><th scope="row"><label for="hora_minima_intercambio">' . __('Horas mínimas por intercambio', 'flavor-chat-ia') . '</label></th>';
@@ -1536,6 +1752,16 @@ KNOWLEDGE;
             $capability,
             'bt-usuarios',
             [$this, 'render_pagina_usuarios']
+        );
+
+        // Página: Configuración (oculta)
+        add_submenu_page(
+            null,
+            __('Configuración', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability,
+            'banco-tiempo-config',
+            [$this, 'render_admin_config']
         );
     }
 

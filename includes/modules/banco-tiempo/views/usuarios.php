@@ -164,11 +164,11 @@ usort($datos_usuarios, function($a, $b) use ($orden) {
 
                 <label for="orden"><?php echo esc_html__('Ordenar por:', 'flavor-chat-ia'); ?></label>
                 <select name="orden" id="orden" onchange="this.form.submit()">
-                    <option value="<?php echo esc_attr__('saldo_desc', 'flavor-chat-ia'); ?>" <?php selected($orden, 'saldo_desc'); ?>><?php echo esc_html__('Saldo (mayor a menor)', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('saldo_asc', 'flavor-chat-ia'); ?>" <?php selected($orden, 'saldo_asc'); ?>><?php echo esc_html__('Saldo (menor a mayor)', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('nombre_asc', 'flavor-chat-ia'); ?>" <?php selected($orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre (A-Z)', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('nombre_desc', 'flavor-chat-ia'); ?>" <?php selected($orden, 'nombre_desc'); ?>><?php echo esc_html__('Nombre (Z-A)', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('intercambios_desc', 'flavor-chat-ia'); ?>" <?php selected($orden, 'intercambios_desc'); ?>><?php echo esc_html__('Más intercambios', 'flavor-chat-ia'); ?></option>
+                    <option value="saldo_desc" <?php selected($orden, 'saldo_desc'); ?>><?php echo esc_html__('Saldo (mayor a menor)', 'flavor-chat-ia'); ?></option>
+                    <option value="saldo_asc" <?php selected($orden, 'saldo_asc'); ?>><?php echo esc_html__('Saldo (menor a mayor)', 'flavor-chat-ia'); ?></option>
+                    <option value="nombre_asc" <?php selected($orden, 'nombre_asc'); ?>><?php echo esc_html__('Nombre (A-Z)', 'flavor-chat-ia'); ?></option>
+                    <option value="nombre_desc" <?php selected($orden, 'nombre_desc'); ?>><?php echo esc_html__('Nombre (Z-A)', 'flavor-chat-ia'); ?></option>
+                    <option value="intercambios_desc" <?php selected($orden, 'intercambios_desc'); ?>><?php echo esc_html__('Más intercambios', 'flavor-chat-ia'); ?></option>
                 </select>
             </form>
         </div>

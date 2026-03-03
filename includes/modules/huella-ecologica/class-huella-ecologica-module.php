@@ -1735,7 +1735,49 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
-        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+        $aliases = [
+            'listar' => 'calcular_huella',
+            'calculadora' => 'calcular_huella',
+            'mi_huella' => 'mis_registros',
+            'mis_items' => 'mis_registros',
+            'mis-registros' => 'mis_registros',
+            'compensar' => 'proyectos_compensacion',
+            'ranking' => 'ver_logros',
+            'logros' => 'ver_logros',
+            'comunidad' => 'ver_comunidad',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $method = 'action_' . $action_name;
+
+        if (method_exists($this, $method)) {
+            return $this->$method($params);
+        }
+
+        return [
+            'success' => false,
+            'error' => __('Acción no implementada', 'flavor-chat-ia'),
+        ];
+    }
+
+    private function action_calcular_huella($params) {
+        return ['success' => true, 'html' => do_shortcode('[huella_ecologica_calculadora]')];
+    }
+
+    private function action_mis_registros($params) {
+        return ['success' => true, 'html' => do_shortcode('[huella_ecologica_mis_registros]')];
+    }
+
+    private function action_ver_comunidad($params) {
+        return ['success' => true, 'html' => do_shortcode('[huella_ecologica_comunidad]')];
+    }
+
+    private function action_proyectos_compensacion($params) {
+        return ['success' => true, 'html' => do_shortcode('[huella_ecologica_proyectos]')];
+    }
+
+    private function action_ver_logros($params) {
+        return ['success' => true, 'html' => do_shortcode('[huella_ecologica_logros]')];
     }
 
     /**
@@ -1803,31 +1845,31 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
                 'calculadora' => [
                     'label'   => __('Calculadora', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-calculator',
-                    'content' => 'shortcode:huella_calculadora',
+                    'content' => 'shortcode:huella_ecologica_calculadora',
                     'public'  => true,
                 ],
                 'mi-huella' => [
                     'label'      => __('Mi huella', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-chart-pie',
-                    'content'    => 'shortcode:huella_mi_huella',
+                    'content'    => 'shortcode:huella_ecologica_mis_registros',
                     'requires_login' => true,
                 ],
                 'registrar' => [
                     'label'      => __('Registrar', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-plus-alt',
-                    'content'    => 'shortcode:huella_registrar',
+                    'content'    => 'shortcode:huella_ecologica_calculadora',
                     'requires_login' => true,
                 ],
                 'compensar' => [
                     'label'      => __('Compensar', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-palmtree',
-                    'content'    => 'shortcode:huella_compensar',
+                    'content'    => 'shortcode:huella_ecologica_proyectos',
                     'requires_login' => true,
                 ],
                 'ranking' => [
                     'label'   => __('Ranking', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-awards',
-                    'content' => 'shortcode:huella_ranking',
+                    'content' => 'shortcode:huella_ecologica_logros',
                     'public'  => true,
                 ],
             ],

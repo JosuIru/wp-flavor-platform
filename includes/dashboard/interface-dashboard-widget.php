@@ -460,6 +460,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
             // ═══════════════════════════════════════════════════════════════
             'economia-don'          => '_frontend_:/mi-portal/economia-don/',
             'economia-suficiencia'  => '_frontend_:/mi-portal/economia-suficiencia/',
+            'energia-comunitaria'   => '_frontend_:/mi-portal/energia-comunitaria/',
             'saberes-ancestrales'   => '_frontend_:/mi-portal/saberes-ancestrales/',
             'justicia-restaurativa' => '_frontend_:/mi-portal/justicia-restaurativa/',
             'huella-ecologica'      => '_frontend_:/mi-portal/huella-ecologica/',

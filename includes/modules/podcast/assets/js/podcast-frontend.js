@@ -48,6 +48,11 @@
 
             // Subir episodio
             $(document).on('click', '.flavor-btn-subir-episodio', this.abrirFormEpisodio.bind(this));
+
+            // Modales de gestion
+            $(document).on('click', '.flavor-podcast-modal-close, .flavor-podcast-modal-overlay', this.cerrarModal.bind(this));
+            $(document).on('submit', '#form-crear-serie-modal', this.enviarFormSerie.bind(this));
+            $(document).on('submit', '#form-subir-episodio-modal', this.enviarFormEpisodio.bind(this));
         },
 
         initPlayer: function() {
@@ -333,15 +338,176 @@
             }
         },
 
-        abrirFormSerie: function() {
-            // TODO: Implementar modal de crear serie
-            alert('Función de crear serie - pendiente de implementar modal');
+        abrirFormSerie: function(e) {
+            if (e) {
+                e.preventDefault();
+            }
+
+            this.ensureModal('crear-serie', 'Nueva serie', `
+                <form id="form-crear-serie-modal" class="flavor-form flavor-podcast-modal-form" enctype="multipart/form-data">
+                    <div class="flavor-form-grupo">
+                        <label for="podcast-serie-titulo">Título *</label>
+                        <input type="text" id="podcast-serie-titulo" name="titulo" required>
+                    </div>
+                    <div class="flavor-form-grupo">
+                        <label for="podcast-serie-descripcion">Descripción *</label>
+                        <textarea id="podcast-serie-descripcion" name="descripcion" rows="4" required></textarea>
+                    </div>
+                    <div class="flavor-form-grupo">
+                        <label for="podcast-serie-categoria">Categoría</label>
+                        <select id="podcast-serie-categoria" name="categoria">
+                            <option value="cultura">Cultura</option>
+                            <option value="tecnologia">Tecnología</option>
+                            <option value="sociedad">Sociedad</option>
+                            <option value="entretenimiento">Entretenimiento</option>
+                            <option value="educacion">Educación</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="flavor-form-grupo">
+                        <label for="podcast-serie-imagen">Imagen de portada</label>
+                        <input type="file" id="podcast-serie-imagen" name="imagen" accept="image/*">
+                    </div>
+                    <div class="flavor-form-acciones">
+                        <button type="button" class="flavor-btn flavor-btn-outline flavor-podcast-modal-close">Cancelar</button>
+                        <button type="submit" class="flavor-btn flavor-btn-primary" data-loading="Creando...">Crear serie</button>
+                    </div>
+                </form>
+            `).show();
         },
 
         abrirFormEpisodio: function(e) {
+            e.preventDefault();
             var serieId = $(e.currentTarget).data('serie-id');
-            // TODO: Implementar modal de subir episodio
-            alert('Función de subir episodio a serie ' + serieId + ' - pendiente de implementar modal');
+            this.ensureModal('subir-episodio', 'Subir episodio', `
+                <form id="form-subir-episodio-modal" class="flavor-form flavor-podcast-modal-form" enctype="multipart/form-data">
+                    <input type="hidden" name="serie_id" value="${serieId}">
+                    <div class="flavor-form-grupo">
+                        <label for="podcast-episodio-titulo">Título del episodio *</label>
+                        <input type="text" id="podcast-episodio-titulo" name="titulo" required>
+                    </div>
+                    <div class="flavor-form-grupo">
+                        <label for="podcast-episodio-descripcion">Descripción</label>
+                        <textarea id="podcast-episodio-descripcion" name="descripcion" rows="3"></textarea>
+                    </div>
+                    <div class="flavor-form-grupo">
+                        <label for="podcast-episodio-audio">Archivo de audio *</label>
+                        <input type="file" id="podcast-episodio-audio" name="audio" accept="audio/*" required>
+                    </div>
+                    <div class="flavor-form-acciones">
+                        <button type="button" class="flavor-btn flavor-btn-outline flavor-podcast-modal-close">Cancelar</button>
+                        <button type="submit" class="flavor-btn flavor-btn-primary" data-loading="Subiendo...">Publicar episodio</button>
+                    </div>
+                </form>
+            `).show();
+        },
+
+        ensureModal: function(id, titulo, contenido) {
+            var selector = '#flavor-podcast-modal-' + id;
+            var $modal = $(selector);
+
+            if (!$modal.length) {
+                $modal = $(`
+                    <div id="flavor-podcast-modal-${id}" class="flavor-podcast-modal" style="display:none;">
+                        <div class="flavor-podcast-modal-overlay"></div>
+                        <div class="flavor-podcast-modal-content">
+                            <div class="flavor-podcast-modal-header">
+                                <h3>${titulo}</h3>
+                                <button type="button" class="flavor-podcast-modal-close">&times;</button>
+                            </div>
+                            <div class="flavor-podcast-modal-body">${contenido}</div>
+                        </div>
+                    </div>
+                `);
+                $('body').append($modal);
+            } else {
+                $modal.find('.flavor-podcast-modal-header h3').text(titulo);
+                $modal.find('.flavor-podcast-modal-body').html(contenido);
+            }
+
+            return $modal;
+        },
+
+        cerrarModal: function(e) {
+            $(e.currentTarget).closest('.flavor-podcast-modal').hide();
+        },
+
+        enviarFormSerie: function(e) {
+            e.preventDefault();
+
+            var $form = $(e.currentTarget);
+            var $btn = $form.find('button[type="submit"]');
+            var original = $btn.text();
+            var formData = new FormData($form[0]);
+
+            formData.append('action', 'flavor_podcast_crear_serie');
+            formData.append('nonce', this.config.nonce);
+
+            $btn.prop('disabled', true).text($btn.data('loading') || this.config.strings.procesando);
+
+            $.ajax({
+                url: this.config.ajaxUrl,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        FlavorPodcast.showNotice(response.data.message || 'Serie creada correctamente', 'success');
+                        $form.closest('.flavor-podcast-modal').hide();
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 900);
+                    } else {
+                        FlavorPodcast.showNotice((response.data && response.data.message) || FlavorPodcast.config.strings.error, 'error');
+                    }
+                },
+                error: function() {
+                    FlavorPodcast.showNotice(FlavorPodcast.config.strings.error, 'error');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text(original);
+                }
+            });
+        },
+
+        enviarFormEpisodio: function(e) {
+            e.preventDefault();
+
+            var $form = $(e.currentTarget);
+            var $btn = $form.find('button[type="submit"]');
+            var original = $btn.text();
+            var formData = new FormData($form[0]);
+
+            formData.append('action', 'flavor_podcast_subir_episodio');
+            formData.append('nonce', this.config.nonce);
+
+            $btn.prop('disabled', true).text($btn.data('loading') || this.config.strings.procesando);
+
+            $.ajax({
+                url: this.config.ajaxUrl,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        FlavorPodcast.showNotice(response.data.message || 'Episodio publicado correctamente', 'success');
+                        $form.closest('.flavor-podcast-modal').hide();
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 900);
+                    } else {
+                        FlavorPodcast.showNotice((response.data && response.data.message) || FlavorPodcast.config.strings.error, 'error');
+                    }
+                },
+                error: function() {
+                    FlavorPodcast.showNotice(FlavorPodcast.config.strings.error, 'error');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text(original);
+                }
+            });
         },
 
         showNotice: function(message, type) {
@@ -393,6 +559,67 @@
         }
         .flavor-btn-like.liked .dashicons-heart-filled {
             color: #ef4444;
+        }
+        .flavor-podcast-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 10002;
+        }
+        .flavor-podcast-modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(17, 24, 39, 0.65);
+        }
+        .flavor-podcast-modal-content {
+            position: relative;
+            max-width: 640px;
+            margin: 5vh auto;
+            background: #fff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+        }
+        .flavor-podcast-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .flavor-podcast-modal-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        .flavor-podcast-modal-close {
+            background: transparent;
+            border: 0;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        .flavor-podcast-modal-body {
+            padding: 22px;
+        }
+        .flavor-podcast-modal-form .flavor-form-grupo {
+            margin-bottom: 14px;
+        }
+        .flavor-podcast-modal-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .flavor-podcast-modal-form input[type="text"],
+        .flavor-podcast-modal-form input[type="file"],
+        .flavor-podcast-modal-form textarea,
+        .flavor-podcast-modal-form select {
+            width: 100%;
+        }
+        .flavor-podcast-modal-form .flavor-form-acciones {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
         }
     `;
     document.head.appendChild(estilos);

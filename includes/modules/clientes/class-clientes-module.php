@@ -1028,6 +1028,24 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = [
+            'listar' => 'listar_clientes',
+            'listado' => 'listar_clientes',
+            'buscar' => 'buscar_clientes',
+            'crear' => 'crear_cliente',
+            'nuevo' => 'crear_cliente',
+            'detalle' => 'ver_cliente',
+            'ver' => 'ver_cliente',
+            'editar' => 'actualizar_cliente',
+            'actualizar' => 'actualizar_cliente',
+            'nota' => 'agregar_nota',
+            'agregar_nota' => 'agregar_nota',
+            'mis_items' => 'mis_clientes',
+            'mis-clientes' => 'mis_clientes',
+            'stats' => 'estadisticas',
+        ];
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         $metodo_accion = 'action_' . $nombre_accion;
 
         if (method_exists($this, $metodo_accion)) {

@@ -18,7 +18,7 @@ if (!is_user_logged_in()) {
     echo '<span class="dashicons dashicons-lock"></span>';
     echo '<h3>' . esc_html__('Acceso restringido', 'flavor-chat-ia') . '</h3>';
     echo '<p>' . esc_html__('Inicia sesion para ver los detalles de tu pedido.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/mi-pedido/'))) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Iniciar sesion', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -61,7 +61,7 @@ if (!$entrega) {
     echo '<span class="dashicons dashicons-clipboard"></span>';
     echo '<h3>' . esc_html__('Pedido no encontrado', 'flavor-chat-ia') . '</h3>';
     echo '<p>' . esc_html__('No se ha encontrado el pedido solicitado o no tienes pedidos aun.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(home_url('/mi-portal/grupos-consumo/catalogo/')) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(home_url('/mi-portal/grupos-consumo/productos/')) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Ver catalogo', 'flavor-chat-ia');
     echo '</a></div>';
     return;

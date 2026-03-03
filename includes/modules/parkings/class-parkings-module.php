@@ -418,6 +418,9 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         add_shortcode('flavor_solicitar_plaza', [$this, 'shortcode_solicitar_plaza']);
         add_shortcode('flavor_parking_grid', [$this, 'shortcode_parking_grid']);
         add_shortcode('flavor_parking_stats', [$this, 'shortcode_estadisticas']);
+        add_shortcode('parkings_mapa', [$this, 'shortcode_mapa_alias']);
+        add_shortcode('parkings_reservar', [$this, 'shortcode_reservar_alias']);
+        add_shortcode('parkings_mis_reservas', [$this, 'shortcode_mis_reservas_alias']);
     }
 
     /**
@@ -425,6 +428,36 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      */
     public function registrar_shortcodes() {
         $this->register_shortcodes();
+    }
+
+    /**
+     * Wrapper del renderer: mapa.
+     *
+     * @param array $atributos
+     * @return string
+     */
+    public function shortcode_mapa_alias($atributos) {
+        return $this->shortcode_mapa_parkings($atributos);
+    }
+
+    /**
+     * Wrapper del renderer: reservar.
+     *
+     * @param array $atributos
+     * @return string
+     */
+    public function shortcode_reservar_alias($atributos) {
+        return $this->shortcode_parking_grid($atributos);
+    }
+
+    /**
+     * Wrapper del renderer: mis reservas.
+     *
+     * @param array $atributos
+     * @return string
+     */
+    public function shortcode_mis_reservas_alias($atributos) {
+        return $this->shortcode_mis_reservas($atributos);
     }
 
     /**
@@ -2290,6 +2323,20 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $params) {
+        $aliases = [
+            'listar' => 'buscar_parkings',
+            'listado' => 'buscar_parkings',
+            'mapa' => 'buscar_parkings',
+            'explorar' => 'buscar_parkings',
+            'buscar' => 'buscar_parkings',
+            'tarifas' => 'ver_tarifas',
+            'ocupacion' => 'ocupacion_tiempo_real',
+            'tiempo-real' => 'ocupacion_tiempo_real',
+            'valorar' => 'valorar_reserva',
+            'compartir' => 'compartir_plaza',
+        ];
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         $metodo = 'action_' . $nombre_accion;
 
         if (method_exists($this, $metodo)) {
@@ -2742,7 +2789,7 @@ KNOWLEDGE;
             ),
             'icon' => 'dashicons-car',
             'color' => '#10b981',
-            'link' => home_url('/mis-reservas-parking/'),
+            'link' => home_url('/mi-portal/parkings/mis-reservas/'),
             'data' => [
                 'reserva_id' => $reserva_id,
                 'parking_id' => $parking->id,
@@ -2781,7 +2828,7 @@ KNOWLEDGE;
             'message' => $mensaje,
             'icon' => 'dashicons-no',
             'color' => '#ef4444',
-            'link' => home_url('/mis-reservas-parking/'),
+            'link' => home_url('/mi-portal/parkings/mis-reservas/'),
             'data' => [
                 'reserva_id' => $reserva_id,
                 'penalizacion' => $penalizacion,
@@ -2805,7 +2852,7 @@ KNOWLEDGE;
             ),
             'icon' => 'dashicons-yes-alt',
             'color' => '#22c55e',
-            'link' => home_url('/parkings/?reservar=' . $plaza->id),
+            'link' => add_query_arg('parking', $plaza->parking_id, home_url('/mi-portal/parkings/solicitar/')),
             'priority' => 'high',
             'data' => [
                 'plaza_id' => $plaza->id,
@@ -2842,7 +2889,7 @@ KNOWLEDGE;
                 ),
                 'icon' => 'dashicons-clock',
                 'color' => '#f59e0b',
-                'link' => home_url('/mis-reservas-parking/'),
+                'link' => home_url('/mi-portal/parkings/mis-reservas/'),
                 'data' => [
                     'reserva_id' => $reserva->id,
                 ],
@@ -2879,7 +2926,7 @@ KNOWLEDGE;
                 ),
                 'icon' => 'dashicons-warning',
                 'color' => '#f59e0b',
-                'link' => home_url('/mis-reservas-parking/'),
+                'link' => home_url('/mi-portal/parkings/mis-reservas/'),
                 'data' => [
                     'reserva_id' => $reserva->id,
                 ],
@@ -4122,7 +4169,7 @@ KNOWLEDGE;
                 'mapa' => [
                     'label'   => __('Mapa', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-location',
-                    'content' => 'shortcode:parkings_mapa',
+                    'content' => '[parkings_mapa]',
                     'public'  => true,
                 ],
                 'listado' => [
@@ -4134,13 +4181,13 @@ KNOWLEDGE;
                 'reservar' => [
                     'label'      => __('Reservar', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-calendar-alt',
-                    'content'    => 'shortcode:parkings_reservar',
+                    'content'    => '[parkings_reservar]',
                     'requires_login' => true,
                 ],
                 'mis-reservas' => [
                     'label'      => __('Mis reservas', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-admin-users',
-                    'content'    => 'shortcode:parkings_mis_reservas',
+                    'content'    => '[parkings_mis_reservas]',
                     'requires_login' => true,
                 ],
             ],

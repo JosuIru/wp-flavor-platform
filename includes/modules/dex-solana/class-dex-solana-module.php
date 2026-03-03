@@ -830,6 +830,29 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = array(
+            'listar' => 'listar_pools',
+            'listado' => 'listar_pools',
+            'explorar' => 'listar_pools',
+            'buscar' => 'buscar_token',
+            'cotizacion' => 'obtener_cotizacion_swap',
+            'swap' => 'ejecutar_swap',
+            'portfolio' => 'obtener_portfolio',
+            'historial' => 'obtener_historial_swaps',
+            'precios' => 'obtener_precios',
+            'pool' => 'obtener_pool',
+            'liquidez' => 'agregar_liquidez',
+            'retirar' => 'retirar_liquidez',
+            'posiciones' => 'obtener_posiciones_lp',
+            'farming' => 'listar_programas_farming',
+            'stake' => 'stakear_lp',
+            'unstake' => 'unstakear_lp',
+            'rewards' => 'cosechar_rewards',
+            'modo' => 'cambiar_modo',
+            'reset' => 'reset_dex',
+        );
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         $metodo_accion = 'action_' . $nombre_accion;
 
         if (method_exists($this, $metodo_accion)) {

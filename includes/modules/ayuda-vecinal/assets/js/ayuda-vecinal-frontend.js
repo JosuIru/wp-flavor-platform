@@ -48,6 +48,7 @@
 
             // Acciones en lista de ayudas
             $(document).on('click', '.btn-ver-respuestas', this.handleVerRespuestas.bind(this));
+            $(document).on('click', '.btn-aceptar-respuesta', this.handleAceptarRespuesta.bind(this));
             $(document).on('click', '.btn-cancelar-solicitud', this.handleCancelarSolicitud.bind(this));
             $(document).on('click', '.btn-completar-solicitud', this.handleCompletarSolicitud.bind(this));
             $(document).on('click', '.btn-retirar-oferta', this.handleRetirarOferta.bind(this));
@@ -416,60 +417,228 @@
          */
         handleVerRespuestas: function(evento) {
             const idSolicitud = $(evento.currentTarget).data('solicitud-id');
-            // TODO: Implementar modal de respuestas
-            console.log('Ver respuestas de solicitud:', idSolicitud);
+            this.restRequest(String(idSolicitud) + '/respuestas', {
+                method: 'GET'
+            }).done((respuestas) => {
+                this.mostrarModalRespuestas(idSolicitud, respuestas || []);
+            }).fail((xhr) => {
+                this.mostrarNotificacion(this.obtenerMensajeError(xhr), 'error');
+            });
+        },
+
+        /**
+         * Aceptar respuesta
+         */
+        handleAceptarRespuesta: function(evento) {
+            evento.preventDefault();
+
+            if (!confirm('¿Aceptar esta ayuda y asignar a esta persona?')) {
+                return;
+            }
+
+            const idRespuesta = $(evento.currentTarget).data('respuesta-id');
+
+            this.restRequest('respuestas/' + String(idRespuesta) + '/aceptar', {
+                method: 'POST'
+            }).done((respuesta) => {
+                this.mostrarNotificacion((respuesta && respuesta.message) || ayudaVecinalData.strings.respuesta_aceptada, 'exito');
+                $('#modal-respuestas-ayuda').removeClass('activo');
+                window.location.reload();
+            }).fail((xhr) => {
+                this.mostrarNotificacion(this.obtenerMensajeError(xhr), 'error');
+            });
         },
 
         /**
          * Cancelar solicitud
          */
         handleCancelarSolicitud: function(evento) {
+            evento.preventDefault();
+
             if (!confirm('¿Estás seguro de que quieres cancelar esta solicitud?')) {
                 return;
             }
 
             const idSolicitud = $(evento.currentTarget).data('solicitud-id');
-            // TODO: Implementar cancelación
-            console.log('Cancelar solicitud:', idSolicitud);
+
+            this.restRequest(String(idSolicitud), {
+                method: 'DELETE'
+            }).done((respuesta) => {
+                this.mostrarNotificacion((respuesta && respuesta.message) || ayudaVecinalData.strings.solicitud_cancelada, 'exito');
+                window.location.reload();
+            }).fail((xhr) => {
+                this.mostrarNotificacion(this.obtenerMensajeError(xhr), 'error');
+            });
         },
 
         /**
          * Completar solicitud
          */
         handleCompletarSolicitud: function(evento) {
+            evento.preventDefault();
+
             if (!confirm('¿Confirmas que la ayuda ha sido completada?')) {
                 return;
             }
 
             const idSolicitud = $(evento.currentTarget).data('solicitud-id');
-            // TODO: Implementar completar
-            console.log('Completar solicitud:', idSolicitud);
+
+            this.restRequest(String(idSolicitud), {
+                method: 'PUT',
+                data: {
+                    estado: 'completada'
+                }
+            }).done((respuesta) => {
+                this.mostrarNotificacion((respuesta && respuesta.message) || ayudaVecinalData.strings.solicitud_completada, 'exito');
+                window.location.reload();
+            }).fail((xhr) => {
+                this.mostrarNotificacion(this.obtenerMensajeError(xhr), 'error');
+            });
         },
 
         /**
          * Retirar oferta
          */
         handleRetirarOferta: function(evento) {
+            evento.preventDefault();
+
             if (!confirm('¿Estás seguro de que quieres retirar tu oferta de ayuda?')) {
                 return;
             }
 
-            const idRespuesta = $(evento.currentTarget).data('respuesta-id');
-            // TODO: Implementar retirar
-            console.log('Retirar oferta:', idRespuesta);
+            const boton = $(evento.currentTarget);
+            const idRespuesta = boton.data('respuesta-id');
+
+            this.restRequest('respuestas/' + String(idRespuesta) + '/retirar', {
+                method: 'POST'
+            }).done((respuesta) => {
+                this.mostrarNotificacion((respuesta && respuesta.message) || 'Tu oferta de ayuda ha sido retirada.', 'exito');
+                window.location.reload();
+            }).fail((xhr) => {
+                this.mostrarNotificacion(this.obtenerMensajeError(xhr), 'error');
+            });
         },
 
         /**
          * Desactivar oferta
          */
         handleDesactivarOferta: function(evento) {
+            evento.preventDefault();
+
             if (!confirm('¿Quieres desactivar tu oferta de ayuda?')) {
                 return;
             }
 
-            const idOferta = $(evento.currentTarget).data('oferta-id');
-            // TODO: Implementar desactivar
-            console.log('Desactivar oferta:', idOferta);
+            const boton = $(evento.currentTarget);
+            const idOferta = boton.data('oferta-id');
+
+            this.restRequest('ofertas/' + String(idOferta), {
+                method: 'PUT',
+                data: {
+                    activa: false
+                }
+            }).done((respuesta) => {
+                this.mostrarNotificacion((respuesta && respuesta.message) || 'Tu oferta ha sido desactivada.', 'exito');
+                window.location.reload();
+            }).fail((xhr) => {
+                this.mostrarNotificacion(this.obtenerMensajeError(xhr), 'error');
+            });
+        },
+
+        /**
+         * Peticion REST al modulo
+         */
+        restRequest: function(path, opciones) {
+            opciones = opciones || {};
+
+            const ajaxOptions = {
+                url: ayudaVecinalData.rest_url + path.replace(/^\/+/, ''),
+                type: opciones.method || 'GET',
+                headers: {
+                    'X-WP-Nonce': ayudaVecinalData.rest_nonce
+                }
+            };
+
+            if (ajaxOptions.type === 'GET') {
+                ajaxOptions.data = opciones.data || {};
+            } else {
+                ajaxOptions.contentType = 'application/json; charset=utf-8';
+                ajaxOptions.data = JSON.stringify(opciones.data || {});
+                ajaxOptions.processData = false;
+            }
+
+            return $.ajax(ajaxOptions);
+        },
+
+        /**
+         * Mostrar respuestas en modal
+         */
+        mostrarModalRespuestas: function(idSolicitud, respuestas) {
+            let modal = $('#modal-respuestas-ayuda');
+
+            if (!modal.length) {
+                modal = $(`
+                    <div id="modal-respuestas-ayuda" class="av-modal">
+                        <div class="av-modal-contenido">
+                            <div class="av-modal-header">
+                                <h3>Respuestas recibidas</h3>
+                                <button class="av-modal-cerrar">&times;</button>
+                            </div>
+                            <div class="av-respuestas-contenido"></div>
+                        </div>
+                    </div>
+                `);
+                $('body').append(modal);
+
+                modal.on('click', '.av-modal-cerrar', function() {
+                    modal.removeClass('activo');
+                });
+
+                modal.on('click', function(e) {
+                    if ($(e.target).is('.av-modal')) {
+                        modal.removeClass('activo');
+                    }
+                });
+            }
+
+            const contenedor = modal.find('.av-respuestas-contenido');
+            const html = respuestas.length ? respuestas.map(function(respuesta) {
+                const disponibilidad = respuesta.disponibilidad_propuesta
+                    ? `<div class="av-respuesta-meta"><strong>Disponibilidad:</strong> ${respuesta.disponibilidad_propuesta}</div>`
+                    : '';
+
+                return `
+                    <div class="av-respuesta-item">
+                        <div class="av-respuesta-head">
+                            <strong>${respuesta.ayudante && respuesta.ayudante.nombre ? respuesta.ayudante.nombre : 'Vecino'}</strong>
+                            <span class="av-respuesta-estado estado-${respuesta.estado || 'pendiente'}">${respuesta.estado || 'pendiente'}</span>
+                        </div>
+                        <div class="av-respuesta-mensaje">${respuesta.mensaje || ''}</div>
+                        ${disponibilidad}
+                        <div class="av-respuesta-meta">${respuesta.fecha_formateada || ''}</div>
+                        ${respuesta.estado === 'pendiente' ? `<div class="av-respuesta-acciones"><button class="btn-principal btn-aceptar-respuesta" data-respuesta-id="${respuesta.id}" data-solicitud-id="${idSolicitud}">Aceptar ayuda</button></div>` : ''}
+                    </div>
+                `;
+            }).join('') : `<div class="av-empty-state"><p>${ayudaVecinalData.strings.sin_respuestas}</p></div>`;
+
+            contenedor.html(html);
+            modal.addClass('activo');
+        },
+
+        /**
+         * Obtener mensaje util desde una respuesta REST
+         */
+        obtenerMensajeError: function(xhr) {
+            if (xhr && xhr.responseJSON) {
+                if (xhr.responseJSON.message) {
+                    return xhr.responseJSON.message;
+                }
+                if (xhr.responseJSON.data && xhr.responseJSON.data.message) {
+                    return xhr.responseJSON.data.message;
+                }
+            }
+
+            return ayudaVecinalData.strings.error_general;
         },
 
         /**
@@ -611,6 +780,60 @@
                 font-size: 1.5rem;
                 cursor: pointer;
                 color: #6b7280;
+            }
+
+            .av-respuestas-contenido {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .av-respuesta-item {
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                padding: 1rem;
+                background: #fff;
+            }
+
+            .av-respuesta-head {
+                display: flex;
+                justify-content: space-between;
+                gap: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .av-respuesta-mensaje {
+                color: #374151;
+                margin-bottom: 0.5rem;
+                white-space: pre-wrap;
+            }
+
+            .av-respuesta-meta {
+                color: #6b7280;
+                font-size: 0.875rem;
+            }
+
+            .av-respuesta-acciones {
+                margin-top: 0.75rem;
+            }
+
+            .av-respuesta-estado {
+                font-size: 0.75rem;
+                border-radius: 999px;
+                padding: 0.2rem 0.6rem;
+                background: #e5e7eb;
+                color: #374151;
+                text-transform: capitalize;
+            }
+
+            .estado-pendiente {
+                background: #fef3c7;
+                color: #92400e;
+            }
+
+            .estado-aceptada {
+                background: #dcfce7;
+                color: #166534;
             }
 
             .form-grupo input.error,

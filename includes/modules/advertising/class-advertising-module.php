@@ -818,6 +818,22 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
      * Ejecutar acción
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'listar_anuncios',
+            'listado' => 'listar_anuncios',
+            'crear' => 'crear_anuncio',
+            'nuevo' => 'crear_anuncio',
+            'mis_items' => 'mis_anuncios',
+            'mis-anuncios' => 'mis_anuncios',
+            'stats' => 'ver_estadisticas',
+            'estadisticas' => 'ver_estadisticas',
+            'pausar' => 'pausar_anuncio',
+            'reanudar' => 'reanudar_anuncio',
+            'ingresos' => 'mis_ingresos',
+            'ubicaciones' => 'ubicaciones_disponibles',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo = 'action_' . $action_name;
 
         if (method_exists($this, $metodo)) {

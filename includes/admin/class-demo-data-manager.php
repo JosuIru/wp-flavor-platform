@@ -197,6 +197,7 @@ class Flavor_Demo_Data_Manager {
             'empresarial',
             'espacios_comunes',
             'eventos',
+            'energia_comunitaria',
             'facturas',
             'fichaje_empleados',
             'foros',
@@ -5089,6 +5090,492 @@ private function populate_comunidades() {
 
 private function clear_comunidades() {
     return ['success' => true, 'count' => 0];
+}
+
+private function populate_energia_comunitaria() {
+    global $wpdb;
+
+    $tabla_comunidades = $wpdb->prefix . 'flavor_energia_comunidades';
+    $tabla_instalaciones = $wpdb->prefix . 'flavor_energia_instalaciones';
+    $tabla_lecturas = $wpdb->prefix . 'flavor_energia_lecturas';
+    $tabla_incidencias = $wpdb->prefix . 'flavor_energia_incidencias';
+    $tabla_participantes = $wpdb->prefix . 'flavor_energia_participantes';
+    $tabla_cierres = $wpdb->prefix . 'flavor_energia_repartos_cierre';
+    $tabla_cierres_detalle = $wpdb->prefix . 'flavor_energia_repartos_detalle';
+    $tabla_liquidaciones = $wpdb->prefix . 'flavor_energia_liquidaciones';
+    $tabla_comunidades_sociales = $wpdb->prefix . 'flavor_comunidades';
+
+    if (
+        !Flavor_Chat_Helpers::tabla_existe($tabla_comunidades) ||
+        !Flavor_Chat_Helpers::tabla_existe($tabla_instalaciones) ||
+        !Flavor_Chat_Helpers::tabla_existe($tabla_lecturas) ||
+        !Flavor_Chat_Helpers::tabla_existe($tabla_incidencias) ||
+        !Flavor_Chat_Helpers::tabla_existe($tabla_participantes) ||
+        !Flavor_Chat_Helpers::tabla_existe($tabla_cierres) ||
+        !Flavor_Chat_Helpers::tabla_existe($tabla_cierres_detalle) ||
+        !Flavor_Chat_Helpers::tabla_existe($tabla_liquidaciones)
+    ) {
+        return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
+    }
+
+    $usuarios_demo = $this->get_or_create_demo_users();
+    $creador_id = !empty($usuarios_demo) ? (int) $usuarios_demo[0] : $this->get_demo_user_id();
+    $responsable_id = !empty($usuarios_demo[1]) ? (int) $usuarios_demo[1] : $creador_id;
+
+    $comunidades_sociales = [];
+    if (Flavor_Chat_Helpers::tabla_existe($tabla_comunidades_sociales)) {
+        $comunidades_sociales = $wpdb->get_col(
+            "SELECT id FROM {$tabla_comunidades_sociales} WHERE estado = 'activa' ORDER BY id ASC LIMIT 2"
+        );
+    }
+
+    $ids_insertados = [
+        'comunidades' => [],
+        'instalaciones' => [],
+        'lecturas' => [],
+        'incidencias' => [],
+        'participantes' => [],
+        'cierres' => [],
+        'cierres_detalle' => [],
+        'liquidaciones' => [],
+    ];
+
+    $comunidades_demo = [
+        [
+            'comunidad_id' => isset($comunidades_sociales[0]) ? (int) $comunidades_sociales[0] : null,
+            'nombre' => 'Comunidad Solar Barrio Norte',
+            'descripcion' => 'Autoconsumo compartido con cubiertas solares, batería comunitaria y gobernanza vecinal.',
+            'tipo_instalacion_principal' => 'solar',
+            'modelo_reparto' => 'proporcional',
+            'potencia_kw' => 48.50,
+            'bateria_kwh' => 95.00,
+        ],
+        [
+            'comunidad_id' => isset($comunidades_sociales[1]) ? (int) $comunidades_sociales[1] : null,
+            'nombre' => 'Microred Cooperativa La Rivera',
+            'descripcion' => 'Nodo energético de proximidad con reparto mixto, prioridad a necesidades esenciales y formación comunitaria.',
+            'tipo_instalacion_principal' => 'mixta',
+            'modelo_reparto' => 'mixto',
+            'potencia_kw' => 63.20,
+            'bateria_kwh' => 140.00,
+        ],
+    ];
+
+    foreach ($comunidades_demo as $index => $comunidad) {
+        $insertado = $wpdb->insert(
+            $tabla_comunidades,
+            [
+                'comunidad_id' => $comunidad['comunidad_id'],
+                'creador_id' => $creador_id,
+                'nombre' => $comunidad['nombre'],
+                'descripcion' => $comunidad['descripcion'],
+                'tipo_instalacion_principal' => $comunidad['tipo_instalacion_principal'],
+                'modelo_reparto' => $comunidad['modelo_reparto'],
+                'potencia_kw' => $comunidad['potencia_kw'],
+                'bateria_kwh' => $comunidad['bateria_kwh'],
+                'estado' => 'activa',
+                'created_at' => date('Y-m-d H:i:s', strtotime('-' . (40 - ($index * 7)) . ' days')),
+                'updated_at' => current_time('mysql'),
+            ],
+            ['%d', '%d', '%s', '%s', '%s', '%s', '%f', '%f', '%s', '%s', '%s']
+        );
+
+        if ($insertado) {
+            $ids_insertados['comunidades'][] = (int) $wpdb->insert_id;
+        }
+    }
+
+    $instalaciones_demo = [];
+    foreach ($ids_insertados['comunidades'] as $idx => $energia_comunidad_id) {
+        if ($idx === 0) {
+            $instalaciones_demo[] = [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'responsable_id' => $responsable_id,
+                'nombre' => 'Cubierta Centro Cívico Norte',
+                'tipo' => 'solar',
+                'potencia_kw' => 32.00,
+                'bateria_kwh' => 40.00,
+                'ubicacion' => 'Centro Cívico Norte',
+                'ultima_revision' => date('Y-m-d H:i:s', strtotime('-15 days')),
+            ];
+            $instalaciones_demo[] = [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'responsable_id' => $responsable_id,
+                'nombre' => 'Batería Compartida Plaza Norte',
+                'tipo' => 'bateria',
+                'potencia_kw' => 0,
+                'bateria_kwh' => 55.00,
+                'ubicacion' => 'Plaza Norte',
+                'ultima_revision' => date('Y-m-d H:i:s', strtotime('-8 days')),
+            ];
+        } else {
+            $instalaciones_demo[] = [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'responsable_id' => $responsable_id,
+                'nombre' => 'Microred Escuela Taller',
+                'tipo' => 'microred',
+                'potencia_kw' => 41.20,
+                'bateria_kwh' => 60.00,
+                'ubicacion' => 'Escuela Taller La Rivera',
+                'ultima_revision' => date('Y-m-d H:i:s', strtotime('-11 days')),
+            ];
+            $instalaciones_demo[] = [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'responsable_id' => $responsable_id,
+                'nombre' => 'Aerogenerador Comunitario Rivera',
+                'tipo' => 'eolica',
+                'potencia_kw' => 22.00,
+                'bateria_kwh' => 25.00,
+                'ubicacion' => 'Parque Fluvial',
+                'ultima_revision' => date('Y-m-d H:i:s', strtotime('-21 days')),
+            ];
+        }
+    }
+
+    foreach ($instalaciones_demo as $index => $instalacion) {
+        $insertado = $wpdb->insert(
+            $tabla_instalaciones,
+            [
+                'energia_comunidad_id' => $instalacion['energia_comunidad_id'],
+                'responsable_id' => $instalacion['responsable_id'],
+                'nombre' => $instalacion['nombre'],
+                'tipo' => $instalacion['tipo'],
+                'potencia_kw' => $instalacion['potencia_kw'],
+                'bateria_kwh' => $instalacion['bateria_kwh'],
+                'ubicacion' => $instalacion['ubicacion'],
+                'estado' => 'activa',
+                'ultima_revision' => $instalacion['ultima_revision'],
+                'created_at' => date('Y-m-d H:i:s', strtotime('-' . (20 - $index) . ' days')),
+            ],
+            ['%d', '%d', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%s']
+        );
+
+        if ($insertado) {
+            $ids_insertados['instalaciones'][] = (int) $wpdb->insert_id;
+        }
+    }
+
+    foreach ($ids_insertados['instalaciones'] as $index => $instalacion_id) {
+        for ($i = 0; $i < 3; $i++) {
+            $generada = rand(180, 420) / 10;
+            $consumida = rand(120, 360) / 10;
+
+            $insertado = $wpdb->insert(
+                $tabla_lecturas,
+                [
+                    'instalacion_id' => $instalacion_id,
+                    'user_id' => $creador_id,
+                    'energia_generada_kwh' => $generada,
+                    'energia_consumida_kwh' => $consumida,
+                    'excedente_kwh' => max(0, $generada - $consumida),
+                    'bateria_porcentaje' => rand(35, 96),
+                    'fecha_lectura' => date('Y-m-d H:i:s', strtotime('-' . (($index * 3) + $i + 1) . ' days')),
+                    'origen' => 'manual',
+                    'created_at' => current_time('mysql'),
+                ],
+                ['%d', '%d', '%f', '%f', '%f', '%f', '%s', '%s', '%s']
+            );
+
+            if ($insertado) {
+                $ids_insertados['lecturas'][] = (int) $wpdb->insert_id;
+            }
+        }
+    }
+
+    $incidencias_demo = [];
+    if (!empty($ids_insertados['instalaciones'][0])) {
+        $incidencias_demo[] = [
+            'instalacion_id' => $ids_insertados['instalaciones'][0],
+            'user_id' => $responsable_id,
+            'titulo' => 'Revisión de inversor programada',
+            'descripcion' => 'Se detecta una caída leve de rendimiento. Revisar firmware y ventilación.',
+            'prioridad' => 'media',
+            'estado' => 'en_progreso',
+            'fecha_reporte' => date('Y-m-d H:i:s', strtotime('-4 days')),
+        ];
+    }
+    if (!empty($ids_insertados['instalaciones'][2])) {
+        $incidencias_demo[] = [
+            'instalacion_id' => $ids_insertados['instalaciones'][2],
+            'user_id' => $responsable_id,
+            'titulo' => 'Poda recomendada por sombras',
+            'descripcion' => 'La arboleda cercana empieza a proyectar sombra parcial en horas de tarde.',
+            'prioridad' => 'baja',
+            'estado' => 'abierta',
+            'fecha_reporte' => date('Y-m-d H:i:s', strtotime('-2 days')),
+        ];
+    }
+
+    foreach ($incidencias_demo as $incidencia) {
+        $insertado = $wpdb->insert(
+            $tabla_incidencias,
+            $incidencia,
+            ['%d', '%d', '%s', '%s', '%s', '%s', '%s']
+        );
+
+        if ($insertado) {
+            $ids_insertados['incidencias'][] = (int) $wpdb->insert_id;
+        }
+    }
+
+    $participantes_demo = [];
+    foreach ($ids_insertados['comunidades'] as $index => $energia_comunidad_id) {
+        if ($index === 0) {
+            $participantes_demo[] = [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'user_id' => $creador_id,
+                'nombre' => 'Bloque A',
+                'rol' => 'hogar',
+                'coeficiente_reparto' => 1.20,
+                'consumo_base_kwh' => 240.00,
+                'estado' => 'activo',
+                'created_at' => current_time('mysql'),
+            ];
+            $participantes_demo[] = [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'user_id' => $responsable_id,
+                'nombre' => 'Bloque B',
+                'rol' => 'hogar',
+                'coeficiente_reparto' => 1.00,
+                'consumo_base_kwh' => 210.00,
+                'estado' => 'activo',
+                'created_at' => current_time('mysql'),
+            ];
+            $participantes_demo[] = [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'user_id' => null,
+                'nombre' => 'Centro Cívico',
+                'rol' => 'espacio_comun',
+                'coeficiente_reparto' => 0.80,
+                'consumo_base_kwh' => 175.00,
+                'estado' => 'activo',
+                'created_at' => current_time('mysql'),
+            ];
+        } else {
+            $participantes_demo[] = [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'user_id' => $creador_id,
+                'nombre' => 'Hogar Rivera 1',
+                'rol' => 'hogar',
+                'coeficiente_reparto' => 0.95,
+                'consumo_base_kwh' => 185.00,
+                'estado' => 'activo',
+                'created_at' => current_time('mysql'),
+            ];
+            $participantes_demo[] = [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'user_id' => $responsable_id,
+                'nombre' => 'Taller Comunitario',
+                'rol' => 'equipamiento',
+                'coeficiente_reparto' => 1.35,
+                'consumo_base_kwh' => 260.00,
+                'estado' => 'activo',
+                'created_at' => current_time('mysql'),
+            ];
+            $participantes_demo[] = [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'user_id' => null,
+                'nombre' => 'Comercio Local Asociado',
+                'rol' => 'comercio',
+                'coeficiente_reparto' => 0.90,
+                'consumo_base_kwh' => 195.00,
+                'estado' => 'activo',
+                'created_at' => current_time('mysql'),
+            ];
+        }
+    }
+
+    foreach ($participantes_demo as $participante) {
+        $insertado = $wpdb->insert(
+            $tabla_participantes,
+            $participante,
+            ['%d', '%d', '%s', '%s', '%f', '%f', '%s', '%s']
+        );
+
+        if ($insertado) {
+            $ids_insertados['participantes'][] = (int) $wpdb->insert_id;
+        }
+    }
+
+    $participantes_por_comunidad = [];
+    $participantes_rows = $wpdb->get_results(
+        "SELECT id, energia_comunidad_id, nombre, coeficiente_reparto
+         FROM {$tabla_participantes}
+         WHERE id IN (" . implode(',', array_map('intval', $ids_insertados['participantes'] ?: [0])) . ")",
+        ARRAY_A
+    );
+    foreach ($participantes_rows as $row) {
+        $participantes_por_comunidad[(int) $row['energia_comunidad_id']][] = $row;
+    }
+
+    $periodo_demo = date('Y-m', strtotime('-1 month'));
+    foreach ($ids_insertados['comunidades'] as $index => $energia_comunidad_id) {
+        $kwh_generados = $index === 0 ? 1240.50 : 1588.40;
+        $kwh_consumidos = $index === 0 ? 1015.20 : 1332.80;
+        $excedente = max(0, $kwh_generados - $kwh_consumidos);
+        $autosuficiencia = $kwh_consumidos > 0 ? round(($kwh_generados / $kwh_consumidos) * 100, 2) : 0;
+        $ahorro = round(min($kwh_generados, $kwh_consumidos) * 0.18, 2);
+
+        $insertado = $wpdb->insert(
+            $tabla_cierres,
+            [
+                'energia_comunidad_id' => $energia_comunidad_id,
+                'periodo' => $periodo_demo,
+                'periodo_inicio' => $periodo_demo . '-01',
+                'periodo_fin' => date('Y-m-t', strtotime($periodo_demo . '-01')),
+                'kwh_generados' => $kwh_generados,
+                'kwh_consumidos' => $kwh_consumidos,
+                'excedente_kwh' => $excedente,
+                'autosuficiencia_pct' => $autosuficiencia,
+                'ahorro_estimado_eur' => $ahorro,
+                'creado_por' => $creador_id,
+                'created_at' => date('Y-m-d H:i:s', strtotime('-20 days')),
+            ],
+            ['%d', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%f', '%d', '%s']
+        );
+
+        if ($insertado) {
+            $cierre_id = (int) $wpdb->insert_id;
+            $ids_insertados['cierres'][] = $cierre_id;
+
+            $participantes_cierre = $participantes_por_comunidad[$energia_comunidad_id] ?? [];
+            $coef_total = array_sum(array_map(function ($fila) {
+                return (float) $fila['coeficiente_reparto'];
+            }, $participantes_cierre));
+
+            foreach ($participantes_cierre as $participante) {
+                $ratio = $coef_total > 0 ? ((float) $participante['coeficiente_reparto'] / $coef_total) : 0;
+                $kwh_asignados = round($excedente * $ratio, 2);
+                $ahorro_participante = round($kwh_asignados * 0.18, 2);
+
+                $detalle_insertado = $wpdb->insert(
+                    $tabla_cierres_detalle,
+                    [
+                        'cierre_id' => $cierre_id,
+                        'participante_id' => (int) $participante['id'],
+                        'participante_nombre' => $participante['nombre'],
+                        'coeficiente_reparto' => (float) $participante['coeficiente_reparto'],
+                        'ratio_reparto_pct' => round($ratio * 100, 2),
+                        'kwh_asignados' => $kwh_asignados,
+                        'ahorro_estimado_eur' => $ahorro_participante,
+                        'created_at' => date('Y-m-d H:i:s', strtotime('-20 days')),
+                    ],
+                    ['%d', '%d', '%s', '%f', '%f', '%f', '%f', '%s']
+                );
+
+                if ($detalle_insertado) {
+                    $detalle_id = (int) $wpdb->insert_id;
+                    $ids_insertados['cierres_detalle'][] = $detalle_id;
+
+                    $liquidacion_insertada = $wpdb->insert(
+                        $tabla_liquidaciones,
+                        [
+                            'cierre_id' => $cierre_id,
+                            'detalle_id' => $detalle_id,
+                            'energia_comunidad_id' => $energia_comunidad_id,
+                            'participante_id' => (int) $participante['id'],
+                            'participante_nombre' => $participante['nombre'],
+                            'periodo' => $periodo_demo,
+                            'referencia' => sprintf(
+                                'EC-%s-C%04d-P%04d',
+                                str_replace('-', '', $periodo_demo),
+                                $cierre_id,
+                                (int) $participante['id']
+                            ),
+                            'kwh_liquidados' => $kwh_asignados,
+                            'precio_kwh' => 0.18,
+                            'importe_ahorro_eur' => $ahorro_participante,
+                            'estado' => 'generada',
+                            'created_at' => date('Y-m-d H:i:s', strtotime('-20 days')),
+                        ],
+                        ['%d', '%d', '%d', '%d', '%s', '%s', '%s', '%f', '%f', '%f', '%s', '%s']
+                    );
+
+                    if ($liquidacion_insertada) {
+                        $ids_insertados['liquidaciones'][] = (int) $wpdb->insert_id;
+                    }
+                }
+            }
+        }
+    }
+
+    update_option('flavor_demo_data_energia_comunitaria_structured', $ids_insertados, false);
+    $this->mark_as_demo('energia_comunitaria', $ids_insertados['comunidades']);
+
+    $conteo = count($ids_insertados['comunidades']) +
+        count($ids_insertados['instalaciones']) +
+        count($ids_insertados['lecturas']) +
+        count($ids_insertados['incidencias']) +
+        count($ids_insertados['participantes']) +
+        count($ids_insertados['cierres']) +
+        count($ids_insertados['cierres_detalle']) +
+        count($ids_insertados['liquidaciones']);
+
+    return [
+        'success' => true,
+        'count' => $conteo,
+        'message' => sprintf(
+            'Se crearon %d comunidades energéticas, %d instalaciones, %d lecturas y %d incidencias',
+            count($ids_insertados['comunidades']),
+            count($ids_insertados['instalaciones']),
+            count($ids_insertados['lecturas']),
+            count($ids_insertados['incidencias'])
+        ),
+    ];
+}
+
+private function clear_energia_comunitaria() {
+    global $wpdb;
+
+    $ids = get_option('flavor_demo_data_energia_comunitaria_structured', []);
+
+    if (empty($ids)) {
+        $this->clear_demo_ids('energia_comunitaria');
+        return ['success' => true, 'count' => 0];
+    }
+
+    $tabla_comunidades = $wpdb->prefix . 'flavor_energia_comunidades';
+    $tabla_instalaciones = $wpdb->prefix . 'flavor_energia_instalaciones';
+    $tabla_lecturas = $wpdb->prefix . 'flavor_energia_lecturas';
+    $tabla_incidencias = $wpdb->prefix . 'flavor_energia_incidencias';
+    $tabla_participantes = $wpdb->prefix . 'flavor_energia_participantes';
+    $tabla_cierres = $wpdb->prefix . 'flavor_energia_repartos_cierre';
+    $tabla_cierres_detalle = $wpdb->prefix . 'flavor_energia_repartos_detalle';
+    $tabla_liquidaciones = $wpdb->prefix . 'flavor_energia_liquidaciones';
+
+    $total_eliminados = 0;
+
+    $grupos = [
+        $tabla_liquidaciones => $ids['liquidaciones'] ?? [],
+        $tabla_cierres_detalle => $ids['cierres_detalle'] ?? [],
+        $tabla_incidencias => $ids['incidencias'] ?? [],
+        $tabla_lecturas => $ids['lecturas'] ?? [],
+        $tabla_participantes => $ids['participantes'] ?? [],
+        $tabla_cierres => $ids['cierres'] ?? [],
+        $tabla_instalaciones => $ids['instalaciones'] ?? [],
+        $tabla_comunidades => $ids['comunidades'] ?? [],
+    ];
+
+    foreach ($grupos as $tabla => $tabla_ids) {
+        if (empty($tabla_ids)) {
+            continue;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($tabla_ids), '%d'));
+        $eliminados = $wpdb->query($wpdb->prepare(
+            "DELETE FROM {$tabla} WHERE id IN ($placeholders)",
+            ...$tabla_ids
+        ));
+
+        if ($eliminados) {
+            $total_eliminados += (int) $eliminados;
+        }
+    }
+
+    delete_option('flavor_demo_data_energia_comunitaria_structured');
+    $this->clear_demo_ids('energia_comunitaria');
+
+    return ['success' => true, 'count' => $total_eliminados];
 }
 
 private function populate_bares() {

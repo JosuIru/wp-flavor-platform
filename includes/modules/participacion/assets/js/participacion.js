@@ -9,13 +9,17 @@
     // Namespace global
     window.FlavorParticipacion = window.FlavorParticipacion || {};
 
+    const participacionConfig = typeof flavorParticipacionConfig !== 'undefined'
+        ? flavorParticipacionConfig
+        : (typeof flavorParticipacion !== 'undefined' ? flavorParticipacion : {});
+
     /**
      * Configuracion del modulo
      */
     const CONFIG = {
-        ajaxUrl: typeof flavorParticipacionConfig !== 'undefined' ? flavorParticipacionConfig.ajaxUrl : '/wp-admin/admin-ajax.php',
-        nonce: typeof flavorParticipacionConfig !== 'undefined' ? flavorParticipacionConfig.nonce : '',
-        strings: typeof flavorParticipacionConfig !== 'undefined' ? flavorParticipacionConfig.strings : {}
+        ajaxUrl: participacionConfig.ajaxUrl || '/wp-admin/admin-ajax.php',
+        nonce: participacionConfig.nonce || '',
+        strings: participacionConfig.strings || participacionConfig.i18n || {}
     };
 
     /**

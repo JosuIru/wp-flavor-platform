@@ -54,9 +54,9 @@
 
         $(document).on('click', '.mm-btn-rechazar', function() {
             const archivoId = $(this).data('id');
-            if (confirm('¿Rechazar este archivo?')) {
+            self.showConfirm('¿Rechazar este archivo?', function() {
                 self.moderar(archivoId, 'rechazar');
-            }
+            });
         });
 
         // Destacar
@@ -68,9 +68,9 @@
         // Eliminar
         $(document).on('click', '.mm-btn-eliminar', function() {
             const archivoId = $(this).data('id');
-            if (confirm('¿Eliminar este archivo permanentemente?')) {
+            self.showConfirm('¿Eliminar este archivo permanentemente?', function() {
                 self.eliminarArchivo(archivoId);
-            }
+            });
         });
 
         // Resolver reporte
@@ -242,8 +242,9 @@
                         const count = parseInt($('#mm-stat-pendientes').text()) - 1;
                         $('#mm-stat-pendientes').text(Math.max(0, count));
                     });
+                    MMAdmin.showToast(accion === 'aprobar' ? 'Archivo aprobado' : 'Archivo rechazado', 'success');
                 } else {
-                    alert(response.data || 'Error');
+                    MMAdmin.showToast(response.data || 'Error', 'error');
                 }
             }
         });
@@ -366,8 +367,9 @@
                     $(`tr:has([data-id="${archivoId}"])`).fadeOut(300, function() {
                         $(this).remove();
                     });
+                    MMAdmin.showToast('Archivo eliminado', 'success');
                 } else {
-                    alert(response.data || 'Error al eliminar');
+                    MMAdmin.showToast(response.data || 'Error al eliminar', 'error');
                 }
             }
         });
@@ -376,6 +378,53 @@
     MMAdmin.resolverReporte = function(reporteId) {
         // Implementar
         console.log('Resolver reporte:', reporteId);
+    };
+
+    MMAdmin.showToast = function(message, type) {
+        type = type || 'info';
+
+        if (!$('.mm-admin-toast-container').length) {
+            $('body').append('<div class="mm-admin-toast-container"></div>');
+        }
+
+        const toast = $('<div class="mm-admin-toast ' + type + '">' + message + '</div>');
+        $('.mm-admin-toast-container').append(toast);
+
+        setTimeout(function() {
+            toast.fadeOut(300, function() {
+                $(this).remove();
+            });
+        }, 4000);
+    };
+
+    MMAdmin.showConfirm = function(message, onConfirm) {
+        if (!$('.mm-admin-toast-container').length) {
+            $('body').append('<div class="mm-admin-toast-container"></div>');
+        }
+
+        const toast = $(
+            '<div class="mm-admin-toast info">' +
+                '<div class="mm-admin-confirm-text"></div>' +
+                '<div class="mm-admin-confirm-actions" style="margin-top:10px;display:flex;gap:8px;">' +
+                    '<button type="button" class="mm-admin-confirm-btn mm-admin-confirm-btn--primary" style="border:0;border-radius:8px;padding:8px 12px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer;">Confirmar</button>' +
+                    '<button type="button" class="mm-admin-confirm-btn mm-admin-confirm-btn--secondary" style="border:0;border-radius:8px;padding:8px 12px;background:#e5e7eb;color:#111827;font-weight:600;cursor:pointer;">Cancelar</button>' +
+                '</div>' +
+            '</div>'
+        );
+
+        toast.find('.mm-admin-confirm-text').text(message);
+        $('.mm-admin-toast-container').append(toast);
+
+        toast.find('.mm-admin-confirm-btn--primary').on('click', function() {
+            toast.remove();
+            if (typeof onConfirm === 'function') {
+                onConfirm();
+            }
+        });
+
+        toast.find('.mm-admin-confirm-btn--secondary').on('click', function() {
+            toast.remove();
+        });
     };
 
     // Exponer

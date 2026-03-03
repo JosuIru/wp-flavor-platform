@@ -42,6 +42,61 @@
         this.loadMisGrupos();
     };
 
+    FlavorChatGrupos.mostrarAviso = function(mensaje, tipo = 'info') {
+        let contenedor = $('.cg-notice-container');
+        if (!contenedor.length) {
+            contenedor = $('<div class="cg-notice-container"></div>').appendTo('body');
+        }
+
+        const aviso = $('<div class="cg-notice cg-notice-' + tipo + '"></div>').text(mensaje);
+        contenedor.append(aviso);
+
+        setTimeout(function() {
+            aviso.addClass('is-visible');
+        }, 10);
+
+        setTimeout(function() {
+            aviso.removeClass('is-visible');
+            setTimeout(function() {
+                aviso.remove();
+            }, 200);
+        }, 3000);
+    };
+
+    FlavorChatGrupos.mostrarConfirmacion = function(mensaje, onConfirm) {
+        let contenedor = $('.cg-notice-container');
+        if (!contenedor.length) {
+            contenedor = $('<div class="cg-notice-container"></div>').appendTo('body');
+        }
+
+        const aviso = $(`
+            <div class="cg-notice cg-notice-confirm is-visible">
+                <div class="cg-notice-confirm__text"></div>
+                <div class="cg-notice-confirm__actions">
+                    <button type="button" class="cg-notice-confirm__btn cg-notice-confirm__btn--primary"></button>
+                    <button type="button" class="cg-notice-confirm__btn cg-notice-confirm__btn--secondary"></button>
+                </div>
+            </div>
+        `);
+
+        aviso.find('.cg-notice-confirm__text').text(mensaje);
+        aviso.find('.cg-notice-confirm__btn--primary').text(this.strings.confirmar || 'Confirmar');
+        aviso.find('.cg-notice-confirm__btn--secondary').text(this.strings.cancelar || 'Cancelar');
+
+        aviso.find('.cg-notice-confirm__btn--primary').on('click', function() {
+            aviso.remove();
+            if (typeof onConfirm === 'function') {
+                onConfirm();
+            }
+        });
+
+        aviso.find('.cg-notice-confirm__btn--secondary').on('click', function() {
+            aviso.remove();
+        });
+
+        contenedor.append(aviso);
+    };
+
     /**
      * Bind de eventos
      */
@@ -88,6 +143,12 @@
             self.unirseGrupo(grupoId, $(this));
         });
 
+        // Abrir grupo desde tarjetas de exploración
+        $(document).on('click', '.cg-btn-abrir-grupo', function() {
+            const grupoId = $(this).data('id');
+            self.abrirGrupo(grupoId);
+        });
+
         // Reaccionar a mensaje
         $(document).on('click', '.cg-reaccion', function() {
             const mensajeId = $(this).closest('.cg-mensaje').data('id');
@@ -110,9 +171,12 @@
         // Eliminar mensaje
         $(document).on('click', '.cg-btn-eliminar-msg', function() {
             const mensajeId = $(this).closest('.cg-mensaje').data('id');
-            if (confirm('¿Eliminar este mensaje?')) {
-                self.eliminarMensaje(mensajeId);
-            }
+            self.mostrarConfirmacion(
+                self.strings.confirmar_eliminar || '¿Eliminar este mensaje?',
+                function() {
+                    self.eliminarMensaje(mensajeId);
+                }
+            );
         });
 
         // Scroll para cargar más mensajes
@@ -468,7 +532,7 @@
                     // Update sidebar
                     self.actualizarSidebarGrupo(self.grupoActual, mensaje);
                 } else {
-                    alert(response.error || 'Error al enviar');
+                    self.mostrarAviso(response.error || 'Error al enviar', 'error');
                 }
             },
             complete: function() {
@@ -539,7 +603,13 @@
                     const msg = $(`.cg-mensaje[data-id="${mensajeId}"]`);
                     msg.find('.cg-mensaje-texto').html('<span class="cg-mensaje-eliminado">' + (self.strings.mensaje_eliminado || 'Mensaje eliminado') + '</span>');
                     msg.find('.cg-mensaje-acciones').remove();
+                    self.mostrarAviso(self.strings.mensaje_eliminado || 'Mensaje eliminado', 'success');
+                } else {
+                    self.mostrarAviso(response.error || self.strings.error || 'Error al eliminar mensaje', 'error');
                 }
+            },
+            error: function() {
+                self.mostrarAviso(self.strings.error || 'Error al eliminar mensaje', 'error');
             }
         });
     };
@@ -668,11 +738,12 @@
                     });
                     self.fetchMisGrupos();
                 } else {
-                    alert(response.error || 'Error al unirse');
+                    self.mostrarAviso(response.error || 'Error al unirse', 'error');
                     btn.prop('disabled', false).text(textoOriginal);
                 }
             },
             error: function() {
+                self.mostrarAviso('Error de conexión', 'error');
                 btn.prop('disabled', false).text(textoOriginal);
             }
         });
@@ -806,7 +877,7 @@
                     // Enviar mensaje con adjunto
                     self.enviarMensajeConAdjunto(response.data);
                 } else {
-                    alert(response.data || 'Error al subir archivo');
+                    self.mostrarAviso(response.data || 'Error al subir archivo', 'error');
                 }
             }
         });
@@ -901,7 +972,7 @@
                     </div>
                     <div class="cg-grupo-card-footer">
                         ${grupo.es_miembro
-                            ? `<button class="cg-btn cg-btn-primary cg-btn-block" onclick="FlavorChatGrupos.abrirGrupo(${grupo.id})">Abrir</button>`
+                            ? `<button class="cg-btn cg-btn-primary cg-btn-block cg-btn-abrir-grupo" data-id="${grupo.id}">Abrir</button>`
                             : `<button class="cg-btn cg-btn-outline cg-btn-block cg-btn-unirse" data-id="${grupo.id}">Unirse</button>`
                         }
                     </div>
@@ -965,13 +1036,13 @@
             },
             success: function(response) {
                 if (response.success) {
-                    alert('Grupo creado correctamente');
+                    self.mostrarAviso('Grupo creado correctamente', 'success');
                     form[0].reset();
                     if (response.grupo_id) {
-                        window.location.href = '?grupo=' + response.slug;
+                        window.location.href = '/mi-portal/chat-grupos/mensajes/?grupo_id=' + response.grupo_id;
                     }
                 } else {
-                    alert(response.error || 'Error al crear el grupo');
+                    self.mostrarAviso(response.error || 'Error al crear el grupo', 'error');
                 }
             },
             complete: function() {
@@ -1121,7 +1192,7 @@
                         textarea.val('');
                         self.cargarMensajes(grupoId);
                     } else {
-                        alert(response.error || 'Error al enviar mensaje');
+                        self.mostrarAviso(response.error || 'Error al enviar mensaje', 'error');
                     }
                 },
                 complete: function() {
@@ -1329,11 +1400,11 @@
                     textarea.val('');
                     self.cargarMensajesIntegrado(instancia);
                 } else {
-                    alert(response.error || self.strings.error || 'Error al enviar mensaje');
+                    self.mostrarAviso(response.error || self.strings.error || 'Error al enviar mensaje', 'error');
                 }
             },
             error: function() {
-                alert(self.strings.error || 'Error al enviar mensaje');
+                self.mostrarAviso(self.strings.error || 'Error al enviar mensaje', 'error');
             },
             complete: function() {
                 textarea.prop('disabled', false).focus();
@@ -1367,3 +1438,23 @@
     window.FlavorChatGruposEmbebido = FlavorChatGruposEmbebido;
 
 })(jQuery);
+
+(function() {
+    if (document.getElementById('cg-notice-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'cg-notice-styles';
+    style.textContent = `
+        .cg-notice-container{position:fixed;top:20px;right:20px;z-index:100001;display:flex;flex-direction:column;gap:10px}
+        .cg-notice{background:#111827;color:#fff;padding:12px 16px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;transform:translateY(-6px);transition:all .2s ease;max-width:320px}
+        .cg-notice.is-visible{opacity:1;transform:translateY(0)}
+        .cg-notice-success{background:#166534}
+        .cg-notice-error{background:#991b1b}
+        .cg-notice-info{background:#1d4ed8}
+        .cg-notice-confirm{background:#eff6ff;color:#1d4ed8;max-width:360px}
+        .cg-notice-confirm__actions{display:flex;gap:8px;margin-top:10px}
+        .cg-notice-confirm__btn{border:0;border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:600}
+        .cg-notice-confirm__btn--primary{background:#1d4ed8;color:#fff}
+        .cg-notice-confirm__btn--secondary{background:#e5e7eb;color:#111827}
+    `;
+    document.head.appendChild(style);
+})();

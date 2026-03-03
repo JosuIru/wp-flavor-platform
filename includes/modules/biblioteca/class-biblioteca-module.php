@@ -603,6 +603,28 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'buscar_libros',
+            'listado' => 'buscar_libros',
+            'buscar' => 'buscar_libros',
+            'explorar' => 'buscar_libros',
+            'detalle' => 'detalle_libro',
+            'ver' => 'detalle_libro',
+            'crear' => 'agregar_libro',
+            'nuevo' => 'agregar_libro',
+            'mis_items' => 'mis_libros',
+            'mis-libros' => 'mis_libros',
+            'mis-prestamos' => 'mis_prestamos',
+            'prestamo' => 'solicitar_prestamo',
+            'reservar' => 'reservar_libro',
+            'devolver' => 'devolver_libro',
+            'renovar' => 'renovar_prestamo',
+            'valorar' => 'valorar_libro',
+            'recomendaciones' => 'recomendaciones',
+            'stats' => 'estadisticas_biblioteca',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {

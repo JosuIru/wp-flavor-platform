@@ -1,8 +1,8 @@
 <?php
 /**
- * Template: Mi Cesta - Grupos de Consumo
+ * Template: Mi Pedido - Grupos de Consumo
  *
- * Vista completa de la cesta de compra del usuario con gestion de productos.
+ * Vista completa del pedido manual del usuario con gestion de productos.
  *
  * @package FlavorChatIA
  * @subpackage Modules\GruposConsumo\Templates
@@ -17,9 +17,9 @@ if (!is_user_logged_in()) {
     echo '<div class="gc-cesta-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
     echo '<h3>' . esc_html__('Acceso restringido', 'flavor-chat-ia') . '</h3>';
-    echo '<p>' . esc_html__('Inicia sesion para ver y gestionar tu cesta de compra.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="gc-btn gc-btn-primary">';
-    echo esc_html__('Iniciar sesion', 'flavor-chat-ia');
+    echo '<p>' . esc_html__('Inicia sesión para ver y gestionar tu pedido.', 'flavor-chat-ia') . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/mi-pedido/'))) . '" class="gc-btn gc-btn-primary">';
+    echo esc_html__('Iniciar sesión', 'flavor-chat-ia');
     echo '</a></div>';
     return;
 }
@@ -27,7 +27,7 @@ if (!is_user_logged_in()) {
 global $wpdb;
 $user_id = get_current_user_id();
 
-// Obtener items de la cesta desde la tabla
+// Obtener items del pedido actual desde la tabla
 $tabla_lista = $wpdb->prefix . 'flavor_gc_lista_compra';
 $items_cesta = $wpdb->get_results($wpdb->prepare(
     "SELECT lc.*,
@@ -90,7 +90,7 @@ $total_final = $subtotal + $gastos_gestion;
         <div class="gc-cesta-titulo">
             <h2>
                 <span class="dashicons dashicons-cart"></span>
-                <?php esc_html_e('Mi Cesta', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Pedido actual', 'flavor-chat-ia'); ?>
             </h2>
             <?php if ($total_items > 0) : ?>
             <span class="gc-cesta-count"><?php printf(_n('%d producto', '%d productos', $total_items, 'flavor-chat-ia'), $total_items); ?></span>
@@ -124,7 +124,7 @@ $total_final = $subtotal + $gastos_gestion;
                 <span class="dashicons dashicons-calendar-alt"></span>
                 <?php esc_html_e('Sin ciclo activo', 'flavor-chat-ia'); ?>
             </span>
-            <p class="gc-sin-ciclo-msg"><?php esc_html_e('Los productos se guardaran para el proximo ciclo.', 'flavor-chat-ia'); ?></p>
+            <p class="gc-sin-ciclo-msg"><?php esc_html_e('Los productos se guardarán para el próximo ciclo.', 'flavor-chat-ia'); ?></p>
         </div>
         <?php endif; ?>
     </header>
@@ -132,11 +132,11 @@ $total_final = $subtotal + $gastos_gestion;
     <?php if (empty($items_cesta)) : ?>
     <div class="gc-cesta-empty">
         <span class="dashicons dashicons-products"></span>
-        <h3><?php esc_html_e('Tu cesta esta vacia', 'flavor-chat-ia'); ?></h3>
-        <p><?php esc_html_e('Explora nuestro catalogo y anade productos a tu cesta.', 'flavor-chat-ia'); ?></p>
-        <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/catalogo/')); ?>" class="gc-btn gc-btn-primary">
+        <h3><?php esc_html_e('Tu pedido está vacío', 'flavor-chat-ia'); ?></h3>
+        <p><?php esc_html_e('Explora los productos disponibles y añade artículos a tu pedido actual.', 'flavor-chat-ia'); ?></p>
+        <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
             <span class="dashicons dashicons-products"></span>
-            <?php esc_html_e('Ver catalogo', 'flavor-chat-ia'); ?>
+            <?php esc_html_e('Ver productos', 'flavor-chat-ia'); ?>
         </a>
     </div>
 
@@ -172,7 +172,7 @@ $total_final = $subtotal + $gastos_gestion;
                     <div class="gc-item-info">
                         <h4 class="gc-item-nombre">
                             <?php if ($producto_disponible) : ?>
-                            <a href="<?php echo esc_url(get_permalink($item->producto_id)); ?>">
+                            <a href="<?php echo esc_url(add_query_arg('product', intval($item->producto_id), home_url('/mi-portal/grupos-consumo/productos/'))); ?>">
                                 <?php echo esc_html($item->producto_nombre ?: __('Producto', 'flavor-chat-ia')); ?>
                             </a>
                             <?php else : ?>
@@ -279,7 +279,7 @@ $total_final = $subtotal + $gastos_gestion;
                         <?php else : ?>
                         <div class="gc-sin-ciclo-aviso">
                             <span class="dashicons dashicons-info"></span>
-                            <p><?php esc_html_e('Podras confirmar tu pedido cuando se abra el proximo ciclo.', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('Podrás confirmar tu pedido cuando se abra el próximo ciclo.', 'flavor-chat-ia'); ?></p>
                         </div>
                         <?php endif; ?>
                     </div>
@@ -298,16 +298,16 @@ $total_final = $subtotal + $gastos_gestion;
                                     );
                                 }
                             } else {
-                                esc_html_e('La entrega se confirmara al abrir el ciclo.', 'flavor-chat-ia');
+                                esc_html_e('La entrega se confirmará al abrir el ciclo.', 'flavor-chat-ia');
                             }
                             ?>
                         </p>
                     </div>
                 </div>
 
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/catalogo/')); ?>" class="gc-btn gc-btn-text gc-btn-block">
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-text gc-btn-block">
                     <span class="dashicons dashicons-arrow-left-alt"></span>
-                    <?php esc_html_e('Seguir comprando', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Seguir añadiendo productos', 'flavor-chat-ia'); ?>
                 </a>
             </div>
         </div>
@@ -318,6 +318,12 @@ $total_final = $subtotal + $gastos_gestion;
 <script>
 (function($) {
     'use strict';
+
+    function gcCestaAviso(mensaje, tipo) {
+        tipo = tipo || 'error';
+        $('.gc-cesta-inline-notice').remove();
+        $('<div class="gc-cesta-inline-notice gc-cesta-inline-notice-' + tipo + '"><p>' + mensaje + '</p></div>').insertBefore('#gc-form-confirmar').hide().fadeIn(150);
+    }
 
     var $form = $('#gc-cesta-form');
     var porcentajeGestion = <?php echo esc_js($porcentaje_gestion); ?>;
@@ -342,6 +348,24 @@ $total_final = $subtotal + $gastos_gestion;
         $('#gc-resumen-subtotal').text(subtotal.toFixed(2).replace('.', ',') + ' \u20AC');
         $('#gc-resumen-gestion').text(gestion.toFixed(2).replace('.', ',') + ' \u20AC');
         $('#gc-resumen-total').text(total.toFixed(2).replace('.', ',') + ' \u20AC');
+    }
+
+    function gcCestaConfirmar(mensaje, onConfirm) {
+        $('.gc-cesta-inline-confirm').remove();
+        var $confirm = $('<div class="gc-cesta-inline-confirm"><p></p><div class="gc-cesta-inline-confirm-actions"><button type="button" class="button button-primary gc-cesta-inline-confirm-ok"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-cesta-inline-confirm-cancel"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div></div>');
+        $confirm.find('p').text(mensaje);
+        $confirm.insertBefore('#gc-form-confirmar').hide().fadeIn(150);
+
+        $confirm.on('click', '.gc-cesta-inline-confirm-ok', function() {
+            $confirm.remove();
+            if (typeof onConfirm === 'function') {
+                onConfirm();
+            }
+        });
+
+        $confirm.on('click', '.gc-cesta-inline-confirm-cancel', function() {
+            $confirm.remove();
+        });
     }
 
     // Botones +/-
@@ -372,33 +396,31 @@ $total_final = $subtotal + $gastos_gestion;
         var $item = $(this).closest('.gc-cesta-item');
         var itemId = $item.data('item-id');
 
-        if (!confirm('<?php echo esc_js(__('Eliminar este producto de la cesta?', 'flavor-chat-ia')); ?>')) {
-            return;
-        }
-
-        $.ajax({
-            url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
-            type: 'POST',
-            data: {
-                action: 'gc_remove_from_cart',
-                nonce: $('#gc_cesta_nonce').val(),
-                item_id: itemId
-            },
-            success: function(response) {
-                if (response.success) {
-                    $item.slideUp(300, function() {
-                        $(this).remove();
-                        recalcularTotales();
-                        if ($('.gc-cesta-item').length === 0) {
-                            location.reload();
-                        }
-                    });
+        gcCestaConfirmar('<?php echo esc_js(__('¿Eliminar este producto del pedido actual?', 'flavor-chat-ia')); ?>', function() {
+            $.ajax({
+                url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
+                type: 'POST',
+                data: {
+                    action: 'gc_remove_from_cart',
+                    nonce: $('#gc_cesta_nonce').val(),
+                    item_id: itemId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $item.slideUp(300, function() {
+                            $(this).remove();
+                            recalcularTotales();
+                            if ($('.gc-cesta-item').length === 0) {
+                                location.reload();
+                            }
+                        });
+                    }
                 }
-            }
+            });
         });
     });
 
-    // Actualizar cesta
+    // Actualizar pedido actual
     $('#gc-btn-actualizar').on('click', function() {
         var $btn = $(this);
         var textoOriginal = $btn.html();
@@ -423,7 +445,7 @@ $total_final = $subtotal + $gastos_gestion;
                 $btn.prop('disabled', false).html(textoOriginal);
                 if (response.success) {
                     // Mostrar mensaje de exito
-                    $('<div class="gc-toast gc-toast-success"><?php echo esc_js(__('Cesta actualizada', 'flavor-chat-ia')); ?></div>')
+                    $('<div class="gc-toast gc-toast-success"><?php echo esc_js(__('Pedido actualizado', 'flavor-chat-ia')); ?></div>')
                         .appendTo('body')
                         .fadeIn()
                         .delay(2000)
@@ -451,12 +473,12 @@ $total_final = $subtotal + $gastos_gestion;
                 if (response.success && response.data.entrega_id) {
                     window.location.href = '<?php echo esc_url(home_url('/mi-portal/grupos-consumo/checkout/')); ?>?entrega_id=' + response.data.entrega_id;
                 } else {
-                    alert(response.data.error || '<?php echo esc_js(__('Error al confirmar el pedido.', 'flavor-chat-ia')); ?>');
+                    gcCestaAviso(response.data.error || '<?php echo esc_js(__('Error al confirmar el pedido.', 'flavor-chat-ia')); ?>', 'error');
                     $btn.prop('disabled', false).html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Confirmar pedido', 'flavor-chat-ia')); ?>');
                 }
             },
             error: function() {
-                alert('<?php echo esc_js(__('Error de conexion.', 'flavor-chat-ia')); ?>');
+                gcCestaAviso('<?php echo esc_js(__('Error de conexion.', 'flavor-chat-ia')); ?>', 'error');
                 $btn.prop('disabled', false).html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Confirmar pedido', 'flavor-chat-ia')); ?>');
             }
         });
@@ -466,6 +488,12 @@ $total_final = $subtotal + $gastos_gestion;
 </script>
 
 <style>
+.gc-cesta-inline-notice{margin:0 0 16px;padding:12px 14px;border-left:4px solid #d63638;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.gc-cesta-inline-notice-success{border-left-color:#00a32a}
+.gc-cesta-inline-notice-error{border-left-color:#d63638}
+.gc-cesta-inline-confirm{margin:0 0 16px;padding:12px 14px;border-left:4px solid #dba617;background:#fff8e1;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.gc-cesta-inline-confirm p{margin:0 0 10px}
+.gc-cesta-inline-confirm-actions{display:flex;gap:8px;flex-wrap:wrap}
 .gc-mi-cesta-container {
     max-width: 1000px;
 }
@@ -695,7 +723,11 @@ $total_final = $subtotal + $gastos_gestion;
     height: 18px;
 }
 .gc-input-cantidad {
-    width: 50px;
+    width: 65px;
+    min-width: 65px;
+    max-width: 65px;
+    flex: 0 0 65px;
+    box-sizing: border-box;
     height: 36px;
     border: none;
     text-align: center;

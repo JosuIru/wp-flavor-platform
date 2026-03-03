@@ -415,6 +415,19 @@ if (!defined('ABSPATH')) {
 
             const formData = new FormData(this);
             const btn = this.querySelector('button[type="submit"]');
+            let notice = container.querySelector('.bt-donar-notice');
+
+            if (!notice) {
+                notice = document.createElement('div');
+                notice.className = 'bt-donar-notice';
+                form.prepend(notice);
+            }
+
+            const showNotice = (message, type = 'info') => {
+                notice.className = 'bt-donar-notice bt-donar-notice--' + type;
+                notice.textContent = message;
+            };
+
             btn.disabled = true;
             btn.innerHTML = '<span class="dashicons dashicons-update"></span> <?php echo esc_js(__('Procesando...', 'flavor-chat-ia')); ?>';
 
@@ -433,16 +446,16 @@ if (!defined('ABSPATH')) {
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    alert(data.data.message);
+                    showNotice(data.data.message, 'success');
                     location.reload();
                 } else {
-                    alert(data.data.message || '<?php echo esc_js(__('Error al procesar', 'flavor-chat-ia')); ?>');
+                    showNotice(data.data.message || '<?php echo esc_js(__('Error al procesar', 'flavor-chat-ia')); ?>', 'error');
                     btn.disabled = false;
                     btn.innerHTML = '<span class="dashicons dashicons-heart"></span> <?php echo esc_js(__('Donar ahora', 'flavor-chat-ia')); ?>';
                 }
             })
             .catch(() => {
-                alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                showNotice('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
                 btn.disabled = false;
                 btn.innerHTML = '<span class="dashicons dashicons-heart"></span> <?php echo esc_js(__('Donar ahora', 'flavor-chat-ia')); ?>';
             });
@@ -450,3 +463,23 @@ if (!defined('ABSPATH')) {
     });
 })();
 </script>
+<style>
+.bt-donar-notice {
+    margin: 0 0 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.bt-donar-notice--success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.bt-donar-notice--error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+</style>

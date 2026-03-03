@@ -13,6 +13,8 @@ if (!defined('ABSPATH')) {
 class Flavor_Clientes_Dashboard_Tab {
 
     private static $instance = null;
+    private $flash_message = null;
+    private $flash_type = 'success';
 
     public static function get_instance() {
         if (null === self::$instance) {
@@ -41,6 +43,8 @@ class Flavor_Clientes_Dashboard_Tab {
     }
 
     public function render_tab() {
+        $this->handle_post_actions();
+
         $datos = $this->obtener_datos_usuario();
         $subtab = isset($_GET['subtab']) ? sanitize_text_field($_GET['subtab']) : 'lista';
         $cliente_id = isset($_GET['cliente_id']) ? absint($_GET['cliente_id']) : null;
@@ -64,23 +68,31 @@ class Flavor_Clientes_Dashboard_Tab {
             </div>
 
             <div class="flavor-dashboard-content">
+                <?php if ($this->flash_message): ?>
+                    <div class="flavor-<?php echo esc_attr($this->flash_type); ?>">
+                        <?php echo esc_html($this->flash_message); ?>
+                    </div>
+                <?php endif; ?>
+
                 <?php
-                if ($cliente_id && $subtab === 'detalle') {
-                    $this->render_detalle_cliente($cliente_id);
-                } else {
-                    switch ($subtab) {
-                        case 'nuevo':
-                            $this->render_nuevo_cliente();
-                            break;
-                        case 'actividad':
-                            $this->render_actividad($datos);
-                            break;
-                        case 'estadisticas':
-                            $this->render_estadisticas($datos);
-                            break;
-                        default:
-                            $this->render_lista_clientes($datos);
-                    }
+                switch ($subtab) {
+                    case 'detalle':
+                        $this->render_detalle_cliente($cliente_id);
+                        break;
+                    case 'editar':
+                        $this->render_editar_cliente($cliente_id);
+                        break;
+                    case 'nuevo':
+                        $this->render_nuevo_cliente();
+                        break;
+                    case 'actividad':
+                        $this->render_actividad($datos);
+                        break;
+                    case 'estadisticas':
+                        $this->render_estadisticas($datos);
+                        break;
+                    default:
+                        $this->render_lista_clientes($datos);
                 }
                 ?>
             </div>
@@ -223,6 +235,7 @@ class Flavor_Clientes_Dashboard_Tab {
 
             <form id="form-nuevo-cliente" method="post">
                 <?php wp_nonce_field('flavor_nuevo_cliente', 'cliente_nonce'); ?>
+                <input type="hidden" name="dashboard_action" value="crear_cliente">
 
                 <div class="form-row">
                     <div class="form-group">
@@ -312,6 +325,11 @@ class Flavor_Clientes_Dashboard_Tab {
         $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
         $tabla_notas = $wpdb->prefix . 'flavor_clientes_notas';
 
+        if (!$cliente_id) {
+            echo '<div class="flavor-error">Cliente no especificado</div>';
+            return;
+        }
+
         $cliente = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_clientes WHERE id = %d",
             $cliente_id
@@ -346,7 +364,7 @@ class Flavor_Clientes_Dashboard_Tab {
                 </div>
                 <div class="cliente-acciones">
                     <a href="?tab=clientes&subtab=editar&cliente_id=<?php echo $cliente->id; ?>" class="flavor-btn">Editar</a>
-                    <button class="flavor-btn flavor-btn-danger eliminar-cliente" data-id="<?php echo $cliente->id; ?>">Eliminar</button>
+                    <span class="flavor-btn flavor-btn-danger disabled" aria-disabled="true" title="La eliminación aún no está disponible en el dashboard">Eliminar</span>
                 </div>
             </div>
 
@@ -405,11 +423,12 @@ class Flavor_Clientes_Dashboard_Tab {
                     <h3>Historial de interacciones</h3>
 
                     <!-- Añadir nota -->
-                    <form id="form-nueva-nota" class="nueva-nota-form">
+                    <form id="form-nueva-nota" class="nueva-nota-form" method="post">
                         <?php wp_nonce_field('flavor_nueva_nota', 'nota_nonce'); ?>
+                        <input type="hidden" name="dashboard_action" value="agregar_nota">
                         <input type="hidden" name="cliente_id" value="<?php echo $cliente->id; ?>">
                         <div class="form-row">
-                            <select name="tipo_nota">
+                            <select name="tipo">
                                 <option value="nota">Nota</option>
                                 <option value="llamada">Llamada</option>
                                 <option value="email">Email</option>
@@ -446,6 +465,106 @@ class Flavor_Clientes_Dashboard_Tab {
                     </div>
                 </div>
             </div>
+        </div>
+        <?php
+    }
+
+    private function render_editar_cliente($cliente_id) {
+        global $wpdb;
+        $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
+
+        if (!$cliente_id) {
+            echo '<div class="flavor-error">Cliente no especificado</div>';
+            return;
+        }
+
+        $cliente = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_clientes WHERE id = %d",
+            $cliente_id
+        ));
+
+        if (!$cliente) {
+            echo '<div class="flavor-error">Cliente no encontrado</div>';
+            return;
+        }
+        ?>
+        <div class="nuevo-cliente-form">
+            <h3>Editar cliente</h3>
+
+            <form id="form-editar-cliente" method="post">
+                <?php wp_nonce_field('flavor_editar_cliente', 'cliente_nonce'); ?>
+                <input type="hidden" name="dashboard_action" value="actualizar_cliente">
+                <input type="hidden" name="cliente_id" value="<?php echo esc_attr($cliente->id); ?>">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre completo *</label>
+                        <input type="text" id="nombre" name="nombre" required value="<?php echo esc_attr($cliente->nombre); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="<?php echo esc_attr($cliente->email); ?>">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" value="<?php echo esc_attr($cliente->telefono); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="empresa">Empresa</label>
+                        <input type="text" id="empresa" name="empresa" value="<?php echo esc_attr($cliente->empresa); ?>">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cargo">Cargo</label>
+                        <input type="text" id="cargo" name="cargo" value="<?php echo esc_attr($cliente->cargo); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo">Tipo de cliente</label>
+                        <select id="tipo" name="tipo">
+                            <option value="particular" <?php selected($cliente->tipo, 'particular'); ?>>Particular</option>
+                            <option value="empresa" <?php selected($cliente->tipo, 'empresa'); ?>>Empresa</option>
+                            <option value="autonomo" <?php selected($cliente->tipo, 'autonomo'); ?>>Autónomo</option>
+                            <option value="administracion" <?php selected($cliente->tipo, 'administracion'); ?>>Administración</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="estado">Estado</label>
+                        <select id="estado" name="estado">
+                            <option value="activo" <?php selected($cliente->estado, 'activo'); ?>>Activo</option>
+                            <option value="potencial" <?php selected($cliente->estado, 'potencial'); ?>>Potencial</option>
+                            <option value="inactivo" <?php selected($cliente->estado, 'inactivo'); ?>>Inactivo</option>
+                            <option value="perdido" <?php selected($cliente->estado, 'perdido'); ?>>Perdido</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_estimado">Valor estimado (€)</label>
+                        <input type="number" id="valor_estimado" name="valor_estimado" min="0" step="0.01" value="<?php echo esc_attr($cliente->valor_estimado); ?>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <textarea id="direccion" name="direccion" rows="2"><?php echo esc_textarea($cliente->direccion); ?></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="etiquetas">Etiquetas (separadas por comas)</label>
+                    <input type="text" id="etiquetas" name="etiquetas" value="<?php echo esc_attr($cliente->etiquetas); ?>">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="flavor-btn flavor-btn-primary">Actualizar Cliente</button>
+                    <a href="?tab=clientes&subtab=detalle&cliente_id=<?php echo esc_attr($cliente->id); ?>" class="flavor-btn">Cancelar</a>
+                </div>
+            </form>
         </div>
         <?php
     }
@@ -539,6 +658,59 @@ class Flavor_Clientes_Dashboard_Tab {
             </div>
         </div>
         <?php
+    }
+
+    private function handle_post_actions() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['dashboard_action'])) {
+            return;
+        }
+
+        if (!current_user_can('edit_posts')) {
+            $this->flash_type = 'error';
+            $this->flash_message = 'Sin permisos para gestionar clientes.';
+            return;
+        }
+
+        $dashboard_action = sanitize_key(wp_unslash($_POST['dashboard_action']));
+
+        if (in_array($dashboard_action, ['crear_cliente', 'actualizar_cliente'], true)) {
+            if (empty($_POST['cliente_nonce']) || !wp_verify_nonce($_POST['cliente_nonce'], $dashboard_action === 'crear_cliente' ? 'flavor_nuevo_cliente' : 'flavor_editar_cliente')) {
+                $this->flash_type = 'error';
+                $this->flash_message = 'Nonce de cliente no válido.';
+                return;
+            }
+        }
+
+        if ($dashboard_action === 'agregar_nota') {
+            if (empty($_POST['nota_nonce']) || !wp_verify_nonce($_POST['nota_nonce'], 'flavor_nueva_nota')) {
+                $this->flash_type = 'error';
+                $this->flash_message = 'Nonce de nota no válido.';
+                return;
+            }
+        }
+
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            $this->flash_type = 'error';
+            $this->flash_message = 'El cargador de módulos no está disponible.';
+            return;
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $module = $loader ? $loader->get_module('clientes') : null;
+
+        if (!$module || !method_exists($module, 'execute_action')) {
+            $this->flash_type = 'error';
+            $this->flash_message = 'El módulo de clientes no está disponible.';
+            return;
+        }
+
+        $params = wp_unslash($_POST);
+        $result = $module->execute_action($dashboard_action, $params);
+
+        $this->flash_type = !empty($result['success']) ? 'success' : 'error';
+        $this->flash_message = !empty($result['mensaje'])
+            ? $result['mensaje']
+            : (!empty($result['error']) ? $result['error'] : 'No se pudo completar la acción.');
     }
 
     private function obtener_datos_usuario() {

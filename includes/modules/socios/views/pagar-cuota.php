@@ -30,7 +30,7 @@ if (!defined('ABSPATH')) {
             <span class="dashicons dashicons-info-outline"></span>
             <h3><?php esc_html_e('No eres socio aún', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Para acceder a esta sección necesitas ser socio de la cooperativa.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(home_url('/socios/unirse/')); ?>" class="flavor-soc-btn flavor-soc-btn-primary">
+            <a href="<?php echo esc_url(home_url('/mi-portal/socios/unirse/')); ?>" class="flavor-soc-btn flavor-soc-btn-primary">
                 <?php esc_html_e('Hacerse socio', 'flavor-chat-ia'); ?>
             </a>
         </div>

@@ -74,6 +74,29 @@
             $(container).html(successHtml);
         },
 
+        showNotice: function(container, message, type = 'info') {
+            const $container = $(container);
+            if (!$container.length) {
+                return;
+            }
+
+            $container.find('.flavor-inline-notice').remove();
+
+            const cssClass = 'flavor-inline-notice flavor-inline-notice--' + type;
+            const noticeHtml =
+                '<div class="' + cssClass + '" role="status" aria-live="polite">' +
+                    '<span class="flavor-inline-notice__message">' + message + '</span>' +
+                    '<button type="button" class="flavor-inline-notice__close" aria-label="' + (CONFIG.i18n.close || 'Cerrar') + '">&times;</button>' +
+                '</div>';
+
+            const $notice = $(noticeHtml);
+            $container.prepend($notice);
+
+            $notice.on('click', '.flavor-inline-notice__close', function() {
+                $notice.remove();
+            });
+        },
+
         scrollToElement: function(element, offset = 100) {
             const elementPosition = $(element).offset().top - offset;
             $('html, body').animate({ scrollTop: elementPosition }, 400);
@@ -247,6 +270,7 @@
             const documentItem = $(input).closest('.flavor-documento-item');
             const fileNameSpan = documentItem.find('.flavor-file-name');
             const tipoDocumento = documentItem.data('tipo');
+            const noticeTarget = this.container.find('.flavor-form-header, .flavor-tramites-formulario').first();
 
             if (!file) {
                 fileNameSpan.text('');
@@ -257,7 +281,7 @@
             // Validar extension
             const extension = Utils.getFileExtension(file.name);
             if (CONFIG.allowedTypes.indexOf(extension) === -1) {
-                alert(CONFIG.i18n.invalidType || 'Tipo de archivo no permitido');
+                Utils.showNotice(noticeTarget, CONFIG.i18n.invalidType || 'Tipo de archivo no permitido', 'error');
                 input.value = '';
                 fileNameSpan.text('');
                 return;
@@ -265,7 +289,7 @@
 
             // Validar tamanio
             if (file.size > CONFIG.maxFileSize) {
-                alert(CONFIG.i18n.fileTooBig || 'El archivo es demasiado grande');
+                Utils.showNotice(noticeTarget, CONFIG.i18n.fileTooBig || 'El archivo es demasiado grande', 'error');
                 input.value = '';
                 fileNameSpan.text('');
                 return;
@@ -404,7 +428,11 @@
 
         handleSuccess: function(data, esBorrador) {
             if (esBorrador) {
-                alert(data.mensaje || 'Borrador guardado correctamente');
+                Utils.showNotice(
+                    this.container.find('.flavor-form-header, .flavor-tramites-formulario').first(),
+                    data.mensaje || 'Borrador guardado correctamente',
+                    'success'
+                );
                 return;
             }
 
@@ -426,7 +454,11 @@
                     $field.after('<span class="flavor-field-error flavor-error">' + data.errors[campo] + '</span>');
                 }
             } else {
-                alert(data.mensaje || CONFIG.i18n.error || 'Ha ocurrido un error');
+                Utils.showNotice(
+                    this.container.find('.flavor-form-header, .flavor-tramites-formulario').first(),
+                    data.mensaje || CONFIG.i18n.error || 'Ha ocurrido un error',
+                    'error'
+                );
             }
         }
     };

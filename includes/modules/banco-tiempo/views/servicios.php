@@ -40,6 +40,23 @@ if (isset($_POST['accion']) && check_admin_referer('banco_tiempo_servicios')) {
             }
             break;
 
+        case 'editar_servicio':
+            $servicio_id = absint($_POST['servicio_id']);
+            $datos_servicio = [
+                'usuario_id' => absint($_POST['usuario_id']),
+                'titulo' => sanitize_text_field($_POST['titulo']),
+                'descripcion' => sanitize_textarea_field($_POST['descripcion']),
+                'categoria' => sanitize_text_field($_POST['categoria']),
+                'horas_estimadas' => floatval($_POST['horas_estimadas']),
+            ];
+
+            if ($wpdb->update($tabla_servicios, $datos_servicio, ['id' => $servicio_id]) !== false) {
+                $mensaje_exito = 'Servicio actualizado correctamente.';
+            } else {
+                $mensaje_error = 'Error al actualizar el servicio.';
+            }
+            break;
+
         case 'actualizar_estado':
             $servicio_id = absint($_POST['servicio_id']);
             $nuevo_estado = sanitize_text_field($_POST['estado']);
@@ -175,9 +192,9 @@ $categorias = [
 
                 <select name="estado" id="filter-estado">
                     <option value=""><?php echo esc_html__('Todos los estados', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('activo', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('inactivo', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'inactivo'); ?>><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
-                    <option value="<?php echo esc_attr__('completado', 'flavor-chat-ia'); ?>" <?php selected($filtro_estado, 'completado'); ?>><?php echo esc_html__('Completado', 'flavor-chat-ia'); ?></option>
+                    <option value="activo" <?php selected($filtro_estado, 'activo'); ?>><?php echo esc_html__('Activo', 'flavor-chat-ia'); ?></option>
+                    <option value="inactivo" <?php selected($filtro_estado, 'inactivo'); ?>><?php echo esc_html__('Inactivo', 'flavor-chat-ia'); ?></option>
+                    <option value="completado" <?php selected($filtro_estado, 'completado'); ?>><?php echo esc_html__('Completado', 'flavor-chat-ia'); ?></option>
                 </select>
 
                 <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
@@ -304,7 +321,7 @@ $categorias = [
 
             <form method="post" id="form-servicio">
                 <?php wp_nonce_field('banco_tiempo_servicios'); ?>
-                <input type="hidden" name="accion" value="<?php echo esc_attr__('crear_servicio', 'flavor-chat-ia'); ?>">
+                <input type="hidden" name="accion" value="crear_servicio">
                 <input type="hidden" name="servicio_id" id="servicio_id">
 
                 <table class="form-table">
@@ -386,10 +403,21 @@ $categorias = [
     background-color: #646970;
     color: #fff;
 }
+
+.bt-inline-notice {
+    margin: 12px 0;
+    padding: 10px 12px;
+    border-left: 4px solid #d63638;
+    background: #fff;
+}
 </style>
 
 <script>
 jQuery(document).ready(function($) {
+    function mostrarAvisoServicios(mensaje) {
+        $('.bt-inline-notice').remove();
+        $('<div class="bt-inline-notice"><p>' + mensaje + '</p></div>').insertAfter('.wp-header-end');
+    }
 
     // Abrir modal nuevo servicio
     $('#btn-nuevo-servicio').click(function(e) {
@@ -436,7 +464,7 @@ jQuery(document).ready(function($) {
                 if (response.success && response.data) {
                     var s = response.data;
                     $('#usuario_id').val(s.usuario_id);
-                    $('#nombre').val(s.nombre);
+                    $('#titulo').val(s.titulo);
                     $('#descripcion').val(s.descripcion);
                     $('#categoria').val(s.categoria);
                     $('#horas_estimadas').val(s.horas_estimadas);
@@ -444,7 +472,7 @@ jQuery(document).ready(function($) {
                 $('#modal-servicio').fadeIn();
             },
             error: function() {
-                alert('<?php echo esc_js(__('Error al cargar el servicio', 'flavor-chat-ia')); ?>');
+                mostrarAvisoServicios('<?php echo esc_js(__('Error al cargar el servicio', 'flavor-chat-ia')); ?>');
             }
         });
     });
@@ -456,11 +484,11 @@ jQuery(document).ready(function($) {
         var estadoActual = $(this).data('estado');
         var nuevoEstado = estadoActual === 'activo' ? 'inactivo' : 'activo';
 
-        if (confirm('¿Confirmar cambio de estado?')) {
+        if (window.confirm('<?php echo esc_js(__('¿Confirmar cambio de estado?', 'flavor-chat-ia')); ?>')) {
             $('<form method="post">' +
-                '<input type="hidden" name="accion" value="<?php echo esc_attr__('actualizar_estado', 'flavor-chat-ia'); ?>">' +
-                '<input type="hidden" name="servicio_id" value="<?php echo esc_attr__('\' + id + \'', 'flavor-chat-ia'); ?>">' +
-                '<input type="hidden" name="estado" value="<?php echo esc_attr__('\' + nuevoEstado + \'', 'flavor-chat-ia'); ?>">' +
+                '<input type="hidden" name="accion" value="actualizar_estado">' +
+                '<input type="hidden" name="servicio_id" value="' + id + '">' +
+                '<input type="hidden" name="estado" value="' + nuevoEstado + '">' +
                 '<?php echo wp_nonce_field("banco_tiempo_servicios", "_wpnonce", true, false); ?>' +
                 '</form>').appendTo('body').submit();
         }

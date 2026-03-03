@@ -14,6 +14,35 @@
             this.bindEvents();
         },
 
+        solicitarConfirmacion: function(mensaje, onConfirm) {
+            $('#modal-confirmacion-gc').remove();
+            $('body').append(`
+                <div class="gc-modal-overlay" id="modal-confirmacion-gc">
+                    <div class="gc-modal-content">
+                        <button type="button" class="gc-modal-close">&times;</button>
+                        <h3>Confirmación</h3>
+                        <p>${mensaje}</p>
+                        <div class="gc-form-actions">
+                            <button type="button" class="gc-btn gc-btn-primary gc-confirmar-accion">Confirmar</button>
+                            <button type="button" class="gc-btn gc-btn-secondary gc-modal-cancelar">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            `);
+            $('#modal-confirmacion-gc').on('click', '.gc-modal-close, .gc-modal-cancelar', function() {
+                $('#modal-confirmacion-gc').remove();
+            });
+            $('#modal-confirmacion-gc').on('click', function(e) {
+                if (e.target === this) {
+                    $(this).remove();
+                }
+            });
+            $('#modal-confirmacion-gc').on('click', '.gc-confirmar-accion', function() {
+                $('#modal-confirmacion-gc').remove();
+                onConfirm();
+            });
+        },
+
         /**
          * Vincular eventos
          */
@@ -236,10 +265,7 @@
             const $btn = $(e.currentTarget);
             const pedidoId = $btn.data('pedido-id');
 
-            if (!confirm('¿Confirmas que has realizado el pago?')) {
-                return;
-            }
-
+            this.solicitarConfirmacion('¿Confirmas que has realizado el pago?', () => {
             const textoOriginal = $btn.text();
             $btn.prop('disabled', true).text('Marcando...');
 
@@ -264,6 +290,7 @@
                     this.mostrarMensaje('error', 'Error de conexión.');
                     $btn.prop('disabled', false).text(textoOriginal);
                 }
+            });
             });
         },
 

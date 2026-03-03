@@ -17,9 +17,25 @@ if (!defined('ABSPATH')) {
 }
 
 $mostrar_origen = $atributos['mostrar_origen'] === 'true';
+$get_comunidad_id = static function ($comunidad) {
+    if (is_array($comunidad)) {
+        return $comunidad['id'] ?? '';
+    }
+
+    return $comunidad->id ?? '';
+};
+
+$get_comunidad_nombre = static function ($comunidad) {
+    if (is_array($comunidad)) {
+        return $comunidad['nombre'] ?? '';
+    }
+
+    return $comunidad->nombre ?? '';
+};
 ?>
 
 <div class="flavor-feed-unificado" data-nonce="<?php echo esc_attr(wp_create_nonce('flavor_comunidades_nonce')); ?>">
+    <div class="flavor-feed-notice" id="feed-unificado-notice" style="display:none;"></div>
 
     <!-- Cabecera con filtros -->
     <div class="flavor-feed-header">
@@ -34,8 +50,8 @@ $mostrar_origen = $atributos['mostrar_origen'] === 'true';
             <select class="flavor-feed-filtro-comunidad" id="filtro-comunidad">
                 <option value=""><?php esc_html_e('Todas las comunidades', 'flavor-chat-ia'); ?></option>
                 <?php foreach ($comunidades_usuario as $comunidad): ?>
-                <option value="<?php echo esc_attr($comunidad->id); ?>">
-                    <?php echo esc_html($comunidad->nombre); ?>
+                <option value="<?php echo esc_attr($get_comunidad_id($comunidad)); ?>">
+                    <?php echo esc_html($get_comunidad_nombre($comunidad)); ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -64,7 +80,7 @@ $mostrar_origen = $atributos['mostrar_origen'] === 'true';
                 <span class="dashicons dashicons-groups"></span>
                 <h3><?php esc_html_e('No hay actividad todavía', 'flavor-chat-ia'); ?></h3>
                 <p><?php esc_html_e('Únete a comunidades para ver su actividad aquí.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo esc_url(home_url('/comunidades/')); ?>" class="flavor-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/')); ?>" class="flavor-btn-primary">
                     <?php esc_html_e('Explorar comunidades', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -157,7 +173,7 @@ $mostrar_origen = $atributos['mostrar_origen'] === 'true';
                                 <span class="likes-count"><?php echo esc_html($item->likes_count); ?></span>
                             </button>
 
-                            <a href="<?php echo esc_url(add_query_arg('comunidad', $item->comunidad_id, home_url('/comunidades/'))); ?>"
+                            <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $item->comunidad_id . '/')); ?>"
                                class="flavor-feed-btn">
                                 <span class="dashicons dashicons-admin-comments"></span>
                                 <?php esc_html_e('Comentar', 'flavor-chat-ia'); ?>
@@ -204,8 +220,8 @@ $mostrar_origen = $atributos['mostrar_origen'] === 'true';
                     <select name="comunidad_destino" id="comunidad-destino" required>
                         <option value=""><?php esc_html_e('Selecciona una comunidad', 'flavor-chat-ia'); ?></option>
                         <?php foreach ($comunidades_usuario as $comunidad): ?>
-                        <option value="<?php echo esc_attr($comunidad->id); ?>">
-                            <?php echo esc_html($comunidad->nombre); ?>
+                        <option value="<?php echo esc_attr($get_comunidad_id($comunidad)); ?>">
+                            <?php echo esc_html($get_comunidad_nombre($comunidad)); ?>
                         </option>
                         <?php endforeach; ?>
                     </select>
@@ -332,6 +348,23 @@ $mostrar_origen = $atributos['mostrar_origen'] === 'true';
 .flavor-feed-vacio p {
     margin: 0 0 20px;
     color: var(--gc-gray-500, #6b7280);
+}
+
+.flavor-feed-notice {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.95em;
+}
+
+.flavor-feed-notice.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.flavor-feed-notice.success {
+    background: #dcfce7;
+    color: #166534;
 }
 
 /* Items del feed */
@@ -758,6 +791,14 @@ $mostrar_origen = $atributos['mostrar_origen'] === 'true';
         var modal = document.getElementById('modal-compartir');
         var formCompartir = document.getElementById('form-compartir');
         var inputActividadId = document.getElementById('compartir-actividad-id');
+        var notice = document.getElementById('feed-unificado-notice');
+
+        function mostrarAviso(mensaje, tipo) {
+            if (!notice) return;
+            notice.className = 'flavor-feed-notice ' + (tipo || 'error');
+            notice.textContent = mensaje;
+            notice.style.display = 'block';
+        }
 
         contenedor.addEventListener('click', function(e) {
             var btnCompartir = e.target.closest('.flavor-compartir-btn');
@@ -790,15 +831,15 @@ $mostrar_origen = $atributos['mostrar_origen'] === 'true';
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
                     if (data.success) {
-                        alert(data.data.message);
+                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Publicación compartida', 'flavor-chat-ia')); ?>', 'success');
                         modal.setAttribute('aria-hidden', 'true');
                         formCompartir.reset();
                     } else {
-                        alert(data.data.message || 'Error al compartir');
+                        mostrarAviso(data.data.message || '<?php echo esc_js(__('Error al compartir', 'flavor-chat-ia')); ?>', 'error');
                     }
                 })
                 .catch(function() {
-                    alert('Error de conexión');
+                    mostrarAviso('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
                 });
             });
         }

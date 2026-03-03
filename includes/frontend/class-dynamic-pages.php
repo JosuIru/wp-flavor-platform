@@ -99,6 +99,7 @@ class Flavor_Dynamic_Pages {
         'banco-de-tiempo' => 'banco_tiempo',
         'economia-don' => 'economia_don',
         'economia-suficiencia' => 'economia_suficiencia',
+        'energia-comunitaria' => 'energia_comunitaria',
         // Biblioteca y Multimedia
         'biblioteca' => 'biblioteca',
         'multimedia' => 'multimedia',
@@ -216,6 +217,7 @@ class Flavor_Dynamic_Pages {
                     $this->current_action = sanitize_key($action);
                     $this->current_item_id = $item_id;
 
+                    $this->disable_shortcode_unautop();
                     $this->enqueue_assets();
                     $this->render_page();
                     exit;
@@ -282,6 +284,7 @@ class Flavor_Dynamic_Pages {
         $this->current_item_id = $item_id;
 
         // Cargar assets y renderizar
+        $this->disable_shortcode_unautop();
         $this->enqueue_assets();
         $this->render_page();
         exit;
@@ -441,6 +444,7 @@ class Flavor_Dynamic_Pages {
         }
 
         // Cargar assets
+        $this->disable_shortcode_unautop();
         $this->enqueue_assets();
 
         // Renderizar página
@@ -534,27 +538,51 @@ class Flavor_Dynamic_Pages {
                         true // In footer
                     );
 
-                    // Pasar configuración al script
-                    wp_localize_script($js_handle, 'gcFrontend', [
-                        'ajaxUrl'   => admin_url('admin-ajax.php'),
-                        'restUrl'   => rest_url('flavor/v1/grupos-consumo/'),
-                        'nonce'     => wp_create_nonce('gc_nonce'),
-                        'restNonce' => wp_create_nonce('wp_rest'),
-                        'isLoggedIn' => is_user_logged_in(),
-                        'loginUrl'  => wp_login_url(home_url($_SERVER['REQUEST_URI'] ?? '')),
-                        'i18n'      => [
-                            'agregado'        => __('Producto agregado a la lista', 'flavor-chat-ia'),
-                            'eliminado'       => __('Producto eliminado de la lista', 'flavor-chat-ia'),
-                            'error'           => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                            'confirmarEliminar' => __('¿Eliminar este producto?', 'flavor-chat-ia'),
-                            'pedidoCreado'    => __('Pedido creado correctamente', 'flavor-chat-ia'),
-                            'cargando'        => __('Cargando...', 'flavor-chat-ia'),
-                            'sinProductos'    => __('Tu lista está vacía', 'flavor-chat-ia'),
-                        ],
-                    ]);
+                    // Solo grupos-consumo usa este contrato global legacy.
+                    if ($module_dir === 'grupos-consumo') {
+                        $scripts = wp_scripts();
+                        $existing_data = $scripts ? (string) $scripts->get_data($js_handle, 'data') : '';
+
+                        if (strpos($existing_data, 'var gcFrontend =') === false) {
+                            wp_localize_script($js_handle, 'gcFrontend', [
+                                'ajaxUrl'   => admin_url('admin-ajax.php'),
+                                'restUrl'   => rest_url('flavor/v1/grupos-consumo/'),
+                                'nonce'     => wp_create_nonce('gc_nonce'),
+                                'restNonce' => wp_create_nonce('wp_rest'),
+                                'isLoggedIn' => is_user_logged_in(),
+                                'loginUrl'  => wp_login_url(home_url($_SERVER['REQUEST_URI'] ?? '')),
+                                'i18n'      => [
+                                    'agregado'        => __('Producto agregado a la lista', 'flavor-chat-ia'),
+                                    'eliminado'       => __('Producto eliminado de la lista', 'flavor-chat-ia'),
+                                    'error'           => __('Ha ocurrido un error', 'flavor-chat-ia'),
+                                    'confirmarEliminar' => __('¿Eliminar este producto?', 'flavor-chat-ia'),
+                                    'pedidoCreado'    => __('Pedido creado correctamente', 'flavor-chat-ia'),
+                                    'cargando'        => __('Cargando...', 'flavor-chat-ia'),
+                                    'sinProductos'    => __('Tu lista está vacía', 'flavor-chat-ia'),
+                                ],
+                            ]);
+                        }
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * Desactiva shortcode_unautop en el portal dinámico para evitar regex gigantes
+     * cuando WordPress intenta procesar cientos de shortcodes registrados.
+     *
+     * @return void
+     */
+    private function disable_shortcode_unautop() {
+        static $disabled = false;
+
+        if ($disabled) {
+            return;
+        }
+
+        remove_filter('the_content', 'shortcode_unautop');
+        $disabled = true;
     }
 
     /**
@@ -766,18 +794,21 @@ class Flavor_Dynamic_Pages {
             return;
         }
 
-        $actions = $this->get_module_actions($this->current_module);
+        $actions = $this->get_composed_module_actions($this->current_module, $module);
         ?>
         <aside class="flavor-app-sidebar">
             <nav class="fas-nav">
-                <a href="<?php echo esc_url(home_url('/' . $this->base_path . '/' . $this->current_module . '/')); ?>"
-                   class="fas-nav-item <?php echo $this->current_action === 'index' ? 'active' : ''; ?>">
-                    <span class="dashicons dashicons-list-view"></span>
-                    <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
-                </a>
+                <?php if ($this->should_render_sidebar_root_link($this->current_module, $actions)): ?>
+                    <a href="<?php echo esc_url(home_url('/' . $this->base_path . '/' . $this->current_module . '/')); ?>"
+                       class="fas-nav-item <?php echo $this->current_action === 'index' ? 'active' : ''; ?>">
+                        <span class="dashicons dashicons-list-view"></span>
+                        <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
+                    </a>
+                <?php endif; ?>
 
                 <?php foreach ($actions as $action_id => $action): ?>
-                    <a href="<?php echo esc_url(home_url('/' . $this->base_path . '/' . $this->current_module . '/' . $action_id . '/')); ?>"
+                    <?php $action_url = $this->get_sidebar_action_url($action_id, $action); ?>
+                    <a href="<?php echo esc_url($action_url); ?>"
                        class="fas-nav-item <?php echo $this->current_action === $action_id ? 'active' : ''; ?>">
                         <span class="dashicons <?php echo esc_attr($action['icon'] ?? 'dashicons-admin-generic'); ?>"></span>
                         <?php echo esc_html($action['label'] ?? ucfirst($action_id)); ?>
@@ -786,6 +817,238 @@ class Flavor_Dynamic_Pages {
             </nav>
         </aside>
         <?php
+    }
+
+    /**
+     * Obtiene las acciones del sidebar priorizando tabs reales del modulo.
+     *
+     * Esto reduce desalineaciones entre el aside y el sistema actual del modulo,
+     * manteniendo como complemento algunas acciones legacy utiles.
+     *
+     * @param string $module_id Slug del modulo.
+     * @param object $module Instancia del modulo.
+     * @return array
+     */
+    private function get_composed_module_actions($module_id, $module) {
+        $module_slug = str_replace('_', '-', $module_id);
+        $tabs = $this->get_module_tabs($module);
+        $legacy_priority_actions = $this->get_legacy_priority_actions($module_slug);
+        $legacy_actions = $this->get_legacy_module_actions($module_slug);
+
+        $sidebar_actions = [];
+        $seen_ids = [];
+        $seen_labels = [];
+
+        $add_action = function ($action_id, $action) use (&$sidebar_actions, &$seen_ids, &$seen_labels, $module_slug, $tabs) {
+            $action_id = str_replace('_', '-', (string) $action_id);
+
+            $canonical_duplicates = [
+                'grupos-consumo' => [
+                    'catalogo' => 'productos',
+                    'pedidos' => 'mis-pedidos',
+                ],
+            ];
+
+            if (!empty($canonical_duplicates[$module_slug][$action_id])) {
+                $canonical_id = $canonical_duplicates[$module_slug][$action_id];
+                if (isset($tabs[$canonical_id])) {
+                    return;
+                }
+            }
+
+            if ($this->should_skip_sidebar_action($action_id, $module_slug, $action)) {
+                return;
+            }
+
+            $label = $action['label'] ?? $this->get_action_label($action_id);
+            $normalized_label = sanitize_title(wp_strip_all_tags((string) $label));
+
+            if (isset($seen_ids[$action_id]) || ($normalized_label !== '' && isset($seen_labels[$normalized_label]))) {
+                return;
+            }
+
+            $action['label'] = $label;
+            $action['icon'] = $action['icon'] ?? 'dashicons-admin-generic';
+
+            $sidebar_actions[$action_id] = $action;
+            $seen_ids[$action_id] = true;
+
+            if ($normalized_label !== '') {
+                $seen_labels[$normalized_label] = true;
+            }
+        };
+
+        foreach ($tabs as $tab_id => $tab) {
+            $add_action($tab_id, $tab);
+        }
+
+        foreach ($legacy_priority_actions as $action_id => $action) {
+            $add_action($action_id, $action);
+        }
+
+        if (empty($tabs)) {
+            foreach ($legacy_actions as $action_id => $action) {
+                if (!$this->is_priority_sidebar_action($action_id)) {
+                    $add_action($action_id, $action);
+                }
+            }
+        }
+
+        return $sidebar_actions;
+    }
+
+    /**
+     * Obtiene solo las acciones legacy prioritarias para complementar tabs reales.
+     *
+     * @param string $module_id
+     * @return array
+     */
+    private function get_legacy_priority_actions($module_id) {
+        if ($this->module_uses_modern_sidebar_only($module_id)) {
+            return [];
+        }
+
+        $priority_actions = [];
+
+        foreach ($this->get_legacy_module_actions($module_id) as $action_id => $action) {
+            if ($this->is_priority_sidebar_action($action_id)) {
+                $priority_actions[$action_id] = $action;
+            }
+        }
+
+        return $priority_actions;
+    }
+
+    /**
+     * Módulos ya saneados donde el sidebar debe salir solo del contrato moderno.
+     *
+     * @param string $module_id
+     * @return bool
+     */
+    private function module_uses_modern_sidebar_only($module_id) {
+        static $modern_only_modules = [
+            'banco-tiempo',
+            'marketplace',
+            'chat-interno',
+            'chat-grupos',
+            'parkings',
+            'facturas',
+            'advertising',
+            'socios',
+            'bares',
+            'grupos-consumo',
+            'reservas',
+            'tramites',
+            'participacion',
+            'espacios-comunes',
+            'red-social',
+            'comunidades',
+            'multimedia',
+        ];
+
+        return in_array((string) $module_id, $modern_only_modules, true);
+    }
+
+    /**
+     * Alias semantico para el sidebar.
+     *
+     * @param string $module_id
+     * @param object $module
+     * @return array
+     */
+    private function get_sidebar_actions($module_id, $module) {
+        return $this->get_composed_module_actions($module_id, $module);
+    }
+
+    /**
+     * Obtiene la URL real de una acción del sidebar.
+     *
+     * Permite que tabs/acciones modernas definan una URL explícita sin quedar
+     * forzadas al patrón /mi-portal/{modulo}/{accion}/.
+     *
+     * @param string $action_id
+     * @param array  $action
+     * @return string
+     */
+    private function get_sidebar_action_url($action_id, array $action): string {
+        if (!empty($action['url'])) {
+            return (string) $action['url'];
+        }
+
+        if (!empty($action['href'])) {
+            return (string) $action['href'];
+        }
+
+        return home_url('/' . $this->base_path . '/' . $this->current_module . '/' . $action_id . '/');
+    }
+
+    /**
+     * Determina si debe mostrarse el enlace raíz "Ver todos" del sidebar.
+     *
+     * Algunos módulos modernos ya usan como primera tab la misma vista raíz y
+     * el enlace fijo solo introduce duplicados semánticos en el aside.
+     *
+     * @param string $module_id
+     * @param array  $actions
+     * @return bool
+     */
+    private function should_render_sidebar_root_link($module_id, array $actions): bool {
+        static $modules_with_duplicated_root = [
+            'banco-tiempo',
+            'comunidades',
+            'grupos-consumo',
+            'chat-grupos',
+            'multimedia',
+            'red-social',
+        ];
+
+        return !in_array((string) $module_id, $modules_with_duplicated_root, true);
+    }
+
+    /**
+     * Determina si una accion debe priorizarse en el sidebar.
+     *
+     * @param string $action_id
+     * @return bool
+     */
+    private function is_priority_sidebar_action($action_id) {
+        return (bool) preg_match('/^(crear|nuevo|nueva|publicar|registrar|reportar|ofrecer|solicitar|proponer|reservar|alquilar|explorar|buscar)/', (string) $action_id);
+    }
+
+    /**
+     * Filtra acciones redundantes para el enlace raiz del modulo.
+     *
+     * @param string $action_id
+     * @param string $module_slug
+     * @param array  $action
+     * @return bool
+     */
+    private function should_skip_sidebar_action($action_id, $module_slug, array $action) {
+        $action_id = str_replace('_', '-', (string) $action_id);
+
+        if (!empty($action['hidden_nav'])) {
+            return true;
+        }
+
+        if (!empty($action['cap']) && !current_user_can($action['cap'])) {
+            return true;
+        }
+
+        if (!empty($action['requires_login']) && !is_user_logged_in()) {
+            return true;
+        }
+
+        if (in_array($action_id, ['index', 'listado', 'todos', 'todo'], true)) {
+            return true;
+        }
+
+        if ($action_id === $module_slug) {
+            return true;
+        }
+
+        $label = sanitize_title(wp_strip_all_tags((string) ($action['label'] ?? '')));
+
+        return in_array($label, ['ver-todos', 'todos', 'todo'], true);
     }
 
     /**
@@ -1119,11 +1382,12 @@ class Flavor_Dynamic_Pages {
      * Renderiza acciones rápidas del módulo
      */
     private function render_module_quick_actions() {
-        $actions = $this->get_module_actions($this->current_module);
+        $module = $this->get_module_instance($this->current_module);
+        $actions = $this->get_composed_module_actions($this->current_module, $module);
         $primary_action = array_key_first($actions);
 
         if ($primary_action && isset($actions[$primary_action])): ?>
-            <a href="<?php echo esc_url(home_url('/' . $this->base_path . '/' . $this->current_module . '/' . $primary_action . '/')); ?>"
+            <a href="<?php echo esc_url($this->get_sidebar_action_url($primary_action, $actions[$primary_action])); ?>"
                class="fmd-primary-btn">
                 <span class="dashicons <?php echo esc_attr($actions[$primary_action]['icon'] ?? 'dashicons-plus-alt'); ?>"></span>
                 <?php echo esc_html($actions[$primary_action]['label']); ?>
@@ -1206,7 +1470,10 @@ class Flavor_Dynamic_Pages {
                         <?php if (!empty($widget['actions'])): ?>
                         <div class="fmd-widget-footer">
                             <?php foreach ($widget['actions'] as $action_key => $action): ?>
-                                <a href="<?php echo esc_url($base_url . $action_key . '/'); ?>" class="fmd-widget-btn">
+                                <?php
+                                $widget_action_url = $action['url'] ?? $action['href'] ?? ($base_url . $action_key . '/');
+                                ?>
+                                <a href="<?php echo esc_url($widget_action_url); ?>" class="fmd-widget-btn">
                                     <?php if (!empty($action['icon'])): ?>
                                         <span class="dashicons <?php echo esc_attr($action['icon']); ?>"></span>
                                     <?php endif; ?>
@@ -1254,8 +1521,8 @@ class Flavor_Dynamic_Pages {
             // Widget: Ciclo actual (resumen) + Mi Pedido (estado)
             // Tabs: Catálogo completo, Pedidos, Productores, Ciclos
             'grupos-consumo' => [
-                ['title' => __('Ciclo Actual', 'flavor-chat-ia'), 'icon' => 'dashicons-update', 'size' => 'medium', 'shortcode' => '[gc_ciclo_actual]', 'action' => 'ciclo'],
-                ['title' => __('Mi Pedido', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'size' => 'large', 'shortcode' => '[gc_mi_pedido]', 'action' => 'mi-pedido'],
+                ['title' => __('Ciclo Actual', 'flavor-chat-ia'), 'icon' => 'dashicons-update', 'size' => 'medium', 'shortcode' => '[gc_ciclo_actual]', 'action' => 'ciclos'],
+                ['title' => __('Pedido actual', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'size' => 'large', 'shortcode' => '[gc_mi_pedido]', 'action' => 'mi-pedido'],
             ],
 
             // === EVENTOS ===
@@ -1310,8 +1577,8 @@ class Flavor_Dynamic_Pages {
             // === BANCO DE TIEMPO ===
             // Widget: Mi saldo y estadísticas | Tabs: Listados
             'banco-tiempo' => [
-                ['title' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'medium', 'shortcode' => '[banco_tiempo_mi_balance]', 'action' => 'mi-saldo'],
-                ['title' => __('Mis Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'large', 'shortcode' => '[banco_tiempo_intercambios limite="4"]', 'action' => 'intercambios'],
+                ['title' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'medium', 'shortcode' => '[banco_tiempo_widget_saldo]', 'action' => 'mi-saldo'],
+                ['title' => __('Mis Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'large', 'shortcode' => '[banco_tiempo_widget_intercambios limite="3"]', 'action' => 'intercambios'],
             ],
 
             // === BICICLETAS COMPARTIDAS ===
@@ -1380,7 +1647,7 @@ class Flavor_Dynamic_Pages {
             // Widget: Mi comunidad | Tabs: Directorio y mapa
             'comunidades' => [
                 ['title' => __('Mis Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-multisite', 'size' => 'medium', 'shortcode' => '[comunidades_mis_comunidades limite="3" compacto="true"]', 'action' => 'mis-comunidades'],
-                ['title' => __('Actividad Reciente', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'size' => 'large', 'shortcode' => '[comunidades_actividad limit="5"]', 'action' => 'tablon'],
+                ['title' => __('Actividad Reciente', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'size' => 'large', 'shortcode' => '[comunidades_actividad limit="5"]', 'action' => 'actividad'],
             ],
 
             // === SOCIOS ===
@@ -1398,21 +1665,21 @@ class Flavor_Dynamic_Pages {
             // === CHAT GRUPOS ===
             // Widget: Mensajes sin leer | Tabs: Grupos
             'chat-grupos' => [
-                ['title' => __('Mensajes Nuevos', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'size' => 'medium', 'shortcode' => '[chat_grupos_sin_leer]', 'action' => 'mis-grupos'],
+                ['title' => __('Mensajes Nuevos', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'size' => 'medium', 'shortcode' => '[chat_grupos_sin_leer]', 'action' => 'mensajes'],
                 ['title' => __('Grupos Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'large', 'shortcode' => '[chat_grupos_activos limit="4"]', 'action' => 'mis-grupos'],
             ],
 
             // === CHAT INTERNO ===
             // Widget: Mensajes sin leer | Tabs: Bandeja
             'chat-interno' => [
-                ['title' => __('Sin Leer', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'size' => 'large', 'shortcode' => '[chat_mensajes_sin_leer]', 'action' => 'bandeja'],
+                ['title' => __('Sin Leer', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'size' => 'large', 'shortcode' => '[chat_mensajes_sin_leer]', 'action' => 'mensajes'],
             ],
 
             // === RED SOCIAL ===
             // Widget: Notificaciones | Tabs: Feed
             'red-social' => [
-                ['title' => __('Notificaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-bell', 'size' => 'medium', 'shortcode' => '[rs_notificaciones]', 'action' => 'notificaciones'],
-                ['title' => __('Mi Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'medium', 'shortcode' => '[rs_mi_actividad]', 'action' => 'mi-perfil'],
+                ['title' => __('Mi Perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'medium', 'shortcode' => '[rs_perfil]', 'action' => 'mi-perfil'],
+                ['title' => __('Mi Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'size' => 'medium', 'shortcode' => '[rs_mi_actividad]', 'action' => 'mi-actividad'],
             ],
 
             // === PARTICIPACIÓN ===
@@ -1443,8 +1710,8 @@ class Flavor_Dynamic_Pages {
             // === TRÁMITES ===
             // Widget: Expedientes pendientes | Tabs: Catálogo
             'tramites' => [
-                ['title' => __('Pendientes', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'medium', 'shortcode' => '[tramites_pendientes]', 'action' => 'mis-expedientes'],
-                ['title' => __('Más Solicitados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[tramites_populares limit="4"]', 'action' => 'catalogo'],
+                ['title' => __('Mis Trámites', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'medium', 'shortcode' => '[tramites_pendientes]', 'action' => 'mis-tramites'],
+                ['title' => __('Más Solicitados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[tramites_populares limit="4"]', 'action' => 'listado'],
             ],
 
             // === TRANSPARENCIA ===
@@ -1551,6 +1818,12 @@ class Flavor_Dynamic_Pages {
                 ['title' => __('Mi Camino', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'size' => 'large', 'shortcode' => '[flavor_suficiencia_mi_camino]', 'action' => 'mi-camino'],
                 ['title' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_biblioteca]', 'action' => 'biblioteca'],
             ],
+            'energia-comunitaria' => [
+                ['title' => __('Panel', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'large', 'shortcode' => '[flavor_energia_dashboard]', 'action' => 'panel'],
+                ['title' => __('Instalaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-tools', 'size' => 'medium', 'shortcode' => '[flavor_energia_instalaciones]', 'action' => 'instalaciones'],
+                ['title' => __('Participantes', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'medium', 'shortcode' => '[flavor_energia_participantes]', 'action' => 'participantes'],
+                ['title' => __('Cierres', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'size' => 'medium', 'shortcode' => '[flavor_energia_cierres]', 'action' => 'cierres'],
+            ],
 
             // === TRABAJO DIGNO ===
             'trabajo-digno' => [
@@ -1588,7 +1861,7 @@ class Flavor_Dynamic_Pages {
      */
     private function get_action_label($action) {
         $labels = [
-            'mi-pedido'      => __('Mi Pedido', 'flavor-chat-ia'),
+            'mi-pedido'      => __('Pedido actual', 'flavor-chat-ia'),
             'mi-cesta'       => __('Mi Cesta', 'flavor-chat-ia'),
             'productos'      => __('Productos', 'flavor-chat-ia'),
             'productores'    => __('Productores', 'flavor-chat-ia'),
@@ -1602,7 +1875,7 @@ class Flavor_Dynamic_Pages {
             'editar'         => __('Editar', 'flavor-chat-ia'),
             'ver'            => __('Detalle', 'flavor-chat-ia'),
             'mis-reservas'   => __('Mis Reservas', 'flavor-chat-ia'),
-            'mis-pedidos'    => __('Mis Pedidos', 'flavor-chat-ia'),
+            'mis-pedidos'    => __('Historial', 'flavor-chat-ia'),
             'mis-reportes'   => __('Mis Reportes', 'flavor-chat-ia'),
             'inscripciones'  => __('Inscripciones', 'flavor-chat-ia'),
             'suscripciones'  => __('Suscripciones', 'flavor-chat-ia'),
@@ -1631,12 +1904,13 @@ class Flavor_Dynamic_Pages {
      * @return array Tabs del módulo
      */
     private function get_module_tabs($module) {
+        $tabs_modulo = [];
+        $tabs_renderer = [];
+        $module_id = str_replace('_', '-', $this->current_module);
+
         // PRIORIDAD 1: Método get_dashboard_tabs() del módulo
         if ($module && method_exists($module, 'get_dashboard_tabs')) {
-            $tabs_modulo = $module->get_dashboard_tabs();
-            if (!empty($tabs_modulo)) {
-                return $tabs_modulo;
-            }
+            $tabs_modulo = $module->get_dashboard_tabs() ?: [];
         }
 
         // PRIORIDAD 2: Nuevo sistema - get_renderer_config()['tabs']
@@ -1644,12 +1918,19 @@ class Flavor_Dynamic_Pages {
         if ($module_class && method_exists($module_class, 'get_renderer_config')) {
             $config = $module_class::get_renderer_config();
             if (!empty($config['tabs'])) {
-                return $this->convert_renderer_tabs_to_legacy($config['tabs'], $config);
+                $tabs_renderer = $this->convert_renderer_tabs_to_legacy($config['tabs'], $config);
             }
         }
 
+        if ($this->module_uses_modern_sidebar_only($module_id) && !empty($tabs_renderer)) {
+            return $tabs_renderer;
+        }
+
+        if (!empty($tabs_modulo) || !empty($tabs_renderer)) {
+            return $this->merge_module_tabs($tabs_modulo, $tabs_renderer);
+        }
+
         // PRIORIDAD 3: Tabs específicos por módulo (fallback legacy)
-        $module_id = str_replace('_', '-', $this->current_module);
 
         // ============================================================
         // TABS POR MÓDULO: Complementan los widgets con vistas completas
@@ -1750,13 +2031,15 @@ class Flavor_Dynamic_Pages {
             // === BANCO DE TIEMPO ===
             // Tabs principales cargan templates específicos del módulo
             'banco-tiempo' => [
-                'servicios'    => ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'content' => 'template:servicios.php'],
-                'mi-saldo'     => ['label' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'content' => 'template:mi-saldo.php'],
-                'intercambios' => ['label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'content' => 'template:intercambios.php'],
-                'ranking'      => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'content' => 'template:ranking-comunidad.php'],
+                'servicios'    => ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'content' => '[banco_tiempo_servicios]'],
+                'mi-saldo'     => ['label' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'content' => '[banco_tiempo_mi_saldo]'],
+                'intercambios' => ['label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'content' => '[banco_tiempo_mis_intercambios]'],
+                'ranking'      => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'content' => '[banco_tiempo_ranking]'],
                 // Integraciones
                 'reputacion'   => ['label' => __('Mi Reputación', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'content' => 'template:mi-reputacion.php'],
                 'mensajes'     => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
+                'ofrecer'      => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'content' => '[banco_tiempo_ofrecer]', 'requires_login' => true],
+                'buscar'       => ['label' => __('Buscar servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'content' => '[banco_tiempo_servicios]'],
             ],
 
             // === BICICLETAS COMPARTIDAS ===
@@ -1859,15 +2142,15 @@ class Flavor_Dynamic_Pages {
 
             // === COMUNIDADES ===
             'comunidades' => [
-                'directorio' => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
-                'mapa'       => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
-                'tablon'     => ['label' => __('Tablón', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
-                // Integraciones
-                'foros'      => ['label' => __('Foros', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
-                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
-                'eventos'    => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
-                'anuncios'   => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'is_integration' => true, 'source_module' => 'marketplace'],
-                'recursos'   => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true, 'content' => '[comunidades_recursos]'],
+                'comunidades'     => ['label' => __('Ver todas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'content' => 'callback:render_tab_comunidades'],
+                'crear'           => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'content' => '[comunidades_crear]', 'requires_login' => true],
+                'mis-comunidades' => ['label' => __('Mis comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'content' => 'callback:render_tab_mis_comunidades', 'requires_login' => true],
+                'actividad'       => ['label' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'content' => 'callback:render_tab_actividad', 'requires_login' => true],
+                'foros'           => ['label' => __('Foros', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+                'multimedia'      => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
+                'eventos'         => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'content' => 'callback:render_tab_eventos'],
+                'anuncios'        => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'content' => '[comunidades_tablon limite="20" incluir_red="true"]'],
+                'recursos'        => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'content' => '[comunidades_recursos_compartidos]'],
             ],
 
             // === SOCIOS ===
@@ -1950,11 +2233,10 @@ class Flavor_Dynamic_Pages {
 
             // === TRÁMITES ===
             'tramites' => [
-                'catalogo'       => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
-                'mis-expedientes'=> ['label' => __('Mis Expedientes', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
-                // Integraciones
-                'citas'          => ['label' => __('Citas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true, 'content' => '[tramites_citas]'],
-                'documentos'     => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-default', 'is_integration' => true, 'content' => '[tramites_documentos]'],
+                'listado'      => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'content' => '[flavor_tramites_catalogo]'],
+                'iniciar'      => ['label' => __('Iniciar trámite', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'content' => '[flavor_tramites_solicitar]', 'requires_login' => true],
+                'mis-tramites' => ['label' => __('Mis trámites', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'content' => '[flavor_tramites_mis_solicitudes]', 'requires_login' => true],
+                'seguimiento'  => ['label' => __('Seguimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'content' => '[flavor_tramites_seguimiento]'],
             ],
 
             // === TRANSPARENCIA ===
@@ -2179,6 +2461,39 @@ class Flavor_Dynamic_Pages {
     }
 
     /**
+     * Fusiona tabs legacy del modulo con tabs del renderer moderno.
+     *
+     * Los tabs del renderer completan o corrigen campos del tab legacy
+     * manteniendo el orden principal definido por el módulo.
+     *
+     * @param array $dashboard_tabs
+     * @param array $renderer_tabs
+     * @return array
+     */
+    private function merge_module_tabs(array $dashboard_tabs, array $renderer_tabs): array {
+        if (empty($dashboard_tabs)) {
+            return $renderer_tabs;
+        }
+
+        if (empty($renderer_tabs)) {
+            return $dashboard_tabs;
+        }
+
+        $merged_tabs = $dashboard_tabs;
+
+        foreach ($renderer_tabs as $tab_id => $tab_config) {
+            if (isset($merged_tabs[$tab_id]) && is_array($merged_tabs[$tab_id])) {
+                $merged_tabs[$tab_id] = array_merge($merged_tabs[$tab_id], $tab_config);
+                continue;
+            }
+
+            $merged_tabs[$tab_id] = $tab_config;
+        }
+
+        return $merged_tabs;
+    }
+
+    /**
      * Convierte tabs del nuevo formato (get_renderer_config) al formato legacy
      *
      * Nuevo formato:
@@ -2241,6 +2556,21 @@ class Flavor_Dynamic_Pages {
             }
             if (!empty($tab_config['source_module'])) {
                 $legacy_tab['source_module'] = $tab_config['source_module'];
+            }
+            if (!empty($tab_config['requires_login'])) {
+                $legacy_tab['requires_login'] = true;
+            }
+            if (!empty($tab_config['hidden_nav'])) {
+                $legacy_tab['hidden_nav'] = true;
+            }
+            if (array_key_exists('public', $tab_config)) {
+                $legacy_tab['public'] = (bool) $tab_config['public'];
+            }
+            if (!empty($tab_config['description'])) {
+                $legacy_tab['description'] = $tab_config['description'];
+            }
+            if (!empty($tab_config['cap'])) {
+                $legacy_tab['cap'] = $tab_config['cap'];
             }
 
             $legacy_tabs[$tab_id] = $legacy_tab;
@@ -2372,9 +2702,20 @@ class Flavor_Dynamic_Pages {
             $source_module = $tab_info['source_module'];
             $source_module_slug = str_replace('_', '-', $source_module);
             $source_normalized = str_replace('-', '_', $source_module);
+            $contextual_shortcode = $this->get_contextual_integration_shortcode($source_module_slug);
             ?>
             <div class="fmd-tab-integration" data-source-module="<?php echo esc_attr($source_module_slug); ?>">
                 <?php
+                if ($contextual_shortcode !== null) {
+                    do_action('flavor_rendering_tab_integrado', $source_module_slug, $this->current_module, $this->current_item_id);
+                    $this->ensure_integration_assets_loaded($source_module_slug);
+                    echo do_shortcode($contextual_shortcode);
+                    ?>
+                    </div>
+                    <?php
+                    return;
+                }
+
                 // Intentar usar el shortcode nativo del módulo fuente
                 $shortcode_candidates = [
                     'flavor_' . $source_normalized . '_listado',
@@ -2431,6 +2772,22 @@ class Flavor_Dynamic_Pages {
         $contenido = $tab_info['content'];
         $module_id = str_replace('_', '-', $this->current_module);
 
+        // Algunas tabs modernas siguen declarando shortcodes válidos, pero
+        // en rutas dinámicas el registro puede no haberse resuelto a tiempo.
+        // Si el módulo expone el método real del shortcode, priorizarlo.
+        if (
+            $module &&
+            $module_id === 'comunidades' &&
+            $tab_id === 'crear' &&
+            method_exists($module, 'shortcode_crear')
+        ) {
+            $output = $module->shortcode_crear([]);
+            if (is_string($output) && trim($output) !== '') {
+                echo $output;
+                return;
+            }
+        }
+
         // Tipo 1: Shortcode directo con corchetes [shortcode]
         if (is_string($contenido) && strpos($contenido, '[') === 0) {
             // Extraer nombre del shortcode
@@ -2445,6 +2802,23 @@ class Flavor_Dynamic_Pages {
                     return;
                 }
             }
+
+            if ($shortcode_name && $module) {
+                $module_prefix = str_replace('-', '_', $module_id) . '_';
+                if (strpos($shortcode_name, $module_prefix) === 0) {
+                    $shortcode_suffix = substr($shortcode_name, strlen($module_prefix));
+                    $shortcode_method = 'shortcode_' . $shortcode_suffix;
+
+                    if (method_exists($module, $shortcode_method)) {
+                        $output = $module->{$shortcode_method}([]);
+                        if (is_string($output) && trim($output) !== '') {
+                            echo $output;
+                            return;
+                        }
+                    }
+                }
+            }
+
             // Fallback si shortcode no existe o no produce salida
             $this->render_tab_fallback($tab_id, $module_id);
             return;
@@ -2473,19 +2847,38 @@ class Flavor_Dynamic_Pages {
             return;
         }
 
-        // Tipo 3: Callable (closure o función)
+        // Tipo 4: Prefijo callback:nombre_metodo del modulo
+        if (is_string($contenido) && strpos($contenido, 'callback:') === 0) {
+            $method_name = str_replace('callback:', '', $contenido);
+
+            if ($module && method_exists($module, $method_name)) {
+                $output = $module->{$method_name}(get_current_user_id());
+                if (is_string($output) && $output !== '') {
+                    echo $output;
+                }
+                return;
+            }
+
+            $this->render_tab_fallback($tab_id, $module_id);
+            return;
+        }
+
+        // Tipo 5: Callable (closure o función)
         if (is_callable($contenido)) {
             call_user_func($contenido, $tab_id, $module, $this);
             return;
         }
 
-        // Tipo 4: Nombre de método del módulo
+        // Tipo 6: Nombre de método del módulo
         if (is_string($contenido) && $module && method_exists($module, $contenido)) {
-            $module->{$contenido}(get_current_user_id());
+            $output = $module->{$contenido}(get_current_user_id());
+            if (is_string($output) && $output !== '') {
+                echo $output;
+            }
             return;
         }
 
-        // Tipo 5: String directo (HTML)
+        // Tipo 7: String directo (HTML)
         if (is_string($contenido)) {
             echo wp_kses_post($contenido);
             return;
@@ -2512,16 +2905,15 @@ class Flavor_Dynamic_Pages {
             // Tema hijo/padre - carpeta tabs
             get_stylesheet_directory() . "/flavor/{$module_slug}/tabs/{$template_name}",
             get_template_directory() . "/flavor/{$module_slug}/tabs/{$template_name}",
-            // Plugin - carpeta tabs
+            // Plugin - tabs y plantillas frontend primero
             FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/tabs/{$template_name}",
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/tabs/{$template_name}",
             FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/frontend/tabs/{$template_name}",
-            // Plugin - carpeta views (presupuestos-participativos y otros módulos)
-            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/{$template_name}",
-            // Plugin - raíz del módulo (para archive.php y otros templates principales)
-            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/{$template_name}",
             FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/templates/{$template_name}",
+            FLAVOR_CHAT_IA_PATH . "templates/frontend/{$module_slug}/{$template_name}",
             FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/frontend/{$template_name}",
+            // Vistas legacy al final para no colar pantallas de gestión en el portal
+            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/tabs/{$template_name}",
+            FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_slug}/views/{$template_name}",
             // Template genérico (fallback para todos los módulos)
             FLAVOR_CHAT_IA_PATH . "templates/frontend/{$template_name}",
         ];
@@ -2658,6 +3050,49 @@ class Flavor_Dynamic_Pages {
         $user_id = $tab_data['user_id'] ?? get_current_user_id();
 
         switch ($module_slug) {
+            case 'banco-tiempo':
+                if ($tab_id === 'reputacion') {
+                    $tab_data['reputacion'] = [
+                        'nombre' => '',
+                        'avatar' => '',
+                        'nivel' => 1,
+                        'estado_verificacion' => 'pendiente',
+                        'puntos_confianza' => 0,
+                        'rating_promedio' => 0,
+                        'total_intercambios_completados' => 0,
+                        'total_horas_dadas' => 0,
+                        'total_horas_recibidas' => 0,
+                        'rating_puntualidad' => 0,
+                        'rating_calidad' => 0,
+                        'rating_comunicacion' => 0,
+                        'fecha_primer_intercambio' => null,
+                        'badges' => [],
+                    ];
+                    $tab_data['badges_info'] = [];
+
+                    if ($user_id && class_exists('Flavor_BT_Conciencia_Features')) {
+                        $features = Flavor_BT_Conciencia_Features::get_instance();
+                        $reputacion = $features->obtener_reputacion((int) $user_id);
+                        if (is_array($reputacion)) {
+                            $tab_data['reputacion'] = array_merge($tab_data['reputacion'], $reputacion);
+                            $badges_info = [];
+                            foreach (($reputacion['badges'] ?? []) as $badge_id) {
+                                if (isset(Flavor_BT_Conciencia_Features::BADGES[$badge_id])) {
+                                    $badges_info[] = Flavor_BT_Conciencia_Features::BADGES[$badge_id];
+                                }
+                            }
+                            $tab_data['badges_info'] = $badges_info;
+                        }
+                    } elseif ($user_id) {
+                        $usuario = get_userdata($user_id);
+                        if ($usuario) {
+                            $tab_data['reputacion']['nombre'] = $usuario->display_name;
+                            $tab_data['reputacion']['avatar'] = get_avatar_url($user_id, ['size' => 96]);
+                        }
+                    }
+                }
+                break;
+
             case 'presupuestos-participativos':
                 // Nombres correctos de tablas según frontend controller
                 $tabla_procesos = $wpdb->prefix . 'flavor_pp_procesos';
@@ -2939,9 +3374,20 @@ class Flavor_Dynamic_Pages {
         // Si es una tab de integración con source_module, usar ese módulo
         if (!empty($tab_info['is_integration']) && !empty($tab_info['source_module'])) {
             $source_module = $tab_info['source_module'];
+            $contextual_shortcode = $this->get_contextual_integration_shortcode($source_module);
             ?>
             <div class="fmd-tab-integration" data-source-module="<?php echo esc_attr($source_module); ?>">
                 <?php
+                if ($contextual_shortcode !== null) {
+                    do_action('flavor_rendering_tab_integrado', $source_module, $this->current_module, $this->current_item_id);
+                    $this->ensure_integration_assets_loaded($source_module);
+                    echo do_shortcode($contextual_shortcode);
+                    ?>
+                    </div>
+                    <?php
+                    return;
+                }
+
                 // Usar el shortcode unificado [flavor] con el módulo fuente
                 echo do_shortcode('[flavor module="' . esc_attr($source_module) . '" view="listado" header="no" limit="12"]');
                 ?>
@@ -2987,6 +3433,14 @@ class Flavor_Dynamic_Pages {
             case 'proximos':
             case 'ciclos':
                 $this->render_tab_shortcode($tab_id);
+                break;
+
+            case 'crear':
+                if ($this->current_module === 'comunidades') {
+                    echo do_shortcode('[comunidades_crear]');
+                } else {
+                    $this->render_tab_fallback($tab_id, $this->current_module);
+                }
                 break;
 
             // === BANCO DE TIEMPO - Tabs específicos ===
@@ -3075,6 +3529,417 @@ class Flavor_Dynamic_Pages {
                 </div>
                 <?php
         }
+    }
+
+    /**
+     * Devuelve un shortcode contextual para integraciones que dependen de una entidad actual.
+     *
+     * `null` significa seguir con el flujo genérico; una cadena devuelve el shortcode a renderizar.
+     *
+     * @param string $source_module
+     * @return string|null
+     */
+    private function get_contextual_integration_shortcode($source_module) {
+        $source_module = str_replace('_', '-', sanitize_key((string) $source_module));
+
+        if ($source_module === 'chat-interno') {
+            return '[chat_interno_conversaciones]';
+        }
+
+        $entity_type = $this->get_contextual_integration_entity_type();
+        $entity_id = absint($this->current_item_id);
+
+        if ($source_module === 'chat-grupos') {
+            if (!$entity_type) {
+                return null;
+            }
+
+            if ($entity_id <= 0) {
+                $overview_shortcode = $this->get_contextual_integration_overview_shortcode($source_module);
+                if ($overview_shortcode) {
+                    return $overview_shortcode;
+                }
+
+                return $this->get_empty_state_shortcode(
+                    __('Chat contextual', 'flavor-chat-ia'),
+                    __('Accede a una comunidad, evento o elemento concreto para ver su chat asociado.', 'flavor-chat-ia'),
+                    '💬'
+                );
+            }
+
+            return sprintf(
+                '[flavor_chat_grupo_integrado entidad="%s" entidad_id="%d"]',
+                esc_attr($entity_type),
+                $entity_id
+            );
+        }
+
+        if ($source_module === 'multimedia') {
+            if (!$entity_type) {
+                return null;
+            }
+
+            if ($entity_id <= 0) {
+                $overview_shortcode = $this->get_contextual_integration_overview_shortcode($source_module);
+                if ($overview_shortcode) {
+                    return $overview_shortcode;
+                }
+
+                return $this->get_empty_state_shortcode(
+                    __('Galería contextual', 'flavor-chat-ia'),
+                    __('Accede a una comunidad, evento o elemento concreto para ver su contenido multimedia asociado.', 'flavor-chat-ia'),
+                    '🖼️'
+                );
+            }
+
+            return sprintf(
+                '[flavor_multimedia_galeria entidad="%s" entidad_id="%d"]',
+                esc_attr($entity_type),
+                $entity_id
+            );
+        }
+
+        if ($source_module === 'recetas') {
+            $overview_shortcode = $this->get_contextual_integration_overview_shortcode($source_module);
+            if ($overview_shortcode) {
+                return $overview_shortcode;
+            }
+
+            return null;
+        }
+
+        if ($source_module === 'red-social') {
+            if (!$entity_type) {
+                return null;
+            }
+
+            if ($entity_id <= 0) {
+                $overview_shortcode = $this->get_contextual_integration_overview_shortcode($source_module);
+                if ($overview_shortcode) {
+                    return $overview_shortcode;
+                }
+
+                return $this->get_empty_state_shortcode(
+                    __('Feed contextual', 'flavor-chat-ia'),
+                    __('Accede a una comunidad, evento o elemento concreto para ver su actividad social asociada.', 'flavor-chat-ia'),
+                    '📰'
+                );
+            }
+
+            return sprintf(
+                '[flavor_social_feed entidad="%s" entidad_id="%d"]',
+                esc_attr($entity_type),
+                $entity_id
+            );
+        }
+
+        if ($source_module !== 'foros') {
+            return null;
+        }
+
+        if (!$entity_type) {
+            return null;
+        }
+
+        if ($entity_id > 0) {
+            return sprintf(
+                '[flavor_foros_integrado entidad="%s" entidad_id="%d"]',
+                esc_attr($entity_type),
+                $entity_id
+            );
+        }
+
+        return $this->get_empty_state_shortcode(
+            __('Foro contextual', 'flavor-chat-ia'),
+            __('Accede a una comunidad, evento o elemento concreto para ver su foro asociado.', 'flavor-chat-ia'),
+            '💬'
+        );
+    }
+
+    /**
+     * Devuelve un fallback útil para tabs de integración cuando estamos en la raíz
+     * del módulo y todavía no existe un entity_id contextual.
+     *
+     * @param string $source_module
+     * @return string|null
+     */
+    private function get_contextual_integration_overview_shortcode($source_module) {
+        $source_module = str_replace('_', '-', sanitize_key((string) $source_module));
+        $current_module = str_replace('_', '-', sanitize_key((string) $this->current_module));
+
+        if (!in_array($current_module, ['comunidades', 'grupos-consumo'], true)) {
+            return null;
+        }
+
+        if ($source_module === 'chat-grupos') {
+            return '[chat_grupos_mis_grupos]';
+        }
+
+        if ($source_module === 'multimedia') {
+            return '[flavor_multimedia_galeria limit="12"]';
+        }
+
+        if ($source_module === 'recetas') {
+            return '[flavor module="recetas" view="listado" header="no" limit="12"]';
+        }
+
+        if ($source_module === 'red-social') {
+            return is_user_logged_in() ? '[rs_feed]' : '[rs_explorar]';
+        }
+
+        return null;
+    }
+
+    /**
+     * Intenta cargar e imprimir assets de integraciones dinámicas que no están
+     * presentes en el contenido original del post.
+     *
+     * @param string $source_module
+     * @return void
+     */
+    private function ensure_integration_assets_loaded($source_module) {
+        $source_module = str_replace('_', '-', sanitize_key((string) $source_module));
+
+        if ($source_module === 'chat-interno') {
+            wp_enqueue_style(
+                'flavor-chat-interno',
+                FLAVOR_CHAT_IA_URL . 'includes/modules/chat-interno/assets/css/chat-interno.css',
+                [],
+                FLAVOR_CHAT_IA_VERSION
+            );
+
+            wp_enqueue_script(
+                'flavor-chat-interno',
+                FLAVOR_CHAT_IA_URL . 'includes/modules/chat-interno/assets/js/chat-interno.js',
+                ['jquery'],
+                FLAVOR_CHAT_IA_VERSION,
+                true
+            );
+
+            wp_localize_script('flavor-chat-interno', 'flavorChatInterno', [
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'resturl' => rest_url('flavor/v1/chat-interno/'),
+                'nonce' => wp_create_nonce('flavor_chat_interno'),
+                'user_id' => get_current_user_id(),
+                'user_name' => wp_get_current_user()->display_name,
+                'user_avatar' => get_avatar_url(get_current_user_id(), ['size' => 48]),
+                'polling_interval' => 3000,
+                'typing_timeout' => 3000,
+                'max_file_size' => 25 * 1024 * 1024,
+                'allowed_types' => [
+                    'image/jpeg',
+                    'image/png',
+                    'image/gif',
+                    'image/webp',
+                    'application/pdf',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/vnd.ms-excel',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'audio/mpeg',
+                    'audio/wav',
+                    'audio/ogg',
+                    'audio/webm',
+                ],
+                'strings' => [
+                    'escribiendo' => __('escribiendo...', 'flavor-chat-ia'),
+                    'tu' => __('Tu', 'flavor-chat-ia'),
+                    'ahora' => __('ahora', 'flavor-chat-ia'),
+                    'ayer' => __('ayer', 'flavor-chat-ia'),
+                    'mensaje_eliminado' => __('Mensaje eliminado', 'flavor-chat-ia'),
+                    'mensaje_editado' => __('editado', 'flavor-chat-ia'),
+                    'sin_mensajes' => __('No hay mensajes aun. Inicia la conversacion.', 'flavor-chat-ia'),
+                    'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                    'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+                    'usuario_bloqueado' => __('Has bloqueado a este usuario', 'flavor-chat-ia'),
+                    'bloqueado_por' => __('Este usuario te ha bloqueado', 'flavor-chat-ia'),
+                    'online' => __('En linea', 'flavor-chat-ia'),
+                    'offline' => __('Desconectado', 'flavor-chat-ia'),
+                    'visto' => __('Visto', 'flavor-chat-ia'),
+                    'enviado' => __('Enviado', 'flavor-chat-ia'),
+                    'archivo_grande' => __('El archivo es demasiado grande', 'flavor-chat-ia'),
+                    'tipo_no_permitido' => __('Tipo de archivo no permitido', 'flavor-chat-ia'),
+                    'confirmar_eliminar' => __('Eliminar este mensaje?', 'flavor-chat-ia'),
+                    'confirmar_bloquear' => __('Bloquear a este usuario?', 'flavor-chat-ia'),
+                    'nuevo_mensaje' => __('Nuevo mensaje', 'flavor-chat-ia'),
+                ],
+            ]);
+
+            wp_print_styles('flavor-chat-interno');
+            wp_print_scripts('flavor-chat-interno');
+            return;
+        }
+
+        if ($source_module === 'chat-grupos') {
+            wp_enqueue_style(
+                'flavor-chat-grupos',
+                FLAVOR_CHAT_IA_URL . 'includes/modules/chat-grupos/assets/css/chat-grupos.css',
+                [],
+                FLAVOR_CHAT_IA_VERSION
+            );
+
+            wp_enqueue_script(
+                'flavor-chat-grupos',
+                FLAVOR_CHAT_IA_URL . 'includes/modules/chat-grupos/assets/js/chat-grupos.js',
+                ['jquery'],
+                FLAVOR_CHAT_IA_VERSION,
+                true
+            );
+
+            wp_localize_script('flavor-chat-grupos', 'flavorChatGrupos', [
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'resturl' => rest_url('flavor/v1/chat-grupos/'),
+                'nonce' => wp_create_nonce('flavor_chat_grupos'),
+                'user_id' => get_current_user_id(),
+                'user_name' => wp_get_current_user()->display_name,
+                'user_avatar' => get_avatar_url(get_current_user_id(), ['size' => 48]),
+                'polling_interval' => 3000,
+                'typing_timeout' => 3000,
+                'strings' => [
+                    'escribiendo' => __('escribiendo...', 'flavor-chat-ia'),
+                    'tu' => __('Tú', 'flavor-chat-ia'),
+                    'ahora' => __('ahora', 'flavor-chat-ia'),
+                    'ayer' => __('ayer', 'flavor-chat-ia'),
+                    'mensaje_eliminado' => __('Mensaje eliminado', 'flavor-chat-ia'),
+                    'mensaje_editado' => __('editado', 'flavor-chat-ia'),
+                    'sin_mensajes' => __('No hay mensajes aún. ¡Sé el primero en escribir!', 'flavor-chat-ia'),
+                    'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                    'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+                ],
+            ]);
+
+            wp_print_styles('flavor-chat-grupos');
+            wp_print_scripts('flavor-chat-grupos');
+            return;
+        }
+
+        if ($source_module === 'multimedia') {
+            wp_enqueue_style(
+                'flavor-multimedia-frontend',
+                FLAVOR_CHAT_IA_URL . 'includes/modules/multimedia/assets/css/multimedia-frontend.css',
+                [],
+                FLAVOR_CHAT_IA_VERSION
+            );
+
+            wp_enqueue_script(
+                'flavor-multimedia-frontend',
+                FLAVOR_CHAT_IA_URL . 'includes/modules/multimedia/assets/js/multimedia-frontend.js',
+                ['jquery'],
+                FLAVOR_CHAT_IA_VERSION,
+                true
+            );
+
+            $multimedia_config = [
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'ajaxUrl' => admin_url('admin-ajax.php'),
+                'resturl' => rest_url('flavor/v1/multimedia/'),
+                'restUrl' => rest_url('flavor/v1/multimedia/'),
+                'nonce' => wp_create_nonce('flavor_multimedia_nonce'),
+                'user_id' => get_current_user_id(),
+                'userId' => get_current_user_id(),
+                'maxUploadSize' => wp_max_upload_size(),
+                'allowedTypes' => ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'audio/mpeg'],
+                'strings' => [
+                    'loading' => __('Cargando...', 'flavor-chat-ia'),
+                    'subiendo' => __('Subiendo...', 'flavor-chat-ia'),
+                    'subido' => __('Archivo subido correctamente', 'flavor-chat-ia'),
+                    'error' => __('Error al procesar', 'flavor-chat-ia'),
+                    'no_results' => __('No se encontraron resultados', 'flavor-chat-ia'),
+                    'confirm_delete' => __('¿Eliminar este archivo?', 'flavor-chat-ia'),
+                    'uploading' => __('Subiendo...', 'flavor-chat-ia'),
+                    'upload_success' => __('Archivo subido correctamente', 'flavor-chat-ia'),
+                    'upload_error' => __('Error al subir archivo', 'flavor-chat-ia'),
+                    'eliminado' => __('Archivo eliminado', 'flavor-chat-ia'),
+                    'sin_archivos' => __('No hay archivos', 'flavor-chat-ia'),
+                    'arrastra_aqui' => __('Arrastra archivos aquí o haz clic', 'flavor-chat-ia'),
+                    'archivo_grande' => __('El archivo es demasiado grande', 'flavor-chat-ia'),
+                    'tipo_no_permitido' => __('Tipo de archivo no permitido', 'flavor-chat-ia'),
+                ],
+            ];
+
+            wp_localize_script('flavor-multimedia-frontend', 'flavorMultimediaConfig', $multimedia_config);
+            wp_localize_script('flavor-multimedia-frontend', 'flavorMultimedia', $multimedia_config);
+
+            wp_print_styles('flavor-multimedia-frontend');
+            wp_print_scripts('flavor-multimedia-frontend');
+            return;
+        }
+
+        if ($source_module === 'red-social') {
+            wp_enqueue_style(
+                'flavor-red-social',
+                FLAVOR_CHAT_IA_URL . 'includes/modules/red-social/assets/css/red-social.css',
+                [],
+                FLAVOR_CHAT_IA_VERSION
+            );
+
+            wp_enqueue_script(
+                'flavor-red-social',
+                FLAVOR_CHAT_IA_URL . 'includes/modules/red-social/assets/js/red-social.js',
+                ['jquery'],
+                FLAVOR_CHAT_IA_VERSION,
+                true
+            );
+
+            wp_localize_script('flavor-red-social', 'flavorRedSocial', [
+                'ajaxUrl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('rs_nonce'),
+                'userId' => get_current_user_id(),
+                'maxCaracteres' => 5000,
+                'maxImagenes' => 10,
+            ]);
+
+            wp_print_styles('flavor-red-social');
+            wp_print_scripts('flavor-red-social');
+        }
+    }
+
+    /**
+     * Mapea el módulo actual al tipo de entidad usado por foros integrados.
+     *
+     * @return string
+     */
+    private function get_foros_integration_entity_type() {
+        return $this->get_contextual_integration_entity_type();
+    }
+
+    /**
+     * Mapea el módulo actual al tipo de entidad usado por integraciones contextuales.
+     *
+     * @return string
+     */
+    private function get_contextual_integration_entity_type() {
+        $module_slug = str_replace('-', '_', sanitize_key((string) $this->current_module));
+
+        $map = [
+            'comunidades' => 'comunidad',
+            'eventos' => 'evento',
+            'grupos_consumo' => 'grupo_consumo',
+            'cursos' => 'curso',
+            'colectivos' => 'colectivo',
+            'circulos_cuidados' => 'circulo',
+            'banco_tiempo' => 'servicio_bt',
+            'huertos_urbanos' => 'huerto',
+        ];
+
+        return $map[$module_slug] ?? '';
+    }
+
+    /**
+     * Genera un shortcode de estado vacío reutilizable.
+     *
+     * @param string $title
+     * @param string $message
+     * @param string $icon
+     * @return string
+     */
+    private function get_empty_state_shortcode($title, $message, $icon = 'ℹ️') {
+        return sprintf(
+            '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center"><span class="text-5xl mb-4 block">%s</span><h3 class="text-lg font-semibold text-gray-900 mb-2">%s</h3><p class="text-gray-500 mb-4">%s</p></div>',
+            esc_html($icon),
+            esc_html($title),
+            esc_html($message)
+        );
     }
 
     /**
@@ -3261,43 +4126,36 @@ class Flavor_Dynamic_Pages {
      * @param string $tab_id ID del tab (mi-saldo, servicios, intercambios)
      */
     private function render_tab_banco_tiempo($tab_id) {
-        // Mapeo de tab_id a nombre de template
-        $templates = [
-            'mi-saldo'     => 'mi-saldo.php',
-            'servicios'    => 'servicios.php',
-            'intercambios' => 'intercambios.php',
+        $shortcodes = [
+            'servicios' => '[banco_tiempo_servicios]',
+            'mi-saldo' => '[banco_tiempo_mi_saldo]',
+            'intercambios' => '[banco_tiempo_mis_intercambios]',
+            'ranking' => '[banco_tiempo_ranking]',
+            'ofrecer' => '[banco_tiempo_ofrecer]',
+            'buscar' => '[banco_tiempo_servicios]',
         ];
 
-        $template_file = $templates[$tab_id] ?? null;
-
-        if (!$template_file) {
-            echo '<p>' . esc_html__('Tab no encontrado.', 'flavor-chat-ia') . '</p>';
+        if (isset($shortcodes[$tab_id])) {
+            echo do_shortcode($shortcodes[$tab_id]);
             return;
         }
 
-        // Buscar template en el directorio de templates del módulo
-        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/banco-tiempo/templates/' . $template_file;
-
-        if (file_exists($template_path)) {
-            include $template_path;
-        } else {
-            // Fallback: intentar con views (para compatibilidad)
-            $view_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/banco-tiempo/views/' . $template_file;
-
-            if (file_exists($view_path)) {
-                // Agregar wrapper para estilos frontend
-                echo '<div class="fmd-banco-tiempo-view">';
-                include $view_path;
-                echo '</div>';
-            } else {
-                // Si no existe ni template ni view, usar shortcode genérico
-                ?>
-                <div class="fmd-panel-content">
-                    <?php echo do_shortcode('[flavor_module_listing module="banco-tiempo" vista="' . esc_attr($tab_id) . '" limit="12"]'); ?>
-                </div>
-                <?php
+        if ($tab_id === 'reputacion') {
+            $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/banco-tiempo/templates/mi-reputacion.php';
+            if (file_exists($template_path)) {
+                $tab_data = $this->load_module_tab_data('banco-tiempo', 'reputacion', [
+                    'user_id' => get_current_user_id(),
+                ]);
+                $reputacion = $tab_data['reputacion'] ?? [];
+                $badges_info = $tab_data['badges_info'] ?? [];
+                include $template_path;
+                return;
             }
         }
+
+        echo '<div class="fmd-panel-content">';
+        echo do_shortcode('[flavor_module_listing module="banco-tiempo" vista="' . esc_attr($tab_id) . '" limit="12"]');
+        echo '</div>';
     }
 
     /**
@@ -3882,7 +4740,7 @@ class Flavor_Dynamic_Pages {
                     <span class="dashicons dashicons-id"></span>
                     <h3><?php esc_html_e('¡Únete como socio!', 'flavor-chat-ia'); ?></h3>
                     <p><?php esc_html_e('Accede a beneficios exclusivos, descuentos y participa activamente.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/socios/inscripcion/')); ?>" class="fmd-btn fmd-btn-primary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/socios/unirse/')); ?>" class="fmd-btn fmd-btn-primary">
                         <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -4025,7 +4883,7 @@ class Flavor_Dynamic_Pages {
                                     </td>
                                     <td>
                                         <?php if ($cuota->estado === 'pendiente' || $cuota->estado === 'vencida'): ?>
-                                            <a href="<?php echo esc_url(home_url('/mi-portal/socios/pagar/' . $cuota->id)); ?>" class="fmd-btn fmd-btn-sm fmd-btn-primary">
+                                            <a href="<?php echo esc_url(add_query_arg('cuota_id', $cuota->id, home_url('/mi-portal/socios/pagar-cuota/'))); ?>" class="fmd-btn fmd-btn-sm fmd-btn-primary">
                                                 <?php esc_html_e('Pagar', 'flavor-chat-ia'); ?>
                                             </a>
                                         <?php elseif (!empty($cuota->factura_url)): ?>
@@ -4207,7 +5065,7 @@ class Flavor_Dynamic_Pages {
                         <?php endforeach; ?>
                     </div>
                     <div style="text-align: center; margin-top: 30px;">
-                        <a href="<?php echo esc_url(home_url('/mi-portal/socios/inscripcion/')); ?>" class="fmd-btn fmd-btn-primary">
+                        <a href="<?php echo esc_url(home_url('/mi-portal/socios/unirse/')); ?>" class="fmd-btn fmd-btn-primary">
                             <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
@@ -4265,7 +5123,7 @@ class Flavor_Dynamic_Pages {
                     <span class="dashicons dashicons-id"></span>
                     <h3><?php esc_html_e('No tienes carnet de socio', 'flavor-chat-ia'); ?></h3>
                     <p><?php esc_html_e('Hazte socio para obtener tu carnet digital.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/socios/inscripcion/')); ?>" class="fmd-btn fmd-btn-primary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/socios/unirse/')); ?>" class="fmd-btn fmd-btn-primary">
                         <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -5434,15 +6292,30 @@ class Flavor_Dynamic_Pages {
                     $template_name = str_replace('template:', '', $contenido);
                     $this->render_tab_template($template_name, $action, $module_normalizado, $module_instance);
                 }
-                // Tipo 3: Callable
+                // Tipo 3: Prefijo callback:nombre_metodo del modulo
+                elseif (is_string($contenido) && strpos($contenido, 'callback:') === 0) {
+                    $method_name = str_replace('callback:', '', $contenido);
+                    if ($module_instance && method_exists($module_instance, $method_name)) {
+                        $output = $module_instance->{$method_name}(get_current_user_id());
+                        if (is_string($output) && $output !== '') {
+                            echo $output;
+                        }
+                    } else {
+                        echo '<p class="fmd-empty">' . esc_html__('No hay contenido disponible', 'flavor-chat-ia') . '</p>';
+                    }
+                }
+                // Tipo 4: Callable
                 elseif (is_callable($contenido)) {
                     call_user_func($contenido, $action, $module_instance, $this);
                 }
-                // Tipo 4: Método del módulo
+                // Tipo 5: Método del módulo
                 elseif (is_string($contenido) && $module_instance && method_exists($module_instance, $contenido)) {
-                    $module_instance->{$contenido}(get_current_user_id());
+                    $output = $module_instance->{$contenido}(get_current_user_id());
+                    if (is_string($output) && $output !== '') {
+                        echo $output;
+                    }
                 }
-                // Tipo 5: HTML directo
+                // Tipo 6: HTML directo
                 elseif (is_string($contenido)) {
                     echo wp_kses_post($contenido);
                 }
@@ -5457,6 +6330,7 @@ class Flavor_Dynamic_Pages {
                 $source_module = $integration_tabs[$action]['source_module'];
                 $tab_info = $integration_tabs[$action];
                 $source_module_slug = str_replace('_', '-', $source_module);
+                $contextual_shortcode = $this->get_contextual_integration_shortcode($source_module_slug);
                 ?>
                 <div class="fmd-action-header">
                     <h2>
@@ -5469,6 +6343,16 @@ class Flavor_Dynamic_Pages {
                 </div>
                 <div class="fmd-action-body fmd-integration-content" data-source-module="<?php echo esc_attr($source_module_slug); ?>">
                     <?php
+                    if ($contextual_shortcode !== null) {
+                        do_action('flavor_rendering_tab_integrado', $source_module_slug, $this->current_module, $this->current_item_id);
+                        $this->ensure_integration_assets_loaded($source_module_slug);
+                        echo do_shortcode($contextual_shortcode);
+                        ?>
+                        </div>
+                        <?php
+                        return; // Terminamos aquí, no continuamos al flujo normal
+                    }
+
                     // Intentar usar el shortcode nativo del módulo fuente
                     // Probamos múltiples variantes porque cada módulo usa diferentes convenciones
                     $source_normalized = str_replace('-', '_', $source_module_slug);
@@ -5524,6 +6408,39 @@ class Flavor_Dynamic_Pages {
                     return;
                 case 'historial':
                     $this->render_tab_socios_historial();
+                    return;
+            }
+        }
+
+        // ============================================================
+        // MANEJO ESPECÍFICO: Módulo Banco de Tiempo
+        // ============================================================
+        if ($module === 'banco_tiempo' || $module_normalizado === 'banco-tiempo') {
+            switch ($action) {
+                case 'servicios':
+                case 'mi-saldo':
+                case 'intercambios':
+                case 'ranking':
+                case 'reputacion':
+                case 'ofrecer':
+                case 'buscar':
+                    if (class_exists('Flavor_Banco_Tiempo_Frontend_Controller')) {
+                        $bt_frontend = Flavor_Banco_Tiempo_Frontend_Controller::get_instance();
+                        if (method_exists($bt_frontend, 'registrar_assets')) {
+                            $bt_frontend->registrar_assets();
+                        }
+                        if (method_exists($bt_frontend, 'encolar_assets')) {
+                            $bt_frontend->encolar_assets();
+                        }
+                    }
+                    ?>
+                    <div class="fmd-action-header">
+                        <h2><?php echo esc_html($this->get_action_label($action)); ?></h2>
+                    </div>
+                    <div class="fmd-action-body">
+                        <?php $this->render_tab_banco_tiempo($action); ?>
+                    </div>
+                    <?php
                     return;
             }
         }
@@ -6165,18 +7082,22 @@ class Flavor_Dynamic_Pages {
     }
 
     /**
-     * Obtiene las acciones de un módulo
+     * Obtiene las acciones legacy de un módulo.
+     *
+     * Esta matriz existe como red de seguridad para módulos sin tabs
+     * modernas completas. El sidebar principal ya no debe depender de
+     * ella como fuente primaria cuando el módulo expone configuración viva.
      */
-    private function get_module_actions($module_id) {
+    private function get_legacy_module_actions($module_id) {
         $acciones_por_modulo = [
             // ═══════════════════════════════════════════════════════════════
             // Eventos y Actividades (con integraciones)
             // ═══════════════════════════════════════════════════════════════
             'eventos' => [
-                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mis-eventos' => ['label' => __('Mis eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'proximos-eventos' => ['label' => __('Próximos eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'mis-inscripciones' => ['label' => __('Mis inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt', 'requires_login' => true],
                 'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
-                'asistencias' => ['label' => __('Asistencias', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'crear-evento' => ['label' => __('Crear evento', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'cap' => 'edit_posts'],
                 // Integraciones
                 'multimedia' => ['label' => __('Fotos', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
                 'comentarios' => ['label' => __('Comentarios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
@@ -6206,10 +7127,10 @@ class Flavor_Dynamic_Pages {
             // Reservas y Espacios (con integraciones)
             // ═══════════════════════════════════════════════════════════════
             'reservas' => [
-                'nueva' => ['label' => __('Nueva', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mis-reservas' => ['label' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'recursos' => ['label' => __('Recursos disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
+                'mis-reservas' => ['label' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
                 'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-building'],
+                'nueva-reserva' => ['label' => __('Hacer reserva', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
             ],
             'espacios-comunes' => [
                 'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
@@ -6249,11 +7170,10 @@ class Flavor_Dynamic_Pages {
                 'mensajes' => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt'],
             ],
             'parkings' => [
-                'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mis-reservas' => ['label' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
-                'disponibilidad' => ['label' => __('Disponibilidad', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
-                'tarifas' => ['label' => __('Tarifas', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                'listado' => ['label' => __('Listado', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'requires_login' => true],
+                'mis-reservas' => ['label' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
             ],
 
             // ═══════════════════════════════════════════════════════════════
@@ -6288,9 +7208,10 @@ class Flavor_Dynamic_Pages {
             'red-social' => [
                 'feed' => ['label' => __('Feed', 'flavor-chat-ia'), 'icon' => 'dashicons-rss'],
                 'mi-perfil' => ['label' => __('Mi perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
+                'explorar' => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
                 'amigos' => ['label' => __('Amigos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
                 'mensajes' => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt'],
-                'notificaciones' => ['label' => __('Notificaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
+                'historias' => ['label' => __('Historias', 'flavor-chat-ia'), 'icon' => 'dashicons-format-video'],
             ],
 
             // ═══════════════════════════════════════════════════════════════
@@ -6304,11 +7225,11 @@ class Flavor_Dynamic_Pages {
                 'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
             ],
             'participacion' => [
-                'proponer' => ['label' => __('Proponer', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
-                'mis-propuestas' => ['label' => __('Mis propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-                'votaciones' => ['label' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-yes'],
+                'propuestas' => ['label' => __('Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
+                'votaciones' => ['label' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up'],
+                'resultados' => ['label' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
                 'debates' => ['label' => __('Debates', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
-                'resultados' => ['label' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                'reuniones' => ['label' => __('Reuniones', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
             ],
             'presupuestos-participativos' => [
                 'proponer' => ['label' => __('Proponer', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
@@ -6330,24 +7251,28 @@ class Flavor_Dynamic_Pages {
                 'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
             ],
             'grupos-consumo' => [
-                'productos' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-products'],
-                'mi-cesta' => ['label' => __('Mi cesta', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
-                'mi-pedido' => ['label' => __('Mi pedido', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
-                'mis-pedidos' => ['label' => __('Mis pedidos', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-                'suscripciones' => ['label' => __('Cestas', 'flavor-chat-ia'), 'icon' => 'dashicons-archive'],
-                'unirme' => ['label' => __('Unirme', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'grupos' => ['label' => __('Grupos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'productos' => ['label' => __('Productos', 'flavor-chat-ia'), 'icon' => 'dashicons-products'],
+                'productores' => ['label' => __('Productores', 'flavor-chat-ia'), 'icon' => 'dashicons-store'],
+                'mi-cesta' => ['label' => __('Mi cesta', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'requires_login' => true],
+                'mi-pedido' => ['label' => __('Pedido actual', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'requires_login' => true],
+                'mis-pedidos' => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'requires_login' => true],
+                'ciclos' => ['label' => __('Ciclos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'requires_login' => true],
+                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'requires_login' => true, 'hidden_nav' => true],
+                'unirme' => ['label' => __('Unirme', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'requires_login' => true, 'hidden_nav' => true],
                 // Integraciones
-                'productores' => ['label' => __('Productores', 'flavor-chat-ia'), 'icon' => 'dashicons-businessperson'],
                 'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
                 'recetas' => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
             ],
             'banco-tiempo' => [
-                'ofrecer' => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
-                'mis-servicios' => ['label' => __('Mis servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
-                'mi-balance' => ['label' => __('Mi balance', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'servicios' => ['label' => __('Servicios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
+                'mi-saldo' => ['label' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
                 'intercambios' => ['label' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'],
                 'ranking' => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
+                'reputacion' => ['label' => __('Mi Reputación', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
+                'mensajes' => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt'],
+                'ofrecer' => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
             ],
             'economia-don' => [
                 'ofrecer' => ['label' => __('Ofrecer don', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
@@ -6363,38 +7288,44 @@ class Flavor_Dynamic_Pages {
                 'retos' => ['label' => __('Retos', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
                 'biblioteca' => ['label' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
             ],
+            'energia-comunitaria' => [
+                'comunidades' => ['label' => __('Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'instalaciones' => ['label' => __('Instalaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-tools'],
+                'participantes' => ['label' => __('Participantes', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
+                'registrar-lectura' => ['label' => __('Registrar lectura', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'requires_login' => true],
+                'mantenimiento' => ['label' => __('Mantenimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-hammer'],
+                'balance' => ['label' => __('Balance', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                'cierres' => ['label' => __('Cierres', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'requires_login' => true],
+                'proyectos' => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+            ],
 
             // ═══════════════════════════════════════════════════════════════
             // Biblioteca y Multimedia (con integraciones)
             // ═══════════════════════════════════════════════════════════════
             'biblioteca' => [
-                'solicitar' => ['label' => __('Solicitar', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
-                'mis-prestamos' => ['label' => __('Mis préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
-                'reservas' => ['label' => __('Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
+                'mis-prestamos' => ['label' => __('Mis préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
                 'novedades' => ['label' => __('Novedades', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
                 'resenas' => ['label' => __('Reseñas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'clubes' => ['label' => __('Clubes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
             ],
             'multimedia' => [
-                'subir' => ['label' => __('Subir', 'flavor-chat-ia'), 'icon' => 'dashicons-upload'],
-                'mis-archivos' => ['label' => __('Mis archivos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-archive'],
                 'galeria' => ['label' => __('Galería', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
-                'videos' => ['label' => __('Videos', 'flavor-chat-ia'), 'icon' => 'dashicons-video-alt3'],
                 'albumes' => ['label' => __('Álbumes', 'flavor-chat-ia'), 'icon' => 'dashicons-images-alt2'],
+                'mi-galeria' => ['label' => __('Mi galería', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-media'],
+                'subir' => ['label' => __('Subir', 'flavor-chat-ia'), 'icon' => 'dashicons-cloud-upload'],
             ],
             'podcast' => [
-                'subir' => ['label' => __('Subir', 'flavor-chat-ia'), 'icon' => 'dashicons-upload'],
-                'mis-podcasts' => ['label' => __('Mis podcasts', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone'],
                 'episodios' => ['label' => __('Episodios', 'flavor-chat-ia'), 'icon' => 'dashicons-playlist-audio'],
-                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-rss'],
-                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'programas' => ['label' => __('Programas', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone'],
+                'mis-suscripciones' => ['label' => __('Mis suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'requires_login' => true],
+                'favoritos' => ['label' => __('Favoritos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'requires_login' => true],
             ],
             'radio' => [
-                'programacion' => ['label' => __('Programación', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
                 'en-vivo' => ['label' => __('En vivo', 'flavor-chat-ia'), 'icon' => 'dashicons-controls-volumeon'],
+                'programacion' => ['label' => __('Programación', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
                 'programas' => ['label' => __('Programas', 'flavor-chat-ia'), 'icon' => 'dashicons-playlist-audio'],
-                'archivo' => ['label' => __('Archivo', 'flavor-chat-ia'), 'icon' => 'dashicons-media-archive'],
-                'colaborar' => ['label' => __('Colaborar', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'mis-programas' => ['label' => __('Mis programas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
             ],
             'recetas' => [
                 'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
@@ -6409,46 +7340,42 @@ class Flavor_Dynamic_Pages {
             // Ayuda y Cuidados (con integraciones)
             // ═══════════════════════════════════════════════════════════════
             'ayuda-vecinal' => [
-                'solicitar' => ['label' => __('Solicitar', 'flavor-chat-ia'), 'icon' => 'dashicons-sos'],
-                'ofrecer' => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
-                'mis-solicitudes' => ['label' => __('Mis solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'ofrecer' => ['label' => __('Ofrecer ayuda', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'solicitar' => ['label' => __('Pedir ayuda', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'requires_login' => true],
+                'mis-ayudas' => ['label' => __('Mis ayudas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
                 'voluntarios' => ['label' => __('Voluntarios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
                 'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
                 'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
             ],
             'circulos-cuidados' => [
-                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mis-circulos' => ['label' => __('Mis círculos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                'circulos' => ['label' => __('Círculos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
                 'necesidades' => ['label' => __('Necesidades', 'flavor-chat-ia'), 'icon' => 'dashicons-sos'],
-                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
-                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
-                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'unirse' => ['label' => __('Unirse', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'requires_login' => true],
+                'mis-circulos' => ['label' => __('Mis círculos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
+                'registrar-cuidado' => ['label' => __('Registrar cuidado', 'flavor-chat-ia'), 'icon' => 'dashicons-edit', 'requires_login' => true],
             ],
             'justicia-restaurativa' => [
-                'iniciar' => ['label' => __('Iniciar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'informacion' => ['label' => __('Información', 'flavor-chat-ia'), 'icon' => 'dashicons-info'],
                 'mis-procesos' => ['label' => __('Mis procesos', 'flavor-chat-ia'), 'icon' => 'dashicons-shield'],
                 'mediadores' => ['label' => __('Mediadores', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman'],
-                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
-                'formacion' => ['label' => __('Formación', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
+                'solicitar' => ['label' => __('Solicitar proceso', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'requires_login' => true],
             ],
 
             // ═══════════════════════════════════════════════════════════════
             // Ecología (con integraciones)
             // ═══════════════════════════════════════════════════════════════
             'compostaje' => [
-                'registrar' => ['label' => __('Registrar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'puntos' => ['label' => __('Composteras', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
+                'registrar' => ['label' => __('Registrar aporte', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
                 'mis-aportes' => ['label' => __('Mis aportes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
-                'composteras' => ['label' => __('Composteras', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
-                'estadisticas' => ['label' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area'],
-                'comunidad' => ['label' => __('Comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                'guias' => ['label' => __('Guías', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
+                'turnos' => ['label' => __('Turnos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'ranking' => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
             ],
             'reciclaje' => [
-                'registrar' => ['label' => __('Registrar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mis-registros' => ['label' => __('Mis registros', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
-                'puntos' => ['label' => __('Puntos limpios', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
-                'ranking' => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
-                'guias' => ['label' => __('Guías', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
+                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                'puntos' => ['label' => __('Puntos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-site-alt3'],
+                'mi-impacto' => ['label' => __('Mi impacto', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
+                'guia' => ['label' => __('Guía', 'flavor-chat-ia'), 'icon' => 'dashicons-book'],
             ],
             'huella-ecologica' => [
                 'calculadora' => ['label' => __('Calculadora', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
@@ -6471,100 +7398,91 @@ class Flavor_Dynamic_Pages {
             // Cultura y Saberes (con integraciones)
             // ═══════════════════════════════════════════════════════════════
             'saberes-ancestrales' => [
-                'aportar' => ['label' => __('Aportar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                'guardianes' => ['label' => __('Guardianes', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
                 'talleres' => ['label' => __('Talleres', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
-                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
-                'maestros' => ['label' => __('Maestros', 'flavor-chat-ia'), 'icon' => 'dashicons-businessperson'],
-                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
-                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
-                'recetas' => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
+                'documentar' => ['label' => __('Documentar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'requires_login' => true],
+                'aprender' => ['label' => __('Aprender', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'requires_login' => true],
             ],
 
             // ═══════════════════════════════════════════════════════════════
             // Trámites y Administración (con integraciones)
             // ═══════════════════════════════════════════════════════════════
             'tramites' => [
-                'nuevo' => ['label' => __('Nuevo', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mis-tramites' => ['label' => __('Mis trámites', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
-                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-                'citas' => ['label' => __('Citas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
-                'documentos' => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
+                'iniciar' => ['label' => __('Iniciar trámite', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'requires_login' => true],
+                'mis-tramites' => ['label' => __('Mis trámites', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
+                'seguimiento' => ['label' => __('Seguimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
             ],
             'avisos-municipales' => [
-                'recientes' => ['label' => __('Recientes', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
-                'suscripciones' => ['label' => __('Suscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-email'],
-                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
-                'archivo' => ['label' => __('Archivo', 'flavor-chat-ia'), 'icon' => 'dashicons-archive'],
+                'todos' => ['label' => __('Todos', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                'urgentes' => ['label' => __('Urgentes', 'flavor-chat-ia'), 'icon' => 'dashicons-warning'],
+                'no-leidos' => ['label' => __('Sin leer', 'flavor-chat-ia'), 'icon' => 'dashicons-email'],
+                'suscripcion' => ['label' => __('Suscripción', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
             ],
             'transparencia' => [
                 'documentos' => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
                 'presupuestos' => ['label' => __('Presupuestos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
-                'contratos' => ['label' => __('Contratos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
-                'indicadores' => ['label' => __('Indicadores', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
-                'solicitar' => ['label' => __('Solicitar info', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'solicitar' => ['label' => __('Solicitar información', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'requires_login' => true],
+                'mis-solicitudes' => ['label' => __('Mis solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
             ],
             'seguimiento-denuncias' => [
+                'listado' => ['label' => __('Mis denuncias', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
                 'nueva' => ['label' => __('Nueva', 'flavor-chat-ia'), 'icon' => 'dashicons-flag'],
-                'mis-denuncias' => ['label' => __('Mis denuncias', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-                'anonimas' => ['label' => __('Anónimas', 'flavor-chat-ia'), 'icon' => 'dashicons-hidden'],
-                'seguimiento' => ['label' => __('Seguimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+                'alertas' => ['label' => __('Alertas', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
+                'archivadas' => ['label' => __('Archivadas', 'flavor-chat-ia'), 'icon' => 'dashicons-archive'],
             ],
             'documentacion-legal' => [
-                'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
-                'mis-guardados' => ['label' => __('Guardados', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
-                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
-                'modelos' => ['label' => __('Modelos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'listado' => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
                 'leyes' => ['label' => __('Leyes', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
+                'modelos' => ['label' => __('Modelos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'sentencias' => ['label' => __('Sentencias', 'flavor-chat-ia'), 'icon' => 'dashicons-hammer'],
+                'favoritos' => ['label' => __('Favoritos', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
             ],
 
             // ═══════════════════════════════════════════════════════════════
             // Campañas y Mapeo (con integraciones)
             // ═══════════════════════════════════════════════════════════════
             'campanias' => [
-                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                'listado' => ['label' => __('Campañas', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
                 'mis-campanias' => ['label' => __('Mis campañas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-                'participando' => ['label' => __('Participando', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'firmar' => ['label' => __('Firmar', 'flavor-chat-ia'), 'icon' => 'dashicons-edit'],
                 'acciones' => ['label' => __('Acciones', 'flavor-chat-ia'), 'icon' => 'dashicons-flag'],
-                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
-                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
             ],
             'mapa-actores' => [
-                'registrar' => ['label' => __('Registrar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mapa' => ['label' => __('Mapa', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
-                'red' => ['label' => __('Red', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
-                'directorio' => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-                'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
-                'colaboraciones' => ['label' => __('Colaboraciones', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'listado' => ['label' => __('Actores', 'flavor-chat-ia'), 'icon' => 'dashicons-building'],
+                'grafo' => ['label' => __('Grafo', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
+                'por-tipo' => ['label' => __('Por tipo', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'relaciones' => ['label' => __('Relaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize'],
             ],
 
             // ═══════════════════════════════════════════════════════════════
             // Empleo y Trabajo (con integraciones)
             // ═══════════════════════════════════════════════════════════════
             'trabajo-digno' => [
-                'ofertas' => ['label' => __('Ofertas', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman'],
-                'publicar' => ['label' => __('Publicar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mis-aplicaciones' => ['label' => __('Aplicaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
-                'mi-cv' => ['label' => __('Mi CV', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
-                'formacion' => ['label' => __('Formación', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
-                'alertas' => ['label' => __('Alertas', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
+                'ofertas' => ['label' => __('Ofertas', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
+                'emprendimientos' => ['label' => __('Emprendimientos', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
+                'publicar' => ['label' => __('Publicar oferta', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'requires_login' => true],
+                'mis-postulaciones' => ['label' => __('Mis postulaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
+                'mi-cv' => ['label' => __('Mi CV', 'flavor-chat-ia'), 'icon' => 'dashicons-id', 'requires_login' => true],
             ],
             'fichaje-empleados' => [
-                'fichar' => ['label' => __('Fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
-                'mis-fichajes' => ['label' => __('Mis fichajes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
-                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
-                'informes' => ['label' => __('Informes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
-                'vacaciones' => ['label' => __('Vacaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-palmtree'],
+                'fichar' => ['label' => __('Fichar', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'requires_login' => true],
+                'mis-fichajes' => ['label' => __('Mis fichajes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'requires_login' => true],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'requires_login' => true],
+                'informes' => ['label' => __('Informes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'requires_login' => true],
+                'vacaciones' => ['label' => __('Vacaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-palmtree', 'requires_login' => true],
             ],
 
             // ═══════════════════════════════════════════════════════════════
             // Socios y Membresías (con integraciones)
             // ═══════════════════════════════════════════════════════════════
             'socios' => [
-                'mi-membresia' => ['label' => __('Mi membresía', 'flavor-chat-ia'), 'icon' => 'dashicons-id'],
-                'pagar-cuota' => ['label' => __('Pagar cuota', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
-                'beneficios' => ['label' => __('Beneficios', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
-                'carnet' => ['label' => __('Carnet', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
-                'historial' => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
+                'mi-membresia' => ['label' => __('Mi membresía', 'flavor-chat-ia'), 'icon' => 'dashicons-id', 'requires_login' => true],
+                'pagar-cuota' => ['label' => __('Pagar cuota', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt', 'requires_login' => true],
+                'beneficios' => ['label' => __('Beneficios', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'requires_login' => true],
+                'carnet' => ['label' => __('Carnet', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt', 'requires_login' => true],
+                'historial' => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup', 'requires_login' => true],
                 'directorio' => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
             ],
 
@@ -6573,8 +7491,8 @@ class Flavor_Dynamic_Pages {
             // ═══════════════════════════════════════════════════════════════
             'bares' => [
                 'carta' => ['label' => __('Carta', 'flavor-chat-ia'), 'icon' => 'dashicons-food'],
-                'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
-                'mis-reservas' => ['label' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                'reservar' => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'requires_login' => true],
+                'mis-reservas' => ['label' => __('Mis reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'requires_login' => true],
                 'eventos' => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
                 'opiniones' => ['label' => __('Opiniones', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
                 'promociones' => ['label' => __('Promociones', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
@@ -6617,6 +7535,7 @@ class Flavor_Dynamic_Pages {
             'banco-tiempo' => 'dashicons-clock',
             'economia-don' => 'dashicons-heart',
             'economia-suficiencia' => 'dashicons-chart-area',
+            'energia-comunitaria' => 'dashicons-lightbulb',
             // Biblioteca y Multimedia
             'biblioteca' => 'dashicons-book',
             'multimedia' => 'dashicons-format-gallery',
@@ -6690,6 +7609,7 @@ class Flavor_Dynamic_Pages {
             'banco-tiempo' => '#f59e0b',
             'economia-don' => '#ec4899',
             'economia-suficiencia' => '#10b981',
+            'energia-comunitaria' => '#f59e0b',
             // Biblioteca y Multimedia
             'biblioteca' => '#65a30d',
             'multimedia' => '#a855f7',
@@ -6772,6 +7692,7 @@ class Flavor_Dynamic_Pages {
             'module' => '',
         ], $atts);
 
+        $this->disable_shortcode_unautop();
         ob_start();
 
         if (!empty($atts['module'])) {

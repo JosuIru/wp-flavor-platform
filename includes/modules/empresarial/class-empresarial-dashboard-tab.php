@@ -69,21 +69,57 @@ class Flavor_Empresarial_Dashboard_Tab {
                 <?php
                 switch ($subtab) {
                     case 'servicios':
-                        $this->render_servicios($datos);
+                        echo do_shortcode('[empresarial_servicios]');
                         break;
                     case 'equipo':
-                        $this->render_equipo($datos);
+                        echo do_shortcode('[empresarial_equipo]');
                         break;
                     case 'testimonios':
-                        $this->render_testimonios($datos);
+                        echo do_shortcode('[empresarial_testimonios]');
                         break;
                     case 'portfolio':
-                        $this->render_portfolio($datos);
+                        echo do_shortcode('[empresarial_portfolio]');
                         break;
                     default:
-                        $this->render_perfil($datos);
+                        $this->render_perfil_resumen($datos);
                 }
                 ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    private function render_perfil_resumen($datos) {
+        $empresa = $datos['empresa'] ?? [];
+        ?>
+        <div class="empresa-perfil-resumen">
+            <div class="flavor-notice flavor-notice-info">
+                <p><?php esc_html_e('Este dashboard muestra el estado público del módulo. La edición avanzada del perfil empresarial sigue dependiendo de las vistas nativas y del panel administrativo.', 'flavor-chat-ia'); ?></p>
+            </div>
+
+            <div class="flavor-card">
+                <h3><?php echo esc_html($empresa['nombre'] ?? __('Mi empresa', 'flavor-chat-ia')); ?></h3>
+                <?php if (!empty($empresa['eslogan'])): ?>
+                    <p><strong><?php esc_html_e('Eslogan:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($empresa['eslogan']); ?></p>
+                <?php endif; ?>
+                <?php if (!empty($empresa['descripcion'])): ?>
+                    <p><?php echo esc_html($empresa['descripcion']); ?></p>
+                <?php endif; ?>
+
+                <div class="empresa-meta">
+                    <?php if (!empty($empresa['email'])): ?>
+                        <p><strong><?php esc_html_e('Email:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($empresa['email']); ?></p>
+                    <?php endif; ?>
+                    <?php if (!empty($empresa['telefono'])): ?>
+                        <p><strong><?php esc_html_e('Teléfono:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($empresa['telefono']); ?></p>
+                    <?php endif; ?>
+                    <?php if (!empty($empresa['web'])): ?>
+                        <p><strong><?php esc_html_e('Web:', 'flavor-chat-ia'); ?></strong> <a href="<?php echo esc_url($empresa['web']); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html($empresa['web']); ?></a></p>
+                    <?php endif; ?>
+                    <?php if (!empty($empresa['direccion'])): ?>
+                        <p><strong><?php esc_html_e('Dirección:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($empresa['direccion']); ?></p>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
         <?php

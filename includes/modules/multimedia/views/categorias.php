@@ -32,9 +32,9 @@ $sin_contenido = $total_categorias - $con_contenido;
     <h1>
         <span class="dashicons dashicons-category"></span>
         <?php echo esc_html__('Gestión de Categorías', 'flavor-chat-ia'); ?>
-        <a href="#" class="page-title-action" onclick="abrirModalNuevaCategoria(); return false;">
+        <button type="button" class="page-title-action" onclick="abrirModalNuevaCategoria();">
             <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nueva Categoría', 'flavor-chat-ia'); ?>
-        </a>
+        </button>
     </h1>
 
     <!-- Estadísticas rápidas -->
@@ -102,7 +102,7 @@ $sin_contenido = $total_categorias - $con_contenido;
                             </td>
                             <td style="text-align: center;">
                                 <?php if ($categoria->total_items > 0): ?>
-                                    <a href="?page=flavor-chat-multimedia-galeria&categoria=<?php echo urlencode($categoria->slug); ?>" style="color: #2271b1; font-weight: 600;">
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=multimedia-galeria&categoria=' . urlencode($categoria->slug))); ?>" style="color: #2271b1; font-weight: 600;">
                                         <?php echo number_format($categoria->total_items); ?>
                                     </a>
                                 <?php else: ?>
@@ -187,11 +187,50 @@ function cerrarModalNuevaCategoria() {
 }
 
 function editarCategoria(id) {
-    window.location.href = '<?php echo admin_url('admin.php?page=flavor-multimedia&tab=categorias&editar='); ?>' + id;
+    window.location.href = '<?php echo admin_url('admin.php?page=multimedia-categorias&editar='); ?>' + id;
+}
+
+function mmCategoriasAviso(mensaje, tipo) {
+    var contenedor = document.getElementById('mm-categorias-notice');
+    if (!contenedor) {
+        contenedor = document.createElement('div');
+        contenedor.id = 'mm-categorias-notice';
+        contenedor.style.marginBottom = '16px';
+        var wrap = document.querySelector('.wrap');
+        if (wrap) {
+            wrap.insertBefore(contenedor, wrap.children[1] || null);
+        } else {
+            document.body.prepend(contenedor);
+        }
+    }
+    contenedor.innerHTML = '<div class="notice notice-' + (tipo === 'error' ? 'error' : 'success') + ' is-dismissible"><p>' + mensaje + '</p></div>';
+}
+
+function mmCategoriasConfirmar(mensaje, onConfirm) {
+    var contenedor = document.getElementById('mm-categorias-notice');
+    if (!contenedor) {
+        mmCategoriasAviso('', 'success');
+        contenedor = document.getElementById('mm-categorias-notice');
+    }
+    contenedor.innerHTML =
+        '<div class="notice notice-warning"><p>' + mensaje + '</p>' +
+        '<p style="display:flex;gap:8px;margin-top:8px;">' +
+        '<button type="button" class="button button-primary" id="mm-categorias-confirmar">Confirmar</button>' +
+        '<button type="button" class="button" id="mm-categorias-cancelar">Cancelar</button>' +
+        '</p></div>';
+    document.getElementById('mm-categorias-confirmar').onclick = function() {
+        contenedor.innerHTML = '';
+        if (typeof onConfirm === 'function') {
+            onConfirm();
+        }
+    };
+    document.getElementById('mm-categorias-cancelar').onclick = function() {
+        contenedor.innerHTML = '';
+    };
 }
 
 function eliminarCategoria(id) {
-    if (confirm('<?php echo esc_js(__('¿Eliminar esta categoría? Esta acción no se puede deshacer.', 'flavor-chat-ia')); ?>')) {
+    mmCategoriasConfirmar('<?php echo esc_js(__('¿Eliminar esta categoría? Esta acción no se puede deshacer.', 'flavor-chat-ia')); ?>', function() {
         jQuery.post(ajaxurl, {
             action: 'flavor_multimedia_eliminar_categoria',
             categoria_id: id,
@@ -200,10 +239,10 @@ function eliminarCategoria(id) {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data || '<?php echo esc_js(__('Error al eliminar', 'flavor-chat-ia')); ?>');
+                mmCategoriasAviso(response.data || '<?php echo esc_js(__('Error al eliminar', 'flavor-chat-ia')); ?>', 'error');
             }
         });
-    }
+    });
 }
 
 // Auto-generar slug desde el nombre

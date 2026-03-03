@@ -242,7 +242,11 @@ class Flavor_Network_Content_Bridge {
                 nivel_confianza varchar(50) DEFAULT 'no_verificado',
                 reputacion_score decimal(5,2) DEFAULT 50.00,
                 uptime_percent decimal(5,2) DEFAULT 100.00,
+                avg_response_time int(11) DEFAULT 0,
+                total_checks int(11) DEFAULT 0,
+                successful_checks int(11) DEFAULT 0,
                 ultima_sincronizacion datetime DEFAULT NULL,
+                ultima_verificacion datetime DEFAULT NULL,
                 fecha_registro datetime DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (id),
                 UNIQUE KEY slug (slug),
@@ -264,6 +268,18 @@ class Flavor_Network_Content_Bridge {
             }
             if (!in_array('uptime_percent', $columnas)) {
                 $wpdb->query("ALTER TABLE $tabla ADD COLUMN uptime_percent decimal(5,2) DEFAULT 100.00");
+            }
+            if (!in_array('avg_response_time', $columnas)) {
+                $wpdb->query("ALTER TABLE $tabla ADD COLUMN avg_response_time int(11) DEFAULT 0");
+            }
+            if (!in_array('total_checks', $columnas)) {
+                $wpdb->query("ALTER TABLE $tabla ADD COLUMN total_checks int(11) DEFAULT 0");
+            }
+            if (!in_array('successful_checks', $columnas)) {
+                $wpdb->query("ALTER TABLE $tabla ADD COLUMN successful_checks int(11) DEFAULT 0");
+            }
+            if (!in_array('ultima_verificacion', $columnas)) {
+                $wpdb->query("ALTER TABLE $tabla ADD COLUMN ultima_verificacion datetime DEFAULT NULL");
             }
         }
     }
@@ -690,7 +706,7 @@ class Flavor_Network_Content_Bridge {
 
         $contenido = $wpdb->get_row($wpdb->prepare("
             SELECT c.*, n.nombre as nodo_nombre, n.logo_url as nodo_logo,
-                   n.slug as nodo_slug, n.site_url as nodo_url
+                   n.slug as nodo_slug, n.url as nodo_url
             FROM $tabla c
             LEFT JOIN $tabla_nodos n ON c.nodo_id = n.id
             WHERE c.id = %d AND c.visible_red = 1

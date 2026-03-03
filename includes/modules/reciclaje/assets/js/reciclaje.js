@@ -9,12 +9,16 @@
     // Namespace global
     window.FlavorReciclaje = window.FlavorReciclaje || {};
 
+    const reciclajeConfig = typeof flavorReciclajeData !== 'undefined'
+        ? flavorReciclajeData
+        : (typeof flavorReciclaje !== 'undefined' ? flavorReciclaje : {});
+
     /**
      * Configuracion global
      */
     FlavorReciclaje.config = {
-        ajaxUrl: typeof flavorReciclajeData !== 'undefined' ? flavorReciclajeData.ajaxUrl : '/wp-admin/admin-ajax.php',
-        nonce: typeof flavorReciclajeData !== 'undefined' ? flavorReciclajeData.nonce : '',
+        ajaxUrl: reciclajeConfig.ajaxUrl || '/wp-admin/admin-ajax.php',
+        nonce: reciclajeConfig.nonce || '',
         defaultLat: 40.4168,
         defaultLng: -3.7038,
         defaultZoom: 13,

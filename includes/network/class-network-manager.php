@@ -537,6 +537,12 @@ class Flavor_Network_Manager {
     // ─── Assets ───
 
     public function maybe_enqueue_frontend_assets() {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
+
+        if (!is_admin() && strpos($request_uri, '/mi-portal') !== false) {
+            return;
+        }
+
         // Solo cargar si hay shortcodes en el contenido
         global $post;
         if (!$post) {

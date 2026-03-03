@@ -452,6 +452,10 @@ class Flavor_Chat_Module_Loader {
                 'file' => $modules_path . 'economia-suficiencia/class-economia-suficiencia-module.php',
                 'class' => 'Flavor_Chat_Economia_Suficiencia_Module',
             ],
+            'energia_comunitaria' => [
+                'file' => $modules_path . 'energia-comunitaria/class-energia-comunitaria-module.php',
+                'class' => 'Flavor_Chat_Energia_Comunitaria_Module',
+            ],
             'saberes_ancestrales' => [
                 'file' => $modules_path . 'saberes-ancestrales/class-saberes-ancestrales-module.php',
                 'class' => 'Flavor_Chat_Saberes_Ancestrales_Module',

@@ -64,7 +64,7 @@ class Flavor_Talleres_Frontend_Controller {
      * Registrar assets CSS y JS
      */
     public function registrar_assets() {
-        $base_url = plugins_url('', dirname(__FILE__));
+        $base_url = plugins_url('', dirname(dirname(__FILE__)));
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         // CSS

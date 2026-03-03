@@ -498,7 +498,7 @@ class Flavor_GC_Notification_Channels {
                 $ciclo->post_title,
                 date_i18n(get_option('date_format'), strtotime(get_post_meta($ciclo_id, '_gc_fecha_cierre', true)))
             ),
-            'enlace' => get_permalink($ciclo_id),
+            'enlace' => add_query_arg('ciclo', intval($ciclo_id), home_url('/mi-portal/grupos-consumo/ciclo/')),
             'enlace_texto' => 'Ver ciclo y hacer pedido',
         ];
 
@@ -632,7 +632,7 @@ class Flavor_GC_Notification_Channels {
                 'Hay un nuevo producto disponible: %s',
                 $producto->post_title
             ),
-            'enlace' => get_permalink($producto_id),
+            'enlace' => add_query_arg('product', intval($producto_id), home_url('/mi-portal/grupos-consumo/productos/')),
             'enlace_texto' => 'Ver producto',
         ];
 
@@ -697,7 +697,7 @@ class Flavor_GC_Notification_Channels {
                     'El ciclo "%s" cierra mañana. Si aún no has hecho tu pedido, hazlo antes del cierre.',
                     $ciclo->post_title
                 ),
-                'enlace' => get_permalink($ciclo->ID),
+                'enlace' => add_query_arg('ciclo', intval($ciclo->ID), home_url('/mi-portal/grupos-consumo/ciclo/')),
                 'enlace_texto' => 'Hacer pedido ahora',
             ];
 

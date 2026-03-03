@@ -18,7 +18,7 @@ if (!is_user_logged_in()) {
     echo '<span class="dashicons dashicons-lock"></span>';
     echo '<h3>' . esc_html__('Acceso restringido', 'flavor-chat-ia') . '</h3>';
     echo '<p>' . esc_html__('Inicia sesion para acceder a tu panel de consumidor.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/'))) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Iniciar sesion', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -111,21 +111,21 @@ $accesos_rapidos = [
     [
         'titulo' => __('Catalogo', 'flavor-chat-ia'),
         'desc'   => __('Ver productos disponibles', 'flavor-chat-ia'),
-        'url'    => home_url('/mi-portal/grupos-consumo/catalogo/'),
+        'url'    => home_url('/mi-portal/grupos-consumo/productos/'),
         'icon'   => 'products',
         'color'  => '#4caf50',
     ],
     [
-        'titulo' => __('Mi Cesta', 'flavor-chat-ia'),
+        'titulo' => __('Pedido actual', 'flavor-chat-ia'),
         'desc'   => sprintf(_n('%d producto', '%d productos', $estadisticas['items_cesta'], 'flavor-chat-ia'), $estadisticas['items_cesta']),
-        'url'    => home_url('/mi-portal/grupos-consumo/mi-cesta/'),
+        'url'    => home_url('/mi-portal/grupos-consumo/mi-pedido/'),
         'icon'   => 'cart',
         'color'  => '#2196f3',
         'badge'  => $estadisticas['items_cesta'],
     ],
     [
-        'titulo' => __('Mis Pedidos', 'flavor-chat-ia'),
-        'desc'   => __('Historial de pedidos', 'flavor-chat-ia'),
+        'titulo' => __('Historial', 'flavor-chat-ia'),
+        'desc'   => __('Pedidos confirmados', 'flavor-chat-ia'),
         'url'    => home_url('/mi-portal/grupos-consumo/mis-pedidos/'),
         'icon'   => 'clipboard',
         'color'  => '#ff9800',
@@ -134,7 +134,7 @@ $accesos_rapidos = [
     [
         'titulo' => __('Productores', 'flavor-chat-ia'),
         'desc'   => __('Conoce a los productores', 'flavor-chat-ia'),
-        'url'    => home_url('/mi-portal/grupos-consumo/productores/'),
+        'url'    => home_url('/mi-portal/grupos-consumo/productores-cercanos/'),
         'icon'   => 'store',
         'color'  => '#9c27b0',
     ],
@@ -195,7 +195,7 @@ $accesos_rapidos = [
                 </div>
             </div>
             <div class="gc-ciclo-acciones">
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/catalogo/')); ?>" class="gc-btn gc-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
                     <?php esc_html_e('Hacer pedido', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -291,7 +291,7 @@ $accesos_rapidos = [
             <div class="gc-pedidos-empty">
                 <span class="dashicons dashicons-clipboard"></span>
                 <p><?php esc_html_e('Aun no has realizado ningun pedido.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/catalogo/')); ?>" class="gc-btn gc-btn-sm gc-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-sm gc-btn-primary">
                     <?php esc_html_e('Ver catalogo', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -341,7 +341,7 @@ $accesos_rapidos = [
         <h3 class="gc-section-title"><?php esc_html_e('Mis grupos', 'flavor-chat-ia'); ?></h3>
         <div class="gc-grupos-lista">
             <?php foreach ($mis_grupos as $grupo) : ?>
-            <a href="<?php echo esc_url(get_permalink($grupo->grupo_id)); ?>" class="gc-grupo-item">
+            <a href="<?php echo esc_url(add_query_arg('grupo', $grupo->grupo_id, home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-grupo-item">
                 <span class="gc-grupo-icon">
                     <span class="dashicons dashicons-groups"></span>
                 </span>

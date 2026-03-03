@@ -160,6 +160,8 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         if ( ! $existe_conversaciones || ! $existe_estados ) {
             $this->create_tables();
         }
+
+        $this->migrate_tables();
     }
 
     /**
@@ -264,12 +266,83 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Asegura columnas añadidas en versiones recientes sobre instalaciones
+     * antiguas donde las tablas ya existían.
+     */
+    private function migrate_tables() {
+        global $wpdb;
+
+        $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_mensajes';
+        $tabla_participantes = $wpdb->prefix . 'flavor_chat_participantes';
+        $tabla_bloqueados = $wpdb->prefix . 'flavor_chat_bloqueados';
+        $tabla_estados = $wpdb->prefix . 'flavor_chat_estados_usuario';
+
+        $this->ensure_table_column($tabla_conversaciones, 'tipo', "ALTER TABLE {$tabla_conversaciones} ADD COLUMN tipo enum('individual','soporte') DEFAULT 'individual' AFTER id");
+        $this->ensure_table_column($tabla_conversaciones, 'estado', "ALTER TABLE {$tabla_conversaciones} ADD COLUMN estado enum('activa','archivada','bloqueada') DEFAULT 'activa' AFTER tipo");
+        $this->ensure_table_column($tabla_conversaciones, 'ultimo_mensaje_id', "ALTER TABLE {$tabla_conversaciones} ADD COLUMN ultimo_mensaje_id bigint(20) unsigned DEFAULT NULL AFTER estado");
+        $this->ensure_table_column($tabla_conversaciones, 'fecha_actualizacion', "ALTER TABLE {$tabla_conversaciones} ADD COLUMN fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER fecha_creacion");
+
+        $this->ensure_table_column($tabla_participantes, 'silenciado', "ALTER TABLE {$tabla_participantes} ADD COLUMN silenciado tinyint(1) DEFAULT 0 AFTER rol");
+        $this->ensure_table_column($tabla_participantes, 'archivado', "ALTER TABLE {$tabla_participantes} ADD COLUMN archivado tinyint(1) DEFAULT 0 AFTER silenciado");
+        $this->ensure_table_column($tabla_participantes, 'ultimo_mensaje_leido', "ALTER TABLE {$tabla_participantes} ADD COLUMN ultimo_mensaje_leido bigint(20) DEFAULT 0 AFTER archivado");
+        $this->ensure_table_column($tabla_participantes, 'escribiendo', "ALTER TABLE {$tabla_participantes} ADD COLUMN escribiendo tinyint(1) DEFAULT 0 AFTER ultimo_mensaje_leido");
+        $this->ensure_table_column($tabla_participantes, 'escribiendo_timestamp', "ALTER TABLE {$tabla_participantes} ADD COLUMN escribiendo_timestamp datetime DEFAULT NULL AFTER escribiendo");
+        $this->ensure_table_column($tabla_participantes, 'notificaciones', "ALTER TABLE {$tabla_participantes} ADD COLUMN notificaciones enum('todas','menciones','ninguna') DEFAULT 'todas' AFTER escribiendo_timestamp");
+
+        $this->ensure_table_column($tabla_mensajes, 'mensaje_html', "ALTER TABLE {$tabla_mensajes} ADD COLUMN mensaje_html text DEFAULT NULL AFTER mensaje");
+        $this->ensure_table_column($tabla_mensajes, 'tipo', "ALTER TABLE {$tabla_mensajes} ADD COLUMN tipo enum('texto','imagen','archivo','audio','ubicacion','sistema') DEFAULT 'texto' AFTER mensaje_html");
+        $this->ensure_table_column($tabla_mensajes, 'adjunto_url', "ALTER TABLE {$tabla_mensajes} ADD COLUMN adjunto_url varchar(500) DEFAULT NULL AFTER tipo");
+        $this->ensure_table_column($tabla_mensajes, 'adjunto_nombre', "ALTER TABLE {$tabla_mensajes} ADD COLUMN adjunto_nombre varchar(255) DEFAULT NULL AFTER adjunto_url");
+        $this->ensure_table_column($tabla_mensajes, 'adjunto_tamano', "ALTER TABLE {$tabla_mensajes} ADD COLUMN adjunto_tamano bigint(20) DEFAULT NULL AFTER adjunto_nombre");
+        $this->ensure_table_column($tabla_mensajes, 'adjunto_tipo', "ALTER TABLE {$tabla_mensajes} ADD COLUMN adjunto_tipo varchar(100) DEFAULT NULL AFTER adjunto_tamano");
+        $this->ensure_table_column($tabla_mensajes, 'responde_a', "ALTER TABLE {$tabla_mensajes} ADD COLUMN responde_a bigint(20) unsigned DEFAULT NULL AFTER adjunto_tipo");
+        $this->ensure_table_column($tabla_mensajes, 'leido', "ALTER TABLE {$tabla_mensajes} ADD COLUMN leido tinyint(1) DEFAULT 0 AFTER responde_a");
+        $this->ensure_table_column($tabla_mensajes, 'fecha_lectura', "ALTER TABLE {$tabla_mensajes} ADD COLUMN fecha_lectura datetime DEFAULT NULL AFTER leido");
+        $this->ensure_table_column($tabla_mensajes, 'editado', "ALTER TABLE {$tabla_mensajes} ADD COLUMN editado tinyint(1) DEFAULT 0 AFTER fecha_lectura");
+        $this->ensure_table_column($tabla_mensajes, 'fecha_edicion', "ALTER TABLE {$tabla_mensajes} ADD COLUMN fecha_edicion datetime DEFAULT NULL AFTER editado");
+        $this->ensure_table_column($tabla_mensajes, 'eliminado', "ALTER TABLE {$tabla_mensajes} ADD COLUMN eliminado tinyint(1) DEFAULT 0 AFTER fecha_edicion");
+        $this->ensure_table_column($tabla_mensajes, 'eliminado_para', "ALTER TABLE {$tabla_mensajes} ADD COLUMN eliminado_para text DEFAULT NULL AFTER eliminado");
+        $this->ensure_table_column($tabla_mensajes, 'fecha_creacion', "ALTER TABLE {$tabla_mensajes} ADD COLUMN fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP AFTER eliminado_para");
+
+        $this->ensure_table_column($tabla_bloqueados, 'motivo', "ALTER TABLE {$tabla_bloqueados} ADD COLUMN motivo varchar(255) DEFAULT NULL AFTER bloqueado_id");
+        $this->ensure_table_column($tabla_estados, 'mensaje_estado', "ALTER TABLE {$tabla_estados} ADD COLUMN mensaje_estado varchar(255) DEFAULT NULL AFTER estado");
+    }
+
+    /**
+     * Añade una columna si no existe ya.
+     *
+     * @param string $table
+     * @param string $column
+     * @param string $sql
+     * @return void
+     */
+    private function ensure_table_column($table, $column, $sql) {
+        global $wpdb;
+
+        $exists = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
+            DB_NAME,
+            $table,
+            $column
+        ));
+
+        if (!$exists) {
+            $wpdb->query($sql);
+        }
+    }
+
+    /**
      * Registrar shortcodes
      */
     public function register_shortcodes() {
         add_shortcode('flavor_chat_inbox', [$this, 'shortcode_inbox']);
         add_shortcode('flavor_chat_conversacion', [$this, 'shortcode_conversacion']);
         add_shortcode('flavor_iniciar_chat', [$this, 'shortcode_iniciar_chat']);
+        add_shortcode('chat_interno_conversaciones', [$this, 'shortcode_conversaciones_alias']);
+        add_shortcode('chat_interno_nuevo', [$this, 'shortcode_nuevo_alias']);
+        add_shortcode('chat_interno_archivados', [$this, 'shortcode_archivados_alias']);
+        add_shortcode('chat_interno_mensajes', [$this, 'shortcode_conversacion_alias']);
     }
 
     /**
@@ -412,14 +485,36 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      */
     private function should_load_assets() {
         global $post;
-        if (!$post) return false;
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
 
-        $shortcodes = ['flavor_chat_inbox', 'flavor_chat_conversacion', 'flavor_iniciar_chat'];
+        if (strpos($request_uri, '/mi-portal/chat-interno') !== false) {
+            return true;
+        }
+
+        if ($post && strpos((string) $post->post_name, 'chat-interno') !== false) {
+            return true;
+        }
+
+        if (!$post) {
+            return false;
+        }
+
+        $shortcodes = [
+            'flavor_chat_inbox',
+            'flavor_chat_conversacion',
+            'flavor_iniciar_chat',
+            'chat_interno_conversaciones',
+            'chat_interno_nuevo',
+            'chat_interno_archivados',
+            'chat_interno_mensajes',
+        ];
+
         foreach ($shortcodes as $shortcode) {
             if (has_shortcode($post->post_content, $shortcode)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -495,6 +590,20 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'render_conversaciones',
+            'listado' => 'render_conversaciones',
+            'inbox' => 'render_conversaciones',
+            'nuevo' => 'render_nuevo',
+            'crear' => 'render_nuevo',
+            'detalle' => 'render_mensajes',
+            'mensajes' => 'render_mensajes',
+            'archivados' => 'render_archivados',
+            'buscar' => 'buscar_mensajes',
+            'stats' => 'estadisticas_mensajeria',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -503,8 +612,98 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         return [
             'success' => false,
-            'error' => "Accion no implementada: {$action_name}",
+            'error' => __('La vista solicitada no esta disponible en Chat Interno.', 'flavor-chat-ia'),
         ];
+    }
+
+    /**
+     * Render del inbox principal para el portal.
+     *
+     * @param array $params
+     * @return string
+     */
+    private function action_render_conversaciones($params) {
+        return do_shortcode('[chat_interno_conversaciones]');
+    }
+
+    /**
+     * Render del inbox archivado para el portal.
+     *
+     * @param array $params
+     * @return string
+     */
+    private function action_render_archivados($params) {
+        return do_shortcode('[chat_interno_archivados]');
+    }
+
+    /**
+     * Render del formulario/modal de inicio de chat.
+     *
+     * @param array $params
+     * @return string
+     */
+    private function action_render_nuevo($params) {
+        return do_shortcode('[chat_interno_nuevo]');
+    }
+
+    /**
+     * Render de mensajes actuales para el portal.
+     *
+     * @param array $params
+     * @return string
+     */
+    private function action_render_mensajes($params) {
+        $conversacion_id = intval($params['conversacion_id'] ?? $params['id'] ?? 0);
+
+        if ($conversacion_id > 0) {
+            return do_shortcode(sprintf(
+                '[flavor_chat_conversacion conversacion_id="%d"]',
+                $conversacion_id
+            ));
+        }
+
+        return do_shortcode('[chat_interno_conversaciones]');
+    }
+
+    /**
+     * Wrapper del renderer: conversaciones.
+     *
+     * @param array $atts
+     * @return string
+     */
+    public function shortcode_conversaciones_alias($atts) {
+        return $this->shortcode_inbox($atts);
+    }
+
+    /**
+     * Wrapper del renderer: nuevo chat.
+     *
+     * @param array $atts
+     * @return string
+     */
+    public function shortcode_nuevo_alias($atts) {
+        return $this->shortcode_iniciar_chat($atts);
+    }
+
+    /**
+     * Wrapper del renderer: archivados.
+     *
+     * @param array $atts
+     * @return string
+     */
+    public function shortcode_archivados_alias($atts) {
+        $atts = shortcode_atts(['archivadas' => 1], $atts);
+        return $this->shortcode_inbox($atts);
+    }
+
+    /**
+     * Wrapper del renderer: conversación actual.
+     *
+     * @param array $atts
+     * @return string
+     */
+    public function shortcode_conversacion_alias($atts) {
+        return $this->shortcode_conversacion($atts);
     }
 
     // =========================================================================
@@ -631,25 +830,25 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $otro_usuario_id = intval($params['usuario_id'] ?? 0);
 
         if (!$otro_usuario_id) {
-            return ['success' => false, 'error' => __('Este usuario te ha bloqueado.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes seleccionar un usuario valido para iniciar la conversación.', 'flavor-chat-ia')];
         }
 
         if ($otro_usuario_id === $usuario_id) {
-            return ['success' => false, 'error' => __('flavor_chat_conversaciones', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No puedes iniciar una conversación contigo mismo.', 'flavor-chat-ia')];
         }
 
         // Verificar que el usuario existe
         $otro_usuario = get_userdata($otro_usuario_id);
         if (!$otro_usuario) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El usuario seleccionado no existe.', 'flavor-chat-ia')];
         }
 
         // Verificar bloqueos
         if ($this->esta_bloqueado($usuario_id, $otro_usuario_id)) {
-            return ['success' => false, 'error' => __('individual', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Has bloqueado a este usuario. Desbloquéalo para iniciar la conversación.', 'flavor-chat-ia')];
         }
         if ($this->esta_bloqueado($otro_usuario_id, $usuario_id)) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Este usuario no puede recibir tus mensajes en este momento.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -719,7 +918,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'conversacion_id' => $conversacion_id,
             'nueva' => true,
-            'mensaje' => __('limite', 'flavor-chat-ia'),
+            'mensaje' => __('Conversación iniciada correctamente.', 'flavor-chat-ia'),
         ];
     }
 
@@ -731,7 +930,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => __(' AND m.id < %d', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -870,16 +1069,16 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => __('El mensaje no puede estar vacio.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-chat-ia')];
         }
 
         // Verificar bloqueos
         $otro_participante = $this->obtener_otro_participante($usuario_id, $conversacion_id);
         if ($this->esta_bloqueado($usuario_id, $otro_participante['id'])) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Has bloqueado a este usuario. Desbloquéalo para enviar mensajes.', 'flavor-chat-ia')];
         }
         if ($this->esta_bloqueado($otro_participante['id'], $usuario_id)) {
-            return ['success' => false, 'error' => __('flavor_chat_conversaciones', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Este usuario no puede recibir tus mensajes en este momento.', 'flavor-chat-ia')];
         }
 
         $mensaje = trim($params['mensaje'] ?? '');
@@ -888,11 +1087,11 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             : 'texto';
 
         if (empty($mensaje) && empty($params['adjuntos']) && $tipo === 'texto') {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El mensaje no puede estar vacío.', 'flavor-chat-ia')];
         }
 
         if (strlen($mensaje) > 5000) {
-            return ['success' => false, 'error' => __('adjuntos', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('El mensaje supera el límite permitido.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -990,7 +1189,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => __('Debes iniciar sesion.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1108,7 +1307,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $conversacion_id = intval($params['conversacion_id'] ?? 0);
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
-            return ['success' => false, 'error' => __('Conversacion archivada.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('No tienes acceso a esta conversación.', 'flavor-chat-ia')];
         }
 
         global $wpdb;
@@ -1988,7 +2187,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="ci-login-required">' .
                 __('Debes iniciar sesion para ver tus mensajes.', 'flavor-chat-ia') .
-                ' <a href="' . wp_login_url(get_permalink()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
+                ' <a href="' . wp_login_url(home_url('/mi-portal/chat-interno/')) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
                 '</div>';
         }
 
@@ -2020,10 +2219,10 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <div class="ci-sidebar-footer">
-                    <a href="javascript:void(0);" class="ci-link-archivados" id="ci-toggle-archivados" onclick="if(typeof ciToggleArchivados==='function')ciToggleArchivados();else alert('<?php echo esc_js(__('Funcionalidad en desarrollo', 'flavor-chat-ia')); ?>');">
+                    <button type="button" class="ci-link-archivados" id="ci-toggle-archivados">
                         <span class="dashicons dashicons-archive"></span>
                         <?php _e('Archivados', 'flavor-chat-ia'); ?>
-                    </a>
+                    </button>
                 </div>
             </div>
 
@@ -3115,21 +3314,21 @@ KNOWLEDGE;
                     'label' => __('Conversaciones', 'flavor-chat-ia'),
                     'icon'  => '💬',
                     'color' => 'indigo',
-                    'query' => "SELECT COUNT(DISTINCT conversacion_id) FROM {prefix}flavor_chat_mensajes WHERE remitente_id = {user_id} OR destinatario_id = {user_id}",
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_chat_participantes WHERE usuario_id = {user_id} AND archivado = 0",
                 ],
                 [
                     'key'   => 'mensajes_sin_leer',
                     'label' => __('Sin leer', 'flavor-chat-ia'),
                     'icon'  => '🔴',
                     'color' => 'red',
-                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_chat_mensajes WHERE destinatario_id = {user_id} AND leido = 0",
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_chat_mensajes m INNER JOIN {prefix}flavor_chat_participantes p ON p.conversacion_id = m.conversacion_id WHERE p.usuario_id = {user_id} AND m.remitente_id != {user_id} AND m.id > COALESCE(p.ultimo_mensaje_leido, 0) AND m.eliminado = 0",
                 ],
                 [
                     'key'   => 'mensajes_hoy',
                     'label' => __('Hoy', 'flavor-chat-ia'),
                     'icon'  => '📨',
                     'color' => 'green',
-                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_chat_mensajes WHERE (remitente_id = {user_id} OR destinatario_id = {user_id}) AND DATE(created_at) = CURDATE()",
+                    'query' => "SELECT COUNT(*) FROM {prefix}flavor_chat_mensajes m INNER JOIN {prefix}flavor_chat_participantes p ON p.conversacion_id = m.conversacion_id WHERE p.usuario_id = {user_id} AND DATE(m.fecha_creacion) = CURDATE() AND m.eliminado = 0",
                 ],
             ],
 
@@ -3145,24 +3344,24 @@ KNOWLEDGE;
                 'conversaciones' => [
                     'label'   => __('Conversaciones', 'flavor-chat-ia'),
                     'icon'    => '💬',
-                    'content' => 'shortcode:chat_interno_conversaciones',
+                    'content' => '[chat_interno_conversaciones]',
                 ],
                 'nuevo' => [
                     'label'   => __('Nuevo mensaje', 'flavor-chat-ia'),
                     'icon'    => '✏️',
-                    'content' => 'shortcode:chat_interno_nuevo',
+                    'content' => '[chat_interno_nuevo]',
                 ],
                 'archivados' => [
                     'label'   => __('Archivados', 'flavor-chat-ia'),
                     'icon'    => '📁',
-                    'content' => 'shortcode:chat_interno_archivados',
+                    'content' => '[chat_interno_archivados]',
                 ],
             ],
 
             'archive' => [
                 'columns'       => 1,
                 'per_page'      => 20,
-                'order_by'      => 'updated_at',
+                'order_by'      => 'fecha_creacion',
                 'order'         => 'DESC',
                 'conversation_view' => true,
             ],

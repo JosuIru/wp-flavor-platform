@@ -27,6 +27,7 @@ $atributos_shortcode = $args['atts'] ?? [];
 $mostrar_filtros = ($atributos_shortcode['mostrar_filtros'] ?? 'si') === 'si';
 $columnas = absint($atributos_shortcode['columnas'] ?? 3);
 $porcentaje_gestion = $args['porcentaje_gestion'] ?? 0;
+$producto_destacado_id = isset($_GET['product']) ? absint($_GET['product']) : 0;
 
 // Obtener precios min/max para el filtro de rango
 $precios = array_map(function($producto) {
@@ -38,7 +39,8 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
 
 <div class="flavor-gc-catalogo"
      data-columnas="<?php echo esc_attr($columnas); ?>"
-     data-grupo-id="<?php echo esc_attr($atributos_shortcode['grupo_id'] ?? ''); ?>">
+     data-grupo-id="<?php echo esc_attr($atributos_shortcode['grupo_id'] ?? ''); ?>"
+     data-producto-destacado="<?php echo esc_attr($producto_destacado_id); ?>">
 
     <!-- Header del Catalogo -->
     <header class="flavor-gc-catalogo-header">
@@ -264,11 +266,11 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                 <div class="flavor-gc-ordenar">
                     <label for="gc-ordenar"><?php _e('Ordenar por:', 'flavor-chat-ia'); ?></label>
                     <select id="gc-ordenar" class="flavor-gc-select">
-                        <option value="<?php echo esc_attr__('nombre-asc', 'flavor-chat-ia'); ?>"><?php _e('Nombre A-Z', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('nombre-desc', 'flavor-chat-ia'); ?>"><?php _e('Nombre Z-A', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('precio-asc', 'flavor-chat-ia'); ?>"><?php _e('Precio: menor a mayor', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('precio-desc', 'flavor-chat-ia'); ?>"><?php _e('Precio: mayor a menor', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('productor', 'flavor-chat-ia'); ?>"><?php _e('Por productor', 'flavor-chat-ia'); ?></option>
+                        <option value="nombre-asc"><?php _e('Nombre A-Z', 'flavor-chat-ia'); ?></option>
+                        <option value="nombre-desc"><?php _e('Nombre Z-A', 'flavor-chat-ia'); ?></option>
+                        <option value="precio-asc"><?php _e('Precio: menor a mayor', 'flavor-chat-ia'); ?></option>
+                        <option value="precio-desc"><?php _e('Precio: mayor a menor', 'flavor-chat-ia'); ?></option>
+                        <option value="productor"><?php _e('Por productor', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
             </div>
@@ -299,7 +301,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                         $categorias_producto = get_the_terms($producto_id, 'gc_categoria');
                         $categoria_slugs = $categorias_producto ? implode(' ', wp_list_pluck($categorias_producto, 'slug')) : '';
                         ?>
-                        <article class="flavor-gc-producto-card <?php echo $en_lista ? 'en-lista' : ''; ?> <?php echo !$tiene_stock ? 'sin-stock' : ''; ?>"
+                        <article class="flavor-gc-producto-card <?php echo $en_lista ? 'en-lista' : ''; ?> <?php echo !$tiene_stock ? 'sin-stock' : ''; ?> <?php echo $producto_destacado_id === $producto_id ? 'producto-destacado' : ''; ?>"
                                  data-producto-id="<?php echo esc_attr($producto_id); ?>"
                                  data-precio="<?php echo esc_attr($precio); ?>"
                                  data-nombre="<?php echo esc_attr(strtolower($producto->post_title)); ?>"
@@ -341,7 +343,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
 
                             <div class="flavor-gc-producto-contenido">
                                 <h3 class="flavor-gc-producto-nombre">
-                                    <a href="<?php echo get_permalink($producto_id); ?>">
+                                    <a href="<?php echo esc_url(add_query_arg('product', intval($producto_id), home_url('/mi-portal/grupos-consumo/productos/'))); ?>">
                                         <?php echo esc_html($producto->post_title); ?>
                                     </a>
                                 </h3>
@@ -349,7 +351,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                                 <?php if ($productor): ?>
                                     <p class="flavor-gc-producto-productor">
                                         <span class="dashicons dashicons-admin-users"></span>
-                                        <a href="<?php echo get_permalink($productor_id); ?>">
+                                        <a href="<?php echo esc_url(add_query_arg('productor', intval($productor_id), home_url('/mi-portal/grupos-consumo/productores-cercanos/'))); ?>">
                                             <?php echo esc_html($productor->post_title); ?>
                                         </a>
                                     </p>
@@ -400,7 +402,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                                                 </span>
                                             </button>
                                         <?php else: ?>
-                                            <a href="<?php echo wp_login_url(get_permalink()); ?>" class="flavor-gc-btn-login">
+                                            <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/productos/'))); ?>" class="flavor-gc-btn-login">
                                                 <span class="dashicons dashicons-lock"></span>
                                                 <?php _e('Inicia sesion para pedir', 'flavor-chat-ia'); ?>
                                             </a>

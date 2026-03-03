@@ -6,11 +6,15 @@
 (function($) {
     'use strict';
 
+    const espaciosConfig = typeof flavorEspacios !== 'undefined'
+        ? flavorEspacios
+        : (typeof flavorEspaciosData !== 'undefined' ? flavorEspaciosData : {});
+
     // Variables globales
     const FlavorEspacios = {
-        ajaxurl: typeof flavorEspaciosData !== 'undefined' ? flavorEspaciosData.ajaxurl : '/wp-admin/admin-ajax.php',
-        nonce: typeof flavorEspaciosData !== 'undefined' ? flavorEspaciosData.nonce : '',
-        strings: typeof flavorEspaciosData !== 'undefined' ? flavorEspaciosData.strings : {},
+        ajaxurl: espaciosConfig.ajaxurl || espaciosConfig.ajaxUrl || '/wp-admin/admin-ajax.php',
+        nonce: espaciosConfig.nonce || '',
+        strings: espaciosConfig.strings || espaciosConfig.i18n || {},
         currentMonth: new Date().getMonth(),
         currentYear: new Date().getFullYear(),
         selectedDate: null,

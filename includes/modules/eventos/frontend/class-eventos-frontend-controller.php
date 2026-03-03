@@ -103,7 +103,7 @@ class Flavor_Eventos_Frontend_Controller {
             return;
         }
 
-        $base_url = plugins_url('', dirname(__FILE__));
+        $base_url = plugins_url('', dirname(dirname(__FILE__)));
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         // CSS
@@ -187,6 +187,8 @@ class Flavor_Eventos_Frontend_Controller {
             'limite' => 12,
             'columnas' => 3,
             'mostrar_filtros' => 'true',
+            'comunidad_id' => 0,
+            'comunidad_ids' => '',
         ], $atts);
 
         ob_start();
@@ -306,6 +308,18 @@ class Flavor_Eventos_Frontend_Controller {
         if (!empty($atts['categoria'])) {
             $where[] = "categoria = %s";
             $params[] = $atts['categoria'];
+        }
+
+        $comunidad_id = absint($atts['comunidad_id']);
+        if ($comunidad_id > 0) {
+            $where[] = "comunidad_id = %d";
+            $params[] = $comunidad_id;
+        } elseif (!empty($atts['comunidad_ids'])) {
+            $comunidad_ids = array_values(array_filter(array_map('absint', explode(',', (string) $atts['comunidad_ids']))));
+            if (!empty($comunidad_ids)) {
+                $where[] = 'comunidad_id IN (' . implode(',', array_fill(0, count($comunidad_ids), '%d')) . ')';
+                $params = array_merge($params, $comunidad_ids);
+            }
         }
 
         $sql = "SELECT * FROM $tabla_eventos WHERE " . implode(' AND ', $where) . " ORDER BY fecha_inicio ASC LIMIT %d";

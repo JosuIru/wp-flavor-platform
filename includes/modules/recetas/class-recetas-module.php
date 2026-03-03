@@ -1107,15 +1107,38 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
      * Shortcode receta individual
      */
     public function shortcode_receta_individual($atts = []) {
+        $atts = shortcode_atts([
+            'id' => 0,
+        ], $atts, 'flavor_receta');
+
+        $receta_id = absint($atts['id']);
+
+        if (!$receta_id && is_singular('flavor_receta')) {
+            $receta_id = get_the_ID();
+        }
+
+        if (!$receta_id && isset($_GET['id'])) {
+            $receta_id = absint($_GET['id']);
+        }
+
+        if (!$receta_id) {
+            return '<p class="flavor-notice">' . esc_html__('Receta no encontrada.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $receta = get_post($receta_id);
+
+        if (!$receta || $receta->post_type !== 'flavor_receta' || $receta->post_status !== 'publish') {
+            return '<p class="flavor-notice">' . esc_html__('Receta no disponible.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $template = dirname(__FILE__) . '/templates/receta-single.php';
+
+        if (!file_exists($template)) {
+            return '<p class="flavor-notice">' . esc_html__('Vista de receta no disponible.', 'flavor-chat-ia') . '</p>';
+        }
+
         ob_start();
-        ?>
-        <div class="flavor-shortcode-receta_individual">
-            <div class="flavor-placeholder">
-                <span class="dashicons dashicons-admin-generic"></span>
-                <p><?php esc_html_e('Contenido próximamente', 'flavor-chat-ia'); ?></p>
-            </div>
-        </div>
-        <?php
+        include $template;
         return ob_get_clean();
     }
 
@@ -1191,7 +1214,81 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
-        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+        $aliases = [
+            'listar' => 'buscar_recetas',
+            'listado' => 'buscar_recetas',
+            'buscar' => 'buscar_recetas',
+            'mis_items' => 'mis_recetas',
+            'mis-recetas' => 'mis_recetas',
+            'populares' => 'recetas_populares',
+            'destacadas' => 'recetas_populares',
+            'crear' => 'crear_receta',
+            'nuevo' => 'crear_receta',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $method = 'action_' . $action_name;
+
+        if (method_exists($this, $method)) {
+            return $this->$method($params);
+        }
+
+        return [
+            'success' => false,
+            'error' => __('Acción no implementada', 'flavor-chat-ia'),
+        ];
+    }
+
+    /**
+     * Acción: buscar/listar recetas.
+     */
+    private function action_buscar_recetas($params) {
+        $shortcode = '[flavor_recetas';
+
+        if (!empty($params['termino'])) {
+            $shortcode .= ' busqueda="' . esc_attr($params['termino']) . '"';
+        }
+
+        if (!empty($params['categoria'])) {
+            $shortcode .= ' categoria="' . esc_attr($params['categoria']) . '"';
+        }
+
+        $shortcode .= ']';
+
+        return [
+            'success' => true,
+            'html' => do_shortcode($shortcode),
+        ];
+    }
+
+    /**
+     * Acción: mis recetas.
+     */
+    private function action_mis_recetas($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[flavor_recetas_mis_recetas]'),
+        ];
+    }
+
+    /**
+     * Acción: recetas populares.
+     */
+    private function action_recetas_populares($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[flavor_recetas_destacadas]'),
+        ];
+    }
+
+    /**
+     * Acción: crear receta.
+     */
+    private function action_crear_receta($params) {
+        return [
+            'success' => true,
+            'html' => do_shortcode('[flavor_recetas_crear]'),
+        ];
     }
 
     /**
@@ -1290,7 +1387,7 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
                         'accept' => 'image/*',
                     ],
                 ],
-                'submit_text' => __('Publicar Receta', 'flavor-chat-ia'),
+                'submit_text' => __('Enviar Receta', 'flavor-chat-ia'),
                 'ajax' => true,
             ],
         ];
@@ -1379,22 +1476,30 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
                 'listado' => [
                     'label'   => __('Recetas', 'flavor-chat-ia'),
                     'icon'    => '🍳',
-                    'content' => 'template:recetas/_listado.php',
+                    'content' => '[flavor_recetas cantidad="12" columnas="3"]',
                 ],
                 'mis-recetas' => [
                     'label'   => __('Mis recetas', 'flavor-chat-ia'),
                     'icon'    => '📖',
-                    'content' => 'shortcode:recetas_mis_recetas',
+                    'content' => 'shortcode:flavor_recetas_mis_recetas',
+                    'requires_login' => true,
                 ],
                 'favoritas' => [
                     'label'   => __('Favoritas', 'flavor-chat-ia'),
                     'icon'    => '❤️',
-                    'content' => 'shortcode:recetas_favoritas',
+                    'content' => 'shortcode:flavor_recetas_favoritas',
+                    'requires_login' => true,
                 ],
                 'nueva' => [
                     'label'   => __('Añadir', 'flavor-chat-ia'),
                     'icon'    => '➕',
-                    'content' => 'shortcode:recetas_formulario',
+                    'content' => 'shortcode:flavor_recetas_crear',
+                    'requires_login' => true,
+                ],
+                'buscar' => [
+                    'label'   => __('Buscar', 'flavor-chat-ia'),
+                    'icon'    => '🔍',
+                    'content' => 'shortcode:flavor_recetas_buscador',
                 ],
             ],
 

@@ -1340,6 +1340,18 @@ class Flavor_Module_Config_API {
                     'badge'       => 'categoria',
                 ),
             ),
+            'energia_comunitaria' => array(
+                'id'       => 'energia_comunitaria',
+                'titulo'   => 'Energía Comunitaria',
+                'icono'    => 'bolt',
+                'endpoint' => '/flavor/v1/energia-comunitaria',
+                'layout'   => 'card',
+                'campos'   => array(
+                    'titulo'      => 'nombre',
+                    'descripcion' => 'descripcion',
+                    'badge'       => 'tipo_instalacion_principal',
+                ),
+            ),
 
             'saberes_ancestrales' => array(
                 'id'       => 'saberes_ancestrales',
@@ -2781,6 +2793,31 @@ class Flavor_Module_Config_API {
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_economia_suficiencia',
                 'tablas' => array('wp_flavor_economia_suficiencia'),
+            ),
+            'energia_comunitaria' => array(
+                'id'          => 'energia_comunitaria',
+                'titulo'      => 'Energía Comunitaria',
+                'version'     => '1.0.0',
+                'descripcion' => 'Gestión comunitaria de generación renovable, consumo, reparto, mantenimiento e inversiones para avanzar hacia la autosuficiencia energética local.',
+                'caracteristicas' => array(
+                    'Comunidades energéticas',
+                    'Instalaciones y activos',
+                    'Lecturas de producción y consumo',
+                    'Reparto de excedentes',
+                    'Incidencias y mantenimiento',
+                    'Panel de autosuficiencia',
+                    'Integración con comunidades y huella ecológica',
+                ),
+                'casos_uso' => array(
+                    'Cooperativas solares',
+                    'Autoconsumo compartido',
+                    'Microredes vecinales',
+                    'Compras colectivas de instalaciones',
+                ),
+                'modulos_relacionados' => array('comunidades', 'huella_ecologica', 'presupuestos_participativos', 'eventos', 'economia_suficiencia'),
+                'requisitos' => array(),
+                'tabla_principal' => 'wp_flavor_energia_comunidades',
+                'tablas' => array('wp_flavor_energia_comunidades', 'wp_flavor_energia_instalaciones', 'wp_flavor_energia_lecturas', 'wp_flavor_energia_incidencias'),
             ),
 
             'saberes_ancestrales' => array(

@@ -167,8 +167,47 @@ $aprobados_hoy = $wpdb->get_var("
 </div>
 
 <script>
+function mmModeracionAviso(mensaje, tipo) {
+    var contenedor = document.getElementById('mm-moderacion-notice');
+    if (!contenedor) {
+        contenedor = document.createElement('div');
+        contenedor.id = 'mm-moderacion-notice';
+        contenedor.style.marginBottom = '16px';
+        var wrap = document.querySelector('.wrap');
+        if (wrap) {
+            wrap.insertBefore(contenedor, wrap.children[1] || null);
+        } else {
+            document.body.prepend(contenedor);
+        }
+    }
+    contenedor.innerHTML = '<div class="notice notice-' + (tipo === 'error' ? 'error' : 'success') + ' is-dismissible"><p>' + mensaje + '</p></div>';
+}
+
+function mmModeracionConfirmar(mensaje, onConfirm) {
+    var contenedor = document.getElementById('mm-moderacion-notice');
+    if (!contenedor) {
+        mmModeracionAviso('', 'success');
+        contenedor = document.getElementById('mm-moderacion-notice');
+    }
+    contenedor.innerHTML =
+        '<div class="notice notice-warning"><p>' + mensaje + '</p>' +
+        '<p style="display:flex;gap:8px;margin-top:8px;">' +
+        '<button type="button" class="button button-primary" id="mm-moderacion-confirmar">Confirmar</button>' +
+        '<button type="button" class="button" id="mm-moderacion-cancelar">Cancelar</button>' +
+        '</p></div>';
+    document.getElementById('mm-moderacion-confirmar').onclick = function() {
+        contenedor.innerHTML = '';
+        if (typeof onConfirm === 'function') {
+            onConfirm();
+        }
+    };
+    document.getElementById('mm-moderacion-cancelar').onclick = function() {
+        contenedor.innerHTML = '';
+    };
+}
+
 function aprobar(id) {
-    if (confirm('<?php echo esc_js(__('¿Aprobar este contenido?', 'flavor-chat-ia')); ?>')) {
+    mmModeracionConfirmar('<?php echo esc_js(__('¿Aprobar este contenido?', 'flavor-chat-ia')); ?>', function() {
         jQuery.post(ajaxurl, {
             action: 'flavor_multimedia_moderar',
             multimedia_id: id,
@@ -178,10 +217,10 @@ function aprobar(id) {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data || '<?php echo esc_js(__('Error al aprobar', 'flavor-chat-ia')); ?>');
+                mmModeracionAviso(response.data || '<?php echo esc_js(__('Error al aprobar', 'flavor-chat-ia')); ?>', 'error');
             }
         });
-    }
+    });
 }
 
 function rechazar(id) {
@@ -197,14 +236,14 @@ function rechazar(id) {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data || '<?php echo esc_js(__('Error al rechazar', 'flavor-chat-ia')); ?>');
+                mmModeracionAviso(response.data || '<?php echo esc_js(__('Error al rechazar', 'flavor-chat-ia')); ?>', 'error');
             }
         });
     }
 }
 
 function verDetalle(id) {
-    window.location.href = '<?php echo admin_url('admin.php?page=flavor-multimedia&tab=galeria&ver='); ?>' + id;
+    window.location.href = '<?php echo admin_url('admin.php?page=multimedia-galeria&ver='); ?>' + id;
 }
 
 function seleccionarTodos() {
@@ -221,10 +260,10 @@ function aprobarSeleccionados() {
         ids.push(cb.value);
     });
     if (ids.length === 0) {
-        alert('<?php echo esc_js(__('Selecciona al menos un elemento', 'flavor-chat-ia')); ?>');
+        mmModeracionAviso('<?php echo esc_js(__('Selecciona al menos un elemento', 'flavor-chat-ia')); ?>', 'error');
         return;
     }
-    if (confirm('<?php echo esc_js(__('¿Aprobar los elementos seleccionados?', 'flavor-chat-ia')); ?>')) {
+    mmModeracionConfirmar('<?php echo esc_js(__('¿Aprobar los elementos seleccionados?', 'flavor-chat-ia')); ?>', function() {
         jQuery.post(ajaxurl, {
             action: 'flavor_multimedia_moderar_masivo',
             ids: ids,
@@ -234,10 +273,10 @@ function aprobarSeleccionados() {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data || '<?php echo esc_js(__('Error', 'flavor-chat-ia')); ?>');
+                mmModeracionAviso(response.data || '<?php echo esc_js(__('Error', 'flavor-chat-ia')); ?>', 'error');
             }
         });
-    }
+    });
 }
 
 function rechazarSeleccionados() {
@@ -246,10 +285,10 @@ function rechazarSeleccionados() {
         ids.push(cb.value);
     });
     if (ids.length === 0) {
-        alert('<?php echo esc_js(__('Selecciona al menos un elemento', 'flavor-chat-ia')); ?>');
+        mmModeracionAviso('<?php echo esc_js(__('Selecciona al menos un elemento', 'flavor-chat-ia')); ?>', 'error');
         return;
     }
-    if (confirm('<?php echo esc_js(__('¿Rechazar los elementos seleccionados?', 'flavor-chat-ia')); ?>')) {
+    mmModeracionConfirmar('<?php echo esc_js(__('¿Rechazar los elementos seleccionados?', 'flavor-chat-ia')); ?>', function() {
         jQuery.post(ajaxurl, {
             action: 'flavor_multimedia_moderar_masivo',
             ids: ids,
@@ -259,10 +298,10 @@ function rechazarSeleccionados() {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data || '<?php echo esc_js(__('Error', 'flavor-chat-ia')); ?>');
+                mmModeracionAviso(response.data || '<?php echo esc_js(__('Error', 'flavor-chat-ia')); ?>', 'error');
             }
         });
-    }
+    });
 }
 </script>
 

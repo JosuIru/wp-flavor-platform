@@ -35,8 +35,10 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
     public function can_activate() {
         global $wpdb;
         $nombre_tabla_reservas = $wpdb->prefix . 'flavor_reservas';
+        $nombre_tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
 
-        return Flavor_Chat_Helpers::tabla_existe($nombre_tabla_reservas);
+        return Flavor_Chat_Helpers::tabla_existe($nombre_tabla_reservas)
+            && Flavor_Chat_Helpers::tabla_existe($nombre_tabla_recursos);
     }
 
     /**
@@ -1567,6 +1569,13 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
      * AJAX: Crear reserva desde shortcode
      */
     public function ajax_crear_reserva() {
+        if ((isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'reservas_nonce')) || isset($_POST['recurso_id'])) {
+            if (class_exists('Flavor_Reservas_Frontend_Controller')) {
+                Flavor_Reservas_Frontend_Controller::get_instance()->ajax_crear_reserva();
+                return;
+            }
+        }
+
         // Verificar nonce
         if (!wp_verify_nonce($_POST['reservas_nonce'] ?? '', 'reservas_crear_nonce')) {
             wp_send_json_error(['error' => __('Error de seguridad. Recarga la página.', 'flavor-chat-ia')]);
@@ -1606,6 +1615,13 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
      * AJAX: Cancelar reserva desde shortcode
      */
     public function ajax_cancelar_reserva() {
+        if (isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'reservas_nonce')) {
+            if (class_exists('Flavor_Reservas_Frontend_Controller')) {
+                Flavor_Reservas_Frontend_Controller::get_instance()->ajax_cancelar_reserva();
+                return;
+            }
+        }
+
         // Verificar nonce
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'reservas_shortcode_nonce')) {
             wp_send_json_error(['error' => __('Error de seguridad.', 'flavor-chat-ia')]);
@@ -1630,6 +1646,13 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
      * AJAX: Consultar disponibilidad desde shortcode
      */
     public function ajax_consultar_disponibilidad() {
+        if ((isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'reservas_nonce')) || isset($_POST['recurso_id'])) {
+            if (class_exists('Flavor_Reservas_Frontend_Controller')) {
+                Flavor_Reservas_Frontend_Controller::get_instance()->ajax_verificar_disponibilidad();
+                return;
+            }
+        }
+
         // Verificar nonce (permite tanto el nonce del shortcode como el general)
         $nonce_valido = wp_verify_nonce($_POST['nonce'] ?? '', 'reservas_shortcode_nonce');
 
@@ -2128,8 +2151,10 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
     public function maybe_create_tables() {
         global $wpdb;
         $nombre_tabla_reservas = $wpdb->prefix . 'flavor_reservas';
+        $nombre_tabla_recursos = $wpdb->prefix . 'flavor_reservas_recursos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe($nombre_tabla_reservas)) {
+        if (!Flavor_Chat_Helpers::tabla_existe($nombre_tabla_reservas)
+            || !Flavor_Chat_Helpers::tabla_existe($nombre_tabla_recursos)) {
             $this->create_tables();
         }
     }

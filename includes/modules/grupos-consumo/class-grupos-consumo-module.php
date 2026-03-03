@@ -87,6 +87,9 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         // Ciclos recurrentes - Programar cron y registrar handler
         add_action('init', [$this, 'programar_cron_ciclos_recurrentes']);
         add_action('gc_verificar_ciclos_recurrentes', [$this, 'verificar_ciclos_recurrentes']);
+
+        // Provisionar grupo principal al crear una comunidad
+        add_action('flavor_comunidad_creada', [$this, 'provisionar_grupo_principal_comunidad'], 10, 2);
     }
 
     /**
@@ -101,6 +104,9 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         $assets_url = FLAVOR_CHAT_IA_URL . 'includes/modules/grupos-consumo/assets/';
         $assets_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/grupos-consumo/assets/';
         $version = FLAVOR_CHAT_IA_VERSION;
+        $gc_frontend_version = file_exists($assets_path . 'gc-frontend.js')
+            ? (string) filemtime($assets_path . 'gc-frontend.js')
+            : $version;
 
         // CSS del frontend
         if (file_exists($assets_path . 'gc-frontend.css')) {
@@ -118,28 +124,32 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
                 'gc-frontend',
                 $assets_url . 'gc-frontend.js',
                 ['jquery'],
-                $version,
+                $gc_frontend_version,
                 true
             );
 
-            // Configuración para el script
-            wp_localize_script('gc-frontend', 'gcFrontend', [
-                'ajaxUrl'    => admin_url('admin-ajax.php'),
-                'restUrl'    => rest_url('flavor/v1/grupos-consumo/'),
-                'nonce'      => wp_create_nonce('gc_nonce'),
-                'restNonce'  => wp_create_nonce('wp_rest'),
-                'isLoggedIn' => is_user_logged_in(),
-                'loginUrl'   => wp_login_url(home_url($_SERVER['REQUEST_URI'] ?? '')),
-                'i18n'       => [
-                    'agregado'         => __('Producto agregado a la lista', 'flavor-chat-ia'),
-                    'eliminado'        => __('Producto eliminado de la lista', 'flavor-chat-ia'),
-                    'error'            => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                    'confirmarEliminar' => __('¿Eliminar este producto?', 'flavor-chat-ia'),
-                    'pedidoCreado'     => __('Pedido creado correctamente', 'flavor-chat-ia'),
-                    'cargando'         => __('Cargando...', 'flavor-chat-ia'),
-                    'sinProductos'     => __('Tu lista está vacía', 'flavor-chat-ia'),
-                ],
-            ]);
+            $scripts = wp_scripts();
+            $gc_frontend_data = $scripts ? (string) $scripts->get_data('gc-frontend', 'data') : '';
+
+            if (strpos($gc_frontend_data, 'var gcFrontend =') === false) {
+                wp_localize_script('gc-frontend', 'gcFrontend', [
+                    'ajaxUrl'    => admin_url('admin-ajax.php'),
+                    'restUrl'    => rest_url('flavor/v1/grupos-consumo/'),
+                    'nonce'      => wp_create_nonce('gc_nonce'),
+                    'restNonce'  => wp_create_nonce('wp_rest'),
+                    'isLoggedIn' => is_user_logged_in(),
+                    'loginUrl'   => wp_login_url(home_url('/mi-portal/grupos-consumo/')),
+                    'i18n'       => [
+                        'agregado'         => __('Producto agregado a la lista', 'flavor-chat-ia'),
+                        'eliminado'        => __('Producto eliminado de la lista', 'flavor-chat-ia'),
+                        'error'            => __('Ha ocurrido un error', 'flavor-chat-ia'),
+                        'confirmarEliminar' => __('¿Eliminar este producto?', 'flavor-chat-ia'),
+                        'pedidoCreado'     => __('Pedido creado correctamente', 'flavor-chat-ia'),
+                        'cargando'         => __('Cargando...', 'flavor-chat-ia'),
+                        'sinProductos'     => __('Tu lista está vacía', 'flavor-chat-ia'),
+                    ],
+                ]);
+            }
         }
     }
 
@@ -163,9 +173,11 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             }
         }
 
-        // Cargar en páginas del portal (mi-portal)
+        // Cargar en rutas propias del modulo dentro del portal
         $request_uri = $_SERVER['REQUEST_URI'] ?? '';
-        if (strpos($request_uri, '/mi-portal/') !== false || strpos($request_uri, '/grupos-consumo') !== false) {
+        $request_path = (string) wp_parse_url($request_uri, PHP_URL_PATH);
+
+        if (preg_match('#^/grupos-consumo(?:/|$)#', $request_path)) {
             return true;
         }
 
@@ -226,7 +238,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
                 'priority' => 10,
             ],
             'pedidos' => [
-                'label'    => __('Mis Pedidos', 'flavor-chat-ia'),
+                'label'    => __('Historial', 'flavor-chat-ia'),
                 'icon'     => 'dashicons-cart',
                 'content'  => '[gc_mis_pedidos]',
                 'priority' => 20,
@@ -1331,7 +1343,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
 
         $links = [
             [
-                'label' => __('Ver catálogo', 'flavor-chat-ia'),
+                'label' => __('Ver productos', 'flavor-chat-ia'),
                 'url' => home_url('/mi-portal/grupos-consumo/productos/'),
             ],
             [
@@ -1339,11 +1351,11 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
                 'url' => home_url('/mi-portal/grupos-consumo/mi-cesta/'),
             ],
             [
-                'label' => __('Mi pedido', 'flavor-chat-ia'),
+                'label' => __('Pedido actual', 'flavor-chat-ia'),
                 'url' => home_url('/mi-portal/grupos-consumo/mi-pedido/'),
             ],
             [
-                'label' => __('Mis pedidos', 'flavor-chat-ia'),
+                'label' => __('Historial', 'flavor-chat-ia'),
                 'url' => home_url('/mi-portal/grupos-consumo/mis-pedidos/'),
             ],
             [
@@ -1446,7 +1458,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
 
             <?php if ($ciclo): ?>
                 <div class="gc-panel-section">
-                    <h3><?php _e('Mi pedido en el ciclo activo', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php _e('Pedido actual en el ciclo activo', 'flavor-chat-ia'); ?></h3>
                     <p><?php printf(__('Importe: %s', 'flavor-chat-ia'), number_format_i18n($importe_ciclo_activo, 2) . ' €'); ?></p>
                 </div>
             <?php endif; ?>
@@ -1474,7 +1486,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             ['label' => __('Panel', 'flavor-chat-ia'), 'path' => 'grupos-consumo/panel'],
             ['label' => __('Catálogo', 'flavor-chat-ia'), 'path' => 'grupos-consumo/productos'],
             ['label' => __('Mi cesta', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mi-cesta'],
-            ['label' => __('Mi pedido', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mi-pedido'],
+            ['label' => __('Pedido actual', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mi-pedido'],
             ['label' => __('Mis pedidos', 'flavor-chat-ia'), 'path' => 'grupos-consumo/mis-pedidos'],
             ['label' => __('Suscripciones', 'flavor-chat-ia'), 'path' => 'grupos-consumo/suscripciones'],
             ['label' => __('Productores', 'flavor-chat-ia'), 'path' => 'grupos-consumo/productores-cercanos'],
@@ -1485,11 +1497,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         $current = trim(parse_url(home_url(add_query_arg([])), PHP_URL_PATH), '/');
         $links = [];
         foreach ($items as $item) {
-            $page = get_page_by_path($item['path']);
-            if (!$page) {
-                continue;
-            }
-            $url = get_permalink($page);
+            $url = home_url('/mi-portal/' . trim($item['path'], '/') . '/');
             $is_active = $current === trim(parse_url($url, PHP_URL_PATH), '/');
             $links[] = [
                 'label' => $item['label'],
@@ -2942,15 +2950,66 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = [
+            'listar' => 'listar_productos',
+            'listado' => 'listar_productos',
+            'explorar' => 'listar_productos',
+            'buscar' => 'listar_productos',
+            'productos' => 'listar_productos',
+            'catalogo' => 'listar_productos',
+            'productores' => 'buscar_productor',
+            'buscar_productor' => 'buscar_productor',
+            'ciclo' => 'ciclo_actual',
+            'ciclo_actual' => 'ciclo_actual',
+            'pedido' => 'ver_mi_pedido',
+            'mi_pedido' => 'ver_mi_pedido',
+            'mi-pedido' => 'ver_mi_pedido',
+            'hacer_pedido' => 'hacer_pedido',
+            'modificar_pedido' => 'modificar_pedido',
+        ];
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         $metodo_accion = 'action_' . $nombre_accion;
 
         if (method_exists($this, $metodo_accion)) {
             return $this->$metodo_accion($parametros);
         }
 
+        switch ($nombre_accion) {
+            case 'grupos':
+                return do_shortcode('[flavor module="grupos-consumo" view="listado" header="no" limit="12"]');
+            case 'productos':
+                return do_shortcode('[gc_catalogo]');
+            case 'productores':
+                return do_shortcode('[gc_productores]');
+            case 'mi-cesta':
+                return do_shortcode('[gc_mi_cesta]');
+            case 'mis-pedidos':
+                return do_shortcode('[gc_historial]');
+            case 'ciclos':
+                return do_shortcode('[gc_ciclo_actual]');
+            case 'suscripciones':
+                return do_shortcode('[gc_suscripciones]');
+            case 'panel':
+                return do_shortcode('[gc_panel]');
+            case 'unirme':
+                return do_shortcode('[gc_formulario_union]');
+            case 'foro':
+                $entity_id = absint($parametros['grupo_id'] ?? $parametros['id'] ?? 0);
+                if ($entity_id > 0) {
+                    return do_shortcode(sprintf(
+                        '[flavor_foros_integrado entidad="grupo_consumo" entidad_id="%d"]',
+                        $entity_id
+                    ));
+                }
+                return do_shortcode('[foros_actividad_reciente limit="8"]');
+            case 'recetas':
+                return do_shortcode('[flavor module="recetas" view="listado" header="no" limit="12"]');
+        }
+
         return [
             'success' => false,
-            'error' => sprintf(__('Acción no implementada: %s', 'flavor-chat-ia'), $nombre_accion),
+            'error' => __('La vista solicitada no está disponible en Grupos de Consumo.', 'flavor-chat-ia'),
         ];
     }
 
@@ -3280,7 +3339,7 @@ KNOWLEDGE;
                             <?php endif; ?>
                         </div>
                         <?php if ($es_abierto): ?>
-                            <a href="<?php echo esc_url(get_permalink($ciclo_post->ID)); ?>" class="gc-btn gc-btn-primary gc-btn-sm">
+                            <a href="<?php echo esc_url(add_query_arg('ciclo', intval($ciclo_post->ID), home_url('/mi-portal/grupos-consumo/ciclo/'))); ?>" class="gc-btn gc-btn-primary gc-btn-sm">
                                 <?php _e('Ver productos', 'flavor-chat-ia'); ?>
                             </a>
                         <?php endif; ?>
@@ -3424,13 +3483,17 @@ KNOWLEDGE;
                                 btnEl.textContent = '✓ En pedido';
                                 modal.remove();
                             } else {
-                                alert(data.data?.message || 'Error al añadir');
+                                if (window.gcToast) {
+                                    window.gcToast(data.data?.message || 'Error al añadir', 'error');
+                                }
                                 submitBtn.disabled = false;
                                 submitBtn.textContent = 'Confirmar';
                             }
                         })
                         .catch(function() {
-                            alert('Error de conexión');
+                            if (window.gcToast) {
+                                window.gcToast('Error de conexión', 'error');
+                            }
                             submitBtn.disabled = false;
                             submitBtn.textContent = 'Confirmar';
                         });
@@ -3637,14 +3700,29 @@ KNOWLEDGE;
      * Shortcode: Mi pedido
      */
     public function shortcode_mi_pedido() {
+        ob_start();
+
+        $base_dir = dirname(__FILE__) . '/templates/';
+        $template = !empty($_GET['entrega_id'])
+            ? $base_dir . 'mi-pedido.php'
+            : $base_dir . 'mi-cesta.php';
+
+        if (file_exists($template)) {
+            include $template;
+            return ob_get_clean();
+        }
+
         if (!is_user_logged_in()) {
             return '<p>' . __('Debes iniciar sesión para ver tu pedido.', 'flavor-chat-ia') . '</p>';
         }
 
         $resultado = $this->action_ver_mi_pedido([]);
 
-        // Implementar visualización del pedido
-        return '<div class="gc-mi-pedido"><!-- Pedido del usuario --></div>';
+        if (!$resultado['success']) {
+            return '<p>' . esc_html($resultado['error'] ?? __('No se pudo cargar tu pedido.', 'flavor-chat-ia')) . '</p>';
+        }
+
+        return '<div class="gc-mi-pedido"></div>';
     }
 
     /**
@@ -4323,7 +4401,7 @@ KNOWLEDGE;
                             </div>
                             <div class="gc-producto-footer">
                                 <span class="gc-precio"><?php echo number_format($producto['precio'], 2); ?> € / <?php echo esc_html($producto['unidad']); ?></span>
-                                <button type="button" class="gc-btn gc-btn-primary gc-agregar-lista" data-producto-id="<?php echo esc_attr($producto['id']); ?>">
+                                <button type="button" class="gc-btn gc-btn-primary gc-agregar-lista gc-anadir-pedido" data-producto-id="<?php echo esc_attr($producto['id']); ?>">
                                     <span class="dashicons dashicons-plus"></span>
                                     <?php _e('Añadir', 'flavor-chat-ia'); ?>
                                 </button>
@@ -4386,7 +4464,7 @@ KNOWLEDGE;
                 </div>
                 <div class="gc-carrito-footer">
                     <span class="gc-carrito-total"><?php printf(__('Total: %s €', 'flavor-chat-ia'), number_format($total, 2)); ?></span>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-cesta/')); ?>" class="gc-btn gc-btn-primary gc-ver-lista"><?php _e('Ver Lista', 'flavor-chat-ia'); ?></a>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')); ?>" class="gc-btn gc-btn-primary gc-ver-lista"><?php _e('Ver pedido', 'flavor-chat-ia'); ?></a>
                 </div>
             <?php else: ?>
                 <p class="gc-carrito-vacio"><?php _e('Tu lista está vacía', 'flavor-chat-ia'); ?></p>
@@ -4522,7 +4600,7 @@ KNOWLEDGE;
         ob_start();
         ?>
         <div class="gc-historial">
-            <h3><?php _e('Mi Historial de Pedidos', 'flavor-chat-ia'); ?></h3>
+            <h3><?php _e('Mi Historial', 'flavor-chat-ia'); ?></h3>
             <?php if (empty($pedidos)): ?>
                 <p class="gc-sin-historial"><?php _e('No tienes pedidos anteriores.', 'flavor-chat-ia'); ?></p>
             <?php else: ?>
@@ -4609,7 +4687,7 @@ KNOWLEDGE;
                                 <?php _e('Suscribirse', 'flavor-chat-ia'); ?>
                             </button>
                         <?php else: ?>
-                            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="gc-btn gc-btn-outline">
+                            <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/suscripciones/'))); ?>" class="gc-btn gc-btn-outline">
                                 <?php _e('Inicia sesión para suscribirte', 'flavor-chat-ia'); ?>
                             </a>
                         <?php endif; ?>
@@ -4916,22 +4994,27 @@ KNOWLEDGE;
                 true
             );
 
-            wp_localize_script('gc-frontend', 'gcFrontend', [
-                'ajaxUrl' => admin_url('admin-ajax.php'),
-                'restUrl' => rest_url('flavor-chat-ia/v1/gc/'),
-                'nonce' => wp_create_nonce('gc_nonce'),
-                'restNonce' => wp_create_nonce('wp_rest'),
-                'isLoggedIn' => is_user_logged_in(),
-                'i18n' => [
-                    'agregado' => __('Producto agregado a la lista', 'flavor-chat-ia'),
-                    'eliminado' => __('Producto eliminado de la lista', 'flavor-chat-ia'),
-                    'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
-                    'confirmarEliminar' => __('¿Eliminar este producto de la lista?', 'flavor-chat-ia'),
-                    'cargando' => __('Cargando...', 'flavor-chat-ia'),
-                    'sinProductos' => __('No hay productos disponibles', 'flavor-chat-ia'),
-                    'pedidoCreado' => __('Pedido creado correctamente', 'flavor-chat-ia'),
-                ],
-            ]);
+            $scripts = wp_scripts();
+            $gc_frontend_data = $scripts ? (string) $scripts->get_data('gc-frontend', 'data') : '';
+
+            if (strpos($gc_frontend_data, 'var gcFrontend =') === false) {
+                wp_localize_script('gc-frontend', 'gcFrontend', [
+                    'ajaxUrl' => admin_url('admin-ajax.php'),
+                    'restUrl' => rest_url('flavor-chat-ia/v1/gc/'),
+                    'nonce' => wp_create_nonce('gc_nonce'),
+                    'restNonce' => wp_create_nonce('wp_rest'),
+                    'isLoggedIn' => is_user_logged_in(),
+                    'i18n' => [
+                        'agregado' => __('Producto agregado a la lista', 'flavor-chat-ia'),
+                        'eliminado' => __('Producto eliminado de la lista', 'flavor-chat-ia'),
+                        'error' => __('Ha ocurrido un error', 'flavor-chat-ia'),
+                        'confirmarEliminar' => __('¿Eliminar este producto de la lista?', 'flavor-chat-ia'),
+                        'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                        'sinProductos' => __('No hay productos disponibles', 'flavor-chat-ia'),
+                        'pedidoCreado' => __('Pedido creado correctamente', 'flavor-chat-ia'),
+                    ],
+                ]);
+            }
         }
 
         // Admin assets
@@ -4975,9 +5058,11 @@ KNOWLEDGE;
             'columnas' => 3,
             'limite' => 12,
             'mostrar_cerrados' => 'false',
+            'comunidad_id' => 0,
         ], $atributos);
 
         $mostrar_cerrados = filter_var($atributos['mostrar_cerrados'], FILTER_VALIDATE_BOOLEAN);
+        $comunidad_id = absint($atributos['comunidad_id']);
         $pagina = max(1, absint($_GET['gc_p'] ?? 1));
 
         // Consultar grupos de consumo
@@ -5004,6 +5089,23 @@ KNOWLEDGE;
                     'compare' => 'NOT EXISTS',
                 ],
             ];
+        }
+
+        if ($comunidad_id > 0) {
+            $existing_meta_query = $args_query['meta_query'] ?? [];
+            $meta_query = ['relation' => 'AND'];
+
+            if (!empty($existing_meta_query)) {
+                $meta_query[] = $existing_meta_query;
+            }
+
+            $meta_query[] = [
+                'key' => '_flavor_comunidad_id',
+                'value' => $comunidad_id,
+                'compare' => '=',
+                'type' => 'NUMERIC',
+            ];
+            $args_query['meta_query'] = $meta_query;
         }
 
         $grupos = new WP_Query($args_query);
@@ -5113,6 +5215,85 @@ KNOWLEDGE;
         ));
 
         return intval($count);
+    }
+
+    /**
+     * Obtiene el grupo principal asociado a una comunidad.
+     *
+     * @param int $comunidad_id ID de la comunidad.
+     * @return WP_Post|null
+     */
+    public function obtener_grupo_principal_comunidad($comunidad_id) {
+        $comunidad_id = absint($comunidad_id);
+        if ($comunidad_id <= 0) {
+            return null;
+        }
+
+        $grupos = get_posts([
+            'post_type' => 'gc_grupo',
+            'post_status' => 'publish',
+            'posts_per_page' => 1,
+            'orderby' => 'date',
+            'order' => 'ASC',
+            'meta_query' => [
+                [
+                    'key' => '_flavor_comunidad_id',
+                    'value' => $comunidad_id,
+                    'compare' => '=',
+                    'type' => 'NUMERIC',
+                ],
+            ],
+        ]);
+
+        return !empty($grupos) ? $grupos[0] : null;
+    }
+
+    /**
+     * Provisiona un grupo principal para una comunidad recién creada.
+     *
+     * @param int   $comunidad_id ID de la comunidad.
+     * @param array $datos        Datos de la comunidad.
+     * @return int ID del grupo creado o existente.
+     */
+    public function provisionar_grupo_principal_comunidad($comunidad_id, $datos = []) {
+        $comunidad_id = absint($comunidad_id);
+        if ($comunidad_id <= 0) {
+            return 0;
+        }
+
+        $grupo_existente = $this->obtener_grupo_principal_comunidad($comunidad_id);
+        if ($grupo_existente instanceof WP_Post) {
+            return (int) $grupo_existente->ID;
+        }
+
+        $nombre = sanitize_text_field($datos['nombre'] ?? '');
+        if ($nombre === '') {
+            $nombre = sprintf(__('Grupo de consumo %d', 'flavor-chat-ia'), $comunidad_id);
+        }
+
+        $descripcion = wp_kses_post($datos['descripcion'] ?? '');
+        $ubicacion = sanitize_text_field($datos['ubicacion'] ?? '');
+
+        $grupo_id = wp_insert_post([
+            'post_type' => 'gc_grupo',
+            'post_status' => 'publish',
+            'post_title' => sprintf(__('Grupo de consumo de %s', 'flavor-chat-ia'), $nombre),
+            'post_content' => $descripcion,
+            'post_excerpt' => $descripcion ? wp_trim_words(wp_strip_all_tags($descripcion), 26, '...') : '',
+        ], true);
+
+        if (is_wp_error($grupo_id) || !$grupo_id) {
+            return 0;
+        }
+
+        update_post_meta($grupo_id, '_flavor_comunidad_id', $comunidad_id);
+        update_post_meta($grupo_id, '_gc_grupo_principal_comunidad', 1);
+
+        if ($ubicacion !== '') {
+            update_post_meta($grupo_id, '_gc_ubicacion', $ubicacion);
+        }
+
+        return (int) $grupo_id;
     }
 
     /**
@@ -5790,7 +5971,7 @@ KNOWLEDGE;
                         </p>
                     </div>
                     <div class="gc-productor-acciones">
-                        <a href="<?php echo esc_url(get_permalink($productor->ID)); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
+                        <a href="<?php echo esc_url(add_query_arg('productor', intval($productor->ID), home_url('/mi-portal/grupos-consumo/productores-cercanos/'))); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
                             <?php _e('Ver productos', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
@@ -5864,10 +6045,10 @@ KNOWLEDGE;
 
             // Mis pedidos
             [
-                'title' => __('Mis Pedidos', 'flavor-chat-ia'),
+                'title' => __('Historial', 'flavor-chat-ia'),
                 'slug' => 'mis-pedidos',
                 'content' => Flavor_Page_Creator_V3::page_content([
-                    'title' => __('Mis Pedidos', 'flavor-chat-ia'),
+                    'title' => __('Historial', 'flavor-chat-ia'),
                     'subtitle' => __('Gestiona tus pedidos y suscripciones', 'flavor-chat-ia'),
                     'module' => 'grupos_consumo',
                     'current' => 'pedidos',
@@ -6031,7 +6212,7 @@ KNOWLEDGE;
                 'template'     => 'grupo-consumo-card',
                 'title_field'  => 'nombre',
                 'subtitle_field' => 'ubicacion',
-                'meta_fields'  => ['dia_recogida', 'miembros_count', 'estado'],
+                'meta_fields'  => ['dia_recogida', 'max_miembros', 'estado'],
                 'show_imagen'  => true,
                 'show_estado'  => true,
             ],
@@ -6065,14 +6246,13 @@ KNOWLEDGE;
                     'requires_login' => true,
                 ],
                 'mi-pedido' => [
-                    'label'      => __('Mi pedido', 'flavor-chat-ia'),
+                    'label'      => __('Pedido actual', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-list-view',
                     'content'    => '[gc_mi_pedido]',
                     'requires_login' => true,
-                    'hidden_nav' => true,
                 ],
                 'mis-pedidos' => [
-                    'label'      => __('Mis pedidos', 'flavor-chat-ia'),
+                    'label'      => __('Historial', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-clipboard',
                     'content'    => '[gc_historial]',
                     'requires_login' => true,
@@ -6113,6 +6293,26 @@ KNOWLEDGE;
                     'icon'          => 'dashicons-admin-comments',
                     'is_integration' => true,
                     'source_module' => 'foros',
+                ],
+                'chat' => [
+                    'label'         => __('Chat', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-format-chat',
+                    'is_integration' => true,
+                    'source_module' => 'chat-grupos',
+                    'requires_login' => true,
+                ],
+                'multimedia' => [
+                    'label'         => __('Multimedia', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-format-gallery',
+                    'is_integration' => true,
+                    'source_module' => 'multimedia',
+                ],
+                'red-social' => [
+                    'label'         => __('Red social', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-share',
+                    'is_integration' => true,
+                    'source_module' => 'red-social',
+                    'requires_login' => true,
                 ],
                 'recetas' => [
                     'label'         => __('Recetas', 'flavor-chat-ia'),

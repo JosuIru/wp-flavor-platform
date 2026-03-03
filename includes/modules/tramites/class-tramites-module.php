@@ -2811,6 +2811,18 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'listar_tramites',
+            'listado' => 'listar_tramites',
+            'explorar' => 'listar_tramites',
+            'buscar' => 'listar_tramites',
+            'detalle' => 'detalle_tramite',
+            'ver' => 'detalle_tramite',
+            'estado' => 'estado_expediente',
+            'seguimiento' => 'estado_expediente',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo = 'action_' . $action_name;
 
         if (method_exists($this, $metodo)) {
@@ -3159,25 +3171,25 @@ KNOWLEDGE;
                 'catalogo' => [
                     'label'   => __('Catálogo', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-portfolio',
-                    'content' => 'shortcode:tramites_catalogo',
+                    'content' => '[flavor_tramites_catalogo]',
                     'public'  => true,
                 ],
                 'iniciar' => [
                     'label'      => __('Iniciar trámite', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-plus-alt',
-                    'content'    => 'shortcode:tramites_iniciar',
+                    'content'    => '[flavor_tramites_solicitar]',
                     'requires_login' => true,
                 ],
                 'mis-tramites' => [
                     'label'      => __('Mis trámites', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-admin-users',
-                    'content'    => 'shortcode:tramites_mis_tramites',
+                    'content'    => '[flavor_tramites_mis_solicitudes]',
                     'requires_login' => true,
                 ],
                 'seguimiento' => [
                     'label'   => __('Seguimiento', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-search',
-                    'content' => 'shortcode:tramites_seguimiento',
+                    'content' => '[flavor_tramites_seguimiento]',
                     'public'  => true,
                 ],
             ],

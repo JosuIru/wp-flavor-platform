@@ -94,6 +94,92 @@ class Flavor_GC_Subscriptions {
     }
 
     /**
+     * Valida nonces de suscripción con compatibilidad para clientes antiguos.
+     *
+     * @return void
+     */
+    private function verificar_nonce_ajax() {
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        $acciones_validas = [
+            'gc_suscripcion_nonce',
+            'gc_lista_compra_nonce',
+            'gc_nonce',
+        ];
+
+        foreach ($acciones_validas as $accion) {
+            if ($nonce && wp_verify_nonce($nonce, $accion)) {
+                return;
+            }
+        }
+
+        wp_send_json_error(
+            ['mensaje' => __('Token de seguridad invalido. Recarga la pagina e intentalo de nuevo.', 'flavor-chat-ia')],
+            403
+        );
+    }
+
+    /**
+     * Resuelve el consumidor del usuario autenticado para operaciones AJAX.
+     *
+     * Si el ID recibido no pertenece al usuario actual, intenta recuperar su
+     * membresia activa mas reciente para evitar fallos por HTML o cache obsoleta.
+     *
+     * @param int $consumidor_id ID recibido desde el frontend.
+     * @return object|null
+     */
+    private function resolver_consumidor_ajax($consumidor_id) {
+        $consumidor_manager = Flavor_GC_Consumidor_Manager::get_instance();
+        $consumidor = $consumidor_id > 0 ? $consumidor_manager->obtener_por_id($consumidor_id) : null;
+        $user_id = get_current_user_id();
+
+        if ($consumidor && (int) $consumidor->usuario_id === $user_id) {
+            return $consumidor;
+        }
+
+        global $wpdb;
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+            return null;
+        }
+
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT *
+             FROM {$tabla_consumidores}
+             WHERE usuario_id = %d
+             ORDER BY (estado = 'activo') DESC, fecha_alta DESC, id DESC
+             LIMIT 1",
+            $user_id
+        ));
+    }
+
+    /**
+     * Obtiene una suscripcion y verifica que pertenezca al usuario actual.
+     *
+     * @param int $suscripcion_id ID de la suscripcion.
+     * @return array{suscripcion:?object, consumidor:?object}
+     */
+    private function resolver_suscripcion_ajax($suscripcion_id) {
+        $suscripcion = $suscripcion_id > 0 ? $this->obtener_suscripcion($suscripcion_id) : null;
+        if (!$suscripcion) {
+            return ['suscripcion' => null, 'consumidor' => null];
+        }
+
+        $consumidor_manager = Flavor_GC_Consumidor_Manager::get_instance();
+        $consumidor = $consumidor_manager->obtener_por_id((int) $suscripcion->consumidor_id);
+
+        if (!$consumidor) {
+            return ['suscripcion' => $suscripcion, 'consumidor' => null];
+        }
+
+        if ((int) $consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones')) {
+            return ['suscripcion' => $suscripcion, 'consumidor' => null];
+        }
+
+        return ['suscripcion' => $suscripcion, 'consumidor' => $consumidor];
+    }
+
+    /**
      * Crea una nueva suscripción
      *
      * @param int    $consumidor_id ID del consumidor
@@ -911,7 +997,7 @@ class Flavor_GC_Subscriptions {
      * AJAX: Crear suscripción
      */
     public function ajax_crear_suscripcion() {
-        check_ajax_referer('gc_suscripcion_nonce', 'nonce');
+        $this->verificar_nonce_ajax();
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
@@ -922,14 +1008,13 @@ class Flavor_GC_Subscriptions {
         $frecuencia = isset($_POST['frecuencia']) ? sanitize_text_field($_POST['frecuencia']) : 'semanal';
 
         // Verificar permisos
-        $consumidor_manager = Flavor_GC_Consumidor_Manager::get_instance();
-        $consumidor = $consumidor_manager->obtener_por_id($consumidor_id);
+        $consumidor = $this->resolver_consumidor_ajax($consumidor_id);
 
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones'))) {
             wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
         }
 
-        $resultado = $this->crear_suscripcion($consumidor_id, $tipo_cesta_id, $frecuencia);
+        $resultado = $this->crear_suscripcion((int) $consumidor->id, $tipo_cesta_id, $frecuencia);
 
         if ($resultado['success']) {
             wp_send_json_success($resultado);
@@ -942,18 +1027,20 @@ class Flavor_GC_Subscriptions {
      * AJAX: Pausar suscripción
      */
     public function ajax_pausar_suscripcion() {
-        check_ajax_referer('gc_suscripcion_nonce', 'nonce');
+        $this->verificar_nonce_ajax();
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
         }
 
         $suscripcion_id = isset($_POST['suscripcion_id']) ? absint($_POST['suscripcion_id']) : 0;
-        $suscripcion = $this->obtener_suscripcion($suscripcion_id);
+        $contexto = $this->resolver_suscripcion_ajax($suscripcion_id);
+        $suscripcion = $contexto['suscripcion'];
+        $consumidor = $contexto['consumidor'];
 
-        // Verificar permisos
-        $consumidor_manager = Flavor_GC_Consumidor_Manager::get_instance();
-        $consumidor = $consumidor_manager->obtener_por_id($suscripcion->consumidor_id);
+        if (!$suscripcion) {
+            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-chat-ia')]);
+        }
 
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones'))) {
             wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
@@ -972,18 +1059,20 @@ class Flavor_GC_Subscriptions {
      * AJAX: Reanudar suscripción
      */
     public function ajax_reanudar_suscripcion() {
-        check_ajax_referer('gc_suscripcion_nonce', 'nonce');
+        $this->verificar_nonce_ajax();
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
         }
 
         $suscripcion_id = isset($_POST['suscripcion_id']) ? absint($_POST['suscripcion_id']) : 0;
-        $suscripcion = $this->obtener_suscripcion($suscripcion_id);
+        $contexto = $this->resolver_suscripcion_ajax($suscripcion_id);
+        $suscripcion = $contexto['suscripcion'];
+        $consumidor = $contexto['consumidor'];
 
-        // Verificar permisos
-        $consumidor_manager = Flavor_GC_Consumidor_Manager::get_instance();
-        $consumidor = $consumidor_manager->obtener_por_id($suscripcion->consumidor_id);
+        if (!$suscripcion) {
+            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-chat-ia')]);
+        }
 
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones'))) {
             wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
@@ -1002,7 +1091,7 @@ class Flavor_GC_Subscriptions {
      * AJAX: Cancelar suscripción
      */
     public function ajax_cancelar_suscripcion() {
-        check_ajax_referer('gc_suscripcion_nonce', 'nonce');
+        $this->verificar_nonce_ajax();
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
@@ -1010,11 +1099,13 @@ class Flavor_GC_Subscriptions {
 
         $suscripcion_id = isset($_POST['suscripcion_id']) ? absint($_POST['suscripcion_id']) : 0;
         $motivo = isset($_POST['motivo']) ? sanitize_text_field($_POST['motivo']) : '';
-        $suscripcion = $this->obtener_suscripcion($suscripcion_id);
+        $contexto = $this->resolver_suscripcion_ajax($suscripcion_id);
+        $suscripcion = $contexto['suscripcion'];
+        $consumidor = $contexto['consumidor'];
 
-        // Verificar permisos
-        $consumidor_manager = Flavor_GC_Consumidor_Manager::get_instance();
-        $consumidor = $consumidor_manager->obtener_por_id($suscripcion->consumidor_id);
+        if (!$suscripcion) {
+            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-chat-ia')]);
+        }
 
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones'))) {
             wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);
@@ -1033,7 +1124,7 @@ class Flavor_GC_Subscriptions {
      * AJAX: Cambiar frecuencia
      */
     public function ajax_cambiar_frecuencia() {
-        check_ajax_referer('gc_suscripcion_nonce', 'nonce');
+        $this->verificar_nonce_ajax();
 
         if (!is_user_logged_in()) {
             wp_send_json_error(['mensaje' => __('Debes iniciar sesión.', 'flavor-chat-ia')]);
@@ -1041,11 +1132,13 @@ class Flavor_GC_Subscriptions {
 
         $suscripcion_id = isset($_POST['suscripcion_id']) ? absint($_POST['suscripcion_id']) : 0;
         $frecuencia = isset($_POST['frecuencia']) ? sanitize_text_field($_POST['frecuencia']) : '';
-        $suscripcion = $this->obtener_suscripcion($suscripcion_id);
+        $contexto = $this->resolver_suscripcion_ajax($suscripcion_id);
+        $suscripcion = $contexto['suscripcion'];
+        $consumidor = $contexto['consumidor'];
 
-        // Verificar permisos
-        $consumidor_manager = Flavor_GC_Consumidor_Manager::get_instance();
-        $consumidor = $consumidor_manager->obtener_por_id($suscripcion->consumidor_id);
+        if (!$suscripcion) {
+            wp_send_json_error(['mensaje' => __('Suscripción no encontrada.', 'flavor-chat-ia')]);
+        }
 
         if (!$consumidor || ($consumidor->usuario_id !== get_current_user_id() && !current_user_can('gc_gestionar_suscripciones'))) {
             wp_send_json_error(['mensaje' => __('No tienes permisos.', 'flavor-chat-ia')]);

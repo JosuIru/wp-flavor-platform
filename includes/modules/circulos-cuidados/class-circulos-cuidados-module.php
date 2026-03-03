@@ -187,6 +187,17 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Callback de cron para recordatorios.
+     *
+     * Se deja como implementación segura mínima para evitar fatales
+     * cuando el evento programado se ejecuta antes de definirse una
+     * lógica de recordatorios más completa para el módulo.
+     */
+    public function enviar_recordatorios() {
+        do_action('flavor_log', 'circulos_cuidados_recordatorios_placeholder');
+    }
+
+    /**
      * Registra rutas REST API
      */
     public function register_rest_routes(): void {
@@ -1199,10 +1210,49 @@ KNOWLEDGE;
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'ver_circulos',
+            'listado' => 'ver_circulos',
+            'circulos' => 'ver_circulos',
+            'necesidades' => 'ver_necesidades',
+            'crear' => 'unirse_circulo',
+            'unirse' => 'unirse_circulo',
+            'mis_items' => 'ver_mis_cuidados',
+            'mis-circulos' => 'ver_mis_cuidados',
+            'registrar' => 'registrar_cuidado',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $method = 'action_' . $action_name;
+
+        if (method_exists($this, $method)) {
+            return $this->$method($params);
+        }
+
         return [
             'success' => false,
             'message' => __('Acción no implementada', 'flavor-chat-ia'),
         ];
+    }
+
+    private function action_ver_circulos($params) {
+        return ['success' => true, 'html' => do_shortcode('[circulos_cuidados]')];
+    }
+
+    private function action_ver_necesidades($params) {
+        return ['success' => true, 'html' => do_shortcode('[necesidades_cuidados]')];
+    }
+
+    private function action_unirse_circulo($params) {
+        return ['success' => true, 'html' => do_shortcode('[circulos_cuidados]')];
+    }
+
+    private function action_ver_mis_cuidados($params) {
+        return ['success' => true, 'html' => do_shortcode('[mis_cuidados]')];
+    }
+
+    private function action_registrar_cuidado($params) {
+        return ['success' => true, 'html' => do_shortcode('[mis_cuidados]')];
     }
 
     /**
@@ -1262,25 +1312,25 @@ KNOWLEDGE;
                 'necesidades' => [
                     'label'   => __('Necesidades', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-sos',
-                    'content' => 'shortcode:circulos_necesidades',
+                    'content' => 'shortcode:necesidades_cuidados',
                     'public'  => true,
                 ],
                 'unirse' => [
                     'label'      => __('Unirse', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-plus-alt',
-                    'content'    => 'shortcode:circulos_unirse',
+                    'content'    => 'shortcode:circulos_cuidados',
                     'requires_login' => true,
                 ],
                 'mis-circulos' => [
                     'label'      => __('Mis círculos', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-admin-users',
-                    'content'    => 'shortcode:circulos_mis_circulos',
+                    'content'    => 'shortcode:mis_cuidados',
                     'requires_login' => true,
                 ],
                 'registrar-cuidado' => [
                     'label'      => __('Registrar cuidado', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-edit',
-                    'content'    => 'shortcode:circulos_registrar_cuidado',
+                    'content'    => 'shortcode:mis_cuidados',
                     'requires_login' => true,
                 ],
             ],

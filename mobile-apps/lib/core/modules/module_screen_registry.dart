@@ -29,6 +29,7 @@ import '../../features/modules/biodiversidad_local/biodiversidad_local_screen.da
 import '../../features/modules/circulos_cuidados/circulos_cuidados_screen.dart';
 import '../../features/modules/economia_don/economia_don_screen.dart';
 import '../../features/modules/economia_suficiencia/economia_suficiencia_screen.dart';
+import '../../features/modules/energia_comunitaria/energia_comunitaria_screen.dart';
 import '../../features/modules/huella_ecologica/huella_ecologica_screen.dart';
 import '../../features/modules/justicia_restaurativa/justicia_restaurativa_screen.dart';
 import '../../features/modules/saberes_ancestrales/saberes_ancestrales_screen.dart';
@@ -94,6 +95,7 @@ class ModuleScreenRegistry {
     loader.registerScreenBuilder('circulos-cuidados', (_) => const CirculosCuidadosScreen());
     loader.registerScreenBuilder('economia-don', (_) => const EconomiaDonScreen());
     loader.registerScreenBuilder('economia-suficiencia', (_) => const EconomiaSuficienciaScreen());
+    loader.registerScreenBuilder('energia-comunitaria', (_) => const EnergiaComunitariaScreen());
     loader.registerScreenBuilder('huella-ecologica', (_) => const HuellaEcologicaScreen());
     loader.registerScreenBuilder('justicia-restaurativa', (_) => const JusticiaRestaurativaScreen());
     loader.registerScreenBuilder('saberes-ancestrales', (_) => const SaberesAncestralesScreen());
@@ -137,6 +139,7 @@ class ModuleScreenRegistry {
     loader.registerScreenBuilder('circulos_cuidados', (_) => const CirculosCuidadosScreen());
     loader.registerScreenBuilder('economia_don', (_) => const EconomiaDonScreen());
     loader.registerScreenBuilder('economia_suficiencia', (_) => const EconomiaSuficienciaScreen());
+    loader.registerScreenBuilder('energia_comunitaria', (_) => const EnergiaComunitariaScreen());
     loader.registerScreenBuilder('huella_ecologica', (_) => const HuellaEcologicaScreen());
     loader.registerScreenBuilder('justicia_restaurativa', (_) => const JusticiaRestaurativaScreen());
     loader.registerScreenBuilder('saberes_ancestrales', (_) => const SaberesAncestralesScreen());

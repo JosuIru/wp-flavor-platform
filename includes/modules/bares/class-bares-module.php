@@ -1056,6 +1056,23 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = [
+            'listar' => 'listar_bares',
+            'listado' => 'listar_bares',
+            'buscar' => 'buscar_bares',
+            'detalle' => 'ver_bar',
+            'ver' => 'ver_bar',
+            'carta' => 'ver_carta',
+            'crear' => 'reservar',
+            'reservar' => 'reservar',
+            'mis_items' => 'mis_reservas',
+            'mis-reservas' => 'mis_reservas',
+            'cancelar' => 'cancelar_reserva',
+            'valorar' => 'valorar',
+            'stats' => 'estadisticas',
+        ];
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         $metodo_accion = 'action_' . $nombre_accion;
 
         if (method_exists($this, $metodo_accion)) {
@@ -1911,6 +1928,69 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         ];
     }
 
+    /**
+     * Configuración del renderer para navegación moderna del portal.
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'bares',
+            'title'    => __('Bares', 'flavor-chat-ia'),
+            'subtitle' => __('Explora locales, cartas y reservas', 'flavor-chat-ia'),
+            'icon'     => '🍽️',
+            'color'    => 'amber',
+
+            'database' => [
+                'table'         => 'flavor_bares',
+                'status_field'  => 'estado',
+                'order_by'      => 'created_at DESC',
+                'filter_fields' => ['tipo', 'estado'],
+            ],
+
+            'fields' => [
+                'titulo'      => 'nombre',
+                'descripcion' => 'descripcion',
+                'estado'      => 'estado',
+                'imagen'      => 'imagen',
+                'tipo'        => 'tipo',
+                'ubicacion'   => 'direccion',
+            ],
+
+            'tabs' => [
+                'bares' => [
+                    'label'   => __('Bares', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-food',
+                    'content' => 'template:_archive.php',
+                ],
+                'mapa' => [
+                    'label'   => __('Mapa', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-location',
+                    'content' => '[flavor_module_listing module="bares" action="mapa"]',
+                    'public'  => true,
+                ],
+                'reservar' => [
+                    'label'   => __('Reservar', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-calendar-alt',
+                    'content' => '[flavor_module_form module="bares" action="reservar"]',
+                    'public'  => true,
+                ],
+                'mis-reservas' => [
+                    'label'          => __('Mis reservas', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-tickets-alt',
+                    'content'        => 'callback:render_tab_mis_reservas',
+                    'requires_login' => true,
+                ],
+                'mis-valoraciones' => [
+                    'label'          => __('Mis reseñas', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-star-filled',
+                    'content'        => 'callback:render_tab_mis_valoraciones',
+                    'requires_login' => true,
+                ],
+            ],
+        ];
+    }
+
     // =========================================================
     // WEB COMPONENTS
     // =========================================================
@@ -2162,6 +2242,59 @@ KNOWLEDGE;
             'cocteleria'  => '#EC4899',
         ];
         return $mapa_colores[$tipo_establecimiento] ?? '#6B7280';
+    }
+
+    /**
+     * Renderiza la pestaña de reservas reutilizando el dashboard del módulo.
+     *
+     * @return string
+     */
+    public function render_tab_mis_reservas() {
+        $dashboard_tab = $this->get_dashboard_tab_instance();
+
+        if (!$dashboard_tab || !method_exists($dashboard_tab, 'render_tab_mis_reservas')) {
+            return '<p class="fmd-empty">' . esc_html__('No hay contenido disponible', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        $dashboard_tab->render_tab_mis_reservas();
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza la pestaña de valoraciones reutilizando el dashboard del módulo.
+     *
+     * @return string
+     */
+    public function render_tab_mis_valoraciones() {
+        $dashboard_tab = $this->get_dashboard_tab_instance();
+
+        if (!$dashboard_tab || !method_exists($dashboard_tab, 'render_tab_mis_valoraciones')) {
+            return '<p class="fmd-empty">' . esc_html__('No hay contenido disponible', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        $dashboard_tab->render_tab_mis_valoraciones();
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene la instancia del dashboard tab del módulo.
+     *
+     * @return object|null
+     */
+    private function get_dashboard_tab_instance() {
+        $dashboard_file = dirname(__FILE__) . '/class-bares-dashboard-tab.php';
+
+        if (!class_exists('Flavor_Bares_Dashboard_Tab') && file_exists($dashboard_file)) {
+            require_once $dashboard_file;
+        }
+
+        if (!class_exists('Flavor_Bares_Dashboard_Tab')) {
+            return null;
+        }
+
+        return Flavor_Bares_Dashboard_Tab::get_instance();
     }
 
     /**

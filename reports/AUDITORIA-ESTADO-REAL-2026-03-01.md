@@ -3,7 +3,7 @@
 **Fecha:** 2026-03-01
 **Alcance:** revision estatica del plugin `flavor-chat-ia`
 **Version declarada del plugin:** 3.1.1
-**Estado general:** funcional parcial con deuda estructural relevante
+**Estado general:** funcional parcial con deuda estructural relevante, pero con saneamiento aplicado sobre desajustes criticos de tablas e integraciones
 
 ## Resumen Ejecutivo
 
@@ -45,17 +45,17 @@ En `flavor-chat-ia.php` aparecen cargas duplicadas de clases centrales como:
 
 `require_once` evita doble definicion, pero el problema de fondo sigue ahi: bootstrap dificil de mantener, alto acoplamiento y mayor riesgo de efectos laterales.
 
-### 3. La capa de base de datos esta desalineada en varios modulos
+### 3. La capa de base de datos arrastraba desalineaciones criticas y parte de ellas se han corregido en esta pasada
 
-Este es el riesgo tecnico mas importante detectado.
+Este era el riesgo tecnico mas importante detectado.
 
-Casos claros:
+Casos revisados:
 
-- `presupuestos-participativos` usa `flavor_presupuestos_proyectos` en el modulo e integraciones, pero su instalador crea `flavor_pp_proyectos` y `flavor_pp_propuestas`
-- `reservas` trabaja con `flavor_reservas_recursos`, pero su instalador solo crea `flavor_reservas`
-- `reciclaje` referencia `flavor_puntos_reciclaje` en parte del modulo, pero crea `flavor_reciclaje_puntos`
+- `presupuestos-participativos` ya ha sido alineado a `flavor_pp_proyectos` en modulo, assets frontend e integraciones
+- `reservas` ya crea tanto `flavor_reservas` como `flavor_reservas_recursos`, y su frontend acepta el contrato antiguo y el nuevo
+- `reciclaje` ya ha sido alineado a `flavor_reciclaje_puntos` en modulo, template e integraciones
 
-Esto indica que hay modulos que pueden renderizar UI o registrar integraciones sobre tablas que no coinciden con las creadas por sus propios instaladores.
+Persisten riesgos estructurales en la capa de instalacion porque sigue habiendo logica de tablas repartida entre instalador central, instaladores de modulo y auto-creacion por `init`.
 
 ### 4. Hay bastante implementacion real, pero no una estandarizacion consistente
 
@@ -87,7 +87,7 @@ Recuento estatico sobre `includes/modules`:
 | Metrica | Valor |
 |---------|-------|
 | Modulos con clase principal | 59 |
-| Controladores frontend | 40 |
+| Controladores frontend | 41 |
 | `install.php` por modulo | 17 |
 | Modulos con `views/` no vacio | 38 |
 | Modulos con `templates/` no vacio | 31 |
@@ -210,8 +210,51 @@ La base existe y no es meramente documental:
 ### Riesgos de BD visibles en codigo
 
 - esquemas duplicados o paralelos para una misma capacidad
-- nombres de tabla incompatibles entre modulo, integracion e instalador
+- instalacion repartida en varias capas con distinta autoridad efectiva
 - dificultad para saber si la tabla correcta se crea en activacion o solo cuando el modulo intenta autoactivarse
+
+## Correcciones Aplicadas en Esta Pasada
+
+- `reservas`: el instalador ahora crea y actualiza `flavor_reservas` y `flavor_reservas_recursos`; el modulo valida ambas tablas antes de activarse; el frontend corrige la ruta de assets y acepta `fecha`/`notas` como compatibilidad con formularios legacy
+- `presupuestos-participativos`: integraciones corregidas a `flavor_pp_proyectos`; el frontend corrige la base de assets y usa los nombres de archivo reales `presupuestos.css` y `presupuestos.js`
+- `reciclaje`: referencias corregidas a `flavor_reciclaje_puntos` en modulo, template e integraciones
+
+## Riesgo 403 y Carga de Recursos
+
+Se ha añadido una auditoria especifica en `reports/AUDITORIA-403-MODULOS-2026-03-01.md`.
+
+Resumen:
+
+- se detectan 18 controladores frontend con patrones de construccion de URL de assets potencialmente fragiles desde `frontend/`
+- el arbol de modulos contiene 622 validaciones `check_ajax_referer(...)` y 628 `permission_callback`, por lo que un 403 en runtime suele venir de nonce, permisos o ruta de recurso mal resuelta
+- en esta pasada se han corregido los casos claros de `reservas` y `presupuestos-participativos`
+
+## Bloqueos Runtime Detectados en Logs
+
+Aunque no se ha podido hacer reproduccion HTTP directa desde este entorno, los logs del sitio muestran errores que pueden romper rutas completas del portal aunque el modulo solicitado sea otro:
+
+- `participacion`: redeclaracion de `get_renderer_config()`
+- `espacios-comunes`: llamada a `registrar_en_panel_unificado()` reportada como inexistente en runtime
+- `circulos-cuidados`: cron `cc_recordatorio_cuidados` apuntando a `enviar_recordatorios()` inexistente
+- `ayuda-vecinal`: flujo runtime que intenta invocar `Flavor_Ayuda_Vecinal_Dashboard_Widget::get_instance()`
+- `comunidades`: redeclaracion de `get_renderer_config()` en logs
+- `woocommerce`: error de sintaxis reportado en logs historicos del 1 de marzo de 2026
+
+Correccion aplicada en esta pasada:
+
+- `circulos-cuidados` ahora define `enviar_recordatorios()` con implementacion segura minima para eliminar ese fatal de cron
+- `ayuda-vecinal` ahora define `get_instance()` en su dashboard widget para compatibilidad con runtime
+- `espacios-comunes` incluye una implementacion explicita de `registrar_en_panel_unificado()` como blindaje adicional
+
+Validacion del árbol actual:
+
+- `woocommerce` pasa validacion sintactica con `php -l`
+- `comunidades` pasa validacion sintactica y solo muestra una definicion actual de `get_renderer_config()`
+
+Implicacion:
+
+- la auditoria de rutas y 403 no puede limitarse al modulo visible en la URL; el bootstrap compartido del plugin hace que un modulo roto degrade el portal completo
+- parte de los errores vistos en logs no se corresponden ya con el árbol actual y pueden requerir reinicio de Local, limpieza de OPcache o verificacion directa sobre la instancia runtime
 
 ## Componentes y Subsistemas
 
@@ -266,4 +309,3 @@ La recomendacion es tratar este informe como documento canonico inicial y recons
 1. contratos de tablas
 2. contratos de modulo completo
 3. documentacion viva y unica
-

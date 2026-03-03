@@ -32,6 +32,19 @@ class Flavor_Frontend_Assets {
     }
 
     /**
+     * Detecta si la petición actual pertenece al portal dinámico.
+     */
+    private function is_dynamic_portal_request() {
+        if (is_admin()) {
+            return false;
+        }
+
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
+
+        return strpos($request_uri, '/mi-portal') !== false;
+    }
+
+    /**
      * Constructor privado
      */
     private function __construct() {
@@ -44,6 +57,12 @@ class Flavor_Frontend_Assets {
     public function enqueue_assets() {
         // Solo cargar en páginas que lo necesiten (frontend)
         if (is_admin()) {
+            return;
+        }
+
+        // Las rutas del portal dinámico ya gestionan sus assets por módulo y no
+        // deben volver a escanear todo el contenido de la página.
+        if ($this->is_dynamic_portal_request()) {
             return;
         }
 

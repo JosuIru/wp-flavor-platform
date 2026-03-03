@@ -515,6 +515,30 @@ function imprimirUsuario(usuarioId) {
 }
 
 jQuery(document).ready(function($) {
+    var $notice = $('<div class="gc-inline-notice"></div>').insertBefore('.wrap h1').hide();
+
+    function gcPedidosAviso(mensaje, tipo) {
+        $notice.removeClass('success error').addClass(tipo || 'error').text(mensaje).show();
+    }
+
+    function gcPedidosConfirmar(mensaje, onConfirm) {
+        $notice.removeClass('success error').addClass('error').html(
+            '<p>' + mensaje + '</p>' +
+            '<div class="gc-inline-confirm-actions">' +
+                '<button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button>' +
+                '<button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button>' +
+            '</div>'
+        ).show();
+
+        $notice.off('click', '.gc-confirmar').on('click', '.gc-confirmar', function() {
+            $notice.hide().empty();
+            onConfirm();
+        });
+
+        $notice.off('click', '.gc-cancelar').on('click', '.gc-cancelar', function() {
+            $notice.hide().empty();
+        });
+    }
 
     // Toggle de tarjetas de usuario (expandir/colapsar)
     $('.gc-usuario-header').on('click', function(e) {
@@ -591,13 +615,13 @@ jQuery(document).ready(function($) {
                         $select.css('box-shadow', '');
                     }, 1000);
                 } else {
-                    alert(response.data || '<?php echo esc_js(__('Error al actualizar', 'flavor-chat-ia')); ?>');
+                    gcPedidosAviso(response.data || '<?php echo esc_js(__('Error al actualizar', 'flavor-chat-ia')); ?>', 'error');
                     $select.val(estadoOriginal);
                     aplicarColorSelect($select);
                 }
             },
             error: function() {
-                alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                gcPedidosAviso('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
                 $select.val(estadoOriginal);
                 aplicarColorSelect($select);
             },
@@ -613,7 +637,7 @@ jQuery(document).ready(function($) {
         var $btn = $(this);
         var $card = $btn.closest('.gc-usuario-card');
 
-        if (confirm('<?php echo esc_js(__('¿Marcar todos los pedidos de este usuario como completados?', 'flavor-chat-ia')); ?>')) {
+        gcPedidosConfirmar('<?php echo esc_js(__('¿Marcar todos los pedidos de este usuario como completados?', 'flavor-chat-ia')); ?>', function() {
             $btn.prop('disabled', true);
 
             $.ajax({
@@ -634,17 +658,30 @@ jQuery(document).ready(function($) {
                         });
                         $card.find('.gc-usuario-header').css('background', 'linear-gradient(135deg, #00a32a 0%, #008a20 100%)');
                         $btn.html('<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Preparado', 'flavor-chat-ia')); ?>');
+                        gcPedidosAviso('<?php echo esc_js(__('Pedidos marcados como completados.', 'flavor-chat-ia')); ?>', 'success');
                     } else {
-                        alert(response.data || '<?php echo esc_js(__('Error al actualizar', 'flavor-chat-ia')); ?>');
+                        gcPedidosAviso(response.data || '<?php echo esc_js(__('Error al actualizar', 'flavor-chat-ia')); ?>', 'error');
                         $btn.prop('disabled', false);
                     }
                 },
                 error: function() {
-                    alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                    gcPedidosAviso('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
                     $btn.prop('disabled', false);
                 }
             });
-        }
+        });
     });
 });
 </script>
+
+<style>
+.gc-inline-notice {
+    margin: 12px 0 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+.gc-inline-notice.error { background: #fee2e2; color: #991b1b; }
+.gc-inline-notice.success { background: #dcfce7; color: #166534; }
+.gc-inline-confirm-actions { display:flex; gap:8px; margin-top:10px; }
+</style>

@@ -43,6 +43,7 @@ class Flavor_Facturas_Dashboard_Tab {
     public function render_tab() {
         $datos = $this->obtener_datos_usuario();
         $subtab = isset($_GET['subtab']) ? sanitize_text_field($_GET['subtab']) : 'lista';
+        $factura_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
 
         ?>
         <div class="flavor-facturas-dashboard">
@@ -65,8 +66,14 @@ class Flavor_Facturas_Dashboard_Tab {
             <div class="flavor-dashboard-content">
                 <?php
                 switch ($subtab) {
+                    case 'ver':
+                        $this->render_native_view('flavor_detalle_factura', ['id' => $factura_id], 'Factura no especificada.');
+                        break;
+                    case 'pdf':
+                        $this->render_pdf_factura($factura_id);
+                        break;
                     case 'nueva':
-                        $this->render_nueva_factura();
+                        $this->render_native_view('flavor_nueva_factura');
                         break;
                     case 'pagos':
                         $this->render_pagos($datos);
@@ -81,6 +88,26 @@ class Flavor_Facturas_Dashboard_Tab {
             </div>
         </div>
         <?php
+    }
+
+    private function render_native_view($shortcode, $atts = [], $empty_message = '') {
+        if (!empty($atts['id']) || empty($atts)) {
+            $pairs = [];
+            foreach ($atts as $key => $value) {
+                if ($value === '' || $value === 0 || $value === null) {
+                    continue;
+                }
+                $pairs[] = sprintf('%s="%s"', sanitize_key($key), esc_attr($value));
+            }
+
+            $shortcode_tag = sprintf('[%s%s]', sanitize_key($shortcode), $pairs ? ' ' . implode(' ', $pairs) : '');
+            echo do_shortcode($shortcode_tag);
+            return;
+        }
+
+        if ($empty_message) {
+            printf('<div class="notice notice-warning inline"><p>%s</p></div>', esc_html($empty_message));
+        }
     }
 
     private function render_lista_facturas($datos) {
@@ -198,11 +225,11 @@ class Flavor_Facturas_Dashboard_Tab {
                                     <a href="?tab=facturas&subtab=ver&id=<?php echo $factura->id; ?>" class="flavor-btn flavor-btn-sm" title="Ver">
                                         <span class="dashicons dashicons-visibility"></span>
                                     </a>
-                                    <a href="?tab=facturas&subtab=pdf&id=<?php echo $factura->id; ?>" class="flavor-btn flavor-btn-sm" title="PDF">
+                                    <a href="?tab=facturas&subtab=pdf&id=<?php echo $factura->id; ?>" class="flavor-btn flavor-btn-sm btn-descargar-pdf" data-factura-id="<?php echo $factura->id; ?>" title="PDF">
                                         <span class="dashicons dashicons-pdf"></span>
                                     </a>
                                     <?php if ($factura->estado === 'enviada'): ?>
-                                        <button class="flavor-btn flavor-btn-sm flavor-btn-success marcar-pagada" data-id="<?php echo $factura->id; ?>" title="Marcar pagada">
+                                        <button class="flavor-btn flavor-btn-sm flavor-btn-success marcar-pagada btn-registrar-pago" data-id="<?php echo $factura->id; ?>" data-factura-id="<?php echo $factura->id; ?>" data-pendiente="<?php echo esc_attr(max(0, (float) $factura->total - (float) ($factura->total_pagado ?? 0))); ?>" title="Registrar pago">
                                             <span class="dashicons dashicons-yes"></span>
                                         </button>
                                     <?php endif; ?>
@@ -225,16 +252,16 @@ class Flavor_Facturas_Dashboard_Tab {
         <div class="nueva-factura-form">
             <h3>Nueva factura</h3>
 
-            <form id="form-nueva-factura" method="post">
-                <?php wp_nonce_field('flavor_nueva_factura', 'factura_nonce'); ?>
+            <form id="form-nueva-factura" class="factura-formulario" method="post">
+                <?php wp_nonce_field('flavor_facturas_nonce', 'nonce'); ?>
 
                 <!-- Datos básicos -->
                 <div class="factura-seccion">
                     <h4>Datos de la factura</h4>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Serie</label>
-                            <select name="serie">
+                    <div class="form-group">
+                        <label>Serie</label>
+                        <select name="serie">
                                 <option value="<?php echo esc_attr($config['serie_default']); ?>">
                                     <?php echo esc_html($config['serie_default']); ?>
                                 </option>
@@ -346,7 +373,7 @@ class Flavor_Facturas_Dashboard_Tab {
                 <div class="factura-seccion">
                     <div class="form-group">
                         <label>Notas / Observaciones</label>
-                        <textarea name="notas" rows="3"></textarea>
+                        <textarea name="observaciones" rows="3"></textarea>
                     </div>
                 </div>
 
@@ -473,6 +500,143 @@ class Flavor_Facturas_Dashboard_Tab {
         <?php
     }
 
+    private function render_ver_factura($factura_id) {
+        global $wpdb;
+        $tabla_facturas = $wpdb->prefix . 'flavor_facturas';
+        $tabla_lineas = $wpdb->prefix . 'flavor_facturas_lineas';
+        $tabla_pagos = $wpdb->prefix . 'flavor_facturas_pagos';
+
+        if (!$factura_id) {
+            echo '<div class="flavor-error">Factura no especificada</div>';
+            return;
+        }
+
+        $factura = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_facturas WHERE id = %d",
+            $factura_id
+        ));
+
+        if (!$factura) {
+            echo '<div class="flavor-error">Factura no encontrada</div>';
+            return;
+        }
+
+        $lineas = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_lineas WHERE factura_id = %d ORDER BY id ASC",
+            $factura_id
+        ));
+        $pagos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_pagos WHERE factura_id = %d ORDER BY fecha_pago DESC",
+            $factura_id
+        ));
+        ?>
+        <div class="factura-detalle">
+            <div class="flavor-card">
+                <h3>Factura <?php echo esc_html($factura->numero_factura); ?></h3>
+                <div class="stats-grid">
+                    <div class="stat-item"><span class="stat-label">Cliente</span><span class="stat-valor"><?php echo esc_html($factura->cliente_nombre); ?></span></div>
+                    <div class="stat-item"><span class="stat-label">Estado</span><span class="stat-valor"><?php echo esc_html(ucfirst($factura->estado)); ?></span></div>
+                    <div class="stat-item"><span class="stat-label">Emisión</span><span class="stat-valor"><?php echo esc_html(date_i18n('j M Y', strtotime($factura->fecha_emision))); ?></span></div>
+                    <div class="stat-item"><span class="stat-label">Total</span><span class="stat-valor"><?php echo esc_html(number_format((float) $factura->total, 2, ',', '.') . '€'); ?></span></div>
+                </div>
+
+                <h4>Conceptos</h4>
+                <?php if (empty($lineas)): ?>
+                    <p>No hay líneas registradas.</p>
+                <?php else: ?>
+                    <table class="flavor-table">
+                        <thead>
+                            <tr><th>Concepto</th><th>Cantidad</th><th>Precio</th><th>IVA</th><th>Total</th></tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($lineas as $linea): ?>
+                                <tr>
+                                    <td><?php echo esc_html($linea->concepto); ?></td>
+                                    <td><?php echo esc_html($linea->cantidad); ?></td>
+                                    <td><?php echo esc_html(number_format((float) $linea->precio_unitario, 2, ',', '.') . '€'); ?></td>
+                                    <td><?php echo esc_html((float) $linea->iva_porcentaje . '%'); ?></td>
+                                    <td><?php echo esc_html(number_format((float) $linea->total_linea, 2, ',', '.') . '€'); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+
+                <h4>Pagos</h4>
+                <?php if (empty($pagos)): ?>
+                    <p>No hay pagos asociados.</p>
+                <?php else: ?>
+                    <table class="flavor-table">
+                        <thead>
+                            <tr><th>Fecha</th><th>Importe</th><th>Método</th><th>Referencia</th></tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($pagos as $pago): ?>
+                                <tr>
+                                    <td><?php echo esc_html(date_i18n('j M Y', strtotime($pago->fecha_pago))); ?></td>
+                                    <td><?php echo esc_html(number_format((float) $pago->importe, 2, ',', '.') . '€'); ?></td>
+                                    <td><?php echo esc_html(ucfirst($pago->metodo_pago)); ?></td>
+                                    <td><?php echo esc_html($pago->referencia); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+
+                <div class="form-actions">
+                    <a href="?tab=facturas&subtab=pdf&id=<?php echo esc_attr($factura->id); ?>" class="flavor-btn flavor-btn-primary">Generar PDF</a>
+                    <a href="?tab=facturas&subtab=lista" class="flavor-btn">Volver</a>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    private function render_pdf_factura($factura_id) {
+        if (!$factura_id) {
+            echo '<div class="flavor-error">Factura no especificada</div>';
+            return;
+        }
+
+        $module = null;
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $loader = Flavor_Chat_Module_Loader::get_instance();
+            if ($loader && method_exists($loader, 'get_module')) {
+                $module = $loader->get_module('facturas');
+            }
+        }
+
+        if (!$module || !method_exists($module, 'generar_pdf')) {
+            echo '<div class="flavor-error">La generación de PDF no está disponible.</div>';
+            return;
+        }
+
+        $resultado = $module->generar_pdf($factura_id);
+
+        if (is_wp_error($resultado)) {
+            echo '<div class="flavor-error">' . esc_html($resultado->get_error_message()) . '</div>';
+            return;
+        }
+
+        $pdf_url = $resultado['url'] ?? '';
+        ?>
+        <div class="factura-pdf">
+            <div class="flavor-card">
+                <h3>PDF generado</h3>
+                <?php if ($pdf_url): ?>
+                    <p>El PDF de la factura está listo.</p>
+                    <div class="form-actions">
+                        <a href="<?php echo esc_url($pdf_url); ?>" target="_blank" rel="noopener noreferrer" class="flavor-btn flavor-btn-primary">Abrir PDF</a>
+                        <a href="?tab=facturas&subtab=ver&id=<?php echo esc_attr($factura_id); ?>" class="flavor-btn">Volver a factura</a>
+                    </div>
+                <?php else: ?>
+                    <div class="flavor-error">No se pudo obtener la URL del PDF generado.</div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+    }
+
     private function render_configuracion($datos) {
         $config = $this->obtener_configuracion();
         ?>
@@ -480,7 +644,7 @@ class Flavor_Facturas_Dashboard_Tab {
             <h3>Configuración de facturación</h3>
 
             <form id="form-config-facturas" method="post">
-                <?php wp_nonce_field('flavor_config_facturas', 'config_nonce'); ?>
+                <?php wp_nonce_field('facturas_config', 'facturas_config_nonce'); ?>
 
                 <!-- Datos empresa -->
                 <div class="config-seccion">

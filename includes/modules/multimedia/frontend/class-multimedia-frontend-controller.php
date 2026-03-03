@@ -238,15 +238,15 @@ class Flavor_Multimedia_Frontend_Controller {
                     <span class="dashicons dashicons-upload"></span>
                     <?php esc_html_e('Subir', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/mis-fotos/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/mi-galeria/')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-format-gallery"></span>
                     <?php esc_html_e('Mis Fotos', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/albumes/')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/mi-galeria/?tab=albumes')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-images-alt"></span>
                     <?php esc_html_e('Mis Álbumes', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/multimedia/')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/galeria/')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-admin-site"></span>
                     <?php esc_html_e('Galería', 'flavor-chat-ia'); ?>
                 </a>
@@ -599,7 +599,7 @@ class Flavor_Multimedia_Frontend_Controller {
             <?php else: ?>
                 <div class="flavor-albumes-grid">
                     <?php foreach ($albumes as $album): ?>
-                        <a href="<?php echo esc_url(home_url('/multimedia/album/' . $album->id . '/')); ?>" class="flavor-album-card">
+                        <a href="<?php echo esc_url(add_query_arg('album_id', $album->id, home_url('/mi-portal/multimedia/mi-galeria/'))); ?>" class="flavor-album-card">
                             <div class="flavor-album-cover">
                                 <?php if ($album->portada_url): ?>
                                     <img src="<?php echo esc_url($album->portada_url); ?>" alt="">

@@ -1532,6 +1532,22 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
      * Ejecutar acción del módulo
      */
     public function execute_action($action, $data = []) {
+        $aliases = [
+            'listar' => 'listar_proyectos',
+            'listado' => 'listar_proyectos',
+            'explorar' => 'listar_proyectos',
+            'buscar' => 'buscar',
+            'crear' => 'crear_proyecto',
+            'nuevo' => 'crear_proyecto',
+            'detalle' => 'ver_proyecto',
+            'ver' => 'ver_proyecto',
+            'contactos' => 'listar_contactos',
+            'contactar' => 'listar_contactos',
+            'mis_items' => 'listar_proyectos',
+            'stats' => 'estadisticas',
+        ];
+
+        $action = $aliases[$action] ?? $action;
         $nombre_metodo_accion = 'action_' . $action;
 
         if (method_exists($this, $nombre_metodo_accion)) {

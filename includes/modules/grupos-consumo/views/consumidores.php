@@ -57,9 +57,9 @@ $todos_los_grupos = get_posts([
     <h1 class="wp-heading-inline">
         <?php _e('Gestión de Consumidores', 'flavor-chat-ia'); ?>
     </h1>
-    <a href="#" class="page-title-action gc-modal-trigger" data-modal="modal-nuevo-consumidor">
+    <button type="button" class="page-title-action gc-modal-trigger" data-modal="modal-nuevo-consumidor">
         <?php _e('Añadir Consumidor', 'flavor-chat-ia'); ?>
-    </a>
+    </button>
     <hr class="wp-header-end">
 
     <!-- Selector de Grupo -->
@@ -259,30 +259,30 @@ $todos_los_grupos = get_posts([
                                     <hr>
                                     <!-- Acciones de estado -->
                                     <?php if ($consumidor->estado === 'pendiente'): ?>
-                                        <a href="#" class="gc-accion-estado" data-estado="activo">
+                                        <button type="button" class="gc-accion-estado" data-estado="activo">
                                             <span class="dashicons dashicons-yes"></span> <?php _e('Aprobar', 'flavor-chat-ia'); ?>
-                                        </a>
+                                        </button>
                                     <?php endif; ?>
                                     <?php if ($consumidor->estado === 'activo'): ?>
-                                        <a href="#" class="gc-accion-estado" data-estado="suspendido">
+                                        <button type="button" class="gc-accion-estado" data-estado="suspendido">
                                             <span class="dashicons dashicons-warning"></span> <?php _e('Suspender', 'flavor-chat-ia'); ?>
-                                        </a>
+                                        </button>
                                     <?php endif; ?>
                                     <?php if ($consumidor->estado === 'suspendido'): ?>
-                                        <a href="#" class="gc-accion-estado" data-estado="activo">
+                                        <button type="button" class="gc-accion-estado" data-estado="activo">
                                             <span class="dashicons dashicons-yes"></span> <?php _e('Reactivar', 'flavor-chat-ia'); ?>
-                                        </a>
+                                        </button>
                                     <?php endif; ?>
                                     <?php if ($consumidor->estado !== 'baja'): ?>
-                                        <a href="#" class="gc-accion-estado gc-accion-peligro" data-estado="baja">
+                                        <button type="button" class="gc-accion-estado gc-accion-peligro" data-estado="baja">
                                             <span class="dashicons dashicons-dismiss"></span> <?php _e('Dar de Baja', 'flavor-chat-ia'); ?>
-                                        </a>
+                                        </button>
                                     <?php endif; ?>
                                     <hr>
                                     <!-- Ver detalles y pedidos -->
-                                    <a href="#" class="gc-ver-detalles" data-consumidor-id="<?php echo esc_attr($consumidor->id); ?>">
+                                    <button type="button" class="gc-ver-detalles" data-consumidor-id="<?php echo esc_attr($consumidor->id); ?>">
                                         <span class="dashicons dashicons-visibility"></span> <?php _e('Ver Detalles', 'flavor-chat-ia'); ?>
-                                    </a>
+                                    </button>
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=gc-pedidos&usuario_id=' . $consumidor->usuario_id)); ?>">
                                         <span class="dashicons dashicons-cart"></span> <?php _e('Ver Pedidos', 'flavor-chat-ia'); ?>
                                     </a>
@@ -423,6 +423,24 @@ $todos_los_grupos = get_posts([
 
 <script>
 jQuery(document).ready(function($) {
+    function gcAviso(mensaje, tipo) {
+        tipo = tipo || 'error';
+        $('.gc-inline-notice').remove();
+        $('<div class="gc-inline-notice gc-inline-notice-' + tipo + '"><p>' + mensaje + '</p></div>').insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
+    }
+
+    function gcConfirmar(mensaje, onConfirm) {
+        $('.gc-inline-notice').remove();
+        var $confirm = $('<div class="gc-inline-notice gc-inline-notice-error"><p>' + mensaje + '</p><div class="gc-inline-confirm-actions"><button type="button" class="button button-primary gc-confirmar"><?php echo esc_js(__('Confirmar', 'flavor-chat-ia')); ?></button><button type="button" class="button gc-cancelar"><?php echo esc_js(__('Cancelar', 'flavor-chat-ia')); ?></button></div></div>').insertAfter('.wrap h1.wp-heading-inline').hide().fadeIn(150);
+        $confirm.on('click', '.gc-confirmar', function() {
+            $confirm.remove();
+            onConfirm();
+        });
+        $confirm.on('click', '.gc-cancelar', function() {
+            $confirm.remove();
+        });
+    }
+
     // Dropdown acciones
     $('.gc-acciones-btn').on('click', function(e) {
         e.stopPropagation();
@@ -442,22 +460,27 @@ jQuery(document).ready(function($) {
         var consumidorId = $row.data('consumidor-id');
         var nuevoEstado = $(this).data('estado');
 
-        if (nuevoEstado === 'baja' && !confirm('<?php _e('¿Dar de baja a este consumidor?', 'flavor-chat-ia'); ?>')) {
+        var ejecutarCambioEstado = function() {
+            $.post(ajaxurl, {
+                action: 'gc_cambiar_estado_consumidor',
+                consumidor_id: consumidorId,
+                estado: nuevoEstado,
+                nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
+            }, function(response) {
+                if (response.success) {
+                    location.reload();
+                } else {
+                    gcAviso(response.data.mensaje || response.data.error, 'error');
+                }
+            });
+        };
+
+        if (nuevoEstado === 'baja') {
+            gcConfirmar('<?php echo esc_js(__('¿Dar de baja a este consumidor?', 'flavor-chat-ia')); ?>', ejecutarCambioEstado);
             return;
         }
 
-        $.post(ajaxurl, {
-            action: 'gc_cambiar_estado_consumidor',
-            consumidor_id: consumidorId,
-            estado: nuevoEstado,
-            nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
-        }, function(response) {
-            if (response.success) {
-                location.reload();
-            } else {
-                alert(response.data.mensaje || response.data.error);
-            }
-        });
+        ejecutarCambioEstado();
     });
 
     // Cambiar roles (múltiples)
@@ -494,7 +517,7 @@ jQuery(document).ready(function($) {
             nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
         }, function(response) {
             if (!response.success) {
-                alert(response.data.mensaje || response.data.error);
+                gcAviso(response.data.mensaje || response.data.error, 'error');
                 location.reload();
             }
         });
@@ -526,7 +549,7 @@ jQuery(document).ready(function($) {
             if (response.success) {
                 location.reload();
             } else {
-                alert(response.data.mensaje || response.data.error);
+                gcAviso(response.data.mensaje || response.data.error, 'error');
             }
         });
     });
@@ -637,7 +660,7 @@ jQuery(document).ready(function($) {
         });
 
         if (usuarios.length === 0) {
-            alert('<?php _e('Selecciona al menos un usuario', 'flavor-chat-ia'); ?>');
+            gcAviso('<?php echo esc_js(__('Selecciona al menos un usuario', 'flavor-chat-ia')); ?>', 'error');
             return;
         }
 
@@ -650,16 +673,23 @@ jQuery(document).ready(function($) {
             nonce: '<?php echo wp_create_nonce('gc_admin_nonce'); ?>'
         }, function(response) {
             if (response.success) {
-                alert(response.data.mensaje);
+                gcAviso(response.data.mensaje, 'success');
                 location.reload();
             } else {
-                alert(response.data.error || 'Error');
+                gcAviso(response.data.error || 'Error', 'error');
                 $('.gc-confirmar-importacion').prop('disabled', false).text('<?php _e('Importar seleccionados', 'flavor-chat-ia'); ?>');
             }
         });
     });
 });
 </script>
+
+<style>
+.gc-inline-notice{margin:16px 0;padding:12px 14px;border-left:4px solid #d63638;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.gc-inline-notice-success{border-left-color:#00a32a}
+.gc-inline-notice-error{border-left-color:#d63638}
+.gc-inline-confirm-actions{display:flex;gap:8px;margin-top:10px}
+</style>
 
 <style>
 .gc-stats-grid {

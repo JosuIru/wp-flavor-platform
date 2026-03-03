@@ -613,6 +613,27 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($nombre_accion, $parametros) {
+        $aliases = array(
+            'estado' => 'obtener_estado',
+            'listar' => 'obtener_estado',
+            'resumen' => 'obtener_estado',
+            'portfolio' => 'obtener_portfolio',
+            'mercado' => 'obtener_datos_mercado',
+            'indicadores' => 'obtener_indicadores',
+            'comprar' => 'ejecutar_compra_manual',
+            'vender' => 'ejecutar_venta_manual',
+            'iniciar' => 'iniciar_bot',
+            'detener' => 'detener_bot',
+            'historial' => 'obtener_historial_trades',
+            'reglas' => 'obtener_reglas',
+            'crear_regla' => 'crear_regla',
+            'eliminar' => 'eliminar_regla',
+            'parametros' => 'actualizar_parametros',
+            'reset' => 'reset_paper_trading',
+            'riesgo' => 'obtener_estado_riesgo',
+        );
+
+        $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
         $metodo_accion = 'action_' . $nombre_accion;
 
         if (method_exists($this, $metodo_accion)) {

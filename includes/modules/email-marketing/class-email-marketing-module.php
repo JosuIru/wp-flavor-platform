@@ -6657,9 +6657,26 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
      * @param string $vista
      */
     private function render_vista_fallback($vista) {
+        $paginas = [
+            'dashboard' => admin_url('admin.php?page=flavor-email-marketing'),
+            'campanias' => admin_url('admin.php?page=flavor-email-marketing-campanias'),
+            'automatizaciones' => admin_url('admin.php?page=flavor-email-marketing-automatizaciones'),
+            'suscriptores' => admin_url('admin.php?page=flavor-email-marketing-suscriptores'),
+            'listas' => admin_url('admin.php?page=flavor-email-marketing-listas'),
+            'plantillas' => admin_url('admin.php?page=flavor-email-marketing-plantillas'),
+            'estadisticas' => admin_url('admin.php?page=flavor-email-marketing-estadisticas'),
+            'configuracion' => admin_url('admin.php?page=flavor-email-marketing-configuracion'),
+        ];
+
         echo '<div class="wrap">';
         echo '<h1>' . esc_html(ucfirst($vista)) . '</h1>';
-        echo '<p>' . esc_html__('Vista en desarrollo. Los archivos de plantilla se crearan proximamente.', 'flavor-chat-ia') . '</p>';
+        echo '<div class="notice notice-warning"><p>' . esc_html__('La plantilla concreta no está disponible. Se muestra navegación de respaldo para mantener el módulo accesible.', 'flavor-chat-ia') . '</p></div>';
+        echo '<p>';
+        foreach ($paginas as $slug => $url) {
+            $classes = $slug === $vista ? 'button button-primary' : 'button';
+            echo '<a class="' . esc_attr($classes) . '" style="margin-right:8px;margin-bottom:8px;" href="' . esc_url($url) . '">' . esc_html(ucfirst($slug)) . '</a>';
+        }
+        echo '</p>';
         echo '</div>';
     }
 
@@ -6699,6 +6716,22 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
      * Ejecutar acción
      */
     public function execute_action($nombre, $params) {
+        $aliases = [
+            'listar' => 'listar_listas',
+            'listado' => 'listar_listas',
+            'listas' => 'listar_listas',
+            'explorar' => 'listar_listas',
+            'buscar' => 'obtener_suscriptor',
+            'suscriptor' => 'obtener_suscriptor',
+            'suscribir' => 'suscribir',
+            'crear' => 'suscribir',
+            'nuevo' => 'suscribir',
+            'stats' => 'estadisticas_generales',
+            'estadisticas' => 'estadisticas_generales',
+            'campania' => 'estadisticas_campania',
+        ];
+
+        $nombre = $aliases[$nombre] ?? $nombre;
         $metodo = 'action_' . $nombre;
 
         if (method_exists($this, $metodo)) {

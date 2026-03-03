@@ -692,6 +692,24 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'catalogo_cursos',
+            'listado' => 'catalogo_cursos',
+            'catalogo' => 'catalogo_cursos',
+            'detalle' => 'detalle_curso',
+            'ver' => 'detalle_curso',
+            'mis_items' => 'mis_cursos',
+            'mis-cursos' => 'mis_cursos',
+            'inscribirse' => 'inscribirse',
+            'leccion' => 'ver_leccion',
+            'completar' => 'marcar_completada',
+            'valorar' => 'valorar_curso',
+            'certificado' => 'solicitar_certificado',
+            'instructor' => 'mis_cursos_instructor',
+            'stats' => 'estadisticas_curso',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {

@@ -200,17 +200,25 @@ $historial = $wpdb->get_results($wpdb->prepare(
                     </span>
                     <?php if ($intercambio->estado === 'pendiente' && $intercambio->rol === 'me_solicitaron') : ?>
                     <div class="fl-exchange-actions">
-                        <button class="fl-btn fl-btn-success fl-btn-sm" data-action="aceptar" data-id="<?php echo esc_attr($intercambio->id); ?>">
+                        <button type="button" class="fl-btn fl-btn-success fl-btn-sm bt-btn-aceptar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
                             <span class="dashicons dashicons-yes"></span>
                             <?php esc_html_e('Aceptar', 'flavor-chat-ia'); ?>
                         </button>
-                        <button class="fl-btn fl-btn-danger fl-btn-sm" data-action="rechazar" data-id="<?php echo esc_attr($intercambio->id); ?>">
+                        <button type="button" class="fl-btn fl-btn-danger fl-btn-sm bt-btn-rechazar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
                             <span class="dashicons dashicons-no"></span>
+                            <?php esc_html_e('Rechazar', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                    <?php elseif ($intercambio->estado === 'pendiente' && $intercambio->rol === 'solicite') : ?>
+                    <div class="fl-exchange-actions">
+                        <button type="button" class="fl-btn fl-btn-outline fl-btn-sm bt-btn-cancelar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
+                            <span class="dashicons dashicons-no-alt"></span>
+                            <?php esc_html_e('Cancelar', 'flavor-chat-ia'); ?>
                         </button>
                     </div>
                     <?php elseif ($intercambio->estado === 'aceptado' || $intercambio->estado === 'en_curso') : ?>
                     <div class="fl-exchange-actions">
-                        <button class="fl-btn fl-btn-primary fl-btn-sm" data-action="completar" data-id="<?php echo esc_attr($intercambio->id); ?>">
+                        <button type="button" class="fl-btn fl-btn-primary fl-btn-sm bt-btn-completar-intercambio" data-intercambio-id="<?php echo esc_attr($intercambio->id); ?>">
                             <span class="dashicons dashicons-yes-alt"></span>
                             <?php esc_html_e('Completar', 'flavor-chat-ia'); ?>
                         </button>

@@ -118,7 +118,7 @@ $nonce = wp_create_nonce('gc_conciencia_nonce');
                             </form>
                         <?php else: ?>
                             <p class="gc-excedente-card__login">
-                                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>">
+                                <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/'))); ?>">
                                     <?php esc_html_e('Inicia sesión para reclamar', 'flavor-chat-ia'); ?>
                                 </a>
                             </p>
@@ -406,13 +406,17 @@ $nonce = wp_create_nonce('gc_conciencia_nonce');
                 if (data.success) {
                     form.innerHTML = '<p style="color: var(--gc-success); margin: 0;"><span class="dashicons dashicons-yes"></span> ' + data.data.message + '</p>';
                 } else {
-                    alert(data.data.message || '<?php echo esc_js(__('Error al procesar', 'flavor-chat-ia')); ?>');
+                    if (window.gcToast) {
+                        window.gcToast(data.data.message || '<?php echo esc_js(__('Error al procesar', 'flavor-chat-ia')); ?>', 'error');
+                    }
                     btn.disabled = false;
                     btn.innerHTML = '<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Reclamar', 'flavor-chat-ia')); ?>';
                 }
             })
             .catch(() => {
-                alert('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>');
+                if (window.gcToast) {
+                    window.gcToast('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
+                }
                 btn.disabled = false;
                 btn.innerHTML = '<span class="dashicons dashicons-yes"></span> <?php echo esc_js(__('Reclamar', 'flavor-chat-ia')); ?>';
             });

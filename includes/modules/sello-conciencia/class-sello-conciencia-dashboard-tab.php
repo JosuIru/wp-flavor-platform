@@ -71,6 +71,10 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
                     case 'criterios':
                         $this->render_criterios();
                         break;
+                    case 'detalle':
+                    case 'ver':
+                        $this->render_detalle();
+                        break;
                     default:
                         $this->render_mis_sellos($datos);
                 }
@@ -164,6 +168,10 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
         <div class="solicitar-sello">
             <h3>Solicitar Sello Conciencia</h3>
 
+            <div class="flavor-notice flavor-notice-warning">
+                <p><?php esc_html_e('La solicitud completa todavía no está conectada a un handler de dashboard. El formulario se muestra como referencia y el envío queda desactivado para evitar falsas confirmaciones.', 'flavor-chat-ia'); ?></p>
+            </div>
+
             <div class="info-proceso">
                 <h4>¿Cómo funciona?</h4>
                 <ol>
@@ -252,7 +260,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="flavor-btn flavor-btn-primary">Enviar solicitud</button>
+                    <button type="button" class="flavor-btn" disabled aria-disabled="true"><?php esc_html_e('Envío pendiente de integración', 'flavor-chat-ia'); ?></button>
                 </div>
             </form>
         </div>
@@ -376,6 +384,84 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
             .nivel-card.nivel-plata { border-top: 4px solid #c0c0c0; }
             .nivel-card.nivel-oro { border-top: 4px solid #ffd700; }
             .nivel-card.nivel-platino { border-top: 4px solid #e5e4e2; }
+        </style>
+        <?php
+    }
+
+    private function render_detalle() {
+        global $wpdb;
+
+        $sello_id = isset($_GET['id']) ? absint($_GET['id']) : 0;
+        $tabla_sellos = $wpdb->prefix . 'flavor_sellos_conciencia';
+        $user_id = get_current_user_id();
+
+        if (!$sello_id) {
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Se requiere el identificador del sello.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $sello = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_sellos WHERE id = %d AND (estado = 'activo' OR usuario_id = %d)",
+            $sello_id,
+            $user_id
+        ));
+
+        if (!$sello) {
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('El sello solicitado no existe o no está disponible.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $categorias = array_filter(array_map('trim', explode(',', (string) ($sello->categorias ?? ''))));
+        ?>
+        <div class="sello-detalle">
+            <div class="sello-detalle__header nivel-<?php echo esc_attr($sello->nivel); ?>">
+                <div class="sello-detalle__badge">
+                    <span class="nivel-icono"><?php echo esc_html($this->get_icono_nivel($sello->nivel)); ?></span>
+                    <div>
+                        <h3><?php echo esc_html($sello->nombre_entidad); ?></h3>
+                        <p><?php echo esc_html(ucfirst((string) $sello->tipo)); ?> · <?php echo esc_html(ucfirst((string) $sello->nivel)); ?></p>
+                    </div>
+                </div>
+                <a href="?tab=sello-conciencia&subtab=mis-sellos" class="flavor-btn flavor-btn-sm">
+                    <?php esc_html_e('Volver', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+
+            <div class="sello-detalle__meta">
+                <div><strong><?php esc_html_e('Estado', 'flavor-chat-ia'); ?>:</strong> <?php echo esc_html(ucfirst((string) $sello->estado)); ?></div>
+                <div><strong><?php esc_html_e('Emitido', 'flavor-chat-ia'); ?>:</strong> <?php echo esc_html(date_i18n('j M Y', strtotime((string) $sello->fecha_emision))); ?></div>
+                <div><strong><?php esc_html_e('Válido hasta', 'flavor-chat-ia'); ?>:</strong> <?php echo esc_html(date_i18n('j M Y', strtotime((string) $sello->fecha_expiracion))); ?></div>
+                <?php if (!empty($sello->direccion)) : ?>
+                    <div><strong><?php esc_html_e('Dirección', 'flavor-chat-ia'); ?>:</strong> <?php echo esc_html($sello->direccion); ?></div>
+                <?php endif; ?>
+            </div>
+
+            <?php if (!empty($sello->descripcion)) : ?>
+                <div class="sello-detalle__bloque">
+                    <h4><?php esc_html_e('Descripción', 'flavor-chat-ia'); ?></h4>
+                    <p><?php echo esc_html($sello->descripcion); ?></p>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($categorias)) : ?>
+                <div class="sello-detalle__bloque">
+                    <h4><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></h4>
+                    <div class="sello-categorias">
+                        <?php foreach ($categorias as $cat) : ?>
+                            <span class="categoria-tag"><?php echo esc_html($cat); ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+            .sello-detalle { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+            .sello-detalle__header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 16px; }
+            .sello-detalle__badge { display: flex; gap: 16px; align-items: center; }
+            .sello-detalle__badge .nivel-icono { font-size: 42px; }
+            .sello-detalle__meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
+            .sello-detalle__bloque { margin-top: 18px; }
         </style>
         <?php
     }

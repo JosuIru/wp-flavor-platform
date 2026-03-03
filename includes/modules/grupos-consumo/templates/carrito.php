@@ -22,7 +22,7 @@ $total_estimado = $args['total'] ?? 0;
         <div class="gc-carrito-login-requerido">
             <span class="dashicons dashicons-lock"></span>
             <p><?php _e('Inicia sesión para ver tu lista de compra.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo wp_login_url(get_permalink()); ?>" class="gc-btn gc-btn-primary">
+            <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/mi-pedido/'))); ?>" class="gc-btn gc-btn-primary">
                 <?php _e('Iniciar sesión', 'flavor-chat-ia'); ?>
             </a>
         </div>
@@ -31,8 +31,8 @@ $total_estimado = $args['total'] ?? 0;
             <span class="gc-carrito-icono-vacio">🛒</span>
             <h3><?php _e('Tu lista está vacía', 'flavor-chat-ia'); ?></h3>
             <p><?php _e('Añade productos desde el catálogo para empezar tu pedido.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(get_post_type_archive_link('gc_producto')); ?>" class="gc-btn gc-btn-primary">
-                <?php _e('Ver catálogo', 'flavor-chat-ia'); ?>
+            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
+                <?php _e('Ver productos', 'flavor-chat-ia'); ?>
             </a>
         </div>
     <?php else: ?>
@@ -118,7 +118,7 @@ $total_estimado = $args['total'] ?? 0;
         </div>
 
         <div class="gc-carrito-acciones">
-            <a href="<?php echo esc_url(get_post_type_archive_link('gc_producto')); ?>" class="gc-btn gc-btn-secondary">
+            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-secondary">
                 <span class="dashicons dashicons-arrow-left-alt"></span>
                 <?php _e('Seguir comprando', 'flavor-chat-ia'); ?>
             </a>

@@ -169,6 +169,13 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         add_shortcode('flavor_radio_chat', [$this, 'shortcode_chat']);
         add_shortcode('flavor_radio_proponer', [$this, 'shortcode_proponer_programa']);
         add_shortcode('flavor_radio_podcasts', [$this, 'shortcode_podcasts']);
+        add_shortcode('radio_en_vivo', [$this, 'shortcode_player']);
+        add_shortcode('radio_programacion', [$this, 'shortcode_programacion']);
+        add_shortcode('radio_dedicatorias', [$this, 'shortcode_dedicatorias']);
+        add_shortcode('radio_chat', [$this, 'shortcode_chat']);
+        add_shortcode('radio_proponer', [$this, 'shortcode_proponer_programa']);
+        add_shortcode('radio_podcasts', [$this, 'shortcode_podcasts']);
+        add_shortcode('radio_mis_programas', [$this, 'shortcode_mis_programas']);
     }
 
     /**
@@ -1836,6 +1843,50 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         return ob_get_clean();
     }
 
+    /**
+     * Shortcode: Mis programas.
+     */
+    public function shortcode_mis_programas($atts = []) {
+        if (!is_user_logged_in()) {
+            return '<p class="radio-aviso">' . __('Debes iniciar sesión para ver tus programas.', 'flavor-chat-ia') . '</p>';
+        }
+
+        global $wpdb;
+
+        $tabla = $wpdb->prefix . 'flavor_radio_programas';
+        $programas = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, nombre, categoria, estado, hora_inicio
+             FROM {$tabla}
+             WHERE locutor_id = %d
+             ORDER BY estado = 'activo' DESC, nombre ASC",
+            get_current_user_id()
+        ));
+
+        ob_start();
+        ?>
+        <div class="flavor-radio-mis-programas">
+            <?php if (empty($programas)) : ?>
+                <p><?php esc_html_e('Todavía no tienes programas asignados.', 'flavor-chat-ia'); ?></p>
+            <?php else : ?>
+                <ul class="radio-programas-lista">
+                    <?php foreach ($programas as $programa) : ?>
+                        <li>
+                            <strong><?php echo esc_html($programa->nombre ?: __('Programa', 'flavor-chat-ia')); ?></strong>
+                            <?php if (!empty($programa->categoria)) : ?>
+                                <span><?php echo esc_html($programa->categoria); ?></span>
+                            <?php endif; ?>
+                            <?php if (!empty($programa->hora_inicio)) : ?>
+                                <span><?php echo esc_html(date_i18n('H:i', strtotime($programa->hora_inicio))); ?></span>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
     // =========================================================================
     // Actions del módulo
     // =========================================================================
@@ -1892,6 +1943,26 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'programas',
+            'listado' => 'programas',
+            'explorar' => 'programas',
+            'buscar' => 'programas',
+            'programacion' => 'programacion',
+            'directo' => 'en_vivo',
+            'stream' => 'en_vivo',
+            'crear' => 'proponer_programa',
+            'nuevo' => 'proponer_programa',
+            'mis_items' => 'mis_dedicatorias',
+            'mis-programas' => 'programas',
+            'mensajes' => 'chat_mensajes',
+            'enviar_mensaje' => 'enviar_chat',
+            'dedicatorias' => 'mis_dedicatorias',
+            'podcast' => 'podcasts',
+            'stats' => 'oyentes',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {

@@ -7,8 +7,27 @@
 (function($) {
     'use strict';
 
+    var comunidadesSourceConfig = window.flavorComunidadesConfig || window.flavorComunidades || {};
+    var comunidadesStrings = comunidadesSourceConfig.strings || comunidadesSourceConfig.i18n || {};
+
     var COM = {
-        config: window.flavorComunidadesConfig || {},
+        config: $.extend(true, {
+            ajaxUrl: '/wp-admin/admin-ajax.php',
+            nonce: '',
+            strings: {
+                error: 'Ha ocurrido un error.',
+                cargando: 'Cargando...',
+                confirmUnirse: '¿Deseas unirte a esta comunidad?',
+                confirmSalir: '¿Estás seguro de que deseas abandonar esta comunidad?'
+            }
+        }, comunidadesSourceConfig, {
+            strings: $.extend({
+                error: 'Ha ocurrido un error.',
+                cargando: 'Cargando...',
+                confirmUnirse: '¿Deseas unirte a esta comunidad?',
+                confirmSalir: '¿Estás seguro de que deseas abandonar esta comunidad?'
+            }, comunidadesStrings)
+        }),
 
         init: function() {
             this.bindEvents();
@@ -20,10 +39,10 @@
 
         bindEvents: function() {
             // Unirse a comunidad
-            $(document).on('click', '.flavor-com-btn-unirse', this.handleUnirse.bind(this));
+            $(document).on('click', '.flavor-com-btn-unirse, .btn-unirse, .btn-solicitar, .btn-solicitar-acceso', this.handleUnirse.bind(this));
 
             // Salir de comunidad
-            $(document).on('click', '.flavor-com-btn-salir', this.handleSalir.bind(this));
+            $(document).on('click', '.flavor-com-btn-salir, .btn-salir', this.handleSalir.bind(this));
 
             // Crear comunidad
             $(document).on('submit', '#flavor-com-form-crear', this.handleCrear.bind(this));
@@ -38,68 +57,64 @@
         handleUnirse: function(e) {
             e.preventDefault();
             var $btn = $(e.currentTarget);
-            var comunidadId = $btn.data('comunidad-id');
+            var comunidadId = $btn.data('comunidad-id') || $btn.data('comunidad');
 
-            if (!confirm(this.config.strings.confirmUnirse)) {
-                return;
-            }
+            this.showConfirm(this.config.strings.confirmUnirse, function() {
+                COM.setLoading($btn, true);
 
-            this.setLoading($btn, true);
-
-            $.ajax({
-                url: this.config.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'comunidades_unirse',
-                    nonce: this.config.nonce,
-                    comunidad_id: comunidadId
-                },
-                success: function(response) {
-                    if (response.success) {
-                        location.reload();
-                    } else {
-                        COM.showMessage('error', response.data.message || COM.config.strings.error);
+                $.ajax({
+                    url: COM.config.ajaxUrl,
+                    type: 'POST',
+                    data: {
+                        action: 'comunidades_unirse',
+                        nonce: COM.config.nonce,
+                        comunidad_id: comunidadId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            COM.showMessage('error', response.data.message || response.data.mensaje || COM.config.strings.error);
+                            COM.setLoading($btn, false);
+                        }
+                    },
+                    error: function() {
+                        COM.showMessage('error', COM.config.strings.error);
                         COM.setLoading($btn, false);
                     }
-                },
-                error: function() {
-                    COM.showMessage('error', COM.config.strings.error);
-                    COM.setLoading($btn, false);
-                }
+                });
             });
         },
 
         handleSalir: function(e) {
             e.preventDefault();
             var $btn = $(e.currentTarget);
-            var comunidadId = $btn.data('comunidad-id');
+            var comunidadId = $btn.data('comunidad-id') || $btn.data('comunidad');
 
-            if (!confirm(this.config.strings.confirmSalir)) {
-                return;
-            }
+            this.showConfirm(this.config.strings.confirmSalir, function() {
+                COM.setLoading($btn, true);
 
-            this.setLoading($btn, true);
-
-            $.ajax({
-                url: this.config.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'comunidades_salir',
-                    nonce: this.config.nonce,
-                    comunidad_id: comunidadId
-                },
-                success: function(response) {
-                    if (response.success) {
-                        window.location.href = response.data.redirect || '/comunidades/';
-                    } else {
-                        COM.showMessage('error', response.data.message || COM.config.strings.error);
+                $.ajax({
+                    url: COM.config.ajaxUrl,
+                    type: 'POST',
+                    data: {
+                        action: 'comunidades_salir',
+                        nonce: COM.config.nonce,
+                        comunidad_id: comunidadId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.href = response.data.redirect || '/mi-portal/comunidades/';
+                        } else {
+                            COM.showMessage('error', response.data.message || response.data.mensaje || COM.config.strings.error);
+                            COM.setLoading($btn, false);
+                        }
+                    },
+                    error: function() {
+                        COM.showMessage('error', COM.config.strings.error);
                         COM.setLoading($btn, false);
                     }
-                },
-                error: function() {
-                    COM.showMessage('error', COM.config.strings.error);
-                    COM.setLoading($btn, false);
-                }
+                });
             });
         },
 
@@ -112,6 +127,12 @@
 
             var formData = new FormData($form[0]);
             formData.append('action', 'comunidades_crear');
+            if (!formData.get('nonce') && COM.config.nonce) {
+                formData.append('nonce', COM.config.nonce);
+            }
+            if (!formData.get('comunidades_nonce_field') && COM.config.nonce) {
+                formData.append('comunidades_nonce_field', COM.config.nonce);
+            }
 
             $.ajax({
                 url: this.config.ajaxUrl,
@@ -121,14 +142,14 @@
                 contentType: false,
                 success: function(response) {
                     if (response.success) {
-                        COM.showFormMessage($form, 'exito', response.data.message || 'Comunidad creada correctamente');
+                        COM.showFormMessage($form, 'exito', response.data.message || response.data.mensaje || 'Comunidad creada correctamente');
                         setTimeout(function() {
                             if (response.data.redirect) {
                                 window.location.href = response.data.redirect;
                             }
                         }, 1500);
                     } else {
-                        COM.showFormMessage($form, 'error', response.data.message || COM.config.strings.error);
+                        COM.showFormMessage($form, 'error', response.data.message || response.data.mensaje || COM.config.strings.error);
                         COM.setLoading($btn, false);
                     }
                 },
@@ -158,6 +179,7 @@
                 data: {
                     action: 'comunidades_publicar',
                     nonce: this.config.nonce,
+                    comunidades_nonce_field: this.config.nonce,
                     comunidad_id: $form.find('input[name="comunidad_id"]').val(),
                     contenido: contenido
                 },
@@ -166,7 +188,7 @@
                         $textarea.val('');
                         COM.loadFeed();
                     } else {
-                        COM.showMessage('error', response.data.message || COM.config.strings.error);
+                        COM.showMessage('error', response.data.message || response.data.mensaje || COM.config.strings.error);
                     }
                 },
                 error: function() {
@@ -248,13 +270,13 @@
                 var file = this.files[0];
                 if (file) {
                     if (!file.type.match(/image\/(jpeg|png|webp)/)) {
-                        alert('Solo se permiten imagenes JPG, PNG o WebP.');
+                        COM.showMessage('error', 'Solo se permiten imágenes JPG, PNG o WebP.');
                         this.value = '';
                         return;
                     }
 
                     if (file.size > 2 * 1024 * 1024) {
-                        alert('La imagen no puede superar los 2MB.');
+                        COM.showMessage('error', 'La imagen no puede superar los 2MB.');
                         this.value = '';
                         return;
                     }
@@ -398,6 +420,37 @@
             }, 5000);
         },
 
+        showConfirm: function(mensaje, onConfirm) {
+            var $contenedor = $('.flavor-com-contenedor, .flavor-com-detalle-contenedor').first();
+            if (!$contenedor.length) {
+                $contenedor = $('body');
+            }
+
+            var $mensaje = $(
+                '<div class="flavor-com-notice flavor-com-notice-info">' +
+                    '<div class="flavor-com-confirm-text"></div>' +
+                    '<div class="flavor-com-confirm-actions" style="margin-top:10px;display:flex;gap:8px;">' +
+                        '<button type="button" class="flavor-com-confirm-ok" style="border:0;border-radius:8px;padding:8px 12px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer;">Confirmar</button>' +
+                        '<button type="button" class="flavor-com-confirm-cancel" style="border:0;border-radius:8px;padding:8px 12px;background:#e5e7eb;color:#111827;font-weight:600;cursor:pointer;">Cancelar</button>' +
+                    '</div>' +
+                '</div>'
+            );
+
+            $mensaje.find('.flavor-com-confirm-text').text(mensaje);
+            $contenedor.prepend($mensaje);
+
+            $mensaje.find('.flavor-com-confirm-ok').on('click', function() {
+                $mensaje.remove();
+                if (typeof onConfirm === 'function') {
+                    onConfirm();
+                }
+            });
+
+            $mensaje.find('.flavor-com-confirm-cancel').on('click', function() {
+                $mensaje.remove();
+            });
+        },
+
         showFormMessage: function($form, tipo, mensaje) {
             var $mensajeEl = $form.find('#com-mensaje-resultado');
             $mensajeEl
@@ -481,21 +534,27 @@
             var $notif = $btn.closest('.flavor-com-notificacion');
             var notifId = $notif.data('id');
 
-            if (!confirm('¿Eliminar esta notificación?')) return;
-
-            $.ajax({
-                url: COM.config.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'comunidades_eliminar_notificacion',
-                    nonce: COM.config.nonce,
-                    notificacion_id: notifId
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $notif.fadeOut(300, function() { $(this).remove(); });
+            COM.showConfirm('¿Eliminar esta notificación?', function() {
+                $.ajax({
+                    url: COM.config.ajaxUrl,
+                    type: 'POST',
+                    data: {
+                        action: 'comunidades_eliminar_notificacion',
+                        nonce: COM.config.nonce,
+                        notificacion_id: notifId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $notif.fadeOut(300, function() { $(this).remove(); });
+                            COM.showMessage('info', 'Notificación eliminada.');
+                        } else {
+                            COM.showMessage('error', response.data && (response.data.message || response.data.mensaje) || COM.config.strings.error);
+                        }
+                    },
+                    error: function() {
+                        COM.showMessage('error', COM.config.strings.error);
                     }
-                }
+                });
             });
         },
 
@@ -620,8 +679,8 @@
                 data: {
                     action: 'comunidades_busqueda_federada',
                     nonce: COM.config.nonce,
-                    query: query,
-                    tipos: tipos,
+                    termino: query,
+                    tipo: tipos.length === 1 ? tipos[0] : 'todos',
                     origen: origen
                 },
                 success: function(response) {
@@ -648,9 +707,13 @@
             var html = '';
             var iconos = {
                 'comunidad': '👥',
+                'comunidades': '👥',
                 'publicacion': '📝',
+                'publicaciones': '📝',
                 'evento': '📅',
+                'eventos': '📅',
                 'receta': '🍳',
+                'recetas': '🍳',
                 'biblioteca': '📚',
                 'multimedia': '🎬'
             };
@@ -658,8 +721,9 @@
             for (var i = 0; i < resultados.length; i++) {
                 var r = resultados[i];
                 var icono = iconos[r.tipo] || '📄';
-                var badgeClase = r.federado ? 'flavor-com-badge-federado' : 'flavor-com-badge-local';
-                var badgeTexto = r.federado ? '🌐 ' + r.nodo : '📍 Local';
+                var esFederado = r.origen === 'federado';
+                var badgeClase = esFederado ? 'flavor-com-badge-federado' : 'flavor-com-badge-local';
+                var badgeTexto = esFederado ? '🌐 ' + (r.nodo_nombre || 'Red') : '📍 Local';
 
                 html += '<div class="flavor-com-resultado-item">';
                 html += '<div class="flavor-com-resultado-icono">' + icono + '</div>';
@@ -924,5 +988,37 @@
         TABLON.init();
         METRICAS.init();
     });
+
+    window.flavorComunidades = window.flavorComunidades || {};
+    window.flavorComunidades.unirse = function(comunidadId) {
+        var $trigger = $('<button type="button" data-comunidad-id="' + comunidadId + '"></button>');
+        COM.handleUnirse({
+            preventDefault: function() {},
+            currentTarget: $trigger[0]
+        });
+    };
+
+    window.flavorComunidades.compartir = function(comunidadId) {
+        var comunidadUrl = window.location.origin + '/mi-portal/comunidades/' + comunidadId + '/';
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'Comunidad',
+                url: comunidadUrl
+            }).catch(function() {});
+            return;
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(comunidadUrl).then(function() {
+                COM.showMessage('info', 'Enlace copiado al portapapeles');
+            }).catch(function() {
+                COM.showMessage('info', comunidadUrl);
+            });
+            return;
+        }
+
+        COM.showMessage('info', comunidadUrl);
+    };
 
 })(jQuery);

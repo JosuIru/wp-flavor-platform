@@ -73,6 +73,48 @@
         // Los gráficos se inicializan en cada vista específica
     }
 
+    function mostrarAviso(mensaje, tipo) {
+        tipo = tipo || 'error';
+        let contenedor = $('.gc-admin-notice-container');
+        if (!contenedor.length) {
+            contenedor = $('<div class="gc-admin-notice-container"></div>').appendTo('body');
+        }
+
+        const aviso = $('<div class="gc-admin-notice gc-admin-notice-' + tipo + '"></div>').text(mensaje);
+        contenedor.append(aviso);
+
+        setTimeout(function() {
+            aviso.addClass('is-visible');
+        }, 10);
+
+        setTimeout(function() {
+            aviso.removeClass('is-visible');
+            setTimeout(function() {
+                aviso.remove();
+            }, 200);
+        }, 3000);
+    }
+
+    function solicitarConfirmacion(mensaje, onConfirm) {
+        let contenedor = $('.gc-admin-notice-container');
+        if (!contenedor.length) {
+            contenedor = $('<div class="gc-admin-notice-container"></div>').appendTo('body');
+        }
+
+        $('.gc-admin-confirm').remove();
+        const aviso = $('<div class="gc-admin-notice gc-admin-notice-error gc-admin-confirm"><div class="gc-admin-confirm-texto"></div><div class="gc-admin-confirm-actions"><button type="button" class="button button-primary gc-confirmar">Confirmar</button><button type="button" class="button gc-cancelar">Cancelar</button></div></div>');
+        aviso.find('.gc-admin-confirm-texto').text(mensaje);
+        contenedor.append(aviso);
+        setTimeout(function() { aviso.addClass('is-visible'); }, 10);
+        aviso.on('click', '.gc-confirmar', function() {
+            aviso.remove();
+            onConfirm();
+        });
+        aviso.on('click', '.gc-cancelar', function() {
+            aviso.remove();
+        });
+    }
+
     /**
      * Cambiar estado de consumidor
      */
@@ -82,10 +124,7 @@
         const consumidorId = $btn.data('consumidor');
         const nuevoEstado = $btn.data('estado');
 
-        if (!confirm('¿Cambiar estado a ' + nuevoEstado + '?')) {
-            return;
-        }
-
+        solicitarConfirmacion('¿Cambiar estado a ' + nuevoEstado + '?', function() {
         $btn.addClass('loading');
 
         $.ajax({
@@ -101,15 +140,16 @@
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data.message || 'Error al cambiar estado');
+                    mostrarAviso(response.data.message || 'Error al cambiar estado', 'error');
                 }
             },
             error: function() {
-                alert('Error de conexión');
+                mostrarAviso('Error de conexión', 'error');
             },
             complete: function() {
                 $btn.removeClass('loading');
             }
+        });
         });
     }
 
@@ -122,10 +162,7 @@
         const consumidorId = $btn.data('consumidor');
         const nuevoRol = $btn.data('rol');
 
-        if (!confirm('¿Cambiar rol a ' + nuevoRol + '?')) {
-            return;
-        }
-
+        solicitarConfirmacion('¿Cambiar rol a ' + nuevoRol + '?', function() {
         $.ajax({
             url: ajaxurl,
             method: 'POST',
@@ -139,9 +176,10 @@
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data.message || 'Error al cambiar rol');
+                    mostrarAviso(response.data.message || 'Error al cambiar rol', 'error');
                 }
             }
+        });
         });
     }
 
@@ -164,11 +202,11 @@
                     cerrarModal();
                     location.reload();
                 } else {
-                    alert(response.data.message || 'Error al agregar consumidor');
+                    mostrarAviso(response.data.message || 'Error al agregar consumidor', 'error');
                 }
             },
             error: function() {
-                alert('Error de conexión');
+                mostrarAviso('Error de conexión', 'error');
             },
             complete: function() {
                 $btn.removeClass('loading').prop('disabled', false);
@@ -238,7 +276,7 @@
                     cerrarModal();
                     location.reload();
                 } else {
-                    alert(response.data.message || 'Error al guardar cesta');
+                    mostrarAviso(response.data.message || 'Error al guardar cesta', 'error');
                 }
             },
             complete: function() {
@@ -254,11 +292,8 @@
         e.preventDefault();
         const cicloId = $(this).data('ciclo');
 
-        if (!confirm('¿Enviar el consolidado a todos los productores?')) {
-            return;
-        }
-
-        const $btn = $(this).addClass('loading');
+        solicitarConfirmacion('¿Enviar el consolidado a todos los productores?', function() {
+        const $btn = $(e.currentTarget).addClass('loading');
 
         $.ajax({
             url: ajaxurl,
@@ -270,14 +305,15 @@
             },
             success: function(response) {
                 if (response.success) {
-                    alert('Consolidado enviado correctamente a ' + response.data.enviados + ' productores');
+                    mostrarAviso('Consolidado enviado correctamente a ' + response.data.enviados + ' productores', 'success');
                 } else {
-                    alert(response.data.message || 'Error al enviar');
+                    mostrarAviso(response.data.message || 'Error al enviar', 'error');
                 }
             },
             complete: function() {
                 $btn.removeClass('loading');
             }
+        });
         });
     }
 
@@ -288,10 +324,7 @@
         e.preventDefault();
         const cicloId = $(this).data('ciclo');
 
-        if (!confirm('¿Regenerar el consolidado? Esto reemplazará los datos actuales.')) {
-            return;
-        }
-
+        solicitarConfirmacion('¿Regenerar el consolidado? Esto reemplazará los datos actuales.', function() {
         $.ajax({
             url: ajaxurl,
             method: 'POST',
@@ -304,9 +337,10 @@
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data.message || 'Error al regenerar');
+                    mostrarAviso(response.data.message || 'Error al regenerar', 'error');
                 }
             }
+        });
         });
     }
 
@@ -332,7 +366,7 @@
                 if (response.success) {
                     window.location.href = response.data.url;
                 } else {
-                    alert(response.data.message || 'Error al exportar');
+                    mostrarAviso(response.data.message || 'Error al exportar', 'error');
                 }
             }
         });
@@ -402,14 +436,11 @@
         });
 
         if (ids.length === 0) {
-            alert('Selecciona al menos un elemento');
+            mostrarAviso('Selecciona al menos un elemento', 'error');
             return;
         }
 
-        if (!confirm('¿Ejecutar acción "' + accion + '" en ' + ids.length + ' elementos?')) {
-            return;
-        }
-
+        solicitarConfirmacion('¿Ejecutar acción "' + accion + '" en ' + ids.length + ' elementos?', function() {
         $.ajax({
             url: ajaxurl,
             method: 'POST',
@@ -423,9 +454,10 @@
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.data.message || 'Error al ejecutar acción');
+                    mostrarAviso(response.data.message || 'Error al ejecutar acción', 'error');
                 }
             }
+        });
         });
     }
 
@@ -513,3 +545,16 @@
     $(document).on('change', '.gc-checkbox-item', actualizarBotonesAccionMasiva);
 
 })(jQuery);
+
+(function() {
+    const css = [
+        '.gc-admin-notice-container{position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:10px;max-width:360px}',
+        '.gc-admin-notice{opacity:0;transform:translateY(-6px);transition:all .2s ease;padding:12px 14px;border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.12);font-size:14px}',
+        '.gc-admin-notice.is-visible{opacity:1;transform:translateY(0)}',
+        '.gc-admin-notice-error{background:#fee2e2;color:#991b1b}',
+        '.gc-admin-notice-success{background:#dcfce7;color:#166534}'
+    ].join('');
+    const style = document.createElement('style');
+    style.textContent = css;
+    document.head.appendChild(style);
+})();

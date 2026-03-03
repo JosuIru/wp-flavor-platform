@@ -2045,6 +2045,18 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
+        $aliases = [
+            'listar' => 'listar_avisos',
+            'listado' => 'listar_avisos',
+            'explorar' => 'listar_avisos',
+            'buscar' => 'listar_avisos',
+            'detalle' => 'ver_aviso',
+            'ver' => 'ver_aviso',
+            'no-leidos' => 'avisos_no_leidos',
+            'urgentes' => 'avisos_urgentes',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
         $metodo_accion = 'action_' . $action_name;
 
         if (method_exists($this, $metodo_accion)) {
@@ -2079,13 +2091,13 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $aviso_id = intval($params['aviso_id'] ?? 0);
 
         if (!$aviso_id) {
-            return ['success' => false, 'error' => __('Accion no implementada: {$action_name}', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Se requiere el ID del aviso', 'flavor-chat-ia')];
         }
 
         $aviso = $this->obtener_aviso($aviso_id);
 
         if (!$aviso) {
-            return ['success' => false, 'error' => __('Accion no implementada: {$action_name}', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Aviso no encontrado', 'flavor-chat-ia')];
         }
 
         $this->registrar_visualizacion($aviso_id);
@@ -2100,7 +2112,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         if (!$usuario_id) {
-            return ['success' => false, 'error' => __('Accion no implementada: {$action_name}', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesión para ver avisos no leídos', 'flavor-chat-ia')];
         }
 
         global $wpdb;

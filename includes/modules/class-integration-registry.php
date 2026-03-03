@@ -305,18 +305,81 @@ class Flavor_Integration_Registry {
     /**
      * Widget de dashboard con resumen
      */
-    public function register_dashboard_widget($widgets) {
-        if (empty($this->active_integrations)) {
-            return $widgets;
+    public function register_dashboard_widget($registry) {
+        if (empty($this->active_integrations) || !$registry instanceof Flavor_Widget_Registry) {
+            return;
         }
 
-        $widgets['integrations_summary'] = [
-            'title' => __('Integraciones Activas', 'flavor-chat-ia'),
-            'callback' => [$this, 'render_dashboard_widget'],
-            'priority' => 'low',
-        ];
+        if (!class_exists('Flavor_Module_Widget')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+        }
 
-        return $widgets;
+        $registry->register(new Flavor_Module_Widget([
+            'id' => 'integrations-summary',
+            'title' => __('Integraciones Activas', 'flavor-chat-ia'),
+            'icon' => 'dashicons-networking',
+            'size' => 'medium',
+            'category' => 'sistema',
+            'priority' => 90,
+            'refreshable' => true,
+            'cache_time' => 300,
+            'data_callback' => [$this, 'get_dashboard_widget_data'],
+            'render_callback' => function() {
+                $this->render_dashboard_widget();
+            },
+        ]));
+    }
+
+    /**
+     * Datos del widget de integraciones para el dashboard unificado.
+     */
+    public function get_dashboard_widget_data(): array {
+        $items = [];
+
+        foreach (array_slice($this->active_integrations, 0, 5) as $integration) {
+            $provider = $this->providers[$integration['provider']] ?? null;
+            $consumer = $this->consumers[$integration['consumer']] ?? null;
+
+            $items[] = [
+                'icon' => 'dashicons-randomize',
+                'title' => ($provider['name'] ?? $integration['provider']) . ' -> ' . ($consumer['name'] ?? $integration['consumer']),
+                'meta' => !empty($integration['targets']) ? implode(', ', (array) $integration['targets']) : __('Sin targets', 'flavor-chat-ia'),
+                'badge' => __('Activa', 'flavor-chat-ia'),
+                'badge_color' => 'success',
+            ];
+        }
+
+        return [
+            'stats' => [
+                [
+                    'icon' => 'dashicons-admin-plugins',
+                    'valor' => count($this->providers),
+                    'label' => __('Providers', 'flavor-chat-ia'),
+                    'color' => 'info',
+                ],
+                [
+                    'icon' => 'dashicons-screenoptions',
+                    'valor' => count($this->consumers),
+                    'label' => __('Consumers', 'flavor-chat-ia'),
+                    'color' => 'primary',
+                ],
+                [
+                    'icon' => 'dashicons-networking',
+                    'valor' => count($this->active_integrations),
+                    'label' => __('Integraciones', 'flavor-chat-ia'),
+                    'color' => 'success',
+                ],
+            ],
+            'items' => $items,
+            'empty_state' => __('No hay integraciones activas.', 'flavor-chat-ia'),
+            'footer' => [
+                [
+                    'label' => __('Ver integraciones', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=flavor-chat-ia'),
+                    'icon' => 'dashicons-arrow-right-alt2',
+                ],
+            ],
+        ];
     }
 
     /**

@@ -161,6 +161,7 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
         // Shortcodes
         add_shortcode('flavor_estados', [$this, 'shortcode_estados']);
         add_shortcode('flavor_estados_crear', [$this, 'shortcode_crear_estado']);
+        add_shortcode('flavor_estados_mis_estados', [$this, 'shortcode_mis_estados']);
 
         // Cron para limpieza
         add_action('flavor_limpiar_estados_expirados', [$this, 'limpiar_estados_expirados']);
@@ -168,8 +169,9 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
             wp_schedule_event(time(), 'hourly', 'flavor_limpiar_estados_expirados');
         }
 
-        // Dashboard widget
-        add_action('flavor_dashboard_widgets', [$this, 'register_dashboard_widget']);
+        // Dashboard widget: compatibilidad con registro moderno y dashboard legacy.
+        add_action('flavor_register_dashboard_widgets', [$this, 'register_dashboard_widget']);
+        add_filter('flavor_dashboard_widgets', [$this, 'register_legacy_dashboard_widget']);
 
         // Integración con moderación
         add_filter('flavor_moderation_content_types', [$this, 'registrar_tipo_moderacion']);
@@ -1329,15 +1331,72 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="flavor-login-required"><p>' . esc_html__('Inicia sesión para continuar', 'flavor-chat-ia') . '</p><a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
         }
-        
+
+        ob_start();
+        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-estados/frontend/crear-estado.php';
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode para listar mis estados activos.
+     */
+    public function shortcode_mis_estados($atts = []) {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-login-required"><p>' . esc_html__('Inicia sesión para ver tus estados', 'flavor-chat-ia') . '</p><a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
+        }
+
+        global $wpdb;
+
+        $estados = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$this->prefix}chat_estados
+             WHERE usuario_id = %d AND activo = 1 AND fecha_expiracion > NOW()
+             ORDER BY fecha_creacion DESC",
+            get_current_user_id()
+        ));
+
         ob_start();
         ?>
-        <div class="flavor-shortcode-crear_estado flavor-form-container">
-            <p class="flavor-notice flavor-notice--info">
-                <?php esc_html_e('Formulario en desarrollo', 'flavor-chat-ia'); ?>
-            </p>
+        <div class="flavor-estados-mios">
+            <?php if (empty($estados)) : ?>
+                <div class="flavor-empty-state">
+                    <span class="dashicons dashicons-format-status"></span>
+                    <p><?php esc_html_e('Todavía no has publicado estados activos.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else : ?>
+                <div class="flavor-estados-grid">
+                    <?php foreach ($estados as $estado) : ?>
+                        <article class="flavor-estado-card">
+                            <div class="flavor-estado-card__media">
+                                <?php if ($estado->tipo === 'imagen' && !empty($estado->media_url)) : ?>
+                                    <img src="<?php echo esc_url($estado->media_url); ?>" alt="">
+                                <?php elseif ($estado->tipo === 'video' && !empty($estado->media_thumbnail)) : ?>
+                                    <img src="<?php echo esc_url($estado->media_thumbnail); ?>" alt="">
+                                <?php else : ?>
+                                    <div class="flavor-estado-card__texto" style="background: <?php echo esc_attr($estado->color_fondo ?: '#128C7E'); ?>; color: <?php echo esc_attr($estado->color_texto ?: '#FFFFFF'); ?>;">
+                                        <?php echo esc_html(wp_trim_words($estado->contenido ?: __('Estado sin texto', 'flavor-chat-ia'), 20)); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="flavor-estado-card__meta">
+                                <strong><?php echo esc_html(ucfirst($estado->tipo)); ?></strong>
+                                <span><?php echo esc_html($this->tiempo_relativo($estado->fecha_creacion)); ?></span>
+                                <span><?php echo esc_html(sprintf(__('Expira %s', 'flavor-chat-ia'), human_time_diff(time(), strtotime($estado->fecha_expiracion)))); ?></span>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
+        <style>
+            .flavor-estados-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; }
+            .flavor-estado-card { border:1px solid #e5e7eb; border-radius:14px; overflow:hidden; background:#fff; }
+            .flavor-estado-card__media { aspect-ratio:9/16; background:#f5f5f5; display:flex; align-items:center; justify-content:center; }
+            .flavor-estado-card__media img { width:100%; height:100%; object-fit:cover; display:block; }
+            .flavor-estado-card__texto { width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:18px; text-align:center; font-weight:600; }
+            .flavor-estado-card__meta { display:flex; flex-direction:column; gap:4px; padding:12px; font-size:13px; }
+        </style>
         <?php
+
         return ob_get_clean();
     }
 
@@ -1384,7 +1443,36 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
     /**
      * Registrar widget de dashboard
      */
-    public function register_dashboard_widget($widgets) {
+    public function register_dashboard_widget($registry) {
+        if (!$registry instanceof Flavor_Widget_Registry) {
+            return;
+        }
+
+        if (!class_exists('Flavor_Module_Widget')) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/dashboard/interface-dashboard-widget.php';
+        }
+
+        $registry->register(new Flavor_Module_Widget([
+            'id' => 'chat-estados',
+            'title' => __('Mis Estados', 'flavor-chat-ia'),
+            'icon' => 'dashicons-format-status',
+            'size' => 'medium',
+            'category' => 'comunicacion',
+            'priority' => 15,
+            'refreshable' => true,
+            'cache_time' => 120,
+            'module' => $this,
+            'data_callback' => [$this, 'get_dashboard_widget_data'],
+            'render_callback' => function() {
+                $this->render_dashboard_widget();
+            },
+        ]));
+    }
+
+    /**
+     * Compatibilidad con el dashboard legacy basado en filtros.
+     */
+    public function register_legacy_dashboard_widget($widgets) {
         $widgets['estados'] = [
             'titulo' => __('Mis Estados', 'flavor-chat-ia'),
             'icono' => 'dashicons-format-status',
@@ -1400,6 +1488,48 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
     public function render_dashboard_widget() {
         $estados = $this->obtener_estados_contactos();
         include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-estados/views/dashboard-widget.php';
+    }
+
+    /**
+     * Datos del widget en formato del dashboard unificado.
+     */
+    public function get_dashboard_widget_data(): array {
+        $estados = $this->obtener_estados_contactos();
+        $items = [];
+
+        foreach (array_slice($estados ?: [], 0, 5) as $estado) {
+            $items[] = [
+                'icon' => 'dashicons-format-status',
+                'title' => wp_trim_words($estado->contenido ?? '', 8),
+                'meta' => !empty($estado->usuario_nombre)
+                    ? $estado->usuario_nombre
+                    : __('Contacto', 'flavor-chat-ia'),
+                'badge' => !empty($estado->tipo)
+                    ? ucfirst((string) $estado->tipo)
+                    : __('Estado', 'flavor-chat-ia'),
+                'badge_color' => 'info',
+            ];
+        }
+
+        return [
+            'stats' => [
+                [
+                    'icon' => 'dashicons-format-status',
+                    'valor' => count($estados ?: []),
+                    'label' => __('Estados visibles', 'flavor-chat-ia'),
+                    'color' => 'info',
+                ],
+            ],
+            'items' => $items,
+            'empty_state' => __('No hay estados recientes de tus contactos.', 'flavor-chat-ia'),
+            'footer' => [
+                [
+                    'label' => __('Ver estados', 'flavor-chat-ia'),
+                    'url' => home_url('/mi-portal/chat-estados/'),
+                    'icon' => 'dashicons-arrow-right-alt2',
+                ],
+            ],
+        ];
     }
 
     /**
@@ -1426,7 +1556,82 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function execute_action($action_name, $params) {
-        return ['status' => 'not_implemented', 'message' => __('Acción no implementada', 'flavor-chat-ia')];
+        $aliases = [
+            'listar' => 'ver_estados',
+            'listado' => 'ver_estados',
+            'crear' => 'crear_estado',
+            'nuevo' => 'crear_estado',
+            'mis_items' => 'mis_estados',
+            'mis-estados' => 'mis_estados',
+        ];
+
+        $action_name = $aliases[$action_name] ?? $action_name;
+        $method = 'action_' . $action_name;
+
+        if (method_exists($this, $method)) {
+            return $this->$method($params);
+        }
+
+        return [
+            'success' => false,
+            'error' => __('Acción no implementada', 'flavor-chat-ia'),
+        ];
+    }
+
+    /**
+     * Acción: ver estados de contactos.
+     */
+    private function action_ver_estados($params) {
+        return [
+            'success' => true,
+            'data' => $this->obtener_estados_contactos(),
+        ];
+    }
+
+    /**
+     * Acción: crear estado o devolver el formulario.
+     */
+    private function action_crear_estado($params) {
+        if (empty($params['contenido']) && empty($params['media_url'])) {
+            return [
+                'success' => true,
+                'html' => $this->shortcode_crear_estado(),
+            ];
+        }
+
+        $estado = $this->crear_estado($params);
+
+        if (is_wp_error($estado)) {
+            return [
+                'success' => false,
+                'error' => $estado->get_error_message(),
+            ];
+        }
+
+        return [
+            'success' => true,
+            'estado' => $estado,
+        ];
+    }
+
+    /**
+     * Acción: estados propios activos.
+     */
+    private function action_mis_estados($params) {
+        global $wpdb;
+
+        $estados = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM {$this->prefix}chat_estados
+             WHERE usuario_id = %d AND activo = 1 AND fecha_expiracion > NOW()
+             ORDER BY fecha_creacion DESC",
+            get_current_user_id()
+        ));
+
+        return [
+            'success' => true,
+            'estados' => $estados ?: [],
+            'html' => $this->shortcode_mis_estados(),
+        ];
     }
 
     /**
@@ -1441,6 +1646,48 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
      */
     public function get_knowledge_base() {
         return __('Chat Estados permite compartir contenido efímero (stories) con tus contactos, visible durante 24 horas.', 'flavor-chat-ia');
+    }
+
+    /**
+     * Configuración para el renderer del portal.
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'chat-estados',
+            'title'    => __('Estados', 'flavor-chat-ia'),
+            'subtitle' => __('Publicaciones efímeras visibles durante 24 horas.', 'flavor-chat-ia'),
+            'icon'     => '🟢',
+            'color'    => 'primary',
+            'database' => [
+                'table' => 'flavor_chat_estados',
+                'primary_key' => 'id',
+            ],
+            'tabs' => [
+                'estados' => [
+                    'label' => __('Estados', 'flavor-chat-ia'),
+                    'icon' => '🟢',
+                    'content' => 'shortcode:flavor_estados',
+                ],
+                'crear' => [
+                    'label' => __('Crear', 'flavor-chat-ia'),
+                    'icon' => '➕',
+                    'content' => 'shortcode:flavor_estados_crear',
+                ],
+                'mis-estados' => [
+                    'label' => __('Mis estados', 'flavor-chat-ia'),
+                    'icon' => '👤',
+                    'content' => 'shortcode:flavor_estados_mis_estados',
+                    'requires_login' => true,
+                ],
+            ],
+            'features' => [
+                'has_archive' => false,
+                'has_single' => false,
+                'has_dashboard' => true,
+                'has_search' => false,
+                'realtime' => true,
+            ],
+        ];
     }
 }
 

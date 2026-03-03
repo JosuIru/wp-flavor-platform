@@ -27,9 +27,9 @@ $albumes = $wpdb->get_results("
     <h1>
         <span class="dashicons dashicons-images-alt2"></span>
         <?php echo esc_html__('Gestión de Álbumes', 'flavor-chat-ia'); ?>
-        <a href="#" class="page-title-action" onclick="abrirModalNuevoAlbum(); return false;">
+        <button type="button" class="page-title-action" onclick="abrirModalNuevoAlbum();">
             <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('Nuevo Álbum', 'flavor-chat-ia'); ?>
-        </a>
+        </button>
     </h1>
 
     <!-- Grid de álbumes -->
@@ -140,11 +140,11 @@ function cerrarModalAlbum() {
 }
 
 function verAlbum(id) {
-    window.location.href = '?page=flavor-chat-multimedia-galeria&album_id=' + id;
+    window.location.href = '<?php echo admin_url('admin.php?page=multimedia-galeria&album_id='); ?>' + id;
 }
 
 function editarAlbum(id) {
-    window.location.href = '<?php echo admin_url('admin.php?page=flavor-multimedia&tab=albumes&editar='); ?>' + id;
+    window.location.href = '<?php echo admin_url('admin.php?page=multimedia-albumes&editar='); ?>' + id;
 }
 </script>
 

@@ -40,6 +40,19 @@ class Chat_IA_Assets {
     private $force_load_assets = false;
 
     /**
+     * Detecta si la petición actual pertenece al portal dinámico.
+     */
+    private function is_dynamic_portal_request() {
+        if (is_admin()) {
+            return false;
+        }
+
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
+
+        return strpos($request_uri, '/mi-portal') !== false;
+    }
+
+    /**
      * Constructor privado
      */
     private function __construct() {
@@ -58,6 +71,12 @@ class Chat_IA_Assets {
      * @return string
      */
     public function detect_shortcode_in_content($content) {
+        // El portal dinámico renderiza su propio contenido y no debe volver a
+        // inspeccionarlo con has_shortcode() sobre blobs HTML grandes.
+        if ($this->is_dynamic_portal_request()) {
+            return $content;
+        }
+
         if (has_shortcode($content, 'chat_ia')) {
             $this->force_load_assets = true;
             // Encolar assets si aún no se han cargado

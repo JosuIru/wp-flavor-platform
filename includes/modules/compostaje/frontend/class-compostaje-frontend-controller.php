@@ -1318,6 +1318,8 @@ class Flavor_Compostaje_Frontend_Controller {
     public function ajax_solicitar_compost() {
         check_ajax_referer('flavor_compostaje_nonce', 'nonce');
 
+        global $wpdb;
+
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
             wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
@@ -1325,6 +1327,23 @@ class Flavor_Compostaje_Frontend_Controller {
 
         $punto_id = intval($_POST['punto_id'] ?? 0);
         $cantidad_kg = floatval($_POST['cantidad_kg'] ?? 0);
+        $notas = sanitize_textarea_field($_POST['notas'] ?? '');
+
+        if ($punto_id <= 0 || $cantidad_kg <= 0) {
+            wp_send_json_error(['message' => __('Debes indicar un punto y una cantidad válidos.', 'flavor-chat-ia')]);
+        }
+
+        $tabla_puntos = $wpdb->prefix . 'flavor_puntos_compostaje';
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_solicitudes_compost';
+
+        $punto = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, nombre, estado FROM {$tabla_puntos} WHERE id = %d",
+            $punto_id
+        ));
+
+        if (!$punto || $punto->estado !== 'activo') {
+            wp_send_json_error(['message' => __('El punto de compostaje no está disponible.', 'flavor-chat-ia')]);
+        }
 
         // Verificar que el usuario tiene suficientes kg aportados
         $stats = $this->obtener_estadisticas_usuario($usuario_id);
@@ -1339,9 +1358,53 @@ class Flavor_Compostaje_Frontend_Controller {
             ]);
         }
 
-        // TODO: Crear solicitud en tabla
+        $solicitud_existente = $wpdb->get_var($wpdb->prepare(
+            "SELECT id
+             FROM {$tabla_solicitudes}
+             WHERE usuario_id = %d
+               AND punto_id = %d
+               AND estado IN ('pendiente', 'aprobada')
+             ORDER BY fecha_solicitud DESC
+             LIMIT 1",
+            $usuario_id,
+            $punto_id
+        ));
+
+        if ($solicitud_existente) {
+            wp_send_json_error([
+                'message' => __('Ya tienes una solicitud activa para este punto de compostaje.', 'flavor-chat-ia'),
+            ]);
+        }
+
+        $inserted = $wpdb->insert(
+            $tabla_solicitudes,
+            [
+                'punto_id' => $punto_id,
+                'usuario_id' => $usuario_id,
+                'cantidad_kg' => $cantidad_kg,
+                'estado' => 'pendiente',
+                'notas_usuario' => $notas,
+                'fecha_solicitud' => current_time('mysql'),
+            ],
+            ['%d', '%d', '%f', '%s', '%s', '%s']
+        );
+
+        if (!$inserted) {
+            wp_send_json_error([
+                'message' => __('No se pudo registrar la solicitud de compost.', 'flavor-chat-ia'),
+            ]);
+        }
+
+        do_action('flavor_compostaje_solicitud_creada', $wpdb->insert_id, [
+            'punto_id' => $punto_id,
+            'punto_nombre' => $punto->nombre,
+            'usuario_id' => $usuario_id,
+            'cantidad_kg' => $cantidad_kg,
+            'notas' => $notas,
+        ]);
+
         wp_send_json_success([
-            'message' => __('Solicitud enviada. Te contactaremos pronto.', 'flavor-chat-ia'),
+            'message' => __('Solicitud enviada. Quedó registrada para revisión del punto de compostaje.', 'flavor-chat-ia'),
         ]);
     }
 
@@ -1357,6 +1420,7 @@ class Flavor_Compostaje_Frontend_Controller {
 
         $tabla_aportaciones = $wpdb->prefix . 'flavor_aportaciones_compost';
         $tabla_inscripciones = $wpdb->prefix . 'flavor_inscripciones_turno';
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_solicitudes_compost';
 
         $stats = $wpdb->get_row($wpdb->prepare(
             "SELECT
@@ -1374,8 +1438,20 @@ class Flavor_Compostaje_Frontend_Controller {
             $usuario_id
         ));
 
+        $kg_recogidos = 0;
+        if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_solicitudes)) === $tabla_solicitudes) {
+            $kg_recogidos = $wpdb->get_var($wpdb->prepare(
+                "SELECT COALESCE(SUM(cantidad_kg), 0)
+                 FROM $tabla_solicitudes
+                 WHERE usuario_id = %d
+                   AND estado IN ('pendiente', 'aprobada', 'entregada')",
+                $usuario_id
+            ));
+        }
+
         return [
             'total_kg' => floatval($stats->total_kg ?? 0),
+            'kg_recogidos' => floatval($kg_recogidos ?? 0),
             'total_puntos' => intval($stats->total_puntos ?? 0),
             'co2_evitado' => floatval($stats->co2_evitado ?? 0),
             'num_aportaciones' => intval($stats->num_aportaciones ?? 0),

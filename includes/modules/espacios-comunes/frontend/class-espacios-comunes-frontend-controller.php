@@ -92,19 +92,19 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
             return;
         }
 
-        $base_url = plugins_url('assets/', dirname(__FILE__));
+        $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         wp_enqueue_style(
             'flavor-espacios-comunes',
-            $base_url . 'css/espacios-comunes.css',
+            $base_url . 'css/espacios-frontend.css',
             [],
             $version
         );
 
         wp_enqueue_script(
             'flavor-espacios-comunes',
-            $base_url . 'js/espacios-comunes.js',
+            $base_url . 'js/espacios-frontend.js',
             ['jquery'],
             $version,
             true

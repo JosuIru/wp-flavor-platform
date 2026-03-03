@@ -132,7 +132,7 @@ class Flavor_Tramites_Dashboard_Tab {
 
         wp_register_script(
             'flavor-tramites-dashboard',
-            $base_url . 'js/tramites-dashboard.js',
+            $base_url . 'js/tramites.js',
             ['jquery'],
             $version,
             true
@@ -146,6 +146,25 @@ class Flavor_Tramites_Dashboard_Tab {
                 'error' => __('Error al cargar los datos', 'flavor-chat-ia'),
                 'sinExpedientes' => __('No tienes expedientes registrados', 'flavor-chat-ia'),
                 'verDetalles' => __('Ver detalles', 'flavor-chat-ia'),
+            ],
+        ]);
+
+        wp_localize_script('flavor-tramites-dashboard', 'flavorTramitesConfig', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'restUrl' => rest_url('flavor-tramites/v1/'),
+            'nonce' => wp_create_nonce('flavor_tramites_nonce'),
+            'maxFileSize' => 10 * 1024 * 1024,
+            'allowedTypes' => ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            'maxFiles' => 20,
+            'i18n' => [
+                'uploading' => __('Subiendo...', 'flavor-chat-ia'),
+                'uploadError' => __('Error al subir el archivo', 'flavor-chat-ia'),
+                'fileTooBig' => __('El archivo es demasiado grande', 'flavor-chat-ia'),
+                'invalidType' => __('Tipo de archivo no permitido', 'flavor-chat-ia'),
+                'confirmDelete' => __('¿Estas seguro de eliminar este documento?', 'flavor-chat-ia'),
+                'confirmSubmit' => __('¿Deseas enviar el tramite?', 'flavor-chat-ia'),
+                'required' => __('Este campo es obligatorio', 'flavor-chat-ia'),
+                'invalidEmail' => __('Email no valido', 'flavor-chat-ia'),
             ],
         ]);
     }

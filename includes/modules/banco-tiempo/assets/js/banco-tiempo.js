@@ -9,13 +9,21 @@
     // Namespace global
     window.BancoTiempo = window.BancoTiempo || {};
 
+    const bancoTiempoConfig = typeof bancoTiempoData !== 'undefined'
+        ? bancoTiempoData
+        : (typeof flavorBancoTiempo !== 'undefined' ? flavorBancoTiempo : {});
+
     /**
      * Configuracion global
      */
     BancoTiempo.config = {
-        ajaxUrl: typeof bancoTiempoData !== 'undefined' ? bancoTiempoData.ajaxUrl : '/wp-admin/admin-ajax.php',
-        nonce: typeof bancoTiempoData !== 'undefined' ? bancoTiempoData.nonce : '',
-        strings: typeof bancoTiempoData !== 'undefined' ? bancoTiempoData.strings : {}
+        ajaxUrl: bancoTiempoConfig.ajaxUrl || '/wp-admin/admin-ajax.php',
+        nonce: bancoTiempoConfig.nonce || '',
+        strings: bancoTiempoConfig.strings || bancoTiempoConfig.i18n || {}
+    };
+
+    BancoTiempo.t = function(clave, fallback) {
+        return BancoTiempo.config.strings[clave] || fallback || '';
     };
 
     /**
@@ -108,7 +116,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    BancoTiempo.Utils.showToast('Error de conexion: ' + error, 'error');
+                    BancoTiempo.Utils.showToast(BancoTiempo.t('error_conexion', 'Error de conexión') + ': ' + error, 'error');
                 }
             });
         }
@@ -218,13 +226,13 @@
             var self = this;
             var contenedor = $('.bt-servicios-grid');
 
-            contenedor.html('<div class="bt-loading"><div class="bt-spinner"></div></div>');
+            contenedor.html('<div class="bt-loading"><div class="bt-spinner"></div><span>' + BancoTiempo.t('cargando', 'Cargando...') + '</span></div>');
 
             BancoTiempo.Utils.ajax('buscar_servicios', this.filtrosActuales, function(response) {
                 if (response.success) {
                     self.renderServicios(response.data.servicios);
                 } else {
-                    contenedor.html('<div class="bt-empty"><div class="bt-empty-icon"><span class="dashicons dashicons-search"></span></div><p class="bt-empty-title">No se encontraron servicios</p></div>');
+                    contenedor.html('<div class="bt-empty"><div class="bt-empty-icon"><span class="dashicons dashicons-search"></span></div><p class="bt-empty-title">' + BancoTiempo.t('sin_resultados', 'No se encontraron servicios') + '</p></div>');
                 }
             });
         },
@@ -236,7 +244,7 @@
             var contenedor = $('.bt-servicios-grid');
 
             if (!servicios || servicios.length === 0) {
-                contenedor.html('<div class="bt-empty"><div class="bt-empty-icon"><span class="dashicons dashicons-clock"></span></div><p class="bt-empty-title">No hay servicios disponibles</p><p class="bt-empty-text">Se el primero en ofrecer un servicio</p><button class="bt-btn bt-btn-primary" onclick="BancoTiempo.Formularios.abrirNuevoServicio()">Ofrecer Servicio</button></div>');
+                contenedor.html('<div class="bt-empty"><div class="bt-empty-icon"><span class="dashicons dashicons-clock"></span></div><p class="bt-empty-title">' + BancoTiempo.t('sin_servicios', 'No hay servicios disponibles') + '</p><p class="bt-empty-text">' + BancoTiempo.t('ofrecer_servicio', 'Ofrecer servicio') + '</p><button class="bt-btn bt-btn-primary" onclick="BancoTiempo.Formularios.abrirNuevoServicio()">' + BancoTiempo.t('ofrecer_servicio', 'Ofrecer servicio') + '</button></div>');
                 return;
             }
 
@@ -274,8 +282,8 @@
                 '</div>' +
                 '</div>' +
                 '<div class="bt-servicio-acciones">' +
-                '<button class="bt-btn bt-btn-primary bt-btn-solicitar" data-servicio-id="' + servicio.id + '">Solicitar</button>' +
-                '<button class="bt-btn bt-btn-secondary">Ver mas</button>' +
+                '<button class="bt-btn bt-btn-primary bt-btn-solicitar" data-servicio-id="' + servicio.id + '">' + BancoTiempo.t('solicitar_servicio', 'Solicitar servicio') + '</button>' +
+                '<button class="bt-btn bt-btn-secondary">' + BancoTiempo.t('ver_mas', 'Ver más') + '</button>' +
                 '</div>' +
                 '</div>';
         },
@@ -303,21 +311,21 @@
          */
         abrirModalSolicitar: function(servicioId) {
             BancoTiempo.Modal.abrir({
-                titulo: 'Solicitar Servicio',
+                titulo: BancoTiempo.t('solicitar_servicio', 'Solicitar servicio'),
                 contenido: '<form id="bt-form-solicitar">' +
                     '<input type="hidden" name="servicio_id" value="' + servicioId + '">' +
                     '<div class="bt-form-group">' +
-                    '<label class="bt-form-label">Mensaje para el proveedor</label>' +
-                    '<textarea name="mensaje" class="bt-form-textarea" placeholder="Explica brevemente por que necesitas este servicio..." required></textarea>' +
+                    '<label class="bt-form-label">' + BancoTiempo.t('mensaje_proveedor', 'Mensaje para el proveedor') + '</label>' +
+                    '<textarea name="mensaje" class="bt-form-textarea" placeholder="' + BancoTiempo.t('explica_necesidad', 'Explica brevemente por qué necesitas este servicio...') + '" required></textarea>' +
                     '</div>' +
                     '<div class="bt-form-group">' +
-                    '<label class="bt-form-label">Fecha preferida</label>' +
+                    '<label class="bt-form-label">' + BancoTiempo.t('fecha_preferida', 'Fecha preferida') + '</label>' +
                     '<input type="datetime-local" name="fecha_preferida" class="bt-form-input">' +
                     '</div>' +
                     '</form>',
                 botones: [
-                    { texto: 'Cancelar', clase: 'bt-btn-secondary', cerrar: true },
-                    { texto: 'Enviar Solicitud', clase: 'bt-btn-primary', callback: function() {
+                    { texto: BancoTiempo.t('cancelar', 'Cancelar'), clase: 'bt-btn-secondary', cerrar: true },
+                    { texto: BancoTiempo.t('enviar_solicitud', 'Enviar solicitud'), clase: 'bt-btn-primary', callback: function() {
                         BancoTiempo.Servicios.enviarSolicitud();
                     }}
                 ]
@@ -336,16 +344,16 @@
             };
 
             if (!datos.mensaje) {
-                BancoTiempo.Utils.showToast('Por favor escribe un mensaje', 'warning');
+                BancoTiempo.Utils.showToast(BancoTiempo.t('escribe_mensaje', 'Por favor escribe un mensaje'), 'warning');
                 return;
             }
 
             BancoTiempo.Utils.ajax('solicitar_servicio', datos, function(response) {
                 if (response.success) {
                     BancoTiempo.Modal.cerrar();
-                    BancoTiempo.Utils.showToast('Solicitud enviada correctamente', 'success');
+                    BancoTiempo.Utils.showToast(BancoTiempo.t('solicitud_enviada', 'Solicitud enviada correctamente'), 'success');
                 } else {
-                    BancoTiempo.Utils.showToast(response.data.error || 'Error al enviar solicitud', 'error');
+                    BancoTiempo.Utils.showToast(response.data.error || BancoTiempo.t('error_enviar_solicitud', 'Error al enviar solicitud'), 'error');
                 }
             });
         },
@@ -362,14 +370,14 @@
                         contenido: '<div class="bt-servicio-detalle">' +
                             '<p class="bt-servicio-descripcion">' + servicio.descripcion + '</p>' +
                             '<div class="bt-servicio-meta">' +
-                            '<p><strong>Categoria:</strong> ' + servicio.categoria_nombre + '</p>' +
-                            '<p><strong>Horas estimadas:</strong> ' + BancoTiempo.Utils.formatHoras(servicio.horas_estimadas) + '</p>' +
-                            '<p><strong>Publicado:</strong> ' + BancoTiempo.Utils.formatFechaRelativa(servicio.fecha_publicacion) + '</p>' +
+                            '<p><strong>' + BancoTiempo.t('categoria', 'Categoría') + ':</strong> ' + servicio.categoria_nombre + '</p>' +
+                            '<p><strong>' + BancoTiempo.t('horas_estimadas', 'Horas estimadas') + ':</strong> ' + BancoTiempo.Utils.formatHoras(servicio.horas_estimadas) + '</p>' +
+                            '<p><strong>' + BancoTiempo.t('publicado', 'Publicado') + ':</strong> ' + BancoTiempo.Utils.formatFechaRelativa(servicio.fecha_publicacion) + '</p>' +
                             '</div>' +
                             '</div>',
                         botones: [
-                            { texto: 'Cerrar', clase: 'bt-btn-secondary', cerrar: true },
-                            { texto: 'Solicitar', clase: 'bt-btn-primary', callback: function() {
+                            { texto: BancoTiempo.t('cerrar', 'Cerrar'), clase: 'bt-btn-secondary', cerrar: true },
+                            { texto: BancoTiempo.t('solicitar_servicio', 'Solicitar servicio'), clase: 'bt-btn-primary', callback: function() {
                                 BancoTiempo.Modal.cerrar();
                                 BancoTiempo.Servicios.abrirModalSolicitar(servicioId);
                             }}
@@ -413,6 +421,22 @@
             $(document).on('click', '.bt-btn-nuevo-servicio', function() {
                 self.abrirNuevoServicio();
             });
+
+            $(document).on('click', '.bt-btn-editar', function() {
+                self.abrirEditarServicio($(this).data('servicio-id'));
+            });
+
+            $(document).on('click', '.bt-btn-pausar', function() {
+                self.cambiarEstadoServicio($(this).data('servicio-id'), 'pausar_servicio', BancoTiempo.t('confirmar_pausar_servicio', '¿Seguro que quieres pausar este servicio?'), BancoTiempo.t('servicio_pausado', 'Servicio pausado'));
+            });
+
+            $(document).on('click', '.bt-btn-activar', function() {
+                self.cambiarEstadoServicio($(this).data('servicio-id'), 'activar_servicio', BancoTiempo.t('confirmar_activar_servicio', '¿Quieres volver a activar este servicio?'), BancoTiempo.t('servicio_activado', 'Servicio activado'));
+            });
+
+            $(document).on('click', '.bt-btn-eliminar', function() {
+                self.eliminarServicio($(this).data('servicio-id'));
+            });
         },
 
         /**
@@ -420,11 +444,11 @@
          */
         abrirNuevoServicio: function() {
             BancoTiempo.Modal.abrir({
-                titulo: 'Ofrecer Nuevo Servicio',
+                titulo: BancoTiempo.t('ofrecer_nuevo_servicio', 'Ofrecer nuevo servicio'),
                 contenido: this.getFormularioServicio(),
                 botones: [
-                    { texto: 'Cancelar', clase: 'bt-btn-secondary', cerrar: true },
-                    { texto: 'Publicar Servicio', clase: 'bt-btn-success', callback: function() {
+                    { texto: BancoTiempo.t('cancelar', 'Cancelar'), clase: 'bt-btn-secondary', cerrar: true },
+                    { texto: BancoTiempo.t('publicar_servicio', 'Publicar servicio'), clase: 'bt-btn-success', callback: function() {
                         $('#bt-form-nuevo-servicio').submit();
                     }}
                 ]
@@ -434,17 +458,19 @@
         /**
          * Obtiene HTML del formulario de servicio
          */
-        getFormularioServicio: function(servicio) {
+        getFormularioServicio: function(servicio, formId) {
             servicio = servicio || {};
+            formId = formId || 'bt-form-nuevo-servicio';
             var categorias = typeof bancoTiempoData !== 'undefined' ? bancoTiempoData.categorias : {};
 
-            var opcionesCategorias = '<option value="">Selecciona categoria</option>';
+            var opcionesCategorias = '<option value="">' + BancoTiempo.t('selecciona_categoria', 'Selecciona categoría') + '</option>';
             for (var key in categorias) {
                 var selected = servicio.categoria === key ? ' selected' : '';
                 opcionesCategorias += '<option value="' + key + '"' + selected + '>' + categorias[key] + '</option>';
             }
 
-            return '<form id="bt-form-nuevo-servicio">' +
+            return '<form id="' + formId + '">' +
+                (servicio.id ? '<input type="hidden" name="servicio_id" value="' + servicio.id + '">' : '') +
                 '<div class="bt-form-group">' +
                 '<label class="bt-form-label">Tipo de servicio <span class="required">*</span></label>' +
                 '<select name="tipo" class="bt-form-select" required>' +
@@ -483,6 +509,30 @@
         },
 
         /**
+         * Abre formulario de edición
+         */
+        abrirEditarServicio: function(servicioId) {
+            var self = this;
+
+            BancoTiempo.Utils.ajax('obtener_servicio', { servicio_id: servicioId }, function(response) {
+                if (response.success && response.data) {
+                    BancoTiempo.Modal.abrir({
+                        titulo: BancoTiempo.t('editar_servicio', 'Editar servicio'),
+                        contenido: self.getFormularioServicio(response.data, 'bt-form-editar-servicio'),
+                        botones: [
+                            { texto: BancoTiempo.t('cancelar', 'Cancelar'), clase: 'bt-btn-secondary', cerrar: true },
+                            { texto: BancoTiempo.t('guardar_cambios', 'Guardar cambios'), clase: 'bt-btn-success', callback: function() {
+                                $('#bt-form-editar-servicio').submit();
+                            }}
+                        ]
+                    });
+                } else {
+                    BancoTiempo.Utils.showToast((response.data && response.data.error) || BancoTiempo.t('error_cargar_servicio', 'Error al cargar el servicio'), 'error');
+                }
+            });
+        },
+
+        /**
          * Guarda nuevo servicio
          */
         guardarServicio: function(form) {
@@ -499,10 +549,10 @@
             BancoTiempo.Utils.ajax('crear_servicio', datos, function(response) {
                 if (response.success) {
                     BancoTiempo.Modal.cerrar();
-                    BancoTiempo.Utils.showToast('Servicio publicado correctamente', 'success');
+                    BancoTiempo.Utils.showToast(BancoTiempo.t('servicio_publicado', 'Servicio publicado correctamente'), 'success');
                     BancoTiempo.Servicios.cargarServicios();
                 } else {
-                    BancoTiempo.Utils.showToast(response.data.error || 'Error al publicar servicio', 'error');
+                    BancoTiempo.Utils.showToast(response.data.error || BancoTiempo.t('error_publicar_servicio', 'Error al publicar servicio'), 'error');
                 }
             });
         },
@@ -524,11 +574,59 @@
             BancoTiempo.Utils.ajax('actualizar_servicio', datos, function(response) {
                 if (response.success) {
                     BancoTiempo.Modal.cerrar();
-                    BancoTiempo.Utils.showToast('Servicio actualizado', 'success');
+                    BancoTiempo.Utils.showToast(BancoTiempo.t('servicio_actualizado', 'Servicio actualizado'), 'success');
                     BancoTiempo.MisServicios.cargar();
                 } else {
-                    BancoTiempo.Utils.showToast(response.data.error || 'Error al actualizar', 'error');
+                    BancoTiempo.Utils.showToast(response.data.error || BancoTiempo.t('error_actualizar_servicio', 'Error al actualizar'), 'error');
                 }
+            });
+        },
+
+        /**
+         * Cambia estado del servicio propio
+         */
+        cambiarEstadoServicio: function(servicioId, accion, confirmacion, mensajeOk) {
+            BancoTiempo.Modal.abrir({
+                titulo: BancoTiempo.t('actualizar_servicio', 'Actualizar servicio'),
+                contenido: '<p>' + confirmacion + '</p>',
+                botones: [
+                    { texto: BancoTiempo.t('cancelar', 'Cancelar'), clase: 'bt-btn-secondary', cerrar: true },
+                    { texto: BancoTiempo.t('confirmar', 'Confirmar'), clase: 'bt-btn-primary', callback: function() {
+                        BancoTiempo.Utils.ajax(accion, { servicio_id: servicioId }, function(response) {
+                            if (response.success) {
+                                BancoTiempo.Modal.cerrar();
+                                BancoTiempo.Utils.showToast(mensajeOk, 'success');
+                                BancoTiempo.MisServicios.cargar();
+                            } else {
+                                BancoTiempo.Utils.showToast(response.data.error || BancoTiempo.t('error_actualizar_servicio', 'Error al actualizar'), 'error');
+                            }
+                        });
+                    }}
+                ]
+            });
+        },
+
+        /**
+         * Elimina servicio propio
+         */
+        eliminarServicio: function(servicioId) {
+            BancoTiempo.Modal.abrir({
+                titulo: BancoTiempo.t('eliminar_servicio', 'Eliminar servicio'),
+                contenido: '<p>' + BancoTiempo.t('confirmar_eliminar_servicio', '¿Seguro que quieres eliminar este servicio? Esta acción no se puede deshacer.') + '</p>',
+                botones: [
+                    { texto: BancoTiempo.t('cancelar', 'Cancelar'), clase: 'bt-btn-secondary', cerrar: true },
+                    { texto: BancoTiempo.t('eliminar', 'Eliminar'), clase: 'bt-btn-danger', callback: function() {
+                        BancoTiempo.Utils.ajax('eliminar_servicio', { servicio_id: servicioId }, function(response) {
+                            if (response.success) {
+                                BancoTiempo.Modal.cerrar();
+                                BancoTiempo.Utils.showToast(BancoTiempo.t('servicio_eliminado', 'Servicio eliminado'), 'success');
+                                BancoTiempo.MisServicios.cargar();
+                            } else {
+                                BancoTiempo.Utils.showToast(response.data.error || BancoTiempo.t('error_eliminar_servicio', 'Error al eliminar'), 'error');
+                            }
+                        });
+                    }}
+                ]
             });
         }
     };
@@ -601,7 +699,7 @@
                     });
                     contenedor.html(html);
                 } else {
-                    contenedor.html('<div class="bt-empty"><div class="bt-empty-icon"><span class="dashicons dashicons-randomize"></span></div><p class="bt-empty-title">No hay intercambios</p></div>');
+                    contenedor.html('<div class="bt-empty"><div class="bt-empty-icon"><span class="dashicons dashicons-randomize"></span></div><p class="bt-empty-title">' + BancoTiempo.t('sin_intercambios', 'No hay intercambios') + '</p></div>');
                 }
             });
         },
@@ -621,7 +719,7 @@
                 '<div class="bt-intercambio-info">' +
                 '<div class="bt-intercambio-titulo">' + intercambio.servicio_titulo + '</div>' +
                 '<div class="bt-intercambio-detalle">' +
-                (esEntrante ? 'De: ' : 'Para: ') + intercambio.otro_usuario + ' - ' +
+                (esEntrante ? BancoTiempo.t('de', 'De: ') : BancoTiempo.t('para', 'Para: ')) + intercambio.otro_usuario + ' - ' +
                 BancoTiempo.Utils.formatFechaRelativa(intercambio.fecha) +
                 '</div>' +
                 '</div>' +
@@ -638,10 +736,10 @@
         aceptar: function(intercambioId) {
             BancoTiempo.Utils.ajax('aceptar_intercambio', { intercambio_id: intercambioId }, function(response) {
                 if (response.success) {
-                    BancoTiempo.Utils.showToast('Intercambio aceptado', 'success');
+                    BancoTiempo.Utils.showToast(BancoTiempo.t('intercambio_aceptado', 'Intercambio aceptado'), 'success');
                     BancoTiempo.Intercambios.cargarHistorial();
                 } else {
-                    BancoTiempo.Utils.showToast(response.data.error || 'Error al aceptar', 'error');
+                    BancoTiempo.Utils.showToast(response.data.error || BancoTiempo.t('error_aceptar', 'Error al aceptar'), 'error');
                 }
             });
         },
@@ -650,16 +748,24 @@
          * Rechaza intercambio
          */
         rechazar: function(intercambioId) {
-            if (confirm('¿Estas seguro de rechazar este intercambio?')) {
-                BancoTiempo.Utils.ajax('rechazar_intercambio', { intercambio_id: intercambioId }, function(response) {
-                    if (response.success) {
-                        BancoTiempo.Utils.showToast('Intercambio rechazado', 'info');
-                        BancoTiempo.Intercambios.cargarHistorial();
-                    } else {
-                        BancoTiempo.Utils.showToast(response.data.error || 'Error', 'error');
-                    }
-                });
-            }
+            BancoTiempo.Modal.abrir({
+                titulo: BancoTiempo.t('rechazar_intercambio', 'Rechazar intercambio'),
+                contenido: '<p>' + BancoTiempo.t('confirmar_rechazar_intercambio', '¿Estas seguro de rechazar este intercambio?') + '</p>',
+                botones: [
+                    { texto: BancoTiempo.t('mantener', 'Mantener'), clase: 'bt-btn-secondary', cerrar: true },
+                    { texto: BancoTiempo.t('rechazar', 'Rechazar'), clase: 'bt-btn-danger', callback: function() {
+                        BancoTiempo.Utils.ajax('rechazar_intercambio', { intercambio_id: intercambioId }, function(response) {
+                            if (response.success) {
+                                BancoTiempo.Modal.cerrar();
+                                BancoTiempo.Utils.showToast(BancoTiempo.t('intercambio_rechazado', 'Intercambio rechazado'), 'info');
+                                BancoTiempo.Intercambios.cargarHistorial();
+                            } else {
+                                BancoTiempo.Utils.showToast(response.data.error || BancoTiempo.t('error_generico', 'Error'), 'error');
+                            }
+                        });
+                    }}
+                ]
+            });
         },
 
         /**
@@ -667,26 +773,26 @@
          */
         abrirModalCompletar: function(intercambioId) {
             BancoTiempo.Modal.abrir({
-                titulo: 'Completar Intercambio',
+                titulo: BancoTiempo.t('completar_intercambio', 'Completar Intercambio'),
                 contenido: '<form id="bt-form-completar">' +
                     '<input type="hidden" name="intercambio_id" value="' + intercambioId + '">' +
                     '<div class="bt-form-group">' +
-                    '<label class="bt-form-label">Horas reales del servicio</label>' +
+                    '<label class="bt-form-label">' + BancoTiempo.t('horas_reales_servicio', 'Horas reales del servicio') + '</label>' +
                     '<input type="number" name="horas_reales" class="bt-form-input" min="0.5" max="8" step="0.5" required>' +
                     '</div>' +
                     '<div class="bt-form-group">' +
-                    '<label class="bt-form-label">Valoracion</label>' +
+                    '<label class="bt-form-label">' + BancoTiempo.t('valoracion', 'Valoración') + '</label>' +
                     '<div class="bt-valoracion" id="bt-valoracion-completar"></div>' +
                     '<input type="hidden" name="valoracion" value="5">' +
                     '</div>' +
                     '<div class="bt-form-group">' +
-                    '<label class="bt-form-label">Comentario</label>' +
-                    '<textarea name="comentario" class="bt-form-textarea" placeholder="Comparte tu experiencia..."></textarea>' +
+                    '<label class="bt-form-label">' + BancoTiempo.t('comentario', 'Comentario') + '</label>' +
+                    '<textarea name="comentario" class="bt-form-textarea" placeholder="' + BancoTiempo.t('comparte_experiencia', 'Comparte tu experiencia...') + '"></textarea>' +
                     '</div>' +
                     '</form>',
                 botones: [
-                    { texto: 'Cancelar', clase: 'bt-btn-secondary', cerrar: true },
-                    { texto: 'Confirmar', clase: 'bt-btn-success', callback: function() {
+                    { texto: BancoTiempo.t('cancelar', 'Cancelar'), clase: 'bt-btn-secondary', cerrar: true },
+                    { texto: BancoTiempo.t('confirmar', 'Confirmar'), clase: 'bt-btn-success', callback: function() {
                         BancoTiempo.Intercambios.completar();
                     }}
                 ],
@@ -713,11 +819,11 @@
             BancoTiempo.Utils.ajax('completar_intercambio', datos, function(response) {
                 if (response.success) {
                     BancoTiempo.Modal.cerrar();
-                    BancoTiempo.Utils.showToast('Intercambio completado. Gracias por participar!', 'success');
+                    BancoTiempo.Utils.showToast(BancoTiempo.t('intercambio_completado', 'Intercambio completado. Gracias por participar!'), 'success');
                     BancoTiempo.Intercambios.cargarHistorial();
                     BancoTiempo.Saldo.actualizar();
                 } else {
-                    BancoTiempo.Utils.showToast(response.data.error || 'Error', 'error');
+                    BancoTiempo.Utils.showToast(response.data.error || BancoTiempo.t('error_generico', 'Error'), 'error');
                 }
             });
         },
@@ -726,16 +832,24 @@
          * Cancela intercambio
          */
         cancelar: function(intercambioId) {
-            if (confirm('¿Estas seguro de cancelar este intercambio?')) {
-                BancoTiempo.Utils.ajax('cancelar_intercambio', { intercambio_id: intercambioId }, function(response) {
-                    if (response.success) {
-                        BancoTiempo.Utils.showToast('Intercambio cancelado', 'info');
-                        BancoTiempo.Intercambios.cargarHistorial();
-                    } else {
-                        BancoTiempo.Utils.showToast(response.data.error || 'Error', 'error');
-                    }
-                });
-            }
+            BancoTiempo.Modal.abrir({
+                titulo: BancoTiempo.t('cancelar_intercambio', 'Cancelar intercambio'),
+                contenido: '<p>' + BancoTiempo.t('confirmar_cancelar_intercambio', '¿Estas seguro de cancelar este intercambio?') + '</p>',
+                botones: [
+                    { texto: BancoTiempo.t('volver', 'Volver'), clase: 'bt-btn-secondary', cerrar: true },
+                    { texto: BancoTiempo.t('cancelar_intercambio', 'Cancelar intercambio'), clase: 'bt-btn-danger', callback: function() {
+                        BancoTiempo.Utils.ajax('cancelar_intercambio', { intercambio_id: intercambioId }, function(response) {
+                            if (response.success) {
+                                BancoTiempo.Modal.cerrar();
+                                BancoTiempo.Utils.showToast(BancoTiempo.t('intercambio_cancelado', 'Intercambio cancelado'), 'info');
+                                BancoTiempo.Intercambios.cargarHistorial();
+                            } else {
+                                BancoTiempo.Utils.showToast(response.data.error || BancoTiempo.t('error_generico', 'Error'), 'error');
+                            }
+                        });
+                    }}
+                ]
+            });
         }
     };
 
@@ -888,7 +1002,7 @@
                     });
                     contenedor.html(html);
                 } else {
-                    contenedor.html('<div class="bt-empty"><div class="bt-empty-icon"><span class="dashicons dashicons-admin-post"></span></div><p class="bt-empty-title">No tienes servicios publicados</p><button class="bt-btn bt-btn-primary bt-btn-nuevo-servicio">Publicar Servicio</button></div>');
+                    contenedor.html('<div class="bt-empty"><div class="bt-empty-icon"><span class="dashicons dashicons-admin-post"></span></div><p class="bt-empty-title">' + BancoTiempo.t('sin_servicios_publicados', 'No tienes servicios publicados') + '</p><button class="bt-btn bt-btn-primary bt-btn-nuevo-servicio">' + BancoTiempo.t('publicar_servicio', 'Publicar servicio') + '</button></div>');
                 }
             });
         },
@@ -907,12 +1021,12 @@
                 '<p class="bt-servicio-descripcion">' + servicio.descripcion + '</p>' +
                 '<div class="bt-servicio-meta">' +
                 '<span class="bt-servicio-meta-item"><span class="dashicons dashicons-clock"></span>' + BancoTiempo.Utils.formatHoras(servicio.horas_estimadas) + '</span>' +
-                '<span class="bt-servicio-meta-item"><span class="dashicons dashicons-visibility"></span>' + servicio.solicitudes_count + ' solicitudes</span>' +
+                '<span class="bt-servicio-meta-item"><span class="dashicons dashicons-visibility"></span>' + servicio.solicitudes_count + ' ' + BancoTiempo.t('solicitudes', 'solicitudes') + '</span>' +
                 '</div>' +
                 '<div class="bt-servicio-acciones">' +
-                '<button class="bt-btn bt-btn-secondary bt-btn-sm bt-btn-editar" data-servicio-id="' + servicio.id + '">Editar</button>' +
-                (servicio.estado === 'activo' ? '<button class="bt-btn bt-btn-secondary bt-btn-sm bt-btn-pausar" data-servicio-id="' + servicio.id + '">Pausar</button>' : '<button class="bt-btn bt-btn-primary bt-btn-sm bt-btn-activar" data-servicio-id="' + servicio.id + '">Activar</button>') +
-                '<button class="bt-btn bt-btn-danger bt-btn-sm bt-btn-eliminar" data-servicio-id="' + servicio.id + '">Eliminar</button>' +
+                '<button class="bt-btn bt-btn-secondary bt-btn-sm bt-btn-editar" data-servicio-id="' + servicio.id + '">' + BancoTiempo.t('editar', 'Editar') + '</button>' +
+                (servicio.estado === 'activo' ? '<button class="bt-btn bt-btn-secondary bt-btn-sm bt-btn-pausar" data-servicio-id="' + servicio.id + '">' + BancoTiempo.t('pausar', 'Pausar') + '</button>' : '<button class="bt-btn bt-btn-primary bt-btn-sm bt-btn-activar" data-servicio-id="' + servicio.id + '">' + BancoTiempo.t('activar', 'Activar') + '</button>') +
+                '<button class="bt-btn bt-btn-danger bt-btn-sm bt-btn-eliminar" data-servicio-id="' + servicio.id + '">' + BancoTiempo.t('eliminar', 'Eliminar') + '</button>' +
                 '</div>' +
                 '</div>';
         }

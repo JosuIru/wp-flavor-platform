@@ -62,7 +62,7 @@ class Flavor_Comunidades_Frontend_Controller {
      * Registrar assets
      */
     public function registrar_assets() {
-        $base_url = plugins_url('assets/', dirname(__FILE__));
+        $base_url = plugins_url('assets/', dirname(dirname(__FILE__)));
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         wp_register_style(
@@ -100,6 +100,48 @@ class Flavor_Comunidades_Frontend_Controller {
     public function encolar_assets() {
         wp_enqueue_style('flavor-comunidades');
         wp_enqueue_script('flavor-comunidades');
+    }
+
+    /**
+     * Campos compatibles con el esquema actual de comunidades.
+     */
+    private function get_comunidad_select_sql($alias = '') {
+        global $wpdb;
+
+        $prefix = $alias ? $alias . '.' : '';
+        $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
+
+        return "{$alias}.*,
+            {$prefix}imagen AS imagen_portada,
+            {$prefix}imagen AS imagen_perfil,
+            LEFT(COALESCE({$prefix}descripcion, ''), 200) AS descripcion_corta,
+            CASE
+                WHEN {$prefix}tipo = 'abierta' THEN 'publica'
+                WHEN {$prefix}tipo = 'cerrada' THEN 'visible'
+                ELSE 'privada'
+            END AS privacidad,
+            0 AS verificada,
+            (
+                SELECT COUNT(*)
+                FROM {$tabla_actividad} act
+                WHERE act.comunidad_id = {$prefix}id
+                  AND act.tipo = 'publicacion'
+            ) AS publicaciones_count";
+    }
+
+    /**
+     * Mapea la privacidad legacy al tipo actual.
+     */
+    private function map_privacidad_to_tipo($privacidad) {
+        switch ($privacidad) {
+            case 'privada':
+                return 'secreta';
+            case 'visible':
+                return 'cerrada';
+            case 'publica':
+            default:
+                return 'abierta';
+        }
     }
 
     /**
@@ -172,7 +214,7 @@ class Flavor_Comunidades_Frontend_Controller {
             return '<p class="flavor-error">' . __('El módulo no está configurado.', 'flavor-chat-ia') . '</p>';
         }
 
-        $where = "estado = 'activa' AND (privacidad = 'publica' OR privacidad = 'visible')";
+        $where = "estado = 'activa' AND tipo IN ('abierta', 'cerrada')";
         $params = [];
 
         if (!empty($atts['tipo'])) {
@@ -185,7 +227,7 @@ class Flavor_Comunidades_Frontend_Controller {
             $params[] = $atts['categoria'];
         }
 
-        $sql = "SELECT * FROM {$tabla_comunidades} WHERE {$where} ORDER BY miembros_count DESC, created_at DESC LIMIT %d";
+        $sql = "SELECT " . $this->get_comunidad_select_sql() . " FROM {$tabla_comunidades} WHERE {$where} ORDER BY miembros_count DESC, created_at DESC LIMIT %d";
         $params[] = intval($atts['limite']);
 
         $comunidades = $wpdb->get_results($wpdb->prepare($sql, ...$params));
@@ -198,7 +240,7 @@ class Flavor_Comunidades_Frontend_Controller {
         <div class="flavor-comunidades-listado">
             <?php if ($atts['mostrar_crear'] === 'true' && is_user_logged_in()): ?>
                 <div class="comunidades-header">
-                    <a href="<?php echo esc_url(home_url('/comunidades/crear/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/crear/')); ?>" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-plus-alt2"></span>
                         <?php esc_html_e('Crear Comunidad', 'flavor-chat-ia'); ?>
                     </a>
@@ -224,7 +266,7 @@ class Flavor_Comunidades_Frontend_Controller {
                     <span class="dashicons dashicons-groups"></span>
                     <p><?php esc_html_e('No hay comunidades disponibles.', 'flavor-chat-ia'); ?></p>
                     <?php if (is_user_logged_in()): ?>
-                        <a href="<?php echo esc_url(home_url('/comunidades/crear/')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/crear/')); ?>" class="flavor-btn flavor-btn-primary">
                             <?php esc_html_e('Crear la primera', 'flavor-chat-ia'); ?>
                         </a>
                     <?php endif; ?>
@@ -251,7 +293,7 @@ class Flavor_Comunidades_Frontend_Controller {
             $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
             $usuario_es_miembro = $wpdb->get_var($wpdb->prepare(
                 "SELECT id FROM {$tabla_miembros}
-                 WHERE comunidad_id = %d AND usuario_id = %d AND estado = 'activo'",
+                 WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
                 $comunidad->id,
                 get_current_user_id()
             ));
@@ -305,7 +347,7 @@ class Flavor_Comunidades_Frontend_Controller {
             </div>
 
             <div class="flavor-card-footer">
-                <a href="<?php echo esc_url(home_url('/comunidad/' . $comunidad->slug)); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $comunidad->id . '/')); ?>" class="flavor-btn flavor-btn-outline">
                     <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                 </a>
                 <?php if (is_user_logged_in()): ?>
@@ -346,12 +388,12 @@ class Flavor_Comunidades_Frontend_Controller {
         $comunidad = null;
         if ($atts['id']) {
             $comunidad = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM {$tabla_comunidades} WHERE id = %d",
+                "SELECT " . $this->get_comunidad_select_sql() . " FROM {$tabla_comunidades} WHERE id = %d",
                 $atts['id']
             ));
         } elseif ($atts['slug']) {
             $comunidad = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM {$tabla_comunidades} WHERE slug = %s",
+                "SELECT " . $this->get_comunidad_select_sql() . " FROM {$tabla_comunidades} WHERE slug = %s",
                 $atts['slug']
             ));
         }
@@ -369,7 +411,7 @@ class Flavor_Comunidades_Frontend_Controller {
             $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
             $membresia = $wpdb->get_row($wpdb->prepare(
                 "SELECT rol FROM {$tabla_miembros}
-                 WHERE comunidad_id = %d AND usuario_id = %d AND estado = 'activo'",
+                 WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
                 $comunidad->id,
                 $usuario_id
             ));
@@ -411,15 +453,15 @@ class Flavor_Comunidades_Frontend_Controller {
         }
 
         // Obtener últimas publicaciones
-        $tabla_publicaciones = $wpdb->prefix . 'flavor_comunidades_publicaciones';
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_comunidades_actividad';
         $publicaciones = [];
         if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
             $publicaciones = $wpdb->get_results($wpdb->prepare(
-                "SELECT p.*, u.display_name as autor_nombre
+                "SELECT p.*, p.user_id AS autor_id, p.reacciones_count AS likes_count, u.display_name as autor_nombre
                  FROM {$tabla_publicaciones} p
-                 LEFT JOIN {$wpdb->users} u ON p.autor_id = u.ID
-                 WHERE p.comunidad_id = %d AND p.estado = 'publicado'
-                 ORDER BY p.fijado DESC, p.created_at DESC
+                 LEFT JOIN {$wpdb->users} u ON p.user_id = u.ID
+                 WHERE p.comunidad_id = %d AND p.tipo = 'publicacion'
+                 ORDER BY p.es_fijado DESC, p.created_at DESC
                  LIMIT 20",
                 $comunidad->id
             ));
@@ -430,11 +472,11 @@ class Flavor_Comunidades_Frontend_Controller {
         $miembros_destacados = [];
         if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
             $miembros_destacados = $wpdb->get_results($wpdb->prepare(
-                "SELECT m.*, u.display_name, u.user_email
+                "SELECT m.*, m.user_id AS usuario_id, m.joined_at AS created_at, u.display_name, u.user_email
                  FROM {$tabla_miembros} m
-                 LEFT JOIN {$wpdb->users} u ON m.usuario_id = u.ID
+                 LEFT JOIN {$wpdb->users} u ON m.user_id = u.ID
                  WHERE m.comunidad_id = %d AND m.estado = 'activo'
-                 ORDER BY FIELD(m.rol, 'admin', 'moderador', 'miembro'), m.created_at
+                 ORDER BY FIELD(m.rol, 'admin', 'moderador', 'miembro'), m.joined_at
                  LIMIT 12",
                 $comunidad->id
             ));
@@ -477,7 +519,7 @@ class Flavor_Comunidades_Frontend_Controller {
                 <div class="comunidad-acciones">
                     <?php if ($es_miembro): ?>
                         <?php if ($es_admin): ?>
-                            <a href="<?php echo esc_url(home_url('/comunidad/' . $comunidad->slug . '/admin/')); ?>" class="flavor-btn flavor-btn-secondary">
+                            <a href="<?php echo esc_url(add_query_arg(['comunidad_id' => intval($comunidad->id), 'tab' => 'miembros'], home_url('/mi-portal/comunidades/'))); ?>" class="flavor-btn flavor-btn-secondary">
                                 <span class="dashicons dashicons-admin-generic"></span>
                                 <?php esc_html_e('Administrar', 'flavor-chat-ia'); ?>
                             </a>
@@ -525,7 +567,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
                     <?php if ($es_miembro): ?>
                         <div class="comunidad-publicar">
-                            <form id="form-publicar" class="form-publicar">
+                            <form id="flavor-com-form-publicar" class="form-publicar">
                                 <?php wp_nonce_field('comunidades_nonce', 'comunidades_nonce_field'); ?>
                                 <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($comunidad->id); ?>">
                                 <textarea name="contenido" placeholder="<?php esc_attr_e('¿Qué quieres compartir con la comunidad?', 'flavor-chat-ia'); ?>" rows="3"></textarea>
@@ -598,7 +640,7 @@ class Flavor_Comunidades_Frontend_Controller {
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                        <a href="<?php echo esc_url(home_url('/comunidad/' . $comunidad->slug . '/miembros/')); ?>" class="ver-todos">
+                <a href="<?php echo esc_url(add_query_arg(['comunidad_id' => intval($comunidad->id), 'tab' => 'miembros'], home_url('/mi-portal/comunidades/'))); ?>" class="ver-todos">
                             <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
@@ -638,7 +680,7 @@ class Flavor_Comunidades_Frontend_Controller {
         <div class="flavor-comunidades-crear">
             <h2><?php esc_html_e('Crear Nueva Comunidad', 'flavor-chat-ia'); ?></h2>
 
-            <form id="form-crear-comunidad" class="flavor-form" enctype="multipart/form-data">
+            <form id="flavor-com-form-crear" class="flavor-form" enctype="multipart/form-data">
                 <?php wp_nonce_field('comunidades_nonce', 'comunidades_nonce_field'); ?>
 
                 <div class="flavor-form-group">
@@ -716,11 +758,11 @@ class Flavor_Comunidades_Frontend_Controller {
         $comunidades = [];
         if (Flavor_Chat_Helpers::tabla_existe($tabla_miembros)) {
             $comunidades = $wpdb->get_results($wpdb->prepare(
-                "SELECT c.*, m.rol, m.created_at as fecha_union
+                "SELECT " . $this->get_comunidad_select_sql('c') . ", m.rol, m.joined_at as fecha_union
                  FROM {$tabla_miembros} m
                  JOIN {$tabla_comunidades} c ON m.comunidad_id = c.id
-                 WHERE m.usuario_id = %d AND m.estado = 'activo'
-                 ORDER BY m.created_at DESC",
+                 WHERE m.user_id = %d AND m.estado = 'activo'
+                 ORDER BY m.joined_at DESC",
                 $usuario_id
             ));
         }
@@ -730,7 +772,7 @@ class Flavor_Comunidades_Frontend_Controller {
         <div class="flavor-mis-comunidades">
             <div class="mis-comunidades-header">
                 <h2><?php esc_html_e('Mis Comunidades', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/comunidades/crear/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/crear/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Crear', 'flavor-chat-ia'); ?>
                 </a>
@@ -740,7 +782,7 @@ class Flavor_Comunidades_Frontend_Controller {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-groups"></span>
                     <p><?php esc_html_e('No perteneces a ninguna comunidad.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/comunidades/')); ?>" class="flavor-btn flavor-btn-secondary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/')); ?>" class="flavor-btn flavor-btn-secondary">
                         <?php esc_html_e('Explorar Comunidades', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -757,7 +799,7 @@ class Flavor_Comunidades_Frontend_Controller {
                             <?php endif; ?>
                             <div class="comunidad-info">
                                 <h4>
-                                    <a href="<?php echo esc_url(home_url('/comunidad/' . $comunidad->slug)); ?>">
+                                <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $comunidad->id . '/')); ?>">
                                         <?php echo esc_html($comunidad->nombre); ?>
                                     </a>
                                 </h4>
@@ -768,7 +810,7 @@ class Flavor_Comunidades_Frontend_Controller {
                                     <?php endif; ?>
                                 </p>
                             </div>
-                            <a href="<?php echo esc_url(home_url('/comunidad/' . $comunidad->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                            <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $comunidad->id . '/')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                 <?php esc_html_e('Ir', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
@@ -793,19 +835,19 @@ class Flavor_Comunidades_Frontend_Controller {
 
         global $wpdb;
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
-        $tabla_publicaciones = $wpdb->prefix . 'flavor_comunidades_publicaciones';
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_comunidades_actividad';
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
         // Obtener publicaciones de comunidades del usuario
         $publicaciones = [];
         if (Flavor_Chat_Helpers::tabla_existe($tabla_publicaciones)) {
             $publicaciones = $wpdb->get_results($wpdb->prepare(
-                "SELECT p.*, c.nombre as comunidad_nombre, c.slug as comunidad_slug, u.display_name as autor_nombre
+                "SELECT p.*, p.user_id AS autor_id, c.nombre as comunidad_nombre, c.slug as comunidad_slug, u.display_name as autor_nombre
                  FROM {$tabla_publicaciones} p
                  JOIN {$tabla_miembros} m ON p.comunidad_id = m.comunidad_id
                  JOIN {$tabla_comunidades} c ON p.comunidad_id = c.id
-                 LEFT JOIN {$wpdb->users} u ON p.autor_id = u.ID
-                 WHERE m.usuario_id = %d AND m.estado = 'activo' AND p.estado = 'publicado'
+                 LEFT JOIN {$wpdb->users} u ON p.user_id = u.ID
+                 WHERE m.user_id = %d AND m.estado = 'activo' AND p.tipo = 'publicacion'
                  ORDER BY p.created_at DESC
                  LIMIT 50",
                 $usuario_id
@@ -826,7 +868,7 @@ class Flavor_Comunidades_Frontend_Controller {
                     <?php foreach ($publicaciones as $pub): ?>
                         <div class="feed-item">
                             <div class="feed-header">
-                                <a href="<?php echo esc_url(home_url('/comunidad/' . $pub->comunidad_slug)); ?>" class="feed-comunidad">
+                                <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $pub->comunidad_id . '/')); ?>" class="feed-comunidad">
                                     <?php echo esc_html($pub->comunidad_nombre); ?>
                                 </a>
                                 <span class="feed-autor"><?php echo esc_html($pub->autor_nombre); ?></span>
@@ -876,11 +918,11 @@ class Flavor_Comunidades_Frontend_Controller {
         }
 
         $miembros = $wpdb->get_results($wpdb->prepare(
-            "SELECT m.*, u.display_name, u.user_email
+            "SELECT m.*, m.user_id AS usuario_id, m.joined_at AS created_at, u.display_name, u.user_email
              FROM {$tabla_miembros} m
-             LEFT JOIN {$wpdb->users} u ON m.usuario_id = u.ID
+             LEFT JOIN {$wpdb->users} u ON m.user_id = u.ID
              WHERE m.comunidad_id = %d AND m.estado = 'activo'
-             ORDER BY FIELD(m.rol, 'admin', 'moderador', 'miembro'), m.created_at
+             ORDER BY FIELD(m.rol, 'admin', 'moderador', 'miembro'), m.joined_at
              LIMIT %d",
             $comunidad->id,
             intval($atts['limite'])
@@ -956,10 +998,9 @@ class Flavor_Comunidades_Frontend_Controller {
         $resultado = $wpdb->insert($tabla_comunidades, [
             'nombre' => $nombre,
             'slug' => $slug,
-            'descripcion' => $descripcion,
-            'descripcion_corta' => $descripcion_corta,
+            'descripcion' => $descripcion ?: $descripcion_corta,
             'categoria' => $categoria,
-            'privacidad' => $privacidad,
+            'tipo' => $this->map_privacidad_to_tipo($privacidad),
             'reglas' => $reglas,
             'creador_id' => $usuario_id,
             'estado' => 'activa',
@@ -973,10 +1014,10 @@ class Flavor_Comunidades_Frontend_Controller {
             // Añadir al creador como admin
             $wpdb->insert($tabla_miembros, [
                 'comunidad_id' => $comunidad_id,
-                'usuario_id' => $usuario_id,
+                'user_id' => $usuario_id,
                 'rol' => 'admin',
                 'estado' => 'activo',
-                'created_at' => current_time('mysql'),
+                'joined_at' => current_time('mysql'),
             ]);
 
             do_action('comunidad_created', $comunidad_id, $usuario_id);
@@ -984,7 +1025,7 @@ class Flavor_Comunidades_Frontend_Controller {
             wp_send_json_success([
                 'mensaje' => __('Comunidad creada correctamente', 'flavor-chat-ia'),
                 'comunidad_id' => $comunidad_id,
-                'redirect' => home_url('/comunidad/' . $slug),
+                'redirect' => home_url('/mi-portal/comunidades/' . $comunidad_id . '/'),
             ]);
         } else {
             wp_send_json_error(__('Error al crear la comunidad', 'flavor-chat-ia'));
@@ -1014,7 +1055,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
         // Verificar que la comunidad existe y es pública
         $comunidad = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$tabla_comunidades} WHERE id = %d AND estado = 'activa'",
+            "SELECT " . $this->get_comunidad_select_sql() . " FROM {$tabla_comunidades} WHERE id = %d AND estado = 'activa'",
             $comunidad_id
         ));
 
@@ -1024,7 +1065,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
         // Verificar si ya es miembro
         $existe = $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM {$tabla_miembros} WHERE comunidad_id = %d AND usuario_id = %d",
+            "SELECT id FROM {$tabla_miembros} WHERE comunidad_id = %d AND user_id = %d",
             $comunidad_id,
             $usuario_id
         ));
@@ -1038,10 +1079,10 @@ class Flavor_Comunidades_Frontend_Controller {
 
         $resultado = $wpdb->insert($tabla_miembros, [
             'comunidad_id' => $comunidad_id,
-            'usuario_id' => $usuario_id,
+            'user_id' => $usuario_id,
             'rol' => 'miembro',
             'estado' => $estado,
-            'created_at' => current_time('mysql'),
+            'joined_at' => current_time('mysql'),
         ]);
 
         if ($resultado) {
@@ -1083,7 +1124,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
         // Verificar que no sea el único admin
         $miembro = $wpdb->get_row($wpdb->prepare(
-            "SELECT rol FROM {$tabla_miembros} WHERE comunidad_id = %d AND usuario_id = %d AND estado = 'activo'",
+            "SELECT rol FROM {$tabla_miembros} WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
             $comunidad_id,
             $usuario_id
         ));
@@ -1091,7 +1132,7 @@ class Flavor_Comunidades_Frontend_Controller {
         if ($miembro && $miembro->rol === 'admin') {
             $otros_admins = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_miembros}
-                 WHERE comunidad_id = %d AND rol = 'admin' AND estado = 'activo' AND usuario_id != %d",
+                 WHERE comunidad_id = %d AND rol = 'admin' AND estado = 'activo' AND user_id != %d",
                 $comunidad_id,
                 $usuario_id
             ));
@@ -1103,7 +1144,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
         $resultado = $wpdb->delete($tabla_miembros, [
             'comunidad_id' => $comunidad_id,
-            'usuario_id' => $usuario_id,
+            'user_id' => $usuario_id,
         ]);
 
         if ($resultado) {
@@ -1139,13 +1180,12 @@ class Flavor_Comunidades_Frontend_Controller {
 
         global $wpdb;
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
-        $tabla_publicaciones = $wpdb->prefix . 'flavor_comunidades_publicaciones';
-        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_comunidades_actividad';
 
         // Verificar que es miembro
         $es_miembro = $wpdb->get_var($wpdb->prepare(
             "SELECT id FROM {$tabla_miembros}
-             WHERE comunidad_id = %d AND usuario_id = %d AND estado = 'activo'",
+             WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
             $comunidad_id,
             $usuario_id
         ));
@@ -1156,19 +1196,13 @@ class Flavor_Comunidades_Frontend_Controller {
 
         $resultado = $wpdb->insert($tabla_publicaciones, [
             'comunidad_id' => $comunidad_id,
-            'autor_id' => $usuario_id,
+            'user_id' => $usuario_id,
+            'tipo' => 'publicacion',
             'contenido' => $contenido,
-            'estado' => 'publicado',
             'created_at' => current_time('mysql'),
         ]);
 
         if ($resultado) {
-            // Incrementar contador de publicaciones
-            $wpdb->query($wpdb->prepare(
-                "UPDATE {$tabla_comunidades} SET publicaciones_count = publicaciones_count + 1 WHERE id = %d",
-                $comunidad_id
-            ));
-
             wp_send_json_success(['mensaje' => __('Publicación creada', 'flavor-chat-ia')]);
         } else {
             wp_send_json_error(__('Error al publicar', 'flavor-chat-ia'));
@@ -1194,7 +1228,9 @@ class Flavor_Comunidades_Frontend_Controller {
 
         global $wpdb;
         $tabla_comentarios = $wpdb->prefix . 'flavor_comunidades_comentarios';
-        $tabla_publicaciones = $wpdb->prefix . 'flavor_comunidades_publicaciones';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_comentarios)) {
+            wp_send_json_error(__('Los comentarios no están disponibles en este flujo legacy.', 'flavor-chat-ia'));
+        }
 
         $resultado = $wpdb->insert($tabla_comentarios, [
             'publicacion_id' => $publicacion_id,
@@ -1205,11 +1241,6 @@ class Flavor_Comunidades_Frontend_Controller {
         ]);
 
         if ($resultado) {
-            $wpdb->query($wpdb->prepare(
-                "UPDATE {$tabla_publicaciones} SET comentarios_count = comentarios_count + 1 WHERE id = %d",
-                $publicacion_id
-            ));
-
             wp_send_json_success(['mensaje' => __('Comentario publicado', 'flavor-chat-ia')]);
         } else {
             wp_send_json_error(__('Error al comentar', 'flavor-chat-ia'));
@@ -1226,7 +1257,7 @@ class Flavor_Comunidades_Frontend_Controller {
         global $wpdb;
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
-        $where = "estado = 'activa' AND (privacidad = 'publica' OR privacidad = 'visible')";
+        $where = "estado = 'activa' AND tipo IN ('abierta', 'cerrada')";
         $params = [];
 
         if (!empty($categoria)) {
@@ -1235,13 +1266,13 @@ class Flavor_Comunidades_Frontend_Controller {
         }
 
         if (!empty($busqueda)) {
-            $where .= " AND (nombre LIKE %s OR descripcion_corta LIKE %s)";
+            $where .= " AND (nombre LIKE %s OR descripcion LIKE %s)";
             $like = '%' . $wpdb->esc_like($busqueda) . '%';
             $params[] = $like;
             $params[] = $like;
         }
 
-        $sql = "SELECT * FROM {$tabla_comunidades} WHERE {$where} ORDER BY miembros_count DESC LIMIT 50";
+        $sql = "SELECT " . $this->get_comunidad_select_sql() . " FROM {$tabla_comunidades} WHERE {$where} ORDER BY miembros_count DESC LIMIT 50";
 
         $comunidades = empty($params)
             ? $wpdb->get_results($sql)
@@ -1275,16 +1306,16 @@ class Flavor_Comunidades_Frontend_Controller {
 
         global $wpdb;
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
-        $tabla_publicaciones = $wpdb->prefix . 'flavor_comunidades_publicaciones';
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_comunidades_actividad';
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
         $publicaciones = $wpdb->get_results($wpdb->prepare(
-            "SELECT p.*, c.nombre as comunidad_nombre, c.slug as comunidad_slug, u.display_name as autor_nombre
+            "SELECT p.*, p.user_id AS autor_id, c.nombre as comunidad_nombre, c.slug as comunidad_slug, u.display_name as autor_nombre
              FROM {$tabla_publicaciones} p
              JOIN {$tabla_miembros} m ON p.comunidad_id = m.comunidad_id
              JOIN {$tabla_comunidades} c ON p.comunidad_id = c.id
-             LEFT JOIN {$wpdb->users} u ON p.autor_id = u.ID
-             WHERE m.usuario_id = %d AND m.estado = 'activo' AND p.estado = 'publicado'
+             LEFT JOIN {$wpdb->users} u ON p.user_id = u.ID
+             WHERE m.user_id = %d AND m.estado = 'activo' AND p.tipo = 'publicacion'
              ORDER BY p.created_at DESC
              LIMIT %d OFFSET %d",
             $usuario_id,

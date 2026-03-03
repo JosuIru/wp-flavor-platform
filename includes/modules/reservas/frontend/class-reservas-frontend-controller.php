@@ -52,6 +52,8 @@ class Flavor_Reservas_Frontend_Controller {
         add_action('wp_ajax_reservas_cancelar', [$this, 'ajax_cancelar_reserva']);
         add_action('wp_ajax_reservas_disponibilidad', [$this, 'ajax_verificar_disponibilidad']);
         add_action('wp_ajax_nopriv_reservas_disponibilidad', [$this, 'ajax_verificar_disponibilidad']);
+        add_action('wp_ajax_reservas_calendario', [$this, 'ajax_calendario']);
+        add_action('wp_ajax_nopriv_reservas_calendario', [$this, 'ajax_calendario']);
         add_action('wp_ajax_reservas_filtrar', [$this, 'ajax_filtrar']);
         add_action('wp_ajax_nopriv_reservas_filtrar', [$this, 'ajax_filtrar']);
 
@@ -66,7 +68,7 @@ class Flavor_Reservas_Frontend_Controller {
      * Registrar assets CSS y JS
      */
     public function registrar_assets() {
-        $base_url = plugins_url('', dirname(__FILE__));
+        $base_url = plugins_url('', dirname(dirname(__FILE__)));
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         // CSS
@@ -548,11 +550,15 @@ class Flavor_Reservas_Frontend_Controller {
         }
 
         $recurso_id = isset($_POST['recurso_id']) ? absint($_POST['recurso_id']) : 0;
-        $fecha_inicio = isset($_POST['fecha_inicio']) ? sanitize_text_field($_POST['fecha_inicio']) : '';
+        $fecha = isset($_POST['fecha']) ? sanitize_text_field($_POST['fecha']) : '';
+        $fecha_inicio = isset($_POST['fecha_inicio']) ? sanitize_text_field($_POST['fecha_inicio']) : $fecha;
         $hora_inicio = isset($_POST['hora_inicio']) ? sanitize_text_field($_POST['hora_inicio']) : '';
-        $fecha_fin = isset($_POST['fecha_fin']) ? sanitize_text_field($_POST['fecha_fin']) : '';
+        $fecha_fin = isset($_POST['fecha_fin']) ? sanitize_text_field($_POST['fecha_fin']) : $fecha_inicio;
         $hora_fin = isset($_POST['hora_fin']) ? sanitize_text_field($_POST['hora_fin']) : '';
         $motivo = isset($_POST['motivo']) ? sanitize_textarea_field($_POST['motivo']) : '';
+        if ($motivo === '' && isset($_POST['notas'])) {
+            $motivo = sanitize_textarea_field($_POST['notas']);
+        }
         $usuario_id = get_current_user_id();
 
         if (!$recurso_id || empty($fecha_inicio) || empty($hora_inicio) || empty($fecha_fin) || empty($hora_fin)) {
@@ -643,10 +649,17 @@ class Flavor_Reservas_Frontend_Controller {
      */
     public function ajax_verificar_disponibilidad() {
         $recurso_id = isset($_POST['recurso_id']) ? absint($_POST['recurso_id']) : 0;
+        $fecha = isset($_POST['fecha']) ? sanitize_text_field($_POST['fecha']) : '';
         $fecha_inicio = isset($_POST['fecha_inicio']) ? sanitize_text_field($_POST['fecha_inicio']) : '';
         $hora_inicio = isset($_POST['hora_inicio']) ? sanitize_text_field($_POST['hora_inicio']) : '';
         $fecha_fin = isset($_POST['fecha_fin']) ? sanitize_text_field($_POST['fecha_fin']) : '';
         $hora_fin = isset($_POST['hora_fin']) ? sanitize_text_field($_POST['hora_fin']) : '';
+
+        if ($recurso_id && $fecha && empty($hora_inicio) && empty($hora_fin) && empty($fecha_inicio) && empty($fecha_fin)) {
+            wp_send_json_success([
+                'horarios' => $this->obtener_horarios_disponibles($recurso_id, $fecha),
+            ]);
+        }
 
         if (!$recurso_id || empty($fecha_inicio) || empty($hora_inicio) || empty($fecha_fin) || empty($hora_fin)) {
             wp_send_json_error(__('Datos incompletos', 'flavor-chat-ia'));
@@ -687,6 +700,29 @@ class Flavor_Reservas_Frontend_Controller {
                 'mensaje' => __('Disponible', 'flavor-chat-ia'),
             ]);
         }
+    }
+
+    /**
+     * AJAX: Calendario de disponibilidad
+     */
+    public function ajax_calendario() {
+        check_ajax_referer('reservas_nonce', 'nonce');
+
+        $recurso_id = isset($_POST['recurso_id']) ? absint($_POST['recurso_id']) : 0;
+        $mes = isset($_POST['mes']) ? absint($_POST['mes']) : (int) gmdate('n');
+        $anio = isset($_POST['anio']) ? absint($_POST['anio']) : (int) gmdate('Y');
+
+        if ($mes < 1 || $mes > 12) {
+            $mes = (int) gmdate('n');
+        }
+
+        if ($anio < 2000 || $anio > 2100) {
+            $anio = (int) gmdate('Y');
+        }
+
+        wp_send_json_success([
+            'html' => $this->render_calendario_ajax($recurso_id, $mes, $anio),
+        ]);
     }
 
     /**
@@ -763,5 +799,102 @@ class Flavor_Reservas_Frontend_Controller {
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Renderiza el HTML del calendario para AJAX.
+     */
+    private function render_calendario_ajax($recurso_id, $mes, $anio) {
+        $primer_dia = mktime(0, 0, 0, $mes, 1, $anio);
+        $dias_mes = (int) date('t', $primer_dia);
+        $inicio_semana = (int) date('N', $primer_dia);
+        $hoy = current_time('Y-m-d');
+        $dias = [__('Lun', 'flavor-chat-ia'), __('Mar', 'flavor-chat-ia'), __('Mie', 'flavor-chat-ia'), __('Jue', 'flavor-chat-ia'), __('Vie', 'flavor-chat-ia'), __('Sab', 'flavor-chat-ia'), __('Dom', 'flavor-chat-ia')];
+
+        ob_start();
+        echo '<div class="reservas-calendario__grid">';
+        foreach ($dias as $dia_nombre) {
+            echo '<div class="reservas-calendario__dia-header">' . esc_html($dia_nombre) . '</div>';
+        }
+
+        for ($i = 1; $i < $inicio_semana; $i++) {
+            echo '<div class="reservas-calendario__dia otro-mes"></div>';
+        }
+
+        for ($dia = 1; $dia <= $dias_mes; $dia++) {
+            $fecha = sprintf('%04d-%02d-%02d', $anio, $mes, $dia);
+            $clases = ['reservas-calendario__dia'];
+
+            if ($fecha < $hoy) {
+                $clases[] = 'deshabilitado';
+            }
+            if ($fecha === $hoy) {
+                $clases[] = 'hoy';
+            }
+
+            $slots = $this->obtener_horarios_disponibles($recurso_id, $fecha);
+            $disponibles = array_filter($slots, static function($slot) {
+                return !empty($slot['disponible']);
+            });
+            if (empty($disponibles)) {
+                $clases[] = 'deshabilitado';
+            }
+
+            echo '<div class="' . esc_attr(implode(' ', $clases)) . '" data-fecha="' . esc_attr($fecha) . '">';
+            echo '<span class="reservas-calendario__dia-numero">' . esc_html((string) $dia) . '</span>';
+            echo '</div>';
+        }
+
+        echo '</div>';
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtiene slots de una hora para un recurso y una fecha.
+     */
+    private function obtener_horarios_disponibles($recurso_id, $fecha) {
+        global $wpdb;
+
+        $tabla_reservas = $wpdb->prefix . 'flavor_reservas';
+        $inicio = strtotime($fecha . ' 09:00:00');
+        $fin_dia = strtotime($fecha . ' 22:00:00');
+        $horarios = [];
+
+        while ($inicio < $fin_dia) {
+            $fin_slot = $inicio + HOUR_IN_SECONDS;
+            $hora_inicio = gmdate('H:i', $inicio);
+            $hora_fin = gmdate('H:i', $fin_slot);
+            $inicio_completo = $fecha . ' ' . $hora_inicio . ':00';
+            $fin_completo = $fecha . ' ' . $hora_fin . ':00';
+
+            $conflicto = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*)
+                 FROM {$tabla_reservas}
+                 WHERE recurso_id = %d
+                   AND estado IN ('confirmada', 'pendiente')
+                   AND (
+                       (fecha_inicio <= %s AND fecha_fin > %s)
+                       OR (fecha_inicio < %s AND fecha_fin >= %s)
+                       OR (fecha_inicio >= %s AND fecha_fin <= %s)
+                   )",
+                $recurso_id,
+                $inicio_completo,
+                $inicio_completo,
+                $fin_completo,
+                $fin_completo,
+                $inicio_completo,
+                $fin_completo
+            ));
+
+            $horarios[] = [
+                'inicio' => $hora_inicio,
+                'fin' => $hora_fin,
+                'disponible' => $conflicto === 0,
+            ];
+
+            $inicio = $fin_slot;
+        }
+
+        return $horarios;
     }
 }
