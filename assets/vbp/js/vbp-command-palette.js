@@ -154,6 +154,13 @@ document.addEventListener('alpine:init', function() {
             // Efectos
             { id: 'shadow-editor', label: 'Editor de sombras', category: 'efectos', icon: '🌑', action: 'openShadowEditor', shortcut: 'Ctrl+Alt+Shift+S' },
             { id: 'gradient-editor', label: 'Editor de gradientes', category: 'efectos', icon: '🌈', action: 'openGradientEditor', shortcut: 'Ctrl+Alt+Shift+X' },
+            { id: 'animation-editor', label: 'Editor de animaciones', category: 'efectos', icon: '✨', action: 'openAnimationEditor', shortcut: 'Ctrl+Alt+A' },
+            { id: 'typography-editor', label: 'Editor de tipografía', category: 'efectos', icon: '🔤', action: 'openTypographyEditor', shortcut: 'Ctrl+Shift+T' },
+            { id: 'border-editor', label: 'Editor de bordes', category: 'efectos', icon: '📐', action: 'openBorderEditor', shortcut: 'Ctrl+Shift+B' },
+            { id: 'spacing-editor', label: 'Editor de espaciado', category: 'efectos', icon: '📏', action: 'openSpacingEditor', shortcut: 'Ctrl+Alt+P' },
+
+            // Navegación canvas
+            { id: 'pan-mode', label: 'Modo pan (arrastrar)', category: 'navegacion', icon: '✋', action: 'togglePanMode', shortcut: 'Space' },
 
             // Auto-layout
             { id: 'auto-layout', label: 'Toggle auto-layout', category: 'autolayout', icon: '📐', action: 'toggleAutoLayout', shortcut: 'Shift+A' },
@@ -161,9 +168,9 @@ document.addEventListener('alpine:init', function() {
             { id: 'increase-gap', label: 'Aumentar gap', category: 'autolayout', icon: '⬆', action: 'increaseGap', shortcut: 'Ctrl+Shift+↓' },
 
             // Responsive
-            { id: 'device-desktop', label: 'Vista Escritorio', category: 'responsive', icon: '🖥', action: 'device', value: 'desktop' },
-            { id: 'device-tablet', label: 'Vista Tablet', category: 'responsive', icon: '📱', action: 'device', value: 'tablet' },
-            { id: 'device-mobile', label: 'Vista Móvil', category: 'responsive', icon: '📱', action: 'device', value: 'mobile' },
+            { id: 'device-desktop', label: 'Vista Escritorio', category: 'responsive', icon: '🖥', action: 'breakpointDesktop', shortcut: '1' },
+            { id: 'device-tablet', label: 'Vista Tablet (768px)', category: 'responsive', icon: '📱', action: 'breakpointTablet', shortcut: '2' },
+            { id: 'device-mobile', label: 'Vista Móvil (375px)', category: 'responsive', icon: '📱', action: 'breakpointMobile', shortcut: '3' },
         ],
 
         get filteredCommands() {

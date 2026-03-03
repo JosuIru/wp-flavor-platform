@@ -139,6 +139,20 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+alt+shift+s': 'openShadowEditor',
                 'ctrl+alt+shift+x': 'openGradientEditor',
 
+                // Editores adicionales
+                'ctrl+alt+a': 'openAnimationEditor',
+                'ctrl+shift+t': 'openTypographyEditor',
+                'ctrl+shift+b': 'openBorderEditor',
+                'ctrl+alt+p': 'openSpacingEditor',
+
+                // Responsive breakpoints
+                '1': 'breakpointDesktop',
+                '2': 'breakpointTablet',
+                '3': 'breakpointMobile',
+
+                // Pan mode
+                ' ': 'togglePanMode',
+
                 // Auto-layout
                 'shift+a': 'toggleAutoLayout',
                 'ctrl+shift+arrowup': 'decreaseGap',
@@ -640,6 +654,36 @@ document.addEventListener('alpine:init', function() {
                         this.openGradientEditor();
                         break;
 
+                    // === EDITORES ADICIONALES ===
+                    case 'openAnimationEditor':
+                        this.openAnimationEditor();
+                        break;
+
+                    case 'openTypographyEditor':
+                        this.openTypographyEditor();
+                        break;
+
+                    case 'openBorderEditor':
+                        this.openBorderEditor();
+                        break;
+
+                    case 'openSpacingEditor':
+                        this.openSpacingEditor();
+                        break;
+
+                    // === RESPONSIVE BREAKPOINTS ===
+                    case 'breakpointDesktop':
+                        this.setBreakpoint('desktop');
+                        break;
+
+                    case 'breakpointTablet':
+                        this.setBreakpoint('tablet');
+                        break;
+
+                    case 'breakpointMobile':
+                        this.setBreakpoint('mobile');
+                        break;
+
                     // === AUTO-LAYOUT ===
                     case 'toggleAutoLayout':
                         this.toggleAutoLayout();
@@ -859,6 +903,40 @@ document.addEventListener('alpine:init', function() {
                         this.pasteFromJSON();
                         break;
 
+                    // === EDITORES ADICIONALES ===
+                    case 'openAnimationEditor':
+                        this.openAnimationEditor();
+                        break;
+
+                    case 'openTypographyEditor':
+                        this.openTypographyEditor();
+                        break;
+
+                    case 'openBorderEditor':
+                        this.openBorderEditor();
+                        break;
+
+                    case 'openSpacingEditor':
+                        this.openSpacingEditor();
+                        break;
+
+                    // === RESPONSIVE BREAKPOINTS ===
+                    case 'breakpointDesktop':
+                        this.setBreakpoint('desktop');
+                        break;
+
+                    case 'breakpointTablet':
+                        this.setBreakpoint('tablet');
+                        break;
+
+                    case 'breakpointMobile':
+                        this.setBreakpoint('mobile');
+                        break;
+
+                    // === PAN MODE ===
+                    case 'togglePanMode':
+                        this.togglePanMode();
+                        break;
             },
 
             /**
@@ -4890,6 +4968,911 @@ document.addEventListener('alpine:init', function() {
                 console.log('VBP:', message);
             },
 
+            // === EDITORES ADICIONALES ===
+
+            /**
+             * Editor de animaciones CSS
+             */
+            openAnimationEditor: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un solo elemento', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+                if (!element) return;
+
+                var currentAnimation = (element.styles && element.styles.animation) || {
+                    enabled: false,
+                    name: 'none',
+                    duration: 1,
+                    timing: 'ease',
+                    delay: 0,
+                    iteration: 1,
+                    direction: 'normal',
+                    fillMode: 'none'
+                };
+
+                var modalId = 'vbp-animation-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var animations = [
+                    { value: 'none', label: 'Sin animación' },
+                    { value: 'fadeIn', label: 'Fade In' },
+                    { value: 'fadeOut', label: 'Fade Out' },
+                    { value: 'fadeInUp', label: 'Fade In Up' },
+                    { value: 'fadeInDown', label: 'Fade In Down' },
+                    { value: 'fadeInLeft', label: 'Fade In Left' },
+                    { value: 'fadeInRight', label: 'Fade In Right' },
+                    { value: 'slideInUp', label: 'Slide In Up' },
+                    { value: 'slideInDown', label: 'Slide In Down' },
+                    { value: 'slideInLeft', label: 'Slide In Left' },
+                    { value: 'slideInRight', label: 'Slide In Right' },
+                    { value: 'zoomIn', label: 'Zoom In' },
+                    { value: 'zoomOut', label: 'Zoom Out' },
+                    { value: 'bounce', label: 'Bounce' },
+                    { value: 'pulse', label: 'Pulse' },
+                    { value: 'shake', label: 'Shake' },
+                    { value: 'swing', label: 'Swing' },
+                    { value: 'flip', label: 'Flip' },
+                    { value: 'rotateIn', label: 'Rotate In' }
+                ];
+
+                var timingFunctions = [
+                    { value: 'ease', label: 'Ease' },
+                    { value: 'ease-in', label: 'Ease In' },
+                    { value: 'ease-out', label: 'Ease Out' },
+                    { value: 'ease-in-out', label: 'Ease In Out' },
+                    { value: 'linear', label: 'Linear' },
+                    { value: 'cubic-bezier(0.68,-0.55,0.265,1.55)', label: 'Elastic' }
+                ];
+
+                var html = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                html += '<div class="vbp-modal" style="max-width: 450px;">';
+                html += '<div class="vbp-modal-header">';
+                html += '<h2>✨ Editor de Animaciones</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                html += '</div>';
+                html += '<div class="vbp-modal-body">';
+
+                // Preview
+                html += '<div style="background: #f3f4f6; border-radius: 8px; padding: 24px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; min-height: 100px;">';
+                html += '<div id="animation-preview" style="width: 60px; height: 60px; background: var(--vbp-primary, #89b4fa); border-radius: 8px;"></div>';
+                html += '</div>';
+
+                // Animación
+                html += '<div class="vbp-control" style="margin-bottom: 12px;">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Animación</label>';
+                html += '<select id="animation-name" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                animations.forEach(function(anim) {
+                    var selected = currentAnimation.name === anim.value ? ' selected' : '';
+                    html += '<option value="' + anim.value + '"' + selected + '>' + anim.label + '</option>';
+                });
+                html += '</select></div>';
+
+                // Duración y Delay
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Duración <span id="duration-val">' + currentAnimation.duration + 's</span></label>';
+                html += '<input type="range" id="animation-duration" min="0.1" max="5" step="0.1" value="' + currentAnimation.duration + '" style="width: 100%;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Delay <span id="delay-val">' + currentAnimation.delay + 's</span></label>';
+                html += '<input type="range" id="animation-delay" min="0" max="3" step="0.1" value="' + currentAnimation.delay + '" style="width: 100%;">';
+                html += '</div></div>';
+
+                // Timing function
+                html += '<div class="vbp-control" style="margin-bottom: 12px;">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Curva de tiempo</label>';
+                html += '<select id="animation-timing" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                timingFunctions.forEach(function(tf) {
+                    var selected = currentAnimation.timing === tf.value ? ' selected' : '';
+                    html += '<option value="' + tf.value + '"' + selected + '>' + tf.label + '</option>';
+                });
+                html += '</select></div>';
+
+                // Iteraciones
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Repeticiones</label>';
+                html += '<select id="animation-iteration" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<option value="1"' + (currentAnimation.iteration == 1 ? ' selected' : '') + '>1 vez</option>';
+                html += '<option value="2"' + (currentAnimation.iteration == 2 ? ' selected' : '') + '>2 veces</option>';
+                html += '<option value="3"' + (currentAnimation.iteration == 3 ? ' selected' : '') + '>3 veces</option>';
+                html += '<option value="infinite"' + (currentAnimation.iteration === 'infinite' ? ' selected' : '') + '>Infinito</option>';
+                html += '</select></div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Dirección</label>';
+                html += '<select id="animation-direction" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<option value="normal"' + (currentAnimation.direction === 'normal' ? ' selected' : '') + '>Normal</option>';
+                html += '<option value="reverse"' + (currentAnimation.direction === 'reverse' ? ' selected' : '') + '>Reversa</option>';
+                html += '<option value="alternate"' + (currentAnimation.direction === 'alternate' ? ' selected' : '') + '>Alternada</option>';
+                html += '</select></div></div>';
+
+                // Botón de preview
+                html += '<button id="animation-test" style="width: 100%; padding: 10px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #45475a); border-radius: 6px; cursor: pointer; margin-bottom: 16px;">▶️ Previsualizar animación</button>';
+
+                html += '</div>';
+                html += '<div class="vbp-modal-footer">';
+                html += '<button class="vbp-btn vbp-btn-secondary" id="animation-remove">Quitar animación</button>';
+                html += '<button class="vbp-btn vbp-btn-primary" id="animation-apply">Aplicar</button>';
+                html += '</div></div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var modal = document.getElementById(modalId);
+                var preview = document.getElementById('animation-preview');
+
+                // Actualizar valores
+                modal.querySelector('#animation-duration').addEventListener('input', function() {
+                    document.getElementById('duration-val').textContent = this.value + 's';
+                });
+                modal.querySelector('#animation-delay').addEventListener('input', function() {
+                    document.getElementById('delay-val').textContent = this.value + 's';
+                });
+
+                // Test animation
+                modal.querySelector('#animation-test').addEventListener('click', function() {
+                    var name = document.getElementById('animation-name').value;
+                    var duration = document.getElementById('animation-duration').value;
+                    var timing = document.getElementById('animation-timing').value;
+
+                    preview.style.animation = 'none';
+                    preview.offsetHeight; // Trigger reflow
+                    preview.style.animation = name + ' ' + duration + 's ' + timing;
+                });
+
+                // Aplicar
+                modal.querySelector('#animation-apply').addEventListener('click', function() {
+                    store.saveToHistory();
+
+                    var animationConfig = {
+                        enabled: document.getElementById('animation-name').value !== 'none',
+                        name: document.getElementById('animation-name').value,
+                        duration: parseFloat(document.getElementById('animation-duration').value),
+                        timing: document.getElementById('animation-timing').value,
+                        delay: parseFloat(document.getElementById('animation-delay').value),
+                        iteration: document.getElementById('animation-iteration').value,
+                        direction: document.getElementById('animation-direction').value
+                    };
+
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    styles.animation = animationConfig;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+
+                    modal.remove();
+                    self.showNotification('✨ Animación aplicada');
+                });
+
+                // Quitar
+                modal.querySelector('#animation-remove').addEventListener('click', function() {
+                    store.saveToHistory();
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    delete styles.animation;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+                    modal.remove();
+                    self.showNotification('Animación eliminada');
+                });
+            },
+
+            /**
+             * Editor de tipografía
+             */
+            openTypographyEditor: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un solo elemento', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+                if (!element) return;
+
+                var currentTypo = (element.styles && element.styles.typography) || {
+                    fontFamily: 'inherit',
+                    fontSize: 16,
+                    fontWeight: 400,
+                    lineHeight: 1.5,
+                    letterSpacing: 0,
+                    textTransform: 'none',
+                    textAlign: 'left'
+                };
+
+                var modalId = 'vbp-typography-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var fonts = [
+                    { value: 'inherit', label: 'Heredada (tema)' },
+                    { value: 'Inter, sans-serif', label: 'Inter' },
+                    { value: 'Roboto, sans-serif', label: 'Roboto' },
+                    { value: 'Open Sans, sans-serif', label: 'Open Sans' },
+                    { value: 'Lato, sans-serif', label: 'Lato' },
+                    { value: 'Poppins, sans-serif', label: 'Poppins' },
+                    { value: 'Montserrat, sans-serif', label: 'Montserrat' },
+                    { value: 'Playfair Display, serif', label: 'Playfair Display' },
+                    { value: 'Merriweather, serif', label: 'Merriweather' },
+                    { value: 'Georgia, serif', label: 'Georgia' },
+                    { value: 'Fira Code, monospace', label: 'Fira Code' },
+                    { value: 'monospace', label: 'Monospace' }
+                ];
+
+                var weights = [
+                    { value: 100, label: 'Thin (100)' },
+                    { value: 200, label: 'Extra Light (200)' },
+                    { value: 300, label: 'Light (300)' },
+                    { value: 400, label: 'Regular (400)' },
+                    { value: 500, label: 'Medium (500)' },
+                    { value: 600, label: 'Semi Bold (600)' },
+                    { value: 700, label: 'Bold (700)' },
+                    { value: 800, label: 'Extra Bold (800)' },
+                    { value: 900, label: 'Black (900)' }
+                ];
+
+                var html = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                html += '<div class="vbp-modal" style="max-width: 500px;">';
+                html += '<div class="vbp-modal-header">';
+                html += '<h2>🔤 Editor de Tipografía</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                html += '</div>';
+                html += '<div class="vbp-modal-body">';
+
+                // Preview
+                html += '<div id="typo-preview" style="background: #f3f4f6; border-radius: 8px; padding: 24px; margin-bottom: 16px; min-height: 80px;">';
+                html += '<p style="margin: 0;">El veloz murciélago hindú comía feliz cardillo y kiwi. 1234567890</p>';
+                html += '</div>';
+
+                // Font family
+                html += '<div class="vbp-control" style="margin-bottom: 12px;">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Familia tipográfica</label>';
+                html += '<select id="typo-family" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                fonts.forEach(function(f) {
+                    var selected = currentTypo.fontFamily === f.value ? ' selected' : '';
+                    html += '<option value="' + f.value + '"' + selected + ' style="font-family: ' + f.value + ';">' + f.label + '</option>';
+                });
+                html += '</select></div>';
+
+                // Size and Weight
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Tamaño <span id="size-val">' + currentTypo.fontSize + 'px</span></label>';
+                html += '<input type="range" id="typo-size" min="8" max="120" value="' + currentTypo.fontSize + '" style="width: 100%;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Peso</label>';
+                html += '<select id="typo-weight" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                weights.forEach(function(w) {
+                    var selected = currentTypo.fontWeight == w.value ? ' selected' : '';
+                    html += '<option value="' + w.value + '"' + selected + '>' + w.label + '</option>';
+                });
+                html += '</select></div></div>';
+
+                // Line height and Letter spacing
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Altura de línea <span id="lh-val">' + currentTypo.lineHeight + '</span></label>';
+                html += '<input type="range" id="typo-lineheight" min="0.8" max="3" step="0.1" value="' + currentTypo.lineHeight + '" style="width: 100%;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Espaciado <span id="ls-val">' + currentTypo.letterSpacing + 'px</span></label>';
+                html += '<input type="range" id="typo-letterspacing" min="-5" max="20" step="0.5" value="' + currentTypo.letterSpacing + '" style="width: 100%;">';
+                html += '</div></div>';
+
+                // Transform and Align
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Transformación</label>';
+                html += '<select id="typo-transform" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<option value="none"' + (currentTypo.textTransform === 'none' ? ' selected' : '') + '>Normal</option>';
+                html += '<option value="uppercase"' + (currentTypo.textTransform === 'uppercase' ? ' selected' : '') + '>MAYÚSCULAS</option>';
+                html += '<option value="lowercase"' + (currentTypo.textTransform === 'lowercase' ? ' selected' : '') + '>minúsculas</option>';
+                html += '<option value="capitalize"' + (currentTypo.textTransform === 'capitalize' ? ' selected' : '') + '>Capitalizar</option>';
+                html += '</select></div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Alineación</label>';
+                html += '<div style="display: flex; gap: 4px;">';
+                ['left', 'center', 'right', 'justify'].forEach(function(align) {
+                    var icons = { left: '⬅', center: '↔', right: '➡', justify: '☰' };
+                    var active = currentTypo.textAlign === align ? 'background: var(--vbp-primary, #89b4fa); color: #1e1e2e;' : '';
+                    html += '<button data-align="' + align + '" style="flex: 1; padding: 8px; border: 1px solid var(--vbp-border, #313244); border-radius: 4px; cursor: pointer; ' + active + '">' + icons[align] + '</button>';
+                });
+                html += '</div></div></div>';
+
+                html += '</div>';
+                html += '<div class="vbp-modal-footer">';
+                html += '<button class="vbp-btn vbp-btn-secondary" id="typo-reset">Resetear</button>';
+                html += '<button class="vbp-btn vbp-btn-primary" id="typo-apply">Aplicar</button>';
+                html += '</div></div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var modal = document.getElementById(modalId);
+                var preview = document.getElementById('typo-preview').querySelector('p');
+                var currentAlign = currentTypo.textAlign;
+
+                function updatePreview() {
+                    preview.style.fontFamily = document.getElementById('typo-family').value;
+                    preview.style.fontSize = document.getElementById('typo-size').value + 'px';
+                    preview.style.fontWeight = document.getElementById('typo-weight').value;
+                    preview.style.lineHeight = document.getElementById('typo-lineheight').value;
+                    preview.style.letterSpacing = document.getElementById('typo-letterspacing').value + 'px';
+                    preview.style.textTransform = document.getElementById('typo-transform').value;
+                    preview.style.textAlign = currentAlign;
+                }
+
+                // Event listeners
+                modal.querySelector('#typo-size').addEventListener('input', function() {
+                    document.getElementById('size-val').textContent = this.value + 'px';
+                    updatePreview();
+                });
+                modal.querySelector('#typo-lineheight').addEventListener('input', function() {
+                    document.getElementById('lh-val').textContent = this.value;
+                    updatePreview();
+                });
+                modal.querySelector('#typo-letterspacing').addEventListener('input', function() {
+                    document.getElementById('ls-val').textContent = this.value + 'px';
+                    updatePreview();
+                });
+                modal.querySelectorAll('select').forEach(function(sel) {
+                    sel.addEventListener('change', updatePreview);
+                });
+
+                // Align buttons
+                modal.querySelectorAll('[data-align]').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        modal.querySelectorAll('[data-align]').forEach(function(b) {
+                            b.style.background = '';
+                            b.style.color = '';
+                        });
+                        this.style.background = 'var(--vbp-primary, #89b4fa)';
+                        this.style.color = '#1e1e2e';
+                        currentAlign = this.dataset.align;
+                        updatePreview();
+                    });
+                });
+
+                // Apply
+                modal.querySelector('#typo-apply').addEventListener('click', function() {
+                    store.saveToHistory();
+
+                    var typoConfig = {
+                        fontFamily: document.getElementById('typo-family').value,
+                        fontSize: parseInt(document.getElementById('typo-size').value),
+                        fontWeight: parseInt(document.getElementById('typo-weight').value),
+                        lineHeight: parseFloat(document.getElementById('typo-lineheight').value),
+                        letterSpacing: parseFloat(document.getElementById('typo-letterspacing').value),
+                        textTransform: document.getElementById('typo-transform').value,
+                        textAlign: currentAlign
+                    };
+
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    styles.typography = typoConfig;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+
+                    modal.remove();
+                    self.showNotification('🔤 Tipografía aplicada');
+                });
+
+                // Reset
+                modal.querySelector('#typo-reset').addEventListener('click', function() {
+                    store.saveToHistory();
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    delete styles.typography;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+                    modal.remove();
+                    self.showNotification('Tipografía reseteada');
+                });
+
+                updatePreview();
+            },
+
+            /**
+             * Editor de bordes
+             */
+            openBorderEditor: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un solo elemento', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+                if (!element) return;
+
+                var currentBorder = (element.styles && element.styles.border) || {
+                    width: 0,
+                    style: 'solid',
+                    color: '#000000',
+                    radius: { tl: 0, tr: 0, br: 0, bl: 0 },
+                    uniform: true
+                };
+
+                var modalId = 'vbp-border-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var html = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                html += '<div class="vbp-modal" style="max-width: 420px;">';
+                html += '<div class="vbp-modal-header">';
+                html += '<h2>📐 Editor de Bordes</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                html += '</div>';
+                html += '<div class="vbp-modal-body">';
+
+                // Preview
+                html += '<div style="background: #f3f4f6; border-radius: 8px; padding: 24px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center;">';
+                html += '<div id="border-preview" style="width: 80px; height: 80px; background: white;"></div>';
+                html += '</div>';
+
+                // Border width
+                html += '<div class="vbp-control" style="margin-bottom: 12px;">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Ancho del borde <span id="bw-val">' + currentBorder.width + 'px</span></label>';
+                html += '<input type="range" id="border-width" min="0" max="20" value="' + currentBorder.width + '" style="width: 100%;">';
+                html += '</div>';
+
+                // Style and Color
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Estilo</label>';
+                html += '<select id="border-style" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                ['solid', 'dashed', 'dotted', 'double', 'groove', 'ridge', 'inset', 'outset'].forEach(function(s) {
+                    var selected = currentBorder.style === s ? ' selected' : '';
+                    html += '<option value="' + s + '"' + selected + '>' + s.charAt(0).toUpperCase() + s.slice(1) + '</option>';
+                });
+                html += '</select></div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Color</label>';
+                html += '<input type="color" id="border-color" value="' + currentBorder.color + '" style="width: 100%; height: 38px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); cursor: pointer;">';
+                html += '</div></div>';
+
+                // Border radius section
+                html += '<div style="margin-bottom: 12px;">';
+                html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">';
+                html += '<label style="color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Border Radius</label>';
+                html += '<label style="display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer;">';
+                html += '<input type="checkbox" id="radius-uniform"' + (currentBorder.uniform ? ' checked' : '') + '> Uniforme';
+                html += '</label></div>';
+
+                // Uniform radius
+                html += '<div id="radius-uniform-control"' + (currentBorder.uniform ? '' : ' style="display: none;"') + '>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;"><span id="ru-val">' + (currentBorder.radius.tl || 0) + 'px</span></label>';
+                html += '<input type="range" id="radius-all" min="0" max="100" value="' + (currentBorder.radius.tl || 0) + '" style="width: 100%;">';
+                html += '</div></div>';
+
+                // Individual radius
+                html += '<div id="radius-individual-control"' + (currentBorder.uniform ? ' style="display: none;"' : '') + '>';
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">';
+                ['tl', 'tr', 'br', 'bl'].forEach(function(corner) {
+                    var labels = { tl: '↖ Sup-Izq', tr: '↗ Sup-Der', br: '↘ Inf-Der', bl: '↙ Inf-Izq' };
+                    html += '<div class="vbp-control">';
+                    html += '<label style="display: block; margin-bottom: 4px; color: var(--vbp-text-muted, #6c7086); font-size: 11px;">' + labels[corner] + ' <span id="r' + corner + '-val">' + (currentBorder.radius[corner] || 0) + 'px</span></label>';
+                    html += '<input type="range" class="radius-corner" data-corner="' + corner + '" min="0" max="100" value="' + (currentBorder.radius[corner] || 0) + '" style="width: 100%;">';
+                    html += '</div>';
+                });
+                html += '</div></div></div>';
+
+                // Presets
+                html += '<div style="margin-bottom: 12px;">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Presets</label>';
+                html += '<div style="display: flex; gap: 6px;">';
+                [0, 4, 8, 16, 24, 9999].forEach(function(val) {
+                    var label = val === 9999 ? '●' : val;
+                    html += '<button class="radius-preset" data-value="' + val + '" style="flex: 1; padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #45475a); border-radius: 4px; cursor: pointer;">' + label + '</button>';
+                });
+                html += '</div></div>';
+
+                html += '</div>';
+                html += '<div class="vbp-modal-footer">';
+                html += '<button class="vbp-btn vbp-btn-secondary" id="border-remove">Quitar borde</button>';
+                html += '<button class="vbp-btn vbp-btn-primary" id="border-apply">Aplicar</button>';
+                html += '</div></div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var modal = document.getElementById(modalId);
+                var preview = document.getElementById('border-preview');
+
+                function updatePreview() {
+                    var width = document.getElementById('border-width').value;
+                    var style = document.getElementById('border-style').value;
+                    var color = document.getElementById('border-color').value;
+                    var uniform = document.getElementById('radius-uniform').checked;
+                    var radius;
+
+                    if (uniform) {
+                        var r = document.getElementById('radius-all').value;
+                        radius = r + 'px';
+                    } else {
+                        var tl = modal.querySelector('[data-corner="tl"]').value;
+                        var tr = modal.querySelector('[data-corner="tr"]').value;
+                        var br = modal.querySelector('[data-corner="br"]').value;
+                        var bl = modal.querySelector('[data-corner="bl"]').value;
+                        radius = tl + 'px ' + tr + 'px ' + br + 'px ' + bl + 'px';
+                    }
+
+                    preview.style.border = width + 'px ' + style + ' ' + color;
+                    preview.style.borderRadius = radius;
+                }
+
+                // Event listeners
+                modal.querySelector('#border-width').addEventListener('input', function() {
+                    document.getElementById('bw-val').textContent = this.value + 'px';
+                    updatePreview();
+                });
+
+                modal.querySelector('#border-style').addEventListener('change', updatePreview);
+                modal.querySelector('#border-color').addEventListener('input', updatePreview);
+
+                modal.querySelector('#radius-uniform').addEventListener('change', function() {
+                    document.getElementById('radius-uniform-control').style.display = this.checked ? '' : 'none';
+                    document.getElementById('radius-individual-control').style.display = this.checked ? 'none' : '';
+                    updatePreview();
+                });
+
+                modal.querySelector('#radius-all').addEventListener('input', function() {
+                    document.getElementById('ru-val').textContent = this.value + 'px';
+                    updatePreview();
+                });
+
+                modal.querySelectorAll('.radius-corner').forEach(function(input) {
+                    input.addEventListener('input', function() {
+                        document.getElementById('r' + this.dataset.corner + '-val').textContent = this.value + 'px';
+                        updatePreview();
+                    });
+                });
+
+                modal.querySelectorAll('.radius-preset').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var val = this.dataset.value;
+                        if (document.getElementById('radius-uniform').checked) {
+                            document.getElementById('radius-all').value = val;
+                            document.getElementById('ru-val').textContent = val + 'px';
+                        } else {
+                            modal.querySelectorAll('.radius-corner').forEach(function(input) {
+                                input.value = val;
+                                document.getElementById('r' + input.dataset.corner + '-val').textContent = val + 'px';
+                            });
+                        }
+                        updatePreview();
+                    });
+                });
+
+                // Apply
+                modal.querySelector('#border-apply').addEventListener('click', function() {
+                    store.saveToHistory();
+
+                    var uniform = document.getElementById('radius-uniform').checked;
+                    var radius;
+
+                    if (uniform) {
+                        var r = parseInt(document.getElementById('radius-all').value);
+                        radius = { tl: r, tr: r, br: r, bl: r };
+                    } else {
+                        radius = {
+                            tl: parseInt(modal.querySelector('[data-corner="tl"]').value),
+                            tr: parseInt(modal.querySelector('[data-corner="tr"]').value),
+                            br: parseInt(modal.querySelector('[data-corner="br"]').value),
+                            bl: parseInt(modal.querySelector('[data-corner="bl"]').value)
+                        };
+                    }
+
+                    var borderConfig = {
+                        width: parseInt(document.getElementById('border-width').value),
+                        style: document.getElementById('border-style').value,
+                        color: document.getElementById('border-color').value,
+                        radius: radius,
+                        uniform: uniform
+                    };
+
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    styles.border = borderConfig;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+
+                    modal.remove();
+                    self.showNotification('📐 Borde aplicado');
+                });
+
+                // Remove
+                modal.querySelector('#border-remove').addEventListener('click', function() {
+                    store.saveToHistory();
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    delete styles.border;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+                    modal.remove();
+                    self.showNotification('Borde eliminado');
+                });
+
+                updatePreview();
+            },
+
+            /**
+             * Editor de espaciado (padding/margin visual)
+             */
+            openSpacingEditor: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un solo elemento', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+                if (!element) return;
+
+                var currentSpacing = (element.styles && element.styles.spacing) || {
+                    padding: { top: 0, right: 0, bottom: 0, left: 0 },
+                    margin: { top: 0, right: 0, bottom: 0, left: 0 }
+                };
+
+                var modalId = 'vbp-spacing-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var html = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                html += '<div class="vbp-modal" style="max-width: 500px;">';
+                html += '<div class="vbp-modal-header">';
+                html += '<h2>📏 Editor de Espaciado</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                html += '</div>';
+                html += '<div class="vbp-modal-body">';
+
+                // Visual box model
+                html += '<div class="vbp-spacing-preview" style="display: flex; justify-content: center; margin-bottom: 20px;">';
+                html += '<div style="position: relative; width: 280px;">';
+
+                // Margin box (outer)
+                html += '<div id="margin-box" style="border: 2px dashed #f97316; padding: 20px; background: rgba(249, 115, 22, 0.1); position: relative;">';
+                html += '<span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--vbp-bg, #1e1e2e); padding: 0 6px; font-size: 10px; color: #f97316;">MARGIN</span>';
+
+                // Margin inputs
+                html += '<input type="number" id="mt" value="' + currentSpacing.margin.top + '" style="position: absolute; top: 2px; left: 50%; transform: translateX(-50%); width: 40px; text-align: center; border: 1px solid #f97316; border-radius: 4px; font-size: 12px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<input type="number" id="mr" value="' + currentSpacing.margin.right + '" style="position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: 40px; text-align: center; border: 1px solid #f97316; border-radius: 4px; font-size: 12px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<input type="number" id="mb" value="' + currentSpacing.margin.bottom + '" style="position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 40px; text-align: center; border: 1px solid #f97316; border-radius: 4px; font-size: 12px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<input type="number" id="ml" value="' + currentSpacing.margin.left + '" style="position: absolute; left: 2px; top: 50%; transform: translateY(-50%); width: 40px; text-align: center; border: 1px solid #f97316; border-radius: 4px; font-size: 12px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+
+                // Padding box (inner)
+                html += '<div id="padding-box" style="border: 2px dashed #22c55e; padding: 30px; background: rgba(34, 197, 94, 0.1); position: relative; min-height: 60px;">';
+                html += '<span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--vbp-bg, #1e1e2e); padding: 0 6px; font-size: 10px; color: #22c55e;">PADDING</span>';
+
+                // Padding inputs
+                html += '<input type="number" id="pt" value="' + currentSpacing.padding.top + '" style="position: absolute; top: 2px; left: 50%; transform: translateX(-50%); width: 40px; text-align: center; border: 1px solid #22c55e; border-radius: 4px; font-size: 12px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<input type="number" id="pr" value="' + currentSpacing.padding.right + '" style="position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: 40px; text-align: center; border: 1px solid #22c55e; border-radius: 4px; font-size: 12px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<input type="number" id="pb" value="' + currentSpacing.padding.bottom + '" style="position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 40px; text-align: center; border: 1px solid #22c55e; border-radius: 4px; font-size: 12px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<input type="number" id="pl" value="' + currentSpacing.padding.left + '" style="position: absolute; left: 2px; top: 50%; transform: translateY(-50%); width: 40px; text-align: center; border: 1px solid #22c55e; border-radius: 4px; font-size: 12px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+
+                // Content
+                html += '<div style="background: var(--vbp-primary, #89b4fa); color: #1e1e2e; padding: 8px; border-radius: 4px; text-align: center; font-size: 11px;">Contenido</div>';
+
+                html += '</div>'; // end padding-box
+                html += '</div>'; // end margin-box
+                html += '</div></div>';
+
+                // Quick presets
+                html += '<div style="margin-bottom: 12px;">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Presets rápidos</label>';
+                html += '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">';
+                [
+                    { label: 'Reset', p: 0, m: 0 },
+                    { label: 'S', p: 8, m: 0 },
+                    { label: 'M', p: 16, m: 0 },
+                    { label: 'L', p: 24, m: 0 },
+                    { label: 'XL', p: 32, m: 0 },
+                    { label: 'Card', p: 16, m: 8 },
+                    { label: 'Section', p: 48, m: 0 },
+                    { label: 'Hero', p: 64, m: 0 }
+                ].forEach(function(preset) {
+                    html += '<button class="spacing-preset" data-padding="' + preset.p + '" data-margin="' + preset.m + '" style="padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #45475a); border-radius: 4px; cursor: pointer; font-size: 12px;">' + preset.label + '</button>';
+                });
+                html += '</div></div>';
+
+                html += '</div>';
+                html += '<div class="vbp-modal-footer">';
+                html += '<button class="vbp-btn vbp-btn-secondary" id="spacing-reset">Resetear</button>';
+                html += '<button class="vbp-btn vbp-btn-primary" id="spacing-apply">Aplicar</button>';
+                html += '</div></div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var modal = document.getElementById(modalId);
+
+                // Preset buttons
+                modal.querySelectorAll('.spacing-preset').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var p = this.dataset.padding;
+                        var m = this.dataset.margin;
+                        ['pt', 'pr', 'pb', 'pl'].forEach(function(id) {
+                            document.getElementById(id).value = p;
+                        });
+                        ['mt', 'mr', 'mb', 'ml'].forEach(function(id) {
+                            document.getElementById(id).value = m;
+                        });
+                    });
+                });
+
+                // Apply
+                modal.querySelector('#spacing-apply').addEventListener('click', function() {
+                    store.saveToHistory();
+
+                    var spacingConfig = {
+                        padding: {
+                            top: parseInt(document.getElementById('pt').value) || 0,
+                            right: parseInt(document.getElementById('pr').value) || 0,
+                            bottom: parseInt(document.getElementById('pb').value) || 0,
+                            left: parseInt(document.getElementById('pl').value) || 0
+                        },
+                        margin: {
+                            top: parseInt(document.getElementById('mt').value) || 0,
+                            right: parseInt(document.getElementById('mr').value) || 0,
+                            bottom: parseInt(document.getElementById('mb').value) || 0,
+                            left: parseInt(document.getElementById('ml').value) || 0
+                        }
+                    };
+
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    styles.spacing = spacingConfig;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+
+                    modal.remove();
+                    self.showNotification('📏 Espaciado aplicado');
+                });
+
+                // Reset
+                modal.querySelector('#spacing-reset').addEventListener('click', function() {
+                    store.saveToHistory();
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    delete styles.spacing;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+                    modal.remove();
+                    self.showNotification('Espaciado reseteado');
+                });
+            },
+
+            // === RESPONSIVE BREAKPOINTS ===
+
+            /**
+             * Cambiar breakpoint de vista
+             */
+            setBreakpoint: function(breakpoint) {
+                var canvas = document.querySelector('.vbp-canvas');
+                var wrapper = document.querySelector('.vbp-canvas-wrapper');
+                if (!canvas || !wrapper) return;
+
+                var breakpoints = {
+                    desktop: { width: '100%', maxWidth: 'none', label: '🖥️ Desktop' },
+                    tablet: { width: '768px', maxWidth: '768px', label: '📱 Tablet' },
+                    mobile: { width: '375px', maxWidth: '375px', label: '📱 Mobile' }
+                };
+
+                var config = breakpoints[breakpoint];
+                if (!config) return;
+
+                // Actualizar canvas
+                canvas.style.width = config.width;
+                canvas.style.maxWidth = config.maxWidth;
+                canvas.style.margin = breakpoint === 'desktop' ? '0' : '0 auto';
+                canvas.style.transition = 'width 0.3s ease';
+
+                // Actualizar store si existe
+                var store = Alpine.store('vbp');
+                if (store) {
+                    store.currentBreakpoint = breakpoint;
+                }
+
+                // Actualizar indicador visual
+                this.updateBreakpointIndicator(breakpoint, config.label);
+
+                this.showNotification(config.label);
+            },
+
+            /**
+             * Actualizar indicador de breakpoint
+             */
+            updateBreakpointIndicator: function(breakpoint, label) {
+                var existingIndicator = document.getElementById('vbp-breakpoint-indicator');
+                if (existingIndicator) {
+                    existingIndicator.remove();
+                }
+
+                var indicator = document.createElement('div');
+                indicator.id = 'vbp-breakpoint-indicator';
+                indicator.innerHTML = label;
+                indicator.style.cssText = 'position: fixed; top: 60px; left: 50%; transform: translateX(-50%); padding: 6px 16px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border-radius: 20px; font-size: 12px; z-index: 10000; box-shadow: 0 2px 8px rgba(0,0,0,0.2);';
+                document.body.appendChild(indicator);
+
+                // Auto-hide después de 2 segundos
+                setTimeout(function() {
+                    indicator.style.opacity = '0';
+                    indicator.style.transition = 'opacity 0.3s';
+                    setTimeout(function() {
+                        if (indicator.parentNode) {
+                            indicator.remove();
+                        }
+                    }, 300);
+                }, 2000);
+            },
+
+            // === PAN MODE ===
+            panModeEnabled: false,
+            isPanning: false,
+            panStart: { x: 0, y: 0 },
+            scrollStart: { x: 0, y: 0 },
+
+            /**
+             * Toggle pan mode con espacio
+             */
+            togglePanMode: function() {
+                this.panModeEnabled = !this.panModeEnabled;
+                var canvas = document.querySelector('.vbp-canvas-wrapper');
+
+                if (this.panModeEnabled) {
+                    canvas.style.cursor = 'grab';
+                    this.initPanListeners();
+                    this.showNotification('✋ Pan mode activado');
+                } else {
+                    canvas.style.cursor = '';
+                    this.showNotification('Pan mode desactivado');
+                }
+            },
+
+            /**
+             * Inicializar listeners para pan
+             */
+            initPanListeners: function() {
+                var self = this;
+                var canvas = document.querySelector('.vbp-canvas-wrapper');
+                if (!canvas) return;
+
+                var startPan = function(e) {
+                    if (!self.panModeEnabled) return;
+                    self.isPanning = true;
+                    self.panStart = { x: e.clientX, y: e.clientY };
+                    self.scrollStart = { x: canvas.scrollLeft, y: canvas.scrollTop };
+                    canvas.style.cursor = 'grabbing';
+                    e.preventDefault();
+                };
+
+                var doPan = function(e) {
+                    if (!self.isPanning) return;
+                    var deltaX = e.clientX - self.panStart.x;
+                    var deltaY = e.clientY - self.panStart.y;
+                    canvas.scrollLeft = self.scrollStart.x - deltaX;
+                    canvas.scrollTop = self.scrollStart.y - deltaY;
+                };
+
+                var endPan = function() {
+                    if (self.isPanning) {
+                        self.isPanning = false;
+                        canvas.style.cursor = self.panModeEnabled ? 'grab' : '';
+                    }
+                };
+
+                canvas.addEventListener('mousedown', startPan);
+                document.addEventListener('mousemove', doPan);
+                document.addEventListener('mouseup', endPan);
+            },
+
             /**
              * Mostrar modal de ayuda con atajos de teclado
              */
@@ -5063,9 +6046,21 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + Alt + L', action: 'Constraint izquierda' },
                 { keys: 'Ctrl + Alt + →', action: 'Constraint derecha' }
             ]},
-            { category: 'Efectos', shortcuts: [
+            { category: 'Efectos y Editores', shortcuts: [
                 { keys: 'Ctrl + Alt + Shift + S', action: 'Editor de sombras' },
-                { keys: 'Ctrl + Alt + Shift + X', action: 'Editor de gradientes' }
+                { keys: 'Ctrl + Alt + Shift + X', action: 'Editor de gradientes' },
+                { keys: 'Ctrl + Alt + A', action: 'Editor de animaciones' },
+                { keys: 'Ctrl + Shift + T', action: 'Editor de tipografía' },
+                { keys: 'Ctrl + Shift + B', action: 'Editor de bordes' },
+                { keys: 'Ctrl + Alt + P', action: 'Editor de espaciado' }
+            ]},
+            { category: 'Responsive', shortcuts: [
+                { keys: '1', action: 'Vista Desktop' },
+                { keys: '2', action: 'Vista Tablet (768px)' },
+                { keys: '3', action: 'Vista Mobile (375px)' }
+            ]},
+            { category: 'Navegación Canvas', shortcuts: [
+                { keys: 'Space', action: 'Activar modo pan (arrastrar)' }
             ]},
             { category: 'Auto-layout', shortcuts: [
                 { keys: 'Shift + A', action: 'Toggle auto-layout' },
