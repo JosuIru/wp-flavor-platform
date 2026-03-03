@@ -111,6 +111,10 @@ document.addEventListener('alpine:init', function() {
                 // Búsqueda
                 'ctrl+f': 'findElements',
 
+                // Exportar
+                'ctrl+shift+e': 'copyAsHTML',
+                'ctrl+alt+e': 'copyAsJSON',
+
                 // Extras
                 'ctrl+u': 'unsplash',
                 'ctrl+shift+g': 'saveAsGlobal',
@@ -471,6 +475,15 @@ document.addEventListener('alpine:init', function() {
                     // === BÚSQUEDA ===
                     case 'findElements':
                         this.openFindDialog();
+                        break;
+
+                    // === EXPORTAR ===
+                    case 'copyAsHTML':
+                        this.copyAsHTML();
+                        break;
+
+                    case 'copyAsJSON':
+                        this.copyAsJSON();
                         break;
                 }
             },
@@ -1422,6 +1435,93 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Copiar elemento seleccionado como HTML
+             */
+            copyAsHTML: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona un elemento para copiar', 'warning');
+                    return;
+                }
+
+                var self = this;
+                var htmlParts = [];
+
+                store.selection.elementIds.forEach(function(id) {
+                    var domEl = document.querySelector('[data-element-id="' + id + '"]');
+                    if (domEl) {
+                        // Clonar y limpiar atributos de editor
+                        var clone = domEl.cloneNode(true);
+                        clone.removeAttribute('data-element-id');
+                        clone.removeAttribute('x-data');
+                        clone.removeAttribute('x-bind');
+                        clone.classList.remove('vbp-element', 'vbp-selected', 'vbp-hover');
+
+                        // Limpiar clases vbp-* del clon
+                        clone.querySelectorAll('*').forEach(function(el) {
+                            var classes = Array.from(el.classList);
+                            classes.forEach(function(cls) {
+                                if (cls.startsWith('vbp-')) {
+                                    el.classList.remove(cls);
+                                }
+                            });
+                        });
+
+                        htmlParts.push(clone.outerHTML);
+                    }
+                });
+
+                if (htmlParts.length > 0) {
+                    var html = htmlParts.join('\n\n');
+
+                    // Formatear HTML básico
+                    html = html.replace(/></g, '>\n<');
+
+                    navigator.clipboard.writeText(html).then(function() {
+                        self.showNotification('📋 HTML copiado al portapapeles');
+                    }).catch(function() {
+                        self.showNotification('Error al copiar HTML', 'error');
+                    });
+                }
+            },
+
+            /**
+             * Copiar elemento seleccionado como JSON
+             */
+            copyAsJSON: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona un elemento para copiar', 'warning');
+                    return;
+                }
+
+                var self = this;
+                var elements = [];
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        // Copiar sin ID para que sea reutilizable
+                        var cleanElement = JSON.parse(JSON.stringify(element));
+                        delete cleanElement.id;
+                        elements.push(cleanElement);
+                    }
+                });
+
+                if (elements.length > 0) {
+                    var json = JSON.stringify(elements.length === 1 ? elements[0] : elements, null, 2);
+
+                    navigator.clipboard.writeText(json).then(function() {
+                        self.showNotification('📋 JSON copiado al portapapeles');
+                    }).catch(function() {
+                        self.showNotification('Error al copiar JSON', 'error');
+                    });
+                }
+            },
+
+            /**
              * Abrir diálogo de búsqueda de elementos
              */
             openFindDialog: function() {
@@ -1843,6 +1943,8 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + E', action: 'Exportar' },
                 { keys: 'Ctrl + T', action: 'Templates' },
                 { keys: 'Ctrl + ,', action: 'Configuración' },
+                { keys: 'Ctrl + Shift + E', action: 'Copiar como HTML' },
+                { keys: 'Ctrl + Alt + E', action: 'Copiar como JSON' },
                 { keys: '? / F1', action: 'Ayuda (esta ventana)' }
             ]}
         ];

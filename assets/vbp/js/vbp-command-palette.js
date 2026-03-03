@@ -76,6 +76,8 @@ document.addEventListener('alpine:init', function() {
             { id: 'find-elements', label: 'Buscar elementos', category: 'vista', icon: '🔍', action: 'findElements', shortcut: 'Ctrl+F' },
             { id: 'toggle-visibility', label: 'Ocultar/Mostrar selección', category: 'vista', icon: '👁', action: 'toggleVisibility', shortcut: 'Ctrl+Shift+H' },
             { id: 'hide-others', label: 'Ocultar otros elementos', category: 'vista', icon: '👁‍🗨', action: 'hideOthers', shortcut: 'Ctrl+Alt+H' },
+            { id: 'copy-html', label: 'Copiar como HTML', category: 'exportar', icon: '📄', action: 'copyAsHTML', shortcut: 'Ctrl+Shift+E' },
+            { id: 'copy-json', label: 'Copiar como JSON', category: 'exportar', icon: '{ }', action: 'copyAsJSON', shortcut: 'Ctrl+Alt+E' },
             { id: 'toggle-layers', label: 'Mostrar/Ocultar Capas', category: 'vista', icon: '📑', action: 'togglePanel', value: 'layers' },
             { id: 'toggle-inspector', label: 'Mostrar/Ocultar Inspector', category: 'vista', icon: '⚙', action: 'togglePanel', value: 'inspector' },
             { id: 'toggle-blocks', label: 'Mostrar/Ocultar Bloques', category: 'vista', icon: '🧱', action: 'togglePanel', value: 'blocks' },
@@ -323,6 +325,18 @@ document.addEventListener('alpine:init', function() {
                     }));
                     break;
 
+                case 'copyAsHTML':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'copyAsHTML' }
+                    }));
+                    break;
+
+                case 'copyAsJSON':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'copyAsJSON' }
+                    }));
+                    break;
+
                 case 'alignElements':
                     // Disparar el evento de alineación con el valor correcto
                     var alignActions = {
@@ -470,6 +484,7 @@ document.addEventListener('alpine:init', function() {
                 'acciones': 'Acciones',
                 'alineacion': 'Alineación',
                 'vista': 'Vista',
+                'exportar': 'Exportar',
                 'responsive': 'Responsive'
             };
             return labels[category] || category;
