@@ -100,6 +100,10 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+\'': 'toggleGrid',
                 'ctrl+;': 'toggleGuides',
 
+                // Dimensiones
+                'ctrl+shift+f': 'fitContent',
+                'ctrl+alt+f': 'fillParent',
+
                 // Extras
                 'ctrl+u': 'unsplash',
                 'ctrl+shift+g': 'saveAsGlobal',
@@ -437,6 +441,15 @@ document.addEventListener('alpine:init', function() {
 
                     case 'toggleGuides':
                         this.toggleGuides();
+                        break;
+
+                    // === DIMENSIONES ===
+                    case 'fitContent':
+                        this.fitContent();
+                        break;
+
+                    case 'fillParent':
+                        this.fillParent();
                         break;
                 }
             },
@@ -1215,6 +1228,88 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Ajustar elemento al tamaño del contenido
+             */
+            fitContent: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona un elemento', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                var self = this;
+                var count = 0;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || element.locked) return;
+
+                    // Buscar el elemento en el DOM para obtener su contenido
+                    var domEl = document.querySelector('[data-element-id="' + id + '"]');
+                    if (!domEl) return;
+
+                    // Calcular tamaño del contenido
+                    var contenido = domEl.querySelector('.vbp-element-content');
+                    if (contenido) {
+                        var rect = contenido.getBoundingClientRect();
+                        var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                        if (!estilos.size) estilos.size = {};
+
+                        // Ajustar con un pequeño padding
+                        estilos.size.width = Math.ceil(rect.width + 20) + 'px';
+                        estilos.size.height = 'auto';
+
+                        store.updateElement(id, { styles: estilos });
+                        count++;
+                    }
+                });
+
+                store.isDirty = true;
+                this.showNotification('📐 ' + count + ' elemento(s) ajustado(s)');
+            },
+
+            /**
+             * Expandir elemento para llenar el contenedor padre
+             */
+            fillParent: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona un elemento', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                var self = this;
+                var count = 0;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || element.locked) return;
+
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (!estilos.size) estilos.size = {};
+                    if (!estilos.position) estilos.position = {};
+
+                    // Establecer tamaño al 100%
+                    estilos.size.width = '100%';
+                    estilos.size.height = 'auto';
+                    estilos.position.left = '0';
+                    estilos.position.top = estilos.position.top || '0';
+
+                    store.updateElement(id, { styles: estilos });
+                    count++;
+                });
+
+                store.isDirty = true;
+                this.showNotification('📏 ' + count + ' elemento(s) expandido(s)');
+            },
+
+            /**
              * Mostrar/ocultar cuadrícula
              */
             toggleGrid: function() {
@@ -1505,7 +1600,9 @@ window.vbpKeyboard = {
                 { keys: '↑ ↓ ← →', action: 'Mover 1px' },
                 { keys: 'Shift + ↑ ↓ ← →', action: 'Mover 10px' },
                 { keys: 'Ctrl + ↑', action: 'Mover al frente' },
-                { keys: 'Ctrl + ↓', action: 'Mover al fondo' }
+                { keys: 'Ctrl + ↓', action: 'Mover al fondo' },
+                { keys: 'Ctrl + Shift + F', action: 'Ajustar al contenido' },
+                { keys: 'Ctrl + Alt + F', action: 'Llenar contenedor' }
             ]},
             { category: 'Zoom', shortcuts: [
                 { keys: 'Ctrl + +', action: 'Acercar' },

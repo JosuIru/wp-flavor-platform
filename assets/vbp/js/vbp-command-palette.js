@@ -57,6 +57,8 @@ document.addEventListener('alpine:init', function() {
             { id: 'toggle-lock', label: 'Bloquear/Desbloquear elemento', category: 'acciones', icon: '🔒', action: 'toggleLock', shortcut: 'Ctrl+Shift+L' },
             { id: 'invert-selection', label: 'Invertir selección', category: 'acciones', icon: '🔄', action: 'invertSelection', shortcut: 'Ctrl+Shift+A' },
             { id: 'select-similar', label: 'Seleccionar similares', category: 'acciones', icon: '👥', action: 'selectSimilar', shortcut: 'Ctrl+Alt+A' },
+            { id: 'fit-content', label: 'Ajustar al contenido', category: 'acciones', icon: '📐', action: 'fitContent', shortcut: 'Ctrl+Shift+F' },
+            { id: 'fill-parent', label: 'Llenar contenedor', category: 'acciones', icon: '📏', action: 'fillParent', shortcut: 'Ctrl+Alt+F' },
 
             // Alineación y distribución
             { id: 'align-left', label: 'Alinear a la izquierda', category: 'alineacion', icon: '⬅', action: 'alignElements', value: 'left', shortcut: 'Alt+L' },
@@ -273,6 +275,18 @@ document.addEventListener('alpine:init', function() {
                 case 'selectSimilar':
                     document.dispatchEvent(new CustomEvent('vbp:executeAction', {
                         detail: { action: 'selectSimilar' }
+                    }));
+                    break;
+
+                case 'fitContent':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'fitContent' }
+                    }));
+                    break;
+
+                case 'fillParent':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'fillParent' }
                     }));
                     break;
 
