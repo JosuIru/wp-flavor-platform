@@ -33,7 +33,7 @@ class Flavor_VBP_Editor {
      *
      * @var array
      */
-    const POST_TYPES_SOPORTADOS = array( 'flavor_landing' );
+    const POST_TYPES_SOPORTADOS = array( 'flavor_landing', 'page' );
 
     /**
      * Meta key para datos del builder
@@ -165,8 +165,9 @@ class Flavor_VBP_Editor {
             }
         }
 
-        // Redirigir solo si es un tipo de post soportado
-        if ( in_array( $tipo_post, self::POST_TYPES_SOPORTADOS, true ) ) {
+        // Solo redirigir automáticamente para flavor_landing
+        // Para page, el usuario debe usar el link "Editar con VBP"
+        if ( 'flavor_landing' === $tipo_post ) {
             // Si es post nuevo, primero crear el post
             if ( 'post-new.php' === $pagenow ) {
                 $post_id_nuevo = wp_insert_post(
@@ -200,14 +201,96 @@ class Flavor_VBP_Editor {
      * Registra la página del editor fullscreen
      */
     public function registrar_pagina_editor() {
+        // Página oculta del editor (se accede con post_id)
         add_submenu_page(
-            null, // Sin parent menu (oculto)
+            null,
             __( 'Visual Builder Pro', 'flavor-chat-ia' ),
             __( 'Visual Builder Pro', 'flavor-chat-ia' ),
             'edit_posts',
             'vbp-editor',
             array( $this, 'renderizar_pagina_editor' )
         );
+
+        // Submenú visible en Flavor Platform
+        add_submenu_page(
+            'flavor-dashboard',
+            __( 'Visual Builder Pro', 'flavor-chat-ia' ),
+            __( '🎨 Visual Builder Pro', 'flavor-chat-ia' ),
+            'edit_posts',
+            'vbp-landing-list',
+            array( $this, 'renderizar_pagina_listado' )
+        );
+    }
+
+    /**
+     * Renderiza la página de listado de landings
+     */
+    public function renderizar_pagina_listado() {
+        $url_nueva = admin_url( 'post-new.php?post_type=flavor_landing' );
+        ?>
+        <div class="wrap">
+            <h1 class="wp-heading-inline"><?php esc_html_e( 'Visual Builder Pro', 'flavor-chat-ia' ); ?></h1>
+            <a href="<?php echo esc_url( $url_nueva ); ?>" class="page-title-action"><?php esc_html_e( 'Crear Nueva Landing', 'flavor-chat-ia' ); ?></a>
+            <hr class="wp-header-end">
+
+            <div class="vbp-landing-list-wrapper" style="margin-top: 20px;">
+                <h2><?php esc_html_e( 'Landing Pages', 'flavor-chat-ia' ); ?></h2>
+                <?php
+                $landings = get_posts(
+                    array(
+                        'post_type'      => 'flavor_landing',
+                        'posts_per_page' => -1,
+                        'post_status'    => array( 'publish', 'draft', 'pending' ),
+                        'orderby'        => 'modified',
+                        'order'          => 'DESC',
+                    )
+                );
+
+                if ( empty( $landings ) ) {
+                    echo '<p>' . esc_html__( 'No hay landing pages creadas todavía.', 'flavor-chat-ia' ) . '</p>';
+                } else {
+                    echo '<table class="wp-list-table widefat fixed striped">';
+                    echo '<thead><tr>';
+                    echo '<th>' . esc_html__( 'Título', 'flavor-chat-ia' ) . '</th>';
+                    echo '<th>' . esc_html__( 'Estado', 'flavor-chat-ia' ) . '</th>';
+                    echo '<th>' . esc_html__( 'Fecha', 'flavor-chat-ia' ) . '</th>';
+                    echo '<th>' . esc_html__( 'Acciones', 'flavor-chat-ia' ) . '</th>';
+                    echo '</tr></thead><tbody>';
+
+                    foreach ( $landings as $landing ) {
+                        $url_editar = add_query_arg(
+                            array(
+                                'page'    => 'vbp-editor',
+                                'post_id' => $landing->ID,
+                            ),
+                            admin_url( 'admin.php' )
+                        );
+                        $url_ver    = get_permalink( $landing->ID );
+                        $estado     = get_post_status_object( $landing->post_status );
+
+                        echo '<tr>';
+                        echo '<td><strong><a href="' . esc_url( $url_editar ) . '">' . esc_html( $landing->post_title ?: __( '(Sin título)', 'flavor-chat-ia' ) ) . '</a></strong></td>';
+                        echo '<td>' . esc_html( $estado->label ) . '</td>';
+                        echo '<td>' . esc_html( get_the_modified_date( '', $landing ) ) . '</td>';
+                        echo '<td>';
+                        echo '<a href="' . esc_url( $url_editar ) . '" class="button button-primary button-small">' . esc_html__( 'Editar', 'flavor-chat-ia' ) . '</a> ';
+                        if ( 'publish' === $landing->post_status ) {
+                            echo '<a href="' . esc_url( $url_ver ) . '" class="button button-small" target="_blank">' . esc_html__( 'Ver', 'flavor-chat-ia' ) . '</a>';
+                        }
+                        echo '</td>';
+                        echo '</tr>';
+                    }
+
+                    echo '</tbody></table>';
+                }
+                ?>
+
+                <h2 style="margin-top: 30px;"><?php esc_html_e( 'Páginas con Visual Builder', 'flavor-chat-ia' ); ?></h2>
+                <p class="description"><?php esc_html_e( 'También puedes editar páginas normales con el Visual Builder. Usa el link "Editor Visual" en la lista de páginas.', 'flavor-chat-ia' ); ?></p>
+                <p><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=page' ) ); ?>" class="button"><?php esc_html_e( 'Ver Páginas', 'flavor-chat-ia' ); ?></a></p>
+            </div>
+        </div>
+        <?php
     }
 
     /**
