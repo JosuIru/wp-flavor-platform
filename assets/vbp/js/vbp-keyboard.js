@@ -5241,8 +5241,10 @@ document.addEventListener('alpine:init', function() {
                     lineHeight: 1.5,
                     letterSpacing: 0,
                     textTransform: 'none',
-                    textAlign: 'left'
+                    textAlign: 'left',
+                    color: '#000000'
                 };
+                if (!currentTypo.color) currentTypo.color = '#000000';
 
                 var modalId = 'vbp-typography-modal';
                 var existing = document.getElementById(modalId);
@@ -5311,7 +5313,15 @@ document.addEventListener('alpine:init', function() {
                     var selected = currentTypo.fontWeight == w.value ? ' selected' : '';
                     html += '<option value="' + w.value + '"' + selected + '>' + w.label + '</option>';
                 });
-                html += '</select></div></div>';
+                html += '</select></div>';
+
+                // Color
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Color</label>';
+                html += '<div style="display: flex; gap: 8px; align-items: center;">';
+                html += '<input type="color" id="typo-color" value="' + currentTypo.color + '" style="width: 50px; height: 36px; border: none; border-radius: 6px; cursor: pointer;">';
+                html += '<input type="text" id="typo-color-hex" value="' + currentTypo.color + '" style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); font-family: monospace;">';
+                html += '</div></div></div>';
 
                 // Line height and Letter spacing
                 html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">';
@@ -5364,6 +5374,7 @@ document.addEventListener('alpine:init', function() {
                     preview.style.letterSpacing = document.getElementById('typo-letterspacing').value + 'px';
                     preview.style.textTransform = document.getElementById('typo-transform').value;
                     preview.style.textAlign = currentAlign;
+                    preview.style.color = document.getElementById('typo-color').value;
                 }
 
                 // Event listeners
@@ -5381,6 +5392,19 @@ document.addEventListener('alpine:init', function() {
                 });
                 modal.querySelectorAll('select').forEach(function(sel) {
                     sel.addEventListener('change', updatePreview);
+                });
+
+                // Color inputs
+                modal.querySelector('#typo-color').addEventListener('input', function() {
+                    document.getElementById('typo-color-hex').value = this.value;
+                    updatePreview();
+                });
+                modal.querySelector('#typo-color-hex').addEventListener('input', function() {
+                    var val = this.value;
+                    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                        document.getElementById('typo-color').value = val;
+                        updatePreview();
+                    }
                 });
 
                 // Align buttons
@@ -5408,7 +5432,8 @@ document.addEventListener('alpine:init', function() {
                         lineHeight: parseFloat(document.getElementById('typo-lineheight').value),
                         letterSpacing: parseFloat(document.getElementById('typo-letterspacing').value),
                         textTransform: document.getElementById('typo-transform').value,
-                        textAlign: currentAlign
+                        textAlign: currentAlign,
+                        color: document.getElementById('typo-color').value
                     };
 
                     var styles = JSON.parse(JSON.stringify(element.styles || {}));
