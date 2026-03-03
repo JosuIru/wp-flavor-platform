@@ -70,9 +70,12 @@ document.addEventListener('alpine:init', function() {
             { id: 'toggle-layers', label: 'Mostrar/Ocultar Capas', category: 'vista', icon: '📑', action: 'togglePanel', value: 'layers' },
             { id: 'toggle-inspector', label: 'Mostrar/Ocultar Inspector', category: 'vista', icon: '⚙', action: 'togglePanel', value: 'inspector' },
             { id: 'toggle-blocks', label: 'Mostrar/Ocultar Bloques', category: 'vista', icon: '🧱', action: 'togglePanel', value: 'blocks' },
-            { id: 'zoom-in', label: 'Acercar', category: 'vista', icon: '🔍+', action: 'zoom', value: 'in' },
-            { id: 'zoom-out', label: 'Alejar', category: 'vista', icon: '🔍-', action: 'zoom', value: 'out' },
-            { id: 'zoom-fit', label: 'Ajustar a pantalla', category: 'vista', icon: '⬜', action: 'zoom', value: 'fit' },
+            { id: 'zoom-in', label: 'Acercar', category: 'vista', icon: '🔍+', action: 'zoom', value: 'in', shortcut: 'Ctrl++' },
+            { id: 'zoom-out', label: 'Alejar', category: 'vista', icon: '🔍-', action: 'zoom', value: 'out', shortcut: 'Ctrl+-' },
+            { id: 'zoom-fit', label: 'Ajustar a pantalla', category: 'vista', icon: '⬜', action: 'zoom', value: 'fit', shortcut: 'Ctrl+0' },
+            { id: 'zoom-100', label: 'Zoom 100%', category: 'vista', icon: '1️⃣', action: 'zoom', value: '100', shortcut: 'Ctrl+1' },
+            { id: 'zoom-50', label: 'Zoom 50%', category: 'vista', icon: '5️⃣', action: 'zoom', value: '50', shortcut: 'Ctrl+5' },
+            { id: 'zoom-200', label: 'Zoom 200%', category: 'vista', icon: '2️⃣', action: 'zoom', value: '200', shortcut: 'Ctrl+2' },
 
             // Responsive
             { id: 'device-desktop', label: 'Vista Escritorio', category: 'responsive', icon: '🖥', action: 'device', value: 'desktop' },
@@ -311,21 +314,56 @@ document.addEventListener('alpine:init', function() {
 
         handleZoom: function(direction) {
             var store = Alpine.store('vbp');
-            if (!store.canvas) return;
-
-            var currentZoom = store.canvas.zoom || 100;
+            var currentZoom = store.zoom || 100;
 
             switch (direction) {
                 case 'in':
-                    store.canvas.zoom = Math.min(currentZoom + 10, 200);
+                    store.zoom = Math.min(currentZoom + 10, 200);
                     break;
                 case 'out':
-                    store.canvas.zoom = Math.max(currentZoom - 10, 25);
+                    store.zoom = Math.max(currentZoom - 10, 25);
                     break;
                 case 'fit':
-                    store.canvas.zoom = 100;
+                    store.zoom = 100;
+                    break;
+                case '100':
+                    store.zoom = 100;
+                    break;
+                case '50':
+                    store.zoom = 50;
+                    break;
+                case '200':
+                    store.zoom = 200;
                     break;
             }
+
+            // Mostrar feedback de zoom
+            this.showZoomFeedback(store.zoom);
+        },
+
+        /**
+         * Mostrar indicador de zoom
+         */
+        showZoomFeedback: function(zoomLevel) {
+            var existingIndicator = document.getElementById('vbp-zoom-indicator');
+            if (existingIndicator) {
+                existingIndicator.remove();
+            }
+
+            var indicator = document.createElement('div');
+            indicator.id = 'vbp-zoom-indicator';
+            indicator.innerHTML = '🔍 ' + zoomLevel + '%';
+            indicator.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background: rgba(30, 30, 46, 0.95); color: #cdd6f4; border-radius: 8px; font-size: 16px; font-weight: 600; z-index: 10000; pointer-events: none; transition: opacity 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+            document.body.appendChild(indicator);
+
+            setTimeout(function() {
+                indicator.style.opacity = '0';
+                setTimeout(function() {
+                    if (indicator.parentNode) {
+                        indicator.remove();
+                    }
+                }, 300);
+            }, 800);
         },
 
         addToRecent: function(commandId) {

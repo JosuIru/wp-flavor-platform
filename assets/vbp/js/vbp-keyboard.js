@@ -56,6 +56,8 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+-': 'zoomOut',
                 'ctrl+0': 'zoomReset',
                 'ctrl+1': 'zoom100',
+                'ctrl+2': 'zoom200',
+                'ctrl+5': 'zoom50',
 
                 // Paneles
                 'ctrl+\\': 'togglePanels',
@@ -255,18 +257,32 @@ document.addEventListener('alpine:init', function() {
                     // === ZOOM ===
                     case 'zoomIn':
                         store.zoom = Math.min(200, store.zoom + 10);
+                        this.showZoomFeedback(store.zoom);
                         break;
 
                     case 'zoomOut':
                         store.zoom = Math.max(25, store.zoom - 10);
+                        this.showZoomFeedback(store.zoom);
                         break;
 
                     case 'zoomReset':
                         store.zoom = 100;
+                        this.showZoomFeedback(100);
                         break;
 
                     case 'zoom100':
                         store.zoom = 100;
+                        this.showZoomFeedback(100);
+                        break;
+
+                    case 'zoom50':
+                        store.zoom = 50;
+                        this.showZoomFeedback(50);
+                        break;
+
+                    case 'zoom200':
+                        store.zoom = 200;
+                        this.showZoomFeedback(200);
                         break;
 
                     // === PANELES ===
@@ -1104,6 +1120,31 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Mostrar indicador visual de zoom
+             */
+            showZoomFeedback: function(zoomLevel) {
+                var existingIndicator = document.getElementById('vbp-zoom-indicator');
+                if (existingIndicator) {
+                    existingIndicator.remove();
+                }
+
+                var indicator = document.createElement('div');
+                indicator.id = 'vbp-zoom-indicator';
+                indicator.innerHTML = '🔍 ' + zoomLevel + '%';
+                indicator.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background: rgba(30, 30, 46, 0.95); color: #cdd6f4; border-radius: 8px; font-size: 16px; font-weight: 600; z-index: 10000; pointer-events: none; transition: opacity 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+                document.body.appendChild(indicator);
+
+                setTimeout(function() {
+                    indicator.style.opacity = '0';
+                    setTimeout(function() {
+                        if (indicator.parentNode) {
+                            indicator.remove();
+                        }
+                    }, 300);
+                }, 800);
+            },
+
+            /**
              * Mostrar notificación
              */
             showNotification: function(message, type) {
@@ -1243,7 +1284,11 @@ window.vbpKeyboard = {
             { category: 'Zoom', shortcuts: [
                 { keys: 'Ctrl + +', action: 'Acercar' },
                 { keys: 'Ctrl + -', action: 'Alejar' },
-                { keys: 'Ctrl + 0', action: 'Zoom 100%' }
+                { keys: 'Ctrl + 0', action: 'Restablecer zoom' },
+                { keys: 'Ctrl + 1', action: 'Zoom 100%' },
+                { keys: 'Ctrl + 2', action: 'Zoom 200%' },
+                { keys: 'Ctrl + 5', action: 'Zoom 50%' },
+                { keys: 'Ctrl + Rueda', action: 'Zoom con ratón' }
             ]},
             { category: 'Paneles', shortcuts: [
                 { keys: 'Ctrl + \\', action: 'Toggle todos los paneles' },

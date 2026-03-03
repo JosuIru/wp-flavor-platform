@@ -31,7 +31,59 @@ document.addEventListener('alpine:init', function() {
                     self.initBlocksPanelDrag();
                     self.initDropZone();
                     self.initClickHandler();
+                    self.initWheelZoom();
                 });
+            },
+
+            /**
+             * Zoom con rueda del ratón (Ctrl+Wheel)
+             */
+            initWheelZoom: function() {
+                var canvas = document.querySelector('.vbp-canvas-wrapper');
+                if (!canvas) return;
+
+                var self = this;
+
+                canvas.addEventListener('wheel', function(e) {
+                    // Solo si se mantiene Ctrl o Cmd presionado
+                    if (!e.ctrlKey && !e.metaKey) return;
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var store = Alpine.store('vbp');
+                    var currentZoom = store.zoom || 100;
+                    var delta = e.deltaY > 0 ? -10 : 10;
+                    var newZoom = Math.min(200, Math.max(25, currentZoom + delta));
+
+                    if (newZoom !== currentZoom) {
+                        store.zoom = newZoom;
+                        self.showZoomIndicator(newZoom);
+                    }
+                }, { passive: false });
+            },
+
+            /**
+             * Mostrar indicador visual de zoom
+             */
+            showZoomIndicator: function(zoomLevel) {
+                var existingIndicator = document.getElementById('vbp-zoom-indicator');
+                if (existingIndicator) {
+                    existingIndicator.remove();
+                }
+
+                var indicator = document.createElement('div');
+                indicator.id = 'vbp-zoom-indicator';
+                indicator.innerHTML = '🔍 ' + zoomLevel + '%';
+                indicator.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 8px 16px; background: rgba(30, 30, 46, 0.9); color: #cdd6f4; border-radius: 6px; font-size: 14px; font-weight: 500; z-index: 10000; pointer-events: none; transition: opacity 0.3s;';
+                document.body.appendChild(indicator);
+
+                setTimeout(function() {
+                    indicator.style.opacity = '0';
+                    setTimeout(function() {
+                        indicator.remove();
+                    }, 300);
+                }, 1000);
             },
 
             /**
