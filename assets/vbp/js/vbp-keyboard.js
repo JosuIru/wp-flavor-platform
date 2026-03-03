@@ -149,6 +149,17 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+alt+shift+h': 'openHoverStatesEditor',
                 'ctrl+alt+shift+y': 'openScrollAnimationEditor',
 
+                // Templates y componentes
+                'ctrl+shift+k': 'openTemplatesLibrary',
+                'ctrl+alt+shift+c': 'saveAsComponent',
+                'ctrl+shift+i': 'openComponentsLibrary',
+
+                // Design tokens
+                'ctrl+alt+shift+t': 'openDesignTokens',
+
+                // Export
+                'ctrl+alt+e': 'openExportOptions',
+
                 // Responsive breakpoints
                 '1': 'breakpointDesktop',
                 '2': 'breakpointTablet',
@@ -949,6 +960,29 @@ document.addEventListener('alpine:init', function() {
 
                     case 'openScrollAnimationEditor':
                         this.openScrollAnimationEditor();
+                        break;
+
+                    // === TEMPLATES Y COMPONENTES ===
+                    case 'openTemplatesLibrary':
+                        this.openTemplatesLibrary();
+                        break;
+
+                    case 'saveAsComponent':
+                        this.saveAsComponent();
+                        break;
+
+                    case 'openComponentsLibrary':
+                        this.openComponentsLibrary();
+                        break;
+
+                    // === DESIGN TOKENS ===
+                    case 'openDesignTokens':
+                        this.openDesignTokens();
+                        break;
+
+                    // === EXPORT ===
+                    case 'openExportOptions':
+                        this.openExportOptions();
                         break;
             },
 
@@ -6435,6 +6469,1130 @@ document.addEventListener('alpine:init', function() {
                 return transforms[type] || 'none';
             },
 
+            // === TEMPLATES LIBRARY ===
+
+            /**
+             * Biblioteca de plantillas predefinidas
+             */
+            openTemplatesLibrary: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                var modalId = 'vbp-templates-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var templates = [
+                    {
+                        category: 'Hero',
+                        items: [
+                            { id: 'hero-centered', name: 'Hero Centrado', icon: '🎯', description: 'Título, subtítulo y CTA centrados' },
+                            { id: 'hero-split', name: 'Hero Dividido', icon: '⬛', description: 'Texto a la izquierda, imagen a la derecha' },
+                            { id: 'hero-video', name: 'Hero con Video', icon: '🎬', description: 'Background de video con overlay' },
+                            { id: 'hero-gradient', name: 'Hero Gradiente', icon: '🌈', description: 'Fondo gradiente animado' }
+                        ]
+                    },
+                    {
+                        category: 'Features',
+                        items: [
+                            { id: 'features-grid', name: 'Grid de Features', icon: '⊞', description: '3 columnas con iconos' },
+                            { id: 'features-alternating', name: 'Features Alternadas', icon: '↔', description: 'Imagen/texto alternando' },
+                            { id: 'features-cards', name: 'Cards de Features', icon: '🃏', description: 'Cards con hover effects' }
+                        ]
+                    },
+                    {
+                        category: 'Pricing',
+                        items: [
+                            { id: 'pricing-3col', name: 'Precios 3 Columnas', icon: '💰', description: 'Plan destacado en el centro' },
+                            { id: 'pricing-toggle', name: 'Precios con Toggle', icon: '🔄', description: 'Mensual/Anual switch' },
+                            { id: 'pricing-comparison', name: 'Tabla Comparativa', icon: '📊', description: 'Comparación de features' }
+                        ]
+                    },
+                    {
+                        category: 'Testimonials',
+                        items: [
+                            { id: 'testimonials-carousel', name: 'Carrusel', icon: '🎠', description: 'Slider de testimonios' },
+                            { id: 'testimonials-grid', name: 'Grid de Cards', icon: '💬', description: 'Masonry de testimonios' },
+                            { id: 'testimonials-single', name: 'Testimonio Grande', icon: '⭐', description: 'Un testimonio destacado' }
+                        ]
+                    },
+                    {
+                        category: 'CTA',
+                        items: [
+                            { id: 'cta-simple', name: 'CTA Simple', icon: '📢', description: 'Título y botón' },
+                            { id: 'cta-newsletter', name: 'Newsletter', icon: '✉', description: 'Formulario de suscripción' },
+                            { id: 'cta-download', name: 'Descarga App', icon: '📱', description: 'Botones de app stores' }
+                        ]
+                    },
+                    {
+                        category: 'Footer',
+                        items: [
+                            { id: 'footer-4col', name: 'Footer 4 Columnas', icon: '🦶', description: 'Links organizados' },
+                            { id: 'footer-simple', name: 'Footer Simple', icon: '➖', description: 'Copyright y social' },
+                            { id: 'footer-mega', name: 'Mega Footer', icon: '📋', description: 'Newsletter + links + info' }
+                        ]
+                    }
+                ];
+
+                var html = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                html += '<div class="vbp-modal" style="max-width: 800px; max-height: 85vh;">';
+                html += '<div class="vbp-modal-header">';
+                html += '<h2>📚 Biblioteca de Plantillas</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                html += '</div>';
+                html += '<div class="vbp-modal-body" style="overflow-y: auto; max-height: 60vh;">';
+
+                // Search
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<input type="text" id="template-search" placeholder="🔍 Buscar plantillas..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); font-size: 14px;">';
+                html += '</div>';
+
+                // Categories
+                templates.forEach(function(cat) {
+                    html += '<div class="template-category" style="margin-bottom: 24px;">';
+                    html += '<h3 style="font-size: 14px; color: var(--vbp-text-muted, #6c7086); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">' + cat.category + '</h3>';
+                    html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">';
+
+                    cat.items.forEach(function(item) {
+                        html += '<div class="template-item" data-id="' + item.id + '" data-name="' + item.name + '" style="background: var(--vbp-surface, #313244); border: 1px solid var(--vbp-border, #45475a); border-radius: 8px; padding: 16px; cursor: pointer; transition: all 0.2s;">';
+                        html += '<div style="font-size: 24px; margin-bottom: 8px;">' + item.icon + '</div>';
+                        html += '<div style="font-weight: 600; margin-bottom: 4px;">' + item.name + '</div>';
+                        html += '<div style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">' + item.description + '</div>';
+                        html += '</div>';
+                    });
+
+                    html += '</div></div>';
+                });
+
+                html += '</div>';
+                html += '<div class="vbp-modal-footer" style="border-top: 1px solid var(--vbp-border, #313244); padding-top: 16px;">';
+                html += '<p style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">💡 Haz clic en una plantilla para insertarla en el canvas</p>';
+                html += '</div></div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var modal = document.getElementById(modalId);
+
+                // Search functionality
+                modal.querySelector('#template-search').addEventListener('input', function() {
+                    var query = this.value.toLowerCase();
+                    modal.querySelectorAll('.template-item').forEach(function(item) {
+                        var name = item.dataset.name.toLowerCase();
+                        item.style.display = name.indexOf(query) !== -1 ? '' : 'none';
+                    });
+                });
+
+                // Template selection
+                modal.querySelectorAll('.template-item').forEach(function(item) {
+                    item.addEventListener('mouseenter', function() {
+                        this.style.borderColor = 'var(--vbp-primary, #89b4fa)';
+                        this.style.transform = 'translateY(-2px)';
+                    });
+                    item.addEventListener('mouseleave', function() {
+                        this.style.borderColor = 'var(--vbp-border, #45475a)';
+                        this.style.transform = '';
+                    });
+                    item.addEventListener('click', function() {
+                        var templateId = this.dataset.id;
+                        self.insertTemplate(templateId);
+                        modal.remove();
+                    });
+                });
+            },
+
+            /**
+             * Insertar plantilla en el canvas
+             */
+            insertTemplate: function(templateId) {
+                var store = Alpine.store('vbp');
+                var template = this.getTemplateData(templateId);
+
+                if (template) {
+                    store.saveToHistory();
+                    template.elements.forEach(function(el) {
+                        el.id = 'el_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                        store.addElement(el);
+                    });
+                    store.isDirty = true;
+                    this.showNotification('📚 Plantilla insertada: ' + template.name);
+                }
+            },
+
+            /**
+             * Obtener datos de plantilla
+             */
+            getTemplateData: function(templateId) {
+                var templates = {
+                    'hero-centered': {
+                        name: 'Hero Centrado',
+                        elements: [
+                            {
+                                type: 'container',
+                                content: '',
+                                styles: {
+                                    layout: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', padding: '48px' },
+                                    background: { type: 'gradient', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }
+                                },
+                                children: [
+                                    { type: 'heading', content: 'Bienvenido a tu sitio', styles: { typography: { fontSize: 48, fontWeight: 700, color: '#ffffff', textAlign: 'center' } } },
+                                    { type: 'text', content: 'Una descripción breve pero impactante de lo que ofreces', styles: { typography: { fontSize: 20, color: 'rgba(255,255,255,0.9)', textAlign: 'center', maxWidth: '600px', marginTop: '16px' } } },
+                                    { type: 'button', content: 'Comenzar ahora', styles: { spacing: { marginTop: '32px', padding: '16px 32px' }, background: { color: '#ffffff' }, typography: { color: '#667eea', fontWeight: 600 }, border: { radius: { tl: 8, tr: 8, br: 8, bl: 8 } } } }
+                                ]
+                            }
+                        ]
+                    },
+                    'hero-split': {
+                        name: 'Hero Dividido',
+                        elements: [
+                            {
+                                type: 'columns',
+                                styles: { layout: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', minHeight: '80vh', alignItems: 'center', padding: '48px' } },
+                                children: [
+                                    {
+                                        type: 'container',
+                                        children: [
+                                            { type: 'heading', content: 'Transforma tu negocio', styles: { typography: { fontSize: 42, fontWeight: 700, lineHeight: 1.2 } } },
+                                            { type: 'text', content: 'Soluciones innovadoras para empresas que quieren crecer.', styles: { typography: { fontSize: 18, color: '#6b7280', marginTop: '16px' } } },
+                                            { type: 'button', content: 'Descubre más', styles: { spacing: { marginTop: '24px', padding: '14px 28px' }, background: { color: '#3b82f6' }, typography: { color: '#ffffff', fontWeight: 600 }, border: { radius: { tl: 6, tr: 6, br: 6, bl: 6 } } } }
+                                        ]
+                                    },
+                                    { type: 'image', content: '', styles: { border: { radius: { tl: 16, tr: 16, br: 16, bl: 16 } }, effects: { boxShadow: { enabled: true, x: 0, y: 20, blur: 40, color: 'rgba(0,0,0,0.15)' } } } }
+                                ]
+                            }
+                        ]
+                    },
+                    'features-grid': {
+                        name: 'Grid de Features',
+                        elements: [
+                            {
+                                type: 'container',
+                                styles: { spacing: { padding: '64px 48px' }, background: { color: '#f9fafb' } },
+                                children: [
+                                    { type: 'heading', content: 'Nuestras características', styles: { typography: { fontSize: 36, fontWeight: 700, textAlign: 'center', marginBottom: '48px' } } },
+                                    {
+                                        type: 'columns',
+                                        styles: { layout: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' } },
+                                        children: [
+                                            { type: 'container', styles: { spacing: { padding: '24px' }, background: { color: '#ffffff' }, border: { radius: { tl: 12, tr: 12, br: 12, bl: 12 } } }, children: [
+                                                { type: 'text', content: '⚡', styles: { typography: { fontSize: 32, marginBottom: '16px' } } },
+                                                { type: 'heading', content: 'Rápido', styles: { typography: { fontSize: 20, fontWeight: 600, marginBottom: '8px' } } },
+                                                { type: 'text', content: 'Rendimiento optimizado para la mejor experiencia.', styles: { typography: { color: '#6b7280' } } }
+                                            ]},
+                                            { type: 'container', styles: { spacing: { padding: '24px' }, background: { color: '#ffffff' }, border: { radius: { tl: 12, tr: 12, br: 12, bl: 12 } } }, children: [
+                                                { type: 'text', content: '🔒', styles: { typography: { fontSize: 32, marginBottom: '16px' } } },
+                                                { type: 'heading', content: 'Seguro', styles: { typography: { fontSize: 20, fontWeight: 600, marginBottom: '8px' } } },
+                                                { type: 'text', content: 'Protección de datos de nivel empresarial.', styles: { typography: { color: '#6b7280' } } }
+                                            ]},
+                                            { type: 'container', styles: { spacing: { padding: '24px' }, background: { color: '#ffffff' }, border: { radius: { tl: 12, tr: 12, br: 12, bl: 12 } } }, children: [
+                                                { type: 'text', content: '🎨', styles: { typography: { fontSize: 32, marginBottom: '16px' } } },
+                                                { type: 'heading', content: 'Personalizable', styles: { typography: { fontSize: 20, fontWeight: 600, marginBottom: '8px' } } },
+                                                { type: 'text', content: 'Adapta todo a tu marca y necesidades.', styles: { typography: { color: '#6b7280' } } }
+                                            ]}
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    'pricing-3col': {
+                        name: 'Precios 3 Columnas',
+                        elements: [
+                            {
+                                type: 'container',
+                                styles: { spacing: { padding: '64px 48px' } },
+                                children: [
+                                    { type: 'heading', content: 'Planes y precios', styles: { typography: { fontSize: 36, fontWeight: 700, textAlign: 'center', marginBottom: '16px' } } },
+                                    { type: 'text', content: 'Elige el plan que mejor se adapte a ti', styles: { typography: { textAlign: 'center', color: '#6b7280', marginBottom: '48px' } } },
+                                    {
+                                        type: 'columns',
+                                        styles: { layout: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', alignItems: 'start' } },
+                                        children: [
+                                            { type: 'container', styles: { spacing: { padding: '32px' }, background: { color: '#ffffff' }, border: { width: 1, style: 'solid', color: '#e5e7eb', radius: { tl: 16, tr: 16, br: 16, bl: 16 } } }, children: [
+                                                { type: 'heading', content: 'Básico', styles: { typography: { fontSize: 20, fontWeight: 600 } } },
+                                                { type: 'text', content: '$9/mes', styles: { typography: { fontSize: 36, fontWeight: 700, marginTop: '16px' } } },
+                                                { type: 'text', content: '• 5 proyectos\n• 10GB almacenamiento\n• Soporte email', styles: { typography: { color: '#6b7280', marginTop: '24px', whiteSpace: 'pre-line' } } },
+                                                { type: 'button', content: 'Elegir plan', styles: { spacing: { marginTop: '24px', padding: '12px 24px' }, layout: { width: '100%' } } }
+                                            ]},
+                                            { type: 'container', styles: { spacing: { padding: '32px' }, background: { color: '#3b82f6' }, border: { radius: { tl: 16, tr: 16, br: 16, bl: 16 } }, effects: { boxShadow: { enabled: true, y: 10, blur: 30, color: 'rgba(59,130,246,0.3)' } } }, children: [
+                                                { type: 'text', content: '⭐ Popular', styles: { typography: { fontSize: 12, color: '#ffffff', textTransform: 'uppercase', letterSpacing: '1px' } } },
+                                                { type: 'heading', content: 'Pro', styles: { typography: { fontSize: 20, fontWeight: 600, color: '#ffffff' } } },
+                                                { type: 'text', content: '$29/mes', styles: { typography: { fontSize: 36, fontWeight: 700, color: '#ffffff', marginTop: '16px' } } },
+                                                { type: 'text', content: '• Proyectos ilimitados\n• 100GB almacenamiento\n• Soporte prioritario\n• API access', styles: { typography: { color: 'rgba(255,255,255,0.9)', marginTop: '24px', whiteSpace: 'pre-line' } } },
+                                                { type: 'button', content: 'Elegir plan', styles: { spacing: { marginTop: '24px', padding: '12px 24px' }, layout: { width: '100%' }, background: { color: '#ffffff' }, typography: { color: '#3b82f6' } } }
+                                            ]},
+                                            { type: 'container', styles: { spacing: { padding: '32px' }, background: { color: '#ffffff' }, border: { width: 1, style: 'solid', color: '#e5e7eb', radius: { tl: 16, tr: 16, br: 16, bl: 16 } } }, children: [
+                                                { type: 'heading', content: 'Enterprise', styles: { typography: { fontSize: 20, fontWeight: 600 } } },
+                                                { type: 'text', content: 'Contactar', styles: { typography: { fontSize: 36, fontWeight: 700, marginTop: '16px' } } },
+                                                { type: 'text', content: '• Todo de Pro\n• SLA garantizado\n• Manager dedicado\n• On-premise option', styles: { typography: { color: '#6b7280', marginTop: '24px', whiteSpace: 'pre-line' } } },
+                                                { type: 'button', content: 'Contactar', styles: { spacing: { marginTop: '24px', padding: '12px 24px' }, layout: { width: '100%' } } }
+                                            ]}
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    'cta-simple': {
+                        name: 'CTA Simple',
+                        elements: [
+                            {
+                                type: 'container',
+                                styles: { spacing: { padding: '64px 48px' }, background: { type: 'gradient', value: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }, layout: { textAlign: 'center' } },
+                                children: [
+                                    { type: 'heading', content: '¿Listo para empezar?', styles: { typography: { fontSize: 36, fontWeight: 700, color: '#ffffff' } } },
+                                    { type: 'text', content: 'Únete a miles de usuarios satisfechos', styles: { typography: { fontSize: 18, color: 'rgba(255,255,255,0.9)', marginTop: '16px' } } },
+                                    { type: 'button', content: 'Comenzar gratis', styles: { spacing: { marginTop: '32px', padding: '16px 32px' }, background: { color: '#ffffff' }, typography: { color: '#3b82f6', fontWeight: 600, fontSize: 16 }, border: { radius: { tl: 8, tr: 8, br: 8, bl: 8 } } } }
+                                ]
+                            }
+                        ]
+                    },
+                    'cta-newsletter': {
+                        name: 'Newsletter',
+                        elements: [
+                            {
+                                type: 'container',
+                                styles: { spacing: { padding: '48px' }, background: { color: '#f3f4f6' }, border: { radius: { tl: 16, tr: 16, br: 16, bl: 16 } }, layout: { textAlign: 'center', maxWidth: '600px', margin: '0 auto' } },
+                                children: [
+                                    { type: 'text', content: '📬', styles: { typography: { fontSize: 48 } } },
+                                    { type: 'heading', content: 'Suscríbete a nuestro newsletter', styles: { typography: { fontSize: 24, fontWeight: 700, marginTop: '16px' } } },
+                                    { type: 'text', content: 'Recibe las últimas novedades directo en tu inbox', styles: { typography: { color: '#6b7280', marginTop: '8px' } } },
+                                    {
+                                        type: 'container',
+                                        styles: { layout: { display: 'flex', gap: '12px', marginTop: '24px' } },
+                                        children: [
+                                            { type: 'input', content: '', placeholder: 'tu@email.com', styles: { layout: { flex: 1 }, spacing: { padding: '14px 16px' }, border: { width: 1, style: 'solid', color: '#d1d5db', radius: { tl: 8, tr: 8, br: 8, bl: 8 } } } },
+                                            { type: 'button', content: 'Suscribirse', styles: { spacing: { padding: '14px 24px' }, background: { color: '#3b82f6' }, typography: { color: '#ffffff', fontWeight: 600 }, border: { radius: { tl: 8, tr: 8, br: 8, bl: 8 } } } }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    'footer-simple': {
+                        name: 'Footer Simple',
+                        elements: [
+                            {
+                                type: 'container',
+                                styles: { spacing: { padding: '32px 48px' }, background: { color: '#1f2937' }, layout: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+                                children: [
+                                    { type: 'text', content: '© 2024 Tu Empresa. Todos los derechos reservados.', styles: { typography: { color: '#9ca3af', fontSize: 14 } } },
+                                    {
+                                        type: 'container',
+                                        styles: { layout: { display: 'flex', gap: '16px' } },
+                                        children: [
+                                            { type: 'text', content: '🐦', styles: { typography: { fontSize: 20 } } },
+                                            { type: 'text', content: '📘', styles: { typography: { fontSize: 20 } } },
+                                            { type: 'text', content: '📸', styles: { typography: { fontSize: 20 } } },
+                                            { type: 'text', content: '💼', styles: { typography: { fontSize: 20 } } }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                };
+
+                return templates[templateId] || null;
+            },
+
+            // === COMPONENTES REUTILIZABLES ===
+
+            /**
+             * Guardar selección como componente
+             */
+            saveAsComponent: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para guardar', 'warning');
+                    return;
+                }
+
+                var name = prompt('Nombre del componente:', 'Mi Componente');
+                if (!name) return;
+
+                var elements = store.selection.elementIds.map(function(id) {
+                    return JSON.parse(JSON.stringify(store.getElement(id)));
+                });
+
+                var component = {
+                    id: 'comp_' + Date.now(),
+                    name: name,
+                    created: new Date().toISOString(),
+                    elements: elements,
+                    thumbnail: null
+                };
+
+                // Guardar en localStorage
+                var components = JSON.parse(localStorage.getItem('vbp_components') || '[]');
+                components.push(component);
+                localStorage.setItem('vbp_components', JSON.stringify(components));
+
+                this.showNotification('💾 Componente guardado: ' + name);
+            },
+
+            /**
+             * Abrir biblioteca de componentes
+             */
+            openComponentsLibrary: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                var modalId = 'vbp-components-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var components = JSON.parse(localStorage.getItem('vbp_components') || '[]');
+
+                var html = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                html += '<div class="vbp-modal" style="max-width: 700px;">';
+                html += '<div class="vbp-modal-header">';
+                html += '<h2>🧩 Mis Componentes</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                html += '</div>';
+                html += '<div class="vbp-modal-body" style="max-height: 60vh; overflow-y: auto;">';
+
+                if (components.length === 0) {
+                    html += '<div style="text-align: center; padding: 48px; color: var(--vbp-text-muted, #6c7086);">';
+                    html += '<div style="font-size: 48px; margin-bottom: 16px;">🧩</div>';
+                    html += '<p>No tienes componentes guardados</p>';
+                    html += '<p style="font-size: 12px; margin-top: 8px;">Selecciona elementos y presiona <kbd>Ctrl+Alt+Shift+C</kbd> para guardar</p>';
+                    html += '</div>';
+                } else {
+                    html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px;">';
+                    components.forEach(function(comp, idx) {
+                        html += '<div class="component-item" data-index="' + idx + '" style="background: var(--vbp-surface, #313244); border: 1px solid var(--vbp-border, #45475a); border-radius: 8px; padding: 16px; cursor: pointer; transition: all 0.2s; position: relative;">';
+                        html += '<div style="font-size: 32px; margin-bottom: 8px;">🧩</div>';
+                        html += '<div style="font-weight: 600; margin-bottom: 4px;">' + comp.name + '</div>';
+                        html += '<div style="font-size: 11px; color: var(--vbp-text-muted, #6c7086);">' + comp.elements.length + ' elementos</div>';
+                        html += '<button class="delete-component" data-index="' + idx + '" style="position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border-radius: 50%; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: none; cursor: pointer; opacity: 0; transition: opacity 0.2s;">×</button>';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                }
+
+                html += '</div>';
+                html += '<div class="vbp-modal-footer">';
+                html += '<p style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">💡 Clic para insertar, hover + × para eliminar</p>';
+                html += '</div></div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var modal = document.getElementById(modalId);
+
+                // Component hover and click
+                modal.querySelectorAll('.component-item').forEach(function(item) {
+                    item.addEventListener('mouseenter', function() {
+                        this.style.borderColor = 'var(--vbp-primary, #89b4fa)';
+                        this.querySelector('.delete-component').style.opacity = '1';
+                    });
+                    item.addEventListener('mouseleave', function() {
+                        this.style.borderColor = 'var(--vbp-border, #45475a)';
+                        this.querySelector('.delete-component').style.opacity = '0';
+                    });
+                    item.addEventListener('click', function(e) {
+                        if (e.target.classList.contains('delete-component')) return;
+                        var idx = parseInt(this.dataset.index);
+                        self.insertComponent(idx);
+                        modal.remove();
+                    });
+                });
+
+                // Delete component
+                modal.querySelectorAll('.delete-component').forEach(function(btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var idx = parseInt(this.dataset.index);
+                        if (confirm('¿Eliminar este componente?')) {
+                            var comps = JSON.parse(localStorage.getItem('vbp_components') || '[]');
+                            comps.splice(idx, 1);
+                            localStorage.setItem('vbp_components', JSON.stringify(comps));
+                            modal.remove();
+                            self.openComponentsLibrary();
+                        }
+                    });
+                });
+            },
+
+            /**
+             * Insertar componente
+             */
+            insertComponent: function(index) {
+                var store = Alpine.store('vbp');
+                var components = JSON.parse(localStorage.getItem('vbp_components') || '[]');
+                var component = components[index];
+
+                if (component) {
+                    store.saveToHistory();
+                    component.elements.forEach(function(el) {
+                        var newEl = JSON.parse(JSON.stringify(el));
+                        newEl.id = 'el_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                        store.addElement(newEl);
+                    });
+                    store.isDirty = true;
+                    this.showNotification('🧩 Componente insertado: ' + component.name);
+                }
+            },
+
+            // === DESIGN TOKENS ===
+
+            /**
+             * Editor de Design Tokens
+             */
+            openDesignTokens: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                var modalId = 'vbp-tokens-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var tokens = JSON.parse(localStorage.getItem('vbp_design_tokens') || JSON.stringify({
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#8b5cf6',
+                        accent: '#f59e0b',
+                        success: '#22c55e',
+                        warning: '#f97316',
+                        error: '#ef4444',
+                        background: '#ffffff',
+                        surface: '#f3f4f6',
+                        text: '#1f2937',
+                        textMuted: '#6b7280'
+                    },
+                    spacing: {
+                        xs: 4,
+                        sm: 8,
+                        md: 16,
+                        lg: 24,
+                        xl: 32,
+                        xxl: 48
+                    },
+                    typography: {
+                        fontFamily: 'Inter, sans-serif',
+                        fontSizeBase: 16,
+                        fontSizeH1: 48,
+                        fontSizeH2: 36,
+                        fontSizeH3: 24,
+                        fontSizeSmall: 14,
+                        lineHeight: 1.5,
+                        fontWeightNormal: 400,
+                        fontWeightMedium: 500,
+                        fontWeightBold: 700
+                    },
+                    borders: {
+                        radiusSm: 4,
+                        radiusMd: 8,
+                        radiusLg: 16,
+                        radiusFull: 9999
+                    }
+                }));
+
+                var html = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                html += '<div class="vbp-modal" style="max-width: 650px; max-height: 85vh;">';
+                html += '<div class="vbp-modal-header">';
+                html += '<h2>🎨 Design Tokens</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                html += '</div>';
+                html += '<div class="vbp-modal-body" style="overflow-y: auto; max-height: 55vh;">';
+
+                // Colors
+                html += '<div class="token-section" style="margin-bottom: 24px;">';
+                html += '<h3 style="font-size: 14px; color: var(--vbp-text-muted, #6c7086); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">🎨 Colores</h3>';
+                html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">';
+                Object.keys(tokens.colors).forEach(function(key) {
+                    html += '<div style="display: flex; align-items: center; gap: 8px;">';
+                    html += '<input type="color" id="color-' + key + '" value="' + tokens.colors[key] + '" style="width: 40px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">';
+                    html += '<span style="flex: 1; font-size: 13px;">' + key + '</span>';
+                    html += '<input type="text" value="' + tokens.colors[key] + '" style="width: 80px; padding: 4px 8px; font-size: 11px; border: 1px solid var(--vbp-border, #313244); border-radius: 4px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);" readonly>';
+                    html += '</div>';
+                });
+                html += '</div></div>';
+
+                // Spacing
+                html += '<div class="token-section" style="margin-bottom: 24px;">';
+                html += '<h3 style="font-size: 14px; color: var(--vbp-text-muted, #6c7086); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">📏 Espaciado</h3>';
+                html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">';
+                Object.keys(tokens.spacing).forEach(function(key) {
+                    html += '<div style="display: flex; align-items: center; gap: 8px;">';
+                    html += '<span style="width: 40px; font-size: 12px; color: var(--vbp-text-muted, #6c7086);">' + key + '</span>';
+                    html += '<input type="number" id="spacing-' + key + '" value="' + tokens.spacing[key] + '" min="0" max="200" style="flex: 1; padding: 6px; border: 1px solid var(--vbp-border, #313244); border-radius: 4px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                    html += '<span style="font-size: 11px; color: var(--vbp-text-muted, #6c7086);">px</span>';
+                    html += '</div>';
+                });
+                html += '</div></div>';
+
+                // Typography
+                html += '<div class="token-section" style="margin-bottom: 24px;">';
+                html += '<h3 style="font-size: 14px; color: var(--vbp-text-muted, #6c7086); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">🔤 Tipografía</h3>';
+                html += '<div style="margin-bottom: 12px;">';
+                html += '<label style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">Familia tipográfica</label>';
+                html += '<select id="typo-fontFamily" style="width: 100%; padding: 8px; margin-top: 4px; border: 1px solid var(--vbp-border, #313244); border-radius: 6px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                ['Inter, sans-serif', 'Roboto, sans-serif', 'Open Sans, sans-serif', 'Poppins, sans-serif', 'Montserrat, sans-serif', 'Playfair Display, serif', 'Georgia, serif'].forEach(function(font) {
+                    var selected = tokens.typography.fontFamily === font ? ' selected' : '';
+                    html += '<option value="' + font + '"' + selected + '>' + font.split(',')[0] + '</option>';
+                });
+                html += '</select></div>';
+                html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">';
+                [
+                    { key: 'fontSizeBase', label: 'Base' },
+                    { key: 'fontSizeH1', label: 'H1' },
+                    { key: 'fontSizeH2', label: 'H2' },
+                    { key: 'fontSizeH3', label: 'H3' }
+                ].forEach(function(item) {
+                    html += '<div style="display: flex; align-items: center; gap: 8px;">';
+                    html += '<span style="width: 40px; font-size: 12px;">' + item.label + '</span>';
+                    html += '<input type="number" id="typo-' + item.key + '" value="' + tokens.typography[item.key] + '" min="8" max="120" style="flex: 1; padding: 6px; border: 1px solid var(--vbp-border, #313244); border-radius: 4px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                    html += '<span style="font-size: 11px; color: var(--vbp-text-muted, #6c7086);">px</span>';
+                    html += '</div>';
+                });
+                html += '</div></div>';
+
+                // Border Radius
+                html += '<div class="token-section">';
+                html += '<h3 style="font-size: 14px; color: var(--vbp-text-muted, #6c7086); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">📐 Border Radius</h3>';
+                html += '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">';
+                Object.keys(tokens.borders).forEach(function(key) {
+                    var label = key.replace('radius', '').toLowerCase();
+                    html += '<div style="text-align: center;">';
+                    html += '<div style="width: 48px; height: 48px; background: var(--vbp-primary, #89b4fa); margin: 0 auto 8px; border-radius: ' + tokens.borders[key] + 'px;"></div>';
+                    html += '<input type="number" id="border-' + key + '" value="' + tokens.borders[key] + '" min="0" max="100" style="width: 100%; padding: 4px; text-align: center; border: 1px solid var(--vbp-border, #313244); border-radius: 4px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); font-size: 12px;">';
+                    html += '<span style="font-size: 10px; color: var(--vbp-text-muted, #6c7086);">' + label + '</span>';
+                    html += '</div>';
+                });
+                html += '</div></div>';
+
+                html += '</div>';
+                html += '<div class="vbp-modal-footer">';
+                html += '<button class="vbp-btn vbp-btn-secondary" id="tokens-reset">Resetear</button>';
+                html += '<button class="vbp-btn vbp-btn-secondary" id="tokens-export">Exportar CSS</button>';
+                html += '<button class="vbp-btn vbp-btn-primary" id="tokens-save">Guardar</button>';
+                html += '</div></div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var modal = document.getElementById(modalId);
+
+                // Color inputs sync
+                modal.querySelectorAll('input[type="color"]').forEach(function(input) {
+                    input.addEventListener('input', function() {
+                        this.nextElementSibling.nextElementSibling.value = this.value;
+                    });
+                });
+
+                // Save
+                modal.querySelector('#tokens-save').addEventListener('click', function() {
+                    var newTokens = {
+                        colors: {},
+                        spacing: {},
+                        typography: { fontFamily: modal.querySelector('#typo-fontFamily').value },
+                        borders: {}
+                    };
+
+                    Object.keys(tokens.colors).forEach(function(key) {
+                        newTokens.colors[key] = modal.querySelector('#color-' + key).value;
+                    });
+                    Object.keys(tokens.spacing).forEach(function(key) {
+                        newTokens.spacing[key] = parseInt(modal.querySelector('#spacing-' + key).value);
+                    });
+                    ['fontSizeBase', 'fontSizeH1', 'fontSizeH2', 'fontSizeH3'].forEach(function(key) {
+                        newTokens.typography[key] = parseInt(modal.querySelector('#typo-' + key).value);
+                    });
+                    Object.keys(tokens.borders).forEach(function(key) {
+                        newTokens.borders[key] = parseInt(modal.querySelector('#border-' + key).value);
+                    });
+
+                    localStorage.setItem('vbp_design_tokens', JSON.stringify(newTokens));
+                    modal.remove();
+                    self.showNotification('🎨 Design tokens guardados');
+                });
+
+                // Export CSS
+                modal.querySelector('#tokens-export').addEventListener('click', function() {
+                    var css = ':root {\n';
+                    Object.keys(tokens.colors).forEach(function(key) {
+                        css += '  --color-' + key.replace(/([A-Z])/g, '-$1').toLowerCase() + ': ' + modal.querySelector('#color-' + key).value + ';\n';
+                    });
+                    Object.keys(tokens.spacing).forEach(function(key) {
+                        css += '  --spacing-' + key + ': ' + modal.querySelector('#spacing-' + key).value + 'px;\n';
+                    });
+                    css += '  --font-family: ' + modal.querySelector('#typo-fontFamily').value + ';\n';
+                    ['fontSizeBase', 'fontSizeH1', 'fontSizeH2', 'fontSizeH3'].forEach(function(key) {
+                        css += '  --font-size-' + key.replace('fontSize', '').toLowerCase() + ': ' + modal.querySelector('#typo-' + key).value + 'px;\n';
+                    });
+                    Object.keys(tokens.borders).forEach(function(key) {
+                        css += '  --' + key.replace(/([A-Z])/g, '-$1').toLowerCase() + ': ' + modal.querySelector('#border-' + key).value + 'px;\n';
+                    });
+                    css += '}';
+
+                    navigator.clipboard.writeText(css).then(function() {
+                        self.showNotification('📋 CSS copiado al portapapeles');
+                    });
+                });
+
+                // Reset
+                modal.querySelector('#tokens-reset').addEventListener('click', function() {
+                    if (confirm('¿Resetear todos los tokens a valores por defecto?')) {
+                        localStorage.removeItem('vbp_design_tokens');
+                        modal.remove();
+                        self.openDesignTokens();
+                    }
+                });
+            },
+
+            // === EXPORT OPTIONS ===
+
+            /**
+             * Opciones de exportación
+             */
+            openExportOptions: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                var modalId = 'vbp-export-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var html = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                html += '<div class="vbp-modal" style="max-width: 600px;">';
+                html += '<div class="vbp-modal-header">';
+                html += '<h2>📤 Exportar</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                html += '</div>';
+                html += '<div class="vbp-modal-body">';
+
+                // Export options grid
+                html += '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">';
+
+                // HTML/CSS
+                html += '<div class="export-option" data-type="html" style="background: var(--vbp-surface, #313244); border: 1px solid var(--vbp-border, #45475a); border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.2s; text-align: center;">';
+                html += '<div style="font-size: 36px; margin-bottom: 12px;">🌐</div>';
+                html += '<div style="font-weight: 600; margin-bottom: 4px;">HTML + CSS</div>';
+                html += '<div style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">Código limpio y semántico</div>';
+                html += '</div>';
+
+                // Tailwind
+                html += '<div class="export-option" data-type="tailwind" style="background: var(--vbp-surface, #313244); border: 1px solid var(--vbp-border, #45475a); border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.2s; text-align: center;">';
+                html += '<div style="font-size: 36px; margin-bottom: 12px;">🎐</div>';
+                html += '<div style="font-weight: 600; margin-bottom: 4px;">Tailwind CSS</div>';
+                html += '<div style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">Clases de utilidad</div>';
+                html += '</div>';
+
+                // React
+                html += '<div class="export-option" data-type="react" style="background: var(--vbp-surface, #313244); border: 1px solid var(--vbp-border, #45475a); border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.2s; text-align: center;">';
+                html += '<div style="font-size: 36px; margin-bottom: 12px;">⚛️</div>';
+                html += '<div style="font-weight: 600; margin-bottom: 4px;">React Component</div>';
+                html += '<div style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">JSX + styled-components</div>';
+                html += '</div>';
+
+                // Vue
+                html += '<div class="export-option" data-type="vue" style="background: var(--vbp-surface, #313244); border: 1px solid var(--vbp-border, #45475a); border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.2s; text-align: center;">';
+                html += '<div style="font-size: 36px; margin-bottom: 12px;">💚</div>';
+                html += '<div style="font-weight: 600; margin-bottom: 4px;">Vue Component</div>';
+                html += '<div style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">SFC con scoped styles</div>';
+                html += '</div>';
+
+                // JSON
+                html += '<div class="export-option" data-type="json" style="background: var(--vbp-surface, #313244); border: 1px solid var(--vbp-border, #45475a); border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.2s; text-align: center;">';
+                html += '<div style="font-size: 36px; margin-bottom: 12px;">{ }</div>';
+                html += '<div style="font-weight: 600; margin-bottom: 4px;">JSON</div>';
+                html += '<div style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">Datos estructurados</div>';
+                html += '</div>';
+
+                // Image
+                html += '<div class="export-option" data-type="image" style="background: var(--vbp-surface, #313244); border: 1px solid var(--vbp-border, #45475a); border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.2s; text-align: center;">';
+                html += '<div style="font-size: 36px; margin-bottom: 12px;">🖼</div>';
+                html += '<div style="font-weight: 600; margin-bottom: 4px;">Imagen PNG</div>';
+                html += '<div style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">Screenshot del canvas</div>';
+                html += '</div>';
+
+                html += '</div>';
+
+                // Output area (hidden initially)
+                html += '<div id="export-output" style="display: none; margin-top: 24px;">';
+                html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">';
+                html += '<span id="export-type-label" style="font-weight: 600;"></span>';
+                html += '<button id="copy-export" style="padding: 6px 12px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">📋 Copiar</button>';
+                html += '</div>';
+                html += '<pre id="export-code" style="background: #1a1b26; color: #a9b1d6; padding: 16px; border-radius: 8px; overflow-x: auto; max-height: 300px; font-size: 12px; line-height: 1.5;"></pre>';
+                html += '</div>';
+
+                html += '</div></div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var modal = document.getElementById(modalId);
+
+                // Export option click
+                modal.querySelectorAll('.export-option').forEach(function(opt) {
+                    opt.addEventListener('mouseenter', function() {
+                        this.style.borderColor = 'var(--vbp-primary, #89b4fa)';
+                        this.style.transform = 'translateY(-4px)';
+                    });
+                    opt.addEventListener('mouseleave', function() {
+                        this.style.borderColor = 'var(--vbp-border, #45475a)';
+                        this.style.transform = '';
+                    });
+                    opt.addEventListener('click', function() {
+                        var type = this.dataset.type;
+                        var code = self.generateExport(type, store.elements);
+
+                        document.getElementById('export-output').style.display = '';
+                        document.getElementById('export-type-label').textContent = this.querySelector('div:nth-child(2)').textContent;
+                        document.getElementById('export-code').textContent = code;
+
+                        // Highlight selected
+                        modal.querySelectorAll('.export-option').forEach(function(o) {
+                            o.style.borderColor = 'var(--vbp-border, #45475a)';
+                        });
+                        this.style.borderColor = 'var(--vbp-primary, #89b4fa)';
+                    });
+                });
+
+                // Copy button
+                modal.querySelector('#copy-export').addEventListener('click', function() {
+                    var code = document.getElementById('export-code').textContent;
+                    navigator.clipboard.writeText(code).then(function() {
+                        self.showNotification('📋 Código copiado');
+                    });
+                });
+            },
+
+            /**
+             * Generar código de exportación
+             */
+            generateExport: function(type, elements) {
+                var self = this;
+
+                switch (type) {
+                    case 'html':
+                        return this.generateHTML(elements);
+                    case 'tailwind':
+                        return this.generateTailwind(elements);
+                    case 'react':
+                        return this.generateReact(elements);
+                    case 'vue':
+                        return this.generateVue(elements);
+                    case 'json':
+                        return JSON.stringify(elements, null, 2);
+                    case 'image':
+                        this.exportAsImage();
+                        return '// Generando imagen...';
+                    default:
+                        return '';
+                }
+            },
+
+            /**
+             * Generar HTML limpio
+             */
+            generateHTML: function(elements) {
+                var html = '<!DOCTYPE html>\n<html lang="es">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>Mi Página</title>\n  <style>\n';
+
+                // Generate CSS
+                var css = this.generateCSS(elements);
+                html += css;
+
+                html += '\n  </style>\n</head>\n<body>\n';
+
+                // Generate HTML structure
+                elements.forEach(function(el) {
+                    html += '  ' + this.elementToHTML(el, 1) + '\n';
+                }, this);
+
+                html += '</body>\n</html>';
+
+                return html;
+            },
+
+            /**
+             * Elemento a HTML
+             */
+            elementToHTML: function(element, indent) {
+                var spaces = '  '.repeat(indent);
+                var tag = this.getHTMLTag(element.type);
+                var className = 'el-' + element.id;
+
+                var html = spaces + '<' + tag + ' class="' + className + '">';
+
+                if (element.content) {
+                    html += element.content;
+                }
+
+                if (element.children && element.children.length) {
+                    html += '\n';
+                    element.children.forEach(function(child) {
+                        html += this.elementToHTML(child, indent + 1) + '\n';
+                    }, this);
+                    html += spaces;
+                }
+
+                html += '</' + tag + '>';
+
+                return html;
+            },
+
+            /**
+             * Obtener tag HTML según tipo
+             */
+            getHTMLTag: function(type) {
+                var tags = {
+                    'text': 'p',
+                    'heading': 'h2',
+                    'button': 'button',
+                    'image': 'img',
+                    'container': 'div',
+                    'columns': 'div',
+                    'row': 'div',
+                    'section': 'section',
+                    'hero': 'section',
+                    'features': 'section',
+                    'input': 'input'
+                };
+                return tags[type] || 'div';
+            },
+
+            /**
+             * Generar CSS
+             */
+            generateCSS: function(elements) {
+                var css = '    * { margin: 0; padding: 0; box-sizing: border-box; }\n';
+                css += '    body { font-family: system-ui, sans-serif; }\n\n';
+
+                elements.forEach(function(el) {
+                    css += this.elementToCSS(el);
+                }, this);
+
+                return css;
+            },
+
+            /**
+             * Elemento a CSS
+             */
+            elementToCSS: function(element) {
+                var css = '    .el-' + element.id + ' {\n';
+
+                if (element.styles) {
+                    if (element.styles.layout) {
+                        var layout = element.styles.layout;
+                        if (layout.display) css += '      display: ' + layout.display + ';\n';
+                        if (layout.flexDirection) css += '      flex-direction: ' + layout.flexDirection + ';\n';
+                        if (layout.alignItems) css += '      align-items: ' + layout.alignItems + ';\n';
+                        if (layout.justifyContent) css += '      justify-content: ' + layout.justifyContent + ';\n';
+                        if (layout.gap) css += '      gap: ' + layout.gap + ';\n';
+                    }
+
+                    if (element.styles.spacing) {
+                        var sp = element.styles.spacing;
+                        if (sp.padding) css += '      padding: ' + sp.padding.top + 'px ' + sp.padding.right + 'px ' + sp.padding.bottom + 'px ' + sp.padding.left + 'px;\n';
+                        if (sp.margin) css += '      margin: ' + sp.margin.top + 'px ' + sp.margin.right + 'px ' + sp.margin.bottom + 'px ' + sp.margin.left + 'px;\n';
+                    }
+
+                    if (element.styles.typography) {
+                        var typo = element.styles.typography;
+                        if (typo.fontSize) css += '      font-size: ' + typo.fontSize + 'px;\n';
+                        if (typo.fontWeight) css += '      font-weight: ' + typo.fontWeight + ';\n';
+                        if (typo.color) css += '      color: ' + typo.color + ';\n';
+                        if (typo.textAlign) css += '      text-align: ' + typo.textAlign + ';\n';
+                    }
+
+                    if (element.styles.background) {
+                        var bg = element.styles.background;
+                        if (bg.color) css += '      background-color: ' + bg.color + ';\n';
+                        if (bg.type === 'gradient') css += '      background: ' + bg.value + ';\n';
+                    }
+
+                    if (element.styles.border && element.styles.border.radius) {
+                        var r = element.styles.border.radius;
+                        css += '      border-radius: ' + r.tl + 'px ' + r.tr + 'px ' + r.br + 'px ' + r.bl + 'px;\n';
+                    }
+                }
+
+                css += '    }\n\n';
+
+                if (element.children) {
+                    element.children.forEach(function(child) {
+                        css += this.elementToCSS(child);
+                    }, this);
+                }
+
+                return css;
+            },
+
+            /**
+             * Generar Tailwind
+             */
+            generateTailwind: function(elements) {
+                var html = '<!-- Tailwind CSS -->\n';
+                elements.forEach(function(el) {
+                    html += this.elementToTailwind(el, 0) + '\n';
+                }, this);
+                return html;
+            },
+
+            /**
+             * Elemento a Tailwind
+             */
+            elementToTailwind: function(element, indent) {
+                var spaces = '  '.repeat(indent);
+                var tag = this.getHTMLTag(element.type);
+                var classes = this.stylesToTailwind(element.styles);
+
+                var html = spaces + '<' + tag + ' class="' + classes + '">';
+
+                if (element.content) {
+                    html += element.content;
+                }
+
+                if (element.children && element.children.length) {
+                    html += '\n';
+                    element.children.forEach(function(child) {
+                        html += this.elementToTailwind(child, indent + 1) + '\n';
+                    }, this);
+                    html += spaces;
+                }
+
+                html += '</' + tag + '>';
+
+                return html;
+            },
+
+            /**
+             * Estilos a clases Tailwind
+             */
+            stylesToTailwind: function(styles) {
+                var classes = [];
+
+                if (!styles) return classes.join(' ');
+
+                if (styles.layout) {
+                    if (styles.layout.display === 'flex') classes.push('flex');
+                    if (styles.layout.display === 'grid') classes.push('grid');
+                    if (styles.layout.flexDirection === 'column') classes.push('flex-col');
+                    if (styles.layout.alignItems === 'center') classes.push('items-center');
+                    if (styles.layout.justifyContent === 'center') classes.push('justify-center');
+                    if (styles.layout.justifyContent === 'space-between') classes.push('justify-between');
+                }
+
+                if (styles.spacing) {
+                    var p = styles.spacing.padding;
+                    if (p) {
+                        if (p.top === p.bottom && p.left === p.right && p.top === p.left) {
+                            classes.push('p-' + Math.round(p.top / 4));
+                        } else {
+                            if (p.top === p.bottom) classes.push('py-' + Math.round(p.top / 4));
+                            if (p.left === p.right) classes.push('px-' + Math.round(p.left / 4));
+                        }
+                    }
+                }
+
+                if (styles.typography) {
+                    var fs = styles.typography.fontSize;
+                    if (fs <= 12) classes.push('text-xs');
+                    else if (fs <= 14) classes.push('text-sm');
+                    else if (fs <= 16) classes.push('text-base');
+                    else if (fs <= 20) classes.push('text-lg');
+                    else if (fs <= 24) classes.push('text-xl');
+                    else if (fs <= 30) classes.push('text-2xl');
+                    else if (fs <= 36) classes.push('text-3xl');
+                    else if (fs <= 48) classes.push('text-4xl');
+                    else classes.push('text-5xl');
+
+                    if (styles.typography.fontWeight >= 700) classes.push('font-bold');
+                    else if (styles.typography.fontWeight >= 600) classes.push('font-semibold');
+                    else if (styles.typography.fontWeight >= 500) classes.push('font-medium');
+
+                    if (styles.typography.textAlign === 'center') classes.push('text-center');
+                }
+
+                if (styles.border && styles.border.radius) {
+                    var r = styles.border.radius.tl;
+                    if (r >= 9999) classes.push('rounded-full');
+                    else if (r >= 16) classes.push('rounded-2xl');
+                    else if (r >= 12) classes.push('rounded-xl');
+                    else if (r >= 8) classes.push('rounded-lg');
+                    else if (r >= 6) classes.push('rounded-md');
+                    else if (r >= 4) classes.push('rounded');
+                }
+
+                return classes.join(' ');
+            },
+
+            /**
+             * Generar React Component
+             */
+            generateReact: function(elements) {
+                var jsx = 'import React from \'react\';\nimport styled from \'styled-components\';\n\n';
+
+                jsx += 'const Component = () => {\n  return (\n    <Container>\n';
+
+                elements.forEach(function(el) {
+                    jsx += '      ' + this.elementToJSX(el) + '\n';
+                }, this);
+
+                jsx += '    </Container>\n  );\n};\n\n';
+
+                jsx += '// Styled Components\nconst Container = styled.div`\n  // Add your styles\n`;\n\n';
+                jsx += 'export default Component;';
+
+                return jsx;
+            },
+
+            /**
+             * Elemento a JSX
+             */
+            elementToJSX: function(element) {
+                var tag = element.type.charAt(0).toUpperCase() + element.type.slice(1);
+                var jsx = '<' + tag + '>';
+                if (element.content) jsx += element.content;
+                jsx += '</' + tag + '>';
+                return jsx;
+            },
+
+            /**
+             * Generar Vue Component
+             */
+            generateVue: function(elements) {
+                var vue = '<template>\n  <div class="container">\n';
+
+                elements.forEach(function(el) {
+                    vue += '    ' + this.elementToHTML(el, 2) + '\n';
+                }, this);
+
+                vue += '  </div>\n</template>\n\n';
+                vue += '<script>\nexport default {\n  name: \'MyComponent\'\n}\n</script>\n\n';
+                vue += '<style scoped>\n.container {\n  /* Add your styles */\n}\n</style>';
+
+                return vue;
+            },
+
+            /**
+             * Exportar como imagen
+             */
+            exportAsImage: function() {
+                var self = this;
+                var canvas = document.querySelector('.vbp-canvas');
+
+                if (!canvas) {
+                    this.showNotification('No se encontró el canvas', 'error');
+                    return;
+                }
+
+                // Use html2canvas if available
+                if (typeof html2canvas !== 'undefined') {
+                    html2canvas(canvas).then(function(canvasEl) {
+                        var link = document.createElement('a');
+                        link.download = 'design-export.png';
+                        link.href = canvasEl.toDataURL();
+                        link.click();
+                        self.showNotification('🖼 Imagen exportada');
+                    });
+                } else {
+                    this.showNotification('Necesitas html2canvas para exportar imágenes', 'warning');
+                }
+            },
+
             /**
              * Mostrar modal de ayuda con atajos de teclado
              */
@@ -6617,6 +7775,15 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + Alt + P', action: 'Editor de espaciado' },
                 { keys: 'Ctrl + Alt + Shift + H', action: 'Estados interactivos (hover/active)' },
                 { keys: 'Ctrl + Alt + Shift + Y', action: 'Animaciones de scroll' }
+            ]},
+            { category: 'Templates y Componentes', shortcuts: [
+                { keys: 'Ctrl + Shift + K', action: 'Biblioteca de templates' },
+                { keys: 'Ctrl + Alt + Shift + C', action: 'Guardar como componente' },
+                { keys: 'Ctrl + Shift + I', action: 'Biblioteca de componentes' }
+            ]},
+            { category: 'Design System', shortcuts: [
+                { keys: 'Ctrl + Alt + Shift + T', action: 'Editor de design tokens' },
+                { keys: 'Ctrl + Alt + E', action: 'Opciones de exportación' }
             ]},
             { category: 'Responsive', shortcuts: [
                 { keys: '1', action: 'Vista Desktop' },

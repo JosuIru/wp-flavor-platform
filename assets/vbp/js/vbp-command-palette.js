@@ -173,6 +173,15 @@ document.addEventListener('alpine:init', function() {
             { id: 'device-desktop', label: 'Vista Escritorio', category: 'responsive', icon: '🖥', action: 'breakpointDesktop', shortcut: '1' },
             { id: 'device-tablet', label: 'Vista Tablet (768px)', category: 'responsive', icon: '📱', action: 'breakpointTablet', shortcut: '2' },
             { id: 'device-mobile', label: 'Vista Móvil (375px)', category: 'responsive', icon: '📱', action: 'breakpointMobile', shortcut: '3' },
+
+            // Templates y Componentes
+            { id: 'templates-library', label: 'Biblioteca de templates', category: 'templates', icon: '📐', action: 'openTemplatesLibrary', shortcut: 'Ctrl+Shift+K' },
+            { id: 'save-component', label: 'Guardar como componente', category: 'templates', icon: '💾', action: 'saveAsComponent', shortcut: 'Ctrl+Alt+Shift+C' },
+            { id: 'components-library', label: 'Biblioteca de componentes', category: 'templates', icon: '🧩', action: 'openComponentsLibrary', shortcut: 'Ctrl+Shift+I' },
+
+            // Design System
+            { id: 'design-tokens', label: 'Editor de design tokens', category: 'design', icon: '🎨', action: 'openDesignTokens', shortcut: 'Ctrl+Alt+Shift+T' },
+            { id: 'export-options', label: 'Opciones de exportación', category: 'design', icon: '📤', action: 'openExportOptions', shortcut: 'Ctrl+Alt+E' },
         ],
 
         get filteredCommands() {
