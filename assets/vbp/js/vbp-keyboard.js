@@ -123,6 +123,12 @@ document.addEventListener('alpine:init', function() {
                 // Snap to grid
                 'ctrl+shift+.': 'toggleSnapToGrid',
 
+                // Rulers
+                'ctrl+alt+shift+r': 'toggleRulers',
+
+                // Grid settings
+                'alt+shift+g': 'openGridSettings',
+
                 // Constraints
                 'ctrl+alt+t': 'toggleConstraintTop',
                 'ctrl+alt+b': 'toggleConstraintBottom',
@@ -598,6 +604,16 @@ document.addEventListener('alpine:init', function() {
                         this.toggleSnapToGrid();
                         break;
 
+                    // === RULERS ===
+                    case 'toggleRulers':
+                        this.toggleRulers();
+                        break;
+
+                    // === GRID SETTINGS ===
+                    case 'openGridSettings':
+                        this.openGridSettings();
+                        break;
+
                     // === CONSTRAINTS ===
                     case 'toggleConstraintTop':
                         this.toggleConstraint('top');
@@ -843,95 +859,6 @@ document.addEventListener('alpine:init', function() {
                         this.pasteFromJSON();
                         break;
 
-                    // === HERRAMIENTAS AVANZADAS ===
-                    case 'toggleAspectRatioLock':
-                        this.toggleAspectRatioLock();
-                        break;
-
-                    case 'toggleSmartGuides':
-                        this.toggleSmartGuides();
-                        break;
-
-                    case 'toggleMeasureTool':
-                        this.toggleMeasureTool();
-                        break;
-
-                    case 'saveAsFavorite':
-                        this.saveAsFavorite();
-                        break;
-
-                    case 'openFavorites':
-                        this.openFavorites();
-                        break;
-
-                    case 'openCSSVariables':
-                        this.openCSSVariables();
-                        break;
-
-                    case 'openVersionCompare':
-                        this.openVersionCompare();
-                        break;
-
-                    // === ROTACIÓN ===
-                    case 'rotate15':
-                        this.rotateSelection(15);
-                        break;
-
-                    case 'rotateNeg15':
-                        this.rotateSelection(-15);
-                        break;
-
-                    case 'rotate90':
-                        this.rotateSelection(90);
-                        break;
-
-                    case 'resetRotation':
-                        this.resetRotation();
-                        break;
-
-                    // === SNAP Y CONSTRAINTS ===
-                    case 'toggleSnapToGrid':
-                        this.toggleSnapToGrid();
-                        break;
-
-                    case 'toggleConstraintTop':
-                        this.toggleConstraint('top');
-                        break;
-
-                    case 'toggleConstraintBottom':
-                        this.toggleConstraint('bottom');
-                        break;
-
-                    case 'toggleConstraintLeft':
-                        this.toggleConstraint('left');
-                        break;
-
-                    case 'toggleConstraintRight':
-                        this.toggleConstraint('right');
-                        break;
-
-                    // === EFECTOS ===
-                    case 'openShadowEditor':
-                        this.openShadowEditor();
-                        break;
-
-                    case 'openGradientEditor':
-                        this.openGradientEditor();
-                        break;
-
-                    // === AUTO-LAYOUT ===
-                    case 'toggleAutoLayout':
-                        this.toggleAutoLayout();
-                        break;
-
-                    case 'decreaseGap':
-                        this.adjustAutoLayoutGap(-4);
-                        break;
-
-                    case 'increaseGap':
-                        this.adjustAutoLayoutGap(4);
-                        break;
-                }
             },
 
             /**
@@ -3788,6 +3715,154 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Toggle rulers (reglas)
+             */
+            rulersVisible: false,
+
+            toggleRulers: function() {
+                this.rulersVisible = !this.rulersVisible;
+                localStorage.setItem('vbp_rulers_visible', this.rulersVisible);
+
+                if (this.rulersVisible) {
+                    this.showRulers();
+                } else {
+                    this.hideRulers();
+                }
+
+                this.showNotification(this.rulersVisible ? '📏 Reglas visibles' : '📏 Reglas ocultas');
+            },
+
+            showRulers: function() {
+                var canvas = document.querySelector('.vbp-canvas');
+                if (!canvas) return;
+
+                // Crear regla horizontal
+                var rulerH = document.createElement('div');
+                rulerH.id = 'vbp-ruler-h';
+                rulerH.className = 'vbp-ruler vbp-ruler-horizontal';
+                rulerH.style.cssText = 'position: absolute; top: 0; left: 30px; right: 0; height: 24px; background: var(--vbp-panel-header-bg, #181825); border-bottom: 1px solid var(--vbp-border, #313244); z-index: 100; overflow: hidden;';
+
+                // Crear regla vertical
+                var rulerV = document.createElement('div');
+                rulerV.id = 'vbp-ruler-v';
+                rulerV.className = 'vbp-ruler vbp-ruler-vertical';
+                rulerV.style.cssText = 'position: absolute; top: 24px; left: 0; bottom: 0; width: 30px; background: var(--vbp-panel-header-bg, #181825); border-right: 1px solid var(--vbp-border, #313244); z-index: 100; overflow: hidden;';
+
+                // Generar marcas
+                var canvasWidth = canvas.scrollWidth;
+                var canvasHeight = canvas.scrollHeight;
+
+                var marksH = '';
+                for (var x = 0; x < canvasWidth; x += 50) {
+                    marksH += '<span style="position: absolute; left: ' + x + 'px; top: 0; height: 100%; border-left: 1px solid var(--vbp-border, #313244); font-size: 9px; color: var(--vbp-text-muted, #6c7086); padding-left: 2px;">' + x + '</span>';
+                }
+                rulerH.innerHTML = marksH;
+
+                var marksV = '';
+                for (var y = 0; y < canvasHeight; y += 50) {
+                    marksV += '<span style="position: absolute; top: ' + y + 'px; left: 0; width: 100%; border-top: 1px solid var(--vbp-border, #313244); font-size: 9px; color: var(--vbp-text-muted, #6c7086); writing-mode: vertical-rl; padding-top: 2px;">' + y + '</span>';
+                }
+                rulerV.innerHTML = marksV;
+
+                // Agregar al canvas wrapper
+                var wrapper = canvas.parentElement;
+                if (wrapper) {
+                    wrapper.style.position = 'relative';
+                    wrapper.appendChild(rulerH);
+                    wrapper.appendChild(rulerV);
+                }
+
+                canvas.style.marginTop = '24px';
+                canvas.style.marginLeft = '30px';
+            },
+
+            hideRulers: function() {
+                var rulerH = document.getElementById('vbp-ruler-h');
+                var rulerV = document.getElementById('vbp-ruler-v');
+                if (rulerH) rulerH.remove();
+                if (rulerV) rulerV.remove();
+
+                var canvas = document.querySelector('.vbp-canvas');
+                if (canvas) {
+                    canvas.style.marginTop = '';
+                    canvas.style.marginLeft = '';
+                }
+            },
+
+            /**
+             * Abrir configuración del grid
+             */
+            openGridSettings: function() {
+                var self = this;
+
+                var modal = document.createElement('div');
+                modal.id = 'vbp-grid-settings-modal';
+                modal.className = 'vbp-modal-overlay';
+
+                var html = '<div class="vbp-modal" style="max-width: 350px;">';
+                html += '<div class="vbp-modal-header"><h2>⊞ Configuración de Grid</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'vbp-grid-settings-modal\').remove()">&times;</button></div>';
+                html += '<div class="vbp-modal-body">';
+
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 12px;">';
+                html += '<input type="checkbox" id="vbp-grid-snap-enabled" ' + (this.snapToGridEnabled ? 'checked' : '') + '>';
+                html += '<span style="font-size: 14px;">Snap to grid activado</span></label>';
+                html += '</div>';
+
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<label style="font-size: 12px; color: var(--vbp-text-muted, #6c7086); display: flex; justify-content: space-between; margin-bottom: 6px;">Tamaño del grid <span id="vbp-grid-size-val">' + this.gridSize + 'px</span></label>';
+                html += '<input type="range" id="vbp-grid-size" min="4" max="64" value="' + this.gridSize + '" style="width: 100%;" oninput="document.getElementById(\'vbp-grid-size-val\').textContent = this.value + \'px\'">';
+                html += '</div>';
+
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<label style="font-size: 12px; color: var(--vbp-text-muted, #6c7086); display: block; margin-bottom: 6px;">Presets</label>';
+                html += '<div style="display: flex; gap: 8px;">';
+                html += '<button onclick="document.getElementById(\'vbp-grid-size\').value=8;document.getElementById(\'vbp-grid-size-val\').textContent=\'8px\'" style="flex: 1; padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #313244); border-radius: 4px; cursor: pointer;">8px</button>';
+                html += '<button onclick="document.getElementById(\'vbp-grid-size\').value=16;document.getElementById(\'vbp-grid-size-val\').textContent=\'16px\'" style="flex: 1; padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #313244); border-radius: 4px; cursor: pointer;">16px</button>';
+                html += '<button onclick="document.getElementById(\'vbp-grid-size\').value=24;document.getElementById(\'vbp-grid-size-val\').textContent=\'24px\'" style="flex: 1; padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #313244); border-radius: 4px; cursor: pointer;">24px</button>';
+                html += '</div></div>';
+
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">';
+                html += '<input type="checkbox" id="vbp-grid-visible" ' + (document.querySelector('.vbp-canvas.vbp-grid-visible') ? 'checked' : '') + '>';
+                html += '<span style="font-size: 14px;">Mostrar grid visual</span></label>';
+                html += '</div>';
+
+                html += '<button onclick="window.vbpKeyboard.saveGridSettings()" style="width: 100%; padding: 10px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Guardar</button>';
+                html += '</div></div>';
+
+                modal.innerHTML = html;
+                document.body.appendChild(modal);
+            },
+
+            saveGridSettings: function() {
+                var snapEnabled = document.getElementById('vbp-grid-snap-enabled').checked;
+                var gridSize = parseInt(document.getElementById('vbp-grid-size').value, 10);
+                var gridVisible = document.getElementById('vbp-grid-visible').checked;
+
+                this.snapToGridEnabled = snapEnabled;
+                this.gridSize = gridSize;
+
+                localStorage.setItem('vbp_snap_to_grid', snapEnabled);
+                localStorage.setItem('vbp_grid_size', gridSize);
+                localStorage.setItem('vbp_grid_visible', gridVisible);
+
+                var canvas = document.querySelector('.vbp-canvas');
+                if (canvas) {
+                    if (gridVisible) {
+                        canvas.classList.add('vbp-grid-visible');
+                        canvas.style.backgroundSize = gridSize + 'px ' + gridSize + 'px';
+                    } else {
+                        canvas.classList.remove('vbp-grid-visible');
+                    }
+                }
+
+                document.getElementById('vbp-grid-settings-modal').remove();
+                this.showNotification('Configuración de grid guardada');
+            },
+
+            /**
              * Toggle constraint en elemento
              */
             toggleConstraint: function(side) {
@@ -4981,6 +5056,8 @@ window.vbpKeyboard = {
             ]},
             { category: 'Snap y Constraints', shortcuts: [
                 { keys: 'Ctrl + Shift + .', action: 'Snap to grid on/off' },
+                { keys: 'Ctrl + Alt + Shift + R', action: 'Mostrar/Ocultar reglas' },
+                { keys: 'Alt + Shift + G', action: 'Configuración del grid' },
                 { keys: 'Ctrl + Alt + T', action: 'Constraint arriba' },
                 { keys: 'Ctrl + Alt + B', action: 'Constraint abajo' },
                 { keys: 'Ctrl + Alt + L', action: 'Constraint izquierda' },

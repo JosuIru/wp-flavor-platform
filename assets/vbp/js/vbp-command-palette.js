@@ -144,6 +144,8 @@ document.addEventListener('alpine:init', function() {
 
             // Snap y Constraints
             { id: 'snap-to-grid', label: 'Snap to grid on/off', category: 'snap', icon: '⊞', action: 'toggleSnapToGrid', shortcut: 'Ctrl+Shift+.' },
+            { id: 'toggle-rulers', label: 'Mostrar/Ocultar reglas', category: 'snap', icon: '📏', action: 'toggleRulers', shortcut: 'Ctrl+Alt+Shift+R' },
+            { id: 'grid-settings', label: 'Configuración del grid', category: 'snap', icon: '⚙', action: 'openGridSettings', shortcut: 'Alt+Shift+G' },
             { id: 'constraint-top', label: 'Constraint arriba', category: 'snap', icon: '⬆', action: 'toggleConstraintTop', shortcut: 'Ctrl+Alt+T' },
             { id: 'constraint-bottom', label: 'Constraint abajo', category: 'snap', icon: '⬇', action: 'toggleConstraintBottom', shortcut: 'Ctrl+Alt+B' },
             { id: 'constraint-left', label: 'Constraint izquierda', category: 'snap', icon: '⬅', action: 'toggleConstraintLeft', shortcut: 'Ctrl+Alt+L' },
@@ -642,6 +644,18 @@ document.addEventListener('alpine:init', function() {
                 case 'toggleSnapToGrid':
                     document.dispatchEvent(new CustomEvent('vbp:executeAction', {
                         detail: { action: 'toggleSnapToGrid' }
+                    }));
+                    break;
+
+                case 'toggleRulers':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleRulers' }
+                    }));
+                    break;
+
+                case 'openGridSettings':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openGridSettings' }
                     }));
                     break;
 
