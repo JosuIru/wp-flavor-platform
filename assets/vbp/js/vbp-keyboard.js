@@ -28,12 +28,21 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+x': 'cut',
                 'ctrl+v': 'paste',
                 'ctrl+d': 'duplicate',
+                'ctrl+shift+c': 'copyStyles',
+                'ctrl+shift+v': 'pasteStyles',
+                'ctrl+shift+r': 'resetStyles',
+
+                // Agrupar
+                'ctrl+g': 'group',
+                'ctrl+shift+u': 'ungroup',
 
                 // Selección
                 'delete': 'delete',
                 'backspace': 'delete',
                 'escape': 'deselect',
                 'ctrl+a': 'selectAll',
+                'enter': 'editInline',
+                'f2': 'editInline',
 
                 // Navegación
                 'arrowup': 'moveUp',
@@ -67,9 +76,14 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
-             * Clipboard para copy/paste
+             * Clipboard para copy/paste de elementos
              */
             clipboard: null,
+
+            /**
+             * Clipboard para copy/paste de estilos
+             */
+            styleClipboard: null,
 
             /**
              * Inicialización
@@ -159,6 +173,26 @@ document.addEventListener('alpine:init', function() {
                         this.duplicateSelection();
                         break;
 
+                    case 'copyStyles':
+                        this.copyStyles();
+                        break;
+
+                    case 'pasteStyles':
+                        this.pasteStyles();
+                        break;
+
+                    case 'resetStyles':
+                        this.resetStyles();
+                        break;
+
+                    case 'group':
+                        this.groupSelection();
+                        break;
+
+                    case 'ungroup':
+                        this.ungroupSelection();
+                        break;
+
                     case 'delete':
                         this.deleteSelection();
                         break;
@@ -173,6 +207,10 @@ document.addEventListener('alpine:init', function() {
                             return el.id;
                         }));
                         this.showNotification('Todos seleccionados');
+                        break;
+
+                    case 'editInline':
+                        this.startInlineEdit();
                         break;
 
                     // === NAVEGACIÓN ===
@@ -411,6 +449,223 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Copiar estilos del elemento seleccionado
+             */
+            copyStyles: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un elemento para copiar estilos', 'warning');
+                    return;
+                }
+
+                var element = store.getElement(store.selection.elementIds[0]);
+                if (!element || !element.styles) {
+                    this.showNotification('El elemento no tiene estilos', 'warning');
+                    return;
+                }
+
+                // Copiar estilos excluyendo posición y tamaño
+                var estilosParaCopiar = JSON.parse(JSON.stringify(element.styles));
+
+                // Guardar el tipo de elemento para compatibilidad
+                this.styleClipboard = {
+                    type: element.type,
+                    styles: estilosParaCopiar
+                };
+
+                this.showNotification('Estilos copiados');
+            },
+
+            /**
+             * Pegar estilos al elemento seleccionado
+             */
+            pasteStyles: function() {
+                var store = Alpine.store('vbp');
+                var self = this;
+
+                if (!this.styleClipboard) {
+                    this.showNotification('No hay estilos para pegar', 'warning');
+                    return;
+                }
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para aplicar estilos', 'warning');
+                    return;
+                }
+
+                // Guardar en historial antes de aplicar
+                store.saveToHistory();
+
+                var count = 0;
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        // Fusionar estilos preservando posición y tamaño
+                        var posicion = element.styles && element.styles.position ? element.styles.position : {};
+                        var tamano = element.styles && element.styles.size ? element.styles.size : {};
+
+                        var nuevosEstilos = JSON.parse(JSON.stringify(self.styleClipboard.styles));
+                        nuevosEstilos.position = posicion;
+                        nuevosEstilos.size = tamano;
+
+                        store.updateElement(id, { styles: nuevosEstilos });
+                        count++;
+                    }
+                });
+
+                store.isDirty = true;
+                this.showNotification('Estilos aplicados a ' + count + ' elemento(s)');
+            },
+
+            /**
+             * Resetear estilos a valores por defecto
+             */
+            resetStyles: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para resetear estilos', 'warning');
+                    return;
+                }
+
+                // Guardar en historial
+                store.saveToHistory();
+
+                var count = 0;
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        // Obtener estilos por defecto según tipo
+                        var estilosPorDefecto = {
+                            typography: {},
+                            colors: {},
+                            spacing: {},
+                            border: {},
+                            shadow: {},
+                            advanced: {}
+                        };
+
+                        // Preservar posición y tamaño
+                        if (element.styles && element.styles.position) {
+                            estilosPorDefecto.position = element.styles.position;
+                        }
+                        if (element.styles && element.styles.size) {
+                            estilosPorDefecto.size = element.styles.size;
+                        }
+
+                        store.updateElement(id, { styles: estilosPorDefecto });
+                        count++;
+                    }
+                });
+
+                store.isDirty = true;
+                this.showNotification('Estilos reseteados en ' + count + ' elemento(s)');
+            },
+
+            /**
+             * Agrupar elementos seleccionados
+             */
+            groupSelection: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length < 2) {
+                    this.showNotification('Selecciona al menos 2 elementos para agrupar', 'warning');
+                    return;
+                }
+
+                // Guardar en historial
+                store.saveToHistory();
+
+                // Obtener elementos seleccionados
+                var elementosAGrupar = [];
+                var indicesMasAlto = 0;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var elemento = store.getElement(id);
+                    var indice = store.elements.findIndex(function(el) { return el.id === id; });
+                    if (elemento) {
+                        elementosAGrupar.push(JSON.parse(JSON.stringify(elemento)));
+                        if (indice > indicesMasAlto) indicesMasAlto = indice;
+                    }
+                });
+
+                // Eliminar elementos originales
+                store.selection.elementIds.forEach(function(id) {
+                    var indice = store.elements.findIndex(function(el) { return el.id === id; });
+                    if (indice !== -1) {
+                        store.elements.splice(indice, 1);
+                    }
+                });
+
+                // Crear el grupo
+                var grupoId = 'el_' + Math.random().toString(36).substr(2, 9);
+                var grupo = {
+                    id: grupoId,
+                    type: 'group',
+                    name: 'Grupo (' + elementosAGrupar.length + ' elementos)',
+                    visible: true,
+                    locked: false,
+                    children: elementosAGrupar,
+                    data: {},
+                    styles: {}
+                };
+
+                // Insertar grupo en la posición del elemento más alto
+                var posicionInsercion = Math.min(indicesMasAlto, store.elements.length);
+                store.elements.splice(posicionInsercion, 0, grupo);
+
+                store.isDirty = true;
+                store.setSelection([grupoId]);
+
+                this.showNotification('Grupo creado con ' + elementosAGrupar.length + ' elementos');
+            },
+
+            /**
+             * Desagrupar elementos
+             */
+            ungroupSelection: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un grupo para desagrupar', 'warning');
+                    return;
+                }
+
+                var grupoId = store.selection.elementIds[0];
+                var grupo = store.getElement(grupoId);
+
+                if (!grupo || grupo.type !== 'group' || !grupo.children) {
+                    this.showNotification('El elemento seleccionado no es un grupo', 'warning');
+                    return;
+                }
+
+                // Guardar en historial
+                store.saveToHistory();
+
+                // Encontrar índice del grupo
+                var indiceGrupo = store.elements.findIndex(function(el) { return el.id === grupoId; });
+
+                // Eliminar el grupo
+                store.elements.splice(indiceGrupo, 1);
+
+                // Insertar los hijos en la posición del grupo
+                var nuevosIds = [];
+                grupo.children.forEach(function(hijo, i) {
+                    // Generar nuevos IDs para evitar conflictos
+                    var nuevoHijo = JSON.parse(JSON.stringify(hijo));
+                    nuevoHijo.id = 'el_' + Math.random().toString(36).substr(2, 9);
+                    store.elements.splice(indiceGrupo + i, 0, nuevoHijo);
+                    nuevosIds.push(nuevoHijo.id);
+                });
+
+                store.isDirty = true;
+                store.setSelection(nuevosIds);
+
+                this.showNotification('Grupo disuelto: ' + nuevosIds.length + ' elementos');
+            },
+
+            /**
              * Eliminar selección
              */
             deleteSelection: function() {
@@ -437,6 +692,63 @@ document.addEventListener('alpine:init', function() {
                 store.clearSelection();
 
                 this.showNotification('Eliminado (' + count + ')');
+            },
+
+            /**
+             * Iniciar edición inline del elemento seleccionado
+             */
+            startInlineEdit: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+
+                if (!element) return;
+
+                // Tipos de elementos que soportan edición inline
+                var tiposEditables = ['heading', 'text', 'paragraph', 'button', 'link', 'list'];
+
+                if (tiposEditables.indexOf(element.type) === -1) {
+                    return;
+                }
+
+                // Buscar el elemento en el canvas y activar contenteditable
+                var elementoCanvas = document.querySelector('[data-element-id="' + elementId + '"]');
+                if (!elementoCanvas) {
+                    elementoCanvas = document.querySelector('#' + elementId);
+                }
+
+                if (elementoCanvas) {
+                    // Buscar el contenedor de texto editable
+                    var textoEditable = elementoCanvas.querySelector('[contenteditable]');
+                    if (!textoEditable) {
+                        // Si no tiene contenteditable, buscamos el contenido principal
+                        var contenidoPrincipal = elementoCanvas.querySelector('.vbp-element-content, .vbp-heading-text, .vbp-text-content');
+                        if (contenidoPrincipal) {
+                            textoEditable = contenidoPrincipal;
+                            textoEditable.setAttribute('contenteditable', 'true');
+                        }
+                    }
+
+                    if (textoEditable) {
+                        textoEditable.focus();
+                        // Seleccionar todo el texto
+                        var seleccion = window.getSelection();
+                        var rango = document.createRange();
+                        rango.selectNodeContents(textoEditable);
+                        seleccion.removeAllRanges();
+                        seleccion.addRange(rango);
+                    }
+                }
+
+                // También disparar evento para que el inspector sepa
+                document.dispatchEvent(new CustomEvent('vbp:startInlineEdit', {
+                    detail: { elementId: elementId, type: element.type }
+                }));
             },
 
             /**
@@ -593,7 +905,8 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + D', action: 'Duplicar' },
                 { keys: 'Delete', action: 'Eliminar' },
                 { keys: 'Ctrl + Shift + C', action: 'Copiar estilos' },
-                { keys: 'Ctrl + Shift + V', action: 'Pegar estilos' }
+                { keys: 'Ctrl + Shift + V', action: 'Pegar estilos' },
+                { keys: 'Ctrl + Shift + R', action: 'Resetear estilos' }
             ]},
             { category: 'Texto enriquecido', shortcuts: [
                 { keys: 'Ctrl + B', action: 'Negrita' },
@@ -604,9 +917,12 @@ window.vbpKeyboard = {
                 { keys: '*texto*', action: 'Markdown cursiva' },
                 { keys: '@', action: 'Mencionar página/entrada' }
             ]},
-            { category: 'Selección', shortcuts: [
+            { category: 'Selección y Grupos', shortcuts: [
                 { keys: 'Ctrl + A', action: 'Seleccionar todo' },
                 { keys: 'Escape', action: 'Deseleccionar' },
+                { keys: 'Enter / F2', action: 'Editar texto inline' },
+                { keys: 'Ctrl + G', action: 'Agrupar elementos' },
+                { keys: 'Ctrl + Shift + U', action: 'Desagrupar' },
                 { keys: 'Alt + Click', action: 'Duplicar elemento' },
                 { keys: 'Shift + Click', action: 'Multi-selección' }
             ]},
