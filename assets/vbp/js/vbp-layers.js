@@ -29,14 +29,16 @@ function vbpLayersComponent() {
          * Obtiene los elementos del store
          */
         get elements() {
-            return Alpine.store('vbp').elements || [];
+            const store = Alpine.store('vbp');
+            return store && store.elements ? store.elements : [];
         },
 
         /**
          * Obtiene los elementos seleccionados
          */
         get selectedElements() {
-            return Alpine.store('vbp').selection?.elementIds || [];
+            const store = Alpine.store('vbp');
+            return store && store.selection && store.selection.elementIds ? store.selection.elementIds : [];
         },
 
         /**

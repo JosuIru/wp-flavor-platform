@@ -8,6 +8,12 @@
 
 function vbpApp() {
     return {
+        // Getter seguro para elementos del store
+        get elements() {
+            var store = Alpine.store('vbp');
+            return store && store.elements ? store.elements : [];
+        },
+
         documentTitle: '',
         isSaving: false,
         saveStatus: '',

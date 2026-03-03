@@ -37,9 +37,14 @@ document.addEventListener('alpine:init', function() {
             init: function() {
                 var self = this;
 
-                // Actualizar mini mapa cuando cambian los elementos
-                this.$watch('$store.vbp.elements', function() {
-                    self.updateElements();
+                // Esperar a que el store esté listo antes de hacer $watch
+                this.$nextTick(function() {
+                    if (Alpine.store('vbp')) {
+                        // Actualizar mini mapa cuando cambian los elementos
+                        self.$watch('$store.vbp.elements', function() {
+                            self.updateElements();
+                        });
+                    }
                 });
 
                 // Actualizar viewport en scroll
