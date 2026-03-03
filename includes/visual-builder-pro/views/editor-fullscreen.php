@@ -1074,6 +1074,7 @@ $datos_json = wp_json_encode( $datos );
     <?php include __DIR__ . '/modals/modal-icons.php'; ?>
     <?php include __DIR__ . '/modals/modal-emoji.php'; ?>
     <?php include __DIR__ . '/modals/modal-command-palette.php'; ?>
+    <?php include __DIR__ . '/modals/modal-ai-assistant.php'; ?>
 
     <!-- Contenedor de notificaciones Toast -->
     <div class="vbp-toast-container" x-data="vbpToastContainer()" aria-live="polite" aria-label="<?php esc_attr_e( 'Notificaciones', 'flavor-chat-ia' ); ?>">

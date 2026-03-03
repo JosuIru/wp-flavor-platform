@@ -391,6 +391,7 @@ class Flavor_VBP_Editor {
             'editor-statusbar'       => 'editor-statusbar.css',
             'editor-tooltips'        => 'editor-tooltips.css',
             'editor-toast'           => 'editor-toast.css',
+            'editor-ai-assistant'    => 'editor-ai-assistant.css',
         );
 
         // Cargar Material Icons font
@@ -459,6 +460,7 @@ class Flavor_VBP_Editor {
             'minimap'      => array( 'vbp-minimap.js', array() ), // Mini mapa de navegación
             'breadcrumbs'  => array( 'vbp-breadcrumbs.js', array() ), // Breadcrumbs y zoom
             'toast'        => array( 'vbp-toast.js', array() ), // Sistema de notificaciones
+            'ai-assistant' => array( 'vbp-ai-assistant.js', array() ), // Asistente de IA
         );
 
         foreach ( $archivos_js as $handle => $config ) {
