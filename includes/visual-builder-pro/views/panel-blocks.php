@@ -43,6 +43,50 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     <!-- Lista de categorías y bloques -->
     <div class="vbp-blocks-list" role="tree" aria-label="<?php esc_attr_e( 'Categorías de bloques', 'flavor-chat-ia' ); ?>" x-show="categories.length > 0">
+
+        <!-- Bloques Recientes -->
+        <div class="vbp-block-category vbp-recent-blocks-category" role="treeitem" :aria-expanded="openCategories.includes('recent')" x-show="recentBlocks.length > 0 && !searchQuery">
+            <button
+                type="button"
+                @click="toggleCategory('recent')"
+                class="vbp-category-header vbp-category-header--recent"
+                :class="{ 'open': openCategories.includes('recent') }"
+                :aria-expanded="openCategories.includes('recent')"
+            >
+                <span class="vbp-category-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </span>
+                <span class="vbp-category-name"><?php esc_html_e( 'Recientes', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-category-count" x-text="recentBlocks.length"></span>
+                <svg class="vbp-category-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="6,9 12,15 18,9"/>
+                </svg>
+            </button>
+
+            <div class="vbp-category-blocks" x-show="openCategories.includes('recent')" x-collapse>
+                <template x-for="block in recentBlocks" :key="'recent-' + block.type">
+                    <div
+                        class="vbp-block-item"
+                        :data-block-type="block.type"
+                        draggable="true"
+                        @dragstart="handleDragStart($event, block)"
+                        @dragend="handleDragEnd($event)"
+                        @click="addBlock(block)"
+                        role="treeitem"
+                        tabindex="0"
+                        @keydown.enter="addBlock(block)"
+                        @keydown.space.prevent="addBlock(block)"
+                    >
+                        <span class="vbp-block-icon" x-html="block.icon" aria-hidden="true"></span>
+                        <span class="vbp-block-name" x-text="block.name"></span>
+                    </div>
+                </template>
+            </div>
+        </div>
+
         <template x-for="category in filteredCategories" :key="category.id">
             <div class="vbp-block-category" role="treeitem" :aria-expanded="openCategories.includes(category.id)">
                 <button
@@ -157,9 +201,11 @@ document.addEventListener('alpine:init', () => {
 
     Alpine.data('vbpBlocksPanel', () => ({
         searchQuery: '',
-        openCategories: ['sections', 'basic'],
+        openCategories: ['recent', 'sections', 'basic'],
         globalWidgets: [],
         globalWidgetsLoaded: false,
+        recentBlocks: [],
+        maxRecentBlocks: 8,
 
         // Cargar categorías desde VBP_Config si están disponibles, con fallback
         categories: (typeof VBP_Config !== 'undefined' && VBP_Config.blocks && VBP_Config.blocks.length > 0)
@@ -244,10 +290,54 @@ document.addEventListener('alpine:init', () => {
 
         addBlock(block) {
             Alpine.store('vbp').addElement(block.type);
+            this.addToRecent(block);
         },
 
-        // Widgets Globales
+        addToRecent(block) {
+            // Evitar duplicados
+            var existingIndex = this.recentBlocks.findIndex(b => b.type === block.type);
+            if (existingIndex > -1) {
+                this.recentBlocks.splice(existingIndex, 1);
+            }
+
+            // Agregar al inicio
+            this.recentBlocks.unshift({
+                type: block.type,
+                name: block.name,
+                icon: block.icon
+            });
+
+            // Limitar cantidad
+            if (this.recentBlocks.length > this.maxRecentBlocks) {
+                this.recentBlocks = this.recentBlocks.slice(0, this.maxRecentBlocks);
+            }
+
+            // Guardar en localStorage
+            this.saveRecentBlocks();
+        },
+
+        loadRecentBlocks() {
+            try {
+                var stored = localStorage.getItem('vbp_recent_blocks');
+                if (stored) {
+                    this.recentBlocks = JSON.parse(stored);
+                }
+            } catch (e) {
+                console.warn('Error cargando bloques recientes:', e);
+            }
+        },
+
+        saveRecentBlocks() {
+            try {
+                localStorage.setItem('vbp_recent_blocks', JSON.stringify(this.recentBlocks));
+            } catch (e) {
+                console.warn('Error guardando bloques recientes:', e);
+            }
+        },
+
+        // Inicialización
         init() {
+            this.loadRecentBlocks();
             this.loadGlobalWidgets();
         },
 

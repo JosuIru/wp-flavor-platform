@@ -3807,6 +3807,19 @@
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
 }
 
+/* Recent blocks category */
+.vbp-category-header--recent {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+}
+
+.vbp-category-header--recent:hover {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%);
+}
+
+.vbp-recent-blocks-category .vbp-category-count {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
 .vbp-category-count {
     display: inline-flex;
     align-items: center;
