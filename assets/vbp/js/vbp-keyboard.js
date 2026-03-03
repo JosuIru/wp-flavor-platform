@@ -36,13 +36,15 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+g': 'group',
                 'ctrl+shift+u': 'ungroup',
 
-                // Selección
+                // Selección y navegación
                 'delete': 'delete',
                 'backspace': 'delete',
                 'escape': 'deselect',
                 'ctrl+a': 'selectAll',
                 'enter': 'editInline',
                 'f2': 'editInline',
+                'tab': 'selectNext',
+                'shift+tab': 'selectPrevious',
 
                 // Navegación y posicionamiento
                 'arrowup': 'nudgeUp',
@@ -237,6 +239,14 @@ document.addEventListener('alpine:init', function() {
                             return el.id;
                         }));
                         this.showNotification('Todos seleccionados');
+                        break;
+
+                    case 'selectNext':
+                        this.selectAdjacentElement(1);
+                        break;
+
+                    case 'selectPrevious':
+                        this.selectAdjacentElement(-1);
                         break;
 
                     case 'editInline':
@@ -859,6 +869,47 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Seleccionar elemento adyacente (navegación con Tab)
+             * @param {number} direction - 1 para siguiente, -1 para anterior
+             */
+            selectAdjacentElement: function(direction) {
+                var store = Alpine.store('vbp');
+
+                if (store.elements.length === 0) return;
+
+                var currentIndex = -1;
+
+                // Si hay un elemento seleccionado, encontrar su índice
+                if (store.selection.elementIds.length === 1) {
+                    currentIndex = store.elements.findIndex(function(el) {
+                        return el.id === store.selection.elementIds[0];
+                    });
+                }
+
+                // Calcular nuevo índice
+                var newIndex = currentIndex + direction;
+
+                // Wrap around (circular)
+                if (newIndex < 0) {
+                    newIndex = store.elements.length - 1;
+                } else if (newIndex >= store.elements.length) {
+                    newIndex = 0;
+                }
+
+                // Seleccionar el elemento
+                var element = store.elements[newIndex];
+                if (element) {
+                    store.setSelection([element.id]);
+
+                    // Hacer scroll al elemento
+                    var domElement = document.querySelector('[data-element-id="' + element.id + '"]');
+                    if (domElement) {
+                        domElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            },
+
+            /**
              * Mover elementos seleccionados píxel a píxel (nudge)
              * @param {number} dx - Desplazamiento horizontal en px
              * @param {number} dy - Desplazamiento vertical en px
@@ -1323,6 +1374,8 @@ window.vbpKeyboard = {
             ]},
             { category: 'Selección y Grupos', shortcuts: [
                 { keys: 'Ctrl + A', action: 'Seleccionar todo' },
+                { keys: 'Tab', action: 'Siguiente elemento' },
+                { keys: 'Shift + Tab', action: 'Elemento anterior' },
                 { keys: 'Escape', action: 'Deseleccionar' },
                 { keys: 'Enter / F2', action: 'Editar texto inline' },
                 { keys: 'Ctrl + G', action: 'Agrupar elementos' },
