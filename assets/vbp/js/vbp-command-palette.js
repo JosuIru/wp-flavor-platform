@@ -131,10 +131,32 @@ document.addEventListener('alpine:init', function() {
             { id: 'aspect-ratio-lock', label: 'Bloquear proporción', category: 'herramientas', icon: '🔒', action: 'toggleAspectRatioLock', shortcut: 'Ctrl+Shift+P' },
             { id: 'smart-guides', label: 'Smart Guides on/off', category: 'herramientas', icon: '📐', action: 'toggleSmartGuides', shortcut: 'Ctrl+Alt+G' },
             { id: 'measure-tool', label: 'Herramienta de medición', category: 'herramientas', icon: '📏', action: 'toggleMeasureTool', shortcut: 'M' },
-            { id: 'save-favorite', label: 'Guardar como favorito', category: 'herramientas', icon: '⭐', action: 'saveAsFavorite', shortcut: 'Ctrl+Alt+F' },
-            { id: 'open-favorites', label: 'Abrir favoritos', category: 'herramientas', icon: '⭐', action: 'openFavorites', shortcut: 'Ctrl+Shift+F' },
+            { id: 'save-favorite', label: 'Guardar como favorito', category: 'herramientas', icon: '⭐', action: 'saveAsFavorite', shortcut: 'Ctrl+Alt+K' },
+            { id: 'open-favorites', label: 'Abrir favoritos', category: 'herramientas', icon: '⭐', action: 'openFavorites', shortcut: 'Ctrl+Alt+Shift+K' },
             { id: 'css-variables', label: 'Editor de variables CSS', category: 'herramientas', icon: '🎨', action: 'openCSSVariables', shortcut: 'Ctrl+Alt+C' },
             { id: 'version-compare', label: 'Comparar versiones', category: 'herramientas', icon: '📜', action: 'openVersionCompare', shortcut: 'Ctrl+Alt+D' },
+
+            // Rotación
+            { id: 'rotate-15', label: 'Rotar 15°', category: 'rotacion', icon: '↻', action: 'rotate15', shortcut: 'R' },
+            { id: 'rotate-neg-15', label: 'Rotar -15°', category: 'rotacion', icon: '↺', action: 'rotateNeg15', shortcut: 'Shift+R' },
+            { id: 'rotate-90', label: 'Rotar 90°', category: 'rotacion', icon: '⟳', action: 'rotate90', shortcut: 'Ctrl+R' },
+            { id: 'reset-rotation', label: 'Resetear rotación', category: 'rotacion', icon: '🔄', action: 'resetRotation', shortcut: 'Ctrl+Alt+0' },
+
+            // Snap y Constraints
+            { id: 'snap-to-grid', label: 'Snap to grid on/off', category: 'snap', icon: '⊞', action: 'toggleSnapToGrid', shortcut: 'Ctrl+Shift+.' },
+            { id: 'constraint-top', label: 'Constraint arriba', category: 'snap', icon: '⬆', action: 'toggleConstraintTop', shortcut: 'Ctrl+Alt+T' },
+            { id: 'constraint-bottom', label: 'Constraint abajo', category: 'snap', icon: '⬇', action: 'toggleConstraintBottom', shortcut: 'Ctrl+Alt+B' },
+            { id: 'constraint-left', label: 'Constraint izquierda', category: 'snap', icon: '⬅', action: 'toggleConstraintLeft', shortcut: 'Ctrl+Alt+L' },
+            { id: 'constraint-right', label: 'Constraint derecha', category: 'snap', icon: '➡', action: 'toggleConstraintRight', shortcut: 'Ctrl+Alt+→' },
+
+            // Efectos
+            { id: 'shadow-editor', label: 'Editor de sombras', category: 'efectos', icon: '🌑', action: 'openShadowEditor', shortcut: 'Ctrl+Alt+Shift+S' },
+            { id: 'gradient-editor', label: 'Editor de gradientes', category: 'efectos', icon: '🌈', action: 'openGradientEditor', shortcut: 'Ctrl+Alt+Shift+X' },
+
+            // Auto-layout
+            { id: 'auto-layout', label: 'Toggle auto-layout', category: 'autolayout', icon: '📐', action: 'toggleAutoLayout', shortcut: 'Shift+A' },
+            { id: 'decrease-gap', label: 'Reducir gap', category: 'autolayout', icon: '⬇', action: 'decreaseGap', shortcut: 'Ctrl+Shift+↑' },
+            { id: 'increase-gap', label: 'Aumentar gap', category: 'autolayout', icon: '⬆', action: 'increaseGap', shortcut: 'Ctrl+Shift+↓' },
 
             // Responsive
             { id: 'device-desktop', label: 'Vista Escritorio', category: 'responsive', icon: '🖥', action: 'device', value: 'desktop' },
@@ -591,6 +613,94 @@ document.addEventListener('alpine:init', function() {
                     }));
                     break;
 
+                // Rotación
+                case 'rotate15':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'rotate15' }
+                    }));
+                    break;
+
+                case 'rotateNeg15':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'rotateNeg15' }
+                    }));
+                    break;
+
+                case 'rotate90':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'rotate90' }
+                    }));
+                    break;
+
+                case 'resetRotation':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'resetRotation' }
+                    }));
+                    break;
+
+                // Snap y Constraints
+                case 'toggleSnapToGrid':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleSnapToGrid' }
+                    }));
+                    break;
+
+                case 'toggleConstraintTop':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleConstraintTop' }
+                    }));
+                    break;
+
+                case 'toggleConstraintBottom':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleConstraintBottom' }
+                    }));
+                    break;
+
+                case 'toggleConstraintLeft':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleConstraintLeft' }
+                    }));
+                    break;
+
+                case 'toggleConstraintRight':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleConstraintRight' }
+                    }));
+                    break;
+
+                // Efectos
+                case 'openShadowEditor':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openShadowEditor' }
+                    }));
+                    break;
+
+                case 'openGradientEditor':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'openGradientEditor' }
+                    }));
+                    break;
+
+                // Auto-layout
+                case 'toggleAutoLayout':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleAutoLayout' }
+                    }));
+                    break;
+
+                case 'decreaseGap':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'decreaseGap' }
+                    }));
+                    break;
+
+                case 'increaseGap':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'increaseGap' }
+                    }));
+                    break;
+
                 case 'togglePanel':
                     this.togglePanel(cmd.value);
                     break;
@@ -716,7 +826,11 @@ document.addEventListener('alpine:init', function() {
                 'herramientas': 'Herramientas Avanzadas',
                 'vista': 'Vista',
                 'exportar': 'Exportar',
-                'responsive': 'Responsive'
+                'responsive': 'Responsive',
+                'rotacion': 'Rotación',
+                'snap': 'Snap y Constraints',
+                'efectos': 'Efectos',
+                'autolayout': 'Auto-layout'
             };
             return labels[category] || category;
         }

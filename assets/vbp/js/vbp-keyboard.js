@@ -105,14 +105,38 @@ document.addEventListener('alpine:init', function() {
                 'm': 'toggleMeasureTool',
 
                 // Favoritos/presets
-                'ctrl+alt+f': 'saveAsFavorite',
-                'ctrl+shift+f': 'openFavorites',
+                'ctrl+alt+k': 'saveAsFavorite',
+                'ctrl+alt+shift+k': 'openFavorites',
 
                 // CSS Variables
                 'ctrl+alt+c': 'openCSSVariables',
 
                 // Version compare
                 'ctrl+alt+d': 'openVersionCompare',
+
+                // Rotación
+                'r': 'rotate15',
+                'shift+r': 'rotateNeg15',
+                'ctrl+r': 'rotate90',
+                'ctrl+alt+0': 'resetRotation',
+
+                // Snap to grid
+                'ctrl+shift+.': 'toggleSnapToGrid',
+
+                // Constraints
+                'ctrl+alt+t': 'toggleConstraintTop',
+                'ctrl+alt+b': 'toggleConstraintBottom',
+                'ctrl+alt+l': 'toggleConstraintLeft',
+                'ctrl+alt+right': 'toggleConstraintRight',
+
+                // Efectos
+                'ctrl+alt+shift+s': 'openShadowEditor',
+                'ctrl+alt+shift+x': 'openGradientEditor',
+
+                // Auto-layout
+                'shift+a': 'toggleAutoLayout',
+                'ctrl+shift+arrowup': 'decreaseGap',
+                'ctrl+shift+arrowdown': 'increaseGap',
 
                 // Zoom
                 'ctrl++': 'zoomIn',
@@ -513,6 +537,67 @@ document.addEventListener('alpine:init', function() {
                         this.openVersionCompare();
                         break;
 
+                    // === ROTACIÓN ===
+                    case 'rotate15':
+                        this.rotateSelection(15);
+                        break;
+
+                    case 'rotateNeg15':
+                        this.rotateSelection(-15);
+                        break;
+
+                    case 'rotate90':
+                        this.rotateSelection(90);
+                        break;
+
+                    case 'resetRotation':
+                        this.resetRotation();
+                        break;
+
+                    // === SNAP TO GRID ===
+                    case 'toggleSnapToGrid':
+                        this.toggleSnapToGrid();
+                        break;
+
+                    // === CONSTRAINTS ===
+                    case 'toggleConstraintTop':
+                        this.toggleConstraint('top');
+                        break;
+
+                    case 'toggleConstraintBottom':
+                        this.toggleConstraint('bottom');
+                        break;
+
+                    case 'toggleConstraintLeft':
+                        this.toggleConstraint('left');
+                        break;
+
+                    case 'toggleConstraintRight':
+                        this.toggleConstraint('right');
+                        break;
+
+                    // === EFECTOS ===
+                    case 'openShadowEditor':
+                        this.openShadowEditor();
+                        break;
+
+                    case 'openGradientEditor':
+                        this.openGradientEditor();
+                        break;
+
+                    // === AUTO-LAYOUT ===
+                    case 'toggleAutoLayout':
+                        this.toggleAutoLayout();
+                        break;
+
+                    case 'decreaseGap':
+                        this.adjustAutoLayoutGap(-4);
+                        break;
+
+                    case 'increaseGap':
+                        this.adjustAutoLayoutGap(4);
+                        break;
+
                     // === ZOOM ===
                     case 'zoomIn':
                         store.zoom = Math.min(200, store.zoom + 10);
@@ -717,6 +802,95 @@ document.addEventListener('alpine:init', function() {
 
                     case 'pasteFromJSON':
                         this.pasteFromJSON();
+                        break;
+
+                    // === HERRAMIENTAS AVANZADAS ===
+                    case 'toggleAspectRatioLock':
+                        this.toggleAspectRatioLock();
+                        break;
+
+                    case 'toggleSmartGuides':
+                        this.toggleSmartGuides();
+                        break;
+
+                    case 'toggleMeasureTool':
+                        this.toggleMeasureTool();
+                        break;
+
+                    case 'saveAsFavorite':
+                        this.saveAsFavorite();
+                        break;
+
+                    case 'openFavorites':
+                        this.openFavorites();
+                        break;
+
+                    case 'openCSSVariables':
+                        this.openCSSVariables();
+                        break;
+
+                    case 'openVersionCompare':
+                        this.openVersionCompare();
+                        break;
+
+                    // === ROTACIÓN ===
+                    case 'rotate15':
+                        this.rotateSelection(15);
+                        break;
+
+                    case 'rotateNeg15':
+                        this.rotateSelection(-15);
+                        break;
+
+                    case 'rotate90':
+                        this.rotateSelection(90);
+                        break;
+
+                    case 'resetRotation':
+                        this.resetRotation();
+                        break;
+
+                    // === SNAP Y CONSTRAINTS ===
+                    case 'toggleSnapToGrid':
+                        this.toggleSnapToGrid();
+                        break;
+
+                    case 'toggleConstraintTop':
+                        this.toggleConstraint('top');
+                        break;
+
+                    case 'toggleConstraintBottom':
+                        this.toggleConstraint('bottom');
+                        break;
+
+                    case 'toggleConstraintLeft':
+                        this.toggleConstraint('left');
+                        break;
+
+                    case 'toggleConstraintRight':
+                        this.toggleConstraint('right');
+                        break;
+
+                    // === EFECTOS ===
+                    case 'openShadowEditor':
+                        this.openShadowEditor();
+                        break;
+
+                    case 'openGradientEditor':
+                        this.openGradientEditor();
+                        break;
+
+                    // === AUTO-LAYOUT ===
+                    case 'toggleAutoLayout':
+                        this.toggleAutoLayout();
+                        break;
+
+                    case 'decreaseGap':
+                        this.adjustAutoLayoutGap(-4);
+                        break;
+
+                    case 'increaseGap':
+                        this.adjustAutoLayoutGap(4);
                         break;
                 }
             },
@@ -3483,6 +3657,682 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Rotar elementos seleccionados
+             */
+            rotateSelection: function(degrees) {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para rotar', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || element.locked) return;
+
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (!estilos.transform) estilos.transform = {};
+
+                    var currentRotation = parseFloat(estilos.transform.rotate) || 0;
+                    estilos.transform.rotate = ((currentRotation + degrees) % 360) + 'deg';
+
+                    store.updateElement(id, { styles: estilos });
+                });
+
+                store.isDirty = true;
+                this.showNotification('🔄 Rotado ' + degrees + '°');
+            },
+
+            /**
+             * Resetear rotación
+             */
+            resetRotation: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || element.locked) return;
+
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (estilos.transform) {
+                        estilos.transform.rotate = '0deg';
+                    }
+
+                    store.updateElement(id, { styles: estilos });
+                });
+
+                store.isDirty = true;
+                this.showNotification('🔄 Rotación reseteada');
+            },
+
+            /**
+             * Estado de snap to grid
+             */
+            snapToGridEnabled: false,
+            gridSize: 8,
+
+            /**
+             * Toggle snap to grid
+             */
+            toggleSnapToGrid: function() {
+                this.snapToGridEnabled = !this.snapToGridEnabled;
+                localStorage.setItem('vbp_snap_to_grid', this.snapToGridEnabled);
+
+                var canvas = document.querySelector('.vbp-canvas');
+                if (canvas) {
+                    if (this.snapToGridEnabled) {
+                        canvas.classList.add('vbp-snap-grid-enabled');
+                    } else {
+                        canvas.classList.remove('vbp-snap-grid-enabled');
+                    }
+                }
+
+                this.showNotification(this.snapToGridEnabled ? '🧲 Snap to grid activado' : '🧲 Snap to grid desactivado');
+            },
+
+            /**
+             * Ajustar posición al grid
+             */
+            snapToGrid: function(value) {
+                if (!this.snapToGridEnabled) return value;
+                return Math.round(value / this.gridSize) * this.gridSize;
+            },
+
+            /**
+             * Toggle constraint en elemento
+             */
+            toggleConstraint: function(side) {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || element.locked) return;
+
+                    var constraints = JSON.parse(JSON.stringify(element.constraints || {
+                        top: false,
+                        bottom: false,
+                        left: false,
+                        right: false,
+                        centerH: false,
+                        centerV: false
+                    }));
+
+                    constraints[side] = !constraints[side];
+
+                    store.updateElement(id, { constraints: constraints });
+                });
+
+                store.isDirty = true;
+
+                var icons = { top: '⬆️', bottom: '⬇️', left: '⬅️', right: '➡️' };
+                this.showNotification(icons[side] + ' Constraint ' + side + ' toggle');
+            },
+
+            /**
+             * Abrir editor de sombras
+             */
+            openShadowEditor: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un solo elemento', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+                if (!element) return;
+
+                var currentShadow = (element.styles && element.styles.effects && element.styles.effects.boxShadow) || {
+                    enabled: false,
+                    x: 0,
+                    y: 4,
+                    blur: 8,
+                    spread: 0,
+                    color: 'rgba(0,0,0,0.15)',
+                    inset: false
+                };
+
+                var modalId = 'vbp-shadow-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var modalHtml = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                modalHtml += '<div class="vbp-modal" style="max-width: 400px;">';
+                modalHtml += '<div class="vbp-modal-header">';
+                modalHtml += '<h2>🌑 Editor de Sombras</h2>';
+                modalHtml += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                modalHtml += '</div>';
+                modalHtml += '<div class="vbp-modal-body">';
+
+                modalHtml += '<div class="vbp-shadow-preview" id="shadow-preview" style="width: 100%; height: 100px; background: #f3f4f6; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">';
+                modalHtml += '<div id="shadow-preview-box" style="width: 60px; height: 60px; background: white; border-radius: 8px;"></div>';
+                modalHtml += '</div>';
+
+                modalHtml += '<div class="vbp-shadow-controls" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">';
+
+                modalHtml += '<div class="vbp-control">';
+                modalHtml += '<label>Offset X</label>';
+                modalHtml += '<input type="range" id="shadow-x" min="-50" max="50" value="' + currentShadow.x + '">';
+                modalHtml += '<span id="shadow-x-val">' + currentShadow.x + 'px</span>';
+                modalHtml += '</div>';
+
+                modalHtml += '<div class="vbp-control">';
+                modalHtml += '<label>Offset Y</label>';
+                modalHtml += '<input type="range" id="shadow-y" min="-50" max="50" value="' + currentShadow.y + '">';
+                modalHtml += '<span id="shadow-y-val">' + currentShadow.y + 'px</span>';
+                modalHtml += '</div>';
+
+                modalHtml += '<div class="vbp-control">';
+                modalHtml += '<label>Blur</label>';
+                modalHtml += '<input type="range" id="shadow-blur" min="0" max="100" value="' + currentShadow.blur + '">';
+                modalHtml += '<span id="shadow-blur-val">' + currentShadow.blur + 'px</span>';
+                modalHtml += '</div>';
+
+                modalHtml += '<div class="vbp-control">';
+                modalHtml += '<label>Spread</label>';
+                modalHtml += '<input type="range" id="shadow-spread" min="-50" max="50" value="' + currentShadow.spread + '">';
+                modalHtml += '<span id="shadow-spread-val">' + currentShadow.spread + 'px</span>';
+                modalHtml += '</div>';
+
+                modalHtml += '<div class="vbp-control" style="grid-column: span 2;">';
+                modalHtml += '<label>Color</label>';
+                modalHtml += '<input type="text" id="shadow-color" value="' + currentShadow.color + '" style="width: 100%;">';
+                modalHtml += '</div>';
+
+                modalHtml += '<div class="vbp-control">';
+                modalHtml += '<label><input type="checkbox" id="shadow-inset" ' + (currentShadow.inset ? 'checked' : '') + '> Inset</label>';
+                modalHtml += '</div>';
+
+                modalHtml += '</div>';
+
+                modalHtml += '</div>';
+                modalHtml += '<div class="vbp-modal-footer">';
+                modalHtml += '<button class="vbp-btn vbp-btn-secondary" id="shadow-remove">Quitar sombra</button>';
+                modalHtml += '<button class="vbp-btn vbp-btn-primary" id="shadow-apply">Aplicar</button>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                var modal = document.getElementById(modalId);
+                var previewBox = document.getElementById('shadow-preview-box');
+
+                function updatePreview() {
+                    var x = document.getElementById('shadow-x').value;
+                    var y = document.getElementById('shadow-y').value;
+                    var blur = document.getElementById('shadow-blur').value;
+                    var spread = document.getElementById('shadow-spread').value;
+                    var color = document.getElementById('shadow-color').value;
+                    var inset = document.getElementById('shadow-inset').checked;
+
+                    document.getElementById('shadow-x-val').textContent = x + 'px';
+                    document.getElementById('shadow-y-val').textContent = y + 'px';
+                    document.getElementById('shadow-blur-val').textContent = blur + 'px';
+                    document.getElementById('shadow-spread-val').textContent = spread + 'px';
+
+                    var shadowValue = (inset ? 'inset ' : '') + x + 'px ' + y + 'px ' + blur + 'px ' + spread + 'px ' + color;
+                    previewBox.style.boxShadow = shadowValue;
+                }
+
+                modal.querySelectorAll('input').forEach(function(input) {
+                    input.addEventListener('input', updatePreview);
+                });
+
+                updatePreview();
+
+                document.getElementById('shadow-apply').addEventListener('click', function() {
+                    var shadowData = {
+                        enabled: true,
+                        x: parseInt(document.getElementById('shadow-x').value),
+                        y: parseInt(document.getElementById('shadow-y').value),
+                        blur: parseInt(document.getElementById('shadow-blur').value),
+                        spread: parseInt(document.getElementById('shadow-spread').value),
+                        color: document.getElementById('shadow-color').value,
+                        inset: document.getElementById('shadow-inset').checked
+                    };
+
+                    store.saveToHistory();
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (!estilos.effects) estilos.effects = {};
+                    estilos.effects.boxShadow = shadowData;
+                    store.updateElement(elementId, { styles: estilos });
+                    store.isDirty = true;
+
+                    modal.remove();
+                    self.showNotification('🌑 Sombra aplicada');
+                });
+
+                document.getElementById('shadow-remove').addEventListener('click', function() {
+                    store.saveToHistory();
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (estilos.effects) {
+                        delete estilos.effects.boxShadow;
+                    }
+                    store.updateElement(elementId, { styles: estilos });
+                    store.isDirty = true;
+
+                    modal.remove();
+                    self.showNotification('🌑 Sombra eliminada');
+                });
+
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) modal.remove();
+                });
+            },
+
+            /**
+             * Abrir editor de gradientes
+             */
+            openGradientEditor: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un solo elemento', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+                if (!element) return;
+
+                var currentGradient = (element.styles && element.styles.background && element.styles.background.gradient) || {
+                    enabled: false,
+                    type: 'linear',
+                    angle: 135,
+                    stops: [
+                        { color: '#3b82f6', position: 0 },
+                        { color: '#8b5cf6', position: 100 }
+                    ]
+                };
+
+                var modalId = 'vbp-gradient-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var modalHtml = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                modalHtml += '<div class="vbp-modal" style="max-width: 450px;">';
+                modalHtml += '<div class="vbp-modal-header">';
+                modalHtml += '<h2>🌈 Editor de Gradientes</h2>';
+                modalHtml += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                modalHtml += '</div>';
+                modalHtml += '<div class="vbp-modal-body">';
+
+                modalHtml += '<div id="gradient-preview" style="width: 100%; height: 80px; border-radius: 8px; margin-bottom: 16px;"></div>';
+
+                modalHtml += '<div class="vbp-control" style="margin-bottom: 12px;">';
+                modalHtml += '<label>Tipo</label>';
+                modalHtml += '<select id="gradient-type" style="width: 100%; padding: 8px;">';
+                modalHtml += '<option value="linear" ' + (currentGradient.type === 'linear' ? 'selected' : '') + '>Linear</option>';
+                modalHtml += '<option value="radial" ' + (currentGradient.type === 'radial' ? 'selected' : '') + '>Radial</option>';
+                modalHtml += '</select>';
+                modalHtml += '</div>';
+
+                modalHtml += '<div class="vbp-control" id="angle-control" style="margin-bottom: 12px;">';
+                modalHtml += '<label>Ángulo: <span id="angle-val">' + currentGradient.angle + '</span>°</label>';
+                modalHtml += '<input type="range" id="gradient-angle" min="0" max="360" value="' + currentGradient.angle + '" style="width: 100%;">';
+                modalHtml += '</div>';
+
+                modalHtml += '<div class="vbp-gradient-stops" id="gradient-stops" style="margin-bottom: 12px;">';
+                modalHtml += '<label>Color Stops</label>';
+                currentGradient.stops.forEach(function(stop, i) {
+                    modalHtml += '<div class="vbp-gradient-stop" style="display: flex; gap: 8px; margin-top: 8px;">';
+                    modalHtml += '<input type="color" class="stop-color" value="' + stop.color + '" data-index="' + i + '">';
+                    modalHtml += '<input type="range" class="stop-position" min="0" max="100" value="' + stop.position + '" data-index="' + i + '" style="flex: 1;">';
+                    modalHtml += '<span class="stop-pos-val">' + stop.position + '%</span>';
+                    if (i > 1) {
+                        modalHtml += '<button class="vbp-btn-sm stop-remove" data-index="' + i + '">×</button>';
+                    }
+                    modalHtml += '</div>';
+                });
+                modalHtml += '</div>';
+
+                modalHtml += '<button class="vbp-btn vbp-btn-secondary" id="add-stop" style="width: 100%; margin-bottom: 12px;">+ Añadir color stop</button>';
+
+                modalHtml += '<div class="vbp-gradient-presets" style="margin-bottom: 12px;">';
+                modalHtml += '<label>Presets</label>';
+                modalHtml += '<div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-top: 8px;">';
+                var presets = [
+                    ['#667eea', '#764ba2'],
+                    ['#f093fb', '#f5576c'],
+                    ['#4facfe', '#00f2fe'],
+                    ['#43e97b', '#38f9d7'],
+                    ['#fa709a', '#fee140'],
+                    ['#a8edea', '#fed6e3'],
+                    ['#ff9a9e', '#fecfef'],
+                    ['#ffecd2', '#fcb69f'],
+                    ['#667eea', '#764ba2'],
+                    ['#11998e', '#38ef7d'],
+                    ['#fc5c7d', '#6a82fb'],
+                    ['#00c6ff', '#0072ff']
+                ];
+                presets.forEach(function(preset, i) {
+                    modalHtml += '<div class="gradient-preset" data-colors="' + preset.join(',') + '" style="width: 100%; height: 24px; border-radius: 4px; cursor: pointer; background: linear-gradient(135deg, ' + preset[0] + ', ' + preset[1] + ');"></div>';
+                });
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+
+                modalHtml += '</div>';
+                modalHtml += '<div class="vbp-modal-footer">';
+                modalHtml += '<button class="vbp-btn vbp-btn-secondary" id="gradient-remove">Quitar gradiente</button>';
+                modalHtml += '<button class="vbp-btn vbp-btn-primary" id="gradient-apply">Aplicar</button>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                var modal = document.getElementById(modalId);
+                var stops = JSON.parse(JSON.stringify(currentGradient.stops));
+
+                function updatePreview() {
+                    var type = document.getElementById('gradient-type').value;
+                    var angle = document.getElementById('gradient-angle').value;
+                    var preview = document.getElementById('gradient-preview');
+                    var angleControl = document.getElementById('angle-control');
+
+                    document.getElementById('angle-val').textContent = angle;
+
+                    angleControl.style.display = type === 'linear' ? 'block' : 'none';
+
+                    var stopStrings = stops.map(function(s) {
+                        return s.color + ' ' + s.position + '%';
+                    }).join(', ');
+
+                    if (type === 'linear') {
+                        preview.style.background = 'linear-gradient(' + angle + 'deg, ' + stopStrings + ')';
+                    } else {
+                        preview.style.background = 'radial-gradient(circle, ' + stopStrings + ')';
+                    }
+                }
+
+                function rebuildStops() {
+                    var container = document.getElementById('gradient-stops');
+                    var html = '<label>Color Stops</label>';
+                    stops.forEach(function(stop, i) {
+                        html += '<div class="vbp-gradient-stop" style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">';
+                        html += '<input type="color" class="stop-color" value="' + stop.color + '" data-index="' + i + '">';
+                        html += '<input type="range" class="stop-position" min="0" max="100" value="' + stop.position + '" data-index="' + i + '" style="flex: 1;">';
+                        html += '<span class="stop-pos-val" style="width: 40px;">' + stop.position + '%</span>';
+                        if (stops.length > 2) {
+                            html += '<button class="vbp-btn-sm stop-remove" data-index="' + i + '" style="padding: 2px 6px;">×</button>';
+                        }
+                        html += '</div>';
+                    });
+                    container.innerHTML = html;
+                    attachStopListeners();
+                }
+
+                function attachStopListeners() {
+                    modal.querySelectorAll('.stop-color').forEach(function(input) {
+                        input.addEventListener('input', function() {
+                            var idx = parseInt(this.dataset.index);
+                            stops[idx].color = this.value;
+                            updatePreview();
+                        });
+                    });
+
+                    modal.querySelectorAll('.stop-position').forEach(function(input) {
+                        input.addEventListener('input', function() {
+                            var idx = parseInt(this.dataset.index);
+                            stops[idx].position = parseInt(this.value);
+                            this.nextElementSibling.textContent = this.value + '%';
+                            updatePreview();
+                        });
+                    });
+
+                    modal.querySelectorAll('.stop-remove').forEach(function(btn) {
+                        btn.addEventListener('click', function() {
+                            var idx = parseInt(this.dataset.index);
+                            stops.splice(idx, 1);
+                            rebuildStops();
+                            updatePreview();
+                        });
+                    });
+                }
+
+                document.getElementById('gradient-type').addEventListener('change', updatePreview);
+                document.getElementById('gradient-angle').addEventListener('input', updatePreview);
+
+                document.getElementById('add-stop').addEventListener('click', function() {
+                    stops.push({ color: '#888888', position: 50 });
+                    stops.sort(function(a, b) { return a.position - b.position; });
+                    rebuildStops();
+                    updatePreview();
+                });
+
+                modal.querySelectorAll('.gradient-preset').forEach(function(preset) {
+                    preset.addEventListener('click', function() {
+                        var colors = this.dataset.colors.split(',');
+                        stops = [
+                            { color: colors[0], position: 0 },
+                            { color: colors[1], position: 100 }
+                        ];
+                        rebuildStops();
+                        updatePreview();
+                    });
+                });
+
+                attachStopListeners();
+                updatePreview();
+
+                document.getElementById('gradient-apply').addEventListener('click', function() {
+                    var gradientData = {
+                        enabled: true,
+                        type: document.getElementById('gradient-type').value,
+                        angle: parseInt(document.getElementById('gradient-angle').value),
+                        stops: stops
+                    };
+
+                    store.saveToHistory();
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (!estilos.background) estilos.background = {};
+                    estilos.background.gradient = gradientData;
+                    store.updateElement(elementId, { styles: estilos });
+                    store.isDirty = true;
+
+                    modal.remove();
+                    self.showNotification('🌈 Gradiente aplicado');
+                });
+
+                document.getElementById('gradient-remove').addEventListener('click', function() {
+                    store.saveToHistory();
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (estilos.background) {
+                        delete estilos.background.gradient;
+                    }
+                    store.updateElement(elementId, { styles: estilos });
+                    store.isDirty = true;
+
+                    modal.remove();
+                    self.showNotification('🌈 Gradiente eliminado');
+                });
+
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) modal.remove();
+                });
+            },
+
+            /**
+             * Toggle auto-layout en contenedor
+             */
+            toggleAutoLayout: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un contenedor', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+
+                if (!element) return;
+
+                // Solo para contenedores
+                if (['container', 'columns', 'row', 'group', 'section'].indexOf(element.type) === -1) {
+                    this.showNotification('Solo contenedores soportan auto-layout', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                var autoLayout = element.autoLayout || {
+                    enabled: false,
+                    direction: 'vertical',
+                    gap: 16,
+                    padding: 16,
+                    alignItems: 'stretch',
+                    justifyContent: 'flex-start'
+                };
+
+                autoLayout.enabled = !autoLayout.enabled;
+
+                store.updateElement(elementId, { autoLayout: autoLayout });
+                store.isDirty = true;
+
+                if (autoLayout.enabled) {
+                    this.showNotification('📐 Auto-layout activado');
+                } else {
+                    this.showNotification('📐 Auto-layout desactivado');
+                }
+            },
+
+            /**
+             * Ajustar gap del auto-layout
+             */
+            adjustAutoLayoutGap: function(delta) {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+
+                if (!element || !element.autoLayout || !element.autoLayout.enabled) {
+                    this.showNotification('Activa auto-layout primero (Shift+A)', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                var autoLayout = JSON.parse(JSON.stringify(element.autoLayout));
+                autoLayout.gap = Math.max(0, (autoLayout.gap || 16) + delta);
+
+                store.updateElement(elementId, { autoLayout: autoLayout });
+                store.isDirty = true;
+
+                this.showNotification('📐 Gap: ' + autoLayout.gap + 'px');
+            },
+
+            /**
+             * Inicializar multi-select con caja
+             */
+            initMultiSelectBox: function() {
+                var self = this;
+                var canvas = document.querySelector('.vbp-canvas');
+                if (!canvas) return;
+
+                var selectionBox = null;
+                var startX, startY;
+                var isSelecting = false;
+
+                canvas.addEventListener('mousedown', function(e) {
+                    // Solo si hacemos click en el canvas vacío
+                    if (e.target !== canvas && !e.target.classList.contains('vbp-canvas-content')) return;
+                    if (e.button !== 0) return; // Solo click izquierdo
+
+                    isSelecting = true;
+                    var rect = canvas.getBoundingClientRect();
+                    startX = e.clientX - rect.left + canvas.scrollLeft;
+                    startY = e.clientY - rect.top + canvas.scrollTop;
+
+                    selectionBox = document.createElement('div');
+                    selectionBox.className = 'vbp-selection-box';
+                    selectionBox.style.cssText = 'position: absolute; border: 1px dashed #3b82f6; background: rgba(59, 130, 246, 0.1); pointer-events: none; z-index: 9999;';
+                    canvas.appendChild(selectionBox);
+                });
+
+                document.addEventListener('mousemove', function(e) {
+                    if (!isSelecting || !selectionBox) return;
+
+                    var rect = canvas.getBoundingClientRect();
+                    var currentX = e.clientX - rect.left + canvas.scrollLeft;
+                    var currentY = e.clientY - rect.top + canvas.scrollTop;
+
+                    var left = Math.min(startX, currentX);
+                    var top = Math.min(startY, currentY);
+                    var width = Math.abs(currentX - startX);
+                    var height = Math.abs(currentY - startY);
+
+                    selectionBox.style.left = left + 'px';
+                    selectionBox.style.top = top + 'px';
+                    selectionBox.style.width = width + 'px';
+                    selectionBox.style.height = height + 'px';
+                });
+
+                document.addEventListener('mouseup', function(e) {
+                    if (!isSelecting || !selectionBox) return;
+
+                    isSelecting = false;
+
+                    // Obtener bounds de la caja de selección
+                    var boxRect = selectionBox.getBoundingClientRect();
+
+                    // Encontrar elementos dentro de la caja
+                    var elementsInBox = [];
+                    var elements = canvas.querySelectorAll('.vbp-element');
+
+                    elements.forEach(function(el) {
+                        var elRect = el.getBoundingClientRect();
+
+                        // Verificar si el elemento está dentro de la caja
+                        if (elRect.left < boxRect.right &&
+                            elRect.right > boxRect.left &&
+                            elRect.top < boxRect.bottom &&
+                            elRect.bottom > boxRect.top) {
+                            var elementId = el.dataset.elementId;
+                            if (elementId) {
+                                elementsInBox.push(elementId);
+                            }
+                        }
+                    });
+
+                    selectionBox.remove();
+                    selectionBox = null;
+
+                    // Seleccionar elementos encontrados
+                    if (elementsInBox.length > 0) {
+                        var store = Alpine.store('vbp');
+                        store.setSelection(elementsInBox);
+                        self.showNotification('Seleccionados ' + elementsInBox.length + ' elementos');
+                    }
+                });
+            },
+
+            /**
              * Obtener bounds combinados de la selección
              */
             getSelectionBounds: function(store) {
@@ -3511,6 +4361,801 @@ document.addEventListener('alpine:init', function() {
                     width: maxX - minX,
                     height: maxY - minY
                 };
+            },
+
+            // =========================================================
+            // HERRAMIENTAS AVANZADAS
+            // =========================================================
+
+            /**
+             * Toggle bloqueo de proporción (aspect ratio)
+             */
+            toggleAspectRatioLock: function() {
+                var store = Alpine.store('vbp');
+                if (store.selection.elementIds.length === 0) return;
+
+                var self = this;
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        var locked = !element.aspectRatioLock;
+                        store.updateElement(id, { aspectRatioLock: locked });
+                    }
+                });
+
+                var firstEl = store.getElement(store.selection.elementIds[0]);
+                this.showNotification('Proporción ' + (firstEl.aspectRatioLock ? 'bloqueada 🔒' : 'desbloqueada 🔓'));
+            },
+
+            /**
+             * Toggle smart guides
+             */
+            smartGuidesEnabled: false,
+
+            toggleSmartGuides: function() {
+                this.smartGuidesEnabled = !this.smartGuidesEnabled;
+                localStorage.setItem('vbp_smart_guides', this.smartGuidesEnabled);
+
+                if (this.smartGuidesEnabled) {
+                    this.initSmartGuides();
+                } else {
+                    this.removeSmartGuides();
+                }
+
+                this.showNotification('Smart Guides ' + (this.smartGuidesEnabled ? 'ON 📐' : 'OFF'));
+            },
+
+            initSmartGuides: function() {
+                // Las guías se muestran durante el drag
+                document.body.classList.add('vbp-smart-guides-enabled');
+            },
+
+            removeSmartGuides: function() {
+                document.body.classList.remove('vbp-smart-guides-enabled');
+                var guides = document.querySelectorAll('.vbp-smart-guide');
+                guides.forEach(function(g) { g.remove(); });
+            },
+
+            /**
+             * Toggle herramienta de medición
+             */
+            measureToolActive: false,
+
+            toggleMeasureTool: function() {
+                this.measureToolActive = !this.measureToolActive;
+
+                if (this.measureToolActive) {
+                    this.initMeasureTool();
+                    this.showNotification('Herramienta de medición ON 📏');
+                } else {
+                    this.removeMeasureTool();
+                    this.showNotification('Herramienta de medición OFF');
+                }
+            },
+
+            initMeasureTool: function() {
+                var self = this;
+                var canvas = document.querySelector('.vbp-canvas');
+                if (!canvas) return;
+
+                canvas.classList.add('vbp-measuring');
+
+                this.measureHandler = function(e) {
+                    var elements = document.querySelectorAll('.vbp-element');
+                    var target = e.target.closest('.vbp-element');
+
+                    if (target) {
+                        self.showMeasurements(target);
+                    }
+                };
+
+                canvas.addEventListener('mousemove', this.measureHandler);
+            },
+
+            removeMeasureTool: function() {
+                var canvas = document.querySelector('.vbp-canvas');
+                if (canvas) {
+                    canvas.classList.remove('vbp-measuring');
+                    if (this.measureHandler) {
+                        canvas.removeEventListener('mousemove', this.measureHandler);
+                    }
+                }
+                var tooltips = document.querySelectorAll('.vbp-measure-tooltip');
+                tooltips.forEach(function(t) { t.remove(); });
+            },
+
+            showMeasurements: function(element) {
+                var existing = document.querySelector('.vbp-measure-tooltip');
+                if (existing) existing.remove();
+
+                var rect = element.getBoundingClientRect();
+                var tooltip = document.createElement('div');
+                tooltip.className = 'vbp-measure-tooltip';
+                tooltip.innerHTML = Math.round(rect.width) + ' × ' + Math.round(rect.height) + ' px';
+                tooltip.style.cssText = 'position: fixed; left: ' + rect.left + 'px; top: ' + (rect.top - 24) + 'px; padding: 4px 8px; background: #89b4fa; color: #1e1e2e; font-size: 11px; font-weight: 600; border-radius: 4px; z-index: 10001; pointer-events: none;';
+                document.body.appendChild(tooltip);
+            },
+
+            /**
+             * Favoritos / Presets
+             */
+            favorites: [],
+
+            saveAsFavorite: function() {
+                var store = Alpine.store('vbp');
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para guardar', 'warning');
+                    return;
+                }
+
+                var name = prompt('Nombre del favorito:', 'Favorito ' + (this.favorites.length + 1));
+                if (!name) return;
+
+                var self = this;
+                var elementsToSave = store.selection.elementIds.map(function(id) {
+                    return JSON.parse(JSON.stringify(store.getElement(id)));
+                });
+
+                this.favorites.push({
+                    id: Date.now(),
+                    name: name,
+                    elements: elementsToSave,
+                    date: new Date().toISOString()
+                });
+
+                localStorage.setItem('vbp_favorites', JSON.stringify(this.favorites));
+                this.showNotification('Guardado como favorito ⭐');
+            },
+
+            openFavorites: function() {
+                var self = this;
+                var stored = localStorage.getItem('vbp_favorites');
+                if (stored) {
+                    this.favorites = JSON.parse(stored);
+                }
+
+                if (this.favorites.length === 0) {
+                    this.showNotification('No hay favoritos guardados', 'info');
+                    return;
+                }
+
+                // Crear modal
+                var modal = document.createElement('div');
+                modal.id = 'vbp-favorites-modal';
+                modal.className = 'vbp-modal-overlay';
+
+                var html = '<div class="vbp-modal" style="max-width: 500px;">';
+                html += '<div class="vbp-modal-header"><h2>⭐ Favoritos</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'vbp-favorites-modal\').remove()">&times;</button></div>';
+                html += '<div class="vbp-modal-body" style="max-height: 400px; overflow-y: auto;">';
+                html += '<ul class="vbp-favorites-list" style="list-style: none; padding: 0; margin: 0;">';
+
+                this.favorites.forEach(function(fav, index) {
+                    html += '<li style="display: flex; justify-content: space-between; align-items: center; padding: 12px; margin: 4px 0; background: var(--vbp-surface, #313244); border-radius: 6px;">';
+                    html += '<span style="font-weight: 500;">' + fav.name + '</span>';
+                    html += '<div>';
+                    html += '<button onclick="window.vbpKeyboard.insertFavorite(' + index + ')" style="padding: 6px 12px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border: none; border-radius: 4px; cursor: pointer; margin-right: 8px;">Insertar</button>';
+                    html += '<button onclick="window.vbpKeyboard.deleteFavorite(' + index + ')" style="padding: 6px 12px; background: #f38ba8; color: #1e1e2e; border: none; border-radius: 4px; cursor: pointer;">🗑️</button>';
+                    html += '</div></li>';
+                });
+
+                html += '</ul></div></div>';
+                modal.innerHTML = html;
+                document.body.appendChild(modal);
+            },
+
+            insertFavorite: function(index) {
+                var store = Alpine.store('vbp');
+                var fav = this.favorites[index];
+                if (!fav) return;
+
+                var self = this;
+                fav.elements.forEach(function(el) {
+                    var newEl = JSON.parse(JSON.stringify(el));
+                    newEl.id = 'el_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    store.addElement(newEl);
+                });
+
+                document.getElementById('vbp-favorites-modal').remove();
+                this.showNotification('Favorito insertado');
+            },
+
+            deleteFavorite: function(index) {
+                this.favorites.splice(index, 1);
+                localStorage.setItem('vbp_favorites', JSON.stringify(this.favorites));
+                document.getElementById('vbp-favorites-modal').remove();
+                this.openFavorites();
+            },
+
+            /**
+             * Editor de variables CSS
+             */
+            openCSSVariables: function() {
+                var store = Alpine.store('vbp');
+                var cssVars = store.settings && store.settings.cssVariables ? store.settings.cssVariables : {};
+
+                var modal = document.createElement('div');
+                modal.id = 'vbp-css-vars-modal';
+                modal.className = 'vbp-modal-overlay';
+
+                var html = '<div class="vbp-modal" style="max-width: 600px;">';
+                html += '<div class="vbp-modal-header"><h2>🎨 Variables CSS</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'vbp-css-vars-modal\').remove()">&times;</button></div>';
+                html += '<div class="vbp-modal-body">';
+
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<button onclick="window.vbpKeyboard.addCSSVariable()" style="padding: 8px 16px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border: none; border-radius: 6px; cursor: pointer;">+ Añadir variable</button>';
+                html += '</div>';
+
+                html += '<div id="vbp-css-vars-list" style="max-height: 300px; overflow-y: auto;">';
+
+                Object.keys(cssVars).forEach(function(key) {
+                    var val = cssVars[key];
+                    var isColor = val.startsWith('#') || val.startsWith('rgb');
+                    html += '<div class="vbp-css-var-row" style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">';
+                    html += '<input type="text" value="' + key + '" style="flex: 1; padding: 8px; background: var(--vbp-input-bg, #11111b); border: 1px solid var(--vbp-border, #313244); border-radius: 4px; color: var(--vbp-text, #cdd6f4);" data-var-name>';
+                    if (isColor) {
+                        html += '<input type="color" value="' + val + '" style="width: 40px; height: 36px; padding: 0; border: none; cursor: pointer;" data-var-value-color>';
+                    }
+                    html += '<input type="text" value="' + val + '" style="flex: 1; padding: 8px; background: var(--vbp-input-bg, #11111b); border: 1px solid var(--vbp-border, #313244); border-radius: 4px; color: var(--vbp-text, #cdd6f4);" data-var-value>';
+                    html += '<button onclick="this.parentElement.remove()" style="padding: 8px; background: #f38ba8; color: #1e1e2e; border: none; border-radius: 4px; cursor: pointer;">🗑️</button>';
+                    html += '</div>';
+                });
+
+                html += '</div>';
+                html += '<div style="margin-top: 16px; text-align: right;">';
+                html += '<button onclick="window.vbpKeyboard.saveCSSVariables()" style="padding: 10px 20px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Guardar variables</button>';
+                html += '</div>';
+                html += '</div></div>';
+
+                modal.innerHTML = html;
+                document.body.appendChild(modal);
+            },
+
+            addCSSVariable: function() {
+                var list = document.getElementById('vbp-css-vars-list');
+                var row = document.createElement('div');
+                row.className = 'vbp-css-var-row';
+                row.style.cssText = 'display: flex; gap: 8px; margin-bottom: 8px; align-items: center;';
+                row.innerHTML = '<input type="text" placeholder="--mi-variable" style="flex: 1; padding: 8px; background: var(--vbp-input-bg, #11111b); border: 1px solid var(--vbp-border, #313244); border-radius: 4px; color: var(--vbp-text, #cdd6f4);" data-var-name>' +
+                    '<input type="text" placeholder="#ffffff o 16px" style="flex: 1; padding: 8px; background: var(--vbp-input-bg, #11111b); border: 1px solid var(--vbp-border, #313244); border-radius: 4px; color: var(--vbp-text, #cdd6f4);" data-var-value>' +
+                    '<button onclick="this.parentElement.remove()" style="padding: 8px; background: #f38ba8; color: #1e1e2e; border: none; border-radius: 4px; cursor: pointer;">🗑️</button>';
+                list.appendChild(row);
+            },
+
+            saveCSSVariables: function() {
+                var store = Alpine.store('vbp');
+                var rows = document.querySelectorAll('#vbp-css-vars-list .vbp-css-var-row');
+                var vars = {};
+
+                rows.forEach(function(row) {
+                    var nameInput = row.querySelector('[data-var-name]');
+                    var valueInput = row.querySelector('[data-var-value]');
+                    if (nameInput && valueInput && nameInput.value && valueInput.value) {
+                        vars[nameInput.value] = valueInput.value;
+                    }
+                });
+
+                if (!store.settings) store.settings = {};
+                store.settings.cssVariables = vars;
+                store.isDirty = true;
+
+                document.getElementById('vbp-css-vars-modal').remove();
+                this.showNotification('Variables CSS guardadas');
+            },
+
+            /**
+             * Comparador de versiones
+             */
+            versions: [],
+
+            openVersionCompare: function() {
+                var store = Alpine.store('vbp');
+                var self = this;
+
+                // Guardar versión actual
+                var currentVersion = {
+                    id: Date.now(),
+                    date: new Date().toLocaleString(),
+                    elements: JSON.parse(JSON.stringify(store.elements))
+                };
+
+                var stored = localStorage.getItem('vbp_versions_' + store.postId);
+                this.versions = stored ? JSON.parse(stored) : [];
+
+                var modal = document.createElement('div');
+                modal.id = 'vbp-versions-modal';
+                modal.className = 'vbp-modal-overlay';
+
+                var html = '<div class="vbp-modal" style="max-width: 600px;">';
+                html += '<div class="vbp-modal-header"><h2>📜 Historial de Versiones</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'vbp-versions-modal\').remove()">&times;</button></div>';
+                html += '<div class="vbp-modal-body">';
+
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<button onclick="window.vbpKeyboard.saveVersion()" style="padding: 8px 16px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border: none; border-radius: 6px; cursor: pointer;">💾 Guardar versión actual</button>';
+                html += '</div>';
+
+                html += '<div style="max-height: 300px; overflow-y: auto;">';
+                if (this.versions.length === 0) {
+                    html += '<p style="color: var(--vbp-text-muted, #6c7086); text-align: center;">No hay versiones guardadas</p>';
+                } else {
+                    this.versions.forEach(function(ver, index) {
+                        html += '<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; margin: 4px 0; background: var(--vbp-surface, #313244); border-radius: 6px;">';
+                        html += '<div><strong>Versión ' + (index + 1) + '</strong><br><small style="color: var(--vbp-text-muted, #6c7086);">' + ver.date + ' - ' + ver.elements.length + ' elementos</small></div>';
+                        html += '<div>';
+                        html += '<button onclick="window.vbpKeyboard.restoreVersion(' + index + ')" style="padding: 6px 12px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border: none; border-radius: 4px; cursor: pointer; margin-right: 8px;">Restaurar</button>';
+                        html += '<button onclick="window.vbpKeyboard.deleteVersion(' + index + ')" style="padding: 6px 12px; background: #f38ba8; color: #1e1e2e; border: none; border-radius: 4px; cursor: pointer;">🗑️</button>';
+                        html += '</div></div>';
+                    });
+                }
+                html += '</div></div></div>';
+
+                modal.innerHTML = html;
+                document.body.appendChild(modal);
+            },
+
+            saveVersion: function() {
+                var store = Alpine.store('vbp');
+                var version = {
+                    id: Date.now(),
+                    date: new Date().toLocaleString(),
+                    elements: JSON.parse(JSON.stringify(store.elements))
+                };
+
+                this.versions.push(version);
+                localStorage.setItem('vbp_versions_' + store.postId, JSON.stringify(this.versions));
+
+                document.getElementById('vbp-versions-modal').remove();
+                this.openVersionCompare();
+                this.showNotification('Versión guardada');
+            },
+
+            restoreVersion: function(index) {
+                var store = Alpine.store('vbp');
+                var ver = this.versions[index];
+                if (!ver) return;
+
+                if (confirm('¿Restaurar esta versión? Los cambios actuales se perderán.')) {
+                    store.elements = JSON.parse(JSON.stringify(ver.elements));
+                    store.isDirty = true;
+                    document.getElementById('vbp-versions-modal').remove();
+                    this.showNotification('Versión restaurada');
+                }
+            },
+
+            deleteVersion: function(index) {
+                var store = Alpine.store('vbp');
+                this.versions.splice(index, 1);
+                localStorage.setItem('vbp_versions_' + store.postId, JSON.stringify(this.versions));
+                document.getElementById('vbp-versions-modal').remove();
+                this.openVersionCompare();
+            },
+
+            // =========================================================
+            // ROTACIÓN
+            // =========================================================
+
+            /**
+             * Rotar selección por grados
+             */
+            rotateSelection: function(degrees) {
+                var store = Alpine.store('vbp');
+                if (store.selection.elementIds.length === 0) return;
+
+                var self = this;
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        var estilos = element.estilos || {};
+                        if (!estilos.transform) estilos.transform = {};
+
+                        var currentRotation = parseFloat(estilos.transform.rotate) || 0;
+                        estilos.transform.rotate = ((currentRotation + degrees) % 360) + 'deg';
+
+                        store.updateElement(id, { estilos: estilos });
+                    }
+                });
+
+                this.showNotification('Rotar ' + degrees + '°');
+            },
+
+            /**
+             * Resetear rotación
+             */
+            resetRotation: function() {
+                var store = Alpine.store('vbp');
+                if (store.selection.elementIds.length === 0) return;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        var estilos = element.estilos || {};
+                        if (!estilos.transform) estilos.transform = {};
+                        estilos.transform.rotate = '0deg';
+                        store.updateElement(id, { estilos: estilos });
+                    }
+                });
+
+                this.showNotification('Rotación reseteada');
+            },
+
+            // =========================================================
+            // SNAP Y CONSTRAINTS
+            // =========================================================
+
+            snapToGridEnabled: false,
+            gridSize: 8,
+
+            /**
+             * Toggle snap to grid
+             */
+            toggleSnapToGrid: function() {
+                this.snapToGridEnabled = !this.snapToGridEnabled;
+                localStorage.setItem('vbp_snap_to_grid', this.snapToGridEnabled);
+                this.showNotification('Snap to grid ' + (this.snapToGridEnabled ? 'ON' : 'OFF'));
+            },
+
+            /**
+             * Ajustar valor al grid
+             */
+            snapToGrid: function(value) {
+                if (!this.snapToGridEnabled) return value;
+                return Math.round(value / this.gridSize) * this.gridSize;
+            },
+
+            /**
+             * Toggle constraint
+             */
+            toggleConstraint: function(side) {
+                var store = Alpine.store('vbp');
+                if (store.selection.elementIds.length === 0) return;
+
+                var self = this;
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        var constraints = element.constraints || { top: false, bottom: false, left: false, right: false };
+                        constraints[side] = !constraints[side];
+                        store.updateElement(id, { constraints: constraints });
+                    }
+                });
+
+                this.showNotification('Constraint ' + side + ' ' + (store.getElement(store.selection.elementIds[0]).constraints[side] ? 'ON' : 'OFF'));
+            },
+
+            // =========================================================
+            // EFECTOS
+            // =========================================================
+
+            /**
+             * Editor de sombras
+             */
+            openShadowEditor: function() {
+                var store = Alpine.store('vbp');
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona un elemento', 'warning');
+                    return;
+                }
+
+                var element = store.getElement(store.selection.elementIds[0]);
+                var shadow = (element.estilos && element.estilos.boxShadow) || { x: 0, y: 4, blur: 12, spread: 0, color: '#00000040', inset: false };
+
+                var modal = document.createElement('div');
+                modal.id = 'vbp-shadow-modal';
+                modal.className = 'vbp-modal-overlay';
+
+                var html = '<div class="vbp-modal" style="max-width: 400px;">';
+                html += '<div class="vbp-modal-header"><h2>🌑 Editor de Sombra</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'vbp-shadow-modal\').remove()">&times;</button></div>';
+                html += '<div class="vbp-modal-body">';
+
+                html += '<div style="margin-bottom: 16px; padding: 20px; background: var(--vbp-surface, #313244); border-radius: 8px; text-align: center;">';
+                html += '<div id="vbp-shadow-preview" style="width: 80px; height: 80px; margin: 0 auto; background: var(--vbp-primary, #89b4fa); border-radius: 8px;"></div>';
+                html += '</div>';
+
+                var sliders = [
+                    { id: 'x', label: 'X', min: -50, max: 50, value: shadow.x || 0 },
+                    { id: 'y', label: 'Y', min: -50, max: 50, value: shadow.y || 4 },
+                    { id: 'blur', label: 'Blur', min: 0, max: 100, value: shadow.blur || 12 },
+                    { id: 'spread', label: 'Spread', min: -20, max: 50, value: shadow.spread || 0 }
+                ];
+
+                sliders.forEach(function(s) {
+                    html += '<div style="margin-bottom: 12px;">';
+                    html += '<label style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; color: var(--vbp-text-muted, #6c7086);">' + s.label + ' <span id="vbp-shadow-' + s.id + '-val">' + s.value + 'px</span></label>';
+                    html += '<input type="range" id="vbp-shadow-' + s.id + '" min="' + s.min + '" max="' + s.max + '" value="' + s.value + '" style="width: 100%;" oninput="window.vbpKeyboard.updateShadowPreview()">';
+                    html += '</div>';
+                });
+
+                html += '<div style="display: flex; gap: 12px; margin-bottom: 12px;">';
+                html += '<div style="flex: 1;"><label style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">Color</label>';
+                html += '<input type="color" id="vbp-shadow-color" value="' + (shadow.color.substring(0, 7) || '#000000') + '" style="width: 100%; height: 36px; border: none; cursor: pointer;" oninput="window.vbpKeyboard.updateShadowPreview()"></div>';
+                html += '<div style="flex: 1;"><label style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">Opacidad</label>';
+                html += '<input type="range" id="vbp-shadow-opacity" min="0" max="100" value="' + (parseInt(shadow.color.substring(7), 16) / 255 * 100 || 25) + '" style="width: 100%;" oninput="window.vbpKeyboard.updateShadowPreview()"></div>';
+                html += '</div>';
+
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">';
+                html += '<input type="checkbox" id="vbp-shadow-inset" ' + (shadow.inset ? 'checked' : '') + ' onchange="window.vbpKeyboard.updateShadowPreview()">';
+                html += '<span style="font-size: 14px;">Sombra interna (inset)</span></label>';
+                html += '</div>';
+
+                html += '<div style="display: flex; gap: 8px;">';
+                html += '<button onclick="window.vbpKeyboard.removeShadow()" style="flex: 1; padding: 10px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #313244); border-radius: 6px; cursor: pointer;">Quitar sombra</button>';
+                html += '<button onclick="window.vbpKeyboard.applyShadow()" style="flex: 1; padding: 10px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Aplicar</button>';
+                html += '</div>';
+
+                html += '</div></div>';
+
+                modal.innerHTML = html;
+                document.body.appendChild(modal);
+
+                this.updateShadowPreview();
+            },
+
+            updateShadowPreview: function() {
+                var x = document.getElementById('vbp-shadow-x').value;
+                var y = document.getElementById('vbp-shadow-y').value;
+                var blur = document.getElementById('vbp-shadow-blur').value;
+                var spread = document.getElementById('vbp-shadow-spread').value;
+                var color = document.getElementById('vbp-shadow-color').value;
+                var opacity = document.getElementById('vbp-shadow-opacity').value;
+                var inset = document.getElementById('vbp-shadow-inset').checked;
+
+                document.getElementById('vbp-shadow-x-val').textContent = x + 'px';
+                document.getElementById('vbp-shadow-y-val').textContent = y + 'px';
+                document.getElementById('vbp-shadow-blur-val').textContent = blur + 'px';
+                document.getElementById('vbp-shadow-spread-val').textContent = spread + 'px';
+
+                var alpha = Math.round(opacity / 100 * 255).toString(16).padStart(2, '0');
+                var shadowVal = (inset ? 'inset ' : '') + x + 'px ' + y + 'px ' + blur + 'px ' + spread + 'px ' + color + alpha;
+
+                var preview = document.getElementById('vbp-shadow-preview');
+                if (preview) {
+                    preview.style.boxShadow = shadowVal;
+                }
+            },
+
+            applyShadow: function() {
+                var store = Alpine.store('vbp');
+                var x = document.getElementById('vbp-shadow-x').value;
+                var y = document.getElementById('vbp-shadow-y').value;
+                var blur = document.getElementById('vbp-shadow-blur').value;
+                var spread = document.getElementById('vbp-shadow-spread').value;
+                var color = document.getElementById('vbp-shadow-color').value;
+                var opacity = document.getElementById('vbp-shadow-opacity').value;
+                var inset = document.getElementById('vbp-shadow-inset').checked;
+
+                var alpha = Math.round(opacity / 100 * 255).toString(16).padStart(2, '0');
+                var shadowVal = (inset ? 'inset ' : '') + x + 'px ' + y + 'px ' + blur + 'px ' + spread + 'px ' + color + alpha;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        var estilos = element.estilos || {};
+                        estilos.boxShadow = {
+                            value: shadowVal,
+                            x: parseInt(x), y: parseInt(y), blur: parseInt(blur), spread: parseInt(spread),
+                            color: color + alpha, inset: inset
+                        };
+                        store.updateElement(id, { estilos: estilos });
+                    }
+                });
+
+                document.getElementById('vbp-shadow-modal').remove();
+                this.showNotification('Sombra aplicada');
+            },
+
+            removeShadow: function() {
+                var store = Alpine.store('vbp');
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        var estilos = element.estilos || {};
+                        delete estilos.boxShadow;
+                        store.updateElement(id, { estilos: estilos });
+                    }
+                });
+
+                document.getElementById('vbp-shadow-modal').remove();
+                this.showNotification('Sombra eliminada');
+            },
+
+            /**
+             * Editor de gradientes
+             */
+            openGradientEditor: function() {
+                var store = Alpine.store('vbp');
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona un elemento', 'warning');
+                    return;
+                }
+
+                var modal = document.createElement('div');
+                modal.id = 'vbp-gradient-modal';
+                modal.className = 'vbp-modal-overlay';
+
+                var presets = [
+                    { name: 'Sunset', value: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
+                    { name: 'Ocean', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+                    { name: 'Forest', value: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' },
+                    { name: 'Fire', value: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)' },
+                    { name: 'Sky', value: 'linear-gradient(135deg, #89b4fa 0%, #cba6f7 100%)' },
+                    { name: 'Night', value: 'linear-gradient(135deg, #1e1e2e 0%, #313244 100%)' }
+                ];
+
+                var html = '<div class="vbp-modal" style="max-width: 450px;">';
+                html += '<div class="vbp-modal-header"><h2>🌈 Editor de Gradiente</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'vbp-gradient-modal\').remove()">&times;</button></div>';
+                html += '<div class="vbp-modal-body">';
+
+                html += '<div style="margin-bottom: 16px; padding: 20px; background: var(--vbp-surface, #313244); border-radius: 8px;">';
+                html += '<div id="vbp-gradient-preview" style="width: 100%; height: 60px; border-radius: 6px; background: linear-gradient(135deg, #89b4fa 0%, #cba6f7 100%);"></div>';
+                html += '</div>';
+
+                html += '<div style="margin-bottom: 16px;">';
+                html += '<label style="font-size: 12px; color: var(--vbp-text-muted, #6c7086); display: block; margin-bottom: 6px;">Presets</label>';
+                html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">';
+                presets.forEach(function(p) {
+                    html += '<button onclick="window.vbpKeyboard.applyGradientPreset(\'' + p.value.replace(/'/g, "\\'") + '\')" style="padding: 8px; background: ' + p.value + '; border: none; border-radius: 6px; cursor: pointer; font-size: 11px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">' + p.name + '</button>';
+                });
+                html += '</div></div>';
+
+                html += '<div style="margin-bottom: 12px;">';
+                html += '<label style="font-size: 12px; color: var(--vbp-text-muted, #6c7086); display: block; margin-bottom: 6px;">Tipo</label>';
+                html += '<select id="vbp-gradient-type" style="width: 100%; padding: 8px; background: var(--vbp-input-bg, #11111b); border: 1px solid var(--vbp-border, #313244); border-radius: 4px; color: var(--vbp-text, #cdd6f4);" onchange="window.vbpKeyboard.updateGradientPreview()">';
+                html += '<option value="linear">Linear</option>';
+                html += '<option value="radial">Radial</option>';
+                html += '</select></div>';
+
+                html += '<div style="margin-bottom: 12px;">';
+                html += '<label style="font-size: 12px; color: var(--vbp-text-muted, #6c7086); display: flex; justify-content: space-between; margin-bottom: 4px;">Ángulo <span id="vbp-gradient-angle-val">135°</span></label>';
+                html += '<input type="range" id="vbp-gradient-angle" min="0" max="360" value="135" style="width: 100%;" oninput="window.vbpKeyboard.updateGradientPreview()">';
+                html += '</div>';
+
+                html += '<div style="display: flex; gap: 12px; margin-bottom: 12px;">';
+                html += '<div style="flex: 1;"><label style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">Color 1</label>';
+                html += '<input type="color" id="vbp-gradient-color1" value="#89b4fa" style="width: 100%; height: 36px; border: none; cursor: pointer;" oninput="window.vbpKeyboard.updateGradientPreview()"></div>';
+                html += '<div style="flex: 1;"><label style="font-size: 12px; color: var(--vbp-text-muted, #6c7086);">Color 2</label>';
+                html += '<input type="color" id="vbp-gradient-color2" value="#cba6f7" style="width: 100%; height: 36px; border: none; cursor: pointer;" oninput="window.vbpKeyboard.updateGradientPreview()"></div>';
+                html += '</div>';
+
+                html += '<div style="display: flex; gap: 8px;">';
+                html += '<button onclick="window.vbpKeyboard.removeGradient()" style="flex: 1; padding: 10px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #313244); border-radius: 6px; cursor: pointer;">Quitar gradiente</button>';
+                html += '<button onclick="window.vbpKeyboard.applyGradient()" style="flex: 1; padding: 10px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Aplicar</button>';
+                html += '</div>';
+
+                html += '</div></div>';
+
+                modal.innerHTML = html;
+                document.body.appendChild(modal);
+            },
+
+            updateGradientPreview: function() {
+                var type = document.getElementById('vbp-gradient-type').value;
+                var angle = document.getElementById('vbp-gradient-angle').value;
+                var color1 = document.getElementById('vbp-gradient-color1').value;
+                var color2 = document.getElementById('vbp-gradient-color2').value;
+
+                document.getElementById('vbp-gradient-angle-val').textContent = angle + '°';
+
+                var gradient;
+                if (type === 'linear') {
+                    gradient = 'linear-gradient(' + angle + 'deg, ' + color1 + ' 0%, ' + color2 + ' 100%)';
+                } else {
+                    gradient = 'radial-gradient(circle, ' + color1 + ' 0%, ' + color2 + ' 100%)';
+                }
+
+                var preview = document.getElementById('vbp-gradient-preview');
+                if (preview) {
+                    preview.style.background = gradient;
+                }
+            },
+
+            applyGradientPreset: function(gradient) {
+                var preview = document.getElementById('vbp-gradient-preview');
+                if (preview) {
+                    preview.style.background = gradient;
+                }
+                this.currentGradient = gradient;
+            },
+
+            applyGradient: function() {
+                var store = Alpine.store('vbp');
+                var gradient;
+
+                if (this.currentGradient) {
+                    gradient = this.currentGradient;
+                } else {
+                    var type = document.getElementById('vbp-gradient-type').value;
+                    var angle = document.getElementById('vbp-gradient-angle').value;
+                    var color1 = document.getElementById('vbp-gradient-color1').value;
+                    var color2 = document.getElementById('vbp-gradient-color2').value;
+
+                    if (type === 'linear') {
+                        gradient = 'linear-gradient(' + angle + 'deg, ' + color1 + ' 0%, ' + color2 + ' 100%)';
+                    } else {
+                        gradient = 'radial-gradient(circle, ' + color1 + ' 0%, ' + color2 + ' 100%)';
+                    }
+                }
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        var estilos = element.estilos || {};
+                        estilos.background = gradient;
+                        store.updateElement(id, { estilos: estilos });
+                    }
+                });
+
+                this.currentGradient = null;
+                document.getElementById('vbp-gradient-modal').remove();
+                this.showNotification('Gradiente aplicado');
+            },
+
+            removeGradient: function() {
+                var store = Alpine.store('vbp');
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        var estilos = element.estilos || {};
+                        delete estilos.background;
+                        store.updateElement(id, { estilos: estilos });
+                    }
+                });
+
+                document.getElementById('vbp-gradient-modal').remove();
+                this.showNotification('Gradiente eliminado');
+            },
+
+            // =========================================================
+            // AUTO-LAYOUT
+            // =========================================================
+
+            /**
+             * Toggle auto-layout en contenedor
+             */
+            toggleAutoLayout: function() {
+                var store = Alpine.store('vbp');
+                if (store.selection.elementIds.length === 0) return;
+
+                var self = this;
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element && (element.type === 'container' || element.type === 'columns' || element.type === 'group')) {
+                        var autoLayout = element.autoLayout || { enabled: false, direction: 'column', gap: 16, padding: 16, alignItems: 'stretch', justifyContent: 'flex-start' };
+                        autoLayout.enabled = !autoLayout.enabled;
+                        store.updateElement(id, { autoLayout: autoLayout });
+                    }
+                });
+
+                var firstEl = store.getElement(store.selection.elementIds[0]);
+                if (firstEl && firstEl.autoLayout) {
+                    this.showNotification('Auto-layout ' + (firstEl.autoLayout.enabled ? 'ON' : 'OFF'));
+                }
+            },
+
+            /**
+             * Ajustar gap de auto-layout
+             */
+            adjustAutoLayoutGap: function(delta) {
+                var store = Alpine.store('vbp');
+                if (store.selection.elementIds.length === 0) return;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element && element.autoLayout && element.autoLayout.enabled) {
+                        var autoLayout = element.autoLayout;
+                        autoLayout.gap = Math.max(0, (autoLayout.gap || 16) + delta);
+                        store.updateElement(id, { autoLayout: autoLayout });
+                    }
+                });
+
+                var firstEl = store.getElement(store.selection.elementIds[0]);
+                if (firstEl && firstEl.autoLayout) {
+                    this.showNotification('Gap: ' + firstEl.autoLayout.gap + 'px');
+                }
             },
 
             /**
@@ -3709,10 +5354,32 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + Shift + P', action: 'Bloquear proporción' },
                 { keys: 'Ctrl + Alt + G', action: 'Smart Guides on/off' },
                 { keys: 'M', action: 'Herramienta de medición' },
-                { keys: 'Ctrl + Alt + F', action: 'Guardar como favorito' },
-                { keys: 'Ctrl + Shift + F', action: 'Abrir favoritos' },
+                { keys: 'Ctrl + Alt + K', action: 'Guardar como favorito' },
+                { keys: 'Ctrl + Alt + Shift + K', action: 'Abrir favoritos' },
                 { keys: 'Ctrl + Alt + C', action: 'Editor variables CSS' },
                 { keys: 'Ctrl + Alt + D', action: 'Comparar versiones' }
+            ]},
+            { category: 'Rotación', shortcuts: [
+                { keys: 'R', action: 'Rotar 15°' },
+                { keys: 'Shift + R', action: 'Rotar -15°' },
+                { keys: 'Ctrl + R', action: 'Rotar 90°' },
+                { keys: 'Ctrl + Alt + 0', action: 'Resetear rotación' }
+            ]},
+            { category: 'Snap y Constraints', shortcuts: [
+                { keys: 'Ctrl + Shift + .', action: 'Snap to grid on/off' },
+                { keys: 'Ctrl + Alt + T', action: 'Constraint arriba' },
+                { keys: 'Ctrl + Alt + B', action: 'Constraint abajo' },
+                { keys: 'Ctrl + Alt + L', action: 'Constraint izquierda' },
+                { keys: 'Ctrl + Alt + →', action: 'Constraint derecha' }
+            ]},
+            { category: 'Efectos', shortcuts: [
+                { keys: 'Ctrl + Alt + Shift + S', action: 'Editor de sombras' },
+                { keys: 'Ctrl + Alt + Shift + X', action: 'Editor de gradientes' }
+            ]},
+            { category: 'Auto-layout', shortcuts: [
+                { keys: 'Shift + A', action: 'Toggle auto-layout' },
+                { keys: 'Ctrl + Shift + ↑', action: 'Reducir gap' },
+                { keys: 'Ctrl + Shift + ↓', action: 'Aumentar gap' }
             ]},
             { category: 'Zoom', shortcuts: [
                 { keys: 'Ctrl + +', action: 'Acercar' },
