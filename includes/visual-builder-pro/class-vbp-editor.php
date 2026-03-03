@@ -165,15 +165,18 @@ class Flavor_VBP_Editor {
             }
         }
 
-        // Solo redirigir automáticamente para flavor_landing
-        // Para page, el usuario debe usar el link "Editar con VBP"
-        if ( 'flavor_landing' === $tipo_post ) {
+        // Redirigir automáticamente para todos los tipos soportados
+        if ( in_array( $tipo_post, self::POST_TYPES_SOPORTADOS, true ) ) {
             // Si es post nuevo, primero crear el post
             if ( 'post-new.php' === $pagenow ) {
+                $titulo_nuevo = 'page' === $tipo_post
+                    ? __( 'Nueva Página', 'flavor-chat-ia' )
+                    : __( 'Nueva Landing Page', 'flavor-chat-ia' );
+
                 $post_id_nuevo = wp_insert_post(
                     array(
                         'post_type'   => $tipo_post,
-                        'post_title'  => __( 'Nueva Landing Page', 'flavor-chat-ia' ),
+                        'post_title'  => $titulo_nuevo,
                         'post_status' => 'draft',
                     )
                 );
