@@ -120,6 +120,20 @@ interface Flavor_Chat_Module_Interface {
      * @return array Array de definiciones de páginas para el Page Creator
      */
     public function get_pages_definition();
+
+    /**
+     * Obtiene los metadatos ecosistémicos del módulo.
+     *
+     * @return array
+     */
+    public function get_ecosystem_metadata();
+
+    /**
+     * Obtiene la metadata de dashboard del módulo.
+     *
+     * @return array
+     */
+    public function get_dashboard_metadata();
 }
 
 /**
@@ -210,6 +224,30 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
     protected $required_capability = 'read';
 
     /**
+     * Rol del módulo dentro del ecosistema.
+     * Valores esperados: base|vertical|transversal
+     */
+    protected $module_role = 'vertical';
+
+    /**
+     * Relaciones ecosistémicas declarativas del módulo.
+     */
+    protected $ecosystem_supports_modules = [];
+    protected $ecosystem_measures_modules = [];
+    protected $ecosystem_governs_modules = [];
+    protected $ecosystem_teaches_modules = [];
+    protected $ecosystem_base_for_modules = [];
+
+    /**
+     * Metadata declarativa para dashboards.
+     */
+    protected $dashboard_parent_module = '';
+    protected $dashboard_satellite_priority = 50;
+    protected $dashboard_transversal_priority = 50;
+    protected $dashboard_client_contexts = [];
+    protected $dashboard_admin_contexts = [];
+
+    /**
      * Constructor
      */
     public function __construct() {
@@ -220,7 +258,8 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      * Carga la configuración del módulo
      */
     protected function load_settings() {
-        $all_settings = get_option('flavor_chat_ia_module_' . $this->id, []);
+        $module_id = $this->id ?: $this->module_id;
+        $all_settings = $module_id ? get_option('flavor_chat_ia_module_' . $module_id, []) : [];
         $this->settings = wp_parse_args($all_settings, $this->get_default_settings());
     }
 
@@ -246,21 +285,39 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      * {@inheritdoc}
      */
     public function get_id() {
-        return $this->id;
+        return $this->id ?: $this->module_id;
     }
 
     /**
      * {@inheritdoc}
      */
     public function get_name() {
-        return $this->name;
+        return $this->name ?: $this->module_name;
     }
 
     /**
      * {@inheritdoc}
      */
     public function get_description() {
-        return $this->description;
+        return $this->description ?: $this->module_description;
+    }
+
+    /**
+     * Obtiene el icono del módulo.
+     *
+     * @return string
+     */
+    public function get_icon() {
+        return $this->icon ?: $this->module_icon;
+    }
+
+    /**
+     * Obtiene el color del módulo.
+     *
+     * @return string
+     */
+    public function get_color() {
+        return $this->color ?: $this->module_color;
     }
 
     /**
@@ -396,5 +453,39 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
         // Por defecto, los módulos no declaran páginas
         // Los módulos que necesiten páginas deben sobrescribir este método
         return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_ecosystem_metadata() {
+        return [
+            'module_role' => $this->module_role ?: 'vertical',
+            'depends_on' => array_values(array_unique(array_filter((array) $this->get_dependencies()))),
+            'supports_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_supports_modules))),
+            'measures_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_measures_modules))),
+            'governs_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_governs_modules))),
+            'teaches_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_teaches_modules))),
+            'base_for_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_base_for_modules))),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get_dashboard_metadata() {
+        $default_parent = $this->dashboard_parent_module;
+        if ($default_parent === '' && $this->module_role !== 'base') {
+            $dependencies = array_values(array_unique(array_filter((array) $this->get_dependencies())));
+            $default_parent = $dependencies[0] ?? '';
+        }
+
+        return [
+            'parent_module' => $default_parent,
+            'satellite_priority' => absint($this->dashboard_satellite_priority),
+            'transversal_priority' => absint($this->dashboard_transversal_priority),
+            'client_contexts' => array_values(array_unique(array_filter((array) $this->dashboard_client_contexts))),
+            'admin_contexts' => array_values(array_unique(array_filter((array) $this->dashboard_admin_contexts))),
+        ];
     }
 }

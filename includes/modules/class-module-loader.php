@@ -230,6 +230,14 @@ class Flavor_Chat_Module_Loader {
                 'id' => $module->get_id(),
                 'name' => $module->get_name(),
                 'description' => $module->get_description(),
+                'icon' => method_exists($module, 'get_icon') ? $module->get_icon() : 'dashicons-admin-plugins',
+                'color' => method_exists($module, 'get_color') ? $module->get_color() : '#3b82f6',
+                'ecosystem' => method_exists($module, 'get_ecosystem_metadata')
+                    ? $module->get_ecosystem_metadata()
+                    : [],
+                'dashboard' => method_exists($module, 'get_dashboard_metadata')
+                    ? $module->get_dashboard_metadata()
+                    : [],
                 'visibility' => method_exists($module, 'get_default_visibility')
                     ? $module->get_default_visibility()
                     : 'public',
@@ -677,6 +685,10 @@ class Flavor_Chat_Module_Loader {
     public function get_registered_modules() {
         $modules_info = [];
 
+        if ($this->modules_metadata_cache === null) {
+            $this->rebuild_metadata_cache();
+        }
+
         foreach ($this->registered_modules as $id => $module_data) {
             if (isset($this->loaded_modules[$id])) {
                 $module = $this->loaded_modules[$id];
@@ -684,6 +696,14 @@ class Flavor_Chat_Module_Loader {
                     'id' => $module->get_id(),
                     'name' => $module->get_name(),
                     'description' => $module->get_description(),
+                    'icon' => method_exists($module, 'get_icon') ? $module->get_icon() : 'dashicons-admin-plugins',
+                    'color' => method_exists($module, 'get_color') ? $module->get_color() : '#3b82f6',
+                    'ecosystem' => method_exists($module, 'get_ecosystem_metadata')
+                        ? $module->get_ecosystem_metadata()
+                        : [],
+                    'dashboard' => method_exists($module, 'get_dashboard_metadata')
+                        ? $module->get_dashboard_metadata()
+                        : [],
                     'can_activate' => $module->can_activate(),
                     'activation_error' => $module->get_activation_error(),
                     'is_loaded' => true,
@@ -691,10 +711,18 @@ class Flavor_Chat_Module_Loader {
                 continue;
             }
 
+            $cached_meta = $this->modules_metadata_cache[$id] ?? [];
+            $fallback_name = ucwords(str_replace(['_', '-'], ' ', $id));
+            $name = trim((string) ($cached_meta['name'] ?? ''));
+            $description = trim((string) ($cached_meta['description'] ?? ''));
+
             $modules_info[$id] = [
                 'id' => $id,
-                'name' => ucwords(str_replace(['_', '-'], ' ', $id)),
-                'description' => '',
+                'name' => $name !== '' ? $name : $fallback_name,
+                'description' => $description,
+                'icon' => $cached_meta['icon'] ?? 'dashicons-admin-plugins',
+                'color' => $cached_meta['color'] ?? '#3b82f6',
+                'ecosystem' => $cached_meta['ecosystem'] ?? [],
                 'can_activate' => true,
                 'activation_error' => '',
                 'is_loaded' => false,
