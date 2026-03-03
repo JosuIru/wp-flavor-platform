@@ -158,6 +158,8 @@ document.addEventListener('alpine:init', function() {
             { id: 'typography-editor', label: 'Editor de tipografía', category: 'efectos', icon: '🔤', action: 'openTypographyEditor', shortcut: 'Ctrl+Shift+T' },
             { id: 'border-editor', label: 'Editor de bordes', category: 'efectos', icon: '📐', action: 'openBorderEditor', shortcut: 'Ctrl+Shift+B' },
             { id: 'spacing-editor', label: 'Editor de espaciado', category: 'efectos', icon: '📏', action: 'openSpacingEditor', shortcut: 'Ctrl+Alt+P' },
+            { id: 'hover-states', label: 'Estados interactivos (hover/active/focus)', category: 'efectos', icon: '🎯', action: 'openHoverStatesEditor', shortcut: 'Ctrl+Alt+Shift+H' },
+            { id: 'scroll-animation', label: 'Animaciones de scroll', category: 'efectos', icon: '📜', action: 'openScrollAnimationEditor', shortcut: 'Ctrl+Alt+Shift+Y' },
 
             // Navegación canvas
             { id: 'pan-mode', label: 'Modo pan (arrastrar)', category: 'navegacion', icon: '✋', action: 'togglePanMode', shortcut: 'Space' },

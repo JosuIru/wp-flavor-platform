@@ -145,6 +145,10 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+shift+b': 'openBorderEditor',
                 'ctrl+alt+p': 'openSpacingEditor',
 
+                // Estados interactivos y scroll
+                'ctrl+alt+shift+h': 'openHoverStatesEditor',
+                'ctrl+alt+shift+y': 'openScrollAnimationEditor',
+
                 // Responsive breakpoints
                 '1': 'breakpointDesktop',
                 '2': 'breakpointTablet',
@@ -936,6 +940,15 @@ document.addEventListener('alpine:init', function() {
                     // === PAN MODE ===
                     case 'togglePanMode':
                         this.togglePanMode();
+                        break;
+
+                    // === ESTADOS INTERACTIVOS Y SCROLL ===
+                    case 'openHoverStatesEditor':
+                        this.openHoverStatesEditor();
+                        break;
+
+                    case 'openScrollAnimationEditor':
+                        this.openScrollAnimationEditor();
                         break;
             },
 
@@ -5873,6 +5886,555 @@ document.addEventListener('alpine:init', function() {
                 document.addEventListener('mouseup', endPan);
             },
 
+            // === ESTADOS INTERACTIVOS (HOVER/ACTIVE/FOCUS) ===
+
+            /**
+             * Editor de estados interactivos
+             */
+            openHoverStatesEditor: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un solo elemento', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+                if (!element) return;
+
+                var currentStates = (element.styles && element.styles.interactiveStates) || {
+                    hover: { enabled: false, transform: '', background: '', color: '', boxShadow: '', scale: 1, opacity: 1 },
+                    active: { enabled: false, transform: '', background: '', color: '', scale: 0.98, opacity: 1 },
+                    focus: { enabled: false, outline: '2px solid #3b82f6', outlineOffset: '2px' }
+                };
+
+                var modalId = 'vbp-hover-states-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var html = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                html += '<div class="vbp-modal" style="max-width: 550px;">';
+                html += '<div class="vbp-modal-header">';
+                html += '<h2>🎯 Estados Interactivos</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                html += '</div>';
+                html += '<div class="vbp-modal-body">';
+
+                // Tabs para cada estado
+                html += '<div class="vbp-state-tabs" style="display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--vbp-border, #313244); padding-bottom: 8px;">';
+                html += '<button class="state-tab active" data-state="hover" style="padding: 8px 16px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border: none; border-radius: 6px 6px 0 0; cursor: pointer; font-weight: 600;">:hover</button>';
+                html += '<button class="state-tab" data-state="active" style="padding: 8px 16px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: none; border-radius: 6px 6px 0 0; cursor: pointer;">:active</button>';
+                html += '<button class="state-tab" data-state="focus" style="padding: 8px 16px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: none; border-radius: 6px 6px 0 0; cursor: pointer;">:focus</button>';
+                html += '</div>';
+
+                // Preview
+                html += '<div style="background: #f3f4f6; border-radius: 8px; padding: 32px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center;">';
+                html += '<div id="hover-preview" style="padding: 16px 32px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">Hover me</div>';
+                html += '</div>';
+
+                // Panel Hover
+                html += '<div id="panel-hover" class="state-panel">';
+                html += '<label style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; cursor: pointer;">';
+                html += '<input type="checkbox" id="hover-enabled" ' + (currentStates.hover.enabled ? 'checked' : '') + '>';
+                html += '<span style="font-weight: 600;">Habilitar estado :hover</span></label>';
+
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">';
+                // Scale
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Escala <span id="hover-scale-val">' + (currentStates.hover.scale || 1) + '</span></label>';
+                html += '<input type="range" id="hover-scale" min="0.8" max="1.3" step="0.02" value="' + (currentStates.hover.scale || 1) + '" style="width: 100%;">';
+                html += '</div>';
+                // Opacity
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Opacidad <span id="hover-opacity-val">' + (currentStates.hover.opacity || 1) + '</span></label>';
+                html += '<input type="range" id="hover-opacity" min="0" max="1" step="0.05" value="' + (currentStates.hover.opacity || 1) + '" style="width: 100%;">';
+                html += '</div>';
+                // Background
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Color de fondo</label>';
+                html += '<input type="color" id="hover-bg" value="' + (currentStates.hover.background || '#3b82f6') + '" style="width: 100%; height: 36px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); cursor: pointer;">';
+                html += '</div>';
+                // Text color
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Color de texto</label>';
+                html += '<input type="color" id="hover-color" value="' + (currentStates.hover.color || '#ffffff') + '" style="width: 100%; height: 36px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); cursor: pointer;">';
+                html += '</div>';
+                // TranslateY
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Mover Y <span id="hover-ty-val">0px</span></label>';
+                html += '<input type="range" id="hover-translateY" min="-20" max="20" value="0" style="width: 100%;">';
+                html += '</div>';
+                // Shadow
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Sombra</label>';
+                html += '<select id="hover-shadow" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<option value="">Sin sombra</option>';
+                html += '<option value="0 4px 6px rgba(0,0,0,0.1)">Suave</option>';
+                html += '<option value="0 10px 15px rgba(0,0,0,0.15)">Media</option>';
+                html += '<option value="0 20px 25px rgba(0,0,0,0.2)">Grande</option>';
+                html += '<option value="0 25px 50px rgba(0,0,0,0.25)">Extra grande</option>';
+                html += '</select></div>';
+                html += '</div></div>';
+
+                // Panel Active
+                html += '<div id="panel-active" class="state-panel" style="display: none;">';
+                html += '<label style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; cursor: pointer;">';
+                html += '<input type="checkbox" id="active-enabled" ' + (currentStates.active.enabled ? 'checked' : '') + '>';
+                html += '<span style="font-weight: 600;">Habilitar estado :active</span></label>';
+
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Escala <span id="active-scale-val">' + (currentStates.active.scale || 0.98) + '</span></label>';
+                html += '<input type="range" id="active-scale" min="0.9" max="1.1" step="0.01" value="' + (currentStates.active.scale || 0.98) + '" style="width: 100%;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Opacidad <span id="active-opacity-val">' + (currentStates.active.opacity || 1) + '</span></label>';
+                html += '<input type="range" id="active-opacity" min="0" max="1" step="0.05" value="' + (currentStates.active.opacity || 1) + '" style="width: 100%;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Color de fondo</label>';
+                html += '<input type="color" id="active-bg" value="' + (currentStates.active.background || '#2563eb') + '" style="width: 100%; height: 36px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); cursor: pointer;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Color de texto</label>';
+                html += '<input type="color" id="active-color" value="' + (currentStates.active.color || '#ffffff') + '" style="width: 100%; height: 36px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); cursor: pointer;">';
+                html += '</div>';
+                html += '</div></div>';
+
+                // Panel Focus
+                html += '<div id="panel-focus" class="state-panel" style="display: none;">';
+                html += '<label style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; cursor: pointer;">';
+                html += '<input type="checkbox" id="focus-enabled" ' + (currentStates.focus.enabled ? 'checked' : '') + '>';
+                html += '<span style="font-weight: 600;">Habilitar estado :focus</span></label>';
+
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Color del outline</label>';
+                html += '<input type="color" id="focus-outline-color" value="#3b82f6" style="width: 100%; height: 36px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); cursor: pointer;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Ancho outline <span id="focus-width-val">2px</span></label>';
+                html += '<input type="range" id="focus-outline-width" min="1" max="5" value="2" style="width: 100%;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Offset <span id="focus-offset-val">2px</span></label>';
+                html += '<input type="range" id="focus-outline-offset" min="0" max="8" value="2" style="width: 100%;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Estilo</label>';
+                html += '<select id="focus-outline-style" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<option value="solid">Sólido</option>';
+                html += '<option value="dashed">Guiones</option>';
+                html += '<option value="dotted">Puntos</option>';
+                html += '</select></div>';
+                html += '</div></div>';
+
+                // Transition
+                html += '<div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--vbp-border, #313244);">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Duración transición <span id="trans-val">0.3s</span></label>';
+                html += '<input type="range" id="transition-duration" min="0" max="1" step="0.05" value="0.3" style="width: 100%;">';
+                html += '</div></div>';
+
+                html += '</div>';
+                html += '<div class="vbp-modal-footer">';
+                html += '<button class="vbp-btn vbp-btn-secondary" id="states-remove">Quitar estados</button>';
+                html += '<button class="vbp-btn vbp-btn-primary" id="states-apply">Aplicar</button>';
+                html += '</div></div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var modal = document.getElementById(modalId);
+                var preview = document.getElementById('hover-preview');
+
+                // Tab switching
+                modal.querySelectorAll('.state-tab').forEach(function(tab) {
+                    tab.addEventListener('click', function() {
+                        modal.querySelectorAll('.state-tab').forEach(function(t) {
+                            t.style.background = 'var(--vbp-surface, #313244)';
+                            t.style.color = 'var(--vbp-text, #cdd6f4)';
+                            t.classList.remove('active');
+                        });
+                        this.style.background = 'var(--vbp-primary, #89b4fa)';
+                        this.style.color = '#1e1e2e';
+                        this.classList.add('active');
+
+                        modal.querySelectorAll('.state-panel').forEach(function(p) {
+                            p.style.display = 'none';
+                        });
+                        document.getElementById('panel-' + this.dataset.state).style.display = '';
+                    });
+                });
+
+                // Update preview
+                function updateHoverPreview() {
+                    var scale = document.getElementById('hover-scale').value;
+                    var opacity = document.getElementById('hover-opacity').value;
+                    var bg = document.getElementById('hover-bg').value;
+                    var color = document.getElementById('hover-color').value;
+                    var ty = document.getElementById('hover-translateY').value;
+                    var shadow = document.getElementById('hover-shadow').value;
+                    var duration = document.getElementById('transition-duration').value;
+
+                    document.getElementById('hover-scale-val').textContent = scale;
+                    document.getElementById('hover-opacity-val').textContent = opacity;
+                    document.getElementById('hover-ty-val').textContent = ty + 'px';
+                    document.getElementById('trans-val').textContent = duration + 's';
+
+                    preview.style.transition = 'all ' + duration + 's ease';
+
+                    preview.onmouseenter = function() {
+                        this.style.transform = 'scale(' + scale + ') translateY(' + ty + 'px)';
+                        this.style.opacity = opacity;
+                        this.style.background = bg;
+                        this.style.color = color;
+                        this.style.boxShadow = shadow;
+                    };
+                    preview.onmouseleave = function() {
+                        this.style.transform = '';
+                        this.style.opacity = '';
+                        this.style.background = '';
+                        this.style.color = '';
+                        this.style.boxShadow = '';
+                    };
+                }
+
+                // Event listeners for hover controls
+                ['hover-scale', 'hover-opacity', 'hover-bg', 'hover-color', 'hover-translateY', 'hover-shadow', 'transition-duration'].forEach(function(id) {
+                    var el = document.getElementById(id);
+                    if (el) el.addEventListener('input', updateHoverPreview);
+                });
+
+                // Active panel controls
+                modal.querySelector('#active-scale').addEventListener('input', function() {
+                    document.getElementById('active-scale-val').textContent = this.value;
+                });
+                modal.querySelector('#active-opacity').addEventListener('input', function() {
+                    document.getElementById('active-opacity-val').textContent = this.value;
+                });
+
+                // Focus panel controls
+                modal.querySelector('#focus-outline-width').addEventListener('input', function() {
+                    document.getElementById('focus-width-val').textContent = this.value + 'px';
+                });
+                modal.querySelector('#focus-outline-offset').addEventListener('input', function() {
+                    document.getElementById('focus-offset-val').textContent = this.value + 'px';
+                });
+
+                updateHoverPreview();
+
+                // Apply
+                modal.querySelector('#states-apply').addEventListener('click', function() {
+                    store.saveToHistory();
+
+                    var statesConfig = {
+                        hover: {
+                            enabled: document.getElementById('hover-enabled').checked,
+                            scale: parseFloat(document.getElementById('hover-scale').value),
+                            opacity: parseFloat(document.getElementById('hover-opacity').value),
+                            background: document.getElementById('hover-bg').value,
+                            color: document.getElementById('hover-color').value,
+                            translateY: parseInt(document.getElementById('hover-translateY').value),
+                            boxShadow: document.getElementById('hover-shadow').value
+                        },
+                        active: {
+                            enabled: document.getElementById('active-enabled').checked,
+                            scale: parseFloat(document.getElementById('active-scale').value),
+                            opacity: parseFloat(document.getElementById('active-opacity').value),
+                            background: document.getElementById('active-bg').value,
+                            color: document.getElementById('active-color').value
+                        },
+                        focus: {
+                            enabled: document.getElementById('focus-enabled').checked,
+                            outlineColor: document.getElementById('focus-outline-color').value,
+                            outlineWidth: parseInt(document.getElementById('focus-outline-width').value),
+                            outlineOffset: parseInt(document.getElementById('focus-outline-offset').value),
+                            outlineStyle: document.getElementById('focus-outline-style').value
+                        },
+                        transitionDuration: parseFloat(document.getElementById('transition-duration').value)
+                    };
+
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    styles.interactiveStates = statesConfig;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+
+                    modal.remove();
+                    self.showNotification('🎯 Estados interactivos aplicados');
+                });
+
+                // Remove
+                modal.querySelector('#states-remove').addEventListener('click', function() {
+                    store.saveToHistory();
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    delete styles.interactiveStates;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+                    modal.remove();
+                    self.showNotification('Estados eliminados');
+                });
+            },
+
+            // === SCROLL ANIMATIONS ===
+
+            /**
+             * Editor de animaciones de scroll
+             */
+            openScrollAnimationEditor: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un solo elemento', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = store.getElement(elementId);
+                if (!element) return;
+
+                var currentScroll = (element.styles && element.styles.scrollAnimation) || {
+                    enabled: false,
+                    type: 'fadeInUp',
+                    trigger: 'onEnter',
+                    threshold: 0.2,
+                    duration: 0.6,
+                    delay: 0,
+                    once: true,
+                    offset: 0
+                };
+
+                var modalId = 'vbp-scroll-animation-modal';
+                var existing = document.getElementById(modalId);
+                if (existing) existing.remove();
+
+                var scrollAnimations = [
+                    { value: 'fadeIn', label: 'Fade In', icon: '👁' },
+                    { value: 'fadeInUp', label: 'Fade In Up', icon: '⬆' },
+                    { value: 'fadeInDown', label: 'Fade In Down', icon: '⬇' },
+                    { value: 'fadeInLeft', label: 'Fade In Left', icon: '⬅' },
+                    { value: 'fadeInRight', label: 'Fade In Right', icon: '➡' },
+                    { value: 'zoomIn', label: 'Zoom In', icon: '🔍' },
+                    { value: 'slideUp', label: 'Slide Up', icon: '📤' },
+                    { value: 'slideDown', label: 'Slide Down', icon: '📥' },
+                    { value: 'slideLeft', label: 'Slide Left', icon: '◀' },
+                    { value: 'slideRight', label: 'Slide Right', icon: '▶' },
+                    { value: 'flipX', label: 'Flip Horizontal', icon: '↔' },
+                    { value: 'flipY', label: 'Flip Vertical', icon: '↕' },
+                    { value: 'rotateIn', label: 'Rotate In', icon: '🔄' },
+                    { value: 'bounce', label: 'Bounce', icon: '⚡' },
+                    { value: 'parallax', label: 'Parallax', icon: '🏔' }
+                ];
+
+                var html = '<div id="' + modalId + '" class="vbp-modal-overlay">';
+                html += '<div class="vbp-modal" style="max-width: 500px;">';
+                html += '<div class="vbp-modal-header">';
+                html += '<h2>📜 Animaciones de Scroll</h2>';
+                html += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                html += '</div>';
+                html += '<div class="vbp-modal-body">';
+
+                // Enable
+                html += '<label style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; cursor: pointer;">';
+                html += '<input type="checkbox" id="scroll-enabled" ' + (currentScroll.enabled ? 'checked' : '') + '>';
+                html += '<span style="font-weight: 600;">Habilitar animación en scroll</span></label>';
+
+                // Preview
+                html += '<div style="background: linear-gradient(to bottom, #f3f4f6, #e5e7eb); border-radius: 8px; padding: 16px; margin-bottom: 16px; height: 120px; overflow-y: auto; position: relative;">';
+                html += '<div style="height: 60px;"></div>';
+                html += '<div id="scroll-preview" style="padding: 16px; background: var(--vbp-primary, #89b4fa); color: #1e1e2e; border-radius: 8px; text-align: center; font-weight: 600; opacity: 0; transform: translateY(20px);">Elemento animado</div>';
+                html += '<div style="height: 60px;"></div>';
+                html += '</div>';
+                html += '<button id="scroll-test" style="width: 100%; padding: 8px; margin-bottom: 16px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #45475a); border-radius: 6px; cursor: pointer;">▶️ Previsualizar animación</button>';
+
+                // Animation type
+                html += '<div class="vbp-control" style="margin-bottom: 12px;">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Tipo de animación</label>';
+                html += '<select id="scroll-type" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                scrollAnimations.forEach(function(anim) {
+                    var selected = currentScroll.type === anim.value ? ' selected' : '';
+                    html += '<option value="' + anim.value + '"' + selected + '>' + anim.icon + ' ' + anim.label + '</option>';
+                });
+                html += '</select></div>';
+
+                // Trigger point
+                html += '<div class="vbp-control" style="margin-bottom: 12px;">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Punto de activación</label>';
+                html += '<select id="scroll-trigger" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--vbp-border, #313244); background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4);">';
+                html += '<option value="onEnter"' + (currentScroll.trigger === 'onEnter' ? ' selected' : '') + '>Al entrar en viewport</option>';
+                html += '<option value="onCenter"' + (currentScroll.trigger === 'onCenter' ? ' selected' : '') + '>Al llegar al centro</option>';
+                html += '<option value="onLeave"' + (currentScroll.trigger === 'onLeave' ? ' selected' : '') + '>Al salir del viewport</option>';
+                html += '</select></div>';
+
+                // Duration and Delay
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Duración <span id="scroll-dur-val">' + currentScroll.duration + 's</span></label>';
+                html += '<input type="range" id="scroll-duration" min="0.1" max="2" step="0.1" value="' + currentScroll.duration + '" style="width: 100%;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Delay <span id="scroll-delay-val">' + currentScroll.delay + 's</span></label>';
+                html += '<input type="range" id="scroll-delay" min="0" max="1" step="0.1" value="' + currentScroll.delay + '" style="width: 100%;">';
+                html += '</div></div>';
+
+                // Threshold and Offset
+                html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Umbral visible <span id="scroll-thresh-val">' + Math.round(currentScroll.threshold * 100) + '%</span></label>';
+                html += '<input type="range" id="scroll-threshold" min="0" max="1" step="0.1" value="' + currentScroll.threshold + '" style="width: 100%;">';
+                html += '</div>';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Offset <span id="scroll-offset-val">' + currentScroll.offset + 'px</span></label>';
+                html += '<input type="range" id="scroll-offset" min="-200" max="200" value="' + currentScroll.offset + '" style="width: 100%;">';
+                html += '</div></div>';
+
+                // Parallax intensity (only for parallax)
+                html += '<div id="parallax-options" style="display: none; margin-bottom: 12px;">';
+                html += '<div class="vbp-control">';
+                html += '<label style="display: block; margin-bottom: 6px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Intensidad parallax <span id="parallax-val">0.5</span></label>';
+                html += '<input type="range" id="parallax-intensity" min="0.1" max="1" step="0.1" value="0.5" style="width: 100%;">';
+                html += '</div></div>';
+
+                // Once option
+                html += '<label style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; cursor: pointer;">';
+                html += '<input type="checkbox" id="scroll-once" ' + (currentScroll.once ? 'checked' : '') + '>';
+                html += '<span style="font-size: 14px;">Animar solo una vez</span></label>';
+
+                // Presets
+                html += '<div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--vbp-border, #313244);">';
+                html += '<label style="display: block; margin-bottom: 8px; color: var(--vbp-text-muted, #6c7086); font-size: 12px;">Presets rápidos</label>';
+                html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">';
+                html += '<button class="scroll-preset" data-type="fadeInUp" data-duration="0.6" style="padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #45475a); border-radius: 4px; cursor: pointer; font-size: 11px;">⬆️ Sutil</button>';
+                html += '<button class="scroll-preset" data-type="zoomIn" data-duration="0.8" style="padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #45475a); border-radius: 4px; cursor: pointer; font-size: 11px;">🔍 Zoom</button>';
+                html += '<button class="scroll-preset" data-type="bounce" data-duration="1" style="padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #45475a); border-radius: 4px; cursor: pointer; font-size: 11px;">⚡ Bounce</button>';
+                html += '<button class="scroll-preset" data-type="slideLeft" data-duration="0.5" style="padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #45475a); border-radius: 4px; cursor: pointer; font-size: 11px;">◀ Slide</button>';
+                html += '<button class="scroll-preset" data-type="flipX" data-duration="0.8" style="padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #45475a); border-radius: 4px; cursor: pointer; font-size: 11px;">↔ Flip</button>';
+                html += '<button class="scroll-preset" data-type="parallax" data-duration="0" style="padding: 8px; background: var(--vbp-surface, #313244); color: var(--vbp-text, #cdd6f4); border: 1px solid var(--vbp-border, #45475a); border-radius: 4px; cursor: pointer; font-size: 11px;">🏔 Parallax</button>';
+                html += '</div></div>';
+
+                html += '</div>';
+                html += '<div class="vbp-modal-footer">';
+                html += '<button class="vbp-btn vbp-btn-secondary" id="scroll-remove">Quitar animación</button>';
+                html += '<button class="vbp-btn vbp-btn-primary" id="scroll-apply">Aplicar</button>';
+                html += '</div></div></div>';
+
+                document.body.insertAdjacentHTML('beforeend', html);
+
+                var modal = document.getElementById(modalId);
+                var preview = document.getElementById('scroll-preview');
+
+                // Show/hide parallax options
+                modal.querySelector('#scroll-type').addEventListener('change', function() {
+                    document.getElementById('parallax-options').style.display = this.value === 'parallax' ? '' : 'none';
+                });
+
+                // Update labels
+                modal.querySelector('#scroll-duration').addEventListener('input', function() {
+                    document.getElementById('scroll-dur-val').textContent = this.value + 's';
+                });
+                modal.querySelector('#scroll-delay').addEventListener('input', function() {
+                    document.getElementById('scroll-delay-val').textContent = this.value + 's';
+                });
+                modal.querySelector('#scroll-threshold').addEventListener('input', function() {
+                    document.getElementById('scroll-thresh-val').textContent = Math.round(this.value * 100) + '%';
+                });
+                modal.querySelector('#scroll-offset').addEventListener('input', function() {
+                    document.getElementById('scroll-offset-val').textContent = this.value + 'px';
+                });
+                modal.querySelector('#parallax-intensity').addEventListener('input', function() {
+                    document.getElementById('parallax-val').textContent = this.value;
+                });
+
+                // Test animation
+                modal.querySelector('#scroll-test').addEventListener('click', function() {
+                    var type = document.getElementById('scroll-type').value;
+                    var duration = document.getElementById('scroll-duration').value;
+
+                    // Reset
+                    preview.style.transition = 'none';
+                    preview.style.opacity = '0';
+                    preview.style.transform = self.getScrollInitialTransform(type);
+
+                    setTimeout(function() {
+                        preview.style.transition = 'all ' + duration + 's cubic-bezier(0.4, 0, 0.2, 1)';
+                        preview.style.opacity = '1';
+                        preview.style.transform = 'none';
+                    }, 50);
+                });
+
+                // Presets
+                modal.querySelectorAll('.scroll-preset').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        document.getElementById('scroll-type').value = this.dataset.type;
+                        document.getElementById('scroll-duration').value = this.dataset.duration;
+                        document.getElementById('scroll-dur-val').textContent = this.dataset.duration + 's';
+                        document.getElementById('parallax-options').style.display = this.dataset.type === 'parallax' ? '' : 'none';
+                    });
+                });
+
+                // Apply
+                modal.querySelector('#scroll-apply').addEventListener('click', function() {
+                    store.saveToHistory();
+
+                    var scrollConfig = {
+                        enabled: document.getElementById('scroll-enabled').checked,
+                        type: document.getElementById('scroll-type').value,
+                        trigger: document.getElementById('scroll-trigger').value,
+                        threshold: parseFloat(document.getElementById('scroll-threshold').value),
+                        duration: parseFloat(document.getElementById('scroll-duration').value),
+                        delay: parseFloat(document.getElementById('scroll-delay').value),
+                        offset: parseInt(document.getElementById('scroll-offset').value),
+                        once: document.getElementById('scroll-once').checked,
+                        parallaxIntensity: parseFloat(document.getElementById('parallax-intensity').value)
+                    };
+
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    styles.scrollAnimation = scrollConfig;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+
+                    modal.remove();
+                    self.showNotification('📜 Animación de scroll aplicada');
+                });
+
+                // Remove
+                modal.querySelector('#scroll-remove').addEventListener('click', function() {
+                    store.saveToHistory();
+                    var styles = JSON.parse(JSON.stringify(element.styles || {}));
+                    delete styles.scrollAnimation;
+                    store.updateElement(elementId, { styles: styles });
+                    store.isDirty = true;
+                    modal.remove();
+                    self.showNotification('Animación de scroll eliminada');
+                });
+            },
+
+            /**
+             * Obtener transform inicial según tipo de animación
+             */
+            getScrollInitialTransform: function(type) {
+                var transforms = {
+                    'fadeIn': 'none',
+                    'fadeInUp': 'translateY(30px)',
+                    'fadeInDown': 'translateY(-30px)',
+                    'fadeInLeft': 'translateX(-30px)',
+                    'fadeInRight': 'translateX(30px)',
+                    'zoomIn': 'scale(0.8)',
+                    'slideUp': 'translateY(100%)',
+                    'slideDown': 'translateY(-100%)',
+                    'slideLeft': 'translateX(-100%)',
+                    'slideRight': 'translateX(100%)',
+                    'flipX': 'perspective(400px) rotateY(-90deg)',
+                    'flipY': 'perspective(400px) rotateX(-90deg)',
+                    'rotateIn': 'rotate(-180deg) scale(0.5)',
+                    'bounce': 'translateY(30px)',
+                    'parallax': 'none'
+                };
+                return transforms[type] || 'none';
+            },
+
             /**
              * Mostrar modal de ayuda con atajos de teclado
              */
@@ -6052,7 +6614,9 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + Alt + A', action: 'Editor de animaciones' },
                 { keys: 'Ctrl + Shift + T', action: 'Editor de tipografía' },
                 { keys: 'Ctrl + Shift + B', action: 'Editor de bordes' },
-                { keys: 'Ctrl + Alt + P', action: 'Editor de espaciado' }
+                { keys: 'Ctrl + Alt + P', action: 'Editor de espaciado' },
+                { keys: 'Ctrl + Alt + Shift + H', action: 'Estados interactivos (hover/active)' },
+                { keys: 'Ctrl + Alt + Shift + Y', action: 'Animaciones de scroll' }
             ]},
             { category: 'Responsive', shortcuts: [
                 { keys: '1', action: 'Vista Desktop' },
