@@ -142,13 +142,47 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Hero', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
-            'variants' => array( 'fullscreen', 'split', 'centered', 'video', 'slider' ),
+            'variants' => array(
+                'fullscreen'   => __( 'Pantalla completa', 'flavor-chat-ia' ),
+                'split'        => __( 'Dividido', 'flavor-chat-ia' ),
+                'centered'     => __( 'Centrado', 'flavor-chat-ia' ),
+                'video'        => __( 'Con video', 'flavor-chat-ia' ),
+                'slider'       => __( 'Slider', 'flavor-chat-ia' ),
+                'glassmorphism'=> __( 'Glassmorphism', 'flavor-chat-ia' ),
+                'gradient'     => __( 'Gradiente animado', 'flavor-chat-ia' ),
+                'parallax'     => __( 'Parallax', 'flavor-chat-ia' ),
+                'particles'    => __( 'Con partículas', 'flavor-chat-ia' ),
+                'minimal'      => __( 'Minimalista', 'flavor-chat-ia' ),
+                '3d'           => __( 'Efecto 3D', 'flavor-chat-ia' ),
+                'typewriter'   => __( 'Efecto máquina de escribir', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'        => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'subtitulo'     => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ) ),
+                'titulo'        => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'subtitulo'     => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
                 'boton_texto'   => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ) ),
                 'boton_url'     => array( 'type' => 'url', 'label' => __( 'URL del botón', 'flavor-chat-ia' ) ),
+                'boton_2_texto' => array( 'type' => 'text', 'label' => __( 'Segundo botón (texto)', 'flavor-chat-ia' ) ),
+                'boton_2_url'   => array( 'type' => 'url', 'label' => __( 'Segundo botón (URL)', 'flavor-chat-ia' ) ),
                 'imagen_fondo'  => array( 'type' => 'image', 'label' => __( 'Imagen de fondo', 'flavor-chat-ia' ) ),
+                'video_url'     => array( 'type' => 'url', 'label' => __( 'URL del video (YouTube/Vimeo)', 'flavor-chat-ia' ) ),
+                'overlay_color' => array( 'type' => 'color', 'label' => __( 'Color overlay', 'flavor-chat-ia' ) ),
+                'overlay_opacity' => array( 'type' => 'range', 'label' => __( 'Opacidad overlay', 'flavor-chat-ia' ), 'min' => 0, 'max' => 100 ),
+                'altura'        => array( 'type' => 'select', 'label' => __( 'Altura', 'flavor-chat-ia' ), 'options' => array( 'auto' => 'Auto', '50vh' => '50%', '75vh' => '75%', '100vh' => '100%' ) ),
+                'alineacion'    => array( 'type' => 'select', 'label' => __( 'Alineación', 'flavor-chat-ia' ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
+            ),
+            'presets' => array(
+                'startup' => array(
+                    'name' => 'Startup SaaS',
+                    'data' => array( 'titulo' => 'Transforma tu negocio digital', 'subtitulo' => 'La plataforma todo-en-uno que necesitas para escalar', 'boton_texto' => 'Empieza gratis' ),
+                ),
+                'ecommerce' => array(
+                    'name' => 'E-commerce',
+                    'data' => array( 'titulo' => 'Nueva colección disponible', 'subtitulo' => 'Descubre las últimas tendencias', 'boton_texto' => 'Ver productos' ),
+                ),
+                'comunidad' => array(
+                    'name' => 'Comunidad',
+                    'data' => array( 'titulo' => 'Únete a nuestra comunidad', 'subtitulo' => 'Miles de personas ya forman parte', 'boton_texto' => 'Registrarse' ),
+                ),
             ),
         ) );
 
@@ -158,10 +192,42 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Características', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
-            'variants' => array( 'grid', 'list', 'alternating', 'cards' ),
+            'variants' => array(
+                'grid'        => __( 'Cuadrícula', 'flavor-chat-ia' ),
+                'list'        => __( 'Lista', 'flavor-chat-ia' ),
+                'alternating' => __( 'Alternado', 'flavor-chat-ia' ),
+                'cards'       => __( 'Tarjetas', 'flavor-chat-ia' ),
+                'zigzag'      => __( 'Zigzag', 'flavor-chat-ia' ),
+                'timeline'    => __( 'Línea de tiempo', 'flavor-chat-ia' ),
+                'tabs'        => __( 'Pestañas', 'flavor-chat-ia' ),
+                'accordion'   => __( 'Acordeón', 'flavor-chat-ia' ),
+                'icons-only'  => __( 'Solo iconos', 'flavor-chat-ia' ),
+                'bento'       => __( 'Bento Grid', 'flavor-chat-ia' ),
+                'hover-cards' => __( 'Tarjetas con hover', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo' => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'items'  => array( 'type' => 'repeater', 'label' => __( 'Características', 'flavor-chat-ia' ) ),
+                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'subtitulo' => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
+                'columnas'  => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4' ) ),
+                'items'     => array( 'type' => 'repeater', 'label' => __( 'Características', 'flavor-chat-ia' ), 'fields' => array(
+                    'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
+                    'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
+                    'descripcion' => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
+                    'enlace'      => array( 'type' => 'url', 'label' => __( 'Enlace', 'flavor-chat-ia' ) ),
+                ) ),
+            ),
+            'presets' => array(
+                'saas' => array(
+                    'name' => 'SaaS Features',
+                    'data' => array(
+                        'titulo' => 'Todo lo que necesitas',
+                        'items' => array(
+                            array( 'icono' => 'rocket', 'titulo' => 'Rápido', 'descripcion' => 'Rendimiento optimizado' ),
+                            array( 'icono' => 'shield', 'titulo' => 'Seguro', 'descripcion' => 'Protección de datos' ),
+                            array( 'icono' => 'refresh', 'titulo' => 'Actualizado', 'descripcion' => 'Mejoras constantes' ),
+                        ),
+                    ),
+                ),
             ),
         ) );
 
@@ -171,11 +237,33 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Testimonios', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
-            'variants' => array( 'carousel', 'grid', 'single', 'masonry' ),
+            'variants' => array(
+                'carousel'    => __( 'Carrusel', 'flavor-chat-ia' ),
+                'grid'        => __( 'Cuadrícula', 'flavor-chat-ia' ),
+                'single'      => __( 'Único destacado', 'flavor-chat-ia' ),
+                'masonry'     => __( 'Masonry', 'flavor-chat-ia' ),
+                'video'       => __( 'Video testimonios', 'flavor-chat-ia' ),
+                'rating'      => __( 'Con estrellas', 'flavor-chat-ia' ),
+                'avatar-large'=> __( 'Avatar grande', 'flavor-chat-ia' ),
+                'quote-card'  => __( 'Tarjeta con cita', 'flavor-chat-ia' ),
+                'logos'       => __( 'Con logos de empresas', 'flavor-chat-ia' ),
+                'twitter'     => __( 'Estilo Twitter/X', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'subtitulo'   => array( 'type' => 'text', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ) ),
-                'testimonios' => array( 'type' => 'repeater', 'label' => __( 'Testimonios', 'flavor-chat-ia' ) ),
+                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'subtitulo'    => array( 'type' => 'text', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
+                'autoplay'     => array( 'type' => 'toggle', 'label' => __( 'Autoplay', 'flavor-chat-ia' ) ),
+                'mostrar_rating' => array( 'type' => 'toggle', 'label' => __( 'Mostrar rating', 'flavor-chat-ia' ) ),
+                'testimonios'  => array( 'type' => 'repeater', 'label' => __( 'Testimonios', 'flavor-chat-ia' ), 'fields' => array(
+                    'texto'    => array( 'type' => 'textarea', 'label' => __( 'Testimonio', 'flavor-chat-ia' ) ),
+                    'nombre'   => array( 'type' => 'text', 'label' => __( 'Nombre', 'flavor-chat-ia' ) ),
+                    'cargo'    => array( 'type' => 'text', 'label' => __( 'Cargo', 'flavor-chat-ia' ) ),
+                    'empresa'  => array( 'type' => 'text', 'label' => __( 'Empresa', 'flavor-chat-ia' ) ),
+                    'avatar'   => array( 'type' => 'image', 'label' => __( 'Foto', 'flavor-chat-ia' ) ),
+                    'logo'     => array( 'type' => 'image', 'label' => __( 'Logo empresa', 'flavor-chat-ia' ) ),
+                    'rating'   => array( 'type' => 'select', 'label' => __( 'Rating', 'flavor-chat-ia' ), 'options' => array( '5' => '5 estrellas', '4' => '4 estrellas', '3' => '3 estrellas' ) ),
+                    'video_url'=> array( 'type' => 'url', 'label' => __( 'Video (opcional)', 'flavor-chat-ia' ) ),
+                ) ),
             ),
         ) );
 
@@ -185,13 +273,62 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Precios', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><path d="M12 6v2m0 8v2"/></svg>',
-            'variants' => array( 'cards', 'table', 'toggle', 'comparison' ),
+            'variants' => array(
+                'cards'       => __( 'Tarjetas', 'flavor-chat-ia' ),
+                'table'       => __( 'Tabla comparativa', 'flavor-chat-ia' ),
+                'toggle'      => __( 'Toggle mensual/anual', 'flavor-chat-ia' ),
+                'comparison'  => __( 'Comparación lado a lado', 'flavor-chat-ia' ),
+                'slider'      => __( 'Slider de planes', 'flavor-chat-ia' ),
+                'minimal'     => __( 'Minimalista', 'flavor-chat-ia' ),
+                'gradient'    => __( 'Gradiente destacado', 'flavor-chat-ia' ),
+                'enterprise'  => __( 'Enterprise con contacto', 'flavor-chat-ia' ),
+                'freemium'    => __( 'Freemium destacado', 'flavor-chat-ia' ),
+                'horizontal'  => __( 'Horizontal', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'subtitulo'   => array( 'type' => 'text', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ) ),
-                'planes'      => array( 'type' => 'repeater', 'label' => __( 'Planes', 'flavor-chat-ia' ) ),
-                'moneda'      => array( 'type' => 'text', 'label' => __( 'Moneda', 'flavor-chat-ia' ) ),
+                'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'subtitulo'   => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
+                'moneda'      => array( 'type' => 'text', 'label' => __( 'Moneda', 'flavor-chat-ia' ), 'default' => '€' ),
                 'periodo'     => array( 'type' => 'select', 'label' => __( 'Período', 'flavor-chat-ia' ), 'options' => array( 'mes' => 'Mes', 'año' => 'Año', 'único' => 'Pago único' ) ),
+                'mostrar_toggle' => array( 'type' => 'toggle', 'label' => __( 'Mostrar toggle mensual/anual', 'flavor-chat-ia' ) ),
+                'descuento_anual' => array( 'type' => 'number', 'label' => __( 'Descuento anual (%)', 'flavor-chat-ia' ), 'default' => 20 ),
+                'planes'      => array( 'type' => 'repeater', 'label' => __( 'Planes', 'flavor-chat-ia' ), 'fields' => array(
+                    'nombre'        => array( 'type' => 'text', 'label' => __( 'Nombre del plan', 'flavor-chat-ia' ) ),
+                    'descripcion'   => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
+                    'precio'        => array( 'type' => 'number', 'label' => __( 'Precio', 'flavor-chat-ia' ) ),
+                    'precio_anual'  => array( 'type' => 'number', 'label' => __( 'Precio anual', 'flavor-chat-ia' ) ),
+                    'destacado'     => array( 'type' => 'toggle', 'label' => __( 'Plan destacado', 'flavor-chat-ia' ) ),
+                    'etiqueta'      => array( 'type' => 'text', 'label' => __( 'Etiqueta (ej: Popular)', 'flavor-chat-ia' ) ),
+                    'boton_texto'   => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ) ),
+                    'boton_url'     => array( 'type' => 'url', 'label' => __( 'URL del botón', 'flavor-chat-ia' ) ),
+                    'caracteristicas' => array( 'type' => 'textarea', 'label' => __( 'Características (una por línea)', 'flavor-chat-ia' ) ),
+                    'icono'         => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
+                ) ),
+            ),
+            'presets' => array(
+                'saas' => array(
+                    'name' => 'SaaS Estándar',
+                    'data' => array(
+                        'titulo' => 'Planes y precios',
+                        'subtitulo' => 'Elige el plan que mejor se adapte a tus necesidades',
+                        'moneda' => '€',
+                        'planes' => array(
+                            array( 'nombre' => 'Básico', 'precio' => 9, 'caracteristicas' => "5 usuarios\n10GB almacenamiento\nSoporte email" ),
+                            array( 'nombre' => 'Pro', 'precio' => 29, 'destacado' => true, 'etiqueta' => 'Popular', 'caracteristicas' => "25 usuarios\n100GB almacenamiento\nSoporte prioritario" ),
+                            array( 'nombre' => 'Enterprise', 'precio' => 99, 'caracteristicas' => "Usuarios ilimitados\n1TB almacenamiento\nSoporte 24/7" ),
+                        ),
+                    ),
+                ),
+                'freemium' => array(
+                    'name' => 'Freemium',
+                    'data' => array(
+                        'titulo' => 'Empieza gratis',
+                        'planes' => array(
+                            array( 'nombre' => 'Gratis', 'precio' => 0, 'caracteristicas' => "Funciones básicas\n1 usuario\nSoporte comunidad" ),
+                            array( 'nombre' => 'Premium', 'precio' => 19, 'destacado' => true, 'caracteristicas' => "Todas las funciones\nUsuarios ilimitados\nSoporte prioritario" ),
+                        ),
+                    ),
+                ),
             ),
         ) );
 
@@ -201,13 +338,47 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Llamada a acción', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>',
-            'variants' => array( 'simple', 'banner', 'split', 'gradient' ),
+            'variants' => array(
+                'simple'      => __( 'Simple', 'flavor-chat-ia' ),
+                'banner'      => __( 'Banner', 'flavor-chat-ia' ),
+                'split'       => __( 'Dividido', 'flavor-chat-ia' ),
+                'gradient'    => __( 'Gradiente', 'flavor-chat-ia' ),
+                'newsletter'  => __( 'Newsletter', 'flavor-chat-ia' ),
+                'countdown'   => __( 'Con cuenta atrás', 'flavor-chat-ia' ),
+                'floating'    => __( 'Flotante', 'flavor-chat-ia' ),
+                'video'       => __( 'Con video', 'flavor-chat-ia' ),
+                'testimonial' => __( 'Con testimonio', 'flavor-chat-ia' ),
+                'stats'       => __( 'Con estadísticas', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'descripcion'  => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
+                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'descripcion'  => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ), 'ai' => true ),
                 'boton_texto'  => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ) ),
                 'boton_url'    => array( 'type' => 'url', 'label' => __( 'URL del botón', 'flavor-chat-ia' ) ),
+                'boton_estilo' => array( 'type' => 'select', 'label' => __( 'Estilo del botón', 'flavor-chat-ia' ), 'options' => array( 'primary' => 'Primario', 'secondary' => 'Secundario', 'white' => 'Blanco', 'outline' => 'Contorno' ) ),
+                'boton_2_texto'=> array( 'type' => 'text', 'label' => __( 'Segundo botón (texto)', 'flavor-chat-ia' ) ),
+                'boton_2_url'  => array( 'type' => 'url', 'label' => __( 'Segundo botón (URL)', 'flavor-chat-ia' ) ),
                 'imagen_fondo' => array( 'type' => 'image', 'label' => __( 'Imagen de fondo', 'flavor-chat-ia' ) ),
+                'video_url'    => array( 'type' => 'url', 'label' => __( 'Video de fondo (URL)', 'flavor-chat-ia' ) ),
+                'overlay_color'=> array( 'type' => 'color', 'label' => __( 'Color overlay', 'flavor-chat-ia' ) ),
+                'overlay_opacity' => array( 'type' => 'range', 'label' => __( 'Opacidad overlay', 'flavor-chat-ia' ), 'min' => 0, 'max' => 100 ),
+                'formulario_email' => array( 'type' => 'toggle', 'label' => __( 'Mostrar campo email', 'flavor-chat-ia' ) ),
+                'fecha_limite' => array( 'type' => 'datetime', 'label' => __( 'Fecha límite (countdown)', 'flavor-chat-ia' ) ),
+                'alineacion'   => array( 'type' => 'select', 'label' => __( 'Alineación', 'flavor-chat-ia' ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
+            ),
+            'presets' => array(
+                'newsletter' => array(
+                    'name' => 'Newsletter',
+                    'data' => array( 'titulo' => 'Suscríbete a nuestra newsletter', 'descripcion' => 'Recibe las últimas novedades directamente en tu email', 'boton_texto' => 'Suscribirse', 'formulario_email' => true ),
+                ),
+                'prueba_gratis' => array(
+                    'name' => 'Prueba gratis',
+                    'data' => array( 'titulo' => '¿Listo para empezar?', 'descripcion' => 'Prueba gratis durante 14 días. Sin tarjeta de crédito.', 'boton_texto' => 'Empezar prueba gratis' ),
+                ),
+                'oferta_limitada' => array(
+                    'name' => 'Oferta limitada',
+                    'data' => array( 'titulo' => '🔥 Oferta por tiempo limitado', 'descripcion' => '50% de descuento solo esta semana', 'boton_texto' => 'Aprovechar oferta' ),
+                ),
             ),
         ) );
 
@@ -217,11 +388,45 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'FAQ', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>',
-            'variants' => array( 'accordion', 'two-columns', 'categories' ),
+            'variants' => array(
+                'accordion'    => __( 'Acordeón', 'flavor-chat-ia' ),
+                'two-columns'  => __( 'Dos columnas', 'flavor-chat-ia' ),
+                'categories'   => __( 'Por categorías', 'flavor-chat-ia' ),
+                'tabs'         => __( 'Con pestañas', 'flavor-chat-ia' ),
+                'search'       => __( 'Con buscador', 'flavor-chat-ia' ),
+                'sidebar'      => __( 'Con sidebar', 'flavor-chat-ia' ),
+                'cards'        => __( 'Tarjetas', 'flavor-chat-ia' ),
+                'minimal'      => __( 'Minimalista', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'subtitulo' => array( 'type' => 'text', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ) ),
-                'preguntas' => array( 'type' => 'repeater', 'label' => __( 'Preguntas', 'flavor-chat-ia' ) ),
+                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'subtitulo' => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
+                'mostrar_buscador' => array( 'type' => 'toggle', 'label' => __( 'Mostrar buscador', 'flavor-chat-ia' ) ),
+                'abrir_primero'    => array( 'type' => 'toggle', 'label' => __( 'Abrir primera pregunta', 'flavor-chat-ia' ) ),
+                'icono_expandir'   => array( 'type' => 'select', 'label' => __( 'Icono expandir', 'flavor-chat-ia' ), 'options' => array( 'plus' => 'Plus/Minus', 'chevron' => 'Chevron', 'arrow' => 'Flecha' ) ),
+                'preguntas' => array( 'type' => 'repeater', 'label' => __( 'Preguntas', 'flavor-chat-ia' ), 'fields' => array(
+                    'pregunta'  => array( 'type' => 'text', 'label' => __( 'Pregunta', 'flavor-chat-ia' ) ),
+                    'respuesta' => array( 'type' => 'editor', 'label' => __( 'Respuesta', 'flavor-chat-ia' ) ),
+                    'categoria' => array( 'type' => 'text', 'label' => __( 'Categoría', 'flavor-chat-ia' ) ),
+                    'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
+                ) ),
+                'texto_contacto' => array( 'type' => 'text', 'label' => __( 'Texto de contacto', 'flavor-chat-ia' ) ),
+                'enlace_contacto' => array( 'type' => 'url', 'label' => __( 'Enlace de contacto', 'flavor-chat-ia' ) ),
+            ),
+            'presets' => array(
+                'general' => array(
+                    'name' => 'FAQ General',
+                    'data' => array(
+                        'titulo' => 'Preguntas frecuentes',
+                        'subtitulo' => 'Encuentra respuestas a las preguntas más comunes',
+                        'preguntas' => array(
+                            array( 'pregunta' => '¿Cómo puedo empezar?', 'respuesta' => 'Regístrate gratis y sigue los pasos del asistente.' ),
+                            array( 'pregunta' => '¿Ofrecen soporte técnico?', 'respuesta' => 'Sí, ofrecemos soporte 24/7 por email y chat.' ),
+                            array( 'pregunta' => '¿Puedo cancelar en cualquier momento?', 'respuesta' => 'Por supuesto, sin permanencia ni cargos ocultos.' ),
+                        ),
+                        'texto_contacto' => '¿No encuentras lo que buscas? Contáctanos',
+                    ),
+                ),
             ),
         ) );
 
@@ -231,15 +436,43 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Contacto', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
-            'variants' => array( 'form', 'split', 'map', 'info' ),
+            'variants' => array(
+                'form'          => __( 'Formulario', 'flavor-chat-ia' ),
+                'split'         => __( 'Dividido', 'flavor-chat-ia' ),
+                'map'           => __( 'Con mapa', 'flavor-chat-ia' ),
+                'info'          => __( 'Solo información', 'flavor-chat-ia' ),
+                'cards'         => __( 'Tarjetas de contacto', 'flavor-chat-ia' ),
+                'chat'          => __( 'Estilo chat', 'flavor-chat-ia' ),
+                'minimal'       => __( 'Minimalista', 'flavor-chat-ia' ),
+                'fullwidth-map' => __( 'Mapa ancho completo', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'subtitulo' => array( 'type' => 'text', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ) ),
-                'email'     => array( 'type' => 'text', 'label' => __( 'Email', 'flavor-chat-ia' ) ),
-                'telefono'  => array( 'type' => 'text', 'label' => __( 'Teléfono', 'flavor-chat-ia' ) ),
-                'direccion' => array( 'type' => 'textarea', 'label' => __( 'Dirección', 'flavor-chat-ia' ) ),
-                'mapa_lat'  => array( 'type' => 'number', 'label' => __( 'Latitud', 'flavor-chat-ia' ) ),
-                'mapa_lng'  => array( 'type' => 'number', 'label' => __( 'Longitud', 'flavor-chat-ia' ) ),
+                'titulo'         => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'subtitulo'      => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
+                'email'          => array( 'type' => 'text', 'label' => __( 'Email', 'flavor-chat-ia' ) ),
+                'telefono'       => array( 'type' => 'text', 'label' => __( 'Teléfono', 'flavor-chat-ia' ) ),
+                'whatsapp'       => array( 'type' => 'text', 'label' => __( 'WhatsApp', 'flavor-chat-ia' ) ),
+                'direccion'      => array( 'type' => 'textarea', 'label' => __( 'Dirección', 'flavor-chat-ia' ) ),
+                'horario'        => array( 'type' => 'textarea', 'label' => __( 'Horario de atención', 'flavor-chat-ia' ) ),
+                'mapa_lat'       => array( 'type' => 'number', 'label' => __( 'Latitud', 'flavor-chat-ia' ) ),
+                'mapa_lng'       => array( 'type' => 'number', 'label' => __( 'Longitud', 'flavor-chat-ia' ) ),
+                'mapa_zoom'      => array( 'type' => 'number', 'label' => __( 'Zoom del mapa', 'flavor-chat-ia' ), 'default' => 15 ),
+                'redes_sociales' => array( 'type' => 'repeater', 'label' => __( 'Redes sociales', 'flavor-chat-ia' ), 'fields' => array(
+                    'red'   => array( 'type' => 'select', 'label' => __( 'Red', 'flavor-chat-ia' ), 'options' => array( 'facebook' => 'Facebook', 'twitter' => 'Twitter/X', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'youtube' => 'YouTube', 'tiktok' => 'TikTok' ) ),
+                    'url'   => array( 'type' => 'url', 'label' => __( 'URL', 'flavor-chat-ia' ) ),
+                ) ),
+                'formulario_campos' => array( 'type' => 'multiselect', 'label' => __( 'Campos del formulario', 'flavor-chat-ia' ), 'options' => array( 'nombre' => 'Nombre', 'email' => 'Email', 'telefono' => 'Teléfono', 'asunto' => 'Asunto', 'mensaje' => 'Mensaje' ) ),
+                'boton_texto'    => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ), 'default' => 'Enviar mensaje' ),
+            ),
+            'presets' => array(
+                'empresa' => array(
+                    'name' => 'Empresa',
+                    'data' => array(
+                        'titulo' => 'Contacta con nosotros',
+                        'subtitulo' => 'Estamos aquí para ayudarte',
+                        'formulario_campos' => array( 'nombre', 'email', 'asunto', 'mensaje' ),
+                    ),
+                ),
             ),
         ) );
 
@@ -249,11 +482,43 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Equipo', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
-            'variants' => array( 'grid', 'carousel', 'list' ),
+            'variants' => array(
+                'grid'        => __( 'Cuadrícula', 'flavor-chat-ia' ),
+                'carousel'    => __( 'Carrusel', 'flavor-chat-ia' ),
+                'list'        => __( 'Lista', 'flavor-chat-ia' ),
+                'cards'       => __( 'Tarjetas hover', 'flavor-chat-ia' ),
+                'circular'    => __( 'Fotos circulares', 'flavor-chat-ia' ),
+                'minimal'     => __( 'Minimalista', 'flavor-chat-ia' ),
+                'detailed'    => __( 'Detallado con bio', 'flavor-chat-ia' ),
+                'hierarchy'   => __( 'Organigrama', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'subtitulo' => array( 'type' => 'text', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ) ),
-                'miembros'  => array( 'type' => 'repeater', 'label' => __( 'Miembros', 'flavor-chat-ia' ) ),
+                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'subtitulo' => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
+                'columnas'  => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5' ) ),
+                'miembros'  => array( 'type' => 'repeater', 'label' => __( 'Miembros', 'flavor-chat-ia' ), 'fields' => array(
+                    'nombre'    => array( 'type' => 'text', 'label' => __( 'Nombre', 'flavor-chat-ia' ) ),
+                    'cargo'     => array( 'type' => 'text', 'label' => __( 'Cargo', 'flavor-chat-ia' ) ),
+                    'bio'       => array( 'type' => 'textarea', 'label' => __( 'Biografía', 'flavor-chat-ia' ) ),
+                    'foto'      => array( 'type' => 'image', 'label' => __( 'Foto', 'flavor-chat-ia' ) ),
+                    'email'     => array( 'type' => 'text', 'label' => __( 'Email', 'flavor-chat-ia' ) ),
+                    'linkedin'  => array( 'type' => 'url', 'label' => __( 'LinkedIn', 'flavor-chat-ia' ) ),
+                    'twitter'   => array( 'type' => 'url', 'label' => __( 'Twitter/X', 'flavor-chat-ia' ) ),
+                    'departamento' => array( 'type' => 'text', 'label' => __( 'Departamento', 'flavor-chat-ia' ) ),
+                ) ),
+                'mostrar_redes' => array( 'type' => 'toggle', 'label' => __( 'Mostrar redes sociales', 'flavor-chat-ia' ) ),
+                'mostrar_email' => array( 'type' => 'toggle', 'label' => __( 'Mostrar email', 'flavor-chat-ia' ) ),
+            ),
+            'presets' => array(
+                'startup' => array(
+                    'name' => 'Startup',
+                    'data' => array(
+                        'titulo' => 'Nuestro equipo',
+                        'subtitulo' => 'Las personas detrás del proyecto',
+                        'columnas' => '4',
+                        'mostrar_redes' => true,
+                    ),
+                ),
             ),
         ) );
 
@@ -263,12 +528,29 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Galería', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>',
-            'variants' => array( 'grid', 'masonry', 'carousel', 'lightbox' ),
+            'variants' => array(
+                'grid'        => __( 'Cuadrícula', 'flavor-chat-ia' ),
+                'masonry'     => __( 'Masonry', 'flavor-chat-ia' ),
+                'carousel'    => __( 'Carrusel', 'flavor-chat-ia' ),
+                'lightbox'    => __( 'Con lightbox', 'flavor-chat-ia' ),
+                'justified'   => __( 'Justificada', 'flavor-chat-ia' ),
+                'slider'      => __( 'Slider fullwidth', 'flavor-chat-ia' ),
+                'mosaic'      => __( 'Mosaico', 'flavor-chat-ia' ),
+                'polaroid'    => __( 'Estilo Polaroid', 'flavor-chat-ia' ),
+                'filterable'  => __( 'Con filtros', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'imagenes'  => array( 'type' => 'gallery', 'label' => __( 'Imágenes', 'flavor-chat-ia' ) ),
-                'columnas'  => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '6' => '6' ) ),
-                'lightbox'  => array( 'type' => 'toggle', 'label' => __( 'Lightbox', 'flavor-chat-ia' ) ),
+                'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'subtitulo'   => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
+                'imagenes'    => array( 'type' => 'gallery', 'label' => __( 'Imágenes', 'flavor-chat-ia' ) ),
+                'columnas'    => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5', '6' => '6' ) ),
+                'gap'         => array( 'type' => 'select', 'label' => __( 'Espaciado', 'flavor-chat-ia' ), 'options' => array( '0' => 'Sin espacio', '4' => 'Pequeño', '8' => 'Normal', '16' => 'Grande' ) ),
+                'lightbox'    => array( 'type' => 'toggle', 'label' => __( 'Lightbox', 'flavor-chat-ia' ) ),
+                'captions'    => array( 'type' => 'toggle', 'label' => __( 'Mostrar títulos', 'flavor-chat-ia' ) ),
+                'hover_effect'=> array( 'type' => 'select', 'label' => __( 'Efecto hover', 'flavor-chat-ia' ), 'options' => array( 'none' => 'Ninguno', 'zoom' => 'Zoom', 'overlay' => 'Overlay', 'grayscale' => 'Escala de grises', 'blur' => 'Desenfoque' ) ),
+                'aspect_ratio'=> array( 'type' => 'select', 'label' => __( 'Proporción', 'flavor-chat-ia' ), 'options' => array( 'auto' => 'Auto', 'square' => 'Cuadrado', '4:3' => '4:3', '16:9' => '16:9', '3:2' => '3:2' ) ),
+                'autoplay'    => array( 'type' => 'toggle', 'label' => __( 'Autoplay (carrusel)', 'flavor-chat-ia' ) ),
+                'categorias'  => array( 'type' => 'text', 'label' => __( 'Categorías (separadas por coma)', 'flavor-chat-ia' ) ),
             ),
         ) );
 
@@ -278,13 +560,44 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Blog', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>',
-            'variants' => array( 'grid', 'list', 'featured' ),
+            'variants' => array(
+                'grid'          => __( 'Cuadrícula', 'flavor-chat-ia' ),
+                'list'          => __( 'Lista', 'flavor-chat-ia' ),
+                'featured'      => __( 'Destacado + grid', 'flavor-chat-ia' ),
+                'masonry'       => __( 'Masonry', 'flavor-chat-ia' ),
+                'carousel'      => __( 'Carrusel', 'flavor-chat-ia' ),
+                'minimal'       => __( 'Minimalista', 'flavor-chat-ia' ),
+                'cards-overlay' => __( 'Tarjetas con overlay', 'flavor-chat-ia' ),
+                'timeline'      => __( 'Línea de tiempo', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'     => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'cantidad'   => array( 'type' => 'number', 'label' => __( 'Cantidad de posts', 'flavor-chat-ia' ) ),
-                'categoria'  => array( 'type' => 'select', 'label' => __( 'Categoría', 'flavor-chat-ia' ) ),
-                'columnas'   => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4' ) ),
+                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'subtitulo'    => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
+                'cantidad'     => array( 'type' => 'number', 'label' => __( 'Cantidad de posts', 'flavor-chat-ia' ), 'default' => 6 ),
+                'categoria'    => array( 'type' => 'taxonomy', 'label' => __( 'Categoría', 'flavor-chat-ia' ), 'taxonomy' => 'category' ),
+                'etiquetas'    => array( 'type' => 'taxonomy', 'label' => __( 'Etiquetas', 'flavor-chat-ia' ), 'taxonomy' => 'post_tag' ),
+                'columnas'     => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4' ) ),
+                'orden'        => array( 'type' => 'select', 'label' => __( 'Ordenar por', 'flavor-chat-ia' ), 'options' => array( 'date' => 'Fecha', 'title' => 'Título', 'rand' => 'Aleatorio', 'comment_count' => 'Comentarios' ) ),
                 'mostrar_extracto' => array( 'type' => 'toggle', 'label' => __( 'Mostrar extracto', 'flavor-chat-ia' ) ),
+                'mostrar_fecha' => array( 'type' => 'toggle', 'label' => __( 'Mostrar fecha', 'flavor-chat-ia' ) ),
+                'mostrar_autor' => array( 'type' => 'toggle', 'label' => __( 'Mostrar autor', 'flavor-chat-ia' ) ),
+                'mostrar_categorias' => array( 'type' => 'toggle', 'label' => __( 'Mostrar categorías', 'flavor-chat-ia' ) ),
+                'mostrar_imagen' => array( 'type' => 'toggle', 'label' => __( 'Mostrar imagen', 'flavor-chat-ia' ), 'default' => true ),
+                'leer_mas_texto' => array( 'type' => 'text', 'label' => __( 'Texto "Leer más"', 'flavor-chat-ia' ), 'default' => 'Leer más' ),
+                'ver_todos_url' => array( 'type' => 'url', 'label' => __( 'URL "Ver todos"', 'flavor-chat-ia' ) ),
+                'ver_todos_texto' => array( 'type' => 'text', 'label' => __( 'Texto "Ver todos"', 'flavor-chat-ia' ) ),
+            ),
+            'presets' => array(
+                'noticias' => array(
+                    'name' => 'Noticias',
+                    'data' => array(
+                        'titulo' => 'Últimas noticias',
+                        'cantidad' => 6,
+                        'columnas' => '3',
+                        'mostrar_fecha' => true,
+                        'mostrar_extracto' => true,
+                    ),
+                ),
             ),
         ) );
 
@@ -294,13 +607,41 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Video', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>',
-            'variants' => array( 'embed', 'background', 'lightbox' ),
+            'variants' => array(
+                'embed'       => __( 'Embed simple', 'flavor-chat-ia' ),
+                'background'  => __( 'Video de fondo', 'flavor-chat-ia' ),
+                'lightbox'    => __( 'Con lightbox', 'flavor-chat-ia' ),
+                'split'       => __( 'Dividido con texto', 'flavor-chat-ia' ),
+                'fullscreen'  => __( 'Pantalla completa', 'flavor-chat-ia' ),
+                'playlist'    => __( 'Playlist', 'flavor-chat-ia' ),
+                'testimonial' => __( 'Video testimonio', 'flavor-chat-ia' ),
+                'tutorial'    => __( 'Tutorial con pasos', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'descripcion'  => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
-                'video_url'    => array( 'type' => 'url', 'label' => __( 'URL del video', 'flavor-chat-ia' ) ),
+                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'descripcion'  => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ), 'ai' => true ),
+                'video_url'    => array( 'type' => 'url', 'label' => __( 'URL del video (YouTube/Vimeo)', 'flavor-chat-ia' ) ),
+                'video_file'   => array( 'type' => 'file', 'label' => __( 'Archivo de video', 'flavor-chat-ia' ), 'accept' => 'video/*' ),
                 'thumbnail'    => array( 'type' => 'image', 'label' => __( 'Imagen de portada', 'flavor-chat-ia' ) ),
                 'autoplay'     => array( 'type' => 'toggle', 'label' => __( 'Autoplay', 'flavor-chat-ia' ) ),
+                'loop'         => array( 'type' => 'toggle', 'label' => __( 'Loop', 'flavor-chat-ia' ) ),
+                'muted'        => array( 'type' => 'toggle', 'label' => __( 'Silenciado', 'flavor-chat-ia' ) ),
+                'controls'     => array( 'type' => 'toggle', 'label' => __( 'Mostrar controles', 'flavor-chat-ia' ), 'default' => true ),
+                'aspect_ratio' => array( 'type' => 'select', 'label' => __( 'Proporción', 'flavor-chat-ia' ), 'options' => array( '16:9' => '16:9', '4:3' => '4:3', '21:9' => '21:9 (Cine)', '1:1' => 'Cuadrado' ) ),
+                'play_icon'    => array( 'type' => 'select', 'label' => __( 'Estilo icono play', 'flavor-chat-ia' ), 'options' => array( 'default' => 'Defecto', 'circle' => 'Círculo', 'minimal' => 'Minimalista', 'youtube' => 'Estilo YouTube' ) ),
+                'overlay_color'=> array( 'type' => 'color', 'label' => __( 'Color overlay', 'flavor-chat-ia' ) ),
+                'boton_texto'  => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ) ),
+                'boton_url'    => array( 'type' => 'url', 'label' => __( 'URL del botón', 'flavor-chat-ia' ) ),
+            ),
+            'presets' => array(
+                'demo' => array(
+                    'name' => 'Demo producto',
+                    'data' => array(
+                        'titulo' => 'Mira cómo funciona',
+                        'descripcion' => 'Un recorrido completo por todas las funcionalidades',
+                        'controls' => true,
+                    ),
+                ),
             ),
         ) );
 
@@ -310,11 +651,49 @@ class Flavor_VBP_Block_Library {
             'name'     => __( 'Estadísticas', 'flavor-chat-ia' ),
             'category' => 'sections',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>',
-            'variants' => array( 'counters', 'progress', 'charts' ),
+            'variants' => array(
+                'counters'    => __( 'Contadores', 'flavor-chat-ia' ),
+                'progress'    => __( 'Barras de progreso', 'flavor-chat-ia' ),
+                'charts'      => __( 'Gráficos', 'flavor-chat-ia' ),
+                'cards'       => __( 'Tarjetas', 'flavor-chat-ia' ),
+                'icons'       => __( 'Con iconos', 'flavor-chat-ia' ),
+                'radial'      => __( 'Progreso circular', 'flavor-chat-ia' ),
+                'minimal'     => __( 'Minimalista', 'flavor-chat-ia' ),
+                'comparison'  => __( 'Comparación antes/después', 'flavor-chat-ia' ),
+            ),
             'fields'   => array(
-                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                'estadisticas' => array( 'type' => 'repeater', 'label' => __( 'Estadísticas', 'flavor-chat-ia' ) ),
-                'animacion'    => array( 'type' => 'toggle', 'label' => __( 'Animación', 'flavor-chat-ia' ) ),
+                'titulo'       => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
+                'subtitulo'    => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
+                'columnas'     => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5' ) ),
+                'estadisticas' => array( 'type' => 'repeater', 'label' => __( 'Estadísticas', 'flavor-chat-ia' ), 'fields' => array(
+                    'valor'       => array( 'type' => 'text', 'label' => __( 'Valor', 'flavor-chat-ia' ) ),
+                    'etiqueta'    => array( 'type' => 'text', 'label' => __( 'Etiqueta', 'flavor-chat-ia' ) ),
+                    'descripcion' => array( 'type' => 'text', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
+                    'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
+                    'prefijo'     => array( 'type' => 'text', 'label' => __( 'Prefijo (ej: $, €)', 'flavor-chat-ia' ) ),
+                    'sufijo'      => array( 'type' => 'text', 'label' => __( 'Sufijo (ej: %, +)', 'flavor-chat-ia' ) ),
+                    'porcentaje'  => array( 'type' => 'number', 'label' => __( 'Porcentaje (para barras)', 'flavor-chat-ia' ), 'min' => 0, 'max' => 100 ),
+                    'color'       => array( 'type' => 'color', 'label' => __( 'Color', 'flavor-chat-ia' ) ),
+                ) ),
+                'animacion'    => array( 'type' => 'toggle', 'label' => __( 'Animación de conteo', 'flavor-chat-ia' ), 'default' => true ),
+                'duracion'     => array( 'type' => 'number', 'label' => __( 'Duración animación (ms)', 'flavor-chat-ia' ), 'default' => 2000 ),
+                'color_fondo'  => array( 'type' => 'color', 'label' => __( 'Color de fondo', 'flavor-chat-ia' ) ),
+            ),
+            'presets' => array(
+                'empresa' => array(
+                    'name' => 'Métricas empresa',
+                    'data' => array(
+                        'titulo' => 'Nuestros números',
+                        'columnas' => '4',
+                        'animacion' => true,
+                        'estadisticas' => array(
+                            array( 'valor' => '10000', 'sufijo' => '+', 'etiqueta' => 'Clientes' ),
+                            array( 'valor' => '50', 'sufijo' => '+', 'etiqueta' => 'Países' ),
+                            array( 'valor' => '99', 'sufijo' => '%', 'etiqueta' => 'Satisfacción' ),
+                            array( 'valor' => '24', 'sufijo' => '/7', 'etiqueta' => 'Soporte' ),
+                        ),
+                    ),
+                ),
             ),
         ) );
     }
@@ -2858,14 +3237,149 @@ class Flavor_VBP_Block_Library {
             'fields'    => array(),
             'shortcode' => '',
             'module'    => '',
-            'supports'  => array( 'styles', 'responsive' ),
+            'supports'  => array( 'styles', 'responsive', 'animation', 'ai' ),
+            'presets'   => array(),
         );
 
         $bloque = wp_parse_args( $args, $defaults );
 
+        // Añadir campos comunes automáticamente
+        $bloque['fields'] = array_merge( $bloque['fields'], $this->get_campos_comunes() );
+
         if ( ! empty( $bloque['id'] ) ) {
             $this->bloques[ $bloque['id'] ] = $bloque;
         }
+    }
+
+    /**
+     * Campos comunes para todos los bloques
+     *
+     * @return array
+     */
+    private function get_campos_comunes() {
+        return array(
+            // === ANIMACIONES ===
+            '_animacion' => array(
+                'type'    => 'select',
+                'label'   => __( 'Animación de entrada', 'flavor-chat-ia' ),
+                'group'   => 'animacion',
+                'options' => array(
+                    'none'       => __( 'Ninguna', 'flavor-chat-ia' ),
+                    'fadeIn'     => 'Fade In',
+                    'fadeInUp'   => 'Fade In Up',
+                    'fadeInDown' => 'Fade In Down',
+                    'fadeInLeft' => 'Fade In Left',
+                    'fadeInRight'=> 'Fade In Right',
+                    'slideInUp'  => 'Slide In Up',
+                    'slideInDown'=> 'Slide In Down',
+                    'slideInLeft'=> 'Slide In Left',
+                    'slideInRight'=> 'Slide In Right',
+                    'zoomIn'     => 'Zoom In',
+                    'zoomInUp'   => 'Zoom In Up',
+                    'bounceIn'   => 'Bounce In',
+                    'flipInX'    => 'Flip In X',
+                    'flipInY'    => 'Flip In Y',
+                    'rotateIn'   => 'Rotate In',
+                    'pulse'      => 'Pulse',
+                    'shake'      => 'Shake',
+                    'swing'      => 'Swing',
+                    'tada'       => 'Tada',
+                    'wobble'     => 'Wobble',
+                    'jello'      => 'Jello',
+                    'heartBeat'  => 'Heart Beat',
+                ),
+            ),
+            '_animacion_duracion' => array(
+                'type'    => 'select',
+                'label'   => __( 'Duración', 'flavor-chat-ia' ),
+                'group'   => 'animacion',
+                'options' => array(
+                    'faster' => '0.3s',
+                    'fast'   => '0.5s',
+                    'normal' => '0.8s',
+                    'slow'   => '1s',
+                    'slower' => '1.5s',
+                ),
+                'default' => 'normal',
+            ),
+            '_animacion_delay' => array(
+                'type'    => 'select',
+                'label'   => __( 'Retraso', 'flavor-chat-ia' ),
+                'group'   => 'animacion',
+                'options' => array(
+                    '0'    => __( 'Sin retraso', 'flavor-chat-ia' ),
+                    '100'  => '0.1s',
+                    '200'  => '0.2s',
+                    '300'  => '0.3s',
+                    '500'  => '0.5s',
+                    '700'  => '0.7s',
+                    '1000' => '1s',
+                    '1500' => '1.5s',
+                    '2000' => '2s',
+                ),
+                'default' => '0',
+            ),
+            '_animacion_trigger' => array(
+                'type'    => 'select',
+                'label'   => __( 'Disparador', 'flavor-chat-ia' ),
+                'group'   => 'animacion',
+                'options' => array(
+                    'viewport' => __( 'Al entrar en viewport', 'flavor-chat-ia' ),
+                    'load'     => __( 'Al cargar página', 'flavor-chat-ia' ),
+                    'hover'    => __( 'Al pasar el mouse', 'flavor-chat-ia' ),
+                    'click'    => __( 'Al hacer click', 'flavor-chat-ia' ),
+                ),
+                'default' => 'viewport',
+            ),
+
+            // === RESPONSIVE ===
+            '_ocultar_en' => array(
+                'type'    => 'multiselect',
+                'label'   => __( 'Ocultar en', 'flavor-chat-ia' ),
+                'group'   => 'responsive',
+                'options' => array(
+                    'mobile'  => __( 'Móvil', 'flavor-chat-ia' ),
+                    'tablet'  => __( 'Tablet', 'flavor-chat-ia' ),
+                    'desktop' => __( 'Escritorio', 'flavor-chat-ia' ),
+                ),
+            ),
+            '_orden_mobile' => array(
+                'type'    => 'number',
+                'label'   => __( 'Orden en móvil', 'flavor-chat-ia' ),
+                'group'   => 'responsive',
+                'min'     => -10,
+                'max'     => 100,
+                'default' => 0,
+            ),
+            '_padding_mobile' => array(
+                'type'    => 'spacing',
+                'label'   => __( 'Padding en móvil', 'flavor-chat-ia' ),
+                'group'   => 'responsive',
+            ),
+            '_margin_mobile' => array(
+                'type'    => 'spacing',
+                'label'   => __( 'Margen en móvil', 'flavor-chat-ia' ),
+                'group'   => 'responsive',
+            ),
+
+            // === AVANZADO ===
+            '_css_id' => array(
+                'type'  => 'text',
+                'label' => __( 'ID CSS', 'flavor-chat-ia' ),
+                'group' => 'avanzado',
+            ),
+            '_css_classes' => array(
+                'type'  => 'text',
+                'label' => __( 'Clases CSS adicionales', 'flavor-chat-ia' ),
+                'group' => 'avanzado',
+            ),
+            '_custom_css' => array(
+                'type'     => 'code',
+                'label'    => __( 'CSS personalizado', 'flavor-chat-ia' ),
+                'group'    => 'avanzado',
+                'language' => 'css',
+            ),
+        );
     }
 
     /**
