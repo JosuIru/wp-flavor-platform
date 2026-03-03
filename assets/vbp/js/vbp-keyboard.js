@@ -60,6 +60,23 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+arrowup': 'moveToTop',
                 'ctrl+arrowdown': 'moveToBottom',
 
+                // Navegación jerárquica
+                'alt+arrowup': 'selectParent',
+                'alt+arrowdown': 'selectFirstChild',
+                'alt+enter': 'centerInViewport',
+
+                // Duplicado avanzado
+                'ctrl+shift+d': 'duplicateInPlace',
+
+                // Colapsar/expandir
+                'ctrl+.': 'toggleCollapse',
+
+                // Spacing presets
+                'alt+1': 'setSpacing8',
+                'alt+2': 'setSpacing16',
+                'alt+3': 'setSpacing24',
+                'alt+4': 'setSpacing32',
+
                 // Zoom
                 'ctrl++': 'zoomIn',
                 'ctrl+=': 'zoomIn',
@@ -339,6 +356,46 @@ document.addEventListener('alpine:init', function() {
 
                     case 'moveToBottom':
                         this.moveSelectionToEdge('bottom');
+                        break;
+
+                    // === NAVEGACIÓN JERÁRQUICA ===
+                    case 'selectParent':
+                        this.selectParent();
+                        break;
+
+                    case 'selectFirstChild':
+                        this.selectFirstChild();
+                        break;
+
+                    case 'centerInViewport':
+                        this.centerInViewport();
+                        break;
+
+                    // === DUPLICADO AVANZADO ===
+                    case 'duplicateInPlace':
+                        this.duplicateInPlace();
+                        break;
+
+                    // === COLAPSAR ===
+                    case 'toggleCollapse':
+                        this.toggleCollapse();
+                        break;
+
+                    // === SPACING PRESETS ===
+                    case 'setSpacing8':
+                        this.setSpacingPreset(8);
+                        break;
+
+                    case 'setSpacing16':
+                        this.setSpacingPreset(16);
+                        break;
+
+                    case 'setSpacing24':
+                        this.setSpacingPreset(24);
+                        break;
+
+                    case 'setSpacing32':
+                        this.setSpacingPreset(32);
                         break;
 
                     // === ZOOM ===
@@ -2105,6 +2162,208 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Seleccionar elemento padre
+             */
+            selectParent: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un elemento', 'warning');
+                    return;
+                }
+
+                var currentId = store.selection.elementIds[0];
+                var current = store.getElement(currentId);
+
+                if (!current) return;
+
+                // Buscar el padre en todos los elementos
+                var parentId = null;
+                var self = this;
+
+                function findParent(elements, targetId, currentParentId) {
+                    for (var i = 0; i < elements.length; i++) {
+                        var el = elements[i];
+                        if (el.id === targetId) {
+                            return currentParentId;
+                        }
+                        if (el.children && el.children.length > 0) {
+                            var found = findParent(el.children, targetId, el.id);
+                            if (found) return found;
+                        }
+                    }
+                    return null;
+                }
+
+                parentId = findParent(store.elements, currentId, null);
+
+                if (parentId) {
+                    store.setSelection([parentId]);
+                    this.showNotification('⬆️ Seleccionado padre');
+
+                    // Scroll al elemento
+                    var parentElement = document.querySelector('[data-element-id="' + parentId + '"]');
+                    if (parentElement) {
+                        parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    this.showNotification('Este elemento no tiene padre', 'info');
+                }
+            },
+
+            /**
+             * Seleccionar primer hijo
+             */
+            selectFirstChild: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 1) {
+                    this.showNotification('Selecciona un elemento', 'warning');
+                    return;
+                }
+
+                var currentId = store.selection.elementIds[0];
+                var current = store.getElement(currentId);
+
+                if (!current) return;
+
+                if (current.children && current.children.length > 0) {
+                    var firstChild = current.children[0];
+                    store.setSelection([firstChild.id]);
+                    this.showNotification('⬇️ Seleccionado primer hijo');
+
+                    // Scroll al elemento
+                    var childElement = document.querySelector('[data-element-id="' + firstChild.id + '"]');
+                    if (childElement) {
+                        childElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    this.showNotification('Este elemento no tiene hijos', 'info');
+                }
+            },
+
+            /**
+             * Centrar elemento seleccionado en el viewport
+             */
+            centerInViewport: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona un elemento', 'warning');
+                    return;
+                }
+
+                var elementId = store.selection.elementIds[0];
+                var element = document.querySelector('[data-element-id="' + elementId + '"]');
+
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                    this.showNotification('📍 Centrado en viewport');
+                }
+            },
+
+            /**
+             * Duplicar en el mismo lugar (sin offset)
+             */
+            duplicateInPlace: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para duplicar', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+                var newIds = [];
+                var self = this;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element) return;
+
+                    // Clonar el elemento (deep clone)
+                    var clone = JSON.parse(JSON.stringify(element));
+                    clone.id = 'el_' + Math.random().toString(36).substr(2, 9);
+                    clone.name = (element.name || element.type) + ' (copia)';
+
+                    // Mismo lugar exacto (sin offset)
+                    store.elements.push(clone);
+                    newIds.push(clone.id);
+                });
+
+                store.setSelection(newIds);
+                store.isDirty = true;
+
+                this.showNotification('📋 ' + newIds.length + ' elemento(s) duplicado(s) en el mismo lugar');
+            },
+
+            /**
+             * Colapsar/expandir contenedor
+             */
+            toggleCollapse: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona un contenedor', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+                var toggledCount = 0;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element) return;
+
+                    // Solo colapsar elementos que pueden tener hijos
+                    if (element.children && element.children.length > 0 ||
+                        ['container', 'columns', 'row', 'group', 'section'].indexOf(element.type) !== -1) {
+
+                        var isCollapsed = element.collapsed || false;
+                        store.updateElement(id, { collapsed: !isCollapsed });
+                        toggledCount++;
+                    }
+                });
+
+                if (toggledCount > 0) {
+                    store.isDirty = true;
+                    this.showNotification(toggledCount > 0 ? '📁 Toggle colapso' : '📂 Toggle expansión');
+                } else {
+                    this.showNotification('Solo contenedores pueden colapsarse', 'info');
+                }
+            },
+
+            /**
+             * Aplicar preset de spacing
+             */
+            setSpacingPreset: function(spacing) {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || element.locked) return;
+
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (!estilos.spacing) estilos.spacing = {};
+
+                    estilos.spacing.padding = spacing + 'px';
+                    estilos.spacing.margin = spacing + 'px';
+
+                    store.updateElement(id, { styles: estilos });
+                });
+
+                store.isDirty = true;
+                this.showNotification('📏 Spacing: ' + spacing + 'px');
+            },
+
+            /**
              * Obtener bounds combinados de la selección
              */
             getSelectionBounds: function(store) {
@@ -2267,7 +2526,8 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + C', action: 'Copiar elemento' },
                 { keys: 'Ctrl + X', action: 'Cortar' },
                 { keys: 'Ctrl + V', action: 'Pegar' },
-                { keys: 'Ctrl + D', action: 'Duplicar' },
+                { keys: 'Ctrl + D', action: 'Duplicar (con offset)' },
+                { keys: 'Ctrl + Shift + D', action: 'Duplicar en mismo lugar' },
                 { keys: 'Delete', action: 'Eliminar' },
                 { keys: 'Ctrl + Shift + C', action: 'Copiar estilos' },
                 { keys: 'Ctrl + Shift + V', action: 'Pegar estilos' },
@@ -2302,7 +2562,19 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + ↑', action: 'Mover al frente' },
                 { keys: 'Ctrl + ↓', action: 'Mover al fondo' },
                 { keys: 'Ctrl + Shift + F', action: 'Ajustar al contenido' },
-                { keys: 'Ctrl + Alt + F', action: 'Llenar contenedor' }
+                { keys: 'Ctrl + Alt + F', action: 'Llenar contenedor' },
+                { keys: 'Alt + Enter', action: 'Centrar en viewport' }
+            ]},
+            { category: 'Navegación Jerárquica', shortcuts: [
+                { keys: 'Alt + ↑', action: 'Seleccionar padre' },
+                { keys: 'Alt + ↓', action: 'Seleccionar primer hijo' },
+                { keys: 'Ctrl + .', action: 'Colapsar/expandir' }
+            ]},
+            { category: 'Spacing Rápido', shortcuts: [
+                { keys: 'Alt + 1', action: 'Spacing 8px' },
+                { keys: 'Alt + 2', action: 'Spacing 16px' },
+                { keys: 'Alt + 3', action: 'Spacing 24px' },
+                { keys: 'Alt + 4', action: 'Spacing 32px' }
             ]},
             { category: 'Zoom', shortcuts: [
                 { keys: 'Ctrl + +', action: 'Acercar' },

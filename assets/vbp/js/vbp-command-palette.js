@@ -100,6 +100,19 @@ document.addEventListener('alpine:init', function() {
             { id: 'swap-elements', label: 'Intercambiar posición', category: 'orden', icon: '🔀', action: 'swapElements', shortcut: 'Ctrl+Alt+S' },
             { id: 'wrap-container', label: 'Envolver en contenedor', category: 'orden', icon: '📦', action: 'wrapInContainer', shortcut: 'Ctrl+Shift+W' },
 
+            // Navegación jerárquica
+            { id: 'select-parent', label: 'Seleccionar padre', category: 'navegacion', icon: '⬆', action: 'selectParent', shortcut: 'Alt+↑' },
+            { id: 'select-child', label: 'Seleccionar primer hijo', category: 'navegacion', icon: '⬇', action: 'selectFirstChild', shortcut: 'Alt+↓' },
+            { id: 'center-viewport', label: 'Centrar en viewport', category: 'navegacion', icon: '📍', action: 'centerInViewport', shortcut: 'Alt+Enter' },
+            { id: 'toggle-collapse', label: 'Colapsar/Expandir', category: 'navegacion', icon: '📁', action: 'toggleCollapse', shortcut: 'Ctrl+.' },
+            { id: 'duplicate-in-place', label: 'Duplicar en mismo lugar', category: 'acciones', icon: '📋', action: 'duplicateInPlace', shortcut: 'Ctrl+Shift+D' },
+
+            // Spacing presets
+            { id: 'spacing-8', label: 'Spacing 8px', category: 'spacing', icon: '📏', action: 'setSpacing', value: '8' },
+            { id: 'spacing-16', label: 'Spacing 16px', category: 'spacing', icon: '📏', action: 'setSpacing', value: '16' },
+            { id: 'spacing-24', label: 'Spacing 24px', category: 'spacing', icon: '📏', action: 'setSpacing', value: '24' },
+            { id: 'spacing-32', label: 'Spacing 32px', category: 'spacing', icon: '📏', action: 'setSpacing', value: '32' },
+
             // Responsive
             { id: 'device-desktop', label: 'Vista Escritorio', category: 'responsive', icon: '🖥', action: 'device', value: 'desktop' },
             { id: 'device-tablet', label: 'Vista Tablet', category: 'responsive', icon: '📱', action: 'device', value: 'tablet' },
@@ -438,6 +451,43 @@ document.addEventListener('alpine:init', function() {
                     }));
                     break;
 
+                case 'selectParent':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'selectParent' }
+                    }));
+                    break;
+
+                case 'selectFirstChild':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'selectFirstChild' }
+                    }));
+                    break;
+
+                case 'centerInViewport':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'centerInViewport' }
+                    }));
+                    break;
+
+                case 'toggleCollapse':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleCollapse' }
+                    }));
+                    break;
+
+                case 'duplicateInPlace':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'duplicateInPlace' }
+                    }));
+                    break;
+
+                case 'setSpacing':
+                    var spacingValue = parseInt(cmd.value, 10);
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'setSpacing' + spacingValue }
+                    }));
+                    break;
+
                 case 'togglePanel':
                     this.togglePanel(cmd.value);
                     break;
@@ -556,6 +606,8 @@ document.addEventListener('alpine:init', function() {
                 'acciones': 'Acciones',
                 'alineacion': 'Alineación',
                 'orden': 'Orden y Transformación',
+                'navegacion': 'Navegación Jerárquica',
+                'spacing': 'Spacing Rápido',
                 'vista': 'Vista',
                 'exportar': 'Exportar',
                 'responsive': 'Responsive'
