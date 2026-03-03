@@ -44,9 +44,15 @@ document.addEventListener('alpine:init', function() {
                 'enter': 'editInline',
                 'f2': 'editInline',
 
-                // Navegación
-                'arrowup': 'moveUp',
-                'arrowdown': 'moveDown',
+                // Navegación y posicionamiento
+                'arrowup': 'nudgeUp',
+                'arrowdown': 'nudgeDown',
+                'arrowleft': 'nudgeLeft',
+                'arrowright': 'nudgeRight',
+                'shift+arrowup': 'nudgeUpLarge',
+                'shift+arrowdown': 'nudgeDownLarge',
+                'shift+arrowleft': 'nudgeLeftLarge',
+                'shift+arrowright': 'nudgeRightLarge',
                 'ctrl+arrowup': 'moveToTop',
                 'ctrl+arrowdown': 'moveToBottom',
 
@@ -238,12 +244,36 @@ document.addEventListener('alpine:init', function() {
                         break;
 
                     // === NAVEGACIÓN ===
-                    case 'moveUp':
-                        this.moveSelection(-1);
+                    case 'nudgeUp':
+                        this.nudgeSelection(0, -1);
                         break;
 
-                    case 'moveDown':
-                        this.moveSelection(1);
+                    case 'nudgeDown':
+                        this.nudgeSelection(0, 1);
+                        break;
+
+                    case 'nudgeLeft':
+                        this.nudgeSelection(-1, 0);
+                        break;
+
+                    case 'nudgeRight':
+                        this.nudgeSelection(1, 0);
+                        break;
+
+                    case 'nudgeUpLarge':
+                        this.nudgeSelection(0, -10);
+                        break;
+
+                    case 'nudgeDownLarge':
+                        this.nudgeSelection(0, 10);
+                        break;
+
+                    case 'nudgeLeftLarge':
+                        this.nudgeSelection(-10, 0);
+                        break;
+
+                    case 'nudgeRightLarge':
+                        this.nudgeSelection(10, 0);
                         break;
 
                     case 'moveToTop':
@@ -829,25 +859,50 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
-             * Mover selección
+             * Mover elementos seleccionados píxel a píxel (nudge)
+             * @param {number} dx - Desplazamiento horizontal en px
+             * @param {number} dy - Desplazamiento vertical en px
              */
-            moveSelection: function(direction) {
+            nudgeSelection: function(dx, dy) {
                 var store = Alpine.store('vbp');
 
-                if (store.selection.elementIds.length !== 1) return;
+                if (store.selection.elementIds.length === 0) return;
 
-                var id = store.selection.elementIds[0];
-                var currentIndex = store.elements.findIndex(function(el) {
-                    return el.id === id;
+                // Verificar si hay elementos bloqueados
+                var hayBloqueados = false;
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element && element.locked) {
+                        hayBloqueados = true;
+                    }
                 });
 
-                if (currentIndex === -1) return;
+                if (hayBloqueados) {
+                    this.showNotification('Hay elementos bloqueados en la selección', 'warning');
+                    return;
+                }
 
-                var newIndex = currentIndex + direction;
+                // No guardar en historial para cada nudge pequeño (se guarda al final)
+                var self = this;
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element) return;
 
-                if (newIndex < 0 || newIndex >= store.elements.length) return;
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (!estilos.position) estilos.position = {};
 
-                store.moveElement(currentIndex, newIndex);
+                    // Obtener posición actual
+                    var currentLeft = parseFloat(estilos.position.left) || 0;
+                    var currentTop = parseFloat(estilos.position.top) || 0;
+
+                    // Aplicar desplazamiento
+                    estilos.position.left = (currentLeft + dx) + 'px';
+                    estilos.position.top = (currentTop + dy) + 'px';
+
+                    store.updateElement(id, { styles: estilos });
+                });
+
+                store.isDirty = true;
             },
 
             /**
@@ -1276,10 +1331,11 @@ window.vbpKeyboard = {
                 { keys: 'Alt + Click', action: 'Duplicar elemento' },
                 { keys: 'Shift + Click', action: 'Multi-selección' }
             ]},
-            { category: 'Navegación', shortcuts: [
-                { keys: '↑ / ↓', action: 'Mover elemento' },
-                { keys: 'Ctrl + ↑', action: 'Mover al inicio' },
-                { keys: 'Ctrl + ↓', action: 'Mover al final' }
+            { category: 'Posicionamiento', shortcuts: [
+                { keys: '↑ ↓ ← →', action: 'Mover 1px' },
+                { keys: 'Shift + ↑ ↓ ← →', action: 'Mover 10px' },
+                { keys: 'Ctrl + ↑', action: 'Mover al frente' },
+                { keys: 'Ctrl + ↓', action: 'Mover al fondo' }
             ]},
             { category: 'Zoom', shortcuts: [
                 { keys: 'Ctrl + +', action: 'Acercar' },
