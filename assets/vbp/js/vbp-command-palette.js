@@ -73,6 +73,9 @@ document.addEventListener('alpine:init', function() {
             // Vista
             { id: 'toggle-grid', label: 'Mostrar/Ocultar Cuadrícula', category: 'vista', icon: '⊞', action: 'toggleGrid', shortcut: 'Ctrl+\'' },
             { id: 'toggle-guides', label: 'Mostrar/Ocultar Guías', category: 'vista', icon: '📏', action: 'toggleGuides', shortcut: 'Ctrl+;' },
+            { id: 'find-elements', label: 'Buscar elementos', category: 'vista', icon: '🔍', action: 'findElements', shortcut: 'Ctrl+F' },
+            { id: 'toggle-visibility', label: 'Ocultar/Mostrar selección', category: 'vista', icon: '👁', action: 'toggleVisibility', shortcut: 'Ctrl+Shift+H' },
+            { id: 'hide-others', label: 'Ocultar otros elementos', category: 'vista', icon: '👁‍🗨', action: 'hideOthers', shortcut: 'Ctrl+Alt+H' },
             { id: 'toggle-layers', label: 'Mostrar/Ocultar Capas', category: 'vista', icon: '📑', action: 'togglePanel', value: 'layers' },
             { id: 'toggle-inspector', label: 'Mostrar/Ocultar Inspector', category: 'vista', icon: '⚙', action: 'togglePanel', value: 'inspector' },
             { id: 'toggle-blocks', label: 'Mostrar/Ocultar Bloques', category: 'vista', icon: '🧱', action: 'togglePanel', value: 'blocks' },
@@ -299,6 +302,24 @@ document.addEventListener('alpine:init', function() {
                 case 'toggleGuides':
                     document.dispatchEvent(new CustomEvent('vbp:executeAction', {
                         detail: { action: 'toggleGuides' }
+                    }));
+                    break;
+
+                case 'findElements':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'findElements' }
+                    }));
+                    break;
+
+                case 'toggleVisibility':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleVisibility' }
+                    }));
+                    break;
+
+                case 'hideOthers':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'hideOthers' }
                     }));
                     break;
 

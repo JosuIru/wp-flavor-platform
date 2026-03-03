@@ -104,6 +104,13 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+shift+f': 'fitContent',
                 'ctrl+alt+f': 'fillParent',
 
+                // Visibilidad
+                'ctrl+shift+h': 'toggleVisibility',
+                'ctrl+alt+h': 'hideOthers',
+
+                // Búsqueda
+                'ctrl+f': 'findElements',
+
                 // Extras
                 'ctrl+u': 'unsplash',
                 'ctrl+shift+g': 'saveAsGlobal',
@@ -450,6 +457,20 @@ document.addEventListener('alpine:init', function() {
 
                     case 'fillParent':
                         this.fillParent();
+                        break;
+
+                    // === VISIBILIDAD ===
+                    case 'toggleVisibility':
+                        this.toggleVisibility();
+                        break;
+
+                    case 'hideOthers':
+                        this.hideOthers();
+                        break;
+
+                    // === BÚSQUEDA ===
+                    case 'findElements':
+                        this.openFindDialog();
                         break;
                 }
             },
@@ -1333,6 +1354,189 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Toggle visibilidad de elementos seleccionados
+             */
+            toggleVisibility: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para ocultar/mostrar', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                var count = 0;
+                var allHidden = true;
+
+                // Verificar si todos están ocultos
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element && element.visible !== false) {
+                        allHidden = false;
+                    }
+                });
+
+                // Toggle: si todos ocultos, mostrar; si no, ocultar
+                var newVisibility = allHidden;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (element) {
+                        store.updateElement(id, { visible: newVisibility });
+                        count++;
+                    }
+                });
+
+                store.isDirty = true;
+                this.showNotification(newVisibility ? '👁 ' + count + ' visible(s)' : '👁‍🗨 ' + count + ' oculto(s)');
+            },
+
+            /**
+             * Ocultar todos excepto los seleccionados
+             */
+            hideOthers: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para mantener visibles', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                var selectedIds = store.selection.elementIds;
+                var hiddenCount = 0;
+
+                store.elements.forEach(function(element) {
+                    if (selectedIds.indexOf(element.id) === -1) {
+                        store.updateElement(element.id, { visible: false });
+                        hiddenCount++;
+                    } else {
+                        store.updateElement(element.id, { visible: true });
+                    }
+                });
+
+                store.isDirty = true;
+                this.showNotification('👁‍🗨 ' + hiddenCount + ' oculto(s), ' + selectedIds.length + ' visible(s)');
+            },
+
+            /**
+             * Abrir diálogo de búsqueda de elementos
+             */
+            openFindDialog: function() {
+                var self = this;
+                var store = Alpine.store('vbp');
+
+                // Crear modal de búsqueda
+                var modalId = 'vbp-find-modal';
+                var existingModal = document.getElementById(modalId);
+                if (existingModal) {
+                    existingModal.remove();
+                }
+
+                var modalHtml = '<div id="' + modalId + '" class="vbp-modal-overlay" style="z-index: 10001;">';
+                modalHtml += '<div class="vbp-modal vbp-find-modal" style="max-width: 400px;">';
+                modalHtml += '<div class="vbp-modal-header">';
+                modalHtml += '<h2>🔍 Buscar Elementos</h2>';
+                modalHtml += '<button class="vbp-modal-close" onclick="document.getElementById(\'' + modalId + '\').remove()">&times;</button>';
+                modalHtml += '</div>';
+                modalHtml += '<div class="vbp-modal-body" style="padding: 16px;">';
+                modalHtml += '<input type="text" id="vbp-find-input" class="vbp-find-input" placeholder="Buscar por nombre o tipo..." style="width: 100%; padding: 12px; border: 1px solid #313244; background: #11111b; color: #cdd6f4; border-radius: 6px; font-size: 14px; margin-bottom: 12px;">';
+                modalHtml += '<div id="vbp-find-results" class="vbp-find-results" style="max-height: 300px; overflow-y: auto;"></div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                var modal = document.getElementById(modalId);
+                var input = document.getElementById('vbp-find-input');
+                var results = document.getElementById('vbp-find-results');
+
+                // Focus en el input
+                input.focus();
+
+                // Renderizar resultados
+                function renderResults(query) {
+                    var filtered = store.elements.filter(function(el) {
+                        var name = (el.name || el.type).toLowerCase();
+                        var type = el.type.toLowerCase();
+                        var q = query.toLowerCase();
+                        return name.indexOf(q) !== -1 || type.indexOf(q) !== -1;
+                    });
+
+                    if (filtered.length === 0) {
+                        results.innerHTML = '<p style="color: #6c7086; padding: 12px; text-align: center;">No se encontraron elementos</p>';
+                        return;
+                    }
+
+                    var html = '';
+                    filtered.forEach(function(el) {
+                        var isSelected = store.selection.elementIds.indexOf(el.id) !== -1;
+                        html += '<div class="vbp-find-item" data-id="' + el.id + '" style="padding: 10px 12px; border-bottom: 1px solid #313244; cursor: pointer; display: flex; align-items: center; gap: 10px;' + (isSelected ? ' background: rgba(139, 180, 250, 0.1);' : '') + '">';
+                        html += '<span style="opacity: 0.5;">' + el.type + '</span>';
+                        html += '<span style="flex: 1;">' + (el.name || el.type) + '</span>';
+                        if (el.locked) html += '<span style="opacity: 0.5;">🔒</span>';
+                        if (el.visible === false) html += '<span style="opacity: 0.5;">👁‍🗨</span>';
+                        html += '</div>';
+                    });
+
+                    results.innerHTML = html;
+
+                    // Event listeners para cada resultado
+                    results.querySelectorAll('.vbp-find-item').forEach(function(item) {
+                        item.addEventListener('click', function() {
+                            var id = this.dataset.id;
+                            store.setSelection([id]);
+
+                            // Scroll al elemento
+                            var domEl = document.querySelector('[data-element-id="' + id + '"]');
+                            if (domEl) {
+                                domEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+
+                            modal.remove();
+                        });
+
+                        item.addEventListener('mouseenter', function() {
+                            this.style.background = 'rgba(139, 180, 250, 0.15)';
+                        });
+
+                        item.addEventListener('mouseleave', function() {
+                            var id = this.dataset.id;
+                            var isSelected = store.selection.elementIds.indexOf(id) !== -1;
+                            this.style.background = isSelected ? 'rgba(139, 180, 250, 0.1)' : '';
+                        });
+                    });
+                }
+
+                // Mostrar todos inicialmente
+                renderResults('');
+
+                // Buscar al escribir
+                input.addEventListener('input', function() {
+                    renderResults(this.value);
+                });
+
+                // Cerrar con Escape
+                var closeOnEscape = function(e) {
+                    if (e.key === 'Escape') {
+                        modal.remove();
+                        document.removeEventListener('keydown', closeOnEscape);
+                    }
+                };
+                document.addEventListener('keydown', closeOnEscape);
+
+                // Cerrar al hacer clic fuera
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+            },
+
+            /**
              * Mostrar/ocultar guías
              */
             toggleGuides: function() {
@@ -1618,7 +1822,10 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + B', action: 'Panel de bloques' },
                 { keys: 'Ctrl + L', action: 'Capas' },
                 { keys: 'Ctrl + \'', action: 'Mostrar/Ocultar cuadrícula' },
-                { keys: 'Ctrl + ;', action: 'Mostrar/Ocultar guías' }
+                { keys: 'Ctrl + ;', action: 'Mostrar/Ocultar guías' },
+                { keys: 'Ctrl + F', action: 'Buscar elementos' },
+                { keys: 'Ctrl + Shift + H', action: 'Ocultar/Mostrar selección' },
+                { keys: 'Ctrl + Alt + H', action: 'Ocultar otros' }
             ]},
             { category: 'Alineación', shortcuts: [
                 { keys: 'Alt + L', action: 'Alinear a la izquierda' },
