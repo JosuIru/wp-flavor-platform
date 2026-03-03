@@ -94,6 +94,10 @@ document.addEventListener('alpine:init', function() {
                 // Bloqueo
                 'ctrl+shift+l': 'toggleLock',
 
+                // Grid y guías
+                'ctrl+\'': 'toggleGrid',
+                'ctrl+;': 'toggleGuides',
+
                 // Extras
                 'ctrl+u': 'unsplash',
                 'ctrl+shift+g': 'saveAsGlobal',
@@ -414,6 +418,15 @@ document.addEventListener('alpine:init', function() {
                     // === BLOQUEO ===
                     case 'toggleLock':
                         this.toggleLock();
+                        break;
+
+                    // === GRID Y GUÍAS ===
+                    case 'toggleGrid':
+                        this.toggleGrid();
+                        break;
+
+                    case 'toggleGuides':
+                        this.toggleGuides();
                         break;
                 }
             },
@@ -1146,6 +1159,52 @@ document.addEventListener('alpine:init', function() {
             },
 
             /**
+             * Mostrar/ocultar cuadrícula
+             */
+            toggleGrid: function() {
+                var canvas = document.querySelector('.vbp-canvas');
+                if (!canvas) return;
+
+                var isVisible = canvas.classList.toggle('vbp-show-grid');
+
+                // Crear CSS de grid si no existe
+                if (!document.getElementById('vbp-grid-styles')) {
+                    var style = document.createElement('style');
+                    style.id = 'vbp-grid-styles';
+                    style.textContent = '.vbp-canvas.vbp-show-grid { background-image: linear-gradient(rgba(139, 180, 250, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 180, 250, 0.1) 1px, transparent 1px); background-size: 20px 20px; }';
+                    document.head.appendChild(style);
+                }
+
+                // Guardar preferencia
+                localStorage.setItem('vbp_grid_visible', isVisible);
+
+                this.showNotification(isVisible ? '⊞ Cuadrícula visible' : '⊞ Cuadrícula oculta');
+            },
+
+            /**
+             * Mostrar/ocultar guías
+             */
+            toggleGuides: function() {
+                var guidesContainer = document.querySelector('.vbp-guides-container');
+                var rulerH = document.getElementById('vbp-ruler-h');
+                var rulerV = document.getElementById('vbp-ruler-v');
+
+                var isVisible = true;
+
+                if (guidesContainer) {
+                    isVisible = guidesContainer.style.display !== 'none';
+                    guidesContainer.style.display = isVisible ? 'none' : 'block';
+                }
+
+                if (rulerH) rulerH.style.opacity = isVisible ? '0.3' : '1';
+                if (rulerV) rulerV.style.opacity = isVisible ? '0.3' : '1';
+
+                localStorage.setItem('vbp_guides_visible', !isVisible);
+
+                this.showNotification(!isVisible ? '📏 Guías visibles' : '📏 Guías ocultas');
+            },
+
+            /**
              * Bloquear/desbloquear elementos seleccionados
              */
             toggleLock: function() {
@@ -1399,10 +1458,12 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + 5', action: 'Zoom 50%' },
                 { keys: 'Ctrl + Rueda', action: 'Zoom con ratón' }
             ]},
-            { category: 'Paneles', shortcuts: [
+            { category: 'Paneles y Vista', shortcuts: [
                 { keys: 'Ctrl + \\', action: 'Toggle todos los paneles' },
                 { keys: 'Ctrl + B', action: 'Panel de bloques' },
-                { keys: 'Ctrl + L', action: 'Capas' }
+                { keys: 'Ctrl + L', action: 'Capas' },
+                { keys: 'Ctrl + \'', action: 'Mostrar/Ocultar cuadrícula' },
+                { keys: 'Ctrl + ;', action: 'Mostrar/Ocultar guías' }
             ]},
             { category: 'Alineación', shortcuts: [
                 { keys: 'Alt + L', action: 'Alinear a la izquierda' },

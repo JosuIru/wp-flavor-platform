@@ -67,6 +67,8 @@ document.addEventListener('alpine:init', function() {
             { id: 'distribute-v', label: 'Distribuir verticalmente', category: 'alineacion', icon: '⇕', action: 'distributeElements', value: 'vertical', shortcut: 'Ctrl+Alt+V' },
 
             // Vista
+            { id: 'toggle-grid', label: 'Mostrar/Ocultar Cuadrícula', category: 'vista', icon: '⊞', action: 'toggleGrid', shortcut: 'Ctrl+\'' },
+            { id: 'toggle-guides', label: 'Mostrar/Ocultar Guías', category: 'vista', icon: '📏', action: 'toggleGuides', shortcut: 'Ctrl+;' },
             { id: 'toggle-layers', label: 'Mostrar/Ocultar Capas', category: 'vista', icon: '📑', action: 'togglePanel', value: 'layers' },
             { id: 'toggle-inspector', label: 'Mostrar/Ocultar Inspector', category: 'vista', icon: '⚙', action: 'togglePanel', value: 'inspector' },
             { id: 'toggle-blocks', label: 'Mostrar/Ocultar Bloques', category: 'vista', icon: '🧱', action: 'togglePanel', value: 'blocks' },
@@ -257,6 +259,18 @@ document.addEventListener('alpine:init', function() {
                 case 'toggleLock':
                     document.dispatchEvent(new CustomEvent('vbp:executeAction', {
                         detail: { action: 'toggleLock' }
+                    }));
+                    break;
+
+                case 'toggleGrid':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleGrid' }
+                    }));
+                    break;
+
+                case 'toggleGuides':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'toggleGuides' }
                     }));
                     break;
 
