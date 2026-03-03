@@ -242,6 +242,45 @@ document.addEventListener('alpine:init', function() {
                         self.executeAction(e.detail.action);
                     }
                 });
+
+                // Inicializar multi-select box
+                this.initMultiSelectBox();
+
+                // Cargar preferencias desde localStorage
+                this.loadPreferences();
+
+                // Cargar favoritos
+                var storedFavorites = localStorage.getItem('vbp_favorites');
+                if (storedFavorites) {
+                    this.favorites = JSON.parse(storedFavorites);
+                }
+
+                // Exponer globalmente para acceso desde modales
+                window.vbpKeyboard = this;
+            },
+
+            /**
+             * Cargar preferencias guardadas
+             */
+            loadPreferences: function() {
+                // Smart guides
+                var smartGuides = localStorage.getItem('vbp_smart_guides');
+                if (smartGuides === 'true') {
+                    this.smartGuidesEnabled = true;
+                    this.initSmartGuides();
+                }
+
+                // Snap to grid
+                var snapToGrid = localStorage.getItem('vbp_snap_to_grid');
+                if (snapToGrid === 'true') {
+                    this.snapToGridEnabled = true;
+                }
+
+                // Grid size
+                var gridSize = localStorage.getItem('vbp_grid_size');
+                if (gridSize) {
+                    this.gridSize = parseInt(gridSize, 10);
+                }
             },
 
             /**
