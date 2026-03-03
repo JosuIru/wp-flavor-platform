@@ -91,6 +91,15 @@ document.addEventListener('alpine:init', function() {
             { id: 'zoom-50', label: 'Zoom 50%', category: 'vista', icon: '5️⃣', action: 'zoom', value: '50', shortcut: 'Ctrl+5' },
             { id: 'zoom-200', label: 'Zoom 200%', category: 'vista', icon: '2️⃣', action: 'zoom', value: '200', shortcut: 'Ctrl+2' },
 
+            // Orden y transformación
+            { id: 'bring-forward', label: 'Traer adelante', category: 'orden', icon: '⬆', action: 'bringForward', shortcut: 'Ctrl+]' },
+            { id: 'send-backward', label: 'Enviar atrás', category: 'orden', icon: '⬇', action: 'sendBackward', shortcut: 'Ctrl+[' },
+            { id: 'bring-to-front', label: 'Traer al frente', category: 'orden', icon: '⏫', action: 'bringToFront', shortcut: 'Ctrl+Shift+]' },
+            { id: 'send-to-back', label: 'Enviar al fondo', category: 'orden', icon: '⏬', action: 'sendToBack', shortcut: 'Ctrl+Shift+[' },
+            { id: 'match-size', label: 'Igualar tamaño', category: 'orden', icon: '📐', action: 'matchSize', shortcut: 'Ctrl+M' },
+            { id: 'swap-elements', label: 'Intercambiar posición', category: 'orden', icon: '🔀', action: 'swapElements', shortcut: 'Ctrl+Alt+S' },
+            { id: 'wrap-container', label: 'Envolver en contenedor', category: 'orden', icon: '📦', action: 'wrapInContainer', shortcut: 'Ctrl+Shift+W' },
+
             // Responsive
             { id: 'device-desktop', label: 'Vista Escritorio', category: 'responsive', icon: '🖥', action: 'device', value: 'desktop' },
             { id: 'device-tablet', label: 'Vista Tablet', category: 'responsive', icon: '📱', action: 'device', value: 'tablet' },
@@ -387,6 +396,48 @@ document.addEventListener('alpine:init', function() {
                     }
                     break;
 
+                case 'bringForward':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'bringForward' }
+                    }));
+                    break;
+
+                case 'sendBackward':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'sendBackward' }
+                    }));
+                    break;
+
+                case 'bringToFront':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'bringToFront' }
+                    }));
+                    break;
+
+                case 'sendToBack':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'sendToBack' }
+                    }));
+                    break;
+
+                case 'matchSize':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'matchSize' }
+                    }));
+                    break;
+
+                case 'swapElements':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'swapElements' }
+                    }));
+                    break;
+
+                case 'wrapInContainer':
+                    document.dispatchEvent(new CustomEvent('vbp:executeAction', {
+                        detail: { action: 'wrapInContainer' }
+                    }));
+                    break;
+
                 case 'togglePanel':
                     this.togglePanel(cmd.value);
                     break;
@@ -504,6 +555,7 @@ document.addEventListener('alpine:init', function() {
                 'layout': 'Layout',
                 'acciones': 'Acciones',
                 'alineacion': 'Alineación',
+                'orden': 'Orden y Transformación',
                 'vista': 'Vista',
                 'exportar': 'Exportar',
                 'responsive': 'Responsive'

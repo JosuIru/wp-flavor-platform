@@ -97,6 +97,18 @@ document.addEventListener('alpine:init', function() {
                 'ctrl+shift+arrowright': 'stackHorizontal',
                 'ctrl+shift+arrowdown': 'stackVertical',
 
+                // Transformaciones
+                'ctrl+[': 'sendBackward',
+                'ctrl+]': 'bringForward',
+                'ctrl+shift+[': 'sendToBack',
+                'ctrl+shift+]': 'bringToFront',
+                'ctrl+m': 'matchSize',
+                'ctrl+alt+s': 'swapElements',
+
+                // Envolver/Desenvolver
+                'ctrl+shift+w': 'wrapInContainer',
+                'ctrl+shift+u': 'ungroup',
+
                 // Bloqueo
                 'ctrl+shift+l': 'toggleLock',
 
@@ -453,6 +465,36 @@ document.addEventListener('alpine:init', function() {
 
                     case 'stackVertical':
                         this.stackElements('vertical');
+                        break;
+
+                    // === ORDEN Z ===
+                    case 'sendBackward':
+                        this.changeZOrder('backward');
+                        break;
+
+                    case 'bringForward':
+                        this.changeZOrder('forward');
+                        break;
+
+                    case 'sendToBack':
+                        this.changeZOrder('back');
+                        break;
+
+                    case 'bringToFront':
+                        this.changeZOrder('front');
+                        break;
+
+                    // === TRANSFORMACIONES ===
+                    case 'matchSize':
+                        this.matchSize();
+                        break;
+
+                    case 'swapElements':
+                        this.swapElements();
+                        break;
+
+                    case 'wrapInContainer':
+                        this.wrapInContainer();
                         break;
 
                     // === BLOQUEO ===
@@ -1181,6 +1223,226 @@ document.addEventListener('alpine:init', function() {
                     'bottom': 'Alineado abajo'
                 };
                 this.showNotification(labels[alignment] || 'Alineado');
+            },
+
+            /**
+             * Cambiar orden Z de elementos
+             */
+            changeZOrder: function(direction) {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona un elemento', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                var self = this;
+                store.selection.elementIds.forEach(function(id) {
+                    var currentIndex = store.elements.findIndex(function(el) {
+                        return el.id === id;
+                    });
+
+                    if (currentIndex === -1) return;
+
+                    var newIndex;
+                    switch (direction) {
+                        case 'backward':
+                            newIndex = Math.max(0, currentIndex - 1);
+                            break;
+                        case 'forward':
+                            newIndex = Math.min(store.elements.length - 1, currentIndex + 1);
+                            break;
+                        case 'back':
+                            newIndex = 0;
+                            break;
+                        case 'front':
+                            newIndex = store.elements.length - 1;
+                            break;
+                    }
+
+                    if (newIndex !== currentIndex) {
+                        store.moveElement(currentIndex, newIndex);
+                    }
+                });
+
+                store.isDirty = true;
+
+                var labels = {
+                    'backward': '⬇ Un nivel atrás',
+                    'forward': '⬆ Un nivel adelante',
+                    'back': '⬇ Al fondo',
+                    'front': '⬆ Al frente'
+                };
+                this.showNotification(labels[direction]);
+            },
+
+            /**
+             * Igualar tamaño de elementos al primero seleccionado
+             */
+            matchSize: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length < 2) {
+                    this.showNotification('Selecciona al menos 2 elementos', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                // El primer elemento seleccionado es la referencia
+                var referenceId = store.selection.elementIds[0];
+                var refElement = store.getElement(referenceId);
+                if (!refElement) return;
+
+                var refBounds = this.getElementBounds(refElement);
+                if (!refBounds) return;
+
+                var count = 0;
+                var self = this;
+
+                store.selection.elementIds.slice(1).forEach(function(id) {
+                    var element = store.getElement(id);
+                    if (!element || element.locked) return;
+
+                    var estilos = JSON.parse(JSON.stringify(element.styles || {}));
+                    if (!estilos.size) estilos.size = {};
+
+                    estilos.size.width = refBounds.width + 'px';
+                    estilos.size.height = refBounds.height + 'px';
+
+                    store.updateElement(id, { styles: estilos });
+                    count++;
+                });
+
+                store.isDirty = true;
+                this.showNotification('📐 ' + count + ' elemento(s) igualado(s)');
+            },
+
+            /**
+             * Intercambiar posición de dos elementos
+             */
+            swapElements: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length !== 2) {
+                    this.showNotification('Selecciona exactamente 2 elementos', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                var id1 = store.selection.elementIds[0];
+                var id2 = store.selection.elementIds[1];
+
+                var el1 = store.getElement(id1);
+                var el2 = store.getElement(id2);
+
+                if (!el1 || !el2) return;
+                if (el1.locked || el2.locked) {
+                    this.showNotification('No se pueden intercambiar elementos bloqueados', 'warning');
+                    return;
+                }
+
+                var bounds1 = this.getElementBounds(el1);
+                var bounds2 = this.getElementBounds(el2);
+
+                if (!bounds1 || !bounds2) return;
+
+                // Intercambiar posiciones
+                var estilos1 = JSON.parse(JSON.stringify(el1.styles || {}));
+                var estilos2 = JSON.parse(JSON.stringify(el2.styles || {}));
+
+                if (!estilos1.position) estilos1.position = {};
+                if (!estilos2.position) estilos2.position = {};
+
+                // Guardar posiciones
+                var temp = {
+                    left: estilos1.position.left,
+                    top: estilos1.position.top
+                };
+
+                estilos1.position.left = estilos2.position.left;
+                estilos1.position.top = estilos2.position.top;
+                estilos2.position.left = temp.left;
+                estilos2.position.top = temp.top;
+
+                store.updateElement(id1, { styles: estilos1 });
+                store.updateElement(id2, { styles: estilos2 });
+
+                store.isDirty = true;
+                this.showNotification('🔄 Posiciones intercambiadas');
+            },
+
+            /**
+             * Envolver elementos en un contenedor
+             */
+            wrapInContainer: function() {
+                var store = Alpine.store('vbp');
+
+                if (store.selection.elementIds.length === 0) {
+                    this.showNotification('Selecciona elementos para envolver', 'warning');
+                    return;
+                }
+
+                store.saveToHistory();
+
+                // Obtener bounds combinados
+                var bounds = this.getSelectionBounds(store);
+                if (!bounds) return;
+
+                // Copiar elementos seleccionados
+                var elementosAEnvolver = [];
+                var indicesMasAlto = 0;
+
+                store.selection.elementIds.forEach(function(id) {
+                    var elemento = store.getElement(id);
+                    var indice = store.elements.findIndex(function(el) { return el.id === id; });
+                    if (elemento) {
+                        elementosAEnvolver.push(JSON.parse(JSON.stringify(elemento)));
+                        if (indice > indicesMasAlto) indicesMasAlto = indice;
+                    }
+                });
+
+                // Eliminar elementos originales
+                store.selection.elementIds.forEach(function(id) {
+                    var indice = store.elements.findIndex(function(el) { return el.id === id; });
+                    if (indice !== -1) {
+                        store.elements.splice(indice, 1);
+                    }
+                });
+
+                // Crear contenedor
+                var containerId = 'el_' + Math.random().toString(36).substr(2, 9);
+                var container = {
+                    id: containerId,
+                    type: 'container',
+                    name: 'Contenedor (' + elementosAEnvolver.length + ' elementos)',
+                    visible: true,
+                    locked: false,
+                    children: elementosAEnvolver,
+                    data: {},
+                    styles: {
+                        position: {
+                            left: bounds.left + 'px',
+                            top: bounds.top + 'px'
+                        },
+                        size: {
+                            width: bounds.width + 'px',
+                            height: bounds.height + 'px'
+                        }
+                    }
+                };
+
+                // Insertar contenedor
+                var posicionInsercion = Math.min(indicesMasAlto, store.elements.length);
+                store.elements.splice(posicionInsercion, 0, container);
+
+                store.isDirty = true;
+                store.setSelection([containerId]);
+
+                this.showNotification('📦 Envueltos en contenedor');
             },
 
             /**
@@ -2072,6 +2334,15 @@ window.vbpKeyboard = {
                 { keys: 'Ctrl + Alt + V', action: 'Distribuir verticalmente' },
                 { keys: 'Ctrl + Shift + →', action: 'Apilar horizontal' },
                 { keys: 'Ctrl + Shift + ↓', action: 'Apilar vertical' }
+            ]},
+            { category: 'Orden y Transformación', shortcuts: [
+                { keys: 'Ctrl + ]', action: 'Traer adelante' },
+                { keys: 'Ctrl + [', action: 'Enviar atrás' },
+                { keys: 'Ctrl + Shift + ]', action: 'Traer al frente' },
+                { keys: 'Ctrl + Shift + [', action: 'Enviar al fondo' },
+                { keys: 'Ctrl + M', action: 'Igualar tamaño' },
+                { keys: 'Ctrl + Alt + S', action: 'Intercambiar posición' },
+                { keys: 'Ctrl + Shift + W', action: 'Envolver en contenedor' }
             ]},
             { category: 'Productividad', shortcuts: [
                 { keys: 'Ctrl + /', action: 'Paleta de comandos' },
