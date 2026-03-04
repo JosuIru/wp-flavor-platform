@@ -2046,19 +2046,6 @@ KNOWLEDGE;
             echo '<div class="wrap"><h1>' . esc_html__('Usuarios', 'flavor-chat-ia') . '</h1></div>';
         }
     }
-
-    /**
-     * Renderiza página de configuración
-     */
-    public function render_admin_config() {
-        $views_path = dirname(__FILE__) . '/views/configuracion.php';
-        if (file_exists($views_path)) {
-            include $views_path;
-        } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Configuración - Banco de Tiempo', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Vista de configuración no disponible.', 'flavor-chat-ia') . '</p></div>';
-        }
-    }
 }
 
 // Registrar handlers AJAX para banco de tiempo
