@@ -24,6 +24,12 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         $this->id = 'banco_tiempo';
         $this->name = 'Banco de Tiempo'; // Translation loaded on init
         $this->description = 'Sistema de intercambio de servicios por horas entre miembros.'; // Translation loaded on init
+        $this->module_role = 'vertical';
+        $this->ecosystem_supports_modules = ['ayuda_vecinal', 'comunidades'];
+        $this->dashboard_parent_module = 'comunidades';
+        $this->dashboard_satellite_priority = 40;
+        $this->dashboard_client_contexts = ['cuidados', 'intercambio', 'comunidad'];
+        $this->dashboard_admin_contexts = ['cuidados', 'gestion', 'admin'];
 
         parent::__construct();
     }
@@ -83,6 +89,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('flavor_banco_tiempo_servicio_completado', [$this, 'on_servicio_completado'], 10, 2);
+        add_action('flavor_comunidad_creada', [$this, 'provisionar_servicios_comunidad'], 10, 2);
 
         // Registrar páginas de administración
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
@@ -149,7 +156,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $db_version = get_option('flavor_banco_tiempo_db_version', '0');
-        $current_version = '4.2.0';
+        $current_version = '4.2.1';
 
         // Si la versión es antigua, crear/actualizar todas las tablas
         if (version_compare($db_version, $current_version, '<')) {
@@ -198,6 +205,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         $sql_servicios = "CREATE TABLE $tabla_servicios (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             usuario_id bigint(20) unsigned NOT NULL,
+            comunidad_id bigint(20) unsigned DEFAULT NULL,
             titulo varchar(255) NOT NULL,
             descripcion text NOT NULL,
             categoria varchar(100) DEFAULT 'otros',
@@ -209,6 +217,7 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
             fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY usuario_id (usuario_id),
+            KEY comunidad_id (comunidad_id),
             KEY categoria (categoria),
             KEY estado (estado)
         ) $charset_collate;";
@@ -361,6 +370,53 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Provisiona un servicio inicial asociado a la comunidad.
+     *
+     * @param int   $comunidad_id ID de la comunidad.
+     * @param array $datos        Contexto de creación.
+     */
+    public function provisionar_servicios_comunidad($comunidad_id, $datos = []) {
+        global $wpdb;
+
+        $comunidad_id = absint($comunidad_id);
+        $creador_id = absint($datos['creador_id'] ?? 0);
+        if ($comunidad_id <= 0 || $creador_id <= 0) {
+            return;
+        }
+
+        $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+            return;
+        }
+
+        $existe = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_servicios WHERE comunidad_id = %d",
+            $comunidad_id
+        ));
+
+        if ($existe > 0) {
+            return;
+        }
+
+        $nombre = sanitize_text_field($datos['nombre'] ?? __('Comunidad', 'flavor-chat-ia'));
+
+        $wpdb->insert(
+            $tabla_servicios,
+            [
+                'usuario_id' => $creador_id,
+                'comunidad_id' => $comunidad_id,
+                'titulo' => sprintf(__('Apoyo vecinal en %s', 'flavor-chat-ia'), $nombre),
+                'descripcion' => __('Servicio inicial para activar el banco del tiempo de la comunidad. Puedes editarlo o crear nuevos servicios desde la pestaña Banco del tiempo.', 'flavor-chat-ia'),
+                'categoria' => 'otros',
+                'horas_estimadas' => 1,
+                'estado' => 'activo',
+                'fecha_publicacion' => current_time('mysql'),
+            ],
+            ['%d', '%d', '%s', '%s', '%s', '%f', '%s', '%s']
+        );
+    }
+
+    /**
      * Callback cuando un servicio se completa
      */
     public function on_servicio_completado($intercambio_id, $horas) {
@@ -436,6 +492,11 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
             'ranking' => 'ranking',
             'reputacion' => 'reputacion',
             'ofrecer' => 'ofrecer_servicio',
+            'foro' => 'foro_servicio',
+            'chat' => 'chat_servicio',
+            'multimedia' => 'multimedia_servicio',
+            'red-social' => 'red_social_servicio',
+            'red_social' => 'red_social_servicio',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -453,17 +514,58 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Obtiene el servicio contextual para tabs satélite.
+     *
+     * @param array $params
+     * @return array|null
+     */
+    private function resolve_contextual_servicio(array $params = []) {
+        global $wpdb;
+        $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
+            return null;
+        }
+
+        $servicio_id = absint(
+            $params['servicio_id']
+            ?? $params['id']
+            ?? ($_GET['servicio_id'] ?? 0)
+            ?? ($_GET['id'] ?? 0)
+        );
+
+        if ($servicio_id <= 0) {
+            return null;
+        }
+
+        $servicio = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM {$tabla_servicios} WHERE id = %d LIMIT 1", $servicio_id),
+            ARRAY_A
+        );
+
+        if (!is_array($servicio) || empty($servicio['id'])) {
+            return null;
+        }
+
+        return $servicio;
+    }
+
+    /**
      * Acción: Render del listado frontend de servicios
      */
     private function action_servicios($params) {
         $categoria = sanitize_text_field($params['categoria'] ?? '');
         $limite = absint($params['limite'] ?? 12);
+        $comunidad_id = absint($params['comunidad_id'] ?? ($_GET['comunidad_id'] ?? 0));
 
-        return do_shortcode(sprintf(
-            '[banco_tiempo_servicios categoria="%s" limite="%d"]',
+        $shortcode = sprintf(
+            '[banco_tiempo_servicios categoria="%s" limite="%d" mostrar_propios="0"%s]',
             esc_attr($categoria),
-            $limite
-        ));
+            $limite,
+            $comunidad_id > 0 ? sprintf(' comunidad_id="%d"', $comunidad_id) : ''
+        );
+
+        return do_shortcode($shortcode);
     }
 
     /**
@@ -721,6 +823,85 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
                 $titulo
             ),
         ];
+    }
+
+    /**
+     * Acción: Foro contextual del servicio.
+     */
+    private function action_foro_servicio($params) {
+        $servicio = $this->resolve_contextual_servicio((array) $params);
+        if (!$servicio) {
+            return '<p>' . esc_html__('Selecciona un servicio para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $header  = '<div class="flavor-contextual-section-header">';
+        $header .= '<h3>' . esc_html__('Foro del servicio', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p>' . esc_html($servicio['titulo']) . '</p>';
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor_foros_integrado entidad="servicio_bt" entidad_id="' . absint($servicio['id']) . '"]');
+    }
+
+    /**
+     * Acción: Chat contextual del servicio.
+     */
+    private function action_chat_servicio($params) {
+        if (!is_user_logged_in()) {
+            return '<p>' . esc_html__('Debes iniciar sesión para acceder al chat del servicio.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $servicio = $this->resolve_contextual_servicio((array) $params);
+        if (!$servicio) {
+            return '<p>' . esc_html__('Selecciona un servicio para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $header  = '<div class="flavor-contextual-section-header">';
+        $header .= '<h3>' . esc_html__('Chat del servicio', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p>' . esc_html($servicio['titulo']) . '</p>';
+        $header .= '</div>';
+        $header .= '<p><a class="flavor-btn flavor-btn-secondary" href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?servicio_id=' . absint($servicio['id']))) . '">' . esc_html__('Abrir chat completo', 'flavor-chat-ia') . '</a></p>';
+
+        return $header . do_shortcode('[flavor_chat_grupo_integrado entidad="servicio_bt" entidad_id="' . absint($servicio['id']) . '"]');
+    }
+
+    /**
+     * Acción: Galería contextual del servicio.
+     */
+    private function action_multimedia_servicio($params) {
+        $servicio = $this->resolve_contextual_servicio((array) $params);
+        if (!$servicio) {
+            return '<p>' . esc_html__('Selecciona un servicio para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $header  = '<div class="flavor-contextual-section-header">';
+        $header .= '<h3>' . esc_html__('Multimedia del servicio', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p>' . esc_html($servicio['titulo']) . '</p>';
+        $header .= '</div>';
+        $header .= '<p><a class="flavor-btn flavor-btn-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?servicio_id=' . absint($servicio['id']))) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p>';
+
+        return $header . do_shortcode('[flavor_multimedia_galeria entidad="servicio_bt" entidad_id="' . absint($servicio['id']) . '"]');
+    }
+
+    /**
+     * Acción: Feed social contextual del servicio.
+     */
+    private function action_red_social_servicio($params) {
+        if (!is_user_logged_in()) {
+            return '<p>' . esc_html__('Debes iniciar sesión para ver la actividad social del servicio.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $servicio = $this->resolve_contextual_servicio((array) $params);
+        if (!$servicio) {
+            return '<p>' . esc_html__('Selecciona un servicio para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $header  = '<div class="flavor-contextual-section-header">';
+        $header .= '<h3>' . esc_html__('Actividad social del servicio', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p>' . esc_html($servicio['titulo']) . '</p>';
+        $header .= '</div>';
+        $header .= '<p><a class="flavor-btn flavor-btn-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?servicio_id=' . absint($servicio['id']))) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p>';
+
+        return $header . do_shortcode('[flavor_social_feed entidad="servicio_bt" entidad_id="' . absint($servicio['id']) . '"]');
     }
 
     /**
@@ -1073,7 +1254,7 @@ KNOWLEDGE;
                 [
                     'slug' => 'banco-tiempo-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'banco-tiempo-intercambios',
@@ -1133,6 +1314,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
         $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         $estadisticas = [];
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
@@ -1148,7 +1330,7 @@ KNOWLEDGE;
             'valor' => $intercambios_activos,
             'label' => __('Intercambios activos', 'flavor-chat-ia'),
             'color' => $intercambios_activos > 0 ? 'blue' : 'gray',
-            'enlace' => admin_url('admin.php?page=bt-intercambios'),
+            'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/banco-tiempo/') : admin_url('admin.php?page=bt-intercambios'),
         ];
 
         // Total de miembros participantes
@@ -1160,7 +1342,7 @@ KNOWLEDGE;
             'valor' => $total_miembros,
             'label' => __('Miembros', 'flavor-chat-ia'),
             'color' => $total_miembros > 0 ? 'green' : 'gray',
-            'enlace' => admin_url('admin.php?page=bt-usuarios'),
+            'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/banco-tiempo/') : admin_url('admin.php?page=bt-usuarios'),
         ];
 
         return $estadisticas;
@@ -1170,14 +1352,24 @@ KNOWLEDGE;
      * Renderiza el dashboard del banco de tiempo
      */
     public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         global $wpdb;
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
         $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Banco de Tiempo', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Servicio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bt-servicios&nuevo=1'), 'class' => 'button-primary'],
-        ]);
+        $acciones = $is_dashboard_viewer
+            ? [
+                ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
+            ]
+            : [
+                ['label' => __('Nuevo Servicio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bt-servicios&nuevo=1'), 'class' => 'button-primary'],
+            ];
+        $this->render_page_header(__('Dashboard de Banco de Tiempo', 'flavor-chat-ia'), $acciones);
+
+        if ($is_dashboard_viewer) {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. La creación de servicios y la gestión de intercambios siguen reservadas a administración.', 'flavor-chat-ia') . '</p></div>';
+        }
 
         // Estadísticas generales
         $total_servicios = Flavor_Chat_Helpers::tabla_existe($tabla_servicios)
@@ -1212,9 +1404,21 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Intercambios', 'flavor-chat-ia'));
+        $this->render_page_header(
+            __('Gestión de Intercambios', 'flavor-chat-ia'),
+            $is_dashboard_viewer
+                ? [
+                    ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
+                ]
+                : []
+        );
+
+        if ($is_dashboard_viewer) {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los intercambios pueden revisarse, pero su gestión operativa sigue reservada a administración.', 'flavor-chat-ia') . '</p></div>';
+        }
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_transacciones)) {
             echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
@@ -1320,9 +1524,21 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
         $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Miembros del Banco de Tiempo', 'flavor-chat-ia'));
+        $this->render_page_header(
+            __('Miembros del Banco de Tiempo', 'flavor-chat-ia'),
+            $is_dashboard_viewer
+                ? [
+                    ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
+                ]
+                : []
+        );
+
+        if ($is_dashboard_viewer) {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los perfiles detallados de usuario siguen reservados a administración.', 'flavor-chat-ia') . '</p></div>';
+        }
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
             echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
@@ -1377,7 +1593,11 @@ KNOWLEDGE;
                 echo '<td>' . esc_html(number_format($horas_dadas, 1)) . 'h</td>';
                 echo '<td>' . esc_html(number_format($horas_recibidas, 1)) . 'h</td>';
                 echo '<td><span class="' . esc_attr($clase_saldo) . '">' . esc_html(($saldo >= 0 ? '+' : '') . number_format($saldo, 1)) . 'h</span></td>';
-                echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $miembro['usuario_id'])) . '" class="button button-small">' . __('Ver Perfil', 'flavor-chat-ia') . '</a></td>';
+                if ($is_dashboard_viewer) {
+                    echo '<td><span class="description">' . __('Solo lectura', 'flavor-chat-ia') . '</span></td>';
+                } else {
+                    echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $miembro['usuario_id'])) . '" class="button button-small">' . __('Ver Perfil', 'flavor-chat-ia') . '</a></td>';
+                }
                 echo '</tr>';
             }
 
@@ -1397,8 +1617,10 @@ KNOWLEDGE;
         $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
         $mensaje_exito = '';
         $mensaje_error = '';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
 
         if (
+            !$is_dashboard_viewer &&
             isset($_POST['bt_guardar_servicio']) &&
             check_admin_referer('bt_editar_servicio', 'bt_nonce')
         ) {
@@ -1433,14 +1655,25 @@ KNOWLEDGE;
         }
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Servicios del Banco de Tiempo', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Servicio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bt-servicios&nuevo=1'), 'class' => 'button-primary'],
-        ]);
+        $this->render_page_header(
+            __('Servicios del Banco de Tiempo', 'flavor-chat-ia'),
+            $is_dashboard_viewer
+                ? [
+                    ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/banco-tiempo/'), 'class' => ''],
+                ]
+                : [
+                    ['label' => __('Nuevo Servicio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bt-servicios&nuevo=1'), 'class' => 'button-primary'],
+                ]
+        );
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_servicios)) {
             echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
             echo '</div>';
             return;
+        }
+
+        if ($is_dashboard_viewer) {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. La creación y edición de servicios siguen reservadas a administración.', 'flavor-chat-ia') . '</p></div>';
         }
 
         if ($mensaje_exito) {
@@ -1811,6 +2044,19 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Usuarios', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderiza página de configuración
+     */
+    public function render_admin_config() {
+        $views_path = dirname(__FILE__) . '/views/configuracion.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración - Banco de Tiempo', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista de configuración no disponible.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 }

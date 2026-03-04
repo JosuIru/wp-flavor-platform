@@ -170,6 +170,9 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         if (!wp_next_scheduled('flavor_parkings_check_reservas_expiradas')) {
             wp_schedule_event(time(), 'hourly', 'flavor_parkings_check_reservas_expiradas');
         }
+
+        // Registrar páginas de administración
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -730,7 +733,7 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
                         <?php _e('Reservar plaza', 'flavor-chat-ia'); ?>
                     </button>
                 <?php else: ?>
-                    <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="btn-login-reservar">
+                    <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="btn-login-reservar">
                         <?php _e('Iniciar sesion para reservar', 'flavor-chat-ia'); ?>
                     </a>
                 <?php endif; ?>
@@ -747,7 +750,7 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="flavor-parkings-login-requerido">' .
                    '<p>' . __('Debes iniciar sesion para ver tus reservas.', 'flavor-chat-ia') . '</p>' .
-                   '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="btn-login">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
+                   '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn-login">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
                    '</div>';
         }
 
@@ -811,7 +814,7 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="flavor-parkings-login-requerido">' .
                    '<p>' . __('Debes iniciar sesion para solicitar una plaza.', 'flavor-chat-ia') . '</p>' .
-                   '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="btn-login">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
+                   '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn-login">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
                    '</div>';
         }
 
@@ -3776,7 +3779,7 @@ KNOWLEDGE;
                 [
                     'slug' => 'flavor-parkings-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-parkings-plazas',
@@ -3825,6 +3828,18 @@ KNOWLEDGE;
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**
@@ -4217,5 +4232,44 @@ KNOWLEDGE;
                 'historico'      => true,
             ],
         ];
+    }
+
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     * Las páginas son accesibles vía URL directa pero no aparecen en el menú
+     * Se acceden desde el Dashboard Unificado
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas (null como parent = no aparecen en menú)
+        add_submenu_page(null, __('Parkings - Calendario', 'flavor-chat-ia'), __('Calendario', 'flavor-chat-ia'), $capability, 'flavor-parkings-calendario', [$this, 'render_pagina_calendario']);
+        add_submenu_page(null, __('Parkings - Plazas', 'flavor-chat-ia'), __('Plazas', 'flavor-chat-ia'), $capability, 'flavor-parkings-plazas', [$this, 'render_pagina_plazas']);
+        add_submenu_page(null, __('Parkings - Propietarios', 'flavor-chat-ia'), __('Propietarios', 'flavor-chat-ia'), $capability, 'flavor-parkings-propietarios', [$this, 'render_pagina_propietarios']);
+        add_submenu_page(null, __('Parkings - Reservas', 'flavor-chat-ia'), __('Reservas', 'flavor-chat-ia'), $capability, 'flavor-parkings-reservas', [$this, 'render_pagina_reservas']);
+    }
+
+    public function render_pagina_calendario() {
+        $views_path = dirname(__FILE__) . '/views/calendario.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Calendario de Reservas', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_plazas() {
+        $views_path = dirname(__FILE__) . '/views/plazas.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Plazas', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_propietarios() {
+        $views_path = dirname(__FILE__) . '/views/propietarios.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Propietarios', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_reservas() {
+        $views_path = dirname(__FILE__) . '/views/reservas.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Reservas', 'flavor-chat-ia') . '</h1></div>'; }
     }
 }

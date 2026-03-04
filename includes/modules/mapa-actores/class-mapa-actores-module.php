@@ -60,6 +60,9 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
         $this->register_rest_routes();
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+
+        // Registrar páginas de administración
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -912,7 +915,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'actores-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'actores-listado',
@@ -945,6 +948,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_actores = $wpdb->prefix . 'flavor_mapa_actores';
         $tabla_relaciones = $wpdb->prefix . 'flavor_mapa_actores_relaciones';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
 
         $total_actores = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_actores WHERE activo = 1");
         $total_relaciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_relaciones");
@@ -955,14 +959,14 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 'valor' => $total_actores,
                 'label' => __('Actores', 'flavor-chat-ia'),
                 'color' => 'blue',
-                'enlace' => admin_url('admin.php?page=actores-listado'),
+                'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/participacion/') : admin_url('admin.php?page=actores-listado'),
             ],
             [
                 'icon' => 'dashicons-admin-links',
                 'valor' => $total_relaciones,
                 'label' => __('Relaciones', 'flavor-chat-ia'),
                 'color' => 'purple',
-                'enlace' => admin_url('admin.php?page=actores-relaciones'),
+                'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/participacion/') : admin_url('admin.php?page=actores-relaciones'),
             ],
         ];
     }
@@ -983,6 +987,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      * Renderiza el dashboard de administracion del modulo
      */
     public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         global $wpdb;
         $tabla_actores = $wpdb->prefix . 'flavor_mapa_actores';
         $tabla_relaciones = $wpdb->prefix . 'flavor_mapa_actores_relaciones';
@@ -1024,17 +1029,42 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
              LIMIT 5"
         );
 
-        $this->render_page_header(__('Mapa de Actores - Dashboard', 'flavor-chat-ia'), [
-            [
-                'label' => __('Nuevo Actor', 'flavor-chat-ia'),
-                'url' => admin_url('admin.php?page=actores-listado&action=nuevo'),
-                'class' => 'button-primary',
-            ],
-        ]);
+        $acciones = $is_dashboard_viewer
+            ? [
+                [
+                    'label' => __('Ver en portal', 'flavor-chat-ia'),
+                    'url' => home_url('/mi-portal/participacion/'),
+                    'class' => '',
+                ],
+            ]
+            : [
+                [
+                    'label' => __('Nuevo Actor', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=actores-listado&action=nuevo'),
+                    'class' => 'button-primary',
+                ],
+            ];
+        $this->render_page_header(__('Mapa de Actores - Dashboard', 'flavor-chat-ia'), $acciones);
         ?>
         <div class="wrap flavor-admin-dashboard">
+            <?php if ($is_dashboard_viewer) : ?>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. El alta de actores, relaciones y configuración estratégica sigue reservada a administración.', 'flavor-chat-ia'); ?></p></div>
+            <?php endif; ?>
+            <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
+                <?php $this->render_admin_module_hub([
+                    'description' => __('Acceso visible a listado, relaciones, configuración y al bloque principal de análisis del mapa.', 'flavor-chat-ia'),
+                    'stats_anchor' => '#mapa-actores-stats',
+                    'extra_items' => [
+                        [
+                            'label' => __('Portal', 'flavor-chat-ia'),
+                            'url' => home_url('/mi-portal/participacion/'),
+                            'icon' => 'dashicons-external',
+                        ],
+                    ],
+                ]); ?>
+            <?php endif; ?>
             <!-- KPIs principales -->
-            <div class="flavor-admin-kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div id="mapa-actores-stats" class="flavor-admin-kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px;">
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <span class="dashicons dashicons-networking" style="font-size: 32px; color: #2271b1; margin-bottom: 10px;"></span>
                     <div style="font-size: 28px; font-weight: 600;"><?php echo esc_html($estadisticas['total_actores']); ?></div>
@@ -1108,9 +1138,13 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                     ?>
                                         <tr>
                                             <td>
-                                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $actor_reciente->id)); ?>">
+                                                <?php if ($is_dashboard_viewer) : ?>
                                                     <?php echo esc_html($actor_reciente->nombre); ?>
-                                                </a>
+                                                <?php else : ?>
+                                                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $actor_reciente->id)); ?>">
+                                                        <?php echo esc_html($actor_reciente->nombre); ?>
+                                                    </a>
+                                                <?php endif; ?>
                                             </td>
                                             <td><?php echo esc_html($tipos_labels[$actor_reciente->tipo] ?? $actor_reciente->tipo); ?></td>
                                             <td>
@@ -1132,11 +1166,13 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
-                            <p style="margin-bottom: 0; margin-top: 15px;">
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado')); ?>" class="button">
-                                    <?php _e('Ver todos los actores', 'flavor-chat-ia'); ?>
-                                </a>
-                            </p>
+                            <?php if (!$is_dashboard_viewer) : ?>
+                                <p style="margin-bottom: 0; margin-top: 15px;">
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado')); ?>" class="button">
+                                        <?php _e('Ver todos los actores', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </p>
+                            <?php endif; ?>
                         <?php else: ?>
                             <p style="color: #646970;"><?php _e('No hay actores registrados.', 'flavor-chat-ia'); ?></p>
                         <?php endif; ?>
@@ -1163,9 +1199,13 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                         <span title="<?php echo esc_attr(ucfirst(str_replace('_', ' ', $actor_influyente->nivel_influencia))); ?>">
                                             <?php echo esc_html($influencia_icons[$actor_influyente->nivel_influencia] ?? '●'); ?>
                                         </span>
-                                        <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $actor_influyente->id)); ?>">
+                                        <?php if ($is_dashboard_viewer) : ?>
                                             <?php echo esc_html($actor_influyente->nombre); ?>
-                                        </a>
+                                        <?php else : ?>
+                                            <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $actor_influyente->id)); ?>">
+                                                <?php echo esc_html($actor_influyente->nombre); ?>
+                                            </a>
+                                        <?php endif; ?>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
@@ -1177,17 +1217,19 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                     <!-- Acciones rapidas -->
                     <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                         <h3 style="margin-top: 0;"><?php _e('Acciones Rapidas', 'flavor-chat-ia'); ?></h3>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=nuevo')); ?>" class="button button-primary" style="text-align: center;">
-                                <?php _e('Agregar Actor', 'flavor-chat-ia'); ?>
-                            </a>
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=actores-relaciones')); ?>" class="button" style="text-align: center;">
-                                <?php _e('Gestionar Relaciones', 'flavor-chat-ia'); ?>
-                            </a>
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=actores-config')); ?>" class="button" style="text-align: center;">
-                                <?php _e('Configuracion', 'flavor-chat-ia'); ?>
-                            </a>
-                        </div>
+                        <?php if (!$is_dashboard_viewer) : ?>
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=nuevo')); ?>" class="button button-primary" style="text-align: center;">
+                                    <?php _e('Agregar Actor', 'flavor-chat-ia'); ?>
+                                </a>
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-relaciones')); ?>" class="button" style="text-align: center;">
+                                    <?php _e('Gestionar Relaciones', 'flavor-chat-ia'); ?>
+                                </a>
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-config')); ?>" class="button" style="text-align: center;">
+                                    <?php _e('Configuracion', 'flavor-chat-ia'); ?>
+                                </a>
+                            </div>
+                        <?php endif; ?>
 
                         <?php if ($estadisticas['relaciones_sin_verificar'] > 0): ?>
                             <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 4px; border-left: 4px solid #ffc107;">
@@ -1206,11 +1248,24 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
+    }
+
+    /**
      * Renderiza el listado de actores en administracion
      */
     public function render_admin_listado() {
         global $wpdb;
         $tabla_actores = $wpdb->prefix . 'flavor_mapa_actores';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
 
         // Parametros de filtrado y paginacion
         $pagina_actual = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
@@ -1259,15 +1314,29 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
         $parametros_consulta = array_merge($where_parametros, [$por_pagina, $offset]);
         $actores = $wpdb->get_results($wpdb->prepare($consulta_actores, $parametros_consulta));
 
-        $this->render_page_header(__('Listado de Actores', 'flavor-chat-ia'), [
-            [
-                'label' => __('Nuevo Actor', 'flavor-chat-ia'),
-                'url' => admin_url('admin.php?page=actores-listado&action=nuevo'),
-                'class' => 'button-primary',
-            ],
-        ]);
+        $this->render_page_header(
+            __('Listado de Actores', 'flavor-chat-ia'),
+            $is_dashboard_viewer
+                ? [
+                    [
+                        'label' => __('Ver en portal', 'flavor-chat-ia'),
+                        'url' => home_url('/mi-portal/participacion/'),
+                        'class' => '',
+                    ],
+                ]
+                : [
+                    [
+                        'label' => __('Nuevo Actor', 'flavor-chat-ia'),
+                        'url' => admin_url('admin.php?page=actores-listado&action=nuevo'),
+                        'class' => 'button-primary',
+                    ],
+                ]
+        );
         ?>
         <div class="wrap">
+            <?php if ($is_dashboard_viewer) : ?>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista de consulta para gestor de grupos. El alta, edición y configuración del mapa de actores siguen reservadas a administración.', 'flavor-chat-ia'); ?></p></div>
+            <?php endif; ?>
             <!-- Filtros -->
             <form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                 <input type="hidden" name="page" value="actores-listado">
@@ -1338,9 +1407,13 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                             <tr>
                                 <td>
                                     <strong>
-                                        <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $actor->id)); ?>">
+                                        <?php if ($is_dashboard_viewer) : ?>
                                             <?php echo esc_html($actor->nombre); ?>
-                                        </a>
+                                        <?php else : ?>
+                                            <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $actor->id)); ?>">
+                                                <?php echo esc_html($actor->nombre); ?>
+                                            </a>
+                                        <?php endif; ?>
                                     </strong>
                                     <?php if ($actor->verificado): ?>
                                         <span title="<?php esc_attr_e('Verificado', 'flavor-chat-ia'); ?>">✓</span>
@@ -1355,14 +1428,18 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                 <td><?php echo esc_html($influencia_labels[$actor->nivel_influencia] ?? $actor->nivel_influencia); ?></td>
                                 <td><?php echo esc_html($actor->municipio ?: '-'); ?></td>
                                 <td>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=editar&id=' . $actor->id)); ?>"
-                                       class="button button-small" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
-                                        <span class="dashicons dashicons-edit" style="vertical-align: middle;"></span>
-                                    </a>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-relaciones&actor_id=' . $actor->id)); ?>"
-                                       class="button button-small" title="<?php esc_attr_e('Ver Relaciones', 'flavor-chat-ia'); ?>">
-                                        <span class="dashicons dashicons-admin-links" style="vertical-align: middle;"></span>
-                                    </a>
+                                    <?php if ($is_dashboard_viewer) : ?>
+                                        <span class="description"><?php esc_html_e('Solo lectura', 'flavor-chat-ia'); ?></span>
+                                    <?php else : ?>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=editar&id=' . $actor->id)); ?>"
+                                           class="button button-small" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                            <span class="dashicons dashicons-edit" style="vertical-align: middle;"></span>
+                                        </a>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=actores-relaciones&actor_id=' . $actor->id)); ?>"
+                                           class="button button-small" title="<?php esc_attr_e('Ver Relaciones', 'flavor-chat-ia'); ?>">
+                                            <span class="dashicons dashicons-admin-links" style="vertical-align: middle;"></span>
+                                        </a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -1419,6 +1496,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_actores = $wpdb->prefix . 'flavor_mapa_actores';
         $tabla_relaciones = $wpdb->prefix . 'flavor_mapa_actores_relaciones';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
 
         // Filtro por actor especifico
         $actor_id_filtro = isset($_GET['actor_id']) ? intval($_GET['actor_id']) : 0;
@@ -1457,15 +1535,29 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
             'otro' => __('Otro', 'flavor-chat-ia'),
         ];
 
-        $this->render_page_header(__('Relaciones entre Actores', 'flavor-chat-ia'), [
-            [
-                'label' => __('Nueva Relacion', 'flavor-chat-ia'),
-                'url' => '#',
-                'class' => 'button-primary',
-            ],
-        ]);
+        $this->render_page_header(
+            __('Relaciones entre Actores', 'flavor-chat-ia'),
+            $is_dashboard_viewer
+                ? [
+                    [
+                        'label' => __('Ver en portal', 'flavor-chat-ia'),
+                        'url' => home_url('/mi-portal/participacion/'),
+                        'class' => '',
+                    ],
+                ]
+                : [
+                    [
+                        'label' => __('Nueva Relacion', 'flavor-chat-ia'),
+                        'url' => '#',
+                        'class' => 'button-primary',
+                    ],
+                ]
+        );
         ?>
         <div class="wrap">
+            <?php if ($is_dashboard_viewer) : ?>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista de consulta para gestor de grupos. Las relaciones pueden revisarse, pero su creación y mantenimiento siguen reservados a administración.', 'flavor-chat-ia'); ?></p></div>
+            <?php endif; ?>
             <!-- Filtro por actor -->
             <form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
                 <input type="hidden" name="page" value="actores-relaciones">
@@ -1505,9 +1597,13 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                         <?php foreach ($relaciones as $relacion): ?>
                             <tr>
                                 <td>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $relacion->actor_origen_id)); ?>">
+                                    <?php if ($is_dashboard_viewer) : ?>
                                         <?php echo esc_html($relacion->actor_origen_nombre); ?>
-                                    </a>
+                                    <?php else : ?>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $relacion->actor_origen_id)); ?>">
+                                            <?php echo esc_html($relacion->actor_origen_nombre); ?>
+                                        </a>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php echo esc_html($tipos_relacion[$relacion->tipo_relacion] ?? $relacion->tipo_relacion); ?>
@@ -1518,9 +1614,13 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $relacion->actor_destino_id)); ?>">
+                                    <?php if ($is_dashboard_viewer) : ?>
                                         <?php echo esc_html($relacion->actor_destino_nombre); ?>
-                                    </a>
+                                    <?php else : ?>
+                                        <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=ver&id=' . $relacion->actor_destino_id)); ?>">
+                                            <?php echo esc_html($relacion->actor_destino_nombre); ?>
+                                        </a>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php
@@ -1845,5 +1945,58 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 'has_timeline'   => true,
             ],
         ];
+    }
+
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     * Las páginas son accesibles vía URL directa pero no aparecen en el menú
+     * Se acceden desde el Dashboard Unificado
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas (null como parent = no aparecen en menú)
+        add_submenu_page(null, __('Mapa Actores - Configuración', 'flavor-chat-ia'), __('Configuración', 'flavor-chat-ia'), $capability, 'actores-config', [$this, 'render_pagina_config']);
+        add_submenu_page(null, __('Mapa Actores - Interacciones', 'flavor-chat-ia'), __('Interacciones', 'flavor-chat-ia'), $capability, 'actores-interacciones', [$this, 'render_pagina_interacciones']);
+        add_submenu_page(null, __('Mapa Actores - Listado', 'flavor-chat-ia'), __('Listado', 'flavor-chat-ia'), $capability, 'actores-listado', [$this, 'render_pagina_listado']);
+        add_submenu_page(null, __('Mapa Actores - Nuevo', 'flavor-chat-ia'), __('Nuevo Actor', 'flavor-chat-ia'), $capability, 'actores-nuevo', [$this, 'render_pagina_nuevo']);
+        add_submenu_page(null, __('Mapa Actores - Personas', 'flavor-chat-ia'), __('Personas', 'flavor-chat-ia'), $capability, 'actores-personas', [$this, 'render_pagina_personas']);
+        add_submenu_page(null, __('Mapa Actores - Relaciones', 'flavor-chat-ia'), __('Relaciones', 'flavor-chat-ia'), $capability, 'actores-relaciones', [$this, 'render_pagina_relaciones']);
+    }
+
+    public function render_pagina_config() {
+        $views_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Configuración Mapa de Actores', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_interacciones() {
+        $views_path = dirname(__FILE__) . '/views/interacciones.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Historial de Interacciones', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_listado() {
+        $views_path = dirname(__FILE__) . '/views/listado.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Listado de Actores', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_nuevo() {
+        $views_path = dirname(__FILE__) . '/views/nuevo.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Nuevo Actor', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_personas() {
+        $views_path = dirname(__FILE__) . '/views/personas.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Personas Clave', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_relaciones() {
+        $views_path = dirname(__FILE__) . '/views/relaciones.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Relaciones entre Actores', 'flavor-chat-ia') . '</h1></div>'; }
     }
 }

@@ -125,6 +125,116 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 },
             ],
 
+            'incidencias' => [
+                'id'       => 'chat-incidencia',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="incidencia" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('incidencia', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            'documentacion_legal' => [
+                'id'       => 'chat-documento-legal',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="documento_legal" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('documento_legal', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            'presupuestos_participativos' => [
+                'id'       => 'chat-pp-proyecto',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="pp_proyecto" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('pp_proyecto', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            'saberes_ancestrales' => [
+                'id'       => 'chat-saber-ancestral',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="saber_ancestral" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('saber_ancestral', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            'transparencia' => [
+                'id'       => 'chat-documento-transparencia',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="documento_transparencia" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('documento_transparencia', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            'avisos_municipales' => [
+                'id'       => 'chat-aviso-municipal',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="aviso_municipal" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('aviso_municipal', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            'economia_don' => [
+                'id'       => 'chat-economia-don',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="economia_don" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('economia_don', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            'advertising' => [
+                'id'       => 'chat-advertising-ad',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="advertising_ad" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('advertising_ad', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            'radio' => [
+                'id'       => 'chat-radio-programa',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="radio_programa" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('radio_programa', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            'energia_comunitaria' => [
+                'id'       => 'chat-energia-comunidad',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="energia_comunidad" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('energia_comunidad', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
             // Tab de chat para Cursos
             'cursos' => [
                 'id'       => 'chat-curso',
@@ -134,6 +244,18 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 'priority' => 95,
                 'badge'    => function($contexto) {
                     return $this->contar_mensajes_no_leidos_entidad('curso', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            // Tab de chat para Talleres
+            'talleres' => [
+                'id'       => 'chat-taller',
+                'label'    => __('Chat del Taller', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="taller" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('taller', $contexto['entity_id'], $contexto['user_id']);
                 },
             ],
 
@@ -170,6 +292,60 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 'priority' => 95,
                 'badge'    => function($contexto) {
                     return $this->contar_mensajes_no_leidos_entidad('servicio_bt', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            // Tab de chat para Trabajo Digno
+            'trabajo_digno' => [
+                'id'       => 'chat-oferta-trabajo',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="trabajo_digno_oferta" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('trabajo_digno_oferta', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+
+            // Tab de chat para Huertos Urbanos
+            'huertos_urbanos' => [
+                'id'       => 'chat-huerto',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="huerto" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('huerto', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+            'participacion' => [
+                'id'       => 'chat-propuesta',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="participacion_propuesta" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('participacion_propuesta', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+            'economia_suficiencia' => [
+                'id'       => 'chat-recurso-suficiencia',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="es_recurso" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('es_recurso', $contexto['entity_id'], $contexto['user_id']);
+                },
+            ],
+            'justicia_restaurativa' => [
+                'id'       => 'chat-proceso-restaurativo',
+                'label'    => __('Chat', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-status',
+                'content'  => '[flavor_chat_grupo_integrado entidad="jr_proceso" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_mensajes_no_leidos_entidad('jr_proceso', $contexto['entity_id'], $contexto['user_id']);
                 },
             ],
         ];
@@ -824,7 +1000,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
      * Acción: Mis grupos
      */
     private function action_mis_grupos($params) {
-        $usuario_id = get_current_user_id();
+        $usuario_id = !empty($params['usuario_id']) ? absint($params['usuario_id']) : get_current_user_id();
         if (!$usuario_id) {
             return ['success' => false, 'error' => __('Debes iniciar sesión.', 'flavor-chat-ia')];
         }
@@ -868,6 +1044,8 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                 'imagen_url' => $g->imagen_url,
                 'color' => $g->color,
                 'tipo' => $g->tipo,
+                'entidad_tipo' => sanitize_key($g->entidad_tipo ?? ''),
+                'entidad_id' => (int) ($g->entidad_id ?? 0),
                 'miembros' => (int) $g->miembros_count,
                 'mensajes_no_leidos' => (int) $no_leidos,
                 'mi_rol' => $g->rol,
@@ -876,11 +1054,29 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
                     'texto' => wp_trim_words($ultimo_msg->mensaje, 10),
                     'autor' => $ultimo_msg->autor_nombre,
                     'fecha' => $this->tiempo_relativo($ultimo_msg->fecha_creacion),
+                    'fecha_iso' => mysql2date('c', $ultimo_msg->fecha_creacion, false),
+                    'timestamp' => strtotime($ultimo_msg->fecha_creacion),
                 ] : null,
             ];
         }
 
         return ['success' => true, 'grupos' => $resultado];
+    }
+
+    /**
+     * Obtiene los grupos del usuario actual o de un usuario específico.
+     *
+     * @param int $usuario_id
+     * @return array
+     */
+    public function get_grupos_usuario($usuario_id) {
+        $respuesta = $this->action_mis_grupos([
+            'usuario_id' => absint($usuario_id),
+        ]);
+
+        return !empty($respuesta['success']) && !empty($respuesta['grupos'])
+            ? (array) $respuesta['grupos']
+            : [];
     }
 
     /**
@@ -2839,10 +3035,35 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
             'grupo_consumo' => ['tabla' => 'flavor_grupos_consumo', 'campo' => 'nombre'],
             'evento'        => ['tabla' => 'flavor_eventos', 'campo' => 'titulo'],
             'comunidad'     => ['tabla' => 'flavor_comunidades', 'campo' => 'nombre'],
+            'incidencia'    => ['tabla' => 'flavor_incidencias', 'campo' => 'titulo'],
+            'documento_legal' => ['tabla' => 'flavor_documentacion_legal', 'campo' => 'titulo'],
+            'pp_proyecto' => ['tabla' => 'flavor_pp_proyectos', 'campo' => 'titulo'],
+            'saber_ancestral' => ['tabla' => null, 'campo' => 'post_title'],
+            'documento_transparencia' => ['tabla' => 'flavor_transparencia_documentos_publicos', 'campo' => 'titulo'],
+            'aviso_municipal' => ['tabla' => 'flavor_avisos_municipales', 'campo' => 'titulo'],
+            'economia_don' => ['tabla' => 'flavor_economia_dones', 'campo' => 'titulo'],
+            'energia_comunidad' => ['tabla' => 'flavor_energia_comunidades', 'campo' => 'nombre'],
             'curso'         => ['tabla' => 'flavor_cursos', 'campo' => 'titulo'],
+            'taller'        => ['tabla' => 'flavor_talleres', 'campo' => 'titulo'],
+            'libro_biblioteca' => ['tabla' => 'flavor_biblioteca_libros', 'campo' => 'titulo'],
+            'marketplace_anuncio' => ['tabla' => 'flavor_marketplace_anuncios', 'campo' => 'titulo'],
+            'advertising_ad' => ['tabla' => null, 'campo' => 'post_title'],
+            'radio_programa' => ['tabla' => 'flavor_radio_programas', 'campo' => 'nombre'],
+            'trabajo_digno_oferta' => ['tabla' => null, 'campo' => 'post_title'],
+            'participacion_propuesta' => ['tabla' => 'flavor_propuestas', 'campo' => 'titulo'],
+            'es_recurso'     => ['tabla' => null, 'campo' => 'post_title'],
+            'jr_proceso'     => ['tabla' => null, 'campo' => 'post_title'],
+            'huerto'         => ['tabla' => 'flavor_huertos', 'campo' => 'nombre'],
             'colectivo'     => ['tabla' => 'flavor_colectivos', 'campo' => 'nombre'],
             'circulo'       => ['tabla' => 'flavor_circulos_cuidados', 'campo' => 'nombre'],
         ];
+
+        if (in_array($tipo, ['trabajo_digno_oferta', 'es_recurso', 'jr_proceso', 'saber_ancestral', 'advertising_ad'], true)) {
+            $post = get_post($id);
+            return ($post && in_array($post->post_type, ['td_oferta', 'es_recurso', 'jr_proceso', 'sa_saber', 'flavor_ad'], true))
+                ? $post->post_title
+                : ucfirst(str_replace('_', ' ', $tipo)) . ' #' . $id;
+        }
 
         if (!isset($tablas[$tipo])) {
             return ucfirst(str_replace('_', ' ', $tipo)) . ' #' . $id;
@@ -3544,8 +3765,69 @@ KNOWLEDGE;
      * Renderiza el dashboard de administración del módulo
      */
     public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         $estadisticas = $this->get_estadisticas_admin();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/chat-grupos/admin/views/dashboard.php';
+        ?>
+        <div class="wrap flavor-admin-page">
+            <?php
+            $acciones = $is_dashboard_viewer
+                ? [
+                    [
+                        'label' => __('Ver en portal', 'flavor-chat-ia'),
+                        'url' => home_url('/mi-portal/chat-grupos/'),
+                        'class' => '',
+                    ],
+                ]
+                : [
+                    [
+                        'label' => __('Gestionar grupos', 'flavor-chat-ia'),
+                        'url' => admin_url('admin.php?page=flavor-chat-grupos-listado'),
+                        'class' => 'button-primary',
+                    ],
+                    [
+                        'label' => __('Moderación', 'flavor-chat-ia'),
+                        'url' => admin_url('admin.php?page=flavor-chat-grupos-moderacion'),
+                        'class' => '',
+                    ],
+                ];
+            $this->render_page_header(__('Dashboard de Chat Grupos', 'flavor-chat-ia'), $acciones);
+            if ($is_dashboard_viewer) :
+            ?>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. La gestión detallada y la moderación siguen reservadas a administración.', 'flavor-chat-ia'); ?></p></div>
+            <?php endif; ?>
+
+            <div class="flavor-stats-grid">
+                <div class="stat-card">
+                    <span class="dashicons dashicons-groups"></span>
+                    <div class="stat-value"><?php echo intval($estadisticas['total_grupos'] ?? 0); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Grupos activos', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="stat-card">
+                    <span class="dashicons dashicons-format-chat"></span>
+                    <div class="stat-value"><?php echo intval($estadisticas['total_mensajes'] ?? 0); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Mensajes', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="stat-card">
+                    <span class="dashicons dashicons-admin-users"></span>
+                    <div class="stat-value"><?php echo intval($estadisticas['total_miembros'] ?? 0); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Miembros', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="stat-card">
+                    <span class="dashicons dashicons-clock"></span>
+                    <div class="stat-value"><?php echo intval($estadisticas['mensajes_hoy'] ?? 0); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Mensajes hoy', 'flavor-chat-ia'); ?></div>
+                </div>
+            </div>
+
+            <div class="flavor-admin-section">
+                <h2><?php esc_html_e('Resumen operativo', 'flavor-chat-ia'); ?></h2>
+                <ul class="flavor-widget-stats">
+                    <li><span class="label"><?php esc_html_e('Grupos pendientes:', 'flavor-chat-ia'); ?></span> <span class="value"><?php echo intval($this->contar_grupos_pendientes()); ?></span></li>
+                    <li><span class="label"><?php esc_html_e('Reportes pendientes:', 'flavor-chat-ia'); ?></span> <span class="value"><?php echo intval($this->contar_reportes_pendientes()); ?></span></li>
+                </ul>
+            </div>
+        </div>
+        <?php
     }
 
     /**

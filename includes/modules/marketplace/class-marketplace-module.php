@@ -155,6 +155,33 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Garantiza que el frontend controller del Marketplace esté cargado
+     * antes de resolver shortcodes frontend desde tabs legacy.
+     */
+    private static function asegurar_frontend_controller(): void {
+        if (!class_exists('Flavor_Marketplace_Frontend_Controller')) {
+            $archivo_controller = dirname(__FILE__) . '/frontend/class-marketplace-frontend-controller.php';
+            if (file_exists($archivo_controller)) {
+                require_once $archivo_controller;
+            }
+        }
+
+        if (class_exists('Flavor_Marketplace_Frontend_Controller')) {
+            Flavor_Marketplace_Frontend_Controller::get_instance();
+        }
+    }
+
+    /**
+     * Obtiene la URL actual para redirects de login en páginas dinámicas.
+     */
+    private static function get_current_request_url(): string {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/mi-portal/marketplace/';
+        $request_uri = '/' . ltrim($request_uri, '/');
+
+        return home_url($request_uri);
+    }
+
+    /**
      * Registra shortcodes del módulo
      *
      * Nota: Los shortcodes principales (marketplace_catalogo, marketplace_listado,
@@ -173,7 +200,7 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="marketplace-login-required"><p>' .
                    esc_html__('Debes iniciar sesión para publicar un anuncio.', 'flavor-chat-ia') .
-                   '</p><a href="' . esc_url(wp_login_url(get_permalink())) . '" class="btn-login">' .
+                   '</p><a href="' . esc_url(wp_login_url(self::get_current_request_url())) . '" class="btn-login">' .
                    esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
         }
 
@@ -282,13 +309,13 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'marketplace-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                     'badge' => [$this, 'contar_anuncios_pendientes'],
                 ],
                 [
                     'slug' => 'marketplace-anuncios',
                     'titulo' => __('Anuncios', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_anuncios'],
+                    'callback' => [$this, 'render_pagina_productos'],
                 ],
                 [
                     'slug' => 'marketplace-moderacion',
@@ -299,7 +326,7 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'marketplace-categorias',
                     'titulo' => __('Categorías', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_categorias'],
+                    'callback' => [$this, 'render_pagina_categorias'],
                 ],
             ],
             'dashboard_widget' => [$this, 'render_dashboard_widget'],
@@ -790,6 +817,11 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
             'nuevo' => 'publicar_anuncio',
             'mis_items' => 'mis_anuncios',
             'mis-anuncios' => 'mis_anuncios',
+            'foro' => 'foro_anuncio',
+            'chat' => 'chat_anuncio',
+            'multimedia' => 'multimedia_anuncio',
+            'red-social' => 'red_social_anuncio',
+            'red_social' => 'red_social_anuncio',
             'favoritos' => 'favoritos',
             'categorias' => 'categorias',
             'contactar' => 'contactar_vendedor',
@@ -861,6 +893,115 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'html' => ob_get_clean(),
         ];
+    }
+
+    /**
+     * Resuelve el anuncio contextual para tabs satélite.
+     */
+    private function resolve_contextual_anuncio(array $params = []): ?array {
+        global $wpdb;
+
+        $anuncio_id = absint(
+            $params['anuncio_id']
+            ?? $params['id']
+            ?? $_GET['anuncio_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if (!$anuncio_id) {
+            return null;
+        }
+
+        $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_anuncios)) {
+            return null;
+        }
+
+        $anuncio = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, titulo, descripcion FROM {$tabla_anuncios} WHERE id = %d",
+            $anuncio_id
+        ));
+
+        if (!$anuncio) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $anuncio->id,
+            'titulo' => (string) $anuncio->titulo,
+            'descripcion' => (string) ($anuncio->descripcion ?? ''),
+        ];
+    }
+
+    private function action_foro_anuncio($params) {
+        $anuncio = $this->resolve_contextual_anuncio((array) $params);
+        if (!$anuncio) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-foro">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;"><h2>'
+            . esc_html__('Foro del anuncio', 'flavor-chat-ia')
+            . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . do_shortcode('[flavor_foros_integrado entidad="marketplace_anuncio" entidad_id="' . absint($anuncio['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_chat_anuncio($params) {
+        $anuncio = $this->resolve_contextual_anuncio((array) $params);
+        if (!$anuncio) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este anuncio.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-chat">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Chat del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?anuncio_id=' . absint($anuncio['id']))) . '" class="button button-secondary">'
+            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="marketplace_anuncio" entidad_id="' . absint($anuncio['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_multimedia_anuncio($params) {
+        $anuncio = $this->resolve_contextual_anuncio((array) $params);
+        if (!$anuncio) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Archivos del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?anuncio_id=' . absint($anuncio['id']))) . '" class="button button-primary">'
+            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="marketplace_anuncio" entidad_id="' . absint($anuncio['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_red_social_anuncio($params) {
+        $anuncio = $this->resolve_contextual_anuncio((array) $params);
+        if (!$anuncio) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este anuncio.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Actividad social del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?anuncio_id=' . absint($anuncio['id']))) . '" class="button button-primary">'
+            . esc_html__('Publicar', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_social_feed entidad="marketplace_anuncio" entidad_id="' . absint($anuncio['id']) . '"]')
+            . '</div>';
     }
 
     /**
@@ -1294,7 +1435,17 @@ KNOWLEDGE;
     public function registrar_paginas_admin() {
         $capability = 'manage_options';
 
-        // Dashboard - página oculta
+        // Dashboard - página oculta (slug canónico)
+        add_submenu_page(
+            null,
+            __('Dashboard Marketplace', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'marketplace-dashboard',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Alias para compatibilidad con enlaces legacy
         add_submenu_page(
             null,
             __('Dashboard Marketplace', 'flavor-chat-ia'),
@@ -1332,6 +1483,16 @@ KNOWLEDGE;
             $capability,
             'marketplace-vendedores',
             [$this, 'render_pagina_vendedores']
+        );
+
+        // Anuncios - página oculta
+        add_submenu_page(
+            null,
+            __('Anuncios Marketplace', 'flavor-chat-ia'),
+            __('Anuncios', 'flavor-chat-ia'),
+            $capability,
+            'marketplace-anuncios',
+            [$this, 'render_pagina_productos']
         );
 
         // Categorías - página oculta
@@ -1552,6 +1713,12 @@ KNOWLEDGE;
                     'icon'     => 'dashicons-category',
                     'callback' => [__CLASS__, 'render_tab_categorias'],
                 ],
+                'detalle' => [
+                    'label'      => __('Detalle', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-visibility',
+                    'callback'   => [__CLASS__, 'render_tab_detalle'],
+                    'hidden_nav' => true,
+                ],
             ],
 
             // Configuración del archive/listado
@@ -1702,206 +1869,16 @@ KNOWLEDGE;
      * @return void
      */
     public static function render_tab_anuncios(): void {
-        global $wpdb;
-        $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
-        $tabla_categorias = $wpdb->prefix . 'flavor_marketplace_categorias';
-
-        // Filtros
-        $tipo_filtro = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
-        $categoria_filtro = isset($_GET['categoria']) ? absint($_GET['categoria']) : 0;
-        $busqueda = isset($_GET['buscar']) ? sanitize_text_field($_GET['buscar']) : '';
-        $pagina_actual = max(1, isset($_GET['pag']) ? absint($_GET['pag']) : 1);
-        $por_pagina = 12;
-        $offset = ($pagina_actual - 1) * $por_pagina;
-
-        // Construir query
-        $condiciones_where = ["a.estado = 'publicado'"];
-        $parametros_preparar = [];
-
-        if (!empty($tipo_filtro)) {
-            $condiciones_where[] = "a.tipo = %s";
-            $parametros_preparar[] = $tipo_filtro;
+        self::asegurar_frontend_controller();
+        if (class_exists('Flavor_Marketplace_Frontend_Controller')) {
+            echo Flavor_Marketplace_Frontend_Controller::get_instance()->shortcode_catalogo([
+                'limite' => 12,
+                'mostrar_filtros' => 'si',
+            ]);
+            return;
         }
 
-        if ($categoria_filtro > 0) {
-            $condiciones_where[] = "a.categoria_id = %d";
-            $parametros_preparar[] = $categoria_filtro;
-        }
-
-        if (!empty($busqueda)) {
-            $condiciones_where[] = "(a.titulo LIKE %s OR a.descripcion LIKE %s)";
-            $termino_busqueda = '%' . $wpdb->esc_like($busqueda) . '%';
-            $parametros_preparar[] = $termino_busqueda;
-            $parametros_preparar[] = $termino_busqueda;
-        }
-
-        $clausula_where = implode(' AND ', $condiciones_where);
-
-        // Total de resultados
-        $consulta_total = "SELECT COUNT(*) FROM {$tabla_anuncios} a WHERE {$clausula_where}";
-        if (!empty($parametros_preparar)) {
-            $consulta_total = $wpdb->prepare($consulta_total, $parametros_preparar);
-        }
-        $total_anuncios = (int) $wpdb->get_var($consulta_total);
-        $total_paginas = ceil($total_anuncios / $por_pagina);
-
-        // Obtener anuncios
-        $consulta_anuncios = "SELECT a.*, c.nombre as categoria_nombre, c.icono as categoria_icono
-                             FROM {$tabla_anuncios} a
-                             LEFT JOIN {$tabla_categorias} c ON a.categoria_id = c.id
-                             WHERE {$clausula_where}
-                             ORDER BY a.es_destacado DESC, a.fecha_publicacion DESC
-                             LIMIT %d OFFSET %d";
-
-        $parametros_finales = array_merge($parametros_preparar, [$por_pagina, $offset]);
-        $anuncios = $wpdb->get_results($wpdb->prepare($consulta_anuncios, $parametros_finales));
-
-        // Obtener categorías para filtros
-        $categorias = $wpdb->get_results("SELECT id, nombre, icono, color, anuncios_count FROM {$tabla_categorias} WHERE activa = 1 ORDER BY orden ASC");
-
-        // Tipos de anuncio
-        $tipos_anuncio = [
-            'venta'       => ['label' => __('Venta', 'flavor-chat-ia'), 'icon' => '🏷️'],
-            'regalo'      => ['label' => __('Regalo', 'flavor-chat-ia'), 'icon' => '🎁'],
-            'intercambio' => ['label' => __('Intercambio', 'flavor-chat-ia'), 'icon' => '🔄'],
-            'alquiler'    => ['label' => __('Alquiler', 'flavor-chat-ia'), 'icon' => '🏠'],
-            'servicio'    => ['label' => __('Servicio', 'flavor-chat-ia'), 'icon' => '🔧'],
-            'compra'      => ['label' => __('Busco', 'flavor-chat-ia'), 'icon' => '🔍'],
-        ];
-        ?>
-        <div class="flavor-marketplace-anuncios">
-            <!-- Header con búsqueda y filtros -->
-            <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl p-6 mb-6 shadow-lg">
-                <div class="flex items-center justify-between flex-wrap gap-4 mb-4">
-                    <div>
-                        <h2 class="text-2xl font-bold mb-1">🛒 <?php echo esc_html__('Marketplace Vecinal', 'flavor-chat-ia'); ?></h2>
-                        <p class="text-green-100"><?php echo esc_html($total_anuncios); ?> <?php echo esc_html__('anuncios disponibles', 'flavor-chat-ia'); ?></p>
-                    </div>
-                    <?php if (is_user_logged_in()): ?>
-                    <a href="<?php echo esc_url(add_query_arg('tab', 'publicar')); ?>"
-                       class="bg-white text-green-600 px-5 py-2 rounded-xl font-semibold hover:bg-green-50 transition-all shadow-md">
-                        ➕ <?php echo esc_html__('Publicar Anuncio', 'flavor-chat-ia'); ?>
-                    </a>
-                    <?php endif; ?>
-                </div>
-
-                <!-- Barra de búsqueda -->
-                <form method="get" class="flex gap-2">
-                    <input type="hidden" name="tab" value="anuncios">
-                    <input type="text" name="buscar" value="<?php echo esc_attr($busqueda); ?>"
-                           placeholder="<?php echo esc_attr__('Buscar productos...', 'flavor-chat-ia'); ?>"
-                           class="flex-1 px-4 py-3 rounded-xl bg-white/20 text-white placeholder-white/70 border border-white/30 focus:bg-white/30 focus:outline-none">
-                    <button type="submit" class="px-6 py-3 bg-white text-green-600 rounded-xl font-semibold hover:bg-green-50 transition-colors">
-                        🔍 <?php echo esc_html__('Buscar', 'flavor-chat-ia'); ?>
-                    </button>
-                </form>
-            </div>
-
-            <!-- Filtros por tipo -->
-            <div class="flex flex-wrap gap-2 mb-6">
-                <a href="<?php echo esc_url(remove_query_arg('tipo')); ?>"
-                   class="px-4 py-2 rounded-full text-sm font-medium transition-colors <?php echo empty($tipo_filtro) ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
-                    <?php echo esc_html__('Todos', 'flavor-chat-ia'); ?>
-                </a>
-                <?php foreach ($tipos_anuncio as $tipo_clave => $tipo_datos): ?>
-                <a href="<?php echo esc_url(add_query_arg('tipo', $tipo_clave)); ?>"
-                   class="px-4 py-2 rounded-full text-sm font-medium transition-colors <?php echo $tipo_filtro === $tipo_clave ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
-                    <?php echo esc_html($tipo_datos['icon'] . ' ' . $tipo_datos['label']); ?>
-                </a>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- Grid de anuncios -->
-            <?php if (empty($anuncios)): ?>
-            <div class="text-center py-12 bg-gray-50 rounded-2xl">
-                <div class="text-6xl mb-4">📦</div>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No hay anuncios disponibles', 'flavor-chat-ia'); ?></h3>
-                <p class="text-gray-500 mb-6"><?php echo esc_html__('Sé el primero en publicar en el marketplace', 'flavor-chat-ia'); ?></p>
-                <?php if (is_user_logged_in()): ?>
-                <a href="<?php echo esc_url(add_query_arg('tab', 'publicar')); ?>"
-                   class="inline-block bg-green-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-600 transition-colors">
-                    <?php echo esc_html__('Publicar Anuncio', 'flavor-chat-ia'); ?>
-                </a>
-                <?php endif; ?>
-            </div>
-            <?php else: ?>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <?php foreach ($anuncios as $anuncio):
-                    $tipo_info = $tipos_anuncio[$anuncio->tipo] ?? ['label' => ucfirst($anuncio->tipo), 'icon' => '📦'];
-                    $precio_formateado = $anuncio->es_gratuito ? __('Gratis', 'flavor-chat-ia') : number_format((float) $anuncio->precio, 2, ',', '.') . ' €';
-                    $usuario = get_userdata($anuncio->usuario_id);
-                    $nombre_usuario = $usuario ? $usuario->display_name : $anuncio->usuario_nombre;
-                ?>
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all group">
-                    <!-- Imagen -->
-                    <div class="relative aspect-square bg-gray-100">
-                        <?php if (!empty($anuncio->imagen_principal)): ?>
-                        <img src="<?php echo esc_url($anuncio->imagen_principal); ?>"
-                             alt="<?php echo esc_attr($anuncio->titulo); ?>"
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <?php else: ?>
-                        <div class="w-full h-full flex items-center justify-center text-gray-400 text-5xl">📷</div>
-                        <?php endif; ?>
-
-                        <!-- Badge de tipo -->
-                        <span class="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur rounded-full text-sm font-medium shadow-sm">
-                            <?php echo esc_html($tipo_info['icon'] . ' ' . $tipo_info['label']); ?>
-                        </span>
-
-                        <?php if ($anuncio->es_destacado): ?>
-                        <span class="absolute top-3 right-3 px-2 py-1 bg-yellow-400 text-yellow-900 rounded-full text-xs font-bold">
-                            ⭐ <?php echo esc_html__('Destacado', 'flavor-chat-ia'); ?>
-                        </span>
-                        <?php endif; ?>
-                    </div>
-
-                    <!-- Contenido -->
-                    <div class="p-4">
-                        <h3 class="font-semibold text-gray-800 mb-1 line-clamp-2">
-                            <?php echo esc_html($anuncio->titulo); ?>
-                        </h3>
-
-                        <p class="text-xl font-bold text-green-600 mb-2">
-                            <?php echo esc_html($precio_formateado); ?>
-                        </p>
-
-                        <?php if (!empty($anuncio->ubicacion_texto)): ?>
-                        <p class="text-sm text-gray-500 mb-2">
-                            📍 <?php echo esc_html($anuncio->ubicacion_texto); ?>
-                        </p>
-                        <?php endif; ?>
-
-                        <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-100">
-                            <span><?php echo esc_html($nombre_usuario); ?></span>
-                            <span><?php echo esc_html(human_time_diff(strtotime($anuncio->fecha_publicacion), current_time('timestamp'))); ?></span>
-                        </div>
-                    </div>
-
-                    <!-- Acciones -->
-                    <div class="px-4 pb-4">
-                        <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/anuncio/' . $anuncio->id . '/')); ?>"
-                           class="block w-full text-center py-2 bg-green-50 text-green-600 rounded-lg font-medium hover:bg-green-100 transition-colors">
-                            <?php echo esc_html__('Ver detalles', 'flavor-chat-ia'); ?>
-                        </a>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- Paginación -->
-            <?php if ($total_paginas > 1): ?>
-            <div class="flex justify-center gap-2 mt-8">
-                <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
-                <a href="<?php echo esc_url(add_query_arg('pag', $i)); ?>"
-                   class="px-4 py-2 rounded-lg font-medium transition-colors <?php echo $pagina_actual === $i ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
-                    <?php echo esc_html($i); ?>
-                </a>
-                <?php endfor; ?>
-            </div>
-            <?php endif; ?>
-            <?php endif; ?>
-        </div>
-        <?php
+        echo do_shortcode('[marketplace_listado limite="12" mostrar_filtros="si"]');
     }
 
     /**
@@ -1910,140 +1887,13 @@ KNOWLEDGE;
      * @return void
      */
     public static function render_tab_mis_anuncios(): void {
-        if (!is_user_logged_in()) {
-            echo '<div class="text-center py-12 bg-yellow-50 rounded-2xl">';
-            echo '<div class="text-5xl mb-4">🔐</div>';
-            echo '<h3 class="text-xl font-semibold text-gray-700 mb-2">' . esc_html__('Inicia sesión', 'flavor-chat-ia') . '</h3>';
-            echo '<p class="text-gray-500 mb-4">' . esc_html__('Necesitas iniciar sesión para ver tus anuncios', 'flavor-chat-ia') . '</p>';
-            echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="inline-block bg-yellow-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', 'flavor-chat-ia') . '</a>';
-            echo '</div>';
+        self::asegurar_frontend_controller();
+        if (class_exists('Flavor_Marketplace_Frontend_Controller')) {
+            echo Flavor_Marketplace_Frontend_Controller::get_instance()->shortcode_mis_anuncios([]);
             return;
         }
 
-        global $wpdb;
-        $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
-        $usuario_id = get_current_user_id();
-
-        // Obtener anuncios del usuario
-        $mis_anuncios = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$tabla_anuncios}
-             WHERE usuario_id = %d AND estado NOT IN ('eliminado')
-             ORDER BY created_at DESC",
-            $usuario_id
-        ));
-
-        // Estadísticas
-        $stats_publicados = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$tabla_anuncios} WHERE usuario_id = %d AND estado = 'publicado'", $usuario_id));
-        $stats_pendientes = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$tabla_anuncios} WHERE usuario_id = %d AND estado = 'pendiente'", $usuario_id));
-        $stats_vendidos = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$tabla_anuncios} WHERE usuario_id = %d AND estado = 'vendido'", $usuario_id));
-
-        $estados_info = [
-            'publicado'  => ['label' => __('Publicado', 'flavor-chat-ia'), 'class' => 'bg-green-100 text-green-700'],
-            'pendiente'  => ['label' => __('Pendiente', 'flavor-chat-ia'), 'class' => 'bg-yellow-100 text-yellow-700'],
-            'vendido'    => ['label' => __('Vendido', 'flavor-chat-ia'), 'class' => 'bg-gray-100 text-gray-700'],
-            'pausado'    => ['label' => __('Pausado', 'flavor-chat-ia'), 'class' => 'bg-blue-100 text-blue-700'],
-            'borrador'   => ['label' => __('Borrador', 'flavor-chat-ia'), 'class' => 'bg-gray-100 text-gray-600'],
-            'rechazado'  => ['label' => __('Rechazado', 'flavor-chat-ia'), 'class' => 'bg-red-100 text-red-700'],
-        ];
-        ?>
-        <div class="flavor-marketplace-mis-anuncios">
-            <!-- Header -->
-            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl p-6 mb-6 shadow-lg">
-                <div class="flex items-center justify-between flex-wrap gap-4 mb-4">
-                    <div>
-                        <h2 class="text-2xl font-bold mb-1">📋 <?php echo esc_html__('Mis Anuncios', 'flavor-chat-ia'); ?></h2>
-                        <p class="text-indigo-100"><?php echo esc_html__('Gestiona tus productos publicados', 'flavor-chat-ia'); ?></p>
-                    </div>
-                    <a href="<?php echo esc_url(add_query_arg('tab', 'publicar')); ?>"
-                       class="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-all shadow-md">
-                        ➕ <?php echo esc_html__('Nuevo Anuncio', 'flavor-chat-ia'); ?>
-                    </a>
-                </div>
-
-                <!-- Stats -->
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
-                        <div class="text-2xl font-bold"><?php echo esc_html($stats_publicados); ?></div>
-                        <div class="text-sm text-indigo-100"><?php echo esc_html__('Publicados', 'flavor-chat-ia'); ?></div>
-                    </div>
-                    <div class="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
-                        <div class="text-2xl font-bold"><?php echo esc_html($stats_pendientes); ?></div>
-                        <div class="text-sm text-indigo-100"><?php echo esc_html__('Pendientes', 'flavor-chat-ia'); ?></div>
-                    </div>
-                    <div class="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
-                        <div class="text-2xl font-bold"><?php echo esc_html($stats_vendidos); ?></div>
-                        <div class="text-sm text-indigo-100"><?php echo esc_html__('Vendidos', 'flavor-chat-ia'); ?></div>
-                    </div>
-                </div>
-            </div>
-
-            <?php if (empty($mis_anuncios)): ?>
-            <!-- Estado vacío -->
-            <div class="text-center py-12 bg-gray-50 rounded-2xl">
-                <div class="text-6xl mb-4">📦</div>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2"><?php echo esc_html__('No tienes anuncios', 'flavor-chat-ia'); ?></h3>
-                <p class="text-gray-500 mb-6"><?php echo esc_html__('¡Publica tu primer producto!', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo esc_url(add_query_arg('tab', 'publicar')); ?>"
-                   class="inline-block bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-600 transition-colors">
-                    <?php echo esc_html__('Publicar Anuncio', 'flavor-chat-ia'); ?>
-                </a>
-            </div>
-            <?php else: ?>
-            <!-- Lista de anuncios -->
-            <div class="space-y-4">
-                <?php foreach ($mis_anuncios as $anuncio):
-                    $estado_info = $estados_info[$anuncio->estado] ?? ['label' => ucfirst($anuncio->estado), 'class' => 'bg-gray-100 text-gray-600'];
-                    $precio_formateado = $anuncio->es_gratuito ? __('Gratis', 'flavor-chat-ia') : number_format((float) $anuncio->precio, 2, ',', '.') . ' €';
-                ?>
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow">
-                    <div class="flex gap-4">
-                        <!-- Imagen -->
-                        <div class="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                            <?php if (!empty($anuncio->imagen_principal)): ?>
-                            <img src="<?php echo esc_url($anuncio->imagen_principal); ?>" alt="<?php echo esc_attr($anuncio->titulo); ?>" class="w-full h-full object-cover">
-                            <?php else: ?>
-                            <div class="w-full h-full flex items-center justify-center text-gray-400 text-3xl">📷</div>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Info -->
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-start justify-between gap-2 mb-2">
-                                <h3 class="font-semibold text-gray-800 truncate"><?php echo esc_html($anuncio->titulo); ?></h3>
-                                <span class="text-lg font-bold text-green-600 whitespace-nowrap"><?php echo esc_html($precio_formateado); ?></span>
-                            </div>
-
-                            <p class="text-sm text-gray-500 mb-3 line-clamp-1"><?php echo esc_html(wp_trim_words($anuncio->descripcion, 15)); ?></p>
-
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3 text-xs text-gray-500">
-                                    <span class="px-2 py-1 rounded-full <?php echo esc_attr($estado_info['class']); ?>">
-                                        <?php echo esc_html($estado_info['label']); ?>
-                                    </span>
-                                    <span>📅 <?php echo esc_html(date_i18n(get_option('date_format'), strtotime($anuncio->created_at))); ?></span>
-                                    <span>👁 <?php echo esc_html($anuncio->visualizaciones); ?></span>
-                                </div>
-
-                                <!-- Acciones -->
-                                <div class="flex items-center gap-2">
-                                    <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/anuncio/' . $anuncio->id . '/')); ?>"
-                                       class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
-                                        <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
-                                    </a>
-                                    <a href="<?php echo esc_url(add_query_arg(['tab' => 'publicar', 'editar' => $anuncio->id])); ?>"
-                                       class="px-3 py-1 text-sm bg-indigo-100 text-indigo-600 rounded-lg hover:bg-indigo-200 transition-colors">
-                                        <?php echo esc_html__('Editar', 'flavor-chat-ia'); ?>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-        </div>
-        <?php
+        echo do_shortcode('[marketplace_mis_anuncios]');
     }
 
     /**
@@ -2057,7 +1907,7 @@ KNOWLEDGE;
             echo '<div class="text-5xl mb-4">🔐</div>';
             echo '<h3 class="text-xl font-semibold text-gray-700 mb-2">' . esc_html__('Inicia sesión', 'flavor-chat-ia') . '</h3>';
             echo '<p class="text-gray-500 mb-4">' . esc_html__('Necesitas iniciar sesión para publicar un anuncio', 'flavor-chat-ia') . '</p>';
-            echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="inline-block bg-yellow-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', 'flavor-chat-ia') . '</a>';
+            echo '<a href="' . esc_url(wp_login_url(self::get_current_request_url())) . '" class="inline-block bg-yellow-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', 'flavor-chat-ia') . '</a>';
             echo '</div>';
             return;
         }
@@ -2267,21 +2117,19 @@ KNOWLEDGE;
      * @return void
      */
     public static function render_tab_categorias(): void {
-        global $wpdb;
-        $tabla_categorias = $wpdb->prefix . 'flavor_marketplace_categorias';
-        $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
+        $categorias = get_terms([
+            'taxonomy' => 'marketplace_categoria',
+            'hide_empty' => false,
+            'orderby' => 'name',
+            'order' => 'ASC',
+        ]);
 
-        // Obtener categorías con conteo de anuncios
-        $categorias = $wpdb->get_results(
-            "SELECT c.*, COUNT(a.id) as total_anuncios
-             FROM {$tabla_categorias} c
-             LEFT JOIN {$tabla_anuncios} a ON c.id = a.categoria_id AND a.estado = 'publicado'
-             WHERE c.activa = 1
-             GROUP BY c.id
-             ORDER BY c.orden ASC"
-        );
+        if (is_wp_error($categorias)) {
+            $categorias = [];
+        }
 
-        $total_anuncios = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_anuncios} WHERE estado = 'publicado'");
+        $base_anuncios_url = home_url('/mi-portal/marketplace/anuncios/');
+        $total_anuncios = (int) wp_count_posts('marketplace_item')->publish;
         ?>
         <div class="flavor-marketplace-categorias">
             <!-- Header -->
@@ -2300,7 +2148,7 @@ KNOWLEDGE;
             <!-- Grid de categorías -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <!-- Todos -->
-                <a href="<?php echo esc_url(add_query_arg('tab', 'anuncios')); ?>"
+                <a href="<?php echo esc_url($base_anuncios_url); ?>"
                    class="bg-gradient-to-br from-gray-700 to-gray-800 text-white rounded-2xl p-6 text-center hover:shadow-lg transition-all group">
                     <div class="text-4xl mb-3">🏪</div>
                     <h3 class="font-semibold mb-1"><?php echo esc_html__('Todos', 'flavor-chat-ia'); ?></h3>
@@ -2308,22 +2156,30 @@ KNOWLEDGE;
                 </a>
 
                 <?php foreach ($categorias as $categoria):
-                    $icono = !empty($categoria->icono) ? str_replace('dashicons-', '', $categoria->icono) : 'category';
+                    $term_link = add_query_arg('categoria', $categoria->slug, $base_anuncios_url);
                 ?>
-                <a href="<?php echo esc_url(add_query_arg(['tab' => 'anuncios', 'categoria' => $categoria->id])); ?>"
-                   class="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-200 transition-all group"
-                   style="<?php echo !empty($categoria->color) ? 'border-left: 4px solid ' . esc_attr($categoria->color) : ''; ?>">
+                <a href="<?php echo esc_url($term_link); ?>"
+                   class="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-200 transition-all group">
                     <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">
-                        <span class="dashicons dashicons-<?php echo esc_attr($icono); ?>" style="font-size: 2.5rem; width: 2.5rem; height: 2.5rem; <?php echo !empty($categoria->color) ? 'color: ' . esc_attr($categoria->color) : ''; ?>"></span>
+                        <span class="dashicons dashicons-category" style="font-size: 2.5rem; width: 2.5rem; height: 2.5rem;"></span>
                     </div>
-                    <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html($categoria->nombre); ?></h3>
-                    <p class="text-gray-500 text-sm"><?php echo esc_html($categoria->total_anuncios); ?> <?php echo esc_html__('anuncios', 'flavor-chat-ia'); ?></p>
+                    <h3 class="font-semibold text-gray-800 mb-1"><?php echo esc_html($categoria->name); ?></h3>
+                    <p class="text-gray-500 text-sm"><?php echo esc_html((int) $categoria->count); ?> <?php echo esc_html__('anuncios', 'flavor-chat-ia'); ?></p>
                 </a>
                 <?php endforeach; ?>
             </div>
             <?php endif; ?>
         </div>
         <?php
+    }
+
+    /**
+     * Renderiza el tab oculto de detalle dentro del portal.
+     */
+    public static function render_tab_detalle(): void {
+        self::asegurar_frontend_controller();
+        $anuncio_id = absint($_GET['anuncio_id'] ?? $_GET['id'] ?? 0);
+        echo do_shortcode('[marketplace_detalle id="' . $anuncio_id . '"]');
     }
 
     /**

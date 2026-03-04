@@ -38,6 +38,13 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         $this->id = 'comunidades';
         $this->name = 'Comunidades'; // Translation loaded on init
         $this->description = 'Crea y gestiona comunidades tematicas con miembros, actividades y contenido compartido'; // Translation loaded on init
+        $this->module_role = 'base';
+        $this->ecosystem_base_for_modules = ['eventos', 'ayuda_vecinal', 'foros', 'energia_comunitaria'];
+        $this->ecosystem_supports_modules = ['eventos', 'ayuda_vecinal', 'foros', 'presupuestos_participativos', 'energia_comunitaria'];
+        $this->dashboard_parent_module = 'comunidades';
+        $this->dashboard_satellite_priority = 10;
+        $this->dashboard_client_contexts = ['comunidad', 'miembro', 'coordinacion'];
+        $this->dashboard_admin_contexts = ['comunidad', 'coordinacion', 'admin'];
 
         if (did_action('init')) {
             $this->register_shortcodes();
@@ -245,6 +252,27 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                     'icon'    => 'dashicons-carrot',
                     'content' => 'callback:render_tab_grupos_consumo',
                     'requires_login' => true,
+                ],
+                'banco-tiempo' => [
+                    'label'   => __('Banco del tiempo', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-clock',
+                    'content' => 'callback:render_tab_banco_tiempo',
+                    'requires_login' => true,
+                ],
+                'recetas' => [
+                    'label'   => __('Recetas', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-carrot',
+                    'content' => 'callback:render_tab_recetas',
+                ],
+                'biblioteca' => [
+                    'label'   => __('Biblioteca', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-book',
+                    'content' => 'callback:render_tab_biblioteca',
+                ],
+                'podcast' => [
+                    'label'   => __('Podcast', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-microphone',
+                    'content' => 'callback:render_tab_podcast',
                 ],
                 'anuncios' => [
                     'label'   => __('Anuncios', 'flavor-chat-ia'),
@@ -562,6 +590,27 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 'icon'    => 'dashicons-carrot',
                 'content' => 'callback:render_tab_grupos_consumo',
                 'requires_login' => true,
+            ],
+            'banco-tiempo' => [
+                'label'   => __('Banco del tiempo', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-clock',
+                'content' => 'callback:render_tab_banco_tiempo',
+                'requires_login' => true,
+            ],
+            'recetas' => [
+                'label'   => __('Recetas', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-carrot',
+                'content' => 'callback:render_tab_recetas',
+            ],
+            'biblioteca' => [
+                'label'   => __('Biblioteca', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-book',
+                'content' => 'callback:render_tab_biblioteca',
+            ],
+            'podcast' => [
+                'label'   => __('Podcast', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-microphone',
+                'content' => 'callback:render_tab_podcast',
             ],
             'anuncios' => [
                 'label'   => __('Anuncios', 'flavor-chat-ia'),
@@ -978,6 +1027,160 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         $header .= '</div>';
 
         return $header . do_shortcode('[gc_grupos_lista columnas="1" limite="6" comunidad_id="' . $comunidad_id . '"]');
+    }
+
+    /**
+     * Renderiza el tab contextual de banco del tiempo.
+     *
+     * @return string
+     */
+    public function render_tab_banco_tiempo() {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">⏰</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Banco del tiempo de la comunidad', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesión para acceder a los servicios del banco del tiempo de tu comunidad.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+        if (empty($comunidad_ids)) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">⏰</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Sin comunidad contextual', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a una comunidad concreta para ver su banco del tiempo asociado.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_id = absint($comunidad_ids[0]);
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Banco del tiempo de la comunidad', 'flavor-chat-ia') . '</h3>';
+        if (!empty($comunidad->nombre)) {
+            $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+        }
+        $header .= '</div>';
+        $header .= '<div class="flex items-center gap-2 flex-wrap">';
+        $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['comunidad_id' => $comunidad_id], home_url('/mi-portal/banco-tiempo/ofrecer/'))) . '">';
+        $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+        $header .= esc_html__('Ofrecer servicio', 'flavor-chat-ia');
+        $header .= '</a>';
+        $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-teal-700 text-sm font-medium border border-teal-200 hover:bg-teal-50" href="' . esc_url(add_query_arg(['comunidad_id' => $comunidad_id], home_url('/mi-portal/banco-tiempo/servicios/'))) . '">';
+        $header .= '<span class="dashicons dashicons-external" style="font-size:16px;width:16px;height:16px;"></span>';
+        $header .= esc_html__('Abrir módulo completo', 'flavor-chat-ia');
+        $header .= '</a>';
+        $header .= '</div>';
+        $header .= '</div>';
+
+        return $header . do_shortcode('[banco_tiempo_servicios limite="12" columnas="3" comunidad_id="' . $comunidad_id . '"]');
+    }
+
+    /**
+     * Renderiza el tab contextual de recetas.
+     *
+     * @return string
+     */
+    public function render_tab_recetas() {
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+        if (empty($comunidad_ids)) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🍳</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Recetas de la comunidad', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a una comunidad concreta para explorar sus recetas compartidas.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_id = absint($comunidad_ids[0]);
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Recetas de la comunidad', 'flavor-chat-ia') . '</h3>';
+        if (!empty($comunidad->nombre)) {
+            $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+        }
+        $header .= '</div>';
+        if (is_user_logged_in()) {
+            $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['comunidad_id' => $comunidad_id], home_url('/mi-portal/recetas/nueva/'))) . '">';
+            $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+            $header .= esc_html__('Compartir receta', 'flavor-chat-ia');
+            $header .= '</a>';
+        }
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor module="recetas" view="listado" header="no" limit="12"]');
+    }
+
+    /**
+     * Renderiza el tab contextual de biblioteca.
+     *
+     * @return string
+     */
+    public function render_tab_biblioteca() {
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+        if (empty($comunidad_ids)) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">📚</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Biblioteca de la comunidad', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a una comunidad concreta para explorar su biblioteca compartida.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_id = absint($comunidad_ids[0]);
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Biblioteca de la comunidad', 'flavor-chat-ia') . '</h3>';
+        if (!empty($comunidad->nombre)) {
+            $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+        }
+        $header .= '</div>';
+        if (is_user_logged_in()) {
+            $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['comunidad_id' => $comunidad_id], home_url('/mi-portal/biblioteca/anadir/'))) . '">';
+            $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+            $header .= esc_html__('Añadir libro', 'flavor-chat-ia');
+            $header .= '</a>';
+        }
+        $header .= '</div>';
+
+        return $header . do_shortcode('[biblioteca_catalogo]');
+    }
+
+    /**
+     * Renderiza el tab contextual de podcast.
+     *
+     * @return string
+     */
+    public function render_tab_podcast() {
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+        if (empty($comunidad_ids)) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🎙️</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Podcast de la comunidad', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a una comunidad concreta para escuchar o descubrir sus programas y episodios.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_id = absint($comunidad_ids[0]);
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Podcast de la comunidad', 'flavor-chat-ia') . '</h3>';
+        if (!empty($comunidad->nombre)) {
+            $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+        }
+        $header .= '</div>';
+        $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['comunidad_id' => $comunidad_id], home_url('/mi-portal/podcast/programas/'))) . '">';
+        $header .= '<span class="dashicons dashicons-external" style="font-size:16px;width:16px;height:16px;"></span>';
+        $header .= esc_html__('Abrir módulo completo', 'flavor-chat-ia');
+        $header .= '</a>';
+        $header .= '</div>';
+
+        return $header . do_shortcode('[podcast_series]');
     }
 
     /**
@@ -2656,7 +2859,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'comunidades-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'comunidades-listado',
@@ -2784,15 +2987,25 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
      * Renderiza el dashboard de comunidades
      */
     public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         global $wpdb;
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
         $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
         $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Comunidades', 'flavor-chat-ia'), [
-            ['label' => __('Nueva Comunidad', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=comunidades-listado&accion=nueva'), 'class' => 'button-primary'],
-        ]);
+        $acciones = $is_dashboard_viewer
+            ? [
+                ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/comunidades/'), 'class' => ''],
+            ]
+            : [
+                ['label' => __('Nueva Comunidad', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=comunidades-listado&accion=nueva'), 'class' => 'button-primary'],
+            ];
+        $this->render_page_header(__('Dashboard de Comunidades', 'flavor-chat-ia'), $acciones);
+
+        if ($is_dashboard_viewer) {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. La creación y gestión detallada de comunidades sigue reservada a administración.', 'flavor-chat-ia') . '</p></div>';
+        }
 
         // Estadisticas rapidas
         $total_comunidades = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_comunidades WHERE estado = 'activa'");
@@ -4445,6 +4658,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             'grupo_chat_id' => $grupo_chat_id,
         ]);
 
+        // Sincronizar al creador con los modulos satelite de la comunidad.
+        $this->sincronizar_miembro_grupo_consumo_comunidad($nueva_comunidad_id, $usuario_actual_id, 'unirse', 'admin');
+
         return [
             'success'       => true,
             'comunidad_id'  => $nueva_comunidad_id,
@@ -4597,6 +4813,95 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Sincroniza la membresia de un usuario con el grupo principal de consumo de la comunidad.
+     *
+     * @param int    $comunidad_id ID de la comunidad.
+     * @param int    $usuario_id   ID del usuario.
+     * @param string $accion       Accion de sincronizacion.
+     * @param string $rol_comunidad Rol del usuario dentro de la comunidad.
+     * @return bool
+     */
+    private function sincronizar_miembro_grupo_consumo_comunidad($comunidad_id, $usuario_id, $accion, $rol_comunidad = 'miembro') {
+        if (!class_exists('Flavor_GC_Consumidor_Manager')) {
+            return false;
+        }
+
+        $module_loader = Flavor_Module_Loader::get_instance();
+        if (!$module_loader) {
+            return false;
+        }
+
+        $modulo_grupos_consumo = $module_loader->get_module('grupos_consumo');
+        if (!$modulo_grupos_consumo || !method_exists($modulo_grupos_consumo, 'obtener_grupo_principal_comunidad')) {
+            return false;
+        }
+
+        $grupo_principal = $modulo_grupos_consumo->obtener_grupo_principal_comunidad($comunidad_id);
+        if (!$grupo_principal instanceof WP_Post) {
+            return false;
+        }
+
+        $grupo_id = (int) $grupo_principal->ID;
+        $consumidor_manager = Flavor_GC_Consumidor_Manager::get_instance();
+        $consumidor = $consumidor_manager->obtener_consumidor($usuario_id, $grupo_id);
+
+        $rol_gc = in_array($rol_comunidad, ['admin', 'moderador'], true) ? 'coordinador' : 'consumidor';
+
+        switch ($accion) {
+            case 'unirse':
+                if (!$consumidor) {
+                    $alta = $consumidor_manager->alta_consumidor($usuario_id, $grupo_id, $rol_gc);
+                    if (empty($alta['success']) || empty($alta['consumidor_id'])) {
+                        return false;
+                    }
+
+                    $consumidor_id = (int) $alta['consumidor_id'];
+                    $estado = $consumidor_manager->cambiar_estado($consumidor_id, 'activo');
+                    if (empty($estado['success'])) {
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                if ($consumidor->estado !== 'activo') {
+                    $estado = $consumidor_manager->cambiar_estado((int) $consumidor->id, 'activo');
+                    if (empty($estado['success'])) {
+                        return false;
+                    }
+                }
+
+                if ($consumidor->rol !== $rol_gc) {
+                    $rol = $consumidor_manager->cambiar_rol((int) $consumidor->id, $rol_gc);
+                    if (empty($rol['success'])) {
+                        return false;
+                    }
+                }
+
+                return true;
+
+            case 'suspender':
+                if (!$consumidor) {
+                    return true;
+                }
+
+                $estado = $consumidor_manager->cambiar_estado((int) $consumidor->id, 'suspendido');
+                return !empty($estado['success']);
+
+            case 'banear':
+            case 'salir':
+                if (!$consumidor) {
+                    return true;
+                }
+
+                $estado = $consumidor_manager->cambiar_estado((int) $consumidor->id, 'baja');
+                return !empty($estado['success']);
+        }
+
+        return false;
+    }
+
+    /**
      * Accion: Unirse a una comunidad
      */
     private function action_unirse($parametros) {
@@ -4710,6 +5015,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
             // Sincronizar con grupo de chat de la comunidad
             $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_actual_id, 'unirse');
+            $this->sincronizar_miembro_grupo_consumo_comunidad($comunidad_id, $usuario_actual_id, 'unirse', 'miembro');
         }
 
         $mensaje_respuesta = ($estado_inicial === 'pendiente')
@@ -4798,6 +5104,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         // Sincronizar con grupo de chat de la comunidad
         $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_actual_id, 'salir');
+        $this->sincronizar_miembro_grupo_consumo_comunidad($comunidad_id, $usuario_actual_id, 'salir', $membresia->rol);
 
         $comunidad = $wpdb->get_row($wpdb->prepare(
             "SELECT nombre FROM $tabla_comunidades WHERE id = %d",
@@ -5216,6 +5523,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                     ['%s'],
                     ['%d', '%d']
                 );
+                if ($membresia_objetivo->estado === 'activo') {
+                    $this->sincronizar_miembro_grupo_consumo_comunidad($comunidad_id, $usuario_objetivo_id, 'unirse', $nuevo_rol);
+                }
                 $mensaje_resultado = sprintf(__('Rol actualizado a "%s".', 'flavor-chat-ia'), $nuevo_rol);
                 break;
 
@@ -5234,6 +5544,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 ));
                 // Sincronizar con grupo de chat (quitar acceso)
                 $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_objetivo_id, 'salir');
+                $this->sincronizar_miembro_grupo_consumo_comunidad($comunidad_id, $usuario_objetivo_id, 'suspender', $membresia_objetivo->rol);
                 $mensaje_resultado = __('Miembro suspendido.', 'flavor-chat-ia');
                 break;
 
@@ -5252,6 +5563,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 ));
                 // Sincronizar con grupo de chat (quitar acceso)
                 $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_objetivo_id, 'salir');
+                $this->sincronizar_miembro_grupo_consumo_comunidad($comunidad_id, $usuario_objetivo_id, 'banear', $membresia_objetivo->rol);
                 $mensaje_resultado = __('Miembro baneado de la comunidad.', 'flavor-chat-ia');
                 break;
 
@@ -5276,6 +5588,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 ));
                 // Sincronizar con grupo de chat
                 $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_objetivo_id, 'unirse');
+                $this->sincronizar_miembro_grupo_consumo_comunidad($comunidad_id, $usuario_objetivo_id, 'unirse', $membresia_objetivo->rol);
                 $mensaje_resultado = __('Miembro aprobado y activado.', 'flavor-chat-ia');
                 break;
 
@@ -5294,6 +5607,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 ));
                 // Sincronizar con grupo de chat
                 $this->sincronizar_miembro_chat_comunidad($comunidad_id, $usuario_objetivo_id, 'unirse');
+                $this->sincronizar_miembro_grupo_consumo_comunidad($comunidad_id, $usuario_objetivo_id, 'unirse', $membresia_objetivo->rol);
                 $mensaje_resultado = __('Miembro reactivado.', 'flavor-chat-ia');
                 break;
 
@@ -7393,6 +7707,56 @@ KNOWLEDGE;
             'comunidades-metricas',
             [$this, 'render_pagina_metricas']
         );
+
+        // Página: Configuración (oculta)
+        add_submenu_page(
+            null,
+            __('Configuración de Comunidades', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability,
+            'comunidades-config',
+            [$this, 'render_pagina_config']
+        );
+
+        // Página: Editar (oculta)
+        add_submenu_page(
+            null,
+            __('Editar Comunidad', 'flavor-chat-ia'),
+            __('Editar', 'flavor-chat-ia'),
+            $capability,
+            'comunidades-editar',
+            [$this, 'render_pagina_editar']
+        );
+
+        // Página: Miembros (oculta)
+        add_submenu_page(
+            null,
+            __('Miembros de Comunidades', 'flavor-chat-ia'),
+            __('Miembros', 'flavor-chat-ia'),
+            $capability,
+            'comunidades-miembros',
+            [$this, 'render_pagina_miembros']
+        );
+
+        // Página: Nueva (oculta)
+        add_submenu_page(
+            null,
+            __('Nueva Comunidad', 'flavor-chat-ia'),
+            __('Nueva', 'flavor-chat-ia'),
+            $capability,
+            'comunidades-nueva',
+            [$this, 'render_pagina_nueva']
+        );
+
+        // Página: Publicaciones (oculta)
+        add_submenu_page(
+            null,
+            __('Publicaciones de Comunidades', 'flavor-chat-ia'),
+            __('Publicaciones', 'flavor-chat-ia'),
+            $capability,
+            'comunidades-publicaciones',
+            [$this, 'render_pagina_publicaciones']
+        );
     }
 
     /**
@@ -7447,6 +7811,70 @@ KNOWLEDGE;
         echo '</div>';
     }
 
+    /**
+     * Renderiza página de configuración
+     */
+    public function render_pagina_config() {
+        $views_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Comunidades', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza página de editar
+     */
+    public function render_pagina_editar() {
+        $views_path = dirname(__FILE__) . '/views/editar.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Editar Comunidad', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza página de miembros
+     */
+    public function render_pagina_miembros() {
+        $views_path = dirname(__FILE__) . '/views/miembros.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Miembros de Comunidades', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza página de nueva comunidad
+     */
+    public function render_pagina_nueva() {
+        $views_path = dirname(__FILE__) . '/views/nueva.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Nueva Comunidad', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza página de publicaciones
+     */
+    public function render_pagina_publicaciones() {
+        $views_path = dirname(__FILE__) . '/views/publicaciones.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Publicaciones de Comunidades', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
 
     /**
      * Inicializa el dashboard tab del módulo

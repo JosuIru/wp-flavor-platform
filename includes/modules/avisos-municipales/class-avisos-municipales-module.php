@@ -2054,6 +2054,11 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
             'ver' => 'ver_aviso',
             'no-leidos' => 'avisos_no_leidos',
             'urgentes' => 'avisos_urgentes',
+            'foro' => 'foro_aviso',
+            'chat' => 'chat_aviso',
+            'multimedia' => 'multimedia_aviso',
+            'red-social' => 'red_social_aviso',
+            'red_social' => 'red_social_aviso',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -2143,6 +2148,102 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
             'total'   => count($avisos),
             'avisos'  => array_map([$this, 'formatear_aviso_para_json'], $avisos),
         ];
+    }
+
+    private function resolve_contextual_aviso($params = []) {
+        $aviso_id = intval(
+            $params['aviso_id']
+            ?? $params['id']
+            ?? $_GET['aviso_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if ($aviso_id <= 0) {
+            return null;
+        }
+
+        $aviso = $this->obtener_aviso($aviso_id);
+        if (!$aviso) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $aviso->id,
+            'titulo' => (string) $aviso->titulo,
+            'descripcion' => (string) ($aviso->contenido ?? ''),
+        ];
+    }
+
+    private function action_foro_aviso($params) {
+        $aviso = $this->resolve_contextual_aviso($params);
+        if (!$aviso) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-foro">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
+            . '<h2>' . esc_html__('Foro del aviso', 'flavor-chat-ia') . '</h2>'
+            . '<p>' . esc_html($aviso['titulo']) . '</p>'
+            . '</div>'
+            . do_shortcode('[flavor_foros_integrado entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_chat_aviso($params) {
+        $aviso = $this->resolve_contextual_aviso($params);
+        if (!$aviso) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este aviso.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-chat">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Chat del aviso', 'flavor-chat-ia') . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?aviso_id=' . absint($aviso['id']))) . '" class="button button-secondary">'
+            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_multimedia_aviso($params) {
+        $aviso = $this->resolve_contextual_aviso($params);
+        if (!$aviso) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Archivos del aviso', 'flavor-chat-ia') . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?aviso_id=' . absint($aviso['id']))) . '" class="button button-primary">'
+            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_red_social_aviso($params) {
+        $aviso = $this->resolve_contextual_aviso($params);
+        if (!$aviso) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un aviso para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este aviso.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Actividad social del aviso', 'flavor-chat-ia') . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?aviso_id=' . absint($aviso['id']))) . '" class="button button-primary">'
+            . esc_html__('Publicar', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_social_feed entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
+            . '</div>';
     }
 
     /**

@@ -1347,6 +1347,11 @@ KNOWLEDGE;
             'mis-dones' => 'mis_intercambios',
             'crear' => 'ofrecer_don',
             'nuevo' => 'ofrecer_don',
+            'foro' => 'foro_don',
+            'chat' => 'chat_don',
+            'multimedia' => 'multimedia_don',
+            'red-social' => 'red_social_don',
+            'red_social' => 'red_social_don',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -1381,6 +1386,109 @@ KNOWLEDGE;
             'success' => true,
             'html' => do_shortcode('[ofrecer_don]'),
         ];
+    }
+
+    private function resolve_contextual_don($params = []) {
+        global $wpdb;
+
+        $don_id = absint(
+            $params['don_id']
+            ?? $params['id']
+            ?? $_GET['don_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if (!$don_id) {
+            return null;
+        }
+
+        $tabla = $wpdb->prefix . 'flavor_economia_dones';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return null;
+        }
+
+        $don = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, titulo, descripcion FROM {$tabla} WHERE id = %d",
+            $don_id
+        ), ARRAY_A);
+
+        if (!$don) {
+            return null;
+        }
+
+        return $don;
+    }
+
+    private function action_foro_don($params) {
+        $don = $this->resolve_contextual_don($params);
+        if (!$don) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-foro">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
+            . '<h2>' . esc_html__('Foro del don', 'flavor-chat-ia') . '</h2>'
+            . '<p>' . esc_html($don['titulo']) . '</p>'
+            . '</div>'
+            . do_shortcode('[flavor_foros_integrado entidad="economia_don" entidad_id="' . absint($don['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_chat_don($params) {
+        $don = $this->resolve_contextual_don($params);
+        if (!$don) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este don.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-chat">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Chat del don', 'flavor-chat-ia') . '</h2><p>' . esc_html($don['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?don_id=' . absint($don['id']))) . '" class="button button-secondary">'
+            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="economia_don" entidad_id="' . absint($don['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_multimedia_don($params) {
+        $don = $this->resolve_contextual_don($params);
+        if (!$don) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Archivos del don', 'flavor-chat-ia') . '</h2><p>' . esc_html($don['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?don_id=' . absint($don['id']))) . '" class="button button-primary">'
+            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="economia_don" entidad_id="' . absint($don['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_red_social_don($params) {
+        $don = $this->resolve_contextual_don($params);
+        if (!$don) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un don para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este don.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Actividad social del don', 'flavor-chat-ia') . '</h2><p>' . esc_html($don['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?don_id=' . absint($don['id']))) . '" class="button button-primary">'
+            . esc_html__('Publicar', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_social_feed entidad="economia_don" entidad_id="' . absint($don['id']) . '"]')
+            . '</div>';
     }
 
     /**

@@ -37,6 +37,11 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $this->id = 'transparencia';
         $this->name = 'Portal de Transparencia'; // Translation loaded on init
         $this->description = 'Portal de transparencia con datos publicos, presupuestos, contratos, actas y rendicion de cuentas.'; // Translation loaded on init
+        $this->module_role = 'transversal';
+        $this->ecosystem_governs_modules = ['grupos_consumo', 'energia_comunitaria', 'participacion'];
+        $this->dashboard_transversal_priority = 20;
+        $this->dashboard_client_contexts = ['transparencia', 'gobernanza', 'rendicion_cuentas'];
+        $this->dashboard_admin_contexts = ['transparencia', 'gobernanza', 'admin'];
         $this->prefijo_tabla = $wpdb->prefix . 'flavor_transparencia_';
 
         parent::__construct();
@@ -108,7 +113,7 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug'     => 'transparencia-dashboard',
                     'titulo'   => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                     'badge'    => [$this, 'contar_solicitudes_pendientes'],
                 ],
                 [
@@ -162,6 +167,9 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         // Cargar Dashboard Tab para el frontend del usuario
         $this->cargar_dashboard_tab();
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -2234,6 +2242,11 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
             'mis_items' => 'consultar_datos',
             'mis-solicitudes' => 'consultar_datos',
             'indicadores' => 'ver_indicadores',
+            'foro' => 'foro_documento',
+            'chat' => 'chat_documento',
+            'multimedia' => 'multimedia_documento',
+            'red-social' => 'red_social_documento',
+            'red_social' => 'red_social_documento',
         ];
 
         $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
@@ -2255,6 +2268,102 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     private function action_consultar_datos($parametros) {
         $resultado = $this->obtener_documentos_publicos($parametros);
         return ['success' => true, 'datos' => $resultado['documentos']];
+    }
+
+    private function resolve_contextual_documento($parametros = []) {
+        $documento_id = absint(
+            $parametros['documento_id']
+            ?? $parametros['id']
+            ?? $_GET['documento_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if (!$documento_id) {
+            return null;
+        }
+
+        $documento = $this->obtener_documento_por_id($documento_id);
+        if (!$documento) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $documento['id'],
+            'titulo' => (string) $documento['titulo'],
+            'descripcion' => (string) ($documento['descripcion'] ?? ''),
+        ];
+    }
+
+    private function action_foro_documento($parametros) {
+        $documento = $this->resolve_contextual_documento($parametros);
+        if (!$documento) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-foro">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
+            . '<h2>' . esc_html__('Foro del documento', 'flavor-chat-ia') . '</h2>'
+            . '<p>' . esc_html($documento['titulo']) . '</p>'
+            . '</div>'
+            . do_shortcode('[flavor_foros_integrado entidad="documento_transparencia" entidad_id="' . absint($documento['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_chat_documento($parametros) {
+        $documento = $this->resolve_contextual_documento($parametros);
+        if (!$documento) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este documento.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-chat">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Chat del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?documento_id=' . absint($documento['id']))) . '" class="button button-secondary">'
+            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="documento_transparencia" entidad_id="' . absint($documento['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_multimedia_documento($parametros) {
+        $documento = $this->resolve_contextual_documento($parametros);
+        if (!$documento) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Archivos del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?documento_id=' . absint($documento['id']))) . '" class="button button-primary">'
+            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="documento_transparencia" entidad_id="' . absint($documento['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_red_social_documento($parametros) {
+        $documento = $this->resolve_contextual_documento($parametros);
+        if (!$documento) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este documento.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Actividad social del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?documento_id=' . absint($documento['id']))) . '" class="button button-primary">'
+            . esc_html__('Publicar', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_social_feed entidad="documento_transparencia" entidad_id="' . absint($documento['id']) . '"]')
+            . '</div>';
     }
 
     /**
@@ -2519,7 +2628,21 @@ KNOWLEDGE;
                 ],
             ]); ?>
 
-            <div class="flavor-dashboard-grid">
+            <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
+                <?php $this->render_admin_module_hub([
+                    'description' => __('Acceso visible a documentos, configuración y al bloque principal de métricas y actividad.', 'flavor-chat-ia'),
+                    'stats_anchor' => '#transparencia-stats',
+                    'extra_items' => [
+                        [
+                            'label' => __('Portal', 'flavor-chat-ia'),
+                            'url' => home_url('/mi-portal/transparencia/'),
+                            'icon' => 'dashicons-external',
+                        ],
+                    ],
+                ]); ?>
+            <?php endif; ?>
+
+            <div id="transparencia-stats" class="flavor-dashboard-grid">
                 <div class="flavor-stat-card">
                     <span class="dashicons dashicons-media-document"></span>
                     <div class="stat-content">
@@ -2559,6 +2682,18 @@ KNOWLEDGE;
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**
@@ -2939,6 +3074,30 @@ KNOWLEDGE;
                     'content'    => 'shortcode:transparencia_mis_solicitudes',
                     'requires_login' => true,
                 ],
+                'foro' => [
+                    'label'      => __('Foro', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-comments',
+                    'content'    => 'action:foro_documento',
+                    'hidden_nav' => true,
+                ],
+                'chat' => [
+                    'label'      => __('Chat', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-chat',
+                    'content'    => 'action:chat_documento',
+                    'hidden_nav' => true,
+                ],
+                'multimedia' => [
+                    'label'      => __('Multimedia', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-gallery',
+                    'content'    => 'action:multimedia_documento',
+                    'hidden_nav' => true,
+                ],
+                'red-social' => [
+                    'label'      => __('Red social', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-share',
+                    'content'    => 'action:red_social_documento',
+                    'hidden_nav' => true,
+                ],
             ],
 
             'archive' => [
@@ -2978,6 +3137,123 @@ KNOWLEDGE;
             if (class_exists('Flavor_Transparencia_Dashboard_Tab')) {
                 Flavor_Transparencia_Dashboard_Tab::get_instance();
             }
+        }
+    }
+
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        add_submenu_page(
+            null,
+            __('Transparencia - Configuración', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability,
+            'transparencia-configuracion',
+            [$this, 'render_pagina_configuracion']
+        );
+
+        add_submenu_page(
+            null,
+            __('Transparencia - Datos', 'flavor-chat-ia'),
+            __('Datos', 'flavor-chat-ia'),
+            $capability,
+            'transparencia-datos',
+            [$this, 'render_pagina_datos']
+        );
+
+        add_submenu_page(
+            null,
+            __('Transparencia - Informes', 'flavor-chat-ia'),
+            __('Informes', 'flavor-chat-ia'),
+            $capability,
+            'transparencia-informes',
+            [$this, 'render_pagina_informes']
+        );
+
+        add_submenu_page(
+            null,
+            __('Transparencia - Publicar', 'flavor-chat-ia'),
+            __('Publicar', 'flavor-chat-ia'),
+            $capability,
+            'transparencia-publicar',
+            [$this, 'render_pagina_publicar']
+        );
+
+        add_submenu_page(
+            null,
+            __('Transparencia - Solicitudes', 'flavor-chat-ia'),
+            __('Solicitudes', 'flavor-chat-ia'),
+            $capability,
+            'transparencia-solicitudes',
+            [$this, 'render_pagina_solicitudes']
+        );
+    }
+
+    /**
+     * Renderizar página de configuración
+     */
+    public function render_pagina_configuracion() {
+        $views_path = dirname(__FILE__) . '/views/configuracion.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Transparencia', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Configuración del portal de transparencia.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de datos
+     */
+    public function render_pagina_datos() {
+        $views_path = dirname(__FILE__) . '/views/datos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Datos Públicos', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Gestión de datos públicos del portal de transparencia.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de informes
+     */
+    public function render_pagina_informes() {
+        $views_path = dirname(__FILE__) . '/views/informes.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Informes de Transparencia', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Generación y gestión de informes de transparencia.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de publicar
+     */
+    public function render_pagina_publicar() {
+        $views_path = dirname(__FILE__) . '/views/publicar.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Publicar Documentos', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Publicación de documentos en el portal de transparencia.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de solicitudes
+     */
+    public function render_pagina_solicitudes() {
+        $views_path = dirname(__FILE__) . '/views/solicitudes.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Solicitudes de Información', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Gestión de solicitudes de acceso a información pública.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 }

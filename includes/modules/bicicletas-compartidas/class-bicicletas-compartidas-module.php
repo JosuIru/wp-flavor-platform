@@ -91,6 +91,9 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
         // Inicializar Dashboard Tab para el área de usuario
         $this->inicializar_dashboard_tab();
 
+        // Registrar páginas de administración
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
         // AJAX handlers para shortcodes
         add_action('wp_ajax_bicicletas_reservar', [$this, 'ajax_reservar_bicicleta']);
         add_action('wp_ajax_nopriv_bicicletas_reservar', [$this, 'ajax_login_required']);
@@ -1351,7 +1354,7 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
                 }
                 ?>
             </p>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="inline-block px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium">
+            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="inline-block px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium">
                 <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
             </a>
         </div>
@@ -2382,7 +2385,7 @@ KNOWLEDGE;
                 [
                     'slug' => 'flavor-bicicletas-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-bicicletas-flota',
@@ -2579,6 +2582,18 @@ KNOWLEDGE;
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**
@@ -3111,5 +3126,159 @@ KNOWLEDGE;
                 'estadisticas'    => true,
             ],
         ];
+    }
+
+    /**
+     * Registra las páginas de administración del módulo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        add_submenu_page(
+            null,
+            __('Bicicletas', 'flavor-chat-ia'),
+            __('Bicicletas', 'flavor-chat-ia'),
+            $capability,
+            'flavor-bicicletas-bicicletas',
+            [$this, 'render_pagina_bicicletas']
+        );
+
+        add_submenu_page(
+            null,
+            __('Configuración de Bicicletas', 'flavor-chat-ia'),
+            __('Configuración de Bicicletas', 'flavor-chat-ia'),
+            $capability,
+            'flavor-bicicletas-configuracion',
+            [$this, 'render_pagina_configuracion']
+        );
+
+        add_submenu_page(
+            null,
+            __('Estaciones de Bicicletas', 'flavor-chat-ia'),
+            __('Estaciones de Bicicletas', 'flavor-chat-ia'),
+            $capability,
+            'flavor-bicicletas-estaciones',
+            [$this, 'render_pagina_estaciones']
+        );
+
+        add_submenu_page(
+            null,
+            __('Flota de Bicicletas', 'flavor-chat-ia'),
+            __('Flota de Bicicletas', 'flavor-chat-ia'),
+            $capability,
+            'flavor-bicicletas-flota',
+            [$this, 'render_pagina_flota']
+        );
+
+        add_submenu_page(
+            null,
+            __('Mantenimiento de Bicicletas', 'flavor-chat-ia'),
+            __('Mantenimiento de Bicicletas', 'flavor-chat-ia'),
+            $capability,
+            'flavor-bicicletas-mantenimiento',
+            [$this, 'render_pagina_mantenimiento']
+        );
+
+        add_submenu_page(
+            null,
+            __('Préstamos de Bicicletas', 'flavor-chat-ia'),
+            __('Préstamos de Bicicletas', 'flavor-chat-ia'),
+            $capability,
+            'flavor-bicicletas-prestamos',
+            [$this, 'render_pagina_prestamos']
+        );
+
+        add_submenu_page(
+            null,
+            __('Uso de Bicicletas', 'flavor-chat-ia'),
+            __('Uso de Bicicletas', 'flavor-chat-ia'),
+            $capability,
+            'flavor-bicicletas-uso',
+            [$this, 'render_pagina_uso']
+        );
+    }
+
+    /**
+     * Renderiza la página de bicicletas
+     */
+    public function render_pagina_bicicletas() {
+        $ruta_vista = dirname(__FILE__) . '/views/bicicletas.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_pagina_configuracion() {
+        $ruta_vista = dirname(__FILE__) . '/views/configuracion.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de estaciones
+     */
+    public function render_pagina_estaciones() {
+        $ruta_vista = dirname(__FILE__) . '/views/estaciones.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Estaciones de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de flota
+     */
+    public function render_pagina_flota() {
+        $ruta_vista = dirname(__FILE__) . '/views/flota.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Flota de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de mantenimiento
+     */
+    public function render_pagina_mantenimiento() {
+        $ruta_vista = dirname(__FILE__) . '/views/mantenimiento.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Mantenimiento de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de préstamos
+     */
+    public function render_pagina_prestamos() {
+        $ruta_vista = dirname(__FILE__) . '/views/prestamos.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Préstamos de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de uso
+     */
+    public function render_pagina_uso() {
+        $ruta_vista = dirname(__FILE__) . '/views/uso.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Uso de Bicicletas', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
     }
 }

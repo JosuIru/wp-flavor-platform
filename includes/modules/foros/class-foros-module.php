@@ -152,6 +152,116 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                 },
             ],
 
+            'incidencias' => [
+                'id'       => 'foro-incidencia',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="incidencia" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('incidencia', $contexto['entity_id']);
+                },
+            ],
+
+            'documentacion_legal' => [
+                'id'       => 'foro-documento-legal',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="documento_legal" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('documento_legal', $contexto['entity_id']);
+                },
+            ],
+
+            'presupuestos_participativos' => [
+                'id'       => 'foro-pp-proyecto',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="pp_proyecto" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('pp_proyecto', $contexto['entity_id']);
+                },
+            ],
+
+            'saberes_ancestrales' => [
+                'id'       => 'foro-saber-ancestral',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="saber_ancestral" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('saber_ancestral', $contexto['entity_id']);
+                },
+            ],
+
+            'transparencia' => [
+                'id'       => 'foro-documento-transparencia',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="documento_transparencia" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('documento_transparencia', $contexto['entity_id']);
+                },
+            ],
+
+            'avisos_municipales' => [
+                'id'       => 'foro-aviso-municipal',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="aviso_municipal" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('aviso_municipal', $contexto['entity_id']);
+                },
+            ],
+
+            'economia_don' => [
+                'id'       => 'foro-economia-don',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="economia_don" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('economia_don', $contexto['entity_id']);
+                },
+            ],
+
+            'advertising' => [
+                'id'       => 'foro-advertising-ad',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="advertising_ad" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('advertising_ad', $contexto['entity_id']);
+                },
+            ],
+
+            'radio' => [
+                'id'       => 'foro-radio-programa',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="radio_programa" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('radio_programa', $contexto['entity_id']);
+                },
+            ],
+
+            'energia_comunitaria' => [
+                'id'       => 'foro-energia-comunidad',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="energia_comunidad" entidad_id="{entity_id}"]',
+                'priority' => 95,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('energia_comunidad', $contexto['entity_id']);
+                },
+            ],
+
             // Tab de discusión para Cursos
             'cursos' => [
                 'id'       => 'foro-curso',
@@ -161,6 +271,18 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                 'priority' => 100,
                 'badge'    => function($contexto) {
                     return $this->contar_temas_entidad('curso', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de discusión para Talleres
+            'talleres' => [
+                'id'       => 'foro-taller',
+                'label'    => __('Foro del Taller', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="taller" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('taller', $contexto['entity_id']);
                 },
             ],
 
@@ -197,6 +319,60 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                 'priority' => 100,
                 'badge'    => function($contexto) {
                     return $this->contar_temas_entidad('servicio_bt', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de foro para Trabajo Digno
+            'trabajo_digno' => [
+                'id'       => 'foro-oferta-trabajo',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="trabajo_digno_oferta" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('trabajo_digno_oferta', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de foro para Huertos Urbanos
+            'huertos_urbanos' => [
+                'id'       => 'foro-huerto',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="huerto" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('huerto', $contexto['entity_id']);
+                },
+            ],
+            'participacion' => [
+                'id'       => 'foro-propuesta',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="participacion_propuesta" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('participacion_propuesta', $contexto['entity_id']);
+                },
+            ],
+            'economia_suficiencia' => [
+                'id'       => 'foro-recurso-suficiencia',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="es_recurso" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('es_recurso', $contexto['entity_id']);
+                },
+            ],
+            'justicia_restaurativa' => [
+                'id'       => 'foro-proceso-restaurativo',
+                'label'    => __('Foro', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-chat',
+                'content'  => '[flavor_foros_integrado entidad="jr_proceso" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_temas_entidad('jr_proceso', $contexto['entity_id']);
                 },
             ],
         ];
@@ -400,7 +576,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                                 <?php if (!empty($tema->es_fijado)): ?>
                                     <span class="dashicons dashicons-admin-post" title="<?php esc_attr_e('Fijado', 'flavor-chat-ia'); ?>"></span>
                                 <?php endif; ?>
-                                <a href="<?php echo esc_url(home_url('/mi-portal/foros/tema/' . $tema->id . '/')); ?>">
+                                <a href="<?php echo esc_url(add_query_arg('tema_id', $tema->id, home_url('/mi-portal/foros/'))); ?>">
                                     <?php echo esc_html($tema->titulo); ?>
                                 </a>
                             </h4>
@@ -751,10 +927,238 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                 }
                 break;
 
+            case 'incidencia':
+                $tabla = $wpdb->prefix . 'flavor_incidencias';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'documento_legal':
+                $tabla = $wpdb->prefix . 'flavor_documentacion_legal';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'pp_proyecto':
+                $tabla = $wpdb->prefix . 'flavor_pp_proyectos';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'saber_ancestral':
+                $post = get_post($entidad_id);
+                if ($post && $post->post_type === 'sa_saber') {
+                    $label = $post->post_title;
+                    $description = wp_trim_words((string) $post->post_content, 30);
+                }
+                break;
+
+            case 'documento_transparencia':
+                $tabla = $wpdb->prefix . 'flavor_transparencia_documentos_publicos';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'aviso_municipal':
+                $tabla = $wpdb->prefix . 'flavor_avisos_municipales';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, contenido AS descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'economia_don':
+                $tabla = $wpdb->prefix . 'flavor_economia_dones';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'energia_comunidad':
+                $tabla = $wpdb->prefix . 'flavor_energia_comunidades';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT nombre, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->nombre;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
             case 'grupo_consumo':
                 $post = get_post($entidad_id);
                 if ($post && $post->post_type === 'gc_grupo') {
                     $label = get_the_title($post);
+                    $description = wp_trim_words((string) $post->post_content, 30);
+                }
+                break;
+
+            case 'podcast_serie':
+                $tabla = $wpdb->prefix . 'flavor_podcast_series';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'libro_biblioteca':
+                $tabla = $wpdb->prefix . 'flavor_biblioteca_libros';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'taller':
+                $tabla = $wpdb->prefix . 'flavor_talleres';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'marketplace_anuncio':
+                $tabla = $wpdb->prefix . 'flavor_marketplace_anuncios';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'advertising_ad':
+                $post = get_post($entidad_id);
+                if ($post && $post->post_type === 'flavor_ad') {
+                    $label = $post->post_title;
+                    $description = wp_trim_words((string) ($post->post_excerpt ?: $post->post_content), 30);
+                }
+                break;
+
+            case 'radio_programa':
+                $tabla = $wpdb->prefix . 'flavor_radio_programas';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT nombre AS titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'trabajo_digno_oferta':
+                $post = get_post($entidad_id);
+                if ($post && $post->post_type === 'td_oferta') {
+                    $label = $post->post_title;
+                    $description = wp_trim_words((string) $post->post_content, 30);
+                }
+                break;
+
+            case 'huerto':
+                $tabla = $wpdb->prefix . 'flavor_huertos';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT nombre, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->nombre;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'participacion_propuesta':
+                $tabla = $wpdb->prefix . 'flavor_propuestas';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+                    $entity = $wpdb->get_row($wpdb->prepare(
+                        "SELECT titulo, descripcion FROM {$tabla} WHERE id = %d",
+                        $entidad_id
+                    ));
+                    if ($entity) {
+                        $label = $entity->titulo;
+                        $description = wp_trim_words((string) $entity->descripcion, 30);
+                    }
+                }
+                break;
+
+            case 'jr_proceso':
+                $post = get_post($entidad_id);
+                if ($post && $post->post_type === 'jr_proceso') {
+                    $label = $post->post_title;
                     $description = wp_trim_words((string) $post->post_content, 30);
                 }
                 break;
@@ -823,7 +1227,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                     <?php foreach ($foros as $foro): ?>
                         <div class="foro-card">
                             <h3 class="foro-titulo">
-                                <a href="<?php echo esc_url(home_url('/foros/' . $foro->slug . '/')); ?>">
+                                <a href="<?php echo esc_url(add_query_arg('foro_id', $foro->id, home_url('/mi-portal/foros/'))); ?>">
                                     <?php echo esc_html($foro->nombre); ?>
                                 </a>
                             </h3>
@@ -2137,7 +2541,7 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'flavor-foros-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-foros-listado',
@@ -2209,16 +2613,32 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
      * Renderiza el dashboard de administracion de foros
      */
     public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         $estadisticas = $this->get_estadisticas_admin();
         ?>
         <div class="wrap flavor-admin-page">
-            <?php $this->render_page_header(__('Dashboard de Foros', 'flavor-chat-ia'), [
-                [
-                    'label' => __('Nuevo Foro', 'flavor-chat-ia'),
-                    'url' => admin_url('admin.php?page=flavor-foros-listado&action=nuevo'),
-                    'class' => 'button-primary',
-                ],
-            ]); ?>
+            <?php
+            $acciones = $is_dashboard_viewer
+                ? [
+                    [
+                        'label' => __('Ver en portal', 'flavor-chat-ia'),
+                        'url' => home_url('/mi-portal/foros/'),
+                        'class' => '',
+                    ],
+                ]
+                : [
+                    [
+                        'label' => __('Nuevo Foro', 'flavor-chat-ia'),
+                        'url' => admin_url('admin.php?page=flavor-foros-listado&action=nuevo'),
+                        'class' => 'button-primary',
+                    ],
+                ];
+            $this->render_page_header(__('Dashboard de Foros', 'flavor-chat-ia'), $acciones);
+
+            if ($is_dashboard_viewer) :
+            ?>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. La creación y moderación avanzada siguen reservadas a administración.', 'flavor-chat-ia'); ?></p></div>
+            <?php endif; ?>
 
             <div class="flavor-stats-grid">
                 <div class="stat-card">
@@ -3245,7 +3665,7 @@ KNOWLEDGE;
      */
     public function register_admin_menu() {
         add_submenu_page(
-            'flavor-app-composer',
+            'flavor-chat-ia',
             __('Gestionar Foros', 'flavor-chat-ia'),
             __('Foros', 'flavor-chat-ia'),
             'manage_options',
@@ -3825,7 +4245,17 @@ KNOWLEDGE;
             [$this, 'render_pagina_dashboard']
         );
 
-        // Listado de foros - página oculta
+        // Listado de foros - página oculta (flavor-foros-listado)
+        add_submenu_page(
+            null,
+            __('Listado de Foros', 'flavor-chat-ia'),
+            __('Foros', 'flavor-chat-ia'),
+            $capability,
+            'flavor-foros-listado',
+            [$this, 'render_pagina_foros']
+        );
+
+        // Listado de foros - página oculta (foros-listado)
         add_submenu_page(
             null,
             __('Listado de Foros', 'flavor-chat-ia'),
@@ -3845,7 +4275,17 @@ KNOWLEDGE;
             [$this, 'render_pagina_hilos']
         );
 
-        // Moderación - página oculta
+        // Moderación - página oculta (flavor-foros-moderacion)
+        add_submenu_page(
+            null,
+            __('Moderación de Foros', 'flavor-chat-ia'),
+            __('Moderación', 'flavor-chat-ia'),
+            $capability,
+            'flavor-foros-moderacion',
+            [$this, 'render_pagina_moderacion']
+        );
+
+        // Moderación - página oculta (foros-moderacion)
         add_submenu_page(
             null,
             __('Moderación de Foros', 'flavor-chat-ia'),
@@ -3960,7 +4400,7 @@ KNOWLEDGE;
                 'hilos' => [
                     'label'   => __('Hilos recientes', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-format-chat',
-                    'content' => 'template:hilos.php',
+                    'content' => '[flavor_foros_actividad_reciente limite="12"]',
                 ],
                 'mis-hilos' => [
                     'label'   => __('Mis hilos', 'flavor-chat-ia'),

@@ -177,6 +177,11 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
         $this->module_description = __('Sistema de medición y reducción del impacto ambiental colectivo', 'flavor-chat-ia');
         $this->module_icon = 'dashicons-palmtree';
         $this->module_color = '#27ae60';
+        $this->module_role = 'transversal';
+        $this->ecosystem_measures_modules = ['energia_comunitaria', 'grupos_consumo', 'compostaje', 'reciclaje', 'carpooling'];
+        $this->dashboard_transversal_priority = 5;
+        $this->dashboard_client_contexts = ['impacto', 'sostenibilidad', 'energia', 'consumo'];
+        $this->dashboard_admin_contexts = ['impacto', 'sostenibilidad', 'admin'];
 
         parent::__construct();
     }

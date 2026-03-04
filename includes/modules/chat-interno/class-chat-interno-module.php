@@ -2994,9 +2994,34 @@ KNOWLEDGE;
      * Renderiza el dashboard de administracion
      */
     public function render_admin_dashboard() {
-        $this->render_page_header(__('Chat Interno - Dashboard', 'flavor-chat-ia'));
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
+        $acciones = $is_dashboard_viewer
+            ? [
+                [
+                    'label' => __('Ver en portal', 'flavor-chat-ia'),
+                    'url' => home_url('/mi-portal/chat-interno/'),
+                    'class' => '',
+                ],
+            ]
+            : [];
+        $this->render_page_header(__('Chat Interno - Dashboard', 'flavor-chat-ia'), $acciones);
         ?>
         <div class="wrap flavor-chat-interno-admin">
+            <?php if ($is_dashboard_viewer) : ?>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. El dashboard permite consulta rápida, pero la gestión detallada de conversaciones sigue reservada a administración.', 'flavor-chat-ia'); ?></p></div>
+            <?php endif; ?>
+            <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
+                <?php $this->render_admin_module_hub([
+                    'description' => __('Acceso visible al dashboard, conversaciones, configuración y al panel principal de actividad.', 'flavor-chat-ia'),
+                    'extra_items' => [
+                        [
+                            'label' => __('Portal', 'flavor-chat-ia'),
+                            'url' => home_url('/mi-portal/chat-interno/'),
+                            'icon' => 'dashicons-external',
+                        ],
+                    ],
+                ]); ?>
+            <?php endif; ?>
             <div class="flavor-admin-grid">
                 <?php $this->render_dashboard_widget(); ?>
             </div>
@@ -3008,18 +3033,30 @@ KNOWLEDGE;
      * Renderiza la lista de conversaciones en admin
      */
     public function render_admin_conversaciones() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         $this->render_page_header(
             __('Conversaciones', 'flavor-chat-ia'),
-            [
-                [
-                    'label' => __('Exportar', 'flavor-chat-ia'),
-                    'url' => admin_url('admin.php?page=flavor-chat-interno-conversaciones&action=exportar'),
-                    'class' => 'button-secondary',
-                ],
-            ]
+            $is_dashboard_viewer
+                ? [
+                    [
+                        'label' => __('Ver en portal', 'flavor-chat-ia'),
+                        'url' => home_url('/mi-portal/chat-interno/'),
+                        'class' => '',
+                    ],
+                ]
+                : [
+                    [
+                        'label' => __('Exportar', 'flavor-chat-ia'),
+                        'url' => admin_url('admin.php?page=flavor-chat-interno-conversaciones&action=exportar'),
+                        'class' => 'button-secondary',
+                    ],
+                ]
         );
         ?>
         <div class="wrap flavor-chat-interno-admin">
+            <?php if ($is_dashboard_viewer) : ?>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista de solo lectura para gestor de grupos. La exportación y la moderación detallada de conversaciones siguen reservadas a administración.', 'flavor-chat-ia'); ?></p></div>
+            <?php endif; ?>
             <p><?php _e('Listado de todas las conversaciones del sistema.', 'flavor-chat-ia'); ?></p>
             <?php $this->render_tabla_conversaciones(); ?>
         </div>
@@ -3171,6 +3208,7 @@ KNOWLEDGE;
     public function get_estadisticas_admin() {
         global $wpdb;
         $tabla_conversaciones = $wpdb->prefix . 'flavor_chat_conversaciones';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
 
         $total_activas = 0;
         if ($this->tabla_existe($tabla_conversaciones)) {
@@ -3183,7 +3221,7 @@ KNOWLEDGE;
                 'valor' => intval($total_activas),
                 'label' => __('Chats activos', 'flavor-chat-ia'),
                 'color' => 'purple',
-                'enlace' => admin_url('admin.php?page=flavor-chat-interno-conversaciones'),
+                'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/chat-interno/') : admin_url('admin.php?page=flavor-chat-interno-conversaciones'),
             ],
         ];
     }

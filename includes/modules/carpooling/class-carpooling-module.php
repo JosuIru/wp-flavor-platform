@@ -59,6 +59,9 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $this->tabla_vehiculos = $wpdb->prefix . 'flavor_carpooling_vehiculos';
 
         parent::__construct();
+
+        // Registrar páginas de administración
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -1716,7 +1719,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="carpooling-login-required">' .
                    __('Debes iniciar sesion para publicar un viaje.', 'flavor-chat-ia') .
-                   ' <a href="' . wp_login_url(get_permalink()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
+                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
         }
 
         wp_enqueue_style('carpooling-styles');
@@ -1739,7 +1742,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="carpooling-login-required">' .
                    __('Debes iniciar sesion para ver tus viajes.', 'flavor-chat-ia') .
-                   ' <a href="' . wp_login_url(get_permalink()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
+                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
         }
 
         wp_enqueue_style('carpooling-styles');
@@ -1757,7 +1760,7 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="carpooling-login-required">' .
                    __('Debes iniciar sesion para ver tus reservas.', 'flavor-chat-ia') .
-                   ' <a href="' . wp_login_url(get_permalink()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
+                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
         }
 
         wp_enqueue_style('carpooling-styles');
@@ -2529,7 +2532,7 @@ KNOWLEDGE;
                 [
                     'slug' => 'carpooling-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'carpooling-viajes',
@@ -2552,6 +2555,18 @@ KNOWLEDGE;
      */
     public function render_admin_dashboard() {
         include dirname(__FILE__) . '/views/dashboard.php';
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**
@@ -2883,6 +2898,118 @@ KNOWLEDGE;
             if (class_exists('Flavor_Carpooling_Dashboard_Tab')) {
                 Flavor_Carpooling_Dashboard_Tab::get_instance();
             }
+        }
+    }
+
+    /**
+     * Registra las páginas de administración del módulo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        add_submenu_page(
+            null,
+            __('Configuración de Carpooling', 'flavor-chat-ia'),
+            __('Configuración de Carpooling', 'flavor-chat-ia'),
+            $capability,
+            'carpooling-config',
+            [$this, 'render_pagina_carpooling_config']
+        );
+
+        add_submenu_page(
+            null,
+            __('Viajes de Carpooling', 'flavor-chat-ia'),
+            __('Viajes de Carpooling', 'flavor-chat-ia'),
+            $capability,
+            'carpooling-viajes',
+            [$this, 'render_pagina_carpooling_viajes']
+        );
+
+        add_submenu_page(
+            null,
+            __('Conductores', 'flavor-chat-ia'),
+            __('Conductores', 'flavor-chat-ia'),
+            $capability,
+            'flavor-carpooling-conductores',
+            [$this, 'render_pagina_conductores']
+        );
+
+        add_submenu_page(
+            null,
+            __('Reservas de Carpooling', 'flavor-chat-ia'),
+            __('Reservas de Carpooling', 'flavor-chat-ia'),
+            $capability,
+            'flavor-carpooling-reservas',
+            [$this, 'render_pagina_reservas']
+        );
+
+        add_submenu_page(
+            null,
+            __('Viajes', 'flavor-chat-ia'),
+            __('Viajes', 'flavor-chat-ia'),
+            $capability,
+            'flavor-carpooling-viajes',
+            [$this, 'render_pagina_viajes']
+        );
+    }
+
+    /**
+     * Renderiza la página de configuración de carpooling
+     */
+    public function render_pagina_carpooling_config() {
+        $ruta_vista = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Carpooling', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de viajes de carpooling
+     */
+    public function render_pagina_carpooling_viajes() {
+        $ruta_vista = dirname(__FILE__) . '/views/viajes.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Viajes de Carpooling', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de conductores
+     */
+    public function render_pagina_conductores() {
+        $ruta_vista = dirname(__FILE__) . '/views/conductores.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Conductores', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de reservas
+     */
+    public function render_pagina_reservas() {
+        $ruta_vista = dirname(__FILE__) . '/views/reservas.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Reservas de Carpooling', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de viajes
+     */
+    public function render_pagina_viajes() {
+        $ruta_vista = dirname(__FILE__) . '/views/viajes.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Viajes', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 }

@@ -33,6 +33,12 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         $this->id = 'grupos_consumo';
         $this->name = 'Grupos de Consumo'; // Translation loaded on init
         $this->description = 'Gestión de pedidos colectivos, productores locales y distribución comunitaria.'; // Translation loaded on init
+        $this->module_role = 'vertical';
+        $this->ecosystem_supports_modules = ['eventos', 'participacion'];
+        $this->dashboard_parent_module = 'comunidades';
+        $this->dashboard_satellite_priority = 30;
+        $this->dashboard_client_contexts = ['consumo', 'comunidad', 'coordinacion'];
+        $this->dashboard_admin_contexts = ['consumo', 'gestion', 'admin'];
 
         parent::__construct();
 
@@ -5297,6 +5303,272 @@ KNOWLEDGE;
     }
 
     /**
+     * Obtiene los grupos contextuales para tabs satélite.
+     *
+     * @return int[]
+     */
+    private function get_contextual_grupo_ids_for_satellite_tabs() {
+        global $wpdb;
+
+        $direct_id = absint($_GET['grupo'] ?? $_GET['grupo_id'] ?? $_GET['id'] ?? 0);
+        if ($direct_id > 0) {
+            return [$direct_id];
+        }
+
+        if (!is_user_logged_in()) {
+            return [];
+        }
+
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_consumidores)) {
+            return [];
+        }
+
+        return array_map('intval', (array) $wpdb->get_col($wpdb->prepare(
+            "SELECT grupo_id
+             FROM {$tabla_consumidores}
+             WHERE usuario_id = %d AND estado = 'activo'
+             ORDER BY fecha_alta DESC
+             LIMIT 12",
+            get_current_user_id()
+        )));
+    }
+
+    /**
+     * Obtiene el grupo contextual principal para tabs satélite.
+     *
+     * @return WP_Post|null
+     */
+    private function get_contextual_grupo_for_satellite_tabs() {
+        $grupo_ids = $this->get_contextual_grupo_ids_for_satellite_tabs();
+        if (empty($grupo_ids)) {
+            return null;
+        }
+
+        $grupo = get_post((int) $grupo_ids[0]);
+        return ($grupo && $grupo->post_type === 'gc_grupo') ? $grupo : null;
+    }
+
+    /**
+     * Renderiza el tab contextual de foro.
+     *
+     * @return string
+     */
+    public function render_tab_foro() {
+        $grupo = $this->get_contextual_grupo_for_satellite_tabs();
+        if (!$grupo) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">💬</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Foro del grupo', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para ver su foro asociado.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100">';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Foro del grupo', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor_foros_integrado entidad="grupo_consumo" entidad_id="' . (int) $grupo->ID . '"]');
+    }
+
+    /**
+     * Renderiza el tab contextual de chat.
+     *
+     * @return string
+     */
+    public function render_tab_chat() {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">💬</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Chat del grupo', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesión para acceder al chat del grupo.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $grupo = $this->get_contextual_grupo_for_satellite_tabs();
+        if (!$grupo) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">💬</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Chat del grupo', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para abrir su chat asociado.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Chat del grupo', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
+        $header .= '</div>';
+        $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/chat-grupos/mensajes/'))) . '">';
+        $header .= '<span class="dashicons dashicons-external" style="font-size:16px;width:16px;height:16px;"></span>';
+        $header .= esc_html__('Abrir chat completo', 'flavor-chat-ia');
+        $header .= '</a>';
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor_chat_grupo_integrado entidad="grupo_consumo" entidad_id="' . (int) $grupo->ID . '"]');
+    }
+
+    /**
+     * Renderiza el tab contextual de multimedia.
+     *
+     * @return string
+     */
+    public function render_tab_multimedia() {
+        $grupo = $this->get_contextual_grupo_for_satellite_tabs();
+        if (!$grupo) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🖼️</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Galería del grupo', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para ver su galería multimedia.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Galería del grupo', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
+        $header .= '</div>';
+        if (is_user_logged_in()) {
+            $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/multimedia/subir/'))) . '">';
+            $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+            $header .= esc_html__('Subir archivo', 'flavor-chat-ia');
+            $header .= '</a>';
+        }
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor_multimedia_galeria entidad="grupo_consumo" entidad_id="' . (int) $grupo->ID . '" limite="12" columnas="4" mostrar_filtros="true"]');
+    }
+
+    /**
+     * Renderiza el tab contextual de red social.
+     *
+     * @return string
+     */
+    public function render_tab_red_social() {
+        if (!is_user_logged_in()) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🫂</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Actividad social del grupo', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Inicia sesión para ver la actividad social del grupo.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $grupo = $this->get_contextual_grupo_for_satellite_tabs();
+        if (!$grupo) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🫂</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Actividad social del grupo', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para ver su actividad social.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Actividad social del grupo', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
+        $header .= '</div>';
+        $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/red-social/crear/'))) . '">';
+        $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+        $header .= esc_html__('Publicar', 'flavor-chat-ia');
+        $header .= '</a>';
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor_social_feed entidad="grupo_consumo" entidad_id="' . (int) $grupo->ID . '"]');
+    }
+
+    /**
+     * Renderiza el tab contextual de recetas.
+     *
+     * @return string
+     */
+    public function render_tab_recetas() {
+        $grupo = $this->get_contextual_grupo_for_satellite_tabs();
+        if (!$grupo) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🍳</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Recetas del grupo', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para descubrir sus recetas relacionadas.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Recetas del grupo', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
+        $header .= '</div>';
+        if (is_user_logged_in()) {
+            $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/recetas/nueva/'))) . '">';
+            $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+            $header .= esc_html__('Compartir receta', 'flavor-chat-ia');
+            $header .= '</a>';
+        }
+        $header .= '</div>';
+
+        return $header . do_shortcode('[flavor module="recetas" view="listado" header="no" limit="12"]');
+    }
+
+    /**
+     * Renderiza el tab contextual de biblioteca.
+     *
+     * @return string
+     */
+    public function render_tab_biblioteca() {
+        $grupo = $this->get_contextual_grupo_for_satellite_tabs();
+        if (!$grupo) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">📚</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Biblioteca del grupo', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para explorar su biblioteca compartida.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Biblioteca del grupo', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
+        $header .= '</div>';
+        if (is_user_logged_in()) {
+            $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/biblioteca/anadir/'))) . '">';
+            $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+            $header .= esc_html__('Añadir libro', 'flavor-chat-ia');
+            $header .= '</a>';
+        }
+        $header .= '</div>';
+
+        return $header . do_shortcode('[biblioteca_catalogo]');
+    }
+
+    /**
+     * Renderiza el tab contextual de podcast.
+     *
+     * @return string
+     */
+    public function render_tab_podcast() {
+        $grupo = $this->get_contextual_grupo_for_satellite_tabs();
+        if (!$grupo) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🎙️</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Podcast del grupo', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a un grupo concreto para escuchar sus programas y episodios.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Podcast del grupo', 'flavor-chat-ia') . '</h3>';
+        $header .= '<p class="text-sm text-gray-500">' . esc_html(get_the_title($grupo)) . '</p>';
+        $header .= '</div>';
+        $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['grupo_id' => (int) $grupo->ID], home_url('/mi-portal/podcast/programas/'))) . '">';
+        $header .= '<span class="dashicons dashicons-external" style="font-size:16px;width:16px;height:16px;"></span>';
+        $header .= esc_html__('Abrir módulo completo', 'flavor-chat-ia');
+        $header .= '</a>';
+        $header .= '</div>';
+
+        return $header . do_shortcode('[podcast_series]');
+    }
+
+    /**
      * Shortcode: Formulario para unirse a un grupo de consumo
      *
      * @param array $atributos Atributos del shortcode
@@ -6291,34 +6563,39 @@ KNOWLEDGE;
                 'foro' => [
                     'label'         => __('Foro', 'flavor-chat-ia'),
                     'icon'          => 'dashicons-admin-comments',
-                    'is_integration' => true,
-                    'source_module' => 'foros',
+                    'content'       => 'callback:render_tab_foro',
                 ],
                 'chat' => [
                     'label'         => __('Chat', 'flavor-chat-ia'),
                     'icon'          => 'dashicons-format-chat',
-                    'is_integration' => true,
-                    'source_module' => 'chat-grupos',
+                    'content'       => 'callback:render_tab_chat',
                     'requires_login' => true,
                 ],
                 'multimedia' => [
                     'label'         => __('Multimedia', 'flavor-chat-ia'),
                     'icon'          => 'dashicons-format-gallery',
-                    'is_integration' => true,
-                    'source_module' => 'multimedia',
+                    'content'       => 'callback:render_tab_multimedia',
                 ],
                 'red-social' => [
                     'label'         => __('Red social', 'flavor-chat-ia'),
                     'icon'          => 'dashicons-share',
-                    'is_integration' => true,
-                    'source_module' => 'red-social',
+                    'content'       => 'callback:render_tab_red_social',
                     'requires_login' => true,
                 ],
                 'recetas' => [
                     'label'         => __('Recetas', 'flavor-chat-ia'),
                     'icon'          => 'dashicons-carrot',
-                    'is_integration' => true,
-                    'source_module' => 'recetas',
+                    'content'       => 'callback:render_tab_recetas',
+                ],
+                'biblioteca' => [
+                    'label'         => __('Biblioteca', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-book',
+                    'content'       => 'callback:render_tab_biblioteca',
+                ],
+                'podcast' => [
+                    'label'         => __('Podcast', 'flavor-chat-ia'),
+                    'icon'          => 'dashicons-microphone',
+                    'content'       => 'callback:render_tab_podcast',
                 ],
             ],
 

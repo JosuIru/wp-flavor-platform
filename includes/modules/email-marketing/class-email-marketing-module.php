@@ -134,6 +134,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Hooks de WordPress
         add_action('admin_menu', [$this, 'add_admin_menu'], 20);
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
 
@@ -6568,6 +6569,18 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
+    }
+
+    /**
      * Render: Campañas
      */
     public function render_admin_campanias() {
@@ -6970,7 +6983,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'flavor-em-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-em-campanias',
@@ -7256,5 +7269,144 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
                 'ab_testing'      => true,
             ],
         ];
+    }
+
+    /**
+     * Registra las paginas de administracion del modulo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        add_submenu_page(
+            null,
+            __('Automatizaciones Email', 'flavor-chat-ia'),
+            __('Automatizaciones', 'flavor-chat-ia'),
+            $capability,
+            'flavor-em-automatizaciones',
+            [$this, 'render_em_automatizaciones']
+        );
+
+        add_submenu_page(
+            null,
+            __('Campanias Email', 'flavor-chat-ia'),
+            __('Campanias', 'flavor-chat-ia'),
+            $capability,
+            'flavor-em-campanias',
+            [$this, 'render_em_campanias']
+        );
+
+        add_submenu_page(
+            null,
+            __('Configuracion Email Marketing', 'flavor-chat-ia'),
+            __('Configuracion', 'flavor-chat-ia'),
+            $capability,
+            'flavor-em-configuracion',
+            [$this, 'render_em_configuracion']
+        );
+
+        add_submenu_page(
+            null,
+            __('Listas de Correo', 'flavor-chat-ia'),
+            __('Listas', 'flavor-chat-ia'),
+            $capability,
+            'flavor-em-listas',
+            [$this, 'render_em_listas']
+        );
+
+        add_submenu_page(
+            null,
+            __('Plantillas Email', 'flavor-chat-ia'),
+            __('Plantillas', 'flavor-chat-ia'),
+            $capability,
+            'flavor-em-plantillas',
+            [$this, 'render_em_plantillas']
+        );
+
+        add_submenu_page(
+            null,
+            __('Suscriptores', 'flavor-chat-ia'),
+            __('Suscriptores', 'flavor-chat-ia'),
+            $capability,
+            'flavor-em-suscriptores',
+            [$this, 'render_em_suscriptores']
+        );
+    }
+
+    /**
+     * Render: Automatizaciones
+     */
+    public function render_em_automatizaciones() {
+        $vista = dirname(__FILE__) . '/views/automatizaciones.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Automatizaciones Email', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Campanias
+     */
+    public function render_em_campanias() {
+        $vista = dirname(__FILE__) . '/views/campanias.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Campanias Email', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Configuracion
+     */
+    public function render_em_configuracion() {
+        $vista = dirname(__FILE__) . '/views/configuracion.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuracion Email Marketing', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Listas
+     */
+    public function render_em_listas() {
+        $vista = dirname(__FILE__) . '/views/listas.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Listas de Correo', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Plantillas
+     */
+    public function render_em_plantillas() {
+        $vista = dirname(__FILE__) . '/views/plantillas.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Plantillas Email', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Suscriptores
+     */
+    public function render_em_suscriptores() {
+        $vista = dirname(__FILE__) . '/views/suscriptores.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Suscriptores', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
     }
 }

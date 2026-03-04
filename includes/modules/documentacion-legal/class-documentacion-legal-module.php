@@ -64,6 +64,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         $this->register_rest_routes();
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -765,6 +766,16 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
      * Ejecuta una accion
      */
     public function execute_action($accion, $parametros = []) {
+        $aliases = [
+            'foro' => 'foro_documento',
+            'chat' => 'chat_documento',
+            'multimedia' => 'multimedia_documento',
+            'red-social' => 'red_social_documento',
+            'red_social' => 'red_social_documento',
+        ];
+
+        $accion = $aliases[$accion] ?? $accion;
+
         switch ($accion) {
             case 'buscar_documentos':
                 return $this->action_buscar($parametros);
@@ -772,9 +783,124 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                 return $this->action_ver_documento($parametros);
             case 'listar_categorias':
                 return $this->action_listar_categorias();
+            case 'foro_documento':
+                return $this->action_foro_documento($parametros);
+            case 'chat_documento':
+                return $this->action_chat_documento($parametros);
+            case 'multimedia_documento':
+                return $this->action_multimedia_documento($parametros);
+            case 'red_social_documento':
+                return $this->action_red_social_documento($parametros);
             default:
                 return ['success' => false, 'error' => 'Accion no reconocida'];
         }
+    }
+
+    private function resolve_contextual_documento(array $params = []): ?array {
+        global $wpdb;
+
+        $documento_id = absint(
+            $params['documento_id']
+            ?? $params['id']
+            ?? $_GET['documento_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if (!$documento_id) {
+            return null;
+        }
+
+        $tabla = $wpdb->prefix . 'flavor_documentacion_legal';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return null;
+        }
+
+        $documento = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, titulo, descripcion FROM {$tabla} WHERE id = %d",
+            $documento_id
+        ));
+
+        if (!$documento) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $documento->id,
+            'titulo' => (string) $documento->titulo,
+            'descripcion' => (string) ($documento->descripcion ?? ''),
+        ];
+    }
+
+    private function action_foro_documento($params) {
+        $documento = $this->resolve_contextual_documento((array) $params);
+        if (!$documento) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-foro">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
+            . '<h2>' . esc_html__('Foro del documento', 'flavor-chat-ia') . '</h2>'
+            . '<p>' . esc_html($documento['titulo']) . '</p>'
+            . '</div>'
+            . do_shortcode('[flavor_foros_integrado entidad="documento_legal" entidad_id="' . absint($documento['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_chat_documento($params) {
+        $documento = $this->resolve_contextual_documento((array) $params);
+        if (!$documento) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este documento.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-chat">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Chat del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?documento_id=' . absint($documento['id']))) . '" class="button button-secondary">'
+            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="documento_legal" entidad_id="' . absint($documento['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_multimedia_documento($params) {
+        $documento = $this->resolve_contextual_documento((array) $params);
+        if (!$documento) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver sus archivos relacionados.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Archivos del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?documento_id=' . absint($documento['id']))) . '" class="button button-primary">'
+            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="documento_legal" entidad_id="' . absint($documento['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_red_social_documento($params) {
+        $documento = $this->resolve_contextual_documento((array) $params);
+        if (!$documento) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un documento para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este documento.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Actividad social del documento', 'flavor-chat-ia') . '</h2><p>' . esc_html($documento['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?documento_id=' . absint($documento['id']))) . '" class="button button-primary">'
+            . esc_html__('Publicar', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_social_feed entidad="documento_legal" entidad_id="' . absint($documento['id']) . '"]')
+            . '</div>';
     }
 
     /**
@@ -937,7 +1063,7 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug'     => 'documentos-dashboard',
                     'titulo'   => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug'     => 'documentos-listado',
@@ -1048,8 +1174,22 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                 ['label' => __('Nuevo Documento', 'flavor-chat-ia'), 'url' => '#nuevo-documento', 'class' => 'button-primary'],
             ]); ?>
 
+            <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
+                <?php $this->render_admin_module_hub([
+                    'description' => __('Acceso visible al dashboard, listado, categorías, configuración y al bloque principal de métricas.', 'flavor-chat-ia'),
+                    'stats_anchor' => '#documentacion-legal-stats',
+                    'extra_items' => [
+                        [
+                            'label' => __('Portal', 'flavor-chat-ia'),
+                            'url' => home_url('/mi-portal/documentacion-legal/'),
+                            'icon' => 'dashicons-external',
+                        ],
+                    ],
+                ]); ?>
+            <?php endif; ?>
+
             <!-- KPIs -->
-            <div class="flavor-kpis-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div id="documentacion-legal-stats" class="flavor-kpis-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <span class="dashicons dashicons-media-document" style="font-size: 40px; color: #2271b1;"></span>
@@ -1214,6 +1354,18 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**
@@ -2046,5 +2198,144 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
                 'has_versioning' => true,
             ],
         ];
+    }
+
+    /**
+     * Registra las paginas de administracion del modulo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        add_submenu_page(
+            null,
+            __('Categorias de Documentos', 'flavor-chat-ia'),
+            __('Categorias', 'flavor-chat-ia'),
+            $capability,
+            'documentos-categorias',
+            [$this, 'render_documentos_categorias']
+        );
+
+        add_submenu_page(
+            null,
+            __('Configuracion Documentacion Legal', 'flavor-chat-ia'),
+            __('Configuracion', 'flavor-chat-ia'),
+            $capability,
+            'documentos-config',
+            [$this, 'render_documentos_config']
+        );
+
+        add_submenu_page(
+            null,
+            __('Estadisticas Documentacion Legal', 'flavor-chat-ia'),
+            __('Estadisticas', 'flavor-chat-ia'),
+            $capability,
+            'documentos-estadisticas',
+            [$this, 'render_documentos_estadisticas']
+        );
+
+        add_submenu_page(
+            null,
+            __('Listado de Documentos', 'flavor-chat-ia'),
+            __('Documentos', 'flavor-chat-ia'),
+            $capability,
+            'documentos-listado',
+            [$this, 'render_documentos_listado']
+        );
+
+        add_submenu_page(
+            null,
+            __('Modelos de Documentos', 'flavor-chat-ia'),
+            __('Modelos', 'flavor-chat-ia'),
+            $capability,
+            'documentos-modelos',
+            [$this, 'render_documentos_modelos']
+        );
+
+        add_submenu_page(
+            null,
+            __('Nuevo Documento', 'flavor-chat-ia'),
+            __('Nuevo', 'flavor-chat-ia'),
+            $capability,
+            'documentos-nuevo',
+            [$this, 'render_documentos_nuevo']
+        );
+    }
+
+    /**
+     * Render: Categorias de documentos
+     */
+    public function render_documentos_categorias() {
+        $vista = dirname(__FILE__) . '/views/categorias.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Categorias de Documentos', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Configuracion
+     */
+    public function render_documentos_config() {
+        $vista = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuracion Documentacion Legal', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Estadisticas
+     */
+    public function render_documentos_estadisticas() {
+        $vista = dirname(__FILE__) . '/views/estadisticas.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Estadisticas Documentacion Legal', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Listado de documentos
+     */
+    public function render_documentos_listado() {
+        $vista = dirname(__FILE__) . '/views/listado.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Listado de Documentos', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Modelos de documentos
+     */
+    public function render_documentos_modelos() {
+        $vista = dirname(__FILE__) . '/views/modelos.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Modelos de Documentos', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Nuevo documento
+     */
+    public function render_documentos_nuevo() {
+        $vista = dirname(__FILE__) . '/views/nuevo.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Nuevo Documento', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
     }
 }

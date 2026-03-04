@@ -285,6 +285,9 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
 
         // Cargar Dashboard Widget
         $this->inicializar_dashboard_widget();
+
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -298,6 +301,100 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
                 new Flavor_Espacios_Dashboard_Widget();
             }
         }
+    }
+
+    /**
+     * Configuración del módulo para el panel unificado de administración.
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'espacios_comunes',
+            'label' => __('Espacios Comunes', 'flavor-chat-ia'),
+            'icon' => 'dashicons-admin-home',
+            'capability' => 'manage_options',
+            'categoria' => 'servicios',
+            'paginas' => [
+                [
+                    'slug' => 'espacios-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_dashboard'],
+                ],
+                [
+                    'slug' => 'espacios-listado',
+                    'titulo' => __('Espacios', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_espacios'],
+                ],
+                [
+                    'slug' => 'espacios-reservas',
+                    'titulo' => __('Reservas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_reservas'],
+                ],
+                [
+                    'slug' => 'espacios-calendario',
+                    'titulo' => __('Calendario', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_calendario'],
+                ],
+                [
+                    'slug' => 'espacios-normas',
+                    'titulo' => __('Normas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_normas'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Renderiza la página dashboard.
+     */
+    public function render_pagina_dashboard() {
+        $this->render_admin_view('dashboard.php', __('Espacios Comunes - Dashboard', 'flavor-chat-ia'));
+    }
+
+    /**
+     * Renderiza la página de espacios.
+     */
+    public function render_pagina_espacios() {
+        $this->render_admin_view('espacios.php', __('Gestión de Espacios', 'flavor-chat-ia'));
+    }
+
+    /**
+     * Renderiza la página de reservas.
+     */
+    public function render_pagina_reservas() {
+        $this->render_admin_view('reservas.php', __('Gestión de Reservas', 'flavor-chat-ia'));
+    }
+
+    /**
+     * Renderiza la página de calendario.
+     */
+    public function render_pagina_calendario() {
+        $this->render_admin_view('calendario.php', __('Calendario de Espacios', 'flavor-chat-ia'));
+    }
+
+    /**
+     * Renderiza la página de normas.
+     */
+    public function render_pagina_normas() {
+        $this->render_admin_view('normas.php', __('Normas y Políticas', 'flavor-chat-ia'));
+    }
+
+    /**
+     * Helper para renderizar vistas admin del módulo.
+     *
+     * @param string $view_file
+     * @param string $fallback_title
+     * @return void
+     */
+    private function render_admin_view($view_file, $fallback_title) {
+        $view_path = dirname(__FILE__) . '/views/' . ltrim($view_file, '/');
+        if (file_exists($view_path)) {
+            include $view_path;
+            return;
+        }
+
+        echo '<div class="wrap"><h1>' . esc_html($fallback_title) . '</h1></div>';
     }
 
     /**
@@ -2126,4 +2223,120 @@ KNOWLEDGE;
         ];
     }
 
+    /**
+     * Registra las paginas de administracion del modulo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        add_submenu_page(
+            null,
+            __('Calendario Espacios', 'flavor-chat-ia'),
+            __('Calendario', 'flavor-chat-ia'),
+            $capability,
+            'espacios-calendario',
+            [$this, 'render_espacios_calendario']
+        );
+
+        add_submenu_page(
+            null,
+            __('Reservas de Espacios Comunes', 'flavor-chat-ia'),
+            __('Reservas', 'flavor-chat-ia'),
+            $capability,
+            'espacios-comunes-reservas',
+            [$this, 'render_espacios_comunes_reservas']
+        );
+
+        add_submenu_page(
+            null,
+            __('Listado de Espacios', 'flavor-chat-ia'),
+            __('Espacios', 'flavor-chat-ia'),
+            $capability,
+            'espacios-listado',
+            [$this, 'render_espacios_listado']
+        );
+
+        add_submenu_page(
+            null,
+            __('Normas de Uso', 'flavor-chat-ia'),
+            __('Normas', 'flavor-chat-ia'),
+            $capability,
+            'espacios-normas',
+            [$this, 'render_espacios_normas']
+        );
+
+        add_submenu_page(
+            null,
+            __('Reservas', 'flavor-chat-ia'),
+            __('Reservas', 'flavor-chat-ia'),
+            $capability,
+            'espacios-reservas',
+            [$this, 'render_espacios_reservas']
+        );
+    }
+
+    /**
+     * Render: Calendario
+     */
+    public function render_espacios_calendario() {
+        $vista = dirname(__FILE__) . '/views/calendario.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Calendario Espacios', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Reservas de espacios comunes
+     */
+    public function render_espacios_comunes_reservas() {
+        $vista = dirname(__FILE__) . '/views/reservas.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Reservas de Espacios Comunes', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Listado de espacios
+     */
+    public function render_espacios_listado() {
+        $vista = dirname(__FILE__) . '/views/listado.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Listado de Espacios', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Normas de uso
+     */
+    public function render_espacios_normas() {
+        $vista = dirname(__FILE__) . '/views/normas.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Normas de Uso', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Render: Reservas
+     */
+    public function render_espacios_reservas() {
+        $vista = dirname(__FILE__) . '/views/reservas-admin.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Reservas', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
 }

@@ -894,7 +894,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug'     => 'denuncias-dashboard',
                     'titulo'   => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                     'badge'    => [$this, 'contar_denuncias_pendientes'],
                 ],
                 [
@@ -1061,8 +1061,22 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                 ['label' => __('Exportar', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=denuncias-listado&action=exportar'), 'class' => ''],
             ]); ?>
 
+            <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
+                <?php $this->render_admin_module_hub([
+                    'description' => __('Acceso visible a listado, asignación, estadísticas, configuración y al bloque principal de KPIs.', 'flavor-chat-ia'),
+                    'stats_anchor' => '#denuncias-stats',
+                    'extra_items' => [
+                        [
+                            'label' => __('Portal', 'flavor-chat-ia'),
+                            'url' => home_url('/mi-portal/seguimiento-denuncias/'),
+                            'icon' => 'dashicons-external',
+                        ],
+                    ],
+                ]); ?>
+            <?php endif; ?>
+
             <!-- KPIs -->
-            <div class="flavor-kpi-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0;">
+            <div id="denuncias-stats" class="flavor-kpi-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0;">
                 <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #3b82f6;">
                     <div class="kpi-icon" style="font-size: 32px; color: #3b82f6;">
                         <span class="dashicons dashicons-clipboard"></span>
@@ -1186,6 +1200,18 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**

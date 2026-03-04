@@ -25,8 +25,17 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
     protected $required_capability = 'read';
 
     public function __construct() {
+        $this->module_role = 'vertical';
+        $this->dashboard_parent_module = 'comunidades';
+        $this->dashboard_satellite_priority = 35;
+        $this->dashboard_client_contexts = ['eventos', 'agenda', 'actividad', 'comunidad'];
+        $this->dashboard_admin_contexts = ['eventos', 'agenda', 'admin'];
         parent::__construct();
         add_action('init', [$this, 'ensure_comunidad_schema'], 1);
+    }
+
+    public function get_dependencies() {
+        return ['comunidades'];
     }
 
     public function can_activate() {
@@ -194,6 +203,36 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                     'icon'    => 'dashicons-plus-alt',
                     'content' => 'render_tab_crear_evento',
                     'cap'     => 'edit_posts',
+                ],
+                'detalle' => [
+                    'label'      => __('Detalle', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-visibility',
+                    'content'    => '[eventos_detalle]',
+                    'public'     => true,
+                    'hidden_nav' => true,
+                ],
+                'foro' => [
+                    'label'   => __('Foro', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-admin-comments',
+                    'content' => 'callback:render_tab_foro',
+                    'requires_login' => true,
+                ],
+                'chat' => [
+                    'label'   => __('Chat', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-format-chat',
+                    'content' => 'callback:render_tab_chat',
+                    'requires_login' => true,
+                ],
+                'multimedia' => [
+                    'label'   => __('Multimedia', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-format-gallery',
+                    'content' => 'callback:render_tab_multimedia',
+                ],
+                'red-social' => [
+                    'label'   => __('Red social', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-share',
+                    'content' => 'callback:render_tab_red_social',
+                    'requires_login' => true,
                 ],
             ],
 
@@ -469,7 +508,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                     </div>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="<?php echo esc_url(home_url('/mi-portal/eventos/' . $inscripcion->evento_id . '/')); ?>" class="button" style="font-size: 13px;">
+                    <a href="<?php echo esc_url(add_query_arg('evento_id', $inscripcion->evento_id, home_url('/mi-portal/eventos/detalle/'))); ?>" class="button" style="font-size: 13px;">
                         <?php esc_html_e('Ver evento', 'flavor-chat-ia'); ?>
                     </a>
                     <?php if ($es_futuro && $inscripcion->estado !== 'cancelada'): ?>
@@ -579,7 +618,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                         <?php if ($tiene_eventos): ?>
                             <div style="margin-top: 4px;">
                                 <?php foreach (array_slice($eventos_por_dia[$dia], 0, 2) as $evento_dia): ?>
-                                    <a href="<?php echo esc_url(home_url('/mi-portal/eventos/' . $evento_dia->id . '/')); ?>"
+                                    <a href="<?php echo esc_url(add_query_arg('evento_id', $evento_dia->id, home_url('/mi-portal/eventos/detalle/'))); ?>"
                                        style="display: block; padding: 2px 4px; margin-bottom: 2px; background: #8b5cf6; color: #fff; border-radius: 4px; font-size: 10px; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
                                        title="<?php echo esc_attr($evento_dia->titulo); ?>">
                                         <?php echo esc_html(mb_substr($evento_dia->titulo, 0, 15)); ?>
@@ -739,7 +778,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
      * @param object $evento Datos del evento
      */
     private function render_evento_card_frontend($evento) {
-        $url_detalle = home_url('/mi-portal/eventos/' . $evento->id . '/');
+        $url_detalle = add_query_arg('evento_id', $evento->id, home_url('/mi-portal/eventos/detalle/'));
         $fecha_formateada = date_i18n('d M Y - H:i', strtotime($evento->fecha_inicio));
         $es_gratuito = empty($evento->precio) || $evento->precio == 0;
         $plazas_disponibles = $evento->aforo_maximo > 0 ? ($evento->aforo_maximo - $evento->inscritos_count) : null;
@@ -812,6 +851,95 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Renderiza el tab de foro del evento actual.
+     *
+     * @param int $usuario_id ID del usuario actual.
+     * @return void
+     */
+    public function render_tab_foro($usuario_id) {
+        $evento = $this->resolve_contextual_evento();
+        if (!$evento) {
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Accede a un evento concreto para ver su foro.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        echo '<div class="flavor-context-header" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;">';
+        echo '<div><h3 style="margin:0 0 4px;">' . esc_html__('Foro del evento', 'flavor-chat-ia') . '</h3><p style="margin:0;color:#6b7280;">' . esc_html($evento['titulo']) . '</p></div>';
+        echo '</div>';
+        echo do_shortcode('[flavor_foros_integrado entidad="evento" entidad_id="' . absint($evento['id']) . '"]');
+    }
+
+    /**
+     * Renderiza el tab de chat del evento actual.
+     *
+     * @param int $usuario_id ID del usuario actual.
+     * @return void
+     */
+    public function render_tab_chat($usuario_id) {
+        if (!$usuario_id) {
+            echo '<div class="flavor-login-required"><p>' . esc_html__('Inicia sesión para acceder al chat del evento.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $evento = $this->resolve_contextual_evento();
+        if (!$evento) {
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Accede a un evento concreto para ver su chat.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        echo '<div class="flavor-context-header" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;">';
+        echo '<div><h3 style="margin:0 0 4px;">' . esc_html__('Chat del evento', 'flavor-chat-ia') . '</h3><p style="margin:0;color:#6b7280;">' . esc_html($evento['titulo']) . '</p></div>';
+        echo '<a class="button button-primary" href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?evento_id=' . absint($evento['id']))) . '">' . esc_html__('Abrir chat completo', 'flavor-chat-ia') . '</a>';
+        echo '</div>';
+        echo do_shortcode('[flavor_chat_grupo_integrado entidad="evento" entidad_id="' . absint($evento['id']) . '"]');
+    }
+
+    /**
+     * Renderiza el tab de multimedia del evento actual.
+     *
+     * @param int $usuario_id ID del usuario actual.
+     * @return void
+     */
+    public function render_tab_multimedia($usuario_id) {
+        $evento = $this->resolve_contextual_evento();
+        if (!$evento) {
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Accede a un evento concreto para ver su galería.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        echo '<div class="flavor-context-header" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;">';
+        echo '<div><h3 style="margin:0 0 4px;">' . esc_html__('Galería del evento', 'flavor-chat-ia') . '</h3><p style="margin:0;color:#6b7280;">' . esc_html($evento['titulo']) . '</p></div>';
+        echo '<a class="button button-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?evento_id=' . absint($evento['id']))) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a>';
+        echo '</div>';
+        echo do_shortcode('[flavor_multimedia_galeria entidad="evento" entidad_id="' . absint($evento['id']) . '"]');
+    }
+
+    /**
+     * Renderiza el tab de actividad social del evento actual.
+     *
+     * @param int $usuario_id ID del usuario actual.
+     * @return void
+     */
+    public function render_tab_red_social($usuario_id) {
+        if (!$usuario_id) {
+            echo '<div class="flavor-login-required"><p>' . esc_html__('Inicia sesión para ver la actividad social del evento.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        $evento = $this->resolve_contextual_evento();
+        if (!$evento) {
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Accede a un evento concreto para ver su actividad social.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
+
+        echo '<div class="flavor-context-header" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;">';
+        echo '<div><h3 style="margin:0 0 4px;">' . esc_html__('Actividad social del evento', 'flavor-chat-ia') . '</h3><p style="margin:0;color:#6b7280;">' . esc_html($evento['titulo']) . '</p></div>';
+        echo '<a class="button button-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?evento_id=' . absint($evento['id']))) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a>';
+        echo '</div>';
+        echo do_shortcode('[flavor_social_feed entidad="evento" entidad_id="' . absint($evento['id']) . '"]');
+    }
+
+    /**
      * Obtiene una comunidad contextual desde query args o ruta del portal.
      */
     private function resolve_contextual_comunidad_id(): int {
@@ -826,6 +954,32 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         }
 
         return 0;
+    }
+
+    /**
+     * Resuelve el evento contextual actual.
+     *
+     * @return array|null
+     */
+    private function resolve_contextual_evento(): ?array {
+        global $wpdb;
+
+        $evento_id = absint($_GET['evento_id'] ?? $_GET['evento'] ?? $_GET['id'] ?? 0);
+        if ($evento_id <= 0) {
+            return null;
+        }
+
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            return null;
+        }
+
+        $evento = $wpdb->get_row(
+            $wpdb->prepare("SELECT id, titulo, comunidad_id FROM {$tabla_eventos} WHERE id = %d LIMIT 1", $evento_id),
+            ARRAY_A
+        );
+
+        return is_array($evento) ? $evento : null;
     }
 
     public function init() {
@@ -988,7 +1142,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'eventos-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'eventos-proximos',
@@ -1092,10 +1246,21 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
      * Renderiza el dashboard de eventos
      */
     public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
+
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Eventos', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Evento', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=eventos-nuevo'), 'class' => 'button-primary'],
-        ]);
+        $acciones = $is_dashboard_viewer
+            ? [
+                ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/eventos/'), 'class' => ''],
+            ]
+            : [
+                ['label' => __('Nuevo Evento', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=eventos-nuevo'), 'class' => 'button-primary'],
+            ];
+        $this->render_page_header(__('Dashboard de Eventos', 'flavor-chat-ia'), $acciones);
+
+        if ($is_dashboard_viewer) {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. Este acceso permite consultar métricas, no crear ni editar eventos desde admin.', 'flavor-chat-ia') . '</p></div>';
+        }
 
         // Resumen de estadísticas
         $estadisticas = $this->action_estadisticas([]);
@@ -2337,6 +2502,9 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         add_submenu_page(null, __('Calendario', 'flavor-chat-ia'), __('Calendario', 'flavor-chat-ia'), $capability, 'eventos-calendario', [$this, 'render_pagina_calendario']);
         add_submenu_page(null, __('Asistentes', 'flavor-chat-ia'), __('Asistentes', 'flavor-chat-ia'), $capability, 'eventos-asistentes', [$this, 'render_pagina_asistentes']);
         add_submenu_page(null, __('Entradas', 'flavor-chat-ia'), __('Entradas', 'flavor-chat-ia'), $capability, 'eventos-entradas', [$this, 'render_pagina_entradas']);
+        add_submenu_page(null, __('Próximos Eventos', 'flavor-chat-ia'), __('Próximos', 'flavor-chat-ia'), $capability, 'eventos-proximos', [$this, 'render_pagina_proximos']);
+        add_submenu_page(null, __('Nuevo Evento', 'flavor-chat-ia'), __('Nuevo', 'flavor-chat-ia'), $capability, 'eventos-nuevo', [$this, 'render_pagina_nuevo']);
+        add_submenu_page(null, __('Configuración Eventos', 'flavor-chat-ia'), __('Configuración', 'flavor-chat-ia'), $capability, 'eventos-config', [$this, 'render_pagina_config']);
     }
 
     public function render_pagina_dashboard() {
@@ -2374,6 +2542,41 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         echo '</div>';
     }
 
+    public function render_pagina_proximos() {
+        echo '<div class="wrap"><h1>' . esc_html__('Próximos Eventos', 'flavor-chat-ia') . '</h1>';
+        $path = dirname(__FILE__) . '/views/proximos.php';
+        if (file_exists($path)) {
+            include $path;
+        } else {
+            echo '<p>' . esc_html__('Lista de eventos próximos.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=eventos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
+        }
+        echo '</div>';
+    }
+
+    public function render_pagina_nuevo() {
+        echo '<div class="wrap"><h1>' . esc_html__('Nuevo Evento', 'flavor-chat-ia') . '</h1>';
+        $path = dirname(__FILE__) . '/views/nuevo.php';
+        if (file_exists($path)) {
+            include $path;
+        } else {
+            echo '<p>' . esc_html__('Formulario para crear un nuevo evento.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=eventos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
+        }
+        echo '</div>';
+    }
+
+    public function render_pagina_config() {
+        echo '<div class="wrap"><h1>' . esc_html__('Configuración de Eventos', 'flavor-chat-ia') . '</h1>';
+        $path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($path)) {
+            include $path;
+        } else {
+            echo '<p>' . esc_html__('Ajustes del módulo de eventos.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=eventos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
+        }
+        echo '</div>';
+    }
 
     /**
      * Inicializa el dashboard tab del módulo

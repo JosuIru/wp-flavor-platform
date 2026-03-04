@@ -434,6 +434,11 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
      */
     public function get_admin_config(): array {
         return [
+            'id' => 'biodiversidad_local',
+            'label' => __('Biodiversidad Local', 'flavor-chat-ia'),
+            'icon' => 'dashicons-admin-site-alt3',
+            'capability' => 'manage_options',
+            'categoria' => 'sostenibilidad',
             'paginas' => [
                 [
                     'slug' => 'biodiversidad',

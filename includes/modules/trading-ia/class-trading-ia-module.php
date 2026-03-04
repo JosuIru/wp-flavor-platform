@@ -1901,7 +1901,7 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="trading-ia-login-required">' .
                    '<p>' . __('Debes iniciar sesion para ver el dashboard de trading.', 'flavor-chat-ia') . '</p>' .
-                   '<a href="' . wp_login_url(get_permalink()) . '" class="button">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
+                   '<a href="' . wp_login_url(flavor_current_request_url()) . '" class="button">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a>' .
                    '</div>';
         }
 

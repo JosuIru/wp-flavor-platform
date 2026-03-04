@@ -145,6 +145,9 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         // Cargar Dashboard Tab para el cliente
         $this->cargar_dashboard_tab();
 
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
         // Enqueue scripts
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
@@ -508,7 +511,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'reciclaje-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'reciclaje-puntos',
@@ -600,6 +603,20 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
             ['label' => __('Nuevo Punto', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=reciclaje-puntos&action=nuevo'), 'class' => 'button-primary'],
         ]);
 
+        if (method_exists($this, 'render_admin_module_hub')) {
+            $this->render_admin_module_hub([
+                'description' => __('Acceso visible a puntos, estadísticas, campañas, configuración y al bloque principal de métricas.', 'flavor-chat-ia'),
+                'stats_anchor' => '#reciclaje-stats',
+                'extra_items' => [
+                    [
+                        'label' => __('Portal', 'flavor-chat-ia'),
+                        'url' => home_url('/mi-portal/reciclaje/'),
+                        'icon' => 'dashicons-external',
+                    ],
+                ],
+            ]);
+        }
+
         // Estadísticas resumen
         $estadisticas = [];
         if (Flavor_Chat_Helpers::tabla_existe($tabla_depositos)) {
@@ -615,7 +632,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
             $estadisticas['puntos_activos'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_puntos WHERE estado = 'activo'");
         }
 
-        echo '<div class="flavor-stats-grid">';
+        echo '<div id="reciclaje-stats" class="flavor-stats-grid">';
         echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html(number_format_i18n($estadisticas['kg_mes'] ?? 0, 1)) . ' kg</span><span class="stat-label">' . __('Reciclado este mes', 'flavor-chat-ia') . '</span></div>';
         echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['total_depositos'] ?? 0) . '</span><span class="stat-label">' . __('Depósitos totales', 'flavor-chat-ia') . '</span></div>';
         echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($estadisticas['usuarios_activos'] ?? 0) . '</span><span class="stat-label">' . __('Usuarios activos', 'flavor-chat-ia') . '</span></div>';
@@ -624,6 +641,18 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
 
         echo '<p>' . __('Panel de control del módulo de reciclaje con métricas ambientales y accesos rápidos.', 'flavor-chat-ia') . '</p>';
         echo '</div>';
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**
@@ -2050,6 +2079,35 @@ KNOWLEDGE;
             if (class_exists('Flavor_Reciclaje_Dashboard_Tab')) {
                 Flavor_Reciclaje_Dashboard_Tab::get_instance();
             }
+        }
+    }
+
+    /**
+     * Registrar páginas de administración (ocultas del sidebar)
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        add_submenu_page(
+            null,
+            __('Puntos de Reciclaje', 'flavor-chat-ia'),
+            __('Puntos de Reciclaje', 'flavor-chat-ia'),
+            $capability,
+            'flavor-reciclaje-puntos',
+            [$this, 'render_pagina_puntos']
+        );
+    }
+
+    /**
+     * Renderizar página de puntos de reciclaje
+     */
+    public function render_pagina_puntos() {
+        $views_path = dirname(__FILE__) . '/views/puntos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Puntos de Reciclaje', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Gestión de puntos de reciclaje comunitarios.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 }

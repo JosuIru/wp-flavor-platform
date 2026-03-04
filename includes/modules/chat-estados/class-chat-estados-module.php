@@ -184,6 +184,82 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Configuración del módulo para el panel admin unificado.
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'chat_estados',
+            'label' => __('Chat Estados', 'flavor-chat-ia'),
+            'icon' => 'dashicons-format-status',
+            'capability' => 'manage_options',
+            'categoria' => 'comunicacion',
+            'paginas' => [
+                [
+                    'slug' => 'chat-estados-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_dashboard'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Renderiza el dashboard admin del módulo.
+     */
+    public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
+        $estados = $this->obtener_estados_contactos(get_current_user_id());
+        $mis_estados = $estados['mis_estados'] ?? null;
+        $contactos = $estados['contactos'] ?? [];
+        $total_mis_estados = is_array($mis_estados['estados'] ?? null) ? count($mis_estados['estados']) : 0;
+        $total_contactos = count($contactos);
+        $total_sin_ver = 0;
+
+        foreach ($contactos as $contacto) {
+            $total_sin_ver += (int) ($contacto['sin_ver'] ?? 0);
+        }
+
+        $this->render_page_header(__('Dashboard de Estados', 'flavor-chat-ia'), [
+            [
+                'label' => __('Ver en portal', 'flavor-chat-ia'),
+                'url' => home_url('/mi-portal/chat-estados/'),
+                'class' => '',
+            ],
+        ]);
+        ?>
+        <div class="wrap flavor-chat-estados-dashboard">
+            <?php if ($is_dashboard_viewer) : ?>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. Este dashboard permite consulta rápida, no administración avanzada de estados.', 'flavor-chat-ia'); ?></p></div>
+            <?php endif; ?>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:20px 0;">
+                <div class="card" style="margin:0;padding:16px;">
+                    <div style="font-size:28px;font-weight:700;line-height:1.1;"><?php echo esc_html(number_format_i18n($total_mis_estados)); ?></div>
+                    <div style="color:#646970;"><?php esc_html_e('Estados propios activos', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="card" style="margin:0;padding:16px;">
+                    <div style="font-size:28px;font-weight:700;line-height:1.1;"><?php echo esc_html(number_format_i18n($total_contactos)); ?></div>
+                    <div style="color:#646970;"><?php esc_html_e('Contactos con estados', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="card" style="margin:0;padding:16px;">
+                    <div style="font-size:28px;font-weight:700;line-height:1.1;"><?php echo esc_html(number_format_i18n($total_sin_ver)); ?></div>
+                    <div style="color:#646970;"><?php esc_html_e('Estados pendientes de ver', 'flavor-chat-ia'); ?></div>
+                </div>
+            </div>
+
+            <div class="card" style="max-width:980px;padding:20px;">
+                <h2 style="margin-top:0;"><?php esc_html_e('Resumen operativo', 'flavor-chat-ia'); ?></h2>
+                <p style="color:#646970;">
+                    <?php esc_html_e('Este dashboard reutiliza la misma base funcional del widget y el tab cliente para mantener una entrada admin coherente sin duplicar lógica.', 'flavor-chat-ia'); ?>
+                </p>
+                <?php $this->render_dashboard_widget(); ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
      * Inicializa el dashboard tab del módulo
      */
     private function inicializar_dashboard_tab() {
@@ -1329,7 +1405,7 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_crear_estado($atts = []) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required"><p>' . esc_html__('Inicia sesión para continuar', 'flavor-chat-ia') . '</p><a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
+            return '<div class="flavor-login-required"><p>' . esc_html__('Inicia sesión para continuar', 'flavor-chat-ia') . '</p><a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
         }
 
         ob_start();
@@ -1342,7 +1418,7 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mis_estados($atts = []) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required"><p>' . esc_html__('Inicia sesión para ver tus estados', 'flavor-chat-ia') . '</p><a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
+            return '<div class="flavor-login-required"><p>' . esc_html__('Inicia sesión para ver tus estados', 'flavor-chat-ia') . '</p><a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
         }
 
         global $wpdb;
@@ -1693,5 +1769,14 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
 
 // Inicializar
 add_action('plugins_loaded', function() {
-    Flavor_Chat_Estados_Module::get_instance();
+    if (class_exists('Flavor_Module_Loader') && method_exists('Flavor_Module_Loader', 'get_instance')) {
+        $loader = Flavor_Module_Loader::get_instance();
+        if ($loader && method_exists($loader, 'get_module') && $loader->get_module('chat_estados')) {
+            return;
+        }
+    }
+
+    if (class_exists('Flavor_Chat_Estados_Module')) {
+        new Flavor_Chat_Estados_Module();
+    }
 }, 20);

@@ -831,6 +831,11 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             'reanudar' => 'reanudar_anuncio',
             'ingresos' => 'mis_ingresos',
             'ubicaciones' => 'ubicaciones_disponibles',
+            'foro' => 'foro_anuncio',
+            'chat' => 'chat_anuncio',
+            'multimedia' => 'multimedia_anuncio',
+            'red-social' => 'red_social_anuncio',
+            'red_social' => 'red_social_anuncio',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -844,6 +849,102 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             'success' => false,
             'error' => "Acción no implementada: {$action_name}",
         ];
+    }
+
+    private function resolve_contextual_anuncio($params = []) {
+        $ad_id = absint(
+            $params['ad_id']
+            ?? $params['id']
+            ?? $_GET['ad_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if (!$ad_id) {
+            return null;
+        }
+
+        $ad = get_post($ad_id);
+        if (!$ad || $ad->post_type !== 'flavor_ad') {
+            return null;
+        }
+
+        return [
+            'id' => (int) $ad->ID,
+            'titulo' => (string) $ad->post_title,
+            'descripcion' => (string) ($ad->post_excerpt ?: wp_trim_words(wp_strip_all_tags((string) $ad->post_content), 24)),
+        ];
+    }
+
+    private function action_foro_anuncio($params) {
+        $anuncio = $this->resolve_contextual_anuncio($params);
+        if (!$anuncio) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-foro">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
+            . '<h2>' . esc_html__('Foro del anuncio', 'flavor-chat-ia') . '</h2>'
+            . '<p>' . esc_html($anuncio['titulo']) . '</p>'
+            . '</div>'
+            . do_shortcode('[flavor_foros_integrado entidad="advertising_ad" entidad_id="' . absint($anuncio['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_chat_anuncio($params) {
+        $anuncio = $this->resolve_contextual_anuncio($params);
+        if (!$anuncio) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este anuncio.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-chat">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Chat del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?ad_id=' . absint($anuncio['id']))) . '" class="button button-secondary">'
+            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="advertising_ad" entidad_id="' . absint($anuncio['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_multimedia_anuncio($params) {
+        $anuncio = $this->resolve_contextual_anuncio($params);
+        if (!$anuncio) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Multimedia del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?ad_id=' . absint($anuncio['id']))) . '" class="button button-primary">'
+            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="advertising_ad" entidad_id="' . absint($anuncio['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_red_social_anuncio($params) {
+        $anuncio = $this->resolve_contextual_anuncio($params);
+        if (!$anuncio) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un anuncio para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este anuncio.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Actividad social del anuncio', 'flavor-chat-ia') . '</h2><p>' . esc_html($anuncio['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?ad_id=' . absint($anuncio['id']))) . '" class="button button-primary">'
+            . esc_html__('Publicar', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_social_feed entidad="advertising_ad" entidad_id="' . absint($anuncio['id']) . '"]')
+            . '</div>';
     }
 
     /**

@@ -1231,7 +1231,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
                 <div class="reservas-mensaje reservas-mensaje-info">
                     ' . sprintf(
                         __('Debes <a href="%s">iniciar sesión</a> para ver tus reservas.', 'flavor-chat-ia'),
-                        wp_login_url(get_permalink())
+                        wp_login_url(flavor_current_request_url())
                     ) . '
                 </div>
             </div>';
@@ -1689,6 +1689,11 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
             'capability' => 'manage_options',
             'categoria' => 'operaciones',
             'paginas' => [
+                [
+                    'slug' => 'reservas-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_dashboard'],
+                ],
                 [
                     'slug' => 'reservas-calendario',
                     'titulo' => __('Calendario', 'flavor-chat-ia'),
@@ -2823,6 +2828,26 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
             'reservas-calendario',
             [$this, 'render_pagina_calendario']
         );
+
+        // Nueva reserva - página oculta
+        add_submenu_page(
+            null,
+            __('Nueva Reserva', 'flavor-chat-ia'),
+            __('Nueva Reserva', 'flavor-chat-ia'),
+            $capability,
+            'reservas-nueva',
+            [$this, 'render_pagina_nueva']
+        );
+
+        // Configuración - página oculta
+        add_submenu_page(
+            null,
+            __('Configuración - Reservas', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability,
+            'reservas-config',
+            [$this, 'render_pagina_config']
+        );
     }
 
     /**
@@ -2871,6 +2896,32 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Calendario de Reservas', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de nueva reserva
+     */
+    public function render_pagina_nueva() {
+        $views_path = dirname(__FILE__) . '/views/formulario.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Nueva Reserva', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Formulario de nueva reserva en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de configuración
+     */
+    public function render_pagina_config() {
+        $views_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Reservas', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Página de configuración en desarrollo.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 

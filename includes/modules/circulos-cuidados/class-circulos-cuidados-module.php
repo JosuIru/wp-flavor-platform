@@ -336,6 +336,11 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
      */
     public function get_admin_config(): array {
         return [
+            'id' => 'circulos_cuidados',
+            'label' => __('Círculos de Cuidados', 'flavor-chat-ia'),
+            'icon' => 'dashicons-heart',
+            'capability' => 'manage_options',
+            'categoria' => 'comunidad',
             'paginas' => [
                 [
                     'slug' => 'circulos-cuidados',
@@ -1255,6 +1260,88 @@ KNOWLEDGE;
         return ['success' => true, 'html' => do_shortcode('[mis_cuidados]')];
     }
 
+    private function resolve_contextual_circulo(): ?array {
+        $circulo_id = absint($_GET['circulo_id'] ?? $_GET['circulo'] ?? $_GET['id'] ?? 0);
+        if (!$circulo_id) {
+            return null;
+        }
+
+        $circulo = get_post($circulo_id);
+        if (!$circulo || $circulo->post_type !== 'cc_circulo') {
+            return null;
+        }
+
+        return [
+            'id'     => (int) $circulo->ID,
+            'nombre' => get_the_title($circulo),
+        ];
+    }
+
+    public function render_tab_foro($usuario_id): string {
+        $circulo = $this->resolve_contextual_circulo();
+        if (!$circulo) {
+            return '<p>' . esc_html__('Selecciona un círculo para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Foro del círculo', 'flavor-chat-ia') . '</h3><p>' . esc_html($circulo['nombre']) . '</p></div>'
+            . do_shortcode('[flavor_foros_integrado entidad="circulo" entidad_id="' . absint($circulo['id']) . '"]')
+            . '</div>';
+    }
+
+    public function render_tab_chat($usuario_id): string {
+        if (!$usuario_id) {
+            return '<p>' . esc_html__('Inicia sesión para acceder al chat del círculo.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $circulo = $this->resolve_contextual_circulo();
+        if (!$circulo) {
+            return '<p>' . esc_html__('Selecciona un círculo para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $cta = home_url('/mi-portal/chat-grupos/mensajes/?circulo_id=' . absint($circulo['id']));
+
+        return '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Chat del círculo', 'flavor-chat-ia') . '</h3><p>' . esc_html($circulo['nombre']) . '</p>'
+            . '<p><a class="button button-primary" href="' . esc_url($cta) . '">' . esc_html__('Abrir chat completo', 'flavor-chat-ia') . '</a></p></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="circulo" entidad_id="' . absint($circulo['id']) . '"]')
+            . '</div>';
+    }
+
+    public function render_tab_multimedia($usuario_id): string {
+        $circulo = $this->resolve_contextual_circulo();
+        if (!$circulo) {
+            return '<p>' . esc_html__('Selecciona un círculo para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $cta = home_url('/mi-portal/multimedia/subir/?circulo_id=' . absint($circulo['id']));
+
+        return '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Archivos del círculo', 'flavor-chat-ia') . '</h3><p>' . esc_html($circulo['nombre']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="circulo" entidad_id="' . absint($circulo['id']) . '"]')
+            . '</div>';
+    }
+
+    public function render_tab_red_social($usuario_id): string {
+        if (!$usuario_id) {
+            return '<p>' . esc_html__('Inicia sesión para ver la actividad del círculo.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $circulo = $this->resolve_contextual_circulo();
+        if (!$circulo) {
+            return '<p>' . esc_html__('Selecciona un círculo para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $cta = home_url('/mi-portal/red-social/crear/?circulo_id=' . absint($circulo['id']));
+
+        return '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Actividad del círculo', 'flavor-chat-ia') . '</h3><p>' . esc_html($circulo['nombre']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p></div>'
+            . do_shortcode('[flavor_social_feed entidad="circulo" entidad_id="' . absint($circulo['id']) . '"]')
+            . '</div>';
+    }
+
     /**
      * Configuración para el Module Renderer
      *
@@ -1325,6 +1412,29 @@ KNOWLEDGE;
                     'label'      => __('Mis círculos', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:mis_cuidados',
+                    'requires_login' => true,
+                ],
+                'foro' => [
+                    'label'          => __('Foro', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-format-chat',
+                    'content'        => 'callback:render_tab_foro',
+                    'requires_login' => true,
+                ],
+                'chat' => [
+                    'label'          => __('Chat', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-format-status',
+                    'content'        => 'callback:render_tab_chat',
+                    'requires_login' => true,
+                ],
+                'multimedia' => [
+                    'label'   => __('Multimedia', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-format-gallery',
+                    'content' => 'callback:render_tab_multimedia',
+                ],
+                'red-social' => [
+                    'label'          => __('Red social', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-share',
+                    'content'        => 'callback:render_tab_red_social',
                     'requires_login' => true,
                 ],
                 'registrar-cuidado' => [

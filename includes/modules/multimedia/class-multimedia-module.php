@@ -272,6 +272,116 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
                 },
             ],
 
+            'incidencias' => [
+                'id'       => 'galeria-incidencia',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="incidencia" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('incidencia', $contexto['entity_id']);
+                },
+            ],
+
+            'documentacion_legal' => [
+                'id'       => 'galeria-documento-legal',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="documento_legal" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('documento_legal', $contexto['entity_id']);
+                },
+            ],
+
+            'presupuestos_participativos' => [
+                'id'       => 'galeria-pp-proyecto',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="pp_proyecto" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('pp_proyecto', $contexto['entity_id']);
+                },
+            ],
+
+            'saberes_ancestrales' => [
+                'id'       => 'galeria-saber-ancestral',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="saber_ancestral" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('saber_ancestral', $contexto['entity_id']);
+                },
+            ],
+
+            'transparencia' => [
+                'id'       => 'galeria-documento-transparencia',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="documento_transparencia" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('documento_transparencia', $contexto['entity_id']);
+                },
+            ],
+
+            'avisos_municipales' => [
+                'id'       => 'galeria-aviso-municipal',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="aviso_municipal" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('aviso_municipal', $contexto['entity_id']);
+                },
+            ],
+
+            'economia_don' => [
+                'id'       => 'galeria-economia-don',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="economia_don" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('economia_don', $contexto['entity_id']);
+                },
+            ],
+
+            'advertising' => [
+                'id'       => 'galeria-advertising-ad',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="advertising_ad" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('advertising_ad', $contexto['entity_id']);
+                },
+            ],
+
+            'radio' => [
+                'id'       => 'galeria-radio-programa',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="radio_programa" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('radio_programa', $contexto['entity_id']);
+                },
+            ],
+
+            'energia_comunitaria' => [
+                'id'       => 'galeria-energia-comunidad',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="energia_comunidad" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('energia_comunidad', $contexto['entity_id']);
+                },
+            ],
+
             // Tab de galería para Cursos
             'cursos' => [
                 'id'       => 'recursos-curso',
@@ -281,6 +391,30 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
                 'priority' => 110,
                 'badge'    => function($contexto) {
                     return $this->contar_multimedia_entidad('curso', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de recursos para Talleres
+            'talleres' => [
+                'id'       => 'recursos-taller',
+                'label'    => __('Recursos', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="taller" entidad_id="{entity_id}"]',
+                'priority' => 110,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('taller', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de multimedia para Trabajo Digno
+            'trabajo_digno' => [
+                'id'       => 'recursos-oferta-trabajo',
+                'label'    => __('Recursos', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="trabajo_digno_oferta" entidad_id="{entity_id}"]',
+                'priority' => 110,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('trabajo_digno_oferta', $contexto['entity_id']);
                 },
             ],
 
@@ -305,6 +439,36 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
                 'priority' => 100,
                 'badge'    => function($contexto) {
                     return $this->contar_multimedia_entidad('huerto', $contexto['entity_id']);
+                },
+            ],
+            'participacion' => [
+                'id'       => 'multimedia-propuesta',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="participacion_propuesta" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('participacion_propuesta', $contexto['entity_id']);
+                },
+            ],
+            'economia_suficiencia' => [
+                'id'       => 'multimedia-recurso-suficiencia',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="es_recurso" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('es_recurso', $contexto['entity_id']);
+                },
+            ],
+            'justicia_restaurativa' => [
+                'id'       => 'multimedia-proceso-restaurativo',
+                'label'    => __('Multimedia', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-format-gallery',
+                'content'  => '[flavor_multimedia_galeria entidad="jr_proceso" entidad_id="{entity_id}"]',
+                'priority' => 100,
+                'badge'    => function($contexto) {
+                    return $this->contar_multimedia_entidad('jr_proceso', $contexto['entity_id']);
                 },
             ],
 
@@ -2701,7 +2865,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'flavor-multimedia-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-multimedia-galeria',
@@ -2724,7 +2888,8 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
      * Renderizar dashboard del panel unificado
      */
     public function render_admin_dashboard() {
-        $template = FLAVOR_CHAT_IA_PATH . 'includes/modules/multimedia/views/admin-dashboard.php';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
+        $template = FLAVOR_CHAT_IA_PATH . 'includes/modules/multimedia/views/dashboard.php';
         if (file_exists($template)) {
             include $template;
         } else {
@@ -2737,6 +2902,16 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
      * Renderizar galería del panel unificado
      */
     public function render_admin_galeria() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
+        if ($is_dashboard_viewer) {
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Galería', 'flavor-chat-ia') . '</h1>';
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. La gestión detallada de la galería y la moderación siguen reservadas a administración.', 'flavor-chat-ia') . '</p></div>';
+            echo '<p><a class="button" href="' . esc_url(home_url('/mi-portal/multimedia/')) . '">' . esc_html__('Ver en portal', 'flavor-chat-ia') . '</a></p>';
+            echo '</div>';
+            return;
+        }
+
         $template = FLAVOR_CHAT_IA_PATH . 'includes/modules/multimedia/views/admin-galeria.php';
         if (file_exists($template)) {
             include $template;
@@ -2856,7 +3031,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
      * Renderizar página admin
      */
     public function render_admin_page() {
-        $template = FLAVOR_CHAT_IA_PATH . 'includes/modules/multimedia/views/admin-dashboard.php';
+        $template = FLAVOR_CHAT_IA_PATH . 'includes/modules/multimedia/views/dashboard.php';
         if (file_exists($template)) {
             include $template;
         } else {
@@ -3384,6 +3559,33 @@ KNOWLEDGE;
             'multimedia-moderacion',
             [$this, 'render_pagina_moderacion']
         );
+
+        add_submenu_page(
+            null,
+            __('Multimedia - Configuración', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability,
+            'flavor-multimedia-configuracion',
+            [$this, 'render_pagina_configuracion']
+        );
+
+        add_submenu_page(
+            null,
+            __('Multimedia - Estadísticas', 'flavor-chat-ia'),
+            __('Estadísticas', 'flavor-chat-ia'),
+            $capability,
+            'multimedia-estadisticas',
+            [$this, 'render_pagina_estadisticas']
+        );
+
+        add_submenu_page(
+            null,
+            __('Multimedia - Subir', 'flavor-chat-ia'),
+            __('Subir', 'flavor-chat-ia'),
+            $capability,
+            'multimedia-subir',
+            [$this, 'render_pagina_subir']
+        );
     }
 
     /**
@@ -3443,6 +3645,42 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Moderación de Contenido', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de configuración
+     */
+    public function render_pagina_configuracion() {
+        $views_path = dirname(__FILE__) . '/views/configuracion.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración Multimedia', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de estadísticas
+     */
+    public function render_pagina_estadisticas() {
+        $views_path = dirname(__FILE__) . '/views/estadisticas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Estadísticas Multimedia', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de subida
+     */
+    public function render_pagina_subir() {
+        $views_path = dirname(__FILE__) . '/views/subir.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Subir Multimedia', 'flavor-chat-ia') . '</h1></div>';
         }
     }
 

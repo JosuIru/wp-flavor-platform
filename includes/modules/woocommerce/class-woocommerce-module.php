@@ -1353,7 +1353,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'flavor-woocommerce-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-woocommerce-pedidos',
@@ -1401,6 +1401,18 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             include $ruta_vista;
         } else {
             $this->render_vista_placeholder(__('Dashboard de WooCommerce', 'flavor-chat-ia'));
+        }
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
         }
     }
 

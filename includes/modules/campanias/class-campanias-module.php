@@ -1275,7 +1275,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'campanias-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'campanias-listado',
@@ -1400,6 +1400,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
      * Renderiza el dashboard de administracion de campanias
      */
     public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         global $wpdb;
         $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
         $tabla_firmas = $wpdb->prefix . 'flavor_campanias_firmas';
@@ -1461,20 +1462,42 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
             current_time('mysql')
         ));
 
-        $this->render_page_header(
-            __('Dashboard de Campanias', 'flavor-chat-ia'),
-            [
+        $acciones = $is_dashboard_viewer
+            ? [
+                [
+                    'label' => __('Ver en portal', 'flavor-chat-ia'),
+                    'url' => home_url('/mi-portal/participacion/'),
+                    'class' => '',
+                ],
+            ]
+            : [
                 [
                     'label' => __('Nueva Campania', 'flavor-chat-ia'),
                     'url' => admin_url('admin.php?page=campanias-listado&accion=nueva'),
                     'class' => 'button-primary',
                 ],
-            ]
-        );
+            ];
+        $this->render_page_header(__('Dashboard de Campanias', 'flavor-chat-ia'), $acciones);
         ?>
         <div class="wrap flavor-admin-dashboard">
+            <?php if ($is_dashboard_viewer) : ?>
+                <div class="notice notice-info"><p><?php esc_html_e('Vista resumida para gestor de grupos. La edición de campañas, firmas y acciones sigue reservada a administración.', 'flavor-chat-ia'); ?></p></div>
+            <?php endif; ?>
+            <?php if (method_exists($this, 'render_admin_module_hub')) : ?>
+                <?php $this->render_admin_module_hub([
+                    'description' => __('Acceso visible al dashboard, listado, firmas, configuración y al bloque principal de métricas.', 'flavor-chat-ia'),
+                    'stats_anchor' => '#campanias-stats',
+                    'extra_items' => [
+                        [
+                            'label' => __('Portal', 'flavor-chat-ia'),
+                            'url' => home_url('/mi-portal/participacion/'),
+                            'icon' => 'dashicons-external',
+                        ],
+                    ],
+                ]); ?>
+            <?php endif; ?>
             <!-- Tarjetas de estadisticas -->
-            <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div id="campanias-stats" class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
                 <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #2271b1; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <div class="stat-icon" style="font-size: 32px; color: #2271b1;">
                         <span class="dashicons dashicons-megaphone"></span>
@@ -1511,6 +1534,13 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                     <div class="stat-label" style="color: #646970;"><?php _e('Campanias Exitosas', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
+
+            <?php if ($is_dashboard_viewer) : ?>
+                <p><?php esc_html_e('El resto de accesos administrativos del dashboard se ocultan en modo gestor para evitar flujos de edición o moderación fuera de alcance.', 'flavor-chat-ia'); ?></p>
+                </div>
+                <?php
+                return;
+            endif; ?>
 
             <div class="flavor-dashboard-columns" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
                 <!-- Columna principal -->
@@ -1688,6 +1718,18 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**

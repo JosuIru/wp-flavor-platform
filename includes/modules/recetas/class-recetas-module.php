@@ -82,12 +82,23 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'recetas',
+            'label' => __('Recetas', 'flavor-chat-ia'),
             'titulo' => __('Recetas', 'flavor-chat-ia'),
+            'categoria' => 'recursos',
             'descripcion' => __('Gestionar recetas vinculables a productos', 'flavor-chat-ia'),
+            'icon' => 'dashicons-carrot',
             'icono' => 'dashicons-carrot',
+            'capability' => 'edit_posts',
             'orden' => 35,
             'render_callback' => [$this, 'render_admin_page'],
             'permisos' => 'edit_posts',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-recetas-dashboard',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_page'],
+                ],
+            ],
         ];
     }
 
@@ -1224,6 +1235,10 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
             'destacadas' => 'recetas_populares',
             'crear' => 'crear_receta',
             'nuevo' => 'crear_receta',
+            'foro' => 'foro_receta',
+            'multimedia' => 'multimedia_receta',
+            'red-social' => 'red_social_receta',
+            'red_social' => 'red_social_receta',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -1289,6 +1304,131 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'html' => do_shortcode('[flavor_recetas_crear]'),
         ];
+    }
+
+    /**
+     * Resuelve la receta contextual para tabs satélite.
+     *
+     * @param array $params Parámetros opcionales.
+     * @return WP_Post|null
+     */
+    private function resolve_contextual_receta(array $params = []) {
+        $receta_id = absint(
+            $params['receta_id']
+            ?? $params['id']
+            ?? $_GET['receta_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if ($receta_id <= 0) {
+            return null;
+        }
+
+        $receta = get_post($receta_id);
+        if (!$receta || $receta->post_type !== 'flavor_receta') {
+            return null;
+        }
+
+        return $receta;
+    }
+
+    /**
+     * Acción: foro contextual de receta.
+     *
+     * @param array $params Parámetros.
+     * @return string
+     */
+    private function action_foro_receta($params) {
+        $receta = $this->resolve_contextual_receta((array) $params);
+        if (!$receta) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona una receta para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-tab flavor-contextual-foro">
+            <div class="flavor-contextual-header" style="margin-bottom:1.5rem;">
+                <h2><?php esc_html_e('Foro de la receta', 'flavor-chat-ia'); ?></h2>
+                <p><?php echo esc_html(get_the_title($receta)); ?></p>
+            </div>
+            <?php echo do_shortcode(sprintf(
+                '[flavor_foros_integrado entidad="receta" entidad_id="%d"]',
+                absint($receta->ID)
+            )); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Acción: multimedia contextual de receta.
+     *
+     * @param array $params Parámetros.
+     * @return string
+     */
+    private function action_multimedia_receta($params) {
+        $receta = $this->resolve_contextual_receta((array) $params);
+        if (!$receta) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona una receta para ver su galería.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-tab flavor-contextual-multimedia">
+            <div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <div>
+                    <h2><?php esc_html_e('Multimedia de la receta', 'flavor-chat-ia'); ?></h2>
+                    <p><?php echo esc_html(get_the_title($receta)); ?></p>
+                </div>
+                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/subir/?receta_id=' . absint($receta->ID))); ?>" class="button button-primary">
+                    <?php esc_html_e('Subir archivo', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php echo do_shortcode(sprintf(
+                '[flavor_multimedia_galeria entidad="receta" entidad_id="%d"]',
+                absint($receta->ID)
+            )); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Acción: red social contextual de receta.
+     *
+     * @param array $params Parámetros.
+     * @return string
+     */
+    private function action_red_social_receta($params) {
+        $receta = $this->resolve_contextual_receta((array) $params);
+        if (!$receta) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona una receta para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de esta receta.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-tab flavor-contextual-red-social">
+            <div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <div>
+                    <h2><?php esc_html_e('Actividad social de la receta', 'flavor-chat-ia'); ?></h2>
+                    <p><?php echo esc_html(get_the_title($receta)); ?></p>
+                </div>
+                <a href="<?php echo esc_url(home_url('/mi-portal/red-social/crear/?receta_id=' . absint($receta->ID))); ?>" class="button button-primary">
+                    <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php echo do_shortcode(sprintf(
+                '[flavor_social_feed entidad="receta" entidad_id="%d"]',
+                absint($receta->ID)
+            )); ?>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 
     /**
@@ -1501,6 +1641,22 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
                     'icon'    => '🔍',
                     'content' => 'shortcode:flavor_recetas_buscador',
                 ],
+                'foro' => [
+                    'label'   => __('Foro', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-admin-comments',
+                    'content' => 'callback:render_tab_foro',
+                ],
+                'multimedia' => [
+                    'label'   => __('Multimedia', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-format-gallery',
+                    'content' => 'callback:render_tab_multimedia',
+                ],
+                'red-social' => [
+                    'label'   => __('Red social', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-share',
+                    'content' => 'callback:render_tab_red_social',
+                    'requires_login' => true,
+                ],
             ],
 
             'archive' => [
@@ -1537,5 +1693,32 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
                 'has_print'      => true,
             ],
         ];
+    }
+
+    /**
+     * Renderiza el tab de foro contextual.
+     *
+     * @return string
+     */
+    public function render_tab_foro(): string {
+        return $this->action_foro_receta([]);
+    }
+
+    /**
+     * Renderiza el tab de multimedia contextual.
+     *
+     * @return string
+     */
+    public function render_tab_multimedia(): string {
+        return $this->action_multimedia_receta([]);
+    }
+
+    /**
+     * Renderiza el tab social contextual.
+     *
+     * @return string
+     */
+    public function render_tab_red_social(): string {
+        return $this->action_red_social_receta([]);
     }
 }

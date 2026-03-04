@@ -125,6 +125,9 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_filter('query_vars', [$this, 'add_query_vars']);
 
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
         // Registrar en panel de administración unificado
         $this->registrar_en_panel_unificado();
         // Cargar Dashboard Tab
@@ -2360,6 +2363,10 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             'explorar' => 'listar_series',
             'buscar' => 'listar_series',
             'episodios' => 'listar_series',
+            'foro' => 'foro_serie',
+            'multimedia' => 'multimedia_serie',
+            'red-social' => 'red_social_serie',
+            'red_social' => 'red_social_serie',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -2385,6 +2392,157 @@ class Flavor_Chat_Podcast_Module extends Flavor_Chat_Module_Base {
             'total' => count($series),
             'series' => array_map([$this, 'formatear_serie_respuesta'], $series),
         ];
+    }
+
+    /**
+     * Resuelve la serie contextual para tabs satélite.
+     *
+     * @param array $params Parámetros opcionales.
+     * @return object|null
+     */
+    private function resolve_contextual_serie(array $params = []) {
+        $serie_id = absint(
+            $params['serie_id']
+            ?? $params['id']
+            ?? $_GET['serie_id']
+            ?? $_GET['serie']
+            ?? 0
+        );
+
+        if ($serie_id <= 0) {
+            return null;
+        }
+
+        return $this->obtener_serie($serie_id);
+    }
+
+    /**
+     * Acción: Foro contextual de una serie.
+     *
+     * @param array $params Parámetros de la acción.
+     * @return string
+     */
+    private function action_foro_serie($params) {
+        $serie = $this->resolve_contextual_serie((array) $params);
+        if (!$serie) {
+            return $this->render_mensaje_error(__('Selecciona una serie para ver su foro.', 'flavor-chat-ia'));
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-tab flavor-contextual-foro">
+            <div class="flavor-contextual-header mb-6">
+                <h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e('Foro de la serie', 'flavor-chat-ia'); ?></h2>
+                <p class="text-gray-600 mt-1"><?php echo esc_html($serie->titulo); ?></p>
+            </div>
+            <?php echo do_shortcode(sprintf(
+                '[flavor_foros_integrado entidad="podcast_serie" entidad_id="%d"]',
+                absint($serie->id)
+            )); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza el tab de foro contextual de una serie.
+     *
+     * @return string
+     */
+    public function render_tab_foro(): string {
+        return $this->action_foro_serie([]);
+    }
+
+    /**
+     * Acción: Multimedia contextual de una serie.
+     *
+     * @param array $params Parámetros de la acción.
+     * @return string
+     */
+    private function action_multimedia_serie($params) {
+        $serie = $this->resolve_contextual_serie((array) $params);
+        if (!$serie) {
+            return $this->render_mensaje_error(__('Selecciona una serie para ver su galería.', 'flavor-chat-ia'));
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-tab flavor-contextual-multimedia">
+            <div class="flavor-contextual-header mb-6 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e('Multimedia de la serie', 'flavor-chat-ia'); ?></h2>
+                    <p class="text-gray-600 mt-1"><?php echo esc_html($serie->titulo); ?></p>
+                </div>
+                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/subir/?serie_id=' . absint($serie->id))); ?>"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                    <span class="dashicons dashicons-upload"></span>
+                    <?php esc_html_e('Subir archivo', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php echo do_shortcode(sprintf(
+                '[flavor_multimedia_galeria entidad="podcast_serie" entidad_id="%d"]',
+                absint($serie->id)
+            )); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza el tab de multimedia contextual de una serie.
+     *
+     * @return string
+     */
+    public function render_tab_multimedia(): string {
+        return $this->action_multimedia_serie([]);
+    }
+
+    /**
+     * Acción: Feed social contextual de una serie.
+     *
+     * @param array $params Parámetros de la acción.
+     * @return string
+     */
+    private function action_red_social_serie($params) {
+        $serie = $this->resolve_contextual_serie((array) $params);
+        if (!$serie) {
+            return $this->render_mensaje_error(__('Selecciona una serie para ver su actividad social.', 'flavor-chat-ia'));
+        }
+
+        if (!is_user_logged_in()) {
+            return $this->render_mensaje_login(__('Inicia sesion para participar en la actividad social de esta serie.', 'flavor-chat-ia'));
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-tab flavor-contextual-red-social">
+            <div class="flavor-contextual-header mb-6 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900"><?php esc_html_e('Actividad social de la serie', 'flavor-chat-ia'); ?></h2>
+                    <p class="text-gray-600 mt-1"><?php echo esc_html($serie->titulo); ?></p>
+                </div>
+                <a href="<?php echo esc_url(home_url('/mi-portal/red-social/crear/?serie_id=' . absint($serie->id))); ?>"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                    <span class="dashicons dashicons-edit"></span>
+                    <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php echo do_shortcode(sprintf(
+                '[flavor_social_feed entidad="podcast_serie" entidad_id="%d"]',
+                absint($serie->id)
+            )); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renderiza el tab social contextual de una serie.
+     *
+     * @return string
+     */
+    public function render_tab_red_social(): string {
+        return $this->action_red_social_serie([]);
     }
 
     /**
@@ -2540,7 +2698,7 @@ KNOWLEDGE;
                 [
                     'slug'     => 'flavor-podcast-dashboard',
                     'titulo'   => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug'     => 'flavor-podcast-episodios',
@@ -2606,6 +2764,18 @@ KNOWLEDGE;
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**
@@ -2924,6 +3094,22 @@ KNOWLEDGE;
                     'label'    => __('Favoritos', 'flavor-chat-ia'),
                     'icon'     => 'dashicons-heart',
                     'content'  => 'callback:render_tab_favoritos',
+                    'requires_login' => true,
+                ],
+                'foro' => [
+                    'label' => __('Foro', 'flavor-chat-ia'),
+                    'icon' => 'dashicons-admin-comments',
+                    'content' => 'callback:render_tab_foro',
+                ],
+                'multimedia' => [
+                    'label' => __('Multimedia', 'flavor-chat-ia'),
+                    'icon' => 'dashicons-format-gallery',
+                    'content' => 'callback:render_tab_multimedia',
+                ],
+                'red-social' => [
+                    'label' => __('Red social', 'flavor-chat-ia'),
+                    'icon' => 'dashicons-share',
+                    'content' => 'callback:render_tab_red_social',
                     'requires_login' => true,
                 ],
             ],
@@ -3554,7 +3740,7 @@ KNOWLEDGE;
             <span class="dashicons dashicons-lock text-gray-300 text-6xl mb-4"></span>
             <h3 class="text-lg font-semibold text-gray-700 mb-2"><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h3>
             <p class="text-gray-500 mb-4"><?php echo esc_html($mensaje); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>"
+            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>"
                class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                 <span class="dashicons dashicons-admin-users"></span>
                 <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
@@ -3581,6 +3767,36 @@ KNOWLEDGE;
         return ob_get_clean();
     }
 
+
+    /**
+     * Registra las páginas de administración del módulo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas (sin menú visible en el sidebar)
+        add_submenu_page(null, __('Episodios', 'flavor-chat-ia'), __('Episodios', 'flavor-chat-ia'), $capability, 'podcast-episodios', [$this, 'render_pagina_episodios']);
+        add_submenu_page(null, __('Series', 'flavor-chat-ia'), __('Series', 'flavor-chat-ia'), $capability, 'podcast-series', [$this, 'render_pagina_series']);
+        add_submenu_page(null, __('Suscriptores', 'flavor-chat-ia'), __('Suscriptores', 'flavor-chat-ia'), $capability, 'podcast-suscriptores', [$this, 'render_pagina_suscriptores']);
+    }
+
+    public function render_pagina_episodios() {
+        $views_path = dirname(__FILE__) . '/views/episodios.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Episodios', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_series() {
+        $views_path = dirname(__FILE__) . '/views/series.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Series', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_suscriptores() {
+        $views_path = dirname(__FILE__) . '/views/suscriptores.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Suscriptores', 'flavor-chat-ia') . '</h1></div>'; }
+    }
 
     /**
      * Inicializa el dashboard tab del módulo

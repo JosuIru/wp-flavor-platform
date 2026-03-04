@@ -94,6 +94,9 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
 
+        // Registrar páginas de administración
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'maybe_create_pages']);
@@ -615,6 +618,8 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             'mis_items' => 'mis_libros',
             'mis-libros' => 'mis_libros',
             'mis-prestamos' => 'mis_prestamos',
+            'foro' => 'resenas_libro',
+            'chat' => 'chat_libro',
             'prestamo' => 'solicitar_prestamo',
             'reservar' => 'reservar_libro',
             'devolver' => 'devolver_libro',
@@ -622,6 +627,10 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
             'valorar' => 'valorar_libro',
             'recomendaciones' => 'recomendaciones',
             'stats' => 'estadisticas_biblioteca',
+            'resenas' => 'resenas_libro',
+            'multimedia' => 'multimedia_libro',
+            'red-social' => 'red_social_libro',
+            'red_social' => 'red_social_libro',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -1318,6 +1327,173 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
                 'libros_populares' => $libros_populares,
             ],
         ];
+    }
+
+    /**
+     * Resuelve el libro contextual para tabs satélite.
+     *
+     * @param array $params Parámetros opcionales.
+     * @return object|null
+     */
+    private function resolve_contextual_libro(array $params = []) {
+        $libro_id = absint(
+            $params['libro_id']
+            ?? $params['id']
+            ?? $_GET['libro_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if ($libro_id <= 0) {
+            return null;
+        }
+
+        global $wpdb;
+        $tabla_libros = $wpdb->prefix . 'flavor_biblioteca_libros';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_libros)) {
+            return null;
+        }
+
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_libros} WHERE id = %d",
+            $libro_id
+        ));
+    }
+
+    /**
+     * Acción: foro/reseñas contextual del libro.
+     *
+     * @param array $params Parámetros.
+     * @return string
+     */
+    private function action_resenas_libro($params) {
+        $libro = $this->resolve_contextual_libro((array) $params);
+        if (!$libro) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver sus reseñas.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-tab flavor-contextual-resenas">
+            <div class="flavor-contextual-header" style="margin-bottom:1.5rem;">
+                <h2><?php esc_html_e('Reseñas del libro', 'flavor-chat-ia'); ?></h2>
+                <p><?php echo esc_html($libro->titulo); ?></p>
+            </div>
+            <?php echo do_shortcode(sprintf(
+                '[flavor_foros_integrado entidad="libro_biblioteca" entidad_id="%d"]',
+                absint($libro->id)
+            )); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Acción: chat contextual del libro.
+     *
+     * @param array $params Parámetros.
+     * @return string
+     */
+    private function action_chat_libro($params) {
+        $libro = $this->resolve_contextual_libro((array) $params);
+        if (!$libro) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este libro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-tab flavor-contextual-chat">
+            <div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <div>
+                    <h2><?php esc_html_e('Chat del libro', 'flavor-chat-ia'); ?></h2>
+                    <p><?php echo esc_html($libro->titulo); ?></p>
+                </div>
+                <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/mensajes/?libro_id=' . absint($libro->id))); ?>" class="button button-secondary">
+                    <?php esc_html_e('Abrir chat completo', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php echo do_shortcode(sprintf(
+                '[flavor_chat_grupo_integrado entidad="libro_biblioteca" entidad_id="%d"]',
+                absint($libro->id)
+            )); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Acción: multimedia contextual del libro.
+     *
+     * @param array $params Parámetros.
+     * @return string
+     */
+    private function action_multimedia_libro($params) {
+        $libro = $this->resolve_contextual_libro((array) $params);
+        if (!$libro) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver su galería.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-tab flavor-contextual-multimedia">
+            <div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <div>
+                    <h2><?php esc_html_e('Multimedia del libro', 'flavor-chat-ia'); ?></h2>
+                    <p><?php echo esc_html($libro->titulo); ?></p>
+                </div>
+                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/subir/?libro_id=' . absint($libro->id))); ?>" class="button button-primary">
+                    <?php esc_html_e('Subir archivo', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php echo do_shortcode(sprintf(
+                '[flavor_multimedia_galeria entidad="libro_biblioteca" entidad_id="%d"]',
+                absint($libro->id)
+            )); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Acción: feed social contextual del libro.
+     *
+     * @param array $params Parámetros.
+     * @return string
+     */
+    private function action_red_social_libro($params) {
+        $libro = $this->resolve_contextual_libro((array) $params);
+        if (!$libro) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un libro para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este libro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-tab flavor-contextual-red-social">
+            <div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <div>
+                    <h2><?php esc_html_e('Actividad social del libro', 'flavor-chat-ia'); ?></h2>
+                    <p><?php echo esc_html($libro->titulo); ?></p>
+                </div>
+                <a href="<?php echo esc_url(home_url('/mi-portal/red-social/crear/?libro_id=' . absint($libro->id))); ?>" class="button button-primary">
+                    <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php echo do_shortcode(sprintf(
+                '[flavor_social_feed entidad="libro_biblioteca" entidad_id="%d"]',
+                absint($libro->id)
+            )); ?>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 
     // =========================================================================
@@ -2798,8 +2974,11 @@ KNOWLEDGE;
                 'catalogo' => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt', 'content' => 'template:_archive.php'],
                 'mis-prestamos' => ['label' => __('Mis Préstamos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'content' => 'template:mis-prestamos.php'],
                 'novedades' => ['label' => __('Novedades', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
-                'resenas' => ['label' => __('Reseñas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
-                'clubes' => ['label' => __('Clubes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'content' => '[biblioteca_clubes]'],
+                'resenas' => ['label' => __('Reseñas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'content' => 'callback:render_tab_resenas'],
+                'chat' => ['label' => __('Chat', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat', 'content' => 'callback:render_tab_chat', 'requires_login' => true],
+                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'content' => 'callback:render_tab_multimedia'],
+                'red-social' => ['label' => __('Red social', 'flavor-chat-ia'), 'icon' => 'dashicons-share', 'content' => 'callback:render_tab_red_social', 'requires_login' => true],
+                'clubes' => ['label' => __('Clubes', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'content' => 'callback:render_tab_clubes'],
             ],
 
             'archive' => [
@@ -2818,6 +2997,51 @@ KNOWLEDGE;
                 ],
             ],
         ];
+    }
+
+    /**
+     * Renderiza el tab de reseñas contextuales.
+     *
+     * @return string
+     */
+    public function render_tab_resenas(): string {
+        return $this->action_resenas_libro([]);
+    }
+
+    /**
+     * Renderiza el tab de chat contextual.
+     *
+     * @return string
+     */
+    public function render_tab_chat(): string {
+        return $this->action_chat_libro([]);
+    }
+
+    /**
+     * Renderiza el tab de multimedia contextual.
+     *
+     * @return string
+     */
+    public function render_tab_multimedia(): string {
+        return $this->action_multimedia_libro([]);
+    }
+
+    /**
+     * Renderiza el tab social contextual.
+     *
+     * @return string
+     */
+    public function render_tab_red_social(): string {
+        return $this->action_red_social_libro([]);
+    }
+
+    /**
+     * Renderiza el tab de clubes de lectura.
+     *
+     * @return string
+     */
+    public function render_tab_clubes(): string {
+        return do_shortcode('[biblioteca_clubes]');
     }
 
     // =========================================================================
@@ -2840,7 +3064,7 @@ KNOWLEDGE;
                 [
                     'slug'     => 'biblioteca-dashboard',
                     'titulo'   => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug'     => 'biblioteca-catalogo',
@@ -3139,6 +3363,18 @@ KNOWLEDGE;
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**
@@ -3885,6 +4121,164 @@ KNOWLEDGE;
             if (class_exists('Flavor_Biblioteca_Dashboard_Tab')) {
                 Flavor_Biblioteca_Dashboard_Tab::get_instance();
             }
+        }
+    }
+
+    /**
+     * Registra las páginas de administración del módulo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        add_submenu_page(
+            null,
+            __('Catálogo de Biblioteca', 'flavor-chat-ia'),
+            __('Catálogo de Biblioteca', 'flavor-chat-ia'),
+            $capability,
+            'biblioteca-catalogo',
+            [$this, 'render_pagina_biblioteca_catalogo']
+        );
+
+        add_submenu_page(
+            null,
+            __('Configuración de Biblioteca', 'flavor-chat-ia'),
+            __('Configuración de Biblioteca', 'flavor-chat-ia'),
+            $capability,
+            'biblioteca-config',
+            [$this, 'render_pagina_biblioteca_config']
+        );
+
+        add_submenu_page(
+            null,
+            __('Préstamos de Biblioteca', 'flavor-chat-ia'),
+            __('Préstamos de Biblioteca', 'flavor-chat-ia'),
+            $capability,
+            'biblioteca-prestamos',
+            [$this, 'render_pagina_biblioteca_prestamos']
+        );
+
+        add_submenu_page(
+            null,
+            __('Usuarios de Biblioteca', 'flavor-chat-ia'),
+            __('Usuarios de Biblioteca', 'flavor-chat-ia'),
+            $capability,
+            'biblioteca-usuarios',
+            [$this, 'render_pagina_biblioteca_usuarios']
+        );
+    }
+
+    /**
+     * Renderiza la página de catálogo de biblioteca
+     */
+    public function render_pagina_biblioteca_catalogo() {
+        $ruta_vista = dirname(__FILE__) . '/views/catalogo.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Catálogo de Biblioteca', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de configuración de biblioteca
+     */
+    public function render_pagina_biblioteca_config() {
+        $ruta_vista = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Biblioteca', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de préstamos de biblioteca
+     */
+    public function render_pagina_biblioteca_prestamos() {
+        $ruta_vista = dirname(__FILE__) . '/views/prestamos.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Préstamos de Biblioteca', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de usuarios de biblioteca
+     */
+    public function render_pagina_biblioteca_usuarios() {
+        $ruta_vista = dirname(__FILE__) . '/views/usuarios.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Usuarios de Biblioteca', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Registra las páginas de administración del módulo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        add_submenu_page(
+            null,
+            __('Catálogo - Biblioteca', 'flavor-chat-ia'),
+            __('Catálogo', 'flavor-chat-ia'),
+            $capability,
+            'biblioteca-catalogo',
+            [$this, 'render_pagina_biblioteca_catalogo']
+        );
+
+        add_submenu_page(
+            null,
+            __('Configuración - Biblioteca', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability,
+            'biblioteca-config',
+            [$this, 'render_pagina_biblioteca_config']
+        );
+
+        add_submenu_page(
+            null,
+            __('Préstamos - Biblioteca', 'flavor-chat-ia'),
+            __('Préstamos', 'flavor-chat-ia'),
+            $capability,
+            'biblioteca-prestamos',
+            [$this, 'render_pagina_biblioteca_prestamos']
+        );
+
+        add_submenu_page(
+            null,
+            __('Usuarios - Biblioteca', 'flavor-chat-ia'),
+            __('Usuarios', 'flavor-chat-ia'),
+            $capability,
+            'biblioteca-usuarios',
+            [$this, 'render_pagina_biblioteca_usuarios']
+        );
+    }
+
+    /**
+     * Renderiza la página de catálogo
+     */
+    public function render_pagina_biblioteca_catalogo() {
+        $ruta_vista = dirname(__FILE__) . '/views/catalogo.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Catálogo de Biblioteca', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_pagina_biblioteca_config() {
+        $ruta_vista = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Biblioteca', 'flavor-chat-ia') . '</h1><p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 }

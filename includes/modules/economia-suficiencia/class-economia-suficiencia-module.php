@@ -170,6 +170,12 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $this->module_description = __('Promueve un modelo basado en "suficiente" vs "máximo"', 'flavor-chat-ia');
         $this->module_icon = 'dashicons-editor-expand';
         $this->module_color = '#27ae60';
+        $this->module_role = 'transversal';
+        $this->ecosystem_teaches_modules = ['grupos_consumo', 'marketplace', 'comunidades'];
+        $this->ecosystem_supports_modules = ['grupos_consumo', 'marketplace', 'comunidades'];
+        $this->dashboard_transversal_priority = 30;
+        $this->dashboard_client_contexts = ['consumo', 'suficiencia', 'aprendizaje', 'comunidad'];
+        $this->dashboard_admin_contexts = ['consumo', 'aprendizaje', 'admin'];
 
         parent::__construct();
 
@@ -1100,6 +1106,11 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             'nuevo' => 'registrar_practica',
             'nivel' => 'ver_nivel',
             'mi_camino' => 'ver_nivel',
+            'foro' => 'foro_recurso',
+            'chat' => 'chat_recurso',
+            'multimedia' => 'multimedia_recurso',
+            'red-social' => 'red_social_recurso',
+            'red_social' => 'red_social_recurso',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -1143,6 +1154,114 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'html' => do_shortcode('[flavor_suficiencia_mi_camino]'),
         ];
+    }
+
+    /**
+     * Resolver recurso contextual para tabs satélite.
+     *
+     * @param array $params
+     * @return WP_Post|null
+     */
+    private function resolve_contextual_recurso($params = []) {
+        $recurso_id = absint(
+            $params['recurso_id']
+            ?? $params['id']
+            ?? $_GET['recurso_id']
+            ?? 0
+        );
+
+        if (!$recurso_id) {
+            return null;
+        }
+
+        $recurso = get_post($recurso_id);
+        if (!$recurso || $recurso->post_type !== 'es_recurso') {
+            return null;
+        }
+
+        return $recurso;
+    }
+
+    private function action_foro_recurso($params) {
+        $recurso = $this->resolve_contextual_recurso($params);
+        if (!$recurso) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Foro del recurso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html($recurso->post_title) . '</p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_foros_integrado entidad="es_recurso" entidad_id="' . absint($recurso->ID) . '"]');
+
+        return $html;
+    }
+
+    private function action_chat_recurso($params) {
+        if (!is_user_logged_in()) {
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para acceder al chat del recurso.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $recurso = $this->resolve_contextual_recurso($params);
+        if (!$recurso) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Chat del recurso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html($recurso->post_title) . '</p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_chat_grupo_integrado entidad="es_recurso" entidad_id="' . absint($recurso->ID) . '"]');
+
+        return $html;
+    }
+
+    private function action_multimedia_recurso($params) {
+        $recurso = $this->resolve_contextual_recurso($params);
+        if (!$recurso) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Multimedia del recurso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html($recurso->post_title) . '</p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?recurso_id=' . absint($recurso->ID))) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_multimedia_galeria entidad="es_recurso" entidad_id="' . absint($recurso->ID) . '"]');
+
+        return $html;
+    }
+
+    private function action_red_social_recurso($params) {
+        if (!is_user_logged_in()) {
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para ver la actividad social del recurso.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $recurso = $this->resolve_contextual_recurso($params);
+        if (!$recurso) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado el recurso contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Actividad social del recurso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html($recurso->post_title) . '</p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?recurso_id=' . absint($recurso->ID))) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_social_feed entidad="es_recurso" entidad_id="' . absint($recurso->ID) . '"]');
+
+        return $html;
     }
 
     /**
@@ -2448,6 +2567,34 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                     'icon'       => 'dashicons-plus-alt',
                     'content'    => 'shortcode:suficiencia_registrar',
                     'requires_login' => true,
+                ],
+                'foro' => [
+                    'label'      => __('Foro', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-chat',
+                    'content'    => 'callback:action_foro_recurso',
+                    'requires_login' => false,
+                    'hidden_nav' => true,
+                ],
+                'chat' => [
+                    'label'      => __('Chat', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-status',
+                    'content'    => 'callback:action_chat_recurso',
+                    'requires_login' => true,
+                    'hidden_nav' => true,
+                ],
+                'multimedia' => [
+                    'label'      => __('Multimedia', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-gallery',
+                    'content'    => 'callback:action_multimedia_recurso',
+                    'requires_login' => false,
+                    'hidden_nav' => true,
+                ],
+                'red-social' => [
+                    'label'      => __('Red social', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-share',
+                    'content'    => 'callback:action_red_social_recurso',
+                    'requires_login' => true,
+                    'hidden_nav' => true,
                 ],
             ],
 

@@ -134,8 +134,8 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
 
-        // Admin menu
-        add_action('admin_menu', [$this, 'add_admin_menu']);
+        // Admin pages
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
 
         // Dashboard tab (básico)
         add_filter('flavor_user_dashboard_tabs', [$this, 'add_dashboard_tab']);
@@ -1960,6 +1960,11 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             'dedicatorias' => 'mis_dedicatorias',
             'podcast' => 'podcasts',
             'stats' => 'oyentes',
+            'foro' => 'foro_programa',
+            'chat' => 'chat_programa',
+            'multimedia' => 'multimedia_programa',
+            'red-social' => 'red_social_programa',
+            'red_social' => 'red_social_programa',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -2067,6 +2072,113 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             'success' => true,
             'oyentes' => $this->get_oyentes_actuales(),
         ];
+    }
+
+    private function resolve_contextual_programa($params = []) {
+        global $wpdb;
+
+        $programa_id = absint(
+            $params['programa_id']
+            ?? $params['id']
+            ?? $_GET['programa_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if (!$programa_id) {
+            return null;
+        }
+
+        $tabla = $wpdb->prefix . 'flavor_radio_programas';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return null;
+        }
+
+        $programa = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, nombre, descripcion FROM {$tabla} WHERE id = %d",
+            $programa_id
+        ), ARRAY_A);
+
+        if (!$programa) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $programa['id'],
+            'titulo' => (string) $programa['nombre'],
+            'descripcion' => (string) ($programa['descripcion'] ?? ''),
+        ];
+    }
+
+    private function action_foro_programa($params) {
+        $programa = $this->resolve_contextual_programa($params);
+        if (!$programa) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-foro">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
+            . '<h2>' . esc_html__('Foro del programa', 'flavor-chat-ia') . '</h2>'
+            . '<p>' . esc_html($programa['titulo']) . '</p>'
+            . '</div>'
+            . do_shortcode('[flavor_foros_integrado entidad="radio_programa" entidad_id="' . absint($programa['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_chat_programa($params) {
+        $programa = $this->resolve_contextual_programa($params);
+        if (!$programa) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este programa.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-chat">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Chat del programa', 'flavor-chat-ia') . '</h2><p>' . esc_html($programa['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?programa_id=' . absint($programa['id']))) . '" class="button button-secondary">'
+            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="radio_programa" entidad_id="' . absint($programa['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_multimedia_programa($params) {
+        $programa = $this->resolve_contextual_programa($params);
+        if (!$programa) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Multimedia del programa', 'flavor-chat-ia') . '</h2><p>' . esc_html($programa['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?programa_id=' . absint($programa['id']))) . '" class="button button-primary">'
+            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="radio_programa" entidad_id="' . absint($programa['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_red_social_programa($params) {
+        $programa = $this->resolve_contextual_programa($params);
+        if (!$programa) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un programa para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este programa.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Actividad social del programa', 'flavor-chat-ia') . '</h2><p>' . esc_html($programa['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?programa_id=' . absint($programa['id']))) . '" class="button button-primary">'
+            . esc_html__('Publicar', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_social_feed entidad="radio_programa" entidad_id="' . absint($programa['id']) . '"]')
+            . '</div>';
     }
 
     // =========================================================================
@@ -2771,6 +2883,30 @@ KNOWLEDGE;
                     'content'    => 'shortcode:radio_mis_programas',
                     'requires_login' => true,
                 ],
+                'foro' => [
+                    'label'      => __('Foro', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-admin-comments',
+                    'content'    => 'action:foro_programa',
+                    'hidden_nav' => true,
+                ],
+                'chat' => [
+                    'label'      => __('Chat', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-chat',
+                    'content'    => 'action:chat_programa',
+                    'hidden_nav' => true,
+                ],
+                'multimedia' => [
+                    'label'      => __('Multimedia', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-gallery',
+                    'content'    => 'action:multimedia_programa',
+                    'hidden_nav' => true,
+                ],
+                'red-social' => [
+                    'label'      => __('Red social', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-share',
+                    'content'    => 'action:red_social_programa',
+                    'hidden_nav' => true,
+                ],
             ],
 
             'archive' => [
@@ -2821,6 +2957,29 @@ KNOWLEDGE;
         }
     }
 
+
+    /**
+     * Registra las páginas de administración del módulo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Páginas ocultas (sin menú visible en el sidebar)
+        add_submenu_page(null, __('Emisiones', 'flavor-chat-ia'), __('Emisiones', 'flavor-chat-ia'), $capability, 'flavor-radio-emisiones', [$this, 'render_pagina_emisiones']);
+        add_submenu_page(null, __('Programas', 'flavor-chat-ia'), __('Programas', 'flavor-chat-ia'), $capability, 'flavor-radio-programas', [$this, 'render_pagina_programas']);
+    }
+
+    public function render_pagina_emisiones() {
+        $views_path = dirname(__FILE__) . '/views/emisiones.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Emisiones', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_programas() {
+        $views_path = dirname(__FILE__) . '/views/programas.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Programas', 'flavor-chat-ia') . '</h1></div>'; }
+    }
 
     /**
      * Inicializa el dashboard tab del módulo

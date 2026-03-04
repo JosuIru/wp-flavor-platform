@@ -959,6 +959,11 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
      */
     public function get_admin_config(): array {
         return [
+            'id' => 'sello_conciencia',
+            'label' => __('Sello de Conciencia', 'flavor-chat-ia'),
+            'icon' => 'dashicons-awards',
+            'capability' => 'manage_options',
+            'categoria' => 'recursos',
             'paginas' => [
                 [
                     'slug' => 'sello-conciencia',

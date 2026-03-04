@@ -329,7 +329,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
             return '<div class="flavor-pp-notice flavor-pp-notice-warning">' .
                    sprintf(
                        __('Debes <a href="%s">iniciar sesión</a> para proponer un proyecto.', 'flavor-chat-ia'),
-                       wp_login_url(get_permalink())
+                       wp_login_url(flavor_current_request_url())
                    ) .
                    '</div>';
         }
@@ -371,7 +371,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
             return '<div class="flavor-pp-notice flavor-pp-notice-warning">' .
                    sprintf(
                        __('Debes <a href="%s">iniciar sesión</a> para votar.', 'flavor-chat-ia'),
-                       wp_login_url(get_permalink())
+                       wp_login_url(flavor_current_request_url())
                    ) .
                    '</div>';
         }
@@ -495,7 +495,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
             return '<div class="flavor-pp-notice flavor-pp-notice-warning">' .
                    sprintf(
                        __('Debes <a href="%s">iniciar sesión</a> para ver tus propuestas.', 'flavor-chat-ia'),
-                       wp_login_url(get_permalink())
+                       wp_login_url(flavor_current_request_url())
                    ) .
                    '</div>';
         }
@@ -1710,7 +1710,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
                 [
                     'slug' => 'pp-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'pp-propuestas',
@@ -2220,6 +2220,11 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
             'resultados' => 'info_edicion_actual',
             'estado_actual' => 'info_edicion_actual',
             'seguimiento' => 'seguimiento_proyecto',
+            'foro' => 'foro_proyecto',
+            'chat' => 'chat_proyecto',
+            'multimedia' => 'multimedia_proyecto',
+            'red-social' => 'red_social_proyecto',
+            'red_social' => 'red_social_proyecto',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -2285,6 +2290,113 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
                 'participacion' => floatval($edicion->participacion_porcentaje) . '%',
             ],
         ];
+    }
+
+    private function resolve_contextual_proyecto($params = []) {
+        global $wpdb;
+
+        $proyecto_id = absint(
+            $params['proyecto_id']
+            ?? $params['id']
+            ?? $_GET['proyecto_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if (!$proyecto_id) {
+            return null;
+        }
+
+        $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_proyectos)) {
+            return null;
+        }
+
+        $proyecto = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, titulo, descripcion FROM {$tabla_proyectos} WHERE id = %d",
+            $proyecto_id
+        ));
+
+        if (!$proyecto) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $proyecto->id,
+            'titulo' => (string) $proyecto->titulo,
+            'descripcion' => (string) ($proyecto->descripcion ?? ''),
+        ];
+    }
+
+    private function action_foro_proyecto($params) {
+        $proyecto = $this->resolve_contextual_proyecto($params);
+        if (!$proyecto) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un proyecto para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-foro">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
+            . '<h2>' . esc_html__('Foro del proyecto', 'flavor-chat-ia') . '</h2>'
+            . '<p>' . esc_html($proyecto['titulo']) . '</p>'
+            . '</div>'
+            . do_shortcode('[flavor_foros_integrado entidad="pp_proyecto" entidad_id="' . absint($proyecto['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_chat_proyecto($params) {
+        $proyecto = $this->resolve_contextual_proyecto($params);
+        if (!$proyecto) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un proyecto para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este proyecto.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-chat">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Chat del proyecto', 'flavor-chat-ia') . '</h2><p>' . esc_html($proyecto['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?proyecto_id=' . absint($proyecto['id']))) . '" class="button button-secondary">'
+            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="pp_proyecto" entidad_id="' . absint($proyecto['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_multimedia_proyecto($params) {
+        $proyecto = $this->resolve_contextual_proyecto($params);
+        if (!$proyecto) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un proyecto para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Archivos del proyecto', 'flavor-chat-ia') . '</h2><p>' . esc_html($proyecto['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?proyecto_id=' . absint($proyecto['id']))) . '" class="button button-primary">'
+            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="pp_proyecto" entidad_id="' . absint($proyecto['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_red_social_proyecto($params) {
+        $proyecto = $this->resolve_contextual_proyecto($params);
+        if (!$proyecto) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un proyecto para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este proyecto.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Actividad social del proyecto', 'flavor-chat-ia') . '</h2><p>' . esc_html($proyecto['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?proyecto_id=' . absint($proyecto['id']))) . '" class="button button-primary">'
+            . esc_html__('Publicar', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_social_feed entidad="pp_proyecto" entidad_id="' . absint($proyecto['id']) . '"]')
+            . '</div>';
     }
 
     /**

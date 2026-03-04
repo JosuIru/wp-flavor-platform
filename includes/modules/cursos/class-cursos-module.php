@@ -188,7 +188,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'cursos-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'cursos-listado',
@@ -707,6 +707,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
             'certificado' => 'solicitar_certificado',
             'instructor' => 'mis_cursos_instructor',
             'stats' => 'estadisticas_curso',
+            'multimedia' => 'multimedia_curso',
+            'biblioteca' => 'biblioteca_curso',
+            'podcast' => 'podcast_curso',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -720,6 +723,91 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
             'success' => false,
             'error' => "Acción no implementada: {$action_name}",
         ];
+    }
+
+    private function resolve_contextual_curso(array $params = []): ?array {
+        global $wpdb;
+
+        $curso_id = absint(
+            $params['curso_id']
+            ?? $_GET['curso_id']
+            ?? $_GET['curso']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if (!$curso_id) {
+            return null;
+        }
+
+        $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
+        $curso = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, titulo, descripcion, estado FROM $tabla_cursos WHERE id = %d",
+            $curso_id
+        ), ARRAY_A);
+
+        if (!$curso || !in_array($curso['estado'] ?? '', ['publicado', 'en_curso', 'borrador'], true)) {
+            return null;
+        }
+
+        return $curso;
+    }
+
+    private function action_multimedia_curso($params) {
+        $curso = $this->resolve_contextual_curso($params);
+        if (!$curso) {
+            return [
+                'success' => false,
+                'error' => __('ID de curso requerido', 'flavor-chat-ia'),
+            ];
+        }
+
+        $cta = home_url('/mi-portal/multimedia/subir/?curso_id=' . absint($curso['id']));
+        $html = '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Archivos del curso', 'flavor-chat-ia') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="curso" entidad_id="' . absint($curso['id']) . '"]')
+            . '</div>';
+
+        return ['success' => true, 'html' => $html];
+    }
+
+    private function action_biblioteca_curso($params) {
+        $curso = $this->resolve_contextual_curso($params);
+        if (!$curso) {
+            return [
+                'success' => false,
+                'error' => __('ID de curso requerido', 'flavor-chat-ia'),
+            ];
+        }
+
+        $cta = home_url('/mi-portal/biblioteca/');
+        $html = '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Biblioteca recomendada', 'flavor-chat-ia') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Abrir biblioteca', 'flavor-chat-ia') . '</a></p></div>'
+            . do_shortcode('[biblioteca_catalogo limite="12"]')
+            . '</div>';
+
+        return ['success' => true, 'html' => $html];
+    }
+
+    private function action_podcast_curso($params) {
+        $curso = $this->resolve_contextual_curso($params);
+        if (!$curso) {
+            return [
+                'success' => false,
+                'error' => __('ID de curso requerido', 'flavor-chat-ia'),
+            ];
+        }
+
+        $cta = home_url('/mi-portal/podcast/');
+        $html = '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Podcast recomendado', 'flavor-chat-ia') . '</h3><p>' . esc_html($curso['titulo']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Abrir podcast', 'flavor-chat-ia') . '</a></p></div>'
+            . do_shortcode('[podcast_series limit="6"]')
+            . '</div>';
+
+        return ['success' => true, 'html' => $html];
     }
 
     /**
@@ -1934,7 +2022,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_mis_cursos($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="cursos-login-required">Debes <a href="' . wp_login_url(get_permalink()) . '">iniciar sesión</a> para ver tus cursos.</p>';
+            return '<p class="cursos-login-required">Debes <a href="' . wp_login_url(flavor_current_request_url()) . '">iniciar sesión</a> para ver tus cursos.</p>';
         }
 
         wp_enqueue_style('cursos-frontend', $this->get_module_url() . 'assets/css/cursos-frontend.css', [], '1.0.0');
@@ -1952,7 +2040,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     public function shortcode_aula($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="cursos-login-required">Debes <a href="' . wp_login_url(get_permalink()) . '">iniciar sesión</a> para acceder al aula.</p>';
+            return '<p class="cursos-login-required">Debes <a href="' . wp_login_url(flavor_current_request_url()) . '">iniciar sesión</a> para acceder al aula.</p>';
         }
 
         $curso_id = isset($_GET['curso_id']) ? intval($_GET['curso_id']) : 0;

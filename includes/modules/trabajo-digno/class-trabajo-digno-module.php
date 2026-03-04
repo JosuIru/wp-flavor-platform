@@ -488,6 +488,11 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
      */
     public function get_admin_config(): array {
         return [
+            'id' => 'trabajo_digno',
+            'label' => __('Trabajo Digno', 'flavor-chat-ia'),
+            'icon' => 'dashicons-businessman',
+            'capability' => 'manage_options',
+            'categoria' => 'economia',
             'paginas' => [
                 [
                     'slug' => 'trabajo-digno',
@@ -1339,6 +1344,11 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             'mis_items' => 'ver_mi_perfil',
             'mi-cv' => 'ver_mi_perfil',
             'mis-postulaciones' => 'ver_mis_postulaciones',
+            'foro' => 'foro_oferta',
+            'chat' => 'chat_oferta',
+            'multimedia' => 'multimedia_oferta',
+            'red-social' => 'red_social_oferta',
+            'red_social' => 'red_social_oferta',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -1372,6 +1382,104 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
 
     private function action_ver_mis_postulaciones($params) {
         return ['success' => true, 'data' => $this->api_get_mis_postulaciones(new \WP_REST_Request('GET'))->get_data()];
+    }
+
+    private function resolve_contextual_oferta(array $params = []): ?\WP_Post {
+        $oferta_id = intval(
+            $params['oferta_id']
+            ?? $params['entity_id']
+            ?? ($_GET['oferta_id'] ?? 0)
+        );
+
+        if ($oferta_id <= 0) {
+            return null;
+        }
+
+        $oferta = get_post($oferta_id);
+        if (!$oferta || $oferta->post_type !== 'td_oferta') {
+            return null;
+        }
+
+        return $oferta;
+    }
+
+    private function action_foro_oferta($params) {
+        $oferta = $this->resolve_contextual_oferta((array) $params);
+        if (!$oferta) {
+            return ['success' => false, 'message' => __('Selecciona una oferta para abrir su foro.', 'flavor-chat-ia')];
+        }
+
+        ob_start();
+        ?>
+        <div class="td-contexto td-contexto-foro">
+            <div class="td-contexto-header">
+                <h3><?php echo esc_html__('Foro de la oferta', 'flavor-chat-ia'); ?></h3>
+                <p><?php echo esc_html($oferta->post_title); ?></p>
+            </div>
+            <?php echo do_shortcode('[flavor_foros_integrado entidad="trabajo_digno_oferta" entidad_id="' . intval($oferta->ID) . '"]'); ?>
+        </div>
+        <?php
+        return ['success' => true, 'html' => ob_get_clean()];
+    }
+
+    private function action_chat_oferta($params) {
+        $oferta = $this->resolve_contextual_oferta((array) $params);
+        if (!$oferta) {
+            return ['success' => false, 'message' => __('Selecciona una oferta para abrir su chat.', 'flavor-chat-ia')];
+        }
+
+        ob_start();
+        ?>
+        <div class="td-contexto td-contexto-chat">
+            <div class="td-contexto-header">
+                <h3><?php echo esc_html__('Chat de la oferta', 'flavor-chat-ia'); ?></h3>
+                <p><?php echo esc_html($oferta->post_title); ?></p>
+            </div>
+            <p><a class="button button-secondary" href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/')); ?>"><?php echo esc_html__('Abrir chat completo', 'flavor-chat-ia'); ?></a></p>
+            <?php echo do_shortcode('[flavor_chat_grupo_integrado entidad="trabajo_digno_oferta" entidad_id="' . intval($oferta->ID) . '"]'); ?>
+        </div>
+        <?php
+        return ['success' => true, 'html' => ob_get_clean()];
+    }
+
+    private function action_multimedia_oferta($params) {
+        $oferta = $this->resolve_contextual_oferta((array) $params);
+        if (!$oferta) {
+            return ['success' => false, 'message' => __('Selecciona una oferta para ver sus recursos multimedia.', 'flavor-chat-ia')];
+        }
+
+        ob_start();
+        ?>
+        <div class="td-contexto td-contexto-multimedia">
+            <div class="td-contexto-header">
+                <h3><?php echo esc_html__('Recursos de la oferta', 'flavor-chat-ia'); ?></h3>
+                <p><?php echo esc_html($oferta->post_title); ?></p>
+            </div>
+            <p><a class="button button-secondary" href="<?php echo esc_url(home_url('/mi-portal/multimedia/subir/?trabajo_digno_oferta_id=' . intval($oferta->ID))); ?>"><?php echo esc_html__('Subir archivo', 'flavor-chat-ia'); ?></a></p>
+            <?php echo do_shortcode('[flavor_multimedia_galeria entidad="trabajo_digno_oferta" entidad_id="' . intval($oferta->ID) . '"]'); ?>
+        </div>
+        <?php
+        return ['success' => true, 'html' => ob_get_clean()];
+    }
+
+    private function action_red_social_oferta($params) {
+        $oferta = $this->resolve_contextual_oferta((array) $params);
+        if (!$oferta) {
+            return ['success' => false, 'message' => __('Selecciona una oferta para ver su actividad social.', 'flavor-chat-ia')];
+        }
+
+        ob_start();
+        ?>
+        <div class="td-contexto td-contexto-red-social">
+            <div class="td-contexto-header">
+                <h3><?php echo esc_html__('Actividad social de la oferta', 'flavor-chat-ia'); ?></h3>
+                <p><?php echo esc_html($oferta->post_title); ?></p>
+            </div>
+            <p><a class="button button-secondary" href="<?php echo esc_url(home_url('/mi-portal/red-social/crear/?trabajo_digno_oferta_id=' . intval($oferta->ID))); ?>"><?php echo esc_html__('Publicar', 'flavor-chat-ia'); ?></a></p>
+            <?php echo do_shortcode('[flavor_social_feed entidad="trabajo_digno_oferta" entidad_id="' . intval($oferta->ID) . '"]'); ?>
+        </div>
+        <?php
+        return ['success' => true, 'html' => ob_get_clean()];
     }
 
     /**
@@ -1457,6 +1565,30 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
                     'content'    => 'shortcode:trabajo_digno_mi_perfil',
                     'requires_login' => true,
                 ],
+                'foro' => [
+                    'label'      => __('Foro', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-chat',
+                    'content'    => 'callback:render_tab_foro',
+                    'hidden_nav' => true,
+                ],
+                'chat' => [
+                    'label'      => __('Chat', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-status',
+                    'content'    => 'callback:render_tab_chat',
+                    'hidden_nav' => true,
+                ],
+                'multimedia' => [
+                    'label'      => __('Multimedia', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-gallery',
+                    'content'    => 'callback:render_tab_multimedia',
+                    'hidden_nav' => true,
+                ],
+                'red-social' => [
+                    'label'      => __('Red social', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-share',
+                    'content'    => 'callback:render_tab_red_social',
+                    'hidden_nav' => true,
+                ],
             ],
 
             'archive' => [
@@ -1507,6 +1639,26 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
         </div>
         <?php
         return ob_get_clean();
+    }
+
+    public function render_tab_foro(): string {
+        $result = $this->action_foro_oferta(['oferta_id' => $_GET['oferta_id'] ?? 0]);
+        return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
+    }
+
+    public function render_tab_chat(): string {
+        $result = $this->action_chat_oferta(['oferta_id' => $_GET['oferta_id'] ?? 0]);
+        return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
+    }
+
+    public function render_tab_multimedia(): string {
+        $result = $this->action_multimedia_oferta(['oferta_id' => $_GET['oferta_id'] ?? 0]);
+        return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
+    }
+
+    public function render_tab_red_social(): string {
+        $result = $this->action_red_social_oferta(['oferta_id' => $_GET['oferta_id'] ?? 0]);
+        return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
 
 

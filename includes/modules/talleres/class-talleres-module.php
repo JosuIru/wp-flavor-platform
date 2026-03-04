@@ -580,6 +580,11 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
             'mis_items' => 'mis_talleres_inscritos',
             'mis-talleres' => 'mis_talleres_inscritos',
             'calendario' => 'calendario_talleres',
+            'foro' => 'foro_taller',
+            'chat' => 'chat_taller',
+            'multimedia' => 'multimedia_taller',
+            'red-social' => 'red_social_taller',
+            'red_social' => 'red_social_taller',
             'inscribirse' => 'inscribirse',
             'cancelar' => 'cancelar_inscripcion',
             'valorar' => 'valorar_taller',
@@ -597,6 +602,111 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
             'success' => false,
             'error' => "Acción no implementada: {$action_name}",
         ];
+    }
+
+    /**
+     * Resuelve el taller contextual para tabs satélite.
+     */
+    private function resolve_contextual_taller(array $params = []): ?array {
+        global $wpdb;
+
+        $taller_id = absint(
+            $params['taller_id']
+            ?? $_GET['taller_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if (!$taller_id) {
+            return null;
+        }
+
+        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
+            return null;
+        }
+
+        $taller = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, titulo, descripcion FROM {$tabla_talleres} WHERE id = %d",
+            $taller_id
+        ));
+
+        if (!$taller) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $taller->id,
+            'titulo' => (string) $taller->titulo,
+            'descripcion' => (string) ($taller->descripcion ?? ''),
+        ];
+    }
+
+    private function action_foro_taller($params) {
+        $taller = $this->resolve_contextual_taller((array) $params);
+        if (!$taller) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $header = '<div class="flavor-contextual-tab flavor-contextual-foro">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
+            . '<h2>' . esc_html__('Foro del taller', 'flavor-chat-ia') . '</h2>'
+            . '<p>' . esc_html($taller['titulo']) . '</p>'
+            . '</div>';
+
+        return $header . do_shortcode('[flavor_foros_integrado entidad="taller" entidad_id="' . absint($taller['id']) . '"]') . '</div>';
+    }
+
+    private function action_chat_taller($params) {
+        $taller = $this->resolve_contextual_taller((array) $params);
+        if (!$taller) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $header = '<div class="flavor-contextual-tab flavor-contextual-chat">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Chat del taller', 'flavor-chat-ia') . '</h2><p>' . esc_html($taller['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?taller_id=' . absint($taller['id']))) . '" class="button button-secondary">'
+            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . '</a></div>';
+
+        return $header . do_shortcode('[flavor_chat_grupo_integrado entidad="taller" entidad_id="' . absint($taller['id']) . '"]') . '</div>';
+    }
+
+    private function action_multimedia_taller($params) {
+        $taller = $this->resolve_contextual_taller((array) $params);
+        if (!$taller) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver sus recursos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $header = '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Recursos del taller', 'flavor-chat-ia') . '</h2><p>' . esc_html($taller['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?taller_id=' . absint($taller['id']))) . '" class="button button-primary">'
+            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . '</a></div>';
+
+        return $header . do_shortcode('[flavor_multimedia_galeria entidad="taller" entidad_id="' . absint($taller['id']) . '"]') . '</div>';
+    }
+
+    private function action_red_social_taller($params) {
+        $taller = $this->resolve_contextual_taller((array) $params);
+        if (!$taller) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un taller para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este taller.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $header = '<div class="flavor-contextual-tab flavor-contextual-red-social">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Actividad social del taller', 'flavor-chat-ia') . '</h2><p>' . esc_html($taller['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?taller_id=' . absint($taller['id']))) . '" class="button button-primary">'
+            . esc_html__('Publicar', 'flavor-chat-ia')
+            . '</a></div>';
+
+        return $header . do_shortcode('[flavor_social_feed entidad="taller" entidad_id="' . absint($taller['id']) . '"]') . '</div>';
     }
 
     /**
@@ -1993,7 +2103,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
     public function shortcode_mis_inscripciones($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="talleres-login-required">Debes <a href="' . wp_login_url(get_permalink()) . '">iniciar sesión</a> para ver tus inscripciones.</p>';
+            return '<p class="talleres-login-required">Debes <a href="' . wp_login_url(flavor_current_request_url()) . '">iniciar sesión</a> para ver tus inscripciones.</p>';
         }
 
         $this->enqueue_frontend_assets();
@@ -2007,7 +2117,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
     public function shortcode_proponer_taller($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="talleres-login-required">Debes <a href="' . wp_login_url(get_permalink()) . '">iniciar sesión</a> para proponer un taller.</p>';
+            return '<p class="talleres-login-required">Debes <a href="' . wp_login_url(flavor_current_request_url()) . '">iniciar sesión</a> para proponer un taller.</p>';
         }
 
         $this->enqueue_frontend_assets();
@@ -2665,7 +2775,7 @@ KNOWLEDGE;
                 [
                     'slug' => 'talleres-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'talleres-activos',
@@ -3300,25 +3410,16 @@ KNOWLEDGE;
         // Páginas ocultas del sidebar (primer parámetro null)
         add_submenu_page(
             null,
-            __('Talleres - Dashboard', 'flavor-chat-ia'),
-            __('Dashboard', 'flavor-chat-ia'),
+            __('Talleres - Configuración', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
             $capability,
-            'talleres',
-            [$this, 'render_pagina_dashboard']
+            'talleres-configuracion',
+            [$this, 'render_pagina_configuracion']
         );
 
         add_submenu_page(
             null,
-            __('Talleres', 'flavor-chat-ia'),
-            __('Talleres', 'flavor-chat-ia'),
-            $capability,
-            'talleres-listado',
-            [$this, 'render_pagina_talleres']
-        );
-
-        add_submenu_page(
-            null,
-            __('Inscripciones', 'flavor-chat-ia'),
+            __('Talleres - Inscripciones', 'flavor-chat-ia'),
             __('Inscripciones', 'flavor-chat-ia'),
             $capability,
             'talleres-inscripciones',
@@ -3327,7 +3428,16 @@ KNOWLEDGE;
 
         add_submenu_page(
             null,
-            __('Materiales', 'flavor-chat-ia'),
+            __('Talleres - Listado', 'flavor-chat-ia'),
+            __('Listado', 'flavor-chat-ia'),
+            $capability,
+            'talleres-listado',
+            [$this, 'render_pagina_talleres']
+        );
+
+        add_submenu_page(
+            null,
+            __('Talleres - Materiales', 'flavor-chat-ia'),
             __('Materiales', 'flavor-chat-ia'),
             $capability,
             'talleres-materiales',
@@ -3344,6 +3454,19 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Dashboard Talleres', 'flavor-chat-ia') . '</h1></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de configuración
+     */
+    public function render_pagina_configuracion() {
+        $views_path = dirname(__FILE__) . '/views/configuracion.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Talleres', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Configuración del módulo de talleres prácticos.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 

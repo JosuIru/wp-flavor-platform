@@ -111,6 +111,12 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
         $this->module_description = __('Preserva y transmite el conocimiento tradicional de la comunidad', 'flavor-chat-ia');
         $this->module_icon = 'dashicons-book';
         $this->module_color = '#8B4513';
+        $this->module_role = 'transversal';
+        $this->ecosystem_teaches_modules = ['comunidades', 'talleres', 'cursos'];
+        $this->ecosystem_supports_modules = ['talleres', 'cursos', 'comunidades'];
+        $this->dashboard_transversal_priority = 40;
+        $this->dashboard_client_contexts = ['aprendizaje', 'comunidad', 'cultura', 'saberes'];
+        $this->dashboard_admin_contexts = ['aprendizaje', 'cultura', 'admin'];
 
         parent::__construct();
     }
@@ -1268,6 +1274,11 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
             'documentar' => 'compartir_saber',
             'mis_items' => 'mis_aprendizajes',
             'aprender' => 'mis_aprendizajes',
+            'foro' => 'foro_saber',
+            'chat' => 'chat_saber',
+            'multimedia' => 'multimedia_saber',
+            'red-social' => 'red_social_saber',
+            'red_social' => 'red_social_saber',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -1301,6 +1312,102 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
 
     private function action_mis_aprendizajes($params) {
         return ['success' => true, 'html' => do_shortcode('[saberes_mis_aprendizajes]')];
+    }
+
+    private function resolve_contextual_saber($params = []) {
+        $saber_id = absint(
+            $params['saber_id']
+            ?? $params['id']
+            ?? $_GET['saber_id']
+            ?? $_GET['id']
+            ?? 0
+        );
+
+        if (!$saber_id) {
+            return null;
+        }
+
+        $saber = get_post($saber_id);
+        if (!$saber || $saber->post_type !== 'sa_saber') {
+            return null;
+        }
+
+        return [
+            'id' => (int) $saber->ID,
+            'titulo' => (string) $saber->post_title,
+            'descripcion' => (string) $saber->post_content,
+        ];
+    }
+
+    private function action_foro_saber($params) {
+        $saber = $this->resolve_contextual_saber($params);
+        if (!$saber) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-foro">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;">'
+            . '<h2>' . esc_html__('Foro del saber', 'flavor-chat-ia') . '</h2>'
+            . '<p>' . esc_html($saber['titulo']) . '</p>'
+            . '</div>'
+            . do_shortcode('[flavor_foros_integrado entidad="saber_ancestral" entidad_id="' . absint($saber['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_chat_saber($params) {
+        $saber = $this->resolve_contextual_saber($params);
+        if (!$saber) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en el chat de este saber.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-chat">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Chat del saber', 'flavor-chat-ia') . '</h2><p>' . esc_html($saber['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?saber_id=' . absint($saber['id']))) . '" class="button button-secondary">'
+            . esc_html__('Abrir chat completo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="saber_ancestral" entidad_id="' . absint($saber['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_multimedia_saber($params) {
+        $saber = $this->resolve_contextual_saber($params);
+        if (!$saber) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver sus archivos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Archivos del saber', 'flavor-chat-ia') . '</h2><p>' . esc_html($saber['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?saber_id=' . absint($saber['id']))) . '" class="button button-primary">'
+            . esc_html__('Subir archivo', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="saber_ancestral" entidad_id="' . absint($saber['id']) . '"]')
+            . '</div>';
+    }
+
+    private function action_red_social_saber($params) {
+        $saber = $this->resolve_contextual_saber($params);
+        if (!$saber) {
+            return '<p class="flavor-notice">' . esc_html__('Selecciona un saber para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-notice">' . esc_html__('Inicia sesión para participar en la actividad social de este saber.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
+            . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
+            . '<div><h2>' . esc_html__('Actividad social del saber', 'flavor-chat-ia') . '</h2><p>' . esc_html($saber['titulo']) . '</p></div>'
+            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?saber_id=' . absint($saber['id']))) . '" class="button button-primary">'
+            . esc_html__('Publicar', 'flavor-chat-ia')
+            . '</a></div>'
+            . do_shortcode('[flavor_social_feed entidad="saber_ancestral" entidad_id="' . absint($saber['id']) . '"]')
+            . '</div>';
     }
 
     /**

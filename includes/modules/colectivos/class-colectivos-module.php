@@ -32,6 +32,11 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         $this->id = 'colectivos';
         $this->name = 'Colectivos y Asociaciones'; // Translation loaded on init
         $this->description = 'Gestión de colectivos, asociaciones y cooperativas con proyectos, asambleas y miembros'; // Translation loaded on init
+        $this->module_role = 'base';
+        $this->dashboard_parent_module = 'colectivos';
+        $this->dashboard_satellite_priority = 20;
+        $this->dashboard_client_contexts = ['colectivos', 'asociacion', 'gobernanza', 'comunidad'];
+        $this->dashboard_admin_contexts = ['colectivos', 'gobernanza', 'admin'];
 
         parent::__construct();
     }
@@ -124,6 +129,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         $this->register_ajax_handlers();
+        $this->cargar_frontend_controller();
 
         // Registrar páginas de administración
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
@@ -134,6 +140,20 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
 
         // Cargar Dashboard Tab para el panel del cliente
         $this->cargar_dashboard_tab();
+    }
+
+    /**
+     * Carga el controlador frontend para asegurar los shortcodes modernos.
+     */
+    private function cargar_frontend_controller() {
+        $ruta_frontend = dirname(__FILE__) . '/frontend/class-colectivos-frontend-controller.php';
+        if (file_exists($ruta_frontend)) {
+            require_once $ruta_frontend;
+
+            if (class_exists('Flavor_Colectivos_Frontend_Controller')) {
+                Flavor_Colectivos_Frontend_Controller::get_instance();
+            }
+        }
     }
 
     /**
@@ -258,7 +278,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
             return '<p class="flavor-col-login-required">' .
                 sprintf(
                     esc_html__('Debes %siniciar sesión%s para ver tus colectivos.', 'flavor-chat-ia'),
-                    '<a href="' . esc_url(wp_login_url(get_permalink())) . '">',
+                    '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '">',
                     '</a>'
                 ) . '</p>';
         }
@@ -415,7 +435,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
                         <ul class="flavor-col-lista-compacta">
                             <?php foreach ($mis_colectivos as $colectivo) : ?>
                                 <li>
-                                    <a href="<?php echo esc_url(home_url('/colectivos/detalle/?colectivo=' . $colectivo->id)); ?>">
+                                    <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/?colectivo=' . $colectivo->id)); ?>">
                                         <?php echo esc_html($colectivo->nombre); ?>
                                     </a>
                                     <span class="flavor-col-rol-badge"><?php echo esc_html($roles_etiquetas[$colectivo->rol] ?? $colectivo->rol); ?></span>
@@ -1168,7 +1188,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug'     => 'flavor-colectivos-dashboard',
                     'titulo'   => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug'     => 'flavor-colectivos-listado',
@@ -2835,6 +2855,26 @@ KNOWLEDGE;
             'colectivos-asambleas',
             [$this, 'render_pagina_asambleas']
         );
+
+        // Página: Miembros (oculta)
+        add_submenu_page(
+            null,
+            __('Miembros de Colectivos', 'flavor-chat-ia'),
+            __('Miembros', 'flavor-chat-ia'),
+            $capability,
+            'colectivos-miembros',
+            [$this, 'render_pagina_miembros']
+        );
+
+        // Página: Nuevo (oculta)
+        add_submenu_page(
+            null,
+            __('Nuevo Colectivo', 'flavor-chat-ia'),
+            __('Nuevo', 'flavor-chat-ia'),
+            $capability,
+            'colectivos-nuevo',
+            [$this, 'render_pagina_nuevo']
+        );
     }
 
     /**
@@ -2887,6 +2927,118 @@ KNOWLEDGE;
             include $views_path;
         }
         echo '</div>';
+    }
+
+    /**
+     * Renderiza página de miembros
+     */
+    public function render_pagina_miembros() {
+        $views_path = dirname(__FILE__) . '/views/miembros.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Miembros de Colectivos', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza página de nuevo colectivo
+     */
+    public function render_pagina_nuevo() {
+        $views_path = dirname(__FILE__) . '/views/nuevo.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Nuevo Colectivo', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    private function resolve_contextual_colectivo(): ?array {
+        global $wpdb;
+
+        $colectivo_id = absint($_GET['colectivo_id'] ?? $_GET['colectivo'] ?? $_GET['id'] ?? 0);
+        if (!$colectivo_id) {
+            return null;
+        }
+
+        $tabla = $wpdb->prefix . 'flavor_colectivos';
+        $colectivo = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, nombre, estado FROM $tabla WHERE id = %d",
+            $colectivo_id
+        ), ARRAY_A);
+
+        if (!$colectivo || ($colectivo['estado'] ?? '') === 'eliminado') {
+            return null;
+        }
+
+        return $colectivo;
+    }
+
+    public function render_tab_foro($usuario_id): string {
+        $colectivo = $this->resolve_contextual_colectivo();
+        if (!$colectivo) {
+            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver su foro.', 'flavor-chat-ia') . '</p>';
+        }
+
+        return '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Foro del colectivo', 'flavor-chat-ia') . '</h3><p>' . esc_html($colectivo['nombre']) . '</p></div>'
+            . do_shortcode('[flavor_foros_integrado entidad="colectivo" entidad_id="' . absint($colectivo['id']) . '"]')
+            . '</div>';
+    }
+
+    public function render_tab_chat($usuario_id): string {
+        if (!$usuario_id) {
+            return '<p class="flavor-col-error">' . esc_html__('Inicia sesión para acceder al chat del colectivo.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $colectivo = $this->resolve_contextual_colectivo();
+        if (!$colectivo) {
+            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver su chat.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $cta = home_url('/mi-portal/chat-grupos/mensajes/?colectivo_id=' . absint($colectivo['id']));
+
+        return '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Chat del colectivo', 'flavor-chat-ia') . '</h3><p>' . esc_html($colectivo['nombre']) . '</p>'
+            . '<p><a class="button button-primary" href="' . esc_url($cta) . '">' . esc_html__('Abrir chat completo', 'flavor-chat-ia') . '</a></p></div>'
+            . do_shortcode('[flavor_chat_grupo_integrado entidad="colectivo" entidad_id="' . absint($colectivo['id']) . '"]')
+            . '</div>';
+    }
+
+    public function render_tab_multimedia($usuario_id): string {
+        $colectivo = $this->resolve_contextual_colectivo();
+        if (!$colectivo) {
+            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver sus documentos.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $cta = home_url('/mi-portal/multimedia/subir/?colectivo_id=' . absint($colectivo['id']));
+
+        return '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Documentos y multimedia', 'flavor-chat-ia') . '</h3><p>' . esc_html($colectivo['nombre']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p></div>'
+            . do_shortcode('[flavor_multimedia_galeria entidad="colectivo" entidad_id="' . absint($colectivo['id']) . '"]')
+            . '</div>';
+    }
+
+    public function render_tab_red_social($usuario_id): string {
+        if (!$usuario_id) {
+            return '<p class="flavor-col-error">' . esc_html__('Inicia sesión para ver la actividad social del colectivo.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $colectivo = $this->resolve_contextual_colectivo();
+        if (!$colectivo) {
+            return '<p class="flavor-col-error">' . esc_html__('Selecciona un colectivo para ver su actividad social.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $cta = home_url('/mi-portal/red-social/crear/?colectivo_id=' . absint($colectivo['id']));
+
+        return '<div class="flavor-contextual-block">'
+            . '<div class="flavor-contextual-header"><h3>' . esc_html__('Actividad social del colectivo', 'flavor-chat-ia') . '</h3><p>' . esc_html($colectivo['nombre']) . '</p>'
+            . '<p><a class="button" href="' . esc_url($cta) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p></div>'
+            . do_shortcode('[flavor_social_feed entidad="colectivo" entidad_id="' . absint($colectivo['id']) . '"]')
+            . '</div>';
     }
 
     /**
@@ -2974,11 +3126,28 @@ KNOWLEDGE;
                     'icon'    => 'dashicons-megaphone',
                     'content' => 'template:asambleas.php',
                 ],
+                'foro' => [
+                    'label'          => __('Foro', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-format-chat',
+                    'content'        => 'callback:render_tab_foro',
+                    'requires_login' => true,
+                ],
+                'chat' => [
+                    'label'          => __('Chat', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-format-status',
+                    'content'        => 'callback:render_tab_chat',
+                    'requires_login' => true,
+                ],
                 'documentos' => [
-                    'label'          => __('Documentos', 'flavor-chat-ia'),
-                    'icon'           => 'dashicons-media-document',
-                    'is_integration' => true,
-                    'source_module'  => 'multimedia',
+                    'label'   => __('Documentos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-media-document',
+                    'content' => 'callback:render_tab_multimedia',
+                ],
+                'red-social' => [
+                    'label'          => __('Red social', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-share',
+                    'content'        => 'callback:render_tab_red_social',
+                    'requires_login' => true,
                 ],
             ],
 

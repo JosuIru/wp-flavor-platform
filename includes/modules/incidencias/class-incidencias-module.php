@@ -387,7 +387,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'incidencias-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'incidencias-abiertas',
@@ -489,12 +489,24 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      * Renderiza el dashboard de admin de incidencias
      */
     public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
+
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Incidencias', 'flavor-chat-ia'), [
-            ['label' => __('Ver Abiertas', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-abiertas'), 'class' => 'button-primary'],
-            ['label' => __('Ver Mapa', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-mapa'), 'class' => ''],
-        ]);
-        $this->handle_admin_actions();
+        $acciones = $is_dashboard_viewer
+            ? [
+                ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/incidencias/'), 'class' => ''],
+            ]
+            : [
+                ['label' => __('Ver Abiertas', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-abiertas'), 'class' => 'button-primary'],
+                ['label' => __('Ver Mapa', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=incidencias-mapa'), 'class' => ''],
+            ];
+        $this->render_page_header(__('Dashboard de Incidencias', 'flavor-chat-ia'), $acciones);
+
+        if (!$is_dashboard_viewer) {
+            $this->handle_admin_actions();
+        } else {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. Las acciones de validación y cambio de estado siguen restringidas a administración.', 'flavor-chat-ia') . '</p></div>';
+        }
 
         if (!$this->can_activate()) {
             echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
@@ -2795,6 +2807,11 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             'ver' => 'ver_incidencia',
             'mis_items' => 'listar_incidencias',
             'stats' => 'estadisticas_incidencias',
+            'foro' => 'foro_incidencia',
+            'chat' => 'chat_incidencia',
+            'multimedia' => 'multimedia_incidencia',
+            'red-social' => 'red_social_incidencia',
+            'red_social' => 'red_social_incidencia',
         ];
 
         $nombre_accion = $aliases[$nombre_accion] ?? $nombre_accion;
@@ -2808,6 +2825,113 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             'success' => false,
             'error' => sprintf(__('Acción no implementada: %s', 'flavor-chat-ia'), $nombre_accion),
         ];
+    }
+
+    /**
+     * Resuelve una incidencia contextual para tabs satélite.
+     *
+     * @param array $parametros
+     * @return object|null
+     */
+    private function resolve_contextual_incidencia(array $parametros = []) {
+        global $wpdb;
+        $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+            return null;
+        }
+
+        $incidencia_id = absint(
+            $parametros['incidencia_id']
+            ?? $parametros['entity_id']
+            ?? $parametros['item_id']
+            ?? ($_GET['incidencia_id'] ?? $_GET['entity_id'] ?? $_GET['item_id'] ?? 0)
+        );
+
+        if ($incidencia_id <= 0) {
+            return null;
+        }
+
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_incidencias} WHERE id = %d",
+            $incidencia_id
+        ));
+    }
+
+    private function action_foro_incidencia($parametros) {
+        $incidencia = $this->resolve_contextual_incidencia($parametros);
+        if (!$incidencia) {
+            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-panel flavor-contextual-panel--incidencias-foro">
+            <div class="flavor-contextual-panel__header">
+                <h3><?php esc_html_e('Foro de la incidencia', 'flavor-chat-ia'); ?></h3>
+                <p><?php echo esc_html($incidencia->titulo); ?></p>
+            </div>
+            <?php echo do_shortcode('[flavor_foros_integrado entidad="incidencia" entidad_id="' . absint($incidencia->id) . '"]'); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    private function action_chat_incidencia($parametros) {
+        $incidencia = $this->resolve_contextual_incidencia($parametros);
+        if (!$incidencia) {
+            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-panel flavor-contextual-panel--incidencias-chat">
+            <div class="flavor-contextual-panel__header">
+                <h3><?php esc_html_e('Chat de seguimiento', 'flavor-chat-ia'); ?></h3>
+                <p><?php echo esc_html($incidencia->titulo); ?></p>
+            </div>
+            <?php echo do_shortcode('[flavor_chat_grupo_integrado entidad="incidencia" entidad_id="' . absint($incidencia->id) . '"]'); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    private function action_multimedia_incidencia($parametros) {
+        $incidencia = $this->resolve_contextual_incidencia($parametros);
+        if (!$incidencia) {
+            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-panel flavor-contextual-panel--incidencias-multimedia">
+            <div class="flavor-contextual-panel__header">
+                <h3><?php esc_html_e('Archivos de la incidencia', 'flavor-chat-ia'); ?></h3>
+                <p><?php echo esc_html($incidencia->titulo); ?></p>
+            </div>
+            <?php echo do_shortcode('[flavor_multimedia_galeria entidad="incidencia" entidad_id="' . absint($incidencia->id) . '"]'); ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    private function action_red_social_incidencia($parametros) {
+        $incidencia = $this->resolve_contextual_incidencia($parametros);
+        if (!$incidencia) {
+            return '<div class="flavor-empty-state"><p>' . esc_html__('Incidencia no encontrada.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-contextual-panel flavor-contextual-panel--incidencias-social">
+            <div class="flavor-contextual-panel__header">
+                <h3><?php esc_html_e('Actividad social de la incidencia', 'flavor-chat-ia'); ?></h3>
+                <p><?php echo esc_html($incidencia->titulo); ?></p>
+            </div>
+            <?php echo do_shortcode('[flavor_social_feed entidad="incidencia" entidad_id="' . absint($incidencia->id) . '"]'); ?>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 
     /**
@@ -3352,6 +3476,52 @@ KNOWLEDGE;
             'incidencias-estadisticas',
             [$this, 'render_pagina_estadisticas']
         );
+
+        // Subpáginas adicionales ocultas
+        add_submenu_page(
+            null,
+            __('Incidencias Abiertas', 'flavor-chat-ia'),
+            __('Abiertas', 'flavor-chat-ia'),
+            $capability,
+            'incidencias-abiertas',
+            [$this, 'render_pagina_abiertas']
+        );
+
+        add_submenu_page(
+            null,
+            __('Todas las Incidencias', 'flavor-chat-ia'),
+            __('Todas', 'flavor-chat-ia'),
+            $capability,
+            'incidencias-todas',
+            [$this, 'render_pagina_todas']
+        );
+
+        add_submenu_page(
+            null,
+            __('Mapa de Incidencias', 'flavor-chat-ia'),
+            __('Mapa', 'flavor-chat-ia'),
+            $capability,
+            'incidencias-mapa',
+            [$this, 'render_pagina_mapa']
+        );
+
+        add_submenu_page(
+            null,
+            __('Configuración de Incidencias', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability,
+            'incidencias-config',
+            [$this, 'render_pagina_config']
+        );
+
+        add_submenu_page(
+            null,
+            __('Detalle de Ticket', 'flavor-chat-ia'),
+            __('Detalle Ticket', 'flavor-chat-ia'),
+            $capability,
+            'flavor-incidencias-tickets',
+            [$this, 'render_pagina_detalle_ticket']
+        );
     }
 
     /**
@@ -3402,6 +3572,82 @@ KNOWLEDGE;
         }
     }
 
+    /**
+     * Renderizar página de incidencias abiertas
+     */
+    public function render_pagina_abiertas() {
+        $views_path = dirname(__FILE__) . '/views/abiertas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            // Fallback: usar vista de tickets con filtro de abiertas
+            $_GET['estado'] = 'pendiente';
+            $this->render_pagina_tickets();
+        }
+    }
+
+    /**
+     * Renderizar página de todas las incidencias
+     */
+    public function render_pagina_todas() {
+        $views_path = dirname(__FILE__) . '/views/todas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            // Fallback: usar vista de tickets sin filtro
+            $this->render_pagina_tickets();
+        }
+    }
+
+    /**
+     * Renderizar página de mapa de incidencias
+     */
+    public function render_pagina_mapa() {
+        $views_path = dirname(__FILE__) . '/views/mapa.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Mapa de Incidencias', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista de mapa no disponible. Configure el token de Mapbox en la configuración del módulo.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+        }
+    }
+
+    /**
+     * Renderizar página de configuración de incidencias
+     */
+    public function render_pagina_config() {
+        $views_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Configuración de Incidencias', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Página de configuración en desarrollo.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
+        }
+    }
+
+    /**
+     * Renderizar página de detalle de ticket
+     */
+    public function render_pagina_detalle_ticket() {
+        $views_path = dirname(__FILE__) . '/views/detalle-ticket.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $ticket_id = isset($_GET['ticket_id']) ? intval($_GET['ticket_id']) : 0;
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Detalle de Ticket', 'flavor-chat-ia') . '</h1>';
+            if ($ticket_id > 0) {
+                echo '<p>' . sprintf(esc_html__('Mostrando ticket #%d', 'flavor-chat-ia'), $ticket_id) . '</p>';
+            } else {
+                echo '<p>' . esc_html__('No se especificó un ticket válido.', 'flavor-chat-ia') . '</p>';
+            }
+            echo '</div>';
+        }
+    }
 
     /**
      * Inicializa el dashboard tab del módulo

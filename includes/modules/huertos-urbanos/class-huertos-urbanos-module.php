@@ -208,7 +208,7 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'huertos-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'huertos-parcelas',
@@ -2693,6 +2693,11 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             'mis_items' => 'mi_parcela',
             'mi-parcela' => 'mi_parcela',
             'guia' => 'guia_cultivos',
+            'foro' => 'foro_huerto',
+            'chat' => 'chat_huerto',
+            'multimedia' => 'multimedia_huerto',
+            'red-social' => 'red_social_huerto',
+            'red_social' => 'red_social_huerto',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -2706,6 +2711,20 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             'success' => false,
             'error' => sprintf(__('Acción no implementada: %s', 'flavor-chat-ia'), $action_name),
         ];
+    }
+
+    private function resolve_contextual_huerto(array $params = []): ?array {
+        $huerto_id = intval(
+            $params['huerto_id']
+            ?? $params['entity_id']
+            ?? ($_GET['huerto_id'] ?? 0)
+        );
+
+        if ($huerto_id <= 0) {
+            return null;
+        }
+
+        return $this->obtener_huerto_detalle($huerto_id);
     }
 
     /**
@@ -2784,6 +2803,76 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
             'siembra' => $recomendados_siembra,
             'cosecha' => $recomendados_cosecha,
             'calendario_completo' => $calendario,
+        ];
+    }
+
+    private function action_foro_huerto($params) {
+        $huerto = $this->resolve_contextual_huerto((array) $params);
+        if (!$huerto) {
+            return ['success' => false, 'message' => __('Selecciona un huerto para abrir su foro.', 'flavor-chat-ia')];
+        }
+
+        return [
+            'success' => true,
+            'html' => '<div class="huertos-contexto huertos-contexto-foro"><div class="huertos-contexto-header"><h3>' .
+                esc_html__('Foro del huerto', 'flavor-chat-ia') .
+                '</h3><p>' . esc_html($huerto['nombre']) . '</p></div>' .
+                do_shortcode('[flavor_foros_integrado entidad="huerto" entidad_id="' . intval($huerto['id']) . '"]') .
+                '</div>',
+        ];
+    }
+
+    private function action_chat_huerto($params) {
+        $huerto = $this->resolve_contextual_huerto((array) $params);
+        if (!$huerto) {
+            return ['success' => false, 'message' => __('Selecciona un huerto para abrir su chat.', 'flavor-chat-ia')];
+        }
+
+        return [
+            'success' => true,
+            'html' => '<div class="huertos-contexto huertos-contexto-chat"><div class="huertos-contexto-header"><h3>' .
+                esc_html__('Chat del huerto', 'flavor-chat-ia') .
+                '</h3><p>' . esc_html($huerto['nombre']) . '</p></div><p><a class="button button-secondary" href="' .
+                esc_url(home_url('/mi-portal/chat-grupos/')) .
+                '">' . esc_html__('Abrir chat completo', 'flavor-chat-ia') . '</a></p>' .
+                do_shortcode('[flavor_chat_grupo_integrado entidad="huerto" entidad_id="' . intval($huerto['id']) . '"]') .
+                '</div>',
+        ];
+    }
+
+    private function action_multimedia_huerto($params) {
+        $huerto = $this->resolve_contextual_huerto((array) $params);
+        if (!$huerto) {
+            return ['success' => false, 'message' => __('Selecciona un huerto para ver su galería.', 'flavor-chat-ia')];
+        }
+
+        return [
+            'success' => true,
+            'html' => '<div class="huertos-contexto huertos-contexto-multimedia"><div class="huertos-contexto-header"><h3>' .
+                esc_html__('Galería del huerto', 'flavor-chat-ia') .
+                '</h3><p>' . esc_html($huerto['nombre']) . '</p></div><p><a class="button button-secondary" href="' .
+                esc_url(home_url('/mi-portal/multimedia/subir/?huerto_id=' . intval($huerto['id']))) .
+                '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p>' .
+                do_shortcode('[flavor_multimedia_galeria entidad="huerto" entidad_id="' . intval($huerto['id']) . '"]') .
+                '</div>',
+        ];
+    }
+
+    private function action_red_social_huerto($params) {
+        $huerto = $this->resolve_contextual_huerto((array) $params);
+        if (!$huerto) {
+            return ['success' => false, 'message' => __('Selecciona un huerto para ver su actividad.', 'flavor-chat-ia')];
+        }
+
+        return [
+            'success' => true,
+            'html' => '<div class="huertos-contexto huertos-contexto-red-social"><div class="huertos-contexto-header"><h3>' .
+                esc_html__('Actividad del huerto', 'flavor-chat-ia') .
+                '</h3><p>' . esc_html($huerto['nombre']) . '</p></div><p><a class="button button-secondary" href="' .
+                esc_url(home_url('/mi-portal/red-social/crear/?huerto_id=' . intval($huerto['id']))) .
+                '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p>' .
+                do_shortcode('[flavor_social_feed entidad="huerto" entidad_id="' . intval($huerto['id']) . '"]') .
+                '</div>',
         ];
     }
 
@@ -3112,6 +3201,16 @@ KNOWLEDGE;
         add_submenu_page(null, __('Huertanos', 'flavor-chat-ia'), __('Huertanos', 'flavor-chat-ia'), $capability, 'hu-huertanos', [$this, 'render_pagina_huertanos']);
         add_submenu_page(null, __('Cosechas', 'flavor-chat-ia'), __('Cosechas', 'flavor-chat-ia'), $capability, 'hu-cosechas', [$this, 'render_pagina_cosechas']);
         add_submenu_page(null, __('Recursos', 'flavor-chat-ia'), __('Recursos', 'flavor-chat-ia'), $capability, 'hu-recursos', [$this, 'render_pagina_recursos']);
+
+        // Alias con prefijo huertos- para compatibilidad con dashboard
+        add_submenu_page(null, __('Listado Huertos', 'flavor-chat-ia'), __('Listado', 'flavor-chat-ia'), $capability, 'huertos-listado', [$this, 'render_pagina_dashboard']);
+        add_submenu_page(null, __('Parcelas', 'flavor-chat-ia'), __('Parcelas', 'flavor-chat-ia'), $capability, 'huertos-parcelas', [$this, 'render_pagina_parcelas']);
+        add_submenu_page(null, __('Huertanos', 'flavor-chat-ia'), __('Huertanos', 'flavor-chat-ia'), $capability, 'huertos-huertanos', [$this, 'render_pagina_huertanos']);
+        add_submenu_page(null, __('Cosechas', 'flavor-chat-ia'), __('Cosechas', 'flavor-chat-ia'), $capability, 'huertos-cosechas', [$this, 'render_pagina_cosechas']);
+        add_submenu_page(null, __('Actividades', 'flavor-chat-ia'), __('Actividades', 'flavor-chat-ia'), $capability, 'huertos-actividades', [$this, 'render_pagina_actividades']);
+        add_submenu_page(null, __('Configuración Huertos', 'flavor-chat-ia'), __('Configuración', 'flavor-chat-ia'), $capability, 'huertos-config', [$this, 'render_pagina_config']);
+        add_submenu_page(null, __('Nuevo Huerto', 'flavor-chat-ia'), __('Nuevo', 'flavor-chat-ia'), $capability, 'huertos-nuevo', [$this, 'render_pagina_nuevo']);
+        add_submenu_page(null, __('Editar Huerto', 'flavor-chat-ia'), __('Editar', 'flavor-chat-ia'), $capability, 'huertos-editar', [$this, 'render_pagina_editar']);
     }
 
     public function render_pagina_dashboard() {
@@ -3142,6 +3241,46 @@ KNOWLEDGE;
         $views_path = dirname(__FILE__) . '/views/recursos.php';
         if (file_exists($views_path)) { include $views_path; }
         else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Recursos', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_actividades() {
+        $views_path = dirname(__FILE__) . '/views/actividades.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else {
+            echo '<div class="wrap"><h1>' . esc_html__('Actividades del Huerto', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Registro de actividades y tareas del huerto comunitario.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p></div>';
+        }
+    }
+
+    public function render_pagina_config() {
+        $views_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Huertos', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Ajustes del módulo de huertos urbanos.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p></div>';
+        }
+    }
+
+    public function render_pagina_nuevo() {
+        $views_path = dirname(__FILE__) . '/views/nuevo.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else {
+            echo '<div class="wrap"><h1>' . esc_html__('Nuevo Huerto', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Crear un nuevo huerto comunitario.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p></div>';
+        }
+    }
+
+    public function render_pagina_editar() {
+        $views_path = dirname(__FILE__) . '/views/editar.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else {
+            echo '<div class="wrap"><h1>' . esc_html__('Editar Huerto', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Editar datos del huerto seleccionado.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=huertos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p></div>';
+        }
     }
 
     /**
@@ -3193,6 +3332,10 @@ KNOWLEDGE;
                 'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'content' => 'template:calendario.php'],
                 'banco-semillas' => ['label' => __('Banco Semillas', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'is_integration' => true, 'content' => '[huertos_banco_semillas]'],
                 'recetas' => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
+                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat', 'content' => 'callback:render_tab_foro', 'hidden_nav' => true],
+                'chat' => ['label' => __('Chat', 'flavor-chat-ia'), 'icon' => 'dashicons-format-status', 'content' => 'callback:render_tab_chat', 'hidden_nav' => true],
+                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'content' => 'callback:render_tab_multimedia', 'hidden_nav' => true],
+                'red-social' => ['label' => __('Red social', 'flavor-chat-ia'), 'icon' => 'dashicons-share', 'content' => 'callback:render_tab_red_social', 'hidden_nav' => true],
             ],
 
             'dashboard' => [
@@ -3205,5 +3348,25 @@ KNOWLEDGE;
                 ],
             ],
         ];
+    }
+
+    public function render_tab_foro(): string {
+        $result = $this->action_foro_huerto(['huerto_id' => $_GET['huerto_id'] ?? 0]);
+        return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
+    }
+
+    public function render_tab_chat(): string {
+        $result = $this->action_chat_huerto(['huerto_id' => $_GET['huerto_id'] ?? 0]);
+        return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
+    }
+
+    public function render_tab_multimedia(): string {
+        $result = $this->action_multimedia_huerto(['huerto_id' => $_GET['huerto_id'] ?? 0]);
+        return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
+    }
+
+    public function render_tab_red_social(): string {
+        $result = $this->action_red_social_huerto(['huerto_id' => $_GET['huerto_id'] ?? 0]);
+        return $result['html'] ?? '<p>' . esc_html($result['message'] ?? '') . '</p>';
     }
 }

@@ -434,6 +434,182 @@ class Flavor_Chat_Red_Social_Module extends Flavor_Chat_Module_Base {
                 },
             ],
 
+            'incidencias' => [
+                'id'       => 'feed-incidencia',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="incidencia" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('incidencia', $contexto['entity_id']);
+                },
+            ],
+
+            'documentacion_legal' => [
+                'id'       => 'feed-documento-legal',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="documento_legal" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('documento_legal', $contexto['entity_id']);
+                },
+            ],
+
+            'presupuestos_participativos' => [
+                'id'       => 'feed-pp-proyecto',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="pp_proyecto" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('pp_proyecto', $contexto['entity_id']);
+                },
+            ],
+
+            'saberes_ancestrales' => [
+                'id'       => 'feed-saber-ancestral',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="saber_ancestral" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('saber_ancestral', $contexto['entity_id']);
+                },
+            ],
+
+            'transparencia' => [
+                'id'       => 'feed-documento-transparencia',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="documento_transparencia" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('documento_transparencia', $contexto['entity_id']);
+                },
+            ],
+
+            'avisos_municipales' => [
+                'id'       => 'feed-aviso-municipal',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="aviso_municipal" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('aviso_municipal', $contexto['entity_id']);
+                },
+            ],
+
+            'economia_don' => [
+                'id'       => 'feed-economia-don',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="economia_don" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('economia_don', $contexto['entity_id']);
+                },
+            ],
+
+            'advertising' => [
+                'id'       => 'feed-advertising-ad',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="advertising_ad" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('advertising_ad', $contexto['entity_id']);
+                },
+            ],
+
+            'radio' => [
+                'id'       => 'feed-radio-programa',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="radio_programa" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('radio_programa', $contexto['entity_id']);
+                },
+            ],
+
+            'energia_comunitaria' => [
+                'id'       => 'feed-energia-comunidad',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="energia_comunidad" entidad_id="{entity_id}"]',
+                'priority' => 85,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('energia_comunidad', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de publicaciones para Talleres
+            'talleres' => [
+                'id'       => 'posts-taller',
+                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="taller" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('taller', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de publicaciones para Trabajo Digno
+            'trabajo_digno' => [
+                'id'       => 'posts-oferta-trabajo',
+                'label'    => __('Publicaciones', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="trabajo_digno_oferta" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('trabajo_digno_oferta', $contexto['entity_id']);
+                },
+            ],
+
+            // Tab de publicaciones para Huertos Urbanos
+            'huertos_urbanos' => [
+                'id'       => 'posts-huerto',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="huerto" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('huerto', $contexto['entity_id']);
+                },
+            ],
+            'participacion' => [
+                'id'       => 'posts-propuesta',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="participacion_propuesta" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('participacion_propuesta', $contexto['entity_id']);
+                },
+            ],
+            'economia_suficiencia' => [
+                'id'       => 'posts-recurso-suficiencia',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="es_recurso" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('es_recurso', $contexto['entity_id']);
+                },
+            ],
+            'justicia_restaurativa' => [
+                'id'       => 'posts-proceso-restaurativo',
+                'label'    => __('Actividad', 'flavor-chat-ia'),
+                'icon'     => 'dashicons-share',
+                'content'  => '[flavor_social_feed entidad="jr_proceso" entidad_id="{entity_id}"]',
+                'priority' => 90,
+                'badge'    => function($contexto) {
+                    return $this->contar_publicaciones_entidad('jr_proceso', $contexto['entity_id']);
+                },
+            ],
+
             // Tab de publicaciones para Colectivos
             'colectivos' => [
                 'id'       => 'posts-colectivo',
@@ -3388,7 +3564,7 @@ KNOWLEDGE;
                 [
                     'slug' => 'flavor-red-social-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-red-social-publicaciones',
@@ -5305,38 +5481,38 @@ KNOWLEDGE;
         // Páginas ocultas (sin menú visible en el sidebar)
         add_submenu_page(
             null,
-            __('Red Social', 'flavor-chat-ia'),
-            __('Red Social', 'flavor-chat-ia'),
+            __('Red Social - Estadísticas', 'flavor-chat-ia'),
+            __('Estadísticas', 'flavor-chat-ia'),
             $capability,
-            'red-social',
-            [$this, 'render_pagina_dashboard']
+            'flavor-red-social-estadisticas',
+            [$this, 'render_pagina_estadisticas']
         );
 
         add_submenu_page(
             null,
-            __('Publicaciones', 'flavor-chat-ia'),
+            __('Red Social - Moderación', 'flavor-chat-ia'),
+            __('Moderación', 'flavor-chat-ia'),
+            $capability,
+            'flavor-red-social-moderacion',
+            [$this, 'render_pagina_moderacion']
+        );
+
+        add_submenu_page(
+            null,
+            __('Red Social - Publicaciones', 'flavor-chat-ia'),
             __('Publicaciones', 'flavor-chat-ia'),
             $capability,
-            'red-social-publicaciones',
+            'flavor-red-social-publicaciones',
             [$this, 'render_pagina_publicaciones']
         );
 
         add_submenu_page(
             null,
-            __('Usuarios', 'flavor-chat-ia'),
+            __('Red Social - Usuarios', 'flavor-chat-ia'),
             __('Usuarios', 'flavor-chat-ia'),
             $capability,
-            'red-social-usuarios',
+            'flavor-red-social-usuarios',
             [$this, 'render_pagina_usuarios']
-        );
-
-        add_submenu_page(
-            null,
-            __('Moderación', 'flavor-chat-ia'),
-            __('Moderación', 'flavor-chat-ia'),
-            $capability,
-            'red-social-moderacion',
-            [$this, 'render_pagina_moderacion']
         );
     }
 
@@ -5350,6 +5526,19 @@ KNOWLEDGE;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Dashboard Red Social', 'flavor-chat-ia') . '</h1>';
             echo '<p>' . esc_html__('Panel de administración del módulo de red social.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderizar página de estadísticas
+     */
+    public function render_pagina_estadisticas() {
+        $views_path = dirname(__FILE__) . '/views/estadisticas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Estadísticas Red Social', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Estadísticas y métricas de la red social comunitaria.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 

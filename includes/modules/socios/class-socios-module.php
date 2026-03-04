@@ -25,6 +25,13 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $this->id = 'socios';
         $this->name = 'Gestion de Socios'; // Translation loaded on init
         $this->description = 'Gestion de socios, cuotas y membresias desde la app movil.'; // Translation loaded on init
+        $this->module_role = 'base';
+        $this->ecosystem_base_for_modules = ['participacion', 'transparencia', 'reservas'];
+        $this->ecosystem_supports_modules = ['participacion', 'transparencia', 'reservas'];
+        $this->dashboard_parent_module = 'socios';
+        $this->dashboard_satellite_priority = 15;
+        $this->dashboard_client_contexts = ['socios', 'membresia', 'cuenta', 'comunidad'];
+        $this->dashboard_admin_contexts = ['socios', 'membresia', 'admin'];
 
         // Configurar visibilidad por defecto: solo miembros pueden ver este módulo
         $this->default_visibility = 'members_only';
@@ -134,8 +141,21 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             Flavor_Socios_Payment_Manager::get_instance();
         }
 
+        $this->cargar_frontend_controller();
+
         // Admin pages
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+    }
+
+    /**
+     * Carga el controlador frontend del módulo.
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-socios-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Socios_Frontend_Controller::get_instance();
+        }
     }
 
     // =========================================================
@@ -207,7 +227,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             return '<p class="flavor-soc-login-required">' .
                 sprintf(
                     esc_html__('Debes %siniciar sesión%s para ver tu perfil de socio.', 'flavor-chat-ia'),
-                    '<a href="' . esc_url(wp_login_url(get_permalink())) . '">',
+                    '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '">',
                     '</a>'
                 ) . '</p>';
         }
@@ -274,7 +294,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             return '<p class="flavor-soc-login-required">' .
                 sprintf(
                     esc_html__('Debes %siniciar sesión%s para ver tus cuotas.', 'flavor-chat-ia'),
-                    '<a href="' . esc_url(wp_login_url(get_permalink())) . '">',
+                    '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '">',
                     '</a>'
                 ) . '</p>';
         }
@@ -487,7 +507,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'socios-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'socios-listado',
@@ -1389,6 +1409,13 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
                     'content'        => '[socios_pagar_cuota]',
                     'requires_login' => true,
                 ],
+                'carnet' => [
+                    'label'          => __('Mi carnet', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-id',
+                    'content'        => '[socios_mi_carnet]',
+                    'requires_login' => true,
+                    'hidden_nav'     => true,
+                ],
             ],
         ];
     }
@@ -2024,6 +2051,24 @@ KNOWLEDGE;
 [flavor_module_form module="socios" action="pagar_cuota"]',
                 'parent' => 'socios',
             ],
+            [
+                'title' => __('Mis Cuotas', 'flavor-chat-ia'),
+                'slug' => 'mis-cuotas',
+                'content' => '<h1>' . __('Mis Cuotas', 'flavor-chat-ia') . '</h1>
+<p>' . __('Consulta el estado de tus pagos y tu historial de cuotas.', 'flavor-chat-ia') . '</p>
+
+[socios_mis_cuotas]',
+                'parent' => 'socios',
+            ],
+            [
+                'title' => __('Mi Carnet', 'flavor-chat-ia'),
+                'slug' => 'carnet',
+                'content' => '<h1>' . __('Mi Carnet Digital', 'flavor-chat-ia') . '</h1>
+<p>' . __('Accede a tu carnet de socio desde el portal.', 'flavor-chat-ia') . '</p>
+
+[socios_mi_carnet]',
+                'parent' => 'socios',
+            ],
         ];
     }
 
@@ -2071,6 +2116,26 @@ KNOWLEDGE;
             $capability,
             'socios-pagos',
             [$this, 'render_pagina_pagos']
+        );
+
+        // Página: Altas y Bajas (oculta)
+        add_submenu_page(
+            null,
+            __('Altas y Bajas', 'flavor-chat-ia'),
+            __('Altas y Bajas', 'flavor-chat-ia'),
+            $capability,
+            'socios-altas-bajas',
+            [$this, 'render_pagina_altas_bajas']
+        );
+
+        // Página: Configuración (oculta)
+        add_submenu_page(
+            null,
+            __('Configuración Socios', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability,
+            'socios-config',
+            [$this, 'render_pagina_config']
         );
     }
 
@@ -2123,6 +2188,37 @@ KNOWLEDGE;
         }
     }
 
+    /**
+     * Renderizar página de altas y bajas
+     */
+    public function render_pagina_altas_bajas() {
+        $views_path = dirname(__FILE__) . '/views/altas-bajas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Altas y Bajas de Socios', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Gestión de movimientos de altas y bajas del período actual.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
+            echo '</div>';
+        }
+    }
+
+    /**
+     * Renderizar página de configuración
+     */
+    public function render_pagina_config() {
+        $views_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Configuración de Socios', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Ajustes del módulo de gestión de socios.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
+            echo '</div>';
+        }
+    }
 
     /**
      * Inicializa el dashboard tab del módulo

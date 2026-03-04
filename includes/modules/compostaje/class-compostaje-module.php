@@ -143,6 +143,9 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_nopriv_compostaje_consultar_estado', [$this, 'ajax_consultar_estado']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
+        // Registrar páginas de administración
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
         // Cargar Dashboard Tab para el panel del usuario
         $this->cargar_dashboard_tab();
 
@@ -1679,7 +1682,7 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="flavor-aviso flavor-aviso-info">' .
                    __('Debes iniciar sesion para registrar aportaciones.', 'flavor-chat-ia') .
-                   ' <a href="' . wp_login_url(get_permalink()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
+                   ' <a href="' . wp_login_url(flavor_current_request_url()) . '">' . __('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
         }
 
         $atributos = shortcode_atts([
@@ -2591,7 +2594,7 @@ KNOWLEDGE;
                 [
                     'slug' => 'flavor-compostaje-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'flavor-compostaje-composteras',
@@ -2614,8 +2617,19 @@ KNOWLEDGE;
         $this->render_page_header(__('Dashboard de Compostaje', 'flavor-chat-ia'));
 
         $estadisticas_generales = $this->obtener_estadisticas_generales();
+        include dirname(__FILE__) . '/views/dashboard.php';
+    }
 
-        include dirname(__FILE__) . '/views/admin-dashboard.php';
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**
@@ -2886,6 +2900,84 @@ KNOWLEDGE;
             if (class_exists('Flavor_Compostaje_Dashboard_Tab')) {
                 Flavor_Compostaje_Dashboard_Tab::get_instance();
             }
+        }
+    }
+
+    // =========================================================
+    // Páginas de Administración
+    // =========================================================
+
+    /**
+     * Registra las páginas de administración del módulo
+     */
+    public function registrar_paginas_admin() {
+        // Subpágina: Composteras
+        add_submenu_page(
+            null,
+            __('Composteras', 'flavor-chat-ia'),
+            __('Composteras', 'flavor-chat-ia'),
+            'manage_options',
+            'flavor-compostaje-composteras',
+            [$this, 'render_pagina_composteras']
+        );
+
+        // Subpágina: Mantenimiento
+        add_submenu_page(
+            null,
+            __('Mantenimiento de Compostaje', 'flavor-chat-ia'),
+            __('Mantenimiento', 'flavor-chat-ia'),
+            'manage_options',
+            'flavor-compostaje-mantenimiento',
+            [$this, 'render_pagina_mantenimiento']
+        );
+
+        // Subpágina: Participantes
+        add_submenu_page(
+            null,
+            __('Participantes de Compostaje', 'flavor-chat-ia'),
+            __('Participantes', 'flavor-chat-ia'),
+            'manage_options',
+            'flavor-compostaje-participantes',
+            [$this, 'render_pagina_participantes']
+        );
+    }
+
+    /**
+     * Renderiza la página de composteras
+     */
+    public function render_pagina_composteras() {
+        $ruta_vista = dirname(__FILE__) . '/views/composteras.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Composteras', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de mantenimiento
+     */
+    public function render_pagina_mantenimiento() {
+        $ruta_vista = dirname(__FILE__) . '/views/mantenimiento.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Mantenimiento de Compostaje', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de participantes
+     */
+    public function render_pagina_participantes() {
+        $ruta_vista = dirname(__FILE__) . '/views/participantes.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Participantes de Compostaje', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 }

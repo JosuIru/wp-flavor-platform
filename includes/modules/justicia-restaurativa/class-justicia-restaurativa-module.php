@@ -310,6 +310,11 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
      */
     public function get_admin_config(): array {
         return [
+            'id' => 'justicia_restaurativa',
+            'label' => __('Justicia Restaurativa', 'flavor-chat-ia'),
+            'icon' => 'dashicons-shield',
+            'capability' => 'manage_options',
+            'categoria' => 'comunidad',
             'paginas' => [
                 [
                     'slug' => 'justicia-restaurativa',
@@ -1133,6 +1138,11 @@ KNOWLEDGE;
             'mis_items' => 'ver_mis_procesos',
             'mis-procesos' => 'ver_mis_procesos',
             'mediadores' => 'listar_mediadores',
+            'foro' => 'foro_proceso',
+            'chat' => 'chat_proceso',
+            'multimedia' => 'multimedia_proceso',
+            'red-social' => 'red_social_proceso',
+            'red_social' => 'red_social_proceso',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -1162,6 +1172,115 @@ KNOWLEDGE;
 
     private function action_listar_mediadores($params) {
         return ['success' => true, 'html' => do_shortcode('[mediadores]')];
+    }
+
+    /**
+     * Resolver proceso contextual para tabs satélite.
+     *
+     * @param array $params
+     * @return WP_Post|null
+     */
+    private function resolve_contextual_proceso($params = []) {
+        $proceso_id = absint(
+            $params['proceso_id']
+            ?? $params['id']
+            ?? $_GET['proceso_id']
+            ?? $_GET['proceso']
+            ?? 0
+        );
+
+        if (!$proceso_id) {
+            return null;
+        }
+
+        $proceso = get_post($proceso_id);
+        if (!$proceso || $proceso->post_type !== 'jr_proceso') {
+            return null;
+        }
+
+        return $proceso;
+    }
+
+    private function action_foro_proceso($params) {
+        $proceso = $this->resolve_contextual_proceso($params);
+        if (!$proceso) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado el proceso contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Foro del proceso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html(get_the_title($proceso)) . '</p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_foros_integrado entidad="jr_proceso" entidad_id="' . absint($proceso->ID) . '"]');
+
+        return $html;
+    }
+
+    private function action_chat_proceso($params) {
+        if (!is_user_logged_in()) {
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para acceder al chat del proceso.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $proceso = $this->resolve_contextual_proceso($params);
+        if (!$proceso) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado el proceso contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Chat del proceso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html(get_the_title($proceso)) . '</p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_chat_grupo_integrado entidad="jr_proceso" entidad_id="' . absint($proceso->ID) . '"]');
+
+        return $html;
+    }
+
+    private function action_multimedia_proceso($params) {
+        $proceso = $this->resolve_contextual_proceso($params);
+        if (!$proceso) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado el proceso contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Multimedia del proceso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html(get_the_title($proceso)) . '</p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?proceso_id=' . absint($proceso->ID))) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_multimedia_galeria entidad="jr_proceso" entidad_id="' . absint($proceso->ID) . '"]');
+
+        return $html;
+    }
+
+    private function action_red_social_proceso($params) {
+        if (!is_user_logged_in()) {
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para ver la actividad social del proceso.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $proceso = $this->resolve_contextual_proceso($params);
+        if (!$proceso) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado el proceso contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Actividad social del proceso', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html(get_the_title($proceso)) . '</p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?proceso_id=' . absint($proceso->ID))) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_social_feed entidad="jr_proceso" entidad_id="' . absint($proceso->ID) . '"]');
+
+        return $html;
     }
 
     /**
@@ -1247,6 +1366,34 @@ KNOWLEDGE;
                     'icon'       => 'dashicons-admin-users',
                     'content'    => 'shortcode:mis_procesos',
                     'requires_login' => true,
+                ],
+                'foro' => [
+                    'label'      => __('Foro', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-chat',
+                    'content'    => 'callback:action_foro_proceso',
+                    'requires_login' => false,
+                    'hidden_nav' => true,
+                ],
+                'chat' => [
+                    'label'      => __('Chat', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-status',
+                    'content'    => 'callback:action_chat_proceso',
+                    'requires_login' => true,
+                    'hidden_nav' => true,
+                ],
+                'multimedia' => [
+                    'label'      => __('Multimedia', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-gallery',
+                    'content'    => 'callback:action_multimedia_proceso',
+                    'requires_login' => false,
+                    'hidden_nav' => true,
+                ],
+                'red-social' => [
+                    'label'      => __('Red social', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-share',
+                    'content'    => 'callback:action_red_social_proceso',
+                    'requires_login' => true,
+                    'hidden_nav' => true,
                 ],
             ],
 

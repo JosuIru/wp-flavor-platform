@@ -25,6 +25,10 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
         $this->id = 'ayuda_vecinal';
         $this->name = 'Ayuda Vecinal'; // Translation loaded on init
         $this->description = 'Red de ayuda mutua entre vecinos - ofrece y solicita ayuda en tu comunidad.'; // Translation loaded on init
+        $this->dashboard_parent_module = 'comunidades';
+        $this->dashboard_satellite_priority = 25;
+        $this->dashboard_client_contexts = ['cuidados', 'comunidad', 'solidaridad'];
+        $this->dashboard_admin_contexts = ['cuidados', 'solidaridad', 'admin'];
 
         parent::__construct();
 
@@ -176,6 +180,15 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
                 'context' => 'side',
             ],
         ];
+    }
+
+    public function get_ecosystem_metadata() {
+        $metadata = parent::get_ecosystem_metadata();
+        $metadata['module_role'] = 'vertical';
+        $metadata['depends_on'] = array_values(array_unique(array_merge($metadata['depends_on'], ['comunidades'])));
+        $metadata['supports_modules'] = ['eventos', 'banco_tiempo'];
+
+        return $metadata;
     }
 
     /**
@@ -701,7 +714,7 @@ KNOWLEDGE;
                 [
                     'slug' => 'ayuda-vecinal-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'ayuda-vecinal-solicitudes',
@@ -751,6 +764,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
         $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         $estadisticas = [];
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
@@ -766,7 +780,7 @@ KNOWLEDGE;
             'valor' => $solicitudes_abiertas,
             'label' => __('Solicitudes abiertas', 'flavor-chat-ia'),
             'color' => $solicitudes_abiertas > 0 ? 'orange' : 'gray',
-            'enlace' => admin_url('admin.php?page=ayuda-vecinal-solicitudes'),
+            'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/ayuda-vecinal/') : admin_url('admin.php?page=ayuda-vecinal-solicitudes'),
         ];
 
         // Total de voluntarios activos
@@ -779,7 +793,7 @@ KNOWLEDGE;
                 'valor' => $total_voluntarios,
                 'label' => __('Voluntarios activos', 'flavor-chat-ia'),
                 'color' => $total_voluntarios > 0 ? 'green' : 'gray',
-                'enlace' => admin_url('admin.php?page=ayuda-vecinal-voluntarios'),
+                'enlace' => $is_dashboard_viewer ? home_url('/mi-portal/ayuda-vecinal/') : admin_url('admin.php?page=ayuda-vecinal-voluntarios'),
             ];
         }
 
@@ -790,15 +804,25 @@ KNOWLEDGE;
      * Renderiza el dashboard de ayuda vecinal
      */
     public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
         $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
         $tabla_valoraciones = $wpdb->prefix . 'flavor_ayuda_valoraciones';
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Ayuda Vecinal', 'flavor-chat-ia'), [
-            ['label' => __('Nueva Solicitud', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
-        ]);
+        $acciones = $is_dashboard_viewer
+            ? [
+                ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/ayuda-vecinal/'), 'class' => ''],
+            ]
+            : [
+                ['label' => __('Nueva Solicitud', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
+            ];
+        $this->render_page_header(__('Dashboard de Ayuda Vecinal', 'flavor-chat-ia'), $acciones);
+
+        if ($is_dashboard_viewer) {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. La gestión completa de solicitudes y voluntarios sigue reservada a administración.', 'flavor-chat-ia') . '</p></div>';
+        }
 
         // Estadísticas generales
         $solicitudes_abiertas = Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)
@@ -834,9 +858,21 @@ KNOWLEDGE;
     public function render_admin_solicitudes() {
         global $wpdb;
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Gestión de Solicitudes', 'flavor-chat-ia'));
+        $this->render_page_header(
+            __('Gestión de Solicitudes', 'flavor-chat-ia'),
+            $is_dashboard_viewer
+                ? [
+                    ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/ayuda-vecinal/'), 'class' => ''],
+                ]
+                : []
+        );
+
+        if ($is_dashboard_viewer) {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. El detalle puede revisarse, pero la gestión operativa de solicitudes sigue reservada a administración.', 'flavor-chat-ia') . '</p></div>';
+        }
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)) {
             echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
@@ -942,9 +978,21 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
         $tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
 
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Voluntarios de la Red', 'flavor-chat-ia'));
+        $this->render_page_header(
+            __('Voluntarios de la Red', 'flavor-chat-ia'),
+            $is_dashboard_viewer
+                ? [
+                    ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/ayuda-vecinal/'), 'class' => ''],
+                ]
+                : []
+        );
+
+        if ($is_dashboard_viewer) {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista de consulta para gestor de grupos. Los perfiles de usuario y la gestión avanzada de voluntarios siguen reservados a administración.', 'flavor-chat-ia') . '</p></div>';
+        }
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_ofertas)) {
             echo '<p>' . __('Las tablas no están creadas.', 'flavor-chat-ia') . '</p>';
@@ -995,7 +1043,11 @@ KNOWLEDGE;
                 echo '<td>' . esc_html($ayudas_realizadas) . '</td>';
                 echo '<td><span class="puntos-solidaridad">' . esc_html($puntos_solidaridad) . ' pts</span></td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($voluntario['ultima_oferta']))) . '</td>';
-                echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $voluntario['usuario_id'])) . '" class="button button-small">' . __('Ver Perfil', 'flavor-chat-ia') . '</a></td>';
+                if ($is_dashboard_viewer) {
+                    echo '<td><span class="description">' . __('Solo lectura', 'flavor-chat-ia') . '</span></td>';
+                } else {
+                    echo '<td><a href="' . esc_url(admin_url('user-edit.php?user_id=' . $voluntario['usuario_id'])) . '" class="button button-small">' . __('Ver Perfil', 'flavor-chat-ia') . '</a></td>';
+                }
                 echo '</tr>';
             }
 
@@ -2258,6 +2310,7 @@ KNOWLEDGE;
         // Páginas ocultas (null como parent = no aparecen en menú)
         add_submenu_page(null, __('Ayuda Vecinal - Dashboard', 'flavor-chat-ia'), __('Dashboard', 'flavor-chat-ia'), $capability, 'ayuda-vecinal', [$this, 'render_pagina_dashboard']);
         add_submenu_page(null, __('Ayuda Vecinal - Solicitudes', 'flavor-chat-ia'), __('Solicitudes', 'flavor-chat-ia'), $capability, 'ayuda-solicitudes', [$this, 'render_pagina_solicitudes']);
+        add_submenu_page(null, __('Ayuda Vecinal - Solicitudes Vecinales', 'flavor-chat-ia'), __('Solicitudes Vecinales', 'flavor-chat-ia'), $capability, 'ayuda-vecinal-solicitudes', [$this, 'render_pagina_vecinal_solicitudes']);
         add_submenu_page(null, __('Ayuda Vecinal - Voluntarios', 'flavor-chat-ia'), __('Voluntarios', 'flavor-chat-ia'), $capability, 'ayuda-voluntarios', [$this, 'render_pagina_voluntarios']);
         add_submenu_page(null, __('Ayuda Vecinal - Matches', 'flavor-chat-ia'), __('Matches', 'flavor-chat-ia'), $capability, 'ayuda-matches', [$this, 'render_pagina_matches']);
         add_submenu_page(null, __('Ayuda Vecinal - Estadísticas', 'flavor-chat-ia'), __('Estadísticas', 'flavor-chat-ia'), $capability, 'ayuda-estadisticas', [$this, 'render_pagina_estadisticas']);
@@ -2273,6 +2326,12 @@ KNOWLEDGE;
         $views_path = dirname(__FILE__) . '/views/solicitudes.php';
         if (file_exists($views_path)) { include $views_path; }
         else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Solicitudes', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_vecinal_solicitudes() {
+        $views_path = dirname(__FILE__) . '/views/vecinal-solicitudes.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Solicitudes Vecinales', 'flavor-chat-ia') . '</h1></div>'; }
     }
 
     public function render_pagina_voluntarios() {
@@ -3912,7 +3971,7 @@ KNOWLEDGE;
             <div class="login-icono">🔐</div>
             <p><?php echo esc_html($mensaje); ?></p>
             <div class="login-acciones">
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="btn-principal">
+                <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="btn-principal">
                     <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
                 </a>
                 <?php if (get_option('users_can_register')): ?>

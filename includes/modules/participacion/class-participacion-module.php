@@ -62,6 +62,11 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         $this->id = 'participacion';
         $this->name = 'Participacion Ciudadana'; // Translation loaded on init
         $this->description = 'Votaciones, encuestas, propuestas, presupuestos participativos y consultas ciudadanas.'; // Translation loaded on init
+        $this->module_role = 'transversal';
+        $this->ecosystem_governs_modules = ['energia_comunitaria', 'comunidades', 'presupuestos_participativos'];
+        $this->dashboard_transversal_priority = 10;
+        $this->dashboard_client_contexts = ['participacion', 'gobernanza', 'comunidad'];
+        $this->dashboard_admin_contexts = ['gobernanza', 'participacion', 'admin'];
 
         parent::__construct();
 
@@ -150,6 +155,117 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         ];
     }
 
+    public function get_ecosystem_metadata() {
+        $metadata = parent::get_ecosystem_metadata();
+        $metadata['module_role'] = 'transversal';
+        $metadata['governs_modules'] = ['energia_comunitaria', 'comunidades', 'presupuestos_participativos'];
+
+        return $metadata;
+    }
+
+    /**
+     * Configuración del renderer para navegación moderna del portal.
+     *
+     * @return array
+     */
+    public static function get_renderer_config(): array {
+        return [
+            'module'   => 'participacion',
+            'title'    => __('Participación', 'flavor-chat-ia'),
+            'subtitle' => __('Propuestas, votaciones, debates y peticiones ciudadanas', 'flavor-chat-ia'),
+            'icon'     => '🗳️',
+            'color'    => 'blue',
+            'database' => [
+                'table'         => 'flavor_propuestas',
+                'status_field'  => 'estado',
+                'order_by'      => 'fecha_creacion DESC',
+                'filter_fields' => ['categoria', 'estado'],
+            ],
+            'fields' => [
+                'titulo'      => 'titulo',
+                'descripcion' => 'descripcion',
+                'estado'      => 'estado',
+                'fecha'       => 'fecha_creacion',
+                'tipo'        => 'categoria',
+            ],
+            'tabs' => [
+                'propuestas' => [
+                    'label'   => __('Iniciativas', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-lightbulb',
+                    'content' => '[propuestas_activas]',
+                    'public'  => true,
+                ],
+                'crear' => [
+                    'label'          => __('Nueva propuesta', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-plus-alt2',
+                    'content'        => '[crear_propuesta]',
+                    'requires_login' => true,
+                    'hidden_nav'     => true,
+                ],
+                'votaciones' => [
+                    'label'   => __('Decisiones', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-thumbs-up',
+                    'content' => '[participacion_encuestas]',
+                    'public'  => true,
+                ],
+                'resultados' => [
+                    'label'   => __('Acuerdos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-chart-bar',
+                    'content' => '[resultados_participacion]',
+                    'public'  => true,
+                ],
+                'debates' => [
+                    'label'   => __('Conversaciones', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-admin-comments',
+                    'content' => '[participacion_debates]',
+                    'public'  => true,
+                ],
+                'detalle' => [
+                    'label'      => __('Detalle', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-visibility',
+                    'content'    => '[detalle_propuesta]',
+                    'public'     => true,
+                    'hidden_nav' => true,
+                ],
+                'encuesta' => [
+                    'label'      => __('Encuesta', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-chart-bar',
+                    'content'    => '[participacion_encuesta]',
+                    'public'     => true,
+                    'hidden_nav' => true,
+                ],
+                'peticiones' => [
+                    'label'      => __('Peticiones', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-megaphone',
+                    'content'    => '[participacion_peticiones]',
+                    'public'     => true,
+                    'hidden_nav' => true,
+                ],
+                'peticion' => [
+                    'label'      => __('Petición', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-megaphone',
+                    'content'    => '[participacion_peticion]',
+                    'public'     => true,
+                    'hidden_nav' => true,
+                ],
+                'crear-peticion' => [
+                    'label'          => __('Crear petición', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-plus-alt',
+                    'content'        => '[participacion_crear_peticion]',
+                    'requires_login' => true,
+                    'hidden_nav'     => true,
+                ],
+                'debate' => [
+                    'label'      => __('Debate', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-format-chat',
+                    'content'    => '[participacion_debate]',
+                    'public'     => true,
+                    'hidden_nav' => true,
+                ],
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -185,6 +301,18 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
+        $this->cargar_frontend_controller();
+    }
+
+    /**
+     * Carga el controlador frontend del módulo.
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-participacion-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Participacion_Frontend_Controller::get_instance();
+        }
     }
 
     /**
@@ -575,7 +703,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             <div class="propuesta-header">
                 <span class="propuesta-categoria"><?php echo esc_html($categoria_nombre); ?></span>
                 <h3 class="propuesta-titulo">
-                    <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, get_permalink())); ?>">
+                    <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, home_url('/mi-portal/participacion/detalle/'))); ?>">
                         <?php echo esc_html($propuesta->titulo); ?>
                     </a>
                 </h3>
@@ -614,7 +742,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                         <?php echo $ya_apoyo ? 'disabled' : ''; ?>>
                     <?php echo $ya_apoyo ? '&#10003; ' . esc_html__('Apoyada', 'flavor-chat-ia') : esc_html__('Apoyar', 'flavor-chat-ia'); ?>
                 </button>
-                <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, get_permalink())); ?>"
+                <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, home_url('/mi-portal/participacion/detalle/'))); ?>"
                    class="btn-participacion btn-participacion-outline">
                     <?php esc_html_e('Ver mas', 'flavor-chat-ia'); ?>
                 </a>
@@ -631,7 +759,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="alerta-participacion advertencia">' .
                    esc_html__('Debes iniciar sesion para crear una propuesta.', 'flavor-chat-ia') .
-                   ' <a href="' . esc_url(wp_login_url(get_permalink())) . '">' .
+                   ' <a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '">' .
                    esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a></div>';
         }
 
@@ -1077,7 +1205,7 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
                     <?php else: ?>
                     <div class="alerta-participacion info">
                         <?php esc_html_e('Inicia sesion para comentar.', 'flavor-chat-ia'); ?>
-                        <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>"><?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?></a>
+                        <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>"><?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?></a>
                     </div>
                     <?php endif; ?>
 
@@ -2181,6 +2309,11 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
             'debates' => 'fases',
             'reuniones' => 'fases',
             'presupuesto' => 'presupuesto',
+            'foro' => 'foro_propuesta',
+            'chat' => 'chat_propuesta',
+            'multimedia' => 'multimedia_propuesta',
+            'red-social' => 'red_social_propuesta',
+            'red_social' => 'red_social_propuesta',
         ];
 
         $action_name = $aliases[$action_name] ?? $action_name;
@@ -2256,6 +2389,109 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
 
     private function action_presupuesto($params) {
         return do_shortcode('[presupuesto_participativo]');
+    }
+
+    /**
+     * Resolver propuesta contextual para tabs satélite.
+     *
+     * @param array $params
+     * @return object|null
+     */
+    private function resolve_contextual_propuesta($params = []) {
+        $propuesta_id = absint(
+            $params['propuesta_id']
+            ?? $params['id']
+            ?? $_GET['propuesta_id']
+            ?? 0
+        );
+
+        if (!$propuesta_id) {
+            return null;
+        }
+
+        return $this->obtener_propuesta($propuesta_id);
+    }
+
+    private function action_foro_propuesta($params) {
+        $propuesta = $this->resolve_contextual_propuesta($params);
+        if (!$propuesta) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado la propuesta contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Foro de la propuesta', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html($propuesta->titulo) . '</p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_foros_integrado entidad="participacion_propuesta" entidad_id="' . absint($propuesta->id) . '"]');
+
+        return $html;
+    }
+
+    private function action_chat_propuesta($params) {
+        if (!is_user_logged_in()) {
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para acceder al chat de la propuesta.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $propuesta = $this->resolve_contextual_propuesta($params);
+        if (!$propuesta) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado la propuesta contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Chat de la propuesta', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html($propuesta->titulo) . '</p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_chat_grupo_integrado entidad="participacion_propuesta" entidad_id="' . absint($propuesta->id) . '"]');
+
+        return $html;
+    }
+
+    private function action_multimedia_propuesta($params) {
+        $propuesta = $this->resolve_contextual_propuesta($params);
+        if (!$propuesta) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado la propuesta contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Multimedia de la propuesta', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html($propuesta->titulo) . '</p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/multimedia/subir/?propuesta_id=' . absint($propuesta->id))) . '">' . esc_html__('Subir archivo', 'flavor-chat-ia') . '</a></p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_multimedia_galeria entidad="participacion_propuesta" entidad_id="' . absint($propuesta->id) . '"]');
+
+        return $html;
+    }
+
+    private function action_red_social_propuesta($params) {
+        if (!is_user_logged_in()) {
+            return '<div class="notice notice-info"><p>' . esc_html__('Debes iniciar sesión para ver la actividad social de la propuesta.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $propuesta = $this->resolve_contextual_propuesta($params);
+        if (!$propuesta) {
+            return [
+                'success' => false,
+                'error' => __('No se ha encontrado la propuesta contextual.', 'flavor-chat-ia'),
+            ];
+        }
+
+        $html  = '<div class="flavor-context-header">';
+        $html .= '<h3>' . esc_html__('Actividad social de la propuesta', 'flavor-chat-ia') . '</h3>';
+        $html .= '<p>' . esc_html($propuesta->titulo) . '</p>';
+        $html .= '<p><a class="button button-primary" href="' . esc_url(home_url('/mi-portal/red-social/crear/?propuesta_id=' . absint($propuesta->id))) . '">' . esc_html__('Publicar', 'flavor-chat-ia') . '</a></p>';
+        $html .= '</div>';
+        $html .= do_shortcode('[flavor_social_feed entidad="participacion_propuesta" entidad_id="' . absint($propuesta->id) . '"]');
+
+        return $html;
     }
 
     /**
@@ -2513,7 +2749,7 @@ KNOWLEDGE;
                 [
                     'slug' => 'participacion-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'participacion-propuestas',
@@ -3017,29 +3253,17 @@ KNOWLEDGE;
         $capability = 'manage_options';
 
         // Páginas ocultas (sin menú visible en el sidebar)
-        add_submenu_page(null, __('Participación', 'flavor-chat-ia'), __('Participación', 'flavor-chat-ia'), $capability, 'participacion', [$this, 'render_pagina_dashboard']);
-        add_submenu_page(null, __('Propuestas', 'flavor-chat-ia'), __('Propuestas', 'flavor-chat-ia'), $capability, 'part-propuestas', [$this, 'render_pagina_propuestas']);
-        add_submenu_page(null, __('Votaciones', 'flavor-chat-ia'), __('Votaciones', 'flavor-chat-ia'), $capability, 'part-votaciones', [$this, 'render_pagina_votaciones']);
-        add_submenu_page(null, __('Debates', 'flavor-chat-ia'), __('Debates', 'flavor-chat-ia'), $capability, 'part-debates', [$this, 'render_pagina_debates']);
-        add_submenu_page(null, __('Resultados', 'flavor-chat-ia'), __('Resultados', 'flavor-chat-ia'), $capability, 'part-resultados', [$this, 'render_pagina_resultados']);
+        add_submenu_page(null, __('Configuración Participación', 'flavor-chat-ia'), __('Configuración', 'flavor-chat-ia'), $capability, 'participacion-config', [$this, 'render_pagina_config']);
+        add_submenu_page(null, __('Debates', 'flavor-chat-ia'), __('Debates', 'flavor-chat-ia'), $capability, 'participacion-debates', [$this, 'render_pagina_debates']);
+        add_submenu_page(null, __('Propuestas', 'flavor-chat-ia'), __('Propuestas', 'flavor-chat-ia'), $capability, 'participacion-propuestas', [$this, 'render_pagina_propuestas']);
+        add_submenu_page(null, __('Resultados', 'flavor-chat-ia'), __('Resultados', 'flavor-chat-ia'), $capability, 'participacion-resultados', [$this, 'render_pagina_resultados']);
+        add_submenu_page(null, __('Votaciones', 'flavor-chat-ia'), __('Votaciones', 'flavor-chat-ia'), $capability, 'participacion-votaciones', [$this, 'render_pagina_votaciones']);
     }
 
-    public function render_pagina_dashboard() {
-        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+    public function render_pagina_config() {
+        $views_path = dirname(__FILE__) . '/views/config.php';
         if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Dashboard Participación', 'flavor-chat-ia') . '</h1></div>'; }
-    }
-
-    public function render_pagina_propuestas() {
-        $views_path = dirname(__FILE__) . '/views/propuestas.php';
-        if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Propuestas', 'flavor-chat-ia') . '</h1></div>'; }
-    }
-
-    public function render_pagina_votaciones() {
-        $views_path = dirname(__FILE__) . '/views/votaciones.php';
-        if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Votaciones', 'flavor-chat-ia') . '</h1></div>'; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Configuración Participación', 'flavor-chat-ia') . '</h1></div>'; }
     }
 
     public function render_pagina_debates() {
@@ -3048,10 +3272,22 @@ KNOWLEDGE;
         else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Debates', 'flavor-chat-ia') . '</h1></div>'; }
     }
 
+    public function render_pagina_propuestas() {
+        $views_path = dirname(__FILE__) . '/views/propuestas.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Propuestas', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
     public function render_pagina_resultados() {
         $views_path = dirname(__FILE__) . '/views/resultados.php';
         if (file_exists($views_path)) { include $views_path; }
         else { echo '<div class="wrap"><h1>' . esc_html__('Resultados', 'flavor-chat-ia') . '</h1></div>'; }
+    }
+
+    public function render_pagina_votaciones() {
+        $views_path = dirname(__FILE__) . '/views/votaciones.php';
+        if (file_exists($views_path)) { include $views_path; }
+        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Votaciones', 'flavor-chat-ia') . '</h1></div>'; }
     }
 
 

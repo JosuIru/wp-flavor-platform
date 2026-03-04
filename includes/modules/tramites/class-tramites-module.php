@@ -60,6 +60,25 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $this->tabla_historial = $wpdb->prefix . 'flavor_historial_expediente';
 
         parent::__construct();
+        $this->cargar_frontend_controller();
+    }
+
+    /**
+     * Carga el frontend controller para registrar shortcodes públicos.
+     */
+    private function cargar_frontend_controller() {
+        if (class_exists('Flavor_Tramites_Frontend_Controller')) {
+            Flavor_Tramites_Frontend_Controller::get_instance();
+            return;
+        }
+
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-tramites-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            if (class_exists('Flavor_Tramites_Frontend_Controller')) {
+                Flavor_Tramites_Frontend_Controller::get_instance();
+            }
+        }
     }
 
     /**
@@ -284,6 +303,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
         // Dashboard tabs para usuarios (frontend)
         $this->init_dashboard_tabs();
+
+        // Registrar páginas de administración ocultas
+        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
     }
 
     /**
@@ -329,7 +351,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                 [
                     'slug' => 'tramites-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_dashboard'],
+                    'callback' => [$this, 'render_pagina_dashboard'],
                 ],
                 [
                     'slug' => 'tramites-pendientes',
@@ -435,12 +457,24 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
      * Renderiza el dashboard de administración de trámites
      */
     public function render_admin_dashboard() {
+        $is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
+
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Trámites', 'flavor-chat-ia'), [
-            ['label' => __('Ver Pendientes', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-pendientes'), 'class' => 'button-primary'],
-            ['label' => __('Tipos de Trámite', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-tipos'), 'class' => ''],
-        ]);
-        $this->handle_admin_actions();
+        $acciones = $is_dashboard_viewer
+            ? [
+                ['label' => __('Ver en portal', 'flavor-chat-ia'), 'url' => home_url('/mi-portal/tramites/'), 'class' => ''],
+            ]
+            : [
+                ['label' => __('Ver Pendientes', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-pendientes'), 'class' => 'button-primary'],
+                ['label' => __('Tipos de Trámite', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=tramites-tipos'), 'class' => ''],
+            ];
+        $this->render_page_header(__('Dashboard de Trámites', 'flavor-chat-ia'), $acciones);
+
+        if (!$is_dashboard_viewer) {
+            $this->handle_admin_actions();
+        } else {
+            echo '<div class="notice notice-info"><p>' . esc_html__('Vista resumida para gestor de grupos. Este dashboard muestra métricas, pero la gestión administrativa avanzada sigue reservada a administradores.', 'flavor-chat-ia') . '</p></div>';
+        }
         echo '<p>' . __('Panel de control del módulo de trámites administrativos.', 'flavor-chat-ia') . '</p>';
 
         if (!$this->can_activate()) {
@@ -471,6 +505,18 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
 
         $this->render_tramites_resumen();
         echo '</div>';
+    }
+
+    /**
+     * Renderizar página dashboard con vista completa
+     */
+    public function render_pagina_dashboard() {
+        $views_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            $this->render_admin_dashboard();
+        }
     }
 
     /**
@@ -1990,7 +2036,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <a href="<?php echo esc_url(add_query_arg('tramite', $tipo->id, get_permalink())); ?>" class="flavor-tramite-enlace">
+                        <a href="<?php echo esc_url(add_query_arg('tramite', $tipo->id, flavor_current_request_url())); ?>" class="flavor-tramite-enlace">
                             <?php esc_html_e('Iniciar tramite', 'flavor-chat-ia'); ?>
                             <span class="dashicons dashicons-arrow-right-alt"></span>
                         </a>
@@ -2026,7 +2072,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         if ($this->get_setting('requiere_login') && !is_user_logged_in()) {
             return '<div class="flavor-tramites-login-required">
                 <p>' . esc_html__('Debes iniciar sesion para realizar este tramite.', 'flavor-chat-ia') . '</p>
-                <a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>
+                <a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>
             </div>';
         }
 
@@ -2197,7 +2243,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         if (!is_user_logged_in()) {
             return '<div class="flavor-tramites-login-required">
                 <p>' . esc_html__('Debes iniciar sesion para ver tus expedientes.', 'flavor-chat-ia') . '</p>
-                <a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>
+                <a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>
             </div>';
         }
 
@@ -2261,7 +2307,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
                         </span>
                     </div>
                     <div class="flavor-expediente-acciones">
-                        <a href="<?php echo esc_url(add_query_arg('expediente', $expediente->numero_expediente, get_permalink())); ?>" class="flavor-btn flavor-btn-small">
+                        <a href="<?php echo esc_url(add_query_arg('expediente', $expediente->numero_expediente, flavor_current_request_url())); ?>" class="flavor-btn flavor-btn-small">
                             <?php esc_html_e('Ver detalle', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
@@ -3192,6 +3238,20 @@ KNOWLEDGE;
                     'content' => '[flavor_tramites_seguimiento]',
                     'public'  => true,
                 ],
+                'detalle' => [
+                    'label'      => __('Detalle', 'flavor-chat-ia'),
+                    'icon'       => 'dashicons-visibility',
+                    'content'    => '[flavor_tramites_detalle]',
+                    'public'     => true,
+                    'hidden_nav' => true,
+                ],
+                'citas' => [
+                    'label'          => __('Citas', 'flavor-chat-ia'),
+                    'icon'           => 'dashicons-calendar-alt',
+                    'content'        => '[flavor_tramites_citas]',
+                    'requires_login' => true,
+                    'hidden_nav'     => true,
+                ],
             ],
 
             'archive' => [
@@ -3231,6 +3291,109 @@ KNOWLEDGE;
             if (class_exists('Flavor_Tramites_Dashboard_Tab')) {
                 Flavor_Tramites_Dashboard_Tab::get_instance();
             }
+        }
+    }
+
+    // =========================================================================
+    // PÁGINAS DE ADMINISTRACIÓN OCULTAS
+    // =========================================================================
+
+    /**
+     * Registra las páginas de administración ocultas del módulo
+     */
+    public function registrar_paginas_admin() {
+        $capability = 'manage_options';
+
+        // Pendientes
+        add_submenu_page(
+            null,
+            __('Pendientes - Trámites', 'flavor-chat-ia'),
+            __('Pendientes', 'flavor-chat-ia'),
+            $capability,
+            'tramites-pendientes',
+            [$this, 'render_admin_pendientes']
+        );
+
+        // Historial
+        add_submenu_page(
+            null,
+            __('Historial - Trámites', 'flavor-chat-ia'),
+            __('Historial', 'flavor-chat-ia'),
+            $capability,
+            'tramites-historial',
+            [$this, 'render_admin_historial']
+        );
+
+        // Tipos de trámite
+        add_submenu_page(
+            null,
+            __('Tipos de Trámite - Trámites', 'flavor-chat-ia'),
+            __('Tipos de Trámite', 'flavor-chat-ia'),
+            $capability,
+            'tramites-tipos',
+            [$this, 'render_admin_tipos']
+        );
+
+        // Configuración
+        add_submenu_page(
+            null,
+            __('Configuración - Trámites', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability,
+            'tramites-config',
+            [$this, 'render_admin_config']
+        );
+    }
+
+    /**
+     * Renderiza la página de trámites pendientes
+     */
+    public function render_admin_pendientes() {
+        $ruta_vista = dirname(__FILE__) . '/views/pendientes.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Trámites Pendientes', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de historial de trámites
+     */
+    public function render_admin_historial() {
+        $ruta_vista = dirname(__FILE__) . '/views/historial.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Historial de Trámites', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de tipos de trámite
+     */
+    public function render_admin_tipos() {
+        $ruta_vista = dirname(__FILE__) . '/views/tipos.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Tipos de Trámite', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de configuración de trámites
+     */
+    public function render_admin_config() {
+        $ruta_vista = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($ruta_vista)) {
+            include $ruta_vista;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Trámites', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista no disponible.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 }
