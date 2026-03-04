@@ -2969,18 +2969,6 @@ KNOWLEDGE;
         add_submenu_page(null, __('Programas', 'flavor-chat-ia'), __('Programas', 'flavor-chat-ia'), $capability, 'flavor-radio-programas', [$this, 'render_pagina_programas']);
     }
 
-    public function render_pagina_emisiones() {
-        $views_path = dirname(__FILE__) . '/views/emisiones.php';
-        if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Emisiones', 'flavor-chat-ia') . '</h1></div>'; }
-    }
-
-    public function render_pagina_programas() {
-        $views_path = dirname(__FILE__) . '/views/programas.php';
-        if (file_exists($views_path)) { include $views_path; }
-        else { echo '<div class="wrap"><h1>' . esc_html__('Gestión de Programas', 'flavor-chat-ia') . '</h1></div>'; }
-    }
-
     /**
      * Inicializa el dashboard tab del módulo
      */
