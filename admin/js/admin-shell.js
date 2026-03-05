@@ -201,6 +201,48 @@ document.addEventListener('alpine:init', () => {
             if (wpContent) {
                 wpContent.style.transition = 'padding-left 250ms ease';
             }
+
+            // Eliminar padding inline de elementos del editor de posts/CPTs
+            // que WordPress añade y que interfiere con el Shell
+            this.fixPostEditorLayout();
+
+            // Observar cambios en el DOM por si WordPress añade estilos después
+            const observer = new MutationObserver(() => {
+                this.fixPostEditorLayout();
+            });
+
+            const postStuff = document.getElementById('poststuff');
+            if (postStuff) {
+                observer.observe(postStuff, {
+                    attributes: true,
+                    subtree: true,
+                    attributeFilter: ['style']
+                });
+            }
+        },
+
+        /**
+         * Corregir layout del editor de posts/CPTs
+         */
+        fixPostEditorLayout() {
+            // Elementos que WordPress puede añadir padding-left inline
+            const elementsToFix = [
+                '#normal-sortables',
+                '#advanced-sortables',
+                '#side-sortables',
+                '.meta-box-sortables',
+                '#postbox-container-1',
+                '#postbox-container-2'
+            ];
+
+            elementsToFix.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (el.style.paddingLeft) {
+                        el.style.paddingLeft = '';
+                    }
+                });
+            });
         },
 
         /**
