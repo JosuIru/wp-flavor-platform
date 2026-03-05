@@ -75,7 +75,7 @@ class Flavor_Multimedia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $mis_archivos = 0;
         if ($user_id && $this->table_exists($tabla_archivos)) {
             $mis_archivos = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$tabla_archivos} WHERE autor_id = %d",
+                "SELECT COUNT(*) FROM {$tabla_archivos} WHERE usuario_id = %d",
                 $user_id
             ));
         }

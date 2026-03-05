@@ -45,10 +45,10 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         }
 
         $items = $wpdb->get_results(
-            "SELECT id, titulo, tipo, url_archivo
+            "SELECT id, titulo, tipo, archivo_url
              FROM {$tabla}
-             WHERE estado = 'activo'
-             ORDER BY fecha_subida DESC
+             WHERE estado IN ('publico', 'comunidad')
+             ORDER BY fecha_creacion DESC
              LIMIT 100"
         );
 
@@ -89,15 +89,15 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
                     $tabla = $wpdb->prefix . 'flavor_multimedia';
                     foreach ($related_ids as $item_id):
                         $item = $wpdb->get_row($wpdb->prepare(
-                            "SELECT id, titulo, tipo, url_archivo FROM {$tabla} WHERE id = %d",
+                            "SELECT id, titulo, tipo, archivo_url FROM {$tabla} WHERE id = %d",
                             $item_id
                         ));
                         if (!$item) continue;
                 ?>
                 <div class="flavor-integration-item" style="display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #eee;">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <?php if ($item->tipo === 'imagen' && $item->url_archivo): ?>
-                            <img src="<?php echo esc_url($item->url_archivo); ?>" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" />
+                        <?php if ($item->tipo === 'imagen' && $item->archivo_url): ?>
+                            <img src="<?php echo esc_url($item->archivo_url); ?>" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" />
                         <?php else: ?>
                             <span class="dashicons dashicons-<?php echo $item->tipo === 'video' ? 'video-alt3' : 'format-audio'; ?>" style="font-size: 24px;"></span>
                         <?php endif; ?>
@@ -509,7 +509,7 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
 
         $total = $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$tabla}
-             WHERE entidad_tipo = %s AND entidad_id = %d AND estado = 'activo'",
+             WHERE entidad_tipo = %s AND entidad_id = %d AND estado IN ('publico', 'comunidad')",
             $tipo_entidad,
             $entidad_id
         ));

@@ -16,7 +16,7 @@ $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
 $tipo_filtro = isset($_GET['tipo']) ? sanitize_text_field($_GET['tipo']) : '';
 $categoria_filtro = isset($_GET['categoria']) ? sanitize_text_field($_GET['categoria']) : '';
 
-$where_clauses = ["estado = 'aprobado'"];
+$where_clauses = ["estado IN ('publico', 'comunidad')"];
 $prepare_values = [];
 
 if ($tipo_filtro) {
@@ -33,11 +33,11 @@ $where_sql = implode(' AND ', $where_clauses);
 
 if (!empty($prepare_values)) {
     $multimedia = $wpdb->get_results($wpdb->prepare("
-        SELECT * FROM $tabla_multimedia WHERE $where_sql ORDER BY fecha_subida DESC
+        SELECT * FROM $tabla_multimedia WHERE $where_sql ORDER BY fecha_creacion DESC
     ", ...$prepare_values));
 } else {
     $multimedia = $wpdb->get_results("
-        SELECT * FROM $tabla_multimedia WHERE $where_sql ORDER BY fecha_subida DESC
+        SELECT * FROM $tabla_multimedia WHERE $where_sql ORDER BY fecha_creacion DESC
     ");
 }
 

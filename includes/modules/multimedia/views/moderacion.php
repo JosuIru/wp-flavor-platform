@@ -18,18 +18,18 @@ $pendientes = $wpdb->get_results("
     FROM $tabla_multimedia m
     INNER JOIN {$wpdb->users} u ON m.usuario_id = u.ID
     WHERE m.estado = 'pendiente'
-    ORDER BY m.fecha_subida ASC
+    ORDER BY m.fecha_creacion ASC
 ");
 
 // Obtener estadísticas de moderación
 $total_pendientes = count($pendientes);
 $rechazados_hoy = $wpdb->get_var("
     SELECT COUNT(*) FROM $tabla_multimedia
-    WHERE estado = 'rechazado' AND DATE(fecha_subida) = CURDATE()
+    WHERE estado = 'rechazado' AND DATE(fecha_creacion) = CURDATE()
 ");
 $aprobados_hoy = $wpdb->get_var("
     SELECT COUNT(*) FROM $tabla_multimedia
-    WHERE estado = 'aprobado' AND DATE(fecha_subida) = CURDATE()
+    WHERE estado IN ('publico', 'comunidad') AND DATE(fecha_creacion) = CURDATE()
 ");
 ?>
 
@@ -115,7 +115,7 @@ $aprobados_hoy = $wpdb->get_var("
                                 </span>
                                 <span>
                                     <span class="dashicons dashicons-calendar" style="font-size: 14px;"></span>
-                                    <?php echo date_i18n('d/m/Y H:i', strtotime($item->fecha_subida)); ?>
+                                    <?php echo date_i18n('d/m/Y H:i', strtotime($item->fecha_creacion)); ?>
                                 </span>
                                 <?php if ($item->categoria): ?>
                                     <span>

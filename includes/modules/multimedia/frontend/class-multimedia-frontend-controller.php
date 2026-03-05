@@ -165,22 +165,22 @@ class Flavor_Multimedia_Frontend_Controller {
 
         if (Flavor_Chat_Helpers::tabla_existe($this->tabla_multimedia)) {
             $mis_fotos = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$this->tabla_multimedia} WHERE autor_id = %d AND tipo = 'foto'",
+                "SELECT COUNT(*) FROM {$this->tabla_multimedia} WHERE usuario_id = %d AND tipo = 'imagen'",
                 $user_id
             ));
 
             $mis_videos = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$this->tabla_multimedia} WHERE autor_id = %d AND tipo = 'video'",
+                "SELECT COUNT(*) FROM {$this->tabla_multimedia} WHERE usuario_id = %d AND tipo = 'video'",
                 $user_id
             ));
 
             $mis_likes = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COALESCE(SUM(likes), 0) FROM {$this->tabla_multimedia} WHERE autor_id = %d",
+                "SELECT COALESCE(SUM(me_gusta), 0) FROM {$this->tabla_multimedia} WHERE usuario_id = %d",
                 $user_id
             ));
 
             $total_vistas = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COALESCE(SUM(vistas), 0) FROM {$this->tabla_multimedia} WHERE autor_id = %d",
+                "SELECT COALESCE(SUM(vistas), 0) FROM {$this->tabla_multimedia} WHERE usuario_id = %d",
                 $user_id
             ));
         }
@@ -188,7 +188,7 @@ class Flavor_Multimedia_Frontend_Controller {
         $mis_albumes = 0;
         if (Flavor_Chat_Helpers::tabla_existe($this->tabla_albumes)) {
             $mis_albumes = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$this->tabla_albumes} WHERE autor_id = %d",
+                "SELECT COUNT(*) FROM {$this->tabla_albumes} WHERE usuario_id = %d",
                 $user_id
             ));
         }
@@ -267,8 +267,8 @@ class Flavor_Multimedia_Frontend_Controller {
 
         $contenido_reciente = $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM {$this->tabla_multimedia}
-             WHERE autor_id = %d AND estado = 'aprobado'
-             ORDER BY fecha_subida DESC LIMIT 8",
+             WHERE usuario_id = %d AND estado IN ('publico', 'comunidad')
+             ORDER BY fecha_creacion DESC LIMIT 8",
             $user_id
         ));
 
@@ -288,7 +288,7 @@ class Flavor_Multimedia_Frontend_Controller {
             <div class="flavor-multimedia-grid flavor-multimedia-grid-sm">
                 <?php foreach ($contenido_reciente as $item): ?>
                     <div class="flavor-multimedia-item" data-id="<?php echo esc_attr($item->id); ?>">
-                        <?php if ($item->tipo === 'foto'): ?>
+                        <?php if ($item->tipo === 'imagen'): ?>
                             <img src="<?php echo esc_url($item->url_thumbnail ?: $item->url); ?>" alt="<?php echo esc_attr($item->titulo); ?>" loading="lazy">
                         <?php elseif ($item->tipo === 'video'): ?>
                             <div class="flavor-multimedia-video-thumb">
@@ -330,7 +330,7 @@ class Flavor_Multimedia_Frontend_Controller {
             return '<p class="flavor-notice">' . esc_html__('Galería no disponible.', 'flavor-chat-ia') . '</p>';
         }
 
-        $where_clauses = ["estado = 'aprobado'"];
+        $where_clauses = ["estado IN ('publico', 'comunidad')"];
         $params = [];
 
         if (!empty($atts['categoria'])) {
@@ -353,7 +353,7 @@ class Flavor_Multimedia_Frontend_Controller {
         $limite = min(100, max(1, intval($atts['limite'])));
         $columnas = min(6, max(2, intval($atts['columnas'])));
 
-        $query = "SELECT * FROM {$this->tabla_multimedia} WHERE {$where_sql} ORDER BY fecha_subida DESC LIMIT %d";
+        $query = "SELECT * FROM {$this->tabla_multimedia} WHERE {$where_sql} ORDER BY fecha_creacion DESC LIMIT %d";
         $params[] = $limite;
 
         $items = $wpdb->get_results($wpdb->prepare($query, ...$params));
@@ -370,7 +370,7 @@ class Flavor_Multimedia_Frontend_Controller {
                 <div class="flavor-multimedia-grid flavor-multimedia-grid-<?php echo esc_attr($columnas); ?>">
                     <?php foreach ($items as $item): ?>
                         <div class="flavor-multimedia-item" data-id="<?php echo esc_attr($item->id); ?>" data-tipo="<?php echo esc_attr($item->tipo); ?>">
-                            <?php if ($item->tipo === 'foto'): ?>
+                            <?php if ($item->tipo === 'imagen'): ?>
                                 <img src="<?php echo esc_url($item->url_thumbnail ?: $item->url); ?>" alt="<?php echo esc_attr($item->titulo); ?>" loading="lazy">
                             <?php elseif ($item->tipo === 'video'): ?>
                                 <div class="flavor-multimedia-video-thumb">
@@ -422,8 +422,8 @@ class Flavor_Multimedia_Frontend_Controller {
 
         $items = $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM {$this->tabla_multimedia}
-             WHERE autor_id = %d
-             ORDER BY fecha_subida DESC",
+             WHERE usuario_id = %d
+             ORDER BY fecha_creacion DESC",
             $user_id
         ));
 
@@ -447,7 +447,7 @@ class Flavor_Multimedia_Frontend_Controller {
                 <div class="flavor-multimedia-grid">
                     <?php foreach ($items as $item): ?>
                         <div class="flavor-multimedia-item flavor-multimedia-item-editable" data-id="<?php echo esc_attr($item->id); ?>">
-                            <?php if ($item->tipo === 'foto'): ?>
+                            <?php if ($item->tipo === 'imagen'): ?>
                                 <img src="<?php echo esc_url($item->url_thumbnail ?: $item->url); ?>" alt="<?php echo esc_attr($item->titulo); ?>">
                             <?php elseif ($item->tipo === 'video'): ?>
                                 <div class="flavor-multimedia-video-thumb">
@@ -574,7 +574,7 @@ class Flavor_Multimedia_Frontend_Controller {
 
         if (!empty($atts['autor'])) {
             if ($atts['autor'] === 'current' && is_user_logged_in()) {
-                $where .= " AND autor_id = %d";
+                $where .= " AND usuario_id = %d";
                 $params[] = get_current_user_id();
             }
         }
@@ -652,8 +652,8 @@ class Flavor_Multimedia_Frontend_Controller {
 
         $items = $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM {$this->tabla_multimedia}
-             WHERE album_id = %d AND estado = 'aprobado'
-             ORDER BY fecha_subida DESC",
+             WHERE album_id = %d AND estado IN ('publico', 'comunidad')
+             ORDER BY fecha_creacion DESC",
             $album_id
         ));
 
@@ -676,7 +676,7 @@ class Flavor_Multimedia_Frontend_Controller {
                 <div class="flavor-multimedia-grid">
                     <?php foreach ($items as $item): ?>
                         <div class="flavor-multimedia-item" data-id="<?php echo esc_attr($item->id); ?>">
-                            <?php if ($item->tipo === 'foto'): ?>
+                            <?php if ($item->tipo === 'imagen'): ?>
                                 <img src="<?php echo esc_url($item->url_thumbnail ?: $item->url); ?>" alt="<?php echo esc_attr($item->titulo); ?>">
                             <?php elseif ($item->tipo === 'video'): ?>
                                 <div class="flavor-multimedia-video-thumb">
@@ -775,7 +775,7 @@ class Flavor_Multimedia_Frontend_Controller {
             }
 
             // Determinar tipo
-            $tipo = 'foto';
+            $tipo = 'imagen';
             if (strpos($file['type'], 'video/') === 0) {
                 $tipo = 'video';
             } elseif (strpos($file['type'], 'audio/') === 0) {
@@ -793,14 +793,14 @@ class Flavor_Multimedia_Frontend_Controller {
             $url = wp_get_attachment_url($attachment_id);
             $url_thumbnail = '';
 
-            if ($tipo === 'foto') {
+            if ($tipo === 'imagen') {
                 $thumbnail = wp_get_attachment_image_src($attachment_id, 'medium');
                 $url_thumbnail = $thumbnail ? $thumbnail[0] : $url;
             }
 
             // Insertar en tabla de multimedia
             $wpdb->insert($this->tabla_multimedia, [
-                'autor_id' => $user_id,
+                'usuario_id' => $user_id,
                 'attachment_id' => $attachment_id,
                 'titulo' => $titulo ?: $file['name'],
                 'descripcion' => $descripcion,
@@ -811,7 +811,7 @@ class Flavor_Multimedia_Frontend_Controller {
                 'entidad_tipo' => $entidad_tipo,
                 'entidad_id' => $entidad_id,
                 'estado' => 'aprobado',
-                'fecha_subida' => current_time('mysql'),
+                'fecha_creacion' => current_time('mysql'),
             ]);
 
             $archivos_subidos[] = [
@@ -850,7 +850,7 @@ class Flavor_Multimedia_Frontend_Controller {
         $user_id = get_current_user_id();
 
         $archivo = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_multimedia} WHERE id = %d AND autor_id = %d",
+            "SELECT * FROM {$this->tabla_multimedia} WHERE id = %d AND usuario_id = %d",
             $archivo_id, $user_id
         ));
 
@@ -915,7 +915,7 @@ class Flavor_Multimedia_Frontend_Controller {
         $user_id = get_current_user_id();
 
         $wpdb->insert($this->tabla_albumes, [
-            'autor_id' => $user_id,
+            'usuario_id' => $user_id,
             'titulo' => $titulo,
             'descripcion' => sanitize_textarea_field($_POST['descripcion'] ?? ''),
             'fecha_creacion' => current_time('mysql'),
@@ -949,7 +949,7 @@ class Flavor_Multimedia_Frontend_Controller {
 
         // Verificar propiedad
         $archivo = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_multimedia} WHERE id = %d AND autor_id = %d",
+            "SELECT * FROM {$this->tabla_multimedia} WHERE id = %d AND usuario_id = %d",
             $archivo_id, $user_id
         ));
 
@@ -996,22 +996,22 @@ class Flavor_Multimedia_Frontend_Controller {
 
         if (Flavor_Chat_Helpers::tabla_existe($this->tabla_multimedia)) {
             $stats['fotos'] = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$this->tabla_multimedia} WHERE autor_id = %d AND tipo = 'foto'",
+                "SELECT COUNT(*) FROM {$this->tabla_multimedia} WHERE usuario_id = %d AND tipo = 'imagen'",
                 $user_id
             ));
             $stats['videos'] = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$this->tabla_multimedia} WHERE autor_id = %d AND tipo = 'video'",
+                "SELECT COUNT(*) FROM {$this->tabla_multimedia} WHERE usuario_id = %d AND tipo = 'video'",
                 $user_id
             ));
             $stats['likes'] = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COALESCE(SUM(likes), 0) FROM {$this->tabla_multimedia} WHERE autor_id = %d",
+                "SELECT COALESCE(SUM(me_gusta), 0) FROM {$this->tabla_multimedia} WHERE usuario_id = %d",
                 $user_id
             ));
         }
 
         if (Flavor_Chat_Helpers::tabla_existe($this->tabla_albumes)) {
             $stats['albumes'] = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$this->tabla_albumes} WHERE autor_id = %d",
+                "SELECT COUNT(*) FROM {$this->tabla_albumes} WHERE usuario_id = %d",
                 $user_id
             ));
         }
