@@ -291,4 +291,61 @@ document.addEventListener('DOMContentLoaded', () => {
             shellElement.classList.add('fls-shell-dark');
         }
     }
+
+    // Fix para el editor de posts/CPTs - ejecutar independientemente de Alpine
+    if (document.body.classList.contains('fls-shell-active')) {
+        // Ejecutar inmediatamente
+        fixPostEditorLayout();
+
+        // Ejecutar después de un pequeño delay (WordPress puede añadir estilos tarde)
+        setTimeout(fixPostEditorLayout, 100);
+        setTimeout(fixPostEditorLayout, 500);
+
+        // Observar cambios en el DOM
+        const postStuff = document.getElementById('poststuff');
+        if (postStuff) {
+            const observer = new MutationObserver(() => {
+                fixPostEditorLayout();
+            });
+            observer.observe(postStuff, {
+                attributes: true,
+                subtree: true,
+                attributeFilter: ['style']
+            });
+        }
+    }
 });
+
+// También ejecutar cuando la página esté completamente cargada
+window.addEventListener('load', () => {
+    if (document.body.classList.contains('fls-shell-active')) {
+        fixPostEditorLayout();
+    }
+});
+
+/**
+ * Corregir layout del editor de posts/CPTs
+ * Elimina padding-left inline que WordPress añade y que interfiere con el Shell
+ */
+function fixPostEditorLayout() {
+    const elementsToFix = [
+        '#normal-sortables',
+        '#advanced-sortables',
+        '#side-sortables',
+        '.meta-box-sortables',
+        '#postbox-container-1',
+        '#postbox-container-2',
+        '#post-body'
+    ];
+
+    elementsToFix.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => {
+            if (el.style.paddingLeft) {
+                el.style.paddingLeft = '';
+            }
+            if (el.style.marginLeft) {
+                el.style.marginLeft = '';
+            }
+        });
+    });
+}
