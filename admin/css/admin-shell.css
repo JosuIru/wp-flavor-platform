@@ -864,3 +864,46 @@ body.fls-shell-active #wpbody {
     width: 240px;
     bottom: 0;
 }
+
+/* ==========================================================================
+   Post Editor / CPT Editor Adjustments
+   ========================================================================== */
+
+/* Reset any inline padding that WordPress or plugins might add */
+body.fls-shell-active #poststuff #post-body.columns-2 #postbox-container-1,
+body.fls-shell-active #poststuff #post-body.columns-2 #postbox-container-2 {
+    margin-right: 0;
+}
+
+body.fls-shell-active .meta-box-sortables {
+    padding-left: 0 !important;
+}
+
+body.fls-shell-active #normal-sortables {
+    padding-left: 0 !important;
+}
+
+/* Ensure the post editor content area respects the shell */
+body.fls-shell-active #poststuff {
+    padding-right: 20px;
+}
+
+body.fls-shell-active #post-body-content {
+    margin-bottom: 20px;
+}
+
+/* Fix for Gutenberg/Block Editor if used */
+body.fls-shell-active .edit-post-layout {
+    padding-left: 0;
+}
+
+body.fls-shell-active .interface-interface-skeleton {
+    left: 0;
+}
+
+/* Responsive adjustments for post editor */
+@media (max-width: 782px) {
+    body.fls-shell-active #poststuff {
+        padding-right: 10px;
+    }
+}
