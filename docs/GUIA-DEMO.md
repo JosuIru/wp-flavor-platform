@@ -1,4 +1,4 @@
-# Guía de Demo Técnica - TEDER Emprendimiento
+# Guía de Demo Técnica - la organización Emprendimiento
 
 ## Preparación Pre-Demo (30 min antes)
 
@@ -57,7 +57,7 @@
 ### Grupo de Consumo Activo
 
 ```
-Nombre: "Cesta de la Tierra Estella"
+Nombre: "Cesta de la la comarca"
 Productores: Pedro (verduras), María (cosmética)
 Ciclo: Semanal (jueves)
 Punto recogida: Plaza de los Fueros, Estella
@@ -82,7 +82,7 @@ Precio: Gratuito / 2 horas banco tiempo
 ### PARTE 1: Visión General (3 min)
 
 **Narración:**
-> "Flavor Platform es una plataforma integral que permite digitalizar ecosistemas locales. Vamos a ver cómo funcionaría para el emprendimiento en Tierra Estella."
+> "Flavor Platform es una plataforma integral que permite digitalizar ecosistemas locales. Vamos a ver cómo funcionaría para el emprendimiento en la comarca."
 
 **Acción:** Mostrar dashboard de administración
 - Señalar los módulos activos
@@ -159,7 +159,7 @@ Precio: Gratuito / 2 horas banco tiempo
 
 **Acciones:**
 1. Ir a Grupos de Consumo
-2. Mostrar grupo "Cesta de la Tierra Estella"
+2. Mostrar grupo "Cesta de la la comarca"
 3. Ver ciclo de pedidos activo
 4. Mostrar productos disponibles esta semana
 5. Ver punto de recogida en mapa
@@ -186,7 +186,7 @@ Precio: Gratuito / 2 horas banco tiempo
 **Puntos clave:**
 - "Formadores locales comparten conocimiento"
 - "Se puede cobrar en euros o en horas de banco de tiempo"
-- "Útil para programas de capacitación de TEDER"
+- "Útil para programas de capacitación de la organización"
 
 ---
 
@@ -197,7 +197,7 @@ Precio: Gratuito / 2 horas banco tiempo
 
 **Acciones:**
 1. Mostrar brevemente red social interna
-2. Enseñar grupo "Emprendedores Tierra Estella"
+2. Enseñar grupo "Emprendedores la comarca"
 3. Mostrar publicación de colaboración
 
 **Puntos clave:**
@@ -209,7 +209,7 @@ Precio: Gratuito / 2 horas banco tiempo
 ### PARTE 8: Panel de Administración (3 min)
 
 **Narración:**
-> "TEDER tendría acceso completo al panel de administración para gestionar y obtener métricas del ecosistema."
+> "la organización tendría acceso completo al panel de administración para gestionar y obtener métricas del ecosistema."
 
 **Acciones:**
 1. Ir a `/wp-admin/admin.php?page=flavor-dashboard`
@@ -244,7 +244,7 @@ Precio: Gratuito / 2 horas banco tiempo
 ### Funcionales
 
 **P: ¿Podemos añadir módulos específicos?**
-> "Sí, la plataforma es modular. Podemos desarrollar funcionalidades específicas para Tierra Estella."
+> "Sí, la plataforma es modular. Podemos desarrollar funcionalidades específicas para la comarca."
 
 **P: ¿Cómo se dan de alta los emprendedores?**
 > "Auto-registro con validación manual, o alta masiva por CSV desde administración."
@@ -265,7 +265,7 @@ Precio: Gratuito / 2 horas banco tiempo
 ## Materiales de Apoyo
 
 ### Para Dejar/Enviar Después
-- [ ] PDF de presentación (convertir PRESENTACION-TEDER-EMPRENDIMIENTO.md)
+- [ ] PDF de presentación (convertir PRESENTACION-la organización-EMPRENDIMIENTO.md)
 - [ ] Propuesta económica detallada
 - [ ] Referencias de otros proyectos (si hay)
 - [ ] Tarjeta de contacto
@@ -280,7 +280,7 @@ Precio: Gratuito / 2 horas banco tiempo
 ## Tips para la Reunión
 
 1. **Escucha primero** - Deja que expliquen sus necesidades específicas antes de mostrar todo
-2. **Adapta el discurso** - Usa ejemplos de Tierra Estella, no genéricos
+2. **Adapta el discurso** - Usa ejemplos de la comarca, no genéricos
 3. **No te extiendas** - 25 min de demo máximo, luego conversación
 4. **Muestra flexibilidad** - "Esto se puede adaptar a vuestras necesidades"
 5. **Cierra con próximos pasos** - "¿Qué os parece si hacemos una propuesta detallada?"
@@ -299,4 +299,4 @@ Precio: Gratuito / 2 horas banco tiempo
 
 ---
 
-*Guía preparada para demo TEDER - Marzo 2026*
+*Guía preparada para demo la organización - Marzo 2026*

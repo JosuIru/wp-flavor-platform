@@ -860,6 +860,58 @@ class Flavor_Chat_Module_Loader {
     }
 
     /**
+     * Caché estática de visibilidades de módulos
+     *
+     * @var array|null
+     */
+    private static $visibility_cache = null;
+
+    /**
+     * Caché estática de capacidades requeridas de módulos
+     *
+     * @var array|null
+     */
+    private static $capabilities_cache = null;
+
+    /**
+     * Obtiene todas las visibilidades configuradas (con caché por request)
+     *
+     * @return array Mapa de module_id => visibilidad
+     */
+    public static function get_visibility_settings_cached(): array {
+        if (self::$visibility_cache !== null) {
+            return self::$visibility_cache;
+        }
+
+        self::$visibility_cache = get_option('flavor_modules_visibility', []);
+        return self::$visibility_cache;
+    }
+
+    /**
+     * Obtiene todas las capacidades configuradas (con caché por request)
+     *
+     * @return array Mapa de module_id => capability
+     */
+    public static function get_capabilities_settings_cached(): array {
+        if (self::$capabilities_cache !== null) {
+            return self::$capabilities_cache;
+        }
+
+        self::$capabilities_cache = get_option('flavor_modules_capabilities', []);
+        return self::$capabilities_cache;
+    }
+
+    /**
+     * Invalida las cachés de visibilidad y capacidades
+     *
+     * @return void
+     */
+    public static function invalidate_visibility_cache(): void {
+        self::$visibility_cache = null;
+        self::$capabilities_cache = null;
+    }
+
+    /**
      * Verifica si un módulo está activo (método estático para dependency checker)
      *
      * @param string $module_id ID del módulo (acepta guiones o guiones bajos)
@@ -1082,8 +1134,8 @@ class Flavor_Chat_Module_Loader {
      * @return string|null Visibilidad del módulo o null si no existe
      */
     public function get_module_visibility($module_id) {
-        // Primero verificar si hay visibilidad configurada en admin
-        $visibilidades_configuradas = get_option('flavor_modules_visibility', []);
+        // Usar caché estática para evitar múltiples get_option
+        $visibilidades_configuradas = self::get_visibility_settings_cached();
 
         if (isset($visibilidades_configuradas[$module_id])) {
             return $visibilidades_configuradas[$module_id];
@@ -1125,8 +1177,8 @@ class Flavor_Chat_Module_Loader {
      * @return string|null Capacidad requerida o null si no existe
      */
     public function get_module_required_capability($module_id) {
-        // Primero verificar si hay capacidad configurada en admin
-        $capacidades_configuradas = get_option('flavor_modules_capabilities', []);
+        // Usar caché estática para evitar múltiples get_option
+        $capacidades_configuradas = self::get_capabilities_settings_cached();
 
         if (isset($capacidades_configuradas[$module_id])) {
             return $capacidades_configuradas[$module_id];
@@ -1168,8 +1220,9 @@ class Flavor_Chat_Module_Loader {
      */
     public function get_all_modules_visibility_info() {
         $informacion_visibilidad = [];
-        $visibilidades_configuradas = get_option('flavor_modules_visibility', []);
-        $capacidades_configuradas = get_option('flavor_modules_capabilities', []);
+        // Usar cachés estáticas para evitar múltiples get_option
+        $visibilidades_configuradas = self::get_visibility_settings_cached();
+        $capacidades_configuradas = self::get_capabilities_settings_cached();
 
         // Intentar usar caché de metadatos primero
         if ($this->modules_metadata_cache === null) {
@@ -1325,6 +1378,15 @@ add_action('update_option_flavor_active_modules', function () {
     Flavor_Chat_Module_Loader::invalidate_active_modules_cache();
 }, 10, 0);
 
+// Invalidar caché de visibilidad cuando cambian las configuraciones
+add_action('update_option_flavor_modules_visibility', function () {
+    Flavor_Chat_Module_Loader::invalidate_visibility_cache();
+}, 10, 0);
+
+add_action('update_option_flavor_modules_capabilities', function () {
+    Flavor_Chat_Module_Loader::invalidate_visibility_cache();
+}, 10, 0);
+
 // Auto-rebuild metadata cache cuando se actualiza el plugin
 add_action('upgrader_process_complete', function ($upgrader, $options) {
     if ($options['action'] !== 'update' || $options['type'] !== 'plugin') {
@@ -1335,8 +1397,9 @@ add_action('upgrader_process_complete', function ($upgrader, $options) {
     $updated_plugins = $options['plugins'] ?? [];
 
     if (in_array($our_plugin, $updated_plugins, true)) {
-        // Invalidar caché para forzar rebuild en próxima carga
+        // Invalidar cachés para forzar rebuild en próxima carga
         $loader = Flavor_Chat_Module_Loader::get_instance();
         $loader->invalidate_metadata_cache();
+        Flavor_Chat_Module_Loader::invalidate_visibility_cache();
     }
 }, 10, 2);

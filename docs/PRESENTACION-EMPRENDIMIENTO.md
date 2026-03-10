@@ -3,8 +3,8 @@
 
 ---
 
-**Presentación para TEDER**
-*Proyecto EDLP - Emprendimiento en Tierra Estella*
+**Presentación para la organización**
+*Proyecto EDLP - Emprendimiento en la comarca*
 
 ---
 
@@ -152,7 +152,7 @@ Nuestro enfoque combina:
 
 ---
 
-## Caso de Uso: Emprendimiento en Tierra Estella
+## Caso de Uso: Emprendimiento en la comarca
 
 ### Escenario 1: Nuevo Emprendedor
 
@@ -175,7 +175,7 @@ Nuestro enfoque combina:
 
 ## Panel de Administración
 
-TEDER tendría acceso a:
+la organización tendría acceso a:
 
 - **Dashboard** con métricas del ecosistema
 - **Gestión de usuarios** y emprendedores
@@ -276,4 +276,4 @@ Este proyecto encaja en las líneas de financiación EDLP:
 
 ---
 
-*Documento preparado para TEDER - Marzo 2026*
+*Documento preparado para la organización - Marzo 2026*

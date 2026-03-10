@@ -410,8 +410,12 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      * {@inheritdoc}
      */
     public function get_visibility() {
-        // Primero verificar si hay visibilidad configurada en admin
-        $visibilidades_configuradas = get_option('flavor_modules_visibility', []);
+        // Usar caché centralizada del Module Loader
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $visibilidades_configuradas = Flavor_Chat_Module_Loader::get_visibility_settings_cached();
+        } else {
+            $visibilidades_configuradas = get_option('flavor_modules_visibility', []);
+        }
 
         if (isset($visibilidades_configuradas[$this->id])) {
             return $visibilidades_configuradas[$this->id];
@@ -425,8 +429,12 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
      * {@inheritdoc}
      */
     public function get_required_capability() {
-        // Verificar si hay capacidad configurada en admin
-        $capacidades_configuradas = get_option('flavor_modules_capabilities', []);
+        // Usar caché centralizada del Module Loader
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $capacidades_configuradas = Flavor_Chat_Module_Loader::get_capabilities_settings_cached();
+        } else {
+            $capacidades_configuradas = get_option('flavor_modules_capabilities', []);
+        }
 
         if (isset($capacidades_configuradas[$this->id])) {
             return $capacidades_configuradas[$this->id];

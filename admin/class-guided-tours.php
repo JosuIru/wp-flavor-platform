@@ -585,10 +585,10 @@ class Flavor_Guided_Tours {
         ];
 
         // Tour: Directorio de Emprendedores (Socios)
-        $this->tours['teder_directorio'] = [
-            'id' => 'teder_directorio',
+        $this->tours['demo_directorio'] = [
+            'id' => 'demo_directorio',
             'titulo' => __('Directorio de Emprendedores', 'flavor-chat-ia'),
-            'descripcion' => __('Mapa del tejido empresarial de Tierra Estella', 'flavor-chat-ia'),
+            'descripcion' => __('Mapa del tejido empresarial de la comunidad', 'flavor-chat-ia'),
             'icono' => 'dashicons-groups',
             'duracion' => '2 min',
             'paginas' => ['flavor-platform_page_flavor-socios', 'toplevel_page_socios'],
@@ -611,8 +611,8 @@ class Flavor_Guided_Tours {
         ];
 
         // Tour: Red Social / Networking
-        $this->tours['teder_networking'] = [
-            'id' => 'teder_networking',
+        $this->tours['demo_networking'] = [
+            'id' => 'demo_networking',
             'titulo' => __('Red Social de Emprendedores', 'flavor-chat-ia'),
             'descripcion' => __('LinkedIn local para la comunidad emprendedora', 'flavor-chat-ia'),
             'icono' => 'dashicons-networking',

@@ -200,7 +200,12 @@ class Flavor_Module_Access_Control {
      * @return string
      */
     public function obtener_visibilidad_modulo($module_slug) {
-        $visibilidades = get_option('flavor_modules_visibility', []);
+        // Usar caché centralizada del Module Loader
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $visibilidades = Flavor_Chat_Module_Loader::get_visibility_settings_cached();
+        } else {
+            $visibilidades = get_option('flavor_modules_visibility', []);
+        }
 
         if (isset($visibilidades[$module_slug])) {
             return $visibilidades[$module_slug];
@@ -217,7 +222,12 @@ class Flavor_Module_Access_Control {
      * @return string
      */
     public function obtener_capacidad_modulo($module_slug) {
-        $capacidades = get_option('flavor_modules_capabilities', []);
+        // Usar caché centralizada del Module Loader
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $capacidades = Flavor_Chat_Module_Loader::get_capabilities_settings_cached();
+        } else {
+            $capacidades = get_option('flavor_modules_capabilities', []);
+        }
 
         if (isset($capacidades[$module_slug])) {
             return $capacidades[$module_slug];

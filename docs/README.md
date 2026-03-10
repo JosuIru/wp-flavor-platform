@@ -77,12 +77,12 @@
 
 ---
 
-## Demo TEDER
+## Demo Tejido Empresarial
 
 | Documento | Descripcion |
 |-----------|-------------|
-| [GUIA-DEMO-TEDER.md](GUIA-DEMO-TEDER.md) | Script demo |
-| [PRESENTACION-TEDER-EMPRENDIMIENTO.md](PRESENTACION-TEDER-EMPRENDIMIENTO.md) | Presentacion |
+| [GUIA-DEMO.md](GUIA-DEMO.md) | Script demo |
+| [PRESENTACION-EMPRENDIMIENTO.md](PRESENTACION-EMPRENDIMIENTO.md) | Presentacion |
 
 ---
 
