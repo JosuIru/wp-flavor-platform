@@ -28,7 +28,7 @@ $alumnos = $wpdb->get_results("
            COUNT(DISTINCT cert.id) as certificados_obtenidos,
            SUM(i.precio_pagado) as total_pagado
     FROM {$wpdb->users} u
-    INNER JOIN $tabla_inscripciones i ON u.ID = i.alumno_id
+    INNER JOIN $tabla_inscripciones i ON u.ID = i.usuario_id
     LEFT JOIN $tabla_certificados cert ON i.id = cert.inscripcion_id
     GROUP BY u.ID
     ORDER BY total_inscripciones DESC
@@ -95,8 +95,7 @@ $filtro_estado = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) :
     <!-- Filtros -->
     <div class="flavor-filters">
         <form method="get" action="">
-            <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-chat-cursos', 'flavor-chat-ia'); ?>">
-            <input type="hidden" name="tab" value="<?php echo esc_attr__('alumnos', 'flavor-chat-ia'); ?>">
+            <input type="hidden" name="page" value="cursos-alumnos">
 
             <div class="flavor-filters-row">
                 <input type="search"
@@ -235,7 +234,7 @@ jQuery(document).ready(function($) {
 
         $.post(ajaxurl, {
             action: 'flavor_get_alumno_detail',
-            alumno_id: alumnoId,
+            usuario_id: alumnoId,
             nonce: '<?php echo wp_create_nonce('flavor_cursos_nonce'); ?>'
         }, function(response) {
             if (response.success) {
@@ -283,7 +282,7 @@ jQuery(document).ready(function($) {
     // Ver progreso alumno
     $('.btn-progreso-alumno').on('click', function() {
         const alumnoId = $(this).data('id');
-        window.location.href = '?page=flavor-chat-cursos&tab=alumnos&action=progreso&alumno_id=' + alumnoId;
+        window.location.href = '?page=cursos-alumnos&action=progreso&usuario_id=' + alumnoId;
     });
 
     // Cerrar modal
