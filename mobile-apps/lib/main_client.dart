@@ -448,18 +448,9 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
   @override
   void initState() {
     super.initState();
-    _listenToLayoutUpdates();
-    _loadConfig();
-  }
-
-  void _listenToLayoutUpdates() {
-    ref.listen<LayoutConfig>(layoutConfigProvider, (previous, next) {
-      final signature = _buildLayoutSignature(next);
-      if (signature == _lastLayoutSignature) {
-        return;
-      }
-      _lastLayoutSignature = signature;
-      _applyLayoutConfig(next);
+    // Programar carga después del primer frame para tener acceso a context
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadConfig();
     });
   }
 
@@ -855,6 +846,16 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
     final i18n = AppLocalizations.of(context)!;
     final authState = ref.watch(clientAuthProvider);
 
+    // Escuchar cambios del layoutConfigProvider
+    ref.listen<LayoutConfig>(layoutConfigProvider, (previous, next) {
+      final signature = _buildLayoutSignature(next);
+      if (signature == _lastLayoutSignature) {
+        return;
+      }
+      _lastLayoutSignature = signature;
+      _applyLayoutConfig(next);
+    });
+
     // Escuchar cambios del syncProvider para recargar configuración
     ref.listen(syncProvider, (previous, next) {
       if (next.layoutConfig != null && previous?.layoutConfig == null) {
@@ -921,7 +922,7 @@ class _ClientHomeScreenState extends ConsumerState<ClientHomeScreen> {
               backgroundColor: Theme.of(context).colorScheme.secondary,
             )
           : null,
-      bottomNavigationBar: useBottomNav && bottomTabs.isNotEmpty
+      bottomNavigationBar: useBottomNav && bottomTabs.length >= 2
           ? NavigationBar(
               selectedIndex: _currentIndex,
               onDestinationSelected: (index) {

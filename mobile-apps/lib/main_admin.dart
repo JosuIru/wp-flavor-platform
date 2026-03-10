@@ -1483,20 +1483,22 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
         index: _currentIndex,
         children: bottomTabs.map((tab) => tab.screen).toList(),
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          Haptics.selection();
-          setState(() => _currentIndex = index);
-        },
-        destinations: bottomTabs
-            .map((tab) => NavigationDestination(
-                  icon: Icon(tab.icon),
-                  selectedIcon: Icon(tab.selectedIcon),
-                  label: tab.label,
-                ))
-            .toList(),
-      ),
+      bottomNavigationBar: bottomTabs.length >= 2
+          ? NavigationBar(
+              selectedIndex: _currentIndex,
+              onDestinationSelected: (index) {
+                Haptics.selection();
+                setState(() => _currentIndex = index);
+              },
+              destinations: bottomTabs
+                  .map((tab) => NavigationDestination(
+                        icon: Icon(tab.icon),
+                        selectedIcon: Icon(tab.selectedIcon),
+                        label: tab.label,
+                      ))
+                  .toList(),
+            )
+          : null,
     );
   }
 }

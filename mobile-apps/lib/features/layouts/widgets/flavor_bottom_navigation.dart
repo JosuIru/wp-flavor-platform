@@ -37,7 +37,8 @@ class FlavorBottomNavigation extends StatelessWidget {
     // Limitar a 5 items máximo para bottom nav
     final displayItems = navItems.take(5).toList();
 
-    if (displayItems.isEmpty) {
+    // NavigationBar requiere mínimo 2 destinos
+    if (displayItems.length < 2) {
       return const SizedBox.shrink();
     }
 
