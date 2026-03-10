@@ -71,43 +71,7 @@ class Flavor_Frontend_Assets {
         $tiene_shortcodes_modulos = false;
 
         if ($post && is_singular()) {
-            $shortcodes_a_buscar = [
-                // Módulos genéricos
-                'flavor_module_listing',
-                'flavor_module_form',
-                'flavor_module_detail',
-                'flavor_module_dashboard',
-                // Landings y secciones
-                'flavor_landing',
-                'flavor_section',
-                // Dashboard usuario
-                'flavor_mi_cuenta',
-                // Grupos de consumo
-                'gc_ciclo_actual',
-                'gc_productos',
-                'gc_mi_pedido',
-                // Marketplace
-                'marketplace_listado',
-                'marketplace_formulario',
-                // Red de comunidades
-                'flavor_network_directory',
-                'flavor_network_map',
-                'flavor_network_board',
-                'flavor_network_events',
-                'flavor_network_alerts',
-                'flavor_network_catalog',
-                'flavor_network_collaborations',
-                'flavor_network_time_offers',
-                'flavor_network_node_profile',
-                'flavor_network_questions',
-            ];
-
-            foreach ($shortcodes_a_buscar as $shortcode) {
-                if (has_shortcode($post->post_content, $shortcode)) {
-                    $tiene_shortcodes_modulos = true;
-                    break;
-                }
-            }
+            $tiene_shortcodes_modulos = $this->post_has_module_shortcodes($post);
         }
 
         // Permitir forzar la carga via filtro
@@ -214,5 +178,68 @@ class Flavor_Frontend_Assets {
             [],
             FLAVOR_CHAT_IA_VERSION
         );
+    }
+
+    /**
+     * Verifica si un post contiene shortcodes de módulos.
+     * Usa una sola regex en lugar de múltiples has_shortcode() y
+     * cachea el resultado en post_meta para evitar re-escaneos.
+     *
+     * @param WP_Post $post Post a verificar
+     * @return bool
+     */
+    private function post_has_module_shortcodes($post): bool {
+        if (empty($post->post_content)) {
+            return false;
+        }
+
+        // Intentar obtener del caché (post_meta)
+        $cache_key = '_flavor_has_module_shortcodes';
+        $content_hash = '_flavor_content_hash';
+
+        $current_hash = md5($post->post_content);
+        $cached_hash = get_post_meta($post->ID, $content_hash, true);
+        $cached_result = get_post_meta($post->ID, $cache_key, true);
+
+        // Si el contenido no cambió, usar caché
+        if ($cached_hash === $current_hash && $cached_result !== '') {
+            return (bool) $cached_result;
+        }
+
+        // Lista de shortcodes a detectar (una sola regex)
+        $shortcodes = [
+            'flavor_module_listing',
+            'flavor_module_form',
+            'flavor_module_detail',
+            'flavor_module_dashboard',
+            'flavor_landing',
+            'flavor_section',
+            'flavor_mi_cuenta',
+            'gc_ciclo_actual',
+            'gc_productos',
+            'gc_mi_pedido',
+            'marketplace_listado',
+            'marketplace_formulario',
+            'flavor_network_directory',
+            'flavor_network_map',
+            'flavor_network_board',
+            'flavor_network_events',
+            'flavor_network_alerts',
+            'flavor_network_catalog',
+            'flavor_network_collaborations',
+            'flavor_network_time_offers',
+            'flavor_network_node_profile',
+            'flavor_network_questions',
+        ];
+
+        // Crear patrón regex optimizado (una sola pasada)
+        $pattern = '/\[(?:' . implode('|', array_map('preg_quote', $shortcodes)) . ')[\s\]]/';
+        $has_shortcodes = (bool) preg_match($pattern, $post->post_content);
+
+        // Guardar en caché (silencioso, no crítico si falla)
+        update_post_meta($post->ID, $cache_key, $has_shortcodes ? '1' : '0');
+        update_post_meta($post->ID, $content_hash, $current_hash);
+
+        return $has_shortcodes;
     }
 }
