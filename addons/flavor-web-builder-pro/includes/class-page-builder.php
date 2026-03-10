@@ -832,7 +832,7 @@ class Flavor_Page_Builder {
         // CSS base de Flavor (variables CSS del tema)
         wp_enqueue_style(
             'flavor-base-preview',
-            FLAVOR_CHAT_IA_URL . 'assets/css/flavor-base.css',
+            FLAVOR_CHAT_IA_URL . 'assets/css/core/flavor-base.css',
             [],
             FLAVOR_CHAT_IA_VERSION
         );

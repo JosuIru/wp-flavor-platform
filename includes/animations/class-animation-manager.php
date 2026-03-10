@@ -303,7 +303,7 @@ class Flavor_Animation_Manager {
 
         wp_enqueue_style(
             'flavor-animations',
-            FLAVOR_CHAT_IA_URL . "assets/css/animations{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/core/animations{$sufijo_asset}.css",
             [],
             FLAVOR_CHAT_IA_VERSION
         );

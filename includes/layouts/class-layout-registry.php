@@ -715,7 +715,7 @@ class Flavor_Layout_Registry {
 
         wp_enqueue_style(
             'flavor-layouts',
-            FLAVOR_CHAT_IA_URL . "assets/css/layouts{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/layouts/layouts{$sufijo_asset}.css",
             [],
             FLAVOR_CHAT_IA_VERSION
         );

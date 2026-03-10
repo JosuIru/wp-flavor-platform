@@ -236,7 +236,7 @@ class Flavor_Layout_Extras {
 
         wp_enqueue_style(
             'flavor-layout-extras',
-            FLAVOR_CHAT_IA_URL . "assets/css/layout-extras{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/layouts/layout-extras{$sufijo_asset}.css",
             ['flavor-layouts'],
             FLAVOR_CHAT_IA_VERSION
         );

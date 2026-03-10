@@ -809,7 +809,7 @@ class Flavor_Shared_Features {
 
         wp_enqueue_style(
             'flavor-shared-features',
-            FLAVOR_CHAT_IA_URL . 'assets/css/shared-features.css',
+            FLAVOR_CHAT_IA_URL . 'assets/css/modules/shared-features.css',
             [],
             FLAVOR_CHAT_IA_VERSION
         );

@@ -488,10 +488,26 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
      * Encola assets admin
      */
     public function enqueue_admin_assets($hook) {
-        if (strpos($hook, 'flavor-chat') === false) {
+        // Verificar si estamos en una página del módulo de avisos
+        $pagina_actual = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        $es_pagina_avisos = strpos($pagina_actual, 'avisos') !== false;
+
+        if (!$es_pagina_avisos && strpos($hook, 'flavor-chat') === false) {
             return;
         }
+
+        // Cargar estilos base del frontend
         $this->enqueue_assets();
+
+        // Cargar estilos del dashboard admin (componentes dm-*)
+        if ($es_pagina_avisos) {
+            wp_enqueue_style(
+                'flavor-dashboard-module-components',
+                FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-module-components.css',
+                [],
+                FLAVOR_CHAT_IA_VERSION
+            );
+        }
     }
 
     /**
@@ -2478,29 +2494,75 @@ KNOWLEDGE;
      * Renderiza el dashboard de avisos municipales
      */
     public function render_admin_dashboard() {
-        echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Avisos Municipales', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Aviso', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=avisos-nuevo'), 'class' => 'button-primary'],
-        ]);
-
-        // Resumen de estadísticas
         global $wpdb;
         $tabla_avisos = $this->tablas['avisos'];
-        $avisos_activos = $this->contar_avisos_publicados();
-        $total_avisos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_avisos");
-        $avisos_urgentes = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $tabla_avisos WHERE prioridad = 'urgente' AND estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s)",
-            current_time('mysql')
+        $tabla_categorias = $this->tablas['categorias'];
+        $ahora = current_time('mysql');
+        $inicio_mes = gmdate('Y-m-01 00:00:00');
+        $proxima_semana = gmdate('Y-m-d H:i:s', strtotime('+7 days'));
+
+        // Verificar si las tablas existen
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
+            echo '<div class="wrap"><div class="notice notice-warning"><p>' . esc_html__('Las tablas del módulo no están creadas. Active el módulo para crearlas.', 'flavor-chat-ia') . '</p></div></div>';
+            return;
+        }
+
+        // Estadísticas
+        $stats = [
+            'activos' => $this->contar_avisos_publicados(),
+            'urgentes' => (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_avisos WHERE prioridad = 'urgente' AND estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s)",
+                $ahora
+            )),
+            'proximos_expirar' => (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_avisos WHERE estado = 'publicado' AND fecha_expiracion IS NOT NULL AND fecha_expiracion > %s AND fecha_expiracion <= %s",
+                $ahora,
+                $proxima_semana
+            )),
+            'visualizaciones_mes' => (int) $wpdb->get_var("SELECT SUM(total_visualizaciones) FROM $tabla_avisos"),
+            'total' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_avisos"),
+            'este_mes' => (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_avisos WHERE created_at >= %s",
+                $inicio_mes
+            )),
+            'confirmaciones' => (int) $wpdb->get_var("SELECT SUM(total_confirmaciones) FROM $tabla_avisos"),
+        ];
+
+        // Avisos recientes
+        $avisos_recientes = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_avisos WHERE estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s) ORDER BY created_at DESC LIMIT 5",
+            $ahora
         ));
 
-        echo '<div class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($avisos_activos) . '</span><span class="stat-label">' . __('Avisos Activos', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($total_avisos) . '</span><span class="stat-label">' . __('Total Avisos', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($avisos_urgentes) . '</span><span class="stat-label">' . __('Urgentes', 'flavor-chat-ia') . '</span></div>';
-        echo '</div>';
+        // Avisos urgentes
+        $avisos_urgentes = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_avisos WHERE prioridad = 'urgente' AND estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s) ORDER BY created_at DESC",
+            $ahora
+        ));
 
-        echo '<p>' . __('Panel de control del módulo de avisos municipales con métricas y accesos rápidos.', 'flavor-chat-ia') . '</p>';
-        echo '</div>';
+        // Categorías con conteo
+        $categorias = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_categorias)) {
+            $categorias = $wpdb->get_results(
+                "SELECT c.*, COUNT(a.id) as count
+                FROM $tabla_categorias c
+                LEFT JOIN $tabla_avisos a ON a.categoria = c.nombre AND a.estado = 'publicado'
+                GROUP BY c.id
+                ORDER BY c.orden ASC, c.nombre ASC
+                LIMIT 10"
+            );
+        }
+
+        // Cargar vista
+        $vista_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($vista_path)) {
+            include $vista_path;
+        } else {
+            // Fallback básico
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard de Avisos Municipales', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Avisos activos:', 'flavor-chat-ia') . ' ' . esc_html($stats['activos']) . '</p>';
+            echo '</div>';
+        }
     }
 
     /**
@@ -2530,7 +2592,7 @@ KNOWLEDGE;
                 echo '<td><span class="' . esc_attr($clase_prioridad) . '">' . esc_html(ucfirst($aviso['prioridad'] ?? 'media')) . '</span></td>';
                 echo '<td>' . esc_html($aviso['categoria'] ?? '-') . '</td>';
                 echo '<td>' . esc_html(date_i18n('d/m/Y H:i', strtotime($aviso['created_at']))) . '</td>';
-                echo '<td><a href="#" class="button button-small am-ver-aviso" data-id="' . esc_attr($aviso['id']) . '">' . __('Ver', 'flavor-chat-ia') . '</a> <a href="' . esc_url(admin_url('admin.php?page=avisos-municipales-nuevo&editar=' . $aviso['id'])) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
+                echo '<td><a href="#" class="button button-small am-ver-aviso" data-id="' . esc_attr($aviso['id']) . '">' . __('Ver', 'flavor-chat-ia') . '</a> <a href="' . esc_url(admin_url('admin.php?page=avisos-nuevo&editar=' . $aviso['id'])) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a></td>';
                 echo '</tr>';
             }
             echo '</tbody></table>';
@@ -2578,78 +2640,260 @@ KNOWLEDGE;
     }
 
     /**
-     * Renderiza la página de nuevo aviso
+     * Renderiza la página de nuevo/editar aviso
      */
     public function render_admin_nuevo() {
+        global $wpdb;
+        $tabla_avisos = $this->tablas['avisos'];
+
+        // Verificar si estamos editando
+        $aviso_id = isset($_GET['editar']) ? absint($_GET['editar']) : 0;
+        $republicar_id = isset($_GET['republicar']) ? absint($_GET['republicar']) : 0;
+        $prioridad_default = isset($_GET['prioridad']) ? sanitize_text_field($_GET['prioridad']) : 'media';
+
+        $aviso = null;
+        $es_edicion = false;
+        $es_republicar = false;
+
+        if ($aviso_id > 0) {
+            $aviso = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM $tabla_avisos WHERE id = %d",
+                $aviso_id
+            ));
+            $es_edicion = true;
+        } elseif ($republicar_id > 0) {
+            $aviso = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM $tabla_avisos WHERE id = %d",
+                $republicar_id
+            ));
+            $es_republicar = true;
+        }
+
+        // Valores del formulario
+        $titulo = $aviso ? $aviso->titulo : '';
+        $contenido = $aviso ? $aviso->contenido : '';
+        $prioridad = $aviso ? $aviso->prioridad : $prioridad_default;
+        $categoria = $aviso ? $aviso->categoria : '';
+        $fecha_exp = $aviso && $aviso->fecha_expiracion ? date('Y-m-d\TH:i', strtotime($aviso->fecha_expiracion)) : '';
+
+        // Título de la página
+        $titulo_pagina = $es_edicion ? __('Editar Aviso', 'flavor-chat-ia') : ($es_republicar ? __('Republicar Aviso', 'flavor-chat-ia') : __('Nuevo Aviso', 'flavor-chat-ia'));
+
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Nuevo Aviso', 'flavor-chat-ia'));
+        $this->render_page_header($titulo_pagina, [
+            ['label' => __('Volver', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=avisos-activos'), 'class' => 'button'],
+        ]);
+
+        // Procesar formulario
+        if (isset($_POST['publicar_aviso']) || isset($_POST['guardar_borrador'])) {
+            $this->procesar_formulario_aviso($es_edicion ? $aviso_id : 0);
+        }
 
         echo '<form method="post" action="" class="flavor-form">';
         wp_nonce_field('flavor_crear_aviso', 'flavor_aviso_nonce');
 
+        if ($es_edicion) {
+            echo '<input type="hidden" name="aviso_id" value="' . esc_attr($aviso_id) . '" />';
+        }
+
         echo '<table class="form-table">';
 
-        echo '<tr><th scope="row"><label for="titulo">' . __('Título', 'flavor-chat-ia') . '</label></th>';
-        echo '<td><input type="text" name="titulo" id="titulo" class="regular-text" required /></td></tr>';
+        // Título
+        echo '<tr><th scope="row"><label for="titulo">' . __('Título', 'flavor-chat-ia') . ' <span class="required">*</span></label></th>';
+        echo '<td><input type="text" name="titulo" id="titulo" class="regular-text" value="' . esc_attr($titulo) . '" required /></td></tr>';
 
+        // Contenido
         echo '<tr><th scope="row"><label for="contenido">' . __('Contenido', 'flavor-chat-ia') . '</label></th>';
-        echo '<td><textarea name="contenido" id="contenido" rows="6" class="large-text"></textarea></td></tr>';
+        echo '<td><textarea name="contenido" id="contenido" rows="8" class="large-text">' . esc_textarea($contenido) . '</textarea></td></tr>';
 
+        // Prioridad
         echo '<tr><th scope="row"><label for="prioridad">' . __('Prioridad', 'flavor-chat-ia') . '</label></th>';
         echo '<td><select name="prioridad" id="prioridad">';
-        echo '<option value="baja">' . __('Baja', 'flavor-chat-ia') . '</option>';
-        echo '<option value="media" selected>' . __('Media', 'flavor-chat-ia') . '</option>';
-        echo '<option value="alta">' . __('Alta', 'flavor-chat-ia') . '</option>';
-        echo '<option value="urgente">' . __('Urgente', 'flavor-chat-ia') . '</option>';
+        $prioridades = ['baja' => __('Baja', 'flavor-chat-ia'), 'media' => __('Media', 'flavor-chat-ia'), 'alta' => __('Alta', 'flavor-chat-ia'), 'urgente' => __('Urgente', 'flavor-chat-ia')];
+        foreach ($prioridades as $valor => $etiqueta) {
+            $selected = ($prioridad === $valor) ? ' selected' : '';
+            echo '<option value="' . esc_attr($valor) . '"' . $selected . '>' . esc_html($etiqueta) . '</option>';
+        }
         echo '</select></td></tr>';
 
+        // Categoría
+        $tabla_categorias = $this->tablas['categorias'];
+        $categorias_lista = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_categorias)) {
+            $categorias_lista = $wpdb->get_results("SELECT * FROM $tabla_categorias ORDER BY orden ASC");
+        }
+        if (!empty($categorias_lista)) {
+            echo '<tr><th scope="row"><label for="categoria">' . __('Categoría', 'flavor-chat-ia') . '</label></th>';
+            echo '<td><select name="categoria" id="categoria">';
+            echo '<option value="">' . __('-- Seleccionar --', 'flavor-chat-ia') . '</option>';
+            foreach ($categorias_lista as $cat) {
+                $selected = ($categoria === $cat->nombre) ? ' selected' : '';
+                echo '<option value="' . esc_attr($cat->nombre) . '"' . $selected . '>' . esc_html($cat->nombre) . '</option>';
+            }
+            echo '</select></td></tr>';
+        }
+
+        // Fecha de expiración
         echo '<tr><th scope="row"><label for="fecha_expiracion">' . __('Fecha de expiración', 'flavor-chat-ia') . '</label></th>';
-        echo '<td><input type="datetime-local" name="fecha_expiracion" id="fecha_expiracion" />';
+        echo '<td><input type="datetime-local" name="fecha_expiracion" id="fecha_expiracion" value="' . esc_attr($fecha_exp) . '" />';
         echo '<p class="description">' . __('Dejar vacío para aviso sin fecha de expiración.', 'flavor-chat-ia') . '</p></td></tr>';
 
         echo '</table>';
 
         echo '<p class="submit">';
-        echo '<input type="submit" name="publicar_aviso" class="button-primary" value="' . __('Publicar Aviso', 'flavor-chat-ia') . '" />';
-        echo ' <input type="submit" name="guardar_borrador" class="button" value="' . __('Guardar Borrador', 'flavor-chat-ia') . '" />';
+        $boton_publicar = $es_edicion ? __('Actualizar Aviso', 'flavor-chat-ia') : __('Publicar Aviso', 'flavor-chat-ia');
+        echo '<input type="submit" name="publicar_aviso" class="button-primary" value="' . esc_attr($boton_publicar) . '" />';
+        if (!$es_edicion) {
+            echo ' <input type="submit" name="guardar_borrador" class="button" value="' . __('Guardar Borrador', 'flavor-chat-ia') . '" />';
+        }
         echo '</p>';
         echo '</form>';
         echo '</div>';
     }
 
     /**
-     * Renderiza la página de archivo de avisos
+     * Procesa el formulario de nuevo/editar aviso
+     *
+     * @param int $aviso_id ID del aviso a editar (0 para nuevo)
      */
-    public function render_admin_archivo() {
-        echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Archivo de Avisos', 'flavor-chat-ia'));
+    private function procesar_formulario_aviso($aviso_id = 0) {
+        if (!wp_verify_nonce($_POST['flavor_aviso_nonce'] ?? '', 'flavor_crear_aviso')) {
+            echo '<div class="notice notice-error"><p>' . __('Error de seguridad. Recarga la página.', 'flavor-chat-ia') . '</p></div>';
+            return;
+        }
 
         global $wpdb;
         $tabla_avisos = $this->tablas['avisos'];
-        $avisos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_avisos WHERE estado = 'expirado' OR (fecha_expiracion IS NOT NULL AND fecha_expiracion <= %s) ORDER BY created_at DESC LIMIT 50",
-            current_time('mysql')
-        ), ARRAY_A);
 
-        if (!empty($avisos)) {
-            echo '<table class="wp-list-table widefat fixed striped">';
-            echo '<thead><tr><th>' . __('Título', 'flavor-chat-ia') . '</th><th>' . __('Categoría', 'flavor-chat-ia') . '</th><th>' . __('Publicado', 'flavor-chat-ia') . '</th><th>' . __('Expirado', 'flavor-chat-ia') . '</th><th>' . __('Acciones', 'flavor-chat-ia') . '</th></tr></thead>';
-            echo '<tbody>';
-            foreach ($avisos as $aviso) {
-                echo '<tr>';
-                echo '<td><strong>' . esc_html($aviso['titulo']) . '</strong></td>';
-                echo '<td>' . esc_html($aviso['categoria'] ?? '-') . '</td>';
-                echo '<td>' . esc_html(date_i18n('d/m/Y', strtotime($aviso['created_at']))) . '</td>';
-                echo '<td>' . ($aviso['fecha_expiracion'] ? esc_html(date_i18n('d/m/Y', strtotime($aviso['fecha_expiracion']))) : '-') . '</td>';
-                echo '<td><a href="#" class="button button-small am-ver-aviso" data-id="' . esc_attr($aviso['id']) . '">' . __('Ver', 'flavor-chat-ia') . '</a> <a href="' . esc_url(admin_url('admin.php?page=avisos-municipales-nuevo&republicar=' . $aviso['id'])) . '" class="button button-small">' . __('Republicar', 'flavor-chat-ia') . '</a></td>';
-                echo '</tr>';
-            }
-            echo '</tbody></table>';
-        } else {
-            echo '<p>' . __('No hay avisos archivados.', 'flavor-chat-ia') . '</p>';
+        $datos = [
+            'titulo'           => sanitize_text_field($_POST['titulo'] ?? ''),
+            'contenido'        => wp_kses_post($_POST['contenido'] ?? ''),
+            'prioridad'        => sanitize_text_field($_POST['prioridad'] ?? 'media'),
+            'categoria'        => sanitize_text_field($_POST['categoria'] ?? ''),
+            'estado'           => isset($_POST['publicar_aviso']) ? 'publicado' : 'borrador',
+            'fecha_publicacion'=> isset($_POST['publicar_aviso']) ? current_time('mysql') : null,
+            'fecha_expiracion' => !empty($_POST['fecha_expiracion']) ? sanitize_text_field($_POST['fecha_expiracion']) : null,
+            'updated_at'       => current_time('mysql'),
+        ];
+
+        if (empty($datos['titulo'])) {
+            echo '<div class="notice notice-error"><p>' . __('El título es obligatorio.', 'flavor-chat-ia') . '</p></div>';
+            return;
         }
 
-        echo '</div>';
+        if ($aviso_id > 0) {
+            // Actualizar
+            $resultado = $wpdb->update($tabla_avisos, $datos, ['id' => $aviso_id]);
+            if ($resultado !== false) {
+                echo '<div class="notice notice-success"><p>' . __('Aviso actualizado correctamente.', 'flavor-chat-ia') . '</p></div>';
+            } else {
+                echo '<div class="notice notice-error"><p>' . __('Error al actualizar el aviso.', 'flavor-chat-ia') . '</p></div>';
+            }
+        } else {
+            // Insertar
+            $datos['autor_id'] = get_current_user_id();
+            $datos['created_at'] = current_time('mysql');
+
+            $resultado = $wpdb->insert($tabla_avisos, $datos);
+            if ($resultado) {
+                $nuevo_id = $wpdb->insert_id;
+                echo '<div class="notice notice-success"><p>' . sprintf(__('Aviso creado correctamente. <a href="%s">Ver avisos activos</a>', 'flavor-chat-ia'), admin_url('admin.php?page=avisos-activos')) . '</p></div>';
+            } else {
+                echo '<div class="notice notice-error"><p>' . __('Error al crear el aviso.', 'flavor-chat-ia') . '</p></div>';
+            }
+        }
+    }
+
+    /**
+     * Renderiza la página de archivo de avisos
+     */
+    public function render_admin_archivo() {
+        global $wpdb;
+        $tabla_avisos = $this->tablas['avisos'];
+        $tabla_categorias = $this->tablas['categorias'];
+        $ahora = current_time('mysql');
+        $inicio_mes = gmdate('Y-m-01 00:00:00');
+
+        // Filtros
+        $filtros = [
+            'categoria' => isset($_GET['categoria']) ? sanitize_text_field($_GET['categoria']) : '',
+            'anio'      => isset($_GET['anio']) ? absint($_GET['anio']) : '',
+            'buscar'    => isset($_GET['buscar']) ? sanitize_text_field($_GET['buscar']) : '',
+        ];
+
+        // Paginación
+        $por_pagina = 20;
+        $pagina = isset($_GET['pag']) ? max(1, absint($_GET['pag'])) : 1;
+        $offset = ($pagina - 1) * $por_pagina;
+
+        // Construir query
+        $where = "(estado = 'archivado' OR estado = 'expirado' OR (fecha_expiracion IS NOT NULL AND fecha_expiracion <= %s))";
+        $params = [$ahora];
+
+        if (!empty($filtros['categoria'])) {
+            $where .= " AND categoria = %s";
+            $params[] = $filtros['categoria'];
+        }
+
+        if (!empty($filtros['anio'])) {
+            $where .= " AND YEAR(created_at) = %d";
+            $params[] = $filtros['anio'];
+        }
+
+        if (!empty($filtros['buscar'])) {
+            $where .= " AND titulo LIKE %s";
+            $params[] = '%' . $wpdb->esc_like($filtros['buscar']) . '%';
+        }
+
+        // Total para paginación
+        $total = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_avisos WHERE $where",
+            ...$params
+        ));
+
+        // Avisos
+        $avisos = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_avisos WHERE $where ORDER BY created_at DESC LIMIT %d OFFSET %d",
+            ...array_merge($params, [$por_pagina, $offset])
+        ));
+
+        // Estadísticas
+        $stats = [
+            'total_archivados' => $total,
+            'este_mes' => (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_avisos WHERE (estado = 'archivado' OR (fecha_expiracion IS NOT NULL AND fecha_expiracion <= %s)) AND fecha_expiracion >= %s",
+                $ahora,
+                $inicio_mes
+            )),
+            'total_visualizaciones' => (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT SUM(total_visualizaciones) FROM $tabla_avisos WHERE $where",
+                ...$params
+            )),
+            'total_confirmaciones' => (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT SUM(total_confirmaciones) FROM $tabla_avisos WHERE $where",
+                ...$params
+            )),
+        ];
+
+        // Categorías para filtro
+        $categorias = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_categorias)) {
+            $categorias = $wpdb->get_results("SELECT * FROM $tabla_categorias ORDER BY orden ASC");
+        }
+
+        // Paginación
+        $paginacion = [
+            'total'         => $total,
+            'por_pagina'    => $por_pagina,
+            'pagina'        => $pagina,
+            'total_paginas' => ceil($total / $por_pagina),
+        ];
+
+        // Cargar vista
+        $vista_path = dirname(__FILE__) . '/views/archivo.php';
+        if (file_exists($vista_path)) {
+            include $vista_path;
+        }
     }
 
     /**

@@ -102,7 +102,7 @@ class Flavor_Accessibility {
         if (file_exists($ruta_css_skip_links)) {
             wp_enqueue_style(
                 'flavor-skip-links',
-                FLAVOR_CHAT_IA_URL . "assets/css/skip-links{$sufijo_asset}.css",
+                FLAVOR_CHAT_IA_URL . "assets/css/components/skip-links{$sufijo_asset}.css",
                 [],
                 filemtime($ruta_css_skip_links)
             );
