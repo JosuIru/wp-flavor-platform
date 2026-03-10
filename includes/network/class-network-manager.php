@@ -46,6 +46,19 @@ class Flavor_Network_Manager {
     private function __construct() {
         $this->registrar_modulos();
         $this->init_hooks();
+
+        // Inicializar admin en contexto de administración
+        if (is_admin()) {
+            $this->init_admin();
+        }
+    }
+
+    /**
+     * Inicializa el panel de administración de red
+     */
+    private function init_admin() {
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/network/class-network-admin.php';
+        Flavor_Network_Admin::get_instance();
     }
 
     /**
@@ -150,6 +163,853 @@ class Flavor_Network_Manager {
                AND estado = 'activo'
                AND (ultima_sincronizacion IS NULL OR ultima_sincronizacion < %s)",
             $limite_inactivo
+        ));
+
+        // Sincronizar contenido federado
+        $this->sync_producers_from_peers($peers);
+        $this->sync_events_from_peers($peers);
+        $this->sync_carpooling_from_peers($peers);
+        $this->sync_workshops_from_peers($peers);
+        $this->sync_spaces_from_peers($peers);
+        $this->sync_marketplace_from_peers($peers);
+        $this->sync_timebank_from_peers($peers);
+        $this->sync_courses_from_peers($peers);
+    }
+
+    /**
+     * Sincroniza productores desde los nodos de la red
+     */
+    private function sync_producers_from_peers($peers) {
+        global $wpdb;
+
+        $tabla_productores = $wpdb->prefix . 'flavor_network_producers';
+        $tabla_productos = $wpdb->prefix . 'flavor_network_producer_products';
+
+        // Verificar que las tablas existen
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_productores'") !== $tabla_productores) {
+            return;
+        }
+
+        // Obtener coordenadas de este nodo
+        $lat_local = floatval(get_option('flavor_network_lat', 0));
+        $lng_local = floatval(get_option('flavor_network_lng', 0));
+
+        $nodo_local_id = get_option('flavor_network_node_id', '');
+
+        foreach ($peers as $peer) {
+            $site_url = untrailingslashit($peer->site_url);
+            if (empty($site_url)) {
+                continue;
+            }
+
+            // Construir URL con coordenadas para filtrar por distancia
+            $url_params = ['limite' => 50];
+            if ($lat_local && $lng_local) {
+                $url_params['lat'] = $lat_local;
+                $url_params['lng'] = $lng_local;
+            }
+
+            $url = add_query_arg(
+                $url_params,
+                $site_url . '/wp-json/flavor-integration/v1/federation/producers'
+            );
+
+            $response = wp_remote_get($url, [
+                'timeout' => 15,
+                'headers' => [
+                    'User-Agent'    => 'FlavorChatIA/1.0',
+                    'X-Origin-Node' => get_site_url(),
+                    'X-Node-Token'  => get_option('flavor_network_token', ''),
+                ],
+            ]);
+
+            if (is_wp_error($response)) {
+                continue;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if (!is_array($data) || empty($data['productores'])) {
+                continue;
+            }
+
+            foreach ($data['productores'] as $prod_data) {
+                // No importar productores propios
+                if ($prod_data['nodo_id'] === $nodo_local_id) {
+                    continue;
+                }
+
+                // Verificar si ya existe
+                $existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT id FROM $tabla_productores
+                     WHERE nodo_id = %s AND productor_id = %d",
+                    $prod_data['nodo_id'],
+                    $prod_data['productor_id']
+                ));
+
+                $datos_insertar = [
+                    'nodo_id'           => $prod_data['nodo_id'],
+                    'productor_id'      => $prod_data['productor_id'],
+                    'nombre'            => sanitize_text_field($prod_data['nombre']),
+                    'slug'              => sanitize_title($prod_data['slug']),
+                    'ubicacion'         => sanitize_text_field($prod_data['ubicacion'] ?? ''),
+                    'latitud'           => floatval($prod_data['latitud'] ?? 0),
+                    'longitud'          => floatval($prod_data['longitud'] ?? 0),
+                    'radio_entrega_km'  => floatval($prod_data['radio_entrega_km'] ?? 0),
+                    'certificacion_eco' => $prod_data['certificacion_eco'] ? 1 : 0,
+                    'compartir_en_red'  => 1,
+                    'acepta_mensajeria' => $prod_data['acepta_mensajeria'] ? 1 : 0,
+                    'visible_en_red'    => 1,
+                    'actualizado_en'    => current_time('mysql'),
+                ];
+
+                if ($existe) {
+                    $wpdb->update($tabla_productores, $datos_insertar, ['id' => $existe]);
+                } else {
+                    $datos_insertar['creado_en'] = current_time('mysql');
+                    $wpdb->insert($tabla_productores, $datos_insertar);
+                }
+            }
+        }
+
+        // Limpiar productores federados obsoletos (no actualizados en 7 días)
+        $limite_obsoleto = gmdate('Y-m-d H:i:s', time() - (7 * DAY_IN_SECONDS));
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM $tabla_productores
+             WHERE nodo_id != %s
+               AND actualizado_en < %s",
+            $nodo_local_id,
+            $limite_obsoleto
+        ));
+    }
+
+    /**
+     * Sincroniza eventos desde los nodos de la red
+     */
+    private function sync_events_from_peers($peers) {
+        global $wpdb;
+
+        $tabla_eventos = $wpdb->prefix . 'flavor_network_events';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_eventos'") !== $tabla_eventos) {
+            return;
+        }
+
+        $lat_local = floatval(get_option('flavor_network_lat', 0));
+        $lng_local = floatval(get_option('flavor_network_lng', 0));
+        $nodo_local_id = get_option('flavor_network_node_id', '');
+
+        foreach ($peers as $peer) {
+            $site_url = untrailingslashit($peer->site_url);
+            if (empty($site_url)) {
+                continue;
+            }
+
+            $url_params = ['limite' => 50];
+            if ($lat_local && $lng_local) {
+                $url_params['lat'] = $lat_local;
+                $url_params['lng'] = $lng_local;
+                $url_params['radio'] = 100; // Radio de 100km para eventos
+            }
+
+            $url = add_query_arg(
+                $url_params,
+                $site_url . '/wp-json/flavor-integration/v1/federation/events'
+            );
+
+            $response = wp_remote_get($url, [
+                'timeout' => 15,
+                'headers' => [
+                    'User-Agent'    => 'FlavorChatIA/1.0',
+                    'X-Origin-Node' => get_site_url(),
+                    'X-Node-Token'  => get_option('flavor_network_token', ''),
+                ],
+            ]);
+
+            if (is_wp_error($response)) {
+                continue;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if (!is_array($data) || empty($data['eventos'])) {
+                continue;
+            }
+
+            foreach ($data['eventos'] as $ev_data) {
+                if ($ev_data['nodo_id'] === $nodo_local_id) {
+                    continue;
+                }
+
+                $existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT id FROM $tabla_eventos WHERE nodo_id = %s AND evento_id = %d",
+                    $ev_data['nodo_id'],
+                    $ev_data['evento_id']
+                ));
+
+                $datos_insertar = [
+                    'nodo_id'            => $ev_data['nodo_id'],
+                    'evento_id'          => $ev_data['evento_id'],
+                    'titulo'             => sanitize_text_field($ev_data['titulo']),
+                    'descripcion'        => sanitize_textarea_field($ev_data['descripcion'] ?? ''),
+                    'tipo'               => sanitize_text_field($ev_data['tipo'] ?? 'social'),
+                    'fecha_inicio'       => sanitize_text_field($ev_data['fecha_inicio']),
+                    'fecha_fin'          => sanitize_text_field($ev_data['fecha_fin'] ?? ''),
+                    'ubicacion'          => sanitize_text_field($ev_data['ubicacion'] ?? ''),
+                    'es_online'          => $ev_data['es_online'] ? 1 : 0,
+                    'precio'             => floatval($ev_data['precio'] ?? 0),
+                    'aforo_maximo'       => absint($ev_data['aforo_maximo'] ?? 0),
+                    'inscritos_count'    => absint($ev_data['inscritos_count'] ?? 0),
+                    'organizador_nombre' => sanitize_text_field($ev_data['organizador_nombre'] ?? ''),
+                    'imagen_url'         => esc_url_raw($ev_data['imagen_url'] ?? ''),
+                    'visible_en_red'     => 1,
+                    'actualizado_en'     => current_time('mysql'),
+                ];
+
+                if ($existe) {
+                    $wpdb->update($tabla_eventos, $datos_insertar, ['id' => $existe]);
+                } else {
+                    $datos_insertar['creado_en'] = current_time('mysql');
+                    $wpdb->insert($tabla_eventos, $datos_insertar);
+                }
+            }
+        }
+
+        // Limpiar eventos obsoletos (pasados o no actualizados en 3 días)
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM $tabla_eventos
+             WHERE nodo_id != %s
+               AND (fecha_inicio < NOW() OR actualizado_en < %s)",
+            $nodo_local_id,
+            gmdate('Y-m-d H:i:s', time() - (3 * DAY_IN_SECONDS))
+        ));
+    }
+
+    /**
+     * Sincroniza viajes de carpooling desde los nodos de la red
+     */
+    private function sync_carpooling_from_peers($peers) {
+        global $wpdb;
+
+        $tabla_viajes = $wpdb->prefix . 'flavor_network_carpooling';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_viajes'") !== $tabla_viajes) {
+            return;
+        }
+
+        $lat_local = floatval(get_option('flavor_network_lat', 0));
+        $lng_local = floatval(get_option('flavor_network_lng', 0));
+        $nodo_local_id = get_option('flavor_network_node_id', '');
+
+        foreach ($peers as $peer) {
+            $site_url = untrailingslashit($peer->site_url);
+            if (empty($site_url)) {
+                continue;
+            }
+
+            $url_params = ['limite' => 50];
+            if ($lat_local && $lng_local) {
+                $url_params['origen_lat'] = $lat_local;
+                $url_params['origen_lng'] = $lng_local;
+                $url_params['radio'] = 150; // Radio de 150km para viajes
+            }
+
+            $url = add_query_arg(
+                $url_params,
+                $site_url . '/wp-json/flavor-integration/v1/federation/carpooling'
+            );
+
+            $response = wp_remote_get($url, [
+                'timeout' => 15,
+                'headers' => [
+                    'User-Agent'    => 'FlavorChatIA/1.0',
+                    'X-Origin-Node' => get_site_url(),
+                    'X-Node-Token'  => get_option('flavor_network_token', ''),
+                ],
+            ]);
+
+            if (is_wp_error($response)) {
+                continue;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if (!is_array($data) || empty($data['viajes'])) {
+                continue;
+            }
+
+            foreach ($data['viajes'] as $v_data) {
+                if ($v_data['nodo_id'] === $nodo_local_id) {
+                    continue;
+                }
+
+                $existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT id FROM $tabla_viajes WHERE nodo_id = %s AND viaje_id = %d",
+                    $v_data['nodo_id'],
+                    $v_data['viaje_id']
+                ));
+
+                $datos_insertar = [
+                    'nodo_id'            => $v_data['nodo_id'],
+                    'viaje_id'           => $v_data['viaje_id'],
+                    'origen'             => sanitize_text_field($v_data['origen']),
+                    'destino'            => sanitize_text_field($v_data['destino']),
+                    'fecha_salida'       => sanitize_text_field($v_data['fecha_salida']),
+                    'hora_salida'        => sanitize_text_field($v_data['hora_salida'] ?? ''),
+                    'conductor_nombre'   => sanitize_text_field($v_data['conductor_nombre'] ?? ''),
+                    'plazas_disponibles' => absint($v_data['plazas_disponibles'] ?? 0),
+                    'precio_plaza'       => floatval($v_data['precio_plaza'] ?? 0),
+                    'permite_equipaje'   => $v_data['permite_equipaje'] ? 1 : 0,
+                    'permite_mascotas'   => $v_data['permite_mascotas'] ? 1 : 0,
+                    'estado'             => 'activo',
+                    'visible_en_red'     => 1,
+                    'actualizado_en'     => current_time('mysql'),
+                ];
+
+                if ($existe) {
+                    $wpdb->update($tabla_viajes, $datos_insertar, ['id' => $existe]);
+                } else {
+                    $datos_insertar['creado_en'] = current_time('mysql');
+                    $wpdb->insert($tabla_viajes, $datos_insertar);
+                }
+            }
+        }
+
+        // Limpiar viajes obsoletos (pasados o no actualizados)
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM $tabla_viajes
+             WHERE nodo_id != %s
+               AND (fecha_salida < NOW() OR actualizado_en < %s)",
+            $nodo_local_id,
+            gmdate('Y-m-d H:i:s', time() - (2 * DAY_IN_SECONDS))
+        ));
+    }
+
+    /**
+     * Sincroniza talleres desde los nodos de la red
+     */
+    private function sync_workshops_from_peers($peers) {
+        global $wpdb;
+
+        $tabla_talleres = $wpdb->prefix . 'flavor_network_workshops';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_talleres'") !== $tabla_talleres) {
+            return;
+        }
+
+        $lat_local = floatval(get_option('flavor_network_lat', 0));
+        $lng_local = floatval(get_option('flavor_network_lng', 0));
+        $nodo_local_id = get_option('flavor_network_node_id', '');
+
+        foreach ($peers as $peer) {
+            $site_url = untrailingslashit($peer->site_url);
+            if (empty($site_url)) {
+                continue;
+            }
+
+            $url_params = ['limite' => 50];
+            if ($lat_local && $lng_local) {
+                $url_params['lat'] = $lat_local;
+                $url_params['lng'] = $lng_local;
+                $url_params['radio'] = 100;
+            }
+
+            $url = add_query_arg(
+                $url_params,
+                $site_url . '/wp-json/flavor-integration/v1/federation/workshops'
+            );
+
+            $response = wp_remote_get($url, [
+                'timeout' => 15,
+                'headers' => [
+                    'User-Agent'    => 'FlavorChatIA/1.0',
+                    'X-Origin-Node' => get_site_url(),
+                    'X-Node-Token'  => get_option('flavor_network_token', ''),
+                ],
+            ]);
+
+            if (is_wp_error($response)) {
+                continue;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if (!is_array($data) || empty($data['talleres'])) {
+                continue;
+            }
+
+            foreach ($data['talleres'] as $t_data) {
+                if ($t_data['nodo_id'] === $nodo_local_id) {
+                    continue;
+                }
+
+                $existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT id FROM $tabla_talleres WHERE nodo_id = %s AND taller_id = %d",
+                    $t_data['nodo_id'],
+                    $t_data['taller_id']
+                ));
+
+                $datos_insertar = [
+                    'nodo_id'              => $t_data['nodo_id'],
+                    'taller_id'            => $t_data['taller_id'],
+                    'titulo'               => sanitize_text_field($t_data['titulo']),
+                    'slug'                 => sanitize_title($t_data['slug'] ?? ''),
+                    'descripcion'          => sanitize_textarea_field($t_data['descripcion'] ?? ''),
+                    'categoria'            => sanitize_text_field($t_data['categoria'] ?? ''),
+                    'nivel'                => sanitize_text_field($t_data['nivel'] ?? 'todos'),
+                    'duracion_horas'       => floatval($t_data['duracion_horas'] ?? 0),
+                    'numero_sesiones'      => absint($t_data['numero_sesiones'] ?? 1),
+                    'max_participantes'    => absint($t_data['max_participantes'] ?? 20),
+                    'inscritos_actuales'   => absint($t_data['inscritos_actuales'] ?? 0),
+                    'precio'               => floatval($t_data['precio'] ?? 0),
+                    'es_gratuito'          => $t_data['es_gratuito'] ? 1 : 0,
+                    'ubicacion'            => sanitize_text_field($t_data['ubicacion'] ?? ''),
+                    'organizador_nombre'   => sanitize_text_field($t_data['organizador_nombre'] ?? ''),
+                    'imagen_url'           => esc_url_raw($t_data['imagen_url'] ?? ''),
+                    'fecha_primera_sesion' => sanitize_text_field($t_data['fecha_primera_sesion'] ?? ''),
+                    'estado'               => 'publicado',
+                    'visible_en_red'       => 1,
+                    'actualizado_en'       => current_time('mysql'),
+                ];
+
+                if ($existe) {
+                    $wpdb->update($tabla_talleres, $datos_insertar, ['id' => $existe]);
+                } else {
+                    $datos_insertar['creado_en'] = current_time('mysql');
+                    $wpdb->insert($tabla_talleres, $datos_insertar);
+                }
+            }
+        }
+
+        // Limpiar talleres obsoletos (no actualizados en 5 días)
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM $tabla_talleres
+             WHERE nodo_id != %s
+               AND actualizado_en < %s",
+            $nodo_local_id,
+            gmdate('Y-m-d H:i:s', time() - (5 * DAY_IN_SECONDS))
+        ));
+    }
+
+    /**
+     * Sincroniza espacios comunes desde los nodos de la red
+     */
+    private function sync_spaces_from_peers($peers) {
+        global $wpdb;
+
+        $tabla_espacios = $wpdb->prefix . 'flavor_network_spaces';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_espacios'") !== $tabla_espacios) {
+            return;
+        }
+
+        $lat_local = floatval(get_option('flavor_network_lat', 0));
+        $lng_local = floatval(get_option('flavor_network_lng', 0));
+        $nodo_local_id = get_option('flavor_network_node_id', '');
+
+        foreach ($peers as $peer) {
+            $site_url = untrailingslashit($peer->site_url);
+            if (empty($site_url)) {
+                continue;
+            }
+
+            $url_params = ['limite' => 50];
+            if ($lat_local && $lng_local) {
+                $url_params['lat'] = $lat_local;
+                $url_params['lng'] = $lng_local;
+                $url_params['radio'] = 50; // Radio de 50km para espacios
+            }
+
+            $url = add_query_arg(
+                $url_params,
+                $site_url . '/wp-json/flavor-integration/v1/federation/spaces'
+            );
+
+            $response = wp_remote_get($url, [
+                'timeout' => 15,
+                'headers' => [
+                    'User-Agent'    => 'FlavorChatIA/1.0',
+                    'X-Origin-Node' => get_site_url(),
+                    'X-Node-Token'  => get_option('flavor_network_token', ''),
+                ],
+            ]);
+
+            if (is_wp_error($response)) {
+                continue;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if (!is_array($data) || empty($data['espacios'])) {
+                continue;
+            }
+
+            foreach ($data['espacios'] as $e_data) {
+                if ($e_data['nodo_id'] === $nodo_local_id) {
+                    continue;
+                }
+
+                $existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT id FROM $tabla_espacios WHERE nodo_id = %s AND espacio_id = %d",
+                    $e_data['nodo_id'],
+                    $e_data['espacio_id']
+                ));
+
+                $datos_insertar = [
+                    'nodo_id'            => $e_data['nodo_id'],
+                    'espacio_id'         => $e_data['espacio_id'],
+                    'nombre'             => sanitize_text_field($e_data['nombre']),
+                    'descripcion'        => sanitize_textarea_field($e_data['descripcion'] ?? ''),
+                    'tipo'               => sanitize_text_field($e_data['tipo'] ?? 'salon_eventos'),
+                    'ubicacion'          => sanitize_text_field($e_data['ubicacion'] ?? ''),
+                    'capacidad_personas' => absint($e_data['capacidad_personas'] ?? 0),
+                    'precio_hora'        => floatval($e_data['precio_hora'] ?? 0),
+                    'precio_dia'         => floatval($e_data['precio_dia'] ?? 0),
+                    'dias_disponibles'   => sanitize_text_field($e_data['dias_disponibles'] ?? 'L,M,X,J,V,S,D'),
+                    'foto_principal'     => esc_url_raw($e_data['foto_principal'] ?? ''),
+                    'estado'             => 'disponible',
+                    'visible_en_red'     => 1,
+                    'actualizado_en'     => current_time('mysql'),
+                ];
+
+                if ($existe) {
+                    $wpdb->update($tabla_espacios, $datos_insertar, ['id' => $existe]);
+                } else {
+                    $datos_insertar['creado_en'] = current_time('mysql');
+                    $wpdb->insert($tabla_espacios, $datos_insertar);
+                }
+            }
+        }
+
+        // Limpiar espacios obsoletos (no actualizados en 7 días)
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM $tabla_espacios
+             WHERE nodo_id != %s
+               AND actualizado_en < %s",
+            $nodo_local_id,
+            gmdate('Y-m-d H:i:s', time() - (7 * DAY_IN_SECONDS))
+        ));
+    }
+
+    /**
+     * Sincroniza anuncios del marketplace desde los nodos de la red
+     */
+    private function sync_marketplace_from_peers($peers) {
+        global $wpdb;
+
+        $tabla_anuncios = $wpdb->prefix . 'flavor_network_marketplace';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_anuncios'") !== $tabla_anuncios) {
+            return;
+        }
+
+        $lat_local = floatval(get_option('flavor_network_lat', 0));
+        $lng_local = floatval(get_option('flavor_network_lng', 0));
+        $nodo_local_id = get_option('flavor_network_node_id', '');
+
+        foreach ($peers as $peer) {
+            $site_url = untrailingslashit($peer->site_url);
+            if (empty($site_url)) {
+                continue;
+            }
+
+            $url_params = ['limite' => 50];
+            if ($lat_local && $lng_local) {
+                $url_params['lat'] = $lat_local;
+                $url_params['lng'] = $lng_local;
+                $url_params['radio'] = 100; // Radio de 100km para anuncios
+            }
+
+            $url = add_query_arg(
+                $url_params,
+                $site_url . '/wp-json/flavor-integration/v1/federation/marketplace'
+            );
+
+            $response = wp_remote_get($url, [
+                'timeout' => 15,
+                'headers' => [
+                    'User-Agent'    => 'FlavorChatIA/1.0',
+                    'X-Origin-Node' => get_site_url(),
+                    'X-Node-Token'  => get_option('flavor_network_token', ''),
+                ],
+            ]);
+
+            if (is_wp_error($response)) {
+                continue;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if (!is_array($data) || empty($data['anuncios'])) {
+                continue;
+            }
+
+            foreach ($data['anuncios'] as $a_data) {
+                if ($a_data['nodo_id'] === $nodo_local_id) {
+                    continue;
+                }
+
+                $existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT id FROM $tabla_anuncios WHERE nodo_id = %s AND anuncio_id = %d",
+                    $a_data['nodo_id'],
+                    $a_data['anuncio_id']
+                ));
+
+                $datos_insertar = [
+                    'nodo_id'          => $a_data['nodo_id'],
+                    'anuncio_id'       => $a_data['anuncio_id'],
+                    'titulo'           => sanitize_text_field($a_data['titulo']),
+                    'slug'             => sanitize_title($a_data['slug'] ?? ''),
+                    'descripcion'      => sanitize_textarea_field($a_data['descripcion'] ?? ''),
+                    'tipo'             => sanitize_text_field($a_data['tipo'] ?? 'venta'),
+                    'categoria'        => sanitize_text_field($a_data['categoria'] ?? ''),
+                    'precio'           => isset($a_data['precio']) ? floatval($a_data['precio']) : null,
+                    'es_gratuito'      => $a_data['es_gratuito'] ? 1 : 0,
+                    'condicion'        => sanitize_text_field($a_data['condicion'] ?? 'buen_estado'),
+                    'imagen_principal' => esc_url_raw($a_data['imagen_principal'] ?? ''),
+                    'ubicacion'        => sanitize_text_field($a_data['ubicacion'] ?? ''),
+                    'envio_disponible' => $a_data['envio_disponible'] ? 1 : 0,
+                    'usuario_nombre'   => sanitize_text_field($a_data['usuario_nombre'] ?? ''),
+                    'estado'           => 'publicado',
+                    'visible_en_red'   => 1,
+                    'actualizado_en'   => current_time('mysql'),
+                ];
+
+                if ($existe) {
+                    $wpdb->update($tabla_anuncios, $datos_insertar, ['id' => $existe]);
+                } else {
+                    $datos_insertar['creado_en'] = current_time('mysql');
+                    $wpdb->insert($tabla_anuncios, $datos_insertar);
+                }
+            }
+        }
+
+        // Limpiar anuncios obsoletos (no actualizados en 7 días)
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM $tabla_anuncios
+             WHERE nodo_id != %s
+               AND actualizado_en < %s",
+            $nodo_local_id,
+            gmdate('Y-m-d H:i:s', time() - (7 * DAY_IN_SECONDS))
+        ));
+    }
+
+    /**
+     * Sincroniza servicios del banco de tiempo desde los nodos de la red
+     */
+    private function sync_timebank_from_peers($peers) {
+        global $wpdb;
+
+        $tabla_servicios = $wpdb->prefix . 'flavor_network_time_bank';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_servicios'") !== $tabla_servicios) {
+            return;
+        }
+
+        $lat_local = floatval(get_option('flavor_network_lat', 0));
+        $lng_local = floatval(get_option('flavor_network_lng', 0));
+        $nodo_local_id = get_option('flavor_network_node_id', '');
+
+        foreach ($peers as $peer) {
+            $site_url = untrailingslashit($peer->site_url);
+            if (empty($site_url)) {
+                continue;
+            }
+
+            $url_params = ['limite' => 50];
+            if ($lat_local && $lng_local) {
+                $url_params['lat'] = $lat_local;
+                $url_params['lng'] = $lng_local;
+                $url_params['radio'] = 50;
+            }
+
+            $url = add_query_arg(
+                $url_params,
+                $site_url . '/wp-json/flavor-integration/v1/federation/timebank'
+            );
+
+            $response = wp_remote_get($url, [
+                'timeout' => 15,
+                'headers' => [
+                    'User-Agent'    => 'FlavorChatIA/1.0',
+                    'X-Origin-Node' => get_site_url(),
+                    'X-Node-Token'  => get_option('flavor_network_token', ''),
+                ],
+            ]);
+
+            if (is_wp_error($response)) {
+                continue;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if (!is_array($data) || empty($data['servicios'])) {
+                continue;
+            }
+
+            foreach ($data['servicios'] as $servicio_data) {
+                if ($servicio_data['nodo_id'] === $nodo_local_id) {
+                    continue;
+                }
+
+                $existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT id FROM $tabla_servicios WHERE nodo_id = %s AND servicio_id = %d",
+                    $servicio_data['nodo_id'],
+                    $servicio_data['servicio_id']
+                ));
+
+                $datos_insertar = [
+                    'nodo_id'                  => $servicio_data['nodo_id'],
+                    'servicio_id'              => $servicio_data['servicio_id'],
+                    'titulo'                   => sanitize_text_field($servicio_data['titulo']),
+                    'descripcion'              => sanitize_textarea_field($servicio_data['descripcion'] ?? ''),
+                    'tipo'                     => sanitize_text_field($servicio_data['tipo'] ?? 'oferta'),
+                    'categoria'                => sanitize_text_field($servicio_data['categoria'] ?? ''),
+                    'horas_estimadas'          => floatval($servicio_data['horas_estimadas'] ?? 1),
+                    'modalidad'                => sanitize_text_field($servicio_data['modalidad'] ?? 'presencial'),
+                    'disponibilidad'           => sanitize_text_field($servicio_data['disponibilidad'] ?? ''),
+                    'ubicacion'                => sanitize_text_field($servicio_data['ubicacion'] ?? ''),
+                    'usuario_nombre'           => sanitize_text_field($servicio_data['usuario_nombre'] ?? ''),
+                    'valoracion_promedio'      => floatval($servicio_data['valoracion_promedio'] ?? 0),
+                    'intercambios_completados' => intval($servicio_data['intercambios_completados'] ?? 0),
+                    'estado'                   => 'activo',
+                    'visible_en_red'           => 1,
+                    'actualizado_en'           => current_time('mysql'),
+                ];
+
+                if ($existe) {
+                    $wpdb->update($tabla_servicios, $datos_insertar, ['id' => $existe]);
+                } else {
+                    $datos_insertar['creado_en'] = current_time('mysql');
+                    $wpdb->insert($tabla_servicios, $datos_insertar);
+                }
+            }
+        }
+
+        // Limpiar servicios obsoletos (no actualizados en 7 días)
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM $tabla_servicios
+             WHERE nodo_id != %s
+               AND actualizado_en < %s",
+            $nodo_local_id,
+            gmdate('Y-m-d H:i:s', time() - (7 * DAY_IN_SECONDS))
+        ));
+    }
+
+    /**
+     * Sincroniza cursos desde los nodos de la red
+     */
+    private function sync_courses_from_peers($peers) {
+        global $wpdb;
+
+        $tabla_cursos = $wpdb->prefix . 'flavor_network_courses';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_cursos'") !== $tabla_cursos) {
+            return;
+        }
+
+        $lat_local = floatval(get_option('flavor_network_lat', 0));
+        $lng_local = floatval(get_option('flavor_network_lng', 0));
+        $nodo_local_id = get_option('flavor_network_node_id', '');
+
+        foreach ($peers as $peer) {
+            $site_url = untrailingslashit($peer->site_url);
+            if (empty($site_url)) {
+                continue;
+            }
+
+            $url_params = ['limite' => 50];
+            if ($lat_local && $lng_local) {
+                $url_params['lat'] = $lat_local;
+                $url_params['lng'] = $lng_local;
+                $url_params['radio'] = 100;
+            }
+
+            $url = add_query_arg(
+                $url_params,
+                $site_url . '/wp-json/flavor-integration/v1/federation/courses'
+            );
+
+            $response = wp_remote_get($url, [
+                'timeout' => 15,
+                'headers' => [
+                    'User-Agent'    => 'FlavorChatIA/1.0',
+                    'X-Origin-Node' => get_site_url(),
+                    'X-Node-Token'  => get_option('flavor_network_token', ''),
+                ],
+            ]);
+
+            if (is_wp_error($response)) {
+                continue;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if (!is_array($data) || empty($data['cursos'])) {
+                continue;
+            }
+
+            foreach ($data['cursos'] as $curso_data) {
+                if ($curso_data['nodo_id'] === $nodo_local_id) {
+                    continue;
+                }
+
+                $existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT id FROM $tabla_cursos WHERE nodo_id = %s AND curso_id = %d",
+                    $curso_data['nodo_id'],
+                    $curso_data['curso_id']
+                ));
+
+                $datos_insertar = [
+                    'nodo_id'             => $curso_data['nodo_id'],
+                    'curso_id'            => $curso_data['curso_id'],
+                    'titulo'              => sanitize_text_field($curso_data['titulo']),
+                    'slug'                => sanitize_title($curso_data['slug'] ?? ''),
+                    'descripcion'         => sanitize_textarea_field($curso_data['descripcion'] ?? ''),
+                    'categoria'           => sanitize_text_field($curso_data['categoria'] ?? ''),
+                    'nivel'               => sanitize_text_field($curso_data['nivel'] ?? 'todos'),
+                    'modalidad'           => sanitize_text_field($curso_data['modalidad'] ?? 'online'),
+                    'duracion_horas'      => floatval($curso_data['duracion_horas'] ?? 0),
+                    'numero_lecciones'    => intval($curso_data['numero_lecciones'] ?? 0),
+                    'max_alumnos'         => intval($curso_data['max_alumnos'] ?? 30),
+                    'inscritos_actuales'  => intval($curso_data['inscritos_actuales'] ?? 0),
+                    'precio'              => floatval($curso_data['precio'] ?? 0),
+                    'es_gratuito'         => !empty($curso_data['es_gratuito']) ? 1 : 0,
+                    'ubicacion'           => sanitize_text_field($curso_data['ubicacion'] ?? ''),
+                    'instructor_nombre'   => sanitize_text_field($curso_data['instructor_nombre'] ?? ''),
+                    'valoracion_promedio' => floatval($curso_data['valoracion_promedio'] ?? 0),
+                    'imagen_url'          => esc_url_raw($curso_data['imagen_url'] ?? ''),
+                    'fecha_inicio'        => $curso_data['fecha_inicio'] ?? null,
+                    'fecha_fin'           => $curso_data['fecha_fin'] ?? null,
+                    'estado'              => 'publicado',
+                    'visible_en_red'      => 1,
+                    'actualizado_en'      => current_time('mysql'),
+                ];
+
+                if ($existe) {
+                    $wpdb->update($tabla_cursos, $datos_insertar, ['id' => $existe]);
+                } else {
+                    $datos_insertar['creado_en'] = current_time('mysql');
+                    $wpdb->insert($tabla_cursos, $datos_insertar);
+                }
+            }
+        }
+
+        // Limpiar cursos obsoletos (no actualizados en 7 días)
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM $tabla_cursos
+             WHERE nodo_id != %s
+               AND actualizado_en < %s",
+            $nodo_local_id,
+            gmdate('Y-m-d H:i:s', time() - (7 * DAY_IN_SECONDS))
         ));
     }
 

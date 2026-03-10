@@ -40,6 +40,10 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
         $this->dashboard_client_contexts = ['consumo', 'comunidad', 'coordinacion'];
         $this->dashboard_admin_contexts = ['consumo', 'gestion', 'admin'];
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['economia_local', 'regeneracion'];
+        $this->gailu_contribuye_a = ['autonomia', 'impacto'];
+
         parent::__construct();
 
         // Registrar como consumidor de integraciones
@@ -2088,6 +2092,89 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             </tr>
         </table>
 
+        <?php
+        // Sección Compartir en Red (solo si el módulo de red está activo)
+        if (class_exists('Flavor_Network_Manager')):
+            $compartir_en_red = get_post_meta($post->ID, '_gc_compartir_en_red', true);
+            $acepta_mensajeria = get_post_meta($post->ID, '_gc_acepta_mensajeria', true);
+            $nodos_visibles = get_post_meta($post->ID, '_gc_nodos_visibles', true);
+            if (!is_array($nodos_visibles)) {
+                $nodos_visibles = [];
+            }
+        ?>
+        <h3 style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
+            <span class="dashicons dashicons-networking" style="color: #9b59b6;"></span>
+            <?php _e('Compartir en Red de Nodos', 'flavor-chat-ia'); ?>
+        </h3>
+        <p class="description" style="margin-bottom: 15px;">
+            <?php _e('Permite que otros nodos de la red puedan ver este productor y sus productos.', 'flavor-chat-ia'); ?>
+        </p>
+
+        <table class="form-table">
+            <tr>
+                <th><label for="gc_compartir_en_red"><?php _e('Compartir en Red', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="gc_compartir_en_red" name="gc_compartir_en_red"
+                               value="1" <?php checked($compartir_en_red, '1'); ?> />
+                        <?php _e('Permitir que este productor sea visible en otros nodos de la red', 'flavor-chat-ia'); ?>
+                    </label>
+                    <p class="description">
+                        <?php _e('Los nodos cercanos (dentro del radio de entrega) podrán ver y contactar a este productor.', 'flavor-chat-ia'); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="gc_acepta_mensajeria"><?php _e('Envío por Mensajería', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="gc_acepta_mensajeria" name="gc_acepta_mensajeria"
+                               value="1" <?php checked($acepta_mensajeria, '1'); ?> />
+                        <?php _e('Acepta envíos por mensajería a cualquier destino', 'flavor-chat-ia'); ?>
+                    </label>
+                    <p class="description">
+                        <?php _e('Si está activo, el productor será visible en todos los nodos independientemente de la distancia.', 'flavor-chat-ia'); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr id="gc_nodos_visibles_row" style="<?php echo ($compartir_en_red && !$acepta_mensajeria) ? '' : 'display:none;'; ?>">
+                <th><label><?php _e('Visibilidad', 'flavor-chat-ia'); ?></label></th>
+                <td>
+                    <p class="description" style="margin-bottom: 10px;">
+                        <span class="dashicons dashicons-info-outline" style="color: #2271b1;"></span>
+                        <?php
+                        if ($latitud_productor && $longitud_productor && $radio_entrega_km) {
+                            printf(
+                                __('Este productor será visible en nodos que se encuentren a menos de %d km de su ubicación.', 'flavor-chat-ia'),
+                                intval($radio_entrega_km)
+                            );
+                        } else {
+                            _e('Configura la ubicación y el radio de entrega para definir el área de visibilidad en la red.', 'flavor-chat-ia');
+                        }
+                        ?>
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+        <script>
+        jQuery(document).ready(function($) {
+            function actualizarVisibilidadNodos() {
+                var compartir = $('#gc_compartir_en_red').is(':checked');
+                var mensajeria = $('#gc_acepta_mensajeria').is(':checked');
+
+                if (compartir && !mensajeria) {
+                    $('#gc_nodos_visibles_row').show();
+                } else {
+                    $('#gc_nodos_visibles_row').hide();
+                }
+            }
+
+            $('#gc_compartir_en_red, #gc_acepta_mensajeria').on('change', actualizarVisibilidadNodos);
+        });
+        </script>
+        <?php endif; ?>
+
         <script>
         jQuery(document).ready(function($) {
             var mapaInicializado = false;
@@ -2569,6 +2656,159 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
             if ($longitud === '' || (is_numeric($longitud) && $longitud >= -180 && $longitud <= 180)) {
                 update_post_meta($post_id, '_gc_lng', $longitud);
             }
+        }
+
+        // Guardar campos de compartir en red
+        $compartir_en_red = isset($_POST['gc_compartir_en_red']) ? '1' : '0';
+        update_post_meta($post_id, '_gc_compartir_en_red', $compartir_en_red);
+
+        $acepta_mensajeria = isset($_POST['gc_acepta_mensajeria']) ? '1' : '0';
+        update_post_meta($post_id, '_gc_acepta_mensajeria', $acepta_mensajeria);
+
+        // Sincronizar con la tabla de red si está habilitado
+        if ($compartir_en_red === '1' && class_exists('Flavor_Network_Manager')) {
+            $this->sincronizar_productor_con_red($post_id);
+        } elseif ($compartir_en_red === '0' && class_exists('Flavor_Network_Manager')) {
+            $this->eliminar_productor_de_red($post_id);
+        }
+    }
+
+    /**
+     * Sincroniza un productor con la tabla de red
+     */
+    private function sincronizar_productor_con_red($productor_id) {
+        global $wpdb;
+        $tabla_productores_red = $wpdb->prefix . 'flavor_network_producers';
+
+        // Verificar que la tabla existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_productores_red'") !== $tabla_productores_red) {
+            return false;
+        }
+
+        $productor = get_post($productor_id);
+        if (!$productor || $productor->post_type !== 'gc_productor') {
+            return false;
+        }
+
+        // Obtener ID del nodo actual
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            // Generar ID de nodo si no existe
+            $nodo_id = wp_generate_uuid4();
+            update_option('flavor_network_node_id', $nodo_id);
+        }
+
+        $datos_productor = [
+            'nodo_id'           => $nodo_id,
+            'productor_id'      => $productor_id,
+            'nombre'            => $productor->post_title,
+            'slug'              => $productor->post_name,
+            'ubicacion'         => get_post_meta($productor_id, '_gc_ubicacion', true),
+            'latitud'           => floatval(get_post_meta($productor_id, '_gc_lat', true)),
+            'longitud'          => floatval(get_post_meta($productor_id, '_gc_lng', true)),
+            'radio_entrega_km'  => floatval(get_post_meta($productor_id, '_gc_radio_entrega_km', true)),
+            'certificacion_eco' => get_post_meta($productor_id, '_gc_certificacion_eco', true) === '1' ? 1 : 0,
+            'compartir_en_red'  => 1,
+            'acepta_mensajeria' => get_post_meta($productor_id, '_gc_acepta_mensajeria', true) === '1' ? 1 : 0,
+            'visible_en_red'    => 1,
+            'actualizado_en'    => current_time('mysql'),
+        ];
+
+        // Verificar si ya existe
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_productores_red WHERE nodo_id = %s AND productor_id = %d",
+            $nodo_id,
+            $productor_id
+        ));
+
+        if ($existe) {
+            $wpdb->update($tabla_productores_red, $datos_productor, [
+                'nodo_id' => $nodo_id,
+                'productor_id' => $productor_id
+            ]);
+        } else {
+            $datos_productor['creado_en'] = current_time('mysql');
+            $wpdb->insert($tabla_productores_red, $datos_productor);
+        }
+
+        // Sincronizar productos del productor
+        $this->sincronizar_productos_productor_con_red($productor_id);
+
+        return true;
+    }
+
+    /**
+     * Sincroniza los productos de un productor con la tabla de red
+     */
+    private function sincronizar_productos_productor_con_red($productor_id) {
+        global $wpdb;
+        $tabla_productos_red = $wpdb->prefix . 'flavor_network_producer_products';
+
+        // Verificar que la tabla existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_productos_red'") !== $tabla_productos_red) {
+            return;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+
+        // Obtener productos del productor
+        $productos = get_posts([
+            'post_type'      => 'gc_producto',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'meta_query'     => [
+                [
+                    'key'   => '_gc_productor_id',
+                    'value' => $productor_id
+                ]
+            ]
+        ]);
+
+        // Eliminar productos anteriores de la red
+        $wpdb->delete($tabla_productos_red, [
+            'nodo_id' => $nodo_id,
+            'productor_id' => $productor_id
+        ]);
+
+        // Insertar productos actuales
+        foreach ($productos as $producto) {
+            $wpdb->insert($tabla_productos_red, [
+                'nodo_id'        => $nodo_id,
+                'productor_id'   => $productor_id,
+                'producto_id'    => $producto->ID,
+                'nombre'         => $producto->post_title,
+                'precio'         => floatval(get_post_meta($producto->ID, '_gc_precio', true)),
+                'unidad'         => get_post_meta($producto->ID, '_gc_unidad', true),
+                'disponible'     => 1,
+                'actualizado_en' => current_time('mysql'),
+            ]);
+        }
+    }
+
+    /**
+     * Elimina un productor de la tabla de red
+     */
+    private function eliminar_productor_de_red($productor_id) {
+        global $wpdb;
+        $tabla_productores_red = $wpdb->prefix . 'flavor_network_producers';
+        $tabla_productos_red = $wpdb->prefix . 'flavor_network_producer_products';
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+
+        // Eliminar productos del productor
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_productos_red'") === $tabla_productos_red) {
+            $wpdb->delete($tabla_productos_red, [
+                'nodo_id' => $nodo_id,
+                'productor_id' => $productor_id
+            ]);
+        }
+
+        // Eliminar productor
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_productores_red'") === $tabla_productores_red) {
+            $wpdb->delete($tabla_productores_red, [
+                'nodo_id' => $nodo_id,
+                'productor_id' => $productor_id
+            ]);
         }
     }
 

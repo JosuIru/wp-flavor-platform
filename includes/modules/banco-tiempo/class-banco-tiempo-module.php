@@ -31,6 +31,10 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         $this->dashboard_client_contexts = ['cuidados', 'intercambio', 'comunidad'];
         $this->dashboard_admin_contexts = ['cuidados', 'gestion', 'admin'];
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['cuidados', 'economia_local'];
+        $this->gailu_contribuye_a = ['cohesion', 'resiliencia'];
+
         parent::__construct();
     }
 
@@ -2045,6 +2049,146 @@ KNOWLEDGE;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Usuarios', 'flavor-chat-ia') . '</h1></div>';
         }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // FEDERACIÓN DE RED
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Sincroniza un servicio con la red federada
+     *
+     * @param int $servicio_id ID del servicio
+     * @return bool True si se sincronizó correctamente
+     */
+    public function sincronizar_servicio_con_red($servicio_id) {
+        global $wpdb;
+
+        $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
+        $tabla_red = $wpdb->prefix . 'flavor_network_time_bank';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") !== $tabla_red) {
+            return false;
+        }
+
+        $servicio = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_servicios} WHERE id = %d AND estado = 'activo'",
+            $servicio_id
+        ));
+
+        if (!$servicio) {
+            return false;
+        }
+
+        $compartir_en_red = get_user_meta($servicio->usuario_id, '_bt_compartir_servicios_red', true);
+        if ($compartir_en_red === '0') {
+            $this->eliminar_servicio_de_red($servicio_id);
+            return false;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            $nodo_id = wp_generate_uuid4();
+            update_option('flavor_network_node_id', $nodo_id);
+        }
+
+        $usuario = get_userdata($servicio->usuario_id);
+        $usuario_nombre = $usuario ? $usuario->display_name : __('Usuario anónimo', 'flavor-chat-ia');
+
+        $ubicacion = get_user_meta($servicio->usuario_id, 'ubicacion', true) ?: '';
+        $latitud = get_user_meta($servicio->usuario_id, 'latitud', true) ?: null;
+        $longitud = get_user_meta($servicio->usuario_id, 'longitud', true) ?: null;
+
+        $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
+        $intercambios_completados = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_transacciones}
+             WHERE (usuario_receptor_id = %d OR usuario_solicitante_id = %d) AND estado = 'completado'",
+            $servicio->usuario_id,
+            $servicio->usuario_id
+        ));
+
+        $datos_red = [
+            'nodo_id'                  => $nodo_id,
+            'servicio_id'              => $servicio->id,
+            'titulo'                   => $servicio->titulo,
+            'descripcion'              => $servicio->descripcion,
+            'tipo'                     => $servicio->tipo ?: 'oferta',
+            'categoria'                => $servicio->categoria ?: '',
+            'horas_estimadas'          => floatval($servicio->horas_estimadas ?: 1),
+            'modalidad'                => $servicio->modalidad ?: 'presencial',
+            'disponibilidad'           => $servicio->disponibilidad ?: '',
+            'ubicacion'                => $ubicacion,
+            'latitud'                  => $latitud,
+            'longitud'                 => $longitud,
+            'usuario_nombre'           => $usuario_nombre,
+            'valoracion_promedio'      => floatval($servicio->valoracion_promedio ?: 0),
+            'intercambios_completados' => (int) $intercambios_completados,
+            'estado'                   => 'activo',
+            'compartir_en_red'         => 1,
+            'visible_en_red'           => 1,
+            'actualizado_en'           => current_time('mysql'),
+        ];
+
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_red} WHERE nodo_id = %s AND servicio_id = %d",
+            $nodo_id,
+            $servicio->id
+        ));
+
+        if ($existe) {
+            $wpdb->update($tabla_red, $datos_red, ['id' => $existe]);
+        } else {
+            $datos_red['creado_en'] = current_time('mysql');
+            $wpdb->insert($tabla_red, $datos_red);
+        }
+
+        return true;
+    }
+
+    /**
+     * Elimina un servicio de la red federada
+     */
+    public function eliminar_servicio_de_red($servicio_id) {
+        global $wpdb;
+
+        $tabla_red = $wpdb->prefix . 'flavor_network_time_bank';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") !== $tabla_red) {
+            return false;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            return false;
+        }
+
+        $wpdb->delete($tabla_red, [
+            'nodo_id'     => $nodo_id,
+            'servicio_id' => $servicio_id,
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Sincroniza todos los servicios activos con la red
+     */
+    public function sincronizar_todos_servicios_con_red() {
+        global $wpdb;
+
+        $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
+        $servicios = $wpdb->get_results(
+            "SELECT id FROM {$tabla_servicios} WHERE estado = 'activo'"
+        );
+
+        $sincronizados = 0;
+        foreach ($servicios as $servicio) {
+            if ($this->sincronizar_servicio_con_red($servicio->id)) {
+                $sincronizados++;
+            }
+        }
+
+        return $sincronizados;
     }
 }
 

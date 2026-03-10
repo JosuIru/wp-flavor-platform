@@ -32,6 +32,10 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         $this->name = 'Talleres Prácticos'; // Translation loaded on init
         $this->description = 'Talleres prácticos y workshops organizados por y para la comunidad.'; // Translation loaded on init
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['aprendizaje'];
+        $this->gailu_contribuye_a = ['cohesion', 'resiliencia'];
+
         parent::__construct();
     }
 
@@ -2000,10 +2004,147 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         $wpdb->update($tabla_talleres, ['estado' => $estado], ['id' => $taller_id]);
 
+        // Sincronizar con red si se publica
+        if ($estado === 'publicado') {
+            $this->sincronizar_taller_con_red($taller_id);
+        } elseif (in_array($estado, ['cancelado', 'finalizado'])) {
+            $this->eliminar_taller_de_red($taller_id);
+        }
+
         wp_send_json([
             'success' => true,
             'mensaje' => __('taller_id', 'flavor-chat-ia'),
         ]);
+    }
+
+    // ─── Sincronización con Red ──────────────────────────────
+
+    /**
+     * Sincroniza un taller con la tabla de red federada
+     */
+    private function sincronizar_taller_con_red($taller_id) {
+        global $wpdb;
+
+        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+        $tabla_sesiones = $wpdb->prefix . 'flavor_talleres_sesiones';
+        $tabla_red = $wpdb->prefix . 'flavor_network_workshops';
+
+        // Verificar que la tabla de red existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") !== $tabla_red) {
+            return false;
+        }
+
+        // Obtener datos del taller
+        $taller = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_talleres WHERE id = %d",
+            $taller_id
+        ));
+
+        if (!$taller || !in_array($taller->estado, ['publicado', 'confirmado'])) {
+            return false;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            $nodo_id = wp_generate_uuid4();
+            update_option('flavor_network_node_id', $nodo_id);
+        }
+
+        // Obtener nombre del organizador
+        $organizador_nombre = '';
+        if ($taller->organizador_id) {
+            $user = get_userdata($taller->organizador_id);
+            if ($user) {
+                $organizador_nombre = $user->display_name;
+            }
+        }
+
+        // Obtener fecha de primera sesión
+        $primera_sesion = $wpdb->get_var($wpdb->prepare(
+            "SELECT MIN(fecha_hora) FROM $tabla_sesiones WHERE taller_id = %d",
+            $taller_id
+        ));
+
+        $datos_taller = [
+            'nodo_id'                  => $nodo_id,
+            'taller_id'                => $taller_id,
+            'titulo'                   => $taller->titulo,
+            'slug'                     => $taller->slug,
+            'descripcion'              => $taller->descripcion_corta ?: wp_trim_words($taller->descripcion, 50),
+            'categoria'                => $taller->categoria,
+            'nivel'                    => $taller->nivel,
+            'duracion_horas'           => $taller->duracion_horas,
+            'numero_sesiones'          => $taller->numero_sesiones,
+            'max_participantes'        => $taller->max_participantes,
+            'inscritos_actuales'       => $taller->inscritos_actuales,
+            'precio'                   => $taller->precio,
+            'es_gratuito'              => $taller->es_gratuito,
+            'ubicacion'                => $taller->ubicacion,
+            'latitud'                  => $taller->ubicacion_lat,
+            'longitud'                 => $taller->ubicacion_lng,
+            'organizador_nombre'       => $organizador_nombre,
+            'imagen_url'               => $taller->imagen_portada,
+            'fecha_primera_sesion'     => $primera_sesion,
+            'fecha_limite_inscripcion' => $taller->fecha_limite_inscripcion,
+            'estado'                   => $taller->estado,
+            'compartir_en_red'         => 1,
+            'visible_en_red'           => 1,
+            'actualizado_en'           => current_time('mysql'),
+        ];
+
+        // Verificar si ya existe
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_red WHERE nodo_id = %s AND taller_id = %d",
+            $nodo_id,
+            $taller_id
+        ));
+
+        if ($existe) {
+            $wpdb->update($tabla_red, $datos_taller, [
+                'nodo_id' => $nodo_id,
+                'taller_id' => $taller_id
+            ]);
+        } else {
+            $datos_taller['creado_en'] = current_time('mysql');
+            $wpdb->insert($tabla_red, $datos_taller);
+        }
+
+        return true;
+    }
+
+    /**
+     * Elimina un taller de la tabla de red
+     */
+    private function eliminar_taller_de_red($taller_id) {
+        global $wpdb;
+
+        $tabla_red = $wpdb->prefix . 'flavor_network_workshops';
+        $nodo_id = get_option('flavor_network_node_id', '');
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") === $tabla_red) {
+            $wpdb->delete($tabla_red, [
+                'nodo_id' => $nodo_id,
+                'taller_id' => $taller_id
+            ]);
+        }
+    }
+
+    /**
+     * Sincroniza todos los talleres publicados con la red
+     */
+    public function sincronizar_todos_talleres_con_red() {
+        global $wpdb;
+
+        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+
+        $talleres = $wpdb->get_results(
+            "SELECT id FROM $tabla_talleres
+             WHERE estado IN ('publicado', 'confirmado')"
+        );
+
+        foreach ($talleres as $taller) {
+            $this->sincronizar_taller_con_red($taller->id);
+        }
     }
 
     public function ajax_admin_exportar() {

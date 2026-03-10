@@ -28,6 +28,14 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
         $this->name = 'Marketplace'; // Translation loaded on init
         $this->description = 'Plataforma para publicar anuncios de regalo, venta, cambio y alquiler entre usuarios.'; // Translation loaded on init
 
+        // Rol en el ecosistema: módulo vertical que se integra con comunidades
+        $this->module_role = 'vertical';
+        $this->ecosystem_supports_modules = ['comunidades'];
+
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['economia_local'];
+        $this->gailu_contribuye_a = ['autonomia', 'cohesion'];
+
         parent::__construct();
     }
 
@@ -2225,6 +2233,7 @@ KNOWLEDGE;
             'mostrar_telefono' => !empty($_POST['mostrar_telefono']) ? 1 : 0,
             'estado'           => 'pendiente',
             'updated_at'       => current_time('mysql'),
+            'comunidad_id'     => !empty($_POST['comunidad_id']) ? absint($_POST['comunidad_id']) : null,
         ];
 
         // Verificar si es edición o creación
@@ -2275,5 +2284,155 @@ KNOWLEDGE;
             'message' => $mensaje_exito,
             'redirect' => add_query_arg('tab', 'mis-anuncios', remove_query_arg(['editar', 'tab'])),
         ]);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // FEDERACIÓN DE RED
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Sincroniza un anuncio con la red federada
+     *
+     * @param int $anuncio_id ID del anuncio
+     * @return bool True si se sincronizó correctamente
+     */
+    public function sincronizar_anuncio_con_red($anuncio_id) {
+        global $wpdb;
+
+        $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
+        $tabla_red = $wpdb->prefix . 'flavor_network_marketplace';
+
+        // Verificar que la tabla de red existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") !== $tabla_red) {
+            return false;
+        }
+
+        // Obtener datos del anuncio
+        $anuncio = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_anuncios} WHERE id = %d AND estado = 'publicado'",
+            $anuncio_id
+        ));
+
+        if (!$anuncio) {
+            return false;
+        }
+
+        // Verificar si está marcado para compartir en red
+        $compartir_en_red = get_post_meta($anuncio_id, '_marketplace_compartir_red', true);
+        if (empty($compartir_en_red)) {
+            // Por defecto, compartir todos los anuncios publicados
+            $compartir_en_red = '1';
+        }
+
+        if ($compartir_en_red !== '1') {
+            $this->eliminar_anuncio_de_red($anuncio_id);
+            return false;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            $nodo_id = wp_generate_uuid4();
+            update_option('flavor_network_node_id', $nodo_id);
+        }
+
+        // Obtener nombre del usuario
+        $usuario = get_userdata($anuncio->usuario_id);
+        $usuario_nombre = $usuario ? $usuario->display_name : __('Usuario anónimo', 'flavor-chat-ia');
+
+        // Preparar datos para sincronización
+        $datos_red = [
+            'nodo_id'          => $nodo_id,
+            'anuncio_id'       => $anuncio->id,
+            'titulo'           => $anuncio->titulo,
+            'slug'             => sanitize_title($anuncio->titulo) . '-' . $anuncio->id,
+            'descripcion'      => $anuncio->descripcion,
+            'tipo'             => $anuncio->tipo,
+            'categoria'        => $wpdb->get_var($wpdb->prepare(
+                "SELECT nombre FROM {$wpdb->prefix}flavor_marketplace_categorias WHERE id = %d",
+                $anuncio->categoria_id
+            )) ?: '',
+            'precio'           => $anuncio->precio,
+            'es_gratuito'      => $anuncio->tipo === 'regalo' ? 1 : 0,
+            'condicion'        => $anuncio->condicion ?: 'buen_estado',
+            'imagen_principal' => $anuncio->imagen_principal,
+            'ubicacion'        => $anuncio->ubicacion_texto ?: '',
+            'latitud'          => $anuncio->latitud ?: null,
+            'longitud'         => $anuncio->longitud ?: null,
+            'envio_disponible' => $anuncio->envio_disponible ?? 0,
+            'usuario_nombre'   => $usuario_nombre,
+            'estado'           => 'publicado',
+            'compartir_en_red' => 1,
+            'visible_en_red'   => 1,
+            'actualizado_en'   => current_time('mysql'),
+        ];
+
+        // Verificar si ya existe en la red
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_red} WHERE nodo_id = %s AND anuncio_id = %d",
+            $nodo_id,
+            $anuncio->id
+        ));
+
+        if ($existe) {
+            $wpdb->update($tabla_red, $datos_red, ['id' => $existe]);
+        } else {
+            $datos_red['creado_en'] = current_time('mysql');
+            $wpdb->insert($tabla_red, $datos_red);
+        }
+
+        return true;
+    }
+
+    /**
+     * Elimina un anuncio de la red federada
+     *
+     * @param int $anuncio_id ID del anuncio
+     * @return bool True si se eliminó correctamente
+     */
+    public function eliminar_anuncio_de_red($anuncio_id) {
+        global $wpdb;
+
+        $tabla_red = $wpdb->prefix . 'flavor_network_marketplace';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") !== $tabla_red) {
+            return false;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            return false;
+        }
+
+        $wpdb->delete($tabla_red, [
+            'nodo_id'    => $nodo_id,
+            'anuncio_id' => $anuncio_id,
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Sincroniza todos los anuncios publicados con la red
+     *
+     * @return int Número de anuncios sincronizados
+     */
+    public function sincronizar_todos_anuncios_con_red() {
+        global $wpdb;
+
+        $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
+
+        // Obtener todos los anuncios publicados
+        $anuncios = $wpdb->get_results(
+            "SELECT id FROM {$tabla_anuncios} WHERE estado = 'publicado'"
+        );
+
+        $sincronizados = 0;
+        foreach ($anuncios as $anuncio) {
+            if ($this->sincronizar_anuncio_con_red($anuncio->id)) {
+                $sincronizados++;
+            }
+        }
+
+        return $sincronizados;
     }
 }

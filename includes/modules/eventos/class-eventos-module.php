@@ -30,6 +30,11 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $this->dashboard_satellite_priority = 35;
         $this->dashboard_client_contexts = ['eventos', 'agenda', 'actividad', 'comunidad'];
         $this->dashboard_admin_contexts = ['eventos', 'agenda', 'admin'];
+
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['aprendizaje', 'cuidados'];
+        $this->gailu_contribuye_a = ['cohesion'];
+
         parent::__construct();
         add_action('init', [$this, 'ensure_comunidad_schema'], 1);
     }
@@ -1752,6 +1757,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         }
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_eventos';
+        $compartir_en_red = !empty($params['compartir_en_red']) ? 1 : 0;
         $datos = [
             'titulo'        => sanitize_text_field($params['titulo']),
             'descripcion'   => isset($params['descripcion']) ? sanitize_textarea_field($params['descripcion']) : '',
@@ -1761,6 +1767,8 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             'fecha_fin'     => isset($params['fecha_fin']) ? sanitize_text_field($params['fecha_fin']) : null,
             'ubicacion'     => isset($params['ubicacion']) ? sanitize_text_field($params['ubicacion']) : null,
             'direccion'     => isset($params['direccion']) ? sanitize_text_field($params['direccion']) : null,
+            'coordenadas_lat' => isset($params['coordenadas_lat']) ? floatval($params['coordenadas_lat']) : null,
+            'coordenadas_lng' => isset($params['coordenadas_lng']) ? floatval($params['coordenadas_lng']) : null,
             'precio'        => isset($params['precio']) ? floatval($params['precio']) : 0.00,
             'precio_socios' => isset($params['precio_socios']) ? floatval($params['precio_socios']) : 0.00,
             'aforo_maximo'  => isset($params['aforo_maximo']) ? absint($params['aforo_maximo']) : 0,
@@ -1774,7 +1782,15 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         if ($resultado === false) {
             return ['success' => false, 'message' => __('Organiza un evento para la comunidad', 'flavor-chat-ia')];
         }
-        return ['success' => true, 'data' => ['id' => $wpdb->insert_id], 'message' => __('titulo', 'flavor-chat-ia')];
+
+        $evento_id = $wpdb->insert_id;
+
+        // Sincronizar con red si está habilitado
+        if ($compartir_en_red) {
+            $this->sincronizar_evento_con_red($evento_id);
+        }
+
+        return ['success' => true, 'data' => ['id' => $evento_id], 'message' => __('titulo', 'flavor-chat-ia')];
     }
 
     // ─── Action: actualizar_evento ───────────────────────────
@@ -1801,6 +1817,132 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             return ['success' => false, 'message' => __('Networking', 'flavor-chat-ia')];
         }
         return ['success' => true, 'message' => __('Evento actualizado correctamente', 'flavor-chat-ia')];
+    }
+
+    // ─── Sincronización con Red ──────────────────────────────
+
+    /**
+     * Sincroniza un evento con la tabla de red federada
+     */
+    private function sincronizar_evento_con_red($evento_id) {
+        global $wpdb;
+
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $tabla_red = $wpdb->prefix . 'flavor_network_events';
+
+        // Verificar que la tabla de red existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") !== $tabla_red) {
+            return false;
+        }
+
+        // Obtener datos del evento
+        $evento = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_eventos WHERE id = %d",
+            $evento_id
+        ));
+
+        if (!$evento) {
+            return false;
+        }
+
+        // Solo sincronizar eventos publicados
+        if ($evento->estado !== 'publicado') {
+            return false;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            $nodo_id = wp_generate_uuid4();
+            update_option('flavor_network_node_id', $nodo_id);
+        }
+
+        // Obtener nombre del organizador
+        $organizador_nombre = '';
+        if ($evento->organizador_id) {
+            $user = get_userdata($evento->organizador_id);
+            if ($user) {
+                $organizador_nombre = $user->display_name;
+            }
+        }
+
+        $datos_evento = [
+            'nodo_id'            => $nodo_id,
+            'evento_id'          => $evento_id,
+            'titulo'             => $evento->titulo,
+            'descripcion'        => $evento->descripcion,
+            'tipo'               => $evento->tipo,
+            'fecha_inicio'       => $evento->fecha_inicio,
+            'fecha_fin'          => $evento->fecha_fin,
+            'ubicacion'          => $evento->ubicacion,
+            'direccion'          => $evento->direccion,
+            'latitud'            => $evento->coordenadas_lat,
+            'longitud'           => $evento->coordenadas_lng,
+            'es_online'          => $evento->es_online,
+            'url_online'         => $evento->url_online,
+            'organizador_nombre' => $organizador_nombre,
+            'precio'             => $evento->precio,
+            'aforo_maximo'       => $evento->aforo_maximo,
+            'inscritos_count'    => $evento->inscritos_count,
+            'imagen_url'         => $evento->imagen,
+            'compartir_en_red'   => 1,
+            'visible_en_red'     => 1,
+            'actualizado_en'     => current_time('mysql'),
+        ];
+
+        // Verificar si ya existe
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_red WHERE nodo_id = %s AND evento_id = %d",
+            $nodo_id,
+            $evento_id
+        ));
+
+        if ($existe) {
+            $wpdb->update($tabla_red, $datos_evento, [
+                'nodo_id' => $nodo_id,
+                'evento_id' => $evento_id
+            ]);
+        } else {
+            $datos_evento['creado_en'] = current_time('mysql');
+            $wpdb->insert($tabla_red, $datos_evento);
+        }
+
+        return true;
+    }
+
+    /**
+     * Elimina un evento de la tabla de red
+     */
+    private function eliminar_evento_de_red($evento_id) {
+        global $wpdb;
+
+        $tabla_red = $wpdb->prefix . 'flavor_network_events';
+        $nodo_id = get_option('flavor_network_node_id', '');
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") === $tabla_red) {
+            $wpdb->delete($tabla_red, [
+                'nodo_id' => $nodo_id,
+                'evento_id' => $evento_id
+            ]);
+        }
+    }
+
+    /**
+     * Sincroniza todos los eventos publicados con la red
+     */
+    public function sincronizar_todos_eventos_con_red() {
+        global $wpdb;
+
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+
+        $eventos = $wpdb->get_results(
+            "SELECT id FROM $tabla_eventos
+             WHERE estado = 'publicado'
+               AND fecha_inicio >= NOW()"
+        );
+
+        foreach ($eventos as $evento) {
+            $this->sincronizar_evento_con_red($evento->id);
+        }
     }
 
     // ─── Action: inscribirse ─────────────────────────────────
@@ -2181,6 +2323,13 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                         'type' => 'checkbox',
                         'label' => __('Inscripción previa', 'flavor-chat-ia'),
                         'checkbox_label' => __('Requiere inscripción previa', 'flavor-chat-ia'),
+                    ],
+                    'compartir_en_red' => [
+                        'type' => 'checkbox',
+                        'label' => __('Compartir en Red', 'flavor-chat-ia'),
+                        'checkbox_label' => __('Mostrar este evento en otros nodos de la red', 'flavor-chat-ia'),
+                        'description' => __('Si activas esta opción, el evento será visible para usuarios de comunidades cercanas.', 'flavor-chat-ia'),
+                        'default' => true,
                     ],
                 ],
                 'submit_text' => __('Crear Evento', 'flavor-chat-ia'),

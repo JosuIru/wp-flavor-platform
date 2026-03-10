@@ -31,6 +31,10 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $this->name = 'Cursos y Formación'; // Translation loaded on init
         $this->description = 'Plataforma de cursos y formación comunitaria - aprende y enseña en tu comunidad.'; // Translation loaded on init
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['aprendizaje'];
+        $this->gailu_contribuye_a = ['cohesion', 'resiliencia'];
+
         parent::__construct();
     }
 
@@ -2670,5 +2674,176 @@ KNOWLEDGE;
             require_once $archivo_tab;
             Flavor_Cursos_Dashboard_Tab::get_instance();
         }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // FEDERACIÓN DE RED
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Sincroniza un curso con la red federada
+     *
+     * @param int $curso_id ID del curso
+     * @return bool True si se sincronizó correctamente
+     */
+    public function sincronizar_curso_con_red($curso_id) {
+        global $wpdb;
+
+        $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
+        $tabla_red = $wpdb->prefix . 'flavor_network_courses';
+
+        // Verificar que la tabla de red existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") !== $tabla_red) {
+            return false;
+        }
+
+        // Obtener datos del curso
+        $curso = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla_cursos} WHERE id = %d AND estado = 'publicado'",
+            $curso_id
+        ));
+
+        if (!$curso) {
+            return false;
+        }
+
+        // Verificar si está marcado para compartir en red
+        $compartir_en_red = isset($curso->compartir_en_red) ? $curso->compartir_en_red : 1;
+        if (!$compartir_en_red) {
+            $this->eliminar_curso_de_red($curso_id);
+            return false;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            $nodo_id = wp_generate_uuid4();
+            update_option('flavor_network_node_id', $nodo_id);
+        }
+
+        // Obtener nombre del instructor
+        $instructor_nombre = '';
+        if (!empty($curso->instructor_id)) {
+            $instructor = get_userdata($curso->instructor_id);
+            $instructor_nombre = $instructor ? $instructor->display_name : '';
+        }
+
+        // Contar lecciones del curso
+        $tabla_lecciones = $wpdb->prefix . 'flavor_cursos_lecciones';
+        $numero_lecciones = 0;
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_lecciones'") === $tabla_lecciones) {
+            $numero_lecciones = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_lecciones} WHERE curso_id = %d",
+                $curso_id
+            ));
+        }
+
+        // Contar inscritos actuales
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_cursos_inscripciones';
+        $inscritos_actuales = 0;
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_inscripciones'") === $tabla_inscripciones) {
+            $inscritos_actuales = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_inscripciones} WHERE curso_id = %d AND estado = 'activo'",
+                $curso_id
+            ));
+        }
+
+        // Preparar datos para sincronización
+        $datos_red = [
+            'nodo_id'             => $nodo_id,
+            'curso_id'            => $curso->id,
+            'titulo'              => $curso->titulo,
+            'slug'                => sanitize_title($curso->titulo) . '-' . $curso->id,
+            'descripcion'         => $curso->descripcion,
+            'categoria'           => $curso->categoria ?: '',
+            'nivel'               => $curso->nivel ?: 'todos',
+            'modalidad'           => $curso->modalidad ?: 'online',
+            'duracion_horas'      => floatval($curso->duracion_horas ?: 0),
+            'numero_lecciones'    => (int) $numero_lecciones,
+            'max_alumnos'         => (int) ($curso->max_alumnos ?: 30),
+            'inscritos_actuales'  => (int) $inscritos_actuales,
+            'precio'              => floatval($curso->precio ?: 0),
+            'es_gratuito'         => empty($curso->precio) || floatval($curso->precio) == 0 ? 1 : 0,
+            'ubicacion'           => $curso->ubicacion ?: '',
+            'latitud'             => $curso->latitud ?: null,
+            'longitud'            => $curso->longitud ?: null,
+            'instructor_nombre'   => $instructor_nombre,
+            'valoracion_promedio' => floatval($curso->valoracion_promedio ?: 0),
+            'imagen_url'          => $curso->imagen_url ?: '',
+            'fecha_inicio'        => $curso->fecha_inicio ?: null,
+            'fecha_fin'           => $curso->fecha_fin ?: null,
+            'estado'              => 'publicado',
+            'compartir_en_red'    => 1,
+            'visible_en_red'      => 1,
+            'actualizado_en'      => current_time('mysql'),
+        ];
+
+        // Verificar si ya existe en la red
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_red} WHERE nodo_id = %s AND curso_id = %d",
+            $nodo_id,
+            $curso->id
+        ));
+
+        if ($existe) {
+            $wpdb->update($tabla_red, $datos_red, ['id' => $existe]);
+        } else {
+            $datos_red['creado_en'] = current_time('mysql');
+            $wpdb->insert($tabla_red, $datos_red);
+        }
+
+        return true;
+    }
+
+    /**
+     * Elimina un curso de la red federada
+     *
+     * @param int $curso_id ID del curso
+     * @return bool True si se eliminó correctamente
+     */
+    public function eliminar_curso_de_red($curso_id) {
+        global $wpdb;
+
+        $tabla_red = $wpdb->prefix . 'flavor_network_courses';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") !== $tabla_red) {
+            return false;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            return false;
+        }
+
+        $wpdb->delete($tabla_red, [
+            'nodo_id'  => $nodo_id,
+            'curso_id' => $curso_id,
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Sincroniza todos los cursos publicados con la red
+     *
+     * @return int Número de cursos sincronizados
+     */
+    public function sincronizar_todos_cursos_con_red() {
+        global $wpdb;
+
+        $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
+
+        // Obtener todos los cursos publicados
+        $cursos = $wpdb->get_results(
+            "SELECT id FROM {$tabla_cursos} WHERE estado = 'publicado'"
+        );
+
+        $sincronizados = 0;
+        foreach ($cursos as $curso) {
+            if ($this->sincronizar_curso_con_red($curso->id)) {
+                $sincronizados++;
+            }
+        }
+
+        return $sincronizados;
     }
 }

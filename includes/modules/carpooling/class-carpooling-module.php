@@ -58,6 +58,10 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
         $this->tabla_valoraciones = $wpdb->prefix . 'flavor_carpooling_valoraciones';
         $this->tabla_vehiculos = $wpdb->prefix . 'flavor_carpooling_vehiculos';
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['economia_local', 'regeneracion'];
+        $this->gailu_contribuye_a = ['autonomia', 'impacto'];
+
         parent::__construct();
 
         // Registrar páginas de administración
@@ -620,12 +624,136 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
 
         $viaje_id = $wpdb->insert_id;
 
+        // Sincronizar con red si está habilitado (por defecto sí)
+        $compartir_en_red = !isset($params['compartir_en_red']) || !empty($params['compartir_en_red']);
+        if ($compartir_en_red) {
+            $this->sincronizar_viaje_con_red($viaje_id);
+        }
+
         return [
             'success' => true,
             'message' => __('Viaje publicado correctamente.', 'flavor-chat-ia'),
             'viaje_id' => $viaje_id,
             'viaje' => $this->obtener_viaje($viaje_id),
         ];
+    }
+
+    // ─── Sincronización con Red ──────────────────────────────
+
+    /**
+     * Sincroniza un viaje con la tabla de red federada
+     */
+    private function sincronizar_viaje_con_red($viaje_id) {
+        global $wpdb;
+
+        $tabla_red = $wpdb->prefix . 'flavor_network_carpooling';
+
+        // Verificar que la tabla de red existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") !== $tabla_red) {
+            return false;
+        }
+
+        // Obtener datos del viaje
+        $viaje = $this->obtener_viaje($viaje_id);
+        if (!$viaje || $viaje->estado !== 'publicado') {
+            return false;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            $nodo_id = wp_generate_uuid4();
+            update_option('flavor_network_node_id', $nodo_id);
+        }
+
+        // Obtener nombre del conductor
+        $conductor_nombre = '';
+        if ($viaje->conductor_id) {
+            $user = get_userdata($viaje->conductor_id);
+            if ($user) {
+                $conductor_nombre = $user->display_name;
+            }
+        }
+
+        $fecha_hora = $viaje->fecha_hora;
+        $fecha_salida = date('Y-m-d H:i:s', strtotime($fecha_hora));
+        $hora_salida = date('H:i:s', strtotime($fecha_hora));
+
+        $datos_viaje = [
+            'nodo_id'             => $nodo_id,
+            'viaje_id'            => $viaje_id,
+            'origen'              => $viaje->origen,
+            'origen_lat'          => $viaje->origen_lat,
+            'origen_lng'          => $viaje->origen_lng,
+            'destino'             => $viaje->destino,
+            'destino_lat'         => $viaje->destino_lat,
+            'destino_lng'         => $viaje->destino_lng,
+            'fecha_salida'        => $fecha_salida,
+            'hora_salida'         => $hora_salida,
+            'conductor_nombre'    => $conductor_nombre,
+            'plazas_totales'      => $viaje->plazas_totales,
+            'plazas_disponibles'  => $viaje->plazas_disponibles,
+            'precio_plaza'        => $viaje->precio_por_plaza,
+            'permite_equipaje'    => $viaje->permite_equipaje_grande ?? 1,
+            'permite_mascotas'    => $viaje->permite_mascotas ?? 0,
+            'notas'               => $viaje->notas,
+            'estado'              => $viaje->estado,
+            'compartir_en_red'    => 1,
+            'visible_en_red'      => 1,
+            'actualizado_en'      => current_time('mysql'),
+        ];
+
+        // Verificar si ya existe
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_red WHERE nodo_id = %s AND viaje_id = %d",
+            $nodo_id,
+            $viaje_id
+        ));
+
+        if ($existe) {
+            $wpdb->update($tabla_red, $datos_viaje, [
+                'nodo_id' => $nodo_id,
+                'viaje_id' => $viaje_id
+            ]);
+        } else {
+            $datos_viaje['creado_en'] = current_time('mysql');
+            $wpdb->insert($tabla_red, $datos_viaje);
+        }
+
+        return true;
+    }
+
+    /**
+     * Elimina un viaje de la tabla de red
+     */
+    private function eliminar_viaje_de_red($viaje_id) {
+        global $wpdb;
+
+        $tabla_red = $wpdb->prefix . 'flavor_network_carpooling';
+        $nodo_id = get_option('flavor_network_node_id', '');
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") === $tabla_red) {
+            $wpdb->delete($tabla_red, [
+                'nodo_id' => $nodo_id,
+                'viaje_id' => $viaje_id
+            ]);
+        }
+    }
+
+    /**
+     * Sincroniza todos los viajes activos con la red
+     */
+    public function sincronizar_todos_viajes_con_red() {
+        global $wpdb;
+
+        $viajes = $wpdb->get_results(
+            "SELECT id FROM {$this->tabla_viajes}
+             WHERE estado = 'publicado'
+               AND fecha_hora >= NOW()"
+        );
+
+        foreach ($viajes as $viaje) {
+            $this->sincronizar_viaje_con_red($viaje->id);
+        }
     }
 
     /**

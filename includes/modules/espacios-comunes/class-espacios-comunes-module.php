@@ -25,6 +25,10 @@ class Flavor_Chat_Espacios_Comunes_Module extends Flavor_Chat_Module_Base {
         $this->name = __('Espacios Comunes', 'flavor-chat-ia');
         $this->description = __('Sistema de reserva y gestión de espacios comunes y equipamientos de la comunidad.', 'flavor-chat-ia');
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['economia_local', 'cuidados'];
+        $this->gailu_contribuye_a = ['cohesion', 'autonomia'];
+
         parent::__construct();
 
         // Integrar sistema de notificaciones
@@ -2337,6 +2341,119 @@ KNOWLEDGE;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Reservas', 'flavor-chat-ia') . '</h1>';
             echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    // ─── Sincronización con Red ──────────────────────────────
+
+    /**
+     * Sincroniza un espacio con la tabla de red federada
+     */
+    public function sincronizar_espacio_con_red($espacio_id) {
+        global $wpdb;
+
+        $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
+        $tabla_red = $wpdb->prefix . 'flavor_network_spaces';
+
+        // Verificar que la tabla de red existe
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") !== $tabla_red) {
+            return false;
+        }
+
+        // Obtener datos del espacio
+        $espacio = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla_espacios WHERE id = %d",
+            $espacio_id
+        ));
+
+        if (!$espacio || $espacio->estado !== 'disponible') {
+            return false;
+        }
+
+        $nodo_id = get_option('flavor_network_node_id', '');
+        if (empty($nodo_id)) {
+            $nodo_id = wp_generate_uuid4();
+            update_option('flavor_network_node_id', $nodo_id);
+        }
+
+        // Obtener foto principal del JSON
+        $fotos = json_decode($espacio->fotos, true);
+        $foto_principal = is_array($fotos) && !empty($fotos) ? $fotos[0] : '';
+
+        $datos_espacio = [
+            'nodo_id'            => $nodo_id,
+            'espacio_id'         => $espacio_id,
+            'nombre'             => $espacio->nombre,
+            'descripcion'        => wp_trim_words($espacio->descripcion, 50),
+            'tipo'               => $espacio->tipo,
+            'ubicacion'          => $espacio->ubicacion,
+            'latitud'            => $espacio->latitud,
+            'longitud'           => $espacio->longitud,
+            'capacidad_personas' => $espacio->capacidad_personas,
+            'superficie_m2'      => $espacio->superficie_m2,
+            'precio_hora'        => $espacio->precio_hora,
+            'precio_dia'         => $espacio->precio_dia,
+            'horario_apertura'   => $espacio->horario_apertura,
+            'horario_cierre'     => $espacio->horario_cierre,
+            'dias_disponibles'   => $espacio->dias_disponibles,
+            'foto_principal'     => $foto_principal,
+            'estado'             => $espacio->estado,
+            'compartir_en_red'   => 1,
+            'visible_en_red'     => 1,
+            'actualizado_en'     => current_time('mysql'),
+        ];
+
+        // Verificar si ya existe
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla_red WHERE nodo_id = %s AND espacio_id = %d",
+            $nodo_id,
+            $espacio_id
+        ));
+
+        if ($existe) {
+            $wpdb->update($tabla_red, $datos_espacio, [
+                'nodo_id' => $nodo_id,
+                'espacio_id' => $espacio_id
+            ]);
+        } else {
+            $datos_espacio['creado_en'] = current_time('mysql');
+            $wpdb->insert($tabla_red, $datos_espacio);
+        }
+
+        return true;
+    }
+
+    /**
+     * Elimina un espacio de la tabla de red
+     */
+    public function eliminar_espacio_de_red($espacio_id) {
+        global $wpdb;
+
+        $tabla_red = $wpdb->prefix . 'flavor_network_spaces';
+        $nodo_id = get_option('flavor_network_node_id', '');
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_red'") === $tabla_red) {
+            $wpdb->delete($tabla_red, [
+                'nodo_id' => $nodo_id,
+                'espacio_id' => $espacio_id
+            ]);
+        }
+    }
+
+    /**
+     * Sincroniza todos los espacios disponibles con la red
+     */
+    public function sincronizar_todos_espacios_con_red() {
+        global $wpdb;
+
+        $tabla_espacios = $wpdb->prefix . 'flavor_espacios_comunes';
+
+        $espacios = $wpdb->get_results(
+            "SELECT id FROM $tabla_espacios WHERE estado = 'disponible'"
+        );
+
+        foreach ($espacios as $espacio) {
+            $this->sincronizar_espacio_con_red($espacio->id);
         }
     }
 }

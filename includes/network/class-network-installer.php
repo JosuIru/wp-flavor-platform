@@ -21,7 +21,7 @@ class Flavor_Network_Installer {
     /**
      * Versión del esquema de BD
      */
-    const DB_VERSION = '1.2.0';
+    const DB_VERSION = '1.8.0';
 
     /**
      * Opción que almacena la versión actual de BD
@@ -493,6 +493,329 @@ class Flavor_Network_Installer {
             KEY estado (estado)
         ) {$charset_collate};";
         dbDelta($sql_respuestas);
+
+        // ─── Tabla: Productores federados ───
+        $tabla_productores = $prefix . 'producers';
+        $sql_productores = "CREATE TABLE {$tabla_productores} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            nodo_id bigint(20) unsigned NOT NULL,
+            productor_id bigint(20) unsigned NOT NULL,
+            nombre varchar(255) NOT NULL,
+            slug varchar(100) NOT NULL,
+            descripcion text,
+            logo_url varchar(500) DEFAULT '',
+            ubicacion varchar(255) DEFAULT '',
+            direccion varchar(500) DEFAULT '',
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            radio_entrega_km int(11) DEFAULT 0,
+            telefono varchar(50) DEFAULT '',
+            email varchar(255) DEFAULT '',
+            web varchar(500) DEFAULT '',
+            certificacion_eco tinyint(1) DEFAULT 0,
+            numero_certificado varchar(100) DEFAULT '',
+            metodos_produccion text,
+            categorias text,
+            productos_count int(11) DEFAULT 0,
+            compartir_en_red tinyint(1) DEFAULT 1,
+            visible_en_red tinyint(1) DEFAULT 1,
+            estado varchar(20) DEFAULT 'activo',
+            fecha_registro datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY nodo_productor (nodo_id, productor_id),
+            KEY nodo_id (nodo_id),
+            KEY slug (slug),
+            KEY latitud_longitud (latitud, longitud),
+            KEY radio_entrega_km (radio_entrega_km),
+            KEY certificacion_eco (certificacion_eco),
+            KEY compartir_en_red (compartir_en_red),
+            KEY visible_en_red (visible_en_red),
+            KEY estado (estado)
+        ) {$charset_collate};";
+        dbDelta($sql_productores);
+
+        // ─── Tabla: Productos de productores federados ───
+        $tabla_productos_red = $prefix . 'producer_products';
+        $sql_productos_red = "CREATE TABLE {$tabla_productos_red} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            producer_id bigint(20) unsigned NOT NULL,
+            producto_id bigint(20) unsigned NOT NULL,
+            nombre varchar(255) NOT NULL,
+            descripcion text,
+            precio decimal(10,2) DEFAULT NULL,
+            unidad varchar(50) DEFAULT 'kg',
+            categoria varchar(100) DEFAULT '',
+            imagen_url varchar(500) DEFAULT '',
+            disponible tinyint(1) DEFAULT 1,
+            temporada varchar(100) DEFAULT '',
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY producer_producto (producer_id, producto_id),
+            KEY producer_id (producer_id),
+            KEY categoria (categoria),
+            KEY disponible (disponible)
+        ) {$charset_collate};";
+        dbDelta($sql_productos_red);
+
+        // ─── Tabla: Eventos federados ───
+        $tabla_eventos = $prefix . 'events';
+        $sql_eventos = "CREATE TABLE {$tabla_eventos} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            nodo_id varchar(36) NOT NULL,
+            evento_id bigint(20) unsigned NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text,
+            tipo varchar(50) DEFAULT 'social',
+            fecha_inicio datetime NOT NULL,
+            fecha_fin datetime DEFAULT NULL,
+            ubicacion varchar(255) DEFAULT '',
+            direccion varchar(500) DEFAULT '',
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            es_online tinyint(1) DEFAULT 0,
+            url_online varchar(500) DEFAULT '',
+            organizador_nombre varchar(255) DEFAULT '',
+            precio decimal(10,2) DEFAULT 0.00,
+            aforo_maximo int(11) DEFAULT 0,
+            inscritos_count int(11) DEFAULT 0,
+            imagen_url varchar(500) DEFAULT '',
+            compartir_en_red tinyint(1) DEFAULT 1,
+            visible_en_red tinyint(1) DEFAULT 1,
+            creado_en datetime DEFAULT CURRENT_TIMESTAMP,
+            actualizado_en datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY nodo_evento (nodo_id, evento_id),
+            KEY nodo_id (nodo_id),
+            KEY fecha_inicio (fecha_inicio),
+            KEY latitud_longitud (latitud, longitud),
+            KEY visible_en_red (visible_en_red)
+        ) {$charset_collate};";
+        dbDelta($sql_eventos);
+
+        // ─── Tabla: Viajes carpooling federados ───
+        $tabla_viajes = $prefix . 'carpooling';
+        $sql_viajes = "CREATE TABLE {$tabla_viajes} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            nodo_id varchar(36) NOT NULL,
+            viaje_id bigint(20) unsigned NOT NULL,
+            origen varchar(255) NOT NULL,
+            origen_lat decimal(10,8) DEFAULT NULL,
+            origen_lng decimal(11,8) DEFAULT NULL,
+            destino varchar(255) NOT NULL,
+            destino_lat decimal(10,8) DEFAULT NULL,
+            destino_lng decimal(11,8) DEFAULT NULL,
+            fecha_salida datetime NOT NULL,
+            hora_salida time DEFAULT NULL,
+            conductor_nombre varchar(255) DEFAULT '',
+            plazas_totales int(11) DEFAULT 4,
+            plazas_disponibles int(11) DEFAULT 4,
+            precio_plaza decimal(10,2) DEFAULT 0.00,
+            permite_equipaje tinyint(1) DEFAULT 1,
+            permite_mascotas tinyint(1) DEFAULT 0,
+            notas text,
+            estado enum('activo','completo','cancelado','finalizado') DEFAULT 'activo',
+            compartir_en_red tinyint(1) DEFAULT 1,
+            visible_en_red tinyint(1) DEFAULT 1,
+            creado_en datetime DEFAULT CURRENT_TIMESTAMP,
+            actualizado_en datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY nodo_viaje (nodo_id, viaje_id),
+            KEY nodo_id (nodo_id),
+            KEY fecha_salida (fecha_salida),
+            KEY origen_coords (origen_lat, origen_lng),
+            KEY destino_coords (destino_lat, destino_lng),
+            KEY estado (estado),
+            KEY visible_en_red (visible_en_red)
+        ) {$charset_collate};";
+        dbDelta($sql_viajes);
+
+        // ─── Tabla: Talleres federados ───
+        $tabla_talleres = $prefix . 'workshops';
+        $sql_talleres = "CREATE TABLE {$tabla_talleres} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            nodo_id varchar(36) NOT NULL,
+            taller_id bigint(20) unsigned NOT NULL,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) DEFAULT '',
+            descripcion text,
+            categoria varchar(100) DEFAULT '',
+            nivel enum('principiante','intermedio','avanzado','todos') DEFAULT 'todos',
+            duracion_horas decimal(5,2) DEFAULT 0,
+            numero_sesiones int(11) DEFAULT 1,
+            max_participantes int(11) DEFAULT 20,
+            inscritos_actuales int(11) DEFAULT 0,
+            precio decimal(10,2) DEFAULT 0,
+            es_gratuito tinyint(1) DEFAULT 1,
+            ubicacion varchar(500) DEFAULT '',
+            latitud decimal(10,7) DEFAULT NULL,
+            longitud decimal(10,7) DEFAULT NULL,
+            organizador_nombre varchar(255) DEFAULT '',
+            imagen_url varchar(500) DEFAULT '',
+            fecha_primera_sesion datetime DEFAULT NULL,
+            fecha_limite_inscripcion datetime DEFAULT NULL,
+            estado varchar(50) DEFAULT 'publicado',
+            compartir_en_red tinyint(1) DEFAULT 1,
+            visible_en_red tinyint(1) DEFAULT 1,
+            creado_en datetime DEFAULT CURRENT_TIMESTAMP,
+            actualizado_en datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY nodo_taller (nodo_id, taller_id),
+            KEY nodo_id (nodo_id),
+            KEY categoria (categoria),
+            KEY fecha_primera_sesion (fecha_primera_sesion),
+            KEY latitud_longitud (latitud, longitud),
+            KEY visible_en_red (visible_en_red)
+        ) {$charset_collate};";
+        dbDelta($sql_talleres);
+
+        // ─── Tabla: Espacios comunes federados ───
+        $tabla_espacios = $prefix . 'spaces';
+        $sql_espacios = "CREATE TABLE {$tabla_espacios} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            nodo_id varchar(36) NOT NULL,
+            espacio_id bigint(20) unsigned NOT NULL,
+            nombre varchar(255) NOT NULL,
+            descripcion text,
+            tipo varchar(50) DEFAULT 'salon_eventos',
+            ubicacion varchar(500) DEFAULT '',
+            latitud decimal(10,7) DEFAULT NULL,
+            longitud decimal(10,7) DEFAULT NULL,
+            capacidad_personas int(11) DEFAULT 0,
+            superficie_m2 decimal(10,2) DEFAULT NULL,
+            precio_hora decimal(10,2) DEFAULT 0,
+            precio_dia decimal(10,2) DEFAULT 0,
+            horario_apertura time DEFAULT '08:00:00',
+            horario_cierre time DEFAULT '22:00:00',
+            dias_disponibles varchar(50) DEFAULT 'L,M,X,J,V,S,D',
+            foto_principal varchar(500) DEFAULT '',
+            estado varchar(50) DEFAULT 'disponible',
+            compartir_en_red tinyint(1) DEFAULT 1,
+            visible_en_red tinyint(1) DEFAULT 1,
+            creado_en datetime DEFAULT CURRENT_TIMESTAMP,
+            actualizado_en datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY nodo_espacio (nodo_id, espacio_id),
+            KEY nodo_id (nodo_id),
+            KEY tipo (tipo),
+            KEY latitud_longitud (latitud, longitud),
+            KEY visible_en_red (visible_en_red)
+        ) {$charset_collate};";
+        dbDelta($sql_espacios);
+
+        // ─── Tabla: Anuncios marketplace federados ───
+        $tabla_anuncios = $prefix . 'marketplace';
+        $sql_anuncios = "CREATE TABLE {$tabla_anuncios} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            nodo_id varchar(36) NOT NULL,
+            anuncio_id bigint(20) unsigned NOT NULL,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) DEFAULT '',
+            descripcion text,
+            tipo enum('venta','compra','intercambio','regalo','alquiler','servicio') DEFAULT 'venta',
+            categoria varchar(100) DEFAULT '',
+            precio decimal(10,2) DEFAULT NULL,
+            es_gratuito tinyint(1) DEFAULT 0,
+            condicion varchar(50) DEFAULT 'buen_estado',
+            imagen_principal varchar(500) DEFAULT '',
+            ubicacion varchar(500) DEFAULT '',
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            envio_disponible tinyint(1) DEFAULT 0,
+            usuario_nombre varchar(200) DEFAULT '',
+            estado varchar(50) DEFAULT 'publicado',
+            compartir_en_red tinyint(1) DEFAULT 1,
+            visible_en_red tinyint(1) DEFAULT 1,
+            creado_en datetime DEFAULT CURRENT_TIMESTAMP,
+            actualizado_en datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY nodo_anuncio (nodo_id, anuncio_id),
+            KEY nodo_id (nodo_id),
+            KEY tipo (tipo),
+            KEY categoria (categoria),
+            KEY precio (precio),
+            KEY latitud_longitud (latitud, longitud),
+            KEY visible_en_red (visible_en_red)
+        ) {$charset_collate};";
+        dbDelta($sql_anuncios);
+
+        // ─── Tabla: Servicios banco de tiempo federados ───
+        $tabla_banco_tiempo = $prefix . 'time_bank';
+        $sql_banco_tiempo = "CREATE TABLE {$tabla_banco_tiempo} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            nodo_id varchar(36) NOT NULL,
+            servicio_id bigint(20) unsigned NOT NULL,
+            titulo varchar(255) NOT NULL,
+            descripcion text,
+            tipo enum('oferta','demanda') DEFAULT 'oferta',
+            categoria varchar(100) DEFAULT '',
+            horas_estimadas decimal(5,2) DEFAULT 1.00,
+            modalidad enum('presencial','online','ambas') DEFAULT 'presencial',
+            disponibilidad text,
+            ubicacion varchar(500) DEFAULT '',
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            usuario_nombre varchar(200) DEFAULT '',
+            valoracion_promedio decimal(3,2) DEFAULT 0.00,
+            intercambios_completados int(11) DEFAULT 0,
+            estado varchar(50) DEFAULT 'activo',
+            compartir_en_red tinyint(1) DEFAULT 1,
+            visible_en_red tinyint(1) DEFAULT 1,
+            creado_en datetime DEFAULT CURRENT_TIMESTAMP,
+            actualizado_en datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY nodo_servicio (nodo_id, servicio_id),
+            KEY nodo_id (nodo_id),
+            KEY tipo (tipo),
+            KEY categoria (categoria),
+            KEY modalidad (modalidad),
+            KEY latitud_longitud (latitud, longitud),
+            KEY visible_en_red (visible_en_red)
+        ) {$charset_collate};";
+        dbDelta($sql_banco_tiempo);
+
+        // ─── Tabla: Cursos federados ───
+        $tabla_cursos = $prefix . 'courses';
+        $sql_cursos = "CREATE TABLE {$tabla_cursos} (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            nodo_id varchar(36) NOT NULL,
+            curso_id bigint(20) unsigned NOT NULL,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) DEFAULT '',
+            descripcion text,
+            categoria varchar(100) DEFAULT '',
+            nivel enum('principiante','intermedio','avanzado','todos') DEFAULT 'todos',
+            modalidad enum('online','presencial','mixto') DEFAULT 'online',
+            duracion_horas decimal(6,2) DEFAULT 0,
+            numero_lecciones int(11) DEFAULT 0,
+            max_alumnos int(11) DEFAULT 30,
+            inscritos_actuales int(11) DEFAULT 0,
+            precio decimal(10,2) DEFAULT 0,
+            es_gratuito tinyint(1) DEFAULT 1,
+            ubicacion varchar(500) DEFAULT '',
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
+            instructor_nombre varchar(200) DEFAULT '',
+            valoracion_promedio decimal(3,2) DEFAULT 0.00,
+            imagen_url varchar(500) DEFAULT '',
+            fecha_inicio datetime DEFAULT NULL,
+            fecha_fin datetime DEFAULT NULL,
+            estado varchar(50) DEFAULT 'publicado',
+            compartir_en_red tinyint(1) DEFAULT 1,
+            visible_en_red tinyint(1) DEFAULT 1,
+            creado_en datetime DEFAULT CURRENT_TIMESTAMP,
+            actualizado_en datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY nodo_curso (nodo_id, curso_id),
+            KEY nodo_id (nodo_id),
+            KEY categoria (categoria),
+            KEY nivel (nivel),
+            KEY modalidad (modalidad),
+            KEY fecha_inicio (fecha_inicio),
+            KEY latitud_longitud (latitud, longitud),
+            KEY visible_en_red (visible_en_red)
+        ) {$charset_collate};";
+        dbDelta($sql_cursos);
 
         // Guardar versión de BD
         update_option(self::DB_VERSION_OPTION, self::DB_VERSION);
