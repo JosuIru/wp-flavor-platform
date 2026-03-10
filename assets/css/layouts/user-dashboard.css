@@ -723,14 +723,28 @@
 
     .flavor-dashboard-nav {
         padding: 8px 0;
+        position: relative;
+    }
+
+    /* Contenedor de scroll con indicadores */
+    .flavor-dashboard-nav-scroll-wrapper {
+        position: relative;
+        overflow: hidden;
     }
 
     .flavor-dashboard-nav-list {
         display: flex;
         overflow-x: auto;
         padding: 0 12px;
-        gap: 0;
+        gap: 4px;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+        scroll-behavior: smooth;
+    }
+
+    .flavor-dashboard-nav-list::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
     }
 
     .flavor-dashboard-nav-item {
@@ -743,11 +757,17 @@
         border-bottom: 3px solid transparent;
         white-space: nowrap;
         font-size: 13px;
+        border-radius: var(--flavor-radio-borde-sm) var(--flavor-radio-borde-sm) 0 0;
+    }
+
+    .flavor-dashboard-nav-link:hover {
+        background: var(--flavor-color-fondo);
     }
 
     .flavor-dashboard-nav-item--activo .flavor-dashboard-nav-link {
         border-left-color: transparent;
         border-bottom-color: var(--flavor-color-primario);
+        background: var(--flavor-color-primario-light);
     }
 
     .flavor-dashboard-nav-item--logout {
@@ -755,6 +775,80 @@
         padding-top: 0;
         border-top: none;
         margin-left: auto;
+    }
+
+    /* Indicadores de scroll (gradientes) */
+    .flavor-dashboard-nav::before,
+    .flavor-dashboard-nav::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 40px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        z-index: 2;
+    }
+
+    .flavor-dashboard-nav::before {
+        left: 0;
+        background: linear-gradient(to right, var(--flavor-color-fondo-card) 0%, transparent 100%);
+    }
+
+    .flavor-dashboard-nav::after {
+        right: 0;
+        background: linear-gradient(to left, var(--flavor-color-fondo-card) 0%, transparent 100%);
+    }
+
+    /* Clases JS para mostrar indicadores */
+    .flavor-dashboard-nav.has-scroll-left::before {
+        opacity: 1;
+    }
+
+    .flavor-dashboard-nav.has-scroll-right::after {
+        opacity: 1;
+    }
+
+    /* Botones de navegacion de tabs */
+    .flavor-dashboard-nav-scroll-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 50%;
+        background: var(--flavor-color-fondo-card);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--flavor-color-texto);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+    }
+
+    .flavor-dashboard-nav-scroll-btn:hover {
+        background: var(--flavor-color-primario);
+        color: #fff;
+    }
+
+    .flavor-dashboard-nav-scroll-btn--left {
+        left: 4px;
+    }
+
+    .flavor-dashboard-nav-scroll-btn--right {
+        right: 4px;
+    }
+
+    .flavor-dashboard-nav.has-scroll-left .flavor-dashboard-nav-scroll-btn--left,
+    .flavor-dashboard-nav.has-scroll-right .flavor-dashboard-nav-scroll-btn--right {
+        opacity: 1;
+        visibility: visible;
     }
 
     .flavor-dashboard-content {
@@ -821,12 +915,112 @@
         padding: 12px;
     }
 
+    /* Tabs compactos en movil - solo iconos cuando hay muchos */
+    .flavor-dashboard-nav-list {
+        padding: 0 8px;
+        gap: 2px;
+    }
+
     .flavor-dashboard-nav-link {
-        padding: 8px 10px;
-        gap: 6px;
+        padding: 10px 8px;
+        gap: 4px;
+        flex-direction: column;
+        align-items: center;
+        font-size: 10px;
+        min-width: 56px;
+        text-align: center;
+    }
+
+    .flavor-dashboard-nav-icon {
+        width: 22px;
+        height: 22px;
+    }
+
+    .flavor-dashboard-nav-icon svg {
+        width: 22px;
+        height: 22px;
     }
 
     .flavor-dashboard-nav-label {
-        font-size: 12px;
+        font-size: 10px;
+        line-height: 1.2;
+        max-width: 60px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
+
+    /* Indicador de tab activo mas visible en movil */
+    .flavor-dashboard-nav-item--activo .flavor-dashboard-nav-link {
+        background: var(--flavor-color-primario);
+        color: #fff;
+        border-bottom-color: var(--flavor-color-primario-hover);
+        border-radius: var(--flavor-radio-borde-sm);
+    }
+
+    .flavor-dashboard-nav-item--activo .flavor-dashboard-nav-link:hover {
+        color: #fff;
+    }
+
+    /* Ocultar botones de scroll en movil (usar swipe) */
+    .flavor-dashboard-nav-scroll-btn {
+        display: none;
+    }
+
+    /* Indicador de scroll mas sutil en movil */
+    .flavor-dashboard-nav::before,
+    .flavor-dashboard-nav::after {
+        width: 24px;
+    }
+
+    /* Badge de notificaciones ajustado */
+    .flavor-dashboard-badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        min-width: 16px;
+        height: 16px;
+        font-size: 9px;
+        padding: 0 4px;
+    }
+
+    .flavor-dashboard-nav-item {
+        position: relative;
+    }
+}
+
+/* ============================================
+   Contador de tabs (indicador visual)
+   ============================================ */
+.flavor-dashboard-tabs-counter {
+    display: none;
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--flavor-color-texto-secundario);
+    white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+    .flavor-dashboard-tabs-counter {
+        display: block;
+    }
+}
+
+/* ============================================
+   Mejoras de accesibilidad para navegacion
+   ============================================ */
+.flavor-dashboard-nav-link:focus {
+    outline: 2px solid var(--flavor-color-primario);
+    outline-offset: 2px;
+}
+
+.flavor-dashboard-nav-link:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.flavor-dashboard-nav-link:focus-visible {
+    outline: 2px solid var(--flavor-color-primario);
+    outline-offset: 2px;
 }

@@ -1,79 +1,85 @@
 /**
  * Flavor Design Tokens - Sistema de Variables CSS Unificado
  *
- * Este archivo define TODAS las variables CSS del sistema usando el prefijo --fl-*.
- * NO usar variables de otros prefijos (--fud-*, --fcd-*, --fvb-*, --flavor-*) en nuevo código.
+ * Este archivo define tokens de diseño que HEREDAN de --flavor-* (Theme Manager).
+ * Esto permite que la configuración del admin se propague a todos los componentes.
+ *
+ * JERARQUÍA:
+ * 1. --flavor-* = Fuente de verdad (configurado en Theme Manager/Design Settings)
+ * 2. --fl-* = Tokens de diseño (hereda de --flavor-* para colores dinámicos)
+ * 3. --portal-* = Alias para portal (hereda de --flavor-*)
  *
  * @package FlavorChatIA
  * @since 4.1.0
+ * @updated 4.2.0 - Integración con Theme Manager
  */
 
 :root {
     /* =========================================================================
-     * COLORES PRIMARIOS
+     * COLORES PRIMARIOS - Heredan del Theme Manager cuando está disponible
      * ========================================================================= */
-    --fl-primary-50: #eef2ff;
-    --fl-primary-100: #e0e7ff;
-    --fl-primary-200: #c7d2fe;
-    --fl-primary-300: #a5b4fc;
-    --fl-primary-400: #818cf8;
-    --fl-primary-500: #6366f1;
-    --fl-primary-600: #4f46e5;
-    --fl-primary-700: #4338ca;
-    --fl-primary-800: #3730a3;
-    --fl-primary-900: #312e81;
-    --fl-primary-950: #1e1b4b;
+    --fl-primary-50: color-mix(in srgb, var(--flavor-primary, #6366f1) 8%, #fff);
+    --fl-primary-100: color-mix(in srgb, var(--flavor-primary, #6366f1) 15%, #fff);
+    --fl-primary-200: color-mix(in srgb, var(--flavor-primary, #6366f1) 25%, #fff);
+    --fl-primary-300: color-mix(in srgb, var(--flavor-primary, #6366f1) 40%, #fff);
+    --fl-primary-400: color-mix(in srgb, var(--flavor-primary, #6366f1) 60%, #fff);
+    --fl-primary-500: var(--flavor-primary, #6366f1);
+    --fl-primary-600: color-mix(in srgb, var(--flavor-primary, #6366f1) 85%, #000);
+    --fl-primary-700: color-mix(in srgb, var(--flavor-primary, #6366f1) 70%, #000);
+    --fl-primary-800: color-mix(in srgb, var(--flavor-primary, #6366f1) 55%, #000);
+    --fl-primary-900: color-mix(in srgb, var(--flavor-primary, #6366f1) 40%, #000);
+    --fl-primary-950: color-mix(in srgb, var(--flavor-primary, #6366f1) 25%, #000);
 
     /* =========================================================================
-     * COLORES SEMANTICOS
+     * COLORES SEMANTICOS - Heredan del Theme Manager
      * ========================================================================= */
-    /* Success */
-    --fl-success-50: #f0fdf4;
-    --fl-success-100: #dcfce7;
-    --fl-success-200: #bbf7d0;
-    --fl-success-300: #86efac;
-    --fl-success-400: #4ade80;
-    --fl-success-500: #22c55e;
-    --fl-success-600: #16a34a;
-    --fl-success-700: #15803d;
-    --fl-success-800: #166534;
-    --fl-success-900: #14532d;
+    /* Success - hereda de --flavor-success */
+    --fl-success-50: color-mix(in srgb, var(--flavor-success, #22c55e) 8%, #fff);
+    --fl-success-100: color-mix(in srgb, var(--flavor-success, #22c55e) 15%, #fff);
+    --fl-success-200: color-mix(in srgb, var(--flavor-success, #22c55e) 25%, #fff);
+    --fl-success-300: color-mix(in srgb, var(--flavor-success, #22c55e) 40%, #fff);
+    --fl-success-400: color-mix(in srgb, var(--flavor-success, #22c55e) 60%, #fff);
+    --fl-success-500: var(--flavor-success, #22c55e);
+    --fl-success-600: color-mix(in srgb, var(--flavor-success, #22c55e) 85%, #000);
+    --fl-success-700: color-mix(in srgb, var(--flavor-success, #22c55e) 70%, #000);
+    --fl-success-800: color-mix(in srgb, var(--flavor-success, #22c55e) 55%, #000);
+    --fl-success-900: color-mix(in srgb, var(--flavor-success, #22c55e) 40%, #000);
 
-    /* Warning */
-    --fl-warning-50: #fffbeb;
-    --fl-warning-100: #fef3c7;
-    --fl-warning-200: #fde68a;
-    --fl-warning-300: #fcd34d;
-    --fl-warning-400: #fbbf24;
-    --fl-warning-500: #f59e0b;
-    --fl-warning-600: #d97706;
-    --fl-warning-700: #b45309;
-    --fl-warning-800: #92400e;
-    --fl-warning-900: #78350f;
+    /* Warning - hereda de --flavor-warning */
+    --fl-warning-50: color-mix(in srgb, var(--flavor-warning, #f59e0b) 8%, #fff);
+    --fl-warning-100: color-mix(in srgb, var(--flavor-warning, #f59e0b) 15%, #fff);
+    --fl-warning-200: color-mix(in srgb, var(--flavor-warning, #f59e0b) 25%, #fff);
+    --fl-warning-300: color-mix(in srgb, var(--flavor-warning, #f59e0b) 40%, #fff);
+    --fl-warning-400: color-mix(in srgb, var(--flavor-warning, #f59e0b) 60%, #fff);
+    --fl-warning-500: var(--flavor-warning, #f59e0b);
+    --fl-warning-600: color-mix(in srgb, var(--flavor-warning, #f59e0b) 85%, #000);
+    --fl-warning-700: color-mix(in srgb, var(--flavor-warning, #f59e0b) 70%, #000);
+    --fl-warning-800: color-mix(in srgb, var(--flavor-warning, #f59e0b) 55%, #000);
+    --fl-warning-900: color-mix(in srgb, var(--flavor-warning, #f59e0b) 40%, #000);
 
-    /* Danger/Error */
-    --fl-danger-50: #fef2f2;
-    --fl-danger-100: #fee2e2;
-    --fl-danger-200: #fecaca;
-    --fl-danger-300: #fca5a5;
-    --fl-danger-400: #f87171;
-    --fl-danger-500: #ef4444;
-    --fl-danger-600: #dc2626;
-    --fl-danger-700: #b91c1c;
-    --fl-danger-800: #991b1b;
-    --fl-danger-900: #7f1d1d;
+    /* Danger/Error - hereda de --flavor-error */
+    --fl-danger-50: color-mix(in srgb, var(--flavor-error, #ef4444) 8%, #fff);
+    --fl-danger-100: color-mix(in srgb, var(--flavor-error, #ef4444) 15%, #fff);
+    --fl-danger-200: color-mix(in srgb, var(--flavor-error, #ef4444) 25%, #fff);
+    --fl-danger-300: color-mix(in srgb, var(--flavor-error, #ef4444) 40%, #fff);
+    --fl-danger-400: color-mix(in srgb, var(--flavor-error, #ef4444) 60%, #fff);
+    --fl-danger-500: var(--flavor-error, #ef4444);
+    --fl-danger-600: color-mix(in srgb, var(--flavor-error, #ef4444) 85%, #000);
+    --fl-danger-700: color-mix(in srgb, var(--flavor-error, #ef4444) 70%, #000);
+    --fl-danger-800: color-mix(in srgb, var(--flavor-error, #ef4444) 55%, #000);
+    --fl-danger-900: color-mix(in srgb, var(--flavor-error, #ef4444) 40%, #000);
 
-    /* Info */
-    --fl-info-50: #eff6ff;
-    --fl-info-100: #dbeafe;
-    --fl-info-200: #bfdbfe;
-    --fl-info-300: #93c5fd;
-    --fl-info-400: #60a5fa;
-    --fl-info-500: #3b82f6;
-    --fl-info-600: #2563eb;
-    --fl-info-700: #1d4ed8;
-    --fl-info-800: #1e40af;
-    --fl-info-900: #1e3a8a;
+    /* Info - hereda de --flavor-info */
+    --fl-info-50: color-mix(in srgb, var(--flavor-info, #3b82f6) 8%, #fff);
+    --fl-info-100: color-mix(in srgb, var(--flavor-info, #3b82f6) 15%, #fff);
+    --fl-info-200: color-mix(in srgb, var(--flavor-info, #3b82f6) 25%, #fff);
+    --fl-info-300: color-mix(in srgb, var(--flavor-info, #3b82f6) 40%, #fff);
+    --fl-info-400: color-mix(in srgb, var(--flavor-info, #3b82f6) 60%, #fff);
+    --fl-info-500: var(--flavor-info, #3b82f6);
+    --fl-info-600: color-mix(in srgb, var(--flavor-info, #3b82f6) 85%, #000);
+    --fl-info-700: color-mix(in srgb, var(--flavor-info, #3b82f6) 70%, #000);
+    --fl-info-800: color-mix(in srgb, var(--flavor-info, #3b82f6) 55%, #000);
+    --fl-info-900: color-mix(in srgb, var(--flavor-info, #3b82f6) 40%, #000);
 
     /* =========================================================================
      * ESCALA DE GRISES
@@ -260,30 +266,31 @@
 
     /* =========================================================================
      * VARIABLES UI SEMANTICAS - LIGHT MODE (Default)
+     * Heredan de --flavor-* cuando están disponibles
      * ========================================================================= */
-    /* Fondos */
-    --fl-bg-page: var(--fl-gray-50);
-    --fl-bg-card: var(--fl-white);
-    --fl-bg-card-hover: var(--fl-gray-50);
-    --fl-bg-elevated: var(--fl-white);
-    --fl-bg-muted: var(--fl-gray-100);
-    --fl-bg-subtle: var(--fl-gray-50);
-    --fl-bg-inverse: var(--fl-gray-900);
+    /* Fondos - heredan de Theme Manager */
+    --fl-bg-page: var(--flavor-bg-secondary, var(--fl-gray-50));
+    --fl-bg-card: var(--flavor-bg, var(--fl-white));
+    --fl-bg-card-hover: var(--flavor-bg-secondary, var(--fl-gray-50));
+    --fl-bg-elevated: var(--flavor-bg, var(--fl-white));
+    --fl-bg-muted: var(--flavor-bg-tertiary, var(--fl-gray-100));
+    --fl-bg-subtle: var(--flavor-bg-secondary, var(--fl-gray-50));
+    --fl-bg-inverse: var(--flavor-text, var(--fl-gray-900));
 
-    /* Textos */
-    --fl-text-primary: var(--fl-gray-900);
-    --fl-text-secondary: var(--fl-gray-600);
-    --fl-text-muted: var(--fl-gray-500);
+    /* Textos - heredan de Theme Manager */
+    --fl-text-primary: var(--flavor-text, var(--fl-gray-900));
+    --fl-text-secondary: var(--flavor-text-secondary, var(--fl-gray-600));
+    --fl-text-muted: var(--flavor-text-muted, var(--fl-gray-500));
     --fl-text-disabled: var(--fl-gray-400);
-    --fl-text-inverse: var(--fl-white);
-    --fl-text-link: var(--fl-primary-600);
-    --fl-text-link-hover: var(--fl-primary-700);
+    --fl-text-inverse: var(--flavor-bg, var(--fl-white));
+    --fl-text-link: var(--flavor-primary, var(--fl-primary-600));
+    --fl-text-link-hover: var(--flavor-primary-hover, var(--fl-primary-700));
 
-    /* Bordes */
-    --fl-border-default: var(--fl-gray-200);
-    --fl-border-muted: var(--fl-gray-100);
+    /* Bordes - heredan de Theme Manager */
+    --fl-border-default: var(--flavor-border, var(--fl-gray-200));
+    --fl-border-muted: var(--flavor-border-light, var(--fl-gray-100));
     --fl-border-strong: var(--fl-gray-300);
-    --fl-border-focus: var(--fl-primary-500);
+    --fl-border-focus: var(--flavor-primary, var(--fl-primary-500));
 
     /* Estados */
     --fl-bg-success: var(--fl-success-50);
@@ -429,5 +436,74 @@
         --fl-border-strong: var(--fl-gray-600);
         --fl-text-secondary: var(--fl-gray-700);
         --fl-text-muted: var(--fl-gray-600);
+    }
+}
+
+/* =========================================================================
+ * FALLBACK PARA NAVEGADORES SIN SOPORTE color-mix()
+ * Safari < 16.4, Firefox < 111, Chrome < 111
+ * ========================================================================= */
+@supports not (color: color-mix(in srgb, red, blue)) {
+    :root {
+        /* Primary scale - fallback estático */
+        --fl-primary-50: #eef2ff;
+        --fl-primary-100: #e0e7ff;
+        --fl-primary-200: #c7d2fe;
+        --fl-primary-300: #a5b4fc;
+        --fl-primary-400: #818cf8;
+        --fl-primary-500: var(--flavor-primary, #6366f1);
+        --fl-primary-600: #4f46e5;
+        --fl-primary-700: #4338ca;
+        --fl-primary-800: #3730a3;
+        --fl-primary-900: #312e81;
+        --fl-primary-950: #1e1b4b;
+
+        /* Success scale - fallback estático */
+        --fl-success-50: #f0fdf4;
+        --fl-success-100: #dcfce7;
+        --fl-success-200: #bbf7d0;
+        --fl-success-300: #86efac;
+        --fl-success-400: #4ade80;
+        --fl-success-500: var(--flavor-success, #22c55e);
+        --fl-success-600: #16a34a;
+        --fl-success-700: #15803d;
+        --fl-success-800: #166534;
+        --fl-success-900: #14532d;
+
+        /* Warning scale - fallback estático */
+        --fl-warning-50: #fffbeb;
+        --fl-warning-100: #fef3c7;
+        --fl-warning-200: #fde68a;
+        --fl-warning-300: #fcd34d;
+        --fl-warning-400: #fbbf24;
+        --fl-warning-500: var(--flavor-warning, #f59e0b);
+        --fl-warning-600: #d97706;
+        --fl-warning-700: #b45309;
+        --fl-warning-800: #92400e;
+        --fl-warning-900: #78350f;
+
+        /* Danger scale - fallback estático */
+        --fl-danger-50: #fef2f2;
+        --fl-danger-100: #fee2e2;
+        --fl-danger-200: #fecaca;
+        --fl-danger-300: #fca5a5;
+        --fl-danger-400: #f87171;
+        --fl-danger-500: var(--flavor-error, #ef4444);
+        --fl-danger-600: #dc2626;
+        --fl-danger-700: #b91c1c;
+        --fl-danger-800: #991b1b;
+        --fl-danger-900: #7f1d1d;
+
+        /* Info scale - fallback estático */
+        --fl-info-50: #eff6ff;
+        --fl-info-100: #dbeafe;
+        --fl-info-200: #bfdbfe;
+        --fl-info-300: #93c5fd;
+        --fl-info-400: #60a5fa;
+        --fl-info-500: var(--flavor-info, #3b82f6);
+        --fl-info-600: #2563eb;
+        --fl-info-700: #1d4ed8;
+        --fl-info-800: #1e40af;
+        --fl-info-900: #1e3a8a;
     }
 }

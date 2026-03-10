@@ -1,0 +1,1176 @@
+/**
+ * Client Dashboard - Unified Design System v5.0
+ *
+ * Mejoras visuales sobre el sistema base:
+ * - Jerarquía visual mejorada
+ * - Espaciado unificado
+ * - Cards con mejor contraste
+ * - Responsive optimizado
+ *
+ * @package FlavorChatIA
+ */
+
+/* ============================================
+   0. VARIABLES - Mapeo a Design Tokens (--fl-*)
+   ============================================ */
+.flavor-client-dashboard {
+    /* Espaciado */
+    --fcd-spacing-xs: var(--fl-space-1, 0.25rem);
+    --fcd-spacing-sm: var(--fl-space-2, 0.5rem);
+    --fcd-spacing-md: var(--fl-space-4, 1rem);
+    --fcd-spacing-lg: var(--fl-space-6, 1.5rem);
+    --fcd-spacing-xl: var(--fl-space-8, 2rem);
+
+    /* Colores */
+    --fcd-color-primary: var(--fl-primary-500, #6366f1);
+    --fcd-color-primary-light: var(--fl-primary-100, #e0e7ff);
+    --fcd-color-primary-dark: var(--fl-primary-700, #4338ca);
+    --fcd-color-success: var(--fl-success-500, #22c55e);
+    --fcd-color-success-light: var(--fl-success-100, #dcfce7);
+    --fcd-color-warning: var(--fl-warning-500, #f59e0b);
+    --fcd-color-warning-light: var(--fl-warning-100, #fef3c7);
+    --fcd-color-error: var(--fl-danger-500, #ef4444);
+    --fcd-color-error-light: var(--fl-danger-100, #fee2e2);
+    --fcd-color-info: var(--fl-info-500, #3b82f6);
+    --fcd-color-info-light: var(--fl-info-100, #dbeafe);
+
+    /* Textos */
+    --fcd-text: var(--fl-gray-900, #0f172a);
+    --fcd-text-secondary: var(--fl-gray-600, #475569);
+    --fcd-text-muted: var(--fl-gray-400, #94a3b8);
+
+    /* Fondos */
+    --fcd-bg-card: var(--fl-white, #ffffff);
+    --fcd-bg-secondary: var(--fl-gray-50, #f8fafc);
+    --fcd-bg-tertiary: var(--fl-gray-100, #f1f5f9);
+
+    /* Bordes */
+    --fcd-border: var(--fl-gray-200, #e2e8f0);
+    --fcd-border-light: var(--fl-gray-100, #f1f5f9);
+
+    /* Radios */
+    --fcd-radius: var(--fl-radius-lg, 0.5rem);
+    --fcd-radius-sm: var(--fl-radius-md, 0.375rem);
+    --fcd-radius-lg: var(--fl-radius-xl, 0.75rem);
+    --fcd-radius-xl: var(--fl-radius-2xl, 1rem);
+
+    /* Sombras */
+    --fcd-shadow-sm: var(--fl-shadow-sm);
+    --fcd-shadow-md: var(--fl-shadow-md);
+    --fcd-shadow-lg: var(--fl-shadow-lg);
+
+    /* Transiciones */
+    --fcd-transition: var(--fl-transition, 200ms ease-out);
+}
+
+/* Dark mode */
+.flavor-client-dashboard.flavor-dark,
+.flavor-client-dashboard.fl-dark {
+    --fcd-text: var(--fl-gray-100, #f1f5f9);
+    --fcd-text-secondary: var(--fl-gray-400, #94a3b8);
+    --fcd-text-muted: var(--fl-gray-500, #64748b);
+    --fcd-bg-card: var(--fl-gray-800, #1e293b);
+    --fcd-bg-secondary: var(--fl-gray-900, #0f172a);
+    --fcd-bg-tertiary: var(--fl-gray-700, #334155);
+    --fcd-border: var(--fl-gray-700, #334155);
+    --fcd-border-light: var(--fl-gray-800, #1e293b);
+}
+
+/* ============================================
+   1. LAYOUT PRINCIPAL - Estructura clara
+   ============================================ */
+.flavor-client-dashboard {
+    --fcd-content-max: 1400px;
+    --fcd-sidebar-width: 280px;
+    --fcd-gap: 24px;
+
+    max-width: var(--fcd-content-max);
+    margin: 0 auto;
+    padding: var(--fcd-spacing-lg) var(--fcd-spacing-xl);
+}
+
+/* ============================================
+   2. HEADER - Más prominente y limpio
+   ============================================ */
+.flavor-client-dashboard__header {
+    background: var(--fcd-bg-card);
+    margin: calc(var(--fcd-spacing-lg) * -1) calc(var(--fcd-spacing-xl) * -1) var(--fcd-spacing-xl);
+    padding: var(--fcd-spacing-xl);
+    border-bottom: 1px solid var(--fcd-border);
+    border-radius: var(--fcd-radius-lg) var(--fcd-radius-lg) 0 0;
+}
+
+.flavor-client-dashboard__avatar img {
+    width: 72px;
+    height: 72px;
+    border: 3px solid var(--fcd-color-primary);
+    box-shadow: 0 0 0 4px var(--fcd-color-primary-light);
+}
+
+.flavor-client-dashboard__greeting {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.flavor-client-dashboard__saludo {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fcd-text-secondary);
+    margin: 0;
+}
+
+.flavor-client-dashboard__nombre {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--fcd-text);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.flavor-client-dashboard__date {
+    background: var(--fcd-bg-tertiary);
+    padding: var(--fcd-spacing-sm) var(--fcd-spacing-md);
+    border-radius: var(--fcd-radius);
+    font-size: 13px;
+    color: var(--fcd-text-secondary);
+    margin-top: var(--fcd-spacing-sm);
+}
+
+/* Botones del header */
+.flavor-client-dashboard__header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--fcd-spacing-sm);
+}
+
+.flavor-client-dashboard__btn-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--fcd-radius);
+    background: var(--fcd-bg-tertiary);
+    border: 1px solid transparent;
+    color: var(--fcd-text-secondary);
+    cursor: pointer;
+    transition: all var(--fcd-transition);
+}
+
+.flavor-client-dashboard__btn-icon:hover {
+    background: var(--fcd-color-primary-light);
+    color: var(--fcd-color-primary);
+    border-color: var(--fcd-color-primary);
+}
+
+/* Badge de notificaciones */
+.flavor-client-dashboard__notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: var(--fcd-color-error);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* ============================================
+   3. BREADCRUMBS - Discretos pero útiles
+   ============================================ */
+.fl-breadcrumbs {
+    margin-bottom: var(--fcd-spacing-md);
+    padding: var(--fcd-spacing-sm) 0;
+}
+
+.fl-breadcrumbs__list {
+    display: flex;
+    align-items: center;
+    gap: var(--fcd-spacing-xs);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+}
+
+.fl-breadcrumbs__link {
+    color: var(--fcd-text-muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color var(--fcd-transition);
+}
+
+.fl-breadcrumbs__link:hover {
+    color: var(--fcd-color-primary);
+}
+
+.fl-breadcrumbs__current {
+    color: var(--fcd-text);
+    font-weight: 500;
+}
+
+.fl-breadcrumbs__separator {
+    color: var(--fcd-text-muted);
+    opacity: 0.5;
+}
+
+/* ============================================
+   4. ESTADÍSTICAS - Cards destacadas
+   ============================================ */
+.flavor-client-dashboard__stats {
+    margin-bottom: var(--fcd-spacing-xl);
+}
+
+.flavor-client-dashboard__stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--fcd-spacing-md);
+}
+
+.flavor-client-dashboard__stat-card {
+    display: flex;
+    align-items: center;
+    gap: var(--fcd-spacing-md);
+    padding: var(--fcd-spacing-lg);
+    background: var(--fcd-bg-card);
+    border-radius: var(--fcd-radius-lg);
+    border: 1px solid var(--fcd-border);
+    text-decoration: none;
+    transition: all var(--fcd-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.flavor-client-dashboard__stat-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--stat-color, var(--fcd-color-primary));
+    transform: scaleY(0);
+    transition: transform var(--fcd-transition);
+}
+
+.flavor-client-dashboard__stat-card:hover {
+    border-color: var(--stat-color, var(--fcd-color-primary));
+    box-shadow: var(--fcd-shadow-md);
+    transform: translateY(-2px);
+}
+
+.flavor-client-dashboard__stat-card:hover::before {
+    transform: scaleY(1);
+}
+
+/* Colores por tipo */
+.flavor-client-dashboard__stat-card--primary { --stat-color: var(--fcd-color-primary); }
+.flavor-client-dashboard__stat-card--success { --stat-color: var(--fcd-color-success); }
+.flavor-client-dashboard__stat-card--warning { --stat-color: var(--fcd-color-warning); }
+.flavor-client-dashboard__stat-card--error { --stat-color: var(--fcd-color-error); }
+.flavor-client-dashboard__stat-card--info { --stat-color: var(--fcd-color-info); }
+
+.flavor-client-dashboard__stat-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--fcd-radius-lg);
+    background: color-mix(in srgb, var(--stat-color, var(--fcd-color-primary)) 12%, transparent);
+    color: var(--stat-color, var(--fcd-color-primary));
+    flex-shrink: 0;
+}
+
+.flavor-client-dashboard__stat-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.flavor-client-dashboard__stat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.flavor-client-dashboard__stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--fcd-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.flavor-client-dashboard__stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fcd-text-secondary);
+}
+
+.flavor-client-dashboard__stat-meta {
+    font-size: 12px;
+    color: var(--fcd-text-muted);
+}
+
+/* ============================================
+   5. SECCIONES - Títulos consistentes
+   ============================================ */
+.flavor-client-dashboard__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--fcd-spacing-md);
+}
+
+.flavor-client-dashboard__section-title,
+.fl-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--fcd-text);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--fcd-spacing-sm);
+}
+
+.flavor-client-dashboard__section-title::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: var(--fcd-color-primary);
+    border-radius: 2px;
+}
+
+/* ============================================
+   6. ATAJOS RÁPIDOS - Pills compactos
+   ============================================ */
+.flavor-client-dashboard__shortcuts {
+    margin-bottom: var(--fcd-spacing-xl);
+}
+
+.flavor-client-dashboard__shortcuts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--fcd-spacing-sm);
+}
+
+.flavor-client-dashboard__shortcut {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--fcd-spacing-sm);
+    padding: var(--fcd-spacing-sm) var(--fcd-spacing-md);
+    background: var(--fcd-bg-card);
+    border: 1px solid var(--fcd-border);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fcd-text);
+    text-decoration: none;
+    transition: all var(--fcd-transition);
+}
+
+.flavor-client-dashboard__shortcut:hover {
+    background: var(--fcd-color-primary-light);
+    border-color: var(--fcd-color-primary);
+    color: var(--fcd-color-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--fcd-shadow-sm);
+}
+
+.flavor-client-dashboard__shortcut-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+}
+
+/* ============================================
+   7. WIDGETS - Sistema de cards unificado
+   ============================================ */
+.fl-widgets-section {
+    margin-bottom: var(--fcd-spacing-xl);
+}
+
+.fl-widget-group {
+    margin-bottom: var(--fcd-spacing-xl);
+    background: var(--fcd-bg-card);
+    border-radius: var(--fcd-radius-lg);
+    border: 1px solid var(--fcd-border);
+    overflow: hidden;
+}
+
+.fl-widget-group__header {
+    background: var(--fcd-bg-tertiary);
+    border-bottom: 1px solid var(--fcd-border);
+}
+
+.fl-widget-group__toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--fcd-spacing-sm);
+    padding: var(--fcd-spacing-md) var(--fcd-spacing-lg);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    color: var(--fcd-text);
+    transition: background var(--fcd-transition);
+}
+
+.fl-widget-group__toggle:hover {
+    background: var(--fcd-bg-hover);
+}
+
+.fl-widget-group__icon {
+    width: 24px;
+    height: 24px;
+    color: var(--category-color, var(--fcd-color-primary));
+}
+
+.fl-widget-group__title {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.fl-widget-group__count {
+    background: var(--fcd-bg-secondary);
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fcd-text-secondary);
+}
+
+.fl-widget-group__arrow {
+    transition: transform var(--fcd-transition);
+}
+
+.fl-widget-group--collapsed .fl-widget-group__arrow {
+    transform: rotate(180deg);
+}
+
+.fl-widget-group__content {
+    padding: var(--fcd-spacing-lg);
+}
+
+/* Grid de widgets */
+.fl-widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--fcd-spacing-md);
+}
+
+/* Widget individual */
+.fl-widget {
+    background: var(--fcd-bg-secondary);
+    border-radius: var(--fcd-radius);
+    border: 1px solid var(--fcd-border-light);
+    overflow: hidden;
+    transition: all var(--fcd-transition);
+}
+
+.fl-widget:hover {
+    border-color: var(--fcd-border);
+    box-shadow: var(--fcd-shadow-sm);
+}
+
+.fl-widget--featured {
+    grid-column: span 2;
+    border-color: var(--fcd-color-primary);
+    border-width: 2px;
+}
+
+.fl-widget--compact {
+    font-size: 13px;
+}
+
+/* ============================================
+   8. FILTROS DE CATEGORÍA
+   ============================================ */
+.fl-category-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--fcd-spacing-sm);
+    margin-bottom: var(--fcd-spacing-lg);
+    padding: var(--fcd-spacing-sm);
+    background: var(--fcd-bg-card);
+    border-radius: var(--fcd-radius-lg);
+    border: 1px solid var(--fcd-border);
+}
+
+.fl-category-filter {
+    display: flex;
+    align-items: center;
+    gap: var(--fcd-spacing-xs);
+    padding: var(--fcd-spacing-sm) var(--fcd-spacing-md);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--fcd-radius);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fcd-text-secondary);
+    cursor: pointer;
+    transition: all var(--fcd-transition);
+}
+
+.fl-category-filter:hover {
+    background: var(--fcd-bg-tertiary);
+    color: var(--fcd-text);
+}
+
+.fl-category-filter--active {
+    background: var(--fcd-color-primary);
+    color: white;
+    border-color: var(--fcd-color-primary);
+}
+
+.fl-category-filter__count {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 11px;
+}
+
+.fl-category-filter--active .fl-category-filter__count {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+   9. PANEL DE NOTIFICACIONES
+   ============================================ */
+.flavor-client-dashboard__notifications-panel {
+    position: absolute;
+    top: 100%;
+    right: var(--fcd-spacing-xl);
+    width: 360px;
+    max-height: 480px;
+    background: var(--fcd-bg-card);
+    border: 1px solid var(--fcd-border);
+    border-radius: var(--fcd-radius-lg);
+    box-shadow: var(--fcd-shadow-lg);
+    z-index: 100;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--fcd-transition);
+}
+
+.flavor-client-dashboard__notifications-panel[aria-hidden="false"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.flavor-client-dashboard__notifications-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--fcd-spacing-md) var(--fcd-spacing-lg);
+    border-bottom: 1px solid var(--fcd-border);
+}
+
+.flavor-client-dashboard__notifications-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.flavor-client-dashboard__notifications-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.flavor-client-dashboard__notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--fcd-spacing-sm);
+    padding: var(--fcd-spacing-md) var(--fcd-spacing-lg);
+    border-bottom: 1px solid var(--fcd-border-light);
+    transition: background var(--fcd-transition);
+}
+
+.flavor-client-dashboard__notification-item:hover {
+    background: var(--fcd-bg-hover);
+}
+
+.flavor-client-dashboard__notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.flavor-client-dashboard__notification-title {
+    display: block;
+    font-weight: 600;
+    color: var(--fcd-text);
+    margin-bottom: 2px;
+}
+
+.flavor-client-dashboard__notification-message {
+    display: block;
+    font-size: 13px;
+    color: var(--fcd-text-secondary);
+    margin-bottom: 4px;
+}
+
+.flavor-client-dashboard__notification-time {
+    font-size: 12px;
+    color: var(--fcd-text-muted);
+}
+
+.flavor-client-dashboard__notifications-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--fcd-spacing-xs);
+    padding: var(--fcd-spacing-md);
+    background: var(--fcd-bg-tertiary);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fcd-color-primary);
+    text-decoration: none;
+    transition: background var(--fcd-transition);
+}
+
+.flavor-client-dashboard__notifications-footer:hover {
+    background: var(--fcd-color-primary-light);
+}
+
+/* ============================================
+   10. ECOSISTEMAS - Cards informativas
+   ============================================ */
+.flavor-client-dashboard__ecosystems {
+    margin-bottom: var(--fcd-spacing-xl);
+}
+
+.flavor-client-dashboard__ecosystems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--fcd-spacing-md);
+}
+
+.flavor-client-dashboard__ecosystem-card {
+    background: var(--fcd-bg-card);
+    border: 1px solid var(--fcd-border);
+    border-radius: var(--fcd-radius-lg);
+    padding: var(--fcd-spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--fcd-spacing-md);
+}
+
+.flavor-client-dashboard__ecosystem-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.flavor-client-dashboard__ecosystem-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    color: var(--fcd-text);
+}
+
+.flavor-client-dashboard__ecosystem-role {
+    font-size: 12px;
+    color: var(--fcd-color-primary);
+    font-weight: 500;
+}
+
+.flavor-client-dashboard__ecosystem-count {
+    background: var(--fcd-color-primary-light);
+    color: var(--fcd-color-primary);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.flavor-client-dashboard__ecosystem-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fcd-spacing-xs);
+}
+
+.flavor-client-dashboard__ecosystem-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--fcd-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.flavor-client-dashboard__ecosystem-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.flavor-client-dashboard__ecosystem-tag {
+    padding: 4px 10px;
+    background: var(--fcd-bg-tertiary);
+    border-radius: var(--fcd-radius-sm);
+    font-size: 12px;
+    color: var(--fcd-text-secondary);
+    text-decoration: none;
+}
+
+.flavor-client-dashboard__ecosystem-tag.is-active {
+    background: var(--fcd-color-success-light);
+    color: var(--fcd-color-success);
+}
+
+.flavor-client-dashboard__ecosystem-tag.is-suggested {
+    background: var(--fcd-color-info-light);
+    color: var(--fcd-color-info);
+}
+
+.flavor-client-dashboard__ecosystem-actions {
+    margin-top: auto;
+    padding-top: var(--fcd-spacing-md);
+    border-top: 1px solid var(--fcd-border-light);
+}
+
+.flavor-client-dashboard__ecosystem-open {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--fcd-spacing-xs);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fcd-color-primary);
+    text-decoration: none;
+}
+
+.flavor-client-dashboard__ecosystem-open:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+   11. RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+    .flavor-client-dashboard {
+        padding: var(--fcd-spacing-md);
+    }
+
+    .flavor-client-dashboard__header {
+        margin: calc(var(--fcd-spacing-md) * -1) calc(var(--fcd-spacing-md) * -1) var(--fcd-spacing-lg);
+        padding: var(--fcd-spacing-lg);
+    }
+
+    .fl-widgets-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
+    .fl-widget--featured {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .flavor-client-dashboard__header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .flavor-client-dashboard__header-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .flavor-client-dashboard__nombre {
+        font-size: 24px;
+    }
+
+    .flavor-client-dashboard__stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .flavor-client-dashboard__stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: var(--fcd-spacing-md);
+    }
+
+    .flavor-client-dashboard__stat-value {
+        font-size: 28px;
+    }
+
+    .fl-category-filters {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .fl-category-filter {
+        flex-shrink: 0;
+    }
+
+    .flavor-client-dashboard__notifications-panel {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: 70vh;
+        border-radius: var(--fcd-radius-xl) var(--fcd-radius-xl) 0 0;
+        transform: translateY(100%);
+    }
+
+    .flavor-client-dashboard__notifications-panel[aria-hidden="false"] {
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .flavor-client-dashboard {
+        padding: var(--fcd-spacing-sm);
+    }
+
+    .flavor-client-dashboard__stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-client-dashboard__stat-card {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .fl-widgets-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-client-dashboard__ecosystems-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   12. SEÑALES Y ACCIONES - Capas de información
+   ============================================ */
+.flavor-client-dashboard__signals,
+.flavor-client-dashboard__actions-layer {
+    margin-bottom: var(--fcd-spacing-xl);
+}
+
+.flavor-client-dashboard__layer-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--fcd-spacing-sm);
+}
+
+.flavor-client-dashboard__layer-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--fcd-spacing-md);
+    background: var(--fcd-bg-card);
+    border: 1px solid var(--fcd-border);
+    border-radius: var(--fcd-radius);
+    text-decoration: none;
+    transition: all var(--fcd-transition);
+}
+
+.flavor-client-dashboard__layer-card:hover {
+    border-color: var(--fcd-color-primary);
+    box-shadow: var(--fcd-shadow-sm);
+    transform: translateY(-2px);
+}
+
+.flavor-client-dashboard__layer-card--signal {
+    border-left: 3px solid var(--fcd-color-info);
+}
+
+.flavor-client-dashboard__layer-card--action {
+    border-left: 3px solid var(--fcd-color-success);
+}
+
+.flavor-client-dashboard__layer-kind {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--fcd-text-muted);
+}
+
+.flavor-client-dashboard__layer-severity {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--fcd-radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.flavor-client-dashboard__layer-severity--stable {
+    background: var(--fcd-color-success-light);
+    color: var(--fcd-color-success);
+}
+
+.flavor-client-dashboard__layer-severity--warning {
+    background: var(--fcd-color-warning-light);
+    color: var(--fcd-color-warning);
+}
+
+.flavor-client-dashboard__layer-severity--critical {
+    background: var(--fcd-color-error-light);
+    color: var(--fcd-color-error);
+}
+
+.flavor-client-dashboard__layer-severity--info {
+    background: var(--fcd-color-info-light);
+    color: var(--fcd-color-info);
+}
+
+.flavor-client-dashboard__layer-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fcd-text);
+    margin: 0;
+}
+
+.flavor-client-dashboard__layer-meta {
+    font-size: 12px;
+    color: var(--fcd-text-secondary);
+    line-height: 1.4;
+}
+
+/* ============================================
+   13. UTILIDADES
+   ============================================ */
+.fl-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.fl-skip-link {
+    position: absolute;
+    left: -9999px;
+    top: var(--fcd-spacing-sm);
+    z-index: 9999;
+    padding: var(--fcd-spacing-sm) var(--fcd-spacing-md);
+    background: var(--fcd-color-primary);
+    color: white;
+    border-radius: var(--fcd-radius);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.fl-skip-link:focus {
+    left: var(--fcd-spacing-sm);
+}
+
+/* Debug panel mejorado */
+.fl-debug-panel {
+    background: var(--fcd-bg-card);
+    border: 1px solid var(--fcd-border);
+    border-radius: var(--fcd-radius);
+    overflow: hidden;
+}
+
+.fl-debug-panel summary {
+    padding: var(--fcd-spacing-sm) var(--fcd-spacing-md);
+    background: var(--fcd-color-warning-light);
+    font-size: 12px;
+    color: var(--fcd-color-warning);
+    cursor: pointer;
+}
+
+.fl-debug-panel > div {
+    padding: var(--fcd-spacing-sm) var(--fcd-spacing-md);
+    font-size: 12px;
+    color: var(--fcd-text-secondary);
+}
+
+/* ============================================
+   14. PORTAL INTEGRATION - Mapeo de clases
+   ============================================ */
+.flavor-mi-portal,
+.flavor-portal-hub {
+    /* Heredar variables del sistema unificado */
+    --fcd-spacing-xs: var(--fl-space-1, 0.25rem);
+    --fcd-spacing-sm: var(--fl-space-2, 0.5rem);
+    --fcd-spacing-md: var(--fl-space-4, 1rem);
+    --fcd-spacing-lg: var(--fl-space-6, 1.5rem);
+    --fcd-spacing-xl: var(--fl-space-8, 2rem);
+    --fcd-color-primary: var(--fl-primary-500, #6366f1);
+    --fcd-color-primary-light: var(--fl-primary-100, #e0e7ff);
+    --fcd-text: var(--fl-gray-900, #0f172a);
+    --fcd-text-secondary: var(--fl-gray-600, #475569);
+    --fcd-bg-card: var(--fl-white, #ffffff);
+    --fcd-border: var(--fl-gray-200, #e2e8f0);
+    --fcd-radius: var(--fl-radius-lg, 0.5rem);
+    --fcd-shadow-md: var(--fl-shadow-md);
+    --fcd-transition: var(--fl-transition, 200ms ease-out);
+
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Hero del portal - Mejoras */
+.flavor-portal__hero {
+    background: var(--fcd-bg-card);
+    border-radius: var(--fcd-radius);
+    padding: var(--fcd-spacing-xl);
+    margin-bottom: var(--fcd-spacing-xl);
+    border: 1px solid var(--fcd-border);
+}
+
+.flavor-portal__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--fcd-text);
+    margin: 0 0 8px;
+}
+
+.flavor-portal__eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--fcd-color-primary);
+    margin-bottom: 4px;
+}
+
+.flavor-portal__subtitle {
+    color: var(--fcd-text-secondary);
+    margin: 0;
+}
+
+/* Secciones del portal */
+.flavor-portal__section {
+    margin-bottom: var(--fcd-spacing-xl);
+}
+
+.flavor-section-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: var(--fcd-spacing-md);
+    gap: var(--fcd-spacing-md);
+}
+
+.flavor-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--fcd-text);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flavor-section-title::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: var(--fcd-color-primary);
+    border-radius: 2px;
+}
+
+.flavor-portal__section-subtitle {
+    font-size: 14px;
+    color: var(--fcd-text-secondary);
+    margin: 4px 0 0;
+}
+
+.flavor-link-all {
+    color: var(--fcd-color-primary);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.flavor-link-all:hover {
+    text-decoration: underline;
+}
+
+/* Notificaciones del portal */
+.flavor-portal__notifications-bar {
+    background: var(--fcd-bg-card);
+    border: 1px solid var(--fcd-border);
+    border-radius: var(--fcd-radius);
+    padding: var(--fcd-spacing-lg);
+    margin-bottom: var(--fcd-spacing-xl);
+}
+
+.flavor-portal__notifications-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--fcd-text);
+    margin: 0 0 4px;
+}
+
+.flavor-portal__notifications-subtitle {
+    font-size: 13px;
+    color: var(--fcd-text-secondary);
+    margin: 0 0 var(--fcd-spacing-md);
+}
+
+/* Cards de ecosistemas en portal */
+.flavor-portal__ecosystems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--fcd-spacing-md);
+}
+
+/* Dark mode para portal */
+.flavor-mi-portal.flavor-dark,
+.flavor-portal-hub.fl-dark {
+    --fcd-text: var(--fl-gray-100, #f1f5f9);
+    --fcd-text-secondary: var(--fl-gray-400, #94a3b8);
+    --fcd-bg-card: var(--fl-gray-800, #1e293b);
+    --fcd-border: var(--fl-gray-700, #334155);
+}
+
+/* Responsive portal */
+@media (max-width: 768px) {
+    .flavor-portal__hero {
+        padding: var(--fcd-spacing-lg);
+    }
+
+    .flavor-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .flavor-portal__ecosystems-grid {
+        grid-template-columns: 1fr;
+    }
+}

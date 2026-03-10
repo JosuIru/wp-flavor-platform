@@ -1,28 +1,26 @@
 /**
  * Flavor Layouts - Frontend Styles
  * Estilos para menús y footers predefinidos
+ *
+ * NOTA: Las variables de color (--flavor-primary, --flavor-bg, --flavor-text, etc.)
+ * son generadas por el Theme Manager. Aquí solo definimos variables específicas de layouts.
  */
 
-/* ====== Variables CSS ====== */
+/* ====== Variables específicas de Layouts (no sobrescriben el tema) ====== */
 :root {
-    --flavor-primary: var(--flavor-design-primary, #3b82f6);
-    --flavor-secondary: var(--flavor-design-secondary, #8b5cf6);
-    --flavor-accent: var(--flavor-design-accent, #f59e0b);
-    --flavor-success: #10b981;
-    --flavor-warning: #f59e0b;
-    --flavor-error: #ef4444;
-    --flavor-text: var(--flavor-design-text, #1f2937);
-    --flavor-text-light: var(--flavor-design-text-secondary, #6b7280);
-    --flavor-bg: var(--flavor-design-bg, #ffffff);
-    --flavor-bg-alt: #f9fafb;
-    --flavor-border: #e5e7eb;
-    --flavor-radius: 8px;
-    --flavor-radius-lg: 12px;
-    --flavor-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --flavor-shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    --flavor-transition: 0.2s ease;
-    --flavor-header-height: 70px;
-    --flavor-container-width: 1200px;
+    /* Variables de estado - solo si no existen */
+    --flavor-success: var(--flavor-success, #10b981);
+    --flavor-warning: var(--flavor-warning, #f59e0b);
+    --flavor-error: var(--flavor-error, #ef4444);
+
+    /* Variables de diseño específicas de layouts */
+    --flavor-radius: var(--flavor-radius, 8px);
+    --flavor-radius-lg: var(--flavor-radius-lg, 12px);
+    --flavor-shadow: var(--flavor-shadow, 0 1px 3px rgba(0, 0, 0, 0.1));
+    --flavor-shadow-lg: var(--flavor-shadow-lg, 0 10px 25px -5px rgba(0, 0, 0, 0.1));
+    --flavor-transition: var(--flavor-transition, 0.2s ease);
+    --flavor-header-height: var(--flavor-header-height, 70px);
+    --flavor-container-width: var(--flavor-container-width, 1200px);
 }
 
 /* ====== Base Styles ====== */
@@ -36,7 +34,8 @@
 
 .flavor-header {
     position: relative;
-    background: var(--flavor-bg);
+    background: var(--flavor-header-bg, var(--flavor-bg));
+    color: var(--flavor-header-text, var(--flavor-text));
     z-index: 1000;
 }
 
@@ -853,20 +852,20 @@
 }
 
 .flavor-footer--dark {
-    background: var(--flavor-text);
-    color: #fff;
+    background: var(--flavor-footer-bg-dark, var(--flavor-text));
+    color: var(--flavor-footer-text-dark, var(--flavor-text-inverse, #fff));
 }
 
 .flavor-footer--dark .flavor-footer__tagline,
 .flavor-footer--dark .flavor-footer-menu a,
 .flavor-footer--dark .flavor-legal-links a,
 .flavor-footer--dark .flavor-copyright {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--flavor-text-inverse-muted, rgba(255, 255, 255, 0.7));
 }
 
 .flavor-footer--dark .flavor-footer-menu a:hover,
 .flavor-footer--dark .flavor-legal-links a:hover {
-    color: #fff;
+    color: var(--flavor-text-inverse, #fff);
 }
 
 .flavor-footer--light {
@@ -881,7 +880,7 @@
 
 .flavor-footer--gradient {
     background: linear-gradient(135deg, var(--flavor-primary), var(--flavor-secondary));
-    color: #fff;
+    color: var(--flavor-text-inverse, #fff);
 }
 
 /* Multi-Column Footer */

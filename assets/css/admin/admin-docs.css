@@ -246,6 +246,172 @@
     background: #f0f6fc;
 }
 
+/* Catalogo de modulos: tabla grande mas legible */
+.doc-body--catalogo-modulos table {
+    display: block;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 70vh;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    background: #fff;
+}
+
+.doc-body--catalogo-modulos thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f6f7f7;
+    box-shadow: 0 1px 0 #dcdcde;
+}
+
+.doc-body--catalogo-modulos th,
+.doc-body--catalogo-modulos td {
+    vertical-align: top;
+    min-width: 180px;
+}
+
+.doc-body--catalogo-modulos th:first-child,
+.doc-body--catalogo-modulos td:first-child {
+    min-width: 170px;
+    background: #fbfbfc;
+}
+
+.doc-body--catalogo-modulos th:nth-child(2),
+.doc-body--catalogo-modulos td:nth-child(2) {
+    min-width: 170px;
+}
+
+.doc-body--catalogo-modulos th:nth-child(3),
+.doc-body--catalogo-modulos td:nth-child(3) {
+    min-width: 520px;
+}
+
+.doc-body--catalogo-modulos td code {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    line-height: 1.3;
+    background: #eef4ff;
+    color: #174a7c;
+}
+
+.doc-body--catalogo-modulos td:nth-child(2) code {
+    font-weight: 600;
+    background: #f0f6fc;
+    color: #0a4b78;
+}
+
+.doc-body--catalogo-modulos .flavor-docs-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.doc-body--catalogo-modulos .flavor-docs-status--intensive {
+    background: #e8f7ee;
+    color: #0f6b3a;
+}
+
+.doc-body--catalogo-modulos .flavor-docs-status--partial {
+    background: #fff4e5;
+    color: #9a4f00;
+}
+
+.doc-body--catalogo-modulos .flavor-docs-status--pending {
+    background: #f3f0ff;
+    color: #5b3db8;
+}
+
+.doc-body--catalogo-modulos tr:nth-child(even) td:first-child {
+    background: #f6f7f7;
+}
+
+.doc-body--catalogo-modulos h2 + p,
+.doc-body--catalogo-modulos h3 + p {
+    max-width: 920px;
+}
+
+.doc-body--catalogo-modulos a[href^="#"] {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 0;
+}
+
+/* Estado real: lectura ejecutiva mas clara */
+.doc-body--estado-real h2 {
+    border-left: 4px solid #2271b1;
+    padding-left: 12px;
+    background: linear-gradient(90deg, #f0f6fc 0, rgba(240, 246, 252, 0) 100%);
+}
+
+.doc-body--estado-real table {
+    max-width: 980px;
+}
+
+.doc-body--estado-real ul {
+    max-width: 980px;
+}
+
+.doc-body--estado-real h2 + ul li,
+.doc-body--estado-real h3 + ul li {
+    margin-bottom: 10px;
+}
+
+.doc-body--estado-real a[href^="#"] {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 0;
+}
+
+/* Plugin completo y guia de modulos: bloque principal homogeneo */
+.doc-body--plugin-completo h2,
+.doc-body--guia-modulos h2 {
+    border-left: 4px solid #2271b1;
+    padding-left: 12px;
+    background: linear-gradient(90deg, #f0f6fc 0, rgba(240, 246, 252, 0) 100%);
+}
+
+.doc-body--plugin-completo table,
+.doc-body--guia-modulos table {
+    max-width: 980px;
+}
+
+.doc-body--plugin-completo ul,
+.doc-body--guia-modulos ul {
+    max-width: 980px;
+}
+
+.doc-body--plugin-completo a[href^="#"],
+.doc-body--guia-modulos a[href^="#"] {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.doc-body--plugin-completo h2 + ul li,
+.doc-body--plugin-completo h3 + ul li,
+.doc-body--guia-modulos h2 + ul li,
+.doc-body--guia-modulos h3 + ul li {
+    margin-bottom: 10px;
+}
+
+.doc-body--catalogo-modulos ul {
+    columns: 2;
+    column-gap: 28px;
+}
+
+.doc-body--catalogo-modulos ul li {
+    break-inside: avoid;
+}
+
 /* Blockquotes (notas) */
 .flavor-docs-content blockquote {
     margin: 20px 0;
@@ -479,6 +645,20 @@
 
     .flavor-docs-content {
         padding: 20px;
+    }
+
+    .doc-body--catalogo-modulos ul {
+        columns: 1;
+    }
+
+    .doc-body--catalogo-modulos th,
+    .doc-body--catalogo-modulos td {
+        min-width: 160px;
+    }
+
+    .doc-body--catalogo-modulos th:nth-child(3),
+    .doc-body--catalogo-modulos td:nth-child(3) {
+        min-width: 320px;
     }
 }
 
