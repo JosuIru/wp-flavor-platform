@@ -5245,6 +5245,67 @@ class Flavor_Database_Installer {
             KEY backup_key_hash (backup_key_hash)
         ) $charset_collate;";
 
+        // =====================================================
+        // TABLAS PARA CHAT IA (Conversaciones con asistente)
+        // =====================================================
+
+        // Conversaciones de Chat IA
+        $tables[] = "CREATE TABLE {$prefix}chat_conversations (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            user_id bigint(20) UNSIGNED DEFAULT NULL,
+            session_id varchar(64) NOT NULL,
+            started_at datetime DEFAULT CURRENT_TIMESTAMP,
+            ended_at datetime DEFAULT NULL,
+            message_count int(11) DEFAULT 0,
+            total_tokens int(11) DEFAULT 0,
+            escalated tinyint(1) DEFAULT 0,
+            escalated_to bigint(20) UNSIGNED DEFAULT NULL,
+            escalated_at datetime DEFAULT NULL,
+            context_module varchar(100) DEFAULT NULL,
+            satisfaction_rating tinyint(1) DEFAULT NULL,
+            metadata longtext DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY user_id (user_id),
+            KEY session_id (session_id),
+            KEY started_at (started_at),
+            KEY escalated (escalated),
+            KEY context_module (context_module),
+            KEY user_started (user_id, started_at)
+        ) $charset_collate;";
+
+        // Mensajes de Chat IA
+        $tables[] = "CREATE TABLE {$prefix}chat_messages (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            conversation_id bigint(20) UNSIGNED NOT NULL,
+            role enum('user','assistant','system') NOT NULL,
+            content longtext NOT NULL,
+            tokens_used int(11) DEFAULT 0,
+            tools_used longtext DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            metadata longtext DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY conversation_id (conversation_id),
+            KEY role (role),
+            KEY created_at (created_at),
+            KEY conv_created (conversation_id, created_at)
+        ) $charset_collate;";
+
+        // Uso de API por día (para métricas del dashboard)
+        $tables[] = "CREATE TABLE {$prefix}chat_api_usage (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            fecha date NOT NULL,
+            provider varchar(50) NOT NULL DEFAULT 'claude',
+            total_requests int(11) DEFAULT 0,
+            total_tokens_input int(11) DEFAULT 0,
+            total_tokens_output int(11) DEFAULT 0,
+            total_cost decimal(10,4) DEFAULT 0,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY fecha_provider (fecha, provider),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
         return $tables;
     }
 
@@ -5527,6 +5588,13 @@ class Flavor_Database_Installer {
             ['tabla' => 'foros_temas', 'nombre' => 'autor_id', 'columnas' => 'autor_id'],
             ['tabla' => 'foros_temas', 'nombre' => 'estado', 'columnas' => 'estado'],
 
+            // Chat IA (conversaciones con asistente)
+            ['tabla' => 'chat_conversations', 'nombre' => 'dashboard_stats', 'columnas' => 'started_at, escalated'],
+            ['tabla' => 'chat_conversations', 'nombre' => 'user_recent', 'columnas' => 'user_id, started_at'],
+            ['tabla' => 'chat_messages', 'nombre' => 'api_usage', 'columnas' => 'role, created_at'],
+            ['tabla' => 'chat_messages', 'nombre' => 'conv_role', 'columnas' => 'conversation_id, role'],
+            ['tabla' => 'chat_api_usage', 'nombre' => 'reporting', 'columnas' => 'fecha, provider'],
+
             // Mensajes y notificaciones
             ['tabla' => 'mensajes', 'nombre' => 'leido', 'columnas' => 'leido'],
             ['tabla' => 'notificaciones', 'nombre' => 'leida', 'columnas' => 'leida'],
@@ -5743,7 +5811,7 @@ class Flavor_Database_Installer {
      */
     public static function maybe_upgrade() {
         $version_actual = get_option('flavor_db_version', '1.0.0');
-        $version_nueva = '1.7.0'; // Versión con tablas de foros extendidas y social_seguimientos
+        $version_nueva = '1.8.0'; // Versión con tablas de Chat IA para dashboard
 
         if (version_compare($version_actual, $version_nueva, '<')) {
             // Crear tablas faltantes
