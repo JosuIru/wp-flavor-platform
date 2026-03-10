@@ -146,12 +146,36 @@ final class Flavor_Bootstrap_Dependencies {
      * @return void
      */
     private function load_ai_engines() {
+        // Interface siempre necesaria
         require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/interface-ai-engine.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-claude.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-openai.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-deepseek.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-mistral.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-manager.php';
+
+        // En admin cargar todos los engines para la configuración
+        if (is_admin()) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-claude.php';
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-openai.php';
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-deepseek.php';
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-mistral.php';
+            return;
+        }
+
+        // En frontend solo cargar el engine activo (lazy load)
+        $settings = get_option('flavor_chat_ia_settings', []);
+        $active_provider = $settings['active_provider'] ?? 'claude';
+
+        $engine_map = [
+            'claude'   => 'class-engine-claude.php',
+            'openai'   => 'class-engine-openai.php',
+            'deepseek' => 'class-engine-deepseek.php',
+            'mistral'  => 'class-engine-mistral.php',
+        ];
+
+        if (isset($engine_map[$active_provider])) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/' . $engine_map[$active_provider];
+        } else {
+            // Fallback a Claude si el provider no es válido
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-claude.php';
+        }
     }
 
     /**
@@ -389,28 +413,36 @@ final class Flavor_Bootstrap_Dependencies {
 
     /**
      * Carga editor visual y visual builder
+     * Optimizado: componentes pesados solo en admin o contextos de edición
      *
      * @return void
      */
     private function load_editor_visual_builder() {
-        // Editor Visual Mejorado
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-editor-history.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-color-picker.php';
+        // Webhooks siempre necesarios (procesan eventos)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/webhooks/class-webhook-manager.php';
 
-        // Visual Builder Unificado
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-visual-builder.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-vb-all-components.php';
+        // Dashboard VB Widgets necesario en frontend para shortcodes
         require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-dashboard-vb-widgets.php';
 
-        // Visual Builder Pro
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/class-vbp-loader.php';
-        Flavor_VBP_Loader::get_instance();
+        // En frontend solo cargar lo mínimo necesario
+        if (!is_admin()) {
+            // Animaciones solo si están habilitadas
+            $settings = get_option('flavor_chat_ia_settings', []);
+            if (!empty($settings['enable_animations'])) {
+                require_once FLAVOR_CHAT_IA_PATH . 'includes/animations/class-animation-manager.php';
+            }
+            return;
+        }
 
-        // Sistema de Animaciones
+        // En admin cargar todo el sistema de edición
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-editor-history.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-color-picker.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-visual-builder.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-vb-all-components.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/class-vbp-loader.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/animations/class-animation-manager.php';
 
-        // Sistema de Webhooks
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/webhooks/class-webhook-manager.php';
+        Flavor_VBP_Loader::get_instance();
     }
 
     /**
