@@ -2225,7 +2225,7 @@ class Flavor_Portal_Shortcodes {
 
         $mis_abiertas = (int) $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$tabla_incidencias}
-             WHERE reportado_por = %d
+             WHERE usuario_id = %d
              AND estado NOT IN ('resuelta', 'cerrada', 'rechazada')",
             $user_id
         ));
@@ -2235,7 +2235,7 @@ class Flavor_Portal_Shortcodes {
             $actualizaciones_nuevas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_seguimiento} s
                  INNER JOIN {$tabla_incidencias} i ON s.incidencia_id = i.id
-                 WHERE i.reportado_por = %d
+                 WHERE i.usuario_id = %d
                  AND s.fecha_creacion > DATE_SUB(NOW(), INTERVAL 7 DAY)
                  AND s.autor_id != %d",
                 $user_id,
