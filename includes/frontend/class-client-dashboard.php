@@ -55,6 +55,16 @@ class Flavor_Client_Dashboard {
     private $atajos_registrados = [];
 
     /**
+     * Obtiene la URL actual para redirects de login en el dashboard.
+     */
+    private function get_current_request_url(): string {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/';
+        $request_uri = '/' . ltrim($request_uri, '/');
+
+        return home_url($request_uri);
+    }
+
+    /**
      * Obtener instancia singleton
      *
      * @return Flavor_Client_Dashboard
@@ -131,7 +141,7 @@ class Flavor_Client_Dashboard {
         // 1. Design Tokens (variables CSS base)
         wp_enqueue_style(
             'fl-design-tokens',
-            $plugin_url . 'assets/css/design-tokens.css',
+            $plugin_url . 'assets/css/core/design-tokens.css',
             [],
             $version
         );
@@ -139,7 +149,7 @@ class Flavor_Client_Dashboard {
         // 2. Compatibilidad con variables antiguas
         wp_enqueue_style(
             'fl-design-tokens-compat',
-            $plugin_url . 'assets/css/design-tokens-compat.css',
+            $plugin_url . 'assets/css/core/design-tokens-compat.css',
             ['fl-design-tokens'],
             $version
         );
@@ -147,7 +157,7 @@ class Flavor_Client_Dashboard {
         // 3. CSS Base del dashboard
         wp_enqueue_style(
             'fl-dashboard-base',
-            $plugin_url . 'assets/css/dashboard-base.css',
+            $plugin_url . 'assets/css/layouts/dashboard-base.css',
             ['fl-design-tokens-compat'],
             $version
         );
@@ -155,7 +165,7 @@ class Flavor_Client_Dashboard {
         // 4. Widgets y niveles
         wp_enqueue_style(
             'fl-dashboard-widgets',
-            $plugin_url . 'assets/css/dashboard-widgets.css',
+            $plugin_url . 'assets/css/layouts/dashboard-widgets.css',
             ['fl-dashboard-base'],
             $version
         );
@@ -163,7 +173,7 @@ class Flavor_Client_Dashboard {
         // 5. Grupos y categorias
         wp_enqueue_style(
             'fl-dashboard-groups',
-            $plugin_url . 'assets/css/dashboard-groups.css',
+            $plugin_url . 'assets/css/layouts/dashboard-groups.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -171,7 +181,7 @@ class Flavor_Client_Dashboard {
         // 6. Estados visuales
         wp_enqueue_style(
             'fl-dashboard-states',
-            $plugin_url . 'assets/css/dashboard-states.css',
+            $plugin_url . 'assets/css/layouts/dashboard-states.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -179,7 +189,7 @@ class Flavor_Client_Dashboard {
         // 7. Accesibilidad
         wp_enqueue_style(
             'fl-dashboard-a11y',
-            $plugin_url . 'assets/css/dashboard-a11y.css',
+            $plugin_url . 'assets/css/layouts/dashboard-a11y.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -187,7 +197,7 @@ class Flavor_Client_Dashboard {
         // 8. Responsive
         wp_enqueue_style(
             'fl-dashboard-responsive',
-            $plugin_url . 'assets/css/dashboard-responsive.css',
+            $plugin_url . 'assets/css/layouts/dashboard-responsive.css',
             ['fl-dashboard-groups'],
             $version
         );
@@ -195,7 +205,7 @@ class Flavor_Client_Dashboard {
         // 9. Breadcrumbs
         wp_enqueue_style(
             'fl-breadcrumbs',
-            $plugin_url . 'assets/css/breadcrumbs.css',
+            $plugin_url . 'assets/css/components/breadcrumbs.css',
             ['fl-design-tokens'],
             $version
         );
@@ -203,8 +213,16 @@ class Flavor_Client_Dashboard {
         // 10. Client Dashboard (estilos especificos)
         wp_enqueue_style(
             'flavor-client-dashboard',
-            $plugin_url . "assets/css/client-dashboard{$sufijo_asset}.css",
+            $plugin_url . "assets/css/layouts/client-dashboard{$sufijo_asset}.css",
             ['fl-dashboard-responsive', 'fl-breadcrumbs'],
+            $version
+        );
+
+        // 11. Estilos unificados UI/UX (mejoras visuales v4.2)
+        wp_enqueue_style(
+            'flavor-client-dashboard-unified',
+            $plugin_url . 'assets/css/layouts/client-dashboard-unified.css',
+            ['flavor-client-dashboard'],
             $version
         );
 
@@ -473,6 +491,7 @@ class Flavor_Client_Dashboard {
                         'size'     => 'medium',
                         'orden'    => $orden_base,
                         'modulo'   => $modulo_id_normalizado,
+                        'ecosystem' => $this->build_dashboard_ecosystem_metadata($modulo_id, $instancia_modulo),
                     ]);
 
                     $orden_base += 10;
@@ -486,8 +505,107 @@ class Flavor_Client_Dashboard {
                 'url'    => home_url('/mi-portal/' . $modulo_id_normalizado . '/'),
                 'color'  => 'secondary',
                 'orden'  => $orden_base,
+                'modulo' => $modulo_id_normalizado,
+                'ecosystem' => $this->build_dashboard_ecosystem_metadata($modulo_id, $instancia_modulo),
             ]);
         }
+    }
+
+    private function build_dashboard_ecosystem_metadata($module_id, $module_instance) {
+        $metadata = [
+            'module_id' => $this->normalize_module_id($module_id),
+            'module_role' => 'vertical',
+            'depends_on' => [],
+            'base_for_modules' => [],
+            'parent_module' => $this->normalize_module_id($module_id),
+            'satellite_priority' => 50,
+            'transversal_priority' => 50,
+            'client_contexts' => [],
+        ];
+
+        if (is_object($module_instance) && method_exists($module_instance, 'get_ecosystem_metadata')) {
+            $ecosystem = $module_instance->get_ecosystem_metadata();
+            if (is_array($ecosystem)) {
+                $metadata['module_role'] = $ecosystem['module_role'] ?? 'vertical';
+                $metadata['depends_on'] = array_values(array_map([$this, 'normalize_module_id'], (array) ($ecosystem['depends_on'] ?? [])));
+                $metadata['base_for_modules'] = array_values(array_map([$this, 'normalize_module_id'], (array) ($ecosystem['base_for_modules'] ?? [])));
+            }
+        }
+
+        if (is_object($module_instance) && method_exists($module_instance, 'get_dashboard_metadata')) {
+            $dashboard = $module_instance->get_dashboard_metadata();
+            if (is_array($dashboard)) {
+                $metadata['satellite_priority'] = isset($dashboard['satellite_priority']) ? absint($dashboard['satellite_priority']) : 50;
+                $metadata['transversal_priority'] = isset($dashboard['transversal_priority']) ? absint($dashboard['transversal_priority']) : 50;
+                $metadata['client_contexts'] = array_values(array_map([$this, 'sanitize_client_context'], (array) ($dashboard['client_contexts'] ?? [])));
+
+                $dashboard_parent = $this->normalize_module_id($dashboard['parent_module'] ?? '');
+                if ($dashboard_parent !== '') {
+                    $metadata['parent_module'] = $dashboard_parent;
+                }
+            }
+        }
+
+        if ($metadata['parent_module'] === $metadata['module_id'] && $metadata['module_role'] !== 'base' && !empty($metadata['depends_on'])) {
+            $metadata['parent_module'] = $metadata['depends_on'][0];
+        }
+
+        if ($metadata['parent_module'] === $metadata['module_id'] && $metadata['module_role'] !== 'base') {
+            $inferred_parent = $this->find_dashboard_base_parent_module($metadata['module_id']);
+            if ($inferred_parent !== '') {
+                $metadata['parent_module'] = $inferred_parent;
+            }
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * Resuelve una base declarativa a partir de base_for_modules.
+     *
+     * @param string $module_id
+     * @return string
+     */
+    private function find_dashboard_base_parent_module($module_id) {
+        static $base_parent_map = null;
+
+        $module_id = $this->normalize_module_id($module_id);
+        if ($module_id === '') {
+            return '';
+        }
+
+        if (is_array($base_parent_map)) {
+            return $base_parent_map[$module_id] ?? '';
+        }
+
+        $base_parent_map = [];
+
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            return '';
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (!$loader) {
+            return '';
+        }
+
+        $registered_modules = $loader->get_registered_modules();
+        foreach ($registered_modules as $candidate_id => $candidate_module) {
+            $ecosystem = is_array($candidate_module['ecosystem'] ?? null) ? $candidate_module['ecosystem'] : [];
+            if (($ecosystem['module_role'] ?? '') !== 'base') {
+                continue;
+            }
+
+            $base_for_modules = array_values(array_map([$this, 'normalize_module_id'], (array) ($ecosystem['base_for_modules'] ?? [])));
+            $candidate_id = $this->normalize_module_id($candidate_id);
+            foreach ($base_for_modules as $child_module_id) {
+                if ($child_module_id !== '') {
+                    $base_parent_map[$child_module_id] = $candidate_id;
+                }
+            }
+        }
+
+        return $base_parent_map[$module_id] ?? '';
     }
 
     /**
@@ -558,6 +676,7 @@ class Flavor_Client_Dashboard {
             'size'     => 'medium',
             'orden'    => 50,
             'modulo'   => '',
+            'ecosystem' => [],
         ]);
     }
 
@@ -575,6 +694,8 @@ class Flavor_Client_Dashboard {
             'color'  => 'secondary',
             'orden'  => 50,
             'target' => '_self',
+            'modulo' => '',
+            'ecosystem' => [],
         ]);
     }
 
@@ -623,6 +744,1093 @@ class Flavor_Client_Dashboard {
         return $atajos;
     }
 
+    private function obtener_jerarquia_ecosistema_dashboard($widgets, $atajos, $dashboard_contexts = []) {
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            return [];
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $registered_modules = $loader->get_registered_modules();
+        $nodes = [];
+        $active_module_ids = [];
+        $dashboard_contexts = array_values(array_unique(array_filter(array_map([$this, 'sanitize_client_context'], (array) $dashboard_contexts))));
+
+        foreach ($widgets as $widget_id => $widget) {
+            $widget_module_id = $this->normalize_module_id($widget['modulo'] ?? '');
+            if ($widget_module_id !== '') {
+                $active_module_ids[$widget_module_id] = true;
+            }
+            $this->adjuntar_item_a_jerarquia_dashboard(
+                $nodes,
+                $registered_modules,
+                $widget['modulo'] ?? '',
+                $widget['ecosystem'] ?? [],
+                $dashboard_contexts,
+                'widget',
+                [
+                    'id' => $widget_id,
+                    'label' => $widget['title'] ?? $widget_id,
+                ]
+            );
+        }
+
+        foreach ($atajos as $shortcut_id => $shortcut) {
+            $shortcut_module_id = $this->normalize_module_id($shortcut['modulo'] ?? '');
+            if ($shortcut_module_id !== '') {
+                $active_module_ids[$shortcut_module_id] = true;
+            }
+            $this->adjuntar_item_a_jerarquia_dashboard(
+                $nodes,
+                $registered_modules,
+                $shortcut['modulo'] ?? '',
+                $shortcut['ecosystem'] ?? [],
+                $dashboard_contexts,
+                'shortcut',
+                [
+                    'id' => $shortcut_id,
+                    'label' => $shortcut['label'] ?? $shortcut_id,
+                    'url' => $shortcut['url'] ?? '',
+                ]
+            );
+        }
+
+        foreach ($nodes as &$node) {
+            $satellite_ids = array_keys($node['satellites']);
+            $node['transversals'] = $this->get_related_transversals_for_dashboard_node(
+                $node['id'],
+                $satellite_ids,
+                $registered_modules,
+                array_keys($active_module_ids),
+                $dashboard_contexts
+            );
+
+            $node['satellites'] = array_values($node['satellites']);
+            usort($node['satellites'], function ($a, $b) {
+                if (($a['priority'] ?? 50) !== ($b['priority'] ?? 50)) {
+                    return ($a['priority'] ?? 50) <=> ($b['priority'] ?? 50);
+                }
+
+                return strcmp($a['name'], $b['name']);
+            });
+
+            $node['widgets'] = array_values($node['widgets']);
+            usort($node['widgets'], function ($a, $b) {
+                return strcmp($a['label'], $b['label']);
+            });
+
+            $node['shortcuts'] = array_values($node['shortcuts']);
+            usort($node['shortcuts'], function ($a, $b) {
+                return strcmp($a['label'], $b['label']);
+            });
+
+            $node['satellite_count'] = count($node['satellites']);
+            $node['transversal_count'] = count($node['transversals']);
+            $node['item_count'] = count($node['widgets']) + count($node['shortcuts']);
+        }
+        unset($node);
+
+        uasort($nodes, function ($a, $b) {
+            if (($a['context_match_score'] ?? 0) !== ($b['context_match_score'] ?? 0)) {
+                return ($a['context_match_score'] ?? 0) > ($b['context_match_score'] ?? 0) ? -1 : 1;
+            }
+
+            if (($a['priority'] ?? 50) !== ($b['priority'] ?? 50)) {
+                return ($a['priority'] ?? 50) <=> ($b['priority'] ?? 50);
+            }
+
+            if (($a['satellite_count'] ?? 0) === ($b['satellite_count'] ?? 0)) {
+                return strcmp($a['name'], $b['name']);
+            }
+
+            return ($a['satellite_count'] ?? 0) > ($b['satellite_count'] ?? 0) ? -1 : 1;
+        });
+
+        return array_values($nodes);
+    }
+
+    private function adjuntar_item_a_jerarquia_dashboard(&$nodes, $registered_modules, $module_id, $ecosystem, $dashboard_contexts, $item_type, $item_data) {
+        $module_id = $this->normalize_module_id($module_id);
+        if ($module_id === '') {
+            return;
+        }
+
+        $parent_module = $this->normalize_module_id($ecosystem['parent_module'] ?? $module_id);
+        if ($parent_module === '') {
+            $parent_module = $module_id;
+        }
+
+        if (!isset($nodes[$parent_module])) {
+            $nodes[$parent_module] = $this->build_hierarchy_node($parent_module, $registered_modules, $dashboard_contexts);
+        }
+
+        if ($module_id !== $parent_module) {
+            $nodes[$parent_module]['satellites'][$module_id] = [
+                'id' => $module_id,
+                'name' => $this->get_registered_module_name_for_dashboard($module_id, $registered_modules),
+                'role' => $this->get_dashboard_role_label($this->get_registered_module_role_for_dashboard($module_id, $registered_modules), $module_id, $registered_modules),
+                'priority' => $this->get_registered_module_dashboard_priority($module_id, $registered_modules, 'satellite_priority'),
+            ];
+        }
+
+        $nodes[$parent_module][$item_type . 's'][$item_data['id']] = $item_data;
+    }
+
+    private function build_hierarchy_node($module_id, $registered_modules, $dashboard_contexts = []) {
+        $role = $this->get_registered_module_role_for_dashboard($module_id, $registered_modules);
+        $client_contexts = $this->get_registered_module_dashboard_contexts($module_id, $registered_modules);
+
+        return [
+            'id' => $module_id,
+            'name' => $this->get_registered_module_name_for_dashboard($module_id, $registered_modules),
+            'role' => $role,
+            'role_label' => $this->get_dashboard_role_label($role, $module_id, $registered_modules),
+            'url' => home_url('/mi-portal/' . str_replace('_', '-', $module_id) . '/'),
+            'priority' => $this->get_registered_module_dashboard_priority($module_id, $registered_modules, 'satellite_priority'),
+            'client_contexts' => $client_contexts,
+            'context_match_score' => $this->calculate_dashboard_context_match($client_contexts, $dashboard_contexts),
+            'satellites' => [],
+            'transversals' => [],
+            'widgets' => [],
+            'shortcuts' => [],
+        ];
+    }
+
+    private function get_related_transversals_for_dashboard_node($parent_module_id, $satellite_ids, $registered_modules, $active_module_ids, $dashboard_contexts = []) {
+        $targets = array_values(array_unique(array_merge([$parent_module_id], $satellite_ids)));
+        $relations = ['supports_modules', 'measures_modules', 'governs_modules', 'teaches_modules'];
+        $transversals = [];
+
+        foreach ($registered_modules as $module_id => $module_data) {
+            $ecosystem = is_array($module_data['ecosystem'] ?? null) ? $module_data['ecosystem'] : [];
+            if (($ecosystem['module_role'] ?? 'vertical') !== 'transversal') {
+                continue;
+            }
+
+            $matched = false;
+            foreach ($relations as $relation_key) {
+                $related = array_map([$this, 'normalize_module_id'], (array) ($ecosystem[$relation_key] ?? []));
+                if (!empty(array_intersect($targets, $related))) {
+                    $matched = true;
+                    break;
+                }
+            }
+
+            if (!$matched) {
+                continue;
+            }
+
+            $transversals[] = [
+                'id' => $module_id,
+                'name' => $this->get_registered_module_name_for_dashboard($module_id, $registered_modules),
+                'is_active' => in_array($module_id, $active_module_ids, true),
+                'priority' => $this->get_registered_module_dashboard_priority($module_id, $registered_modules, 'transversal_priority'),
+                'client_contexts' => $this->get_registered_module_dashboard_contexts($module_id, $registered_modules),
+                'context_match_score' => $this->calculate_dashboard_context_match(
+                    $this->get_registered_module_dashboard_contexts($module_id, $registered_modules),
+                    $dashboard_contexts
+                ),
+                'url' => in_array($module_id, $active_module_ids, true)
+                    ? home_url('/mi-portal/' . str_replace('_', '-', $module_id) . '/')
+                    : '',
+            ];
+        }
+
+        usort($transversals, function ($a, $b) {
+            if ($a['is_active'] !== $b['is_active']) {
+                return $a['is_active'] ? -1 : 1;
+            }
+
+            if (($a['context_match_score'] ?? 0) !== ($b['context_match_score'] ?? 0)) {
+                return ($a['context_match_score'] ?? 0) > ($b['context_match_score'] ?? 0) ? -1 : 1;
+            }
+
+            if (($a['priority'] ?? 50) !== ($b['priority'] ?? 50)) {
+                return ($a['priority'] ?? 50) <=> ($b['priority'] ?? 50);
+            }
+
+            return strcmp($a['name'], $b['name']);
+        });
+
+        return array_slice($transversals, 0, 5);
+    }
+
+    private function get_registered_module_name_for_dashboard($module_id, $registered_modules) {
+        $module = $registered_modules[$module_id] ?? null;
+        if (!$module) {
+            return ucfirst(str_replace(['-', '_'], ' ', $module_id));
+        }
+
+        $name = trim((string) ($module['name'] ?? ''));
+        return $name !== '' ? $name : ucfirst(str_replace(['-', '_'], ' ', $module_id));
+    }
+
+    private function get_registered_module_role_for_dashboard($module_id, $registered_modules) {
+        return $registered_modules[$module_id]['ecosystem']['module_role'] ?? 'vertical';
+    }
+
+    private function get_registered_module_dashboard_priority($module_id, $registered_modules, $key) {
+        return absint($registered_modules[$module_id]['dashboard'][$key] ?? 50);
+    }
+
+    private function get_registered_module_dashboard_contexts($module_id, $registered_modules) {
+        return array_values(array_map([$this, 'sanitize_client_context'], (array) ($registered_modules[$module_id]['dashboard']['client_contexts'] ?? [])));
+    }
+
+    private function calculate_dashboard_context_match($module_contexts, $dashboard_contexts) {
+        $module_contexts = array_values(array_unique(array_filter(array_map([$this, 'sanitize_client_context'], (array) $module_contexts))));
+        $dashboard_contexts = array_values(array_unique(array_filter(array_map([$this, 'sanitize_client_context'], (array) $dashboard_contexts))));
+
+        if (empty($module_contexts) || empty($dashboard_contexts)) {
+            return 0;
+        }
+
+        return count(array_intersect($module_contexts, $dashboard_contexts));
+    }
+
+    private function sanitize_client_context($context) {
+        return sanitize_key(str_replace('-', '_', (string) $context));
+    }
+
+    private function build_panel_layers($atajos, $notificaciones, $dashboard_contexts = [], $id_usuario = 0) {
+        $signal_modules = ['avisos_municipales', 'anuncios', 'incidencias', 'notificaciones', 'energia_comunitaria'];
+        $action_modules = ['eventos', 'reservas', 'participacion', 'grupos_consumo', 'banco_tiempo', 'ayuda_vecinal', 'tramites', 'socios'];
+        $context_labels = [
+            'energia_comunitaria' => __('Energia', 'flavor-chat-ia'),
+            'eventos' => __('Encuentros', 'flavor-chat-ia'),
+            'reservas' => __('Agenda', 'flavor-chat-ia'),
+            'participacion' => __('Decisiones', 'flavor-chat-ia'),
+            'grupos_consumo' => __('Consumo local', 'flavor-chat-ia'),
+            'banco_tiempo' => __('Cuidados', 'flavor-chat-ia'),
+            'ayuda_vecinal' => __('Cuidados', 'flavor-chat-ia'),
+            'incidencias' => __('Atencion', 'flavor-chat-ia'),
+            'avisos_municipales' => __('Avisos', 'flavor-chat-ia'),
+            'socios' => __('Membresia', 'flavor-chat-ia'),
+            'tramites' => __('Gestiones', 'flavor-chat-ia'),
+        ];
+
+        $layers = [
+            'signals' => [],
+            'actions' => [],
+            'services' => [],
+        ];
+
+        $real_signals = $this->get_panel_native_signals((int) $id_usuario);
+        $real_signal_modules = [];
+
+        foreach ($real_signals as $real_signal) {
+            $layers['signals'][] = $real_signal;
+            if (!empty($real_signal['module_id'])) {
+                $real_signal_modules[] = $real_signal['module_id'];
+            }
+        }
+
+        $real_signal_modules = array_values(array_unique(array_filter($real_signal_modules)));
+
+        $real_actions = $this->get_panel_upcoming_actions((int) $id_usuario);
+        $real_action_modules = [];
+
+        foreach ($real_actions as $real_action) {
+            $layers['actions'][] = $real_action;
+            if (!empty($real_action['module_id'])) {
+                $real_action_modules[] = $real_action['module_id'];
+            }
+        }
+
+        $real_action_modules = array_values(array_unique(array_filter($real_action_modules)));
+
+        foreach ((array) $notificaciones as $notification) {
+            $severity = class_exists('Flavor_Dashboard_Severity')
+                ? Flavor_Dashboard_Severity::get_payload(Flavor_Dashboard_Severity::from_notification_type($notification['type'] ?? 'info'))
+                : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-chat-ia')];
+            $layers['signals'][] = [
+                'label' => $notification['title'] ?? __('Notificacion', 'flavor-chat-ia'),
+                'meta' => $notification['message'] ?? '',
+                'url' => home_url('/mi-cuenta/?tab=notificaciones'),
+                'kind' => __('Notificacion', 'flavor-chat-ia'),
+                'context' => __('Nodo', 'flavor-chat-ia'),
+                'severity' => $severity,
+                'color' => 'secondary',
+                'target' => '_self',
+            ];
+        }
+
+        foreach ((array) $atajos as $shortcut_id => $shortcut) {
+            $module_id = $this->normalize_module_id($shortcut['modulo'] ?? '');
+            $item = [
+                'id' => $shortcut_id,
+                'label' => $shortcut['label'] ?? $shortcut_id,
+                'url' => $shortcut['url'] ?? '',
+                'kind' => __('Herramienta', 'flavor-chat-ia'),
+                'context' => $context_labels[$module_id] ?? '',
+                'icon' => $shortcut['icon'] ?? 'link',
+                'color' => $shortcut['color'] ?? 'secondary',
+                'target' => $shortcut['target'] ?? '_self',
+            ];
+
+            if ($module_id !== '' && in_array($module_id, $signal_modules, true)) {
+                if (in_array($module_id, $real_signal_modules, true)) {
+                    continue;
+                }
+
+                $item['kind'] = __('Senal', 'flavor-chat-ia');
+                $item['severity'] = class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload('attention')
+                    : ['slug' => 'attention', 'label' => __('Atención', 'flavor-chat-ia')];
+                $layers['signals'][] = $item;
+                continue;
+            }
+
+            if ($module_id !== '' && in_array($module_id, $action_modules, true)) {
+                if (in_array($module_id, $real_action_modules, true)) {
+                    continue;
+                }
+
+                $item['kind'] = __('Accion', 'flavor-chat-ia');
+                $item['severity'] = class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload(in_array($module_id, ['eventos', 'reservas', 'participacion'], true) ? 'attention' : 'followup')
+                    : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-chat-ia')];
+                $layers['actions'][] = $item;
+                continue;
+            }
+
+            $layers['services'][] = $item;
+        }
+
+        if (!empty($dashboard_contexts)) {
+            usort($layers['actions'], function ($a, $b) use ($dashboard_contexts) {
+                $a_score = in_array($this->sanitize_client_context($a['context'] ?? ''), $dashboard_contexts, true) ? 1 : 0;
+                $b_score = in_array($this->sanitize_client_context($b['context'] ?? ''), $dashboard_contexts, true) ? 1 : 0;
+                if ($a_score !== $b_score) {
+                    return $a_score > $b_score ? -1 : 1;
+                }
+
+                $a_severity = $a['severity']['slug'] ?? 'stable';
+                $b_severity = $b['severity']['slug'] ?? 'stable';
+                $severity_order = ['attention' => 0, 'followup' => 1, 'stable' => 2];
+                if (($severity_order[$a_severity] ?? 2) !== ($severity_order[$b_severity] ?? 2)) {
+                    return ($severity_order[$a_severity] ?? 2) <=> ($severity_order[$b_severity] ?? 2);
+                }
+
+                $a_date = (int) ($a['date_ts'] ?? 0);
+                $b_date = (int) ($b['date_ts'] ?? 0);
+                if ($a_date && $b_date && $a_date !== $b_date) {
+                    return $a_date <=> $b_date;
+                }
+
+                return strcmp($a['label'], $b['label']);
+            });
+        }
+
+        usort($layers['signals'], function ($a, $b) {
+            $a_severity = $a['severity']['slug'] ?? 'stable';
+            $b_severity = $b['severity']['slug'] ?? 'stable';
+            $severity_order = ['attention' => 0, 'followup' => 1, 'stable' => 2];
+            if (($severity_order[$a_severity] ?? 2) !== ($severity_order[$b_severity] ?? 2)) {
+                return ($severity_order[$a_severity] ?? 2) <=> ($severity_order[$b_severity] ?? 2);
+            }
+
+            return strcmp($a['label'], $b['label']);
+        });
+
+        $layers['signals'] = array_slice($layers['signals'], 0, 5);
+        $layers['actions'] = array_slice($layers['actions'], 0, 6);
+
+        return $layers;
+    }
+
+    private function get_panel_native_signals($id_usuario) {
+        if ($id_usuario <= 0) {
+            return [];
+        }
+
+        $signals = array_merge(
+            $this->get_panel_participation_signals($id_usuario),
+            $this->get_panel_incidencia_signals($id_usuario),
+            $this->get_panel_socios_signals($id_usuario)
+        );
+
+        return array_slice($signals, 0, 3);
+    }
+
+    private function get_panel_upcoming_actions($id_usuario) {
+        if ($id_usuario <= 0) {
+            return [];
+        }
+
+        $acciones = array_merge(
+            $this->get_panel_upcoming_event_actions($id_usuario),
+            $this->get_panel_upcoming_reservation_actions($id_usuario),
+            $this->get_panel_upcoming_participation_actions($id_usuario),
+            $this->get_panel_upcoming_tramite_actions($id_usuario),
+            $this->get_panel_upcoming_grupos_consumo_actions($id_usuario)
+        );
+
+        usort($acciones, function ($a, $b) {
+            $a_date = (int) ($a['date_ts'] ?? 0);
+            $b_date = (int) ($b['date_ts'] ?? 0);
+
+            if ($a_date && $b_date && $a_date !== $b_date) {
+                return $a_date <=> $b_date;
+            }
+
+            return strcmp((string) ($a['label'] ?? ''), (string) ($b['label'] ?? ''));
+        });
+
+        return array_slice($acciones, 0, 4);
+    }
+
+    private function get_panel_upcoming_event_actions($id_usuario) {
+        global $wpdb;
+
+        $acciones = [];
+        $eventos = [];
+
+        if (class_exists('Flavor_Chat_Eventos_Module')) {
+            $eventos_module = Flavor_Chat_Eventos_Module::get_instance();
+            if ($eventos_module && method_exists($eventos_module, 'get_proximos_eventos_usuario')) {
+                $eventos = (array) $eventos_module->get_proximos_eventos_usuario($id_usuario, 3);
+            }
+        }
+
+        if (empty($eventos)) {
+            $tabla_eventos = $wpdb->prefix . 'flavor_network_events';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_eventos'") === $tabla_eventos) {
+                $eventos = (array) $wpdb->get_results(
+                    $wpdb->prepare(
+                        "SELECT id, titulo, fecha_inicio, nodo_origen_nombre
+                         FROM $tabla_eventos
+                         WHERE estado = 'publicado' AND fecha_inicio >= %s
+                         ORDER BY fecha_inicio ASC
+                         LIMIT 3",
+                        current_time('mysql')
+                    ),
+                    ARRAY_A
+                );
+            }
+        }
+
+        foreach ($eventos as $evento) {
+            $fecha = (string) ($evento['fecha_inicio'] ?? $evento['fecha'] ?? '');
+            $date_ts = $fecha ? strtotime($fecha) : 0;
+            if (!$date_ts) {
+                continue;
+            }
+
+            $severity_slug = class_exists('Flavor_Dashboard_Severity')
+                ? Flavor_Dashboard_Severity::from_date($fecha, 'followup')
+                : 'followup';
+
+            $meta_parts = [date_i18n(get_option('date_format') . ' · ' . get_option('time_format'), $date_ts)];
+            if (!empty($evento['nodo_origen_nombre'])) {
+                $meta_parts[] = (string) $evento['nodo_origen_nombre'];
+            }
+
+            $acciones[] = [
+                'id' => 'evento-' . sanitize_key((string) ($evento['id'] ?? wp_generate_uuid4())),
+                'module_id' => 'eventos',
+                'label' => $evento['titulo'] ?? $evento['nombre'] ?? __('Evento cercano', 'flavor-chat-ia'),
+                'meta' => implode(' · ', array_filter($meta_parts)),
+                'url' => $evento['url'] ?? home_url('/mi-portal/eventos/'),
+                'kind' => __('Evento cercano', 'flavor-chat-ia'),
+                'context' => __('Encuentros', 'flavor-chat-ia'),
+                'severity' => class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload($severity_slug)
+                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                'date_ts' => $date_ts,
+                'target' => '_self',
+            ];
+        }
+
+        return $acciones;
+    }
+
+    private function get_panel_upcoming_reservation_actions($id_usuario) {
+        global $wpdb;
+
+        $acciones = [];
+        $reservas = [];
+
+        if (class_exists('Flavor_Chat_Reservas_Module')) {
+            $reservas_module = Flavor_Chat_Reservas_Module::get_instance();
+            if ($reservas_module && method_exists($reservas_module, 'get_proximas_reservas_usuario')) {
+                $reservas = (array) $reservas_module->get_proximas_reservas_usuario($id_usuario, 3);
+            }
+        }
+
+        if (empty($reservas)) {
+            $tabla_reservas = $wpdb->prefix . 'flavor_reservations';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_reservas'") === $tabla_reservas) {
+                $reservas = (array) $wpdb->get_results(
+                    $wpdb->prepare(
+                        "SELECT *
+                         FROM $tabla_reservas
+                         WHERE user_id = %d AND fecha >= CURDATE() AND status IN ('confirmed', 'pending')
+                         ORDER BY fecha ASC, hora ASC
+                         LIMIT 3",
+                        $id_usuario
+                    ),
+                    ARRAY_A
+                );
+            }
+        }
+
+        foreach ($reservas as $reserva) {
+            $fecha = (string) ($reserva['fecha'] ?? '');
+            $hora = (string) ($reserva['hora'] ?? '');
+            $date_ts = $fecha ? strtotime(trim($fecha . ' ' . $hora)) : 0;
+            if (!$date_ts) {
+                $date_ts = $fecha ? strtotime($fecha) : 0;
+            }
+            if (!$date_ts) {
+                continue;
+            }
+
+            $severity_slug = class_exists('Flavor_Dashboard_Severity')
+                ? Flavor_Dashboard_Severity::from_date($fecha, 'followup')
+                : 'followup';
+
+            $meta_parts = [date_i18n(get_option('date_format'), strtotime($fecha))];
+            if ($hora !== '') {
+                $hora_ts = strtotime($hora);
+                if ($hora_ts) {
+                    $meta_parts[] = date_i18n(get_option('time_format'), $hora_ts);
+                }
+            }
+
+            $espacio = $reserva['nombre_espacio'] ?? $reserva['servicio'] ?? $reserva['titulo'] ?? __('Reserva', 'flavor-chat-ia');
+            $estado = $reserva['status'] ?? '';
+            if ($estado !== '') {
+                $meta_parts[] = ucfirst((string) $estado);
+            }
+
+            $acciones[] = [
+                'id' => 'reserva-' . sanitize_key((string) ($reserva['id'] ?? wp_generate_uuid4())),
+                'module_id' => 'reservas',
+                'label' => (string) $espacio,
+                'meta' => implode(' · ', array_filter($meta_parts)),
+                'url' => $reserva['url'] ?? home_url('/mi-portal/reservas/'),
+                'kind' => __('Reserva cercana', 'flavor-chat-ia'),
+                'context' => __('Agenda', 'flavor-chat-ia'),
+                'severity' => class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload($severity_slug)
+                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                'date_ts' => $date_ts,
+                'target' => '_self',
+            ];
+        }
+
+        return $acciones;
+    }
+
+    private function get_panel_upcoming_participation_actions($id_usuario) {
+        global $wpdb;
+
+        $acciones = [];
+        $tabla_votaciones = $wpdb->prefix . 'votaciones';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_votaciones'") !== $tabla_votaciones) {
+            return $acciones;
+        }
+
+        $votaciones = (array) $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT id, titulo, fecha_fin, estado
+                 FROM $tabla_votaciones
+                 WHERE estado = 'activa' AND fecha_fin >= %s
+                 ORDER BY fecha_fin ASC
+                 LIMIT 3",
+                current_time('mysql')
+            ),
+            ARRAY_A
+        );
+
+        foreach ($votaciones as $votacion) {
+            $fecha_fin = (string) ($votacion['fecha_fin'] ?? '');
+            $date_ts = $fecha_fin ? strtotime($fecha_fin) : 0;
+            if (!$date_ts) {
+                continue;
+            }
+
+            $severity_slug = class_exists('Flavor_Dashboard_Severity')
+                ? Flavor_Dashboard_Severity::from_date($fecha_fin, 'followup')
+                : 'followup';
+
+            $acciones[] = [
+                'id' => 'participacion-' . sanitize_key((string) ($votacion['id'] ?? wp_generate_uuid4())),
+                'module_id' => 'participacion',
+                'label' => $votacion['titulo'] ?? __('Decision activa', 'flavor-chat-ia'),
+                'meta' => sprintf(
+                    __('Cierra %s', 'flavor-chat-ia'),
+                    date_i18n(get_option('date_format') . ' · ' . get_option('time_format'), $date_ts)
+                ),
+                'url' => home_url('/mi-portal/participacion/votaciones/'),
+                'kind' => __('Decision activa', 'flavor-chat-ia'),
+                'context' => __('Decisiones', 'flavor-chat-ia'),
+                'severity' => class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload($severity_slug)
+                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                'date_ts' => $date_ts,
+                'target' => '_self',
+            ];
+        }
+
+        return $acciones;
+    }
+
+    private function get_panel_upcoming_tramite_actions($id_usuario) {
+        global $wpdb;
+
+        $acciones = [];
+        $tabla_tramites = $wpdb->prefix . 'tramites';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_tramites'") !== $tabla_tramites) {
+            return $acciones;
+        }
+
+        $tramites = (array) $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT id, titulo, tipo, estado, created_at
+                 FROM $tabla_tramites
+                 WHERE usuario_id = %d
+                 AND estado IN ('pendiente', 'en_revision', 'en_proceso')
+                 ORDER BY created_at DESC
+                 LIMIT 3",
+                $id_usuario
+            ),
+            ARRAY_A
+        );
+
+        foreach ($tramites as $tramite) {
+            $fecha = (string) ($tramite['created_at'] ?? '');
+            $date_ts = $fecha ? strtotime($fecha) : 0;
+            $estado = sanitize_key((string) ($tramite['estado'] ?? 'pendiente'));
+            $severity_slug = $estado === 'pendiente' ? 'attention' : 'followup';
+
+            $meta_parts = [];
+            if (!empty($tramite['tipo'])) {
+                $meta_parts[] = ucwords(str_replace(['-', '_'], ' ', (string) $tramite['tipo']));
+            }
+            if ($date_ts) {
+                $meta_parts[] = sprintf(
+                    __('Iniciado %s', 'flavor-chat-ia'),
+                    date_i18n(get_option('date_format'), $date_ts)
+                );
+            }
+
+            $acciones[] = [
+                'id' => 'tramite-' . sanitize_key((string) ($tramite['id'] ?? wp_generate_uuid4())),
+                'module_id' => 'tramites',
+                'label' => $tramite['titulo'] ?? __('Tramite pendiente', 'flavor-chat-ia'),
+                'meta' => implode(' · ', array_filter($meta_parts)),
+                'url' => home_url('/mi-portal/tramites/mis-tramites/'),
+                'kind' => __('Tramite pendiente', 'flavor-chat-ia'),
+                'context' => __('Gestiones', 'flavor-chat-ia'),
+                'severity' => class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload($severity_slug)
+                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                'date_ts' => $date_ts,
+                'target' => '_self',
+            ];
+        }
+
+        return $acciones;
+    }
+
+    private function get_panel_participation_signals($id_usuario) {
+        global $wpdb;
+
+        $signals = [];
+        $tabla_votaciones = $wpdb->prefix . 'votaciones';
+        $tabla_propuestas = $wpdb->prefix . 'propuestas';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_votaciones'") === $tabla_votaciones) {
+            $votacion = $wpdb->get_row(
+                "SELECT id, titulo, fecha_fin
+                 FROM $tabla_votaciones
+                 WHERE estado = 'activa' AND fecha_fin >= NOW()
+                 ORDER BY fecha_fin ASC
+                 LIMIT 1",
+                ARRAY_A
+            );
+
+            if (!empty($votacion)) {
+                $fecha_fin = (string) ($votacion['fecha_fin'] ?? '');
+                $severity_slug = class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::from_date($fecha_fin, 'followup')
+                    : 'followup';
+
+                $signals[] = [
+                    'module_id' => 'participacion',
+                    'label' => __('Hay decisiones activas en marcha', 'flavor-chat-ia'),
+                    'meta' => sprintf(
+                        __('%s · cierra %s', 'flavor-chat-ia'),
+                        $votacion['titulo'] ?? __('Votacion activa', 'flavor-chat-ia'),
+                        date_i18n(get_option('date_format') . ' · ' . get_option('time_format'), strtotime($fecha_fin))
+                    ),
+                    'url' => home_url('/mi-portal/participacion/votaciones/'),
+                    'kind' => __('Senal', 'flavor-chat-ia'),
+                    'context' => __('Decisiones', 'flavor-chat-ia'),
+                    'severity' => class_exists('Flavor_Dashboard_Severity')
+                        ? Flavor_Dashboard_Severity::get_payload($severity_slug)
+                        : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                ];
+
+                return $signals;
+            }
+        }
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_propuestas'") === $tabla_propuestas) {
+            $propuestas_abiertas = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_propuestas
+                 WHERE estado IN ('abierta', 'publicada', 'en_debate', 'votacion')"
+            );
+
+            if ($propuestas_abiertas > 0) {
+                $signals[] = [
+                    'module_id' => 'participacion',
+                    'label' => sprintf(
+                        _n('%d propuesta abierta', '%d propuestas abiertas', $propuestas_abiertas, 'flavor-chat-ia'),
+                        $propuestas_abiertas
+                    ),
+                    'meta' => __('Hay actividad participativa que conviene revisar.', 'flavor-chat-ia'),
+                    'url' => home_url('/mi-portal/participacion/propuestas/'),
+                    'kind' => __('Senal', 'flavor-chat-ia'),
+                    'context' => __('Participacion', 'flavor-chat-ia'),
+                    'severity' => class_exists('Flavor_Dashboard_Severity')
+                        ? Flavor_Dashboard_Severity::get_payload('followup')
+                        : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                ];
+            }
+        }
+
+        return $signals;
+    }
+
+    private function get_panel_incidencia_signals($id_usuario) {
+        global $wpdb;
+
+        $signals = [];
+        $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+        $tabla_seguimiento = $wpdb->prefix . 'flavor_seguimiento';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_incidencias'") !== $tabla_incidencias) {
+            return $signals;
+        }
+
+        $mis_abiertas = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_incidencias}
+             WHERE reportado_por = %d
+             AND estado NOT IN ('resuelta', 'cerrada', 'rechazada')",
+            $id_usuario
+        ));
+
+        $actualizaciones_nuevas = 0;
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_seguimiento'") === $tabla_seguimiento) {
+            $actualizaciones_nuevas = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$tabla_seguimiento} s
+                 INNER JOIN {$tabla_incidencias} i ON s.incidencia_id = i.id
+                 WHERE i.reportado_por = %d
+                 AND s.fecha_creacion > DATE_SUB(NOW(), INTERVAL 7 DAY)
+                 AND s.autor_id != %d",
+                $id_usuario,
+                $id_usuario
+            ));
+        }
+
+        if ($mis_abiertas > 0 || $actualizaciones_nuevas > 0) {
+            $meta = [];
+            if ($mis_abiertas > 0) {
+                $meta[] = sprintf(
+                    _n('%d incidencia abierta', '%d incidencias abiertas', $mis_abiertas, 'flavor-chat-ia'),
+                    $mis_abiertas
+                );
+            }
+            if ($actualizaciones_nuevas > 0) {
+                $meta[] = sprintf(
+                    _n('%d actualizacion reciente', '%d actualizaciones recientes', $actualizaciones_nuevas, 'flavor-chat-ia'),
+                    $actualizaciones_nuevas
+                );
+            }
+
+            $signals[] = [
+                'module_id' => 'incidencias',
+                'label' => __('Hay incidencias que requieren atención', 'flavor-chat-ia'),
+                'meta' => implode(' · ', $meta),
+                'url' => home_url('/mi-portal/incidencias/mis-incidencias/'),
+                'kind' => __('Senal', 'flavor-chat-ia'),
+                'context' => __('Atencion', 'flavor-chat-ia'),
+                'severity' => class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload('attention')
+                    : ['slug' => 'attention', 'label' => __('Atención', 'flavor-chat-ia')],
+            ];
+
+            return $signals;
+        }
+
+        $total_abiertas = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_incidencias}
+             WHERE estado NOT IN ('resuelta', 'cerrada', 'rechazada')"
+        );
+
+        if ($total_abiertas > 0) {
+            $signals[] = [
+                'module_id' => 'incidencias',
+                'label' => sprintf(
+                    _n('%d incidencia en la comunidad', '%d incidencias en la comunidad', $total_abiertas, 'flavor-chat-ia'),
+                    $total_abiertas
+                ),
+                'meta' => __('Hay actividad comunitaria de seguimiento en incidencias.', 'flavor-chat-ia'),
+                'url' => home_url('/mi-portal/incidencias/'),
+                'kind' => __('Senal', 'flavor-chat-ia'),
+                'context' => __('Nodo', 'flavor-chat-ia'),
+                'severity' => class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload('followup')
+                    : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-chat-ia')],
+            ];
+        }
+
+        return $signals;
+    }
+
+    private function get_panel_socios_signals($id_usuario) {
+        global $wpdb;
+
+        $signals = [];
+        $tabla_socios = $wpdb->prefix . 'flavor_socios_socios';
+        $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_socios'") !== $tabla_socios) {
+            return $signals;
+        }
+
+        $socio = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, estado
+             FROM {$tabla_socios}
+             WHERE usuario_id = %d
+             LIMIT 1",
+            $id_usuario
+        ), ARRAY_A);
+
+        if (empty($socio)) {
+            return $signals;
+        }
+
+        $estado = sanitize_key((string) ($socio['estado'] ?? ''));
+        $cuotas_pendientes = 0;
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_cuotas'") === $tabla_cuotas) {
+            $cuotas_pendientes = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*)
+                 FROM {$tabla_cuotas}
+                 WHERE socio_id = %d AND estado IN ('pendiente', 'vencida')",
+                (int) $socio['id']
+            ));
+        }
+
+        if ($estado === 'suspendido' || $cuotas_pendientes > 0) {
+            $meta_parts = [];
+            if ($estado === 'suspendido') {
+                $meta_parts[] = __('Tu membresía está suspendida.', 'flavor-chat-ia');
+            }
+            if ($cuotas_pendientes > 0) {
+                $meta_parts[] = sprintf(
+                    _n('%d cuota pendiente', '%d cuotas pendientes', $cuotas_pendientes, 'flavor-chat-ia'),
+                    $cuotas_pendientes
+                );
+            }
+
+            $signals[] = [
+                'module_id' => 'socios',
+                'label' => __('Tu vínculo de socio requiere atención', 'flavor-chat-ia'),
+                'meta' => implode(' · ', $meta_parts),
+                'url' => home_url('/mi-portal/socios/cuotas/'),
+                'kind' => __('Senal', 'flavor-chat-ia'),
+                'context' => __('Membresia', 'flavor-chat-ia'),
+                'severity' => class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload('attention')
+                    : ['slug' => 'attention', 'label' => __('Atención', 'flavor-chat-ia')],
+            ];
+
+            return $signals;
+        }
+
+        if ($estado === 'pendiente') {
+            $signals[] = [
+                'module_id' => 'socios',
+                'label' => __('Tu membresía sigue pendiente de revisión', 'flavor-chat-ia'),
+                'meta' => __('Conviene revisar tu estado y completar lo que falte.', 'flavor-chat-ia'),
+                'url' => home_url('/mi-portal/socios/mi-perfil/'),
+                'kind' => __('Senal', 'flavor-chat-ia'),
+                'context' => __('Membresia', 'flavor-chat-ia'),
+                'severity' => class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload('followup')
+                    : ['slug' => 'followup', 'label' => __('Seguimiento', 'flavor-chat-ia')],
+            ];
+        }
+
+        return $signals;
+    }
+
+    private function get_panel_upcoming_grupos_consumo_actions($id_usuario) {
+        global $wpdb;
+
+        $acciones = [];
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+
+        if (
+            $wpdb->get_var("SHOW TABLES LIKE '$tabla_consumidores'") !== $tabla_consumidores ||
+            $wpdb->get_var("SHOW TABLES LIKE '$tabla_pedidos'") !== $tabla_pedidos
+        ) {
+            return $acciones;
+        }
+
+        $consumidor_id = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$tabla_consumidores} WHERE usuario_id = %d LIMIT 1",
+            $id_usuario
+        ));
+
+        if ($consumidor_id <= 0) {
+            return $acciones;
+        }
+
+        $ciclos = get_posts([
+            'post_type' => 'gc_ciclo',
+            'post_status' => 'gc_abierto',
+            'posts_per_page' => 1,
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'fields' => 'ids',
+        ]);
+
+        if (empty($ciclos)) {
+            return $acciones;
+        }
+
+        $ciclo_id = (int) $ciclos[0];
+        $fecha_cierre = (string) get_post_meta($ciclo_id, '_gc_fecha_cierre', true);
+        $fecha_entrega = (string) get_post_meta($ciclo_id, '_gc_fecha_entrega', true);
+        $titulo_ciclo = get_the_title($ciclo_id) ?: __('Ciclo activo', 'flavor-chat-ia');
+
+        $tiene_pedido = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d AND ciclo_id = %d",
+            $id_usuario,
+            $ciclo_id
+        )) > 0;
+
+        $candidatas = [];
+        if ($fecha_cierre) {
+            $candidatas[] = [
+                'date' => $fecha_cierre,
+                'kind' => __('Cierre de ciclo', 'flavor-chat-ia'),
+                'meta_prefix' => __('Cierra', 'flavor-chat-ia'),
+            ];
+        }
+        if ($fecha_entrega && $tiene_pedido) {
+            $candidatas[] = [
+                'date' => $fecha_entrega,
+                'kind' => __('Entrega cercana', 'flavor-chat-ia'),
+                'meta_prefix' => __('Entrega', 'flavor-chat-ia'),
+            ];
+        }
+
+        foreach ($candidatas as $candidata) {
+            $date_ts = strtotime((string) $candidata['date']);
+            if (!$date_ts) {
+                continue;
+            }
+
+            $severity_slug = class_exists('Flavor_Dashboard_Severity')
+                ? Flavor_Dashboard_Severity::from_date((string) $candidata['date'], 'followup')
+                : 'followup';
+
+            if ($severity_slug === 'stable') {
+                continue;
+            }
+
+            $acciones[] = [
+                'id' => 'grupos-consumo-' . $ciclo_id . '-' . sanitize_key((string) $candidata['kind']),
+                'module_id' => 'grupos_consumo',
+                'label' => $titulo_ciclo,
+                'meta' => sprintf(
+                    __('%s %s', 'flavor-chat-ia'),
+                    $candidata['meta_prefix'],
+                    date_i18n(get_option('date_format'), $date_ts)
+                ),
+                'url' => home_url('/mi-portal/grupos-consumo/'),
+                'kind' => $candidata['kind'],
+                'context' => __('Consumo local', 'flavor-chat-ia'),
+                'severity' => class_exists('Flavor_Dashboard_Severity')
+                    ? Flavor_Dashboard_Severity::get_payload($severity_slug)
+                    : ['slug' => $severity_slug, 'label' => __('Seguimiento', 'flavor-chat-ia')],
+                'date_ts' => $date_ts,
+                'target' => '_self',
+            ];
+        }
+
+        return array_slice($acciones, 0, 1);
+    }
+
+    private function resolve_client_dashboard_contexts($atributos = []) {
+        $contexts = ['mi_panel', 'portal'];
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        $request_path = (string) wp_parse_url($request_uri, PHP_URL_PATH);
+        $request_query = [];
+
+        if ($request_uri) {
+            parse_str((string) wp_parse_url($request_uri, PHP_URL_QUERY), $request_query);
+        }
+
+        $explicit_context = $this->sanitize_client_context($atributos['contexto'] ?? '');
+        if ($explicit_context !== '') {
+            $contexts[] = $explicit_context;
+        }
+
+        if (strpos($request_path, '/mi-cuenta') !== false) {
+            $contexts[] = 'cuenta';
+        }
+
+        if (strpos($request_path, '/mi-portal') !== false) {
+            $contexts[] = 'portal';
+        }
+
+        $tab_context = $this->sanitize_client_context($request_query['tab'] ?? '');
+        if ($tab_context !== '') {
+            $contexts[] = $tab_context;
+        }
+
+        foreach (['comunidad', 'energia', 'consumo', 'cuidados', 'participacion', 'gobernanza', 'transparencia'] as $candidate_context) {
+            if (strpos($request_path, $candidate_context) !== false) {
+                $contexts[] = $candidate_context;
+            }
+        }
+
+        return array_values(array_unique(array_filter($contexts)));
+    }
+
+    private function get_dashboard_role_label($role, $module_id = '', $registered_modules = []) {
+        $module_key = $this->normalize_module_id($module_id);
+        if ($module_key !== '' && !empty($registered_modules[$module_key]['ecosystem']['display_role_label'])) {
+            $display_role = sanitize_key((string) ($registered_modules[$module_key]['ecosystem']['display_role'] ?? $role));
+            if ($display_role === 'base-standalone') {
+                return __('Base local', 'flavor-chat-ia');
+            }
+        }
+
+        switch ($role) {
+            case 'base':
+                return __('Base', 'flavor-chat-ia');
+            case 'transversal':
+                return __('Transversal', 'flavor-chat-ia');
+            case 'vertical':
+            default:
+                return __('Vertical', 'flavor-chat-ia');
+        }
+    }
+
+    private function normalize_module_id($module_id) {
+        return str_replace('-', '_', sanitize_key((string) $module_id));
+    }
+
     /**
      * Renderiza el dashboard completo
      *
@@ -643,6 +1851,7 @@ class Flavor_Client_Dashboard {
             'mostrar_widgets'      => 'true',
             'mostrar_notificaciones' => 'true',
             'columnas_widgets'     => 2,
+            'contexto'             => '',
         ], $atributos_shortcode);
 
         $usuario_actual = wp_get_current_user();
@@ -657,6 +1866,9 @@ class Flavor_Client_Dashboard {
         $actividad_reciente  = $this->obtener_actividad_reciente($usuario_actual->ID, 10);
         $notificaciones      = $this->obtener_notificaciones_usuario($usuario_actual->ID, 5);
         $preferencias        = $this->obtener_preferencias_usuario($usuario_actual->ID);
+        $dashboard_contexts  = $this->resolve_client_dashboard_contexts($atributos);
+        $ecosystem_hierarchy = $this->obtener_jerarquia_ecosistema_dashboard($widgets, $atajos, $dashboard_contexts);
+        $panel_layers        = $this->build_panel_layers($atajos, $notificaciones, $dashboard_contexts, $usuario_actual->ID);
 
         // Obtener widgets agrupados por categoría
         $widgets_agrupados = [];
@@ -709,8 +1921,18 @@ class Flavor_Client_Dashboard {
             'actividad_reciente'    => $actividad_reciente,
             'notificaciones'        => $notificaciones,
             'preferencias'          => $preferencias,
+            'ecosystem_hierarchy'   => $ecosystem_hierarchy,
+            'panel_layers'          => $panel_layers,
+            'dashboard_contexts'    => $dashboard_contexts,
             'atributos'             => $atributos,
             'dashboard_instance'    => $this,
+            'portal_url'            => home_url('/mi-portal/'),
+            'legacy_notice'         => [
+                'eyebrow' => __('Vista heredada', 'flavor-chat-ia'),
+                'title'   => __('Mi Portal es ahora el dashboard principal', 'flavor-chat-ia'),
+                'text'    => __('Este panel se mantiene por compatibilidad con paginas que usan el shortcode [flavor_client_dashboard]. Usa Mi Portal para la experiencia principal del nodo.', 'flavor-chat-ia'),
+                'cta'     => __('Abrir Mi Portal', 'flavor-chat-ia'),
+            ],
         ];
 
         $ruta_template = FLAVOR_CHAT_IA_PATH . 'templates/frontend/dashboard/client-dashboard.php';
@@ -742,7 +1964,7 @@ class Flavor_Client_Dashboard {
                 <h2><?php esc_html_e('Acceso Requerido', 'flavor-chat-ia'); ?></h2>
                 <p><?php esc_html_e('Necesitas iniciar sesion para acceder a tu panel personal.', 'flavor-chat-ia'); ?></p>
                 <div class="flavor-client-dashboard__login-actions">
-                    <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-btn flavor-btn--primary">
+                    <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="flavor-btn flavor-btn--primary">
                         <?php esc_html_e('Iniciar Sesion', 'flavor-chat-ia'); ?>
                     </a>
                     <?php if (get_option('users_can_register')) : ?>

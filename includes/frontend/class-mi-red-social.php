@@ -249,6 +249,45 @@ class Flavor_Mi_Red_Social {
     }
 
     /**
+     * Verifica si una columna existe en una tabla.
+     *
+     * @param string $tabla
+     * @param string $columna
+     * @return bool
+     */
+    private function columna_existe($tabla, $columna) {
+        global $wpdb;
+
+        if (!$this->tabla_existe($tabla)) {
+            return false;
+        }
+
+        $resultado = $wpdb->get_var($wpdb->prepare(
+            "SHOW COLUMNS FROM {$tabla} LIKE %s",
+            $columna
+        ));
+
+        return $resultado === $columna;
+    }
+
+    /**
+     * Obtiene la primera columna existente de una lista de candidatas.
+     *
+     * @param string $tabla
+     * @param array  $columnas
+     * @return string
+     */
+    private function obtener_primera_columna_existente($tabla, array $columnas) {
+        foreach ($columnas as $columna) {
+            if ($this->columna_existe($tabla, $columna)) {
+                return $columna;
+            }
+        }
+
+        return '';
+    }
+
+    /**
      * Invalida el caché del feed para un usuario
      *
      * @param int $usuario_id ID del usuario (0 para invalidar todos)
@@ -356,13 +395,13 @@ class Flavor_Mi_Red_Social {
 
         // Precarga de CSS crítico
         add_action('wp_head', function() use ($base_url, $version) {
-            echo '<link rel="preload" href="' . esc_url($base_url . 'assets/css/mi-red-social.css') . '?ver=' . esc_attr($version) . '" as="style">' . "\n";
+            echo '<link rel="preload" href="' . esc_url($base_url . 'assets/css/modules/mi-red-social.css') . '?ver=' . esc_attr($version) . '" as="style">' . "\n";
         }, 1);
 
         // CSS principal
         wp_enqueue_style(
             'flavor-mi-red-social',
-            $base_url . 'assets/css/mi-red-social.css',
+            $base_url . 'assets/css/modules/mi-red-social.css',
             ['flavor-portal'],
             $version
         );
@@ -595,6 +634,16 @@ class Flavor_Mi_Red_Social {
             $items = array_merge($items, $this->get_circulos_items($usuario_id, $limite));
         }
 
+        // 10. Eventos - próximos encuentros y mis inscripciones
+        if ($tipo_filtro === 'todos' || $tipo_filtro === 'evento') {
+            $items = array_merge($items, $this->get_eventos_items($usuario_id, $limite));
+        }
+
+        // 11. Grupos de consumo - grupos y ciclos activos
+        if ($tipo_filtro === 'todos' || $tipo_filtro === 'grupo_consumo') {
+            $items = array_merge($items, $this->get_grupos_consumo_items($usuario_id, $limite));
+        }
+
         // Ordenar por fecha descendente
         usort($items, function($a, $b) {
             return strtotime($b['fecha']) - strtotime($a['fecha']);
@@ -726,18 +775,30 @@ class Flavor_Mi_Red_Social {
         global $wpdb;
 
         $tabla = $wpdb->prefix . 'flavor_podcast_episodios';
+        $tabla_series = $wpdb->prefix . 'flavor_podcast_series';
 
         if (!$this->tabla_existe($tabla)) {
             return [];
         }
 
+        $autor_col = $this->obtener_primera_columna_existente($tabla, ['autor_id', 'usuario_id']);
+        $fecha_col = $this->obtener_primera_columna_existente($tabla, ['fecha_publicacion', 'fecha_creacion', 'created_at']);
+        if ($fecha_col === '') {
+            $fecha_col = 'id';
+        }
+
+        $join_series = $this->tabla_existe($tabla_series) ? " LEFT JOIN {$tabla_series} s ON e.serie_id = s.id" : '';
+        $select_serie = $this->tabla_existe($tabla_series) ? ", s.titulo as serie_titulo" : ", '' as serie_titulo";
+        $join_autor = $autor_col !== '' ? " LEFT JOIN {$wpdb->users} u ON e.{$autor_col} = u.ID" : '';
+        $select_autor = $autor_col !== '' ? ", e.{$autor_col} as autor_id, u.display_name as autor_nombre" : ", 0 as autor_id, '' as autor_nombre";
+
         $episodios = $wpdb->get_results($wpdb->prepare(
-            "SELECT e.*, s.titulo as serie_titulo, u.display_name as autor_nombre
+            "SELECT e.* {$select_serie} {$select_autor}
              FROM {$tabla} e
-             LEFT JOIN {$wpdb->prefix}flavor_podcast_series s ON e.serie_id = s.id
-             LEFT JOIN {$wpdb->users} u ON e.autor_id = u.ID
+             {$join_series}
+             {$join_autor}
              WHERE e.estado = 'publicado'
-             ORDER BY e.fecha_publicacion DESC
+             ORDER BY e.{$fecha_col} DESC
              LIMIT %d",
             $limite
         ));
@@ -771,7 +832,7 @@ class Flavor_Mi_Red_Social {
                     'likes' => (int) ($ep->me_gusta ?? 0),
                     'comentarios' => (int) ($ep->comentarios ?? 0),
                 ],
-                'fecha' => $ep->fecha_publicacion,
+                'fecha' => $ep->{$fecha_col} ?? '',
                 'url' => home_url('/podcast/ver/' . $ep->id . '/'),
             ]);
         }
@@ -801,12 +862,21 @@ class Flavor_Mi_Red_Social {
             $where_tipo = $wpdb->prepare(" AND m.tipo = %s", $tipo_filtro);
         }
 
+        $autor_col = $this->obtener_primera_columna_existente($tabla, ['usuario_id', 'autor_id', 'user_id']);
+        $fecha_col = $this->obtener_primera_columna_existente($tabla, ['fecha_subida', 'fecha_creacion', 'created_at']);
+        if ($fecha_col === '') {
+            $fecha_col = 'id';
+        }
+
+        $join_autor = $autor_col !== '' ? " LEFT JOIN {$wpdb->users} u ON m.{$autor_col} = u.ID" : '';
+        $select_autor = $autor_col !== '' ? ", m.{$autor_col} as autor_id, u.display_name as autor_nombre" : ", 0 as autor_id, '' as autor_nombre";
+
         $elementos = $wpdb->get_results($wpdb->prepare(
-            "SELECT m.*, u.display_name as autor_nombre
+            "SELECT m.* {$select_autor}
              FROM {$tabla} m
-             LEFT JOIN {$wpdb->users} u ON m.usuario_id = u.ID
+             {$join_autor}
              WHERE m.estado = 'publicado' {$where_tipo}
-             ORDER BY m.fecha_subida DESC
+             ORDER BY m.{$fecha_col} DESC
              LIMIT %d",
             $limite
         ));
@@ -818,9 +888,9 @@ class Flavor_Mi_Red_Social {
                 'tipo' => $elem->tipo,
                 'origen' => 'multimedia',
                 'autor' => [
-                    'id' => $elem->usuario_id,
+                    'id' => $elem->autor_id ?? 0,
                     'nombre' => $elem->autor_nombre,
-                    'avatar' => get_avatar_url($elem->usuario_id, ['size' => 48]),
+                    'avatar' => !empty($elem->autor_id) ? get_avatar_url($elem->autor_id, ['size' => 48]) : '',
                 ],
                 'contenido' => [
                     'titulo' => $elem->titulo ?? '',
@@ -838,7 +908,7 @@ class Flavor_Mi_Red_Social {
                     'likes' => (int) ($elem->me_gusta ?? 0),
                     'comentarios' => (int) ($elem->comentarios ?? 0),
                 ],
-                'fecha' => $elem->fecha_subida,
+                'fecha' => $elem->{$fecha_col} ?? '',
                 'url' => home_url('/multimedia/ver/' . $elem->id . '/'),
             ]);
         }
@@ -862,12 +932,21 @@ class Flavor_Mi_Red_Social {
             return [];
         }
 
+        $autor_col = $this->obtener_primera_columna_existente($tabla, ['conductor_id', 'autor_id', 'usuario_id']);
+        $fecha_col = $this->obtener_primera_columna_existente($tabla, ['fecha_emision', 'fecha_creacion', 'created_at']);
+        if ($fecha_col === '') {
+            $fecha_col = 'id';
+        }
+
+        $join_autor = $autor_col !== '' ? " LEFT JOIN {$wpdb->users} u ON p.{$autor_col} = u.ID" : '';
+        $select_autor = $autor_col !== '' ? ", p.{$autor_col} as autor_id, u.display_name as autor_nombre" : ", 0 as autor_id, '' as autor_nombre";
+
         $programas = $wpdb->get_results($wpdb->prepare(
-            "SELECT p.*, u.display_name as autor_nombre
+            "SELECT p.* {$select_autor}
              FROM {$tabla} p
-             LEFT JOIN {$wpdb->users} u ON p.conductor_id = u.ID
+             {$join_autor}
              WHERE p.estado = 'activo'
-             ORDER BY p.fecha_emision DESC
+             ORDER BY p.{$fecha_col} DESC
              LIMIT %d",
             $limite
         ));
@@ -879,9 +958,9 @@ class Flavor_Mi_Red_Social {
                 'tipo' => 'radio',
                 'origen' => 'radio',
                 'autor' => [
-                    'id' => $prog->conductor_id ?? 0,
+                    'id' => $prog->autor_id ?? 0,
                     'nombre' => $prog->autor_nombre ?? __('Radio Comunitaria', 'flavor-chat-ia'),
-                    'avatar' => $prog->conductor_id ? get_avatar_url($prog->conductor_id, ['size' => 48]) : '',
+                    'avatar' => !empty($prog->autor_id) ? get_avatar_url($prog->autor_id, ['size' => 48]) : '',
                 ],
                 'contenido' => [
                     'titulo' => $prog->titulo ?? '',
@@ -899,7 +978,7 @@ class Flavor_Mi_Red_Social {
                     'oyentes' => (int) ($prog->oyentes ?? 0),
                     'likes' => (int) ($prog->me_gusta ?? 0),
                 ],
-                'fecha' => $prog->fecha_emision ?? $prog->fecha_creacion,
+                'fecha' => $prog->{$fecha_col} ?? '',
                 'url' => home_url('/radio/programa/' . $prog->id . '/'),
             ]);
         }
@@ -924,9 +1003,13 @@ class Flavor_Mi_Red_Social {
             return [];
         }
 
+        $select_icono = $this->columna_existe($tabla_comunidades, 'icono')
+            ? ", c.icono as comunidad_icono"
+            : ", '' as comunidad_icono";
+
         // Obtener publicaciones de comunidades a las que pertenece el usuario
         $publicaciones = $wpdb->get_results($wpdb->prepare(
-            "SELECT p.*, c.nombre as comunidad_nombre, c.icono as comunidad_icono,
+            "SELECT p.*, c.nombre as comunidad_nombre {$select_icono},
                     u.display_name as autor_nombre
              FROM {$tabla_publicaciones} p
              LEFT JOIN {$tabla_comunidades} c ON p.comunidad_id = c.id
@@ -980,15 +1063,22 @@ class Flavor_Mi_Red_Social {
         global $wpdb;
 
         $tabla = $wpdb->prefix . 'flavor_foros_temas';
+        $tabla_foros = $wpdb->prefix . 'flavor_foros';
 
         if (!$this->tabla_existe($tabla)) {
             return [];
         }
 
+        $foro_col = $this->obtener_primera_columna_existente($tabla, ['foro_id', 'categoria_id']);
+        $join_foro = ($foro_col !== '' && $this->tabla_existe($tabla_foros))
+            ? " LEFT JOIN {$tabla_foros} f ON t.{$foro_col} = f.id"
+            : '';
+        $select_foro = $join_foro !== '' ? ", f.nombre as foro_nombre" : ", '' as foro_nombre";
+
         $temas = $wpdb->get_results($wpdb->prepare(
-            "SELECT t.*, f.nombre as foro_nombre, u.display_name as autor_nombre
+            "SELECT t.* {$select_foro}, u.display_name as autor_nombre
              FROM {$tabla} t
-             LEFT JOIN {$wpdb->prefix}flavor_foros f ON t.foro_id = f.id
+             {$join_foro}
              LEFT JOIN {$wpdb->users} u ON t.autor_id = u.ID
              WHERE t.estado = 'activo'
              ORDER BY t.ultima_actividad DESC
@@ -1042,12 +1132,21 @@ class Flavor_Mi_Red_Social {
             return [];
         }
 
+        $autor_col = $this->obtener_primera_columna_existente($tabla, ['usuario_id', 'autor_id', 'solicitante_id']);
+        $fecha_col = $this->obtener_primera_columna_existente($tabla, ['fecha_creacion', 'created_at', 'fecha']);
+        if ($fecha_col === '') {
+            $fecha_col = 'id';
+        }
+
+        $join_autor = $autor_col !== '' ? " LEFT JOIN {$wpdb->users} u ON a.{$autor_col} = u.ID" : '';
+        $select_autor = $autor_col !== '' ? ", a.{$autor_col} as autor_id, u.display_name as autor_nombre" : ", 0 as autor_id, '' as autor_nombre";
+
         $solicitudes = $wpdb->get_results($wpdb->prepare(
-            "SELECT a.*, u.display_name as autor_nombre
+            "SELECT a.* {$select_autor}
              FROM {$tabla} a
-             LEFT JOIN {$wpdb->users} u ON a.usuario_id = u.ID
+             {$join_autor}
              WHERE a.estado IN ('abierta', 'en_proceso')
-             ORDER BY a.fecha_creacion DESC
+             ORDER BY a.{$fecha_col} DESC
              LIMIT %d",
             $limite
         ));
@@ -1059,9 +1158,9 @@ class Flavor_Mi_Red_Social {
                 'tipo' => 'ayuda',
                 'origen' => 'ayuda-vecinal',
                 'autor' => [
-                    'id' => $sol->usuario_id,
+                    'id' => $sol->autor_id ?? 0,
                     'nombre' => $sol->autor_nombre,
-                    'avatar' => get_avatar_url($sol->usuario_id, ['size' => 48]),
+                    'avatar' => !empty($sol->autor_id) ? get_avatar_url($sol->autor_id, ['size' => 48]) : '',
                 ],
                 'contenido' => [
                     'titulo' => $sol->titulo ?? '',
@@ -1077,7 +1176,7 @@ class Flavor_Mi_Red_Social {
                     'ofertas' => (int) ($sol->ofertas ?? 0),
                     'comentarios' => (int) ($sol->comentarios ?? 0),
                 ],
-                'fecha' => $sol->fecha_creacion,
+                'fecha' => $sol->{$fecha_col} ?? '',
                 'url' => home_url('/ayuda-vecinal/' . $sol->id . '/'),
             ]);
         }
@@ -1334,6 +1433,192 @@ class Flavor_Mi_Red_Social {
                     'url' => home_url('/circulos-cuidados/' . $act->circulo_id . '/actividades/' . $act->id . '/'),
                 ]);
             }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Obtiene items de Eventos.
+     *
+     * @param int $usuario_id
+     * @param int $limite
+     * @return array
+     */
+    private function get_eventos_items($usuario_id, $limite = 10) {
+        global $wpdb;
+
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+
+        if (!$this->tabla_existe($tabla_eventos)) {
+            return [];
+        }
+
+        $items = [];
+
+        $eventos = $wpdb->get_results($wpdb->prepare(
+            "SELECT e.*,
+                    (SELECT COUNT(*) FROM {$tabla_inscripciones} i WHERE i.evento_id = e.id AND i.estado = 'confirmado') AS inscritos_count
+             FROM {$tabla_eventos} e
+             WHERE e.estado = 'publicado'
+             AND e.fecha_inicio >= %s
+             ORDER BY e.fecha_inicio ASC
+             LIMIT %d",
+            current_time('mysql'),
+            $limite
+        ));
+
+        foreach ($eventos as $evento) {
+            $items[] = $this->normalizar_item([
+                'id' => 'evento_' . $evento->id,
+                'tipo' => 'evento',
+                'origen' => 'eventos',
+                'autor' => [
+                    'id' => $evento->organizador_id ?? 0,
+                    'nombre' => $evento->organizador_nombre ?? __('Eventos', 'flavor-chat-ia'),
+                    'avatar' => !empty($evento->organizador_id) ? get_avatar_url($evento->organizador_id, ['size' => 48]) : '',
+                ],
+                'contenido' => [
+                    'titulo' => $evento->titulo ?? '',
+                    'texto' => $evento->descripcion ?? '',
+                    'fecha_evento' => $evento->fecha_inicio,
+                    'lugar' => $evento->lugar ?? $evento->ubicacion ?? '',
+                ],
+                'contexto' => [
+                    'evento_id' => (int) $evento->id,
+                    'subtipo' => 'proximo',
+                ],
+                'interacciones' => [
+                    'inscritos' => (int) ($evento->inscritos_count ?? 0),
+                ],
+                'fecha' => $evento->fecha_inicio,
+                'url' => home_url('/mi-portal/eventos/ver/' . $evento->id . '/'),
+            ]);
+        }
+
+        if ($usuario_id > 0 && $this->tabla_existe($tabla_inscripciones)) {
+            $mis_inscripciones = $wpdb->get_results($wpdb->prepare(
+                "SELECT i.*, e.titulo, e.descripcion, e.fecha_inicio, e.lugar, e.ubicacion
+                 FROM {$tabla_inscripciones} i
+                 INNER JOIN {$tabla_eventos} e ON i.evento_id = e.id
+                 WHERE i.usuario_id = %d
+                 AND i.estado = 'confirmado'
+                 AND e.estado = 'publicado'
+                 AND e.fecha_inicio >= %s
+                 ORDER BY e.fecha_inicio ASC
+                 LIMIT %d",
+                $usuario_id,
+                current_time('mysql'),
+                max(1, (int) floor($limite / 2))
+            ));
+
+            foreach ($mis_inscripciones as $inscripcion) {
+                $items[] = $this->normalizar_item([
+                    'id' => 'evento_inscripcion_' . $inscripcion->evento_id,
+                    'tipo' => 'evento',
+                    'origen' => 'eventos-inscripcion',
+                    'autor' => [
+                        'id' => $usuario_id,
+                        'nombre' => wp_get_current_user()->display_name ?: __('Mi agenda', 'flavor-chat-ia'),
+                        'avatar' => get_avatar_url($usuario_id, ['size' => 48]),
+                    ],
+                    'contenido' => [
+                        'titulo' => sprintf(__('Inscrito: %s', 'flavor-chat-ia'), $inscripcion->titulo ?? ''),
+                        'texto' => $inscripcion->descripcion ?? '',
+                        'fecha_evento' => $inscripcion->fecha_inicio,
+                        'lugar' => $inscripcion->lugar ?? $inscripcion->ubicacion ?? '',
+                    ],
+                    'contexto' => [
+                        'evento_id' => (int) $inscripcion->evento_id,
+                        'subtipo' => 'inscripcion',
+                    ],
+                    'interacciones' => [
+                        'estado' => $inscripcion->estado ?? 'confirmado',
+                    ],
+                    'fecha' => $inscripcion->fecha_inicio,
+                    'url' => home_url('/mi-portal/eventos/ver/' . $inscripcion->evento_id . '/'),
+                ]);
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Obtiene items de Grupos de Consumo.
+     *
+     * @param int $usuario_id
+     * @param int $limite
+     * @return array
+     */
+    private function get_grupos_consumo_items($usuario_id, $limite = 10) {
+        global $wpdb;
+
+        if ($usuario_id <= 0) {
+            return [];
+        }
+
+        $tabla_consumidores = $wpdb->prefix . 'flavor_gc_consumidores';
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+
+        if (!$this->tabla_existe($tabla_consumidores)) {
+            return [];
+        }
+
+        $items = [];
+
+        $membresias = $wpdb->get_results($wpdb->prepare(
+            "SELECT c.*
+             FROM {$tabla_consumidores} c
+             WHERE c.usuario_id = %d
+             AND c.estado = 'activo'
+             ORDER BY c.fecha_alta DESC
+             LIMIT %d",
+            $usuario_id,
+            $limite
+        ));
+
+        foreach ($membresias as $membresia) {
+            $grupo_id = (int) ($membresia->grupo_id ?? 0);
+            $grupo = $grupo_id > 0 ? get_post($grupo_id) : null;
+
+            if (!$grupo || $grupo->post_type !== 'gc_grupo') {
+                continue;
+            }
+
+            $total_pedidos = 0;
+            if ($this->tabla_existe($tabla_pedidos)) {
+                $total_pedidos = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$tabla_pedidos} WHERE usuario_id = %d",
+                    $usuario_id
+                ));
+            }
+
+            $items[] = $this->normalizar_item([
+                'id' => 'grupo_consumo_' . $grupo_id,
+                'tipo' => 'grupo_consumo',
+                'origen' => 'grupos-consumo',
+                'autor' => [
+                    'id' => $usuario_id,
+                    'nombre' => wp_get_current_user()->display_name ?: __('Grupo de consumo', 'flavor-chat-ia'),
+                    'avatar' => get_avatar_url($usuario_id, ['size' => 48]),
+                ],
+                'contenido' => [
+                    'titulo' => $grupo->post_title ?? '',
+                    'texto' => $grupo->post_excerpt ?: wp_trim_words(wp_strip_all_tags($grupo->post_content ?? ''), 20),
+                    'ubicacion' => get_post_meta($grupo_id, '_gc_ubicacion', true),
+                ],
+                'contexto' => [
+                    'grupo_consumo_id' => $grupo_id,
+                    'subtipo' => 'membresia',
+                ],
+                'interacciones' => [
+                    'pedidos' => $total_pedidos,
+                ],
+                'fecha' => $membresia->fecha_alta ?? $grupo->post_date,
+                'url' => add_query_arg('grupo_id', $grupo_id, home_url('/mi-portal/grupos-consumo/')),
+            ]);
         }
 
         return $items;
@@ -2094,10 +2379,15 @@ class Flavor_Mi_Red_Social {
             return [];
         }
 
+        $user_col = $this->obtener_primera_columna_existente($tabla_miembros, ['usuario_id', 'user_id', 'miembro_id']);
+        if ($user_col === '') {
+            return [];
+        }
+
         return $wpdb->get_results($wpdb->prepare(
             "SELECT c.* FROM {$tabla_comunidades} c
              INNER JOIN {$tabla_miembros} m ON c.id = m.comunidad_id
-             WHERE m.usuario_id = %d AND c.estado = 'activa'",
+             WHERE m.{$user_col} = %d AND c.estado = 'activa'",
             $usuario_id
         ), ARRAY_A);
     }

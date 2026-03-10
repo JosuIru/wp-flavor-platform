@@ -114,6 +114,14 @@ class Flavor_Theme_Manager {
                     '--flavor-spacing' => '1rem',
                     '--flavor-spacing-lg' => '1.5rem',
                     '--flavor-spacing-xl' => '2rem',
+
+                    // Header (opcional - usa --flavor-bg por defecto)
+                    // '--flavor-header-bg' => '#ffffff',
+                    // '--flavor-header-text' => '#1f2937',
+
+                    // Footer Dark (opcional - usa --flavor-text por defecto)
+                    '--flavor-footer-bg-dark' => '#1f2937',
+                    '--flavor-footer-text-dark' => '#ffffff',
                 ],
             ],
             'modern-purple' => [
@@ -1866,7 +1874,7 @@ class Flavor_Theme_Manager {
      * Encolar CSS base de componentes
      */
     public function enqueue_base_css() {
-        $ruta_archivo_css = FLAVOR_CHAT_IA_PATH . 'assets/css/flavor-base.css';
+        $ruta_archivo_css = FLAVOR_CHAT_IA_PATH . 'assets/css/core/flavor-base.css';
         if (!file_exists($ruta_archivo_css)) {
             return;
         }
@@ -1924,6 +1932,57 @@ class Flavor_Theme_Manager {
             echo "  {$safe_var_name}: {$safe_value};\n";
         }
 
+        // Generar aliases de variables para compatibilidad con layouts y componentes
+        echo "\n  /* Aliases de variables --flavor-* para compatibilidad */\n";
+        echo "  --flavor-bg-alt: var(--flavor-bg-secondary, #f9fafb);\n";
+        echo "  --flavor-text-light: var(--flavor-text-secondary, #6b7280);\n";
+        echo "  --flavor-text-inverse: var(--flavor-bg, #ffffff);\n";
+        echo "  --flavor-text-inverse-muted: rgba(255, 255, 255, 0.7);\n";
+        echo "  --flavor-border-light: var(--flavor-border, #e5e7eb);\n";
+
+        // Generar puente completo entre --flavor-* y --fl-* para widgets del dashboard
+        echo "\n  /* Puente de variables: --flavor-* → --fl-* (design tokens) */\n";
+
+        // Fondos
+        echo "  --fl-bg-page: var(--flavor-bg-secondary, var(--fl-gray-50));\n";
+        echo "  --fl-bg-card: var(--flavor-bg, var(--fl-white));\n";
+        echo "  --fl-bg-card-hover: var(--flavor-bg-secondary, var(--fl-gray-50));\n";
+        echo "  --fl-bg-elevated: var(--flavor-bg, var(--fl-white));\n";
+        echo "  --fl-bg-muted: var(--flavor-bg-tertiary, var(--fl-gray-100));\n";
+        echo "  --fl-bg-subtle: var(--flavor-bg-secondary, var(--fl-gray-50));\n";
+        echo "  --fl-bg-inverse: var(--flavor-text, var(--fl-gray-900));\n";
+
+        // Textos
+        echo "  --fl-text-primary: var(--flavor-text, var(--fl-gray-900));\n";
+        echo "  --fl-text-secondary: var(--flavor-text-secondary, var(--fl-gray-600));\n";
+        echo "  --fl-text-muted: var(--flavor-text-muted, var(--fl-gray-500));\n";
+        echo "  --fl-text-inverse: var(--flavor-bg, var(--fl-white));\n";
+        echo "  --fl-text-link: var(--flavor-primary, var(--fl-primary-600));\n";
+        echo "  --fl-text-link-hover: var(--flavor-primary-hover, var(--fl-primary-700));\n";
+
+        // Bordes
+        echo "  --fl-border-default: var(--flavor-border, var(--fl-gray-200));\n";
+        echo "  --fl-border-muted: var(--flavor-border-light, var(--fl-gray-100));\n";
+        echo "  --fl-border-focus: var(--flavor-primary, var(--fl-primary-500));\n";
+
+        // Colores primarios con escala
+        echo "  --fl-primary-500: var(--flavor-primary, #6366f1);\n";
+        echo "  --fl-primary-600: var(--flavor-primary-hover, #4f46e5);\n";
+        echo "  --fl-primary-700: var(--flavor-primary-dark, #4338ca);\n";
+        echo "  --fl-primary-100: var(--flavor-primary-light, #e0e7ff);\n";
+        echo "  --fl-primary-50: var(--flavor-primary-light, #eef2ff);\n";
+
+        // Colores de estado
+        echo "  --fl-success-500: var(--flavor-success, #22c55e);\n";
+        echo "  --fl-warning-500: var(--flavor-warning, #f59e0b);\n";
+        echo "  --fl-danger-500: var(--flavor-error, #ef4444);\n";
+        echo "  --fl-info-500: var(--flavor-info, #3b82f6);\n";
+
+        // Componentes específicos
+        echo "  --fl-widget-bg: var(--flavor-bg, var(--fl-bg-card));\n";
+        echo "  --fl-widget-border: var(--flavor-border, var(--fl-border-default));\n";
+        echo "  --fl-widget-shadow: var(--flavor-shadow-sm, var(--fl-shadow-sm));\n";
+
         echo "}\n";
         echo "</style>\n";
     }
@@ -1947,6 +2006,18 @@ class Flavor_Theme_Manager {
         }
 
         return null;
+    }
+
+    /**
+     * Obtener todos los temas disponibles
+     *
+     * Devuelve tanto los temas predefinidos como los personalizados.
+     *
+     * @return array Todos los temas indexados por ID.
+     */
+    public function get_all_themes() {
+        $custom_themes = get_option('flavor_custom_themes', []);
+        return array_merge($this->themes, $custom_themes);
     }
 
     /**

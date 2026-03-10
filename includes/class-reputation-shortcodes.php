@@ -56,7 +56,7 @@ class Flavor_Reputation_Shortcodes {
 
         wp_enqueue_style(
             'flavor-reputation',
-            FLAVOR_CHAT_IA_URL . 'assets/css/reputation.css',
+            FLAVOR_CHAT_IA_URL . 'assets/css/modules/reputation.css',
             [],
             FLAVOR_CHAT_IA_VERSION
         );

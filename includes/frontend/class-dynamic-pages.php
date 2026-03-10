@@ -49,6 +49,16 @@ class Flavor_Dynamic_Pages {
     private $current_item_id = null;
 
     /**
+     * Obtiene la URL actual para redirects de login en páginas dinámicas.
+     */
+    private function get_current_request_url(): string {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/';
+        $request_uri = '/' . ltrim($request_uri, '/');
+
+        return home_url($request_uri);
+    }
+
+    /**
      * Obtener instancia singleton
      */
     public static function get_instance() {
@@ -175,6 +185,44 @@ class Flavor_Dynamic_Pages {
 
         // Flush rewrite rules si es necesario (una vez)
         add_action('init', [$this, 'maybe_flush_rules'], 999);
+
+        // AJAX para guardar configuración de usuario
+        add_action('wp_ajax_flavor_save_user_settings', [$this, 'ajax_save_user_settings']);
+        add_action('wp_ajax_flavor_delete_user_account', [$this, 'ajax_delete_user_account']);
+
+        // Filtro para avatar personalizado
+        add_filter('get_avatar_url', [$this, 'filter_custom_avatar_url'], 10, 3);
+    }
+
+    /**
+     * Filtro para usar avatar personalizado si existe
+     */
+    public function filter_custom_avatar_url($url, $id_or_email, $args) {
+        $user_id = 0;
+
+        if (is_numeric($id_or_email)) {
+            $user_id = (int) $id_or_email;
+        } elseif (is_object($id_or_email)) {
+            if (!empty($id_or_email->user_id)) {
+                $user_id = (int) $id_or_email->user_id;
+            } elseif (!empty($id_or_email->ID)) {
+                $user_id = (int) $id_or_email->ID;
+            }
+        } elseif (is_string($id_or_email) && is_email($id_or_email)) {
+            $user = get_user_by('email', $id_or_email);
+            if ($user) {
+                $user_id = $user->ID;
+            }
+        }
+
+        if ($user_id > 0) {
+            $custom_avatar = get_user_meta($user_id, 'flavor_custom_avatar', true);
+            if (!empty($custom_avatar)) {
+                return $custom_avatar;
+            }
+        }
+
+        return $url;
     }
 
     /**
@@ -458,21 +506,62 @@ class Flavor_Dynamic_Pages {
     private function enqueue_assets() {
         wp_enqueue_style('dashicons');
 
+        // Alpine.js para interactividad
+        if (!wp_script_is('alpine', 'enqueued')) {
+            wp_enqueue_script(
+                'alpine',
+                'https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js',
+                [],
+                '3.14.3',
+                true
+            );
+            // Añadir defer
+            add_filter('script_loader_tag', function($tag, $handle) {
+                if ($handle === 'alpine') {
+                    return str_replace(' src', ' defer src', $tag);
+                }
+                return $tag;
+            }, 10, 2);
+        }
+
         // CSS global del portal (incluye variables de Design Settings)
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/css/portal.css')) {
+        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/css/layouts/portal.css')) {
             wp_enqueue_style(
                 'flavor-portal',
-                FLAVOR_CHAT_IA_URL . 'assets/css/portal.css',
+                FLAVOR_CHAT_IA_URL . 'assets/css/layouts/portal.css',
                 [],
                 FLAVOR_CHAT_IA_VERSION
             );
         }
 
         // CSS del dashboard
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/css/dashboard-vb-widgets.css')) {
+        if (file_exists(FLAVOR_CHAT_IA_PATH . 'assets/css/layouts/dashboard-vb-widgets.css')) {
             wp_enqueue_style(
                 'flavor-dynamic-pages',
-                FLAVOR_CHAT_IA_URL . 'assets/css/dashboard-vb-widgets.css',
+                FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-vb-widgets.css',
+                ['flavor-portal'],
+                FLAVOR_CHAT_IA_VERSION
+            );
+        }
+
+        // CSS del portal unificado (sistema de layouts)
+        $sufijo_min = (defined('WP_DEBUG') && WP_DEBUG) ? '' : '.min';
+        $unified_portal_css = FLAVOR_CHAT_IA_PATH . "assets/css/unified-portal{$sufijo_min}.css";
+        if (file_exists($unified_portal_css)) {
+            wp_enqueue_style(
+                'flavor-unified-portal',
+                FLAVOR_CHAT_IA_URL . "assets/css/unified-portal{$sufijo_min}.css",
+                ['flavor-portal'],
+                FLAVOR_CHAT_IA_VERSION
+            );
+        }
+
+        // CSS del dashboard unificado (paneles de prioridad, Gailu, social)
+        $unified_dashboard_css = FLAVOR_CHAT_IA_PATH . "assets/css/unified-dashboard{$sufijo_min}.css";
+        if (file_exists($unified_dashboard_css)) {
+            wp_enqueue_style(
+                'flavor-unified-dashboard',
+                FLAVOR_CHAT_IA_URL . "assets/css/unified-dashboard{$sufijo_min}.css",
                 ['flavor-portal'],
                 FLAVOR_CHAT_IA_VERSION
             );
@@ -507,6 +596,78 @@ class Flavor_Dynamic_Pages {
                     );
                 }
             }
+        }
+
+        // CSS específico para Mi Red Social
+        if (in_array($module, ['mi-red', 'mi_red'])) {
+            $mi_red_css = FLAVOR_CHAT_IA_PATH . 'assets/css/modules/mi-red-social.css';
+            if (file_exists($mi_red_css)) {
+                wp_enqueue_style(
+                    'flavor-mi-red-social',
+                    FLAVOR_CHAT_IA_URL . 'assets/css/modules/mi-red-social.css',
+                    ['flavor-portal'],
+                    FLAVOR_CHAT_IA_VERSION
+                );
+            }
+
+            // JS de Mi Red Social
+            $mi_red_js = FLAVOR_CHAT_IA_PATH . 'assets/js/mi-red-social.js';
+            if (file_exists($mi_red_js)) {
+                wp_enqueue_script(
+                    'flavor-mi-red-social',
+                    FLAVOR_CHAT_IA_URL . 'assets/js/mi-red-social.js',
+                    ['jquery'],
+                    FLAVOR_CHAT_IA_VERSION,
+                    true
+                );
+
+                // Localizar script con variables necesarias
+                wp_localize_script('flavor-mi-red-social', 'flavorMiRed', [
+                    'ajaxUrl' => admin_url('admin-ajax.php'),
+                    'restUrl' => rest_url('flavor-chat/v1/mi-red/'),
+                    'nonce' => wp_create_nonce('mi_red_nonce'),
+                    'restNonce' => wp_create_nonce('wp_rest'),
+                    'userId' => get_current_user_id(),
+                    'i18n' => [
+                        'cargando' => __('Cargando...', 'flavor-chat-ia'),
+                        'error' => __('Error al cargar', 'flavor-chat-ia'),
+                        'sinResultados' => __('No hay resultados', 'flavor-chat-ia'),
+                        'publicado' => __('Publicado correctamente', 'flavor-chat-ia'),
+                        'comentarioEnviado' => __('Comentario enviado', 'flavor-chat-ia'),
+                        'meGusta' => __('Me gusta', 'flavor-chat-ia'),
+                        'comentar' => __('Comentar', 'flavor-chat-ia'),
+                        'compartir' => __('Compartir', 'flavor-chat-ia'),
+                        'guardar' => __('Guardar', 'flavor-chat-ia'),
+                        'verMas' => __('Ver más', 'flavor-chat-ia'),
+                        'cargarMas' => __('Cargar más', 'flavor-chat-ia'),
+                    ],
+                ]);
+            }
+        }
+
+        // JS del portal unificado
+        $unified_portal_js = FLAVOR_CHAT_IA_PATH . "assets/js/unified-portal{$sufijo_min}.js";
+        if (file_exists($unified_portal_js)) {
+            wp_enqueue_script(
+                'flavor-unified-portal',
+                FLAVOR_CHAT_IA_URL . "assets/js/unified-portal{$sufijo_min}.js",
+                ['jquery'],
+                FLAVOR_CHAT_IA_VERSION,
+                true
+            );
+
+            wp_localize_script('flavor-unified-portal', 'flavorUnifiedPortal', [
+                'ajaxUrl'     => admin_url('admin-ajax.php'),
+                'nonce'       => wp_create_nonce('flavor_unified_portal'),
+                'userId'      => get_current_user_id(),
+                'settingsUrl' => home_url('/mi-portal/configuracion/'),
+                'i18n'        => [
+                    'loading'     => __('Cargando...', 'flavor-chat-ia'),
+                    'error'       => __('Error al cargar datos', 'flavor-chat-ia'),
+                    'noModules'   => __('No hay módulos activos', 'flavor-chat-ia'),
+                    'layoutSaved' => __('Vista guardada', 'flavor-chat-ia'),
+                ],
+            ]);
         }
 
         // CSS adicional inline
@@ -586,12 +747,47 @@ class Flavor_Dynamic_Pages {
     }
 
     /**
+     * Ajusta wp_head para páginas dinámicas y evita metadatos heredados del post base.
+     */
+    private function prepare_dynamic_wp_head(): void {
+        static $prepared = false;
+
+        if ($prepared) {
+            return;
+        }
+
+        // Evita que WordPress emita canonical, shortlink y discovery del post base
+        // cuando en realidad estamos renderizando una ruta dinámica del portal.
+        remove_action('wp_head', 'rel_canonical');
+        remove_action('wp_head', 'wp_shortlink_wp_head', 10);
+        remove_action('wp_head', 'rest_output_link_wp_head', 10);
+        remove_action('wp_head', 'wp_oembed_add_discovery_links', 10);
+        remove_action('wp_head', 'feed_links', 2);
+        remove_action('wp_head', 'feed_links_extra', 3);
+
+        add_action('wp_head', [$this, 'output_dynamic_head_links'], 1);
+
+        $prepared = true;
+    }
+
+    /**
+     * Emite metadatos básicos correctos para la ruta dinámica actual.
+     */
+    public function output_dynamic_head_links(): void {
+        $canonical_url = $this->get_current_request_url();
+
+        echo '<link rel="canonical" href="' . esc_url($canonical_url) . '" />' . "\n";
+        echo '<meta property="og:url" content="' . esc_url($canonical_url) . '" />' . "\n";
+    }
+
+    /**
      * Renderiza la página completa
      */
     private function render_page($section = '') {
         // Headers
         status_header(200);
         nocache_headers();
+        $this->prepare_dynamic_wp_head();
 
         ?>
         <!DOCTYPE html>
@@ -633,10 +829,39 @@ class Flavor_Dynamic_Pages {
                 ?>
             </div>
 
-            <?php wp_footer(); ?>
+            <?php $this->render_filtered_wp_footer(); ?>
         </body>
         </html>
         <?php
+    }
+
+    /**
+     * Renderiza wp_footer filtrando widgets flotantes externos que ensucian el portal.
+     */
+    private function render_filtered_wp_footer(): void {
+        ob_start();
+        wp_footer();
+        $footer_html = ob_get_clean();
+
+        echo $this->strip_external_chat_widget($footer_html); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    }
+
+    /**
+     * Elimina el widget flotante legacy de chat-ia-addon en páginas dinámicas del portal.
+     */
+    private function strip_external_chat_widget(string $html): string {
+        if (strpos($html, '/wp-content/plugins/wp-calendario-experiencias/addons/chat-ia-addon/') === false) {
+            return $html;
+        }
+
+        $patterns = [
+            '/<!-- Widget del chat -->[\s\S]*?(?=<script id="chat-ia-widget-js-extra">)/i',
+            '/<script id="chat-ia-widget-js-extra">[\s\S]*?<\/script>\s*/i',
+            '/<script[^>]+id="chat-ia-widget-js"[^>]*><\/script>\s*/i',
+            '/<link[^>]+id="chat-ia-widget-css"[^>]*>\s*/i',
+        ];
+
+        return preg_replace($patterns, '', $html) ?? $html;
     }
 
     /**
@@ -659,10 +884,19 @@ class Flavor_Dynamic_Pages {
             $menu_id = intval(substr($menu_source, strlen('menu:')));
         }
         ?>
+        <?php
+        // Obtener logo de Flavor Platform (prioridad) o custom logo del tema
+        $flavor_logo_url = '';
+        if (class_exists('Flavor_Chat_Helpers')) {
+            $flavor_logo_url = Flavor_Chat_Helpers::get_site_logo();
+        }
+        ?>
         <header class="flavor-app-header">
             <div class="fah-left">
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="fah-logo">
-                    <?php if (has_custom_logo()): ?>
+                    <?php if ($flavor_logo_url): ?>
+                        <img src="<?php echo esc_url($flavor_logo_url); ?>" alt="<?php echo esc_attr($site_name); ?>" class="fah-logo-img">
+                    <?php elseif (has_custom_logo()): ?>
                         <?php the_custom_logo(); ?>
                     <?php else: ?>
                         <span class="fah-site-name"><?php echo esc_html($site_name); ?></span>
@@ -811,9 +1045,23 @@ class Flavor_Dynamic_Pages {
                     <a href="<?php echo esc_url($action_url); ?>"
                        class="fas-nav-item <?php echo $this->current_action === $action_id ? 'active' : ''; ?>">
                         <span class="dashicons <?php echo esc_attr($action['icon'] ?? 'dashicons-admin-generic'); ?>"></span>
-                        <?php echo esc_html($action['label'] ?? ucfirst($action_id)); ?>
+                        <?php echo esc_html($this->normalize_module_ui_label($action['label'] ?? '', $action_id, 'action')); ?>
                     </a>
                 <?php endforeach; ?>
+
+                <?php
+                // Enlace de administración para gestores/admins
+                $admin_url = $this->get_module_admin_url($this->current_module, $module);
+                if ($admin_url):
+                ?>
+                <div class="fas-nav-separator"></div>
+                <a href="<?php echo esc_url($admin_url); ?>"
+                   class="fas-nav-item fas-nav-item--admin"
+                   title="<?php esc_attr_e('Ir a la administración de este módulo', 'flavor-chat-ia'); ?>">
+                    <span class="dashicons dashicons-admin-settings"></span>
+                    <?php esc_html_e('Administrar', 'flavor-chat-ia'); ?>
+                </a>
+                <?php endif; ?>
             </nav>
         </aside>
         <?php
@@ -860,7 +1108,7 @@ class Flavor_Dynamic_Pages {
                 return;
             }
 
-            $label = $action['label'] ?? $this->get_action_label($action_id);
+            $label = $this->normalize_module_ui_label($action['label'] ?? '', $action_id, 'action');
             $normalized_label = sanitize_title(wp_strip_all_tags((string) $label));
 
             if (isset($seen_ids[$action_id]) || ($normalized_label !== '' && isset($seen_labels[$normalized_label]))) {
@@ -983,6 +1231,90 @@ class Flavor_Dynamic_Pages {
     }
 
     /**
+     * Obtiene la URL de administración del módulo si el usuario tiene permisos.
+     *
+     * Solo muestra el enlace a usuarios con capacidad de gestión:
+     * - Administradores (manage_options)
+     * - Gestores de la comunidad/nodo (flavor_gestor_comunidad)
+     * - Gestores específicos del módulo (flavor_gestionar_{modulo})
+     *
+     * @param string $module_id ID del módulo (con guiones)
+     * @param object $module Instancia del módulo
+     * @return string|null URL de admin o null si no tiene permisos
+     */
+    private function get_module_admin_url($module_id, $module): ?string {
+        // Normalizar ID del módulo
+        $module_id_normalized = str_replace('-', '_', (string) $module_id);
+        $module_id_slug = str_replace('_', '-', (string) $module_id);
+
+        // Verificar permisos
+        $puede_administrar = false;
+
+        // Admin general
+        if (current_user_can('manage_options')) {
+            $puede_administrar = true;
+        }
+
+        // Gestor de comunidad/nodo
+        if (!$puede_administrar && current_user_can('flavor_gestor_comunidad')) {
+            $puede_administrar = true;
+        }
+
+        // Gestor de grupos (vista reducida)
+        if (!$puede_administrar && current_user_can('flavor_gestor_grupos')) {
+            $puede_administrar = true;
+        }
+
+        // Capability específica del módulo
+        if (!$puede_administrar && current_user_can('flavor_gestionar_' . $module_id_normalized)) {
+            $puede_administrar = true;
+        }
+
+        // Verificar capability del módulo si tiene método
+        if (!$puede_administrar && method_exists($module, 'get_admin_capability')) {
+            $admin_cap = $module->get_admin_capability();
+            if ($admin_cap && current_user_can($admin_cap)) {
+                $puede_administrar = true;
+            }
+        }
+
+        if (!$puede_administrar) {
+            return null;
+        }
+
+        // Usar el trait centralizado que mapea módulos a sus dashboards
+        // Esto garantiza que las URLs sean correctas según el registro canónico
+        if (class_exists('Flavor_Module_Admin_Pages_Trait') || trait_exists('Flavor_Module_Admin_Pages_Trait')) {
+            $dashboard_url = Flavor_Module_Admin_Pages_Helper::get_module_dashboard_url($module_id_normalized);
+            if ($dashboard_url) {
+                return $dashboard_url;
+            }
+        }
+
+        // Fallback: intentar patrones comunes
+        // El trait no tiene mapping para este módulo, intentar inferir
+        $possible_slugs = [
+            $module_id_slug . '-dashboard',           // eventos-dashboard
+            'flavor-' . $module_id_slug . '-dashboard', // flavor-radio-dashboard
+        ];
+
+        foreach ($possible_slugs as $slug) {
+            // Verificar si la página existe comprobando el menú de admin
+            global $submenu;
+            if (!empty($submenu['flavor-platform'])) {
+                foreach ($submenu['flavor-platform'] as $item) {
+                    if (isset($item[2]) && $item[2] === $slug) {
+                        return admin_url('admin.php?page=' . $slug);
+                    }
+                }
+            }
+        }
+
+        // Último fallback: usar el primer patrón más común
+        return admin_url('admin.php?page=' . $module_id_slug . '-dashboard');
+    }
+
+    /**
      * Determina si debe mostrarse el enlace raíz "Ver todos" del sidebar.
      *
      * Algunos módulos modernos ya usan como primera tab la misma vista raíz y
@@ -1091,17 +1423,16 @@ class Flavor_Dynamic_Pages {
      * Renderiza el dashboard principal con widgets de todos los módulos
      */
     private function render_dashboard() {
-        ?>
-        <div class="flavor-dashboard-header">
-            <h1><?php esc_html_e('Dashboard', 'flavor-chat-ia'); ?></h1>
-            <p><?php esc_html_e('Resumen de todos tus módulos activos', 'flavor-chat-ia'); ?></p>
-        </div>
-
-        <?php
-        // Usar el shortcode del dashboard unificado si existe
-        if (shortcode_exists('flavor_unified_dashboard')) {
-            echo do_shortcode('[flavor_unified_dashboard]');
+        // Usar el shortcode del portal unificado (incluye sistema de layouts)
+        if (shortcode_exists('flavor_portal_unificado')) {
+            echo do_shortcode('[flavor_portal_unificado]');
         } else {
+            ?>
+            <div class="flavor-dashboard-header">
+                <h1><?php esc_html_e('Mi portal', 'flavor-chat-ia'); ?></h1>
+                <p><?php esc_html_e('Resumen de tus espacios, módulos activos y capas de participación.', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php
             $this->render_modules_grid();
         }
     }
@@ -1123,7 +1454,7 @@ class Flavor_Dynamic_Pages {
             <div class="flavor-dashboard-header">
                 <h1><?php esc_html_e('Mi Cuenta', 'flavor-chat-ia'); ?></h1>
             </div>
-            <p><?php esc_html_e('Dashboard de usuario no disponible.', 'flavor-chat-ia'); ?></p>
+            <p><?php esc_html_e('Tu espacio personal todavía no está disponible en este entorno.', 'flavor-chat-ia'); ?></p>
             <?php
         }
     }
@@ -1149,7 +1480,7 @@ class Flavor_Dynamic_Pages {
         // Verificar que la clase existe
         if (!class_exists('Flavor_Mi_Red_Social')) {
             echo '<div class="flavor-error">';
-            echo '<p>' . esc_html__('Mi Red Social no está disponible.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('La red social del nodo no está disponible en este momento.', 'flavor-chat-ia') . '</p>';
             echo '</div>';
             return;
         }
@@ -1206,6 +1537,8 @@ class Flavor_Dynamic_Pages {
         $module_name = $module->name ?? ucfirst(str_replace(['-', '_'], ' ', $this->current_module));
         $module_color = $this->get_module_color($this->current_module);
         $module_icon = $this->get_module_icon($this->current_module);
+        $module_role_label = $this->get_module_ecosystem_role_label($module);
+        $module_context_label = $this->get_module_context_label($module, $module_name);
 
         ?>
         <div class="flavor-module-dashboard" style="--module-color: <?php echo esc_attr($module_color); ?>;">
@@ -1215,7 +1548,7 @@ class Flavor_Dynamic_Pages {
                 <div class="fmd-header-left">
                     <div class="fmd-breadcrumb">
                         <a href="<?php echo esc_url(home_url('/' . $this->base_path . '/')); ?>">
-                            <?php esc_html_e('Dashboard', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Mi portal', 'flavor-chat-ia'); ?>
                         </a>
                         <span>›</span>
                         <?php if ($this->current_action && $this->current_action !== 'index'): ?>
@@ -1233,8 +1566,9 @@ class Flavor_Dynamic_Pages {
                             <span class="dashicons <?php echo esc_attr($module_icon); ?>"></span>
                         </div>
                         <div>
+                            <div class="fmd-eyebrow"><?php echo esc_html($module_role_label); ?></div>
                             <h1><?php echo esc_html($module_name); ?></h1>
-                            <p class="fmd-subtitle"><?php echo esc_html($module->description ?? ''); ?></p>
+                            <p class="fmd-subtitle"><?php echo esc_html($module_context_label); ?></p>
                         </div>
                     </div>
                 </div>
@@ -1245,6 +1579,20 @@ class Flavor_Dynamic_Pages {
 
             <?php if ($this->current_action === 'index' || empty($this->current_action)): ?>
 
+                <?php
+                // Paneles de señales y acciones - información relevante del módulo
+                // Se pueden activar/desactivar con filtro: flavor_module_dashboard_panels
+                $show_panels = apply_filters('flavor_module_dashboard_panels', [
+                    'priority' => true,  // Señales del nodo y próximas acciones
+                    'gailu'    => false, // Impacto regenerativo (solo en dashboard principal)
+                    'social'   => false, // Pulso social (solo en dashboard principal)
+                ], $this->current_module);
+
+                if ($show_panels['priority'] ?? false) {
+                    $this->render_priority_panels();
+                }
+                ?>
+
                 <!-- Estadísticas del módulo -->
                 <div class="fmd-stats-grid">
                     <?php $this->render_module_stats(); ?>
@@ -1252,6 +1600,14 @@ class Flavor_Dynamic_Pages {
 
                 <!-- Widgets específicos del módulo -->
                 <?php $this->render_module_specific_widgets($module); ?>
+
+                <?php
+                // Panel Gailu opcional en vistas de módulo
+                if (($show_panels['gailu'] ?? false) && class_exists('Flavor_Unified_Dashboard')) {
+                    $dashboard = Flavor_Unified_Dashboard::get_instance();
+                    $dashboard->render_gailu_impact_panel(true);
+                }
+                ?>
 
                 <!-- Tabs de contenido (solo si hay tabs configurados) -->
                 <?php $tabs = $this->get_module_tabs($module); ?>
@@ -1278,7 +1634,7 @@ class Flavor_Dynamic_Pages {
                         ?>
                             <button class="fmd-tab <?php echo $is_first ? 'active' : ''; ?>" data-tab="<?php echo esc_attr($tab_id); ?>">
                                 <span class="dashicons <?php echo esc_attr($tab_info['icon']); ?>"></span>
-                                <?php echo esc_html($tab_info['label']); ?>
+                                <?php echo esc_html($this->normalize_module_ui_label($tab_info['label'] ?? '', $tab_id, 'tab')); ?>
                                 <?php if ($badge > 0): ?>
                                     <span class="fmd-tab-badge"><?php echo esc_html($badge); ?></span>
                                 <?php endif; ?>
@@ -1297,7 +1653,7 @@ class Flavor_Dynamic_Pages {
                         ?>
                             <button class="fmd-tab fmd-tab--integration" data-tab="<?php echo esc_attr($tab_id); ?>" data-source="<?php echo esc_attr($tab_info['source_module'] ?? ''); ?>">
                                 <span class="dashicons <?php echo esc_attr($tab_info['icon']); ?>"></span>
-                                <?php echo esc_html($tab_info['label']); ?>
+                                <?php echo esc_html($this->normalize_module_ui_label($tab_info['label'] ?? '', $tab_id, 'tab')); ?>
                                 <?php if ($badge > 0): ?>
                                     <span class="fmd-tab-badge"><?php echo esc_html($badge); ?></span>
                                 <?php endif; ?>
@@ -1324,7 +1680,7 @@ class Flavor_Dynamic_Pages {
                 </div>
                 <?php endif; ?>
 
-            <?php elseif ($this->is_create_action($this->current_action)): ?>
+            <?php elseif ($this->is_create_action($this->current_action) && !$this->current_action_uses_module_tab_renderer($module)): ?>
                 <div class="fmd-form-container">
                     <?php
                     // Usar CRUD dinámico para formularios
@@ -1337,7 +1693,7 @@ class Flavor_Dynamic_Pages {
                         ?>
                         <div class="fmd-no-crud">
                             <span class="dashicons dashicons-info"></span>
-                            <p><?php esc_html_e('El sistema de formularios está cargando. Por favor, recarga la página.', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('Esta acción todavía no está lista. Recarga la página o vuelve a intentarlo en unos momentos.', 'flavor-chat-ia'); ?></p>
                         </div>
                         <?php
                     }
@@ -1356,7 +1712,7 @@ class Flavor_Dynamic_Pages {
                         ?>
                         <div class="fmd-no-crud">
                             <span class="dashicons dashicons-info"></span>
-                            <p><?php esc_html_e('El sistema de formularios está cargando. Por favor, recarga la página.', 'flavor-chat-ia'); ?></p>
+                            <p><?php esc_html_e('La edición todavía no está disponible. Recarga la página o vuelve a intentarlo en unos momentos.', 'flavor-chat-ia'); ?></p>
                         </div>
                         <?php
                     }
@@ -1379,6 +1735,64 @@ class Flavor_Dynamic_Pages {
     }
 
     /**
+     * Renderiza paneles de prioridad: señales del nodo y próximas acciones
+     *
+     * Muestra información relevante y actual de todos los módulos:
+     * - Notificaciones urgentes (avisos, incidencias, cuotas)
+     * - Acciones próximas (eventos, reservas, votaciones)
+     * - Novedades (biblioteca, podcast, foros, red social)
+     */
+    private function render_priority_panels() {
+        if (!is_user_logged_in()) {
+            return;
+        }
+
+        // Obtener las señales y acciones usando Flavor_Portal_Shortcodes
+        $notifications_html = '';
+        $actions_html = '';
+
+        if (class_exists('Flavor_Portal_Shortcodes')) {
+            $portal_shortcodes = Flavor_Portal_Shortcodes::get_instance();
+
+            if (method_exists($portal_shortcodes, 'render_shared_notifications_bar')) {
+                $notifications_html = (string) $portal_shortcodes->render_shared_notifications_bar();
+            }
+
+            if (method_exists($portal_shortcodes, 'render_shared_upcoming_actions')) {
+                $actions_html = (string) $portal_shortcodes->render_shared_upcoming_actions();
+            }
+        }
+
+        // Si no hay contenido, no renderizar los paneles
+        if (empty($notifications_html) && empty($actions_html)) {
+            return;
+        }
+        ?>
+        <div class="fmd-priority-panels">
+            <?php if (!empty($notifications_html)): ?>
+            <div class="fmd-panel fmd-panel--signals">
+                <div class="fmd-panel__header">
+                    <span class="fmd-panel__icon">📡</span>
+                    <h3 class="fmd-panel__title"><?php esc_html_e('Señales del nodo', 'flavor-chat-ia'); ?></h3>
+                </div>
+                <?php echo $notifications_html; ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($actions_html)): ?>
+            <div class="fmd-panel fmd-panel--actions">
+                <div class="fmd-panel__header">
+                    <span class="fmd-panel__icon">⚡</span>
+                    <h3 class="fmd-panel__title"><?php esc_html_e('Próximas acciones', 'flavor-chat-ia'); ?></h3>
+                </div>
+                <?php echo $actions_html; ?>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
      * Renderiza acciones rápidas del módulo
      */
     private function render_module_quick_actions() {
@@ -1393,6 +1807,109 @@ class Flavor_Dynamic_Pages {
                 <?php echo esc_html($actions[$primary_action]['label']); ?>
             </a>
         <?php endif;
+    }
+
+    /**
+     * Obtiene una etiqueta corta de rol ecosistémico para el header del módulo.
+     *
+     * @param object $module
+     * @return string
+     */
+    private function get_module_ecosystem_role_label($module) {
+        if (!is_object($module) || !method_exists($module, 'get_ecosystem_metadata')) {
+            return __('Módulo activo', 'flavor-chat-ia');
+        }
+
+        $ecosystem = (array) $module->get_ecosystem_metadata();
+        if (!empty($ecosystem['display_role_label'])) {
+            $display_role = sanitize_key((string) ($ecosystem['display_role'] ?? ''));
+            if ($display_role === 'base') {
+                return __('Base comunitaria', 'flavor-chat-ia');
+            }
+            if ($display_role === 'base-standalone') {
+                return __('Base local', 'flavor-chat-ia');
+            }
+        }
+
+        $role = $ecosystem['module_role'] ?? 'vertical';
+
+        switch ($role) {
+            case 'base':
+                return __('Base comunitaria', 'flavor-chat-ia');
+            case 'transversal':
+                return __('Capa transversal', 'flavor-chat-ia');
+            case 'vertical':
+            default:
+                return __('Servicio operativo', 'flavor-chat-ia');
+        }
+    }
+
+    /**
+     * Obtiene una descripción corta basada en contexto para el header del módulo.
+     *
+     * @param object $module
+     * @param string $module_name
+     * @return string
+     */
+    private function get_module_context_label($module, $module_name) {
+        $fallback = method_exists($module, 'get_description')
+            ? (string) $module->get_description()
+            : '';
+
+        if (!is_object($module) || !method_exists($module, 'get_dashboard_metadata')) {
+            return $fallback ?: $module_name;
+        }
+
+        $dashboard = (array) $module->get_dashboard_metadata();
+        $contexts = array_values(array_filter((array) ($dashboard['client_contexts'] ?? [])));
+
+        if (empty($contexts)) {
+            return $fallback ?: $module_name;
+        }
+
+        $context_labels = [
+            'comunidad' => __('Comunidad viva', 'flavor-chat-ia'),
+            'miembro' => __('Vínculo activo', 'flavor-chat-ia'),
+            'membresia' => __('Vínculo activo', 'flavor-chat-ia'),
+            'socios' => __('Red de socios', 'flavor-chat-ia'),
+            'colectivos' => __('Coordinación colectiva', 'flavor-chat-ia'),
+            'gobernanza' => __('Gobernanza compartida', 'flavor-chat-ia'),
+            'participacion' => __('Participación activa', 'flavor-chat-ia'),
+            'transparencia' => __('Transparencia abierta', 'flavor-chat-ia'),
+            'energia' => __('Energía local', 'flavor-chat-ia'),
+            'consumo' => __('Consumo responsable', 'flavor-chat-ia'),
+            'suficiencia' => __('Suficiencia cotidiana', 'flavor-chat-ia'),
+            'cuidados' => __('Red de cuidados', 'flavor-chat-ia'),
+            'solidaridad' => __('Solidaridad cercana', 'flavor-chat-ia'),
+            'eventos' => __('Encuentros y agenda', 'flavor-chat-ia'),
+            'agenda' => __('Encuentros y agenda', 'flavor-chat-ia'),
+            'actividad' => __('Actividad compartida', 'flavor-chat-ia'),
+            'impacto' => __('Impacto común', 'flavor-chat-ia'),
+            'sostenibilidad' => __('Sostenibilidad local', 'flavor-chat-ia'),
+            'aprendizaje' => __('Aprendizaje compartido', 'flavor-chat-ia'),
+            'cultura' => __('Cultura viva', 'flavor-chat-ia'),
+            'saberes' => __('Saberes compartidos', 'flavor-chat-ia'),
+            'cuenta' => __('Espacio personal', 'flavor-chat-ia'),
+            'perfil' => __('Espacio personal', 'flavor-chat-ia'),
+        ];
+
+        $human_contexts = array_map(static function ($context) use ($context_labels) {
+            $context = (string) $context;
+
+            if (isset($context_labels[$context])) {
+                return $context_labels[$context];
+            }
+
+            $context = str_replace('_', ' ', $context);
+            return function_exists('mb_convert_case')
+                ? mb_convert_case($context, MB_CASE_TITLE, 'UTF-8')
+                : ucwords($context);
+        }, array_slice($contexts, 0, 2));
+
+        return sprintf(
+            __('Espacio de %s dentro de tu ecosistema activo.', 'flavor-chat-ia'),
+            implode(' · ', $human_contexts)
+        );
     }
 
     /**
@@ -1518,25 +2035,26 @@ class Flavor_Dynamic_Pages {
         // ============================================================
         $widgets_config = [
             // === GRUPOS DE CONSUMO ===
-            // Widget: Ciclo actual (resumen) + Mi Pedido (estado)
+            // Widget: Ciclo actual (resumen) + Mi Pedido (resumen breve)
             // Tabs: Catálogo completo, Pedidos, Productores, Ciclos
+            // NOTA: Usamos callback para renderizar resúmenes breves, no el formulario completo
             'grupos-consumo' => [
-                ['title' => __('Ciclo Actual', 'flavor-chat-ia'), 'icon' => 'dashicons-update', 'size' => 'medium', 'shortcode' => '[gc_ciclo_actual]', 'action' => 'ciclos'],
-                ['title' => __('Pedido actual', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'size' => 'large', 'shortcode' => '[gc_mi_pedido]', 'action' => 'mi-pedido'],
+                ['title' => __('Ciclo Actual', 'flavor-chat-ia'), 'icon' => 'dashicons-update', 'size' => 'medium', 'callback' => [$this, 'render_gc_ciclo_widget'], 'action' => 'ciclos'],
+                ['title' => __('Mi Pedido', 'flavor-chat-ia'), 'icon' => 'dashicons-cart', 'size' => 'medium', 'callback' => [$this, 'render_gc_pedido_widget'], 'action' => 'mi-pedido'],
             ],
 
             // === EVENTOS ===
             // Widget: Resumen personal | Tabs: Listados completos
             'eventos' => [
-                ['title' => __('Próximo Evento', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'medium', 'shortcode' => '[eventos_proximo]', 'action' => 'proximos'],
-                ['title' => __('Mis Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt', 'size' => 'medium', 'shortcode' => '[eventos_mis_inscripciones limite="3"]', 'action' => 'inscripciones'],
+                ['title' => __('Próximo Evento', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'medium', 'callback' => [$this, 'render_eventos_proximo_widget'], 'action' => 'proximos'],
+                ['title' => __('Mis Inscripciones', 'flavor-chat-ia'), 'icon' => 'dashicons-tickets-alt', 'size' => 'medium', 'callback' => [$this, 'render_eventos_inscripciones_widget'], 'action' => 'inscripciones'],
             ],
 
             // === RESERVAS ===
             // Widget: Próxima reserva | Tabs: Listados y calendario
             'reservas' => [
-                ['title' => __('Próxima Reserva', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'medium', 'shortcode' => '[reservas_proxima]', 'action' => 'mis-reservas'],
-                ['title' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'size' => 'large', 'shortcode' => '[reservas_calendario_mini]', 'action' => 'calendario'],
+                ['title' => __('Próxima Reserva', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'size' => 'medium', 'callback' => [$this, 'render_reservas_proxima_widget'], 'action' => 'mis-reservas'],
+                ['title' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'size' => 'medium', 'callback' => [$this, 'render_reservas_stats_widget'], 'action' => 'listado'],
             ],
 
             // === ESPACIOS COMUNES ===
@@ -1556,29 +2074,29 @@ class Flavor_Dynamic_Pages {
             // === BIBLIOTECA ===
             // Widget: Préstamos activos | Tabs: Catálogo completo
             'biblioteca' => [
-                ['title' => __('Préstamos Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'size' => 'medium', 'shortcode' => '[biblioteca_prestamos_activos]', 'action' => 'mis-prestamos'],
-                ['title' => __('Novedades', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'large', 'shortcode' => '[biblioteca_novedades limit="4"]', 'action' => 'novedades'],
+                ['title' => __('Préstamos Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'size' => 'medium', 'callback' => [$this, 'render_biblioteca_prestamos_widget'], 'action' => 'mis-prestamos'],
+                ['title' => __('Mi Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'callback' => [$this, 'render_biblioteca_stats_widget'], 'action' => 'catalogo'],
             ],
 
             // === MARKETPLACE ===
             // Widget: Estadísticas | Tabs: Listados
             'marketplace' => [
-                ['title' => __('Mis Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'shortcode' => '[marketplace_mis_stats]', 'action' => 'mis-anuncios'],
-                ['title' => __('Destacados', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'large', 'shortcode' => '[marketplace_destacados limit="4"]', 'action' => 'listado'],
+                ['title' => __('Mis Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'size' => 'medium', 'callback' => [$this, 'render_marketplace_anuncios_widget'], 'action' => 'mis-anuncios'],
+                ['title' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'callback' => [$this, 'render_marketplace_stats_widget'], 'action' => 'listado'],
             ],
 
             // === INCIDENCIAS ===
             // Widget: Resumen estado | Tabs: Listados y mapa
             'incidencias' => [
-                ['title' => __('Estado Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'medium', 'shortcode' => '[incidencias_resumen_estado]', 'action' => 'mis-reportes'],
-                ['title' => __('Últimas Reportadas', 'flavor-chat-ia'), 'icon' => 'dashicons-flag', 'size' => 'large', 'shortcode' => '[incidencias_recientes limite="4"]', 'action' => 'listado'],
+                ['title' => __('Mis Reportes', 'flavor-chat-ia'), 'icon' => 'dashicons-flag', 'size' => 'medium', 'callback' => [$this, 'render_incidencias_mis_reportes_widget'], 'action' => 'mis-reportes'],
+                ['title' => __('Estado General', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'medium', 'callback' => [$this, 'render_incidencias_stats_widget'], 'action' => 'listado'],
             ],
 
             // === BANCO DE TIEMPO ===
             // Widget: Mi saldo y estadísticas | Tabs: Listados
             'banco-tiempo' => [
-                ['title' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'medium', 'shortcode' => '[banco_tiempo_widget_saldo]', 'action' => 'mi-saldo'],
-                ['title' => __('Mis Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'large', 'shortcode' => '[banco_tiempo_widget_intercambios limite="3"]', 'action' => 'intercambios'],
+                ['title' => __('Mi Saldo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock', 'size' => 'medium', 'callback' => [$this, 'render_banco_tiempo_saldo_widget'], 'action' => 'mi-saldo'],
+                ['title' => __('Intercambios', 'flavor-chat-ia'), 'icon' => 'dashicons-randomize', 'size' => 'medium', 'callback' => [$this, 'render_banco_tiempo_stats_widget'], 'action' => 'intercambios'],
             ],
 
             // === BICICLETAS COMPARTIDAS ===
@@ -1639,40 +2157,42 @@ class Flavor_Dynamic_Pages {
             // === COLECTIVOS ===
             // Widget: Mi actividad | Tabs: Listados
             'colectivos' => [
-                ['title' => __('Mi Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'shortcode' => '[colectivos_mi_actividad]', 'action' => 'mis-colectivos'],
-                ['title' => __('Destacados', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled', 'size' => 'large', 'shortcode' => '[colectivos_destacados limit="4"]', 'action' => 'listado'],
+                ['title' => __('Mis Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'callback' => [$this, 'render_colectivos_mis_widget'], 'action' => 'mis-colectivos'],
+                ['title' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'callback' => [$this, 'render_colectivos_stats_widget'], 'action' => 'listado'],
             ],
 
             // === COMUNIDADES ===
             // Widget: Mi comunidad | Tabs: Directorio y mapa
             'comunidades' => [
-                ['title' => __('Mis Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-multisite', 'size' => 'medium', 'shortcode' => '[comunidades_mis_comunidades limite="3" compacto="true"]', 'action' => 'mis-comunidades'],
-                ['title' => __('Actividad Reciente', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'size' => 'large', 'shortcode' => '[comunidades_actividad limit="5"]', 'action' => 'actividad'],
+                ['title' => __('Mis Espacios', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-multisite', 'size' => 'medium', 'callback' => [$this, 'render_comunidades_mis_widget'], 'action' => 'mis-comunidades'],
+                ['title' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'callback' => [$this, 'render_comunidades_stats_widget'], 'action' => 'actividad'],
             ],
 
             // === SOCIOS ===
             // Widget: Estado membresía | Tabs: Directorio
             'socios' => [
-                ['title' => __('Mi Carnet', 'flavor-chat-ia'), 'icon' => 'dashicons-id', 'size' => 'large', 'shortcode' => '[socios_mi_carnet]', 'action' => 'mi-membresia'],
+                ['title' => __('Mi Membresía', 'flavor-chat-ia'), 'icon' => 'dashicons-id', 'size' => 'medium', 'callback' => [$this, 'render_socios_membresia_widget'], 'action' => 'mi-membresia'],
+                ['title' => __('Beneficios', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'size' => 'medium', 'callback' => [$this, 'render_socios_beneficios_widget'], 'action' => 'beneficios'],
             ],
 
             // === FOROS ===
             // Widget: Actividad reciente | Tabs: Discusiones
             'foros' => [
-                ['title' => __('Actividad Reciente', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat', 'size' => 'large', 'shortcode' => '[foros_actividad_reciente limit="5"]', 'action' => 'actividad'],
+                ['title' => __('Mi Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat', 'size' => 'medium', 'callback' => [$this, 'render_foros_actividad_widget'], 'action' => 'mis-hilos'],
+                ['title' => __('Estadísticas', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'medium', 'callback' => [$this, 'render_foros_stats_widget'], 'action' => 'hilos'],
             ],
 
             // === CHAT GRUPOS ===
             // Widget: Mensajes sin leer | Tabs: Grupos
             'chat-grupos' => [
-                ['title' => __('Mensajes Nuevos', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'size' => 'medium', 'shortcode' => '[chat_grupos_sin_leer]', 'action' => 'mensajes'],
-                ['title' => __('Grupos Activos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'large', 'shortcode' => '[chat_grupos_activos limit="4"]', 'action' => 'mis-grupos'],
+                ['title' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'size' => 'medium', 'callback' => [$this, 'render_chat_grupos_mensajes_widget'], 'action' => 'mensajes'],
+                ['title' => __('Mis Grupos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'size' => 'medium', 'callback' => [$this, 'render_chat_grupos_stats_widget'], 'action' => 'mis-grupos'],
             ],
 
             // === CHAT INTERNO ===
             // Widget: Mensajes sin leer | Tabs: Bandeja
             'chat-interno' => [
-                ['title' => __('Sin Leer', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'size' => 'large', 'shortcode' => '[chat_mensajes_sin_leer]', 'action' => 'mensajes'],
+                ['title' => __('Bandeja', 'flavor-chat-ia'), 'icon' => 'dashicons-email', 'size' => 'medium', 'callback' => [$this, 'render_chat_interno_widget'], 'action' => 'mensajes'],
             ],
 
             // === RED SOCIAL ===
@@ -1685,8 +2205,8 @@ class Flavor_Dynamic_Pages {
             // === PARTICIPACIÓN ===
             // Widget: Votaciones activas | Tabs: Propuestas
             'participacion' => [
-                ['title' => __('Votaciones Activas', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up', 'size' => 'medium', 'shortcode' => '[votaciones_activas]', 'action' => 'votaciones'],
-                ['title' => __('Mis Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'medium', 'shortcode' => '[mis_propuestas_resumen]', 'action' => 'propuestas'],
+                ['title' => __('Decisiones Activas', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up', 'size' => 'medium', 'shortcode' => '[votaciones_activas]', 'action' => 'votaciones'],
+                ['title' => __('Iniciativas en Marcha', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'medium', 'shortcode' => '[mis_propuestas_resumen]', 'action' => 'propuestas'],
             ],
 
             // === PRESUPUESTOS PARTICIPATIVOS ===
@@ -1711,13 +2231,13 @@ class Flavor_Dynamic_Pages {
             // Widget: Expedientes pendientes | Tabs: Catálogo
             'tramites' => [
                 ['title' => __('Mis Trámites', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard', 'size' => 'medium', 'shortcode' => '[tramites_pendientes]', 'action' => 'mis-tramites'],
-                ['title' => __('Más Solicitados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[tramites_populares limit="4"]', 'action' => 'listado'],
+                ['title' => __('Más Solicitados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'size' => 'large', 'shortcode' => '[catalogo_tramites limite="4" mostrar_filtros="false" mostrar_buscador="false"]', 'action' => 'catalogo'],
             ],
 
             // === TRANSPARENCIA ===
             // Widget: Resumen presupuesto | Tabs: Portal completo
             'transparencia' => [
-                ['title' => __('Presupuesto', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'large', 'shortcode' => '[transparencia_presupuesto_resumen]', 'action' => 'presupuesto'],
+                ['title' => __('Recursos Comunes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'large', 'shortcode' => '[transparencia_presupuesto_resumen]', 'action' => 'presupuesto'],
             ],
 
             // === FICHAJE EMPLEADOS ===
@@ -1819,10 +2339,10 @@ class Flavor_Dynamic_Pages {
                 ['title' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book', 'size' => 'medium', 'shortcode' => '[flavor_suficiencia_biblioteca]', 'action' => 'biblioteca'],
             ],
             'energia-comunitaria' => [
-                ['title' => __('Panel', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'large', 'shortcode' => '[flavor_energia_dashboard]', 'action' => 'panel'],
-                ['title' => __('Instalaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-tools', 'size' => 'medium', 'shortcode' => '[flavor_energia_instalaciones]', 'action' => 'instalaciones'],
-                ['title' => __('Participantes', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'medium', 'shortcode' => '[flavor_energia_participantes]', 'action' => 'participantes'],
-                ['title' => __('Cierres', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'size' => 'medium', 'shortcode' => '[flavor_energia_cierres]', 'action' => 'cierres'],
+                ['title' => __('Resumen Energético', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb', 'size' => 'large', 'shortcode' => '[flavor_energia_dashboard]', 'action' => 'panel'],
+                ['title' => __('Infraestructura', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-tools', 'size' => 'medium', 'shortcode' => '[flavor_energia_instalaciones]', 'action' => 'instalaciones'],
+                ['title' => __('Comunidad Energética', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'size' => 'medium', 'shortcode' => '[flavor_energia_participantes]', 'action' => 'participantes'],
+                ['title' => __('Cierres y Repartos', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'size' => 'medium', 'shortcode' => '[flavor_energia_cierres]', 'action' => 'cierres'],
             ],
 
             // === TRABAJO DIGNO ===
@@ -1854,24 +2374,967 @@ class Flavor_Dynamic_Pages {
     }
 
     /**
+     * Renderiza widget de resumen del ciclo actual (Grupos de Consumo)
+     *
+     * @param int $user_id ID del usuario
+     */
+    public function render_gc_ciclo_widget($user_id) {
+        // Buscar ciclo activo
+        $args = [
+            'post_type'      => 'gc_ciclo',
+            'post_status'    => 'publish',
+            'posts_per_page' => 1,
+            'meta_query'     => [
+                [
+                    'key'   => '_gc_estado',
+                    'value' => 'abierto',
+                ],
+            ],
+        ];
+        $query = new WP_Query($args);
+
+        if ($query->have_posts()) {
+            $ciclo = $query->posts[0];
+            $fecha_cierre = get_post_meta($ciclo->ID, '_gc_fecha_cierre', true);
+            $fecha_entrega = get_post_meta($ciclo->ID, '_gc_fecha_entrega', true);
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--success">
+                <div class="fmd-summary-status">
+                    <span class="fmd-status-dot fmd-status-dot--success"></span>
+                    <strong><?php echo esc_html($ciclo->post_title); ?></strong>
+                </div>
+                <?php if ($fecha_cierre): ?>
+                <p class="fmd-summary-detail">
+                    <span class="dashicons dashicons-clock"></span>
+                    <?php printf(__('Cierra: %s', 'flavor-chat-ia'), esc_html(date_i18n('j M, H:i', strtotime($fecha_cierre)))); ?>
+                </p>
+                <?php endif; ?>
+                <?php if ($fecha_entrega): ?>
+                <p class="fmd-summary-detail">
+                    <span class="dashicons dashicons-location"></span>
+                    <?php printf(__('Entrega: %s', 'flavor-chat-ia'), esc_html(date_i18n('j M', strtotime($fecha_entrega)))); ?>
+                </p>
+                <?php endif; ?>
+            </div>
+            <?php
+        } else {
+            ?>
+            <p class="fmd-widget-empty"><?php _e('No hay ningún ciclo abierto actualmente.', 'flavor-chat-ia'); ?></p>
+            <?php
+        }
+        wp_reset_postdata();
+    }
+
+    /**
+     * Renderiza widget de resumen del pedido (Grupos de Consumo)
+     *
+     * @param int $user_id ID del usuario
+     */
+    public function render_gc_pedido_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tu pedido.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla_lista = $wpdb->prefix . 'flavor_gc_lista_compra';
+
+        // Verificar si tabla existe
+        $tabla_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_lista)) === $tabla_lista;
+
+        if (!$tabla_existe) {
+            echo '<p class="fmd-widget-empty">' . __('No hay productos en tu cesta.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        // Contar items y calcular total
+        $stats = $wpdb->get_row($wpdb->prepare(
+            "SELECT COUNT(*) as total_items, COALESCE(SUM(cantidad * precio_unitario), 0) as total_importe
+             FROM $tabla_lista
+             WHERE usuario_id = %d",
+            $user_id
+        ));
+
+        $total_items = (int) ($stats->total_items ?? 0);
+        $total_importe = (float) ($stats->total_importe ?? 0);
+
+        if ($total_items === 0) {
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--empty">
+                <span class="dashicons dashicons-cart"></span>
+                <p><?php _e('Tu cesta está vacía', 'flavor-chat-ia'); ?></p>
+                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="fmd-link-action">
+                    <?php _e('Explorar productos', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <?php
+        } else {
+            ?>
+            <div class="fmd-widget-summary">
+                <div class="fmd-summary-stat fmd-summary-stat--primary">
+                    <span class="fmd-stat-number"><?php echo esc_html($total_items); ?></span>
+                    <span class="fmd-stat-label"><?php echo _n('producto', 'productos', $total_items, 'flavor-chat-ia'); ?></span>
+                </div>
+                <div class="fmd-summary-stat fmd-summary-stat--highlight">
+                    <span class="fmd-stat-number"><?php echo number_format($total_importe, 2, ',', '.'); ?> €</span>
+                    <span class="fmd-stat-label"><?php _e('total', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <?php
+        }
+    }
+
+    // =========================================================================
+    // CALLBACKS DE WIDGETS: Renderizado de resúmenes breves para cada módulo
+    // =========================================================================
+
+    /**
+     * Widget: Próximo evento inscrito (Eventos)
+     */
+    public function render_eventos_proximo_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus eventos.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_eventos_inscripciones';
+
+        // Verificar tabla
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            echo '<p class="fmd-widget-empty">' . __('No tienes eventos próximos.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        // Obtener próxima inscripción
+        $inscripcion = $wpdb->get_row($wpdb->prepare(
+            "SELECT i.*, p.post_title
+             FROM $tabla i
+             JOIN {$wpdb->posts} p ON i.evento_id = p.ID
+             WHERE i.usuario_id = %d
+             AND p.post_status = 'publish'
+             ORDER BY i.fecha_inscripcion DESC
+             LIMIT 1",
+            $user_id
+        ));
+
+        if ($inscripcion) {
+            $fecha_evento = get_post_meta($inscripcion->evento_id, '_evento_fecha', true);
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--info">
+                <div class="fmd-summary-status">
+                    <span class="fmd-status-dot fmd-status-dot--info"></span>
+                    <strong><?php echo esc_html($inscripcion->post_title); ?></strong>
+                </div>
+                <?php if ($fecha_evento): ?>
+                <p class="fmd-summary-detail">
+                    <span class="dashicons dashicons-calendar"></span>
+                    <?php echo esc_html(date_i18n('j M, H:i', strtotime($fecha_evento))); ?>
+                </p>
+                <?php endif; ?>
+            </div>
+            <?php
+        } else {
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--empty">
+                <span class="dashicons dashicons-calendar-alt"></span>
+                <p><?php _e('Sin eventos próximos', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php
+        }
+    }
+
+    /**
+     * Widget: Contador de inscripciones (Eventos)
+     */
+    public function render_eventos_inscripciones_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus inscripciones.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_eventos_inscripciones';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $total = 0;
+        } else {
+            $total = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d",
+                $user_id
+            ));
+        }
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('inscripción', 'inscripciones', $total, 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Próxima reserva (Reservas)
+     */
+    public function render_reservas_proxima_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus reservas.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_reservas';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            echo '<p class="fmd-widget-empty">' . __('No tienes reservas próximas.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        $reserva = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla
+             WHERE usuario_id = %d AND fecha_inicio >= NOW() AND estado = 'confirmada'
+             ORDER BY fecha_inicio ASC
+             LIMIT 1",
+            $user_id
+        ));
+
+        if ($reserva) {
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--success">
+                <div class="fmd-summary-status">
+                    <span class="fmd-status-dot fmd-status-dot--success"></span>
+                    <strong><?php echo esc_html($reserva->recurso_nombre ?? __('Reserva confirmada', 'flavor-chat-ia')); ?></strong>
+                </div>
+                <p class="fmd-summary-detail">
+                    <span class="dashicons dashicons-calendar"></span>
+                    <?php echo esc_html(date_i18n('j M, H:i', strtotime($reserva->fecha_inicio))); ?>
+                </p>
+            </div>
+            <?php
+        } else {
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--empty">
+                <span class="dashicons dashicons-calendar-alt"></span>
+                <p><?php _e('Sin reservas próximas', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php
+        }
+    }
+
+    /**
+     * Widget: Estadísticas de reservas (Reservas)
+     */
+    public function render_reservas_stats_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus reservas.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_reservas';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $total = 0;
+            $pendientes = 0;
+        } else {
+            $total = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d",
+                $user_id
+            ));
+            $pendientes = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND fecha_inicio >= NOW()",
+                $user_id
+            ));
+        }
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($pendientes); ?></span>
+                <span class="fmd-stat-label"><?php _e('próximas', 'flavor-chat-ia'); ?></span>
+            </div>
+            <div class="fmd-summary-stat">
+                <span class="fmd-stat-number"><?php echo esc_html($total); ?></span>
+                <span class="fmd-stat-label"><?php _e('total', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Préstamos activos (Biblioteca)
+     */
+    public function render_biblioteca_prestamos_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus préstamos.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            echo '<p class="fmd-widget-empty">' . __('No tienes préstamos activos.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        $prestamos_activos = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado = 'activo'",
+            $user_id
+        ));
+
+        $proximo_vencimiento = $wpdb->get_var($wpdb->prepare(
+            "SELECT MIN(fecha_devolucion) FROM $tabla WHERE usuario_id = %d AND estado = 'activo'",
+            $user_id
+        ));
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($prestamos_activos); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('préstamo activo', 'préstamos activos', $prestamos_activos, 'flavor-chat-ia'); ?></span>
+            </div>
+            <?php if ($proximo_vencimiento): ?>
+            <p class="fmd-summary-detail">
+                <span class="dashicons dashicons-clock"></span>
+                <?php printf(__('Próx. devolución: %s', 'flavor-chat-ia'), esc_html(date_i18n('j M', strtotime($proximo_vencimiento)))); ?>
+            </p>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Estadísticas biblioteca (Biblioteca)
+     */
+    public function render_biblioteca_stats_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tu actividad.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $total = 0;
+        } else {
+            $total = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d",
+                $user_id
+            ));
+        }
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('libro leído', 'libros leídos', $total, 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Mis anuncios (Marketplace)
+     */
+    public function render_marketplace_anuncios_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus anuncios.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        $args = [
+            'post_type'      => 'marketplace_item',
+            'post_status'    => 'publish',
+            'author'         => $user_id,
+            'posts_per_page' => -1,
+        ];
+        $query = new WP_Query($args);
+        $total = $query->found_posts;
+        wp_reset_postdata();
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('anuncio activo', 'anuncios activos', $total, 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Estadísticas marketplace (Marketplace)
+     */
+    public function render_marketplace_stats_widget($user_id) {
+        global $wpdb;
+
+        // Contar total de anuncios en el marketplace
+        $total_anuncios = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'marketplace_item' AND post_status = 'publish'"
+        );
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total_anuncios); ?></span>
+                <span class="fmd-stat-label"><?php _e('anuncios disponibles', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Mis reportes (Incidencias)
+     */
+    public function render_incidencias_mis_reportes_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus reportes.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_incidencias';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $total = 0;
+            $pendientes = 0;
+        } else {
+            $total = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d",
+                $user_id
+            ));
+            $pendientes = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado IN ('pendiente', 'en_proceso')",
+                $user_id
+            ));
+        }
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('reporte', 'reportes', $total, 'flavor-chat-ia'); ?></span>
+            </div>
+            <?php if ($pendientes > 0): ?>
+            <p class="fmd-summary-detail fmd-summary-detail--warning">
+                <span class="dashicons dashicons-warning"></span>
+                <?php printf(_n('%d pendiente', '%d pendientes', $pendientes, 'flavor-chat-ia'), $pendientes); ?>
+            </p>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Estado general incidencias (Incidencias)
+     */
+    public function render_incidencias_stats_widget($user_id) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_incidencias';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $total = 0;
+            $resueltas = 0;
+        } else {
+            $total = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla");
+            $resueltas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'resuelta'");
+        }
+
+        $porcentaje = $total > 0 ? round(($resueltas / $total) * 100) : 0;
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($porcentaje); ?>%</span>
+                <span class="fmd-stat-label"><?php _e('resueltas', 'flavor-chat-ia'); ?></span>
+            </div>
+            <p class="fmd-summary-detail">
+                <?php printf(__('%d de %d incidencias', 'flavor-chat-ia'), $resueltas, $total); ?>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Mi saldo (Banco de Tiempo)
+     */
+    public function render_banco_tiempo_saldo_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tu saldo.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_banco_tiempo_saldos';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $saldo = 0;
+        } else {
+            $saldo = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT saldo FROM $tabla WHERE usuario_id = %d",
+                $user_id
+            ));
+        }
+
+        $horas = floor($saldo / 60);
+        $minutos = $saldo % 60;
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($horas); ?>h <?php echo esc_html($minutos); ?>m</span>
+                <span class="fmd-stat-label"><?php _e('disponibles', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Estadísticas intercambios (Banco de Tiempo)
+     */
+    public function render_banco_tiempo_stats_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus intercambios.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_banco_tiempo_intercambios';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $total = 0;
+        } else {
+            $total = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE usuario_ofertante = %d OR usuario_solicitante = %d",
+                $user_id, $user_id
+            ));
+        }
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('intercambio', 'intercambios', $total, 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Mis colectivos (Colectivos)
+     */
+    public function render_colectivos_mis_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus colectivos.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_colectivos_miembros';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $total = 0;
+        } else {
+            $total = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado = 'activo'",
+                $user_id
+            ));
+        }
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('colectivo', 'colectivos', $total, 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Estadísticas colectivos (Colectivos)
+     */
+    public function render_colectivos_stats_widget($user_id) {
+        global $wpdb;
+
+        $total_colectivos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'colectivo' AND post_status = 'publish'"
+        );
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total_colectivos); ?></span>
+                <span class="fmd-stat-label"><?php _e('colectivos activos', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Mis comunidades (Comunidades)
+     */
+    public function render_comunidades_mis_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus comunidades.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_comunidades_miembros';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $total = 0;
+        } else {
+            $total = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d AND estado = 'activo'",
+                $user_id
+            ));
+        }
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('comunidad', 'comunidades', $total, 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Estadísticas comunidades (Comunidades)
+     */
+    public function render_comunidades_stats_widget($user_id) {
+        global $wpdb;
+
+        $total_comunidades = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'comunidad' AND post_status = 'publish'"
+        );
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total_comunidades); ?></span>
+                <span class="fmd-stat-label"><?php _e('comunidades activas', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Mi membresía (Socios)
+     */
+    public function render_socios_membresia_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tu membresía.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_socios';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $socio = null;
+        } else {
+            $socio = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM $tabla WHERE usuario_id = %d",
+                $user_id
+            ));
+        }
+
+        if ($socio) {
+            $estado_class = $socio->estado === 'activo' ? 'success' : 'warning';
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--<?php echo esc_attr($estado_class); ?>">
+                <div class="fmd-summary-status">
+                    <span class="fmd-status-dot fmd-status-dot--<?php echo esc_attr($estado_class); ?>"></span>
+                    <strong><?php echo esc_html(ucfirst($socio->estado)); ?></strong>
+                </div>
+                <?php if (!empty($socio->numero_socio)): ?>
+                <p class="fmd-summary-detail">
+                    <?php printf(__('Nº Socio: %s', 'flavor-chat-ia'), esc_html($socio->numero_socio)); ?>
+                </p>
+                <?php endif; ?>
+            </div>
+            <?php
+        } else {
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--empty">
+                <span class="dashicons dashicons-id"></span>
+                <p><?php _e('No eres socio todavía', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php
+        }
+    }
+
+    /**
+     * Widget: Beneficios socios (Socios)
+     */
+    public function render_socios_beneficios_widget($user_id) {
+        // Mostrar resumen de beneficios disponibles
+        ?>
+        <div class="fmd-widget-summary">
+            <p class="fmd-summary-detail">
+                <span class="dashicons dashicons-yes-alt"></span>
+                <?php _e('Descuentos exclusivos', 'flavor-chat-ia'); ?>
+            </p>
+            <p class="fmd-summary-detail">
+                <span class="dashicons dashicons-yes-alt"></span>
+                <?php _e('Acceso preferente', 'flavor-chat-ia'); ?>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Mi actividad foros (Foros)
+     */
+    public function render_foros_actividad_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tu actividad.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+        $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
+
+        $mis_hilos = 0;
+        $mis_respuestas = 0;
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_hilos)) === $tabla_hilos) {
+            $mis_hilos = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_hilos WHERE autor_id = %d",
+                $user_id
+            ));
+        }
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_respuestas)) === $tabla_respuestas) {
+            $mis_respuestas = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_respuestas WHERE autor_id = %d",
+                $user_id
+            ));
+        }
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($mis_hilos); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('hilo', 'hilos', $mis_hilos, 'flavor-chat-ia'); ?></span>
+            </div>
+            <div class="fmd-summary-stat">
+                <span class="fmd-stat-number"><?php echo esc_html($mis_respuestas); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('respuesta', 'respuestas', $mis_respuestas, 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Estadísticas foros (Foros)
+     */
+    public function render_foros_stats_widget($user_id) {
+        global $wpdb;
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_hilos)) !== $tabla_hilos) {
+            $total = 0;
+        } else {
+            $total = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_hilos");
+        }
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total); ?></span>
+                <span class="fmd-stat-label"><?php _e('hilos activos', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Mensajes sin leer (Chat Grupos)
+     */
+    public function render_chat_grupos_mensajes_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus mensajes.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_chat_grupos_mensajes';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $sin_leer = 0;
+        } else {
+            // Contar mensajes no leídos en grupos donde es miembro
+            $sin_leer = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla m
+                 JOIN {$wpdb->prefix}flavor_chat_grupos_miembros gm ON m.grupo_id = gm.grupo_id
+                 WHERE gm.usuario_id = %d AND m.autor_id != %d AND m.leido = 0",
+                $user_id, $user_id
+            ));
+        }
+
+        if ($sin_leer > 0) {
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--info">
+                <div class="fmd-summary-stat fmd-summary-stat--primary">
+                    <span class="fmd-stat-number"><?php echo esc_html($sin_leer); ?></span>
+                    <span class="fmd-stat-label"><?php echo _n('mensaje nuevo', 'mensajes nuevos', $sin_leer, 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <?php
+        } else {
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--empty">
+                <span class="dashicons dashicons-email"></span>
+                <p><?php _e('Sin mensajes nuevos', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php
+        }
+    }
+
+    /**
+     * Widget: Mis grupos (Chat Grupos)
+     */
+    public function render_chat_grupos_stats_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus grupos.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $total = 0;
+        } else {
+            $total = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE usuario_id = %d",
+                $user_id
+            ));
+        }
+
+        ?>
+        <div class="fmd-widget-summary">
+            <div class="fmd-summary-stat fmd-summary-stat--primary">
+                <span class="fmd-stat-number"><?php echo esc_html($total); ?></span>
+                <span class="fmd-stat-label"><?php echo _n('grupo', 'grupos', $total, 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Widget: Bandeja de entrada (Chat Interno)
+     */
+    public function render_chat_interno_widget($user_id) {
+        if (!$user_id) {
+            echo '<p class="fmd-widget-empty">' . __('Inicia sesión para ver tus mensajes.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_chat_mensajes';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            $sin_leer = 0;
+            $total = 0;
+        } else {
+            $sin_leer = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE destinatario_id = %d AND leido = 0",
+                $user_id
+            ));
+            $total = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla WHERE destinatario_id = %d OR remitente_id = %d",
+                $user_id, $user_id
+            ));
+        }
+
+        if ($sin_leer > 0) {
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--info">
+                <div class="fmd-summary-stat fmd-summary-stat--primary">
+                    <span class="fmd-stat-number"><?php echo esc_html($sin_leer); ?></span>
+                    <span class="fmd-stat-label"><?php echo _n('mensaje nuevo', 'mensajes nuevos', $sin_leer, 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <?php
+        } else {
+            ?>
+            <div class="fmd-widget-summary fmd-widget-summary--empty">
+                <span class="dashicons dashicons-email"></span>
+                <p><?php _e('Sin mensajes nuevos', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php
+        }
+    }
+
+    // =========================================================================
+    // FIN CALLBACKS DE WIDGETS
+    // =========================================================================
+
+    /**
      * Obtiene el label legible de una acción
      *
      * @param string $action Slug de la acción
      * @return string Label legible
      */
     private function get_action_label($action) {
+        if ($action === 'anuncios' && $this->current_module === 'marketplace') {
+            return __('Anuncios', 'flavor-chat-ia');
+        }
+
         $labels = [
+            'dashboard'      => __('Resumen', 'flavor-chat-ia'),
+            'panel'          => __('Resumen', 'flavor-chat-ia'),
+            'comunidades'    => __('Red energética', 'flavor-chat-ia'),
+            'mis-comunidades'=> __('Mis espacios', 'flavor-chat-ia'),
+            'actividad'      => __('Pulso comunitario', 'flavor-chat-ia'),
+            'eventos'        => __('Encuentros', 'flavor-chat-ia'),
+            'anuncios'       => __('Avisos', 'flavor-chat-ia'),
+            'recursos'       => __('Recursos compartidos', 'flavor-chat-ia'),
+            'propuestas'     => __('Iniciativas', 'flavor-chat-ia'),
+            'votaciones'     => __('Decisiones', 'flavor-chat-ia'),
+            'resultados'     => __('Acuerdos', 'flavor-chat-ia'),
+            'debates'        => __('Conversaciones', 'flavor-chat-ia'),
+            'reuniones'      => __('Encuentros', 'flavor-chat-ia'),
+            'portal'         => __('Visión general', 'flavor-chat-ia'),
+            'presupuesto'    => __('Recursos comunes', 'flavor-chat-ia'),
+            'actas'          => __('Memoria y actas', 'flavor-chat-ia'),
+            'contratos'      => __('Compromisos y contratos', 'flavor-chat-ia'),
+            'indicadores'    => __('Indicadores compartidos', 'flavor-chat-ia'),
+            'instalaciones'  => __('Infraestructura', 'flavor-chat-ia'),
+            'participantes'  => __('Comunidad energética', 'flavor-chat-ia'),
+            'registrar-lectura' => __('Registrar producción', 'flavor-chat-ia'),
+            'mantenimiento'  => __('Cuidados técnicos', 'flavor-chat-ia'),
+            'balance'        => __('Balance energético', 'flavor-chat-ia'),
+            'cierres'        => __('Cierres y repartos', 'flavor-chat-ia'),
             'mi-pedido'      => __('Pedido actual', 'flavor-chat-ia'),
             'mi-cesta'       => __('Mi Cesta', 'flavor-chat-ia'),
             'productos'      => __('Productos', 'flavor-chat-ia'),
             'productores'    => __('Productores', 'flavor-chat-ia'),
+            'servicios'      => __('Servicios', 'flavor-chat-ia'),
+            'buscar'         => __('Buscar servicios', 'flavor-chat-ia'),
+            'mi-saldo'       => __('Mi Saldo', 'flavor-chat-ia'),
+            'intercambios'   => __('Intercambios', 'flavor-chat-ia'),
+            'reputacion'     => __('Mi Reputación', 'flavor-chat-ia'),
+            'ofrecer'        => __('Ofrecer', 'flavor-chat-ia'),
+            'mensajes'       => __('Mensajes', 'flavor-chat-ia'),
             'ciclos'         => __('Ciclos', 'flavor-chat-ia'),
             'mapa'           => __('Mapa', 'flavor-chat-ia'),
             'calendario'     => __('Calendario', 'flavor-chat-ia'),
-            'listado'        => __('Listado', 'flavor-chat-ia'),
-            'crear'          => __('Crear', 'flavor-chat-ia'),
-            'nuevo'          => __('Nuevo', 'flavor-chat-ia'),
-            'nueva'          => __('Nueva', 'flavor-chat-ia'),
+            'listado'        => __('Explorar', 'flavor-chat-ia'),
+            'crear'          => __('Nueva acción', 'flavor-chat-ia'),
+            'nuevo'          => __('Nuevo elemento', 'flavor-chat-ia'),
+            'nueva'          => __('Nueva acción', 'flavor-chat-ia'),
             'editar'         => __('Editar', 'flavor-chat-ia'),
             'ver'            => __('Detalle', 'flavor-chat-ia'),
             'mis-reservas'   => __('Mis Reservas', 'flavor-chat-ia'),
@@ -1890,6 +3353,69 @@ class Flavor_Dynamic_Pages {
 
         // Fallback: convertir slug a texto (mi-pedido → Mi Pedido)
         return ucwords(str_replace('-', ' ', $action));
+    }
+
+    /**
+     * Normaliza labels visibles de tabs y acciones sin romper labels específicos.
+     *
+     * @param string $label
+     * @param string $id
+     * @param string $context
+     * @return string
+     */
+    private function normalize_module_ui_label($label, $id, $context = 'action') {
+        $label = trim((string) $label);
+        $id = str_replace('_', '-', (string) $id);
+
+        if ($label === '') {
+            return $this->get_action_label($id);
+        }
+
+        $normalized = sanitize_title($label);
+
+        if ($normalized === 'anuncios' && $this->current_module === 'marketplace') {
+            return __('Anuncios', 'flavor-chat-ia');
+        }
+
+        $replacements = [
+            'dashboard' => __('Resumen', 'flavor-chat-ia'),
+            'panel' => __('Resumen', 'flavor-chat-ia'),
+            'listado' => __('Explorar', 'flavor-chat-ia'),
+            'todos' => __('Explorar', 'flavor-chat-ia'),
+            'configuracion' => __('Ajustes', 'flavor-chat-ia'),
+            'configuración' => __('Ajustes', 'flavor-chat-ia'),
+            'mis-comunidades' => __('Mis espacios', 'flavor-chat-ia'),
+            'actividad-reciente' => __('Pulso comunitario', 'flavor-chat-ia'),
+            'eventos' => __('Encuentros', 'flavor-chat-ia'),
+            'anuncios' => __('Avisos', 'flavor-chat-ia'),
+            'recursos' => __('Recursos compartidos', 'flavor-chat-ia'),
+            'propuestas' => __('Iniciativas', 'flavor-chat-ia'),
+            'votaciones' => __('Decisiones', 'flavor-chat-ia'),
+            'resultados' => __('Acuerdos', 'flavor-chat-ia'),
+            'debates' => __('Conversaciones', 'flavor-chat-ia'),
+            'reuniones' => __('Encuentros', 'flavor-chat-ia'),
+            'portal' => __('Visión general', 'flavor-chat-ia'),
+            'presupuesto' => __('Recursos comunes', 'flavor-chat-ia'),
+            'actas' => __('Memoria y actas', 'flavor-chat-ia'),
+            'contratos' => __('Compromisos y contratos', 'flavor-chat-ia'),
+            'indicadores' => __('Indicadores compartidos', 'flavor-chat-ia'),
+            'instalaciones' => __('Infraestructura', 'flavor-chat-ia'),
+            'participantes' => __('Comunidad energética', 'flavor-chat-ia'),
+            'registrar-lectura' => __('Registrar producción', 'flavor-chat-ia'),
+            'mantenimiento' => __('Cuidados técnicos', 'flavor-chat-ia'),
+            'balance' => __('Balance energético', 'flavor-chat-ia'),
+            'cierres' => __('Cierres y repartos', 'flavor-chat-ia'),
+        ];
+
+        if (isset($replacements[$normalized])) {
+            return $replacements[$normalized];
+        }
+
+        if (in_array($normalized, ['nuevo', 'nueva', 'crear'], true)) {
+            return __('Nueva acción', 'flavor-chat-ia');
+        }
+
+        return $label;
     }
 
     /**
@@ -1941,10 +3467,10 @@ class Flavor_Dynamic_Pages {
             // Widgets: Mi Pedido (resumen), Productos (destacados)
             // Tabs: Navegación completa del ciclo de consumo
             'grupos-consumo' => [
-                'productos'   => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-products'],
-                'pedidos'     => ['label' => __('Mis Pedidos', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
-                'productores' => ['label' => __('Productores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                'ciclos'      => ['label' => __('Ciclos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'productos'   => ['label' => __('Explorar catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-products'],
+                'pedidos'     => ['label' => __('Mi consumo', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
+                'productores' => ['label' => __('Red de productores', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'ciclos'      => ['label' => __('Ciclo actual', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
                 // Integraciones
                 'foro'        => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
                 'recetas'     => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'is_integration' => true, 'source_module' => 'recetas'],
@@ -1967,10 +3493,10 @@ class Flavor_Dynamic_Pages {
 
             // === RESERVAS ===
             'reservas' => [
-                'recursos'       => ['label' => __('Recursos Disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
+                'recursos'       => ['label' => __('Espacios disponibles', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-home'],
                 'mis-reservas'   => ['label' => __('Mis Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
                 'calendario'     => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
-                'nueva-reserva'  => ['label' => __('Hacer Reserva', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'nueva-reserva'  => ['label' => __('Reservar', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
             ],
 
             // === ESPACIOS COMUNES ===
@@ -2008,12 +3534,12 @@ class Flavor_Dynamic_Pages {
             // === MARKETPLACE ===
             // Tab listado usa Archive Renderer via template genérico
             'marketplace' => [
-                'listado'      => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'content' => 'template:_archive.php'],
-                'mis-anuncios' => ['label' => __('Mis Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-write-blog'],
+                'listado'      => ['label' => __('Explorar anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'content' => 'template:_archive.php'],
+                'mis-anuncios' => ['label' => __('Mi actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-write-blog'],
                 'categorias'   => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
                 // Integraciones
-                'favoritos'    => ['label' => __('Favoritos', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'is_integration' => true, 'content' => '[marketplace_favoritos]'],
-                'mensajes'     => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
+                'favoritos'    => ['label' => __('Guardados', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'is_integration' => true, 'content' => '[marketplace_favoritos]'],
+                'mensajes'     => ['label' => __('Conversaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
             ],
 
             // === INCIDENCIAS ===
@@ -2142,24 +3668,24 @@ class Flavor_Dynamic_Pages {
 
             // === COMUNIDADES ===
             'comunidades' => [
-                'comunidades'     => ['label' => __('Ver todas', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'content' => 'callback:render_tab_comunidades'],
-                'crear'           => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'content' => '[comunidades_crear]', 'requires_login' => true],
-                'mis-comunidades' => ['label' => __('Mis comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'content' => 'callback:render_tab_mis_comunidades', 'requires_login' => true],
-                'actividad'       => ['label' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'content' => 'callback:render_tab_actividad', 'requires_login' => true],
+                'comunidades'     => ['label' => __('Explorar comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'content' => 'callback:render_tab_comunidades'],
+                'crear'           => ['label' => __('Crear comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'content' => '[comunidades_crear]', 'requires_login' => true],
+                'mis-comunidades' => ['label' => __('Mis espacios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'content' => 'callback:render_tab_mis_comunidades', 'requires_login' => true],
+                'actividad'       => ['label' => __('Pulso comunitario', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'content' => 'callback:render_tab_actividad', 'requires_login' => true],
                 'foros'           => ['label' => __('Foros', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
                 'multimedia'      => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery', 'is_integration' => true, 'source_module' => 'multimedia'],
-                'eventos'         => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'content' => 'callback:render_tab_eventos'],
-                'anuncios'        => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'content' => '[comunidades_tablon limite="20" incluir_red="true"]'],
-                'recursos'        => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'content' => '[comunidades_recursos_compartidos]'],
+                'eventos'         => ['label' => __('Encuentros', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'content' => 'callback:render_tab_eventos'],
+                'anuncios'        => ['label' => __('Avisos', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone', 'content' => '[comunidades_tablon limite="20" incluir_red="true"]'],
+                'recursos'        => ['label' => __('Recursos compartidos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'content' => '[comunidades_recursos_compartidos]'],
             ],
 
             // === SOCIOS ===
             'socios' => [
-                'mi-membresia' => ['label' => __('Mi Membresía', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
-                'cuotas'       => ['label' => __('Mis Cuotas', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
-                'directorio'   => ['label' => __('Directorio', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'mi-membresia' => ['label' => __('Mi vínculo', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
+                'cuotas'       => ['label' => __('Aportaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
+                'directorio'   => ['label' => __('Red de socios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
                 'beneficios'   => ['label' => __('Beneficios', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
-                'carnet'       => ['label' => __('Mi Carnet', 'flavor-chat-ia'), 'icon' => 'dashicons-id'],
+                'carnet'       => ['label' => __('Identidad', 'flavor-chat-ia'), 'icon' => 'dashicons-id'],
                 'historial'    => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
                 'eventos'      => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt', 'is_integration' => true, 'source_module' => 'eventos'],
             ],
@@ -2176,6 +3702,8 @@ class Flavor_Dynamic_Pages {
             'chat-grupos' => [
                 'mis-grupos' => ['label' => __('Mis Grupos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
                 'explorar'   => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
+                'crear'      => ['label' => __('Crear Grupo', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'content' => '[chat_grupos_crear]'],
+                'mensajes'   => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat'],
             ],
 
             // === RED SOCIAL ===
@@ -2191,12 +3719,12 @@ class Flavor_Dynamic_Pages {
 
             // === PARTICIPACIÓN ===
             'participacion' => [
-                'propuestas' => ['label' => __('Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
-                'votaciones' => ['label' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up'],
-                'resultados' => ['label' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'propuestas' => ['label' => __('Iniciativas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
+                'votaciones' => ['label' => __('Decisiones', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up'],
+                'resultados' => ['label' => __('Acuerdos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
                 // Integraciones
-                'debates'    => ['label' => __('Debates', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
-                'reuniones'  => ['label' => __('Reuniones', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'source_module' => 'eventos'],
+                'debates'    => ['label' => __('Conversaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
+                'reuniones'  => ['label' => __('Encuentros', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'source_module' => 'eventos'],
             ],
 
             // === PRESUPUESTOS PARTICIPATIVOS ===
@@ -2241,12 +3769,12 @@ class Flavor_Dynamic_Pages {
 
             // === TRANSPARENCIA ===
             'transparencia' => [
-                'portal'      => ['label' => __('Portal', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
-                'presupuesto' => ['label' => __('Presupuesto', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
-                'actas'       => ['label' => __('Actas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'portal'      => ['label' => __('Visión general', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+                'presupuesto' => ['label' => __('Recursos comunes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                'actas'       => ['label' => __('Memoria y actas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
                 // Integraciones
-                'contratos'   => ['label' => __('Contratos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true, 'content' => '[transparencia_contratos]'],
-                'indicadores' => ['label' => __('Indicadores', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true, 'content' => '[transparencia_indicadores]'],
+                'contratos'   => ['label' => __('Compromisos y contratos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio', 'is_integration' => true, 'content' => '[transparencia_contratos]'],
+                'indicadores' => ['label' => __('Indicadores compartidos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar', 'is_integration' => true, 'content' => '[transparencia_indicadores]'],
             ],
 
             // === FICHAJE EMPLEADOS ===
@@ -2440,9 +3968,11 @@ class Flavor_Dynamic_Pages {
 
             // === RECETAS ===
             'recetas' => [
-                'listado'     => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
-                'mis-recetas' => ['label' => __('Mis Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-write-blog'],
-                'categorias'  => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
+                'listado'     => ['label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot', 'content' => '[flavor_recetas_dashboard]'],
+                'mis-recetas' => ['label' => __('Mis Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-write-blog', 'content' => '[flavor_recetas_mis_recetas]'],
+                'crear'       => ['label' => __('Nueva Receta', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'content' => '[flavor_recetas_crear]'],
+                'favoritas'   => ['label' => __('Favoritas', 'flavor-chat-ia'), 'icon' => 'dashicons-heart', 'content' => '[flavor_recetas_favoritas]'],
+                'categorias'  => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category', 'content' => '[flavor_recetas_categorias]'],
                 // Integraciones
                 'ingredientes' => ['label' => __('Ingredientes', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view', 'is_integration' => true, 'content' => '[recetas_ingredientes]'],
                 'temporada'    => ['label' => __('De temporada', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'is_integration' => true, 'content' => '[recetas_temporada]'],
@@ -2885,7 +4415,7 @@ class Flavor_Dynamic_Pages {
         }
 
         // Fallback: mensaje vacío
-        echo '<p class="fmd-empty">' . esc_html__('No hay contenido disponible', 'flavor-chat-ia') . '</p>';
+        echo '<p class="fmd-empty">' . esc_html__('Todavía no hay contenido en este espacio.', 'flavor-chat-ia') . '</p>';
     }
 
     /**
@@ -3948,6 +5478,21 @@ class Flavor_Dynamic_Pages {
     private function render_tab_listado() {
         $module_slug = str_replace('_', '-', $this->current_module);
 
+        // Marketplace usa un frontend controller más reciente que el archive renderer legacy.
+        if ($module_slug === 'marketplace') {
+            $archivo_controller = FLAVOR_CHAT_IA_PATH . 'includes/modules/marketplace/frontend/class-marketplace-frontend-controller.php';
+            if (!class_exists('Flavor_Marketplace_Frontend_Controller') && file_exists($archivo_controller)) {
+                require_once $archivo_controller;
+            }
+            if (class_exists('Flavor_Marketplace_Frontend_Controller')) {
+                echo Flavor_Marketplace_Frontend_Controller::get_instance()->shortcode_catalogo([
+                    'limite' => 12,
+                    'mostrar_filtros' => 'si',
+                ]);
+                return;
+            }
+        }
+
         // Usar Archive Renderer dinámico
         if (!class_exists('Flavor_Archive_Renderer')) {
             require_once FLAVOR_CHAT_IA_PATH . 'includes/class-archive-renderer.php';
@@ -4127,12 +5672,12 @@ class Flavor_Dynamic_Pages {
      */
     private function render_tab_banco_tiempo($tab_id) {
         $shortcodes = [
-            'servicios' => '[banco_tiempo_servicios]',
+            'servicios' => '[banco_tiempo_servicios mostrar_propios="0"]',
             'mi-saldo' => '[banco_tiempo_mi_saldo]',
             'intercambios' => '[banco_tiempo_mis_intercambios]',
             'ranking' => '[banco_tiempo_ranking]',
             'ofrecer' => '[banco_tiempo_ofrecer]',
-            'buscar' => '[banco_tiempo_servicios]',
+            'buscar' => '[banco_tiempo_servicios mostrar_propios="0"]',
         ];
 
         if (isset($shortcodes[$tab_id])) {
@@ -5434,7 +6979,7 @@ class Flavor_Dynamic_Pages {
             <div class="fmd-login-required">
                 <span class="dashicons dashicons-lock"></span>
                 <p><?php esc_html_e('Debes iniciar sesión para ver tus hilos.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="fmd-btn fmd-btn-primary">
+                <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="fmd-btn fmd-btn-primary">
                     <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -5567,7 +7112,7 @@ class Flavor_Dynamic_Pages {
             <div class="fmd-login-required">
                 <span class="dashicons dashicons-lock"></span>
                 <p><?php esc_html_e('Debes iniciar sesión para crear un tema.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="fmd-btn fmd-btn-primary">
+                <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="fmd-btn fmd-btn-primary">
                     <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -6257,6 +7802,23 @@ class Flavor_Dynamic_Pages {
             }
         }
 
+        $module_tabs = $this->get_module_tabs($module_instance);
+        if (!empty($module_tabs[$action])) {
+            $tab_info = $module_tabs[$action];
+            ?>
+            <div class="fmd-action-header">
+                <h2>
+                    <span class="dashicons <?php echo esc_attr($tab_info['icon'] ?? 'dashicons-admin-generic'); ?>"></span>
+                    <?php echo esc_html($this->normalize_module_ui_label($tab_info['label'] ?? '', $action, 'action')); ?>
+                </h2>
+            </div>
+            <div class="fmd-action-body">
+                <?php $this->render_tab_content($action, $tab_info, $module_instance); ?>
+            </div>
+            <?php
+            return;
+        }
+
         // ============================================================
         // PRIORIDAD 0.5: Verificar si la acción tiene content definido en tabs
         // Esto permite que cualquier tab con content se renderice correctamente
@@ -6269,7 +7831,7 @@ class Flavor_Dynamic_Pages {
             if (!empty($tab_info['requires_login']) && !is_user_logged_in()) {
                 echo '<div class="fmd-login-required">';
                 echo '<p>' . esc_html__('Debes iniciar sesión para acceder a esta sección.', 'flavor-chat-ia') . '</p>';
-                echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+                echo '<a href="' . esc_url(wp_login_url($this->get_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
                 echo '</div>';
                 return;
             }
@@ -6301,7 +7863,7 @@ class Flavor_Dynamic_Pages {
                             echo $output;
                         }
                     } else {
-                        echo '<p class="fmd-empty">' . esc_html__('No hay contenido disponible', 'flavor-chat-ia') . '</p>';
+                        echo '<p class="fmd-empty">' . esc_html__('Todavía no hay contenido en este espacio.', 'flavor-chat-ia') . '</p>';
                     }
                 }
                 // Tipo 4: Callable
@@ -6582,7 +8144,7 @@ class Flavor_Dynamic_Pages {
             ?>
             <div class="flavor-empty-state">
                 <span class="dashicons dashicons-info-outline"></span>
-                <p><?php esc_html_e('No hay módulos activos.', 'flavor-chat-ia'); ?></p>
+                <p><?php esc_html_e('Todavía no hay módulos activos en este portal.', 'flavor-chat-ia'); ?></p>
             </div>
             <?php
             return;
@@ -6621,8 +8183,8 @@ class Flavor_Dynamic_Pages {
         ?>
         <div class="flavor-login-required">
             <span class="dashicons dashicons-lock"></span>
-            <h2><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h2>
-            <p><?php esc_html_e('Debes iniciar sesión para acceder a esta sección.', 'flavor-chat-ia'); ?></p>
+            <h2><?php esc_html_e('Acceso al nodo', 'flavor-chat-ia'); ?></h2>
+            <p><?php esc_html_e('Inicia sesión para entrar en este espacio del portal y continuar tu actividad.', 'flavor-chat-ia'); ?></p>
             <a href="<?php echo esc_url(wp_login_url(home_url('/' . $this->base_path . '/mi-cuenta/'))); ?>" class="flavor-btn">
                 <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
             </a>
@@ -6637,13 +8199,13 @@ class Flavor_Dynamic_Pages {
         ?>
         <div class="flavor-not-found">
             <span class="dashicons dashicons-warning"></span>
-            <h2><?php esc_html_e('Módulo no encontrado', 'flavor-chat-ia'); ?></h2>
+            <h2><?php esc_html_e('Espacio no disponible', 'flavor-chat-ia'); ?></h2>
             <p><?php printf(
-                esc_html__('El módulo "%s" no existe o no está activo.', 'flavor-chat-ia'),
+                esc_html__('El espacio "%s" no existe, no está activo o no forma parte de este portal.', 'flavor-chat-ia'),
                 esc_html($this->current_module)
             ); ?></p>
             <a href="<?php echo esc_url(home_url('/' . $this->base_path . '/')); ?>" class="flavor-btn">
-                <?php esc_html_e('Volver al dashboard', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Volver a mi portal', 'flavor-chat-ia'); ?>
             </a>
         </div>
         <?php
@@ -6882,7 +8444,980 @@ class Flavor_Dynamic_Pages {
      * Renderiza sección de configuración
      */
     private function render_settings_section($usuario_id) {
-        $this->render_section_coming_soon(__('Configuración', 'flavor-chat-ia'));
+        $user = get_userdata($usuario_id);
+        if (!$user) {
+            return;
+        }
+
+        // Obtener configuraciones del usuario
+        $user_settings = get_user_meta($usuario_id, 'flavor_user_settings', true) ?: [];
+        $privacy_settings = $user_settings['privacy'] ?? [];
+        $notification_settings = $user_settings['notifications'] ?? [];
+        $appearance_settings = $user_settings['appearance'] ?? [];
+
+        // Valores por defecto
+        $defaults = [
+            'privacy' => [
+                'profile_visibility' => 'public',
+                'show_email' => false,
+                'show_activity' => true,
+                'allow_messages' => true,
+            ],
+            'notifications' => [
+                'email_mentions' => true,
+                'email_messages' => true,
+                'email_updates' => false,
+                'push_enabled' => true,
+            ],
+            'appearance' => [
+                'theme' => 'auto',
+                'compact_mode' => false,
+            ],
+        ];
+
+        $privacy = array_merge($defaults['privacy'], $privacy_settings);
+        $notifications = array_merge($defaults['notifications'], $notification_settings);
+        $appearance = array_merge($defaults['appearance'], $appearance_settings);
+
+        // Tab actual
+        $current_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'perfil';
+        $base_url = home_url('/' . $this->base_path . '/configuracion/');
+        ?>
+        <div class="fmd-settings-container" x-data="flavorSettings()" x-init="init()">
+            <!-- Tabs de navegación -->
+            <nav class="fmd-settings-nav">
+                <a href="<?php echo esc_url(add_query_arg('tab', 'perfil', $base_url)); ?>"
+                   class="fmd-settings-tab <?php echo $current_tab === 'perfil' ? 'active' : ''; ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span><?php esc_html_e('Perfil', 'flavor-chat-ia'); ?></span>
+                </a>
+                <a href="<?php echo esc_url(add_query_arg('tab', 'cuenta', $base_url)); ?>"
+                   class="fmd-settings-tab <?php echo $current_tab === 'cuenta' ? 'active' : ''; ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <span><?php esc_html_e('Cuenta', 'flavor-chat-ia'); ?></span>
+                </a>
+                <a href="<?php echo esc_url(add_query_arg('tab', 'notificaciones', $base_url)); ?>"
+                   class="fmd-settings-tab <?php echo $current_tab === 'notificaciones' ? 'active' : ''; ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    <span><?php esc_html_e('Notificaciones', 'flavor-chat-ia'); ?></span>
+                </a>
+                <a href="<?php echo esc_url(add_query_arg('tab', 'privacidad', $base_url)); ?>"
+                   class="fmd-settings-tab <?php echo $current_tab === 'privacidad' ? 'active' : ''; ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <span><?php esc_html_e('Privacidad', 'flavor-chat-ia'); ?></span>
+                </a>
+                <a href="<?php echo esc_url(add_query_arg('tab', 'apariencia', $base_url)); ?>"
+                   class="fmd-settings-tab <?php echo $current_tab === 'apariencia' ? 'active' : ''; ?>">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <span><?php esc_html_e('Apariencia', 'flavor-chat-ia'); ?></span>
+                </a>
+            </nav>
+
+            <!-- Contenido del tab -->
+            <div class="fmd-settings-content">
+                <?php
+                switch ($current_tab) {
+                    case 'cuenta':
+                        $this->render_settings_account_tab($user);
+                        break;
+                    case 'notificaciones':
+                        $this->render_settings_notifications_tab($usuario_id, $notifications);
+                        break;
+                    case 'privacidad':
+                        $this->render_settings_privacy_tab($usuario_id, $privacy);
+                        break;
+                    case 'apariencia':
+                        $this->render_settings_appearance_tab($usuario_id, $appearance);
+                        break;
+                    default:
+                        $this->render_settings_profile_tab($user);
+                        break;
+                }
+                ?>
+            </div>
+
+            <!-- Toast de notificación -->
+            <div class="fmd-toast" x-show="showToast" x-transition x-cloak
+                 :class="{ 'fmd-toast--success': toastType === 'success', 'fmd-toast--error': toastType === 'error' }">
+                <span x-text="toastMessage"></span>
+            </div>
+        </div>
+
+        <style>
+            .fmd-settings-container {
+                max-width: 900px;
+                margin: 0 auto;
+            }
+            .fmd-settings-nav {
+                display: flex;
+                gap: 4px;
+                background: var(--flavor-bg-secondary, #f3f4f6);
+                padding: 6px;
+                border-radius: 12px;
+                margin-bottom: 24px;
+                overflow-x: auto;
+            }
+            .fmd-settings-tab {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 16px;
+                border-radius: 8px;
+                color: var(--flavor-text-secondary, #6b7280);
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 500;
+                white-space: nowrap;
+                transition: all 0.2s;
+            }
+            .fmd-settings-tab:hover {
+                background: var(--flavor-bg-tertiary, #e5e7eb);
+                color: var(--flavor-text-primary, #1f2937);
+            }
+            .fmd-settings-tab.active {
+                background: white;
+                color: var(--flavor-primary, #3b82f6);
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            .fmd-settings-tab svg {
+                flex-shrink: 0;
+            }
+            .fmd-settings-content {
+                background: white;
+                border-radius: 16px;
+                padding: 32px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            .fmd-settings-section {
+                margin-bottom: 32px;
+            }
+            .fmd-settings-section:last-child {
+                margin-bottom: 0;
+            }
+            .fmd-settings-section-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--flavor-text-primary, #1f2937);
+                margin: 0 0 16px;
+                padding-bottom: 12px;
+                border-bottom: 1px solid var(--flavor-border, #e5e7eb);
+            }
+            .fmd-form-group {
+                margin-bottom: 20px;
+            }
+            .fmd-form-label {
+                display: block;
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--flavor-text-primary, #374151);
+                margin-bottom: 6px;
+            }
+            .fmd-form-hint {
+                font-size: 13px;
+                color: var(--flavor-text-secondary, #6b7280);
+                margin-top: 4px;
+            }
+            .fmd-form-input {
+                width: 100%;
+                padding: 10px 14px;
+                border: 1px solid var(--flavor-border, #d1d5db);
+                border-radius: 8px;
+                font-size: 15px;
+                transition: border-color 0.2s, box-shadow 0.2s;
+            }
+            .fmd-form-input:focus {
+                outline: none;
+                border-color: var(--flavor-primary, #3b82f6);
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            }
+            .fmd-form-textarea {
+                min-height: 100px;
+                resize: vertical;
+            }
+            .fmd-form-row {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            @media (max-width: 640px) {
+                .fmd-form-row {
+                    grid-template-columns: 1fr;
+                }
+            }
+            .fmd-avatar-upload {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                margin-bottom: 24px;
+            }
+            .fmd-avatar-preview {
+                width: 96px;
+                height: 96px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid var(--flavor-border, #e5e7eb);
+            }
+            .fmd-avatar-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .fmd-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+                border: none;
+            }
+            .fmd-btn-primary {
+                background: var(--flavor-primary, #3b82f6);
+                color: white;
+            }
+            .fmd-btn-primary:hover {
+                background: var(--flavor-primary-dark, #2563eb);
+            }
+            .fmd-btn-secondary {
+                background: var(--flavor-bg-secondary, #f3f4f6);
+                color: var(--flavor-text-primary, #374151);
+            }
+            .fmd-btn-secondary:hover {
+                background: var(--flavor-bg-tertiary, #e5e7eb);
+            }
+            .fmd-btn-danger {
+                background: #fef2f2;
+                color: #dc2626;
+            }
+            .fmd-btn-danger:hover {
+                background: #fee2e2;
+            }
+            .fmd-toggle-group {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+            .fmd-toggle-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 16px;
+                background: var(--flavor-bg-secondary, #f9fafb);
+                border-radius: 10px;
+            }
+            .fmd-toggle-info {
+                flex: 1;
+            }
+            .fmd-toggle-title {
+                font-size: 15px;
+                font-weight: 500;
+                color: var(--flavor-text-primary, #1f2937);
+                margin: 0 0 4px;
+            }
+            .fmd-toggle-desc {
+                font-size: 13px;
+                color: var(--flavor-text-secondary, #6b7280);
+                margin: 0;
+            }
+            .fmd-toggle-switch {
+                position: relative;
+                width: 48px;
+                height: 26px;
+                background: #d1d5db;
+                border-radius: 13px;
+                cursor: pointer;
+                transition: background 0.2s;
+                flex-shrink: 0;
+            }
+            .fmd-toggle-switch.active {
+                background: var(--flavor-primary, #3b82f6);
+            }
+            .fmd-toggle-switch::after {
+                content: '';
+                position: absolute;
+                top: 3px;
+                left: 3px;
+                width: 20px;
+                height: 20px;
+                background: white;
+                border-radius: 50%;
+                transition: transform 0.2s;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            }
+            .fmd-toggle-switch.active::after {
+                transform: translateX(22px);
+            }
+            .fmd-select-group {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .fmd-select-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 16px;
+                background: var(--flavor-bg-secondary, #f9fafb);
+                border: 2px solid transparent;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .fmd-select-item:hover {
+                border-color: var(--flavor-border, #d1d5db);
+            }
+            .fmd-select-item.active {
+                border-color: var(--flavor-primary, #3b82f6);
+                background: rgba(59, 130, 246, 0.05);
+            }
+            .fmd-select-radio {
+                width: 20px;
+                height: 20px;
+                border: 2px solid #d1d5db;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+            .fmd-select-item.active .fmd-select-radio {
+                border-color: var(--flavor-primary, #3b82f6);
+            }
+            .fmd-select-item.active .fmd-select-radio::after {
+                content: '';
+                width: 10px;
+                height: 10px;
+                background: var(--flavor-primary, #3b82f6);
+                border-radius: 50%;
+            }
+            .fmd-select-label {
+                font-size: 15px;
+                font-weight: 500;
+                color: var(--flavor-text-primary, #1f2937);
+            }
+            .fmd-theme-preview {
+                display: flex;
+                gap: 16px;
+                margin-top: 20px;
+            }
+            .fmd-theme-card {
+                flex: 1;
+                padding: 20px;
+                border-radius: 12px;
+                border: 2px solid transparent;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .fmd-theme-card:hover {
+                border-color: var(--flavor-border, #d1d5db);
+            }
+            .fmd-theme-card.active {
+                border-color: var(--flavor-primary, #3b82f6);
+            }
+            .fmd-theme-card--light {
+                background: #f9fafb;
+            }
+            .fmd-theme-card--dark {
+                background: #1f2937;
+            }
+            .fmd-theme-card--auto {
+                background: linear-gradient(135deg, #f9fafb 50%, #1f2937 50%);
+            }
+            .fmd-theme-name {
+                text-align: center;
+                font-size: 14px;
+                font-weight: 500;
+                margin-top: 12px;
+            }
+            .fmd-theme-card--dark .fmd-theme-name {
+                color: white;
+            }
+            .fmd-form-actions {
+                display: flex;
+                gap: 12px;
+                margin-top: 24px;
+                padding-top: 24px;
+                border-top: 1px solid var(--flavor-border, #e5e7eb);
+            }
+            .fmd-toast {
+                position: fixed;
+                bottom: 24px;
+                right: 24px;
+                padding: 14px 20px;
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+            }
+            .fmd-toast--success {
+                background: #10b981;
+                color: white;
+            }
+            .fmd-toast--error {
+                background: #ef4444;
+                color: white;
+            }
+            .fmd-danger-zone {
+                margin-top: 40px;
+                padding: 24px;
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                border-radius: 12px;
+            }
+            .fmd-danger-zone h3 {
+                color: #dc2626;
+                margin: 0 0 12px;
+                font-size: 16px;
+            }
+            .fmd-danger-zone p {
+                color: #7f1d1d;
+                margin: 0 0 16px;
+                font-size: 14px;
+            }
+            @media (max-width: 768px) {
+                .fmd-settings-nav {
+                    flex-wrap: nowrap;
+                    -webkit-overflow-scrolling: touch;
+                }
+                .fmd-settings-tab span {
+                    display: none;
+                }
+                .fmd-settings-tab.active span {
+                    display: inline;
+                }
+                .fmd-settings-content {
+                    padding: 20px;
+                }
+            }
+        </style>
+
+        <script>
+        function flavorSettings() {
+            return {
+                showToast: false,
+                toastMessage: '',
+                toastType: 'success',
+                saving: false,
+                avatarFile: null,
+
+                init() {
+                    // Aplicar tema guardado al cargar
+                    this.applyTheme();
+                },
+
+                showNotification(message, type = 'success') {
+                    this.toastMessage = message;
+                    this.toastType = type;
+                    this.showToast = true;
+                    setTimeout(() => { this.showToast = false; }, 3000);
+                },
+
+                async saveSettings(form, section) {
+                    if (this.saving) return;
+                    this.saving = true;
+
+                    const formData = new FormData(form);
+                    formData.append('action', 'flavor_save_user_settings');
+                    formData.append('section', section);
+                    formData.append('nonce', '<?php echo wp_create_nonce('flavor_save_settings'); ?>');
+
+                    try {
+                        const response = await fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const data = await response.json();
+
+                        if (data.success) {
+                            this.showNotification('<?php echo esc_js(__('Cambios guardados correctamente', 'flavor-chat-ia')); ?>');
+
+                            // Si es apariencia, aplicar tema inmediatamente
+                            if (section === 'appearance') {
+                                const themeInput = form.querySelector('input[name="theme"]:checked');
+                                if (themeInput) {
+                                    this.setTheme(themeInput.value);
+                                }
+                            }
+
+                            // Si guardamos avatar, actualizar preview
+                            if (data.data && data.data.avatar_url) {
+                                const preview = document.getElementById('avatar-preview');
+                                if (preview) {
+                                    preview.src = data.data.avatar_url;
+                                }
+                            }
+                        } else {
+                            this.showNotification(data.data || '<?php echo esc_js(__('Error al guardar', 'flavor-chat-ia')); ?>', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Settings save error:', error);
+                        this.showNotification('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
+                    }
+
+                    this.saving = false;
+                },
+
+                setTheme(theme) {
+                    localStorage.setItem('flavor_theme', theme);
+                    this.applyTheme();
+                },
+
+                applyTheme() {
+                    const savedTheme = localStorage.getItem('flavor_theme') || 'auto';
+                    let effectiveTheme = savedTheme;
+
+                    if (savedTheme === 'auto') {
+                        effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    }
+
+                    document.documentElement.setAttribute('data-theme', effectiveTheme);
+                    document.body.classList.toggle('dark-mode', effectiveTheme === 'dark');
+                },
+
+                previewAvatar(input) {
+                    if (input.files && input.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            document.getElementById('avatar-preview').src = e.target.result;
+                        };
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                },
+
+                async deleteAccount() {
+                    if (!confirm('<?php echo esc_js(__('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.', 'flavor-chat-ia')); ?>')) {
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('action', 'flavor_delete_user_account');
+                    formData.append('nonce', '<?php echo wp_create_nonce('flavor_delete_account'); ?>');
+
+                    try {
+                        const response = await fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const data = await response.json();
+
+                        if (data.success) {
+                            this.showNotification('<?php echo esc_js(__('Cuenta eliminada. Redirigiendo...', 'flavor-chat-ia')); ?>');
+                            setTimeout(() => {
+                                window.location.href = '<?php echo home_url(); ?>';
+                            }, 2000);
+                        } else {
+                            this.showNotification(data.data || '<?php echo esc_js(__('Error al eliminar la cuenta', 'flavor-chat-ia')); ?>', 'error');
+                        }
+                    } catch (error) {
+                        this.showNotification('<?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?>', 'error');
+                    }
+                }
+            };
+        }
+
+        // Escuchar cambios de tema del sistema
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            const savedTheme = localStorage.getItem('flavor_theme');
+            if (savedTheme === 'auto') {
+                const effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', effectiveTheme);
+                document.body.classList.toggle('dark-mode', effectiveTheme === 'dark');
+            }
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Tab de perfil en configuración
+     */
+    private function render_settings_profile_tab($user) {
+        $avatar_url = get_avatar_url($user->ID, ['size' => 192]);
+        $bio = get_user_meta($user->ID, 'description', true);
+        $location = get_user_meta($user->ID, 'flavor_location', true);
+        $website = $user->user_url;
+        ?>
+        <form @submit.prevent="saveSettings($el, 'profile')">
+            <div class="fmd-settings-section">
+                <h3 class="fmd-settings-section-title"><?php esc_html_e('Foto de perfil', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-avatar-upload">
+                    <img src="<?php echo esc_url($avatar_url); ?>" alt="" class="fmd-avatar-preview" id="avatar-preview">
+                    <div class="fmd-avatar-actions">
+                        <button type="button" class="fmd-btn fmd-btn-secondary" onclick="document.getElementById('avatar-input').click()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            <?php esc_html_e('Subir foto', 'flavor-chat-ia'); ?>
+                        </button>
+                        <input type="file" id="avatar-input" name="avatar" accept="image/*" style="display:none"
+                               @change="previewAvatar($el)">
+                        <p class="fmd-form-hint"><?php esc_html_e('JPG, PNG o GIF. Máximo 2MB.', 'flavor-chat-ia'); ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fmd-settings-section">
+                <h3 class="fmd-settings-section-title"><?php esc_html_e('Información personal', 'flavor-chat-ia'); ?></h3>
+
+                <div class="fmd-form-row">
+                    <div class="fmd-form-group">
+                        <label class="fmd-form-label"><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></label>
+                        <input type="text" name="first_name" class="fmd-form-input"
+                               value="<?php echo esc_attr($user->first_name); ?>">
+                    </div>
+                    <div class="fmd-form-group">
+                        <label class="fmd-form-label"><?php esc_html_e('Apellidos', 'flavor-chat-ia'); ?></label>
+                        <input type="text" name="last_name" class="fmd-form-input"
+                               value="<?php echo esc_attr($user->last_name); ?>">
+                    </div>
+                </div>
+
+                <div class="fmd-form-group">
+                    <label class="fmd-form-label"><?php esc_html_e('Nombre público', 'flavor-chat-ia'); ?></label>
+                    <input type="text" name="display_name" class="fmd-form-input"
+                           value="<?php echo esc_attr($user->display_name); ?>">
+                    <p class="fmd-form-hint"><?php esc_html_e('Este nombre se mostrará públicamente', 'flavor-chat-ia'); ?></p>
+                </div>
+
+                <div class="fmd-form-group">
+                    <label class="fmd-form-label"><?php esc_html_e('Biografía', 'flavor-chat-ia'); ?></label>
+                    <textarea name="description" class="fmd-form-input fmd-form-textarea"
+                              placeholder="<?php esc_attr_e('Cuéntanos algo sobre ti...', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($bio); ?></textarea>
+                </div>
+
+                <div class="fmd-form-row">
+                    <div class="fmd-form-group">
+                        <label class="fmd-form-label"><?php esc_html_e('Ubicación', 'flavor-chat-ia'); ?></label>
+                        <input type="text" name="location" class="fmd-form-input"
+                               value="<?php echo esc_attr($location); ?>"
+                               placeholder="<?php esc_attr_e('Ej: Madrid, España', 'flavor-chat-ia'); ?>">
+                    </div>
+                    <div class="fmd-form-group">
+                        <label class="fmd-form-label"><?php esc_html_e('Sitio web', 'flavor-chat-ia'); ?></label>
+                        <input type="url" name="user_url" class="fmd-form-input"
+                               value="<?php echo esc_attr($website); ?>"
+                               placeholder="https://">
+                    </div>
+                </div>
+            </div>
+
+            <div class="fmd-form-actions">
+                <button type="submit" class="fmd-btn fmd-btn-primary" :disabled="saving">
+                    <span x-show="!saving"><?php esc_html_e('Guardar cambios', 'flavor-chat-ia'); ?></span>
+                    <span x-show="saving"><?php esc_html_e('Guardando...', 'flavor-chat-ia'); ?></span>
+                </button>
+            </div>
+        </form>
+        <?php
+    }
+
+    /**
+     * Tab de cuenta en configuración
+     */
+    private function render_settings_account_tab($user) {
+        ?>
+        <form @submit.prevent="saveSettings($el, 'account')">
+            <div class="fmd-settings-section">
+                <h3 class="fmd-settings-section-title"><?php esc_html_e('Correo electrónico', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-form-group">
+                    <label class="fmd-form-label"><?php esc_html_e('Email actual', 'flavor-chat-ia'); ?></label>
+                    <input type="email" name="email" class="fmd-form-input"
+                           value="<?php echo esc_attr($user->user_email); ?>">
+                    <p class="fmd-form-hint"><?php esc_html_e('Si cambias tu email, recibirás un mensaje de confirmación', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
+
+            <div class="fmd-settings-section">
+                <h3 class="fmd-settings-section-title"><?php esc_html_e('Cambiar contraseña', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-form-group">
+                    <label class="fmd-form-label"><?php esc_html_e('Contraseña actual', 'flavor-chat-ia'); ?></label>
+                    <input type="password" name="current_password" class="fmd-form-input" autocomplete="current-password">
+                </div>
+                <div class="fmd-form-row">
+                    <div class="fmd-form-group">
+                        <label class="fmd-form-label"><?php esc_html_e('Nueva contraseña', 'flavor-chat-ia'); ?></label>
+                        <input type="password" name="new_password" class="fmd-form-input" autocomplete="new-password">
+                    </div>
+                    <div class="fmd-form-group">
+                        <label class="fmd-form-label"><?php esc_html_e('Confirmar contraseña', 'flavor-chat-ia'); ?></label>
+                        <input type="password" name="confirm_password" class="fmd-form-input" autocomplete="new-password">
+                    </div>
+                </div>
+                <p class="fmd-form-hint"><?php esc_html_e('Deja en blanco si no quieres cambiar la contraseña', 'flavor-chat-ia'); ?></p>
+            </div>
+
+            <div class="fmd-form-actions">
+                <button type="submit" class="fmd-btn fmd-btn-primary" :disabled="saving">
+                    <span x-show="!saving"><?php esc_html_e('Guardar cambios', 'flavor-chat-ia'); ?></span>
+                    <span x-show="saving"><?php esc_html_e('Guardando...', 'flavor-chat-ia'); ?></span>
+                </button>
+            </div>
+        </form>
+
+        <div class="fmd-danger-zone">
+            <h3><?php esc_html_e('Zona de peligro', 'flavor-chat-ia'); ?></h3>
+            <p><?php esc_html_e('Una vez eliminada tu cuenta, no hay vuelta atrás. Por favor, asegúrate.', 'flavor-chat-ia'); ?></p>
+            <button type="button" class="fmd-btn fmd-btn-danger" @click="deleteAccount()">
+                <?php esc_html_e('Eliminar mi cuenta', 'flavor-chat-ia'); ?>
+            </button>
+        </div>
+        <?php
+    }
+
+    /**
+     * Tab de notificaciones en configuración
+     */
+    private function render_settings_notifications_tab($usuario_id, $settings) {
+        ?>
+        <form @submit.prevent="saveSettings($el, 'notifications')">
+            <div class="fmd-settings-section">
+                <h3 class="fmd-settings-section-title"><?php esc_html_e('Notificaciones por email', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-toggle-group">
+                    <div class="fmd-toggle-item">
+                        <div class="fmd-toggle-info">
+                            <p class="fmd-toggle-title"><?php esc_html_e('Menciones y respuestas', 'flavor-chat-ia'); ?></p>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Recibe un email cuando alguien te mencione o responda', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <label class="fmd-toggle-switch <?php echo $settings['email_mentions'] ? 'active' : ''; ?>">
+                            <input type="checkbox" name="email_mentions" value="1" <?php checked($settings['email_mentions']); ?> hidden
+                                   onchange="this.parentElement.classList.toggle('active')">
+                        </label>
+                    </div>
+                    <div class="fmd-toggle-item">
+                        <div class="fmd-toggle-info">
+                            <p class="fmd-toggle-title"><?php esc_html_e('Mensajes directos', 'flavor-chat-ia'); ?></p>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Recibe un email cuando recibas un mensaje privado', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <label class="fmd-toggle-switch <?php echo $settings['email_messages'] ? 'active' : ''; ?>">
+                            <input type="checkbox" name="email_messages" value="1" <?php checked($settings['email_messages']); ?> hidden
+                                   onchange="this.parentElement.classList.toggle('active')">
+                        </label>
+                    </div>
+                    <div class="fmd-toggle-item">
+                        <div class="fmd-toggle-info">
+                            <p class="fmd-toggle-title"><?php esc_html_e('Novedades y actualizaciones', 'flavor-chat-ia'); ?></p>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Recibe información sobre nuevas funcionalidades', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <label class="fmd-toggle-switch <?php echo $settings['email_updates'] ? 'active' : ''; ?>">
+                            <input type="checkbox" name="email_updates" value="1" <?php checked($settings['email_updates']); ?> hidden
+                                   onchange="this.parentElement.classList.toggle('active')">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fmd-settings-section">
+                <h3 class="fmd-settings-section-title"><?php esc_html_e('Notificaciones push', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-toggle-group">
+                    <div class="fmd-toggle-item">
+                        <div class="fmd-toggle-info">
+                            <p class="fmd-toggle-title"><?php esc_html_e('Notificaciones en el navegador', 'flavor-chat-ia'); ?></p>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Recibe notificaciones en tiempo real en tu navegador', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <label class="fmd-toggle-switch <?php echo $settings['push_enabled'] ? 'active' : ''; ?>">
+                            <input type="checkbox" name="push_enabled" value="1" <?php checked($settings['push_enabled']); ?> hidden
+                                   onchange="this.parentElement.classList.toggle('active')">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fmd-form-actions">
+                <button type="submit" class="fmd-btn fmd-btn-primary" :disabled="saving">
+                    <span x-show="!saving"><?php esc_html_e('Guardar preferencias', 'flavor-chat-ia'); ?></span>
+                    <span x-show="saving"><?php esc_html_e('Guardando...', 'flavor-chat-ia'); ?></span>
+                </button>
+            </div>
+        </form>
+        <?php
+    }
+
+    /**
+     * Tab de privacidad en configuración
+     */
+    private function render_settings_privacy_tab($usuario_id, $settings) {
+        ?>
+        <form @submit.prevent="saveSettings($el, 'privacy')">
+            <div class="fmd-settings-section">
+                <h3 class="fmd-settings-section-title"><?php esc_html_e('Visibilidad del perfil', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-select-group">
+                    <label class="fmd-select-item <?php echo $settings['profile_visibility'] === 'public' ? 'active' : ''; ?>"
+                           onclick="this.querySelector('input').checked = true; document.querySelectorAll('.fmd-select-item').forEach(el => el.classList.remove('active')); this.classList.add('active');">
+                        <span class="fmd-select-radio"></span>
+                        <input type="radio" name="profile_visibility" value="public" <?php checked($settings['profile_visibility'], 'public'); ?> hidden>
+                        <div>
+                            <span class="fmd-select-label"><?php esc_html_e('Público', 'flavor-chat-ia'); ?></span>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Cualquiera puede ver tu perfil', 'flavor-chat-ia'); ?></p>
+                        </div>
+                    </label>
+                    <label class="fmd-select-item <?php echo $settings['profile_visibility'] === 'members' ? 'active' : ''; ?>"
+                           onclick="this.querySelector('input').checked = true; document.querySelectorAll('.fmd-select-item').forEach(el => el.classList.remove('active')); this.classList.add('active');">
+                        <span class="fmd-select-radio"></span>
+                        <input type="radio" name="profile_visibility" value="members" <?php checked($settings['profile_visibility'], 'members'); ?> hidden>
+                        <div>
+                            <span class="fmd-select-label"><?php esc_html_e('Solo miembros', 'flavor-chat-ia'); ?></span>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Solo usuarios registrados pueden ver tu perfil', 'flavor-chat-ia'); ?></p>
+                        </div>
+                    </label>
+                    <label class="fmd-select-item <?php echo $settings['profile_visibility'] === 'private' ? 'active' : ''; ?>"
+                           onclick="this.querySelector('input').checked = true; document.querySelectorAll('.fmd-select-item').forEach(el => el.classList.remove('active')); this.classList.add('active');">
+                        <span class="fmd-select-radio"></span>
+                        <input type="radio" name="profile_visibility" value="private" <?php checked($settings['profile_visibility'], 'private'); ?> hidden>
+                        <div>
+                            <span class="fmd-select-label"><?php esc_html_e('Privado', 'flavor-chat-ia'); ?></span>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Solo tú puedes ver tu perfil completo', 'flavor-chat-ia'); ?></p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="fmd-settings-section">
+                <h3 class="fmd-settings-section-title"><?php esc_html_e('Opciones de privacidad', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-toggle-group">
+                    <div class="fmd-toggle-item">
+                        <div class="fmd-toggle-info">
+                            <p class="fmd-toggle-title"><?php esc_html_e('Mostrar email públicamente', 'flavor-chat-ia'); ?></p>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Permitir que otros usuarios vean tu email', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <label class="fmd-toggle-switch <?php echo $settings['show_email'] ? 'active' : ''; ?>">
+                            <input type="checkbox" name="show_email" value="1" <?php checked($settings['show_email']); ?> hidden
+                                   onchange="this.parentElement.classList.toggle('active')">
+                        </label>
+                    </div>
+                    <div class="fmd-toggle-item">
+                        <div class="fmd-toggle-info">
+                            <p class="fmd-toggle-title"><?php esc_html_e('Mostrar mi actividad', 'flavor-chat-ia'); ?></p>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Mostrar tu actividad reciente en tu perfil', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <label class="fmd-toggle-switch <?php echo $settings['show_activity'] ? 'active' : ''; ?>">
+                            <input type="checkbox" name="show_activity" value="1" <?php checked($settings['show_activity']); ?> hidden
+                                   onchange="this.parentElement.classList.toggle('active')">
+                        </label>
+                    </div>
+                    <div class="fmd-toggle-item">
+                        <div class="fmd-toggle-info">
+                            <p class="fmd-toggle-title"><?php esc_html_e('Permitir mensajes directos', 'flavor-chat-ia'); ?></p>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Otros usuarios pueden enviarte mensajes privados', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <label class="fmd-toggle-switch <?php echo $settings['allow_messages'] ? 'active' : ''; ?>">
+                            <input type="checkbox" name="allow_messages" value="1" <?php checked($settings['allow_messages']); ?> hidden
+                                   onchange="this.parentElement.classList.toggle('active')">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fmd-form-actions">
+                <button type="submit" class="fmd-btn fmd-btn-primary" :disabled="saving">
+                    <span x-show="!saving"><?php esc_html_e('Guardar preferencias', 'flavor-chat-ia'); ?></span>
+                    <span x-show="saving"><?php esc_html_e('Guardando...', 'flavor-chat-ia'); ?></span>
+                </button>
+            </div>
+        </form>
+        <?php
+    }
+
+    /**
+     * Tab de apariencia en configuración
+     */
+    private function render_settings_appearance_tab($usuario_id, $settings) {
+        ?>
+        <form @submit.prevent="saveSettings($el, 'appearance')">
+            <div class="fmd-settings-section">
+                <h3 class="fmd-settings-section-title"><?php esc_html_e('Tema de la interfaz', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-theme-preview">
+                    <label class="fmd-theme-card fmd-theme-card--light <?php echo $settings['theme'] === 'light' ? 'active' : ''; ?>"
+                           onclick="document.querySelectorAll('.fmd-theme-card').forEach(el => el.classList.remove('active')); this.classList.add('active'); this.querySelector('input').checked = true;">
+                        <input type="radio" name="theme" value="light" <?php checked($settings['theme'], 'light'); ?> hidden>
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" style="margin:0 auto;display:block;">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        <p class="fmd-theme-name"><?php esc_html_e('Claro', 'flavor-chat-ia'); ?></p>
+                    </label>
+                    <label class="fmd-theme-card fmd-theme-card--dark <?php echo $settings['theme'] === 'dark' ? 'active' : ''; ?>"
+                           onclick="document.querySelectorAll('.fmd-theme-card').forEach(el => el.classList.remove('active')); this.classList.add('active'); this.querySelector('input').checked = true;">
+                        <input type="radio" name="theme" value="dark" <?php checked($settings['theme'], 'dark'); ?> hidden>
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" style="margin:0 auto;display:block;">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                        <p class="fmd-theme-name"><?php esc_html_e('Oscuro', 'flavor-chat-ia'); ?></p>
+                    </label>
+                    <label class="fmd-theme-card fmd-theme-card--auto <?php echo $settings['theme'] === 'auto' ? 'active' : ''; ?>"
+                           onclick="document.querySelectorAll('.fmd-theme-card').forEach(el => el.classList.remove('active')); this.classList.add('active'); this.querySelector('input').checked = true;">
+                        <input type="radio" name="theme" value="auto" <?php checked($settings['theme'], 'auto'); ?> hidden>
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5" style="margin:0 auto;display:block;">
+                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                        <p class="fmd-theme-name"><?php esc_html_e('Automático', 'flavor-chat-ia'); ?></p>
+                    </label>
+                </div>
+                <p class="fmd-form-hint" style="margin-top:16px;text-align:center;">
+                    <?php esc_html_e('El tema automático sigue la preferencia de tu sistema operativo', 'flavor-chat-ia'); ?>
+                </p>
+            </div>
+
+            <div class="fmd-settings-section">
+                <h3 class="fmd-settings-section-title"><?php esc_html_e('Preferencias de visualización', 'flavor-chat-ia'); ?></h3>
+                <div class="fmd-toggle-group">
+                    <div class="fmd-toggle-item">
+                        <div class="fmd-toggle-info">
+                            <p class="fmd-toggle-title"><?php esc_html_e('Modo compacto', 'flavor-chat-ia'); ?></p>
+                            <p class="fmd-toggle-desc"><?php esc_html_e('Reduce el espaciado para mostrar más contenido', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <label class="fmd-toggle-switch <?php echo $settings['compact_mode'] ? 'active' : ''; ?>">
+                            <input type="checkbox" name="compact_mode" value="1" <?php checked($settings['compact_mode']); ?> hidden
+                                   onchange="this.parentElement.classList.toggle('active')">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fmd-form-actions">
+                <button type="submit" class="fmd-btn fmd-btn-primary" :disabled="saving">
+                    <span x-show="!saving"><?php esc_html_e('Guardar preferencias', 'flavor-chat-ia'); ?></span>
+                    <span x-show="saving"><?php esc_html_e('Guardando...', 'flavor-chat-ia'); ?></span>
+                </button>
+            </div>
+        </form>
+        <?php
     }
 
     /**
@@ -7082,6 +9617,25 @@ class Flavor_Dynamic_Pages {
     }
 
     /**
+     * Determina si la acción actual ya tiene un renderer real definido por tabs.
+     *
+     * Evita desviar acciones como "publicar" al CRUD genérico cuando el módulo
+     * expone un callback o contenido específico para esa ruta.
+     *
+     * @param object|null $module
+     * @return bool
+     */
+    private function current_action_uses_module_tab_renderer($module): bool {
+        $action = (string) $this->current_action;
+        if ($action === '') {
+            return false;
+        }
+
+        $tabs = $this->get_module_tabs($module);
+        return !empty($tabs[$action]);
+    }
+
+    /**
      * Obtiene las acciones legacy de un módulo.
      *
      * Esta matriz existe como red de seguridad para módulos sin tabs
@@ -7180,15 +9734,15 @@ class Flavor_Dynamic_Pages {
             // Comunidad y Social (con integraciones de otros módulos)
             // ═══════════════════════════════════════════════════════════════
             'comunidades' => [
-                'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
-                'mis-comunidades' => ['label' => __('Mis comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'crear' => ['label' => __('Nueva comunidad', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
+                'mis-comunidades' => ['label' => __('Mis espacios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
                 'explorar' => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
                 // Integraciones con otros módulos
                 'foros' => ['label' => __('Foros', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
                 'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
-                'eventos' => ['label' => __('Eventos', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
-                'anuncios' => ['label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
-                'recursos' => ['label' => __('Recursos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'eventos' => ['label' => __('Encuentros', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar-alt'],
+                'anuncios' => ['label' => __('Avisos', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                'recursos' => ['label' => __('Recursos compartidos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
             ],
             'colectivos' => [
                 'crear' => ['label' => __('Crear', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
@@ -7225,11 +9779,11 @@ class Flavor_Dynamic_Pages {
                 'categorias' => ['label' => __('Categorías', 'flavor-chat-ia'), 'icon' => 'dashicons-category'],
             ],
             'participacion' => [
-                'propuestas' => ['label' => __('Propuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
-                'votaciones' => ['label' => __('Votaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up'],
-                'resultados' => ['label' => __('Resultados', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
-                'debates' => ['label' => __('Debates', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
-                'reuniones' => ['label' => __('Reuniones', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'propuestas' => ['label' => __('Iniciativas', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
+                'votaciones' => ['label' => __('Decisiones', 'flavor-chat-ia'), 'icon' => 'dashicons-thumbs-up'],
+                'resultados' => ['label' => __('Acuerdos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-bar'],
+                'debates' => ['label' => __('Conversaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'reuniones' => ['label' => __('Encuentros', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
             ],
             'presupuestos-participativos' => [
                 'proponer' => ['label' => __('Proponer', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
@@ -7271,6 +9825,10 @@ class Flavor_Dynamic_Pages {
                 'ranking' => ['label' => __('Ranking', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
                 'reputacion' => ['label' => __('Mi Reputación', 'flavor-chat-ia'), 'icon' => 'dashicons-star-filled'],
                 'mensajes' => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt'],
+                'foro' => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments'],
+                'chat' => ['label' => __('Chat', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat'],
+                'multimedia' => ['label' => __('Multimedia', 'flavor-chat-ia'), 'icon' => 'dashicons-format-gallery'],
+                'red-social' => ['label' => __('Red social', 'flavor-chat-ia'), 'icon' => 'dashicons-share'],
                 'ofrecer' => ['label' => __('Ofrecer', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt'],
                 'buscar' => ['label' => __('Buscar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
             ],
@@ -7289,13 +9847,13 @@ class Flavor_Dynamic_Pages {
                 'biblioteca' => ['label' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
             ],
             'energia-comunitaria' => [
-                'comunidades' => ['label' => __('Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
-                'instalaciones' => ['label' => __('Instalaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-tools'],
-                'participantes' => ['label' => __('Participantes', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
-                'registrar-lectura' => ['label' => __('Registrar lectura', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'requires_login' => true],
-                'mantenimiento' => ['label' => __('Mantenimiento', 'flavor-chat-ia'), 'icon' => 'dashicons-hammer'],
-                'balance' => ['label' => __('Balance', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
-                'cierres' => ['label' => __('Cierres', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'requires_login' => true],
+                'comunidades' => ['label' => __('Red energética', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'instalaciones' => ['label' => __('Infraestructura', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-tools'],
+                'participantes' => ['label' => __('Comunidad energética', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
+                'registrar-lectura' => ['label' => __('Registrar producción', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'requires_login' => true],
+                'mantenimiento' => ['label' => __('Cuidados técnicos', 'flavor-chat-ia'), 'icon' => 'dashicons-hammer'],
+                'balance' => ['label' => __('Balance energético', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                'cierres' => ['label' => __('Cierres y repartos', 'flavor-chat-ia'), 'icon' => 'dashicons-archive', 'requires_login' => true],
                 'proyectos' => ['label' => __('Proyectos', 'flavor-chat-ia'), 'icon' => 'dashicons-portfolio'],
             ],
 
@@ -7421,10 +9979,10 @@ class Flavor_Dynamic_Pages {
                 'suscripcion' => ['label' => __('Suscripción', 'flavor-chat-ia'), 'icon' => 'dashicons-bell'],
             ],
             'transparencia' => [
-                'documentos' => ['label' => __('Documentos', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
-                'presupuestos' => ['label' => __('Presupuestos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
-                'solicitar' => ['label' => __('Solicitar información', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'requires_login' => true],
-                'mis-solicitudes' => ['label' => __('Mis solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
+                'documentos' => ['label' => __('Memoria abierta', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
+                'presupuestos' => ['label' => __('Recursos comunes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                'solicitar' => ['label' => __('Pedir información', 'flavor-chat-ia'), 'icon' => 'dashicons-plus-alt', 'requires_login' => true],
+                'mis-solicitudes' => ['label' => __('Mis consultas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users', 'requires_login' => true],
             ],
             'seguimiento-denuncias' => [
                 'listado' => ['label' => __('Mis denuncias', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
@@ -7579,9 +10137,26 @@ class Flavor_Dynamic_Pages {
 
     /**
      * Obtiene el color de un módulo
+     *
+     * Prioridad:
+     * 1. Color configurado en Design Settings
+     * 2. Color por defecto del módulo (hardcoded)
      */
     private function get_module_color($module_id) {
-        $colores = [
+        // Normalizar ID (guiones bajos a guiones)
+        $id_normalizado = str_replace('_', '-', $module_id);
+        $id_para_settings = str_replace('-', '_', $module_id);
+
+        // 1. Buscar en Design Settings
+        $design_settings = get_option('flavor_design_settings', []);
+        $settings_key = 'module_color_' . $id_para_settings;
+
+        if (!empty($design_settings[$settings_key])) {
+            return $design_settings[$settings_key];
+        }
+
+        // 2. Colores por defecto (fallback)
+        $colores_default = [
             // Eventos y Actividades
             'eventos' => '#4f46e5',
             'talleres' => '#7c3aed',
@@ -7647,8 +10222,7 @@ class Flavor_Dynamic_Pages {
             'sello-conciencia' => '#9333ea',
         ];
 
-        $id_normalizado = str_replace('_', '-', $module_id);
-        return $colores[$id_normalizado] ?? '#6b7280';
+        return $colores_default[$id_normalizado] ?? '#6b7280';
     }
 
     /**
@@ -7721,15 +10295,16 @@ class Flavor_Dynamic_Pages {
     private function get_inline_styles() {
         return '
         :root {
-            --fap-primary: #4f46e5;
-            --fap-primary-dark: #4338ca;
-            --fap-bg: #f8fafc;
-            --fap-surface: #ffffff;
-            --fap-text: #111827;
-            --fap-text-muted: #6b7280;
-            --fap-border: #e5e7eb;
-            --fap-radius: 12px;
-            --fap-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            /* Heredar de variables del Theme Manager, con fallbacks */
+            --fap-primary: var(--flavor-primary, #4f46e5);
+            --fap-primary-dark: var(--flavor-primary-dark, #4338ca);
+            --fap-bg: var(--flavor-bg, #f8fafc);
+            --fap-surface: var(--flavor-bg, #ffffff);
+            --fap-text: var(--flavor-text, #111827);
+            --fap-text-muted: var(--flavor-text-muted, #6b7280);
+            --fap-border: var(--flavor-border, #e5e7eb);
+            --fap-radius: var(--flavor-radius, 12px);
+            --fap-shadow: var(--flavor-shadow, 0 1px 3px rgba(0,0,0,0.1));
         }
 
         body.flavor-app-page {
@@ -7762,6 +10337,15 @@ class Flavor_Dynamic_Pages {
 
         .fah-logo {
             text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .fah-logo-img {
+            height: 40px;
+            width: auto;
+            max-width: 180px;
+            object-fit: contain;
         }
 
         .fah-site-name {
@@ -7882,6 +10466,31 @@ class Flavor_Dynamic_Pages {
             background: rgba(79, 70, 229, 0.1);
             color: var(--fap-primary);
             font-weight: 500;
+        }
+
+        /* Separador del sidebar */
+        .fas-nav-separator {
+            height: 1px;
+            background: var(--fap-border, #e5e7eb);
+            margin: 8px 0;
+        }
+
+        /* Enlace de administración */
+        .fas-nav-item--admin {
+            color: var(--fap-text-muted);
+            font-size: 0.875rem;
+            opacity: 0.85;
+        }
+
+        .fas-nav-item--admin:hover {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+        }
+
+        .fas-nav-item--admin .dashicons {
+            font-size: 1rem;
+            width: 1rem;
+            height: 1rem;
         }
 
         /* Main */
@@ -8053,20 +10662,36 @@ class Flavor_Dynamic_Pages {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 24px;
-            padding: 24px;
+            gap: 24px;
+            margin-bottom: 20px;
+            padding: 22px 24px;
             background: var(--fap-surface);
             border-radius: var(--fap-radius);
             box-shadow: var(--fap-shadow);
+            border: 1px solid color-mix(in srgb, var(--module-color) 10%, var(--fap-border));
+        }
+
+        .fmd-header-left {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .fmd-header-actions {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .fmd-breadcrumb {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             color: var(--fap-text-muted);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            line-height: 1.4;
         }
 
         .fmd-breadcrumb a {
@@ -8076,37 +10701,56 @@ class Flavor_Dynamic_Pages {
 
         .fmd-title-row {
             display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .fmd-eyebrow {
+            display: inline-flex;
             align-items: center;
-            gap: 16px;
+            margin-bottom: 8px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--module-color) 12%, white);
+            color: var(--module-color);
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .fmd-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 56px;
-            height: 56px;
-            background: var(--module-color);
-            border-radius: 14px;
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(145deg, var(--module-color), color-mix(in srgb, var(--module-color) 70%, #111827));
+            border-radius: 16px;
+            box-shadow: 0 12px 24px color-mix(in srgb, var(--module-color) 18%, transparent);
+            flex-shrink: 0;
         }
 
         .fmd-icon .dashicons {
-            font-size: 28px;
-            width: 28px;
-            height: 28px;
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
             color: white;
         }
 
         .fmd-header h1 {
-            font-size: 1.75rem;
+            font-size: 1.625rem;
             font-weight: 700;
             margin: 0;
+            line-height: 1.15;
         }
 
         .fmd-subtitle {
+            max-width: 62ch;
             font-size: 0.9375rem;
+            line-height: 1.55;
             color: var(--fap-text-muted);
-            margin: 4px 0 0;
+            margin: 6px 0 0;
         }
 
         .fmd-primary-btn {
@@ -8114,8 +10758,8 @@ class Flavor_Dynamic_Pages {
             align-items: center;
             gap: 8px;
             padding: 12px 24px;
-            background: var(--module-color);
-            color: white;
+            background: var(--flavor-dashboard-btn-primary, var(--module-color));
+            color: var(--flavor-dashboard-btn-text, white);
             border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
@@ -8325,13 +10969,123 @@ class Flavor_Dynamic_Pages {
             height: 16px;
         }
         .fmd-widget-btn--primary {
-            background: var(--module-color);
-            color: white;
-            border-color: var(--module-color);
+            background: var(--flavor-dashboard-btn-primary, var(--module-color));
+            color: var(--flavor-dashboard-btn-text, white);
+            border-color: var(--flavor-dashboard-btn-primary, var(--module-color));
         }
         .fmd-widget-btn--primary:hover {
             filter: brightness(1.1);
-            color: white;
+            color: var(--flavor-dashboard-btn-text, white);
+        }
+
+        /* Widget summary styles (resúmenes breves) */
+        .fmd-widget-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .fmd-widget-summary--empty {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .fmd-widget-summary--empty .dashicons {
+            font-size: 32px;
+            width: 32px;
+            height: 32px;
+            color: var(--fap-text-muted);
+            display: block;
+            margin: 0 auto 8px;
+        }
+        .fmd-widget-summary--empty p {
+            margin: 0 0 8px;
+            color: var(--fap-text-muted);
+        }
+        .fmd-widget-summary--success .fmd-summary-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .fmd-status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--fap-text-muted);
+        }
+        .fmd-status-dot--success {
+            background: #22c55e;
+        }
+        .fmd-status-dot--info {
+            background: #3b82f6;
+        }
+        .fmd-status-dot--warning {
+            background: #f59e0b;
+        }
+        .fmd-widget-summary--info .fmd-summary-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .fmd-widget-summary--warning .fmd-summary-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .fmd-summary-detail--warning {
+            color: #f59e0b;
+        }
+        .fmd-summary-detail--warning .dashicons {
+            color: #f59e0b;
+        }
+        .fmd-summary-detail {
+            margin: 0;
+            font-size: 0.875rem;
+            color: var(--fap-text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .fmd-summary-detail .dashicons {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+        }
+        .fmd-summary-stat {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .fmd-stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--fap-text);
+        }
+        .fmd-summary-stat--primary .fmd-stat-number {
+            color: var(--module-color, #3b82f6);
+        }
+        .fmd-summary-stat--highlight .fmd-stat-number {
+            color: #22c55e;
+        }
+        .fmd-stat-label {
+            font-size: 0.875rem;
+            color: var(--fap-text-muted);
+        }
+        .fmd-widget-empty {
+            margin: 0;
+            padding: 10px 0;
+            text-align: center;
+            color: var(--fap-text-muted);
+            font-size: 0.9rem;
+        }
+        .fmd-link-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85rem;
+            color: var(--module-color, #3b82f6);
+            text-decoration: none;
+        }
+        .fmd-link-action:hover {
+            text-decoration: underline;
         }
 
         /* Secciones especiales */
@@ -8573,48 +11327,57 @@ class Flavor_Dynamic_Pages {
             border-radius: var(--fap-radius);
             box-shadow: var(--fap-shadow);
             overflow: hidden;
+            border: 1px solid var(--fap-border);
         }
 
         .fmd-tabs-nav {
             display: flex;
+            align-items: center;
+            gap: 8px;
             border-bottom: 1px solid var(--fap-border);
-            padding: 0 16px;
+            padding: 14px 16px 12px;
             overflow-x: auto;
+            scrollbar-width: thin;
+            background:
+                linear-gradient(180deg, color-mix(in srgb, var(--module-color) 4%, white), transparent 120%);
         }
 
         .fmd-tab {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 16px 20px;
-            background: none;
-            border: none;
-            border-bottom: 2px solid transparent;
-            font-size: 0.9375rem;
-            font-weight: 500;
+            padding: 10px 14px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
             color: var(--fap-text-muted);
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
 
         .fmd-tab:hover {
             color: var(--fap-text);
+            background: color-mix(in srgb, var(--module-color) 8%, white);
         }
 
         .fmd-tab.active {
             color: var(--module-color);
-            border-bottom-color: var(--module-color);
+            border-color: color-mix(in srgb, var(--module-color) 24%, transparent);
+            background: color-mix(in srgb, var(--module-color) 12%, white);
+            box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--module-color) 10%, transparent);
         }
 
         .fmd-tab .dashicons {
-            font-size: 18px;
-            width: 18px;
-            height: 18px;
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
         }
 
         .fmd-tab-panels {
-            padding: 24px;
+            padding: 26px 24px 24px;
         }
 
         .fmd-tab-panel {
@@ -8629,20 +11392,22 @@ class Flavor_Dynamic_Pages {
         .fmd-tabs-separator {
             display: flex;
             align-items: center;
-            margin: 0 8px;
-            padding: 12px 0;
+            margin: 0 2px;
+            padding: 8px 0;
+            flex-shrink: 0;
         }
 
         .fmd-tabs-separator::before {
             content: "";
             width: 1px;
-            height: 24px;
+            height: 28px;
             background: var(--fap-border);
         }
 
         /* Integration Tabs */
         .fmd-tab--integration {
-            opacity: 0.85;
+            opacity: 0.92;
+            background: color-mix(in srgb, var(--fap-bg) 70%, white);
         }
 
         .fmd-tab--integration:hover {
@@ -8660,8 +11425,8 @@ class Flavor_Dynamic_Pages {
             justify-content: center;
             min-width: 18px;
             height: 18px;
-            padding: 0 6px;
-            font-size: 0.75rem;
+            padding: 0 5px;
+            font-size: 0.6875rem;
             font-weight: 600;
             line-height: 1;
             color: #fff;
@@ -9088,7 +11853,25 @@ class Flavor_Dynamic_Pages {
 
             .fmd-header {
                 flex-direction: column;
-                gap: 16px;
+                gap: 14px;
+                padding: 18px 16px;
+            }
+
+            .fmd-title-row {
+                gap: 12px;
+            }
+
+            .fmd-header-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .fmd-header h1 {
+                font-size: 1.375rem;
+            }
+
+            .fmd-subtitle {
+                font-size: 0.875rem;
             }
 
             .fmd-stats-grid {
@@ -9110,16 +11893,21 @@ class Flavor_Dynamic_Pages {
             }
 
             .fmd-tabs-nav {
-                padding: 0;
+                gap: 6px;
+                padding: 10px 10px 8px;
             }
 
             .fmd-tab {
-                padding: 12px 16px;
+                padding: 10px 12px;
                 font-size: 0.8125rem;
             }
 
             .fmd-tab span:not(.dashicons) {
                 display: none;
+            }
+
+            .fmd-tab-panels {
+                padding: 20px 16px 16px;
             }
         }
 
@@ -9335,6 +12123,261 @@ class Flavor_Dynamic_Pages {
             }
         }
         ';
+    }
+
+    /**
+     * AJAX: Guardar configuración de usuario
+     */
+    public function ajax_save_user_settings() {
+        // Verificar nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_save_settings')) {
+            wp_send_json_error(__('Sesión expirada. Recarga la página.', 'flavor-chat-ia'));
+        }
+
+        // Verificar usuario logueado
+        if (!is_user_logged_in()) {
+            wp_send_json_error(__('Debes iniciar sesión.', 'flavor-chat-ia'));
+        }
+
+        $usuario_id = get_current_user_id();
+        $section = sanitize_key($_POST['section'] ?? 'profile');
+
+        $response_data = [];
+
+        switch ($section) {
+            case 'profile':
+                $avatar_url = $this->save_profile_settings($usuario_id, $_POST);
+                if ($avatar_url) {
+                    $response_data['avatar_url'] = $avatar_url;
+                }
+                break;
+
+            case 'account':
+                $result = $this->save_account_settings($usuario_id, $_POST);
+                if (is_wp_error($result)) {
+                    wp_send_json_error($result->get_error_message());
+                }
+                break;
+
+            case 'notifications':
+                $this->save_notification_settings($usuario_id, $_POST);
+                break;
+
+            case 'privacy':
+                $this->save_privacy_settings($usuario_id, $_POST);
+                break;
+
+            case 'appearance':
+                $this->save_appearance_settings($usuario_id, $_POST);
+                break;
+        }
+
+        wp_send_json_success($response_data);
+    }
+
+    /**
+     * Guardar configuración de perfil
+     * @return string|null URL del avatar si se subió
+     */
+    private function save_profile_settings($usuario_id, $data) {
+        // Actualizar datos de usuario
+        $userdata = [
+            'ID' => $usuario_id,
+            'first_name' => sanitize_text_field($data['first_name'] ?? ''),
+            'last_name' => sanitize_text_field($data['last_name'] ?? ''),
+            'display_name' => sanitize_text_field($data['display_name'] ?? ''),
+            'description' => sanitize_textarea_field($data['description'] ?? ''),
+            'user_url' => esc_url_raw($data['user_url'] ?? ''),
+        ];
+
+        wp_update_user($userdata);
+
+        // Guardar ubicación como meta
+        update_user_meta($usuario_id, 'flavor_location', sanitize_text_field($data['location'] ?? ''));
+
+        // Manejar avatar si se subió
+        $avatar_url = null;
+        if (!empty($_FILES['avatar']['tmp_name']) && !$_FILES['avatar']['error']) {
+            $avatar_url = $this->handle_avatar_upload($usuario_id);
+        }
+
+        return $avatar_url;
+    }
+
+    /**
+     * Guardar configuración de cuenta
+     */
+    private function save_account_settings($usuario_id, $data) {
+        $user = get_userdata($usuario_id);
+
+        // Cambiar email si es diferente
+        if (!empty($data['email']) && $data['email'] !== $user->user_email) {
+            if (!is_email($data['email'])) {
+                return new WP_Error('invalid_email', __('Email no válido.', 'flavor-chat-ia'));
+            }
+            if (email_exists($data['email'])) {
+                return new WP_Error('email_exists', __('Este email ya está en uso.', 'flavor-chat-ia'));
+            }
+
+            wp_update_user([
+                'ID' => $usuario_id,
+                'user_email' => sanitize_email($data['email']),
+            ]);
+        }
+
+        // Cambiar contraseña si se proporcionó
+        if (!empty($data['new_password'])) {
+            // Verificar contraseña actual
+            if (empty($data['current_password']) || !wp_check_password($data['current_password'], $user->user_pass, $usuario_id)) {
+                return new WP_Error('wrong_password', __('La contraseña actual no es correcta.', 'flavor-chat-ia'));
+            }
+
+            // Verificar que coinciden
+            if ($data['new_password'] !== $data['confirm_password']) {
+                return new WP_Error('password_mismatch', __('Las contraseñas no coinciden.', 'flavor-chat-ia'));
+            }
+
+            // Verificar longitud mínima
+            if (strlen($data['new_password']) < 8) {
+                return new WP_Error('password_short', __('La contraseña debe tener al menos 8 caracteres.', 'flavor-chat-ia'));
+            }
+
+            wp_set_password($data['new_password'], $usuario_id);
+        }
+
+        return true;
+    }
+
+    /**
+     * Guardar configuración de notificaciones
+     */
+    private function save_notification_settings($usuario_id, $data) {
+        $settings = get_user_meta($usuario_id, 'flavor_user_settings', true) ?: [];
+
+        $settings['notifications'] = [
+            'email_mentions' => !empty($data['email_mentions']),
+            'email_messages' => !empty($data['email_messages']),
+            'email_updates' => !empty($data['email_updates']),
+            'push_enabled' => !empty($data['push_enabled']),
+        ];
+
+        update_user_meta($usuario_id, 'flavor_user_settings', $settings);
+    }
+
+    /**
+     * Guardar configuración de privacidad
+     */
+    private function save_privacy_settings($usuario_id, $data) {
+        $settings = get_user_meta($usuario_id, 'flavor_user_settings', true) ?: [];
+
+        $settings['privacy'] = [
+            'profile_visibility' => sanitize_key($data['profile_visibility'] ?? 'public'),
+            'show_email' => !empty($data['show_email']),
+            'show_activity' => !empty($data['show_activity']),
+            'allow_messages' => !empty($data['allow_messages']),
+        ];
+
+        update_user_meta($usuario_id, 'flavor_user_settings', $settings);
+    }
+
+    /**
+     * Guardar configuración de apariencia
+     */
+    private function save_appearance_settings($usuario_id, $data) {
+        $settings = get_user_meta($usuario_id, 'flavor_user_settings', true) ?: [];
+
+        $settings['appearance'] = [
+            'theme' => sanitize_key($data['theme'] ?? 'auto'),
+            'compact_mode' => !empty($data['compact_mode']),
+        ];
+
+        update_user_meta($usuario_id, 'flavor_user_settings', $settings);
+
+        // También guardar en cookie/localStorage para aplicación inmediata
+        // El JS del frontend se encargará de aplicar el tema
+    }
+
+    /**
+     * Manejar subida de avatar
+     * @return string|null URL del avatar subido
+     */
+    private function handle_avatar_upload($usuario_id) {
+        if (!function_exists('wp_handle_upload')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+
+        // Validar tipo de archivo
+        $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!in_array($_FILES['avatar']['type'], $allowed_types)) {
+            return null;
+        }
+
+        // Validar tamaño (máximo 2MB)
+        if ($_FILES['avatar']['size'] > 2 * 1024 * 1024) {
+            return null;
+        }
+
+        $upload = wp_handle_upload($_FILES['avatar'], ['test_form' => false]);
+
+        if (!empty($upload['error'])) {
+            return null;
+        }
+
+        // Eliminar avatar anterior si existe
+        $old_avatar = get_user_meta($usuario_id, 'flavor_custom_avatar', true);
+        if ($old_avatar) {
+            // Intentar eliminar el archivo antiguo
+            $old_file = str_replace(wp_upload_dir()['baseurl'], wp_upload_dir()['basedir'], $old_avatar);
+            if (file_exists($old_file)) {
+                @unlink($old_file);
+            }
+        }
+
+        // Guardar URL del avatar como meta del usuario
+        update_user_meta($usuario_id, 'flavor_custom_avatar', $upload['url']);
+
+        // Crear tamaños adicionales si es necesario
+        if (function_exists('wp_create_image_subsizes')) {
+            $metadata = wp_create_image_subsizes($upload['file'], 0);
+        }
+
+        return $upload['url'];
+    }
+
+    /**
+     * AJAX: Eliminar cuenta de usuario
+     */
+    public function ajax_delete_user_account() {
+        // Verificar nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'flavor_delete_account')) {
+            wp_send_json_error(__('Sesión expirada. Recarga la página.', 'flavor-chat-ia'));
+        }
+
+        // Verificar usuario logueado
+        if (!is_user_logged_in()) {
+            wp_send_json_error(__('Debes iniciar sesión.', 'flavor-chat-ia'));
+        }
+
+        $usuario_id = get_current_user_id();
+
+        // No permitir eliminar administradores
+        if (user_can($usuario_id, 'manage_options')) {
+            wp_send_json_error(__('Los administradores no pueden eliminar su cuenta desde aquí.', 'flavor-chat-ia'));
+        }
+
+        // Requiere el archivo necesario
+        require_once ABSPATH . 'wp-admin/includes/user.php';
+
+        // Eliminar el usuario (sus posts se asignan al admin ID 1)
+        $result = wp_delete_user($usuario_id, 1);
+
+        if ($result) {
+            // Cerrar sesión
+            wp_logout();
+            wp_send_json_success();
+        } else {
+            wp_send_json_error(__('No se pudo eliminar la cuenta.', 'flavor-chat-ia'));
+        }
     }
 }
 

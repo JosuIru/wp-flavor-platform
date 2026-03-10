@@ -77,7 +77,7 @@ class Flavor_Notifications_Widget {
 
         wp_enqueue_style(
             'flavor-notificaciones',
-            $plugin_url . 'assets/css/notificaciones.css',
+            $plugin_url . 'assets/css/modules/notificaciones.css',
             [],
             $version
         );

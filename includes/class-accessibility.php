@@ -98,7 +98,7 @@ class Flavor_Accessibility {
         $sufijo_asset = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
 
         // CSS de skip links
-        $ruta_css_skip_links = FLAVOR_CHAT_IA_PATH . 'assets/css/skip-links.css';
+        $ruta_css_skip_links = FLAVOR_CHAT_IA_PATH . 'assets/css/components/skip-links.css';
         if (file_exists($ruta_css_skip_links)) {
             wp_enqueue_style(
                 'flavor-skip-links',

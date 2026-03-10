@@ -44,6 +44,16 @@ class Flavor_Unified_Dashboard {
     private $renderer;
 
     /**
+     * Obtiene la URL actual para redirects de login en el dashboard unificado.
+     */
+    private function get_current_request_url(): string {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/';
+        $request_uri = '/' . ltrim($request_uri, '/');
+
+        return home_url($request_uri);
+    }
+
+    /**
      * Intervalo de actualizacion automatica en segundos
      *
      * @var int
@@ -169,7 +179,7 @@ class Flavor_Unified_Dashboard {
         // 1. Design Tokens (variables CSS base)
         wp_enqueue_style(
             'fl-design-tokens',
-            $plugin_url . 'assets/css/design-tokens.css',
+            $plugin_url . 'assets/css/core/design-tokens.css',
             [],
             $version
         );
@@ -177,7 +187,7 @@ class Flavor_Unified_Dashboard {
         // 2. Compatibilidad con variables antiguas
         wp_enqueue_style(
             'fl-design-tokens-compat',
-            $plugin_url . 'assets/css/design-tokens-compat.css',
+            $plugin_url . 'assets/css/core/design-tokens-compat.css',
             ['fl-design-tokens'],
             $version
         );
@@ -185,7 +195,7 @@ class Flavor_Unified_Dashboard {
         // 3. CSS Base del dashboard
         wp_enqueue_style(
             'fud-dashboard-base',
-            $plugin_url . 'assets/css/dashboard-base.css',
+            $plugin_url . 'assets/css/layouts/dashboard-base.css',
             ['fl-design-tokens-compat'],
             $version
         );
@@ -193,7 +203,7 @@ class Flavor_Unified_Dashboard {
         // 4. Widgets y niveles
         wp_enqueue_style(
             'fl-dashboard-widgets',
-            $plugin_url . 'assets/css/dashboard-widgets.css',
+            $plugin_url . 'assets/css/layouts/dashboard-widgets.css',
             ['fud-dashboard-base'],
             $version
         );
@@ -201,7 +211,7 @@ class Flavor_Unified_Dashboard {
         // 5. Grupos y categorias
         wp_enqueue_style(
             'fl-dashboard-groups',
-            $plugin_url . 'assets/css/dashboard-groups.css',
+            $plugin_url . 'assets/css/layouts/dashboard-groups.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -209,7 +219,7 @@ class Flavor_Unified_Dashboard {
         // 6. Estados visuales
         wp_enqueue_style(
             'fl-dashboard-states',
-            $plugin_url . 'assets/css/dashboard-states.css',
+            $plugin_url . 'assets/css/layouts/dashboard-states.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -217,7 +227,7 @@ class Flavor_Unified_Dashboard {
         // 7. Accesibilidad
         wp_enqueue_style(
             'fl-dashboard-a11y',
-            $plugin_url . 'assets/css/dashboard-a11y.css',
+            $plugin_url . 'assets/css/layouts/dashboard-a11y.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -225,7 +235,7 @@ class Flavor_Unified_Dashboard {
         // 8. Responsive
         wp_enqueue_style(
             'fl-dashboard-responsive',
-            $plugin_url . 'assets/css/dashboard-responsive.css',
+            $plugin_url . 'assets/css/layouts/dashboard-responsive.css',
             ['fl-dashboard-groups'],
             $version
         );
@@ -233,7 +243,7 @@ class Flavor_Unified_Dashboard {
         // 9. Breadcrumbs
         wp_enqueue_style(
             'fl-breadcrumbs',
-            $plugin_url . 'assets/css/breadcrumbs.css',
+            $plugin_url . 'assets/css/components/breadcrumbs.css',
             ['fl-design-tokens'],
             $version
         );
@@ -241,7 +251,7 @@ class Flavor_Unified_Dashboard {
         // CSS Componentes (legacy)
         wp_enqueue_style(
             'fud-dashboard-components',
-            $plugin_url . 'assets/css/dashboard-components.css',
+            $plugin_url . 'assets/css/layouts/dashboard-components.css',
             ['fl-dashboard-responsive'],
             $version
         );
@@ -523,8 +533,21 @@ class Flavor_Unified_Dashboard {
         }
 
         $module_loader = Flavor_Chat_Module_Loader::get_instance();
+
+        // Obtener módulos activos desde ambas ubicaciones
         $configuracion = get_option('flavor_chat_ia_settings', []);
         $modulos_activos = $configuracion['active_modules'] ?? [];
+
+        // También leer de flavor_active_modules (legacy/compatibilidad)
+        $modulos_activos_legacy = get_option('flavor_active_modules', []);
+        if (!empty($modulos_activos_legacy)) {
+            $modulos_activos = array_unique(array_merge($modulos_activos, $modulos_activos_legacy));
+        }
+
+        // Si no hay módulos configurados, usar default
+        if (empty($modulos_activos)) {
+            $modulos_activos = ['woocommerce'];
+        }
 
         // Obtener todos los modulos cargados
         $modulos_cargados = [];
@@ -764,76 +787,16 @@ class Flavor_Unified_Dashboard {
 
         // Si estamos en admin, usar el mapeo de paginas de admin
         if (is_admin()) {
-            // Mapeo de modulo_id a slug de pagina de admin
-            $admin_pages_mapping = [
-                'advertising'        => 'advertising-dashboard',
-                'avisos_municipales' => 'avisos-dashboard',
-                'ayuda_vecinal'      => 'ayuda-vecinal-dashboard',
-                'banco_tiempo'       => 'banco-tiempo-dashboard',
-                'bares'              => 'bares-dashboard',
-                'biblioteca'         => 'biblioteca-dashboard',
-                'bicicletas_compartidas' => 'flavor-bicicletas-dashboard',
-                'biodiversidad_local' => 'biodiversidad',
-                'carpooling'         => 'carpooling-dashboard',
-                'chat_estados'       => 'estados-dashboard',
-                'chat_grupos'        => 'flavor-chat-grupos-dashboard',
-                'chat_interno'       => 'flavor-chat-interno-dashboard',
-                'circulos_cuidados'  => 'circulos-cuidados',
-                'clientes'           => 'clientes-dashboard',
-                'colectivos'         => 'colectivos',
-                'compostaje'         => 'flavor-compostaje-dashboard',
-                'comunidades'        => 'comunidades-dashboard',
-                'campanias'          => 'campanias-dashboard',
-                'cursos'             => 'cursos-dashboard',
-                'dex_solana'         => 'dex-solana-dashboard',
-                'documentacion_legal' => 'documentacion-legal-dashboard',
-                'economia_don'       => 'economia-don-dashboard',
-                'economia_suficiencia' => 'economia-suficiencia-dashboard',
-                'email_marketing'    => 'flavor-em-dashboard',
-                'encuestas'          => 'encuestas-dashboard',
-                'empresarial'        => 'flavor-empresarial-dashboard',
-                'espacios_comunes'   => 'espacios-dashboard',
-                'eventos'            => 'eventos-dashboard',
-                'facturas'           => 'facturas-dashboard',
-                'fichaje_empleados'  => 'fichaje-dashboard',
-                'foros'              => 'flavor-foros-dashboard',
-                'grupos_consumo'     => 'gc-dashboard',
-                'huella_ecologica'   => 'huella-ecologica',
-                'huertos_urbanos'    => 'huertos-dashboard',
-                'incidencias'        => 'incidencias-dashboard',
-                'justicia_restaurativa' => 'justicia-restaurativa',
-                'mapa_actores'       => 'actores-dashboard',
-                'marketplace'        => 'marketplace-dashboard',
-                'multimedia'         => 'flavor-multimedia-dashboard',
-                'parkings'           => 'flavor-parkings-dashboard',
-                'participacion'      => 'participacion-dashboard',
-                'podcast'            => 'podcast',
-                'presupuestos_participativos' => 'pp-dashboard',
-                'radio'              => 'flavor-radio-dashboard',
-                'recetas'            => 'recetas-dashboard',
-                'reciclaje'          => 'reciclaje-dashboard',
-                'red_social'         => 'flavor-red-social-dashboard',
-                'reservas'           => 'reservas-calendario',
-                'saberes_ancestrales' => 'saberes-dashboard',
-                'seguimiento_denuncias' => 'seguimiento-denuncias-dashboard',
-                'sello_conciencia'   => 'sello-conciencia',
-                'socios'             => 'socios-dashboard',
-                'talleres'           => 'talleres-dashboard',
-                'themacle'           => 'themacle-dashboard',
-                'trabajo_digno'      => 'trabajo-digno',
-                'trading_ia'         => 'trading-ia-dashboard',
-                'tramites'           => 'tramites-dashboard',
-                'transparencia'      => 'transparencia-dashboard',
-                'woocommerce'        => 'flavor-woocommerce-dashboard',
-            ];
+            $mapped_url = class_exists('Flavor_Module_Admin_Pages_Trait')
+                ? Flavor_Module_Admin_Pages_Helper::get_module_dashboard_url($modulo_id)
+                : null;
 
-            // Usar el mapeo si existe
-            if (isset($admin_pages_mapping[$modulo_id])) {
-                return admin_url('admin.php?page=' . $admin_pages_mapping[$modulo_id]);
+            if (!empty($mapped_url)) {
+                return $mapped_url;
             }
 
-            // Fallback: ir al compositor con el modulo seleccionado
-            return admin_url('admin.php?page=flavor-app-composer&module=' . $modulo_id);
+            // Fallback: ir al indice de dashboards de modulos
+            return admin_url('admin.php?page=flavor-module-dashboards');
         }
 
         // En frontend: usar el sistema de paginas dinamicas /mi-portal/{modulo}/
@@ -896,8 +859,15 @@ class Flavor_Unified_Dashboard {
      * @return array
      */
     public function get_system_overview_data(): array {
+        // Obtener módulos activos desde ambas ubicaciones
         $configuracion = get_option('flavor_chat_ia_settings', []);
         $modulos_activos = $configuracion['active_modules'] ?? [];
+
+        $modulos_activos_legacy = get_option('flavor_active_modules', []);
+        if (!empty($modulos_activos_legacy)) {
+            $modulos_activos = array_unique(array_merge($modulos_activos, $modulos_activos_legacy));
+        }
+
         $total_modulos = 0;
 
         if (class_exists('Flavor_Chat_Module_Loader')) {
@@ -915,7 +885,7 @@ class Flavor_Unified_Dashboard {
                     'valor' => count($modulos_activos) . '/' . $total_modulos,
                     'label' => __('Modulos', 'flavor-chat-ia'),
                     'color' => 'primary',
-                    'url'   => admin_url('admin.php?page=flavor-app-composer'),
+                    'url'   => admin_url('admin.php?page=flavor-module-dashboards'),
                 ],
                 [
                     'icon'  => 'dashicons-cloud',
@@ -995,7 +965,7 @@ class Flavor_Unified_Dashboard {
                 'dashicons-networking',
                 [
                     'label' => __('Configurar Red', 'flavor-chat-ia'),
-                    'url'   => admin_url('admin.php?page=flavor-network-settings'),
+                    'url'   => admin_url('admin.php?page=flavor-network'),
                 ]
             );
             return;
@@ -1036,8 +1006,14 @@ class Flavor_Unified_Dashboard {
      * @return array
      */
     public function get_quick_actions_data(): array {
+        // Obtener módulos activos desde ambas ubicaciones
         $configuracion = get_option('flavor_chat_ia_settings', []);
         $modulos_activos = $configuracion['active_modules'] ?? [];
+
+        $modulos_activos_legacy = get_option('flavor_active_modules', []);
+        if (!empty($modulos_activos_legacy)) {
+            $modulos_activos = array_unique(array_merge($modulos_activos, $modulos_activos_legacy));
+        }
 
         $acciones = [
             [
@@ -1048,10 +1024,10 @@ class Flavor_Unified_Dashboard {
                 'color'  => '#2271b1',
             ],
             [
-                'id'     => 'compositor',
-                'label'  => __('Compositor', 'flavor-chat-ia'),
-                'icon'   => 'dashicons-smartphone',
-                'url'    => admin_url('admin.php?page=flavor-app-composer'),
+                'id'     => 'modulos',
+                'label'  => __('Modulos', 'flavor-chat-ia'),
+                'icon'   => 'dashicons-screenoptions',
+                'url'    => admin_url('admin.php?page=flavor-module-dashboards'),
                 'color'  => '#8e44ad',
             ],
         ];
@@ -1349,7 +1325,7 @@ class Flavor_Unified_Dashboard {
         if (!is_user_logged_in()) {
             return '<div class="fud-login-required">
                 <p>' . esc_html__('Debes iniciar sesión para acceder a tu portal.', 'flavor-chat-ia') . '</p>
-                <a href="' . esc_url(wp_login_url(get_permalink())) . '" class="fud-btn fud-btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>
+                <a href="' . esc_url(wp_login_url($this->get_current_request_url())) . '" class="fud-btn fud-btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>
             </div>';
         }
 
@@ -1390,7 +1366,7 @@ class Flavor_Unified_Dashboard {
         // 1. Design Tokens
         wp_enqueue_style(
             'fl-design-tokens',
-            $plugin_url . 'assets/css/design-tokens.css',
+            $plugin_url . 'assets/css/core/design-tokens.css',
             [],
             $version
         );
@@ -1398,7 +1374,7 @@ class Flavor_Unified_Dashboard {
         // 2. Compatibilidad
         wp_enqueue_style(
             'fl-design-tokens-compat',
-            $plugin_url . 'assets/css/design-tokens-compat.css',
+            $plugin_url . 'assets/css/core/design-tokens-compat.css',
             ['fl-design-tokens'],
             $version
         );
@@ -1406,7 +1382,7 @@ class Flavor_Unified_Dashboard {
         // 3. Widgets
         wp_enqueue_style(
             'fl-dashboard-widgets',
-            $plugin_url . 'assets/css/dashboard-widgets.css',
+            $plugin_url . 'assets/css/layouts/dashboard-widgets.css',
             ['fl-design-tokens-compat'],
             $version
         );
@@ -1414,7 +1390,7 @@ class Flavor_Unified_Dashboard {
         // 4. Grupos
         wp_enqueue_style(
             'fl-dashboard-groups',
-            $plugin_url . 'assets/css/dashboard-groups.css',
+            $plugin_url . 'assets/css/layouts/dashboard-groups.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -1422,7 +1398,7 @@ class Flavor_Unified_Dashboard {
         // 5. Estados
         wp_enqueue_style(
             'fl-dashboard-states',
-            $plugin_url . 'assets/css/dashboard-states.css',
+            $plugin_url . 'assets/css/layouts/dashboard-states.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -1430,7 +1406,7 @@ class Flavor_Unified_Dashboard {
         // 6. Accesibilidad
         wp_enqueue_style(
             'fl-dashboard-a11y',
-            $plugin_url . 'assets/css/dashboard-a11y.css',
+            $plugin_url . 'assets/css/layouts/dashboard-a11y.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -1438,7 +1414,7 @@ class Flavor_Unified_Dashboard {
         // 7. Responsive
         wp_enqueue_style(
             'fl-dashboard-responsive',
-            $plugin_url . 'assets/css/dashboard-responsive.css',
+            $plugin_url . 'assets/css/layouts/dashboard-responsive.css',
             ['fl-dashboard-groups'],
             $version
         );
@@ -1446,7 +1422,7 @@ class Flavor_Unified_Dashboard {
         // 8. Breadcrumbs
         wp_enqueue_style(
             'fl-breadcrumbs',
-            $plugin_url . 'assets/css/breadcrumbs.css',
+            $plugin_url . 'assets/css/components/breadcrumbs.css',
             ['fl-design-tokens'],
             $version
         );
@@ -1454,7 +1430,7 @@ class Flavor_Unified_Dashboard {
         // CSS Unificado principal
         wp_enqueue_style(
             'flavor-unified-dashboard',
-            $plugin_url . 'assets/css/unified-dashboard.css',
+            $plugin_url . 'assets/css/layouts/unified-dashboard.css',
             ['fl-dashboard-responsive'],
             $version
         );
@@ -1519,8 +1495,40 @@ class Flavor_Unified_Dashboard {
     private function render_frontend_dashboard(): void {
         $user_id = get_current_user_id();
         $widgets = $this->get_user_widgets($user_id);
+        $ecosystem_nodes = $this->build_frontend_ecosystem_nodes($widgets);
+        $featured_ecosystem_nodes = array_values(array_filter($ecosystem_nodes, static function ($node) {
+            return (int) ($node['satellite_count'] ?? 0) >= 2;
+        }));
+        if (empty($featured_ecosystem_nodes)) {
+            $featured_ecosystem_nodes = $ecosystem_nodes;
+        }
+        $ecosystem_widget_ids = [];
+        foreach ($ecosystem_nodes as $ecosystem_node) {
+            foreach ((array) ($ecosystem_node['widgets'] ?? []) as $node_widget) {
+                $ecosystem_widget_ids[sanitize_key(str_replace('-', '_', (string) ($node_widget['id'] ?? '')))] = true;
+            }
+        }
+        $remaining_widgets = array_values(array_filter($widgets, function ($widget) use ($ecosystem_widget_ids) {
+            $widget_key = sanitize_key(str_replace('-', '_', (string) ($widget['id'] ?? '')));
+            return !isset($ecosystem_widget_ids[$widget_key]);
+        }));
+        $social_panel = $this->get_frontend_social_panel_data($user_id);
         $widgets_agrupados = $this->agrupar_widgets_por_categoria($widgets);
         $categorias_disponibles = $this->obtener_categorias_con_conteo($widgets);
+        $remaining_widgets_agrupados = $this->agrupar_widgets_por_categoria($remaining_widgets);
+        $remaining_categorias_disponibles = $this->obtener_categorias_con_conteo($remaining_widgets);
+        $portal_notifications_markup = '';
+        $portal_actions_markup = '';
+
+        if (class_exists('Flavor_Portal_Shortcodes')) {
+            $portal_shortcodes = Flavor_Portal_Shortcodes::get_instance();
+            if (method_exists($portal_shortcodes, 'render_shared_notifications_bar')) {
+                $portal_notifications_markup = (string) $portal_shortcodes->render_shared_notifications_bar();
+            }
+            if (method_exists($portal_shortcodes, 'render_shared_upcoming_actions')) {
+                $portal_actions_markup = (string) $portal_shortcodes->render_shared_upcoming_actions();
+            }
+        }
         ?>
         <div class="fud-frontend-dashboard fl-dashboard-container" data-fl-dashboard>
             <!-- Header del Dashboard -->
@@ -1538,8 +1546,270 @@ class Flavor_Unified_Dashboard {
                 </div>
             </div>
 
+            <?php if ($portal_notifications_markup !== '' || $portal_actions_markup !== '') : ?>
+            <section class="fud-priority-panels" aria-labelledby="fud-priority-panels-title">
+                <div class="fud-priority-panels__header">
+                    <h2 id="fud-priority-panels-title" class="fud-priority-panels__title"><?php esc_html_e('Atención y próximos pasos', 'flavor-chat-ia'); ?></h2>
+                    <p class="fud-priority-panels__description"><?php esc_html_e('Avisos, notificaciones y acciones cercanas que conviene revisar antes de entrar al detalle del nodo.', 'flavor-chat-ia'); ?></p>
+                </div>
+                <div class="fud-priority-panels__grid">
+                    <?php if ($portal_notifications_markup !== '') : ?>
+                    <article class="fud-priority-panel">
+                        <div class="fud-priority-panel__head">
+                            <h3 class="fud-priority-panel__title"><?php esc_html_e('Señales del nodo', 'flavor-chat-ia'); ?></h3>
+                            <p class="fud-priority-panel__subtitle"><?php esc_html_e('Avisos, anuncios, notificaciones y alertas relevantes.', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <?php echo $portal_notifications_markup; ?>
+                    </article>
+                    <?php endif; ?>
+                    <?php if ($portal_actions_markup !== '') : ?>
+                    <article class="fud-priority-panel">
+                        <div class="fud-priority-panel__head">
+                            <h3 class="fud-priority-panel__title"><?php esc_html_e('Qué hacer ahora', 'flavor-chat-ia'); ?></h3>
+                            <p class="fud-priority-panel__subtitle"><?php esc_html_e('Eventos, reservas, decisiones y tareas cercanas.', 'flavor-chat-ia'); ?></p>
+                        </div>
+                        <?php echo $portal_actions_markup; ?>
+                    </article>
+                    <?php endif; ?>
+                </div>
+            </section>
+            <?php endif; ?>
+
+            <?php
+            // Panel de Impacto Regenerativo (filosofia Gailu)
+            $this->render_gailu_impact_panel();
+            ?>
+
+            <?php if (!empty($featured_ecosystem_nodes)) : ?>
+            <section class="fud-ecosystem-hierarchy" aria-labelledby="fud-frontend-ecosystem-title">
+                <div class="fud-ecosystem-hierarchy__header">
+                    <h2 id="fud-frontend-ecosystem-title" class="fud-ecosystem-hierarchy__title">
+                        <?php esc_html_e('Ecosistemas principales', 'flavor-chat-ia'); ?>
+                    </h2>
+                    <p class="fud-ecosystem-hierarchy__description">
+                        <?php esc_html_e('Aquí se resumen los ecosistemas con más estructura activa en tu portal.', 'flavor-chat-ia'); ?>
+                    </p>
+                </div>
+                <div class="fud-ecosystem-hierarchy__grid">
+                    <?php foreach ($featured_ecosystem_nodes as $ecosystem_node) : ?>
+                    <?php
+                    $base_widget = null;
+                    $satellite_widgets = [];
+                    foreach ($ecosystem_node['widgets'] as $node_widget) {
+                        if (($node_widget['id'] ?? '') === ($ecosystem_node['id'] ?? '')) {
+                            $base_widget = $node_widget;
+                        } else {
+                            $satellite_widgets[] = $node_widget;
+                        }
+                    }
+                    $satellite_count = count($satellite_widgets);
+                    if ($satellite_count < 1) {
+                        continue;
+                    }
+                    ?>
+                    <article class="fud-ecosystem-card">
+                        <div class="fud-ecosystem-card__head">
+                            <div>
+                                <h3 class="fud-ecosystem-card__name"><?php echo esc_html($ecosystem_node['name']); ?></h3>
+                                <span class="fud-ecosystem-card__role"><?php echo esc_html($ecosystem_node['role_label']); ?></span>
+                            </div>
+                            <span class="fud-ecosystem-card__count"><?php echo esc_html($satellite_count); ?></span>
+                        </div>
+                        <p class="fud-ecosystem-card__summary"><?php echo esc_html($this->get_frontend_ecosystem_summary($ecosystem_node)); ?></p>
+                        <?php if ($base_widget) : ?>
+                        <div class="fud-ecosystem-card__block">
+                            <div class="fud-ecosystem-card__label"><?php esc_html_e('Base activa', 'flavor-chat-ia'); ?></div>
+                            <div class="fud-ecosystem-card__tags">
+                                <span class="fud-ecosystem-card__tag fud-ecosystem-card__tag--base"><?php echo esc_html($base_widget['title']); ?></span>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        <?php if (!empty($satellite_widgets)) : ?>
+                        <div class="fud-ecosystem-card__block">
+                            <div class="fud-ecosystem-card__label"><?php esc_html_e('Satélites', 'flavor-chat-ia'); ?></div>
+                            <div class="fud-ecosystem-card__tags">
+                                <?php foreach ($satellite_widgets as $satellite_widget) : ?>
+                                <span class="fud-ecosystem-card__tag"><?php echo esc_html($satellite_widget['title'] ?? ''); ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        <?php if (!empty($ecosystem_node['transversals'])) : ?>
+                        <div class="fud-ecosystem-card__block">
+                            <div class="fud-ecosystem-card__label"><?php esc_html_e('Capas transversales', 'flavor-chat-ia'); ?></div>
+                            <div class="fud-ecosystem-card__tags">
+                                <?php foreach ($ecosystem_node['transversals'] as $transversal) : ?>
+                                <span class="fud-ecosystem-card__tag <?php echo !empty($transversal['is_active']) ? 'is-active' : 'is-suggested'; ?>">
+                                    <?php echo esc_html($transversal['name']); ?>
+                                </span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </article>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+            <?php endif; ?>
+
+            <?php if (!empty($social_panel['feed']) || !empty($social_panel['community_nodes']) || !empty($social_panel['groups'])) : ?>
+            <section class="fud-social-panel" aria-labelledby="fud-social-panel-title">
+                <div class="fud-social-panel__header">
+                    <h2 id="fud-social-panel-title" class="fud-social-panel__title">
+                        <?php esc_html_e('Pulso social del nodo', 'flavor-chat-ia'); ?>
+                    </h2>
+                    <p class="fud-social-panel__description">
+                        <?php esc_html_e('Últimos posts, nodos activos y grupos de conversación enlazados a tu red.', 'flavor-chat-ia'); ?>
+                    </p>
+                </div>
+
+                <div class="fud-social-panel__grid">
+                    <article class="fud-social-panel__card">
+                        <div class="fud-social-panel__card-head">
+                            <h3 class="fud-social-panel__card-title"><?php esc_html_e('Últimos posts', 'flavor-chat-ia'); ?></h3>
+                            <a href="<?php echo esc_url(home_url('/mi-portal/mi-red/')); ?>" class="fud-social-panel__link"><?php esc_html_e('Abrir red', 'flavor-chat-ia'); ?></a>
+                        </div>
+                        <?php if (!empty($social_panel['feed'])) : ?>
+                            <div class="fl-item-list">
+                                <?php foreach ($social_panel['feed'] as $item) : ?>
+                                    <a href="<?php echo esc_url($item['url'] ?? '#'); ?>" class="fl-item-list__link">
+                                        <span class="fl-item-list__icon"><?php echo esc_html($item['tipo_info']['icon'] ?? '📝'); ?></span>
+                                        <span class="fl-item-list__content">
+                                            <span class="fl-item-list__title"><?php echo esc_html($item['title']); ?></span>
+                                            <span class="fl-item-list__meta"><?php echo esc_html($item['meta']); ?></span>
+                                        </span>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else : ?>
+                            <p class="fud-social-panel__empty"><?php esc_html_e('Todavía no hay publicaciones recientes en tu red.', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </article>
+
+                    <article class="fud-social-panel__card fud-social-panel__card--wide">
+                        <div class="fud-social-panel__card-head">
+                            <h3 class="fud-social-panel__card-title"><?php esc_html_e('Nodos y grupos', 'flavor-chat-ia'); ?></h3>
+                            <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/')); ?>" class="fud-social-panel__link"><?php esc_html_e('Ver espacios', 'flavor-chat-ia'); ?></a>
+                        </div>
+                        <?php if (!empty($social_panel['community_nodes'])) : ?>
+                            <?php
+                            $social_node_counts = [
+                                'all' => count($social_panel['community_nodes']),
+                                'comunidad' => 0,
+                                'colectivo' => 0,
+                                'energia_comunidad' => 0,
+                                'grupo_consumo' => 0,
+                                'evento' => 0,
+                                'unread' => 0,
+                            ];
+
+                            foreach ($social_panel['community_nodes'] as $social_node) {
+                                $social_type = sanitize_key((string) ($social_node['entity_type'] ?? ''));
+                                if (isset($social_node_counts[$social_type])) {
+                                    $social_node_counts[$social_type]++;
+                                }
+                                if (absint($social_node['unread_count'] ?? 0) > 0) {
+                                    $social_node_counts['unread']++;
+                                }
+                            }
+                            ?>
+                            <div class="fud-social-panel__filters" role="toolbar" aria-label="<?php esc_attr_e('Filtrar nodos sociales', 'flavor-chat-ia'); ?>">
+                                <button type="button" class="fud-social-panel__filter is-active" data-node-filter="all" aria-pressed="true"><?php esc_html_e('Todos', 'flavor-chat-ia'); ?><span class="fud-social-panel__filter-count"><?php echo esc_html($social_node_counts['all']); ?></span></button>
+                                <button type="button" class="fud-social-panel__filter" data-node-filter="unread" aria-pressed="false"><?php esc_html_e('Con no leídos', 'flavor-chat-ia'); ?><span class="fud-social-panel__filter-count"><?php echo esc_html($social_node_counts['unread']); ?></span></button>
+                                <button type="button" class="fud-social-panel__filter" data-node-filter="comunidad" aria-pressed="false"><?php esc_html_e('Comunidades', 'flavor-chat-ia'); ?><span class="fud-social-panel__filter-count"><?php echo esc_html($social_node_counts['comunidad']); ?></span></button>
+                                <button type="button" class="fud-social-panel__filter" data-node-filter="colectivo" aria-pressed="false"><?php esc_html_e('Colectivos', 'flavor-chat-ia'); ?><span class="fud-social-panel__filter-count"><?php echo esc_html($social_node_counts['colectivo']); ?></span></button>
+                                <button type="button" class="fud-social-panel__filter" data-node-filter="energia_comunidad" aria-pressed="false"><?php esc_html_e('Energía', 'flavor-chat-ia'); ?><span class="fud-social-panel__filter-count"><?php echo esc_html($social_node_counts['energia_comunidad']); ?></span></button>
+                                <button type="button" class="fud-social-panel__filter" data-node-filter="grupo_consumo" aria-pressed="false"><?php esc_html_e('Consumo', 'flavor-chat-ia'); ?><span class="fud-social-panel__filter-count"><?php echo esc_html($social_node_counts['grupo_consumo']); ?></span></button>
+                                <button type="button" class="fud-social-panel__filter" data-node-filter="evento" aria-pressed="false"><?php esc_html_e('Eventos', 'flavor-chat-ia'); ?><span class="fud-social-panel__filter-count"><?php echo esc_html($social_node_counts['evento']); ?></span></button>
+                            </div>
+                            <div class="fud-social-panel__sort" role="toolbar" aria-label="<?php esc_attr_e('Ordenar nodos sociales', 'flavor-chat-ia'); ?>">
+                                <span class="fud-social-panel__sort-label"><?php esc_html_e('Ordenar por', 'flavor-chat-ia'); ?></span>
+                                <button type="button" class="fud-social-panel__sort-btn is-active" data-node-sort="recent" aria-pressed="true"><?php esc_html_e('Más recientes', 'flavor-chat-ia'); ?></button>
+                                <button type="button" class="fud-social-panel__sort-btn" data-node-sort="unread" aria-pressed="false"><?php esc_html_e('Más no leídos', 'flavor-chat-ia'); ?></button>
+                                <button type="button" class="fud-social-panel__sort-btn" data-node-sort="active" aria-pressed="false"><?php esc_html_e('Más activos', 'flavor-chat-ia'); ?></button>
+                            </div>
+                            <div class="fud-social-tree" data-social-tree>
+                                <?php foreach ($social_panel['community_nodes'] as $community) : ?>
+                                    <?php $community_type = sanitize_key((string) ($community['entity_type'] ?? 'comunidad')); ?>
+                                    <div class="fud-social-tree__node fud-social-tree__node--<?php echo esc_attr($community_type); ?>" data-node-type="<?php echo esc_attr($community_type); ?>" data-node-unread="<?php echo esc_attr(absint($community['unread_count'] ?? 0)); ?>" data-node-activity="<?php echo esc_attr(absint($community['last_activity_ts'] ?? 0)); ?>" data-node-groups="<?php echo esc_attr(absint($community['group_count'] ?? 0)); ?>">
+                                        <a href="<?php echo esc_url($community['url']); ?>" class="fud-social-tree__node-link">
+                                            <span class="fud-social-tree__node-icon fud-social-tree__node-icon--<?php echo esc_attr($community_type); ?>">
+                                                <?php echo esc_html($community['icon'] ?? '👥'); ?>
+                                            </span>
+                                            <span class="fud-social-tree__node-content">
+                                                <span class="fud-social-tree__node-type fud-social-tree__node-type--<?php echo esc_attr($community_type); ?>">
+                                                    <?php echo esc_html($community['meta']); ?>
+                                                </span>
+                                                <span class="fud-social-tree__node-title"><?php echo esc_html($community['title']); ?></span>
+                                                <?php if (!empty($community['summary'])) : ?>
+                                                    <span class="fud-social-tree__node-summary"><?php echo esc_html($community['summary']); ?></span>
+                                                <?php endif; ?>
+                                            </span>
+                                            <?php if (!empty($community['unread_badge'])) : ?>
+                                                <span class="fud-social-tree__node-badge"><?php echo esc_html($community['unread_badge']); ?></span>
+                                            <?php endif; ?>
+                                            <span class="fud-social-tree__node-cta"><?php echo esc_html($community['cta_label'] ?? __('Abrir nodo', 'flavor-chat-ia')); ?></span>
+                                        </a>
+                                        <?php if (!empty($community['latest_post'])) : ?>
+                                            <a href="<?php echo esc_url($community['latest_post']['url'] ?? '#'); ?>" class="fud-social-tree__node-post-link">
+                                                <span class="fud-social-tree__node-post-label"><?php esc_html_e('Último post', 'flavor-chat-ia'); ?></span>
+                                                <span class="fud-social-tree__node-post-title"><?php echo esc_html($community['latest_post']['title'] ?? ''); ?></span>
+                                            </a>
+                                        <?php endif; ?>
+                                        <?php if (!empty($community['groups'])) : ?>
+                                            <div class="fud-social-tree__branches">
+                                                <?php foreach ($community['groups'] as $group) : ?>
+                                                    <a href="<?php echo esc_url($group['url']); ?>" class="fud-social-tree__branch">
+                                                        <span class="fud-social-tree__branch-icon">💬</span>
+                                                        <span class="fud-social-tree__branch-content">
+                                                            <span class="fud-social-tree__branch-title"><?php echo esc_html($group['title']); ?></span>
+                                                            <span class="fud-social-tree__branch-meta"><?php echo esc_html($group['meta']); ?></span>
+                                                            <?php if (!empty($group['activity_preview'])) : ?>
+                                                                <span class="fud-social-tree__branch-preview"><?php echo esc_html($group['activity_preview']); ?></span>
+                                                            <?php endif; ?>
+                                                        </span>
+                                                        <?php if (!empty($group['badge'])) : ?>
+                                                            <span class="fud-social-tree__branch-badge"><?php echo esc_html($group['badge']); ?></span>
+                                                        <?php endif; ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else : ?>
+                            <p class="fud-social-panel__empty"><?php esc_html_e('No tienes comunidades activas en este nodo todavía.', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </article>
+
+                    <article class="fud-social-panel__card">
+                        <div class="fud-social-panel__card-head">
+                            <h3 class="fud-social-panel__card-title"><?php esc_html_e('Conversaciones abiertas', 'flavor-chat-ia'); ?></h3>
+                            <a href="<?php echo esc_url(home_url('/mi-portal/chat-grupos/')); ?>" class="fud-social-panel__link"><?php esc_html_e('Abrir grupos', 'flavor-chat-ia'); ?></a>
+                        </div>
+                        <?php if (!empty($social_panel['groups'])) : ?>
+                            <div class="fl-item-list">
+                                <?php foreach ($social_panel['groups'] as $group) : ?>
+                                    <a href="<?php echo esc_url($group['url']); ?>" class="fl-item-list__link">
+                                        <span class="fl-item-list__icon">💬</span>
+                                        <span class="fl-item-list__content">
+                                            <span class="fl-item-list__title"><?php echo esc_html($group['title']); ?></span>
+                                            <span class="fl-item-list__meta"><?php echo esc_html($group['meta']); ?></span>
+                                        </span>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else : ?>
+                            <p class="fud-social-panel__empty"><?php esc_html_e('Todavía no participas en grupos de conversación activos.', 'flavor-chat-ia'); ?></p>
+                        <?php endif; ?>
+                    </article>
+                </div>
+            </section>
+            <?php endif; ?>
+
             <!-- Filtros por Categoría -->
-            <?php if (!empty($categorias_disponibles) && count($categorias_disponibles) > 1): ?>
+            <?php if (empty($ecosystem_nodes) && !empty($categorias_disponibles) && count($categorias_disponibles) > 1): ?>
             <nav class="fl-category-filters" role="navigation" aria-label="<?php esc_attr_e('Filtrar por categoría', 'flavor-chat-ia'); ?>">
                 <button type="button" class="fl-category-filter fl-category-filter--active" data-category="all" aria-pressed="true">
                     <span class="fl-category-filter__icon dashicons dashicons-screenoptions"></span>
@@ -1556,13 +1826,138 @@ class Flavor_Unified_Dashboard {
             </nav>
             <?php endif; ?>
 
-            <!-- Widgets Agrupados por Categoría -->
+            <!-- Widgets Agrupados -->
             <?php if (empty($widgets)): ?>
                 <div class="fl-empty-state">
                     <span class="fl-empty-state__icon dashicons dashicons-screenoptions"></span>
                     <p class="fl-empty-state__message"><?php esc_html_e('No hay módulos activos.', 'flavor-chat-ia'); ?></p>
                     <p class="fl-empty-state__hint"><?php esc_html_e('Contacta con el administrador para activar módulos.', 'flavor-chat-ia'); ?></p>
                 </div>
+            <?php elseif (!empty($ecosystem_nodes)): ?>
+                <section class="fud-coordinated-ecosystems" aria-labelledby="fud-coordinated-ecosystems-title">
+                    <div class="fud-coordinated-ecosystems__header">
+                        <h2 id="fud-coordinated-ecosystems-title" class="fud-coordinated-ecosystems__title"><?php esc_html_e('Ecosistemas coordinados', 'flavor-chat-ia'); ?></h2>
+                        <p class="fud-coordinated-ecosystems__description"><?php esc_html_e('Aquí ves el detalle operativo de cada ecosistema: base activa, satélites y capas transversales.', 'flavor-chat-ia'); ?></p>
+                    </div>
+                <div class="fl-widget-groups" data-fl-widget-groups>
+                    <?php foreach ($ecosystem_nodes as $ecosystem_node): ?>
+                    <?php
+                    $base_widget = null;
+                    $satellite_widgets = [];
+                    foreach ($ecosystem_node['widgets'] as $node_widget) {
+                        if (($node_widget['id'] ?? '') === ($ecosystem_node['id'] ?? '')) {
+                            $base_widget = $node_widget;
+                        } else {
+                            $satellite_widgets[] = $node_widget;
+                        }
+                    }
+                    $satellite_count = count($satellite_widgets);
+                    if ($satellite_count < 1) {
+                        continue;
+                    }
+                    $base_widget_url = $this->get_frontend_widget_url((array) $base_widget, (string) ($ecosystem_node['id'] ?? ''));
+                    ?>
+                    <section class="fl-widget-group fud-widget-group fud-widget-group--ecosystem" data-ecosystem="<?php echo esc_attr($ecosystem_node['id']); ?>" aria-labelledby="fl-group-<?php echo esc_attr($ecosystem_node['id']); ?>">
+                        <header class="fl-widget-group__header">
+                            <div class="fud-ecosystem-group__intro">
+                                <div class="fud-ecosystem-group__title-row">
+                                    <h3 id="fl-group-<?php echo esc_attr($ecosystem_node['id']); ?>" class="fl-widget-group__title">
+                                        <?php echo esc_html($ecosystem_node['name']); ?>
+                                    </h3>
+                                    <span class="fud-ecosystem-card__role"><?php echo esc_html($ecosystem_node['role_label']); ?></span>
+                                </div>
+                                <p class="fud-ecosystem-group__summary">
+                                    <?php echo esc_html($this->get_frontend_ecosystem_summary($ecosystem_node)); ?>
+                                </p>
+                                <?php if ($base_widget) : ?>
+                                <a href="<?php echo esc_url($base_widget_url); ?>" class="fud-ecosystem-group__base-inline">
+                                    <span class="fud-ecosystem-group__base-inline-label"><?php esc_html_e('Base activa', 'flavor-chat-ia'); ?></span>
+                                    <span class="fud-ecosystem-group__base-inline-title"><?php echo esc_html($base_widget['title'] ?? ''); ?></span>
+                                    <span class="fud-ecosystem-group__base-inline-cta"><?php esc_html_e('Abrir ecosistema', 'flavor-chat-ia'); ?></span>
+                                </a>
+                                <?php endif; ?>
+                                <?php if (!empty($satellite_widgets)) : ?>
+                                <div class="fud-ecosystem-group__label"><?php esc_html_e('Satélites operativos', 'flavor-chat-ia'); ?></div>
+                                <div class="fud-ecosystem-group__tags">
+                                    <?php foreach ($satellite_widgets as $satellite_widget) : ?>
+                                    <span class="fud-ecosystem-card__tag"><?php echo esc_html($satellite_widget['title'] ?? ''); ?></span>
+                                    <?php endforeach; ?>
+                                </div>
+                                <?php endif; ?>
+                                <?php if (!empty($ecosystem_node['transversals'])) : ?>
+                                <div class="fud-ecosystem-group__label"><?php esc_html_e('Capas transversales', 'flavor-chat-ia'); ?></div>
+                                <div class="fud-ecosystem-group__tags">
+                                    <?php foreach ($ecosystem_node['transversals'] as $transversal) : ?>
+                                    <span class="fud-ecosystem-card__tag <?php echo !empty($transversal['is_active']) ? 'is-active' : 'is-suggested'; ?>">
+                                        <?php echo esc_html($transversal['name']); ?>
+                                    </span>
+                                    <?php endforeach; ?>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                            <button type="button" class="fl-widget-group__toggle" aria-expanded="true" aria-controls="fl-group-content-<?php echo esc_attr($ecosystem_node['id']); ?>">
+                                <span class="fl-widget-group__count"><?php echo esc_html($satellite_count); ?></span>
+                                <span class="fl-widget-group__chevron dashicons dashicons-arrow-down-alt2"></span>
+                            </button>
+                        </header>
+                        <div id="fl-group-content-<?php echo esc_attr($ecosystem_node['id']); ?>" class="fl-widget-group__content fud-ecosystem-group__content">
+                            <?php if (!empty($satellite_widgets)) : ?>
+                            <div class="fud-widgets-grid">
+                                <?php foreach ($satellite_widgets as $widget): ?>
+                                    <?php $this->render_frontend_widget_card($widget, 'ecosystem'); ?>
+                                <?php endforeach; ?>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                    </section>
+                    <?php endforeach; ?>
+                </div>
+                </section>
+                <?php if (!empty($remaining_widgets_agrupados)) : ?>
+                <section class="fud-secondary-widget-groups" aria-labelledby="fud-secondary-widget-groups-title">
+                    <div class="fud-secondary-widget-groups__header">
+                        <h2 id="fud-secondary-widget-groups-title" class="fud-secondary-widget-groups__title"><?php esc_html_e('Otros espacios activos', 'flavor-chat-ia'); ?></h2>
+                        <p class="fud-secondary-widget-groups__description"><?php esc_html_e('Módulos activos que no forman todavía un ecosistema jerárquico completo.', 'flavor-chat-ia'); ?></p>
+                    </div>
+                    <?php if (count($remaining_categorias_disponibles) > 1) : ?>
+                    <nav class="fl-category-filters" role="navigation" aria-label="<?php esc_attr_e('Filtrar otros espacios por categoría', 'flavor-chat-ia'); ?>">
+                        <button type="button" class="fl-category-filter fl-category-filter--active" data-category="all" aria-pressed="true">
+                            <span class="fl-category-filter__icon dashicons dashicons-screenoptions"></span>
+                            <span class="fl-category-filter__label"><?php esc_html_e('Todos', 'flavor-chat-ia'); ?></span>
+                            <span class="fl-category-filter__count"><?php echo count($remaining_widgets); ?></span>
+                        </button>
+                        <?php foreach ($remaining_categorias_disponibles as $categoria_id => $categoria_info): ?>
+                        <button type="button" class="fl-category-filter" data-category="<?php echo esc_attr($categoria_id); ?>" aria-pressed="false">
+                            <span class="fl-category-filter__icon dashicons <?php echo esc_attr($categoria_info['icono']); ?>"></span>
+                            <span class="fl-category-filter__label"><?php echo esc_html($categoria_info['nombre']); ?></span>
+                            <span class="fl-category-filter__count"><?php echo intval($categoria_info['cantidad']); ?></span>
+                        </button>
+                        <?php endforeach; ?>
+                    </nav>
+                    <?php endif; ?>
+                    <div class="fl-widget-groups" data-fl-widget-groups>
+                        <?php foreach ($remaining_widgets_agrupados as $categoria_id => $grupo): ?>
+                        <section class="fl-widget-group" data-category="<?php echo esc_attr($categoria_id); ?>" aria-labelledby="fl-group-remaining-<?php echo esc_attr($categoria_id); ?>">
+                            <header class="fl-widget-group__header">
+                                <button type="button" class="fl-widget-group__toggle" aria-expanded="true" aria-controls="fl-group-content-remaining-<?php echo esc_attr($categoria_id); ?>">
+                                    <span class="fl-widget-group__icon dashicons <?php echo esc_attr($grupo['icono']); ?>"></span>
+                                    <h3 id="fl-group-remaining-<?php echo esc_attr($categoria_id); ?>" class="fl-widget-group__title">
+                                        <?php echo esc_html($grupo['nombre']); ?>
+                                    </h3>
+                                    <span class="fl-widget-group__count"><?php echo count($grupo['widgets']); ?></span>
+                                    <span class="fl-widget-group__chevron dashicons dashicons-arrow-down-alt2"></span>
+                                </button>
+                            </header>
+                            <div id="fl-group-content-remaining-<?php echo esc_attr($categoria_id); ?>" class="fl-widget-group__content fud-widgets-grid">
+                                <?php foreach ($grupo['widgets'] as $widget): ?>
+                                    <?php $this->render_frontend_widget_card($widget, $categoria_id); ?>
+                                <?php endforeach; ?>
+                            </div>
+                        </section>
+                        <?php endforeach; ?>
+                    </div>
+                </section>
+                <?php endif; ?>
             <?php else: ?>
                 <div class="fl-widget-groups" data-fl-widget-groups>
                     <?php foreach ($widgets_agrupados as $categoria_id => $grupo): ?>
@@ -1579,32 +1974,7 @@ class Flavor_Unified_Dashboard {
                         </header>
                         <div id="fl-group-content-<?php echo esc_attr($categoria_id); ?>" class="fl-widget-group__content fud-widgets-grid">
                             <?php foreach ($grupo['widgets'] as $widget): ?>
-                            <article class="fud-widget fl-widget fl-widget--standard" data-module="<?php echo esc_attr($widget['id']); ?>" data-category="<?php echo esc_attr($categoria_id); ?>" role="region" aria-labelledby="widget-title-<?php echo esc_attr($widget['id']); ?>">
-                                <header class="fud-widget-header fl-widget__header">
-                                    <span class="dashicons <?php echo esc_attr($widget['icon'] ?? 'dashicons-admin-generic'); ?>" aria-hidden="true"></span>
-                                    <h4 id="widget-title-<?php echo esc_attr($widget['id']); ?>" class="fl-widget__title"><?php echo esc_html($widget['title']); ?></h4>
-                                </header>
-                                <div class="fud-widget-stats fl-widget__body">
-                                    <?php if (!empty($widget['stats'])): ?>
-                                        <div class="fl-widget-stats">
-                                        <?php foreach ($widget['stats'] as $stat): ?>
-                                            <?php if (is_array($stat) && isset($stat['value'], $stat['label'])): ?>
-                                            <div class="fl-stat-item">
-                                                <span class="fl-stat-value"><?php echo esc_html($stat['value']); ?></span>
-                                                <span class="fl-stat-label"><?php echo esc_html($stat['label']); ?></span>
-                                            </div>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <footer class="fud-widget-actions fl-widget__footer">
-                                    <a href="<?php echo esc_url(home_url('/mi-portal/' . $widget['id'] . '/')); ?>" class="fl-btn fl-btn--primary fl-btn--sm">
-                                        <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
-                                        <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
-                                    </a>
-                                </footer>
-                            </article>
+                                <?php $this->render_frontend_widget_card($widget, $categoria_id); ?>
                             <?php endforeach; ?>
                         </div>
                     </section>
@@ -1674,6 +2044,85 @@ class Flavor_Unified_Dashboard {
                             grupo.classList.remove('fl-widget-group--collapsed');
                         }
                     }
+                });
+            });
+
+            // Filtros del panel social
+            const socialFilters = document.querySelectorAll('.fud-social-panel__filter');
+            const socialNodes = document.querySelectorAll('.fud-social-tree__node[data-node-type]');
+            const socialTree = document.querySelector('[data-social-tree]');
+            const socialSortButtons = document.querySelectorAll('.fud-social-panel__sort-btn');
+
+            socialFilters.forEach(function(filter) {
+                filter.addEventListener('click', function() {
+                    const nodeType = this.dataset.nodeFilter || 'all';
+
+                    socialFilters.forEach(function(item) {
+                        item.classList.remove('is-active');
+                        item.setAttribute('aria-pressed', 'false');
+                    });
+
+                    this.classList.add('is-active');
+                    this.setAttribute('aria-pressed', 'true');
+
+                    socialNodes.forEach(function(node) {
+                        const hasUnread = parseInt(node.dataset.nodeUnread || '0', 10) > 0;
+                        if (nodeType === 'all' || (nodeType === 'unread' && hasUnread) || node.dataset.nodeType === nodeType) {
+                            node.style.display = '';
+                        } else {
+                            node.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            socialSortButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const sortMode = this.dataset.nodeSort || 'recent';
+                    if (!socialTree || !socialNodes.length) {
+                        return;
+                    }
+
+                    socialSortButtons.forEach(function(item) {
+                        item.classList.remove('is-active');
+                        item.setAttribute('aria-pressed', 'false');
+                    });
+
+                    this.classList.add('is-active');
+                    this.setAttribute('aria-pressed', 'true');
+
+                    const nodes = Array.from(socialTree.querySelectorAll('.fud-social-tree__node[data-node-type]'));
+                    nodes.sort(function(a, b) {
+                        const aActivity = parseInt(a.dataset.nodeActivity || '0', 10);
+                        const bActivity = parseInt(b.dataset.nodeActivity || '0', 10);
+                        const aUnread = parseInt(a.dataset.nodeUnread || '0', 10);
+                        const bUnread = parseInt(b.dataset.nodeUnread || '0', 10);
+                        const aGroups = parseInt(a.dataset.nodeGroups || '0', 10);
+                        const bGroups = parseInt(b.dataset.nodeGroups || '0', 10);
+
+                        if (sortMode === 'unread') {
+                            if (bUnread !== aUnread) {
+                                return bUnread - aUnread;
+                            }
+                            return bActivity - aActivity;
+                        }
+
+                        if (sortMode === 'active') {
+                            if (bGroups !== aGroups) {
+                                return bGroups - aGroups;
+                            }
+                            return bActivity - aActivity;
+                        }
+
+                        if (bActivity !== aActivity) {
+                            return bActivity - aActivity;
+                        }
+                        return bUnread - aUnread;
+                    });
+
+                    nodes.forEach(function(node) {
+                        socialTree.appendChild(node);
+                    });
                 });
             });
 
@@ -1852,10 +2301,1017 @@ class Flavor_Unified_Dashboard {
                 'title' => $modulo['nombre'],
                 'icon' => $modulo['icono'] ?? 'dashicons-admin-generic',
                 'stats' => $this->get_module_stats($modulo['id'], $user_id),
+                'semantics' => $this->get_widget_semantics_frontend($modulo['id']),
+                'severity' => $this->get_widget_native_severity_frontend($modulo['id']),
             ];
         }
 
         return $widgets;
+    }
+
+    /**
+     * Renderiza la tarjeta simplificada de widget para el dashboard frontend.
+     *
+     * @param array $widget
+     * @param string $category_id
+     * @return void
+     */
+    private function render_frontend_widget_card(array $widget, string $category_id = ''): void {
+        $widget_semantics = (array) ($widget['semantics'] ?? []);
+        $cta_label = __('Ver más', 'flavor-chat-ia');
+
+        if ($category_id !== 'ecosystem' && ($widget_semantics['kind_slug'] ?? '') === 'base') {
+            $widget_semantics['kind'] = __('Gestionar', 'flavor-chat-ia');
+            $widget_semantics['kind_slug'] = 'standalone';
+            $cta_label = __('Abrir espacio', 'flavor-chat-ia');
+        }
+
+        ?>
+        <article class="fud-widget fl-widget fl-widget--standard" data-module="<?php echo esc_attr($widget['id']); ?>" data-category="<?php echo esc_attr($category_id); ?>" data-severity="<?php echo esc_attr($widget['severity']['slug'] ?? ''); ?>" role="region" aria-labelledby="widget-title-<?php echo esc_attr($widget['id']); ?>">
+            <header class="fud-widget-header fl-widget__header">
+                <div class="fud-widget__title-wrap fl-widget__title-wrap">
+                    <span class="fud-widget__icon fl-widget__icon" aria-hidden="true">
+                        <span class="dashicons <?php echo esc_attr($widget['icon'] ?? 'dashicons-admin-generic'); ?>"></span>
+                    </span>
+                    <div class="fud-widget__title-block fl-widget__title-block">
+                        <?php if (!empty($widget_semantics['kind']) || !empty($widget_semantics['context']) || !empty($widget['severity']['label'])) : ?>
+                            <div class="fud-widget__meta fl-widget__meta">
+                                <?php if (!empty($widget_semantics['kind'])) : ?>
+                                    <span class="fud-widget__kind fud-widget__kind--<?php echo esc_attr($widget_semantics['kind_slug'] ?? 'vertical'); ?>">
+                                        <?php echo esc_html($widget_semantics['kind']); ?>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if (!empty($widget_semantics['context'])) : ?>
+                                    <span class="fud-widget__context"><?php echo esc_html($widget_semantics['context']); ?></span>
+                                <?php endif; ?>
+                                <?php if (!empty($widget['severity']['label'])) : ?>
+                                    <span class="fud-widget__severity fud-widget__severity--<?php echo esc_attr($widget['severity']['slug'] ?? ''); ?>" <?php if (!empty($widget['severity']['reason'])) : ?>title="<?php echo esc_attr($widget['severity']['reason']); ?>"<?php endif; ?>>
+                                        <?php echo esc_html($widget['severity']['label']); ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                        <h4 id="widget-title-<?php echo esc_attr($widget['id']); ?>" class="fl-widget__title"><?php echo esc_html($widget['title']); ?></h4>
+                        <?php if (!empty($widget_semantics['summary'])) : ?>
+                            <p class="fud-widget__summary"><?php echo esc_html($widget_semantics['summary']); ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </header>
+            <div class="fud-widget-stats fl-widget__body">
+                <?php if (!empty($widget['stats'])): ?>
+                    <div class="fl-widget-stats">
+                    <?php foreach ($widget['stats'] as $stat): ?>
+                        <?php if (is_array($stat) && isset($stat['value'], $stat['label'])): ?>
+                        <div class="fl-stat-item">
+                            <span class="fl-stat-value"><?php echo esc_html($stat['value']); ?></span>
+                            <span class="fl-stat-label"><?php echo esc_html($stat['label']); ?></span>
+                        </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <footer class="fud-widget-actions fl-widget__footer">
+                <a href="<?php echo esc_url($this->get_frontend_widget_url($widget)); ?>" class="fl-btn fl-btn--primary fl-btn--sm">
+                    <?php echo esc_html($cta_label); ?>
+                    <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
+                </a>
+            </footer>
+        </article>
+        <?php
+    }
+
+    /**
+     * Obtiene semántica corta del widget para frontend.
+     *
+     * @param string $module_id
+     * @return array<string,string>
+     */
+    private function get_widget_semantics_frontend(string $module_id): array {
+        $module_key = sanitize_key(str_replace('-', '_', $module_id));
+
+        if ($module_key === '' || !class_exists('Flavor_Chat_Module_Loader')) {
+            return [];
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $registered_modules = $loader ? $loader->get_registered_modules() : [];
+        $module_data = $registered_modules[$module_key] ?? null;
+
+        if (!is_array($module_data)) {
+            return [];
+        }
+
+        $ecosystem = is_array($module_data['ecosystem'] ?? null) ? $module_data['ecosystem'] : [];
+        $dashboard = is_array($module_data['dashboard'] ?? null) ? $module_data['dashboard'] : [];
+        $role = (string) ($ecosystem['module_role'] ?? 'vertical');
+        $display_role = (string) ($ecosystem['display_role'] ?? $role);
+
+        $kind_map = [
+            'base' => __('Coordinar', 'flavor-chat-ia'),
+            'vertical' => __('Operar', 'flavor-chat-ia'),
+            'transversal' => __('Entender', 'flavor-chat-ia'),
+            'standalone' => __('Gestionar', 'flavor-chat-ia'),
+            'base-standalone' => __('Gestionar', 'flavor-chat-ia'),
+        ];
+
+        $context_labels = [
+            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
+            'gobernanza' => __('Gobernanza', 'flavor-chat-ia'),
+            'participacion' => __('Participación', 'flavor-chat-ia'),
+            'transparencia' => __('Transparencia', 'flavor-chat-ia'),
+            'energia' => __('Energía', 'flavor-chat-ia'),
+            'consumo' => __('Consumo local', 'flavor-chat-ia'),
+            'cuidados' => __('Cuidados', 'flavor-chat-ia'),
+            'sostenibilidad' => __('Sostenibilidad', 'flavor-chat-ia'),
+            'impacto' => __('Impacto', 'flavor-chat-ia'),
+            'aprendizaje' => __('Aprendizaje', 'flavor-chat-ia'),
+            'saberes' => __('Saberes', 'flavor-chat-ia'),
+            'agenda' => __('Agenda', 'flavor-chat-ia'),
+            'eventos' => __('Encuentros', 'flavor-chat-ia'),
+            'socios' => __('Socios', 'flavor-chat-ia'),
+            'membresia' => __('Membresía', 'flavor-chat-ia'),
+            'cuenta' => __('Cuenta', 'flavor-chat-ia'),
+            'colectivos' => __('Colectivos', 'flavor-chat-ia'),
+            'asociacion' => __('Asociación', 'flavor-chat-ia'),
+            'coordinacion' => __('Coordinación', 'flavor-chat-ia'),
+        ];
+
+        $contexts = (array) ($dashboard['client_contexts'] ?? []);
+        $primary_context = (string) reset($contexts);
+        $kind_slug = $display_role !== '' ? $display_role : 'vertical';
+        $summary_map = [
+            'comunidad' => __('Espacio comunitario con actividad y coordinación compartida.', 'flavor-chat-ia'),
+            'gobernanza' => __('Espacio de decisiones, acuerdos y seguimiento colectivo.', 'flavor-chat-ia'),
+            'participacion' => __('Espacio para propuestas, votaciones y conversación pública.', 'flavor-chat-ia'),
+            'transparencia' => __('Espacio para memoria abierta, recursos e información compartida.', 'flavor-chat-ia'),
+            'energia' => __('Espacio para seguimiento operativo y balance energético.', 'flavor-chat-ia'),
+            'consumo' => __('Espacio para ciclos, pedidos y relación con productores.', 'flavor-chat-ia'),
+            'cuidados' => __('Espacio para ayuda mutua, apoyo vecinal y cuidados.', 'flavor-chat-ia'),
+            'sostenibilidad' => __('Espacio para prácticas regenerativas e impacto local.', 'flavor-chat-ia'),
+            'impacto' => __('Espacio para métricas, huella e indicadores compartidos.', 'flavor-chat-ia'),
+            'aprendizaje' => __('Espacio para cursos, talleres y aprendizaje compartido.', 'flavor-chat-ia'),
+            'saberes' => __('Espacio para saberes, cultura y transmisión comunitaria.', 'flavor-chat-ia'),
+            'agenda' => __('Espacio para agenda, citas y actividad próxima.', 'flavor-chat-ia'),
+            'eventos' => __('Espacio para encuentros, asistencia y calendario vivo.', 'flavor-chat-ia'),
+            'socios' => __('Espacio para membresía, vínculo y gestión de personas asociadas.', 'flavor-chat-ia'),
+            'membresia' => __('Espacio para membresía, vínculo y gestión de personas asociadas.', 'flavor-chat-ia'),
+            'cuenta' => __('Espacio para estado personal, acceso y seguimiento propio.', 'flavor-chat-ia'),
+            'colectivos' => __('Espacio para organización, coordinación y trabajo colectivo.', 'flavor-chat-ia'),
+            'asociacion' => __('Espacio para organización, coordinación y trabajo colectivo.', 'flavor-chat-ia'),
+            'coordinacion' => __('Espacio para coordinación operativa y seguimiento común.', 'flavor-chat-ia'),
+        ];
+
+        return [
+            'kind' => $kind_map[$kind_slug] ?? __('Operar', 'flavor-chat-ia'),
+            'kind_slug' => sanitize_html_class($kind_slug),
+            'context' => $context_labels[$primary_context] ?? (
+                $primary_context !== ''
+                    ? ucwords(str_replace('_', ' ', $primary_context))
+                    : ''
+            ),
+            'summary' => $summary_map[$primary_context] ?? '',
+        ];
+    }
+
+    /**
+     * Obtiene severidad nativa del widget si existe.
+     *
+     * @param string $module_id
+     * @return array<string,string>
+     */
+    private function get_widget_native_severity_frontend(string $module_id): array {
+        static $cache = [];
+
+        $module_key = sanitize_key(str_replace('-', '_', $module_id));
+
+        if ($module_key === '') {
+            return [];
+        }
+
+        if (array_key_exists($module_key, $cache)) {
+            return $cache[$module_key];
+        }
+
+        if (!class_exists('Flavor_Widget_Registry')) {
+            $cache[$module_key] = [];
+            return $cache[$module_key];
+        }
+
+        $registry = Flavor_Widget_Registry::get_instance();
+        if (!$registry || !method_exists($registry, 'initialize_widgets')) {
+            $cache[$module_key] = [];
+            return $cache[$module_key];
+        }
+
+        $registry->initialize_widgets();
+
+        $widget_candidates = array_values(array_unique([
+            $module_key,
+            str_replace('_', '-', $module_key),
+        ]));
+
+        foreach ($widget_candidates as $widget_candidate) {
+            $widget = $registry->get_widget($widget_candidate);
+            if (!$widget || !method_exists($widget, 'get_widget_config')) {
+                continue;
+            }
+
+            $config = (array) $widget->get_widget_config();
+            $severity_slug = sanitize_key((string) ($config['severity_slug'] ?? ''));
+
+            if ($severity_slug === '') {
+                continue;
+            }
+
+            $cache[$module_key] = [
+                'slug' => $severity_slug,
+                'label' => (string) ($config['severity_label'] ?? ''),
+                'reason' => (string) ($config['severity_reason'] ?? ''),
+            ];
+
+            return $cache[$module_key];
+        }
+
+        $cache[$module_key] = [];
+        return $cache[$module_key];
+    }
+
+    /**
+     * Construye nodos ecosistémicos para el dashboard frontend.
+     *
+     * @param array $widgets
+     * @return array
+     */
+    private function build_frontend_ecosystem_nodes(array $widgets): array {
+        if (empty($widgets) || !class_exists('Flavor_Chat_Module_Loader')) {
+            return [];
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $registered_modules = $loader ? $loader->get_registered_modules() : [];
+
+        if (empty($registered_modules)) {
+            return [];
+        }
+
+        $widget_map = [];
+        foreach ($widgets as $widget) {
+            $widget_map[sanitize_key(str_replace('-', '_', (string) ($widget['id'] ?? '')))] = $widget;
+        }
+
+        $nodes = [];
+
+        foreach ($widget_map as $module_key => $widget) {
+            $module_data = $registered_modules[$module_key] ?? null;
+            $ecosystem = is_array($module_data['ecosystem'] ?? null) ? $module_data['ecosystem'] : [];
+            $dashboard = is_array($module_data['dashboard'] ?? null) ? $module_data['dashboard'] : [];
+            $role = (string) ($ecosystem['module_role'] ?? 'vertical');
+            $depends_on = array_values(array_filter(array_map('sanitize_key', (array) ($ecosystem['depends_on'] ?? []))));
+            $parent_module = sanitize_key((string) ($dashboard['parent_module'] ?? ($depends_on[0] ?? '')));
+
+            if ($role === 'base') {
+                continue;
+            }
+
+            if ($parent_module === '') {
+                $parent_module = $this->find_frontend_base_parent_for_module($module_key, $registered_modules);
+            }
+
+            if (
+                $parent_module === ''
+                || !isset($registered_modules[$parent_module])
+                || !isset($widget_map[$parent_module])
+            ) {
+                continue;
+            }
+
+            if (!isset($nodes[$parent_module])) {
+                $nodes[$parent_module] = $this->build_frontend_ecosystem_node(
+                    $parent_module,
+                    $registered_modules,
+                    $widget_map[$parent_module]
+                );
+                $nodes[$parent_module]['widgets'][$parent_module] = $widget_map[$parent_module];
+            }
+
+            $nodes[$parent_module]['widgets'][$module_key] = $widget;
+
+            if ($role === 'vertical') {
+                $nodes[$parent_module]['satellites'][$module_key] = [
+                    'id' => str_replace('_', '-', $module_key),
+                    'name' => (string) ($widget['title'] ?? $module_data['name'] ?? ucfirst($module_key)),
+                ];
+            }
+        }
+
+        foreach ($nodes as $parent_key => &$node) {
+            $active_targets = array_keys($node['widgets']);
+
+            foreach ($registered_modules as $module_key => $module_data) {
+                $ecosystem = is_array($module_data['ecosystem'] ?? null) ? $module_data['ecosystem'] : [];
+
+                if (($ecosystem['module_role'] ?? 'vertical') !== 'transversal') {
+                    continue;
+                }
+
+                $related_targets = array_merge(
+                    (array) ($ecosystem['ecosystem_supports_modules'] ?? []),
+                    (array) ($ecosystem['ecosystem_measures_modules'] ?? []),
+                    (array) ($ecosystem['ecosystem_governs_modules'] ?? []),
+                    (array) ($ecosystem['ecosystem_teaches_modules'] ?? [])
+                );
+
+                $related_targets = array_values(array_filter(array_map('sanitize_key', $related_targets)));
+
+                if (empty(array_intersect($active_targets, $related_targets)) && !in_array($parent_key, $related_targets, true)) {
+                    continue;
+                }
+
+                $node['transversals'][$module_key] = [
+                    'id' => str_replace('_', '-', $module_key),
+                    'name' => (string) ($widget_map[$module_key]['title'] ?? $module_data['name'] ?? ucfirst($module_key)),
+                    'is_active' => isset($widget_map[$module_key]),
+                ];
+            }
+
+            $node['widgets'] = array_values($node['widgets']);
+            $node['satellites'] = array_values($node['satellites']);
+            $node['transversals'] = array_values($node['transversals']);
+            $node['widget_count'] = count($node['widgets']);
+            $node['satellite_count'] = count($node['satellites']);
+            $node['active_transversal_count'] = count(array_filter($node['transversals'], function ($transversal) {
+                return !empty($transversal['is_active']);
+            }));
+        }
+        unset($node);
+
+        $nodes = array_values(array_filter($nodes, function ($node) {
+            if (empty($node['widgets']) || empty($node['widgets'][$node['base_widget_key'] ?? ''])) {
+                return false;
+            }
+
+            return !empty($node['satellite_count']);
+        }));
+
+        usort($nodes, function ($a, $b) {
+            return ($b['widget_count'] ?? 0) <=> ($a['widget_count'] ?? 0);
+        });
+
+        return $nodes;
+    }
+
+    /**
+     * Construye un nodo base de ecosistema para frontend.
+     *
+     * @param string $module_key
+     * @param array $registered_modules
+     * @return array
+     */
+    private function build_frontend_ecosystem_node(string $module_key, array $registered_modules, array $base_widget = []): array {
+        $module_data = $registered_modules[$module_key] ?? [];
+        $ecosystem = is_array($module_data['ecosystem'] ?? null) ? $module_data['ecosystem'] : [];
+        $dashboard = is_array($module_data['dashboard'] ?? null) ? $module_data['dashboard'] : [];
+        $role = (string) ($ecosystem['display_role'] ?? $ecosystem['module_role'] ?? 'base');
+
+        $role_labels = [
+            'base' => __('Base', 'flavor-chat-ia'),
+            'base-standalone' => __('Base local', 'flavor-chat-ia'),
+            'vertical' => __('Operativo', 'flavor-chat-ia'),
+            'transversal' => __('Transversal', 'flavor-chat-ia'),
+        ];
+
+        return [
+            'id' => str_replace('_', '-', $module_key),
+            'name' => (string) ($base_widget['title'] ?? $module_data['name'] ?? ucfirst($module_key)),
+            'role' => $role,
+            'role_label' => $role_labels[$role] ?? __('Base', 'flavor-chat-ia'),
+            'contexts' => array_values(array_filter(array_map('sanitize_key', (array) ($dashboard['client_contexts'] ?? [])))),
+            'widgets' => [],
+            'satellites' => [],
+            'transversals' => [],
+            'widget_count' => 0,
+            'base_widget_key' => $module_key,
+        ];
+    }
+
+    /**
+     * Resuelve la URL de un widget en el dashboard frontend sin caer a anclas vacías.
+     *
+     * @param array  $widget
+     * @param string $fallback_module_id
+     * @return string
+     */
+    private function get_frontend_widget_url(array $widget, string $fallback_module_id = ''): string {
+        $more_url = trim((string) ($widget['more_url'] ?? ''));
+        if ($more_url !== '' && $more_url !== '#') {
+            return $more_url;
+        }
+
+        $widget_id = sanitize_title((string) ($widget['id'] ?? ''));
+        if ($widget_id === '') {
+            $widget_id = sanitize_title($fallback_module_id);
+        }
+
+        return home_url('/mi-portal/' . $widget_id . '/');
+    }
+
+    /**
+     * Devuelve una lectura corta del ecosistema coordinado.
+     *
+     * @param array $ecosystem_node
+     * @return string
+     */
+    private function get_frontend_ecosystem_summary(array $ecosystem_node): string {
+        $context_labels = [
+            'comunidad' => __('Coordina vida comunitaria y servicios compartidos.', 'flavor-chat-ia'),
+            'socios' => __('Organiza membresía, acceso y relación con personas vinculadas.', 'flavor-chat-ia'),
+            'membresia' => __('Organiza membresía, acceso y relación con personas vinculadas.', 'flavor-chat-ia'),
+            'colectivos' => __('Da soporte a colectivos, coordinación y espacios de organización.', 'flavor-chat-ia'),
+            'asociacion' => __('Da soporte a colectivos, coordinación y espacios de organización.', 'flavor-chat-ia'),
+            'energia' => __('Conecta infraestructura, comunidad energética y seguimiento operativo.', 'flavor-chat-ia'),
+            'consumo' => __('Articula consumo local, ciclos y relación con productores.', 'flavor-chat-ia'),
+            'cuidados' => __('Sostiene redes de ayuda, cuidados y acompañamiento mutuo.', 'flavor-chat-ia'),
+            'eventos' => __('Conecta agenda, encuentros y participación activa.', 'flavor-chat-ia'),
+            'agenda' => __('Conecta agenda, encuentros y participación activa.', 'flavor-chat-ia'),
+        ];
+
+        foreach ((array) ($ecosystem_node['contexts'] ?? []) as $context) {
+            if (isset($context_labels[$context])) {
+                return $context_labels[$context];
+            }
+        }
+
+        return __('Base activa con servicios operativos y capas de soporte relacionadas.', 'flavor-chat-ia');
+    }
+
+    /**
+     * Resuelve una base ecosistémica declarativa a partir de base_for_modules.
+     *
+     * @param string $module_key
+     * @param array  $registered_modules
+     * @return string
+     */
+    private function find_frontend_base_parent_for_module(string $module_key, array $registered_modules): string {
+        foreach ($registered_modules as $candidate_key => $candidate_module) {
+            $candidate_ecosystem = is_array($candidate_module['ecosystem'] ?? null) ? $candidate_module['ecosystem'] : [];
+            if (($candidate_ecosystem['module_role'] ?? '') !== 'base') {
+                continue;
+            }
+
+            $base_for_modules = array_values(array_filter(array_map('sanitize_key', (array) ($candidate_ecosystem['base_for_modules'] ?? []))));
+            if (in_array($module_key, $base_for_modules, true)) {
+                return sanitize_key((string) $candidate_key);
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Obtiene un panel social compacto para la home del dashboard frontend.
+     *
+     * @param int $user_id
+     * @return array
+     */
+    private function get_frontend_social_panel_data(int $user_id): array {
+        if ($user_id <= 0 || !class_exists('Flavor_Mi_Red_Social')) {
+            return [
+                'feed' => [],
+                'communities' => [],
+                'groups' => [],
+            ];
+        }
+
+        $mi_red = Flavor_Mi_Red_Social::get_instance();
+
+        if (!$mi_red) {
+            return [
+                'feed' => [],
+                'communities' => [],
+                'groups' => [],
+            ];
+        }
+
+        $feed_items = method_exists($mi_red, 'obtener_feed_unificado')
+            ? (array) $mi_red->obtener_feed_unificado($user_id, 4, 0, 'todos')
+            : [];
+        $communities = method_exists($mi_red, 'obtener_comunidades_usuario')
+            ? (array) $mi_red->obtener_comunidades_usuario($user_id)
+            : [];
+        $groups = method_exists($mi_red, 'obtener_grupos_chat')
+            ? (array) $mi_red->obtener_grupos_chat($user_id)
+            : [];
+
+        $normalized_feed = $this->normalize_frontend_social_feed_items($feed_items);
+
+        return [
+            'feed' => $normalized_feed,
+            'community_nodes' => $this->normalize_frontend_social_community_nodes($communities, $groups, $normalized_feed),
+            'groups' => $this->normalize_frontend_social_groups($groups),
+        ];
+    }
+
+    /**
+     * Normaliza items del feed social para panel compacto.
+     *
+     * @param array $items
+     * @return array
+     */
+    private function normalize_frontend_social_feed_items(array $items): array {
+        $result = [];
+
+        foreach (array_slice($items, 0, 4) as $item) {
+            $title = trim((string) ($item['contenido']['titulo'] ?? ''));
+            if ($title === '') {
+                $title = wp_trim_words(wp_strip_all_tags((string) ($item['contenido']['texto'] ?? '')), 10);
+            }
+
+            $author = (string) ($item['autor']['nombre'] ?? __('Comunidad', 'flavor-chat-ia'));
+            $time = (string) ($item['fecha_humana'] ?? '');
+            $meta = trim($author . ($time !== '' ? ' · ' . $time : ''));
+
+            $result[] = [
+                'title' => $title !== '' ? $title : __('Publicación reciente', 'flavor-chat-ia'),
+                'meta' => $meta,
+                'url' => (string) ($item['url'] ?? '#'),
+                'tipo_info' => (array) ($item['tipo_info'] ?? []),
+                'entity_type' => $this->infer_social_feed_entity_type((array) ($item['contexto'] ?? []), (string) ($item['url'] ?? '')),
+                'entity_id' => $this->infer_social_feed_entity_id((array) ($item['contexto'] ?? []), (string) ($item['url'] ?? '')),
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Normaliza nodos sociales para panel compacto.
+     *
+     * @param array $communities
+     * @param array $feed_items
+     * @return array
+     */
+    private function normalize_frontend_social_community_nodes(array $communities, array $groups, array $feed_items = []): array {
+        $nodes = [];
+
+        foreach (array_slice($communities, 0, 8) as $community) {
+            $community = (array) $community;
+            $id = absint($community['id'] ?? 0);
+            $members = absint($community['miembros_count'] ?? 0);
+
+            if ($id <= 0) {
+                continue;
+            }
+
+            $nodes['comunidad:' . $id] = [
+                'id' => $id,
+                'entity_key' => 'comunidad:' . $id,
+                'entity_type' => 'comunidad',
+                'id' => $id,
+                'title' => (string) ($community['nombre'] ?? __('Comunidad', 'flavor-chat-ia')),
+                'meta' => $members > 0
+                    ? sprintf(_n('%d miembro', '%d miembros', $members, 'flavor-chat-ia'), $members)
+                    : __('Nodo activo', 'flavor-chat-ia'),
+                'url' => home_url('/mi-portal/comunidades/?comunidad_id=' . $id),
+                'icon' => $this->get_social_node_icon_by_entity_type('comunidad'),
+                'cta_label' => $this->get_social_node_cta_by_entity_type('comunidad'),
+                'last_activity_ts' => 0,
+                'group_count' => 0,
+                'unread_count' => 0,
+                'latest_post' => null,
+                'groups' => [],
+            ];
+        }
+
+        foreach ($groups as $group) {
+            $group = (array) $group;
+            $entity_type = sanitize_key((string) ($group['entidad_tipo'] ?? ''));
+            $entity_id = absint($group['entidad_id'] ?? 0);
+
+            if ($entity_type === '' || $entity_id <= 0) {
+                $related_community_id = $this->infer_social_group_community_id($group);
+                if ($related_community_id > 0) {
+                    $entity_type = 'comunidad';
+                    $entity_id = $related_community_id;
+                }
+            }
+
+            if ($entity_type === '' || $entity_id <= 0) {
+                continue;
+            }
+
+            if (!$this->is_supported_social_node_entity_type($entity_type)) {
+                continue;
+            }
+
+            $node_key = $entity_type . ':' . $entity_id;
+
+            if (!isset($nodes[$node_key])) {
+                $nodes[$node_key] = [
+                    'id' => $entity_id,
+                    'entity_key' => $node_key,
+                    'entity_type' => $entity_type,
+                    'title' => $this->get_social_node_title_from_group($group, $entity_type),
+                    'meta' => $this->get_social_node_label_by_entity_type($entity_type),
+                    'url' => $this->get_social_node_url_by_entity_type($entity_type, $entity_id),
+                    'icon' => $this->get_social_node_icon_by_entity_type($entity_type),
+                    'cta_label' => $this->get_social_node_cta_by_entity_type($entity_type),
+                    'last_activity_ts' => 0,
+                    'group_count' => 0,
+                    'unread_count' => 0,
+                    'latest_post' => null,
+                    'groups' => [],
+                ];
+            }
+
+            $group_activity_ts = absint($group['activity_timestamp'] ?? 0);
+            $group_unread_count = absint($group['badge'] ?? 0);
+            if ($group_activity_ts > (int) ($nodes[$node_key]['last_activity_ts'] ?? 0)) {
+                $nodes[$node_key]['last_activity_ts'] = $group_activity_ts;
+            }
+            $nodes[$node_key]['group_count'] = (int) ($nodes[$node_key]['group_count'] ?? 0) + 1;
+            $nodes[$node_key]['unread_count'] = (int) ($nodes[$node_key]['unread_count'] ?? 0) + $group_unread_count;
+
+            $nodes[$node_key]['groups'][] = [
+                'title' => $this->strip_social_group_prefix((string) ($group['title'] ?? __('Grupo', 'flavor-chat-ia'))),
+                'meta' => (string) ($group['meta'] ?? ''),
+                'url' => (string) ($group['url'] ?? home_url('/mi-portal/chat-grupos/')),
+                'badge' => (string) ($group['badge'] ?? ''),
+                'activity_preview' => (string) ($group['activity_preview'] ?? ''),
+            ];
+        }
+
+        foreach ($feed_items as $feed_item) {
+            $feed_item = (array) $feed_item;
+            $entity_type = sanitize_key((string) ($feed_item['entity_type'] ?? ''));
+            $entity_id = absint($feed_item['entity_id'] ?? 0);
+
+            if ($entity_type === '' || $entity_id <= 0) {
+                continue;
+            }
+
+            $node_key = $entity_type . ':' . $entity_id;
+            if (!isset($nodes[$node_key]) || !empty($nodes[$node_key]['latest_post'])) {
+                continue;
+            }
+
+            $nodes[$node_key]['latest_post'] = [
+                'title' => (string) ($feed_item['title'] ?? __('Publicación reciente', 'flavor-chat-ia')),
+                'meta' => (string) ($feed_item['meta'] ?? ''),
+                'url' => (string) ($feed_item['url'] ?? '#'),
+            ];
+        }
+
+        $nodes = array_values($nodes);
+
+        foreach ($nodes as &$node) {
+            $summary_parts = [];
+            $group_count = absint($node['group_count'] ?? 0);
+            $unread_count = absint($node['unread_count'] ?? 0);
+
+            if ($group_count > 0) {
+                $summary_parts[] = sprintf(_n('%d grupo', '%d grupos', $group_count, 'flavor-chat-ia'), $group_count);
+            }
+
+            if ($unread_count > 0) {
+                $summary_parts[] = sprintf(_n('%d no leído', '%d no leídos', $unread_count, 'flavor-chat-ia'), $unread_count);
+            }
+
+            $node['summary'] = !empty($summary_parts)
+                ? implode(' · ', $summary_parts)
+                : __('Sin grupos activos', 'flavor-chat-ia');
+            $node['unread_badge'] = $unread_count > 0 ? (string) $unread_count : '';
+        }
+        unset($node);
+
+        usort($nodes, function ($a, $b) {
+            $activity_compare = ((int) ($b['last_activity_ts'] ?? 0)) <=> ((int) ($a['last_activity_ts'] ?? 0));
+            if ($activity_compare !== 0) {
+                return $activity_compare;
+            }
+
+            return count($b['groups'] ?? []) <=> count($a['groups'] ?? []);
+        });
+
+        return array_slice($nodes, 0, 8);
+    }
+
+    /**
+     * Normaliza grupos de chat para panel compacto.
+     *
+     * @param array $groups
+     * @return array
+     */
+    private function normalize_frontend_social_groups(array $groups): array {
+        $result = [];
+
+        foreach (array_slice($groups, 0, 4) as $group) {
+            $group = (array) $group;
+            $id = absint($group['id'] ?? 0);
+            $members = absint($group['miembros'] ?? $group['miembros_count'] ?? 0);
+            $last_message = (array) ($group['ultimo_mensaje'] ?? []);
+            $last_text = trim((string) ($last_message['texto'] ?? $group['descripcion'] ?? ''));
+            $last_author = trim((string) ($last_message['autor'] ?? ''));
+            $last_time = trim((string) ($last_message['fecha'] ?? ''));
+            $last_timestamp = absint($last_message['timestamp'] ?? 0);
+
+            $meta_parts = [];
+            if ($members > 0) {
+                $meta_parts[] = sprintf(_n('%d miembro', '%d miembros', $members, 'flavor-chat-ia'), $members);
+            }
+            if ($last_text !== '') {
+                $meta_parts[] = wp_trim_words($last_text, 8);
+            }
+
+            $result[] = [
+                'title' => $this->strip_social_group_prefix((string) ($group['nombre'] ?? $group['grupo_nombre'] ?? __('Grupo', 'flavor-chat-ia'))),
+                'meta' => !empty($meta_parts) ? implode(' · ', $meta_parts) : __('Conversación activa', 'flavor-chat-ia'),
+                'url' => $id > 0 ? home_url('/mi-portal/chat-grupos/mensajes/?grupo_id=' . $id) : home_url('/mi-portal/chat-grupos/'),
+                'badge' => !empty($group['mensajes_no_leidos']) ? (string) absint($group['mensajes_no_leidos']) : '',
+                'activity_preview' => $this->build_social_group_activity_preview($last_author, $last_text, $last_time),
+                'activity_timestamp' => $last_timestamp ? (int) $last_timestamp : 0,
+                'slug' => (string) ($group['slug'] ?? ''),
+                'tipo' => (string) ($group['tipo'] ?? ''),
+                'entidad_tipo' => sanitize_key((string) ($group['entidad_tipo'] ?? '')),
+                'entidad_id' => absint($group['entidad_id'] ?? 0),
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Devuelve si un tipo de entidad es soportado como nodo social.
+     *
+     * @param string $entity_type
+     * @return bool
+     */
+    private function is_supported_social_node_entity_type(string $entity_type): bool {
+        return in_array($entity_type, ['comunidad', 'colectivo', 'energia_comunidad', 'grupo_consumo', 'evento'], true);
+    }
+
+    /**
+     * Etiqueta humana para un nodo social.
+     *
+     * @param string $entity_type
+     * @return string
+     */
+    private function get_social_node_label_by_entity_type(string $entity_type): string {
+        $labels = [
+            'comunidad' => __('Comunidad activa', 'flavor-chat-ia'),
+            'colectivo' => __('Colectivo activo', 'flavor-chat-ia'),
+            'energia_comunidad' => __('Comunidad energética', 'flavor-chat-ia'),
+            'grupo_consumo' => __('Grupo de consumo', 'flavor-chat-ia'),
+            'evento' => __('Encuentro activo', 'flavor-chat-ia'),
+        ];
+
+        return $labels[$entity_type] ?? __('Nodo activo', 'flavor-chat-ia');
+    }
+
+    /**
+     * Icono para un nodo social según su entidad.
+     *
+     * @param string $entity_type
+     * @return string
+     */
+    private function get_social_node_icon_by_entity_type(string $entity_type): string {
+        $icons = [
+            'comunidad' => '👥',
+            'colectivo' => '🕸',
+            'energia_comunidad' => '⚡',
+            'grupo_consumo' => '🧺',
+            'evento' => '📅',
+        ];
+
+        return $icons[$entity_type] ?? '👥';
+    }
+
+    /**
+     * CTA humano por tipo de nodo social.
+     *
+     * @param string $entity_type
+     * @return string
+     */
+    private function get_social_node_cta_by_entity_type(string $entity_type): string {
+        $labels = [
+            'comunidad' => __('Abrir comunidad', 'flavor-chat-ia'),
+            'colectivo' => __('Abrir colectivo', 'flavor-chat-ia'),
+            'energia_comunidad' => __('Abrir energía', 'flavor-chat-ia'),
+            'grupo_consumo' => __('Abrir consumo', 'flavor-chat-ia'),
+            'evento' => __('Abrir evento', 'flavor-chat-ia'),
+        ];
+
+        return $labels[$entity_type] ?? __('Abrir nodo', 'flavor-chat-ia');
+    }
+
+    /**
+     * URL principal para un nodo social.
+     *
+     * @param string $entity_type
+     * @param int $entity_id
+     * @return string
+     */
+    private function get_social_node_url_by_entity_type(string $entity_type, int $entity_id): string {
+        switch ($entity_type) {
+            case 'comunidad':
+                return home_url('/mi-portal/comunidades/?comunidad_id=' . $entity_id);
+            case 'colectivo':
+                return home_url('/mi-portal/colectivos/?colectivo_id=' . $entity_id);
+            case 'energia_comunidad':
+                return home_url('/mi-portal/energia-comunitaria/?comunidad_id=' . $entity_id);
+            case 'grupo_consumo':
+                return home_url('/mi-portal/grupos-consumo/');
+            case 'evento':
+                return home_url('/mi-portal/eventos/');
+            default:
+                return home_url('/mi-portal/chat-grupos/');
+        }
+    }
+
+    /**
+     * Construye un título de nodo social a partir del grupo cuando no hay comunidad cargada.
+     *
+     * @param array $group
+     * @param string $entity_type
+     * @return string
+     */
+    private function get_social_node_title_from_group(array $group, string $entity_type): string {
+        $title = $this->strip_social_group_prefix((string) ($group['title'] ?? $group['nombre'] ?? ''));
+
+        if ($title !== '') {
+            return $title;
+        }
+
+        $fallbacks = [
+            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
+            'colectivo' => __('Colectivo', 'flavor-chat-ia'),
+            'energia_comunidad' => __('Comunidad energética', 'flavor-chat-ia'),
+            'grupo_consumo' => __('Grupo de consumo', 'flavor-chat-ia'),
+            'evento' => __('Evento', 'flavor-chat-ia'),
+        ];
+
+        return $fallbacks[$entity_type] ?? __('Nodo', 'flavor-chat-ia');
+    }
+
+    /**
+     * Limpia prefijos redundantes del nombre de grupo.
+     *
+     * @param string $title
+     * @return string
+     */
+    private function strip_social_group_prefix(string $title): string {
+        $title = preg_replace('/^\s*chat\s*:\s*/i', '', $title);
+        return trim((string) $title);
+    }
+
+    /**
+     * Resumen corto de actividad reciente de un grupo.
+     *
+     * @param string $author
+     * @param string $text
+     * @param string $time
+     * @return string
+     */
+    private function build_social_group_activity_preview(string $author, string $text, string $time): string {
+        $parts = [];
+
+        if ($author !== '') {
+            $parts[] = $author;
+        }
+
+        if ($text !== '') {
+            $parts[] = wp_trim_words($text, 7);
+        }
+
+        $preview = implode(': ', array_filter([
+            !empty($parts) ? implode(' · ', array_slice($parts, 0, 1)) : '',
+            !empty($parts[1]) ? $parts[1] : '',
+        ]));
+
+        if ($preview === '') {
+            return $time !== '' ? sprintf(__('Actividad reciente · %s', 'flavor-chat-ia'), $time) : '';
+        }
+
+        return $time !== '' ? $preview . ' · ' . $time : $preview;
+    }
+
+    /**
+     * Intenta inferir el tipo de nodo asociado a un item del feed.
+     *
+     * @param array $context
+     * @param string $url
+     * @return string
+     */
+    private function infer_social_feed_entity_type(array $context, string $url): string {
+        if (!empty($context['comunidad_id'])) {
+            return 'comunidad';
+        }
+
+        if (!empty($context['colectivo_id'])) {
+            return 'colectivo';
+        }
+
+        if (!empty($context['evento_id'])) {
+            return 'evento';
+        }
+
+        if (!empty($context['grupo_consumo_id'])) {
+            return 'grupo_consumo';
+        }
+
+        if (!empty($context['energia_comunidad_id'])) {
+            return 'energia_comunidad';
+        }
+
+        if (preg_match('#/comunidades/(\d+)/#', $url)) {
+            return 'comunidad';
+        }
+
+        if (preg_match('#/colectivos/(\d+)/#', $url)) {
+            return 'colectivo';
+        }
+
+        if (preg_match('#/eventos/(\d+)/#', $url)) {
+            return 'evento';
+        }
+
+        if (preg_match('#/grupos-consumo/(\d+)/#', $url)) {
+            return 'grupo_consumo';
+        }
+
+        if (preg_match('#/energia-comunitaria/(\d+)/#', $url)) {
+            return 'energia_comunidad';
+        }
+
+        return '';
+    }
+
+    /**
+     * Intenta inferir el ID de nodo asociado a un item del feed.
+     *
+     * @param array $context
+     * @param string $url
+     * @return int
+     */
+    private function infer_social_feed_entity_id(array $context, string $url): int {
+        if (!empty($context['comunidad_id'])) {
+            return absint($context['comunidad_id']);
+        }
+
+        if (!empty($context['colectivo_id'])) {
+            return absint($context['colectivo_id']);
+        }
+
+        if (!empty($context['evento_id'])) {
+            return absint($context['evento_id']);
+        }
+
+        if (!empty($context['grupo_consumo_id'])) {
+            return absint($context['grupo_consumo_id']);
+        }
+
+        if (!empty($context['energia_comunidad_id'])) {
+            return absint($context['energia_comunidad_id']);
+        }
+
+        if (preg_match('#/comunidades/(\d+)/#', $url, $matches)) {
+            return absint($matches[1]);
+        }
+
+        if (preg_match('#/colectivos/(\d+)/#', $url, $matches)) {
+            return absint($matches[1]);
+        }
+
+        if (preg_match('#/eventos/(\d+)/#', $url, $matches)) {
+            return absint($matches[1]);
+        }
+
+        if (preg_match('#/grupos-consumo/(\d+)/#', $url, $matches)) {
+            return absint($matches[1]);
+        }
+
+        if (preg_match('#/energia-comunitaria/(\d+)/#', $url, $matches)) {
+            return absint($matches[1]);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Intenta inferir la comunidad relacionada a un grupo social.
+     *
+     * @param array $group
+     * @return int
+     */
+    private function infer_social_group_community_id(array $group): int {
+        $slug = (string) ($group['slug'] ?? '');
+
+        if ($slug !== '' && preg_match('/^comunidad-(\d+)$/', $slug, $matches)) {
+            return absint($matches[1]);
+        }
+
+        return 0;
     }
 
     /**
@@ -1931,7 +3387,7 @@ class Flavor_Unified_Dashboard {
                 if ($this->table_exists($tabla_reservas)) {
                     $reservas_activas = (int) $wpdb->get_var($wpdb->prepare(
                         "SELECT COUNT(*) FROM {$tabla_reservas}
-                         WHERE usuario_id = %d AND estado = 'confirmada' AND fecha_inicio >= NOW()",
+                         WHERE usuario_id = %d AND estado IN ('pendiente', 'aprobada') AND fecha >= CURDATE()",
                         $user_id
                     ));
                     $stats[] = ['value' => $reservas_activas, 'label' => __('Reservas', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'];
@@ -1980,7 +3436,7 @@ class Flavor_Unified_Dashboard {
                 if ($this->table_exists($tabla_depositos)) {
                     $total_kg = (float) $wpdb->get_var($wpdb->prepare(
                         "SELECT COALESCE(SUM(cantidad_kg), 0) FROM {$tabla_depositos}
-                         WHERE usuario_id = %d AND MONTH(fecha_deposito) = MONTH(NOW())",
+                         WHERE usuario_id = %d AND MONTH(fecha) = MONTH(NOW())",
                         $user_id
                     ));
                     $stats[] = ['value' => number_format($total_kg, 1) . ' kg', 'label' => __('Este mes', 'flavor-chat-ia'), 'icon' => 'dashicons-trash'];
@@ -1992,7 +3448,7 @@ class Flavor_Unified_Dashboard {
                 if ($this->table_exists($tabla_aportes)) {
                     $aportes_mes = (int) $wpdb->get_var($wpdb->prepare(
                         "SELECT COUNT(*) FROM {$tabla_aportes}
-                         WHERE usuario_id = %d AND MONTH(fecha_aportacion) = MONTH(NOW())",
+                         WHERE usuario_id = %d AND MONTH(fecha) = MONTH(NOW())",
                         $user_id
                     ));
                     $stats[] = ['value' => $aportes_mes, 'label' => __('Aportes/mes', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'];
@@ -2365,13 +3821,19 @@ class Flavor_Unified_Dashboard {
             'bares'                 => ['nombre' => __('Bares', 'flavor-chat-ia'), 'icono' => 'dashicons-food', 'categoria' => 'otros'],
         ];
 
-        // Obtener módulos activos desde configuración
+        // Obtener módulos activos desde configuración (ambas ubicaciones)
         $settings = get_option('flavor_chat_ia_settings', []);
         $activos = $settings['active_modules'] ?? [];
 
-        // Si no hay módulos configurados, mostrar todos
+        // También leer de flavor_active_modules (legacy/compatibilidad)
+        $modulos_activos_legacy = get_option('flavor_active_modules', []);
+        if (!empty($modulos_activos_legacy)) {
+            $activos = array_unique(array_merge($activos, $modulos_activos_legacy));
+        }
+
+        // Si no hay módulos configurados, usar default (NO mostrar todos)
         if (empty($activos)) {
-            $activos = array_keys($modulos_disponibles);
+            $activos = ['woocommerce'];
         }
 
         $resultado = [];
@@ -2390,6 +3852,234 @@ class Flavor_Unified_Dashboard {
         }
 
         return $resultado;
+    }
+
+    /**
+     * Renderiza el panel de impacto regenerativo (filosofía Gailu)
+     *
+     * Muestra los principios transformadores y las capacidades regenerativas
+     * activas en el nodo, basándose en los módulos activos.
+     *
+     * @since 3.1.0
+     * @return void
+     */
+    /**
+     * Renderiza el panel de impacto regenerativo (Gailu)
+     * Puede ser llamado desde otros contextos (ej: class-dynamic-pages.php)
+     *
+     * @param bool $compact Si es true, muestra versión compacta para vistas de módulo
+     * @return void
+     */
+    public function render_gailu_impact_panel(bool $compact = false): void {
+        // Obtener métricas Gailu desde el Module Loader
+        // Leer de ambas ubicaciones de configuración
+        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $modulos_activos_ids = $configuracion['active_modules'] ?? [];
+
+        $modulos_activos_legacy = get_option('flavor_active_modules', []);
+        if (!empty($modulos_activos_legacy)) {
+            $modulos_activos_ids = array_unique(array_merge($modulos_activos_ids, $modulos_activos_legacy));
+        }
+
+        if (empty($modulos_activos_ids)) {
+            return; // No mostrar si no hay módulos activos
+        }
+
+        $gailu_metricas = [];
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $gailu_metricas = Flavor_Chat_Module_Loader::get_gailu_metricas($modulos_activos_ids);
+        }
+
+        if (empty($gailu_metricas)) {
+            return;
+        }
+
+        $principios = $gailu_metricas['principios'] ?? [];
+        $contribuciones = $gailu_metricas['contribuciones'] ?? [];
+        $principios_cubiertos = $gailu_metricas['cubiertos']['principios'] ?? 0;
+        $total_principios = $gailu_metricas['totales']['principios'] ?? 5;
+
+        $etiquetas_principios = [
+            'economia_local' => ['nombre' => __('Economía Local', 'flavor-chat-ia'), 'icono' => '🏪', 'color' => '#10b981'],
+            'cuidados' => ['nombre' => __('Cuidados', 'flavor-chat-ia'), 'icono' => '💚', 'color' => '#ec4899'],
+            'gobernanza' => ['nombre' => __('Gobernanza', 'flavor-chat-ia'), 'icono' => '🤝', 'color' => '#8b5cf6'],
+            'regeneracion' => ['nombre' => __('Regeneración', 'flavor-chat-ia'), 'icono' => '🌱', 'color' => '#22c55e'],
+            'aprendizaje' => ['nombre' => __('Aprendizaje', 'flavor-chat-ia'), 'icono' => '📚', 'color' => '#f59e0b'],
+        ];
+
+        $etiquetas_contribuciones = [
+            'autonomia' => ['nombre' => __('Autonomía', 'flavor-chat-ia'), 'icono' => '🚀', 'color' => '#3b82f6'],
+            'resiliencia' => ['nombre' => __('Resiliencia', 'flavor-chat-ia'), 'icono' => '🛡️', 'color' => '#06b6d4'],
+            'cohesion' => ['nombre' => __('Cohesión', 'flavor-chat-ia'), 'icono' => '🔗', 'color' => '#a855f7'],
+            'impacto' => ['nombre' => __('Impacto', 'flavor-chat-ia'), 'icono' => '⚡', 'color' => '#ef4444'],
+        ];
+
+        $porcentaje_cobertura = $total_principios > 0 ? round(($principios_cubiertos / $total_principios) * 100) : 0;
+        ?>
+        <section class="fud-gailu-panel" aria-labelledby="fud-gailu-title">
+            <div class="fud-gailu-panel__header">
+                <div class="fud-gailu-panel__title-wrapper">
+                    <h2 id="fud-gailu-title" class="fud-gailu-panel__title">
+                        <span class="fud-gailu-panel__icon">🌍</span>
+                        <?php esc_html_e('Impacto Regenerativo del Nodo', 'flavor-chat-ia'); ?>
+                    </h2>
+                    <p class="fud-gailu-panel__description">
+                        <?php esc_html_e('Tu participación activa impulsa la transición hacia una comunidad más sostenible y solidaria.', 'flavor-chat-ia'); ?>
+                    </p>
+                </div>
+                <div class="fud-gailu-panel__score">
+                    <span class="fud-gailu-panel__score-value"><?php echo esc_html($porcentaje_cobertura); ?>%</span>
+                    <span class="fud-gailu-panel__score-label"><?php esc_html_e('cobertura', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+
+            <div class="fud-gailu-panel__grid">
+                <!-- Principios transformadores -->
+                <div class="fud-gailu-card">
+                    <h3 class="fud-gailu-card__title">
+                        <span>⭐</span> <?php esc_html_e('Principios Transformadores', 'flavor-chat-ia'); ?>
+                    </h3>
+                    <div class="fud-gailu-principios">
+                        <?php foreach ($etiquetas_principios as $clave => $datos) :
+                            $modulos_principio = $principios[$clave] ?? [];
+                            $tiene_modulos = !empty($modulos_principio);
+                            $count = count($modulos_principio);
+                        ?>
+                        <div class="fud-gailu-principio <?php echo $tiene_modulos ? 'is-active' : 'is-inactive'; ?>"
+                             style="--principio-color: <?php echo esc_attr($datos['color']); ?>"
+                             title="<?php echo $tiene_modulos ? esc_attr(implode(', ', $modulos_principio)) : esc_attr__('Aún no activo', 'flavor-chat-ia'); ?>">
+                            <span class="fud-gailu-principio__icon"><?php echo esc_html($datos['icono']); ?></span>
+                            <span class="fud-gailu-principio__name"><?php echo esc_html($datos['nombre']); ?></span>
+                            <?php if ($tiene_modulos) : ?>
+                            <span class="fud-gailu-principio__count"><?php echo esc_html($count); ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Capacidades regenerativas -->
+                <div class="fud-gailu-card">
+                    <h3 class="fud-gailu-card__title">
+                        <span>🏆</span> <?php esc_html_e('Capacidades Regenerativas', 'flavor-chat-ia'); ?>
+                    </h3>
+                    <div class="fud-gailu-capacidades">
+                        <?php
+                        $total_modulos = max(1, count($modulos_activos_ids));
+                        foreach ($etiquetas_contribuciones as $clave => $datos) :
+                            $modulos_contribucion = $contribuciones[$clave] ?? [];
+                            $tiene_contribucion = !empty($modulos_contribucion);
+                            $count = count($modulos_contribucion);
+                            $porcentaje = round(($count / $total_modulos) * 100);
+                        ?>
+                        <div class="fud-gailu-capacidad <?php echo $tiene_contribucion ? 'is-active' : 'is-inactive'; ?>">
+                            <div class="fud-gailu-capacidad__info">
+                                <span class="fud-gailu-capacidad__icon"><?php echo esc_html($datos['icono']); ?></span>
+                                <span class="fud-gailu-capacidad__name"><?php echo esc_html($datos['nombre']); ?></span>
+                            </div>
+                            <div class="fud-gailu-capacidad__bar">
+                                <div class="fud-gailu-capacidad__fill" style="width: <?php echo esc_attr($porcentaje); ?>%; background: <?php echo esc_attr($datos['color']); ?>"></div>
+                            </div>
+                            <span class="fud-gailu-capacidad__value"><?php echo esc_html($count); ?></span>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <?php
+    }
+
+    /**
+     * Renderiza el panel de prioridades (señales del nodo y próximas acciones)
+     * Puede ser llamado desde otros contextos (ej: class-dynamic-pages.php)
+     *
+     * @param string|null $module_id Si se pasa, filtra alertas relevantes para el módulo
+     * @return void
+     */
+    public function render_priority_panels(?string $module_id = null): void {
+        $portal_notifications_markup = '';
+        $portal_actions_markup = '';
+
+        if (class_exists('Flavor_Portal_Shortcodes')) {
+            $portal_shortcodes = Flavor_Portal_Shortcodes::get_instance();
+            if (method_exists($portal_shortcodes, 'render_shared_notifications_bar')) {
+                $portal_notifications_markup = (string) $portal_shortcodes->render_shared_notifications_bar($module_id);
+            }
+            if (method_exists($portal_shortcodes, 'render_shared_upcoming_actions')) {
+                $portal_actions_markup = (string) $portal_shortcodes->render_shared_upcoming_actions($module_id);
+            }
+        }
+
+        if ($portal_notifications_markup === '' && $portal_actions_markup === '') {
+            return;
+        }
+        ?>
+        <section class="fud-priority-panels fud-priority-panels--module" aria-labelledby="fud-priority-panels-title">
+            <div class="fud-priority-panels__header">
+                <h2 id="fud-priority-panels-title" class="fud-priority-panels__title"><?php esc_html_e('Atención y próximos pasos', 'flavor-chat-ia'); ?></h2>
+            </div>
+            <div class="fud-priority-panels__grid">
+                <?php if ($portal_notifications_markup !== '') : ?>
+                <article class="fud-priority-panel">
+                    <div class="fud-priority-panel__head">
+                        <h3 class="fud-priority-panel__title"><?php esc_html_e('Señales del nodo', 'flavor-chat-ia'); ?></h3>
+                    </div>
+                    <?php echo $portal_notifications_markup; ?>
+                </article>
+                <?php endif; ?>
+                <?php if ($portal_actions_markup !== '') : ?>
+                <article class="fud-priority-panel">
+                    <div class="fud-priority-panel__head">
+                        <h3 class="fud-priority-panel__title"><?php esc_html_e('Qué hacer ahora', 'flavor-chat-ia'); ?></h3>
+                    </div>
+                    <?php echo $portal_actions_markup; ?>
+                </article>
+                <?php endif; ?>
+            </div>
+        </section>
+        <?php
+    }
+
+    /**
+     * Renderiza el panel social compacto
+     * Puede ser llamado desde otros contextos (ej: class-dynamic-pages.php)
+     *
+     * @param int $user_id ID del usuario
+     * @return void
+     */
+    public function render_social_panel_compact(int $user_id): void {
+        $social_panel = $this->get_frontend_social_panel_data($user_id);
+
+        if (empty($social_panel['feed']) && empty($social_panel['community_nodes']) && empty($social_panel['groups'])) {
+            return;
+        }
+        ?>
+        <section class="fud-social-panel fud-social-panel--compact" aria-labelledby="fud-social-panel-compact-title">
+            <div class="fud-social-panel__header">
+                <h2 id="fud-social-panel-compact-title" class="fud-social-panel__title">
+                    <?php esc_html_e('Pulso social', 'flavor-chat-ia'); ?>
+                </h2>
+                <a href="<?php echo esc_url(home_url('/mi-portal/')); ?>" class="fud-social-panel__link">
+                    <?php esc_html_e('Ver todo', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+            <div class="fud-social-panel__grid fud-social-panel__grid--compact">
+                <?php if (!empty($social_panel['feed'])) : ?>
+                <div class="fl-item-list fl-item-list--horizontal">
+                    <?php foreach (array_slice($social_panel['feed'], 0, 3) as $item) : ?>
+                    <a href="<?php echo esc_url($item['url'] ?? '#'); ?>" class="fl-item-list__link">
+                        <span class="fl-item-list__icon"><?php echo esc_html($item['tipo_info']['icon'] ?? '📝'); ?></span>
+                        <span class="fl-item-list__content">
+                            <span class="fl-item-list__title"><?php echo esc_html($item['title']); ?></span>
+                        </span>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+        </section>
+        <?php
     }
 }
 

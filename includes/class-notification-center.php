@@ -621,7 +621,7 @@ class Flavor_Notification_Center {
 
         wp_enqueue_style(
             'flavor-notifications',
-            FLAVOR_CHAT_IA_URL . 'assets/css/notifications.css',
+            FLAVOR_CHAT_IA_URL . 'assets/css/modules/notifications.css',
             [],
             FLAVOR_CHAT_IA_VERSION
         );

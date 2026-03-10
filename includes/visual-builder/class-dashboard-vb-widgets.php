@@ -420,7 +420,7 @@ class Flavor_Dashboard_VB_Widgets {
                         <h2><?php esc_html_e('Dashboard Personal', 'flavor-chat-ia'); ?></h2>
                         <p><?php esc_html_e('Inicia sesion para acceder a tu dashboard personalizado con todas tus actividades y widgets.', 'flavor-chat-ia'); ?></p>
                         <div class="fvb-widget__login-actions">
-                            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="fvb-btn fvb-btn--primary">
+                            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="fvb-btn fvb-btn--primary">
                                 <?php esc_html_e('Iniciar Sesion', 'flavor-chat-ia'); ?>
                             </a>
                             <?php if (get_option('users_can_register')) : ?>
@@ -443,7 +443,7 @@ class Flavor_Dashboard_VB_Widgets {
     private function encolar_assets_dashboard() {
         wp_enqueue_style(
             'fvb-dashboard-widgets',
-            FLAVOR_CHAT_IA_URL . 'assets/css/dashboard-vb-widgets.css',
+            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-vb-widgets.css',
             [],
             FLAVOR_CHAT_IA_VERSION
         );
@@ -471,33 +471,39 @@ class Flavor_Dashboard_VB_Widgets {
     /**
      * Verificar si un módulo está activo
      *
+     * Utiliza la función centralizada Flavor_Chat_Module_Loader::is_module_active()
+     * que verifica en flavor_chat_ia_settings['active_modules'] (preferido)
+     * y flavor_active_modules (legacy), normalizando IDs automáticamente.
+     *
      * @param string $modulo_id ID del módulo
      * @return bool
      */
     public function modulo_activo($modulo_id) {
-        // Verificar por addon manager
+        // Verificar por addon manager (caso especial para addons externos)
         if (class_exists('Flavor_Addon_Manager')) {
             if (Flavor_Addon_Manager::is_addon_active($modulo_id)) {
                 return true;
             }
         }
 
-        // Verificar por opción directa
-        $modulos_activos = get_option('flavor_active_modules', []);
-        if (in_array($modulo_id, $modulos_activos)) {
-            return true;
+        // Usar función centralizada que verifica ambas fuentes de módulos activos
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            return Flavor_Chat_Module_Loader::is_module_active($modulo_id);
         }
 
-        // Verificar si existe la tabla del módulo (indicador de que está instalado)
-        global $wpdb;
-        $tabla = $wpdb->prefix . 'flavor_' . str_replace('-', '_', $modulo_id);
-        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla'") === $tabla) {
-            return true;
+        // Fallback: verificar en ambas opciones (preferida + legacy)
+        $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+        $modulos_activos = $configuracion_plugin['active_modules'] ?? [];
+
+        $modulos_activos_legacy = get_option('flavor_active_modules', []);
+        if (!empty($modulos_activos_legacy)) {
+            $modulos_activos = array_unique(array_merge($modulos_activos, $modulos_activos_legacy));
         }
 
-        // Por defecto, considerar activo si existe su template
-        $template_path = FLAVOR_CHAT_IA_PATH . 'templates/frontend/' . $modulo_id;
-        return is_dir($template_path);
+        // Normalizar ID (guiones vs guiones bajos)
+        $id_normalizado = str_replace('-', '_', $modulo_id);
+        return in_array($modulo_id, $modulos_activos, true)
+            || in_array($id_normalizado, $modulos_activos, true);
     }
 
     /**
@@ -1472,7 +1478,7 @@ class Flavor_Dashboard_VB_Widgets {
                 <div class="fvb-widget__login-message">
                     <span class="dashicons dashicons-lock"></span>
                     <p><?php esc_html_e('Inicia sesión para ver este contenido', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="fvb-btn fvb-btn--primary">
+                    <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="fvb-btn fvb-btn--primary">
                         <?php esc_html_e('Iniciar Sesión', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -2047,7 +2053,7 @@ class Flavor_Dashboard_VB_Widgets {
         // CSS de widgets de dashboard
         wp_enqueue_style(
             'fvb-dashboard-widgets',
-            FLAVOR_CHAT_IA_URL . 'assets/css/dashboard-vb-widgets.css',
+            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-vb-widgets.css',
             ['flavor-vb-frontend'],
             FLAVOR_CHAT_IA_VERSION
         );
@@ -2084,7 +2090,7 @@ class Flavor_Dashboard_VB_Widgets {
         // CSS para el panel del builder
         wp_enqueue_style(
             'fvb-dashboard-widgets-admin',
-            FLAVOR_CHAT_IA_URL . 'assets/css/dashboard-vb-widgets-admin.css',
+            FLAVOR_CHAT_IA_URL . 'assets/css/layouts/dashboard-vb-widgets-admin.css',
             ['flavor-visual-builder'],
             FLAVOR_CHAT_IA_VERSION
         );

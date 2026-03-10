@@ -833,7 +833,7 @@ class Flavor_Social_Search {
     public function enqueue_assets() {
         wp_enqueue_style(
             'flavor-social-search',
-            FLAVOR_CHAT_IA_URL . 'assets/css/social-search.css',
+            FLAVOR_CHAT_IA_URL . 'assets/css/modules/social-search.css',
             [],
             FLAVOR_CHAT_IA_VERSION
         );

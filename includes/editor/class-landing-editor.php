@@ -2375,7 +2375,7 @@ class Flavor_Landing_Editor {
 
             wp_enqueue_style(
                 'flavor-landing-frontend',
-                FLAVOR_CHAT_IA_URL . 'assets/css/landing-frontend.css',
+                FLAVOR_CHAT_IA_URL . 'assets/css/modules/landing-frontend.css',
                 ['swiper'],
                 FLAVOR_CHAT_IA_VERSION
             );
@@ -2466,7 +2466,7 @@ class Flavor_Landing_Editor {
         $html = $this->render_from_structure($structure);
 
         // Añadir estilos base
-        $styles = file_get_contents(FLAVOR_CHAT_IA_PATH . 'assets/css/landing-frontend.css');
+        $styles = file_get_contents(FLAVOR_CHAT_IA_PATH . 'assets/css/modules/landing-frontend.css');
 
         // Estilos del tema activo
         $theme_links = '';
