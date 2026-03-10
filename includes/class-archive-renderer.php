@@ -2678,23 +2678,54 @@ class Flavor_Archive_Renderer {
         }
 
         $stats = [];
+        $count_where_stats = [];
+        $custom_query_stats = [];
 
-        foreach ($tables_config['stats'] as $stat_config) {
-            $value = 0;
-
+        // Separar stats por tipo para optimizar
+        foreach ($tables_config['stats'] as $index => $stat_config) {
             if (!empty($stat_config['query'])) {
-                // Query personalizada
-                $query = str_replace(
-                    ['{table}', '{prefix}'],
-                    [$table, $wpdb->prefix],
-                    $stat_config['query']
-                );
-                $value = $wpdb->get_var($query);
+                $custom_query_stats[$index] = $stat_config;
             } elseif (!empty($stat_config['count_where'])) {
-                // Conteo con condición
-                $value = (int) $wpdb->get_var(
-                    "SELECT COUNT(*) FROM $table WHERE {$stat_config['count_where']}"
-                );
+                $count_where_stats[$index] = $stat_config;
+            }
+        }
+
+        // Consolidar count_where en una sola query usando CASE WHEN
+        $count_results = [];
+        if (!empty($count_where_stats)) {
+            $case_parts = [];
+            foreach ($count_where_stats as $index => $stat_config) {
+                $case_parts[] = "SUM(CASE WHEN {$stat_config['count_where']} THEN 1 ELSE 0 END) AS stat_{$index}";
+            }
+
+            $consolidated_query = "SELECT " . implode(', ', $case_parts) . " FROM {$table}";
+            $result = $wpdb->get_row($consolidated_query);
+
+            if ($result) {
+                foreach ($count_where_stats as $index => $stat_config) {
+                    $count_results[$index] = (int) ($result->{"stat_{$index}"} ?? 0);
+                }
+            }
+        }
+
+        // Ejecutar queries personalizadas (no consolidables)
+        $custom_results = [];
+        foreach ($custom_query_stats as $index => $stat_config) {
+            $query = str_replace(
+                ['{table}', '{prefix}'],
+                [$table, $wpdb->prefix],
+                $stat_config['query']
+            );
+            $custom_results[$index] = $wpdb->get_var($query);
+        }
+
+        // Reconstruir stats en orden original
+        foreach ($tables_config['stats'] as $index => $stat_config) {
+            $value = 0;
+            if (isset($count_results[$index])) {
+                $value = $count_results[$index];
+            } elseif (isset($custom_results[$index])) {
+                $value = $custom_results[$index];
             }
 
             $stats[] = [

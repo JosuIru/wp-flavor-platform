@@ -636,13 +636,49 @@ class Flavor_Module_Renderer {
         }
 
         $stats = [];
-        foreach ($stats_config as $stat) {
-            $value = 0;
+        $count_where_stats = [];
+        $custom_query_stats = [];
 
+        // Separar stats por tipo para optimizar
+        foreach ($stats_config as $index => $stat) {
             if (!empty($stat['query'])) {
-                $value = $wpdb->get_var(str_replace('{table}', $table, $stat['query']));
+                $custom_query_stats[$index] = $stat;
             } elseif (!empty($stat['count_where'])) {
-                $value = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table} WHERE {$stat['count_where']}");
+                $count_where_stats[$index] = $stat;
+            }
+        }
+
+        // Consolidar count_where en una sola query usando CASE WHEN
+        $count_results = [];
+        if (!empty($count_where_stats)) {
+            $case_parts = [];
+            foreach ($count_where_stats as $index => $stat) {
+                $case_parts[] = "SUM(CASE WHEN {$stat['count_where']} THEN 1 ELSE 0 END) AS stat_{$index}";
+            }
+
+            $consolidated_query = "SELECT " . implode(', ', $case_parts) . " FROM {$table}";
+            $result = $wpdb->get_row($consolidated_query);
+
+            if ($result) {
+                foreach ($count_where_stats as $index => $stat) {
+                    $count_results[$index] = (int) ($result->{"stat_{$index}"} ?? 0);
+                }
+            }
+        }
+
+        // Ejecutar queries personalizadas (no consolidables)
+        $custom_results = [];
+        foreach ($custom_query_stats as $index => $stat) {
+            $custom_results[$index] = $wpdb->get_var(str_replace('{table}', $table, $stat['query']));
+        }
+
+        // Reconstruir stats en orden original
+        foreach ($stats_config as $index => $stat) {
+            $value = 0;
+            if (isset($count_results[$index])) {
+                $value = $count_results[$index];
+            } elseif (isset($custom_results[$index])) {
+                $value = $custom_results[$index];
             }
 
             $stats[] = [
