@@ -2200,17 +2200,17 @@ a.flavor-btn--outline {
 }
 
 /* Links */
-.flavor-portal a,
-.flavor-dashboard a,
-[class*="flavor-"] a:not(.flavor-button):not(.flavor-btn) {
+.flavor-portal a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]),
+.flavor-dashboard a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]),
+[class*="flavor-"] a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]) {
     color: var(--portal-primary);
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
-.flavor-portal a:hover,
-.flavor-dashboard a:hover,
-[class*="flavor-"] a:not(.flavor-button):not(.flavor-btn):hover {
+.flavor-portal a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):hover,
+.flavor-dashboard a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):hover,
+[class*="flavor-"] a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):hover {
     color: var(--portal-primary-dark);
     text-decoration: underline;
 }

@@ -515,7 +515,7 @@ class Flavor_Radio_Dashboard_Tab {
             <span class="dashicons dashicons-lock"></span>
             <h4><?php esc_html_e('Inicia sesión para continuar', 'flavor-chat-ia'); ?></h4>
             <p><?php esc_html_e('Necesitas iniciar sesión para acceder a esta sección.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="btn btn-primary">
+            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="btn btn-primary">
                 <?php esc_html_e('Iniciar Sesión', 'flavor-chat-ia'); ?>
             </a>
         </div>

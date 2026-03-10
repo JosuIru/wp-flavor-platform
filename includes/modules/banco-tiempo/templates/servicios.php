@@ -13,6 +13,7 @@ if (!defined('ABSPATH')) {
 
 $usuario_id = get_current_user_id();
 $mostrar_propios = !empty($atts['mostrar_propios']);
+$comunidad_id = absint($atts['comunidad_id'] ?? ($_GET['comunidad_id'] ?? 0));
 
 global $wpdb;
 $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
@@ -39,28 +40,62 @@ $iconos_categoria = [
 // Mis servicios activos
 $mis_servicios = [];
 if ($usuario_id) {
-    $mis_servicios = $wpdb->get_results($wpdb->prepare(
-        "SELECT * FROM $tabla_servicios
-         WHERE usuario_id = %d AND estado IN ('activo', 'pausado')
-         ORDER BY fecha_publicacion DESC",
-        $usuario_id
-    ));
+    if ($comunidad_id > 0) {
+        $mis_servicios = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_servicios
+             WHERE usuario_id = %d AND comunidad_id = %d AND estado IN ('activo', 'pausado')
+             ORDER BY fecha_publicacion DESC",
+            $usuario_id,
+            $comunidad_id
+        ));
+    } else {
+        $mis_servicios = $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM $tabla_servicios
+             WHERE usuario_id = %d AND estado IN ('activo', 'pausado')
+             ORDER BY fecha_publicacion DESC",
+            $usuario_id
+        ));
+    }
 }
 
 // Servicios de otros usuarios
-$servicios_disponibles = $wpdb->get_results($wpdb->prepare(
-    "SELECT s.*, u.display_name as usuario_nombre
+$servicios_sql = "SELECT s.*, u.display_name as usuario_nombre
      FROM $tabla_servicios s
      LEFT JOIN {$wpdb->users} u ON s.usuario_id = u.ID
-     WHERE s.estado = 'activo' AND s.usuario_id != %d
-     ORDER BY s.fecha_publicacion DESC
-     LIMIT 12",
-    $usuario_id ?: 0
-));
+     WHERE s.estado = 'activo' AND s.usuario_id != %d";
+$servicios_params = [$usuario_id ?: 0];
 
-// Estadísticas
-$total_servicios = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_servicios WHERE estado = 'activo'");
-$total_categorias = $wpdb->get_var("SELECT COUNT(DISTINCT categoria) FROM $tabla_servicios WHERE estado = 'activo'");
+if ($comunidad_id > 0) {
+    $servicios_sql .= " AND s.comunidad_id = %d";
+    $servicios_params[] = $comunidad_id;
+}
+
+$servicios_sql .= " ORDER BY s.fecha_publicacion DESC LIMIT 12";
+$servicios_disponibles = $wpdb->get_results($wpdb->prepare($servicios_sql, ...$servicios_params));
+
+// Estadísticas alineadas con la lista visible de servicios disponibles
+$stats_where = ["estado = 'activo'"];
+$stats_params = [];
+
+if ($usuario_id) {
+    $stats_where[] = "usuario_id != %d";
+    $stats_params[] = $usuario_id;
+}
+
+if ($comunidad_id > 0) {
+    $stats_where[] = "comunidad_id = %d";
+    $stats_params[] = $comunidad_id;
+}
+
+$stats_sql_base = " FROM $tabla_servicios WHERE " . implode(' AND ', $stats_where);
+
+if (!empty($stats_params)) {
+    $total_servicios = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*)" . $stats_sql_base, ...$stats_params));
+    $total_categorias = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(DISTINCT categoria)" . $stats_sql_base, ...$stats_params));
+} else {
+    $total_servicios = (int) $wpdb->get_var("SELECT COUNT(*)" . $stats_sql_base);
+    $total_categorias = (int) $wpdb->get_var("SELECT COUNT(DISTINCT categoria)" . $stats_sql_base);
+}
 ?>
 
 <div class="fl-banco-tiempo-servicios">
@@ -168,7 +203,7 @@ $total_categorias = $wpdb->get_var("SELECT COUNT(DISTINCT categoria) FROM $tabla
                         <?php esc_html_e('Solicitar', 'flavor-chat-ia'); ?>
                     </button>
                     <?php else : ?>
-                    <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="fl-btn fl-btn-outline fl-btn-sm">
+                    <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="fl-btn fl-btn-outline fl-btn-sm">
                         <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
                     </a>
                     <?php endif; ?>
@@ -179,8 +214,54 @@ $total_categorias = $wpdb->get_var("SELECT COUNT(DISTINCT categoria) FROM $tabla
         <?php else : ?>
         <div class="fl-empty-state">
             <span class="dashicons dashicons-admin-tools"></span>
-            <p><?php esc_html_e('No hay servicios disponibles en este momento.', 'flavor-chat-ia'); ?></p>
+            <p>
+                <?php
+                echo $usuario_id
+                    ? esc_html__('No hay servicios de otros usuarios disponibles en este momento.', 'flavor-chat-ia')
+                    : esc_html__('No hay servicios disponibles en este momento.', 'flavor-chat-ia');
+                ?>
+            </p>
         </div>
+
+        <?php if ($usuario_id && !empty($mis_servicios)) : ?>
+        <div class="fl-section fl-section-secondary">
+            <div class="fl-section-header">
+                <h3 class="fl-section-title">
+                    <span class="dashicons dashicons-businessman"></span>
+                    <?php esc_html_e('Tus servicios activos', 'flavor-chat-ia'); ?>
+                </h3>
+                <span class="fl-section-count"><?php echo intval(count($mis_servicios)); ?> <?php esc_html_e('servicios', 'flavor-chat-ia'); ?></span>
+            </div>
+            <div class="fl-services-grid fl-services-mine">
+                <?php foreach ($mis_servicios as $servicio) : ?>
+                <div class="fl-service-card fl-service-mine <?php echo $servicio->estado === 'pausado' ? 'fl-service-paused' : ''; ?>">
+                    <div class="fl-service-header">
+                        <span class="fl-service-category">
+                            <span class="dashicons <?php echo esc_attr($iconos_categoria[$servicio->categoria] ?? 'dashicons-tag'); ?>"></span>
+                            <?php echo esc_html($categorias[$servicio->categoria] ?? $servicio->categoria); ?>
+                        </span>
+                        <span class="fl-service-status fl-status-<?php echo esc_attr($servicio->estado); ?>">
+                            <?php echo $servicio->estado === 'activo' ? esc_html__('Activo', 'flavor-chat-ia') : esc_html__('Pausado', 'flavor-chat-ia'); ?>
+                        </span>
+                    </div>
+                    <h4 class="fl-service-title"><?php echo esc_html($servicio->titulo); ?></h4>
+                    <p class="fl-service-desc"><?php echo esc_html(wp_trim_words($servicio->descripcion, 15)); ?></p>
+                    <div class="fl-service-footer">
+                        <span class="fl-service-hours">
+                            <span class="dashicons dashicons-clock"></span>
+                            <?php echo number_format($servicio->horas_estimadas, 1); ?>h
+                        </span>
+                        <div class="fl-service-actions">
+                            <button type="button" class="fl-btn-icon bt-btn-editar" data-servicio-id="<?php echo esc_attr($servicio->id); ?>" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
+                                <span class="dashicons dashicons-edit"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>

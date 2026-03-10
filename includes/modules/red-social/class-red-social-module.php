@@ -5244,6 +5244,12 @@ KNOWLEDGE;
 
         <script>
         (function($) {
+            // Verificar que flavorRedSocial existe antes de usar sus propiedades
+            if (typeof flavorRedSocial === 'undefined') {
+                console.warn('RedSocial: flavorRedSocial no definido, funcionalidades AJAX desactivadas');
+                return;
+            }
+
             var $container = $('.flavor-social-feed-integrado[data-entidad-id="<?php echo esc_js($entidad_id); ?>"]');
             var entidad = '<?php echo esc_js($entidad); ?>';
             var entidadId = <?php echo intval($entidad_id); ?>;

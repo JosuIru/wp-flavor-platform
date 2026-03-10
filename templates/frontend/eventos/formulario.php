@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="flavor-alert flavor-alert-warning">';
     echo '<p>' . __('Debes iniciar sesión para crear eventos.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="flavor-btn flavor-btn-primary">' . __('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . __('Iniciar sesión', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }

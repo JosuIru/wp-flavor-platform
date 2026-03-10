@@ -769,7 +769,7 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
                 <a href="%s" class="fichaje-btn">%s</a>
             </div>',
             esc_html__('Debes iniciar sesión para acceder al sistema de fichaje.', 'flavor-chat-ia'),
-            esc_url(wp_login_url(get_permalink())),
+            esc_url(wp_login_url(flavor_current_request_url())),
             esc_html__('Iniciar sesión', 'flavor-chat-ia')
         );
     }

@@ -12,6 +12,9 @@
             this.initQuickLinks();
             this.initSearch();
             this.initViewToggle();
+            this.initPriorityFilter();
+            this.initAdminSocialFilter();
+            this.initAdminSocialSort();
         },
 
         /**
@@ -96,6 +99,113 @@
 
                 // Guardar preferencia
                 localStorage.setItem(storageKey, viewType);
+            });
+        },
+
+        initPriorityFilter: function() {
+            $(document).on('click', '.fud-priority-filter__btn', function(e) {
+                e.preventDefault();
+
+                const priority = $(this).data('priority') || 'all';
+
+                $('.fud-priority-filter__btn')
+                    .removeClass('is-active')
+                    .attr('aria-pressed', 'false');
+
+                $(this)
+                    .addClass('is-active')
+                    .attr('aria-pressed', 'true');
+
+                FlavorUnifiedDashboard.applyPriorityFilter(priority);
+            });
+        },
+
+        applyPriorityFilter: function(priority) {
+            const normalizedPriority = priority || 'all';
+
+            $('.fud-next-action').each(function() {
+                const itemSeverity = $(this).data('severity') || 'stable';
+                const shouldShow = normalizedPriority === 'all' || itemSeverity === normalizedPriority;
+                $(this).toggle(shouldShow);
+            });
+
+            $('.fud-widget, .fl-widget').each(function() {
+                const itemSeverity = $(this).data('severity') || '';
+                const shouldShow = normalizedPriority === 'all' || itemSeverity === normalizedPriority;
+                $(this).toggle(shouldShow);
+            });
+
+            $('.fud-widgets-grid, .fl-widgets-grid').each(function() {
+                const visibleWidgets = $(this).children('.fud-widget:visible, .fl-widget:visible').length;
+                $(this).toggleClass('is-empty-by-priority', visibleWidgets === 0 && normalizedPriority !== 'all');
+            });
+        },
+
+        initAdminSocialFilter: function() {
+            $(document).on('click', '.fud-admin-social__filter', function(e) {
+                e.preventDefault();
+
+                const filter = $(this).data('social-filter') || 'all';
+
+                $('.fud-admin-social__filter')
+                    .removeClass('is-active')
+                    .attr('aria-pressed', 'false');
+
+                $(this)
+                    .addClass('is-active')
+                    .attr('aria-pressed', 'true');
+
+                $('.fud-admin-social__card').each(function() {
+                    const cardType = $(this).data('social-card') || '';
+                    const shouldShow = filter === 'all' || filter === cardType;
+                    $(this).toggle(shouldShow);
+                });
+            });
+        },
+
+        initAdminSocialSort: function() {
+            $(document).on('click', '.fud-admin-social__sort-btn', function(e) {
+                e.preventDefault();
+
+                const sortMode = $(this).data('social-sort') || 'unread';
+                const list = $(this).closest('.fud-admin-social__card').find('.fud-admin-social__list').first();
+
+                if (!list.length) {
+                    return;
+                }
+
+                $(this).siblings('.fud-admin-social__sort-btn')
+                    .removeClass('is-active')
+                    .attr('aria-pressed', 'false');
+
+                $(this)
+                    .addClass('is-active')
+                    .attr('aria-pressed', 'true');
+
+                const items = list.children('.fud-admin-social__item').get();
+
+                items.sort(function(a, b) {
+                    const aUnread = parseInt(a.dataset.nodeUnread || '0', 10);
+                    const bUnread = parseInt(b.dataset.nodeUnread || '0', 10);
+                    const aGroups = parseInt(a.dataset.nodeGroups || '0', 10);
+                    const bGroups = parseInt(b.dataset.nodeGroups || '0', 10);
+
+                    if (sortMode === 'active') {
+                        if (bGroups !== aGroups) {
+                            return bGroups - aGroups;
+                        }
+                        return bUnread - aUnread;
+                    }
+
+                    if (bUnread !== aUnread) {
+                        return bUnread - aUnread;
+                    }
+                    return bGroups - aGroups;
+                });
+
+                items.forEach(function(item) {
+                    list.append(item);
+                });
             });
         },
 

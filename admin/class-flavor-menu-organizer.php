@@ -25,15 +25,22 @@ class Flavor_Menu_Organizer {
     private $categories = [];
 
     /**
+     * Categorías visibles por vista admin.
+     *
+     * @var array
+     */
+    private $categories_por_vista = [];
+
+    /**
      * Items de Flavor Platform que NO deben moverse
      * (configuración de plataforma, no módulos de negocio)
      */
     private $platform_items = [
         'flavor-dashboard',
-        'flavor-app-composer',
+        'flavor-module-dashboards',
         'flavor-design-settings',
         'flavor-create-pages',
-        'flavor-landing-editor',
+        'flavor-landings',
         'flavor-permissions',
         'flavor-chat-config',
         'flavor-chat-ia-escalations',
@@ -69,9 +76,11 @@ class Flavor_Menu_Organizer {
     private function __construct() {
         // Configurar categorías
         $this->setup_categories();
+        $this->setup_categories_por_vista();
 
         // Reorganizar menús con prioridad baja para ejecutar después de todos los módulos
         add_action('admin_menu', [$this, 'reorganize_menus'], 999);
+        add_action('admin_head', [$this, 'output_scroll_css'], 20);
     }
 
     /**
@@ -146,6 +155,67 @@ class Flavor_Menu_Organizer {
     }
 
     /**
+     * Configurar categorías visibles por vista.
+     */
+    private function setup_categories_por_vista() {
+        $this->categories_por_vista = [
+            'admin' => 'all',
+            'gestor_grupos' => [
+                'comunidad',
+                'comunicacion',
+                'actividades',
+                'servicios',
+                'recursos',
+                'sostenibilidad',
+            ],
+        ];
+
+        $this->categories_por_vista = apply_filters(
+            'flavor_category_menus_por_vista',
+            $this->categories_por_vista
+        );
+    }
+
+    /**
+     * Obtener vista activa del admin.
+     *
+     * @return string
+     */
+    private function get_active_view() {
+        if (class_exists('Flavor_Admin_Menu_Manager')) {
+            return Flavor_Admin_Menu_Manager::get_instance()->obtener_vista_activa();
+        }
+
+        return 'admin';
+    }
+
+    /**
+     * Verificar si una categoría debe mostrarse en la vista actual.
+     *
+     * @param string $category_slug
+     * @return bool
+     */
+    private function category_visible_in_view($category_slug) {
+        $view = $this->get_active_view();
+        $visible_categories = $this->categories_por_vista[$view] ?? 'all';
+
+        if ($visible_categories === 'all') {
+            return true;
+        }
+
+        return in_array($category_slug, $visible_categories, true);
+    }
+
+    /**
+     * Obtener capacidad de menú para la vista actual.
+     *
+     * @return string
+     */
+    private function get_menu_capability() {
+        return $this->get_active_view() === 'gestor_grupos' ? 'read' : 'manage_options';
+    }
+
+    /**
      * Reorganizar menús
      */
     public function reorganize_menus() {
@@ -174,11 +244,17 @@ class Flavor_Menu_Organizer {
      * Crear menús por categoría
      */
     private function create_category_menus() {
+        $capability = $this->get_menu_capability();
+
         foreach ($this->categories as $slug => $config) {
+            if (!$this->category_visible_in_view($slug)) {
+                continue;
+            }
+
             add_menu_page(
                 $config['title'],
                 $config['title'],
-                'manage_options',
+                $capability,
                 'flavor-cat-' . $slug,
                 function() use ($slug, $config) {
                     $this->render_category_dashboard($slug, $config);
@@ -192,7 +268,7 @@ class Flavor_Menu_Organizer {
                 'flavor-cat-' . $slug,
                 $config['title'] . ' - Dashboard',
                 __('Dashboard', 'flavor-chat-ia'),
-                'manage_options',
+                $capability,
                 'flavor-cat-' . $slug,
                 function() use ($slug, $config) {
                     $this->render_category_dashboard($slug, $config);
@@ -232,6 +308,10 @@ class Flavor_Menu_Organizer {
             $category = $this->detect_category($slug);
 
             if ($category) {
+                if (!$this->category_visible_in_view($category)) {
+                    continue;
+                }
+
                 $category_slug = 'flavor-cat-' . $category;
 
                 // Obtener el hookname del slug original
@@ -381,6 +461,22 @@ class Flavor_Menu_Organizer {
         }
 
         return $counts;
+    }
+
+    /**
+     * Limita la altura de submenús largos del ecosistema Flavor en el admin clásico.
+     */
+    public function output_scroll_css() {
+        ?>
+        <style id="flavor-category-menu-scroll">
+            #adminmenu li.toplevel_page_flavor-chat-ia .wp-submenu,
+            #adminmenu li[id^="toplevel_page_flavor-cat-"] .wp-submenu {
+                max-height: calc(100vh - 96px);
+                overflow-y: auto;
+                overscroll-behavior: contain;
+            }
+        </style>
+        <?php
     }
 }
 

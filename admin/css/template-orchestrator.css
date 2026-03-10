@@ -167,6 +167,82 @@
     margin: 0;
 }
 
+.flavor-template-section--suggested {
+    margin-bottom: 18px;
+}
+
+.flavor-template-suggestion-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #fff7ed;
+    border: 1px solid #fdba74;
+}
+
+.flavor-template-suggestion-note .dashicons {
+    color: #c2410c;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+}
+
+.flavor-template-suggestion-note strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #9a3412;
+}
+
+.flavor-template-suggestion-note .description {
+    margin: 0;
+    color: #9a3412;
+}
+
+/* ─── Lectura ecosistemica del preview ─── */
+.flavor-template-ecosystem-block + .flavor-template-ecosystem-block {
+    margin-top: 14px;
+}
+
+.flavor-template-ecosystem-label {
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--flavor-text-secondary, #646970);
+}
+
+.flavor-template-ecosystem-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.flavor-template-ecosystem-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    color: #374151;
+    font-size: 12px;
+}
+
+.flavor-template-ecosystem-tag.is-capability {
+    background: #ecfeff;
+    border-color: #a5f3fc;
+    color: #155e75;
+}
+
+.flavor-template-ecosystem-tag.is-recommended {
+    background: #fff7ed;
+    border-color: #fdba74;
+    color: #9a3412;
+}
+
 /* ─── Lista de modulos ─── */
 .flavor-template-modules {
     list-style: none;

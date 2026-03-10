@@ -16,6 +16,7 @@ const flavorTemplateOrchestratorFactory = () => ({
         mostrarPreviewModal: false,
         plantillaSeleccionadaId: null,
         plantillaSeleccionadaData: {},
+        previewOrigen: 'perfil',
 
         // Estado de modulos seleccionados para instalar
         modulosSeleccionados: [],
@@ -151,8 +152,9 @@ const flavorTemplateOrchestratorFactory = () => ({
          *
          * @param {string} plantillaId - ID de la plantilla
          */
-        abrirPreviewPlantilla(plantillaId) {
+        abrirPreviewPlantilla(plantillaId, origen = 'perfil') {
             this.plantillaSeleccionadaId = plantillaId;
+            this.previewOrigen = origen;
             this.modulosSeleccionados = [];
             this.cargarDatosDemo = false;
 
@@ -208,6 +210,29 @@ const flavorTemplateOrchestratorFactory = () => ({
             this.mostrarPreviewModal = false;
             this.plantillaSeleccionadaId = null;
             this.plantillaSeleccionadaData = null;
+            this.previewOrigen = 'perfil';
+        },
+
+        /**
+         * Indica si el preview actual proviene de una sugerencia automatica
+         *
+         * @returns {boolean}
+         */
+        esPreviewSugerencia() {
+            return this.previewOrigen === 'sugerencia';
+        },
+
+        /**
+         * Activa directamente una plantilla sugerida reutilizando el flujo actual
+         *
+         * @param {string} plantillaId - ID de la plantilla sugerida
+         */
+        activarSugerenciaPlantilla(plantillaId) {
+            this.plantillaSeleccionadaId = plantillaId;
+            this.previewOrigen = 'sugerencia';
+            this.modulosSeleccionados = [];
+            this.cargarDatosDemo = false;
+            this.activarPlantilla(plantillaId);
         },
 
         /**
@@ -498,17 +523,17 @@ window.flavorTemplateOrchestrator = flavorTemplateOrchestratorFactory;
  *
  * @param {string} plantillaId - ID de la plantilla
  */
-window.abrirPreviewPlantilla = function(plantillaId) {
+window.abrirPreviewPlantilla = function(plantillaId, origen = 'perfil') {
     // Buscar la instancia de Alpine en el wrapper
     const wrapper = document.querySelector('.flavor-composer-wrapper');
 
     if (wrapper && wrapper.__x) {
-        wrapper.__x.$data.abrirPreviewPlantilla(plantillaId);
+        wrapper.__x.$data.abrirPreviewPlantilla(plantillaId, origen);
     } else if (window.Alpine) {
         // Fallback: usar el scope global de Alpine
         const componente = Alpine.$data(wrapper);
         if (componente && componente.abrirPreviewPlantilla) {
-            componente.abrirPreviewPlantilla(plantillaId);
+            componente.abrirPreviewPlantilla(plantillaId, origen);
         }
     }
 };

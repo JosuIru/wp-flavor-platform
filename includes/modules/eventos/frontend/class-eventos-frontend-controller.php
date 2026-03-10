@@ -168,6 +168,20 @@ class Flavor_Eventos_Frontend_Controller {
     }
 
     /**
+     * Renderiza un estado de login con acción explícita.
+     *
+     * @param string $mensaje Mensaje principal.
+     * @return string
+     */
+    private function render_login_required($mensaje) {
+        return '<div class="flavor-empty-state flavor-empty-state-login">' .
+            '<p>' . esc_html($mensaje) . '</p>' .
+            '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' .
+            esc_html__('Iniciar sesión', 'flavor-chat-ia') .
+            '</a></div>';
+    }
+
+    /**
      * Shortcode: Próximo evento (widget compacto)
      */
     public function shortcode_proximo($atts) {
@@ -218,7 +232,7 @@ class Flavor_Eventos_Frontend_Controller {
      */
     public function shortcode_mis_inscripciones($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus inscripciones.', 'flavor-chat-ia') . '</p>';
+            return $this->render_login_required(__('Inicia sesión para ver tus inscripciones.', 'flavor-chat-ia'));
         }
 
         $this->encolar_assets();
@@ -246,7 +260,11 @@ class Flavor_Eventos_Frontend_Controller {
         $evento_id = $atts['id'] ?: (isset($_GET['evento_id']) ? absint($_GET['evento_id']) : 0);
 
         if (!$evento_id) {
-            return '<p class="flavor-error">' . __('Evento no especificado.', 'flavor-chat-ia') . '</p>';
+            return '<div class="flavor-empty-state">' .
+                '<p>' . esc_html__('Evento no especificado.', 'flavor-chat-ia') . '</p>' .
+                '<a href="' . esc_url(home_url('/mi-portal/eventos/')) . '" class="flavor-btn flavor-btn-primary">' .
+                esc_html__('Volver a eventos', 'flavor-chat-ia') .
+                '</a></div>';
         }
 
         ob_start();
@@ -766,7 +784,7 @@ class Flavor_Eventos_Frontend_Controller {
             wp_send_json_error(__('Evento no encontrado', 'flavor-chat-ia'));
         }
 
-        $url = home_url('/eventos/?evento_id=' . $evento_id);
+        $url = add_query_arg('evento_id', $evento_id, home_url('/mi-portal/eventos/detalle/'));
         $texto = urlencode($evento->titulo);
 
         $share_urls = [
@@ -808,7 +826,7 @@ class Flavor_Eventos_Frontend_Controller {
                 <p class="evento-ubicacion"><?php echo esc_html($evento->ubicacion); ?></p>
                 <p class="evento-descripcion"><?php echo esc_html(wp_trim_words($evento->descripcion, 15)); ?></p>
                 <div class="evento-acciones">
-                    <a href="<?php echo esc_url(home_url('/eventos/?evento_id=' . $evento->id)); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(add_query_arg('evento_id', $evento->id, home_url('/mi-portal/eventos/detalle/'))); ?>" class="flavor-btn flavor-btn-primary">
                         <?php _e('Ver Evento', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -882,13 +900,13 @@ class Flavor_Eventos_Frontend_Controller {
                                 <strong><?php echo esc_html($evento->titulo); ?></strong>
                                 <span class="ubicacion"><?php echo esc_html($evento->ubicacion); ?></span>
                             </div>
-                            <a href="<?php echo esc_url(home_url('/eventos/?evento_id=' . $evento->id)); ?>" class="flavor-btn flavor-btn-small">
+                            <a href="<?php echo esc_url(add_query_arg('evento_id', $evento->id, home_url('/mi-portal/eventos/detalle/'))); ?>" class="flavor-btn flavor-btn-small">
                                 <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <a href="<?php echo esc_url(home_url('/eventos/')); ?>" class="ver-todos-link">
+                <a href="<?php echo esc_url(home_url('/mi-portal/eventos/')); ?>" class="ver-todos-link">
                     <?php esc_html_e('Ver todos los eventos', 'flavor-chat-ia'); ?> &rarr;
                 </a>
             </div>
@@ -918,12 +936,12 @@ class Flavor_Eventos_Frontend_Controller {
             <?php endif; ?>
 
             <div class="eventos-acciones-botones">
-                <a href="<?php echo esc_url(home_url('/eventos/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/eventos/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-calendar-alt"></span>
                     <?php esc_html_e('Explorar Eventos', 'flavor-chat-ia'); ?>
                 </a>
                 <?php if (is_user_logged_in()): ?>
-                <a href="<?php echo esc_url(home_url('/eventos/mis-inscripciones/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/eventos/mis-inscripciones/')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-list-view"></span>
                     <?php esc_html_e('Mis Inscripciones', 'flavor-chat-ia'); ?>
                 </a>
@@ -1474,7 +1492,7 @@ class Flavor_Eventos_Frontend_Controller {
                     <?php
                     printf(
                         esc_html__('Ya tienes cuenta? %sInicia sesion%s para inscribirte mas rapido.', 'flavor-chat-ia'),
-                        '<a href="' . esc_url(wp_login_url(get_permalink())) . '">',
+                        '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '">',
                         '</a>'
                     );
                     ?>
@@ -1550,7 +1568,7 @@ class Flavor_Eventos_Frontend_Controller {
                     'lng' => (float) $evento->coordenadas_lng,
                     'imagen' => esc_url($evento->imagen),
                     'precio' => (float) $evento->precio,
-                    'url' => home_url('/eventos/?evento_id=' . $evento->id),
+                    'url' => add_query_arg('evento_id', $evento->id, home_url('/mi-portal/eventos/detalle/')),
                 ];
             }
         }

@@ -1586,7 +1586,7 @@ class Flavor_Privacy_Manager {
         if (!is_user_logged_in()) {
             return '<div class="flavor-notice flavor-notice-warning">' .
                    '<p>Debes iniciar sesión para acceder a tu panel de privacidad.</p>' .
-                   '<a href="' . wp_login_url(get_permalink()) . '" class="flavor-btn flavor-btn-primary">Iniciar sesión</a>' .
+                   '<a href="' . wp_login_url(flavor_current_request_url()) . '" class="flavor-btn flavor-btn-primary">Iniciar sesión</a>' .
                    '</div>';
         }
 

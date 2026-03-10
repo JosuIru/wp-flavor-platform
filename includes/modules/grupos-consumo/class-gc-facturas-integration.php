@@ -101,14 +101,14 @@ class Flavor_GC_Facturas_Integration {
      */
     public function render_metabox_facturas($post) {
         $url_nueva_factura = admin_url(
-            'admin.php?page=flavor-panel&modulo=facturas&vista=facturas-nueva' .
+            'admin.php?page=facturas-nueva' .
             '&cliente_id=' . $post->ID .
             '&cliente_tipo=productor' .
             '&cliente_nombre=' . urlencode($post->post_title)
         );
 
         $url_ver_facturas = admin_url(
-            'admin.php?page=flavor-panel&modulo=facturas&vista=facturas-listado' .
+            'admin.php?page=facturas-listado' .
             '&filtro_cliente=' . $post->ID
         );
 
@@ -181,7 +181,7 @@ class Flavor_GC_Facturas_Integration {
         $pendientes = $this->contar_facturas_cliente($post_id, 'productor', 'pendiente');
 
         $url_nueva = admin_url(
-            'admin.php?page=flavor-panel&modulo=facturas&vista=facturas-nueva' .
+            'admin.php?page=facturas-nueva' .
             '&cliente_id=' . $post_id .
             '&cliente_tipo=productor'
         );
@@ -257,7 +257,7 @@ class Flavor_GC_Facturas_Integration {
 
         // Redirigir a la pagina de nueva factura con datos pre-rellenados
         $url = admin_url(
-            'admin.php?page=flavor-panel&modulo=facturas&vista=facturas-nueva' .
+            'admin.php?page=facturas-nueva' .
             '&cliente_id=' . $productor_id .
             '&cliente_tipo=productor' .
             '&cliente_nombre=' . urlencode($productor->post_title) .
@@ -292,7 +292,7 @@ class Flavor_GC_Facturas_Integration {
 
         // Redirigir a la pagina de nueva factura con datos pre-rellenados
         $url = admin_url(
-            'admin.php?page=flavor-panel&modulo=facturas&vista=facturas-nueva' .
+            'admin.php?page=facturas-nueva' .
             '&cliente_id=' . $usuario_id .
             '&cliente_tipo=consumidor' .
             '&cliente_nombre=' . urlencode($usuario->display_name) .

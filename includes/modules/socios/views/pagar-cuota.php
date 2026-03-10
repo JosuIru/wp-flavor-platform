@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
             <span class="dashicons dashicons-lock"></span>
             <h3><?php esc_html_e('Inicia sesión para ver tus cuotas', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Accede a tu cuenta para gestionar tus pagos de socio.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-soc-btn flavor-soc-btn-primary">
+            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-soc-btn flavor-soc-btn-primary">
                 <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
             </a>
         </div>

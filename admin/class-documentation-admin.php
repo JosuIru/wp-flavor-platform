@@ -384,8 +384,8 @@ class Flavor_Documentation_Admin {
                         <li><?php _e('Activa con datos de demo', 'flavor-chat-ia'); ?></li>
                         <li><?php _e('¡Listo para usar!', 'flavor-chat-ia'); ?></li>
                     </ol>
-                    <a href="<?php echo admin_url('admin.php?page=flavor-app-composer'); ?>" class="button button-primary">
-                        <?php _e('Ir al Compositor', 'flavor-chat-ia'); ?> →
+                    <a href="<?php echo admin_url('admin.php?page=flavor-module-dashboards'); ?>" class="button button-primary">
+                        <?php _e('Ir a Módulos', 'flavor-chat-ia'); ?> →
                     </a>
                 </div>
             </div>
@@ -397,9 +397,9 @@ class Flavor_Documentation_Admin {
                         <span class="dashicons dashicons-dashboard"></span>
                         <?php _e('Dashboard', 'flavor-chat-ia'); ?>
                     </a>
-                    <a href="<?php echo admin_url('admin.php?page=flavor-app-composer'); ?>" class="flavor-docs-quick-link">
-                        <span class="dashicons dashicons-layout"></span>
-                        <?php _e('Compositor', 'flavor-chat-ia'); ?>
+                    <a href="<?php echo admin_url('admin.php?page=flavor-module-dashboards'); ?>" class="flavor-docs-quick-link">
+                        <span class="dashicons dashicons-screenoptions"></span>
+                        <?php _e('Módulos', 'flavor-chat-ia'); ?>
                     </a>
                     <a href="<?php echo admin_url('admin.php?page=flavor-chat-config'); ?>" class="flavor-docs-quick-link">
                         <span class="dashicons dashicons-admin-generic"></span>

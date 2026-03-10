@@ -176,7 +176,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
                     <?php esc_html_e('Calcular mi huella', 'flavor-chat-ia'); ?>
                 </a>
                 <?php else : ?>
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="he-btn" style="background: white; color: var(--he-primary);">
+                <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="he-btn" style="background: white; color: var(--he-primary);">
                     <?php esc_html_e('Unirme', 'flavor-chat-ia'); ?>
                 </a>
                 <?php endif; ?>

@@ -17,6 +17,8 @@ const flavorComposerFactory = () => ({
         filtroPerfilCategoria: 'todos',
         filtroPerfilTipo: 'todos',
         filtroPerfilImpacto: 'todos',
+        filtroPerfilCapacidad: 'todos',
+        filtroPerfilContexto: 'todos',
         filtroModuloTexto: '',
         moduleCategoryMap: {},
         landingTags: {},
@@ -24,10 +26,14 @@ const flavorComposerFactory = () => ({
         // Multi-perfil
         modoMultiSeleccion: false,
         perfilesSeleccionados: flavorComposerData.perfilesActivos || [flavorComposerData.perfilActivo || 'personalizado'],
+        perfilesActivosActuales: flavorComposerData.perfilesActivos || [flavorComposerData.perfilActivo || 'personalizado'],
 
         // Datos inyectados desde PHP
         perfiles: flavorComposerData.perfiles || {},
+        perfilesEcosistema: flavorComposerData.perfilesEcosistema || {},
         categorias: flavorComposerData.categorias || {},
+        capacidadesPerfiles: flavorComposerData.capacidadesPerfiles || [],
+        contextosPerfiles: flavorComposerData.contextosPerfiles || [],
         modulosRegistrados: flavorComposerData.modulosRegistrados || {},
         nonces: flavorComposerData.nonces || {},
         adminPostUrl: flavorComposerData.adminPostUrl || '',
@@ -68,6 +74,10 @@ const flavorComposerFactory = () => ({
                 return this.perfilesSeleccionados.includes(idPerfil);
             }
             return this.perfilSeleccionado === idPerfil;
+        },
+
+        perfilEstaActivoEnSistema(idPerfil) {
+            return this.perfilesActivosActuales.includes(idPerfil);
         },
 
         /**
@@ -273,6 +283,7 @@ const flavorComposerFactory = () => ({
         perfilCoincideFiltro(idPerfil) {
             const perfil = this.perfiles[idPerfil];
             if (!perfil) return false;
+            const perfilEcosistema = this.perfilesEcosistema[idPerfil] || {};
 
             if (this.filtroPerfilCategoria !== 'todos') {
                 const categoriasPerfil = this.obtenerCategoriasPerfil(idPerfil);
@@ -295,13 +306,30 @@ const flavorComposerFactory = () => ({
                 }
             }
 
+            if (this.filtroPerfilCapacidad !== 'todos') {
+                const capacidades = perfilEcosistema.capacidades || [];
+                if (!capacidades.includes(this.filtroPerfilCapacidad)) {
+                    return false;
+                }
+            }
+
+            if (this.filtroPerfilContexto !== 'todos') {
+                const contextos = perfilEcosistema.contextos || [];
+                if (!contextos.includes(this.filtroPerfilContexto)) {
+                    return false;
+                }
+            }
+
             const texto = this.normalizarTexto(this.filtroPerfilTexto);
             if (!texto) return true;
 
             const nombre = this.normalizarTexto(perfil.nombre || '');
             const descripcion = this.normalizarTexto(perfil.descripcion || '');
+            const capacidadesTexto = this.normalizarTexto((perfilEcosistema.capacidades || []).join(' '));
+            const contextosTexto = this.normalizarTexto((perfilEcosistema.contextos || []).join(' '));
+            const recomendadosTexto = this.normalizarTexto((perfilEcosistema.recomendados || []).join(' '));
 
-            if (nombre.includes(texto) || descripcion.includes(texto)) {
+            if (nombre.includes(texto) || descripcion.includes(texto) || capacidadesTexto.includes(texto) || contextosTexto.includes(texto) || recomendadosTexto.includes(texto)) {
                 return true;
             }
 
@@ -394,6 +422,88 @@ const flavorComposerFactory = () => ({
         contarActivosEnCategoria(idCategoria) {
             const modulos = this.categorias[idCategoria]?.modulos || [];
             return modulos.filter(idModulo => this.esModuloActivo(idModulo)).length;
+        },
+
+        obtenerContextosActivos() {
+            const contextos = new Set();
+
+            this.modulosActivos.forEach((idModulo) => {
+                const modulo = this.modulosRegistrados[idModulo] || {};
+                const dashboard = modulo.dashboard || {};
+                (dashboard.client_contexts || []).forEach((contexto) => {
+                    if (contexto) {
+                        contextos.add(contexto);
+                    }
+                });
+            });
+
+            this.perfilesActivosActuales.forEach((idPerfil) => {
+                const perfilEcosistema = this.perfilesEcosistema[idPerfil] || {};
+                (perfilEcosistema.contextos || []).forEach((contexto) => {
+                    if (contexto) {
+                        contextos.add(contexto);
+                    }
+                });
+            });
+
+            return Array.from(contextos);
+        },
+
+        obtenerCapacidadesActivas() {
+            const capacidades = new Set();
+
+            this.perfilesActivosActuales.forEach((idPerfil) => {
+                const perfilEcosistema = this.perfilesEcosistema[idPerfil] || {};
+                (perfilEcosistema.capacidades || []).forEach((capacidad) => {
+                    if (capacidad) {
+                        capacidades.add(capacidad);
+                    }
+                });
+            });
+
+            return Array.from(capacidades);
+        },
+
+        obtenerPerfilesSugeridos() {
+            const contextosActivos = this.obtenerContextosActivos();
+            const capacidadesActivas = this.obtenerCapacidadesActivas();
+
+            return Object.entries(this.perfiles)
+                .filter(([idPerfil]) => idPerfil !== 'personalizado' && !this.perfilEstaActivoEnSistema(idPerfil))
+                .map(([idPerfil, perfil]) => {
+                    const ecosistema = this.perfilesEcosistema[idPerfil] || {};
+                    const contextos = ecosistema.contextos || [];
+                    const capacidades = ecosistema.capacidades || [];
+                    const modulosPerfil = []
+                        .concat(perfil.modulos_requeridos || [])
+                        .concat(perfil.modulos_opcionales || []);
+
+                    const contextosCompartidos = contextos.filter((contexto) => contextosActivos.includes(contexto));
+                    const capacidadesCompartidas = capacidades.filter((capacidad) => capacidadesActivas.includes(capacidad));
+                    const modulosCompartidos = modulosPerfil.filter((idModulo) => this.esModuloActivo(idModulo));
+                    const modulosFaltantes = modulosPerfil.filter((idModulo) => !this.esModuloActivo(idModulo));
+
+                    const score = (contextosCompartidos.length * 4) + (capacidadesCompartidas.length * 3) + (modulosCompartidos.length * 2);
+
+                    return {
+                        id: idPerfil,
+                        nombre: perfil.nombre || idPerfil,
+                        descripcion: perfil.descripcion || '',
+                        score,
+                        contextosCompartidos: contextosCompartidos.slice(0, 3),
+                        capacidadesCompartidas: capacidadesCompartidas.slice(0, 2),
+                        modulosFaltantes: modulosFaltantes.length,
+                    };
+                })
+                .filter((perfil) => perfil.score > 0)
+                .sort((a, b) => {
+                    if (a.score !== b.score) {
+                        return b.score - a.score;
+                    }
+
+                    return a.modulosFaltantes - b.modulosFaltantes;
+                })
+                .slice(0, 4);
         },
 
         /**

@@ -1,5 +1,9 @@
 # Referencia Rápida de Módulos
 
+> Documento de referencia operativa rapida.
+> Su inventario es util para ubicacion tecnica y nombres de clase, pero no debe usarse como prueba de madurez, completitud o estado real vigente.
+> Para esa lectura, prevalecen `GUIA_MODULOS.md`, `CATALOGO-MODULOS.md` y `ESTADO-REAL-PLUGIN.md`.
+
 ## Módulos Nativos
 
 | ID | Nombre | Ruta | Clase Principal |

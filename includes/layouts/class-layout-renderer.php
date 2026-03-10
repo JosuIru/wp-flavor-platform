@@ -25,6 +25,16 @@ class Flavor_Layout_Renderer {
     private $registry;
 
     /**
+     * Obtiene la URL actual para redirects de login en layouts dinámicos.
+     */
+    private function get_current_request_url(): string {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/';
+        $request_uri = '/' . ltrim($request_uri, '/');
+
+        return home_url($request_uri);
+    }
+
+    /**
      * Obtener instancia singleton
      */
     public static function get_instance() {
@@ -35,14 +45,25 @@ class Flavor_Layout_Renderer {
     }
 
     /**
+     * Flag para evitar renderizar header/footer dos veces
+     */
+    private $header_rendered = false;
+    private $footer_rendered = false;
+
+    /**
      * Constructor
      */
     private function __construct() {
         $this->registry = flavor_layout_registry();
 
-        // Hooks para reemplazar header/footer del tema
+        // Hooks para reemplazar header/footer del tema (flavor-starter y otros)
         add_action('flavor_header', [$this, 'render_header']);
         add_action('flavor_footer', [$this, 'render_footer']);
+
+        // Fallback: si el tema no usa flavor_header/flavor_footer,
+        // intentar inyectar el layout en hooks estándar de WordPress
+        add_action('wp_body_open', [$this, 'maybe_render_header_fallback'], 5);
+        add_action('wp_footer', [$this, 'maybe_render_footer_fallback'], 5);
 
         // Shortcodes
         add_shortcode('flavor_menu', [$this, 'shortcode_menu']);
@@ -50,9 +71,50 @@ class Flavor_Layout_Renderer {
     }
 
     /**
+     * Renderiza el header como fallback si el tema no usa flavor_header
+     * Solo se renderiza si está habilitado el modo fallback en settings
+     */
+    public function maybe_render_header_fallback() {
+        // Si ya se renderizó via flavor_header, no duplicar
+        if ($this->header_rendered) {
+            return;
+        }
+
+        // Verificar si el fallback está habilitado
+        $settings = get_option('flavor_layout_settings', []);
+        $use_fallback = !empty($settings['inject_in_any_theme']);
+
+        if ($use_fallback) {
+            $this->render_header();
+        }
+    }
+
+    /**
+     * Renderiza el footer como fallback si el tema no usa flavor_footer
+     * Solo se renderiza si está habilitado el modo fallback en settings
+     */
+    public function maybe_render_footer_fallback() {
+        // Si ya se renderizó via flavor_footer, no duplicar
+        if ($this->footer_rendered) {
+            return;
+        }
+
+        // Verificar si el fallback está habilitado
+        $settings = get_option('flavor_layout_settings', []);
+        $use_fallback = !empty($settings['inject_in_any_theme']);
+
+        if ($use_fallback) {
+            $this->render_footer();
+        }
+    }
+
+    /**
      * Renderizar header/menú
      */
     public function render_header() {
+        // Marcar como renderizado para evitar duplicados
+        $this->header_rendered = true;
+
         $active_layout = $this->registry->get_active_layout();
         $menu_type = $active_layout['menu'];
         $settings = $this->registry->get_menu_settings($menu_type);
@@ -70,6 +132,9 @@ class Flavor_Layout_Renderer {
      * Renderizar footer
      */
     public function render_footer() {
+        // Marcar como renderizado para evitar duplicados
+        $this->footer_rendered = true;
+
         $active_layout = $this->registry->get_active_layout();
         $footer_type = $active_layout['footer'];
         $settings = $this->registry->get_footer_settings($footer_type);
@@ -787,10 +852,22 @@ class Flavor_Layout_Renderer {
 
     /**
      * Renderizar logo
+     *
+     * Prioriza el logo configurado en Flavor Platform (flavor_logo_url),
+     * luego el custom logo del tema de WordPress, y finalmente muestra el nombre del sitio.
      */
     private function render_logo($size = 'default') {
-        $custom_logo_id = get_theme_mod('custom_logo');
-        $logo_url = $custom_logo_id ? wp_get_attachment_image_url($custom_logo_id, 'full') : '';
+        // Usar función helper centralizada que prioriza flavor_logo_url
+        $logo_url = '';
+        if (class_exists('Flavor_Chat_Helpers')) {
+            $logo_url = Flavor_Chat_Helpers::get_site_logo();
+        }
+
+        // Fallback al custom logo del tema si no hay logo de Flavor
+        if (empty($logo_url)) {
+            $custom_logo_id = get_theme_mod('custom_logo');
+            $logo_url = $custom_logo_id ? wp_get_attachment_image_url($custom_logo_id, 'full') : '';
+        }
 
         $size_class = 'flavor-logo--' . $size;
         ?>
@@ -878,6 +955,12 @@ class Flavor_Layout_Renderer {
             $settings = get_option('flavor_chat_ia_settings', []);
             $active_modules = $settings['active_modules'] ?? [];
 
+            // Fusionar con opción legacy para compatibilidad
+            $modulos_legacy = get_option('flavor_active_modules', []);
+            if (!empty($modulos_legacy)) {
+                $active_modules = array_unique(array_merge($active_modules, $modulos_legacy));
+            }
+
             // Obtener enlaces del menú de usuario
             $menu_links = $this->get_user_menu_links($current_user, $active_modules);
             ?>
@@ -910,7 +993,7 @@ class Flavor_Layout_Renderer {
             <?php
         } else {
             ?>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-login-link">
+            <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="flavor-login-link">
                 <span class="dashicons dashicons-admin-users"></span>
                 <span class="flavor-login-link__text"><?php esc_html_e('Acceder', 'flavor-chat-ia'); ?></span>
             </a>

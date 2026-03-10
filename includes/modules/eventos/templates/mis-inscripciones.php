@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!is_user_logged_in()) {
-    echo '<div class="eventos-login-required"><span class="dashicons dashicons-lock"></span><h3>' . __('Inicia sesión para ver tus inscripciones', 'flavor-chat-ia') . '</h3></div>';
+    echo '<div class="eventos-login-required"><span class="dashicons dashicons-lock"></span><h3>' . __('Inicia sesión para ver tus inscripciones', 'flavor-chat-ia') . '</h3><a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . __('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
     return;
 }
 
@@ -112,7 +112,7 @@ $estados_labels = [
                             </span>
                         </div>
                         <div class="evento-card-footer">
-                            <a href="<?php echo add_query_arg('evento_id', $inscripcion->evento_id, get_permalink()); ?>" class="btn btn-outline btn-sm">
+                            <a href="<?php echo esc_url(add_query_arg('evento_id', $inscripcion->evento_id, home_url('/mi-portal/eventos/detalle/'))); ?>" class="btn btn-outline btn-sm">
                                 <?php _e('Ver evento', 'flavor-chat-ia'); ?>
                             </a>
                             <?php if ($inscripcion->estado === 'confirmada' || $inscripcion->estado === 'pendiente'): ?>
@@ -129,7 +129,7 @@ $estados_labels = [
                 <span class="dashicons dashicons-calendar-alt"></span>
                 <h3><?php _e('No tienes inscripciones próximas', 'flavor-chat-ia'); ?></h3>
                 <p><?php _e('Explora los eventos disponibles y apúntate.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo remove_query_arg('vista'); ?>" class="btn btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/eventos/')); ?>" class="btn btn-primary">
                     <?php _e('Ver eventos', 'flavor-chat-ia'); ?>
                 </a>
             </div>

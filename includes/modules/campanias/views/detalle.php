@@ -212,7 +212,7 @@ if ($user_id && !empty($campania->participantes)) {
                 <?php endif; ?>
             <?php else: ?>
                 <p>
-                    <a href="<?php echo wp_login_url(get_permalink()); ?>">Inicia sesion</a> para participar en esta campania.
+                    <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>">Inicia sesion</a> para participar en esta campania.
                 </p>
             <?php endif; ?>
 

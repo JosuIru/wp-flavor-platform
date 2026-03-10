@@ -9,405 +9,385 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// Verificar permisos
+if (!current_user_can('manage_options') && !current_user_can('flavor_ver_dashboard')) {
+    wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
+}
+
+global $wpdb;
+$tabla_solicitudes = $wpdb->prefix . 'flavor_ayuda_solicitudes';
+$tabla_voluntarios = $wpdb->prefix . 'flavor_ayuda_voluntarios';
+
+// Verificar si las tablas existen
+$tabla_solicitudes_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_solicitudes)) === $tabla_solicitudes;
+$tabla_voluntarios_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_voluntarios)) === $tabla_voluntarios;
+
+$fecha_inicio_mes = date('Y-m-01 00:00:00');
+$usando_demo = false;
+
+// Valores por defecto
+$solicitudes_activas = 0;
+$voluntarios_activos = 0;
+$ayudas_completadas = 0;
+$horas_voluntariado = 0;
+$solicitudes_urgentes = [];
+$voluntarios_destacados = [];
+$actividad_reciente = [];
+$categorias_data = [];
+
+if ($tabla_solicitudes_existe && $tabla_voluntarios_existe) {
+    $solicitudes_activas = (int) $wpdb->get_var(
+        "SELECT COUNT(*) FROM {$tabla_solicitudes} WHERE estado = 'pendiente'"
+    );
+
+    $voluntarios_activos = (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM {$tabla_voluntarios} WHERE estado = 'activo' AND ultima_actividad >= %s",
+        $fecha_inicio_mes
+    ));
+
+    $ayudas_completadas = (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM {$tabla_solicitudes} WHERE estado = 'completada' AND fecha_completada >= %s",
+        $fecha_inicio_mes
+    ));
+
+    $horas_voluntariado = (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COALESCE(SUM(horas_estimadas), 0) FROM {$tabla_solicitudes}
+         WHERE estado = 'completada' AND fecha_completada >= %s",
+        $fecha_inicio_mes
+    ));
+
+    // Solicitudes urgentes
+    $solicitudes_urgentes = $wpdb->get_results(
+        "SELECT id, titulo, categoria, fecha_creacion, usuario_id
+         FROM {$tabla_solicitudes}
+         WHERE estado = 'pendiente' AND urgente = 1
+         ORDER BY fecha_creacion DESC
+         LIMIT 5"
+    );
+
+    // Voluntarios destacados
+    $voluntarios_destacados = $wpdb->get_results(
+        "SELECT v.id, v.usuario_id, v.ayudas_completadas, v.valoracion_promedio
+         FROM {$tabla_voluntarios} v
+         WHERE v.estado = 'activo'
+         ORDER BY v.ayudas_completadas DESC
+         LIMIT 5"
+    );
+
+    // Categorías
+    $categorias_data = $wpdb->get_results(
+        "SELECT categoria, COUNT(*) as total
+         FROM {$tabla_solicitudes}
+         WHERE estado IN ('pendiente', 'en_proceso', 'completada')
+         GROUP BY categoria
+         ORDER BY total DESC"
+    );
+}
+
+// Usar datos demo si no hay datos reales
+if ($solicitudes_activas == 0 && $voluntarios_activos == 0) {
+    $usando_demo = true;
+    $solicitudes_activas = 12;
+    $voluntarios_activos = 34;
+    $ayudas_completadas = 87;
+    $horas_voluntariado = 245;
+
+    $solicitudes_urgentes = [
+        (object) ['id' => 1, 'titulo' => 'Compra de medicamentos urgente', 'categoria' => 'Compras', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-2 hours'))],
+        (object) ['id' => 2, 'titulo' => 'Acompañamiento a cita médica', 'categoria' => 'Acompañamiento', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-5 hours'))],
+        (object) ['id' => 3, 'titulo' => 'Ayuda para pasear mascotas', 'categoria' => 'Mascotas', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-1 day'))],
+    ];
+
+    $voluntarios_destacados = [
+        (object) ['id' => 1, 'display_name' => 'María García', 'ayudas_completadas' => 28, 'valoracion_promedio' => 4.9],
+        (object) ['id' => 2, 'display_name' => 'Carlos López', 'ayudas_completadas' => 22, 'valoracion_promedio' => 4.8],
+        (object) ['id' => 3, 'display_name' => 'Ana Martínez', 'ayudas_completadas' => 18, 'valoracion_promedio' => 4.9],
+        (object) ['id' => 4, 'display_name' => 'Pedro Sánchez', 'ayudas_completadas' => 15, 'valoracion_promedio' => 4.7],
+        (object) ['id' => 5, 'display_name' => 'Laura Fernández', 'ayudas_completadas' => 12, 'valoracion_promedio' => 5.0],
+    ];
+
+    $categorias_data = [
+        (object) ['categoria' => 'Compras', 'total' => 35],
+        (object) ['categoria' => 'Acompañamiento', 'total' => 28],
+        (object) ['categoria' => 'Gestiones', 'total' => 22],
+        (object) ['categoria' => 'Tecnología', 'total' => 18],
+        (object) ['categoria' => 'Mascotas', 'total' => 12],
+        (object) ['categoria' => 'Otros', 'total' => 8],
+    ];
+
+    $actividad_reciente = [
+        (object) ['tipo' => 'completada', 'titulo' => 'Ayuda completada', 'descripcion' => 'María ayudó a Juan con la compra', 'tiempo' => __('hace 1 hora', 'flavor-chat-ia')],
+        (object) ['tipo' => 'asignada', 'titulo' => 'Voluntario asignado', 'descripcion' => 'Carlos se ofreció para acompañar a Ana', 'tiempo' => __('hace 2 horas', 'flavor-chat-ia')],
+        (object) ['tipo' => 'nueva', 'titulo' => 'Nueva solicitud', 'descripcion' => 'Pedro necesita ayuda con tecnología', 'tiempo' => __('hace 3 horas', 'flavor-chat-ia')],
+        (object) ['tipo' => 'completada', 'titulo' => 'Ayuda completada', 'descripcion' => 'Laura completó una gestión bancaria', 'tiempo' => __('hace 5 horas', 'flavor-chat-ia')],
+    ];
+}
+
+// Preparar datos para gráficos
+$categorias_labels = array_map(function($c) { return $c->categoria; }, $categorias_data);
+$categorias_values = array_map(function($c) { return (int) $c->total; }, $categorias_data);
+
+// Tendencia demo (últimos 7 días)
+$tendencia_labels = [];
+$tendencia_values = [];
+for ($i = 6; $i >= 0; $i--) {
+    $tendencia_labels[] = date_i18n('D', strtotime("-{$i} days"));
+    $tendencia_values[] = $usando_demo ? rand(5, 15) : 0;
+}
 ?>
 
-<div class="wrap flavor-ayuda-dashboard">
-    <h1 class="wp-heading-inline">
-        <?php _e('Ayuda Vecinal - Dashboard', 'flavor-chat-ia'); ?>
-    </h1>
-    <hr class="wp-header-end">
+<div class="dm-dashboard">
+    <?php
+    if (function_exists('flavor_dashboard_help')) {
+        flavor_dashboard_help('ayuda_vecinal');
+    }
+    ?>
 
-    <!-- Accesos Rapidos -->
-    <div class="ayuda-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
-        <a href="<?php echo admin_url('admin.php?page=ayuda-solicitudes'); ?>" class="ayuda-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-heart" style="font-size: 24px; color: #d63638;"></span>
-            <span><?php echo esc_html__('Solicitudes', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=ayuda-voluntarios'); ?>" class="ayuda-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-groups" style="font-size: 24px; color: #00a32a;"></span>
-            <span><?php echo esc_html__('Voluntarios', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=ayuda-matches'); ?>" class="ayuda-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-randomize" style="font-size: 24px; color: #2271b1;"></span>
-            <span><?php echo esc_html__('Matches', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=flavor-app-composer&module=ayuda_vecinal'); ?>" class="ayuda-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
-            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
-        </a>
+    <!-- Header -->
+    <div class="dm-header">
+        <div class="dm-header__title">
+            <span class="dashicons dashicons-heart" style="font-size: 28px; color: #ef4444;"></span>
+            <div>
+                <h1><?php esc_html_e('Dashboard de Ayuda Vecinal', 'flavor-chat-ia'); ?></h1>
+                <p><?php esc_html_e('Conectando vecinos que necesitan ayuda con quienes pueden ofrecerla', 'flavor-chat-ia'); ?></p>
+            </div>
+        </div>
+        <div class="dm-header__actions">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-nueva-solicitud')); ?>" class="dm-btn dm-btn--primary">
+                <span class="dashicons dashicons-plus-alt2"></span>
+                <?php esc_html_e('Nueva Solicitud', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
     </div>
 
-    <!-- KPIs principales -->
-    <div class="flavor-kpi-grid">
-        <div class="flavor-kpi-card">
-            <div class="flavor-kpi-icon">
+    <?php if ($usando_demo) : ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <?php esc_html_e('Mostrando datos de demostración. Los datos reales aparecerán cuando se registren solicitudes y voluntarios.', 'flavor-chat-ia'); ?>
+    </div>
+    <?php endif; ?>
+
+    <!-- Quick Links -->
+    <div class="dm-quick-links">
+        <h3 class="dm-quick-links__title"><?php esc_html_e('Acceso Rápido', 'flavor-chat-ia'); ?></h3>
+        <div class="dm-quick-links__grid">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-solicitudes')); ?>" class="dm-quick-links__item dm-quick-links__item--error">
+                <span class="dashicons dashicons-heart"></span>
+                <?php esc_html_e('Solicitudes', 'flavor-chat-ia'); ?>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-voluntarios')); ?>" class="dm-quick-links__item dm-quick-links__item--success">
+                <span class="dashicons dashicons-groups"></span>
+                <?php esc_html_e('Voluntarios', 'flavor-chat-ia'); ?>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-matches')); ?>" class="dm-quick-links__item dm-quick-links__item--primary">
+                <span class="dashicons dashicons-randomize"></span>
+                <?php esc_html_e('Matches', 'flavor-chat-ia'); ?>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-estadisticas')); ?>" class="dm-quick-links__item dm-quick-links__item--info">
+                <span class="dashicons dashicons-chart-bar"></span>
+                <?php esc_html_e('Estadísticas', 'flavor-chat-ia'); ?>
+            </a>
+            <a href="<?php echo esc_url(home_url('/mi-portal/ayuda-vecinal/')); ?>" class="dm-quick-links__item" target="_blank">
+                <span class="dashicons dashicons-external"></span>
+                <?php esc_html_e('Portal público', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas principales -->
+    <div class="dm-stats-grid dm-stats-grid--4">
+        <div class="dm-stat-card dm-stat-card--error">
+            <div class="dm-stat-card__icon">
                 <span class="dashicons dashicons-sos"></span>
             </div>
-            <div class="flavor-kpi-content">
-                <h3><?php _e('Solicitudes Activas', 'flavor-chat-ia'); ?></h3>
-                <div class="flavor-kpi-value" id="solicitudes-activas">0</div>
-                <p class="flavor-kpi-subtitle"><?php _e('pendientes de asignación', 'flavor-chat-ia'); ?></p>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($solicitudes_activas)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Solicitudes Activas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('pendientes de asignación', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
-        <div class="flavor-kpi-card">
-            <div class="flavor-kpi-icon">
+        <div class="dm-stat-card dm-stat-card--success">
+            <div class="dm-stat-card__icon">
                 <span class="dashicons dashicons-groups"></span>
             </div>
-            <div class="flavor-kpi-content">
-                <h3><?php _e('Voluntarios Activos', 'flavor-chat-ia'); ?></h3>
-                <div class="flavor-kpi-value" id="voluntarios-activos">0</div>
-                <p class="flavor-kpi-subtitle"><?php _e('disponibles este mes', 'flavor-chat-ia'); ?></p>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($voluntarios_activos)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Voluntarios Activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('disponibles este mes', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
-        <div class="flavor-kpi-card">
-            <div class="flavor-kpi-icon">
+        <div class="dm-stat-card dm-stat-card--info">
+            <div class="dm-stat-card__icon">
                 <span class="dashicons dashicons-yes-alt"></span>
             </div>
-            <div class="flavor-kpi-content">
-                <h3><?php _e('Ayudas Completadas', 'flavor-chat-ia'); ?></h3>
-                <div class="flavor-kpi-value" id="ayudas-completadas">0</div>
-                <p class="flavor-kpi-subtitle"><?php _e('este mes', 'flavor-chat-ia'); ?></p>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($ayudas_completadas)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Ayudas Completadas', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('este mes', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
-        <div class="flavor-kpi-card">
-            <div class="flavor-kpi-icon">
-                <span class="dashicons dashicons-heart"></span>
+        <div class="dm-stat-card dm-stat-card--pink">
+            <div class="dm-stat-card__icon">
+                <span class="dashicons dashicons-clock"></span>
             </div>
-            <div class="flavor-kpi-content">
-                <h3><?php _e('Impacto Social', 'flavor-chat-ia'); ?></h3>
-                <div class="flavor-kpi-value" id="horas-voluntariado">0</div>
-                <p class="flavor-kpi-subtitle"><?php _e('horas de voluntariado', 'flavor-chat-ia'); ?></p>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo esc_html(number_format_i18n($horas_voluntariado)); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Horas de Voluntariado', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('impacto social', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
     </div>
 
-    <!-- Gráficos y estadísticas -->
-    <div class="flavor-grid-two-columns">
-        <!-- Solicitudes por categoría -->
-        <div class="flavor-card">
-            <div class="flavor-card-header">
-                <h2><?php _e('Solicitudes por Categoría', 'flavor-chat-ia'); ?></h2>
+    <!-- Gráficos -->
+    <div class="dm-grid dm-grid--2">
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3><?php esc_html_e('Solicitudes por Categoría', 'flavor-chat-ia'); ?></h3>
             </div>
-            <div class="flavor-card-body">
-                <canvas id="grafico-categorias" width="400" height="300"></canvas>
-            </div>
-        </div>
-
-        <!-- Tendencia de solicitudes -->
-        <div class="flavor-card">
-            <div class="flavor-card-header">
-                <h2><?php _e('Tendencia de Solicitudes', 'flavor-chat-ia'); ?></h2>
-            </div>
-            <div class="flavor-card-body">
-                <canvas id="grafico-tendencia" width="400" height="300"></canvas>
+            <div class="dm-card__chart">
+                <canvas id="grafico-categorias"></canvas>
             </div>
         </div>
 
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3><?php esc_html_e('Tendencia Semanal', 'flavor-chat-ia'); ?></h3>
+            </div>
+            <div class="dm-card__chart">
+                <canvas id="grafico-tendencia"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Solicitudes urgentes y voluntarios destacados -->
+    <div class="dm-grid dm-grid--2">
         <!-- Solicitudes urgentes -->
-        <div class="flavor-card">
-            <div class="flavor-card-header">
-                <h2><?php _e('Solicitudes Urgentes', 'flavor-chat-ia'); ?></h2>
-                <a href="?page=ayuda-vecinal-solicitudes&urgente=1" class="button button-small">
-                    <?php _e('Ver todas', 'flavor-chat-ia'); ?>
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-warning" style="color: #ef4444;"></span>
+                    <?php esc_html_e('Solicitudes Urgentes', 'flavor-chat-ia'); ?>
+                </h3>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=ayuda-solicitudes&urgente=1')); ?>" class="dm-btn dm-btn--ghost dm-btn--sm">
+                    <?php esc_html_e('Ver todas', 'flavor-chat-ia'); ?>
                 </a>
             </div>
-            <div class="flavor-card-body">
-                <div id="solicitudes-urgentes-list">
-                    <div class="flavor-loading"><?php _e('Cargando...', 'flavor-chat-ia'); ?></div>
+            <?php if (!empty($solicitudes_urgentes)) : ?>
+            <div class="dm-urgent-list">
+                <?php foreach ($solicitudes_urgentes as $solicitud) : ?>
+                <div class="dm-urgent-item">
+                    <div class="dm-urgent-item__content">
+                        <strong><?php echo esc_html($solicitud->titulo); ?></strong>
+                        <span class="dm-badge dm-badge--secondary"><?php echo esc_html($solicitud->categoria); ?></span>
+                    </div>
+                    <div class="dm-urgent-item__time">
+                        <?php echo esc_html(human_time_diff(strtotime($solicitud->fecha_creacion), current_time('timestamp'))); ?>
+                    </div>
                 </div>
+                <?php endforeach; ?>
             </div>
+            <?php else : ?>
+            <div class="dm-empty">
+                <span class="dashicons dashicons-yes-alt" style="color: var(--dm-success);"></span>
+                <p><?php esc_html_e('No hay solicitudes urgentes', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php endif; ?>
         </div>
 
         <!-- Voluntarios destacados -->
-        <div class="flavor-card">
-            <div class="flavor-card-header">
-                <h2><?php _e('Voluntarios Destacados', 'flavor-chat-ia'); ?></h2>
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-star-filled" style="color: #f59e0b;"></span>
+                    <?php esc_html_e('Voluntarios Destacados', 'flavor-chat-ia'); ?>
+                </h3>
             </div>
-            <div class="flavor-card-body">
-                <div id="voluntarios-destacados-list">
-                    <div class="flavor-loading"><?php _e('Cargando...', 'flavor-chat-ia'); ?></div>
-                </div>
+            <?php if (!empty($voluntarios_destacados)) : ?>
+            <ol class="dm-ranking">
+                <?php foreach ($voluntarios_destacados as $voluntario) :
+                    if ($usando_demo) {
+                        $nombre = $voluntario->display_name;
+                        $ayudas = $voluntario->ayudas_completadas;
+                        $valoracion = $voluntario->valoracion_promedio;
+                    } else {
+                        $usuario = get_userdata($voluntario->usuario_id);
+                        $nombre = $usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia');
+                        $ayudas = $voluntario->ayudas_completadas;
+                        $valoracion = $voluntario->valoracion_promedio ?? 0;
+                    }
+                ?>
+                <li>
+                    <span><?php echo esc_html($nombre); ?></span>
+                    <div>
+                        <strong><?php echo esc_html($ayudas); ?> <?php esc_html_e('ayudas', 'flavor-chat-ia'); ?></strong>
+                        <span class="dm-rating dm-text-warning"><?php echo esc_html(number_format_i18n($valoracion, 1)); ?> ★</span>
+                    </div>
+                </li>
+                <?php endforeach; ?>
+            </ol>
+            <?php else : ?>
+            <div class="dm-empty">
+                <span class="dashicons dashicons-groups"></span>
+                <p><?php esc_html_e('No hay voluntarios registrados.', 'flavor-chat-ia'); ?></p>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 
     <!-- Actividad reciente -->
-    <div class="flavor-card">
-        <div class="flavor-card-header">
-            <h2><?php _e('Actividad Reciente', 'flavor-chat-ia'); ?></h2>
+    <?php if (!empty($actividad_reciente)) : ?>
+    <div class="dm-card">
+        <div class="dm-card__header">
+            <h3><?php esc_html_e('Actividad Reciente', 'flavor-chat-ia'); ?></h3>
         </div>
-        <div class="flavor-card-body">
-            <div class="flavor-timeline" id="actividad-reciente">
-                <div class="flavor-loading"><?php _e('Cargando actividad...', 'flavor-chat-ia'); ?></div>
+        <div class="dm-timeline">
+            <?php foreach ($actividad_reciente as $actividad) :
+                $icon_class = $actividad->tipo === 'completada' ? 'success' : ($actividad->tipo === 'asignada' ? 'warning' : 'info');
+                $icon = $actividad->tipo === 'completada' ? 'yes' : ($actividad->tipo === 'asignada' ? 'admin-users' : 'plus');
+            ?>
+            <div class="dm-timeline__item">
+                <div class="dm-timeline__icon dm-timeline__icon--<?php echo esc_attr($icon_class); ?>">
+                    <span class="dashicons dashicons-<?php echo esc_attr($icon); ?>"></span>
+                </div>
+                <div class="dm-timeline__content">
+                    <div class="dm-timeline__title"><?php echo esc_html($actividad->titulo); ?></div>
+                    <div class="dm-timeline__meta"><?php echo esc_html($actividad->descripcion); ?> · <?php echo esc_html($actividad->tiempo); ?></div>
+                </div>
             </div>
+            <?php endforeach; ?>
         </div>
     </div>
+    <?php endif; ?>
 </div>
-
-<style>
-.flavor-ayuda-dashboard {
-    margin: 20px;
-}
-
-.flavor-kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.flavor-kpi-card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.flavor-kpi-icon {
-    font-size: 48px;
-    color: #2271b1;
-}
-
-.flavor-kpi-icon .dashicons {
-    width: 48px;
-    height: 48px;
-    font-size: 48px;
-}
-
-.flavor-kpi-content h3 {
-    margin: 0 0 5px 0;
-    font-size: 14px;
-    color: #666;
-    font-weight: 500;
-}
-
-.flavor-kpi-value {
-    font-size: 32px;
-    font-weight: 700;
-    color: #1d2327;
-    line-height: 1;
-}
-
-.flavor-kpi-subtitle {
-    margin: 5px 0 0 0;
-    font-size: 12px;
-    color: #999;
-}
-
-.flavor-grid-two-columns {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.flavor-card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.flavor-card-header {
-    padding: 15px 20px;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.flavor-card-header h2 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.flavor-card-body {
-    padding: 20px;
-}
-
-.flavor-loading {
-    text-align: center;
-    padding: 40px;
-    color: #999;
-}
-
-.flavor-solicitud-urgente {
-    padding: 12px;
-    border-left: 4px solid #ef4444;
-    background: #fef2f2;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-.flavor-solicitud-urgente h4 {
-    margin: 0 0 5px 0;
-    font-size: 14px;
-}
-
-.flavor-solicitud-urgente p {
-    margin: 0;
-    font-size: 12px;
-    color: #666;
-}
-
-.flavor-voluntario-destacado {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-}
-
-.flavor-voluntario-destacado:last-child {
-    border-bottom: none;
-}
-
-.flavor-voluntario-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #e5e7eb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    color: #6b7280;
-}
-
-.flavor-voluntario-info {
-    flex: 1;
-}
-
-.flavor-voluntario-nombre {
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.flavor-voluntario-stats {
-    font-size: 12px;
-    color: #666;
-}
-
-.flavor-timeline {
-    position: relative;
-}
-
-.flavor-timeline-item {
-    display: flex;
-    gap: 15px;
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.flavor-timeline-item:last-child {
-    border-bottom: none;
-}
-
-.flavor-timeline-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.flavor-timeline-icon.nueva {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.flavor-timeline-icon.asignada {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.flavor-timeline-icon.completada {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.flavor-timeline-content {
-    flex: 1;
-}
-
-.flavor-timeline-title {
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.flavor-timeline-meta {
-    font-size: 12px;
-    color: #999;
-}
-
-@media (max-width: 782px) {
-    .flavor-kpi-grid,
-    .flavor-grid-two-columns {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
 
 <script>
 jQuery(document).ready(function($) {
-    // Cargar datos del dashboard
-    cargarDatosDashboard();
+    var rootStyles = getComputedStyle(document.documentElement);
+    var primaryColor = rootStyles.getPropertyValue('--dm-primary').trim() || '#3b82f6';
+    var successColor = rootStyles.getPropertyValue('--dm-success').trim() || '#10b981';
+    var warningColor = rootStyles.getPropertyValue('--dm-warning').trim() || '#f59e0b';
+    var errorColor = rootStyles.getPropertyValue('--dm-error').trim() || '#ef4444';
+    var purpleColor = '#8b5cf6';
+    var pinkColor = '#ec4899';
 
-    // Actualizar cada 60 segundos
-    setInterval(cargarDatosDashboard, 60000);
+    // Gráfico de categorías (donut)
+    var categoriasLabels = <?php echo wp_json_encode($categorias_labels); ?>;
+    var categoriasValues = <?php echo wp_json_encode($categorias_values); ?>;
 
-    function cargarDatosDashboard() {
-        $.ajax({
-            url: ajaxurl,
-            method: 'POST',
-            data: {
-                action: 'ayuda_vecinal_get_dashboard_data'
-            },
-            success: function(response) {
-                if (response.success) {
-                    actualizarKPIs(response.data.kpis);
-                    renderizarGraficoCategorias(response.data.categorias);
-                    renderizarGraficoTendencia(response.data.tendencia);
-                    renderizarSolicitudesUrgentes(response.data.urgentes);
-                    renderizarVoluntariosDestacados(response.data.destacados);
-                    renderizarActividadReciente(response.data.actividad);
-                }
-            }
-        });
-    }
-
-    function actualizarKPIs(kpis) {
-        $('#solicitudes-activas').text(kpis.solicitudes_activas);
-        $('#voluntarios-activos').text(kpis.voluntarios_activos);
-        $('#ayudas-completadas').text(kpis.ayudas_completadas);
-        $('#horas-voluntariado').text(kpis.horas_voluntariado);
-    }
-
-    function renderizarGraficoCategorias(datos) {
-        const ctx = document.getElementById('grafico-categorias').getContext('2d');
-        new Chart(ctx, {
+    var ctx1 = document.getElementById('grafico-categorias');
+    if (ctx1 && typeof Chart !== 'undefined') {
+        new Chart(ctx1, {
             type: 'doughnut',
             data: {
-                labels: datos.labels,
+                labels: categoriasLabels,
                 datasets: [{
-                    data: datos.values,
-                    backgroundColor: [
-                        '#3b82f6',
-                        '#10b981',
-                        '#f59e0b',
-                        '#ef4444',
-                        '#8b5cf6',
-                        '#ec4899'
-                    ]
+                    data: categoriasValues,
+                    backgroundColor: [primaryColor, successColor, warningColor, errorColor, purpleColor, pinkColor],
+                    borderWidth: 0
                 }]
             },
             options: {
@@ -417,22 +397,27 @@ jQuery(document).ready(function($) {
                     legend: {
                         position: 'bottom'
                     }
-                }
+                },
+                cutout: '60%'
             }
         });
     }
 
-    function renderizarGraficoTendencia(datos) {
-        const ctx = document.getElementById('grafico-tendencia').getContext('2d');
-        new Chart(ctx, {
+    // Gráfico de tendencia
+    var tendenciaLabels = <?php echo wp_json_encode($tendencia_labels); ?>;
+    var tendenciaValues = <?php echo wp_json_encode($tendencia_values); ?>;
+
+    var ctx2 = document.getElementById('grafico-tendencia');
+    if (ctx2 && typeof Chart !== 'undefined') {
+        new Chart(ctx2, {
             type: 'line',
             data: {
-                labels: datos.labels,
+                labels: tendenciaLabels,
                 datasets: [{
-                    label: '<?php _e('Solicitudes', 'flavor-chat-ia'); ?>',
-                    data: datos.values,
-                    borderColor: '#2271b1',
-                    backgroundColor: 'rgba(34, 113, 177, 0.1)',
+                    label: '<?php echo esc_js(__('Solicitudes', 'flavor-chat-ia')); ?>',
+                    data: tendenciaValues,
+                    borderColor: primaryColor,
+                    backgroundColor: primaryColor + '1a',
                     tension: 0.4,
                     fill: true
                 }]
@@ -440,67 +425,26 @@ jQuery(document).ready(function($) {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
                     }
                 }
             }
         });
-    }
-
-    function renderizarSolicitudesUrgentes(solicitudes) {
-        if (solicitudes.length === 0) {
-            $('#solicitudes-urgentes-list').html('<p style="text-align: center; color: #999;"><?php _e('No hay solicitudes urgentes', 'flavor-chat-ia'); ?></p>');
-            return;
-        }
-
-        let html = '';
-        solicitudes.forEach(solicitud => {
-            html += `
-                <div class="flavor-solicitud-urgente">
-                    <h4>${solicitud.titulo}</h4>
-                    <p>${solicitud.solicitante} · ${solicitud.categoria}</p>
-                    <p style="margin-top: 5px;"><strong><?php _e('Hace', 'flavor-chat-ia'); ?> ${solicitud.tiempo}</strong></p>
-                </div>
-            `;
-        });
-        $('#solicitudes-urgentes-list').html(html);
-    }
-
-    function renderizarVoluntariosDestacados(voluntarios) {
-        let html = '';
-        voluntarios.forEach(voluntario => {
-            html += `
-                <div class="flavor-voluntario-destacado">
-                    <div class="flavor-voluntario-avatar">${voluntario.iniciales}</div>
-                    <div class="flavor-voluntario-info">
-                        <div class="flavor-voluntario-nombre">${voluntario.nombre}</div>
-                        <div class="flavor-voluntario-stats">${voluntario.ayudas_completadas} ayudas · ${voluntario.valoracion} ⭐</div>
-                    </div>
-                </div>
-            `;
-        });
-        $('#voluntarios-destacados-list').html(html);
-    }
-
-    function renderizarActividadReciente(actividad) {
-        let html = '';
-        actividad.forEach(item => {
-            const iconClass = item.tipo === 'nueva' ? 'nueva' : (item.tipo === 'asignada' ? 'asignada' : 'completada');
-            html += `
-                <div class="flavor-timeline-item">
-                    <div class="flavor-timeline-icon ${iconClass}">
-                        <span class="dashicons dashicons-${item.tipo === 'nueva' ? 'plus' : (item.tipo === 'asignada' ? 'admin-users' : 'yes')}"></span>
-                    </div>
-                    <div class="flavor-timeline-content">
-                        <div class="flavor-timeline-title">${item.titulo}</div>
-                        <div class="flavor-timeline-meta">${item.descripcion} · ${item.tiempo}</div>
-                    </div>
-                </div>
-            `;
-        });
-        $('#actividad-reciente').html(html);
     }
 });
 </script>

@@ -1184,7 +1184,7 @@ class Flavor_Transparencia_Dashboard_Tab {
                 <span class="dashicons dashicons-lock"></span>
                 <h3><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h3>
                 <p><?php esc_html_e('Debes iniciar sesion para ver este contenido.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-btn flavor-btn-primary">
                     <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
                 </a>
             </div>

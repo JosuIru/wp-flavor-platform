@@ -38,6 +38,19 @@
     gap: var(--flavor-space-md, 16px);
 }
 
+.flavor-dashboard-view-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--flavor-primary-light, #e8f0fe);
+    color: var(--flavor-primary, #2271b1);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+}
+
 .flavor-last-update {
     display: flex;
     align-items: center;
@@ -164,6 +177,169 @@
 }
 
 /* ============================================================================
+   BANNER DEL NODO LOCAL (Filosofia Gailu: 1 sitio = 1 nodo)
+   ============================================================================ */
+
+.flavor-node-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--flavor-space-lg, 24px);
+    background: var(--flavor-surface, #fff);
+    border: 2px solid var(--flavor-border, #c3c4c7);
+    border-radius: var(--flavor-radius-lg, 12px);
+    padding: var(--flavor-space-lg, 20px) var(--flavor-space-xl, 24px);
+    margin-bottom: var(--flavor-space-xl, 30px);
+    box-shadow: var(--flavor-shadow-md, 0 2px 8px rgba(0,0,0,.08));
+    transition: all var(--flavor-transition-fast, 0.15s ease);
+}
+
+.flavor-node-banner.flavor-node-configured {
+    border-color: #4ab866;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.flavor-node-banner.flavor-node-pending {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.flavor-node-banner-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--flavor-radius-md, 8px);
+    background: rgba(34, 113, 177, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.flavor-node-configured .flavor-node-banner-icon {
+    background: rgba(74, 184, 102, 0.15);
+}
+
+.flavor-node-pending .flavor-node-banner-icon {
+    background: rgba(245, 158, 11, 0.15);
+}
+
+.flavor-node-banner-icon .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: var(--flavor-primary, #2271b1);
+}
+
+.flavor-node-configured .flavor-node-banner-icon .dashicons {
+    color: #16a34a;
+}
+
+.flavor-node-pending .flavor-node-banner-icon .dashicons {
+    color: #d97706;
+}
+
+.flavor-node-banner-content {
+    flex: 1;
+}
+
+.flavor-node-info h3,
+.flavor-node-setup h3 {
+    margin: 0 0 8px;
+    font-size: var(--flavor-font-size-lg, 18px);
+    font-weight: 600;
+    color: var(--flavor-text-primary, #1d2327);
+}
+
+.flavor-node-setup p {
+    margin: 0;
+    font-size: var(--flavor-font-size-sm, 13px);
+    color: var(--flavor-text-secondary, #646970);
+    line-height: 1.5;
+}
+
+.flavor-node-meta {
+    display: flex;
+    gap: var(--flavor-space-lg, 20px);
+    flex-wrap: wrap;
+}
+
+.flavor-node-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--flavor-font-size-sm, 13px);
+    color: var(--flavor-text-secondary, #646970);
+}
+
+.flavor-node-meta .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.flavor-node-status {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 500;
+}
+
+.flavor-node-status.activo {
+    background: rgba(22, 163, 74, 0.1);
+    color: #16a34a;
+}
+
+.flavor-node-status.inactivo {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+}
+
+.flavor-node-status.pendiente {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+}
+
+.flavor-node-banner-actions {
+    display: flex;
+    gap: var(--flavor-space-sm, 8px);
+    flex-shrink: 0;
+}
+
+.flavor-node-banner-actions .button {
+    white-space: nowrap;
+}
+
+.flavor-node-banner-actions .button-primary {
+    background: var(--flavor-primary, #2271b1);
+    border-color: var(--flavor-primary, #2271b1);
+}
+
+.flavor-node-configured .flavor-node-banner-actions .button-primary {
+    background: #16a34a;
+    border-color: #16a34a;
+}
+
+.flavor-node-pending .flavor-node-banner-actions .button-primary {
+    background: #d97706;
+    border-color: #d97706;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .flavor-node-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .flavor-node-meta {
+        justify-content: center;
+    }
+
+    .flavor-node-banner-actions {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ============================================================================
    BARRA DE ONBOARDING
    ============================================================================ */
 
@@ -238,6 +414,70 @@
     display: flex;
     flex-direction: column;
     gap: var(--flavor-space-lg, 24px);
+}
+
+.flavor-dashboard-advanced-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--flavor-space-lg, 24px);
+    padding: 18px;
+    border: 1px solid var(--flavor-border, #c3c4c7);
+    border-radius: var(--flavor-radius-md, 8px);
+    background: linear-gradient(180deg, rgba(34, 113, 177, 0.03) 0%, rgba(255, 255, 255, 0.9) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.flavor-dashboard-advanced-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: -18px -18px 0;
+    padding: 16px 18px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--flavor-text-primary, #1d2327);
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid rgba(34, 113, 177, 0.12);
+    border-radius: var(--flavor-radius-md, 8px) var(--flavor-radius-md, 8px) 0 0;
+}
+
+.flavor-dashboard-advanced-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flavor-dashboard-advanced-meta {
+    color: var(--flavor-text-secondary, #646970);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.flavor-dashboard-advanced-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.flavor-dashboard-advanced-toggle::before {
+    content: "▸";
+    font-size: 14px;
+    color: var(--flavor-primary, #2271b1);
+    transition: transform var(--flavor-transition-fast, 0.15s ease);
+    order: 2;
+}
+
+.flavor-dashboard-advanced-sections[open] > .flavor-dashboard-advanced-toggle::before {
+    transform: rotate(90deg);
+}
+
+.flavor-dashboard-advanced-toggle .dashicons {
+    color: var(--flavor-primary, #2271b1);
+}
+
+.flavor-dashboard-advanced-sections > .flavor-widgets-row:first-of-type {
+    margin-top: 6px;
 }
 
 .flavor-widgets-row {
@@ -726,10 +966,17 @@
 
 .flavor-actions-section {
     margin-bottom: var(--flavor-space-lg, 20px);
+    padding-top: var(--flavor-space-sm, 10px);
+    border-top: 1px solid var(--flavor-bg, #f0f0f1);
 }
 
 .flavor-actions-section:last-child {
     margin-bottom: 0;
+}
+
+.flavor-actions-section:first-child {
+    padding-top: 0;
+    border-top: 0;
 }
 
 .flavor-actions-section h4 {
@@ -741,19 +988,64 @@
     letter-spacing: 0.5px;
 }
 
+.flavor-actions-section--collapsible {
+    padding-top: 0;
+    border-top: 0;
+    margin-bottom: 14px;
+    border: 1px solid var(--flavor-bg, #f0f0f1);
+    border-radius: var(--flavor-radius-md, 8px);
+    background: #fff;
+}
+
+.flavor-actions-section--collapsible[open] {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.flavor-actions-section-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    list-style: none;
+    padding: 12px 14px;
+}
+
+.flavor-actions-section-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.flavor-actions-section-toggle::after {
+    content: "▾";
+    font-size: 12px;
+    color: var(--flavor-text-secondary, #646970);
+    transition: transform var(--flavor-transition-fast, 0.15s ease);
+}
+
+.flavor-actions-section--collapsible:not([open]) .flavor-actions-section-toggle::after {
+    transform: rotate(-90deg);
+}
+
+.flavor-actions-section--collapsible > .flavor-quick-actions-grid {
+    padding: 0 14px 14px;
+}
+
+.flavor-actions-section-toggle h4 {
+    margin: 0;
+}
+
 .flavor-quick-actions-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: var(--flavor-space-sm, 10px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
 }
 
 .flavor-quick-action-btn {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--flavor-space-xs, 6px);
-    padding: var(--flavor-space-md, 16px) var(--flavor-space-sm, 10px);
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+    min-height: 76px;
+    padding: 14px 14px 12px;
     background: color-mix(in srgb, var(--action-color, #2271b1) 10%, transparent);
     border: 1px solid color-mix(in srgb, var(--action-color, #2271b1) 30%, transparent);
     border-radius: var(--flavor-radius-md, 8px);
@@ -773,13 +1065,15 @@
     font-size: 24px;
     width: 24px;
     height: 24px;
+    flex-shrink: 0;
 }
 
 .flavor-action-label {
-    font-size: var(--flavor-font-size-xs, 11px);
-    font-weight: 500;
-    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
     line-height: 1.3;
+    text-wrap: balance;
 }
 
 /* ============================================================================
@@ -1042,6 +1336,20 @@
     .flavor-dashboard-header-actions {
         width: 100%;
         justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .flavor-dashboard-view-badge {
+        order: -1;
+    }
+
+    .flavor-dashboard-advanced-toggle {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .flavor-dashboard-advanced-meta {
+        margin-left: 26px;
     }
 
     .flavor-quick-actions-grid {
@@ -1092,6 +1400,7 @@
 
     .flavor-quick-action-btn {
         padding: var(--flavor-space-sm, 12px);
+        min-height: 68px;
     }
 
     .flavor-modal-content {
@@ -1878,6 +2187,364 @@
 
     .flavor-kpi-value {
         font-size: var(--flavor-font-size-xl, 22px);
+    }
+}
+
+/* ============================================================================
+   BANNER DEL NODO LOCAL (filosofia Gailu)
+   ============================================================================ */
+
+.flavor-node-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--flavor-space-lg, 24px);
+    padding: var(--flavor-space-lg, 24px);
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #86efac;
+    border-radius: var(--flavor-radius-lg, 12px);
+    margin-bottom: var(--flavor-space-lg, 24px);
+}
+
+.flavor-node-banner.flavor-node-pending {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-color: #fbbf24;
+}
+
+.flavor-node-banner-icon {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #22c55e;
+    border-radius: var(--flavor-radius-md, 8px);
+    color: #fff;
+}
+
+.flavor-node-banner.flavor-node-pending .flavor-node-banner-icon {
+    background: #f59e0b;
+}
+
+.flavor-node-banner-icon .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.flavor-node-banner-content {
+    flex: 1;
+}
+
+.flavor-node-info h3,
+.flavor-node-setup h3 {
+    margin: 0 0 8px 0;
+    font-size: var(--flavor-font-size-lg, 18px);
+    color: #14532d;
+}
+
+.flavor-node-banner.flavor-node-pending .flavor-node-info h3,
+.flavor-node-banner.flavor-node-pending .flavor-node-setup h3 {
+    color: #78350f;
+}
+
+.flavor-node-setup p {
+    margin: 0;
+    color: #713f12;
+    font-size: var(--flavor-font-size-sm, 14px);
+}
+
+.flavor-node-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--flavor-space-md, 16px);
+}
+
+.flavor-node-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--flavor-font-size-sm, 14px);
+    color: #166534;
+}
+
+.flavor-node-meta .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.flavor-node-status.activo {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.flavor-node-banner-actions {
+    display: flex;
+    gap: var(--flavor-space-sm, 8px);
+}
+
+/* ============================================================================
+   PANEL DE TRANSICION REGENERATIVA (filosofia Gailu)
+   ============================================================================ */
+
+.flavor-regenerative-panel {
+    background: #fff;
+    border: 1px solid var(--flavor-border-color, #e2e8f0);
+    border-radius: var(--flavor-radius-lg, 12px);
+    padding: var(--flavor-space-lg, 24px);
+    margin-bottom: var(--flavor-space-lg, 24px);
+    box-shadow: var(--flavor-shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+}
+
+.flavor-regenerative-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--flavor-space-lg, 24px);
+    padding-bottom: var(--flavor-space-md, 16px);
+    border-bottom: 1px solid var(--flavor-border-color, #e2e8f0);
+}
+
+.flavor-regenerative-title {
+    display: flex;
+    align-items: center;
+    gap: var(--flavor-space-sm, 8px);
+}
+
+.flavor-regenerative-title .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #8b5cf6;
+}
+
+.flavor-regenerative-title h3 {
+    margin: 0;
+    font-size: var(--flavor-font-size-lg, 18px);
+    font-weight: 600;
+    color: var(--flavor-text-primary, #1d2327);
+}
+
+.flavor-regenerative-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.flavor-regenerative-score {
+    font-size: var(--flavor-font-size-2xl, 32px);
+    font-weight: 700;
+    color: #22c55e;
+    line-height: 1;
+}
+
+.flavor-regenerative-label {
+    font-size: var(--flavor-font-size-xs, 12px);
+    color: var(--flavor-text-secondary, #64748b);
+}
+
+.flavor-regenerative-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--flavor-space-xl, 32px);
+}
+
+.flavor-regenerative-section h4 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 var(--flavor-space-md, 16px) 0;
+    font-size: var(--flavor-font-size-sm, 14px);
+    font-weight: 600;
+    color: var(--flavor-text-secondary, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flavor-regenerative-section h4 .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Principios Grid */
+.flavor-principios-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--flavor-space-sm, 8px);
+}
+
+.flavor-principio-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    font-size: var(--flavor-font-size-sm, 14px);
+    color: #64748b;
+    cursor: default;
+    transition: all 0.2s ease;
+}
+
+.flavor-principio-card.activo {
+    background: color-mix(in srgb, var(--principio-color) 15%, white);
+    border-color: var(--principio-color);
+    color: var(--principio-color);
+}
+
+.flavor-principio-card .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.flavor-principio-card.activo .dashicons {
+    color: var(--principio-color);
+}
+
+.flavor-principio-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: var(--principio-color);
+    color: #fff;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Contribuciones Grid */
+.flavor-contribuciones-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--flavor-space-sm, 8px);
+}
+
+.flavor-contribucion-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--flavor-space-sm, 8px);
+}
+
+.flavor-contribucion-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 120px;
+}
+
+.flavor-contribucion-info .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.flavor-contribucion-nombre {
+    font-size: var(--flavor-font-size-sm, 14px);
+    color: var(--flavor-text-primary, #1d2327);
+}
+
+.flavor-contribucion-progress {
+    flex: 1;
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.flavor-contribucion-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.5s ease;
+}
+
+.flavor-contribucion-bar.inactivo .flavor-contribucion-fill {
+    width: 0 !important;
+}
+
+.flavor-contribucion-valor {
+    min-width: 24px;
+    text-align: right;
+    font-size: var(--flavor-font-size-sm, 14px);
+    font-weight: 600;
+    color: var(--flavor-text-primary, #1d2327);
+}
+
+.flavor-contribucion-bar.inactivo .flavor-contribucion-valor {
+    color: #94a3b8;
+}
+
+/* Footer */
+.flavor-regenerative-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--flavor-space-lg, 24px);
+    padding-top: var(--flavor-space-md, 16px);
+    border-top: 1px solid var(--flavor-border-color, #e2e8f0);
+}
+
+.flavor-regenerative-footer .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.flavor-regenerative-footer .button .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .flavor-node-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .flavor-node-meta {
+        justify-content: center;
+    }
+
+    .flavor-node-banner-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .flavor-node-banner-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .flavor-regenerative-header {
+        flex-direction: column;
+        gap: var(--flavor-space-md, 16px);
+        text-align: center;
+    }
+
+    .flavor-regenerative-summary {
+        align-items: center;
+    }
+
+    .flavor-regenerative-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-regenerative-footer {
+        flex-direction: column;
+        gap: var(--flavor-space-sm, 8px);
+    }
+
+    .flavor-regenerative-footer .button {
+        width: 100%;
+        justify-content: center;
     }
 }
 

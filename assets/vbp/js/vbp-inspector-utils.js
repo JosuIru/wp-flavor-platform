@@ -473,36 +473,87 @@ function vbpEmojiSelector() {
 }
 
 /**
- * Componente Alpine para color picker con paleta del sitio
+ * Componente Alpine para color picker con paleta del sitio y selector nativo
  */
 function vbpColorPicker() {
     return {
-        showPalette: true,
-        colors: [],
+        currentColor: '#ffffff',
+        isOpen: false,
+        presetColors: [],
+        siteColors: [],
 
         init: function() {
             // Obtener colores del sitio desde VBP_Config
             var settings = typeof VBP_Config !== 'undefined' ? VBP_Config.designSettings : {};
 
-            this.colors = [
-                { name: 'Pri', color: settings.primary_color || '#3b82f6', label: 'Primario' },
-                { name: 'Sec', color: settings.secondary_color || '#8b5cf6', label: 'Secundario' },
-                { name: 'Acc', color: settings.accent_color || '#f59e0b', label: 'Acento' },
-                { name: 'Txt', color: settings.text_color || '#1f2937', label: 'Texto' },
-                { name: 'Mut', color: settings.text_muted_color || '#6b7280', label: 'Muted' },
-                { name: 'Bg', color: settings.background_color || '#ffffff', label: 'Fondo' },
-                { name: 'Suc', color: settings.success_color || '#10b981', label: 'Éxito' },
-                { name: 'Err', color: settings.error_color || '#ef4444', label: 'Error' }
+            // Colores del sitio con etiquetas
+            this.siteColors = [
+                { color: settings.primary_color || '#3b82f6', label: 'Primario' },
+                { color: settings.secondary_color || '#8b5cf6', label: 'Secundario' },
+                { color: settings.accent_color || '#f59e0b', label: 'Acento' },
+                { color: settings.success_color || '#10b981', label: 'Éxito' },
+                { color: settings.error_color || '#ef4444', label: 'Error' }
+            ];
+
+            // Colores comunes
+            this.presetColors = [
+                '#000000', '#ffffff', '#f3f4f6', '#e5e7eb',
+                '#d1d5db', '#9ca3af', '#6b7280', '#4b5563',
+                '#374151', '#1f2937', '#111827', '#0f172a',
+                '#ef4444', '#f97316', '#f59e0b', '#eab308',
+                '#84cc16', '#22c55e', '#10b981', '#14b8a6',
+                '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1',
+                '#8b5cf6', '#a855f7', '#d946ef', '#ec4899'
             ];
         },
 
+        initColor: function(color) {
+            this.currentColor = color || '#ffffff';
+        },
+
+        togglePicker: function() {
+            this.isOpen = !this.isOpen;
+        },
+
+        selectColor: function(color) {
+            this.currentColor = color;
+            this.isOpen = false;
+        },
+
+        updateColor: function(color) {
+            this.currentColor = color;
+        },
+
+        // Normalizar color para input[type=color] (requiere formato #rrggbb)
+        normalizeForInput: function(color) {
+            if (!color) return '#ffffff';
+            // Si es rgba, convertir a hex
+            if (color.startsWith('rgba') || color.startsWith('rgb')) {
+                return this.rgbToHex(color);
+            }
+            // Si es hex corto (#fff), expandir
+            if (color.length === 4) {
+                return '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+            }
+            return color;
+        },
+
+        rgbToHex: function(rgb) {
+            var match = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (!match) return '#ffffff';
+            var r = parseInt(match[1]).toString(16).padStart(2, '0');
+            var g = parseInt(match[2]).toString(16).padStart(2, '0');
+            var b = parseInt(match[3]).toString(16).padStart(2, '0');
+            return '#' + r + g + b;
+        },
+
         applyColor: function(color, field) {
-            // Emitir evento para actualizar el modelo
             this.$dispatch('color-selected', { color: color, field: field });
         },
 
-        isActive: function(color, currentValue) {
-            return color.toLowerCase() === (currentValue || '').toLowerCase();
+        isActive: function(color) {
+            if (!this.currentColor || !color) return false;
+            return color.toLowerCase() === this.currentColor.toLowerCase();
         }
     };
 }

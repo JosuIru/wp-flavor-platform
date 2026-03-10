@@ -152,6 +152,7 @@ class Flavor_Widget_Renderer {
         <article class="<?php echo $wrapper_class; ?>"
              data-widget-id="<?php echo $widget_id; ?>"
              data-category="<?php echo $category; ?>"
+             data-severity="<?php echo esc_attr($config['severity_slug'] ?? ''); ?>"
              data-refreshable="<?php echo $refreshable; ?>"
              <?php echo $aria_string; ?>
              tabindex="0">
@@ -190,6 +191,11 @@ class Flavor_Widget_Renderer {
         $icon = esc_attr($config['icon'] ?? 'dashicons-admin-generic');
         $actions = $config['actions'] ?? [];
         $widget_id = esc_attr($config['id'] ?? '');
+        $module_id = sanitize_key(str_replace('-', '_', (string) ($config['module'] ?? '')));
+        $semantics = $this->get_widget_semantics($module_id);
+        $severity_slug = sanitize_key((string) ($config['severity_slug'] ?? ''));
+        $severity_label = (string) ($config['severity_label'] ?? '');
+        $severity_reason = (string) ($config['severity_reason'] ?? '');
 
         if (empty($header_id)) {
             $header_id = 'fl-widget-header-' . $widget_id;
@@ -210,9 +216,28 @@ class Flavor_Widget_Renderer {
                 <span class="fud-widget__icon fl-widget__icon" aria-hidden="true">
                     <span class="dashicons <?php echo $icon; ?>"></span>
                 </span>
-                <h3 class="fud-widget__title fl-widget__title" id="<?php echo esc_attr($header_id); ?>">
-                    <?php echo $title; ?>
-                </h3>
+                <div class="fud-widget__title-block fl-widget__title-block">
+                    <?php if (!empty($semantics['kind']) || !empty($semantics['context'])) : ?>
+                        <div class="fud-widget__meta fl-widget__meta">
+                            <?php if (!empty($semantics['kind'])) : ?>
+                                <span class="fud-widget__kind fud-widget__kind--<?php echo esc_attr($semantics['kind_slug']); ?>">
+                                    <?php echo esc_html($semantics['kind']); ?>
+                                </span>
+                            <?php endif; ?>
+                            <?php if (!empty($semantics['context'])) : ?>
+                                <span class="fud-widget__context"><?php echo esc_html($semantics['context']); ?></span>
+                            <?php endif; ?>
+                            <?php if ($severity_slug !== '' && $severity_label !== '') : ?>
+                                <span class="fud-widget__severity fud-widget__severity--<?php echo esc_attr($severity_slug); ?>" <?php if ($severity_reason !== '') : ?>title="<?php echo esc_attr($severity_reason); ?>"<?php endif; ?>>
+                                    <?php echo esc_html($severity_label); ?>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                    <h3 class="fud-widget__title fl-widget__title" id="<?php echo esc_attr($header_id); ?>">
+                        <?php echo $title; ?>
+                    </h3>
+                </div>
             </div>
 
             <nav class="fud-widget__actions fl-widget__actions" aria-label="<?php printf(esc_attr__('Acciones de %s', 'flavor-chat-ia'), $title); ?>">
@@ -220,6 +245,75 @@ class Flavor_Widget_Renderer {
             </nav>
         </header>
         <?php
+    }
+
+    /**
+     * Obtiene una semántica corta para el widget según el módulo.
+     *
+     * @param string $module_id
+     * @return array<string,string>
+     */
+    private function get_widget_semantics(string $module_id): array {
+        if ($module_id === '' || !class_exists('Flavor_Chat_Module_Loader')) {
+            return [];
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $registered_modules = $loader ? $loader->get_registered_modules() : [];
+        $module_data = $registered_modules[$module_id] ?? null;
+
+        if (!is_array($module_data)) {
+            return [];
+        }
+
+        $ecosystem = is_array($module_data['ecosystem'] ?? null) ? $module_data['ecosystem'] : [];
+        $dashboard = is_array($module_data['dashboard'] ?? null) ? $module_data['dashboard'] : [];
+        $role = (string) ($ecosystem['module_role'] ?? 'vertical');
+        $display_role = (string) ($ecosystem['display_role'] ?? $role);
+
+        $kind_map = [
+            'base' => __('Coordinar', 'flavor-chat-ia'),
+            'vertical' => __('Operar', 'flavor-chat-ia'),
+            'transversal' => __('Entender', 'flavor-chat-ia'),
+            'standalone' => __('Gestionar', 'flavor-chat-ia'),
+            'base-standalone' => __('Gestionar', 'flavor-chat-ia'),
+        ];
+
+        $context_labels = [
+            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
+            'gobernanza' => __('Gobernanza', 'flavor-chat-ia'),
+            'participacion' => __('Participación', 'flavor-chat-ia'),
+            'transparencia' => __('Transparencia', 'flavor-chat-ia'),
+            'energia' => __('Energía', 'flavor-chat-ia'),
+            'consumo' => __('Consumo local', 'flavor-chat-ia'),
+            'cuidados' => __('Cuidados', 'flavor-chat-ia'),
+            'sostenibilidad' => __('Sostenibilidad', 'flavor-chat-ia'),
+            'impacto' => __('Impacto', 'flavor-chat-ia'),
+            'aprendizaje' => __('Aprendizaje', 'flavor-chat-ia'),
+            'saberes' => __('Saberes', 'flavor-chat-ia'),
+            'agenda' => __('Agenda', 'flavor-chat-ia'),
+            'eventos' => __('Encuentros', 'flavor-chat-ia'),
+            'socios' => __('Socios', 'flavor-chat-ia'),
+            'membresia' => __('Membresía', 'flavor-chat-ia'),
+            'cuenta' => __('Cuenta', 'flavor-chat-ia'),
+            'colectivos' => __('Colectivos', 'flavor-chat-ia'),
+            'asociacion' => __('Asociación', 'flavor-chat-ia'),
+            'coordinacion' => __('Coordinación', 'flavor-chat-ia'),
+        ];
+
+        $contexts = (array) ($dashboard['admin_contexts'] ?? $dashboard['client_contexts'] ?? []);
+        $primary_context = (string) reset($contexts);
+        $kind_slug = $display_role !== '' ? $display_role : 'vertical';
+
+        return [
+            'kind' => $kind_map[$kind_slug] ?? __('Operar', 'flavor-chat-ia'),
+            'kind_slug' => sanitize_html_class($kind_slug),
+            'context' => $context_labels[$primary_context] ?? (
+                $primary_context !== ''
+                    ? ucwords(str_replace('_', ' ', $primary_context))
+                    : ''
+            ),
+        ];
     }
 
     /**

@@ -120,6 +120,19 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         });
     }
 
+    public function get_widget_config(): array {
+        $config = parent::get_widget_config();
+        $severity = $this->get_native_severity_payload($this->get_widget_data());
+
+        if (!empty($severity['slug'])) {
+            $config['severity_slug'] = $severity['slug'];
+            $config['severity_label'] = $severity['label'];
+            $config['severity_reason'] = $severity['reason'];
+        }
+
+        return $config;
+    }
+
     /**
      * Obtiene los datos frescos del widget
      *
@@ -152,6 +165,7 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         $stats = [];
 
         if ($socio) {
+            $estado_socio = (string) ($socio->estado ?? '');
             // Stat 1: Estado de membresía
             $estado_color = 'gray';
             $estado_texto = __('Inactivo', 'flavor-chat-ia');
@@ -206,7 +220,7 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                     'valor' => number_format($importe_pendiente, 2, ',', '.') . ' €',
                     'label' => sprintf(_n('%d cuota', '%d cuotas', $cuotas_pendientes, 'flavor-chat-ia'), $cuotas_pendientes),
                     'color' => 'danger',
-                    'url' => $es_admin ? admin_url('admin.php?page=socios&tab=cuotas') : home_url('/mi-portal/socios/cuotas/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=socios&tab=cuotas') : home_url('/mi-portal/socios/mis-cuotas/'),
                 ];
             } else {
                 $stats[] = [
@@ -233,6 +247,8 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
         } else {
             // Usuario no es socio
+            $estado_socio = 'no_registrado';
+            $cuotas_pendientes = 0;
             $stats[] = [
                 'icon' => 'dashicons-info',
                 'valor' => __('No registrado', 'flavor-chat-ia'),
@@ -246,11 +262,15 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
+            'summary' => [
+                'estado_socio' => $estado_socio,
+                'cuotas_pendientes' => (int) ($cuotas_pendientes ?? 0),
+            ],
             'empty_state' => $socio ? __('No hay cuotas registradas', 'flavor-chat-ia') : __('Hazte socio para disfrutar de todos los beneficios', 'flavor-chat-ia'),
             'footer' => [
                 [
                     'label' => $socio ? __('Ver mi cuenta', 'flavor-chat-ia') : __('Hacerse socio', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=socios') : home_url('/mi-portal/socios/' . ($socio ? 'mi-perfil/' : 'registro/')),
+                    'url' => $es_admin ? admin_url('admin.php?page=socios') : home_url('/mi-portal/socios/' . ($socio ? 'mi-perfil/' : 'unirse/')),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -300,7 +320,7 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $icono,
                 'title' => $cuota->concepto ?: $periodo,
                 'meta' => number_format($cuota->importe, 2, ',', '.') . ' €',
-                'url' => $es_admin ? admin_url('admin.php?page=socios&tab=cuotas&id=' . $cuota->id) : home_url('/mi-portal/socios/cuotas/'),
+                'url' => $es_admin ? admin_url('admin.php?page=socios&tab=cuotas&id=' . $cuota->id) : home_url('/mi-portal/socios/mis-cuotas/'),
                 'badge' => ucfirst($cuota->estado),
             ];
         }
@@ -329,6 +349,34 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
         $cache[$nombre_tabla] = ($resultado === $nombre_tabla);
         return $cache[$nombre_tabla];
+    }
+
+    /**
+     * Devuelve severidad nativa segun el estado del vinculo y cuotas.
+     *
+     * @param array $data
+     * @return array{slug:string,label:string,reason:string}
+     */
+    private function get_native_severity_payload(array $data): array {
+        $summary = is_array($data['summary'] ?? null) ? $data['summary'] : [];
+        $estado_socio = (string) ($summary['estado_socio'] ?? '');
+        $cuotas_pendientes = (int) ($summary['cuotas_pendientes'] ?? 0);
+
+        if ($estado_socio === 'suspendido' || $cuotas_pendientes > 0) {
+            $severity = Flavor_Dashboard_Severity::get_payload('attention');
+            $severity['reason'] = __('Tu vínculo de socio requiere atención por suspensión o cuotas pendientes.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        if ($estado_socio === 'pendiente') {
+            $severity = Flavor_Dashboard_Severity::get_payload('followup');
+            $severity['reason'] = __('Tu membresía sigue pendiente de consolidación o revisión.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        $severity = Flavor_Dashboard_Severity::get_payload('stable');
+        $severity['reason'] = __('Tu membresía está estable y sin alertas económicas inmediatas.', 'flavor-chat-ia');
+        return $severity;
     }
 
     /**

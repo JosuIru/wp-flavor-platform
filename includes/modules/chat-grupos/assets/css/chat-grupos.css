@@ -4,26 +4,89 @@
  */
 
 /* ========================================
-   Variables
+   Variables - Heredan del tema cuando está disponible
 ======================================== */
 :root {
-    --cg-primary: #2271b1;
-    --cg-primary-dark: #135e96;
-    --cg-success: #00a32a;
-    --cg-warning: #dba617;
-    --cg-danger: #d63638;
-    --cg-text: #1d2327;
-    --cg-text-light: #50575e;
-    --cg-border: #c3c4c7;
-    --cg-bg: #f6f7f7;
-    --cg-bg-dark: #e2e4e7;
-    --cg-white: #ffffff;
+    --cg-primary: var(--flavor-primary, #2271b1);
+    --cg-primary-dark: var(--flavor-primary-dark, #135e96);
+    --cg-primary-light: var(--flavor-primary-light, #e8f4fc);
+    --cg-success: var(--flavor-success, #00a32a);
+    --cg-warning: var(--flavor-warning, #dba617);
+    --cg-danger: var(--flavor-error, #d63638);
+    --cg-text: var(--flavor-text, #1d2327);
+    --cg-text-light: var(--flavor-text-secondary, #50575e);
+    --cg-border: var(--flavor-border, #c3c4c7);
+    --cg-bg: var(--flavor-bg-secondary, #f6f7f7);
+    --cg-bg-dark: var(--flavor-bg-tertiary, #e2e4e7);
+    --cg-white: var(--flavor-bg, #ffffff);
     --cg-sidebar-width: 320px;
     --cg-panel-width: 300px;
-    --cg-radius: 8px;
-    --cg-radius-sm: 4px;
-    --cg-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --cg-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --cg-radius: var(--flavor-radius, 8px);
+    --cg-radius-sm: var(--flavor-radius-sm, 4px);
+    --cg-shadow: var(--flavor-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+    --cg-shadow-lg: var(--flavor-shadow, 0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+/* ========================================
+   Integración con Portal - Reset de estilos heredados
+======================================== */
+.fmd-action-body .cg-app,
+.flavor-module-content .cg-app,
+.flavor-dashboard-content .cg-app,
+.flavor-portal .cg-app {
+    height: calc(100vh - 250px);
+    min-height: 500px;
+    max-height: none;
+    box-sizing: border-box;
+}
+
+/* Forzar layout flex en el contenedor */
+.cg-app,
+.fmd-action-body .cg-app,
+#flavor-chat-grupos-app {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+/* Reset de padding del contenedor padre */
+.fmd-action-content:has(.cg-app) .fmd-action-body,
+.fmd-action-body:has(.cg-app) {
+    padding: 0;
+}
+
+/* Ajuste para contenedores de ancho completo */
+.fmd-action-content:has(.cg-app),
+.fmd-action-content--chat-grupos {
+    max-width: 100%;
+}
+
+/* Fallback para navegadores sin :has() */
+.cg-app-container .fmd-action-body {
+    padding: 0;
+}
+
+/* Reset de estilos que pueden interferir */
+.cg-app *,
+.cg-app *::before,
+.cg-app *::after {
+    box-sizing: border-box;
+}
+
+.cg-app h3,
+.cg-app h4,
+.cg-app p {
+    margin: 0;
+}
+
+/* Asegurar que los hijos directos tengan el layout correcto */
+.cg-app > .cg-sidebar {
+    flex-shrink: 0;
+    width: var(--cg-sidebar-width, 320px);
+}
+
+.cg-app > .cg-main {
+    flex: 1;
+    min-width: 0;
 }
 
 /* ========================================
@@ -1644,5 +1707,199 @@
     .flavor-chat-integrado .btn-adjuntar,
     .flavor-chat-integrado .btn-emoji {
         display: none;
+    }
+}
+
+/* ========================================
+   Modal de Crear Grupo
+======================================== */
+.cg-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.cg-modal.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cg-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.cg-modal-container {
+    position: relative;
+    width: 90%;
+    max-width: 480px;
+    max-height: 90vh;
+    background: var(--cg-white);
+    border-radius: var(--cg-radius);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    transform: translateY(20px) scale(0.95);
+    transition: transform 0.2s ease;
+    overflow: hidden;
+}
+
+.cg-modal.is-visible .cg-modal-container {
+    transform: translateY(0) scale(1);
+}
+
+.cg-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--cg-border);
+    background: var(--cg-bg);
+}
+
+.cg-modal-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--cg-text);
+}
+
+.cg-modal-close {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: var(--cg-text-light);
+    border-radius: var(--cg-radius-sm);
+    transition: all 0.2s;
+}
+
+.cg-modal-close:hover {
+    background: var(--cg-bg-dark);
+    color: var(--cg-text);
+}
+
+.cg-modal-close .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.cg-modal-body {
+    flex: 1;
+    padding: 1.25rem;
+    overflow-y: auto;
+}
+
+.cg-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--cg-border);
+    background: var(--cg-bg);
+}
+
+/* Formulario dentro del modal */
+.cg-form .cg-form-group {
+    margin-bottom: 1rem;
+}
+
+.cg-form .cg-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.cg-form .cg-form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--cg-text);
+}
+
+.cg-form .cg-form-group input,
+.cg-form .cg-form-group select,
+.cg-form .cg-form-group textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--cg-border);
+    border-radius: var(--cg-radius-sm);
+    font-size: 0.875rem;
+    background: var(--cg-white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.cg-form .cg-form-group input:focus,
+.cg-form .cg-form-group select:focus,
+.cg-form .cg-form-group textarea:focus {
+    border-color: var(--cg-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(34, 113, 177, 0.15);
+}
+
+.cg-form .cg-form-group input[type="color"] {
+    width: 60px;
+    height: 38px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.cg-form .cg-form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.cg-form .cg-form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.cg-form .cg-form-group-half {
+    flex: 1;
+}
+
+/* Botones del modal */
+.cg-btn-secondary {
+    background: var(--cg-bg-dark);
+    color: var(--cg-text);
+    border: 1px solid var(--cg-border);
+}
+
+.cg-btn-secondary:hover {
+    background: var(--cg-border);
+}
+
+/* Responsive modal */
+@media (max-width: 480px) {
+    .cg-modal-container {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .cg-modal-header,
+    .cg-modal-body,
+    .cg-modal-footer {
+        padding: 1rem;
+    }
+
+    .cg-form .cg-form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .cg-modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .cg-modal-footer .cg-btn {
+        width: 100%;
     }
 }

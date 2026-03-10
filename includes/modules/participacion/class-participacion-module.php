@@ -68,6 +68,10 @@ class Flavor_Chat_Participacion_Module extends Flavor_Chat_Module_Base {
         $this->dashboard_client_contexts = ['participacion', 'gobernanza', 'comunidad'];
         $this->dashboard_admin_contexts = ['gobernanza', 'participacion', 'admin'];
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['gobernanza'];
+        $this->gailu_contribuye_a = ['autonomia', 'cohesion'];
+
         parent::__construct();
 
         // Admin pages
@@ -2749,7 +2753,7 @@ KNOWLEDGE;
                 [
                     'slug' => 'participacion-dashboard',
                     'titulo' => __('Dashboard', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_pagina_dashboard'],
+                    'callback' => [$this, 'render_admin_dashboard'],
                 ],
                 [
                     'slug' => 'participacion-propuestas',

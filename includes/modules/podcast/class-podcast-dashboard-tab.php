@@ -807,7 +807,7 @@ class Flavor_Podcast_Dashboard_Tab {
             <span class="dashicons dashicons-lock"></span>
             <h3><?php _e('Inicia sesión', 'flavor-chat-ia'); ?></h3>
             <p><?php _e('Necesitas iniciar sesión para ver esta sección.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo wp_login_url(get_permalink()); ?>" class="flavor-btn flavor-btn-primary">
+            <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="flavor-btn flavor-btn-primary">
                 <?php _e('Iniciar sesión', 'flavor-chat-ia'); ?>
             </a>
         </div>

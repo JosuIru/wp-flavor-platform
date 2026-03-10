@@ -16,6 +16,15 @@ if (!defined('ABSPATH')) {
     <div class="flavor-dashboard-header">
         <h1><?php echo esc_html__('Dashboard de Flavor Platform', 'flavor-chat-ia'); ?></h1>
         <div class="flavor-dashboard-header-actions">
+            <span class="flavor-dashboard-view-badge">
+                <?php
+                echo esc_html(
+                    $es_vista_gestor_grupos
+                        ? __('Vista: Gestor de Grupos', 'flavor-chat-ia')
+                        : __('Vista: Administrador', 'flavor-chat-ia')
+                );
+                ?>
+            </span>
             <span class="flavor-last-update" id="flavor-last-update">
                 <span class="dashicons dashicons-update"></span>
                 <span class="flavor-update-text"><?php echo esc_html__('Actualizando...', 'flavor-chat-ia'); ?></span>
@@ -36,15 +45,64 @@ if (!defined('ABSPATH')) {
             <h2><?php echo esc_html($datos_perfil_activo['nombre']); ?></h2>
             <p><?php echo esc_html($datos_perfil_activo['descripcion']); ?></p>
             <div class="flavor-dashboard-hero-meta">
-                <span><span class="dashicons dashicons-admin-plugins"></span> <?php printf(esc_html__('%d/%d modulos activos', 'flavor-chat-ia'), $estadisticas['modulos_activos'], $estadisticas['modulos_totales']); ?></span>
-                <span><span class="dashicons dashicons-admin-plugins"></span> <?php printf(esc_html__('%d addons', 'flavor-chat-ia'), $estadisticas['addons_activos']); ?></span>
+                <span><span class="dashicons dashicons-screenoptions"></span> <?php printf(esc_html__('%d/%d capacidades activas', 'flavor-chat-ia'), $estadisticas['modulos_activos'], $estadisticas['modulos_totales']); ?></span>
+                <span><span class="dashicons dashicons-admin-plugins"></span> <?php printf(esc_html__('%d extensiones', 'flavor-chat-ia'), $estadisticas['addons_activos']); ?></span>
                 <span><span class="dashicons dashicons-admin-users"></span> <?php printf(esc_html__('%d usuarios activos', 'flavor-chat-ia'), $estadisticas['usuarios_activos_30d']); ?></span>
             </div>
         </div>
-        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-app-composer')); ?>" class="button">
-            <?php echo esc_html__('Modificar mi app', 'flavor-chat-ia'); ?>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-module-dashboards')); ?>" class="button">
+            <?php echo esc_html__('Ver capacidades', 'flavor-chat-ia'); ?>
         </a>
     </div>
+
+    <!-- Banner del Nodo Local (filosofia Gailu: 1 sitio = 1 nodo) -->
+    <?php if (!$es_vista_gestor_grupos): ?>
+    <div class="flavor-node-banner <?php echo !empty($estadisticas_red['nodo_local']) ? 'flavor-node-configured' : 'flavor-node-pending'; ?>">
+        <div class="flavor-node-banner-icon">
+            <span class="dashicons dashicons-networking"></span>
+        </div>
+        <div class="flavor-node-banner-content">
+            <?php if (!empty($estadisticas_red['nodo_local'])): ?>
+                <div class="flavor-node-info">
+                    <h3><?php echo esc_html($estadisticas_red['nodo_local']['nombre']); ?></h3>
+                    <div class="flavor-node-meta">
+                        <span class="flavor-node-status <?php echo esc_attr($estadisticas_red['nodo_local']['estado']); ?>">
+                            <span class="dashicons dashicons-yes-alt"></span>
+                            <?php echo esc_html(ucfirst($estadisticas_red['nodo_local']['estado'])); ?>
+                        </span>
+                        <?php if ($estadisticas_red['nodos_conectados'] > 0): ?>
+                        <span class="flavor-node-connections">
+                            <span class="dashicons dashicons-groups"></span>
+                            <?php printf(esc_html__('%d nodos conectados', 'flavor-chat-ia'), $estadisticas_red['nodos_conectados']); ?>
+                        </span>
+                        <?php endif; ?>
+                        <?php if ($estadisticas_red['mensajes_sin_leer'] > 0): ?>
+                        <span class="flavor-node-messages">
+                            <span class="dashicons dashicons-email-alt"></span>
+                            <?php printf(esc_html__('%d mensajes', 'flavor-chat-ia'), $estadisticas_red['mensajes_sin_leer']); ?>
+                        </span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="flavor-node-setup">
+                    <h3><?php echo esc_html__('Configura tu Nodo', 'flavor-chat-ia'); ?></h3>
+                    <p><?php echo esc_html__('Este sitio representa un nodo en la red Gailu. Configura tu identidad para conectar con otros nodos y compartir recursos.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php endif; ?>
+        </div>
+        <div class="flavor-node-banner-actions">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-network&tab=mi-nodo')); ?>" class="button button-primary">
+                <?php echo !empty($estadisticas_red['nodo_local']) ? esc_html__('Gestionar Nodo', 'flavor-chat-ia') : esc_html__('Configurar Nodo', 'flavor-chat-ia'); ?>
+            </a>
+            <?php if (!empty($estadisticas_red['nodo_local'])): ?>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-network&tab=directorio')); ?>" class="button">
+                <?php echo esc_html__('Directorio', 'flavor-chat-ia'); ?>
+            </a>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <!-- Barra de progreso onboarding -->
     <?php if ($progreso_onboarding < 100): ?>
@@ -60,6 +118,114 @@ if (!defined('ABSPATH')) {
         </div>
         <div class="flavor-onboarding-progress">
             <div class="flavor-onboarding-progress-fill" style="width: <?php echo intval($progreso_onboarding); ?>%;"></div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- Panel de Transicion Regenerativa (filosofia Gailu) -->
+    <?php if (!$es_vista_gestor_grupos): ?>
+    <?php
+    // Obtener metricas regenerativas desde el registro estatico
+    $configuracion_gailu = get_option('flavor_chat_ia_settings', []);
+    $modulos_activos_ids = $configuracion_gailu['active_modules'] ?? [];
+
+    // Usar el metodo estatico del Module Loader para obtener metricas Gailu
+    $gailu_metricas = [];
+    if (class_exists('Flavor_Chat_Module_Loader')) {
+        $gailu_metricas = Flavor_Chat_Module_Loader::get_gailu_metricas($modulos_activos_ids);
+    }
+
+    $principios_activos = $gailu_metricas['principios'] ?? [];
+    $contribuciones_activas = $gailu_metricas['contribuciones'] ?? [];
+    $principios_cubiertos = $gailu_metricas['cubiertos']['principios'] ?? 0;
+    $total_principios = $gailu_metricas['totales']['principios'] ?? 5;
+
+    $etiquetas_principios = [
+        'economia_local' => ['nombre' => __('Economia Local', 'flavor-chat-ia'), 'icono' => 'dashicons-store', 'color' => '#10b981'],
+        'cuidados' => ['nombre' => __('Cuidados', 'flavor-chat-ia'), 'icono' => 'dashicons-heart', 'color' => '#ec4899'],
+        'gobernanza' => ['nombre' => __('Gobernanza', 'flavor-chat-ia'), 'icono' => 'dashicons-groups', 'color' => '#8b5cf6'],
+        'regeneracion' => ['nombre' => __('Regeneracion', 'flavor-chat-ia'), 'icono' => 'dashicons-palmtree', 'color' => '#22c55e'],
+        'aprendizaje' => ['nombre' => __('Aprendizaje', 'flavor-chat-ia'), 'icono' => 'dashicons-book', 'color' => '#f59e0b'],
+    ];
+
+    $etiquetas_contribuciones = [
+        'autonomia' => ['nombre' => __('Autonomia', 'flavor-chat-ia'), 'icono' => 'dashicons-flag', 'color' => '#3b82f6'],
+        'resiliencia' => ['nombre' => __('Resiliencia', 'flavor-chat-ia'), 'icono' => 'dashicons-shield', 'color' => '#06b6d4'],
+        'cohesion' => ['nombre' => __('Cohesion', 'flavor-chat-ia'), 'icono' => 'dashicons-networking', 'color' => '#a855f7'],
+        'impacto' => ['nombre' => __('Impacto', 'flavor-chat-ia'), 'icono' => 'dashicons-chart-line', 'color' => '#ef4444'],
+    ];
+
+    $porcentaje_cobertura = $total_principios > 0 ? round(($principios_cubiertos / $total_principios) * 100) : 0;
+    ?>
+    <div class="flavor-regenerative-panel">
+        <div class="flavor-regenerative-header">
+            <div class="flavor-regenerative-title">
+                <span class="dashicons dashicons-superhero"></span>
+                <h3><?php echo esc_html__('Panel de Transicion Regenerativa', 'flavor-chat-ia'); ?></h3>
+            </div>
+            <div class="flavor-regenerative-summary">
+                <span class="flavor-regenerative-score"><?php echo esc_html($porcentaje_cobertura); ?>%</span>
+                <span class="flavor-regenerative-label"><?php echo esc_html__('cobertura de principios', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+
+        <div class="flavor-regenerative-grid">
+            <!-- Principios transformadores -->
+            <div class="flavor-regenerative-section">
+                <h4><span class="dashicons dashicons-star-filled"></span> <?php echo esc_html__('Principios Transformadores', 'flavor-chat-ia'); ?></h4>
+                <div class="flavor-principios-grid">
+                    <?php foreach ($etiquetas_principios as $clave => $datos): ?>
+                    <?php
+                    $modulos_principio = $principios_activos[$clave] ?? [];
+                    $tiene_modulos = !empty($modulos_principio);
+                    ?>
+                    <div class="flavor-principio-card <?php echo $tiene_modulos ? 'activo' : 'inactivo'; ?>"
+                         style="--principio-color: <?php echo esc_attr($datos['color']); ?>"
+                         title="<?php echo $tiene_modulos ? implode(', ', $modulos_principio) : __('Sin modulos activos', 'flavor-chat-ia'); ?>">
+                        <span class="dashicons <?php echo esc_attr($datos['icono']); ?>"></span>
+                        <span class="flavor-principio-nombre"><?php echo esc_html($datos['nombre']); ?></span>
+                        <?php if ($tiene_modulos): ?>
+                        <span class="flavor-principio-count"><?php echo esc_html(count($modulos_principio)); ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Capacidades regenerativas -->
+            <div class="flavor-regenerative-section">
+                <h4><span class="dashicons dashicons-awards"></span> <?php echo esc_html__('Capacidades Regenerativas', 'flavor-chat-ia'); ?></h4>
+                <div class="flavor-contribuciones-grid">
+                    <?php foreach ($etiquetas_contribuciones as $clave => $datos): ?>
+                    <?php
+                    $modulos_contribucion = $contribuciones_activas[$clave] ?? [];
+                    $tiene_contribucion = !empty($modulos_contribucion);
+                    $total_modulos_activos = max(1, count($modulos_activos_ids));
+                    $porcentaje_contribucion = $tiene_contribucion ? round((count($modulos_contribucion) / $total_modulos_activos) * 100) : 0;
+                    ?>
+                    <div class="flavor-contribucion-bar <?php echo $tiene_contribucion ? 'activo' : 'inactivo'; ?>">
+                        <div class="flavor-contribucion-info">
+                            <span class="dashicons <?php echo esc_attr($datos['icono']); ?>" style="color: <?php echo esc_attr($datos['color']); ?>"></span>
+                            <span class="flavor-contribucion-nombre"><?php echo esc_html($datos['nombre']); ?></span>
+                        </div>
+                        <div class="flavor-contribucion-progress">
+                            <div class="flavor-contribucion-fill" style="width: <?php echo esc_attr($porcentaje_contribucion); ?>%; background: <?php echo esc_attr($datos['color']); ?>"></div>
+                        </div>
+                        <span class="flavor-contribucion-valor"><?php echo esc_html(count($modulos_contribucion)); ?></span>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="flavor-regenerative-footer">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-module-dashboards')); ?>" class="button">
+                <span class="dashicons dashicons-plus-alt2"></span>
+                <?php echo esc_html__('Activar mas capacidades', 'flavor-chat-ia'); ?>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-network&tab=mi-nodo')); ?>" class="button button-link">
+                <?php echo esc_html__('Ver impacto del nodo', 'flavor-chat-ia'); ?>
+            </a>
         </div>
     </div>
     <?php endif; ?>
@@ -214,6 +380,7 @@ if (!defined('ABSPATH')) {
             </div>
         </div>
 
+        <?php if (!$es_vista_gestor_grupos): ?>
         <!-- Fila 2: Graficos -->
         <div class="flavor-widgets-row flavor-widgets-row-3">
             <!-- Widget: Grafico de usuarios -->
@@ -255,6 +422,7 @@ if (!defined('ABSPATH')) {
                 </div>
             </div>
         </div>
+        <?php endif; ?>
 
         <!-- Fila 3: Actividad y acciones -->
         <div class="flavor-widgets-row flavor-widgets-row-2">
@@ -303,8 +471,10 @@ if (!defined('ABSPATH')) {
                 </div>
                 <div class="flavor-widget-content">
                     <!-- Acciones principales -->
-                    <div class="flavor-actions-section">
-                        <h4><?php echo esc_html__('Principales', 'flavor-chat-ia'); ?></h4>
+                    <details class="flavor-actions-section flavor-actions-section--collapsible" data-actions-section="principales" open>
+                        <summary class="flavor-actions-section-toggle">
+                            <h4><?php echo esc_html__('Principales', 'flavor-chat-ia'); ?></h4>
+                        </summary>
                         <div class="flavor-quick-actions-grid">
                             <?php foreach ($acciones_rapidas['principales'] as $accion): ?>
                                 <a href="<?php echo esc_url($accion['url']); ?>"
@@ -316,12 +486,14 @@ if (!defined('ABSPATH')) {
                                 </a>
                             <?php endforeach; ?>
                         </div>
-                    </div>
+                    </details>
 
                     <?php if (!empty($acciones_rapidas['contextuales'])): ?>
                     <!-- Acciones contextuales -->
-                    <div class="flavor-actions-section">
-                        <h4><?php echo esc_html__('Segun modulos', 'flavor-chat-ia'); ?></h4>
+                    <details class="flavor-actions-section flavor-actions-section--collapsible" data-actions-section="contextuales">
+                        <summary class="flavor-actions-section-toggle">
+                            <h4><?php echo esc_html__('Segun modulos', 'flavor-chat-ia'); ?></h4>
+                        </summary>
                         <div class="flavor-quick-actions-grid">
                             <?php foreach ($acciones_rapidas['contextuales'] as $accion): ?>
                                 <a href="<?php echo esc_url($accion['url']); ?>"
@@ -333,12 +505,14 @@ if (!defined('ABSPATH')) {
                                 </a>
                             <?php endforeach; ?>
                         </div>
-                    </div>
+                    </details>
                     <?php endif; ?>
 
                     <!-- Acciones generales -->
-                    <div class="flavor-actions-section">
-                        <h4><?php echo esc_html__('Herramientas', 'flavor-chat-ia'); ?></h4>
+                    <details class="flavor-actions-section flavor-actions-section--collapsible" data-actions-section="herramientas">
+                        <summary class="flavor-actions-section-toggle">
+                            <h4><?php echo esc_html__('Herramientas', 'flavor-chat-ia'); ?></h4>
+                        </summary>
                         <div class="flavor-quick-actions-grid">
                             <?php foreach ($acciones_rapidas['generales'] as $accion): ?>
                                 <a href="<?php echo esc_url($accion['url']); ?>"
@@ -351,10 +525,22 @@ if (!defined('ABSPATH')) {
                                 </a>
                             <?php endforeach; ?>
                         </div>
-                    </div>
+                    </details>
                 </div>
             </div>
         </div>
+
+        <?php if (!$es_vista_gestor_grupos): ?>
+        <details class="flavor-dashboard-advanced-sections" open>
+            <summary class="flavor-dashboard-advanced-toggle">
+                <span class="flavor-dashboard-advanced-title">
+                    <span class="dashicons dashicons-admin-generic"></span>
+                    <?php echo esc_html__('Panel avanzado', 'flavor-chat-ia'); ?>
+                </span>
+                <span class="flavor-dashboard-advanced-meta">
+                    <?php echo esc_html__('Red, addons, mapa y analítica avanzada', 'flavor-chat-ia'); ?>
+                </span>
+            </summary>
 
         <!-- Fila 4: Addons -->
         <div class="flavor-widgets-row flavor-widgets-row-1">
@@ -397,7 +583,9 @@ if (!defined('ABSPATH')) {
                 </div>
             </div>
         </div>
+        <?php endif; ?>
 
+        <?php if (!$es_vista_gestor_grupos): ?>
         <!-- Fila 5: Red de Comunidades -->
         <div class="flavor-widgets-row flavor-widgets-row-2">
             <!-- Widget: Estado de la Red -->
@@ -531,7 +719,9 @@ if (!defined('ABSPATH')) {
                 </div>
             </div>
         </div>
+        <?php endif; ?>
 
+        <?php if (!$es_vista_gestor_grupos): ?>
         <!-- Fila 6: Mapa de Actividad -->
         <div class="flavor-widgets-row flavor-widgets-row-1">
             <div class="flavor-dashboard-widget flavor-widget-map flavor-widget-large" data-widget="activity-map">
@@ -595,7 +785,9 @@ if (!defined('ABSPATH')) {
                 </div>
             </div>
         </div>
+        <?php endif; ?>
 
+        <?php if (!$es_vista_gestor_grupos): ?>
         <!-- Fila 7: KPIs con Tendencias y Graficos Avanzados -->
         <div class="flavor-widgets-row flavor-widgets-row-2">
             <!-- Widget: KPIs Principales -->
@@ -658,9 +850,10 @@ if (!defined('ABSPATH')) {
                 </div>
             </div>
         </div>
+        <?php endif; ?>
 
         <!-- Fila 8: Nodos Recientes -->
-        <?php if (!empty($estadisticas_red['nodos_recientes'])): ?>
+        <?php if (!$es_vista_gestor_grupos && !empty($estadisticas_red['nodos_recientes'])): ?>
         <div class="flavor-widgets-row flavor-widgets-row-1">
             <div class="flavor-dashboard-widget flavor-widget-recent-nodes" data-widget="recent-nodes">
                 <div class="flavor-widget-header">
@@ -699,6 +892,10 @@ if (!defined('ABSPATH')) {
                 </div>
             </div>
         </div>
+        <?php endif; ?>
+
+        <?php if (!$es_vista_gestor_grupos): ?>
+        </details>
         <?php endif; ?>
 
     </div><!-- /.flavor-widgets-container -->

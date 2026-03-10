@@ -22,33 +22,91 @@ trait Flavor_Module_Admin_Pages_Trait {
      * @var array
      */
     protected static $module_dashboard_pages = [
-        'grupos_consumo' => 'gc-dashboard',
-        'eventos' => 'eventos-dashboard',
-        'presupuestos_participativos' => 'pp-dashboard',
-        'mapa_actores' => 'actores-dashboard',
-        'incidencias' => 'incidencias-dashboard',
-        'foros' => 'foros-dashboard',
-        'participacion' => 'participacion-dashboard',
+        // Administración
+        'advertising' => 'advertising-dashboard',
+
+        // Servicios públicos
+        'avisos_municipales' => 'avisos-dashboard',
+        'presupuestos_participativos' => 'presupuestos-dashboard',
+        'transparencia' => 'transparencia-dashboard',
+        'seguimiento_denuncias' => 'denuncias-dashboard',
+        'documentacion_legal' => 'documentos-dashboard',
         'tramites' => 'tramites-dashboard',
+        'incidencias' => 'incidencias-dashboard',
+        'participacion' => 'participacion-dashboard',
+
+        // Comunidad
         'socios' => 'socios-dashboard',
-        'reservas' => 'reservas-dashboard',
-        'facturas' => 'facturas-dashboard',
-        'clientes' => 'clientes-dashboard',
-        'reciclaje' => 'reciclaje-dashboard',
-        'huertos_urbanos' => 'huertos-dashboard',
-        'banco_tiempo' => 'banco-tiempo-dashboard',
-        'ayuda_vecinal' => 'ayuda-dashboard',
-        'carpooling' => 'carpooling-dashboard',
-        'bicicletas_compartidas' => 'bicicletas-dashboard',
-        'compostaje' => 'compostaje-dashboard',
-        'espacios_comunes' => 'espacios-dashboard',
+        'colectivos' => 'flavor-colectivos-dashboard',
+        'comunidades' => 'comunidades-dashboard',
+        'foros' => 'foros-dashboard',
+        'red_social' => 'flavor-red-social-dashboard',
+        'mapa_actores' => 'actores-dashboard',
+
+        // Economía
+        'grupos_consumo' => 'gc-dashboard',
         'marketplace' => 'marketplace-dashboard',
+        'banco_tiempo' => 'banco-tiempo-dashboard',
+        'economia_don' => 'economia-don-dashboard',
+        'economia_suficiencia' => 'suficiencia-dashboard',
+
+        // Actividades
+        'eventos' => 'eventos-dashboard',
         'cursos' => 'cursos-dashboard',
         'talleres' => 'talleres-dashboard',
+        'reservas' => 'reservas-dashboard',
+
+        // Recursos
+        'huertos_urbanos' => 'huertos-dashboard',
+        'espacios_comunes' => 'espacios-dashboard',
         'biblioteca' => 'biblioteca-dashboard',
+        'carpooling' => 'carpooling-dashboard',
+        'fichaje_empleados' => 'fichaje-dashboard',
+        'parkings' => 'parkings-dashboard',
+        'bares' => 'bares-dashboard',
+        'recetas' => 'recetas-dashboard',
+
+        // Sostenibilidad
+        'reciclaje' => 'reciclaje-dashboard',
+        'compostaje' => 'compostaje-dashboard',
+        'energia_comunitaria' => 'flavor-energia-dashboard',
+        'bicicletas_compartidas' => 'bicicletas-dashboard',
+        'biodiversidad_local' => 'biodiversidad-dashboard',
+        'huella_ecologica' => 'huella-ecologica-dashboard',
+        'saberes_ancestrales' => 'saberes-dashboard',
+        'circulos_cuidados' => 'circulos-cuidados-dashboard',
+        'trabajo_digno' => 'trabajo-digno-dashboard',
+        'justicia_restaurativa' => 'justicia-restaurativa-dashboard',
+
+        // Comunicación
         'multimedia' => 'multimedia-dashboard',
+        'radio' => 'flavor-radio-dashboard',
         'podcast' => 'podcast-dashboard',
-        'radio' => 'radio-dashboard',
+        'campanias' => 'campanias-dashboard',
+        'email_marketing' => 'email-marketing-dashboard',
+        'encuestas' => 'encuestas-dashboard',
+
+        // Chat
+        'chat_estados' => 'chat-estados-dashboard',
+        'chat_grupos' => 'chat-grupos-dashboard',
+        'chat_interno' => 'chat-interno-dashboard',
+
+        // Negocios
+        'clientes' => 'clientes-dashboard',
+        'facturas' => 'facturas-dashboard',
+        'empresarial' => 'empresarial-dashboard',
+        'woocommerce' => 'flavor-woocommerce-dashboard',
+        'crowdfunding' => 'crowdfunding-dashboard',
+        'themacle' => 'themacle-dashboard',
+        'trading_ia' => 'trading-ia-dashboard',
+        'dex_solana' => 'dex-solana-dashboard',
+
+        // Social
+        'ayuda_vecinal' => 'ayuda-dashboard',
+        'sello_conciencia' => 'sello-conciencia-dashboard',
+
+        // Especiales
+        'kulturaka' => 'kulturaka-dashboard',
     ];
 
     /**
@@ -59,6 +117,22 @@ trait Flavor_Module_Admin_Pages_Trait {
      */
     public static function get_module_dashboard_page($module_id) {
         return self::$module_dashboard_pages[$module_id] ?? null;
+    }
+
+    /**
+     * Obtiene la URL canónica del dashboard principal de un módulo.
+     *
+     * @param string $module_id ID del módulo
+     * @return string|null URL completa o null si no existe mapping
+     */
+    public static function get_module_dashboard_url($module_id) {
+        $dashboard_page = self::get_module_dashboard_page($module_id);
+
+        if (empty($dashboard_page)) {
+            return null;
+        }
+
+        return admin_url('admin.php?page=' . rawurlencode($dashboard_page));
     }
 
     /**
@@ -250,4 +324,5 @@ trait Flavor_Module_Admin_Pages_Trait {
         }
         echo '</nav>';
     }
+
 }

@@ -174,7 +174,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_anuncios,
                 'label' => __('Mis anuncios', 'flavor-chat-ia'),
                 'color' => $mis_anuncios > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=marketplace') : home_url('/mi-portal/marketplace/mis-anuncios/'),
+                'url' => $es_admin ? admin_url('admin.php?page=marketplace-anuncios') : home_url('/mi-portal/marketplace/?tab=mis-anuncios'),
             ];
         }
 
@@ -185,7 +185,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mensajes_sin_leer,
                 'label' => __('Mensajes nuevos', 'flavor-chat-ia'),
                 'color' => $mensajes_sin_leer > 0 ? 'warning' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=marketplace&tab=mensajes') : home_url('/mi-portal/marketplace/mensajes/'),
+                'url' => $es_admin ? admin_url('admin.php?page=marketplace-moderacion') : home_url('/mi-portal/marketplace/'),
             ];
         }
 
@@ -195,7 +195,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_anuncios,
             'label' => __('Anuncios activos', 'flavor-chat-ia'),
             'color' => 'primary',
-            'url' => $es_admin ? admin_url('admin.php?page=marketplace') : home_url('/mi-portal/marketplace/'),
+            'url' => $es_admin ? admin_url('admin.php?page=marketplace-dashboard') : home_url('/mi-portal/marketplace/'),
         ];
 
         // Stat 4: Favoritos
@@ -205,7 +205,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_favoritos,
                 'label' => __('Favoritos', 'flavor-chat-ia'),
                 'color' => $mis_favoritos > 0 ? 'danger' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=marketplace&tab=favoritos') : home_url('/mi-portal/marketplace/favoritos/'),
+                'url' => $es_admin ? admin_url('admin.php?page=marketplace-anuncios') : home_url('/mi-portal/marketplace/'),
             ];
         }
 
@@ -219,7 +219,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => $user_id ? __('Publicar anuncio', 'flavor-chat-ia') : __('Ver anuncios', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=marketplace&action=nuevo') : home_url('/mi-portal/marketplace/' . ($user_id ? 'publicar/' : '')),
+                    'url' => $es_admin ? admin_url('post-new.php?post_type=marketplace_item') : home_url('/mi-portal/marketplace/' . ($user_id ? 'publicar/' : '')),
                     'icon' => $user_id ? 'dashicons-plus-alt' : 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -274,7 +274,7 @@ class Flavor_Marketplace_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $icono,
                 'title' => wp_trim_words($anuncio->titulo, 6, '...'),
                 'meta' => $precio_texto,
-                'url' => $es_admin ? admin_url('admin.php?page=marketplace&anuncio=' . $anuncio->id) : home_url('/mi-portal/marketplace/ver/' . $anuncio->id . '/'),
+                'url' => $es_admin ? admin_url('edit.php?post_type=marketplace_item') : home_url('/mi-portal/marketplace/detalle/?anuncio_id=' . $anuncio->id),
             ];
         }
 

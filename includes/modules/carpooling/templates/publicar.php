@@ -21,7 +21,7 @@ if (!is_user_logged_in()) {
             <span class="dashicons dashicons-lock"></span>
             <h3><?php esc_html_e('Inicia sesion para publicar', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Necesitas una cuenta para publicar viajes compartidos.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="cp-btn cp-btn-primary">
+            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="cp-btn cp-btn-primary">
                 <?php esc_html_e('Iniciar sesion', 'flavor-chat-ia'); ?>
             </a>
         </div>

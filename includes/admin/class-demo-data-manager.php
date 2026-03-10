@@ -76,7 +76,7 @@ class Flavor_Demo_Data_Manager {
         $mensaje = count($exitos) > 0 ? 'demo_data_populated' : 'demo_data_error';
 
         wp_safe_redirect(add_query_arg(
-            ['page' => 'flavor-app-composer', 'mensaje' => $mensaje, 'count' => count($exitos)],
+            ['page' => 'flavor-module-dashboards', 'mensaje' => $mensaje, 'count' => count($exitos)],
             admin_url('admin.php')
         ));
         exit;
@@ -108,7 +108,7 @@ class Flavor_Demo_Data_Manager {
         $mensaje = count($exitos) > 0 ? 'demo_data_cleared' : 'demo_data_clear_error';
 
         wp_safe_redirect(add_query_arg(
-            ['page' => 'flavor-app-composer', 'mensaje' => $mensaje, 'count' => count($exitos)],
+            ['page' => 'flavor-module-dashboards', 'mensaje' => $mensaje, 'count' => count($exitos)],
             admin_url('admin.php')
         ));
         exit;
@@ -3297,7 +3297,7 @@ class Flavor_Demo_Data_Manager {
 
         wp_safe_redirect(add_query_arg(
             [
-                'page' => 'flavor-app-composer',
+                'page' => 'flavor-module-dashboards',
                 'mensaje' => $mensaje,
                 'count' => $resultado['count'] ?? 0,
                 'demo_scope' => $scope
@@ -3322,7 +3322,7 @@ class Flavor_Demo_Data_Manager {
         $mensaje = $resultado['success'] ? 'demo_pages_deleted' : 'demo_pages_delete_error';
 
         wp_safe_redirect(add_query_arg(
-            ['page' => 'flavor-app-composer', 'mensaje' => $mensaje, 'count' => $resultado['count'] ?? 0],
+            ['page' => 'flavor-module-dashboards', 'mensaje' => $mensaje, 'count' => $resultado['count'] ?? 0],
             admin_url('admin.php')
         ));
         exit;

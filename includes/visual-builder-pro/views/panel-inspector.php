@@ -300,6 +300,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <!-- ========== HERO ========== -->
                 <template x-if="selectedElement.type === 'hero'">
                     <div class="vbp-inspector-section">
+                        <!-- Contenido -->
+                        <h4 class="vbp-section-title">📝 <?php esc_html_e( 'Contenido', 'flavor-chat-ia' ); ?></h4>
                         <div class="vbp-field-group">
                             <label class="vbp-field-label">
                                 <?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?>
@@ -329,12 +331,72 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <div x-ref="editor" contenteditable="true" class="vbp-richtext-editor" @input="updateContent()" @focus="handleFocus()" @blur="handleBlur()" @paste="handlePaste($event)" x-html="content"></div>
                             </div>
                         </div>
+
+                        <!-- Colores de texto -->
+                        <h4 class="vbp-section-title">🎨 <?php esc_html_e( 'Colores de Texto', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.titulo_color || '#ffffff')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <input type="color" :value="normalizeForInput(currentColor)" @input="selectColor($event.target.value); updateElementData('titulo_color', $event.target.value)" class="vbp-color-native">
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('titulo_color', $event.target.value)" class="vbp-field-input vbp-color-text">
+                                    <button type="button" class="vbp-color-dropdown-btn" @click="togglePicker()" title="<?php esc_attr_e( 'Paleta de colores', 'flavor-chat-ia' ); ?>">▼</button>
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-section">
+                                            <span class="vbp-color-section-label"><?php esc_html_e( 'Colores del sitio', 'flavor-chat-ia' ); ?></span>
+                                            <div class="vbp-color-picker-grid vbp-site-colors">
+                                                <template x-for="item in siteColors" :key="item.label">
+                                                    <button type="button" class="vbp-color-preset" :class="{ 'active': isActive(item.color) }" :style="{ backgroundColor: item.color }" :title="item.label" @click="selectColor(item.color); updateElementData('titulo_color', item.color)"></button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="vbp-color-section">
+                                            <span class="vbp-color-section-label"><?php esc_html_e( 'Colores comunes', 'flavor-chat-ia' ); ?></span>
+                                            <div class="vbp-color-picker-grid">
+                                                <template x-for="color in presetColors" :key="color">
+                                                    <button type="button" class="vbp-color-preset" :class="{ 'active': isActive(color) }" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('titulo_color', color)"></button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.subtitulo_color || '#e0e0e0')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <input type="color" :value="normalizeForInput(currentColor)" @input="selectColor($event.target.value); updateElementData('subtitulo_color', $event.target.value)" class="vbp-color-native">
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('subtitulo_color', $event.target.value)" class="vbp-field-input vbp-color-text">
+                                    <button type="button" class="vbp-color-dropdown-btn" @click="togglePicker()" title="<?php esc_attr_e( 'Paleta de colores', 'flavor-chat-ia' ); ?>">▼</button>
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-section">
+                                            <span class="vbp-color-section-label"><?php esc_html_e( 'Colores del sitio', 'flavor-chat-ia' ); ?></span>
+                                            <div class="vbp-color-picker-grid vbp-site-colors">
+                                                <template x-for="item in siteColors" :key="item.label">
+                                                    <button type="button" class="vbp-color-preset" :class="{ 'active': isActive(item.color) }" :style="{ backgroundColor: item.color }" :title="item.label" @click="selectColor(item.color); updateElementData('subtitulo_color', item.color)"></button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="vbp-color-section">
+                                            <span class="vbp-color-section-label"><?php esc_html_e( 'Colores comunes', 'flavor-chat-ia' ); ?></span>
+                                            <div class="vbp-color-picker-grid">
+                                                <template x-for="color in presetColors" :key="color">
+                                                    <button type="button" class="vbp-color-preset" :class="{ 'active': isActive(color) }" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('subtitulo_color', color)"></button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botón Principal -->
+                        <h4 class="vbp-section-title">🔘 <?php esc_html_e( 'Botón Principal', 'flavor-chat-ia' ); ?></h4>
                         <div class="vbp-field-group">
-                            <label class="vbp-field-label"><?php esc_html_e( 'Texto botón', 'flavor-chat-ia' ); ?></label>
+                            <label class="vbp-field-label"><?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.boton_texto" @input="updateElementData('boton_texto', $event.target.value)" class="vbp-field-input">
                         </div>
                         <div class="vbp-field-group" x-data="vbpLinkAutocomplete()">
-                            <label class="vbp-field-label"><?php esc_html_e( 'URL botón', 'flavor-chat-ia' ); ?></label>
+                            <label class="vbp-field-label"><?php esc_html_e( 'URL', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-link-autocomplete">
                                 <input type="url"
                                        x-model="selectedElement.data.boton_url"
@@ -361,14 +423,167 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 </div>
                             </div>
                         </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.boton_color_fondo || '#3b82f6')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Fondo', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_color_fondo', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_color_fondo', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.boton_color_texto || '#ffffff')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_color_texto', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_color_texto', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botón Secundario -->
+                        <h4 class="vbp-section-title">🔘 <?php esc_html_e( 'Botón Secundario', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.data.boton_2_texto" @input="updateElementData('boton_2_texto', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Dejar vacío para ocultar', 'flavor-chat-ia' ); ?>">
+                        </div>
+                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()">
+                            <label class="vbp-field-label"><?php esc_html_e( 'URL', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-link-autocomplete">
+                                <input type="url"
+                                       x-model="selectedElement.data.boton_2_url"
+                                       @input="searchQuery = $event.target.value; updateElementData('boton_2_url', $event.target.value)"
+                                       @keydown="handleKeydown($event)"
+                                       @blur="closeDropdown()"
+                                       @link-selected.window="updateElementData('boton_2_url', $event.detail.url)"
+                                       class="vbp-field-input"
+                                       placeholder="<?php esc_attr_e( 'Escribe para buscar...', 'flavor-chat-ia' ); ?>">
+                            </div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.boton_2_color_fondo || 'transparent')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Fondo', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_2_color_fondo', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_2_color_fondo', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.boton_2_color_texto || '#ffffff')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_2_color_texto', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_2_color_texto', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vbp-field-group" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.boton_2_color_borde || '#ffffff')">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Color del borde', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-color-input-wrapper">
+                                <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_2_color_borde', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                    <div class="vbp-color-picker-grid">
+                                        <template x-for="color in presetColors" :key="color">
+                                            <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_2_color_borde', color)"></button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fondo -->
+                        <h4 class="vbp-section-title">🖼️ <?php esc_html_e( 'Fondo', 'flavor-chat-ia' ); ?></h4>
                         <div class="vbp-field-group">
                             <label class="vbp-field-label"><?php esc_html_e( 'Imagen de fondo', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-image-preview vbp-image-preview-bg" x-show="selectedElement.data.imagen_fondo" :style="{ backgroundImage: 'url(' + selectedElement.data.imagen_fondo + ')' }">
                                 <button type="button" @click="updateElementData('imagen_fondo', '')" class="vbp-image-remove">×</button>
                             </div>
                             <button type="button" @click="openMediaLibrary('imagen_fondo')" class="vbp-btn vbp-btn-secondary vbp-btn-block">
-                                <?php esc_html_e( 'Seleccionar imagen de fondo', 'flavor-chat-ia' ); ?>
+                                <?php esc_html_e( 'Seleccionar imagen', 'flavor-chat-ia' ); ?>
                             </button>
+                        </div>
+                        <div class="vbp-field-group" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.color_fondo || '#1a1a2e')">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Color de fondo', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-color-input-wrapper">
+                                <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('color_fondo', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                    <div class="vbp-color-picker-grid">
+                                        <template x-for="color in presetColors" :key="color">
+                                            <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('color_fondo', color)"></button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.overlay_color || 'rgba(0,0,0,0.5)')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Overlay', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('overlay_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('overlay_color', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Opacidad', 'flavor-chat-ia' ); ?></label>
+                                <input type="range" x-model="selectedElement.data.overlay_opacity" @input="updateElementData('overlay_opacity', $event.target.value)" min="0" max="100" class="vbp-range-input">
+                            </div>
+                        </div>
+
+                        <!-- Layout -->
+                        <h4 class="vbp-section-title">📐 <?php esc_html_e( 'Layout', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Altura', 'flavor-chat-ia' ); ?></label>
+                                <select x-model="selectedElement.data.altura" @change="updateElementData('altura', $event.target.value)" class="vbp-field-select">
+                                    <option value="auto">Auto</option>
+                                    <option value="50vh">50%</option>
+                                    <option value="75vh">75%</option>
+                                    <option value="100vh">100%</option>
+                                </select>
+                            </div>
+                            <div class="vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Alineación', 'flavor-chat-ia' ); ?></label>
+                                <select x-model="selectedElement.data.alineacion" @change="updateElementData('alineacion', $event.target.value)" class="vbp-field-select">
+                                    <option value="left"><?php esc_html_e( 'Izquierda', 'flavor-chat-ia' ); ?></option>
+                                    <option value="center"><?php esc_html_e( 'Centro', 'flavor-chat-ia' ); ?></option>
+                                    <option value="right"><?php esc_html_e( 'Derecha', 'flavor-chat-ia' ); ?></option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -1733,12 +1948,331 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </template>
 
+                <!-- ========== COLORES DE SECCIÓN (para bloques de sección) ========== -->
+                <template x-if="isSectionBlock(selectedElement.type)">
+                    <div class="vbp-inspector-section vbp-section-colors">
+                        <!-- Colores de texto -->
+                        <h4 class="vbp-section-title">🎨 <?php esc_html_e( 'Colores de Texto', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.titulo_color || '#1f2937')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('titulo_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('titulo_color', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.subtitulo_color || '#6b7280')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('subtitulo_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('subtitulo_color', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vbp-field-group" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.texto_color || '#374151')">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Texto general', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-color-input-wrapper">
+                                <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('texto_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                    <div class="vbp-color-picker-grid">
+                                        <template x-for="color in presetColors" :key="color">
+                                            <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('texto_color', color)"></button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Colores de botón -->
+                        <h4 class="vbp-section-title">🔘 <?php esc_html_e( 'Colores de Botón', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.boton_color_fondo || '#3b82f6')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Fondo', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_color_fondo', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_color_fondo', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.boton_color_texto || '#ffffff')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_color_texto', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_color_texto', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vbp-field-group" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.boton_color_hover || '#2563eb')">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Fondo hover', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-color-input-wrapper">
+                                <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('boton_color_hover', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                    <div class="vbp-color-picker-grid">
+                                        <template x-for="color in presetColors" :key="color">
+                                            <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('boton_color_hover', color)"></button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fondo de sección -->
+                        <h4 class="vbp-section-title">🖼️ <?php esc_html_e( 'Fondo de Sección', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Tipo de fondo', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.data.seccion_fondo_tipo" @change="updateElementData('seccion_fondo_tipo', $event.target.value)" class="vbp-field-select">
+                                <option value="color"><?php esc_html_e( 'Color sólido', 'flavor-chat-ia' ); ?></option>
+                                <option value="gradient"><?php esc_html_e( 'Gradiente', 'flavor-chat-ia' ); ?></option>
+                                <option value="image"><?php esc_html_e( 'Imagen', 'flavor-chat-ia' ); ?></option>
+                            </select>
+                        </div>
+                        <!-- Color sólido -->
+                        <div class="vbp-field-group" x-show="!selectedElement.data.seccion_fondo_tipo || selectedElement.data.seccion_fondo_tipo === 'color'" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.seccion_fondo_color || '#ffffff')">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Color de fondo', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-color-input-wrapper">
+                                <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('seccion_fondo_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                    <div class="vbp-color-picker-grid">
+                                        <template x-for="color in presetColors" :key="color">
+                                            <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('seccion_fondo_color', color)"></button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Gradiente -->
+                        <template x-if="selectedElement.data.seccion_fondo_tipo === 'gradient'">
+                            <div class="vbp-field-row">
+                                <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.seccion_fondo_gradiente_inicio || '#3b82f6')">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Inicio', 'flavor-chat-ia' ); ?></label>
+                                    <div class="vbp-color-input-wrapper">
+                                        <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                        <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('seccion_fondo_gradiente_inicio', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                        <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                            <div class="vbp-color-picker-grid">
+                                                <template x-for="color in presetColors" :key="color">
+                                                    <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('seccion_fondo_gradiente_inicio', color)"></button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.seccion_fondo_gradiente_fin || '#8b5cf6')">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Fin', 'flavor-chat-ia' ); ?></label>
+                                    <div class="vbp-color-input-wrapper">
+                                        <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                        <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('seccion_fondo_gradiente_fin', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                        <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                            <div class="vbp-color-picker-grid">
+                                                <template x-for="color in presetColors" :key="color">
+                                                    <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('seccion_fondo_gradiente_fin', color)"></button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <!-- Imagen de fondo -->
+                        <template x-if="selectedElement.data.seccion_fondo_tipo === 'image'">
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Imagen de fondo', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-image-preview vbp-image-preview-bg" x-show="selectedElement.data.seccion_fondo_imagen" :style="{ backgroundImage: 'url(' + selectedElement.data.seccion_fondo_imagen + ')' }">
+                                    <button type="button" @click="updateElementData('seccion_fondo_imagen', '')" class="vbp-image-remove">×</button>
+                                </div>
+                                <button type="button" @click="openMediaLibrary('seccion_fondo_imagen')" class="vbp-btn vbp-btn-secondary vbp-btn-block">
+                                    <?php esc_html_e( 'Seleccionar imagen', 'flavor-chat-ia' ); ?>
+                                </button>
+                            </div>
+                        </template>
+                        <!-- Overlay -->
+                        <div class="vbp-field-group" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.seccion_overlay_color || 'rgba(0,0,0,0.5)')">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Color overlay', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-color-input-wrapper">
+                                <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('seccion_overlay_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                    <div class="vbp-color-picker-grid">
+                                        <template x-for="color in presetColors" :key="color">
+                                            <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('seccion_overlay_color', color)"></button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Opacidad overlay', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-range-wrapper">
+                                <input type="range" min="0" max="100" step="5"
+                                       :value="selectedElement.data.seccion_overlay_opacity || 50"
+                                       @input="updateElementData('seccion_overlay_opacity', parseInt($event.target.value))"
+                                       class="vbp-field-range">
+                                <span class="vbp-range-value" x-text="(selectedElement.data.seccion_overlay_opacity || 50) + '%'"></span>
+                            </div>
+                        </div>
+
+                        <!-- Colores de tarjetas -->
+                        <h4 class="vbp-section-title">🃏 <?php esc_html_e( 'Colores de Tarjetas', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.card_fondo_color || '#ffffff')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Fondo', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('card_fondo_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('card_fondo_color', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.card_borde_color || '#e5e7eb')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Borde', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('card_borde_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('card_borde_color', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.card_titulo_color || '#1f2937')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('card_titulo_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('card_titulo_color', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.card_texto_color || '#6b7280')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('card_texto_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('card_texto_color', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vbp-field-group" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.card_icono_color || '#3b82f6')">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Color de iconos', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-color-input-wrapper">
+                                <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('card_icono_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                    <div class="vbp-color-picker-grid">
+                                        <template x-for="color in presetColors" :key="color">
+                                            <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('card_icono_color', color)"></button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Colores de acento -->
+                        <h4 class="vbp-section-title">✨ <?php esc_html_e( 'Colores de Acento', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-group" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.acento_color || '#3b82f6')">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Color de acento', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-color-input-wrapper">
+                                <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('acento_color', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                    <div class="vbp-color-picker-grid">
+                                        <template x-for="color in presetColors" :key="color">
+                                            <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('acento_color', color)"></button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.destacado_fondo || '#eff6ff')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Fondo destacado', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('destacado_fondo', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('destacado_fondo', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.destacado_borde || '#3b82f6')">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Borde destacado', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-color-input-wrapper">
+                                    <button type="button" class="vbp-color-swatch" :style="{ backgroundColor: currentColor }" @click="togglePicker()"></button>
+                                    <input type="text" x-model="currentColor" @input="updateColor($event.target.value); updateElementData('destacado_borde', $event.target.value)" class="vbp-field-input vbp-color-input">
+                                    <div class="vbp-color-picker-dropdown" x-show="isOpen" x-cloak @click.away="isOpen = false">
+                                        <div class="vbp-color-picker-grid">
+                                            <template x-for="color in presetColors" :key="color">
+                                                <button type="button" class="vbp-color-preset" :style="{ backgroundColor: color }" @click="selectColor(color); updateElementData('destacado_borde', color)"></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
             </div>
 
             <!-- ============================================ -->
             <!-- Tab: Estilos -->
             <!-- ============================================ -->
-            <div x-show="activeTab === 'styles'" class="vbp-inspector-panel">
+            <div x-show="activeTab === 'styles' && hasCompleteStyles()" class="vbp-inspector-panel">
 
                 <!-- Selector de Breakpoints -->
                 <div class="vbp-breakpoint-selector">

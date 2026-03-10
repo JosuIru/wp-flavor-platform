@@ -89,7 +89,7 @@ if (function_exists('flavor_get_color_classes')) {
     <?php else: ?>
         <div class="bg-gray-50 rounded-xl p-4 mb-6 text-center">
             <p class="text-gray-600 mb-2"><?php esc_html_e('Inicia sesión para comentar', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white <?php echo esc_attr($color_classes['bg_solid']); ?> rounded-lg hover:opacity-90">
+            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white <?php echo esc_attr($color_classes['bg_solid']); ?> rounded-lg hover:opacity-90">
                 <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
             </a>
         </div>

@@ -76,6 +76,10 @@ class Flavor_Marketplace_API {
                     'default' => 1,
                     'sanitize_callback' => 'absint',
                 ],
+                'comunidad_id' => [
+                    'type' => 'integer',
+                    'sanitize_callback' => 'absint',
+                ],
             ],
         ]);
 
@@ -117,6 +121,15 @@ class Flavor_Marketplace_API {
                 ],
                 'imagenes' => [
                     'type' => 'array',
+                ],
+                'comunidad_id' => [
+                    'type' => 'integer',
+                    'sanitize_callback' => 'absint',
+                ],
+                'condicion' => [
+                    'type' => 'string',
+                    'enum' => ['nuevo', 'como_nuevo', 'buen_estado', 'usado', 'para_piezas'],
+                    'sanitize_callback' => 'sanitize_text_field',
                 ],
             ],
         ]);
@@ -208,6 +221,7 @@ class Flavor_Marketplace_API {
         $categoria = $request->get_param('categoria');
         $limite = $request->get_param('limite');
         $pagina = $request->get_param('pagina');
+        $comunidad_id = $request->get_param('comunidad_id');
 
         $args = [
             'post_type' => 'marketplace_item',
@@ -244,6 +258,17 @@ class Flavor_Marketplace_API {
 
         if (!empty($tax_query)) {
             $args['tax_query'] = $tax_query;
+        }
+
+        // Filtro por comunidad
+        if (!empty($comunidad_id)) {
+            $args['meta_query'] = $args['meta_query'] ?? [];
+            $args['meta_query'][] = [
+                'key' => '_marketplace_comunidad_id',
+                'value' => $comunidad_id,
+                'compare' => '=',
+                'type' => 'NUMERIC',
+            ];
         }
 
         $query = new WP_Query($args);
@@ -333,6 +358,32 @@ class Flavor_Marketplace_API {
         }
         if (!empty($ubicacion)) {
             update_post_meta($post_id, '_marketplace_ubicacion', $ubicacion);
+        }
+
+        // Guardar condición del producto
+        $condicion = $request->get_param('condicion');
+        if (!empty($condicion)) {
+            update_post_meta($post_id, '_marketplace_condicion', sanitize_text_field($condicion));
+        }
+
+        // Asociar a comunidad si se especifica (validar membresía)
+        $comunidad_id = $request->get_param('comunidad_id');
+        if (!empty($comunidad_id)) {
+            global $wpdb;
+            $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+
+            // Verificar que el usuario sea miembro activo de la comunidad
+            $es_miembro = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM {$tabla_miembros}
+                 WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
+                absint($comunidad_id),
+                $usuario_id
+            ));
+
+            if ($es_miembro) {
+                update_post_meta($post_id, '_marketplace_comunidad_id', absint($comunidad_id));
+            }
+            // Si no es miembro, el anuncio se crea pero sin asociar a la comunidad
         }
 
         // Calcular fecha de expiración (30 días por defecto)
@@ -683,6 +734,7 @@ class Flavor_Marketplace_API {
         $ubicacion = get_post_meta($post->ID, '_marketplace_ubicacion', true);
         $vendido = get_post_meta($post->ID, '_marketplace_vendido', true);
         $vistas = get_post_meta($post->ID, '_marketplace_vistas', true);
+        $comunidad_id = get_post_meta($post->ID, '_marketplace_comunidad_id', true);
 
         // Imagen destacada
         $imagen_url = get_the_post_thumbnail_url($post->ID, 'medium');
@@ -707,6 +759,7 @@ class Flavor_Marketplace_API {
                 'id' => $post->post_author,
                 'nombre' => $autor ? $autor->display_name : 'Usuario',
             ],
+            'comunidad_id' => $comunidad_id ? absint($comunidad_id) : null,
         ];
 
         // Datos adicionales solo en detalle completo

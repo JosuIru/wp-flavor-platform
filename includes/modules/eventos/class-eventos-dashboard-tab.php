@@ -133,7 +133,7 @@ class Flavor_Eventos_Dashboard_Tab {
                                 <?php endif; ?>
                             </div>
                             <div class="flavor-card-footer">
-                                <a href="<?php echo esc_url(home_url('/eventos/' . $evento->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(add_query_arg('evento_id', $evento->id, home_url('/mi-portal/eventos/detalle/'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
@@ -148,7 +148,7 @@ class Flavor_Eventos_Dashboard_Tab {
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/eventos/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/eventos/')); ?>" class="flavor-btn flavor-btn-primary">
                     <?php esc_html_e('Ver todos los eventos', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -189,7 +189,7 @@ class Flavor_Eventos_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-tickets-alt"></span>
                     <p><?php esc_html_e('No estás inscrito en ningún evento.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/eventos/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(home_url('/mi-portal/eventos/')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar eventos', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -215,7 +215,7 @@ class Flavor_Eventos_Dashboard_Tab {
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="<?php echo esc_url(home_url('/eventos/' . $insc->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                        <a href="<?php echo esc_url(add_query_arg('evento_id', $insc->evento_id, home_url('/mi-portal/eventos/detalle/'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                             <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                                         </a>
                                     </td>

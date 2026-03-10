@@ -19,6 +19,8 @@ class _EnergiaComunitariaScreenState extends ConsumerState<EnergiaComunitariaScr
   List<Map<String, dynamic>> _instalaciones = [];
   List<Map<String, dynamic>> _liquidaciones = [];
   List<String> _periodOptions = [];
+  String _selectedOrderBy = 'periodo';
+  String _selectedOrderDir = 'desc';
   int? _selectedComunidadId;
   String _selectedEstado = '';
   String _selectedPeriodo = '';
@@ -94,6 +96,8 @@ class _EnergiaComunitariaScreenState extends ConsumerState<EnergiaComunitariaScr
     if (_selectedEstado.isNotEmpty) {
       queryParameters['estado'] = _selectedEstado;
     }
+    queryParameters['order_by'] = _selectedOrderBy;
+    queryParameters['order_dir'] = _selectedOrderDir;
     if (_fechaDesde != null) {
       queryParameters['fecha_desde'] = _formatDate(_fechaDesde!);
     }
@@ -163,6 +167,8 @@ class _EnergiaComunitariaScreenState extends ConsumerState<EnergiaComunitariaScr
       _selectedPeriodo = '';
       _fechaDesde = null;
       _fechaHasta = null;
+      _selectedOrderBy = 'periodo';
+      _selectedOrderDir = 'desc';
       _currentLiquidacionesPage = 1;
       _hasMoreLiquidaciones = false;
     });
@@ -566,6 +572,27 @@ class _EnergiaComunitariaScreenState extends ConsumerState<EnergiaComunitariaScr
                   ],
                   onChanged: (value) async {
                     setState(() => _selectedPeriodo = value ?? '');
+                    await _loadLiquidaciones(reset: true);
+                  },
+                ),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  value: '$_selectedOrderBy:$_selectedOrderDir',
+                  decoration: const InputDecoration(labelText: 'Orden'),
+                  items: const [
+                    DropdownMenuItem<String>(value: 'periodo:desc', child: Text('Periodo descendente')),
+                    DropdownMenuItem<String>(value: 'periodo:asc', child: Text('Periodo ascendente')),
+                    DropdownMenuItem<String>(value: 'importe:desc', child: Text('Ahorro descendente')),
+                    DropdownMenuItem<String>(value: 'importe:asc', child: Text('Ahorro ascendente')),
+                    DropdownMenuItem<String>(value: 'estado:asc', child: Text('Estado A-Z')),
+                    DropdownMenuItem<String>(value: 'fecha:desc', child: Text('Más recientes')),
+                  ],
+                  onChanged: (value) async {
+                    final parts = (value ?? 'periodo:desc').split(':');
+                    setState(() {
+                      _selectedOrderBy = parts.isNotEmpty ? parts.first : 'periodo';
+                      _selectedOrderDir = parts.length > 1 ? parts[1] : 'desc';
+                    });
                     await _loadLiquidaciones(reset: true);
                   },
                 ),

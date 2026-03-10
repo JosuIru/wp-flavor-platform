@@ -96,6 +96,9 @@ class Flavor_Frontend_Loader {
         // Cargar búsqueda avanzada social
         require_once $base_path . 'class-social-search.php';
 
+        // Cargar portal unificado (sistema de layouts)
+        require_once $base_path . 'class-unified-portal.php';
+
         // Cargar todos los controladores
         foreach ($this->module_map as $slug => $class) {
             $file = $controllers_path . 'class-' . $slug . '-controller.php';
@@ -116,6 +119,10 @@ class Flavor_Frontend_Loader {
 
         if (class_exists('Flavor_Dynamic_Pages')) {
             Flavor_Dynamic_Pages::get_instance();
+        }
+
+        if (class_exists('Flavor_Unified_Portal')) {
+            Flavor_Unified_Portal::get_instance();
         }
 
         // Obtener módulos activos desde la configuración

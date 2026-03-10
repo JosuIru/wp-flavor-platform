@@ -2,6 +2,7 @@
 /**
  * Vista Dashboard - Módulo Reciclaje
  * Panel principal con estadísticas de reciclaje
+ * Migrado al sistema dm-* centralizado
  *
  * @package FlavorChatIA
  */
@@ -15,237 +16,365 @@ $tabla_puntos_reciclaje = $wpdb->prefix . 'flavor_reciclaje_puntos';
 $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
 $tabla_contenedores = $wpdb->prefix . 'flavor_reciclaje_contenedores';
 
-// Obtener estadísticas generales
-$total_puntos_reciclaje = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_puntos_reciclaje WHERE estado = 'activo'");
-$total_depositos_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_depositos WHERE MONTH(fecha_deposito) = MONTH(CURRENT_DATE()) AND YEAR(fecha_deposito) = YEAR(CURRENT_DATE())");
-$total_kg_mes = $wpdb->get_var("SELECT SUM(cantidad_kg) FROM $tabla_depositos WHERE MONTH(fecha_deposito) = MONTH(CURRENT_DATE()) AND YEAR(fecha_deposito) = YEAR(CURRENT_DATE())");
-$contenedores_llenos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_contenedores WHERE necesita_vaciado = 1");
+// Verificar existencia de tablas
+$tabla_puntos_existe = $wpdb->get_var($wpdb->prepare(
+    "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
+    DB_NAME,
+    $tabla_puntos_reciclaje
+)) > 0;
 
-// Estadísticas por material
-$stats_materiales = $wpdb->get_results("
-    SELECT tipo_material,
-           COUNT(*) as total_depositos,
-           SUM(cantidad_kg) as total_kg,
-           AVG(cantidad_kg) as promedio_kg
-    FROM $tabla_depositos
-    WHERE MONTH(fecha_deposito) = MONTH(CURRENT_DATE())
-    AND YEAR(fecha_deposito) = YEAR(CURRENT_DATE())
-    GROUP BY tipo_material
-    ORDER BY total_kg DESC
-");
+$tabla_depositos_existe = $wpdb->get_var($wpdb->prepare(
+    "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
+    DB_NAME,
+    $tabla_depositos
+)) > 0;
 
-// Usuarios más activos
-$usuarios_activos = $wpdb->get_results("
-    SELECT u.ID, u.display_name,
-           COUNT(d.id) as total_depositos,
-           SUM(d.cantidad_kg) as total_kg,
-           SUM(d.puntos_ganados) as total_puntos
-    FROM {$wpdb->users} u
-    INNER JOIN $tabla_depositos d ON u.ID = d.usuario_id
-    WHERE MONTH(d.fecha_deposito) = MONTH(CURRENT_DATE())
-    AND YEAR(d.fecha_deposito) = YEAR(CURRENT_DATE())
-    GROUP BY u.ID
-    ORDER BY total_kg DESC
-    LIMIT 10
-");
+$tabla_contenedores_existe = $wpdb->get_var($wpdb->prepare(
+    "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
+    DB_NAME,
+    $tabla_contenedores
+)) > 0;
 
-// Datos para gráfica de evolución mensual (últimos 6 meses)
-$evolucion_mensual = $wpdb->get_results("
-    SELECT DATE_FORMAT(fecha_deposito, '%Y-%m') as mes,
-           SUM(cantidad_kg) as total_kg,
-           COUNT(*) as total_depositos
-    FROM $tabla_depositos
-    WHERE fecha_deposito >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
-    GROUP BY mes
-    ORDER BY mes ASC
-");
+// Inicializar valores
+$total_puntos_reciclaje = 0;
+$total_depositos_mes = 0;
+$total_kg_mes = 0;
+$contenedores_llenos = 0;
+$stats_materiales = [];
+$usuarios_activos = [];
+$evolucion_mensual = [];
+$puntos_atencion = [];
 
-// Puntos que necesitan atención
-$puntos_atencion = $wpdb->get_results("
-    SELECT p.*,
-           COUNT(c.id) as contenedores_problema
-    FROM $tabla_puntos_reciclaje p
-    LEFT JOIN $tabla_contenedores c ON p.id = c.punto_reciclaje_id AND c.necesita_vaciado = 1
-    WHERE p.estado IN ('lleno', 'mantenimiento')
-    OR c.id IS NOT NULL
-    GROUP BY p.id
-    HAVING contenedores_problema > 0 OR p.estado != 'activo'
-    ORDER BY contenedores_problema DESC
-    LIMIT 5
-");
+// Obtener estadísticas si las tablas existen
+if ($tabla_puntos_existe) {
+    $total_puntos_reciclaje = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_puntos_reciclaje WHERE estado = 'activo'");
+}
+
+if ($tabla_depositos_existe) {
+    $total_depositos_mes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_depositos WHERE MONTH(fecha_deposito) = MONTH(CURRENT_DATE()) AND YEAR(fecha_deposito) = YEAR(CURRENT_DATE())");
+    $total_kg_mes = (float) ($wpdb->get_var("SELECT SUM(cantidad_kg) FROM $tabla_depositos WHERE MONTH(fecha_deposito) = MONTH(CURRENT_DATE()) AND YEAR(fecha_deposito) = YEAR(CURRENT_DATE())") ?: 0);
+
+    $stats_materiales = $wpdb->get_results("
+        SELECT tipo_material,
+               COUNT(*) as total_depositos,
+               SUM(cantidad_kg) as total_kg,
+               AVG(cantidad_kg) as promedio_kg
+        FROM $tabla_depositos
+        WHERE MONTH(fecha_deposito) = MONTH(CURRENT_DATE())
+        AND YEAR(fecha_deposito) = YEAR(CURRENT_DATE())
+        GROUP BY tipo_material
+        ORDER BY total_kg DESC
+    ");
+
+    $usuarios_activos = $wpdb->get_results("
+        SELECT u.ID, u.display_name,
+               COUNT(d.id) as total_depositos,
+               SUM(d.cantidad_kg) as total_kg,
+               SUM(d.puntos_ganados) as total_puntos
+        FROM {$wpdb->users} u
+        INNER JOIN $tabla_depositos d ON u.ID = d.usuario_id
+        WHERE MONTH(d.fecha_deposito) = MONTH(CURRENT_DATE())
+        AND YEAR(d.fecha_deposito) = YEAR(CURRENT_DATE())
+        GROUP BY u.ID
+        ORDER BY total_kg DESC
+        LIMIT 10
+    ");
+
+    $evolucion_mensual = $wpdb->get_results("
+        SELECT DATE_FORMAT(fecha_deposito, '%Y-%m') as mes,
+               SUM(cantidad_kg) as total_kg,
+               COUNT(*) as total_depositos
+        FROM $tabla_depositos
+        WHERE fecha_deposito >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+        GROUP BY mes
+        ORDER BY mes ASC
+    ");
+}
+
+if ($tabla_contenedores_existe) {
+    $contenedores_llenos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_contenedores WHERE necesita_vaciado = 1");
+}
+
+if ($tabla_puntos_existe && $tabla_contenedores_existe) {
+    $puntos_atencion = $wpdb->get_results("
+        SELECT p.*,
+               COUNT(c.id) as contenedores_problema
+        FROM $tabla_puntos_reciclaje p
+        LEFT JOIN $tabla_contenedores c ON p.id = c.punto_reciclaje_id AND c.necesita_vaciado = 1
+        WHERE p.estado IN ('lleno', 'mantenimiento')
+        OR c.id IS NOT NULL
+        GROUP BY p.id
+        HAVING contenedores_problema > 0 OR p.estado != 'activo'
+        ORDER BY contenedores_problema DESC
+        LIMIT 5
+    ");
+}
+
+// Datos demo si no hay datos reales
+$usando_demo = $total_puntos_reciclaje == 0 && $total_depositos_mes == 0;
+
+if ($usando_demo) {
+    $total_puntos_reciclaje = 8;
+    $total_depositos_mes = 234;
+    $total_kg_mes = 1850.5;
+    $contenedores_llenos = 3;
+
+    $stats_materiales = [
+        (object) ['tipo_material' => 'plastico', 'total_depositos' => 89, 'total_kg' => 520.5],
+        (object) ['tipo_material' => 'papel', 'total_depositos' => 67, 'total_kg' => 480.2],
+        (object) ['tipo_material' => 'vidrio', 'total_depositos' => 45, 'total_kg' => 380.0],
+        (object) ['tipo_material' => 'organico', 'total_depositos' => 33, 'total_kg' => 320.8],
+        (object) ['tipo_material' => 'electronico', 'total_depositos' => 15, 'total_kg' => 89.0],
+        (object) ['tipo_material' => 'pilas', 'total_depositos' => 8, 'total_kg' => 12.5],
+    ];
+
+    $usuarios_activos = [
+        (object) ['ID' => 1, 'display_name' => 'María García', 'total_depositos' => 28, 'total_kg' => 145.2, 'total_puntos' => 1450],
+        (object) ['ID' => 2, 'display_name' => 'Carlos López', 'total_depositos' => 22, 'total_kg' => 118.7, 'total_puntos' => 1187],
+        (object) ['ID' => 3, 'display_name' => 'Ana Martínez', 'total_depositos' => 19, 'total_kg' => 98.4, 'total_puntos' => 984],
+        (object) ['ID' => 4, 'display_name' => 'Pedro Sánchez', 'total_depositos' => 15, 'total_kg' => 87.2, 'total_puntos' => 872],
+        (object) ['ID' => 5, 'display_name' => 'Laura Fernández', 'total_depositos' => 12, 'total_kg' => 72.5, 'total_puntos' => 725],
+    ];
+
+    $evolucion_mensual = [
+        (object) ['mes' => date('Y-m', strtotime('-5 months')), 'total_kg' => 1420.5, 'total_depositos' => 178],
+        (object) ['mes' => date('Y-m', strtotime('-4 months')), 'total_kg' => 1580.2, 'total_depositos' => 195],
+        (object) ['mes' => date('Y-m', strtotime('-3 months')), 'total_kg' => 1690.8, 'total_depositos' => 208],
+        (object) ['mes' => date('Y-m', strtotime('-2 months')), 'total_kg' => 1780.4, 'total_depositos' => 218],
+        (object) ['mes' => date('Y-m', strtotime('-1 month')), 'total_kg' => 1820.6, 'total_depositos' => 225],
+        (object) ['mes' => date('Y-m'), 'total_kg' => $total_kg_mes, 'total_depositos' => $total_depositos_mes],
+    ];
+
+    $puntos_atencion = [
+        (object) ['id' => 1, 'nombre' => 'Punto Plaza Central', 'estado' => 'lleno', 'contenedores_problema' => 2],
+        (object) ['id' => 2, 'nombre' => 'Punto Calle Mayor', 'estado' => 'mantenimiento', 'contenedores_problema' => 0],
+        (object) ['id' => 3, 'nombre' => 'Punto Parque Norte', 'estado' => 'activo', 'contenedores_problema' => 1],
+    ];
+}
+
+// Calcular impacto ambiental
+$co2_evitado = $total_kg_mes * 0.75;
+$arboles_equivalentes = $total_kg_mes / 17;
+$agua_ahorrada = $total_kg_mes * 5;
+
+$materiales_colores = [
+    'papel' => 'secondary',
+    'plastico' => 'warning',
+    'vidrio' => 'info',
+    'organico' => 'success',
+    'electronico' => 'error',
+    'ropa' => 'purple',
+    'aceite' => 'warning',
+    'pilas' => 'info',
+];
 ?>
 
-<div class="wrap flavor-reciclaje-dashboard">
-    <h1 class="wp-heading-inline">
-        <span class="dashicons dashicons-admin-site"></span>
-        <?php echo esc_html__('Dashboard de Reciclaje', 'flavor-chat-ia'); ?>
-    </h1>
+<div class="dm-dashboard">
+    <?php
+    if (function_exists('flavor_dashboard_help')) {
+        flavor_dashboard_help('reciclaje');
+    }
+    ?>
 
-    <hr class="wp-header-end">
+    <div class="dm-header">
+        <h1 class="dm-header__title">
+            <span class="dashicons dashicons-admin-site"></span>
+            <?php esc_html_e('Dashboard de Reciclaje', 'flavor-chat-ia'); ?>
+        </h1>
+        <p class="dm-header__description">
+            <?php esc_html_e('Gestiona puntos de reciclaje, monitoriza depósitos y mide el impacto ambiental', 'flavor-chat-ia'); ?>
+        </p>
+    </div>
 
-    <!-- Tarjetas de estadísticas principales -->
-    <div class="flavor-stats-cards">
-        <div class="flavor-stat-card flavor-stat-primary">
-            <div class="flavor-stat-icon">
+    <?php if ($usando_demo): ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Se muestran datos de ejemplo. Registra puntos de reciclaje para ver datos reales.', 'flavor-chat-ia'); ?>
+    </div>
+    <?php endif; ?>
+
+    <!-- Accesos Rápidos -->
+    <div class="dm-quick-links">
+        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-reciclaje-puntos')); ?>" class="dm-quick-links__item">
+            <span class="dashicons dashicons-location"></span>
+            <span><?php esc_html_e('Puntos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-reciclaje-depositos')); ?>" class="dm-quick-links__item">
+            <span class="dashicons dashicons-chart-line"></span>
+            <span><?php esc_html_e('Depósitos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-reciclaje-contenedores')); ?>" class="dm-quick-links__item">
+            <span class="dashicons dashicons-archive"></span>
+            <span><?php esc_html_e('Contenedores', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-reciclaje-config')); ?>" class="dm-quick-links__item">
+            <span class="dashicons dashicons-admin-settings"></span>
+            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(home_url('/mi-portal/reciclaje/')); ?>" class="dm-quick-links__item" target="_blank">
+            <span class="dashicons dashicons-external"></span>
+            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
+        </a>
+    </div>
+
+    <!-- Estadísticas principales -->
+    <div class="dm-stats-grid dm-stats-grid--4">
+        <div class="dm-stat-card dm-stat-card--primary">
+            <div class="dm-stat-card__icon">
                 <span class="dashicons dashicons-location"></span>
             </div>
-            <div class="flavor-stat-content">
-                <h3><?php echo number_format($total_puntos_reciclaje); ?></h3>
-                <p><?php echo esc_html__('Puntos de Reciclaje Activos', 'flavor-chat-ia'); ?></p>
-            </div>
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($total_puntos_reciclaje); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Puntos de Reciclaje', 'flavor-chat-ia'); ?></div>
         </div>
 
-        <div class="flavor-stat-card flavor-stat-success">
-            <div class="flavor-stat-icon">
+        <div class="dm-stat-card dm-stat-card--success">
+            <div class="dm-stat-card__icon">
                 <span class="dashicons dashicons-chart-line"></span>
             </div>
-            <div class="flavor-stat-content">
-                <h3><?php echo number_format($total_kg_mes, 2); ?> kg</h3>
-                <p><?php echo esc_html__('Reciclado este Mes', 'flavor-chat-ia'); ?></p>
-            </div>
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($total_kg_mes, 1); ?> kg</div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Reciclado este Mes', 'flavor-chat-ia'); ?></div>
         </div>
 
-        <div class="flavor-stat-card flavor-stat-info">
-            <div class="flavor-stat-icon">
+        <div class="dm-stat-card dm-stat-card--info">
+            <div class="dm-stat-card__icon">
                 <span class="dashicons dashicons-groups"></span>
             </div>
-            <div class="flavor-stat-content">
-                <h3><?php echo number_format($total_depositos_mes); ?></h3>
-                <p><?php echo esc_html__('Depósitos este Mes', 'flavor-chat-ia'); ?></p>
-            </div>
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($total_depositos_mes); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Depósitos este Mes', 'flavor-chat-ia'); ?></div>
         </div>
 
-        <div class="flavor-stat-card flavor-stat-warning">
-            <div class="flavor-stat-icon">
+        <div class="dm-stat-card dm-stat-card--warning">
+            <div class="dm-stat-card__icon">
                 <span class="dashicons dashicons-warning"></span>
             </div>
-            <div class="flavor-stat-content">
-                <h3><?php echo number_format($contenedores_llenos); ?></h3>
-                <p><?php echo esc_html__('Contenedores Llenos', 'flavor-chat-ia'); ?></p>
-            </div>
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($contenedores_llenos); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Contenedores Llenos', 'flavor-chat-ia'); ?></div>
         </div>
     </div>
 
-    <div class="flavor-dashboard-grid">
+    <div class="dm-grid dm-grid--2">
         <!-- Gráfica de evolución mensual -->
-        <div class="flavor-dashboard-widget flavor-widget-large">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Evolución de Reciclaje', 'flavor-chat-ia'); ?></h2>
-                <span class="flavor-widget-subtitle"><?php echo esc_html__('Últimos 6 meses', 'flavor-chat-ia'); ?></span>
+        <div class="dm-card dm-card--chart" style="grid-column: span 2;">
+            <div class="dm-card__header">
+                <h3><span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Evolución de Reciclaje', 'flavor-chat-ia'); ?></h3>
+                <span class="dm-card__meta"><?php esc_html_e('Últimos 6 meses', 'flavor-chat-ia'); ?></span>
             </div>
-            <div class="flavor-widget-body">
-                <canvas id="grafica-evolucion-reciclaje" height="80"></canvas>
+            <div class="dm-card__chart">
+                <canvas id="grafica-evolucion-reciclaje"></canvas>
             </div>
         </div>
 
         <!-- Estadísticas por material -->
-        <div class="flavor-dashboard-widget">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Reciclaje por Material', 'flavor-chat-ia'); ?></h2>
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Reciclaje por Material', 'flavor-chat-ia'); ?></h3>
             </div>
-            <div class="flavor-widget-body">
-                <canvas id="grafica-materiales" height="200"></canvas>
+            <div class="dm-card__chart">
+                <canvas id="grafica-materiales"></canvas>
             </div>
         </div>
 
         <!-- Usuarios más activos -->
-        <div class="flavor-dashboard-widget">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Usuarios Más Activos', 'flavor-chat-ia'); ?></h2>
-                <span class="flavor-widget-subtitle"><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></span>
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3><span class="dashicons dashicons-awards"></span> <?php esc_html_e('Usuarios Más Activos', 'flavor-chat-ia'); ?></h3>
+                <span class="dm-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
             </div>
-            <div class="flavor-widget-body">
-                <?php if (!empty($usuarios_activos)) : ?>
-                    <div class="flavor-ranking-list">
-                        <?php foreach ($usuarios_activos as $index => $usuario) : ?>
-                            <div class="flavor-ranking-item">
-                                <span class="flavor-ranking-position"><?php echo $index + 1; ?></span>
-                                <div class="flavor-ranking-user">
-                                    <?php echo get_avatar($usuario->ID, 32); ?>
-                                    <div class="flavor-ranking-info">
-                                        <strong><?php echo esc_html($usuario->display_name); ?></strong>
-                                        <span><?php echo sprintf(__('%s kg • %s puntos', 'flavor-chat-ia'), number_format($usuario->total_kg, 2), number_format($usuario->total_puntos)); ?></span>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
+            <?php if (!empty($usuarios_activos)): ?>
+            <div class="dm-ranking">
+                <?php foreach ($usuarios_activos as $index => $usuario): ?>
+                <div class="dm-ranking__item">
+                    <span class="dm-ranking__position"><?php echo $index + 1; ?></span>
+                    <div class="dm-ranking__content">
+                        <?php echo get_avatar($usuario->ID, 32, '', '', ['class' => 'dm-ranking__avatar']); ?>
+                        <div class="dm-ranking__info">
+                            <strong><?php echo esc_html($usuario->display_name); ?></strong>
+                            <span class="dm-text-muted dm-text-sm">
+                                <?php echo sprintf(
+                                    esc_html__('%s kg · %s puntos', 'flavor-chat-ia'),
+                                    number_format_i18n($usuario->total_kg, 1),
+                                    number_format_i18n($usuario->total_puntos)
+                                ); ?>
+                            </span>
+                        </div>
                     </div>
-                <?php else : ?>
-                    <p class="flavor-no-data"><?php echo esc_html__('No hay datos de usuarios activos este mes.', 'flavor-chat-ia'); ?></p>
-                <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
             </div>
+            <?php else: ?>
+            <div class="dm-empty">
+                <span class="dashicons dashicons-groups"></span>
+                <p><?php esc_html_e('No hay datos de usuarios activos este mes.', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php endif; ?>
         </div>
 
         <!-- Puntos que necesitan atención -->
-        <div class="flavor-dashboard-widget">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Puntos que Necesitan Atención', 'flavor-chat-ia'); ?></h2>
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3><span class="dashicons dashicons-warning"></span> <?php esc_html_e('Puntos que Necesitan Atención', 'flavor-chat-ia'); ?></h3>
             </div>
-            <div class="flavor-widget-body">
-                <?php if (!empty($puntos_atencion)) : ?>
-                    <div class="flavor-alert-list">
-                        <?php foreach ($puntos_atencion as $punto) : ?>
-                            <div class="flavor-alert-item flavor-alert-<?php echo esc_attr($punto->estado); ?>">
-                                <span class="dashicons dashicons-location-alt"></span>
-                                <div class="flavor-alert-content">
-                                    <strong><?php echo esc_html($punto->nombre); ?></strong>
-                                    <span>
-                                        <?php
-                                        if ($punto->estado == 'lleno') {
-                                            echo esc_html__('Punto lleno', 'flavor-chat-ia');
-                                        } elseif ($punto->estado == 'mantenimiento') {
-                                            echo esc_html__('En mantenimiento', 'flavor-chat-ia');
-                                        }
-                                        if ($punto->contenedores_problema > 0) {
-                                            echo ' • ' . sprintf(__('%d contenedores necesitan vaciado', 'flavor-chat-ia'), $punto->contenedores_problema);
-                                        }
-                                        ?>
-                                    </span>
-                                </div>
-                                <a href="<?php echo admin_url('admin.php?page=flavor-reciclaje-puntos&action=edit&id=' . $punto->id); ?>" class="button button-small">
-                                    <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
+            <?php if (!empty($puntos_atencion)): ?>
+            <div class="dm-focus-list">
+                <?php foreach ($puntos_atencion as $punto):
+                    $variante = $punto->estado === 'lleno' ? 'warning' : ($punto->estado === 'mantenimiento' ? 'error' : 'info');
+                ?>
+                <div class="dm-focus-list__item dm-focus-list__item--<?php echo esc_attr($variante); ?>">
+                    <span class="dashicons dashicons-location-alt"></span>
+                    <div class="dm-focus-list__content">
+                        <strong><?php echo esc_html($punto->nombre); ?></strong>
+                        <span class="dm-text-sm">
+                            <?php
+                            if ($punto->estado === 'lleno') {
+                                esc_html_e('Punto lleno', 'flavor-chat-ia');
+                            } elseif ($punto->estado === 'mantenimiento') {
+                                esc_html_e('En mantenimiento', 'flavor-chat-ia');
+                            }
+                            if ($punto->contenedores_problema > 0) {
+                                echo ' · ' . sprintf(
+                                    esc_html__('%d contenedores necesitan vaciado', 'flavor-chat-ia'),
+                                    $punto->contenedores_problema
+                                );
+                            }
+                            ?>
+                        </span>
                     </div>
-                <?php else : ?>
-                    <div class="flavor-success-message">
-                        <span class="dashicons dashicons-yes-alt"></span>
-                        <p><?php echo esc_html__('Todos los puntos están operativos.', 'flavor-chat-ia'); ?></p>
-                    </div>
-                <?php endif; ?>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-reciclaje-puntos&action=edit&id=' . $punto->id)); ?>" class="dm-btn dm-btn--sm dm-btn--ghost">
+                        <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+                <?php endforeach; ?>
             </div>
+            <?php else: ?>
+            <div class="dm-alert dm-alert--success" style="margin: 20px;">
+                <span class="dashicons dashicons-yes-alt"></span>
+                <?php esc_html_e('Todos los puntos están operativos.', 'flavor-chat-ia'); ?>
+            </div>
+            <?php endif; ?>
         </div>
 
         <!-- Impacto ambiental -->
-        <div class="flavor-dashboard-widget flavor-widget-highlight">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Impacto Ambiental', 'flavor-chat-ia'); ?></h2>
-                <span class="flavor-widget-subtitle"><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></span>
+        <div class="dm-card dm-stat-card--highlight" style="--dm-stat-gradient: linear-gradient(135deg, var(--dm-eco, #10b981) 0%, #059669 100%);">
+            <div class="dm-card__header" style="border-bottom-color: rgba(255,255,255,0.2);">
+                <h3 style="color: white;"><span class="dashicons dashicons-admin-site"></span> <?php esc_html_e('Impacto Ambiental', 'flavor-chat-ia'); ?></h3>
+                <span class="dm-card__meta" style="color: rgba(255,255,255,0.9);"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
             </div>
-            <div class="flavor-widget-body">
-                <div class="flavor-impact-stats">
-                    <div class="flavor-impact-item">
-                        <span class="dashicons dashicons-admin-site"></span>
-                        <div>
-                            <strong><?php echo number_format($total_kg_mes * 0.75, 2); ?> kg</strong>
-                            <p><?php echo esc_html__('CO₂ evitado', 'flavor-chat-ia'); ?></p>
-                        </div>
-                    </div>
-                    <div class="flavor-impact-item">
-                        <span class="dashicons dashicons-palmtree"></span>
-                        <div>
-                            <strong><?php echo number_format($total_kg_mes / 17, 0); ?></strong>
-                            <p><?php echo esc_html__('Árboles equivalentes', 'flavor-chat-ia'); ?></p>
-                        </div>
-                    </div>
-                    <div class="flavor-impact-item">
-                        <span class="dashicons dashicons-tide"></span>
-                        <div>
-                            <strong><?php echo number_format($total_kg_mes * 5, 0); ?> L</strong>
-                            <p><?php echo esc_html__('Agua ahorrada', 'flavor-chat-ia'); ?></p>
-                        </div>
-                    </div>
+            <div class="dm-impact-grid" style="padding: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; color: white;">
+                <div class="dm-impact-item" style="text-align: center;">
+                    <span class="dashicons dashicons-cloud" style="font-size: 32px; opacity: 0.9;"></span>
+                    <div style="font-size: 24px; font-weight: bold; margin: 8px 0;"><?php echo number_format_i18n($co2_evitado, 0); ?> kg</div>
+                    <div style="font-size: 13px; opacity: 0.9;"><?php esc_html_e('CO₂ evitado', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="dm-impact-item" style="text-align: center;">
+                    <span class="dashicons dashicons-palmtree" style="font-size: 32px; opacity: 0.9;"></span>
+                    <div style="font-size: 24px; font-weight: bold; margin: 8px 0;"><?php echo number_format_i18n($arboles_equivalentes, 0); ?></div>
+                    <div style="font-size: 13px; opacity: 0.9;"><?php esc_html_e('Árboles equivalentes', 'flavor-chat-ia'); ?></div>
+                </div>
+                <div class="dm-impact-item" style="text-align: center;">
+                    <span class="dashicons dashicons-tide" style="font-size: 32px; opacity: 0.9;"></span>
+                    <div style="font-size: 24px; font-weight: bold; margin: 8px 0;"><?php echo number_format_i18n($agua_ahorrada, 0); ?> L</div>
+                    <div style="font-size: 13px; opacity: 0.9;"><?php esc_html_e('Agua ahorrada', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
         </div>
@@ -253,14 +382,25 @@ $puntos_atencion = $wpdb->get_results("
 </div>
 
 <script>
-jQuery(document).ready(function($) {
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof Chart === 'undefined') return;
+
+    const style = getComputedStyle(document.documentElement);
+    const success = style.getPropertyValue('--dm-success').trim() || '#10b981';
+    const primary = style.getPropertyValue('--dm-primary').trim() || '#3b82f6';
+    const warning = style.getPropertyValue('--dm-warning').trim() || '#f59e0b';
+    const info = style.getPropertyValue('--dm-info').trim() || '#06b6d4';
+    const error = style.getPropertyValue('--dm-error').trim() || '#ef4444';
+    const purple = style.getPropertyValue('--dm-purple').trim() || '#8b5cf6';
+    const muted = style.getPropertyValue('--dm-text-muted').trim() || '#64748b';
+
     // Datos para las gráficas
-    const datosEvolucion = <?php echo json_encode($evolucion_mensual); ?>;
-    const datosMateriales = <?php echo json_encode($stats_materiales); ?>;
+    const datosEvolucion = <?php echo wp_json_encode($evolucion_mensual); ?>;
+    const datosMateriales = <?php echo wp_json_encode($stats_materiales); ?>;
 
     // Gráfica de evolución mensual
     const ctxEvolucion = document.getElementById('grafica-evolucion-reciclaje');
-    if (ctxEvolucion) {
+    if (ctxEvolucion && datosEvolucion.length > 0) {
         new Chart(ctxEvolucion, {
             type: 'line',
             data: {
@@ -272,8 +412,8 @@ jQuery(document).ready(function($) {
                 datasets: [{
                     label: '<?php echo esc_js(__('Kg reciclados', 'flavor-chat-ia')); ?>',
                     data: datosEvolucion.map(d => parseFloat(d.total_kg)),
-                    borderColor: '#28a745',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    borderColor: success,
+                    backgroundColor: success + '20',
                     tension: 0.4,
                     fill: true
                 }]
@@ -287,8 +427,12 @@ jQuery(document).ready(function($) {
                     }
                 },
                 scales: {
+                    x: {
+                        grid: { display: false }
+                    },
                     y: {
                         beginAtZero: true,
+                        grid: { color: '#e5e7eb' },
                         ticks: {
                             callback: function(value) {
                                 return value + ' kg';
@@ -304,14 +448,14 @@ jQuery(document).ready(function($) {
     const ctxMateriales = document.getElementById('grafica-materiales');
     if (ctxMateriales && datosMateriales.length > 0) {
         const coloresMateriales = {
-            'papel': '#6c757d',
-            'plastico': '#ffc107',
-            'vidrio': '#17a2b8',
-            'organico': '#28a745',
-            'electronico': '#dc3545',
-            'ropa': '#6f42c1',
-            'aceite': '#fd7e14',
-            'pilas': '#20c997'
+            'papel': muted,
+            'plastico': warning,
+            'vidrio': info,
+            'organico': success,
+            'electronico': error,
+            'ropa': purple,
+            'aceite': warning,
+            'pilas': info
         };
 
         new Chart(ctxMateriales, {
@@ -320,7 +464,7 @@ jQuery(document).ready(function($) {
                 labels: datosMateriales.map(m => m.tipo_material.charAt(0).toUpperCase() + m.tipo_material.slice(1)),
                 datasets: [{
                     data: datosMateriales.map(m => parseFloat(m.total_kg)),
-                    backgroundColor: datosMateriales.map(m => coloresMateriales[m.tipo_material] || '#6c757d')
+                    backgroundColor: datosMateriales.map(m => coloresMateriales[m.tipo_material] || muted)
                 }]
             },
             options: {
@@ -328,7 +472,11 @@ jQuery(document).ready(function($) {
                 maintainAspectRatio: true,
                 plugins: {
                     legend: {
-                        position: 'right'
+                        position: 'right',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15
+                        }
                     },
                     tooltip: {
                         callbacks: {
@@ -343,244 +491,3 @@ jQuery(document).ready(function($) {
     }
 });
 </script>
-
-<style>
-.flavor-reciclaje-dashboard {
-    padding: 20px;
-}
-
-.flavor-stats-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.flavor-stat-card {
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-left: 4px solid;
-}
-
-.flavor-stat-primary { border-left-color: #0073aa; }
-.flavor-stat-success { border-left-color: #28a745; }
-.flavor-stat-info { border-left-color: #17a2b8; }
-.flavor-stat-warning { border-left-color: #ffc107; }
-
-.flavor-stat-icon {
-    font-size: 40px;
-    opacity: 0.8;
-}
-
-.flavor-stat-content h3 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 600;
-}
-
-.flavor-stat-content p {
-    margin: 5px 0 0;
-    color: #666;
-    font-size: 14px;
-}
-
-.flavor-dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 20px;
-}
-
-.flavor-widget-large {
-    grid-column: span 2;
-}
-
-.flavor-dashboard-widget {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    overflow: hidden;
-}
-
-.flavor-widget-header {
-    padding: 20px;
-    border-bottom: 1px solid #eee;
-}
-
-.flavor-widget-header h2 {
-    margin: 0;
-    font-size: 18px;
-}
-
-.flavor-widget-subtitle {
-    color: #666;
-    font-size: 13px;
-}
-
-.flavor-widget-body {
-    padding: 20px;
-}
-
-.flavor-ranking-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.flavor-ranking-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 6px;
-}
-
-.flavor-ranking-position {
-    font-size: 20px;
-    font-weight: 700;
-    color: #0073aa;
-    min-width: 30px;
-    text-align: center;
-}
-
-.flavor-ranking-user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-}
-
-.flavor-ranking-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.flavor-ranking-info strong {
-    font-size: 14px;
-}
-
-.flavor-ranking-info span {
-    font-size: 12px;
-    color: #666;
-}
-
-.flavor-alert-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.flavor-alert-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px;
-    border-radius: 6px;
-    border-left: 4px solid;
-}
-
-.flavor-alert-item.flavor-alert-lleno {
-    background: #fff3cd;
-    border-left-color: #ffc107;
-}
-
-.flavor-alert-item.flavor-alert-mantenimiento {
-    background: #f8d7da;
-    border-left-color: #dc3545;
-}
-
-.flavor-alert-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.flavor-alert-content strong {
-    font-size: 14px;
-}
-
-.flavor-alert-content span {
-    font-size: 12px;
-    color: #666;
-}
-
-.flavor-success-message {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px;
-    background: #d4edda;
-    border-radius: 6px;
-    color: #155724;
-}
-
-.flavor-widget-highlight {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: #fff;
-}
-
-.flavor-widget-highlight .flavor-widget-header {
-    border-bottom-color: rgba(255,255,255,0.2);
-}
-
-.flavor-widget-highlight h2,
-.flavor-widget-highlight .flavor-widget-subtitle {
-    color: #fff;
-}
-
-.flavor-impact-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
-}
-
-.flavor-impact-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.flavor-impact-item .dashicons {
-    font-size: 40px;
-    opacity: 0.9;
-}
-
-.flavor-impact-item strong {
-    display: block;
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-.flavor-impact-item p {
-    margin: 0;
-    font-size: 13px;
-    opacity: 0.9;
-}
-
-.flavor-no-data {
-    text-align: center;
-    color: #666;
-    padding: 40px 20px;
-}
-
-@media (max-width: 1200px) {
-    .flavor-widget-large {
-        grid-column: span 1;
-    }
-}
-
-@media (max-width: 768px) {
-    .flavor-dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .flavor-stats-cards {
-        grid-template-columns: 1fr;
-    }
-}
-</style>

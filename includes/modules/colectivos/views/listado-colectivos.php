@@ -64,7 +64,7 @@ $columnas = absint($atributos['columnas'] ?? 3);
 
                     <div class="flavor-col-card-body">
                         <h3 class="flavor-col-card-titulo">
-                            <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], home_url('/colectivos/'))); ?>">
+                            <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], home_url('/mi-portal/colectivos/'))); ?>">
                                 <?php echo esc_html($colectivo['nombre']); ?>
                             </a>
                         </h3>
@@ -88,7 +88,7 @@ $columnas = absint($atributos['columnas'] ?? 3);
                     </div>
 
                     <div class="flavor-col-card-footer">
-                        <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], home_url('/colectivos/'))); ?>"
+                        <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], home_url('/mi-portal/colectivos/'))); ?>"
                            class="flavor-col-btn flavor-col-btn-secondary">
                             <?php esc_html_e('Ver colectivo', 'flavor-chat-ia'); ?>
                         </a>

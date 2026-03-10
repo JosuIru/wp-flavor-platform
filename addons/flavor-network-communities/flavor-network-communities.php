@@ -70,16 +70,31 @@ function flavor_network_communities_register() {
 
 /**
  * Inicialización del addon
+ *
+ * NOTA: Las clases de Network ahora están integradas en el core de Flavor Platform.
+ * Este addon ahora solo añade funcionalidades extra o extensiones específicas.
+ * Las clases base (Flavor_Network_Manager, Flavor_Network_Admin, etc.) se cargan desde includes/network/
  */
 function flavor_network_communities_init() {
-    // Cargar clases del sistema de red
-    require_once FLAVOR_NETWORK_PATH . 'includes/class-network-installer.php';
-    require_once FLAVOR_NETWORK_PATH . 'includes/class-network-node.php';
-    require_once FLAVOR_NETWORK_PATH . 'includes/class-network-api.php';
-    require_once FLAVOR_NETWORK_PATH . 'includes/class-network-manager.php';
+    // Las clases de Network ahora se cargan desde el core en includes/network/
+    // Solo verificamos que estén disponibles y añadimos extensiones si es necesario
 
-    // Cargar admin solo en backend
-    if (is_admin()) {
+    // Si las clases del core no están disponibles (instalación antigua), cargar las del addon
+    if (!class_exists('Flavor_Network_Installer')) {
+        require_once FLAVOR_NETWORK_PATH . 'includes/class-network-installer.php';
+    }
+    if (!class_exists('Flavor_Network_Node')) {
+        require_once FLAVOR_NETWORK_PATH . 'includes/class-network-node.php';
+    }
+    if (!class_exists('Flavor_Network_API')) {
+        require_once FLAVOR_NETWORK_PATH . 'includes/class-network-api.php';
+    }
+    if (!class_exists('Flavor_Network_Manager')) {
+        require_once FLAVOR_NETWORK_PATH . 'includes/class-network-manager.php';
+    }
+
+    // Cargar admin solo en backend si no existe
+    if (is_admin() && !class_exists('Flavor_Network_Admin')) {
         require_once FLAVOR_NETWORK_PATH . 'includes/class-network-admin.php';
     }
 
@@ -88,12 +103,12 @@ function flavor_network_communities_init() {
         Flavor_Network_Installer::create_tables();
     }
 
-    // Inicializar componentes principales
+    // Inicializar componentes principales (el singleton evita duplicados)
     if (class_exists('Flavor_Network_Manager')) {
         Flavor_Network_Manager::get_instance();
     }
 
-    // Inicializar REST API
+    // Inicializar REST API (el singleton evita duplicados)
     if (class_exists('Flavor_Network_API')) {
         Flavor_Network_API::get_instance();
     }
@@ -104,7 +119,7 @@ function flavor_network_communities_init() {
 
     // Log de inicialización en modo debug
     if (defined('FLAVOR_CHAT_IA_DEBUG') && FLAVOR_CHAT_IA_DEBUG) {
-        flavor_log_debug( 'Addon inicializado correctamente v' . FLAVOR_NETWORK_VERSION, 'NetworkCommunities' );
+        flavor_log_debug( 'Addon Network Communities inicializado v' . FLAVOR_NETWORK_VERSION, 'NetworkCommunities' );
     }
 }
 

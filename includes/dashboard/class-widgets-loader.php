@@ -36,6 +36,13 @@ class Flavor_Widgets_Loader {
     private $widgets_cargados = [];
 
     /**
+     * Caché de módulos activos (evita múltiples get_option)
+     *
+     * @var array|null
+     */
+    private $modulos_activos_cache = null;
+
+    /**
      * Obtiene la instancia singleton
      *
      * @return Flavor_Widgets_Loader
@@ -287,21 +294,45 @@ class Flavor_Widgets_Loader {
     /**
      * Verifica si un módulo está activo
      *
-     * @param string $modulo_id ID del módulo
+     * @param string $modulo_id ID del módulo (puede tener guiones o guiones bajos)
      * @return bool
      */
     private function modulo_activo(string $modulo_id): bool {
-        // Obtener módulos activos del sistema
-        $modulos_activos = get_option('flavor_active_modules', []);
-
-        // Si no hay configuración, asumir todos activos
-        if (empty($modulos_activos)) {
-            return true;
+        // Usar caché para evitar múltiples get_option por request
+        if ($this->modulos_activos_cache === null) {
+            $this->modulos_activos_cache = $this->cargar_modulos_activos();
         }
 
-        // Verificar si el módulo está en la lista de activos
-        return in_array($modulo_id, $modulos_activos, true) ||
-               isset($modulos_activos[$modulo_id]) && $modulos_activos[$modulo_id];
+        // Normalizar el ID del módulo (guiones a guiones bajos para consistencia)
+        $modulo_id_normalizado = str_replace('-', '_', $modulo_id);
+
+        // Verificar si el módulo está en la lista de activos (ambos formatos)
+        return in_array($modulo_id, $this->modulos_activos_cache, true) ||
+               in_array($modulo_id_normalizado, $this->modulos_activos_cache, true);
+    }
+
+    /**
+     * Carga la lista de módulos activos (una sola vez por request)
+     *
+     * @return array
+     */
+    private function cargar_modulos_activos(): array {
+        // Leer de flavor_chat_ia_settings['active_modules'] (preferido)
+        $settings = get_option('flavor_chat_ia_settings', []);
+        $modulos_activos = $settings['active_modules'] ?? [];
+
+        // También leer de flavor_active_modules (legacy/compatibilidad)
+        $modulos_activos_legacy = get_option('flavor_active_modules', []);
+        if (!empty($modulos_activos_legacy)) {
+            $modulos_activos = array_unique(array_merge($modulos_activos, $modulos_activos_legacy));
+        }
+
+        // Si no hay módulos configurados, usar default (woocommerce)
+        if (empty($modulos_activos)) {
+            $modulos_activos = ['woocommerce'];
+        }
+
+        return $modulos_activos;
     }
 
     /**

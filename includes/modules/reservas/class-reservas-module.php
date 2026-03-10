@@ -26,6 +26,10 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         $this->name = 'Reservas'; // Translation loaded on init
         $this->description = 'Gestion generica de reservas: mesas, espacios, clases y mas. Permite crear, cancelar, modificar y consultar disponibilidad.'; // Translation loaded on init
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['economia_local'];
+        $this->gailu_contribuye_a = ['autonomia'];
+
         parent::__construct();
     }
 
@@ -2789,7 +2793,17 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
     public function registrar_paginas_admin() {
         $capability = 'manage_options';
 
-        // Dashboard - página oculta
+        // Dashboard - con sufijo para Admin Shell
+        add_submenu_page(
+            null,
+            __('Dashboard Reservas', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'reservas-dashboard',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Dashboard - mantener alias por compatibilidad
         add_submenu_page(
             null,
             __('Dashboard Reservas', 'flavor-chat-ia'),
@@ -2867,7 +2881,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
      * Renderizar página de reservas
      */
     public function render_pagina_reservas() {
-        $views_path = dirname(__FILE__) . '/views/reservas.php';
+        $views_path = dirname(__FILE__) . '/views/listado.php';
         if (file_exists($views_path)) {
             include $views_path;
         } else {

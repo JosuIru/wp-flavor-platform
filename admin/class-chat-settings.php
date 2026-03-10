@@ -305,10 +305,11 @@ class Flavor_Chat_Settings {
         }
 
         if ($current_tab === 'modules') {
-            $valid_modules = ['woocommerce', 'banco_tiempo', 'grupos_consumo', 'marketplace', 'facturas', 'fichaje_empleados', 'eventos', 'socios', 'incidencias', 'participacion', 'presupuestos_participativos', 'avisos_municipales', 'advertising', 'ayuda_vecinal', 'biblioteca', 'bicicletas_compartidas', 'carpooling', 'chat_grupos', 'chat_interno', 'compostaje', 'cursos', 'empresarial', 'espacios_comunes', 'huertos_urbanos', 'multimedia', 'parkings', 'podcast', 'radio', 'reciclaje', 'red_social', 'talleres', 'tramites', 'transparencia', 'colectivos', 'foros', 'clientes', 'comunidades', 'bares', 'trading_ia', 'dex_solana', 'themacle'];
+            $valid_modules = ['woocommerce', 'banco_tiempo', 'grupos_consumo', 'marketplace', 'facturas', 'fichaje_empleados', 'eventos', 'socios', 'incidencias', 'participacion', 'presupuestos_participativos', 'avisos_municipales', 'advertising', 'ayuda_vecinal', 'biblioteca', 'bicicletas_compartidas', 'carpooling', 'chat_grupos', 'chat_interno', 'compostaje', 'energia_comunitaria', 'cursos', 'empresarial', 'espacios_comunes', 'huertos_urbanos', 'multimedia', 'parkings', 'podcast', 'radio', 'reciclaje', 'red_social', 'talleres', 'tramites', 'transparencia', 'colectivos', 'foros', 'clientes', 'comunidades', 'bares', 'trading_ia', 'dex_solana', 'themacle'];
             $sanitized['active_modules'] = isset($input['active_modules']) && is_array($input['active_modules'])
                 ? array_values(array_intersect($input['active_modules'], $valid_modules))
                 : [];
+            update_option('flavor_active_modules', $sanitized['active_modules']);
 
             // Auto-asignar rol admin del modulo al usuario que activa
             $prev_modules = isset($existing['active_modules']) && is_array($existing['active_modules'])
@@ -491,6 +492,12 @@ class Flavor_Chat_Settings {
             }
         }
 
+        // Pestaña Avanzado
+        if ($current_tab === 'advanced') {
+            $sanitized['limpiar_al_desinstalar'] = !empty($input['limpiar_al_desinstalar']);
+            $sanitized['debug_mode'] = !empty($input['debug_mode']);
+        }
+
         unset($sanitized['_tab']);
         return $sanitized;
     }
@@ -542,6 +549,8 @@ class Flavor_Chat_Settings {
     public function render_settings_page() {
         $settings = get_option('flavor_chat_ia_settings', []);
         $active_tab = $_GET['tab'] ?? 'general';
+        // Usar el slug de página actual para que las pestañas funcionen correctamente
+        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'flavor-chat-config';
         ?>
         <div class="wrap flavor-chat-settings">
             <h1><?php esc_html_e('Flavor Chat IA', 'flavor-chat-ia'); ?></h1>
@@ -549,41 +558,45 @@ class Flavor_Chat_Settings {
             <?php settings_errors('flavor_chat_ia_settings'); ?>
 
             <nav class="nav-tab-wrapper">
-                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=general"
+                <a href="?page=<?php echo esc_attr($current_page); ?>&tab=general"
                    class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('General', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=providers"
+                <a href="?page=<?php echo esc_attr($current_page); ?>&tab=providers"
                    class="nav-tab <?php echo $active_tab === 'providers' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Proveedores IA', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=appearance"
+                <a href="?page=<?php echo esc_attr($current_page); ?>&tab=appearance"
                    class="nav-tab <?php echo $active_tab === 'appearance' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Apariencia', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=quick_actions"
+                <a href="?page=<?php echo esc_attr($current_page); ?>&tab=quick_actions"
                    class="nav-tab <?php echo $active_tab === 'quick_actions' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Acciones Rápidas', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=knowledge"
+                <a href="?page=<?php echo esc_attr($current_page); ?>&tab=knowledge"
                    class="nav-tab <?php echo $active_tab === 'knowledge' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Base de Conocimiento', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=escalation"
+                <a href="?page=<?php echo esc_attr($current_page); ?>&tab=escalation"
                    class="nav-tab <?php echo $active_tab === 'escalation' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Escalado', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=modules"
+                <a href="?page=<?php echo esc_attr($current_page); ?>&tab=modules"
                    class="nav-tab <?php echo $active_tab === 'modules' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Módulos', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=firebase_push"
+                <a href="?page=<?php echo esc_attr($current_page); ?>&tab=firebase_push"
                    class="nav-tab <?php echo $active_tab === 'firebase_push' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Push Notifications', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=analytics"
+                <a href="?page=<?php echo esc_attr($current_page); ?>&tab=analytics"
                    class="nav-tab <?php echo $active_tab === 'analytics' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Analíticas', 'flavor-chat-ia'); ?>
+                </a>
+                <a href="?page=<?php echo esc_attr($current_page); ?>&tab=advanced"
+                   class="nav-tab <?php echo $active_tab === 'advanced' ? 'nav-tab-active' : ''; ?>">
+                    <?php esc_html_e('Avanzado', 'flavor-chat-ia'); ?>
                 </a>
             </nav>
 
@@ -618,6 +631,9 @@ class Flavor_Chat_Settings {
                         break;
                     case 'analytics':
                         $this->render_analytics_tab();
+                        break;
+                    case 'advanced':
+                        $this->render_advanced_tab($settings);
                         break;
                 }
                 ?>
@@ -1730,6 +1746,11 @@ class Flavor_Chat_Settings {
                 'description' => __('Gestión de composteras comunitarias y recogida de residuos orgánicos.', 'flavor-chat-ia'),
                 'requires' => null,
             ],
+            'energia_comunitaria' => [
+                'name' => __('Energia Comunitaria', 'flavor-chat-ia'),
+                'description' => __('Gestión de comunidades energéticas, instalaciones, reparto, cierres y liquidaciones.', 'flavor-chat-ia'),
+                'requires' => null,
+            ],
             'cursos' => [
                 'name' => __('Cursos y Formación', 'flavor-chat-ia'),
                 'description' => __('Plataforma de cursos y formación continua comunitaria.', 'flavor-chat-ia'),
@@ -1837,8 +1858,25 @@ class Flavor_Chat_Settings {
             ],
         ];
 
+        foreach ($available_modules as $module_id => $module_data) {
+            if (!isset($known_modules[$module_id])) {
+                $known_modules[$module_id] = [
+                    'name' => $module_data['name'] ?? ucwords(str_replace(['_', '-'], ' ', $module_id)),
+                    'description' => $module_data['description'] ?? '',
+                    'requires' => null,
+                ];
+            }
+        }
+
         // Combinar información
         foreach ($known_modules as $id => &$module) {
+            if (empty($module['name'])) {
+                $module['name'] = ucwords(str_replace(['_', '-'], ' ', $id));
+            }
+            if (!isset($module['description']) || $module['description'] === '') {
+                $module['description'] = $available_modules[$id]['description'] ?? __('Módulo disponible para activar.', 'flavor-chat-ia');
+            }
+
             if (isset($available_modules[$id])) {
                 // Si el módulo está en available_modules pero no puede activarse por falta de tablas,
                 // permitir activarlo de todas formas si no tiene dependencias externas
@@ -1862,8 +1900,8 @@ class Flavor_Chat_Settings {
         ?>
         <input type="hidden" name="flavor_chat_ia_settings[_tab]" value="modules">
 
-        <h2><?php esc_html_e('Módulos para Apps Móviles', 'flavor-chat-ia'); ?></h2>
-        <p><?php esc_html_e('Selecciona qué módulos estarán disponibles para las aplicaciones móviles a través de la API REST.', 'flavor-chat-ia'); ?></p>
+        <h2><?php esc_html_e('Módulos Web del Portal', 'flavor-chat-ia'); ?></h2>
+        <p><?php esc_html_e('Selecciona qué módulos se cargan en WordPress, en el portal web y en las integraciones base del plugin.', 'flavor-chat-ia'); ?></p>
 
         <div class="notice notice-info inline" style="margin: 20px 0;">
             <p>
@@ -3648,5 +3686,133 @@ Usa colores profesionales que combinen con el tipo de negocio.",
             'conversions' => (int) $conversions,
             'tokens' => number_format((int) $tokens),
         ]);
+    }
+
+    /**
+     * Pestaña Avanzado - Configuraciones avanzadas y peligrosas
+     */
+    private function render_advanced_tab($settings) {
+        global $wpdb;
+
+        // Contar tablas del plugin
+        $tablas_flavor = $wpdb->get_results(
+            "SHOW TABLES LIKE '{$wpdb->prefix}flavor_%'",
+            ARRAY_N
+        );
+        $num_tablas = count($tablas_flavor);
+
+        // Contar opciones
+        $num_opciones = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE 'flavor_%'"
+        );
+        ?>
+        <input type="hidden" name="flavor_chat_ia_settings[_tab]" value="advanced">
+
+        <div class="flavor-settings-section">
+            <h2><?php esc_html_e('Datos del Plugin', 'flavor-chat-ia'); ?></h2>
+            <p class="description">
+                <?php esc_html_e('Información sobre los datos almacenados por Flavor Platform.', 'flavor-chat-ia'); ?>
+            </p>
+
+            <table class="form-table" style="max-width: 600px;">
+                <tr>
+                    <th><?php esc_html_e('Tablas en base de datos', 'flavor-chat-ia'); ?></th>
+                    <td><code><?php echo esc_html($num_tablas); ?></code> <?php esc_html_e('tablas con prefijo flavor_', 'flavor-chat-ia'); ?></td>
+                </tr>
+                <tr>
+                    <th><?php esc_html_e('Opciones guardadas', 'flavor-chat-ia'); ?></th>
+                    <td><code><?php echo esc_html($num_opciones); ?></code> <?php esc_html_e('registros en wp_options', 'flavor-chat-ia'); ?></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="flavor-settings-section" style="margin-top: 30px; padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+            <h2 style="color: #856404; margin-top: 0;">
+                <span class="dashicons dashicons-warning" style="margin-right: 8px;"></span>
+                <?php esc_html_e('Limpieza al Desinstalar', 'flavor-chat-ia'); ?>
+            </h2>
+
+            <p class="description" style="color: #856404; font-size: 14px;">
+                <?php esc_html_e('Si activas esta opcion, al desinstalar el plugin desde WordPress se eliminaran TODOS los datos:', 'flavor-chat-ia'); ?>
+            </p>
+
+            <ul style="color: #856404; margin-left: 20px; list-style: disc;">
+                <li><?php esc_html_e('Todas las tablas de la base de datos (eventos, reservas, foros, mensajes, etc.)', 'flavor-chat-ia'); ?></li>
+                <li><?php esc_html_e('Todas las opciones y configuraciones', 'flavor-chat-ia'); ?></li>
+                <li><?php esc_html_e('Metadatos de usuarios y posts', 'flavor-chat-ia'); ?></li>
+                <li><?php esc_html_e('Custom Post Types y sus contenidos', 'flavor-chat-ia'); ?></li>
+                <li><?php esc_html_e('Roles y capacidades personalizadas', 'flavor-chat-ia'); ?></li>
+            </ul>
+
+            <p style="color: #721c24; font-weight: bold; background: #f8d7da; padding: 10px; border-radius: 4px; margin-top: 15px;">
+                <span class="dashicons dashicons-no" style="margin-right: 5px;"></span>
+                <?php esc_html_e('ESTA ACCION ES IRREVERSIBLE. Solo activa esta opcion si estas seguro de que quieres eliminar todos los datos del plugin.', 'flavor-chat-ia'); ?>
+            </p>
+
+            <table class="form-table">
+                <tr>
+                    <th scope="row">
+                        <label for="limpiar_al_desinstalar">
+                            <?php esc_html_e('Eliminar datos al desinstalar', 'flavor-chat-ia'); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <label class="flavor-switch">
+                            <input type="checkbox"
+                                   name="flavor_chat_ia_settings[limpiar_al_desinstalar]"
+                                   id="limpiar_al_desinstalar"
+                                   value="1"
+                                   <?php checked(!empty($settings['limpiar_al_desinstalar'])); ?>>
+                            <span class="slider round"></span>
+                        </label>
+                        <p class="description" style="color: #856404;">
+                            <?php esc_html_e('Si esta desactivado (por defecto), los datos se conservaran aunque desinstales el plugin.', 'flavor-chat-ia'); ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="flavor-settings-section" style="margin-top: 30px;">
+            <h2><?php esc_html_e('Modo Debug', 'flavor-chat-ia'); ?></h2>
+
+            <table class="form-table">
+                <tr>
+                    <th scope="row">
+                        <label for="debug_mode">
+                            <?php esc_html_e('Activar modo debug', 'flavor-chat-ia'); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <label class="flavor-switch">
+                            <input type="checkbox"
+                                   name="flavor_chat_ia_settings[debug_mode]"
+                                   id="debug_mode"
+                                   value="1"
+                                   <?php checked(!empty($settings['debug_mode'])); ?>>
+                            <span class="slider round"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e('Registra informacion adicional en el log de errores de WordPress. Util para depuracion.', 'flavor-chat-ia'); ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <?php if (!empty($tablas_flavor)): ?>
+        <div class="flavor-settings-section" style="margin-top: 30px;">
+            <h3><?php esc_html_e('Tablas del Plugin', 'flavor-chat-ia'); ?></h3>
+            <details>
+                <summary style="cursor: pointer; color: #0073aa;"><?php esc_html_e('Ver listado de tablas', 'flavor-chat-ia'); ?></summary>
+                <ul style="margin-top: 10px; font-family: monospace; font-size: 12px;">
+                    <?php foreach ($tablas_flavor as $tabla): ?>
+                        <li><?php echo esc_html($tabla[0]); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </details>
+        </div>
+        <?php endif; ?>
+        <?php
     }
 }

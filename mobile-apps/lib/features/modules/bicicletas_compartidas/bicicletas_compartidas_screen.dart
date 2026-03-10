@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
 
@@ -265,9 +266,31 @@ class _BicicletasCompartidasScreenState extends ConsumerState<BicicletasComparti
     );
   }
 
-  void _verMapa(BuildContext context, Map<String, dynamic> estacion) {
-    final i18n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(i18n.bicicletasOpeningMap)));
+  Future<void> _verMapa(BuildContext context, Map<String, dynamic> estacion) async {
+    final latitud = estacion['latitud'] ?? estacion['lat'];
+    final longitud = estacion['longitud'] ?? estacion['lng'];
+    final nombre = estacion['nombre']?.toString() ?? 'Estación';
+
+    if (latitud != null && longitud != null) {
+      final lat = double.tryParse(latitud.toString()) ?? 0;
+      final lng = double.tryParse(longitud.toString()) ?? 0;
+      final url = Uri.parse('https://www.openstreetmap.org/?mlat=$lat&mlon=$lng#map=18/$lat/$lng');
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No se puede abrir el mapa')),
+          );
+        }
+      }
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ubicación no disponible para "$nombre"')),
+        );
+      }
+    }
   }
 
   Future<void> _alquilarBicicleta(BuildContext context, Map<String, dynamic> estacion) async {

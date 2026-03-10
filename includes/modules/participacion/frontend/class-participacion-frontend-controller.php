@@ -112,6 +112,48 @@ class Flavor_Participacion_Frontend_Controller {
     }
 
     /**
+     * Devuelve la URL actual para redirects y compartición.
+     *
+     * @return string
+     */
+    private function get_current_request_url() {
+        return function_exists('flavor_current_request_url')
+            ? flavor_current_request_url()
+            : home_url('/');
+    }
+
+    /**
+     * Renderiza un estado de login con acción.
+     *
+     * @param string $mensaje
+     * @return string
+     */
+    private function render_login_required($mensaje) {
+        return '<div class="flavor-empty-state">' .
+            '<p>' . esc_html($mensaje) . '</p>' .
+            '<a href="' . esc_url(wp_login_url($this->get_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' .
+            esc_html__('Iniciar sesión', 'flavor-chat-ia') .
+            '</a></div>';
+    }
+
+    /**
+     * Construye una URL del portal para Participación.
+     *
+     * @param string $action Acción/tab del portal.
+     * @param array  $args   Query args.
+     * @return string
+     */
+    private function get_portal_url($action, array $args = []) {
+        $url = home_url('/mi-portal/participacion/' . trim($action, '/') . '/');
+
+        if (!empty($args)) {
+            $url = add_query_arg($args, $url);
+        }
+
+        return $url;
+    }
+
+    /**
      * Shortcode: Listado de encuestas
      */
     public function shortcode_encuestas($atts) {
@@ -177,7 +219,7 @@ class Flavor_Participacion_Frontend_Controller {
                             <div class="encuesta-stats">
                                 <span><span class="dashicons dashicons-groups"></span> <?php echo number_format_i18n($encuesta->total_votos ?? 0); ?> <?php esc_html_e('votos', 'flavor-chat-ia'); ?></span>
                             </div>
-                            <a href="<?php echo esc_url(home_url('/participacion/encuesta/' . $encuesta->slug)); ?>" class="flavor-btn flavor-btn-primary">
+                            <a href="<?php echo esc_url($this->get_portal_url('encuesta', ['encuesta_slug' => $encuesta->slug])); ?>" class="flavor-btn flavor-btn-primary">
                                 <?php echo $encuesta->estado === 'activa' ? esc_html__('Participar', 'flavor-chat-ia') : esc_html__('Ver Resultados', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
@@ -213,6 +255,14 @@ class Flavor_Participacion_Frontend_Controller {
         } elseif ($atts['slug']) {
             $encuesta = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_encuestas} WHERE slug = %s", $atts['slug']
+            ));
+        } elseif (!empty($_GET['encuesta_slug'])) {
+            $encuesta = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_encuestas} WHERE slug = %s", sanitize_text_field(wp_unslash($_GET['encuesta_slug']))
+            ));
+        } elseif (!empty($_GET['encuesta_id'])) {
+            $encuesta = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_encuestas} WHERE id = %d", absint($_GET['encuesta_id'])
             ));
         }
 
@@ -285,9 +335,7 @@ class Flavor_Participacion_Frontend_Controller {
                     </div>
                 </form>
             <?php elseif (!is_user_logged_in() && $encuesta->estado === 'activa'): ?>
-                <div class="flavor-notice">
-                    <p><?php esc_html_e('Inicia sesión para participar en esta encuesta.', 'flavor-chat-ia'); ?></p>
-                </div>
+                <?php echo $this->render_login_required(__('Inicia sesión para participar en esta encuesta.', 'flavor-chat-ia')); ?>
             <?php endif; ?>
 
             <?php if ($ya_voto || $encuesta->estado !== 'activa' || $encuesta->mostrar_resultados_parciales): ?>
@@ -355,7 +403,7 @@ class Flavor_Participacion_Frontend_Controller {
             <div class="peticiones-header">
                 <h2><?php esc_html_e('Peticiones Ciudadanas', 'flavor-chat-ia'); ?></h2>
                 <?php if (is_user_logged_in()): ?>
-                    <a href="<?php echo esc_url(home_url('/participacion/crear-peticion/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url($this->get_portal_url('crear-peticion')); ?>" class="flavor-btn flavor-btn-primary">
                         <span class="dashicons dashicons-plus-alt2"></span>
                         <?php esc_html_e('Nueva Petición', 'flavor-chat-ia'); ?>
                     </a>
@@ -395,7 +443,7 @@ class Flavor_Participacion_Frontend_Controller {
                                 </div>
                             </div>
 
-                            <a href="<?php echo esc_url(home_url('/participacion/peticion/' . $peticion->slug)); ?>" class="flavor-btn flavor-btn-outline">
+                            <a href="<?php echo esc_url($this->get_portal_url('peticion', ['peticion_slug' => $peticion->slug])); ?>" class="flavor-btn flavor-btn-outline">
                                 <?php esc_html_e('Ver y Firmar', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
@@ -430,6 +478,14 @@ class Flavor_Participacion_Frontend_Controller {
         } elseif ($atts['slug']) {
             $peticion = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_peticiones} WHERE slug = %s", $atts['slug']
+            ));
+        } elseif (!empty($_GET['peticion_slug'])) {
+            $peticion = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_peticiones} WHERE slug = %s", sanitize_text_field(wp_unslash($_GET['peticion_slug']))
+            ));
+        } elseif (!empty($_GET['peticion_id'])) {
+            $peticion = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_peticiones} WHERE id = %d", absint($_GET['peticion_id'])
             ));
         }
 
@@ -547,9 +603,7 @@ class Flavor_Participacion_Frontend_Controller {
                     <?php esc_html_e('Ya has firmado esta petición', 'flavor-chat-ia'); ?>
                 </div>
             <?php elseif (!is_user_logged_in() && $peticion->estado === 'activa'): ?>
-                <div class="flavor-notice">
-                    <p><?php esc_html_e('Inicia sesión para firmar esta petición.', 'flavor-chat-ia'); ?></p>
-                </div>
+                <?php echo $this->render_login_required(__('Inicia sesión para firmar esta petición.', 'flavor-chat-ia')); ?>
             <?php endif; ?>
 
             <div class="peticion-contenido">
@@ -580,15 +634,15 @@ class Flavor_Participacion_Frontend_Controller {
             <div class="peticion-compartir">
                 <h3><?php esc_html_e('Comparte esta petición', 'flavor-chat-ia'); ?></h3>
                 <div class="compartir-botones">
-                    <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(get_permalink()); ?>&text=<?php echo urlencode($peticion->titulo); ?>"
+                    <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode($this->get_current_request_url()); ?>&text=<?php echo urlencode($peticion->titulo); ?>"
                         class="btn-compartir twitter" target="_blank" rel="noopener">
                         Twitter
                     </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>"
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($this->get_current_request_url()); ?>"
                         class="btn-compartir facebook" target="_blank" rel="noopener">
                         Facebook
                     </a>
-                    <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($peticion->titulo . ' ' . get_permalink()); ?>"
+                    <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($peticion->titulo . ' ' . $this->get_current_request_url()); ?>"
                         class="btn-compartir whatsapp" target="_blank" rel="noopener">
                         WhatsApp
                     </a>
@@ -604,7 +658,7 @@ class Flavor_Participacion_Frontend_Controller {
      */
     public function shortcode_crear_peticion($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Debes iniciar sesión para crear una petición.', 'flavor-chat-ia') . '</p>';
+            return $this->render_login_required(__('Debes iniciar sesión para crear una petición.', 'flavor-chat-ia'));
         }
 
         $this->encolar_assets();
@@ -712,7 +766,7 @@ class Flavor_Participacion_Frontend_Controller {
                                 <span><span class="dashicons dashicons-admin-comments"></span> <?php echo number_format_i18n($debate->comentarios_count ?? 0); ?> <?php esc_html_e('comentarios', 'flavor-chat-ia'); ?></span>
                                 <span><span class="dashicons dashicons-groups"></span> <?php echo number_format_i18n($debate->participantes_count ?? 0); ?> <?php esc_html_e('participantes', 'flavor-chat-ia'); ?></span>
                             </div>
-                            <a href="<?php echo esc_url(home_url('/participacion/debate/' . $debate->slug)); ?>" class="flavor-btn flavor-btn-outline">
+                            <a href="<?php echo esc_url($this->get_portal_url('debate', ['debate_slug' => $debate->slug])); ?>" class="flavor-btn flavor-btn-outline">
                                 <?php esc_html_e('Participar', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
@@ -747,6 +801,14 @@ class Flavor_Participacion_Frontend_Controller {
         } elseif ($atts['slug']) {
             $debate = $wpdb->get_row($wpdb->prepare(
                 "SELECT * FROM {$tabla_debates} WHERE slug = %s", $atts['slug']
+            ));
+        } elseif (!empty($_GET['debate_slug'])) {
+            $debate = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_debates} WHERE slug = %s", sanitize_text_field(wp_unslash($_GET['debate_slug']))
+            ));
+        } elseif (!empty($_GET['debate_id'])) {
+            $debate = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$tabla_debates} WHERE id = %d", absint($_GET['debate_id'])
             ));
         }
 
@@ -857,17 +919,17 @@ class Flavor_Participacion_Frontend_Controller {
         ?>
         <div class="flavor-participacion-resumen">
             <div class="resumen-grid">
-                <a href="<?php echo esc_url(home_url('/participacion/encuestas/')); ?>" class="resumen-card">
+                <a href="<?php echo esc_url($this->get_portal_url('votaciones')); ?>" class="resumen-card">
                     <span class="dashicons dashicons-chart-bar"></span>
                     <span class="resumen-numero"><?php echo number_format_i18n($stats['encuestas']); ?></span>
                     <span class="resumen-label"><?php esc_html_e('Encuestas Activas', 'flavor-chat-ia'); ?></span>
                 </a>
-                <a href="<?php echo esc_url(home_url('/participacion/peticiones/')); ?>" class="resumen-card">
+                <a href="<?php echo esc_url($this->get_portal_url('peticiones')); ?>" class="resumen-card">
                     <span class="dashicons dashicons-edit"></span>
                     <span class="resumen-numero"><?php echo number_format_i18n($stats['peticiones']); ?></span>
                     <span class="resumen-label"><?php esc_html_e('Peticiones', 'flavor-chat-ia'); ?></span>
                 </a>
-                <a href="<?php echo esc_url(home_url('/participacion/debates/')); ?>" class="resumen-card">
+                <a href="<?php echo esc_url($this->get_portal_url('debates')); ?>" class="resumen-card">
                     <span class="dashicons dashicons-format-chat"></span>
                     <span class="resumen-numero"><?php echo number_format_i18n($stats['debates']); ?></span>
                     <span class="resumen-label"><?php esc_html_e('Debates', 'flavor-chat-ia'); ?></span>
@@ -1065,7 +1127,7 @@ class Flavor_Participacion_Frontend_Controller {
 
             wp_send_json_success([
                 'mensaje' => __('Petición creada correctamente', 'flavor-chat-ia'),
-                'redirect' => home_url('/participacion/peticion/' . $slug),
+                'redirect' => $this->get_portal_url('peticion', ['peticion_slug' => $slug]),
             ]);
         } else {
             wp_send_json_error(__('Error al crear la petición', 'flavor-chat-ia'));

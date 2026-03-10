@@ -36,6 +36,12 @@
         // Ultima actualizacion
         lastUpdate: null,
 
+        // Preferencias locales
+        storageKeys: {
+            advancedPanelOpen: 'flavorDashboardAdvancedPanelOpen',
+            actionsSections: 'flavorDashboardActionsSections'
+        },
+
         // Configuracion de colores
         colors: {
             primary: '#2271b1',
@@ -65,6 +71,8 @@
          */
         init: function() {
             this.bindEvents();
+            this.restoreAdvancedPanelState();
+            this.restoreActionsSectionsState();
             this.initSortable();
             this.loadCharts();
             this.loadNetworkStats();
@@ -133,6 +141,60 @@
             // Selector de periodo para comparativas
             $('#flavor-chart-period').on('change', function() {
                 self.loadComparativesChart($(this).val());
+            });
+
+            $('.flavor-dashboard-advanced-sections').on('toggle', function() {
+                localStorage.setItem(self.storageKeys.advancedPanelOpen, $(this).prop('open') ? 'true' : 'false');
+            });
+
+            $('.flavor-actions-section--collapsible').on('toggle', function() {
+                const states = self.getActionsSectionsState();
+                const sectionKey = $(this).data('actions-section');
+                if (!sectionKey) {
+                    return;
+                }
+
+                states[sectionKey] = $(this).prop('open');
+                localStorage.setItem(self.storageKeys.actionsSections, JSON.stringify(states));
+            });
+        },
+
+        /**
+         * Restaura estado del panel avanzado
+         */
+        restoreAdvancedPanelState: function() {
+            const savedState = localStorage.getItem(this.storageKeys.advancedPanelOpen);
+            if (savedState === null) {
+                return;
+            }
+
+            $('.flavor-dashboard-advanced-sections').prop('open', savedState === 'true');
+        },
+
+        /**
+         * Obtiene estado guardado de subsecciones de acciones rápidas
+         */
+        getActionsSectionsState: function() {
+            try {
+                return JSON.parse(localStorage.getItem(this.storageKeys.actionsSections) || '{}');
+            } catch (error) {
+                return {};
+            }
+        },
+
+        /**
+         * Restaura estado de subsecciones de acciones rápidas
+         */
+        restoreActionsSectionsState: function() {
+            const states = this.getActionsSectionsState();
+
+            $('.flavor-actions-section--collapsible').each(function() {
+                const sectionKey = $(this).data('actions-section');
+                if (!sectionKey || typeof states[sectionKey] === 'undefined') {
+                    return;
+                }
+
+                $(this).prop('open', !!states[sectionKey]);
             });
         },
 
@@ -1147,7 +1209,7 @@
             const destinatarios = $('#notif-destinatarios').val();
 
             if (!titulo || !mensaje) {
-                alert('Por favor completa todos los campos');
+                this.showNotice('warning', 'Por favor completa todos los campos');
                 return;
             }
 
@@ -1169,14 +1231,13 @@
                     if (response.success) {
                         $('#flavor-modal-notificacion').fadeOut(200);
                         $('#notif-titulo, #notif-mensaje').val('');
-                        // Mostrar mensaje de exito
-                        alert('Notificacion enviada correctamente');
+                        FlavorDashboardController.showNotice('success', 'Notificación enviada correctamente');
                     } else {
-                        alert('Error: ' + (response.data.message || 'Error desconocido'));
+                        FlavorDashboardController.showNotice('error', 'Error: ' + (response.data.message || 'Error desconocido'));
                     }
                 },
                 error: function() {
-                    alert('Error de conexion');
+                    FlavorDashboardController.showNotice('error', 'Error de conexión');
                 },
                 complete: function() {
                     $btn.prop('disabled', false).text('Enviar');

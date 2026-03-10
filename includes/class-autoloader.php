@@ -64,9 +64,12 @@ class Flavor_Autoloader {
         'Flavor_Module_Admin_UI_Trait' => 'modules/trait-module-admin-ui.php',
         'Flavor_Module_Frontend_Actions' => 'modules/trait-module-frontend-actions.php',
         'Flavor_Module_Admin_Pages_Trait' => 'admin/trait-module-admin-pages.php',
+        'Flavor_Demo_Data_Generator' => 'admin/class-demo-data-generator.php',
         'Flavor_Dashboard_Widget_Trait' => 'modules/trait-dashboard-widget.php',
         'Flavor_WhatsApp_Features' => 'modules/trait-whatsapp-features.php',
         'Flavor_Encuestas_Features' => 'modules/trait-encuestas-features.php',
+        // Portal unificado está en frontend, no en admin
+        'Flavor_Unified_Portal' => 'frontend/class-unified-portal.php',
     ];
 
     /**

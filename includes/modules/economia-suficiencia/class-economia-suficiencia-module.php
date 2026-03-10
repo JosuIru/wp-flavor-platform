@@ -177,6 +177,10 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         $this->dashboard_client_contexts = ['consumo', 'suficiencia', 'aprendizaje', 'comunidad'];
         $this->dashboard_admin_contexts = ['consumo', 'aprendizaje', 'admin'];
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['aprendizaje', 'economia_local'];
+        $this->gailu_contribuye_a = ['resiliencia', 'autonomia'];
+
         parent::__construct();
 
         // Registrar en el Panel de Administración Unificado

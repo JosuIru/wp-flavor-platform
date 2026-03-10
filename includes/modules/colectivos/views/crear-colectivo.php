@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
             <span class="dashicons dashicons-lock"></span>
             <h3><?php esc_html_e('Inicia sesión para crear un colectivo', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Necesitas una cuenta para crear y gestionar colectivos.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-col-btn flavor-col-btn-primary">
+            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-col-btn flavor-col-btn-primary">
                 <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
             </a>
         </div>

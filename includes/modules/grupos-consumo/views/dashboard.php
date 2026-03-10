@@ -14,16 +14,64 @@ if (!defined('ABSPATH')) {
 global $wpdb;
 $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
 
-// Obtener estadísticas generales
-$total_pedidos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_pedidos");
-$pedidos_pendientes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_pedidos WHERE estado = 'pendiente'");
-$pedidos_completados = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_pedidos WHERE estado = 'completado'");
+// Verificar si la tabla existe
+$tabla_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_pedidos)) === $tabla_pedidos;
 
-// Productos totales
-$total_productos = wp_count_posts('gc_producto')->publish;
-$total_productores = wp_count_posts('gc_productor')->publish;
+if ($tabla_existe) {
+    $total_pedidos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_pedidos");
+    $pedidos_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_pedidos WHERE estado = 'pendiente'");
+    $pedidos_completados = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_pedidos WHERE estado = 'completado'");
 
-// Ciclos
+    $primer_dia_mes = gmdate('Y-m-01 00:00:00');
+    $ventas_mes = (float) $wpdb->get_var($wpdb->prepare(
+        "SELECT IFNULL(SUM(cantidad * precio_unitario), 0)
+         FROM $tabla_pedidos
+         WHERE estado = 'completado'
+         AND fecha_pedido >= %s",
+        $primer_dia_mes
+    ));
+
+    $productos_top = $wpdb->get_results(
+        "SELECT producto_id, SUM(cantidad) as total_cantidad, SUM(cantidad * precio_unitario) as total_ventas
+         FROM $tabla_pedidos
+         WHERE estado = 'completado'
+         GROUP BY producto_id
+         ORDER BY total_cantidad DESC
+         LIMIT 6"
+    );
+
+    $pedidos_recientes = $wpdb->get_results(
+        "SELECT p.*, c.post_title as ciclo_titulo
+         FROM $tabla_pedidos p
+         LEFT JOIN {$wpdb->posts} c ON p.ciclo_id = c.ID
+         ORDER BY p.fecha_pedido DESC
+         LIMIT 6"
+    );
+
+    $actividad_ciclos = $wpdb->get_results(
+        "SELECT c.post_title as ciclo, COUNT(p.id) as total_pedidos, SUM(p.cantidad * p.precio_unitario) as total_ventas
+         FROM {$wpdb->posts} c
+         LEFT JOIN $tabla_pedidos p ON c.ID = p.ciclo_id
+         WHERE c.post_type = 'gc_ciclo' AND c.post_status = 'publish'
+         GROUP BY c.ID
+         ORDER BY c.post_date DESC
+         LIMIT 6"
+    );
+} else {
+    $total_pedidos = 0;
+    $pedidos_pendientes = 0;
+    $pedidos_completados = 0;
+    $ventas_mes = 0;
+    $productos_top = [];
+    $pedidos_recientes = [];
+    $actividad_ciclos = [];
+}
+
+// Productos y productores
+$total_productos = (int) wp_count_posts('gc_producto')->publish;
+$total_productores = (int) wp_count_posts('gc_productor')->publish;
+
+// Ciclo actual
 $args_ciclos = [
     'post_type' => 'gc_ciclo',
     'post_status' => 'publish',
@@ -38,414 +86,403 @@ $args_ciclos = [
 $ciclo_actual = new WP_Query($args_ciclos);
 $hay_ciclo_abierto = $ciclo_actual->have_posts();
 
-// Ventas totales del mes actual
-$primer_dia_mes = date('Y-m-01 00:00:00');
-$ventas_mes = $wpdb->get_var($wpdb->prepare(
-    "SELECT IFNULL(SUM(cantidad * precio_unitario), 0)
-     FROM $tabla_pedidos
-     WHERE estado = 'completado'
-     AND fecha_pedido >= %s",
-    $primer_dia_mes
-));
-
-// Productos más pedidos
-$productos_top = $wpdb->get_results(
-    "SELECT producto_id, SUM(cantidad) as total_cantidad, SUM(cantidad * precio_unitario) as total_ventas
-     FROM $tabla_pedidos
-     WHERE estado = 'completado'
-     GROUP BY producto_id
-     ORDER BY total_cantidad DESC
-     LIMIT 10"
-);
-
-// Pedidos recientes
-$pedidos_recientes = $wpdb->get_results(
-    "SELECT p.*, c.post_title as ciclo_titulo
-     FROM $tabla_pedidos p
-     LEFT JOIN {$wpdb->posts} c ON p.ciclo_id = c.ID
-     ORDER BY p.fecha_pedido DESC
-     LIMIT 10"
-);
-
-// Actividad por ciclo
-$actividad_ciclos = $wpdb->get_results(
-    "SELECT c.post_title as ciclo, COUNT(p.id) as total_pedidos, SUM(p.cantidad * p.precio_unitario) as total_ventas
-     FROM {$wpdb->posts} c
-     LEFT JOIN $tabla_pedidos p ON c.ID = p.ciclo_id
-     WHERE c.post_type = 'gc_ciclo' AND c.post_status = 'publish'
-     GROUP BY c.ID
-     ORDER BY c.post_date DESC
-     LIMIT 6"
-);
-
 // Datos de ejemplo si no hay datos reales
-$usar_datos_ejemplo = empty($productos_top) && empty($actividad_ciclos);
+$usar_datos_ejemplo = empty($productos_top) && empty($actividad_ciclos) && $total_pedidos === 0;
 
 if ($usar_datos_ejemplo) {
-    // Productos de ejemplo
+    $total_pedidos = 165;
+    $pedidos_pendientes = 12;
+    $pedidos_completados = 148;
+    $ventas_mes = 2450.00;
+    $total_productos = $total_productos ?: 45;
+    $total_productores = $total_productores ?: 8;
+
     $productos_top = [
         (object) ['producto_id' => 0, 'total_cantidad' => 145, 'total_ventas' => 435.00, 'nombre' => 'Tomates Eco'],
         (object) ['producto_id' => 0, 'total_cantidad' => 120, 'total_ventas' => 240.00, 'nombre' => 'Lechugas Frescas'],
         (object) ['producto_id' => 0, 'total_cantidad' => 98, 'total_ventas' => 294.00, 'nombre' => 'Zanahorias Bio'],
         (object) ['producto_id' => 0, 'total_cantidad' => 85, 'total_ventas' => 510.00, 'nombre' => 'Aceite Oliva Virgen'],
         (object) ['producto_id' => 0, 'total_cantidad' => 72, 'total_ventas' => 180.00, 'nombre' => 'Huevos Camperos'],
-        (object) ['producto_id' => 0, 'total_cantidad' => 65, 'total_ventas' => 195.00, 'nombre' => 'Miel Artesanal'],
     ];
 
-    // Ciclos de ejemplo
     $actividad_ciclos = [
         (object) ['ciclo' => 'Febrero 2026', 'total_pedidos' => 48, 'total_ventas' => 1250.00],
         (object) ['ciclo' => 'Enero 2026', 'total_pedidos' => 52, 'total_ventas' => 1480.00],
         (object) ['ciclo' => 'Diciembre 2025', 'total_pedidos' => 65, 'total_ventas' => 1890.00],
         (object) ['ciclo' => 'Noviembre 2025', 'total_pedidos' => 43, 'total_ventas' => 1120.00],
-        (object) ['ciclo' => 'Octubre 2025', 'total_pedidos' => 38, 'total_ventas' => 980.00],
-        (object) ['ciclo' => 'Septiembre 2025', 'total_pedidos' => 45, 'total_ventas' => 1150.00],
     ];
 }
 
+$estado_badges = [
+    'pendiente' => 'dm-badge--warning',
+    'confirmado' => 'dm-badge--info',
+    'completado' => 'dm-badge--success',
+    'cancelado' => 'dm-badge--error',
+];
+
+$estado_labels = [
+    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
+    'confirmado' => __('Confirmado', 'flavor-chat-ia'),
+    'completado' => __('Completado', 'flavor-chat-ia'),
+    'cancelado' => __('Cancelado', 'flavor-chat-ia'),
+];
 ?>
 
-<div class="wrap">
-    <h1 class="wp-heading-inline">
-        <span class="dashicons dashicons-carrot"></span>
-        <?php echo esc_html__('Dashboard - Grupos de Consumo', 'flavor-chat-ia'); ?>
-    </h1>
+<div class="wrap dm-dashboard">
+    <?php
+    // Sección de ayuda colapsable
+    if (function_exists('flavor_dashboard_help')) {
+        flavor_dashboard_help('grupos_consumo');
+    }
+    ?>
 
-    <hr class="wp-header-end">
+    <?php if ($usar_datos_ejemplo): ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Se muestran datos de ejemplo. Los datos reales aparecerán cuando se registren pedidos.', 'flavor-chat-ia'); ?>
+    </div>
+    <?php endif; ?>
 
-    <!-- Estadísticas Principales -->
-    <div class="gc-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 20px 0;">
+    <!-- Cabecera -->
+    <div class="dm-header">
+        <div class="dm-header__content">
+            <h1 class="dm-header__title">
+                <span class="dashicons dashicons-carrot"></span>
+                <?php esc_html_e('Grupos de Consumo', 'flavor-chat-ia'); ?>
+            </h1>
+            <p class="dm-header__description">
+                <?php esc_html_e('Gestión de pedidos, productos y productores del grupo de consumo', 'flavor-chat-ia'); ?>
+            </p>
+        </div>
+        <div class="dm-header__actions">
+            <?php if (!$hay_ciclo_abierto): ?>
+            <a href="<?php echo esc_url(admin_url('post-new.php?post_type=gc_ciclo')); ?>" class="dm-btn dm-btn--primary">
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo Ciclo', 'flavor-chat-ia'); ?>
+            </a>
+            <?php endif; ?>
+        </div>
+    </div>
 
-        <div class="gc-stat-card" style="background: #fff; border-left: 4px solid #2271b1; padding: 20px; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
-            <div class="stat-icon" style="color: #2271b1; font-size: 32px; margin-bottom: 10px;">
+    <!-- Alerta de ciclo -->
+    <?php if ($hay_ciclo_abierto): ?>
+        <?php $ciclo_actual->the_post(); ?>
+        <div class="dm-alert dm-alert--success">
+            <span class="dashicons dashicons-calendar-alt"></span>
+            <div>
+                <strong><?php esc_html_e('Ciclo activo:', 'flavor-chat-ia'); ?> <?php the_title(); ?></strong>
+                <div style="margin-top: 4px;">
+                    <?php esc_html_e('Fecha cierre:', 'flavor-chat-ia'); ?> <?php echo esc_html(get_post_meta(get_the_ID(), '_gc_fecha_cierre', true)); ?>
+                    <a href="<?php echo esc_url(admin_url('post.php?post=' . get_the_ID() . '&action=edit')); ?>" class="dm-btn dm-btn--sm dm-btn--secondary" style="margin-left: 12px;">
+                        <?php esc_html_e('Gestionar', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <?php wp_reset_postdata(); ?>
+    <?php else: ?>
+        <div class="dm-alert dm-alert--warning">
+            <span class="dashicons dashicons-warning"></span>
+            <strong><?php esc_html_e('No hay ningún ciclo abierto actualmente.', 'flavor-chat-ia'); ?></strong>
+            <a href="<?php echo esc_url(admin_url('post-new.php?post_type=gc_ciclo')); ?>" class="dm-btn dm-btn--sm dm-btn--primary" style="margin-left: 12px;">
+                <?php esc_html_e('Crear Ciclo', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+    <?php endif; ?>
+
+    <!-- Tarjetas de estadísticas -->
+    <div class="dm-stats-grid">
+        <div class="dm-stat-card">
+            <div class="dm-stat-card__icon">
                 <span class="dashicons dashicons-cart"></span>
             </div>
-            <div class="stat-value" style="font-size: 32px; font-weight: bold; color: #1d2327;">
-                <?php echo number_format($total_pedidos); ?>
-            </div>
-            <div class="stat-label" style="color: #646970; font-size: 14px;">
-                <?php echo esc_html__('Total Pedidos', 'flavor-chat-ia'); ?>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($total_pedidos); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Total Pedidos', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
-        <div class="gc-stat-card" style="background: #fff; border-left: 4px solid #dba617; padding: 20px; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
-            <div class="stat-icon" style="color: #dba617; font-size: 32px; margin-bottom: 10px;">
-                <span class="dashicons dashicons-backup"></span>
+        <div class="dm-stat-card dm-stat-card--warning">
+            <div class="dm-stat-card__icon">
+                <span class="dashicons dashicons-clock"></span>
             </div>
-            <div class="stat-value" style="font-size: 32px; font-weight: bold; color: #1d2327;">
-                <?php echo number_format($pedidos_pendientes); ?>
-            </div>
-            <div class="stat-label" style="color: #646970; font-size: 14px;">
-                <?php echo esc_html__('Pedidos Pendientes', 'flavor-chat-ia'); ?>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($pedidos_pendientes); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Pendientes', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
-        <div class="gc-stat-card" style="background: #fff; border-left: 4px solid #00a32a; padding: 20px; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
-            <div class="stat-icon" style="color: #00a32a; font-size: 32px; margin-bottom: 10px;">
+        <div class="dm-stat-card dm-stat-card--success">
+            <div class="dm-stat-card__icon">
                 <span class="dashicons dashicons-yes-alt"></span>
             </div>
-            <div class="stat-value" style="font-size: 32px; font-weight: bold; color: #1d2327;">
-                <?php echo number_format($pedidos_completados); ?>
-            </div>
-            <div class="stat-label" style="color: #646970; font-size: 14px;">
-                <?php echo esc_html__('Pedidos Completados', 'flavor-chat-ia'); ?>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($pedidos_completados); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
-        <div class="gc-stat-card" style="background: #fff; border-left: 4px solid #8c52ff; padding: 20px; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
-            <div class="stat-icon" style="color: #8c52ff; font-size: 32px; margin-bottom: 10px;">
+        <div class="dm-stat-card dm-stat-card--purple">
+            <div class="dm-stat-card__icon">
                 <span class="dashicons dashicons-money-alt"></span>
             </div>
-            <div class="stat-value" style="font-size: 32px; font-weight: bold; color: #1d2327;">
-                <?php echo number_format($ventas_mes, 2); ?> €
-            </div>
-            <div class="stat-label" style="color: #646970; font-size: 14px;">
-                <?php echo esc_html__('Ventas Este Mes', 'flavor-chat-ia'); ?>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($ventas_mes, 2); ?> €</div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Ventas del mes', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
-        <div class="gc-stat-card" style="background: #fff; border-left: 4px solid #00a0d2; padding: 20px; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
-            <div class="stat-icon" style="color: #00a0d2; font-size: 32px; margin-bottom: 10px;">
-                <span class="dashicons dashicons-products"></span>
+        <div class="dm-stat-card dm-stat-card--info">
+            <div class="dm-stat-card__icon">
+                <span class="dashicons dashicons-carrot"></span>
             </div>
-            <div class="stat-value" style="font-size: 32px; font-weight: bold; color: #1d2327;">
-                <?php echo number_format($total_productos); ?>
-            </div>
-            <div class="stat-label" style="color: #646970; font-size: 14px;">
-                <?php echo esc_html__('Productos Disponibles', 'flavor-chat-ia'); ?>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($total_productos); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Productos', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
-        <div class="gc-stat-card" style="background: #fff; border-left: 4px solid #d63638; padding: 20px; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
-            <div class="stat-icon" style="color: #d63638; font-size: 32px; margin-bottom: 10px;">
-                <span class="dashicons dashicons-groups"></span>
+        <div class="dm-stat-card dm-stat-card--pink">
+            <div class="dm-stat-card__icon">
+                <span class="dashicons dashicons-store"></span>
             </div>
-            <div class="stat-value" style="font-size: 32px; font-weight: bold; color: #1d2327;">
-                <?php echo number_format($total_productores); ?>
-            </div>
-            <div class="stat-label" style="color: #646970; font-size: 14px;">
-                <?php echo esc_html__('Productores Activos', 'flavor-chat-ia'); ?>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($total_productores); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Productores', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
     </div>
 
     <!-- Accesos Rápidos -->
-    <div class="gc-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
-        <a href="<?php echo admin_url('admin.php?page=gc-pedidos'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-clipboard" style="font-size: 24px; color: #2271b1;"></span>
-            <span><?php echo esc_html__('Pedidos', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=gc-consumidores'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-admin-users" style="font-size: 24px; color: #00a32a;"></span>
-            <span><?php echo esc_html__('Consumidores', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('edit.php?post_type=gc_ciclo'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-calendar-alt" style="font-size: 24px; color: #dba617;"></span>
-            <span><?php echo esc_html__('Ciclos', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('edit.php?post_type=gc_producto'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-carrot" style="font-size: 24px; color: #d63638;"></span>
-            <span><?php echo esc_html__('Productos', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('edit.php?post_type=gc_productor'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-store" style="font-size: 24px; color: #8c52ff;"></span>
-            <span><?php echo esc_html__('Productores', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=gc-consolidado'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-list-view" style="font-size: 24px; color: #00a0d2;"></span>
-            <span><?php echo esc_html__('Consolidado', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=gc-solicitudes'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-businessperson" style="font-size: 24px; color: #135e96;"></span>
-            <span><?php echo esc_html__('Solicitudes', 'flavor-chat-ia'); ?></span>
-        </a>
-        <a href="<?php echo admin_url('admin.php?page=gc-configuracion'); ?>" class="gc-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
-            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
-        </a>
-    </div>
-
-    <!-- Estado del Ciclo Actual -->
-    <?php if ($hay_ciclo_abierto): ?>
-        <?php $ciclo_actual->the_post(); ?>
-        <div class="notice notice-info" style="border-left-color: #2271b1; padding: 20px;">
-            <h3 style="margin-top: 0;">
-                <span class="dashicons dashicons-calendar-alt"></span>
-                Ciclo Actual: <?php the_title(); ?>
-            </h3>
-            <p>
-                <strong><?php echo esc_html__('Estado:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html__('Abierto |', 'flavor-chat-ia'); ?>
-                <strong><?php echo esc_html__('Fecha Cierre:', 'flavor-chat-ia'); ?></strong> <?php echo get_post_meta(get_the_ID(), '_gc_fecha_cierre', true); ?>
-            </p>
-            <a href="<?php echo admin_url('post.php?post=' . get_the_ID() . '&action=edit'); ?>" class="button button-primary">
-                <?php echo esc_html__('Gestionar Ciclo', 'flavor-chat-ia'); ?>
+    <div class="dm-card">
+        <h2 class="dm-card__title">
+            <span class="dashicons dashicons-admin-links"></span> <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+        </h2>
+        <div class="dm-action-grid">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=gc-pedidos')); ?>" class="dm-action-card">
+                <span class="dashicons dashicons-clipboard dm-action-card__icon"></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Pedidos', 'flavor-chat-ia'); ?></span>
+                <?php if ($pedidos_pendientes > 0): ?>
+                    <span class="dm-badge dm-badge--warning"><?php echo $pedidos_pendientes; ?></span>
+                <?php endif; ?>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=gc-consumidores')); ?>" class="dm-action-card dm-action-card--success">
+                <span class="dashicons dashicons-admin-users dm-action-card__icon"></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Consumidores', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(admin_url('edit.php?post_type=gc_ciclo')); ?>" class="dm-action-card dm-action-card--warning">
+                <span class="dashicons dashicons-calendar-alt dm-action-card__icon"></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Ciclos', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(admin_url('edit.php?post_type=gc_producto')); ?>" class="dm-action-card dm-action-card--pink">
+                <span class="dashicons dashicons-carrot dm-action-card__icon"></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Productos', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(admin_url('edit.php?post_type=gc_productor')); ?>" class="dm-action-card dm-action-card--purple">
+                <span class="dashicons dashicons-store dm-action-card__icon"></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Productores', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=gc-consolidado')); ?>" class="dm-action-card dm-action-card--info">
+                <span class="dashicons dashicons-list-view dm-action-card__icon"></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Consolidado', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=gc-solicitudes')); ?>" class="dm-action-card">
+                <span class="dashicons dashicons-businessperson dm-action-card__icon"></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Solicitudes', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=gc-configuracion')); ?>" class="dm-action-card">
+                <span class="dashicons dashicons-admin-settings dm-action-card__icon"></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/')); ?>" class="dm-action-card" target="_blank">
+                <span class="dashicons dashicons-external dm-action-card__icon"></span>
+                <span class="dm-action-card__label"><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
             </a>
         </div>
-        <?php wp_reset_postdata(); ?>
-    <?php else: ?>
-        <div class="notice notice-warning">
-            <p>
-                <strong><?php echo esc_html__('No hay ningún ciclo abierto actualmente.', 'flavor-chat-ia'); ?></strong>
-                <a href="<?php echo admin_url('post-new.php?post_type=gc_ciclo'); ?>" class="button">
-                    <?php echo esc_html__('Crear Nuevo Ciclo', 'flavor-chat-ia'); ?>
-                </a>
-            </p>
-        </div>
-    <?php endif; ?>
+    </div>
 
     <!-- Gráficos -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-
-        <!-- Productos Más Pedidos -->
-        <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-chart-bar"></span> <?php echo esc_html__('Productos Más Pedidos', 'flavor-chat-ia'); ?></h2>
-            <div class="inside">
-                <canvas id="grafico-productos-top" style="max-height: 300px;"></canvas>
+    <div class="dm-grid dm-grid--2">
+        <div class="dm-card">
+            <h3 class="dm-card__title">
+                <span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Productos Más Pedidos', 'flavor-chat-ia'); ?>
+            </h3>
+            <div class="dm-chart-container">
+                <canvas id="grafico-productos-top"></canvas>
             </div>
         </div>
 
-        <!-- Ventas por Ciclo -->
-        <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-chart-line"></span> <?php echo esc_html__('Actividad por Ciclo', 'flavor-chat-ia'); ?></h2>
-            <div class="inside">
-                <canvas id="grafico-ciclos" style="max-height: 300px;"></canvas>
+        <div class="dm-card">
+            <h3 class="dm-card__title">
+                <span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Actividad por Ciclo', 'flavor-chat-ia'); ?>
+            </h3>
+            <div class="dm-chart-container">
+                <canvas id="grafico-ciclos"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Pedidos Recientes -->
-    <div class="postbox" style="margin: 20px 0;">
-        <h2 class="hndle"><span class="dashicons dashicons-update"></span> <?php echo esc_html__('Pedidos Recientes', 'flavor-chat-ia'); ?></h2>
-        <div class="inside">
-            <table class="wp-list-table widefat fixed striped">
-                <thead>
-                    <tr>
-                        <th style="width: 50px;"><?php echo esc_html__('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Producto', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Usuario', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Ciclo', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Cantidad', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Precio Unit.', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Total', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Estado', 'flavor-chat-ia'); ?></th>
-                        <th><?php echo esc_html__('Fecha', 'flavor-chat-ia'); ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($pedidos_recientes as $pedido):
-                        $usuario = get_userdata($pedido->usuario_id);
-                        $producto = get_post($pedido->producto_id);
-                        $total_pedido = $pedido->cantidad * $pedido->precio_unitario;
-
-                        $estado_config = [
-                            'pendiente' => ['class' => 'warning', 'texto' => 'Pendiente'],
-                            'confirmado' => ['class' => 'info', 'texto' => 'Confirmado'],
-                            'completado' => ['class' => 'success', 'texto' => 'Completado'],
-                            'cancelado' => ['class' => 'error', 'texto' => 'Cancelado']
-                        ];
-                        $estado = $estado_config[$pedido->estado] ?? ['class' => 'default', 'texto' => $pedido->estado];
+    <!-- Tablas -->
+    <div class="dm-grid dm-grid--2">
+        <!-- Productos top -->
+        <div class="dm-card">
+            <h3 class="dm-card__title">
+                <span class="dashicons dashicons-star-filled"></span> <?php esc_html_e('Productos Destacados', 'flavor-chat-ia'); ?>
+            </h3>
+            <?php if (!empty($productos_top)): ?>
+                <ol class="dm-ranking">
+                    <?php foreach ($productos_top as $prod):
+                        $nombre_producto = isset($prod->nombre) ? $prod->nombre : (($p = get_post($prod->producto_id)) ? $p->post_title : 'Producto #' . $prod->producto_id);
                     ?>
-                    <tr>
-                        <td><strong>#<?php echo $pedido->id; ?></strong></td>
-                        <td><?php echo $producto ? esc_html($producto->post_title) : 'Producto desconocido'; ?></td>
-                        <td><?php echo $usuario ? esc_html($usuario->display_name) : 'Usuario desconocido'; ?></td>
-                        <td><?php echo esc_html($pedido->ciclo_titulo ?: 'N/A'); ?></td>
-                        <td><?php echo number_format($pedido->cantidad, 2); ?></td>
-                        <td><?php echo number_format($pedido->precio_unitario, 2); ?> €</td>
-                        <td><strong><?php echo number_format($total_pedido, 2); ?> €</strong></td>
-                        <td>
-                            <span class="badge-<?php echo $estado['class']; ?>"
-                                  style="padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: 600;">
-                                <?php echo $estado['texto']; ?>
-                            </span>
-                        </td>
-                        <td><?php echo date_i18n('d/m/Y H:i', strtotime($pedido->fecha_pedido)); ?></td>
-                    </tr>
+                        <li>
+                            <span><?php echo esc_html($nombre_producto); ?></span>
+                            <strong><?php echo number_format_i18n($prod->total_cantidad); ?> uds</strong>
+                        </li>
                     <?php endforeach; ?>
-                    <?php if (empty($pedidos_recientes)): ?>
-                    <tr>
-                        <td colspan="9" style="text-align: center; padding: 20px; color: #646970;">
-                            <?php echo esc_html__('No hay pedidos registrados', 'flavor-chat-ia'); ?>
-                        </td>
-                    </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                </ol>
+            <?php else: ?>
+                <p class="dm-text-muted"><?php esc_html_e('Sin datos de productos.', 'flavor-chat-ia'); ?></p>
+            <?php endif; ?>
+        </div>
+
+        <!-- Pedidos recientes -->
+        <div class="dm-card">
+            <h3 class="dm-card__title">
+                <span class="dashicons dashicons-update"></span> <?php esc_html_e('Pedidos Recientes', 'flavor-chat-ia'); ?>
+            </h3>
+            <?php if (!empty($pedidos_recientes)): ?>
+                <table class="dm-table">
+                    <thead>
+                        <tr>
+                            <th><?php esc_html_e('Producto', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Cantidad', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach (array_slice($pedidos_recientes, 0, 5) as $pedido):
+                            $producto = get_post($pedido->producto_id);
+                            $total_pedido = $pedido->cantidad * $pedido->precio_unitario;
+                        ?>
+                            <tr>
+                                <td>
+                                    <strong><?php echo esc_html($producto ? wp_trim_words($producto->post_title, 4) : 'Producto'); ?></strong>
+                                    <div class="dm-table__subtitle"><?php echo number_format_i18n($total_pedido, 2); ?> €</div>
+                                </td>
+                                <td><?php echo number_format_i18n($pedido->cantidad, 1); ?></td>
+                                <td>
+                                    <span class="dm-badge <?php echo esc_attr($estado_badges[$pedido->estado] ?? 'dm-badge--secondary'); ?>">
+                                        <?php echo esc_html($estado_labels[$pedido->estado] ?? $pedido->estado); ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <div class="dm-empty">
+                    <span class="dashicons dashicons-cart dm-empty__icon"></span>
+                    <p><?php esc_html_e('No hay pedidos registrados.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php endif; ?>
+            <div class="dm-card__footer">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=gc-pedidos')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
+                    <?php esc_html_e('Ver todos los pedidos', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
         </div>
     </div>
 
+    <!-- Resumen -->
+    <div class="dm-card">
+        <h3 class="dm-card__title">
+            <span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Resumen del Grupo', 'flavor-chat-ia'); ?>
+        </h3>
+        <div class="dm-focus-list">
+            <div class="dm-focus-item">
+                <span class="dm-focus-item__value"><?php echo number_format_i18n($total_pedidos); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('pedidos totales', 'flavor-chat-ia'); ?></span>
+            </div>
+            <div class="dm-focus-item">
+                <span class="dm-focus-item__value"><?php echo number_format_i18n($ventas_mes, 0); ?>€</span>
+                <span class="dm-focus-item__label"><?php esc_html_e('facturado este mes', 'flavor-chat-ia'); ?></span>
+            </div>
+            <div class="dm-focus-item">
+                <span class="dm-focus-item__value"><?php echo number_format_i18n($total_productos); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('productos en catálogo', 'flavor-chat-ia'); ?></span>
+            </div>
+            <div class="dm-focus-item">
+                <span class="dm-focus-item__value"><?php echo number_format_i18n($total_productores); ?></span>
+                <span class="dm-focus-item__label"><?php esc_html_e('productores activos', 'flavor-chat-ia'); ?></span>
+            </div>
+        </div>
+    </div>
 </div>
 
-<style>
-.postbox h2 {
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.badge-warning { background-color: #dba617; color: #fff; }
-.badge-info { background-color: #2271b1; color: #fff; }
-.badge-success { background-color: #00a32a; color: #fff; }
-.badge-error { background-color: #d63638; color: #fff; }
-.badge-default { background-color: #646970; color: #fff; }
-</style>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-jQuery(document).ready(function($) {
+document.addEventListener('DOMContentLoaded', function() {
+    // Colores del tema
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--dm-primary').trim() || '#3b82f6';
+    const successColor = getComputedStyle(document.documentElement).getPropertyValue('--dm-success').trim() || '#22c55e';
 
     // Gráfico Productos Top
-    const ctxProductos = document.getElementById('grafico-productos-top').getContext('2d');
-    new Chart(ctxProductos, {
-        type: 'bar',
-        data: {
-            labels: [
-                <?php
-                foreach ($productos_top as $prod) {
-                    if (isset($prod->nombre)) {
-                        // Usar nombre de datos de ejemplo
-                        echo "'" . esc_js($prod->nombre) . "',";
-                    } else {
-                        // Obtener nombre del producto real
-                        $producto_post = get_post($prod->producto_id);
-                        echo "'" . esc_js($producto_post ? $producto_post->post_title : 'Producto #' . $prod->producto_id) . "',";
-                    }
-                }
-                ?>
-            ],
-            datasets: [{
-                label: 'Cantidad Vendida',
-                data: [
-                    <?php
+    const ctxProductos = document.getElementById('grafico-productos-top');
+    if (ctxProductos) {
+        new Chart(ctxProductos, {
+            type: 'bar',
+            data: {
+                labels: [<?php
                     foreach ($productos_top as $prod) {
-                        echo $prod->total_cantidad . ',';
+                        $nombre = isset($prod->nombre) ? $prod->nombre : (($p = get_post($prod->producto_id)) ? $p->post_title : 'Producto');
+                        echo "'" . esc_js(wp_trim_words($nombre, 3)) . "',";
                     }
-                    ?>
-                ],
-                backgroundColor: '#2271b1'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+                ?>],
+                datasets: [{
+                    label: '<?php esc_attr_e('Cantidad', 'flavor-chat-ia'); ?>',
+                    data: [<?php foreach ($productos_top as $prod) echo (int) $prod->total_cantidad . ','; ?>],
+                    backgroundColor: primaryColor,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
             }
-        }
-    });
+        });
+    }
 
     // Gráfico Ciclos
-    const ctxCiclos = document.getElementById('grafico-ciclos').getContext('2d');
-    new Chart(ctxCiclos, {
-        type: 'line',
-        data: {
-            labels: [
-                <?php
-                foreach ($actividad_ciclos as $ciclo) {
-                    echo "'" . esc_js($ciclo->ciclo) . "',";
-                }
-                ?>
-            ],
-            datasets: [{
-                label: 'Pedidos',
-                data: [
-                    <?php
-                    foreach ($actividad_ciclos as $ciclo) {
-                        echo $ciclo->total_pedidos . ',';
-                    }
-                    ?>
-                ],
-                borderColor: '#2271b1',
-                backgroundColor: 'rgba(34, 113, 177, 0.1)',
-                tension: 0.4,
-                fill: true
-            }, {
-                label: 'Ventas (€)',
-                data: [
-                    <?php
-                    foreach ($actividad_ciclos as $ciclo) {
-                        echo ($ciclo->total_ventas ?: 0) . ',';
-                    }
-                    ?>
-                ],
-                borderColor: '#00a32a',
-                backgroundColor: 'rgba(0, 163, 42, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+    const ctxCiclos = document.getElementById('grafico-ciclos');
+    if (ctxCiclos) {
+        new Chart(ctxCiclos, {
+            type: 'line',
+            data: {
+                labels: [<?php foreach ($actividad_ciclos as $ciclo) echo "'" . esc_js($ciclo->ciclo) . "',"; ?>],
+                datasets: [{
+                    label: '<?php esc_attr_e('Pedidos', 'flavor-chat-ia'); ?>',
+                    data: [<?php foreach ($actividad_ciclos as $ciclo) echo (int) $ciclo->total_pedidos . ','; ?>],
+                    borderColor: primaryColor,
+                    backgroundColor: primaryColor + '20',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: '<?php esc_attr_e('Ventas (€)', 'flavor-chat-ia'); ?>',
+                    data: [<?php foreach ($actividad_ciclos as $ciclo) echo (float) ($ciclo->total_ventas ?: 0) . ','; ?>],
+                    borderColor: successColor,
+                    backgroundColor: successColor + '20',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } }
             }
-        }
-    });
+        });
+    }
 });
 </script>

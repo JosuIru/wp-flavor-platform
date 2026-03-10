@@ -96,7 +96,7 @@ class Flavor_Biblioteca_Frontend_Controller {
             'nonce' => wp_create_nonce('biblioteca_frontend_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
-            'loginUrl' => wp_login_url(get_permalink()),
+            'loginUrl' => wp_login_url(flavor_current_request_url()),
             'i18n' => [
                 'reservaExitosa' => __('Libro reservado correctamente', 'flavor-chat-ia'),
                 'reservaCancelada' => __('Reserva cancelada', 'flavor-chat-ia'),

@@ -161,6 +161,12 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
 ?>
 
 <div class="wrap">
+    <?php
+    if (function_exists('flavor_dashboard_help')) {
+        flavor_dashboard_help('multimedia');
+    }
+    ?>
+
     <h1>
         <span class="dashicons dashicons-format-gallery"></span>
         <?php echo esc_html__('Dashboard Multimedia', 'flavor-chat-ia'); ?>

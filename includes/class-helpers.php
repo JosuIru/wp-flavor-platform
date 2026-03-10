@@ -330,6 +330,61 @@ class Flavor_Chat_Helpers {
     }
 
     /**
+     * Obtiene la URL del logo del sitio configurado en Flavor Platform
+     *
+     * Prioridad:
+     * 1. flavor_logo_url (configurado en el wizard o ajustes)
+     * 2. Custom logo de WordPress (Site Identity)
+     * 3. String vacío si no hay logo configurado
+     *
+     * @return string URL del logo o vacío si no hay logo
+     */
+    public static function get_site_logo() {
+        // 1. Logo configurado en Flavor Platform
+        $flavor_logo = get_option('flavor_logo_url', '');
+        if (!empty($flavor_logo)) {
+            return esc_url($flavor_logo);
+        }
+
+        // 2. Custom logo de WordPress (Site Identity)
+        $custom_logo_id = get_theme_mod('custom_logo');
+        if ($custom_logo_id) {
+            $logo_image = wp_get_attachment_image_url($custom_logo_id, 'full');
+            if ($logo_image) {
+                return esc_url($logo_image);
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Obtiene la URL del logo del sitio con HTML completo
+     *
+     * @param array $atributos Atributos HTML del elemento img (alt, class, style, etc.)
+     * @return string HTML de la imagen del logo o vacío si no hay logo
+     */
+    public static function get_site_logo_html($atributos = []) {
+        $logo_url = self::get_site_logo();
+        if (empty($logo_url)) {
+            return '';
+        }
+
+        $atributos_defecto = [
+            'alt' => get_bloginfo('name'),
+            'class' => 'flavor-site-logo',
+        ];
+        $atributos = array_merge($atributos_defecto, $atributos);
+
+        $atributos_html = '';
+        foreach ($atributos as $nombre_atributo => $valor_atributo) {
+            $atributos_html .= sprintf(' %s="%s"', esc_attr($nombre_atributo), esc_attr($valor_atributo));
+        }
+
+        return sprintf('<img src="%s"%s />', esc_url($logo_url), $atributos_html);
+    }
+
+    /**
      * Obtiene la URL base del portal
      *
      * @return string URL del portal (ej: https://sitio.com/mi-portal/)
@@ -416,5 +471,82 @@ class Flavor_Chat_Helpers {
             $attr_str,
             esc_html($text)
         );
+    }
+}
+
+if (!function_exists('flavor_current_request_url')) {
+    /**
+     * Devuelve la URL actual para redirects de login en rutas dinámicas.
+     */
+    function flavor_current_request_url(): string {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/';
+        $request_uri = '/' . ltrim($request_uri, '/');
+
+        return home_url($request_uri);
+    }
+}
+
+if (!function_exists('flavor_get_site_logo')) {
+    /**
+     * Obtiene la URL del logo del sitio configurado en Flavor Platform.
+     *
+     * @return string URL del logo o vacío si no hay logo
+     */
+    function flavor_get_site_logo(): string {
+        return Flavor_Chat_Helpers::get_site_logo();
+    }
+}
+
+if (!function_exists('flavor_get_site_logo_html')) {
+    /**
+     * Obtiene el HTML de la imagen del logo del sitio.
+     *
+     * @param array $atributos Atributos HTML del elemento img
+     * @return string HTML de la imagen del logo
+     */
+    function flavor_get_site_logo_html(array $atributos = []): string {
+        return Flavor_Chat_Helpers::get_site_logo_html($atributos);
+    }
+}
+
+if (!function_exists('flavor_is_module_active')) {
+    /**
+     * Verifica si un módulo está activo.
+     *
+     * Utiliza la función centralizada Flavor_Chat_Module_Loader::is_module_active()
+     * que verifica en flavor_chat_ia_settings['active_modules'] (preferido)
+     * y flavor_active_modules (legacy), normalizando IDs automáticamente.
+     * Incluye caché por request para evitar múltiples consultas get_option.
+     *
+     * @param string $module_id ID del módulo (acepta guiones o guiones bajos)
+     * @return bool True si el módulo está activo
+     */
+    function flavor_is_module_active(string $module_id): bool {
+        // Usar el método centralizado con caché
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            return Flavor_Chat_Module_Loader::is_module_active($module_id);
+        }
+
+        // Fallback con caché estática si el loader no está disponible
+        static $modulos_activos_cache = null;
+
+        if ($modulos_activos_cache === null) {
+            $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+            $modulos_activos_cache = $configuracion_plugin['active_modules'] ?? [];
+
+            $modulos_activos_legacy = get_option('flavor_active_modules', []);
+            if (!empty($modulos_activos_legacy)) {
+                $modulos_activos_cache = array_unique(array_merge($modulos_activos_cache, $modulos_activos_legacy));
+            }
+
+            if (empty($modulos_activos_cache)) {
+                $modulos_activos_cache = ['woocommerce'];
+            }
+        }
+
+        // Normalizar ID (guiones vs guiones bajos)
+        $id_normalizado = str_replace('-', '_', $module_id);
+        return in_array($module_id, $modulos_activos_cache, true)
+            || in_array($id_normalizado, $modulos_activos_cache, true);
     }
 }

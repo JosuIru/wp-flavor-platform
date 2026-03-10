@@ -16,6 +16,7 @@
             this.vincularEventosPassword();
             this.vincularEventosNotificaciones();
             this.iniciarPollingNotificaciones();
+            this.inicializarNavegacionTabs();
         },
         vincularEventosPerfil: function() {
             var self = this;
@@ -197,6 +198,87 @@
         },
         validarFormatoEmail: function(direccionEmail) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(direccionEmail);
+        },
+
+        /**
+         * Inicializa la navegacion de tabs con indicadores de scroll
+         */
+        inicializarNavegacionTabs: function() {
+            var self = this;
+            var nav = $('.flavor-dashboard-nav');
+            var navList = nav.find('.flavor-dashboard-nav-list');
+
+            if (!navList.length) return;
+
+            // Funcion para actualizar indicadores de scroll
+            function actualizarIndicadoresScroll() {
+                var scrollLeft = navList.scrollLeft();
+                var scrollWidth = navList[0].scrollWidth;
+                var clientWidth = navList[0].clientWidth;
+                var umbral = 10; // pixeles de margen
+
+                var puedeScrollIzquierda = scrollLeft > umbral;
+                var puedeScrollDerecha = (scrollLeft + clientWidth) < (scrollWidth - umbral);
+
+                nav.toggleClass('has-scroll-left', puedeScrollIzquierda);
+                nav.toggleClass('has-scroll-right', puedeScrollDerecha);
+            }
+
+            // Detectar scroll en la lista de tabs
+            navList.on('scroll', function() {
+                actualizarIndicadoresScroll();
+            });
+
+            // Actualizar al redimensionar la ventana
+            $(window).on('resize', function() {
+                actualizarIndicadoresScroll();
+            });
+
+            // Agregar botones de navegacion si no existen
+            if (!nav.find('.flavor-dashboard-nav-scroll-btn').length) {
+                var botonIzquierda = $('<button type="button" class="flavor-dashboard-nav-scroll-btn flavor-dashboard-nav-scroll-btn--left" aria-label="Anterior">' +
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>' +
+                    '</button>');
+                var botonDerecha = $('<button type="button" class="flavor-dashboard-nav-scroll-btn flavor-dashboard-nav-scroll-btn--right" aria-label="Siguiente">' +
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>' +
+                    '</button>');
+
+                nav.append(botonIzquierda);
+                nav.append(botonDerecha);
+
+                // Eventos de click en botones
+                botonIzquierda.on('click', function() {
+                    var scrollActual = navList.scrollLeft();
+                    var anchoVisible = navList.width();
+                    navList.animate({ scrollLeft: scrollActual - (anchoVisible * 0.8) }, 200);
+                });
+
+                botonDerecha.on('click', function() {
+                    var scrollActual = navList.scrollLeft();
+                    var anchoVisible = navList.width();
+                    navList.animate({ scrollLeft: scrollActual + (anchoVisible * 0.8) }, 200);
+                });
+            }
+
+            // Scroll al tab activo para que sea visible
+            var tabActivo = navList.find('.flavor-dashboard-nav-item--activo');
+            if (tabActivo.length) {
+                setTimeout(function() {
+                    var posicionTab = tabActivo.position().left;
+                    var anchoTab = tabActivo.outerWidth();
+                    var anchoVisible = navList.width();
+                    var scrollActual = navList.scrollLeft();
+
+                    // Si el tab activo esta fuera del area visible, hacer scroll
+                    if (posicionTab < 0 || posicionTab + anchoTab > anchoVisible) {
+                        navList.scrollLeft(posicionTab - (anchoVisible / 2) + (anchoTab / 2));
+                    }
+                    actualizarIndicadoresScroll();
+                }, 100);
+            } else {
+                // Ejecutar una vez al cargar
+                setTimeout(actualizarIndicadoresScroll, 100);
+            }
         }
     };
     $(document).ready(function() { FlavorUserDashboard.init(); });

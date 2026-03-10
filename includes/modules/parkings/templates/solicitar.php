@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="parkings-login-required">';
     echo '<p>' . esc_html__('Debes iniciar sesión para solicitar una plaza de parking.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }

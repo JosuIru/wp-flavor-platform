@@ -50,6 +50,19 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
         });
     }
 
+    public function get_widget_config(): array {
+        $config = parent::get_widget_config();
+        $severity = $this->get_native_severity_payload($this->get_widget_data());
+
+        if (!empty($severity['slug'])) {
+            $config['severity_slug'] = $severity['slug'];
+            $config['severity_label'] = $severity['label'];
+            $config['severity_reason'] = $severity['reason'];
+        }
+
+        return $config;
+    }
+
     private function fetch_widget_data(int $user_id): array {
         global $wpdb;
 
@@ -106,7 +119,7 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'valor' => $mis_votos,
                 'label' => __('Mis votos', 'flavor-chat-ia'),
                 'color' => $mis_votos > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=participacion&tab=mis-votos') : home_url('/mi-portal/participacion/mis-votos/'),
+                'url' => $es_admin ? admin_url('admin.php?page=participacion&tab=mis-votos') : home_url('/mi-portal/participacion/votaciones/'),
             ];
         }
 
@@ -115,11 +128,16 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
         return [
             'stats' => $stats,
             'items' => $items,
+            'summary' => [
+                'votaciones_activas' => $votaciones_activas,
+                'propuestas_abiertas' => $propuestas_abiertas,
+                'mis_votos' => $mis_votos,
+            ],
             'empty_state' => __('No hay votaciones activas en este momento', 'flavor-chat-ia'),
             'footer' => [
                 [
                     'label' => __('Participar', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=participacion') : home_url('/mi-portal/participacion/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=participacion') : home_url('/mi-portal/participacion/votaciones/'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -152,7 +170,7 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'icon' => 'dashicons-chart-bar',
                 'title' => wp_trim_words($votacion->titulo, 5, '...'),
                 'meta' => sprintf(__('Cierra en %s', 'flavor-chat-ia'), $tiempo_restante),
-                'url' => $es_admin ? admin_url('admin.php?page=participacion&votacion=' . $votacion->id) : home_url('/mi-portal/participacion/votacion/' . $votacion->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=participacion&votacion=' . $votacion->id) : add_query_arg('encuesta_id', $votacion->id, home_url('/mi-portal/participacion/encuesta/')),
                 'badge' => $votacion->total_votos > 0 ? $votacion->total_votos . ' votos' : null,
             ];
         }
@@ -169,6 +187,35 @@ class Flavor_Participacion_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
         $resultado = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $nombre_tabla));
         $cache[$nombre_tabla] = ($resultado === $nombre_tabla);
         return $cache[$nombre_tabla];
+    }
+
+    /**
+     * Devuelve severidad nativa del widget segun actividad participativa real.
+     *
+     * @param array $data
+     * @return array{slug:string,label:string,reason:string}
+     */
+    private function get_native_severity_payload(array $data): array {
+        $summary = is_array($data['summary'] ?? null) ? $data['summary'] : [];
+        $votaciones_activas = (int) ($summary['votaciones_activas'] ?? 0);
+        $propuestas_abiertas = (int) ($summary['propuestas_abiertas'] ?? 0);
+        $mis_votos = (int) ($summary['mis_votos'] ?? 0);
+
+        if ($votaciones_activas > 0) {
+            $severity = Flavor_Dashboard_Severity::get_payload('attention');
+            $severity['reason'] = __('Hay votaciones activas abiertas y conviene atenderlas antes de que cierren.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        if ($propuestas_abiertas > 0 || $mis_votos > 0) {
+            $severity = Flavor_Dashboard_Severity::get_payload('followup');
+            $severity['reason'] = __('Hay propuestas o actividad participativa reciente que conviene revisar.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        $severity = Flavor_Dashboard_Severity::get_payload('stable');
+        $severity['reason'] = __('No hay procesos participativos urgentes abiertos en este momento.', 'flavor-chat-ia');
+        return $severity;
     }
 
     public function render_widget(): void {

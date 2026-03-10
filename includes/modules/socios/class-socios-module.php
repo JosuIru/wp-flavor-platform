@@ -37,6 +37,10 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $this->default_visibility = 'members_only';
         $this->required_capability = 'read';
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['cuidados'];
+        $this->gailu_contribuye_a = ['cohesion'];
+
         parent::__construct();
     }
 
@@ -143,8 +147,22 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
 
         $this->cargar_frontend_controller();
 
+        // Cargar sistema de perfiles de artista (Kulturaka)
+        $this->cargar_perfil_artista();
+
         // Admin pages
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+    }
+
+    /**
+     * Carga el sistema de perfiles de artista (Kulturaka)
+     */
+    private function cargar_perfil_artista() {
+        $archivo_artista = dirname(__FILE__) . '/class-socios-artista-profile.php';
+        if (file_exists($archivo_artista)) {
+            require_once $archivo_artista;
+            Flavor_Socios_Artista_Profile::get_instance();
+        }
     }
 
     /**
@@ -2078,7 +2096,17 @@ KNOWLEDGE;
     public function registrar_paginas_admin() {
         $capability = 'manage_options';
 
-        // Página principal (oculta)
+        // Página principal - alias con sufijo -dashboard para Admin Shell
+        add_submenu_page(
+            null,
+            __('Dashboard Socios', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'socios-dashboard',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Página principal (oculta) - mantener por compatibilidad
         add_submenu_page(
             null,
             __('Socios', 'flavor-chat-ia'),
@@ -2137,6 +2165,16 @@ KNOWLEDGE;
             'socios-config',
             [$this, 'render_pagina_config']
         );
+
+        // Página: Solicitudes de Alta (oculta)
+        add_submenu_page(
+            null,
+            __('Solicitudes de Alta', 'flavor-chat-ia'),
+            __('Solicitudes', 'flavor-chat-ia'),
+            $capability,
+            'socios-solicitudes',
+            [$this, 'render_pagina_solicitudes']
+        );
     }
 
     /**
@@ -2156,7 +2194,7 @@ KNOWLEDGE;
      * Renderizar página de socios
      */
     public function render_pagina_socios() {
-        $views_path = dirname(__FILE__) . '/views/socios.php';
+        $views_path = dirname(__FILE__) . '/views/listado.php';
         if (file_exists($views_path)) {
             include $views_path;
         } else {
@@ -2180,7 +2218,7 @@ KNOWLEDGE;
      * Renderizar página de pagos
      */
     public function render_pagina_pagos() {
-        $views_path = dirname(__FILE__) . '/views/pagar-cuota.php';
+        $views_path = dirname(__FILE__) . '/views/pagos.php';
         if (file_exists($views_path)) {
             include $views_path;
         } else {
@@ -2215,6 +2253,22 @@ KNOWLEDGE;
             echo '<div class="wrap">';
             echo '<h1>' . esc_html__('Configuración de Socios', 'flavor-chat-ia') . '</h1>';
             echo '<p>' . esc_html__('Ajustes del módulo de gestión de socios.', 'flavor-chat-ia') . '</p>';
+            echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
+            echo '</div>';
+        }
+    }
+
+    /**
+     * Renderizar página de solicitudes de alta
+     */
+    public function render_pagina_solicitudes() {
+        $views_path = dirname(__FILE__) . '/views/solicitudes.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Solicitudes de Alta', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Gestión de solicitudes de nuevos socios.', 'flavor-chat-ia') . '</p>';
             echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
             echo '</div>';
         }

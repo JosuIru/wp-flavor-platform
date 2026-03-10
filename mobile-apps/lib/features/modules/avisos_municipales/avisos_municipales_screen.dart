@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
 
@@ -320,7 +321,20 @@ class _AvisosMunicipalesScreenState extends ConsumerState<AvisosMunicipalesScree
                   if (enlace.isNotEmpty) ...[
                     const SizedBox(height: 16),
                     FilledButton.icon(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final uri = Uri.tryParse(
+                            enlace.startsWith('http') ? enlace : 'https://$enlace');
+                        if (uri != null) {
+                          Navigator.pop(context);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri, mode: LaunchMode.externalApplication);
+                          } else if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No se puede abrir el enlace')),
+                            );
+                          }
+                        }
+                      },
                       icon: const Icon(Icons.link),
                       label: Text(i18n.avisosMoreInfo),
                     ),

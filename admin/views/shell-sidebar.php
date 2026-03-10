@@ -16,6 +16,28 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// Obtener datos de favoritos y recientes
+$favorites_recent_manager = class_exists('Flavor_Shell_Favorites_Recent')
+    ? Flavor_Shell_Favorites_Recent::get_instance()
+    : null;
+
+$shell_data = $favorites_recent_manager
+    ? $favorites_recent_manager->get_shell_data()
+    : ['favorites' => [], 'recent' => [], 'max_favorites' => 15, 'favorites_count' => 0];
+
+// Obtener vistas personalizadas disponibles
+$custom_views_manager = class_exists('Flavor_Shell_Custom_Views')
+    ? Flavor_Shell_Custom_Views::get_instance()
+    : null;
+
+$available_views = $custom_views_manager
+    ? $custom_views_manager->get_available_views()
+    : [];
+
+$active_custom_view = $custom_views_manager
+    ? $custom_views_manager->get_user_active_view()
+    : null;
 ?>
 
 <!-- Skip Link para Accesibilidad -->
@@ -33,6 +55,78 @@ if (!defined('ABSPATH')) {
 >
     <span class="dashicons dashicons-menu"></span>
 </button>
+
+<!-- Quick Search Modal (Cmd+K) -->
+<div
+    x-data="flavorShellSearch"
+    x-show="searchOpen"
+    x-cloak
+    @keydown.escape.window="closeSearch()"
+    @keydown.meta.k.window.prevent="toggleSearch()"
+    @keydown.ctrl.k.window.prevent="toggleSearch()"
+    class="fls-shell-search"
+>
+    <div class="fls-shell-search__backdrop" @click="closeSearch()"></div>
+    <div class="fls-shell-search__modal" @click.outside="closeSearch()">
+        <div class="fls-shell-search__header">
+            <span class="dashicons dashicons-search fls-shell-search__icon"></span>
+            <input
+                type="text"
+                x-model="query"
+                x-ref="searchInput"
+                @input.debounce.150ms="search()"
+                @keydown.down.prevent="navigateResults(1)"
+                @keydown.up.prevent="navigateResults(-1)"
+                @keydown.enter.prevent="selectResult()"
+                class="fls-shell-search__input"
+                placeholder="<?php esc_attr_e('Buscar páginas, módulos, acciones...', 'flavor-chat-ia'); ?>"
+                autocomplete="off"
+            >
+            <kbd class="fls-shell-search__kbd">ESC</kbd>
+        </div>
+
+        <div class="fls-shell-search__results" x-show="results.length > 0 || query.length > 0">
+            <template x-if="results.length === 0 && query.length > 0">
+                <div class="fls-shell-search__empty">
+                    <span class="dashicons dashicons-search"></span>
+                    <p><?php esc_html_e('No se encontraron resultados', 'flavor-chat-ia'); ?></p>
+                </div>
+            </template>
+
+            <template x-for="(group, groupIndex) in groupedResults" :key="groupIndex">
+                <div class="fls-shell-search__group">
+                    <div class="fls-shell-search__group-title" x-text="group.label"></div>
+                    <template x-for="(result, index) in group.items" :key="result.slug">
+                        <a
+                            :href="result.url"
+                            class="fls-shell-search__result"
+                            :class="{ 'fls-shell-search__result--active': isActive(result) }"
+                            @mouseenter="setActive(result)"
+                            @click="trackVisit(result)"
+                        >
+                            <span class="fls-shell-search__result-icon">
+                                <span class="dashicons" :class="result.icon"></span>
+                            </span>
+                            <span class="fls-shell-search__result-text">
+                                <span class="fls-shell-search__result-title" x-text="result.label"></span>
+                                <span class="fls-shell-search__result-section" x-text="result.section" x-show="result.section"></span>
+                            </span>
+                            <span class="fls-shell-search__result-action">
+                                <span class="dashicons dashicons-arrow-right-alt2"></span>
+                            </span>
+                        </a>
+                    </template>
+                </div>
+            </template>
+        </div>
+
+        <div class="fls-shell-search__footer">
+            <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> <?php esc_html_e('navegar', 'flavor-chat-ia'); ?></span>
+            <span><kbd>Enter</kbd> <?php esc_html_e('ir', 'flavor-chat-ia'); ?></span>
+            <span><kbd>Esc</kbd> <?php esc_html_e('cerrar', 'flavor-chat-ia'); ?></span>
+        </div>
+    </div>
+</div>
 
 <!-- Shell Sidebar -->
 <div
@@ -65,11 +159,51 @@ if (!defined('ABSPATH')) {
         </button>
     </div>
 
-    <!-- Vista Selector -->
+    <!-- Quick Search Button -->
+    <button
+        type="button"
+        class="fls-shell__search-btn"
+        @click="$dispatch('open-shell-search')"
+        data-tooltip="<?php esc_attr_e('Buscar (Cmd+K)', 'flavor-chat-ia'); ?>"
+    >
+        <span class="dashicons dashicons-search"></span>
+        <span class="fls-shell__search-text"><?php esc_html_e('Buscar...', 'flavor-chat-ia'); ?></span>
+        <kbd class="fls-shell__search-kbd">
+            <span><?php echo (strpos(strtolower($_SERVER['HTTP_USER_AGENT'] ?? ''), 'mac') !== false) ? '⌘' : 'Ctrl'; ?></span>K
+        </kbd>
+    </button>
+
+    <!-- Quick Portal Link -->
+    <a
+        href="<?php echo esc_url(home_url('/mi-portal/')); ?>"
+        target="_blank"
+        class="fls-shell__portal-btn"
+        data-tooltip="<?php esc_attr_e('Abrir Mi Portal', 'flavor-chat-ia'); ?>"
+    >
+        <span class="dashicons dashicons-admin-home"></span>
+        <span class="fls-shell__portal-text"><?php esc_html_e('Mi Portal', 'flavor-chat-ia'); ?></span>
+        <span class="dashicons dashicons-external fls-shell__portal-external"></span>
+    </a>
+
+    <!-- Vista Selector Mejorado -->
     <?php
     $menu_manager = Flavor_Admin_Menu_Manager::get_instance();
     $vista_activa = $menu_manager->obtener_vista_activa();
     $es_vista_admin = $vista_activa === Flavor_Admin_Menu_Manager::VISTA_ADMIN;
+
+    // Determinar nombre e icono de vista activa
+    $vista_nombre = $es_vista_admin ? __('Admin', 'flavor-chat-ia') : __('Gestor', 'flavor-chat-ia');
+    $vista_icono = $es_vista_admin ? '👤' : '👥';
+
+    if ($active_custom_view && !in_array($active_custom_view, ['admin', 'gestor'], true)) {
+        foreach ($available_views as $view) {
+            if ($view['id'] === $active_custom_view) {
+                $vista_nombre = $view['name'];
+                $vista_icono = $view['icon'] ?: ($es_vista_admin ? '👤' : '👥');
+                break;
+            }
+        }
+    }
     ?>
     <div class="fls-shell__vista-selector">
         <button
@@ -79,36 +213,158 @@ if (!defined('ABSPATH')) {
             @click.outside="vistaOpen = false"
             x-init="vistaOpen = false"
         >
-            <span class="fls-shell__vista-icon"><?php echo $es_vista_admin ? '👤' : '👥'; ?></span>
-            <span class="fls-shell__vista-text">
-                <?php echo $es_vista_admin ? __('Admin', 'flavor-chat-ia') : __('Gestor', 'flavor-chat-ia'); ?>
-            </span>
+            <span class="fls-shell__vista-icon"><?php echo esc_html($vista_icono); ?></span>
+            <span class="fls-shell__vista-text"><?php echo esc_html($vista_nombre); ?></span>
             <span class="dashicons dashicons-arrow-down-alt2 fls-shell__vista-arrow"></span>
         </button>
         <div class="fls-shell__vista-dropdown" x-show="vistaOpen" x-transition x-cloak>
+            <!-- Vistas del sistema -->
+            <div class="fls-shell__vista-group-title"><?php esc_html_e('Vistas del sistema', 'flavor-chat-ia'); ?></div>
             <button
                 type="button"
-                class="fls-shell__vista-option <?php echo $es_vista_admin ? 'fls-shell__vista-option--active' : ''; ?>"
+                class="fls-shell__vista-option <?php echo ($es_vista_admin && !$active_custom_view) ? 'fls-shell__vista-option--active' : ''; ?>"
                 @click="cambiarVista('<?php echo esc_js(Flavor_Admin_Menu_Manager::VISTA_ADMIN); ?>')"
             >
-                <span class="fls-shell__vista-check"><?php echo $es_vista_admin ? '✓' : ''; ?></span>
+                <span class="fls-shell__vista-check"><?php echo ($es_vista_admin && !$active_custom_view) ? '✓' : ''; ?></span>
                 <span>👤 <?php esc_html_e('Administrador', 'flavor-chat-ia'); ?></span>
             </button>
             <button
                 type="button"
-                class="fls-shell__vista-option <?php echo !$es_vista_admin ? 'fls-shell__vista-option--active' : ''; ?>"
+                class="fls-shell__vista-option <?php echo (!$es_vista_admin && !$active_custom_view) ? 'fls-shell__vista-option--active' : ''; ?>"
                 @click="cambiarVista('<?php echo esc_js(Flavor_Admin_Menu_Manager::VISTA_GESTOR_GRUPOS); ?>')"
             >
-                <span class="fls-shell__vista-check"><?php echo !$es_vista_admin ? '✓' : ''; ?></span>
+                <span class="fls-shell__vista-check"><?php echo (!$es_vista_admin && !$active_custom_view) ? '✓' : ''; ?></span>
                 <span>👥 <?php esc_html_e('Gestor de Grupos', 'flavor-chat-ia'); ?></span>
             </button>
+
+            <?php if (!empty($available_views)) : ?>
+                <!-- Vistas personalizadas -->
+                <?php
+                $custom_views_only = array_filter($available_views, function($v) {
+                    return empty($v['is_system']);
+                });
+                if (!empty($custom_views_only)) :
+                ?>
+                    <div class="fls-shell__vista-group-title"><?php esc_html_e('Vistas personalizadas', 'flavor-chat-ia'); ?></div>
+                    <?php foreach ($custom_views_only as $view) : ?>
+                        <button
+                            type="button"
+                            class="fls-shell__vista-option <?php echo ($active_custom_view === $view['id']) ? 'fls-shell__vista-option--active' : ''; ?>"
+                            @click="cambiarVistaPersonalizada('<?php echo esc_js($view['id']); ?>')"
+                            style="<?php echo $view['color'] ? '--vista-color: ' . esc_attr($view['color']) . ';' : ''; ?>"
+                        >
+                            <span class="fls-shell__vista-check"><?php echo ($active_custom_view === $view['id']) ? '✓' : ''; ?></span>
+                            <span><?php echo $view['icon'] ? esc_html($view['icon']) . ' ' : ''; ?><?php echo esc_html($view['name']); ?></span>
+                        </button>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            <?php endif; ?>
+
             <hr class="fls-shell__vista-divider">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-module-dashboards')); ?>" class="fls-shell__vista-option">
+                <span class="fls-shell__vista-check"></span>
+                <span>📊 <?php esc_html_e('Índice de dashboards', 'flavor-chat-ia'); ?></span>
+            </a>
             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-config-vistas')); ?>" class="fls-shell__vista-option">
                 <span class="fls-shell__vista-check"></span>
                 <span>⚙️ <?php esc_html_e('Configurar vistas', 'flavor-chat-ia'); ?></span>
             </a>
+            <?php if (current_user_can('manage_options')) : ?>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-shell-views')); ?>" class="fls-shell__vista-option">
+                    <span class="fls-shell__vista-check"></span>
+                    <span>➕ <?php esc_html_e('Crear vista', 'flavor-chat-ia'); ?></span>
+                </a>
+            <?php endif; ?>
         </div>
     </div>
+
+    <!-- Favoritos Section -->
+    <?php if (!empty($shell_data['favorites'])) : ?>
+        <div class="fls-shell__favorites" x-data="{ favoritesOpen: true }">
+            <button
+                type="button"
+                class="fls-shell__section-toggle"
+                @click="favoritesOpen = !favoritesOpen"
+            >
+                <span class="fls-shell__section-title">
+                    <span class="dashicons dashicons-star-filled fls-shell__section-icon"></span>
+                    <?php esc_html_e('Favoritos', 'flavor-chat-ia'); ?>
+                </span>
+                <span class="dashicons fls-shell__section-arrow" :class="favoritesOpen ? 'dashicons-arrow-up-alt2' : 'dashicons-arrow-down-alt2'"></span>
+            </button>
+            <ul class="fls-shell__quick-list" x-show="favoritesOpen" x-transition x-cloak>
+                <?php foreach ($shell_data['favorites'] as $favorite) :
+                    $fav_url = admin_url('admin.php?page=' . $favorite['slug']);
+                    $fav_is_active = $current_page === $favorite['slug'];
+                ?>
+                    <li class="fls-shell__quick-item">
+                        <a
+                            href="<?php echo esc_url($fav_url); ?>"
+                            class="fls-shell__quick-link<?php echo $fav_is_active ? ' fls-shell__quick-link--active' : ''; ?>"
+                            data-slug="<?php echo esc_attr($favorite['slug']); ?>"
+                        >
+                            <span class="fls-shell__quick-icon">
+                                <span class="dashicons <?php echo esc_attr($favorite['icon'] ?? 'dashicons-star-filled'); ?>"></span>
+                            </span>
+                            <span class="fls-shell__quick-text"><?php echo esc_html($favorite['label']); ?></span>
+                            <button
+                                type="button"
+                                class="fls-shell__quick-remove"
+                                @click.prevent.stop="removeFavorite('<?php echo esc_js($favorite['slug']); ?>')"
+                                title="<?php esc_attr_e('Quitar de favoritos', 'flavor-chat-ia'); ?>"
+                            >
+                                <span class="dashicons dashicons-no-alt"></span>
+                            </button>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <!-- Recientes Section -->
+    <?php if (!empty($shell_data['recent'])) : ?>
+        <div class="fls-shell__recent" x-data="{ recentOpen: true }">
+            <button
+                type="button"
+                class="fls-shell__section-toggle"
+                @click="recentOpen = !recentOpen"
+            >
+                <span class="fls-shell__section-title">
+                    <span class="dashicons dashicons-backup fls-shell__section-icon"></span>
+                    <?php esc_html_e('Recientes', 'flavor-chat-ia'); ?>
+                </span>
+                <span class="dashicons fls-shell__section-arrow" :class="recentOpen ? 'dashicons-arrow-up-alt2' : 'dashicons-arrow-down-alt2'"></span>
+            </button>
+            <ul class="fls-shell__quick-list" x-show="recentOpen" x-transition x-cloak>
+                <?php foreach ($shell_data['recent'] as $recent_item) :
+                    $recent_url = admin_url('admin.php?page=' . $recent_item['slug']);
+                    $recent_is_active = $current_page === $recent_item['slug'];
+                ?>
+                    <li class="fls-shell__quick-item">
+                        <a
+                            href="<?php echo esc_url($recent_url); ?>"
+                            class="fls-shell__quick-link<?php echo $recent_is_active ? ' fls-shell__quick-link--active' : ''; ?>"
+                            data-slug="<?php echo esc_attr($recent_item['slug']); ?>"
+                        >
+                            <span class="fls-shell__quick-icon">
+                                <span class="dashicons <?php echo esc_attr($recent_item['icon'] ?? 'dashicons-admin-page'); ?>"></span>
+                            </span>
+                            <span class="fls-shell__quick-text"><?php echo esc_html($recent_item['label']); ?></span>
+                            <button
+                                type="button"
+                                class="fls-shell__quick-favorite"
+                                @click.prevent.stop="addToFavorites('<?php echo esc_js($recent_item['slug']); ?>', '<?php echo esc_js($recent_item['label']); ?>', '<?php echo esc_js($recent_item['icon'] ?? 'dashicons-star-filled'); ?>')"
+                                title="<?php esc_attr_e('Añadir a favoritos', 'flavor-chat-ia'); ?>"
+                            >
+                                <span class="dashicons dashicons-star-empty"></span>
+                            </button>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
 
     <!-- Navigation -->
     <nav class="fls-shell__nav" role="navigation" aria-label="<?php esc_attr_e('Menú principal', 'flavor-chat-ia'); ?>">
@@ -119,14 +375,28 @@ if (!defined('ABSPATH')) {
                 </div>
 
                 <ul class="fls-shell__menu" role="menu">
-                    <?php foreach ($section['items'] as $item) : ?>
-                        <li class="fls-shell__menu-item" role="none">
+                    <?php foreach ($section['items'] as $item) :
+                        // Soportar URLs directas o slugs de página
+                        $item_url = isset($item['url']) ? admin_url($item['url']) : admin_url('admin.php?page=' . $item['slug']);
+                        $is_expanded = !empty($item['is_expanded']);
+                        $has_subpages = !empty($item['subpages']);
+                        // Activo si es la página actual O si estamos en una subpágina de este módulo
+                        $is_active = $current_page === $item['slug'] || $is_expanded;
+                        $has_badge = !empty($item['badge']) && $item['badge']['count'] > 0;
+                        $badge_severity = $has_badge ? ($item['badge']['severity'] ?? 'info') : '';
+                        // Verificar si es favorito
+                        $is_favorite = $favorites_recent_manager ? $favorites_recent_manager->is_favorite($item['slug']) : false;
+                    ?>
+                        <li class="fls-shell__menu-item<?php echo $is_expanded ? ' fls-shell__menu-item--expanded' : ''; ?>" role="none">
                             <a
-                                href="<?php echo esc_url(admin_url('admin.php?page=' . $item['slug'])); ?>"
-                                class="fls-shell__menu-link<?php echo $current_page === $item['slug'] ? ' fls-shell__menu-link--active' : ''; ?>"
+                                href="<?php echo esc_url($item_url); ?>"
+                                class="fls-shell__menu-link<?php echo $is_active ? ' fls-shell__menu-link--active' : ''; ?><?php echo $is_expanded ? ' fls-shell__menu-link--parent' : ''; ?>"
                                 role="menuitem"
                                 data-tooltip="<?php echo esc_attr($item['label']); ?>"
-                                <?php if ($current_page === $item['slug']) : ?>
+                                data-slug="<?php echo esc_attr($item['slug']); ?>"
+                                data-label="<?php echo esc_attr($item['label']); ?>"
+                                data-icon="<?php echo esc_attr($item['icon']); ?>"
+                                <?php if ($is_active) : ?>
                                     aria-current="page"
                                 <?php endif; ?>
                             >
@@ -136,7 +406,67 @@ if (!defined('ABSPATH')) {
                                 <span class="fls-shell__menu-text">
                                     <?php echo esc_html($item['label']); ?>
                                 </span>
+                                <?php if ($has_badge) :
+                                    $badge_tooltip = Flavor_Admin_Shell::get_badge_tooltip($item['slug'], $item['badge']);
+                                ?>
+                                    <span
+                                        class="fls-shell__menu-badge fls-shell__menu-badge--<?php echo esc_attr($badge_severity); ?>"
+                                        data-slug="<?php echo esc_attr($item['slug']); ?>"
+                                        <?php if ($badge_tooltip) : ?>data-tooltip="<?php echo esc_attr($badge_tooltip); ?>"<?php endif; ?>
+                                    >
+                                        <?php echo $item['badge']['count'] > 99 ? '99+' : number_format_i18n($item['badge']['count']); ?>
+                                    </span>
+                                <?php endif; ?>
+                                <!-- Favorite toggle (visible on hover) -->
+                                <button
+                                    type="button"
+                                    class="fls-shell__menu-fav<?php echo $is_favorite ? ' fls-shell__menu-fav--active' : ''; ?>"
+                                    @click.prevent.stop="toggleFavorite('<?php echo esc_js($item['slug']); ?>', '<?php echo esc_js($item['label']); ?>', '<?php echo esc_js($item['icon']); ?>')"
+                                    title="<?php echo $is_favorite ? esc_attr__('Quitar de favoritos', 'flavor-chat-ia') : esc_attr__('Añadir a favoritos', 'flavor-chat-ia'); ?>"
+                                >
+                                    <span class="dashicons <?php echo $is_favorite ? 'dashicons-star-filled' : 'dashicons-star-empty'; ?>"></span>
+                                </button>
                             </a>
+
+                            <?php if ($has_subpages && $is_expanded) : ?>
+                                <ul class="fls-shell__submenu" role="menu">
+                                    <?php foreach ($item['subpages'] as $subpage) :
+                                        $subpage_url = admin_url('admin.php?page=' . $subpage['slug']);
+                                        $subpage_active = $current_page === $subpage['slug'];
+                                        $subpage_has_badge = !empty($subpage['badge']) && $subpage['badge']['count'] > 0;
+                                        $subpage_badge_severity = $subpage_has_badge ? ($subpage['badge']['severity'] ?? 'info') : '';
+                                    ?>
+                                        <li class="fls-shell__submenu-item" role="none">
+                                            <a
+                                                href="<?php echo esc_url($subpage_url); ?>"
+                                                class="fls-shell__submenu-link<?php echo $subpage_active ? ' fls-shell__submenu-link--active' : ''; ?>"
+                                                role="menuitem"
+                                                <?php if ($subpage_active) : ?>
+                                                    aria-current="page"
+                                                <?php endif; ?>
+                                            >
+                                                <span class="fls-shell__submenu-icon">
+                                                    <span class="dashicons <?php echo esc_attr($subpage['icon'] ?? 'dashicons-arrow-right-alt2'); ?>"></span>
+                                                </span>
+                                                <span class="fls-shell__submenu-text">
+                                                    <?php echo esc_html($subpage['label']); ?>
+                                                </span>
+                                                <?php if ($subpage_has_badge) :
+                                                    $subpage_tooltip = Flavor_Admin_Shell::get_badge_tooltip($subpage['slug'], $subpage['badge']);
+                                                ?>
+                                                    <span
+                                                        class="fls-shell__submenu-badge fls-shell__submenu-badge--<?php echo esc_attr($subpage_badge_severity); ?>"
+                                                        data-slug="<?php echo esc_attr($subpage['slug']); ?>"
+                                                        <?php if ($subpage_tooltip) : ?>data-tooltip="<?php echo esc_attr($subpage_tooltip); ?>"<?php endif; ?>
+                                                    >
+                                                        <?php echo $subpage['badge']['count'] > 99 ? '99+' : number_format_i18n($subpage['badge']['count']); ?>
+                                                    </span>
+                                                <?php endif; ?>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -146,16 +476,42 @@ if (!defined('ABSPATH')) {
 
     <!-- Footer -->
     <div class="fls-shell__footer">
+        <!-- Quick Search -->
+        <button
+            type="button"
+            class="fls-shell__footer-btn"
+            @click="$dispatch('open-shell-search')"
+            data-tooltip="<?php echo esc_attr__('Buscar (Cmd+K)', 'flavor-chat-ia'); ?>"
+            aria-label="<?php esc_attr_e('Abrir búsqueda rápida', 'flavor-chat-ia'); ?>"
+        >
+            <span class="dashicons dashicons-search"></span>
+        </button>
+
         <!-- Dark Mode Toggle -->
         <button
             type="button"
             class="fls-shell__footer-btn"
             :class="{ 'fls-shell__footer-btn--active': darkMode }"
             @click="toggleDarkMode()"
-            data-tooltip="<?php echo esc_attr__('Modo oscuro', 'flavor-chat-ia'); ?>"
-            aria-label="<?php esc_attr_e('Alternar modo oscuro', 'flavor-chat-ia'); ?>"
+            :data-tooltip="darkMode ? '<?php echo esc_attr__('Modo claro', 'flavor-chat-ia'); ?>' : '<?php echo esc_attr__('Modo oscuro', 'flavor-chat-ia'); ?>'"
+            :aria-label="darkMode ? '<?php echo esc_attr__('Cambiar a modo claro', 'flavor-chat-ia'); ?>' : '<?php echo esc_attr__('Cambiar a modo oscuro', 'flavor-chat-ia'); ?>'"
         >
-            <span class="dashicons" :class="darkMode ? 'dashicons-lightbulb' : 'dashicons-admin-generic'"></span>
+            <span class="fls-shell__darkmode-icon">
+                <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <svg x-show="darkMode" x-cloak xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </span>
         </button>
 
         <!-- Back to WordPress -->
@@ -230,6 +586,17 @@ if (!defined('ABSPATH')) {
             <a href="<?php echo esc_url(admin_url('options-general.php')); ?>" class="fls-shell__user-option">
                 <span class="dashicons dashicons-admin-settings"></span>
                 <?php esc_html_e('Ajustes', 'flavor-chat-ia'); ?>
+            </a>
+            <hr class="fls-shell__user-divider">
+            <a href="<?php echo esc_url(home_url('/mi-portal/')); ?>" class="fls-shell__user-option" target="_blank">
+                <span class="dashicons dashicons-admin-home"></span>
+                <?php esc_html_e('Ver Mi Portal', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-external" style="font-size: 12px; margin-left: auto; opacity: 0.5;"></span>
+            </a>
+            <a href="<?php echo esc_url(home_url('/')); ?>" class="fls-shell__user-option" target="_blank">
+                <span class="dashicons dashicons-welcome-view-site"></span>
+                <?php esc_html_e('Ver sitio web', 'flavor-chat-ia'); ?>
+                <span class="dashicons dashicons-external" style="font-size: 12px; margin-left: auto; opacity: 0.5;"></span>
             </a>
             <hr class="fls-shell__user-divider">
             <a href="<?php echo esc_url(wp_logout_url(admin_url())); ?>" class="fls-shell__user-option fls-shell__user-option--logout">

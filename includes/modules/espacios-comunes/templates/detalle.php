@@ -178,7 +178,7 @@ $dias_semana_map = [
                         <?php _e('Reportar incidencia', 'flavor-chat-ia'); ?>
                     </button>
                 <?php else: ?>
-                    <a href="<?php echo wp_login_url(get_permalink()); ?>" class="btn btn-primary">
+                    <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="btn btn-primary">
                         <?php _e('Inicia sesión para reservar', 'flavor-chat-ia'); ?>
                     </a>
                 <?php endif; ?>

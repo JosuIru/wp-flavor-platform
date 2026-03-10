@@ -30,6 +30,10 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
         $this->dashboard_client_contexts = ['cuidados', 'comunidad', 'solidaridad'];
         $this->dashboard_admin_contexts = ['cuidados', 'solidaridad', 'admin'];
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['cuidados'];
+        $this->gailu_contribuye_a = ['cohesion', 'resiliencia'];
+
         parent::__construct();
 
         // Admin pages

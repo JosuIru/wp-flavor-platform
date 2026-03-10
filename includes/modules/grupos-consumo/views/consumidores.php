@@ -290,7 +290,7 @@ $todos_los_grupos = get_posts([
                                     // Boton de crear factura si el modulo de facturas esta activo
                                     $modulo_facturas_activo = class_exists('Flavor_Chat_Facturas_Module');
                                     if ($modulo_facturas_activo):
-                                        $url_factura = admin_url('admin.php?page=flavor-panel&modulo=facturas&vista=facturas-nueva&cliente_id=' . $consumidor->usuario_id . '&cliente_tipo=consumidor');
+                                        $url_factura = admin_url('admin.php?page=facturas-nueva&cliente_id=' . $consumidor->usuario_id . '&cliente_tipo=consumidor');
                                     ?>
                                     <hr>
                                     <a href="<?php echo esc_url($url_factura); ?>" class="gc-accion-factura">

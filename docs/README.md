@@ -1,36 +1,96 @@
-# Documentacion Tecnica
+# Flavor Platform - Documentacion
 
-Este directorio ya no debe usarse como fuente de estado historico del proyecto. La referencia vigente para auditoria de modulos y consistencia del sistema es:
+> Fuente principal de consulta para el plugin.
 
-- [../reports/AUDITORIA-ESTADO-REAL-2026-03-01.md](../reports/AUDITORIA-ESTADO-REAL-2026-03-01.md)
+---
 
-## Documentos vigentes por uso
+## Inicio Rapido
 
-### Estado real y auditoria
+| Documento | Descripcion |
+|-----------|-------------|
+| [GUIA-INICIO-RAPIDO.md](GUIA-INICIO-RAPIDO.md) | Primeros pasos |
+| [GUIA-ADMINISTRACION.md](GUIA-ADMINISTRACION.md) | Manual admin |
+| [FILOSOFIA-PLUGIN.md](FILOSOFIA-PLUGIN.md) | Vision del proyecto |
+| [PLUGIN-COMPLETO.md](PLUGIN-COMPLETO.md) | Funcionalidades |
 
-- [../reports/AUDITORIA-ESTADO-REAL-2026-03-01.md](../reports/AUDITORIA-ESTADO-REAL-2026-03-01.md)
+---
 
-### Arquitectura y desarrollo
+## Arquitectura
 
-- [ARQUITECTURA-MODULOS.md](ARQUITECTURA-MODULOS.md)
-- [ESTANDARES-MODULOS.md](ESTANDARES-MODULOS.md)
-- [GUIA_MODULOS.md](GUIA_MODULOS.md)
-- [REFERENCIA_RAPIDA_MODULOS.md](REFERENCIA_RAPIDA_MODULOS.md)
-- [INTEGRACIONES.md](INTEGRACIONES.md)
-- [FUNCIONALIDADES-COMPARTIDAS.md](FUNCIONALIDADES-COMPARTIDAS.md)
+| Documento | Descripcion |
+|-----------|-------------|
+| [ARQUITECTURA-TECNICA-V3.3.md](ARQUITECTURA-TECNICA-V3.3.md) | Arquitectura completa |
+| [ARQUITECTURA-PLUGIN.md](ARQUITECTURA-PLUGIN.md) | Estructura plugin |
+| [ARQUITECTURA-MODULOS.md](ARQUITECTURA-MODULOS.md) | Sistema modular |
 
-### Operacion y verificacion
+---
 
-- [CHECKLIST-VERIFICACION.md](CHECKLIST-VERIFICACION.md)
-- [PLAN-PRUEBAS.md](PLAN-PRUEBAS.md)
-- [CHECKLIST-RELEASE.md](CHECKLIST-RELEASE.md)
+## Modulos
 
-## Criterio de limpieza aplicado
+| Documento | Descripcion |
+|-----------|-------------|
+| [CATALOGO-MODULOS.md](CATALOGO-MODULOS.md) | Listado de modulos |
+| [GUIA_MODULOS.md](GUIA_MODULOS.md) | Uso de modulos |
+| [ESTANDARES-MODULOS.md](ESTANDARES-MODULOS.md) | Desarrollo |
+| [EJEMPLO-MODULO-COMPLETO.md](EJEMPLO-MODULO-COMPLETO.md) | Tutorial |
+| [REFERENCIA_RAPIDA_MODULOS.md](REFERENCIA_RAPIDA_MODULOS.md) | Referencia |
 
-Se han retirado de la ruta principal de consulta los documentos de auditoria que:
+---
 
-- daban recuentos de modulos incompatibles entre si
-- declaraban versiones contradictorias del sistema
-- describian como actual un estado que ya no coincide con el codigo
+## Dashboards
 
-Si se necesita conservar mas historico, debe mantenerse en `reports/` con marca explicita de obsoleto, no como documentacion canonica.
+| Documento | Descripcion |
+|-----------|-------------|
+| [ARQUITECTURA-DASHBOARDS-ECOSISTEMA.md](ARQUITECTURA-DASHBOARDS-ECOSISTEMA.md) | Ecosistema |
+| [GUIA-CONTEXTOS-DASHBOARD-MODULOS.md](GUIA-CONTEXTOS-DASHBOARD-MODULOS.md) | Contextos |
+
+---
+
+## Apps Mobile
+
+| Documento | Descripcion |
+|-----------|-------------|
+| [CONFIGURACION-APPS.md](CONFIGURACION-APPS.md) | Configurar apps |
+| [CONSTRUIR_APLICACION.md](CONSTRUIR_APLICACION.md) | Compilar Flutter |
+| [CPT-APPS-GUIA.md](CPT-APPS-GUIA.md) | CPT Apps |
+
+---
+
+## Sistemas
+
+| Documento | Descripcion |
+|-----------|-------------|
+| [ADDON-SYSTEM.md](ADDON-SYSTEM.md) | Addons |
+| [RED-DE-NODOS.md](RED-DE-NODOS.md) | Red distribuida |
+| [INTEGRACIONES.md](INTEGRACIONES.md) | Integraciones |
+| [PERMISSIONS-USAGE.md](PERMISSIONS-USAGE.md) | Permisos |
+
+---
+
+## Estado y Planificacion
+
+| Documento | Descripcion |
+|-----------|-------------|
+| [ESTADO-REAL-PLUGIN.md](ESTADO-REAL-PLUGIN.md) | Estado actual |
+| [PLAN-DESARROLLO.md](PLAN-DESARROLLO.md) | Roadmap |
+| [CHECKLIST-RELEASE.md](CHECKLIST-RELEASE.md) | Release |
+
+---
+
+## Demo TEDER
+
+| Documento | Descripcion |
+|-----------|-------------|
+| [GUIA-DEMO-TEDER.md](GUIA-DEMO-TEDER.md) | Script demo |
+| [PRESENTACION-TEDER-EMPRENDIMIENTO.md](PRESENTACION-TEDER-EMPRENDIMIENTO.md) | Presentacion |
+
+---
+
+## Subdirectorios
+
+- `api/` - Documentacion API REST
+- `modulos/` - Docs por modulo
+
+---
+
+*Marzo 2026*

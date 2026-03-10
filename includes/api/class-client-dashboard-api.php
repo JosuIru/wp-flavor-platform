@@ -955,8 +955,8 @@ class Flavor_Client_Dashboard_API {
         $modulos_activos = $configuracion['active_modules'] ?? [];
 
         $total_modulos_disponibles = 0;
-        if (class_exists('Flavor_Module_Loader')) {
-            $cargador_modulos = Flavor_Module_Loader::get_instance();
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $cargador_modulos = Flavor_Chat_Module_Loader::get_instance();
             $total_modulos_disponibles = count($cargador_modulos->get_available_modules());
         }
 
@@ -1121,8 +1121,8 @@ class Flavor_Client_Dashboard_API {
      * @return string Nombre del modulo.
      */
     private function get_module_display_name($id_modulo) {
-        if (class_exists('Flavor_Module_Loader')) {
-            $cargador_modulos = Flavor_Module_Loader::get_instance();
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $cargador_modulos = Flavor_Chat_Module_Loader::get_instance();
             $modulos_disponibles = $cargador_modulos->get_available_modules();
 
             if (isset($modulos_disponibles[$id_modulo]['name'])) {

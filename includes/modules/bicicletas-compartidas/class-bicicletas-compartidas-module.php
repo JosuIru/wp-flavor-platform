@@ -25,6 +25,10 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
         $this->name = 'Bicicletas Compartidas'; // Translation loaded on init
         $this->description = 'Sistema de bicicletas compartidas gestionado por la comunidad.'; // Translation loaded on init
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['regeneracion', 'economia_local'];
+        $this->gailu_contribuye_a = ['impacto', 'autonomia'];
+
         parent::__construct();
     }
 

@@ -27,57 +27,86 @@ class Flavor_Admin_Shell {
      * Prefijos de páginas Flavor
      */
     const PAGE_PREFIXES = [
+        // Prefijos core
         'flavor-',
         'gc-',
-        'pp-',
-        'bt-',
-        'hu-',
-        'part-',
+
+        // Comunidad
         'socios',
         'comunidades',
         'colectivos',
         'foros',
+        'actores',
+
+        // Actividades
         'eventos',
         'cursos',
         'talleres',
         'reservas',
+
+        // Servicios
         'tramites',
         'incidencias',
-        'marketplace',
         'ayuda-',
+        'participacion',
+        'presupuestos',
+        'transparencia',
+        'denuncias',
+        'documentos',
+        'avisos',
+
+        // Economía
+        'marketplace',
         'banco-tiempo',
+        'economia-don',
+        'suficiencia',
+
+        // Recursos
         'huertos',
         'espacios',
         'biblioteca',
         'carpooling',
-        'bicicletas',
-        'reciclaje',
-        'compostaje',
-        'multimedia',
-        'podcast',
-        'radio',
-        'campanias',
-        'encuestas',
-        'economia-don',
-        'suficiencia',
-        'energia',
-        'actores',
-        'documentos',
-        'transparencia',
-        'denuncias',
-        'advertising',
-        'avisos',
         'fichaje',
         'parkings',
+        'bares',
+        'recetas',
+
+        // Sostenibilidad
+        'reciclaje',
+        'compostaje',
+        'bicicletas',
         'biodiversidad',
         'circulos-cuidados',
         'huella-ecologica',
         'justicia-restaurativa',
         'saberes',
-        'sello-conciencia',
         'trabajo-digno',
+        'sello-conciencia',
+
+        // Comunicación
+        'multimedia',
+        'podcast',
+        'radio',
+        'campanias',
+        'email-marketing',
+        'encuestas',
+
+        // Chat
+        'chat-grupos',
+        'chat-interno',
+        'chat-estados',
+
+        // Negocios
+        'clientes',
+        'facturas',
+        'empresarial',
+        'crowdfunding',
+        'themacle',
         'trading-ia',
-        'recetas',
+        'dex-solana',
+
+        // Admin
+        'advertising',
     ];
 
     /**
@@ -318,6 +347,20 @@ class Flavor_Admin_Shell {
     }
 
     /**
+     * Página actual
+     *
+     * @var string
+     */
+    private $current_page = '';
+
+    /**
+     * Dashboard padre activo (si estamos en un módulo)
+     *
+     * @var string|null
+     */
+    private $active_parent_dashboard = null;
+
+    /**
      * Obtener estructura de navegación
      *
      * Filtra los menús según la vista activa del usuario
@@ -325,6 +368,10 @@ class Flavor_Admin_Shell {
      * @return array
      */
     public function get_navigation_structure() {
+        // Obtener página actual y detectar si estamos en un módulo
+        $this->current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        $this->detect_active_module();
+
         // Estructura completa de navegación
         $estructura_completa = [
             'mi_app' => [
@@ -333,10 +380,13 @@ class Flavor_Admin_Shell {
                 'items' => [
                     ['slug' => 'flavor-dashboard', 'label' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashicons-dashboard'],
                     ['slug' => 'flavor-unified-dashboard', 'label' => __('Widgets', 'flavor-chat-ia'), 'icon' => 'dashicons-grid-view'],
-                    ['slug' => 'flavor-module-dashboards', 'label' => __('Módulos', 'flavor-chat-ia'), 'icon' => 'dashicons-screenoptions'],
+                    ['slug' => 'flavor-module-dashboards', 'label' => __('Dashboards', 'flavor-chat-ia'), 'icon' => 'dashicons-screenoptions'],
+                    ['slug' => 'flavor-app-composer', 'label' => __('Módulos', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-generic'],
                     ['slug' => 'flavor-design-settings', 'label' => __('Diseño', 'flavor-chat-ia'), 'icon' => 'dashicons-art'],
+                    ['slug' => 'flavor-layouts', 'label' => __('Layouts', 'flavor-chat-ia'), 'icon' => 'dashicons-layout'],
                     ['slug' => 'flavor-create-pages', 'label' => __('Páginas', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-page'],
-                    ['slug' => 'flavor-landing-editor', 'label' => __('Editor Visual', 'flavor-chat-ia'), 'icon' => 'dashicons-edit'],
+                    ['slug' => 'flavor-landings', 'url' => 'edit.php?post_type=flavor_landing', 'label' => __('Editor Visual', 'flavor-chat-ia'), 'icon' => 'dashicons-edit'],
+                    ['slug' => 'flavor-permissions', 'label' => __('Permisos', 'flavor-chat-ia'), 'icon' => 'dashicons-lock'],
                 ],
             ],
             'mod_comunidad' => [
@@ -360,6 +410,19 @@ class Flavor_Admin_Shell {
                     ['slug' => 'economia-don-dashboard', 'label' => __('Economía Don', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
                 ],
             ],
+            'mod_negocios' => [
+                'label' => __('Negocios', 'flavor-chat-ia'),
+                'icon' => 'dashicons-building',
+                'items' => [
+                    ['slug' => 'clientes-dashboard', 'label' => __('Clientes', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman'],
+                    ['slug' => 'facturas-dashboard', 'label' => __('Facturas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-text'],
+                    ['slug' => 'flavor-woocommerce-dashboard', 'label' => __('WooCommerce', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
+                    ['slug' => 'flavor-crowdfunding', 'label' => __('Crowdfunding', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
+                    ['slug' => 'themacle-dashboard', 'label' => __('Themacle', 'flavor-chat-ia'), 'icon' => 'dashicons-art'],
+                    ['slug' => 'trading-ia-dashboard', 'label' => __('Trading IA', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
+                    ['slug' => 'dex-solana-dashboard', 'label' => __('DEX Solana', 'flavor-chat-ia'), 'icon' => 'dashicons-money'],
+                ],
+            ],
             'mod_actividades' => [
                 'label' => __('Actividades', 'flavor-chat-ia'),
                 'icon' => 'dashicons-calendar-alt',
@@ -378,6 +441,11 @@ class Flavor_Admin_Shell {
                     ['slug' => 'incidencias-dashboard', 'label' => __('Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-warning'],
                     ['slug' => 'ayuda-dashboard', 'label' => __('Ayuda Vecinal', 'flavor-chat-ia'), 'icon' => 'dashicons-sos'],
                     ['slug' => 'participacion-dashboard', 'label' => __('Participación', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                    ['slug' => 'presupuestos-dashboard', 'label' => __('Presupuestos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                    ['slug' => 'transparencia-dashboard', 'label' => __('Transparencia', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+                    ['slug' => 'avisos-dashboard', 'label' => __('Avisos', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                    ['slug' => 'denuncias-dashboard', 'label' => __('Denuncias', 'flavor-chat-ia'), 'icon' => 'dashicons-flag'],
+                    ['slug' => 'documentos-dashboard', 'label' => __('Documentación', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document'],
                 ],
             ],
             'mod_recursos' => [
@@ -388,6 +456,11 @@ class Flavor_Admin_Shell {
                     ['slug' => 'espacios-dashboard', 'label' => __('Espacios', 'flavor-chat-ia'), 'icon' => 'dashicons-building'],
                     ['slug' => 'biblioteca-dashboard', 'label' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
                     ['slug' => 'carpooling-dashboard', 'label' => __('Carpooling', 'flavor-chat-ia'), 'icon' => 'dashicons-car'],
+                    ['slug' => 'fichaje-dashboard', 'label' => __('Fichaje', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
+                    ['slug' => 'parkings-dashboard', 'label' => __('Parkings', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
+                    ['slug' => 'actores-dashboard', 'label' => __('Mapa Actores', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
+                    ['slug' => 'bares-dashboard', 'label' => __('Bares', 'flavor-chat-ia'), 'icon' => 'dashicons-store'],
+                    ['slug' => 'recetas-dashboard', 'label' => __('Recetas', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
                 ],
             ],
             'mod_sostenibilidad' => [
@@ -398,6 +471,13 @@ class Flavor_Admin_Shell {
                     ['slug' => 'compostaje-dashboard', 'label' => __('Compostaje', 'flavor-chat-ia'), 'icon' => 'dashicons-carrot'],
                     ['slug' => 'flavor-energia-dashboard', 'label' => __('Energía', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
                     ['slug' => 'bicicletas-dashboard', 'label' => __('Bicicletas', 'flavor-chat-ia'), 'icon' => 'dashicons-performance'],
+                    ['slug' => 'biodiversidad-dashboard', 'label' => __('Biodiversidad', 'flavor-chat-ia'), 'icon' => 'dashicons-palmtree'],
+                    ['slug' => 'huella-ecologica-dashboard', 'label' => __('Huella Ecológica', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line'],
+                    ['slug' => 'saberes-dashboard', 'label' => __('Saberes', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
+                    ['slug' => 'suficiencia-dashboard', 'label' => __('Suficiencia', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
+                    ['slug' => 'circulos-cuidados-dashboard', 'label' => __('Círculos Cuidados', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                    ['slug' => 'trabajo-digno-dashboard', 'label' => __('Trabajo Digno', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman'],
+                    ['slug' => 'justicia-restaurativa-dashboard', 'label' => __('Justicia Rest.', 'flavor-chat-ia'), 'icon' => 'dashicons-shield'],
                 ],
             ],
             'mod_comunicacion' => [
@@ -408,11 +488,21 @@ class Flavor_Admin_Shell {
                     ['slug' => 'flavor-radio-dashboard', 'label' => __('Radio', 'flavor-chat-ia'), 'icon' => 'dashicons-controls-volumeon'],
                     ['slug' => 'podcast-dashboard', 'label' => __('Podcast', 'flavor-chat-ia'), 'icon' => 'dashicons-microphone'],
                     ['slug' => 'campanias-dashboard', 'label' => __('Campañas', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt'],
+                    ['slug' => 'email-marketing-dashboard', 'label' => __('Email Marketing', 'flavor-chat-ia'), 'icon' => 'dashicons-email'],
+                    ['slug' => 'encuestas-dashboard', 'label' => __('Encuestas', 'flavor-chat-ia'), 'icon' => 'dashicons-forms'],
+                ],
+            ],
+            'mod_chat' => [
+                'label' => __('Chat', 'flavor-chat-ia'),
+                'icon' => 'dashicons-format-chat',
+                'items' => [
+                    ['slug' => 'chat-grupos-dashboard', 'label' => __('Grupos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                    ['slug' => 'chat-interno-dashboard', 'label' => __('Chat Interno', 'flavor-chat-ia'), 'icon' => 'dashicons-testimonial'],
                 ],
             ],
             'chat_ia' => [
                 'label' => __('Chat IA', 'flavor-chat-ia'),
-                'icon' => 'dashicons-format-chat',
+                'icon' => 'dashicons-admin-comments',
                 'items' => [
                     ['slug' => 'flavor-chat-config', 'label' => __('Configuración', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-settings'],
                     ['slug' => 'flavor-chat-ia-escalations', 'label' => __('Escalados', 'flavor-chat-ia'), 'icon' => 'dashicons-warning'],
@@ -423,6 +513,7 @@ class Flavor_Admin_Shell {
                 'icon' => 'dashicons-smartphone',
                 'items' => [
                     ['slug' => 'flavor-apps-config', 'label' => __('Apps Móviles', 'flavor-chat-ia'), 'icon' => 'dashicons-smartphone'],
+                    ['slug' => 'flavor-app-generator', 'label' => __('Generador Apps', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-customizer'],
                     ['slug' => 'flavor-deep-links', 'label' => __('Deep Links', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-links'],
                     ['slug' => 'flavor-network', 'label' => __('Red', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
                 ],
@@ -443,7 +534,20 @@ class Flavor_Admin_Shell {
                     ['slug' => 'flavor-export-import', 'label' => __('Export/Import', 'flavor-chat-ia'), 'icon' => 'dashicons-migrate'],
                     ['slug' => 'flavor-health-check', 'label' => __('Diagnóstico', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
                     ['slug' => 'flavor-activity-log', 'label' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
+                    ['slug' => 'flavor-analytics', 'label' => __('Analytics', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area'],
                     ['slug' => 'flavor-api-docs', 'label' => __('API Docs', 'flavor-chat-ia'), 'icon' => 'dashicons-rest-api'],
+                    ['slug' => 'flavor-systems-panel', 'label' => __('Sistemas V3', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-generic'],
+                ],
+            ],
+            'administracion' => [
+                'label' => __('Administración', 'flavor-chat-ia'),
+                'icon' => 'dashicons-admin-settings',
+                'items' => [
+                    ['slug' => 'flavor-moderation', 'label' => __('Moderación', 'flavor-chat-ia'), 'icon' => 'dashicons-shield'],
+                    ['slug' => 'advertising-dashboard', 'label' => __('Anuncios', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
+                    ['slug' => 'flavor-shell-views', 'label' => __('Vistas Shell', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
+                    ['slug' => 'flavor-integraciones-posts', 'label' => __('Integraciones Posts', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-post'],
+                    ['slug' => 'flavor-integraciones-config', 'label' => __('Config. Integraciones', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-settings'],
                 ],
             ],
             'ayuda' => [
@@ -458,7 +562,7 @@ class Flavor_Admin_Shell {
 
         // Obtener el menu manager para filtrar según vista
         if (!class_exists('Flavor_Admin_Menu_Manager')) {
-            return $estructura_completa;
+            return $this->inject_subpages_and_badges($estructura_completa);
         }
 
         $menu_manager = Flavor_Admin_Menu_Manager::get_instance();
@@ -484,7 +588,133 @@ class Flavor_Admin_Shell {
             }
         }
 
-        return $estructura_filtrada;
+        // Inyectar subpáginas y badges
+        return $this->inject_subpages_and_badges($estructura_filtrada);
+    }
+
+    /**
+     * Detectar si estamos en un módulo con subpáginas
+     *
+     * @return void
+     */
+    private function detect_active_module() {
+        if (!class_exists('Flavor_Shell_Navigation_Registry')) {
+            return;
+        }
+
+        $registry = Flavor_Shell_Navigation_Registry::get_instance();
+        $this->active_parent_dashboard = $registry->get_parent_dashboard($this->current_page);
+    }
+
+    /**
+     * Inyectar subpáginas y badges en la estructura de navegación
+     *
+     * @param array $estructura Estructura de navegación
+     * @return array Estructura con subpáginas y badges
+     */
+    private function inject_subpages_and_badges(array $estructura) {
+        if (!class_exists('Flavor_Shell_Navigation_Registry')) {
+            return $estructura;
+        }
+
+        $registry = Flavor_Shell_Navigation_Registry::get_instance();
+
+        foreach ($estructura as $seccion_id => &$seccion) {
+            foreach ($seccion['items'] as &$item) {
+                $item_slug = $item['slug'];
+
+                // Inyectar badge agregado
+                $badge = $registry->get_aggregated_badge($item_slug);
+                if ($badge) {
+                    $item['badge'] = $badge;
+                }
+
+                // Si este item es el dashboard padre activo, inyectar subpáginas
+                if ($this->active_parent_dashboard === $item_slug) {
+                    $subpages = $registry->get_module_subpages($item_slug);
+
+                    if (!empty($subpages)) {
+                        // Añadir badges a cada subpágina
+                        foreach ($subpages as &$subpage) {
+                            $sub_badge = $registry->get_badge($subpage['slug']);
+                            if ($sub_badge) {
+                                $subpage['badge'] = $sub_badge;
+                            }
+                        }
+                        $item['subpages'] = $subpages;
+                        $item['is_expanded'] = true;
+                    }
+                }
+            }
+        }
+
+        return $estructura;
+    }
+
+    /**
+     * Verificar si estamos en una subpágina de un módulo
+     *
+     * @param string $subpage_slug Slug de la subpágina
+     * @return bool
+     */
+    public function is_subpage_active($subpage_slug) {
+        return $this->current_page === $subpage_slug;
+    }
+
+    /**
+     * Obtener el dashboard padre activo
+     *
+     * @return string|null
+     */
+    public function get_active_parent_dashboard() {
+        return $this->active_parent_dashboard;
+    }
+
+    /**
+     * Obtener tooltip descriptivo para un badge
+     *
+     * @param string $slug  Slug de la página
+     * @param array  $badge Datos del badge
+     * @return string|null
+     */
+    public static function get_badge_tooltip($slug, $badge) {
+        $tooltips = [
+            // Eventos
+            'eventos-dashboard' => __('eventos esta semana', 'flavor-chat-ia'),
+            'eventos-asistentes' => __('inscripciones pendientes', 'flavor-chat-ia'),
+            // Trámites
+            'tramites-dashboard' => __('solicitudes en curso', 'flavor-chat-ia'),
+            'tramites-pendientes' => __('urgentes sin cerrar', 'flavor-chat-ia'),
+            // Incidencias
+            'incidencias-dashboard' => __('incidencias abiertas', 'flavor-chat-ia'),
+            'incidencias-abiertas' => __('sin asignar', 'flavor-chat-ia'),
+            // Socios
+            'socios-solicitudes' => __('solicitudes de alta', 'flavor-chat-ia'),
+            // Marketplace
+            'marketplace-anuncios' => __('pendientes de aprobar', 'flavor-chat-ia'),
+            // Reservas
+            'reservas-pendientes' => __('reservas pendientes', 'flavor-chat-ia'),
+            // Foros
+            'foros-temas' => __('sin respuesta', 'flavor-chat-ia'),
+            // Participación
+            'participacion-votaciones' => __('en votación activa', 'flavor-chat-ia'),
+            // Huertos
+            'huertos-parcelas' => __('solicitudes pendientes', 'flavor-chat-ia'),
+            // Colectivos
+            'colectivos-solicitudes' => __('solicitudes de unión', 'flavor-chat-ia'),
+            // Banco de Tiempo
+            'banco-tiempo-intercambios' => __('intercambios pendientes', 'flavor-chat-ia'),
+            // Biblioteca
+            'biblioteca-prestamos' => __('préstamos vencidos', 'flavor-chat-ia'),
+            // Chat IA
+            'flavor-chat-ia-escalations' => __('escalados sin atender', 'flavor-chat-ia'),
+        ];
+
+        if (isset($tooltips[$slug])) {
+            return $badge['count'] . ' ' . $tooltips[$slug];
+        }
+
+        return null;
     }
 
     /**

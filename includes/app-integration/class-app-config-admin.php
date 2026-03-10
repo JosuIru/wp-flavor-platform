@@ -2198,8 +2198,8 @@ class Flavor_App_Config_Admin {
         $active_modules = $plugin_settings['active_modules'] ?? [];
 
         ?>
-        <h2><?php _e('Módulos Disponibles para las Apps', 'flavor-chat-ia'); ?></h2>
-        <p><?php _e('Activa o desactiva los módulos que estarán disponibles en la app móvil.', 'flavor-chat-ia'); ?></p>
+        <h2><?php _e('Módulos Disponibles para la App Móvil', 'flavor-chat-ia'); ?></h2>
+        <p><?php _e('Activa o desactiva los módulos que estarán visibles en la app móvil. La activación base del módulo web se gestiona en Flavor Chat IA > Módulos.', 'flavor-chat-ia'); ?></p>
 
         <div class="flavor-modules-grid">
             <?php
@@ -2365,6 +2365,13 @@ class Flavor_App_Config_Admin {
                     'icon' => 'recycling',
                     'color' => '#7CB342',
                 ],
+                'energia_comunitaria' => [
+                    'name' => __('Energia Comunitaria', 'flavor-chat-ia'),
+                    'description' => __('Comunidades energéticas, instalaciones, reparto y liquidaciones', 'flavor-chat-ia'),
+                    'api_class' => 'Flavor_Chat_Energia_Comunitaria_Module',
+                    'icon' => 'bolt',
+                    'color' => '#F59E0B',
+                ],
                 'reciclaje' => [
                     'name' => __('Reciclaje', 'flavor-chat-ia'),
                     'description' => __('Gestión de reciclaje', 'flavor-chat-ia'),
@@ -2481,12 +2488,20 @@ class Flavor_App_Config_Admin {
             // Merge: ensure all registered modules appear in the UI
             foreach ($registered_modules as $module_id => $module_data) {
                 if (isset($known_modules[$module_id])) {
+                    if (empty($known_modules[$module_id]['name']) && !empty($module_data['name'])) {
+                        $known_modules[$module_id]['name'] = $module_data['name'];
+                    }
+                    if (empty($known_modules[$module_id]['description']) && !empty($module_data['description'])) {
+                        $known_modules[$module_id]['description'] = $module_data['description'];
+                    }
                     continue;
                 }
                 $label = ucwords(str_replace('_', ' ', $module_id));
                 $known_modules[$module_id] = [
-                    'name' => $label,
-                    'description' => __('Módulo disponible para la app', 'flavor-chat-ia'),
+                    'name' => !empty($module_data['name']) ? $module_data['name'] : $label,
+                    'description' => !empty($module_data['description'])
+                        ? $module_data['description']
+                        : __('Módulo disponible para la app', 'flavor-chat-ia'),
                     'api_class' => '',
                     'icon' => 'extension',
                     'color' => '#607D8B',
@@ -2494,6 +2509,12 @@ class Flavor_App_Config_Admin {
             }
 
             foreach ($known_modules as $module_id => $module_data):
+                if (empty($module_data['name'])) {
+                    $module_data['name'] = ucwords(str_replace(['_', '-'], ' ', $module_id));
+                }
+                if (!isset($module_data['description']) || $module_data['description'] === '') {
+                    $module_data['description'] = __('Módulo disponible para la app', 'flavor-chat-ia');
+                }
                 $is_installed = isset($registered_modules[$module_id]);
                 $is_active = in_array($module_id, $active_modules, true);
                 $api_available = !empty($module_data['api_class'])
@@ -2964,6 +2985,7 @@ class Flavor_App_Config_Admin {
 
         $settings['active_modules'] = $active_modules;
         update_option('flavor_chat_ia_settings', $settings);
+        update_option('flavor_active_modules', $active_modules);
 
         $apps_config = get_option('flavor_apps_config', []);
         if (!isset($apps_config['modules']) || !is_array($apps_config['modules'])) {

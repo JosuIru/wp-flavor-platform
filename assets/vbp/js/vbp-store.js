@@ -128,7 +128,10 @@ document.addEventListener('alpine:init', () => {
         get canRedo() { return this.history.future.length > 0; },
         get selectedElement() {
             if (this.selection.elementIds.length === 1) {
-                return this.getElement(this.selection.elementIds[0]);
+                // Usar getElementDeep para encontrar elementos hijos de contenedores
+                var element = this.getElementDeep(this.selection.elementIds[0]);
+                // Asegurar estructura completa de estilos
+                return this.ensureStylesComplete(element);
             }
             return null;
         },
@@ -137,17 +140,33 @@ document.addEventListener('alpine:init', () => {
         addElement(type, index = -1) {
             this.saveToHistory();
 
+            // Buscar datos del bloque original en VBP_Config
+            var bloqueOriginal = this.getBlockFromConfig(type);
+
             const nuevoElemento = {
                 id: 'el_' + Math.random().toString(36).substr(2, 9),
                 type: type,
                 variant: this.getDefaultVariant(type),
-                name: this.getDefaultName(type),
+                name: bloqueOriginal ? bloqueOriginal.name : this.getDefaultName(type),
                 visible: true,
                 locked: false,
                 data: this.getDefaultData(type),
                 styles: this.getDefaultStyles(),
                 children: []
             };
+
+            // Si es un bloque de módulo, copiar datos adicionales
+            if (bloqueOriginal) {
+                if (bloqueOriginal.shortcode) {
+                    nuevoElemento.shortcode = bloqueOriginal.shortcode;
+                }
+                if (bloqueOriginal.preview_html) {
+                    nuevoElemento.preview_html = bloqueOriginal.preview_html;
+                }
+                if (bloqueOriginal.module) {
+                    nuevoElemento.module = bloqueOriginal.module;
+                }
+            }
 
             if (index === -1) {
                 this.elements.push(nuevoElemento);
@@ -168,6 +187,29 @@ document.addEventListener('alpine:init', () => {
         },
 
         /**
+         * Obtiene datos de un bloque desde VBP_Config.blocks
+         */
+        getBlockFromConfig(type) {
+            if (typeof VBP_Config === 'undefined' || !VBP_Config.blocks) {
+                return null;
+            }
+
+            for (var i = 0; i < VBP_Config.blocks.length; i++) {
+                var categoria = VBP_Config.blocks[i];
+                if (categoria.blocks) {
+                    for (var j = 0; j < categoria.blocks.length; j++) {
+                        var bloque = categoria.blocks[j];
+                        if (bloque.id === type) {
+                            return bloque;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        },
+
+        /**
          * Añadir elemento como hijo de un contenedor
          * @param {string} type - Tipo de elemento a crear
          * @param {string} containerId - ID del contenedor padre
@@ -183,11 +225,14 @@ document.addEventListener('alpine:init', () => {
 
             this.saveToHistory();
 
+            // Buscar datos del bloque original en VBP_Config
+            var bloqueOriginal = this.getBlockFromConfig(type);
+
             var nuevoElemento = {
                 id: 'el_' + Math.random().toString(36).substr(2, 9),
                 type: type,
                 variant: this.getDefaultVariant(type),
-                name: this.getDefaultName(type),
+                name: bloqueOriginal ? bloqueOriginal.name : this.getDefaultName(type),
                 visible: true,
                 locked: false,
                 data: this.getDefaultData(type),
@@ -195,6 +240,19 @@ document.addEventListener('alpine:init', () => {
                 children: [],
                 _columnIndex: columnIndex
             };
+
+            // Si es un bloque de módulo, copiar datos adicionales
+            if (bloqueOriginal) {
+                if (bloqueOriginal.shortcode) {
+                    nuevoElemento.shortcode = bloqueOriginal.shortcode;
+                }
+                if (bloqueOriginal.preview_html) {
+                    nuevoElemento.preview_html = bloqueOriginal.preview_html;
+                }
+                if (bloqueOriginal.module) {
+                    nuevoElemento.module = bloqueOriginal.module;
+                }
+            }
 
             // Asegurar que children existe
             if (!container.children) {
@@ -302,6 +360,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         updateElement(id, cambios) {
+            // Primero intentar en nivel principal
             const index = this.getElementIndex(id);
             if (index !== -1) {
                 this.saveToHistory();
@@ -313,10 +372,33 @@ document.addEventListener('alpine:init', () => {
                 this.isDirty = true;
                 // Trigger autosave debounced
                 debouncedSave(this);
+                return;
+            }
+
+            // Buscar en hijos de contenedores
+            for (var i = 0; i < this.elements.length; i++) {
+                if (this.elements[i].children && this.elements[i].children.length > 0) {
+                    for (var j = 0; j < this.elements[i].children.length; j++) {
+                        if (this.elements[i].children[j].id === id) {
+                            this.saveToHistory();
+                            // Actualizar el hijo
+                            var newChildVersion = (this.elements[i].children[j]._version || 0) + 1;
+                            this.elements[i].children[j] = { ...this.elements[i].children[j], ...cambios, _version: newChildVersion };
+                            // Forzar re-render del contenedor padre
+                            var parentVersion = (this.elements[i]._version || 0) + 1;
+                            this.elements[i] = { ...this.elements[i], _version: parentVersion };
+                            elementIndex.set(this.elements[i].id, { element: this.elements[i], index: i });
+                            this.isDirty = true;
+                            debouncedSave(this);
+                            return;
+                        }
+                    }
+                }
             }
         },
 
         removeElement(id) {
+            // Primero intentar en nivel principal
             const index = this.getElementIndex(id);
             if (index !== -1) {
                 this.saveToHistory();
@@ -327,6 +409,29 @@ document.addEventListener('alpine:init', () => {
                 this.clearSelection();
                 // Trigger autosave debounced
                 debouncedSave(this);
+                return;
+            }
+
+            // Buscar y eliminar de hijos de contenedores
+            for (var i = 0; i < this.elements.length; i++) {
+                if (this.elements[i].children && this.elements[i].children.length > 0) {
+                    var childIndex = this.elements[i].children.findIndex(function(child) {
+                        return child.id === id;
+                    });
+                    if (childIndex !== -1) {
+                        this.saveToHistory();
+                        // Eliminar el hijo
+                        this.elements[i].children.splice(childIndex, 1);
+                        // Forzar re-render del contenedor padre
+                        var parentVersion = (this.elements[i]._version || 0) + 1;
+                        this.elements[i] = { ...this.elements[i], _version: parentVersion };
+                        elementIndex.set(this.elements[i].id, { element: this.elements[i], index: i });
+                        this.isDirty = true;
+                        this.clearSelection();
+                        debouncedSave(this);
+                        return;
+                    }
+                }
             }
         },
 
@@ -749,8 +854,61 @@ document.addEventListener('alpine:init', () => {
                 borders: { radius: '', width: '', color: '', style: '' },
                 shadows: { boxShadow: '' },
                 layout: { display: '', flexDirection: '', justifyContent: '', alignItems: '', gap: '' },
-                advanced: { cssId: '', cssClasses: '', customCss: '' }
+                dimensions: { width: '', height: '', minHeight: '', maxWidth: '' },
+                advanced: {
+                    cssId: '',
+                    cssClasses: '',
+                    customCss: '',
+                    entranceAnimation: '',
+                    hoverAnimation: '',
+                    loopAnimation: '',
+                    parallaxEnabled: false,
+                    parallaxSpeed: 0.5
+                }
             };
+        },
+
+        /**
+         * Asegurar que un elemento tiene la estructura completa de estilos
+         */
+        ensureStylesComplete(element) {
+            if (!element) return element;
+
+            var defaults = this.getDefaultStyles();
+
+            if (!element.styles) {
+                element.styles = defaults;
+                return element;
+            }
+
+            // Merge profundo para cada sección
+            var sections = ['spacing', 'colors', 'typography', 'borders', 'shadows', 'layout', 'dimensions', 'advanced'];
+            var self = this;
+
+            sections.forEach(function(section) {
+                if (!element.styles[section]) {
+                    element.styles[section] = defaults[section];
+                } else if (typeof defaults[section] === 'object') {
+                    // Merge de subobjetos
+                    Object.keys(defaults[section]).forEach(function(key) {
+                        if (element.styles[section][key] === undefined) {
+                            element.styles[section][key] = defaults[section][key];
+                        }
+                    });
+                }
+            });
+
+            // Asegurar subobjetos de spacing
+            if (element.styles.spacing) {
+                if (!element.styles.spacing.margin) {
+                    element.styles.spacing.margin = { top: '', right: '', bottom: '', left: '' };
+                }
+                if (!element.styles.spacing.padding) {
+                    element.styles.spacing.padding = { top: '', right: '', bottom: '', left: '' };
+                }
+            }
+
+            return element;
         },
 
         /**

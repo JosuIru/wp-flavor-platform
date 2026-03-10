@@ -239,7 +239,15 @@ class Flavor_Colectivos_Frontend_Controller {
 
             <?php if (empty($colectivos)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No hay colectivos disponibles.', 'flavor-chat-ia'); ?>
+                    <p><?php _e('No hay colectivos disponibles.', 'flavor-chat-ia'); ?></p>
+                    <div class="flavor-alert-actions">
+                        <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/')); ?>" class="flavor-btn flavor-btn-outline">
+                            <?php _e('Quitar filtros', 'flavor-chat-ia'); ?>
+                        </a>
+                        <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/crear/')); ?>" class="flavor-btn flavor-btn-primary">
+                            <?php _e('Crear colectivo', 'flavor-chat-ia'); ?>
+                        </a>
+                    </div>
                 </div>
             <?php else: ?>
                 <div class="flavor-colectivos-grid">
@@ -566,7 +574,7 @@ class Flavor_Colectivos_Frontend_Controller {
     public function shortcode_crear($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   sprintf(__('<a href="%s">Inicia sesión</a> para crear un colectivo.', 'flavor-chat-ia'), wp_login_url(get_permalink())) .
+                   sprintf(__('<a href="%s">Inicia sesión</a> para crear un colectivo.', 'flavor-chat-ia'), wp_login_url(flavor_current_request_url())) .
                    '</div>';
         }
 

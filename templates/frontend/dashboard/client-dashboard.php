@@ -42,6 +42,19 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
      data-theme="<?php echo esc_attr($tema_usuario); ?>"
      data-user-id="<?php echo esc_attr($usuario->ID); ?>">
 
+    <?php if (!empty($legacy_notice) && !empty($portal_url)) : ?>
+        <section class="flavor-client-dashboard__legacy-notice fl-legacy-notice" aria-label="<?php esc_attr_e('Aviso de compatibilidad', 'flavor-chat-ia'); ?>">
+            <div class="flavor-client-dashboard__legacy-copy">
+                <span class="flavor-client-dashboard__legacy-eyebrow"><?php echo esc_html($legacy_notice['eyebrow'] ?? ''); ?></span>
+                <h2 class="flavor-client-dashboard__legacy-title"><?php echo esc_html($legacy_notice['title'] ?? ''); ?></h2>
+                <p class="flavor-client-dashboard__legacy-text"><?php echo esc_html($legacy_notice['text'] ?? ''); ?></p>
+            </div>
+            <a href="<?php echo esc_url($portal_url); ?>" class="flavor-client-dashboard__legacy-cta fl-btn fl-btn--primary">
+                <?php echo esc_html($legacy_notice['cta'] ?? __('Abrir Mi Portal', 'flavor-chat-ia')); ?>
+            </a>
+        </section>
+    <?php endif; ?>
+
     <!-- Skip Links (Accesibilidad) -->
     <a href="#fl-main-content" class="fl-skip-link"><?php esc_html_e('Saltar al contenido principal', 'flavor-chat-ia'); ?></a>
     <a href="#fl-shortcuts" class="fl-skip-link"><?php esc_html_e('Saltar a acciones rapidas', 'flavor-chat-ia'); ?></a>
@@ -238,16 +251,149 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
         </section>
     <?php endif; ?>
 
+    <?php if (!empty($ecosystem_hierarchy)) : ?>
+        <section class="flavor-client-dashboard__ecosystems" aria-labelledby="ecosystems-heading">
+            <div class="flavor-client-dashboard__section-header">
+                <h2 id="ecosystems-heading" class="flavor-client-dashboard__section-title fl-section-title">
+                    <?php esc_html_e('Mis ecosistemas activos', 'flavor-chat-ia'); ?>
+                </h2>
+            </div>
+            <div class="flavor-client-dashboard__ecosystems-grid">
+                <?php foreach ($ecosystem_hierarchy as $node) : ?>
+                    <article class="flavor-client-dashboard__ecosystem-card">
+                        <div class="flavor-client-dashboard__ecosystem-head">
+                            <div>
+                                <h3 class="flavor-client-dashboard__ecosystem-name"><?php echo esc_html($node['name']); ?></h3>
+                                <span class="flavor-client-dashboard__ecosystem-role"><?php echo esc_html($node['role_label']); ?></span>
+                                <?php if (!empty($dashboard_contexts) && !empty($node['context_match_score'])) : ?>
+                                    <div class="flavor-client-dashboard__ecosystem-context">
+                                        <?php esc_html_e('Relevante en este contexto', 'flavor-chat-ia'); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <span class="flavor-client-dashboard__ecosystem-count"><?php echo esc_html($node['satellite_count']); ?></span>
+                        </div>
+
+                        <?php if (!empty($node['satellites'])) : ?>
+                            <div class="flavor-client-dashboard__ecosystem-block">
+                                <div class="flavor-client-dashboard__ecosystem-label"><?php esc_html_e('Satelites', 'flavor-chat-ia'); ?></div>
+                                <div class="flavor-client-dashboard__ecosystem-tags">
+                                    <?php foreach ($node['satellites'] as $satellite) : ?>
+                                        <span class="flavor-client-dashboard__ecosystem-tag">
+                                            <?php echo esc_html($satellite['name']); ?>
+                                        </span>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($node['transversals'])) : ?>
+                            <div class="flavor-client-dashboard__ecosystem-block">
+                                <div class="flavor-client-dashboard__ecosystem-label"><?php esc_html_e('Capas transversales', 'flavor-chat-ia'); ?></div>
+                                <div class="flavor-client-dashboard__ecosystem-tags">
+                                    <?php foreach ($node['transversals'] as $transversal) : ?>
+                                        <?php if (!empty($transversal['url'])) : ?>
+                                            <a href="<?php echo esc_url($transversal['url']); ?>" class="flavor-client-dashboard__ecosystem-tag <?php echo !empty($transversal['is_active']) ? 'is-active' : 'is-suggested'; ?>">
+                                                <?php echo esc_html($transversal['name']); ?>
+                                            </a>
+                                        <?php else : ?>
+                                            <span class="flavor-client-dashboard__ecosystem-tag <?php echo !empty($transversal['is_active']) ? 'is-active' : 'is-suggested'; ?>">
+                                                <?php echo esc_html($transversal['name']); ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($node['shortcuts'])) : ?>
+                            <div class="flavor-client-dashboard__ecosystem-block">
+                                <div class="flavor-client-dashboard__ecosystem-label"><?php esc_html_e('Accesos', 'flavor-chat-ia'); ?></div>
+                                <div class="flavor-client-dashboard__ecosystem-links">
+                                    <?php foreach (array_slice($node['shortcuts'], 0, 3) as $shortcut) : ?>
+                                        <a href="<?php echo esc_url($shortcut['url'] ?? '#'); ?>" class="flavor-client-dashboard__ecosystem-link">
+                                            <?php echo esc_html($shortcut['label']); ?>
+                                        </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="flavor-client-dashboard__ecosystem-actions">
+                            <a href="<?php echo esc_url($node['url']); ?>" class="flavor-client-dashboard__ecosystem-open">
+                                <?php esc_html_e('Abrir modulo', 'flavor-chat-ia'); ?>
+                            </a>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <?php if (!empty($panel_layers['signals'])) : ?>
+        <section class="flavor-client-dashboard__signals" aria-labelledby="signals-heading">
+            <div class="flavor-client-dashboard__section-header">
+                <h2 id="signals-heading" class="flavor-client-dashboard__section-title fl-section-title">
+                    <?php esc_html_e('Senales del nodo', 'flavor-chat-ia'); ?>
+                </h2>
+            </div>
+            <div class="flavor-client-dashboard__layer-list">
+                <?php foreach ($panel_layers['signals'] as $signal_item) : ?>
+                    <a href="<?php echo esc_url($signal_item['url'] ?? '#'); ?>" class="flavor-client-dashboard__layer-card flavor-client-dashboard__layer-card--signal">
+                        <span class="flavor-client-dashboard__layer-kind"><?php echo esc_html($signal_item['kind'] ?? ''); ?></span>
+                        <?php if (!empty($signal_item['severity']['label'])) : ?>
+                            <span class="flavor-client-dashboard__layer-severity flavor-client-dashboard__layer-severity--<?php echo esc_attr($signal_item['severity']['slug'] ?? 'stable'); ?>">
+                                <?php echo esc_html($signal_item['severity']['label']); ?>
+                            </span>
+                        <?php endif; ?>
+                        <strong class="flavor-client-dashboard__layer-title"><?php echo esc_html($signal_item['label'] ?? ''); ?></strong>
+                        <?php if (!empty($signal_item['meta'])) : ?>
+                            <span class="flavor-client-dashboard__layer-meta"><?php echo esc_html(wp_trim_words($signal_item['meta'], 12)); ?></span>
+                        <?php endif; ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <?php if (!empty($panel_layers['actions'])) : ?>
+        <section class="flavor-client-dashboard__actions-layer" aria-labelledby="actions-layer-heading">
+            <div class="flavor-client-dashboard__section-header">
+                <h2 id="actions-layer-heading" class="flavor-client-dashboard__section-title fl-section-title">
+                    <?php esc_html_e('Que hacer ahora', 'flavor-chat-ia'); ?>
+                </h2>
+            </div>
+            <div class="flavor-client-dashboard__layer-list">
+                <?php foreach ($panel_layers['actions'] as $action_item) : ?>
+                    <a href="<?php echo esc_url($action_item['url'] ?? '#'); ?>" class="flavor-client-dashboard__layer-card flavor-client-dashboard__layer-card--action">
+                        <span class="flavor-client-dashboard__layer-kind"><?php echo esc_html($action_item['kind'] ?? ''); ?></span>
+                        <?php if (!empty($action_item['severity']['label'])) : ?>
+                            <span class="flavor-client-dashboard__layer-severity flavor-client-dashboard__layer-severity--<?php echo esc_attr($action_item['severity']['slug'] ?? 'stable'); ?>">
+                                <?php echo esc_html($action_item['severity']['label']); ?>
+                            </span>
+                        <?php endif; ?>
+                        <strong class="flavor-client-dashboard__layer-title"><?php echo esc_html($action_item['label'] ?? ''); ?></strong>
+                        <?php if (!empty($action_item['meta'])) : ?>
+                            <span class="flavor-client-dashboard__layer-meta"><?php echo esc_html($action_item['meta']); ?></span>
+                        <?php elseif (!empty($action_item['context'])) : ?>
+                            <span class="flavor-client-dashboard__layer-meta"><?php echo esc_html($action_item['context']); ?></span>
+                        <?php endif; ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
     <!-- =========================================================
          ATAJOS RAPIDOS
     ========================================================= -->
-    <?php if ($atributos['mostrar_atajos'] === 'true' && !empty($atajos)) : ?>
+    <?php if ($atributos['mostrar_atajos'] === 'true' && !empty($panel_layers['services'])) : ?>
         <section class="flavor-client-dashboard__shortcuts fl-quick-actions-section" id="fl-shortcuts" aria-labelledby="shortcuts-heading">
             <h2 id="shortcuts-heading" class="flavor-client-dashboard__section-title fl-section-title">
-                <?php esc_html_e('Acciones Rapidas', 'flavor-chat-ia'); ?>
+                <?php esc_html_e('Herramientas disponibles', 'flavor-chat-ia'); ?>
             </h2>
             <div class="flavor-client-dashboard__shortcuts-grid fl-quick-actions">
-                <?php foreach ($atajos as $identificador => $atajo) :
+                <?php foreach ($panel_layers['services'] as $identificador => $atajo) :
                     $color_atajo = $atajo['color'] ?? 'secondary';
                     $target_atajo = $atajo['target'] ?? '_self';
                     ?>
@@ -272,17 +418,19 @@ $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
     ========================================================= -->
     <div class="flavor-client-dashboard__main fl-dashboard-main" id="fl-main-content" role="main">
 
-        <!-- DEBUG: Info de widgets (QUITAR EN PRODUCCION) -->
-        <div style="background:#fef3c7;padding:12px;margin-bottom:16px;border-radius:8px;font-size:13px;border:2px solid #f59e0b;">
-            <strong style="color:#92400e;">🔧 Debug Dashboard v4.1:</strong><br>
-            📦 Widgets locales: <strong><?php echo count($widgets ?? []); ?></strong> |
-            📂 Grupos: <strong><?php echo count($widgets_agrupados ?? []); ?></strong> |
-            🏷️ Categorías: <strong><?php echo count($categorias ?? []); ?></strong> |
-            📊 Total widgets: <strong><?php echo $total_widgets ?? 0; ?></strong>
-            <?php if (!empty($widgets_agrupados)) : ?>
-                <br>Categorías activas: <?php echo implode(', ', array_keys($widgets_agrupados)); ?>
-            <?php endif; ?>
-        </div>
+        <?php if (defined('WP_DEBUG') && WP_DEBUG && current_user_can('manage_options')) : ?>
+        <!-- Debug info solo para admins en modo debug -->
+        <details class="fl-debug-panel" style="margin-bottom:16px;">
+            <summary style="cursor:pointer;padding:8px 12px;background:#fef3c7;border-radius:8px;font-size:12px;color:#92400e;">
+                🔧 Debug Dashboard v4.1
+            </summary>
+            <div style="padding:12px;background:#fffbeb;border-radius:0 0 8px 8px;font-size:12px;">
+                Widgets: <?php echo count($widgets ?? []); ?> |
+                Grupos: <?php echo count($widgets_agrupados ?? []); ?> |
+                Categorías: <?php echo count($categorias ?? []); ?>
+            </div>
+        </details>
+        <?php endif; ?>
 
         <!-- =========================================================
              FILTROS DE CATEGORIA

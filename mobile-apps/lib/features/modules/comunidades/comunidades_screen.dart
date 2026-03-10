@@ -157,6 +157,7 @@ class _ComunidadDetalleScreenState extends ConsumerState<ComunidadDetalleScreen>
   Map<String, dynamic>? _datosComunidad;
   bool _cargando = true;
   String? _mensajeError;
+  bool _uniendose = false;
 
   @override
   void initState() {
@@ -213,12 +214,78 @@ class _ComunidadDetalleScreenState extends ConsumerState<ComunidadDetalleScreen>
                           Text(_datosComunidad!['descripcion']),
                         const SizedBox(height: 24),
                         FilledButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.group_add),
-                          label: const Text('Unirse a la comunidad'),
+                          onPressed: _uniendose ? null : _unirseAComunidad,
+                          icon: _uniendose
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                )
+                              : const Icon(Icons.group_add),
+                          label: Text(_uniendose ? 'Uniendose...' : 'Unirse a la comunidad'),
                         ),
                       ],
                     ),
     );
+  }
+
+  Future<void> _unirseAComunidad() async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Unirse a la comunidad'),
+        content: Text(
+          '¿Deseas unirte a "${_datosComunidad?['nombre'] ?? 'esta comunidad'}"?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Unirme'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmar != true || !mounted) return;
+
+    setState(() => _uniendose = true);
+
+    try {
+      final clienteApi = ref.read(apiClientProvider);
+      final respuesta = await clienteApi.post('/comunidades/${widget.comunidadId}/unirse');
+
+      if (!mounted) return;
+
+      if (respuesta.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Te has unido a la comunidad'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        _cargarDetalle();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(respuesta.error ?? 'Error al unirse'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _uniendose = false);
+      }
+    }
   }
 }

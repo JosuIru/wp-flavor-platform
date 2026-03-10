@@ -1,5 +1,9 @@
 # ✅ Checklist de Verificación - Sistema Completo
 
+> Documento de verificacion de una fase historica.
+> Sirve como checklist de contexto, pero no demuestra por si solo estado real vigente ni validacion runtime actual.
+> Para estado actual, prevalecen `ESTADO-REAL-PLUGIN.md` y `../reports/AUDITORIA-ESTADO-REAL-2026-03-04.md`.
+
 ## 🎯 Objetivo
 Verificar que todas las funcionalidades implementadas funcionan correctamente.
 

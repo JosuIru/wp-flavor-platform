@@ -70,7 +70,7 @@ $usuario_actual = $usuario_logueado ? wp_get_current_user() : null;
             <h3><?php esc_html_e('Inicia sesión para continuar', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Necesitas tener una cuenta para subir contenido multimedia.', 'flavor-chat-ia'); ?></p>
             <div class="flavor-upload-login-acciones">
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-btn flavor-btn--primario">
+                <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-btn flavor-btn--primario">
                     <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
                 </a>
                 <a href="<?php echo esc_url(wp_registration_url()); ?>" class="flavor-btn flavor-btn--secundario">

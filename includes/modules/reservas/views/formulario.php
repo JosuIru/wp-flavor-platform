@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Obtener configuración del módulo
-$module = Flavor_Module_Loader::get_instance()->get_module('reservas');
+$module = Flavor_Chat_Module_Loader::get_instance()->get_module('reservas');
 $settings = $module ? $module->get_settings() : [];
 
 $hora_apertura = $settings['hora_apertura'] ?? '09:00';
@@ -171,7 +171,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
             <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                 <?php _e('Solicitar Reserva', 'flavor-chat-ia'); ?>
             </button>
-            <a href="<?php echo esc_url(home_url('/reservas/')); ?>" class="flavor-btn flavor-btn-secondary flavor-btn-lg">
+            <a href="<?php echo esc_url(home_url('/mi-portal/reservas/')); ?>" class="flavor-btn flavor-btn-secondary flavor-btn-lg">
                 <?php _e('Cancelar', 'flavor-chat-ia'); ?>
             </a>
         </div>

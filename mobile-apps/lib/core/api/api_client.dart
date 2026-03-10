@@ -73,6 +73,9 @@ class ApiClient {
   /// Obtiene la baseUrl actual
   String get currentBaseUrl => _dio.options.baseUrl;
 
+  /// Expone el cliente Dio para uso interno (ej: E2E API)
+  Dio get dio => _dio;
+
   // ==========================================
   // GESTIÓN DE TOKEN
   // ==========================================
@@ -2981,6 +2984,31 @@ class ApiClient {
       final response = await _dio.post(
         '$serverUrl/wp-json/flavor/v1/chat-interno/conversacion/$conversacionId/enviar',
         data: {'mensaje': mensaje},
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Envia un mensaje cifrado E2E
+  Future<ApiResponse<Map<String, dynamic>>> sendChatInternoMensajeCifrado({
+    required int conversacionId,
+    required String ciphertext,
+    required String e2eHeader,
+    required int e2eVersion,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.post(
+        '$serverUrl/wp-json/flavor/v1/chat-interno/conversacion/$conversacionId/enviar',
+        data: {
+          'mensaje': '', // Texto plano vacio
+          'cifrado': 1,
+          'ciphertext': ciphertext,
+          'e2e_header': e2eHeader,
+          'e2e_version': e2eVersion,
+        },
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {

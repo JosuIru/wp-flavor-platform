@@ -86,6 +86,13 @@ dependencies:
   # Biometric authentication
   local_auth: ^2.1.8
 
+  # E2E Encryption (Signal Protocol)
+  cryptography: ^2.7.0
+  convert: ^3.1.1
+
+  # Audio player for radio streaming
+  just_audio: ^0.9.36
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

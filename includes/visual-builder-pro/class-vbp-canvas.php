@@ -419,6 +419,23 @@ class Flavor_VBP_Canvas {
             $css[] = 'box-shadow: ' . esc_attr( $estilos['shadows']['boxShadow'] );
         }
 
+        // Dimensions
+        if ( ! empty( $estilos['dimensions'] ) ) {
+            $dims = $estilos['dimensions'];
+            if ( ! empty( $dims['width'] ) ) {
+                $css[] = 'width: ' . esc_attr( $dims['width'] );
+            }
+            if ( ! empty( $dims['height'] ) ) {
+                $css[] = 'height: ' . esc_attr( $dims['height'] );
+            }
+            if ( ! empty( $dims['minHeight'] ) ) {
+                $css[] = 'min-height: ' . esc_attr( $dims['minHeight'] );
+            }
+            if ( ! empty( $dims['maxWidth'] ) ) {
+                $css[] = 'max-width: ' . esc_attr( $dims['maxWidth'] );
+            }
+        }
+
         return implode( '; ', $css );
     }
 
@@ -1370,11 +1387,11 @@ class Flavor_VBP_Canvas {
         $estilos     = $elemento['styles'] ?? array();
         $estilos_css = $this->generar_estilos_elemento( $estilos );
 
-        $columnas       = $data['columns'] ?? 2;
+        $columnas       = $data['columnas'] ?? ( $data['columns'] ?? 2 );
         $column_widths  = $data['columnWidths'] ?? array();
-        $gap            = $data['gap'] ?? '20px';
-        $vertical_align = $data['verticalAlign'] ?? 'start';
-        $stack_mobile   = $data['stackOnMobile'] ?? true;
+        $gap            = isset( $data['gap'] ) ? $data['gap'] . 'px' : '20px';
+        $vertical_align = $data['align'] ?? ( $data['verticalAlign'] ?? 'start' );
+        $stack_mobile   = $data['stack_on'] ?? ( $data['stackOnMobile'] ?? 'mobile' );
         $children       = $elemento['children'] ?? array();
 
         // Generar ID único para estilos inline
@@ -1451,6 +1468,78 @@ class Flavor_VBP_Canvas {
      */
     private function render_row( $elemento ) {
         return $this->render_columns( $elemento );
+    }
+
+    /**
+     * Renderiza Container
+     */
+    private function render_container( $elemento ) {
+        $data        = $elemento['data'] ?? array();
+        $estilos     = $elemento['styles'] ?? array();
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+        $children    = $elemento['children'] ?? array();
+
+        $max_width  = $data['max_width'] ?? '1200px';
+        $padding    = $data['padding'] ?? '20px';
+        $background = $data['background'] ?? 'transparent';
+
+        $container_css = sprintf(
+            'max-width: %s; margin: 0 auto; padding: %s; background: %s; %s',
+            esc_attr( $max_width ),
+            esc_attr( $padding ),
+            esc_attr( $background ),
+            esc_attr( $estilos_css )
+        );
+
+        $html = '<div class="vbp-container flavor-container" style="' . esc_attr( $container_css ) . '">';
+
+        if ( ! empty( $children ) ) {
+            foreach ( $children as $hijo ) {
+                $html .= $this->renderizar_elemento( $hijo );
+            }
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza Grid
+     */
+    private function render_grid( $elemento ) {
+        $data        = $elemento['data'] ?? array();
+        $estilos     = $elemento['styles'] ?? array();
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+        $children    = $elemento['children'] ?? array();
+
+        $columnas = $data['columnas'] ?? 3;
+        $filas    = $data['filas'] ?? '';
+        $gap      = isset( $data['gap'] ) ? $data['gap'] . 'px' : '24px';
+
+        $grid_rows = ! empty( $filas ) ? 'grid-template-rows: repeat(' . intval( $filas ) . ', auto);' : '';
+
+        $grid_css = sprintf(
+            'display: grid; grid-template-columns: repeat(%d, 1fr); %s gap: %s; %s',
+            intval( $columnas ),
+            $grid_rows,
+            esc_attr( $gap ),
+            esc_attr( $estilos_css )
+        );
+
+        $html = '<div class="vbp-grid flavor-grid" style="' . esc_attr( $grid_css ) . '">';
+
+        if ( ! empty( $children ) ) {
+            foreach ( $children as $hijo ) {
+                $html .= '<div class="vbp-grid-item">';
+                $html .= $this->renderizar_elemento( $hijo );
+                $html .= '</div>';
+            }
+        }
+
+        $html .= '</div>';
+
+        return $html;
     }
 
     /**

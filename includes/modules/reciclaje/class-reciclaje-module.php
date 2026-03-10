@@ -31,6 +31,10 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         $this->name = 'Reciclaje Comunitario'; // Translation loaded on init
         $this->description = 'Sistema de gestión de reciclaje, puntos limpios y economía circular en la comunidad.'; // Translation loaded on init
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['regeneracion'];
+        $this->gailu_contribuye_a = ['impacto', 'autonomia'];
+
         parent::__construct();
     }
 

@@ -36,14 +36,74 @@
                 e.preventDefault();
                 self.toggleFavorito($(this));
             });
+
+            // Formulario de publicar anuncio
+            $(document).on('submit', '#marketplace-publicar-form', function(e) {
+                e.preventDefault();
+                self.publicarAnuncio($(this));
+            });
+
+            // Guardar borrador
+            $(document).on('click', '#mp-guardar-borrador', function(e) {
+                e.preventDefault();
+                self.publicarAnuncio($('#marketplace-publicar-form'), true);
+            });
+        },
+
+        publicarAnuncio: function($form, esBorrador) {
+            var self = this;
+            var $submitBtn = $form.find('button[type="submit"]');
+            var formData = new FormData($form[0]);
+
+            // Añadir flag de borrador si aplica
+            if (esBorrador) {
+                formData.append('estado', 'borrador');
+            }
+
+            $submitBtn.prop('disabled', true).text(self.config.i18n.cargando);
+
+            $.ajax({
+                url: self.config.restUrl + 'anuncios',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-WP-Nonce': self.config.restNonce
+                },
+                success: function(response) {
+                    $submitBtn.prop('disabled', false).text(esBorrador ? 'Guardar borrador' : 'Publicar Anuncio');
+                    if (response.success) {
+                        self.mostrarNotificacion(response.mensaje || 'Anuncio publicado', 'success');
+                        // Redireccionar a mis anuncios o al detalle
+                        if (response.anuncio && response.anuncio.id) {
+                            window.location.href = self.config.restUrl.replace('/flavor/v1/marketplace/', '/mi-portal/marketplace/detalle/?anuncio_id=') + response.anuncio.id;
+                        } else {
+                            window.location.href = window.location.origin + '/mi-portal/marketplace/mis-anuncios/';
+                        }
+                    } else {
+                        self.mostrarNotificacion(response.message || self.config.i18n.error, 'error');
+                    }
+                },
+                error: function(xhr) {
+                    $submitBtn.prop('disabled', false).text(esBorrador ? 'Guardar borrador' : 'Publicar Anuncio');
+                    var errorMsg = self.config.i18n.error;
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+                    self.mostrarNotificacion(errorMsg, 'error');
+                }
+            });
         },
 
         filtrarAnuncios: function() {
             var self = this;
             var $grid = $('#marketplace-lista');
+            var $catalogo = $('.marketplace-catalogo');
             var buscar = $('#marketplace-buscar').val();
             var tipo = $('#marketplace-filtrar-tipo').val();
             var categoria = $('#marketplace-filtrar-categoria').val();
+            var comunidadId = $catalogo.data('comunidad') || 0;
 
             $grid.addClass('marketplace-loading');
 
@@ -55,7 +115,8 @@
                     nonce: self.config.nonce,
                     buscar: buscar,
                     tipo: tipo,
-                    categoria: categoria
+                    categoria: categoria,
+                    comunidad_id: comunidadId
                 },
                 success: function(response) {
                     $grid.removeClass('marketplace-loading');

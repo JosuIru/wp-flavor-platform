@@ -54,12 +54,12 @@ class _ForosScreenState extends ConsumerState<ForosScreen> {
       appBar: AppBar(
         title: const Text('Foros'),
         actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.search), onPressed: _mostrarBusqueda),
           IconButton(icon: const Icon(Icons.refresh), onPressed: _cargarDatos),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => _crearNuevoForo(context),
         child: const Icon(Icons.add),
       ),
       body: _cargando
@@ -253,6 +253,153 @@ class _ForosScreenState extends ConsumerState<ForosScreen> {
     );
   }
 
+  Future<void> _crearNuevoForo(BuildContext context) async {
+    final tituloController = TextEditingController();
+    final descripcionController = TextEditingController();
+    String categoriaSeleccionada = 'general';
+
+    final categorias = ['general', 'anuncios', 'debates', 'ayuda', 'sugerencias'];
+
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.forum, color: Colors.purple.shade400),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Nuevo Debate',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context, false),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: tituloController,
+                  decoration: const InputDecoration(
+                    labelText: 'Titulo del debate',
+                    prefixIcon: Icon(Icons.title),
+                    border: OutlineInputBorder(),
+                    hintText: 'Escribe un titulo descriptivo',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: categoriaSeleccionada,
+                  decoration: const InputDecoration(
+                    labelText: 'Categoria',
+                    prefixIcon: Icon(Icons.category),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: categorias.map((categoria) {
+                    return DropdownMenuItem<String>(
+                      value: categoria,
+                      child: Text(categoria[0].toUpperCase() + categoria.substring(1)),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setModalState(() => categoriaSeleccionada = value);
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Contenido',
+                    prefixIcon: Icon(Icons.description),
+                    border: OutlineInputBorder(),
+                    hintText: 'Describe el tema que quieres discutir...',
+                  ),
+                  maxLines: 4,
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () {
+                      if (tituloController.text.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('El titulo es obligatorio')),
+                        );
+                        return;
+                      }
+                      Navigator.pop(context, true);
+                    },
+                    icon: const Icon(Icons.send),
+                    label: const Text('Publicar debate'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    if (result == true && mounted) {
+      try {
+        final clienteApi = ref.read(apiClientProvider);
+        final respuesta = await clienteApi.post('/foros', data: {
+          'titulo': tituloController.text.trim(),
+          'descripcion': descripcionController.text.trim(),
+          'categoria': categoriaSeleccionada,
+        });
+
+        if (!mounted) return;
+
+        if (respuesta.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Debate creado correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _cargarDatos();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(respuesta.error ?? 'Error al crear el debate'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          );
+        }
+      }
+    }
+
+    tituloController.dispose();
+    descripcionController.dispose();
+  }
+
   Widget _construirEstadisticaForo(IconData icono, String valor, String etiqueta) {
     return Row(
       children: [
@@ -268,6 +415,170 @@ class _ForosScreenState extends ConsumerState<ForosScreen> {
           style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
         ),
       ],
+    );
+  }
+
+  void _mostrarBusqueda() {
+    final controladorBusqueda = TextEditingController();
+    List<dynamic> resultadosFiltrados = List.from(_listaForos);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => DraggableScrollableSheet(
+          initialChildSize: 0.85,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (context, scrollController) => Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.search, color: Colors.purple.shade400),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'Buscar en foros',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: controladorBusqueda,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: 'Escribe para buscar...',
+                        prefixIcon: const Icon(Icons.search),
+                        suffixIcon: controladorBusqueda.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  controladorBusqueda.clear();
+                                  setModalState(() {
+                                    resultadosFiltrados = List.from(_listaForos);
+                                  });
+                                },
+                              )
+                            : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onChanged: (textoBusqueda) {
+                        final busquedaMinusculas = textoBusqueda.toLowerCase();
+                        setModalState(() {
+                          if (textoBusqueda.isEmpty) {
+                            resultadosFiltrados = List.from(_listaForos);
+                          } else {
+                            resultadosFiltrados = _listaForos.where((foro) {
+                              final mapaForo = foro as Map<String, dynamic>;
+                              final titulo = (mapaForo['titulo'] ?? mapaForo['nombre'] ?? '').toString().toLowerCase();
+                              final descripcion = (mapaForo['descripcion'] ?? '').toString().toLowerCase();
+                              final autor = (mapaForo['autor'] ?? '').toString().toLowerCase();
+                              final categoria = (mapaForo['categoria'] ?? '').toString().toLowerCase();
+                              return titulo.contains(busquedaMinusculas) ||
+                                  descripcion.contains(busquedaMinusculas) ||
+                                  autor.contains(busquedaMinusculas) ||
+                                  categoria.contains(busquedaMinusculas);
+                            }).toList();
+                          }
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: resultadosFiltrados.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.search_off, size: 48, color: Colors.grey.shade400),
+                            const SizedBox(height: 12),
+                            Text(
+                              controladorBusqueda.text.isEmpty
+                                  ? 'No hay foros'
+                                  : 'Sin resultados para "${controladorBusqueda.text}"',
+                              style: TextStyle(color: Colors.grey.shade600),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.separated(
+                        controller: scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount: resultadosFiltrados.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        itemBuilder: (context, indice) {
+                          final foro = resultadosFiltrados[indice] as Map<String, dynamic>;
+                          final tituloForo = foro['titulo'] ?? foro['nombre'] ?? 'Sin titulo';
+                          final categoriaForo = foro['categoria'] ?? '';
+                          final autorForo = foro['autor'] ?? '';
+                          final respuestasForo = foro['respuestas'] ?? 0;
+
+                          return ListTile(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            tileColor: Colors.grey.shade100,
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.purple.shade100,
+                              child: Icon(Icons.forum, color: Colors.purple.shade700, size: 20),
+                            ),
+                            title: Text(
+                              tituloForo,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Row(
+                              children: [
+                                if (categoriaForo.isNotEmpty) ...[
+                                  Text(categoriaForo, style: const TextStyle(fontSize: 12)),
+                                  const Text(' • ', style: TextStyle(fontSize: 12)),
+                                ],
+                                if (autorForo.isNotEmpty)
+                                  Text(autorForo, style: const TextStyle(fontSize: 12)),
+                                if (respuestasForo > 0) ...[
+                                  const Text(' • ', style: TextStyle(fontSize: 12)),
+                                  Text('$respuestasForo resp.', style: const TextStyle(fontSize: 12)),
+                                ],
+                              ],
+                            ),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () {
+                              Navigator.pop(context);
+                              final idForo = foro['id'];
+                              if (idForo != null) {
+                                Navigator.of(this.context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => ForoDetalleScreen(foroId: idForo),
+                                  ),
+                                );
+                              }
+                            },
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -362,7 +673,7 @@ class _ForoDetalleScreenState extends ConsumerState<ForoDetalleScreen> {
       appBar: AppBar(
         title: const Text('Debate'),
         actions: [
-          IconButton(icon: const Icon(Icons.share), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.share), onPressed: _compartirForo),
         ],
       ),
       body: _cargando
@@ -461,6 +772,204 @@ class _ForoDetalleScreenState extends ConsumerState<ForoDetalleScreen> {
                       ],
                     ),
     );
+  }
+
+  void _compartirForo() {
+    if (_datosForo == null) return;
+
+    final tituloForo = _datosForo!['titulo'] ?? _datosForo!['nombre'] ?? 'Debate';
+    final autorForo = _datosForo!['autor'] ?? 'Usuario';
+    final contenidoForo = _datosForo!['contenido'] ?? _datosForo!['descripcion'] ?? '';
+    final totalRespuestas = _listaRespuestas.length;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.share, color: Colors.purple.shade400),
+                const SizedBox(width: 12),
+                const Text(
+                  'Compartir debate',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    tituloForo,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Por $autorForo • $totalRespuestas respuestas',
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Compartir mediante:',
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildOpcionCompartir(
+                  Icons.copy,
+                  'Copiar enlace',
+                  Colors.blue,
+                  () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(this.context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Enlace copiado al portapapeles'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  },
+                ),
+                _buildOpcionCompartir(
+                  Icons.message,
+                  'Chat interno',
+                  Colors.purple,
+                  () {
+                    Navigator.pop(context);
+                    _compartirEnChat(tituloForo, contenidoForo);
+                  },
+                ),
+                _buildOpcionCompartir(
+                  Icons.email,
+                  'Email',
+                  Colors.orange,
+                  () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(this.context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Abriendo cliente de email...'),
+                      ),
+                    );
+                  },
+                ),
+                _buildOpcionCompartir(
+                  Icons.more_horiz,
+                  'Mas',
+                  Colors.grey,
+                  () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(this.context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Opciones adicionales de compartir'),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOpcionCompartir(IconData icono, String etiqueta, Color color, VoidCallback alPresionar) {
+    return InkWell(
+      onTap: alPresionar,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          children: [
+            CircleAvatar(
+              backgroundColor: color.withOpacity(0.1),
+              radius: 24,
+              child: Icon(icono, color: color),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              etiqueta,
+              style: const TextStyle(fontSize: 11),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _compartirEnChat(String titulo, String contenido) async {
+    final controladorMensaje = TextEditingController(
+      text: '📢 Te comparto este debate:\n\n"$titulo"\n\n${contenido.length > 100 ? '${contenido.substring(0, 100)}...' : contenido}',
+    );
+
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Compartir en chat'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Escribe un mensaje para acompañar el enlace:'),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controladorMensaje,
+              maxLines: 4,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Mensaje...',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Compartir'),
+          ),
+        ],
+      ),
+    );
+
+    controladorMensaje.dispose();
+
+    if (confirmar == true && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Debate compartido en el chat'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
   }
 
   Widget _construirTarjetaRespuesta(dynamic elemento) {

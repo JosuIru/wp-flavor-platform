@@ -230,6 +230,12 @@ class Flavor_App_Profile_Admin {
 
         $loader = Flavor_Chat_Module_Loader::get_instance();
         $modulos_registrados = $loader->get_registered_modules();
+        $perfiles_ecosistema = [];
+        foreach ($perfiles as $perfil_id => $perfil_data) {
+            $perfiles_ecosistema[$perfil_id] = $this->get_profile_ecosystem_data($perfil_data, $modulos_registrados);
+        }
+        $capacidades_perfiles = $this->get_available_profile_capabilities($perfiles_ecosistema);
+        $contextos_perfiles = $this->get_available_profile_contexts($perfiles_ecosistema);
 
         // Datos para Alpine.js
         $datos_compositor = [
@@ -240,6 +246,9 @@ class Flavor_App_Profile_Admin {
             'categorias'        => $categorias_modulos,
             'tiposOrganizacion' => $tipos_organizacion,
             'impactosSociales'  => $impactos_sociales,
+            'capacidadesPerfiles' => $capacidades_perfiles,
+            'contextosPerfiles' => $contextos_perfiles,
+            'perfilesEcosistema' => $perfiles_ecosistema,
             'landingTags'       => $landing_tags,
             'modulosRegistrados' => $modulos_registrados,
             'adminPostUrl'      => admin_url('admin-post.php'),
@@ -262,8 +271,8 @@ class Flavor_App_Profile_Admin {
         <div class="wrap flavor-composer-wrapper"
              x-data="window.flavorComposerState ? flavorComposerState() : { pasoActual: 'plantillas', modoMultiSeleccion: false, perfilesSeleccionados: [] }"
              x-init="pasoActual = pasoActual || 'plantillas'">
-            <h1><?php _e('Compositor & Modulos', 'flavor-chat-ia'); ?></h1>
-            <p class="description"><?php _e('Elige una plantilla predefinida o personaliza los modulos de tu aplicacion.', 'flavor-chat-ia'); ?></p>
+            <h1><?php _e('Compositor de App Móvil', 'flavor-chat-ia'); ?></h1>
+            <p class="description"><?php _e('Elige una plantilla predefinida o personaliza los modulos visibles en tu aplicacion móvil.', 'flavor-chat-ia'); ?></p>
 
             <?php if ($mensaje === 'perfil_cambiado'): ?>
                 <div class="notice notice-success is-dismissible"><p><?php _e('Plantilla cambiada correctamente.', 'flavor-chat-ia'); ?></p></div>
@@ -281,12 +290,64 @@ class Flavor_App_Profile_Admin {
                     <span class="step-numero">1</span> <?php _e('Plantillas', 'flavor-chat-ia'); ?>
                 </div>
                 <div class="flavor-composer-step" :class="{ 'activo': pasoActual === 'modulos' }" @click="irAPaso('modulos')">
-                    <span class="step-numero">2</span> <?php _e('Módulos', 'flavor-chat-ia'); ?>
+                    <span class="step-numero">2</span> <?php _e('Módulos App', 'flavor-chat-ia'); ?>
                 </div>
             </div>
 
             <!-- Paso 1: Galeria de Plantillas -->
             <div x-show="pasoActual === 'plantillas'" x-transition>
+                <div class="flavor-template-suggestions" x-show="obtenerPerfilesSugeridos().length > 0">
+                    <div class="flavor-template-suggestions__header">
+                        <h2><?php esc_html_e('Sugerencias automáticas', 'flavor-chat-ia'); ?></h2>
+                        <p><?php esc_html_e('Perfiles que completan o amplían mejor el ecosistema que ya tienes activo.', 'flavor-chat-ia'); ?></p>
+                    </div>
+                    <div class="flavor-template-suggestions__grid">
+                        <template x-for="sugerencia in obtenerPerfilesSugeridos()" :key="sugerencia.id">
+                            <article class="flavor-template-suggestion-card">
+                                <div class="flavor-template-suggestion-card__head">
+                                    <h3 x-text="sugerencia.nombre"></h3>
+                                    <span class="flavor-template-suggestion-card__score" x-text="sugerencia.score"></span>
+                                </div>
+                                <p class="flavor-template-suggestion-card__desc" x-text="sugerencia.descripcion"></p>
+                                <template x-if="sugerencia.contextosCompartidos.length > 0">
+                                    <div class="flavor-template-suggestion-card__block">
+                                        <div class="flavor-template-suggestion-card__label"><?php esc_html_e('Contextos compartidos', 'flavor-chat-ia'); ?></div>
+                                        <div class="flavor-template-suggestion-card__tags">
+                                            <template x-for="contexto in sugerencia.contextosCompartidos" :key="contexto">
+                                                <span class="flavor-modulo-tag opcional" x-text="contexto"></span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template x-if="sugerencia.capacidadesCompartidas.length > 0">
+                                    <div class="flavor-template-suggestion-card__block">
+                                        <div class="flavor-template-suggestion-card__label"><?php esc_html_e('Capacidades alineadas', 'flavor-chat-ia'); ?></div>
+                                        <div class="flavor-template-suggestion-card__tags">
+                                            <template x-for="capacidad in sugerencia.capacidadesCompartidas" :key="capacidad">
+                                                <span class="flavor-modulo-tag opcional" style="background:#ecfeff;color:#155e75;" x-text="capacidad"></span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="flavor-template-suggestion-card__footer">
+                                    <span class="flavor-template-suggestion-card__meta">
+                                        <span x-text="sugerencia.modulosFaltantes"></span>
+                                        <?php esc_html_e('módulos por activar', 'flavor-chat-ia'); ?>
+                                    </span>
+                                    <div class="flavor-template-suggestion-card__actions">
+                                        <button type="button" class="button button-secondary" @click="abrirPreviewPlantilla(sugerencia.id, 'sugerencia')">
+                                        <?php esc_html_e('Ver sugerencia', 'flavor-chat-ia'); ?>
+                                        </button>
+                                        <button type="button" class="button button-primary" @click="activarSugerenciaPlantilla(sugerencia.id)">
+                                            <?php esc_html_e('Activar ahora', 'flavor-chat-ia'); ?>
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                        </template>
+                    </div>
+                </div>
+
                 <div class="flavor-composer-filters" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0 20px;">
                     <input type="search"
                            class="regular-text"
@@ -305,6 +366,18 @@ class Flavor_App_Profile_Admin {
                             <option value="<?php echo esc_attr($impacto_id); ?>"><?php echo esc_html($impacto_label); ?></option>
                         <?php endforeach; ?>
                     </select>
+                    <select class="regular-text" style="min-width: 220px;" x-model="filtroPerfilCapacidad">
+                        <option value="todos"><?php esc_html_e('Capacidad del ecosistema', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($capacidades_perfiles as $capacidad): ?>
+                            <option value="<?php echo esc_attr($capacidad); ?>"><?php echo esc_html($capacidad); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <select class="regular-text" style="min-width: 220px;" x-model="filtroPerfilContexto">
+                        <option value="todos"><?php esc_html_e('Contexto prioritario', 'flavor-chat-ia'); ?></option>
+                        <?php foreach ($contextos_perfiles as $contexto): ?>
+                            <option value="<?php echo esc_attr($contexto); ?>"><?php echo esc_html($contexto); ?></option>
+                        <?php endforeach; ?>
+                    </select>
                     <div class="flavor-category-tabs" style="margin: 0;">
                         <span class="flavor-category-tab"
                               :class="{ 'activo': filtroPerfilCategoria === 'todos' }"
@@ -319,7 +392,7 @@ class Flavor_App_Profile_Admin {
                             </span>
                         <?php endforeach; ?>
                     </div>
-                    <button type="button" class="button" @click="filtroPerfilTexto = ''; filtroPerfilCategoria = 'todos'; filtroPerfilTipo = 'todos'; filtroPerfilImpacto = 'todos'">
+                    <button type="button" class="button" @click="filtroPerfilTexto = ''; filtroPerfilCategoria = 'todos'; filtroPerfilTipo = 'todos'; filtroPerfilImpacto = 'todos'; filtroPerfilCapacidad = 'todos'; filtroPerfilContexto = 'todos'">
                         <?php _e('Limpiar filtros', 'flavor-chat-ia'); ?>
                     </button>
                 </div>
@@ -344,6 +417,7 @@ class Flavor_App_Profile_Admin {
 
                 <div class="flavor-templates-grid">
                     <?php foreach ($perfiles as $id_perfil => $datos_perfil): ?>
+                        <?php $perfil_ecosistema = $perfiles_ecosistema[$id_perfil] ?? []; ?>
                         <div class="flavor-template-card"
                              x-show="perfilCoincideFiltro('<?php echo esc_js($id_perfil); ?>')"
                              :class="{ 'seleccionado': modoMultiSeleccion ? perfilesSeleccionados.includes('<?php echo esc_js($id_perfil); ?>') : esPerfilActivo('<?php echo esc_js($id_perfil); ?>') }"
@@ -377,6 +451,46 @@ class Flavor_App_Profile_Admin {
                                     ); ?>
                                 </span>
 
+                                <?php if (!empty($perfil_ecosistema['roles'])) : ?>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px;">
+                                        <?php foreach ($perfil_ecosistema['roles'] as $role): ?>
+                                            <span class="flavor-modulo-tag opcional" style="background: #f3f4f6; color: #374151;">
+                                                <?php echo esc_html($role); ?>
+                                            </span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (!empty($perfil_ecosistema['capacidades'])) : ?>
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #6b7280; margin-bottom: 6px;">
+                                            <?php esc_html_e('Capacidades', 'flavor-chat-ia'); ?>
+                                        </div>
+                                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                            <?php foreach ($perfil_ecosistema['capacidades'] as $capacidad): ?>
+                                                <span class="flavor-modulo-tag opcional" style="background: #ecfeff; color: #155e75;">
+                                                    <?php echo esc_html($capacidad); ?>
+                                                </span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (!empty($perfil_ecosistema['contextos'])) : ?>
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #6b7280; margin-bottom: 6px;">
+                                            <?php esc_html_e('Contextos', 'flavor-chat-ia'); ?>
+                                        </div>
+                                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                            <?php foreach ($perfil_ecosistema['contextos'] as $contexto): ?>
+                                                <span class="flavor-modulo-tag opcional" style="background: #f5f3ff; color: #5b21b6;">
+                                                    <?php echo esc_html($contexto); ?>
+                                                </span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
                                 <div class="flavor-template-tags">
                                     <?php foreach ($datos_perfil['modulos_requeridos'] as $id_modulo): ?>
                                         <span class="flavor-modulo-tag requerido">
@@ -384,6 +498,36 @@ class Flavor_App_Profile_Admin {
                                         </span>
                                     <?php endforeach; ?>
                                 </div>
+
+                                <?php if (!empty($perfil_ecosistema['recomendados'])) : ?>
+                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e5e7eb;">
+                                        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #6b7280; margin-bottom: 6px;">
+                                            <?php esc_html_e('Capas recomendadas', 'flavor-chat-ia'); ?>
+                                        </div>
+                                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                            <?php foreach ($perfil_ecosistema['recomendados'] as $recomendado): ?>
+                                                <span class="flavor-modulo-tag opcional">
+                                                    <?php echo esc_html($recomendado); ?>
+                                                </span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (!empty($perfil_ecosistema['recomendados_contexto'])) : ?>
+                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e5e7eb;">
+                                        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #6b7280; margin-bottom: 6px;">
+                                            <?php esc_html_e('Siguientes capas por contexto', 'flavor-chat-ia'); ?>
+                                        </div>
+                                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                            <?php foreach ($perfil_ecosistema['recomendados_contexto'] as $recomendado_contexto): ?>
+                                                <span class="flavor-modulo-tag opcional" style="background: #eef2ff; color: #3730a3;">
+                                                    <?php echo esc_html($recomendado_contexto); ?>
+                                                </span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             <?php endif; ?>
 
                             <div class="flavor-template-btn">
@@ -429,6 +573,290 @@ class Flavor_App_Profile_Admin {
             ?>
         </div>
         <?php
+    }
+
+    private function get_profile_ecosystem_data($profile_data, $registered_modules) {
+        $module_ids = array_values(array_unique(array_merge(
+            (array) ($profile_data['modulos_requeridos'] ?? []),
+            (array) ($profile_data['modulos_opcionales'] ?? [])
+        )));
+
+        if (empty($module_ids)) {
+            return [
+                'roles' => [],
+                'capacidades' => [],
+                'contextos' => [],
+                'recomendados_contexto' => [],
+                'recomendados' => [],
+            ];
+        }
+
+        $role_counts = [
+            'base' => 0,
+            'vertical' => 0,
+            'transversal' => 0,
+        ];
+
+        $related_scores = [];
+        $context_scores = [];
+        foreach ($module_ids as $module_id) {
+            $module = $registered_modules[$module_id] ?? null;
+            if (!$module) {
+                continue;
+            }
+
+            $ecosystem = is_array($module['ecosystem'] ?? null) ? $module['ecosystem'] : [];
+            $role = $ecosystem['module_role'] ?? 'vertical';
+            if (isset($role_counts[$role])) {
+                $role_counts[$role]++;
+            }
+
+            foreach (['depends_on', 'supports_modules', 'measures_modules', 'governs_modules', 'teaches_modules', 'base_for_modules'] as $relation_key) {
+                foreach ((array) ($ecosystem[$relation_key] ?? []) as $related_module_id) {
+                    if (in_array($related_module_id, $module_ids, true) || !isset($registered_modules[$related_module_id])) {
+                        continue;
+                    }
+
+                    if (!isset($related_scores[$related_module_id])) {
+                        $related_scores[$related_module_id] = 0;
+                    }
+                    $related_scores[$related_module_id]++;
+                }
+            }
+
+            foreach ((array) ($module['dashboard']['client_contexts'] ?? []) as $context) {
+                $context = trim((string) $context);
+                if ($context === '') {
+                    continue;
+                }
+
+                if (!isset($context_scores[$context])) {
+                    $context_scores[$context] = 0;
+                }
+
+                $context_scores[$context]++;
+            }
+        }
+
+        arsort($related_scores);
+        arsort($context_scores);
+
+        $context_ids = array_slice(array_keys($context_scores), 0, 4);
+
+        return [
+            'roles' => $this->format_profile_roles($role_counts),
+            'capacidades' => $this->derive_profile_capabilities($module_ids, $profile_data),
+            'contextos' => array_map([$this, 'humanize_profile_context'], $context_ids),
+            'recomendados_contexto' => $this->get_profile_context_recommendations($module_ids, $context_ids, $registered_modules),
+            'recomendados' => array_slice(array_map(function ($module_id) use ($registered_modules) {
+                return $this->get_registered_module_name($module_id, $registered_modules);
+            }, array_keys($related_scores)), 0, 4),
+        ];
+    }
+
+    private function format_profile_roles($role_counts) {
+        $labels = [
+            'base' => __('Base', 'flavor-chat-ia'),
+            'vertical' => __('Vertical', 'flavor-chat-ia'),
+            'transversal' => __('Transversal', 'flavor-chat-ia'),
+        ];
+
+        $result = [];
+        foreach ($role_counts as $role => $count) {
+            if ($count < 1) {
+                continue;
+            }
+
+            $result[] = sprintf('%d %s', $count, $labels[$role] ?? ucfirst($role));
+        }
+
+        return $result;
+    }
+
+    private function derive_profile_capabilities($module_ids, $profile_data) {
+        $impactos = (array) ($profile_data['impacto_social'] ?? []);
+        $rules = [
+            [
+                'label' => __('Base comunitaria', 'flavor-chat-ia'),
+                'modules' => ['comunidades', 'socios', 'colectivos', 'red_social'],
+                'impacts' => ['cohesion_social', 'intercooperacion'],
+            ],
+            [
+                'label' => __('Red de cuidados', 'flavor-chat-ia'),
+                'modules' => ['ayuda_vecinal', 'banco_tiempo', 'circulos_cuidados', 'eventos'],
+                'impacts' => ['solidaridad'],
+            ],
+            [
+                'label' => __('Gobernanza', 'flavor-chat-ia'),
+                'modules' => ['participacion', 'transparencia', 'presupuestos_participativos', 'comunidades'],
+                'impacts' => ['participacion', 'gobernanza', 'transparencia'],
+            ],
+            [
+                'label' => __('Autosuficiencia local', 'flavor-chat-ia'),
+                'modules' => ['energia_comunitaria', 'grupos_consumo', 'huella_ecologica', 'compostaje', 'reciclaje', 'huertos_urbanos', 'carpooling', 'bicicletas_compartidas'],
+                'impacts' => ['sostenibilidad', 'economia_circular', 'consumo_local', 'movilidad'],
+            ],
+            [
+                'label' => __('Aprendizaje compartido', 'flavor-chat-ia'),
+                'modules' => ['cursos', 'talleres', 'saberes_ancestrales', 'biblioteca', 'radio', 'podcast'],
+                'impacts' => ['educacion', 'cultura'],
+            ],
+            [
+                'label' => __('Economia local', 'flavor-chat-ia'),
+                'modules' => ['marketplace', 'woocommerce', 'grupos_consumo', 'clientes', 'facturas', 'empresarial', 'trabajo_digno'],
+                'impacts' => ['economia_colaborativa', 'economia_circular', 'consumo_local', 'intercooperacion'],
+            ],
+            [
+                'label' => __('Coordinacion territorial', 'flavor-chat-ia'),
+                'modules' => ['avisos_municipales', 'incidencias', 'campanias', 'mapa_actores', 'comunidades', 'colectivos'],
+                'impacts' => ['cohesion_social', 'participacion'],
+            ],
+        ];
+
+        $capabilities = [];
+        foreach ($rules as $rule) {
+            $module_match = array_intersect($module_ids, $rule['modules']);
+            $impact_match = array_intersect($impactos, $rule['impacts']);
+            if (!empty($module_match) || !empty($impact_match)) {
+                $capabilities[] = $rule['label'];
+            }
+        }
+
+        return array_slice(array_values(array_unique($capabilities)), 0, 4);
+    }
+
+    private function get_available_profile_capabilities($profiles_ecosystem) {
+        $capabilities = [];
+
+        foreach ((array) $profiles_ecosystem as $profile_ecosystem) {
+            foreach ((array) ($profile_ecosystem['capacidades'] ?? []) as $capability) {
+                $capability = trim((string) $capability);
+                if ($capability === '') {
+                    continue;
+                }
+                $capabilities[$capability] = $capability;
+            }
+        }
+
+        natcasesort($capabilities);
+
+        return array_values($capabilities);
+    }
+
+    private function get_available_profile_contexts($profiles_ecosystem) {
+        $contexts = [];
+
+        foreach ((array) $profiles_ecosystem as $profile_ecosystem) {
+            foreach ((array) ($profile_ecosystem['contextos'] ?? []) as $context) {
+                $context = trim((string) $context);
+                if ($context === '') {
+                    continue;
+                }
+                $contexts[$context] = $context;
+            }
+        }
+
+        natcasesort($contexts);
+
+        return array_values($contexts);
+    }
+
+    private function humanize_profile_context($context) {
+        $context = sanitize_key(str_replace('-', '_', (string) $context));
+
+        $labels = [
+            'portal' => __('Portal', 'flavor-chat-ia'),
+            'mi_panel' => __('Mi panel', 'flavor-chat-ia'),
+            'cuenta' => __('Cuenta', 'flavor-chat-ia'),
+            'comunidad' => __('Comunidad', 'flavor-chat-ia'),
+            'socios' => __('Socios', 'flavor-chat-ia'),
+            'membresia' => __('Membresia', 'flavor-chat-ia'),
+            'colectivos' => __('Colectivos', 'flavor-chat-ia'),
+            'asociacion' => __('Asociacion', 'flavor-chat-ia'),
+            'energia' => __('Energia', 'flavor-chat-ia'),
+            'consumo' => __('Consumo', 'flavor-chat-ia'),
+            'cuidados' => __('Cuidados', 'flavor-chat-ia'),
+            'eventos' => __('Eventos', 'flavor-chat-ia'),
+            'agenda' => __('Agenda', 'flavor-chat-ia'),
+            'actividad' => __('Actividad', 'flavor-chat-ia'),
+            'gobernanza' => __('Gobernanza', 'flavor-chat-ia'),
+            'transparencia' => __('Transparencia', 'flavor-chat-ia'),
+            'impacto' => __('Impacto', 'flavor-chat-ia'),
+            'sostenibilidad' => __('Sostenibilidad', 'flavor-chat-ia'),
+            'aprendizaje' => __('Aprendizaje', 'flavor-chat-ia'),
+            'cultura' => __('Cultura', 'flavor-chat-ia'),
+            'saberes' => __('Saberes', 'flavor-chat-ia'),
+            'suficiencia' => __('Suficiencia', 'flavor-chat-ia'),
+            'solidaridad' => __('Solidaridad', 'flavor-chat-ia'),
+            'coordinacion' => __('Coordinacion', 'flavor-chat-ia'),
+            'participacion' => __('Participacion', 'flavor-chat-ia'),
+            'gestion' => __('Gestion', 'flavor-chat-ia'),
+            'intercambio' => __('Intercambio', 'flavor-chat-ia'),
+            'rendicion_cuentas' => __('Rendicion de cuentas', 'flavor-chat-ia'),
+        ];
+
+        if (isset($labels[$context])) {
+            return $labels[$context];
+        }
+
+        return ucwords(str_replace('_', ' ', $context));
+    }
+
+    private function get_profile_context_recommendations($module_ids, $context_ids, $registered_modules) {
+        $rules = [
+            'comunidad' => ['eventos', 'participacion', 'ayuda_vecinal', 'transparencia'],
+            'energia' => ['energia_comunitaria', 'huella_ecologica', 'participacion'],
+            'consumo' => ['grupos_consumo', 'huella_ecologica', 'economia_suficiencia'],
+            'cuidados' => ['ayuda_vecinal', 'banco_tiempo', 'eventos'],
+            'gobernanza' => ['participacion', 'transparencia', 'colectivos'],
+            'transparencia' => ['transparencia', 'participacion'],
+            'impacto' => ['huella_ecologica', 'economia_suficiencia'],
+            'sostenibilidad' => ['huella_ecologica', 'energia_comunitaria', 'economia_suficiencia'],
+            'aprendizaje' => ['saberes_ancestrales', 'cursos', 'talleres'],
+            'cultura' => ['saberes_ancestrales', 'eventos'],
+            'saberes' => ['saberes_ancestrales', 'talleres', 'biblioteca'],
+            'socios' => ['socios', 'transparencia', 'participacion'],
+            'membresia' => ['socios', 'transparencia'],
+            'colectivos' => ['colectivos', 'participacion', 'transparencia'],
+            'asociacion' => ['colectivos', 'transparencia', 'eventos'],
+            'solidaridad' => ['ayuda_vecinal', 'banco_tiempo', 'participacion'],
+            'coordinacion' => ['comunidades', 'eventos', 'colectivos'],
+        ];
+
+        $scores = [];
+        foreach ((array) $context_ids as $context_id) {
+            foreach ((array) ($rules[$context_id] ?? []) as $module_id) {
+                if (in_array($module_id, $module_ids, true) || !isset($registered_modules[$module_id])) {
+                    continue;
+                }
+
+                if (!isset($scores[$module_id])) {
+                    $scores[$module_id] = 0;
+                }
+
+                $scores[$module_id]++;
+            }
+        }
+
+        arsort($scores);
+
+        return array_slice(array_map(function ($module_id) use ($registered_modules) {
+            return $this->get_registered_module_name($module_id, $registered_modules);
+        }, array_keys($scores)), 0, 4);
+    }
+
+    private function get_registered_module_name($module_id, $registered_modules) {
+        $module = $registered_modules[$module_id] ?? null;
+        if (!$module) {
+            return ucwords(str_replace(['_', '-'], ' ', (string) $module_id));
+        }
+
+        $name = trim((string) ($module['name'] ?? ''));
+        if ($name !== '') {
+            return $name;
+        }
+
+        return ucwords(str_replace(['_', '-'], ' ', (string) $module_id));
     }
 
     /**
@@ -656,12 +1084,12 @@ class Flavor_App_Profile_Admin {
                     'menu_sync' => $menu_sync,
                 ]);
                 wp_safe_redirect(add_query_arg(
-                    ['page' => 'flavor-app-composer', 'mensaje' => 'perfiles_cambiados'],
+                    ['page' => 'flavor-module-dashboards', 'mensaje' => 'perfiles_cambiados'],
                     admin_url('admin.php')
                 ));
             } else {
                 wp_safe_redirect(add_query_arg(
-                    ['page' => 'flavor-app-composer', 'error' => 'perfiles_invalidos'],
+                    ['page' => 'flavor-module-dashboards', 'error' => 'perfiles_invalidos'],
                     admin_url('admin.php')
                 ));
             }
@@ -681,12 +1109,12 @@ class Flavor_App_Profile_Admin {
                     'menu_sync' => $menu_sync,
                 ]);
                 wp_safe_redirect(add_query_arg(
-                    ['page' => 'flavor-app-composer', 'mensaje' => 'perfil_cambiado'],
+                    ['page' => 'flavor-module-dashboards', 'mensaje' => 'perfil_cambiado'],
                     admin_url('admin.php')
                 ));
             } else {
                 wp_safe_redirect(add_query_arg(
-                    ['page' => 'flavor-app-composer', 'error' => 'perfil_invalido'],
+                    ['page' => 'flavor-module-dashboards', 'error' => 'perfil_invalido'],
                     admin_url('admin.php')
                 ));
             }
@@ -714,7 +1142,7 @@ class Flavor_App_Profile_Admin {
         }
 
         wp_safe_redirect(add_query_arg(
-            ['page' => 'flavor-app-composer', 'mensaje' => 'modulo_actualizado'],
+            ['page' => 'flavor-module-dashboards', 'mensaje' => 'modulo_actualizado'],
             admin_url('admin.php')
         ));
         exit;
@@ -879,7 +1307,7 @@ class Flavor_App_Profile_Admin {
         }
 
         wp_safe_redirect(add_query_arg(
-            ['page' => 'flavor-app-composer', 'mensaje' => 'modulo_frontend_actualizado'],
+            ['page' => 'flavor-module-dashboards', 'mensaje' => 'modulo_frontend_actualizado'],
             admin_url('admin.php')
         ));
         exit;
@@ -898,7 +1326,7 @@ class Flavor_App_Profile_Admin {
         $modulo_slug = sanitize_title($_POST['modulo_slug'] ?? '');
         if (empty($modulo_slug)) {
             wp_safe_redirect(add_query_arg(
-                ['page' => 'flavor-app-composer', 'mensaje' => 'landing_error'],
+                ['page' => 'flavor-module-dashboards', 'mensaje' => 'landing_error'],
                 admin_url('admin.php')
             ));
             exit;
@@ -938,7 +1366,7 @@ class Flavor_App_Profile_Admin {
         }
 
         wp_safe_redirect(add_query_arg(
-            ['page' => 'flavor-app-composer', 'mensaje' => 'landing_creada'],
+            ['page' => 'flavor-module-dashboards', 'mensaje' => 'landing_creada'],
             admin_url('admin.php')
         ));
         exit;
@@ -978,7 +1406,7 @@ class Flavor_App_Profile_Admin {
         }
 
         wp_safe_redirect(add_query_arg(
-            ['page' => 'flavor-app-composer', 'mensaje' => 'landings_creadas'],
+            ['page' => 'flavor-module-dashboards', 'mensaje' => 'landings_creadas'],
             admin_url('admin.php')
         ));
         exit;
@@ -1277,11 +1705,11 @@ class Flavor_App_Profile_Admin {
             </p>
             <div style="display: flex; gap: 8px; margin: 10px 0 15px; flex-wrap: wrap;">
                 <a class="button <?php echo $demo_scope === 'active' ? 'button-primary' : ''; ?>"
-                   href="<?php echo esc_url(add_query_arg(['page' => 'flavor-app-composer', 'demo_scope' => 'active'], admin_url('admin.php'))); ?>">
+                   href="<?php echo esc_url(add_query_arg(['page' => 'flavor-module-dashboards', 'demo_scope' => 'active'], admin_url('admin.php'))); ?>">
                     <?php _e('Solo módulos activos', 'flavor-chat-ia'); ?>
                 </a>
                 <a class="button <?php echo $demo_scope === 'all' ? 'button-primary' : ''; ?>"
-                   href="<?php echo esc_url(add_query_arg(['page' => 'flavor-app-composer', 'demo_scope' => 'all'], admin_url('admin.php'))); ?>">
+                   href="<?php echo esc_url(add_query_arg(['page' => 'flavor-module-dashboards', 'demo_scope' => 'all'], admin_url('admin.php'))); ?>">
                     <?php _e('Todos los módulos', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -1502,8 +1930,8 @@ class Flavor_App_Profile_Admin {
         }
 
         // 2. Si no hay configuración guardada, intentar con Module Loader
-        if (empty($modulos_realmente_activos) && class_exists('Flavor_Module_Loader')) {
-            $module_loader = Flavor_Module_Loader::get_instance();
+        if (empty($modulos_realmente_activos) && class_exists('Flavor_Chat_Module_Loader')) {
+            $module_loader = Flavor_Chat_Module_Loader::get_instance();
             if (method_exists($module_loader, 'get_loaded_modules')) {
                 $loaded_modules = $module_loader->get_loaded_modules();
                 $modulos_realmente_activos = array_keys($loaded_modules);
@@ -1747,12 +2175,12 @@ class Flavor_App_Profile_Admin {
 
         if ($resultado['success']) {
             wp_safe_redirect(add_query_arg(
-                ['page' => 'flavor-app-composer', 'mensaje' => 'plantilla_activada'],
+                ['page' => 'flavor-module-dashboards', 'mensaje' => 'plantilla_activada'],
                 admin_url('admin.php')
             ));
         } else {
             wp_safe_redirect(add_query_arg(
-                ['page' => 'flavor-app-composer', 'mensaje' => 'plantilla_error', 'error' => urlencode($resultado['mensaje'] ?? '')],
+                ['page' => 'flavor-module-dashboards', 'mensaje' => 'plantilla_error', 'error' => urlencode($resultado['mensaje'] ?? '')],
                 admin_url('admin.php')
             ));
         }
@@ -1787,6 +2215,9 @@ class Flavor_App_Profile_Admin {
 
         $modulos_requeridos = $this->normalizar_ids_modulos((array) ($perfil['modulos_requeridos'] ?? []));
         $modulos_opcionales = $this->normalizar_ids_modulos((array) ($perfil['modulos_opcionales'] ?? []));
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $modulos_registrados = $loader->get_registered_modules();
+        $perfil_ecosistema = $this->get_profile_ecosystem_data($perfil, $modulos_registrados);
 
         // Construir respuesta con datos de la plantilla
         $datos_preview = [
@@ -1799,6 +2230,7 @@ class Flavor_App_Profile_Admin {
             'modulos_opcionales' => $modulos_opcionales,
             'paginas' => $this->obtener_paginas_plantilla($plantilla_id),
             'landing' => $this->obtener_landing_plantilla($plantilla_id),
+            'ecosistema' => $perfil_ecosistema,
         ];
 
         wp_send_json_success($datos_preview);

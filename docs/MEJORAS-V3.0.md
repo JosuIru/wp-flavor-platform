@@ -1,5 +1,9 @@
 # Mejoras Implementadas en Flavor Platform 3.0
 
+> Documento historico de mejoras de la fase `3.0`.
+> Describe avances reales de esa version, pero no sustituye la lectura del estado actual del plugin `3.1.1`.
+> Para lectura vigente, usa `ESTADO-REAL-PLUGIN.md` y `../reports/AUDITORIA-ESTADO-REAL-2026-03-04.md`.
+
 Este documento resume todas las mejoras de sistema de addons, rendimiento y UX implementadas en la versión 3.0.
 
 ## 📦 Sistema de Addons Mejorado

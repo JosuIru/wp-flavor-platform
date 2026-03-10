@@ -1,5 +1,9 @@
 # Checklist de Release v3.1.1
 
+> Documento historico de checklist de release.
+> Sus checks marcados no equivalen por si solos a validacion runtime actual ni a garantia global de salida.
+> Para estado vigente, usa `ESTADO-REAL-PLUGIN.md` y `../reports/AUDITORIA-ESTADO-REAL-2026-03-04.md`.
+
 **Fecha última actualización:** 12 de Febrero de 2026
 **Estado:** ✅ Listo para Release
 

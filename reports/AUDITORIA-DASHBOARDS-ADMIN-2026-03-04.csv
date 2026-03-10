@@ -1,0 +1,61 @@
+module_id,name,dashboard_slug,category,has_admin_config,registers_unified_panel,has_render_admin_dashboard,has_views_dashboard,has_dashboard_tab,has_dashboard_widget,status
+advertising,"Advertising",advertising-dashboard,economia,1,1,1,0,1,0,alto
+avisos_municipales,"Avisos Municipales",avisos-dashboard,comunicacion,1,1,1,0,0,1,alto
+ayuda_vecinal,"Ayuda Vecinal",ayuda-dashboard,comunidad,1,1,1,1,0,1,alto
+banco_tiempo,"Banco Tiempo",banco-tiempo-dashboard,otros,1,1,1,1,1,1,alto
+bares,"Bares",bares-dashboard,servicios,1,1,1,0,1,0,alto
+biblioteca,"Biblioteca",biblioteca-dashboard,genero,1,1,1,1,1,1,alto
+bicicletas_compartidas,"Bicicletas Compartidas",bicicletas-dashboard,sostenibilidad,1,1,1,1,1,1,alto
+biodiversidad_local,"Biodiversidad Local",biodiversidad,sostenibilidad,1,1,1,0,1,0,alto
+campanias,"Campanias",campanias-dashboard,comunidad,1,1,1,1,1,0,alto
+carpooling,"Carpooling",carpooling-dashboard,sostenibilidad,1,1,1,1,1,1,alto
+chat_estados,"Chat Estados",chat-estados-dashboard,comunicacion,1,1,1,0,1,0,alto
+chat_grupos,"Chat Grupos",flavor-chat-grupos-dashboard,comunicacion,1,1,1,0,1,0,alto
+chat_interno,"Chat Interno",flavor-chat-interno-dashboard,comunicacion,1,1,1,0,1,0,alto
+circulos_cuidados,"Circulos Cuidados",circulos-cuidados,comunidad,1,1,1,0,1,0,alto
+clientes,"Clientes",clientes-dashboard,personas,1,1,1,0,1,0,alto
+colectivos,"Colectivos",flavor-colectivos-dashboard,comunidad,1,1,1,1,1,1,alto
+compostaje,"Compostaje",compostaje-dashboard,sostenibilidad,1,1,1,1,1,0,alto
+comunidades,"Comunidades",comunidades-dashboard,categoria,1,1,1,1,1,1,alto
+cursos,"Cursos",cursos-dashboard,actividades,1,1,1,1,1,1,alto
+dex_solana,"Dex Solana",dex-solana-dashboard,economia,1,1,1,0,1,0,alto
+documentacion_legal,"Documentacion Legal",documentos-dashboard,recursos,1,1,1,1,0,0,alto
+economia_don,"Economia Don",economia-don-dashboard,economia,1,1,1,0,1,0,alto
+economia_suficiencia,"Economia Suficiencia",suficiencia-dashboard,economia_consciente,1,1,1,0,1,0,alto
+email_marketing,"Email Marketing",flavor-em-dashboard,comunicacion,1,1,1,1,1,0,alto
+empresarial,"Empresarial",flavor-empresarial-dashboard,economia,1,1,1,0,1,0,alto
+encuestas,"Encuestas",encuestas-dashboard,comunicacion,1,1,1,0,1,1,alto
+energia_comunitaria,"Energia Comunitaria",flavor-energia-dashboard,sostenibilidad,1,1,1,0,1,1,alto
+espacios_comunes,"Espacios Comunes",espacios-dashboard,servicios,1,1,0,1,1,1,alto
+eventos,"Eventos",eventos-dashboard,actividades,1,1,1,1,1,1,alto
+facturas,"Facturas",facturas-dashboard,economia,1,1,1,0,1,0,alto
+fichaje_empleados,"Fichaje Empleados",fichaje-dashboard,personas,1,1,1,0,1,0,alto
+foros,"Foros",foros-dashboard,comunicacion,1,1,1,1,1,1,alto
+grupos_consumo,"Grupos Consumo",gc-dashboard,comunidad,1,1,0,1,1,1,alto
+huella_ecologica,"Huella Ecologica",huella-ecologica,transporte,1,1,1,0,1,0,alto
+huertos_urbanos,"Huertos Urbanos",huertos-dashboard,sostenibilidad,1,1,1,1,1,1,alto
+incidencias,"Incidencias",incidencias-dashboard,servicios,1,1,1,1,1,1,alto
+justicia_restaurativa,"Justicia Restaurativa",justicia-restaurativa,comunidad,1,1,1,0,1,0,alto
+mapa_actores,"Mapa Actores",actores-dashboard,comunidad,1,1,1,1,0,0,alto
+marketplace,"Marketplace",marketplace-dashboard,economia,1,1,1,1,1,1,alto
+multimedia,"Multimedia",multimedia-dashboard,recursos,1,1,1,1,1,1,alto
+parkings,"Parkings",flavor-parkings-dashboard,servicios,1,1,1,1,0,0,alto
+participacion,"Participacion",participacion-dashboard,comunidad,1,1,1,1,1,1,alto
+podcast,"Podcast",podcast-dashboard,comunicacion,1,1,1,1,1,1,alto
+presupuestos_participativos,"Presupuestos Participativos",pp-dashboard,economia,1,1,1,1,1,1,alto
+radio,"Radio",flavor-radio-dashboard,comunicacion,1,1,0,1,1,1,alto
+recetas,"Recetas",flavor-recetas-dashboard,recursos,1,1,0,0,0,0,alto
+reciclaje,"Reciclaje",reciclaje-dashboard,sostenibilidad,1,1,1,1,1,1,alto
+red_social,"Red Social",flavor-red-social-dashboard,comunidad,1,1,1,1,1,0,alto
+reservas,"Reservas",reservas-dashboard,operaciones,1,1,0,1,1,1,alto
+saberes_ancestrales,"Saberes Ancestrales",saberes-dashboard,cultura,1,1,1,0,1,0,alto
+seguimiento_denuncias,"Seguimiento Denuncias",denuncias-dashboard,servicios,1,1,1,1,0,0,alto
+sello_conciencia,"Sello Conciencia",sello-conciencia,economia,1,1,1,0,1,0,alto
+socios,"Socios",socios-dashboard,personas,1,1,1,1,1,1,alto
+talleres,"Talleres",talleres-dashboard,actividades,1,1,1,1,1,1,alto
+themacle,"Themacle",themacle-dashboard,recursos,1,1,1,0,0,0,alto
+trabajo_digno,"Trabajo Digno",trabajo-digno,economia,1,1,1,0,1,0,alto
+trading_ia,"Trading Ia",trading-ia-dashboard,economia,1,1,1,0,1,0,alto
+tramites,"Tramites",tramites-dashboard,servicios,1,1,1,1,1,1,alto
+transparencia,"Transparencia",transparencia-dashboard,economia,1,1,1,1,1,1,alto
+woocommerce,"Woocommerce",flavor-woocommerce-dashboard,economia,1,1,1,1,1,0,alto

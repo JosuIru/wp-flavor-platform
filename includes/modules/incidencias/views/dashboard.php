@@ -11,244 +11,290 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Obtener estadísticas
 global $wpdb;
 $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
 
-$total_incidencias = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias");
-$incidencias_abiertas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado IN ('pendiente', 'en_proceso')");
-$incidencias_resueltas_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado = 'resuelta' AND MONTH(fecha_resolucion) = MONTH(CURRENT_DATE()) AND YEAR(fecha_resolucion) = YEAR(CURRENT_DATE())");
+// Verificar existencia de tabla
+$tabla_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_incidencias'") === $tabla_incidencias;
 
-// Estadísticas por estado
-$stats_estado = $wpdb->get_results("
-    SELECT estado, COUNT(*) as total
-    FROM $tabla_incidencias
-    GROUP BY estado
-");
+// Inicializar variables
+$total_incidencias = 0;
+$incidencias_abiertas = 0;
+$incidencias_resueltas_mes = 0;
+$incidencias_sin_asignar = 0;
+$tiempo_promedio_resolucion = 0;
+$stats_estado = [];
+$stats_categoria = [];
+$stats_prioridad = [];
+$incidencias_votadas = [];
+$resueltas_semana = [];
+$usando_datos_ejemplo = false;
 
-// Estadísticas por categoría
-$stats_categoria = $wpdb->get_results("
-    SELECT categoria, COUNT(*) as total
-    FROM $tabla_incidencias
-    WHERE estado IN ('pendiente', 'en_proceso')
-    GROUP BY categoria
-    ORDER BY total DESC
-    LIMIT 10
-");
+if ($tabla_existe) {
+    $total_incidencias = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias");
+    $incidencias_abiertas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado IN ('pendiente', 'en_proceso')");
+    $incidencias_resueltas_mes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado = 'resuelta' AND MONTH(fecha_resolucion) = MONTH(CURRENT_DATE()) AND YEAR(fecha_resolucion) = YEAR(CURRENT_DATE())");
+    $incidencias_sin_asignar = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias WHERE estado = 'pendiente' AND asignado_a IS NULL");
+    $tiempo_promedio_resolucion = (float) $wpdb->get_var("SELECT AVG(TIMESTAMPDIFF(HOUR, fecha_reporte, fecha_resolucion)) FROM $tabla_incidencias WHERE estado = 'resuelta' AND fecha_resolucion IS NOT NULL");
 
-// Estadísticas por prioridad
-$stats_prioridad = $wpdb->get_results("
-    SELECT prioridad, COUNT(*) as total
-    FROM $tabla_incidencias
-    WHERE estado IN ('pendiente', 'en_proceso')
-    GROUP BY prioridad
-");
+    $stats_estado = $wpdb->get_results("SELECT estado, COUNT(*) as total FROM $tabla_incidencias GROUP BY estado");
+    $stats_categoria = $wpdb->get_results("SELECT categoria, COUNT(*) as total FROM $tabla_incidencias WHERE estado IN ('pendiente', 'en_proceso') GROUP BY categoria ORDER BY total DESC LIMIT 10");
+    $stats_prioridad = $wpdb->get_results("SELECT prioridad, COUNT(*) as total FROM $tabla_incidencias WHERE estado IN ('pendiente', 'en_proceso') GROUP BY prioridad");
+    $incidencias_votadas = $wpdb->get_results("SELECT id, numero_incidencia, titulo, categoria, votos_ciudadanos FROM $tabla_incidencias WHERE estado IN ('pendiente', 'en_proceso') ORDER BY votos_ciudadanos DESC LIMIT 5");
+    $resueltas_semana = $wpdb->get_results("SELECT DATE(fecha_resolucion) as fecha, COUNT(*) as total FROM $tabla_incidencias WHERE fecha_resolucion >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) GROUP BY DATE(fecha_resolucion) ORDER BY fecha ASC");
+}
 
-// Tiempo promedio de resolución (en horas)
-$tiempo_promedio_resolucion = $wpdb->get_var("
-    SELECT AVG(TIMESTAMPDIFF(HOUR, fecha_reporte, fecha_resolucion))
-    FROM $tabla_incidencias
-    WHERE estado = 'resuelta'
-    AND fecha_resolucion IS NOT NULL
-");
+// Datos de ejemplo si no hay datos reales
+if ($total_incidencias === 0) {
+    $usando_datos_ejemplo = true;
+    $total_incidencias = 156;
+    $incidencias_abiertas = 34;
+    $incidencias_resueltas_mes = 28;
+    $incidencias_sin_asignar = 8;
+    $tiempo_promedio_resolucion = 72;
 
-// Incidencias recientes sin asignar
-$incidencias_sin_asignar = $wpdb->get_var("
-    SELECT COUNT(*)
-    FROM $tabla_incidencias
-    WHERE estado = 'pendiente'
-    AND asignado_a IS NULL
-");
+    $stats_estado = [
+        (object) ['estado' => 'pendiente', 'total' => 18],
+        (object) ['estado' => 'en_proceso', 'total' => 16],
+        (object) ['estado' => 'resuelta', 'total' => 98],
+        (object) ['estado' => 'cerrada', 'total' => 20],
+        (object) ['estado' => 'rechazada', 'total' => 4],
+    ];
 
-// Incidencias más votadas
-$incidencias_votadas = $wpdb->get_results("
-    SELECT id, numero_incidencia, titulo, categoria, votos_ciudadanos
-    FROM $tabla_incidencias
-    WHERE estado IN ('pendiente', 'en_proceso')
-    ORDER BY votos_ciudadanos DESC
-    LIMIT 5
-");
+    $stats_categoria = [
+        (object) ['categoria' => 'alumbrado', 'total' => 12],
+        (object) ['categoria' => 'limpieza', 'total' => 9],
+        (object) ['categoria' => 'vías públicas', 'total' => 7],
+        (object) ['categoria' => 'parques y jardines', 'total' => 5],
+        (object) ['categoria' => 'mobiliario urbano', 'total' => 4],
+    ];
 
-// Tasa de resolución últimos 7 días
-$resueltas_semana = $wpdb->get_results("
-    SELECT DATE(fecha_resolucion) as fecha, COUNT(*) as total
-    FROM $tabla_incidencias
-    WHERE fecha_resolucion >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-    GROUP BY DATE(fecha_resolucion)
-    ORDER BY fecha ASC
-");
+    $stats_prioridad = [
+        (object) ['prioridad' => 'baja', 'total' => 12],
+        (object) ['prioridad' => 'media', 'total' => 15],
+        (object) ['prioridad' => 'alta', 'total' => 5],
+        (object) ['prioridad' => 'urgente', 'total' => 2],
+    ];
+
+    $incidencias_votadas = [
+        (object) ['id' => 1, 'numero_incidencia' => 'INC-2026-0045', 'titulo' => 'Farola sin luz en Calle Mayor', 'categoria' => 'alumbrado', 'votos_ciudadanos' => 24],
+        (object) ['id' => 2, 'numero_incidencia' => 'INC-2026-0038', 'titulo' => 'Bache peligroso en Plaza España', 'categoria' => 'vías públicas', 'votos_ciudadanos' => 18],
+        (object) ['id' => 3, 'numero_incidencia' => 'INC-2026-0052', 'titulo' => 'Contenedor desbordado', 'categoria' => 'limpieza', 'votos_ciudadanos' => 15],
+        (object) ['id' => 4, 'numero_incidencia' => 'INC-2026-0049', 'titulo' => 'Banco roto en parque infantil', 'categoria' => 'mobiliario urbano', 'votos_ciudadanos' => 12],
+        (object) ['id' => 5, 'numero_incidencia' => 'INC-2026-0055', 'titulo' => 'Árbol caído en acera', 'categoria' => 'parques y jardines', 'votos_ciudadanos' => 10],
+    ];
+
+    $resueltas_semana = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $resueltas_semana[] = (object) [
+            'fecha' => date('Y-m-d', strtotime("-$i days")),
+            'total' => rand(2, 8)
+        ];
+    }
+}
+
+// Mapeo de estados a badges
+$estado_badge_classes = [
+    'pendiente' => 'dm-badge--warning',
+    'en_proceso' => 'dm-badge--info',
+    'resuelta' => 'dm-badge--success',
+    'cerrada' => 'dm-badge--secondary',
+    'rechazada' => 'dm-badge--error',
+];
+
+$estado_labels = [
+    'pendiente' => __('Pendiente', 'flavor-chat-ia'),
+    'en_proceso' => __('En proceso', 'flavor-chat-ia'),
+    'resuelta' => __('Resuelta', 'flavor-chat-ia'),
+    'cerrada' => __('Cerrada', 'flavor-chat-ia'),
+    'rechazada' => __('Rechazada', 'flavor-chat-ia'),
+];
 ?>
 
-<div class="wrap">
-    <h1 class="wp-heading-inline">
-        <span class="dashicons dashicons-warning" style="color: #d63638;"></span>
-        <?php echo esc_html__('Dashboard de Incidencias Urbanas', 'flavor-chat-ia'); ?>
-    </h1>
+<div class="dm-dashboard">
+    <?php
+    if (function_exists('flavor_dashboard_help')) {
+        flavor_dashboard_help('incidencias');
+    }
+    ?>
 
-    <hr class="wp-header-end">
+    <div class="dm-header">
+        <div class="dm-header__title">
+            <span class="dashicons dashicons-warning"></span>
+            <h1><?php esc_html_e('Dashboard de Incidencias Urbanas', 'flavor-chat-ia'); ?></h1>
+        </div>
+        <?php if ($usando_datos_ejemplo): ?>
+            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
+        <?php endif; ?>
+    </div>
 
     <!-- Accesos Rápidos -->
-    <div class="incidencias-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
-        <a href="<?php echo admin_url('admin.php?page=incidencias-listado'); ?>" class="incidencias-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-warning" style="font-size: 24px; color: #d63638;"></span>
-            <span><?php echo esc_html__('Incidencias', 'flavor-chat-ia'); ?></span>
+    <div class="dm-quick-links">
+        <a href="<?php echo esc_url(admin_url('admin.php?page=incidencias-abiertas')); ?>" class="dm-quick-links__item">
+            <span class="dashicons dashicons-warning"></span>
+            <span><?php esc_html_e('Abiertas', 'flavor-chat-ia'); ?></span>
+            <?php if ($incidencias_abiertas > 0): ?>
+                <span class="dm-badge dm-badge--error"><?php echo number_format_i18n($incidencias_abiertas); ?></span>
+            <?php endif; ?>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=incidencias-mapa'); ?>" class="incidencias-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-location-alt" style="font-size: 24px; color: #2271b1;"></span>
-            <span><?php echo esc_html__('Mapa', 'flavor-chat-ia'); ?></span>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=incidencias-todas')); ?>" class="dm-quick-links__item">
+            <span class="dashicons dashicons-list-view"></span>
+            <span><?php esc_html_e('Todas', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=incidencias-config'); ?>" class="incidencias-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
-            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=incidencias-mapa')); ?>" class="dm-quick-links__item">
+            <span class="dashicons dashicons-location-alt"></span>
+            <span><?php esc_html_e('Mapa', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=incidencias-config')); ?>" class="dm-quick-links__item">
+            <span class="dashicons dashicons-admin-settings"></span>
+            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(home_url('/mi-portal/incidencias/')); ?>" class="dm-quick-links__item" target="_blank">
+            <span class="dashicons dashicons-external"></span>
+            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
         </a>
     </div>
 
     <!-- Métricas principales -->
-    <div class="flavor-metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 20px 0;">
-
-        <!-- Total Incidencias -->
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Total Incidencias', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($total_incidencias); ?></h2>
-                </div>
-                <span class="dashicons dashicons-analytics" style="font-size: 40px; color: #2271b1; opacity: 0.3;"></span>
-            </div>
+    <div class="dm-stats-grid dm-stats-grid--4">
+        <div class="dm-stat-card dm-stat-card--primary">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($total_incidencias); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Incidencias', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__icon"><span class="dashicons dashicons-analytics"></span></div>
         </div>
 
-        <!-- Abiertas -->
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #d63638; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Abiertas', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($incidencias_abiertas); ?></h2>
-                    <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
-                        <?php echo $incidencias_sin_asignar; ?> sin asignar
-                    </p>
-                </div>
-                <span class="dashicons dashicons-warning" style="font-size: 40px; color: #d63638; opacity: 0.3;"></span>
-            </div>
+        <div class="dm-stat-card dm-stat-card--error">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($incidencias_abiertas); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Abiertas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta"><?php printf(esc_html__('%s sin asignar', 'flavor-chat-ia'), number_format_i18n($incidencias_sin_asignar)); ?></div>
+            <div class="dm-stat-card__icon"><span class="dashicons dashicons-warning"></span></div>
         </div>
 
-        <!-- Resueltas este mes -->
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Resueltas este mes', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($incidencias_resueltas_mes); ?></h2>
-                </div>
-                <span class="dashicons dashicons-yes-alt" style="font-size: 40px; color: #00a32a; opacity: 0.3;"></span>
-            </div>
+        <div class="dm-stat-card dm-stat-card--success">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($incidencias_resueltas_mes); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Resueltas (mes)', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__icon"><span class="dashicons dashicons-yes-alt"></span></div>
         </div>
 
-        <!-- Tiempo promedio resolución -->
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #f0b849; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Tiempo Promedio', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;">
-                        <?php echo $tiempo_promedio_resolucion ? round($tiempo_promedio_resolucion) : '0'; ?>h
-                    </h2>
-                    <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;"><?php echo esc_html__('de resolución', 'flavor-chat-ia'); ?></p>
-                </div>
-                <span class="dashicons dashicons-clock" style="font-size: 40px; color: #f0b849; opacity: 0.3;"></span>
-            </div>
+        <div class="dm-stat-card dm-stat-card--warning">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($tiempo_promedio_resolucion ? round($tiempo_promedio_resolucion) : 0); ?>h</div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Tiempo Promedio', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('de resolución', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__icon"><span class="dashicons dashicons-clock"></span></div>
         </div>
-
     </div>
 
-    <!-- Gráficos y tablas -->
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin: 20px 0;">
-
-        <!-- Distribución por Estado -->
-        <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
-                <span class="dashicons dashicons-chart-bar"></span>
-                <?php echo esc_html__('Distribución por Estado', 'flavor-chat-ia'); ?>
-            </h3>
-            <canvas id="chart-estado" style="max-height: 300px;"></canvas>
+    <!-- Gráficos -->
+    <div class="dm-grid dm-grid--2">
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3><span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Distribución por Estado', 'flavor-chat-ia'); ?></h3>
+            </div>
+            <div class="dm-card__chart">
+                <canvas id="chart-estado"></canvas>
+            </div>
         </div>
 
-        <!-- Distribución por Prioridad -->
-        <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
-                <span class="dashicons dashicons-chart-pie"></span>
-                <?php echo esc_html__('Por Prioridad', 'flavor-chat-ia'); ?>
-            </h3>
-            <canvas id="chart-prioridad" style="max-height: 300px;"></canvas>
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3><span class="dashicons dashicons-chart-pie"></span> <?php esc_html_e('Por Prioridad', 'flavor-chat-ia'); ?></h3>
+            </div>
+            <div class="dm-card__chart">
+                <canvas id="chart-prioridad"></canvas>
+            </div>
         </div>
-
     </div>
 
-    <!-- Categorías más reportadas e Incidencias más votadas -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-
-        <!-- Categorías -->
-        <div class="flavor-table-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
-                <span class="dashicons dashicons-category"></span>
-                <?php echo esc_html__('Categorías Más Reportadas', 'flavor-chat-ia'); ?>
-            </h3>
-            <canvas id="chart-categorias" style="max-height: 300px;"></canvas>
+    <!-- Categorías y votadas -->
+    <div class="dm-grid dm-grid--2">
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3><span class="dashicons dashicons-category"></span> <?php esc_html_e('Categorías Más Reportadas', 'flavor-chat-ia'); ?></h3>
+            </div>
+            <div class="dm-card__chart">
+                <canvas id="chart-categorias"></canvas>
+            </div>
         </div>
 
-        <!-- Más votadas -->
-        <div class="flavor-table-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
-                <span class="dashicons dashicons-thumbs-up"></span>
-                <?php echo esc_html__('Incidencias Más Votadas', 'flavor-chat-ia'); ?>
-            </h3>
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3><span class="dashicons dashicons-thumbs-up"></span> <?php esc_html_e('Incidencias Más Votadas', 'flavor-chat-ia'); ?></h3>
+            </div>
             <?php if (!empty($incidencias_votadas)): ?>
-                <table class="wp-list-table widefat fixed striped">
+                <table class="dm-table">
                     <thead>
                         <tr>
-                            <th><?php echo esc_html__('Número', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Título', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Categoría', 'flavor-chat-ia'); ?></th>
-                            <th><?php echo esc_html__('Votos', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Número', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th>
+                            <th><?php esc_html_e('Votos', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($incidencias_votadas as $incidencia_votada): ?>
                         <tr>
-                            <td><strong><?php echo esc_html($incidencia_votada->numero_incidencia); ?></strong></td>
                             <td>
-                                <a href="<?php echo admin_url('admin.php?page=flavor-incidencias-tickets&id=' . $incidencia_votada->id); ?>">
-                                    <?php echo esc_html($incidencia_votada->titulo); ?>
-                                </a>
+                                <strong><?php echo esc_html($incidencia_votada->numero_incidencia); ?></strong>
+                                <span class="dm-table__subtitle"><?php echo esc_html(ucfirst($incidencia_votada->categoria)); ?></span>
                             </td>
-                            <td><?php echo esc_html(ucfirst($incidencia_votada->categoria)); ?></td>
+                            <td><?php echo esc_html($incidencia_votada->titulo); ?></td>
                             <td>
-                                <span class="dashicons dashicons-thumbs-up" style="color: #2271b1;"></span>
-                                <?php echo $incidencia_votada->votos_ciudadanos; ?>
+                                <span class="dm-badge dm-badge--primary">
+                                    <span class="dashicons dashicons-thumbs-up" style="font-size: 12px; width: 12px; height: 12px;"></span>
+                                    <?php echo number_format_i18n($incidencia_votada->votos_ciudadanos); ?>
+                                </span>
                             </td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             <?php else: ?>
-                <p style="color: #646970; text-align: center; padding: 40px 0;"><?php echo esc_html__('No hay incidencias con votos', 'flavor-chat-ia'); ?></p>
+                <div class="dm-empty">
+                    <span class="dashicons dashicons-thumbs-up"></span>
+                    <p><?php esc_html_e('No hay incidencias con votos', 'flavor-chat-ia'); ?></p>
+                </div>
             <?php endif; ?>
         </div>
-
     </div>
 
-    <!-- Tendencia de resolución (últimos 7 días) -->
-    <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin: 20px 0;">
-        <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
-            <span class="dashicons dashicons-chart-line"></span>
-            <?php echo esc_html__('Tendencia de Resolución (Últimos 7 Días)', 'flavor-chat-ia'); ?>
-        </h3>
-        <canvas id="chart-tendencia" style="max-height: 250px;"></canvas>
+    <!-- Tendencia de resolución -->
+    <div class="dm-card dm-card--chart">
+        <div class="dm-card__header">
+            <h3><span class="dashicons dashicons-chart-line"></span> <?php esc_html_e('Tendencia de Resolución (Últimos 7 Días)', 'flavor-chat-ia'); ?></h3>
+        </div>
+        <div class="dm-card__chart">
+            <canvas id="chart-tendencia"></canvas>
+        </div>
     </div>
 
+    <!-- Distribución por estado en lista -->
+    <div class="dm-card">
+        <div class="dm-card__header">
+            <h3><?php esc_html_e('Resumen por Estado', 'flavor-chat-ia'); ?></h3>
+        </div>
+        <?php if (!empty($stats_estado)): ?>
+            <div class="dm-badge-list">
+                <?php foreach ($stats_estado as $stat): ?>
+                    <div class="dm-badge-list__item">
+                        <span class="dm-badge <?php echo esc_attr($estado_badge_classes[$stat->estado] ?? 'dm-badge--secondary'); ?>">
+                            <?php echo esc_html($estado_labels[$stat->estado] ?? ucfirst($stat->estado)); ?>
+                        </span>
+                        <span class="dm-badge-list__value"><?php echo number_format_i18n((int) $stat->total); ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
 
-<!-- Scripts de Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+jQuery(document).ready(function($) {
+    if (typeof Chart === 'undefined') return;
+
+    const rootStyles = getComputedStyle(document.documentElement);
+    const primaryColor = rootStyles.getPropertyValue('--dm-primary').trim() || '#3b82f6';
+    const successColor = rootStyles.getPropertyValue('--dm-success').trim() || '#22c55e';
+    const warningColor = rootStyles.getPropertyValue('--dm-warning').trim() || '#f59e0b';
+    const errorColor = rootStyles.getPropertyValue('--dm-error').trim() || '#ef4444';
 
     // Gráfico de Estado
     const ctxEstado = document.getElementById('chart-estado');
@@ -256,43 +302,20 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctxEstado, {
             type: 'bar',
             data: {
-                labels: <?php echo json_encode(array_column($stats_estado, 'estado')); ?>,
+                labels: <?php echo wp_json_encode(array_map(function($s) use ($estado_labels) { return $estado_labels[$s->estado] ?? ucfirst($s->estado); }, $stats_estado)); ?>,
                 datasets: [{
-                    label: 'Incidencias',
-                    data: <?php echo json_encode(array_column($stats_estado, 'total')); ?>,
-                    backgroundColor: [
-                        'rgba(255, 193, 7, 0.8)',  // pendiente
-                        'rgba(33, 150, 243, 0.8)', // en_proceso
-                        'rgba(76, 175, 80, 0.8)',  // resuelta
-                        'rgba(158, 158, 158, 0.8)', // cerrada
-                        'rgba(244, 67, 54, 0.8)'   // rechazada
-                    ],
-                    borderColor: [
-                        'rgb(255, 193, 7)',
-                        'rgb(33, 150, 243)',
-                        'rgb(76, 175, 80)',
-                        'rgb(158, 158, 158)',
-                        'rgb(244, 67, 54)'
-                    ],
+                    label: '<?php esc_html_e('Incidencias', 'flavor-chat-ia'); ?>',
+                    data: <?php echo wp_json_encode(array_column($stats_estado, 'total')); ?>,
+                    backgroundColor: [warningColor + 'cc', primaryColor + 'cc', successColor + 'cc', '#6b7280cc', errorColor + 'cc'],
+                    borderColor: [warningColor, primaryColor, successColor, '#6b7280', errorColor],
                     borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                }
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
             }
         });
     }
@@ -303,32 +326,18 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctxPrioridad, {
             type: 'doughnut',
             data: {
-                labels: <?php echo json_encode(array_column($stats_prioridad, 'prioridad')); ?>,
+                labels: <?php echo wp_json_encode(array_map(function($s) { return ucfirst($s->prioridad); }, $stats_prioridad)); ?>,
                 datasets: [{
-                    data: <?php echo json_encode(array_column($stats_prioridad, 'total')); ?>,
-                    backgroundColor: [
-                        'rgba(76, 175, 80, 0.8)',  // baja
-                        'rgba(255, 193, 7, 0.8)',  // media
-                        'rgba(255, 152, 0, 0.8)',  // alta
-                        'rgba(244, 67, 54, 0.8)'   // urgente
-                    ],
-                    borderColor: [
-                        'rgb(76, 175, 80)',
-                        'rgb(255, 193, 7)',
-                        'rgb(255, 152, 0)',
-                        'rgb(244, 67, 54)'
-                    ],
+                    data: <?php echo wp_json_encode(array_column($stats_prioridad, 'total')); ?>,
+                    backgroundColor: [successColor + 'cc', warningColor + 'cc', '#f97316cc', errorColor + 'cc'],
+                    borderColor: [successColor, warningColor, '#f97316', errorColor],
                     borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
+                plugins: { legend: { position: 'bottom' } }
             }
         });
     }
@@ -339,12 +348,12 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctxCategorias, {
             type: 'bar',
             data: {
-                labels: <?php echo json_encode(array_column($stats_categoria, 'categoria')); ?>,
+                labels: <?php echo wp_json_encode(array_map(function($s) { return ucfirst($s->categoria); }, $stats_categoria)); ?>,
                 datasets: [{
-                    label: 'Incidencias',
-                    data: <?php echo json_encode(array_column($stats_categoria, 'total')); ?>,
-                    backgroundColor: 'rgba(33, 113, 177, 0.8)',
-                    borderColor: 'rgb(33, 113, 177)',
+                    label: '<?php esc_html_e('Incidencias', 'flavor-chat-ia'); ?>',
+                    data: <?php echo wp_json_encode(array_column($stats_categoria, 'total')); ?>,
+                    backgroundColor: primaryColor + 'cc',
+                    borderColor: primaryColor,
                     borderWidth: 2
                 }]
             },
@@ -352,19 +361,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                }
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true, ticks: { precision: 0 } } }
             }
         });
     }
@@ -375,12 +373,12 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctxTendencia, {
             type: 'line',
             data: {
-                labels: <?php echo json_encode(array_map(function($r) { return date('d/m', strtotime($r->fecha)); }, $resueltas_semana)); ?>,
+                labels: <?php echo wp_json_encode(array_map(function($r) { return date_i18n('d/m', strtotime($r->fecha)); }, $resueltas_semana)); ?>,
                 datasets: [{
-                    label: 'Incidencias Resueltas',
-                    data: <?php echo json_encode(array_column($resueltas_semana, 'total')); ?>,
-                    borderColor: 'rgb(76, 175, 80)',
-                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    label: '<?php esc_html_e('Incidencias Resueltas', 'flavor-chat-ia'); ?>',
+                    data: <?php echo wp_json_encode(array_column($resueltas_semana, 'total')); ?>,
+                    borderColor: successColor,
+                    backgroundColor: successColor + '20',
                     tension: 0.4,
                     fill: true
                 }]
@@ -388,47 +386,10 @@ document.addEventListener('DOMContentLoaded', function() {
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                }
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
             }
         });
     }
-
 });
 </script>
-
-<style>
-.flavor-metrics-grid,
-.flavor-chart-container,
-.flavor-table-container {
-    animation: fadeInUp 0.5s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.flavor-metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-    transition: all 0.3s ease;
-}
-</style>

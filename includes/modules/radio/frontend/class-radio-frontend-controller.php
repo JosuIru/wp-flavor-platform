@@ -60,6 +60,12 @@ class Flavor_Radio_Frontend_Controller {
         add_shortcode('flavor_radio_podcasts', [$this, 'shortcode_podcasts']);
         add_shortcode('flavor_radio_estadisticas', [$this, 'shortcode_estadisticas']);
 
+        // Nuevos shortcodes v2.0
+        add_shortcode('flavor_radio_locutor', [$this, 'shortcode_locutor_perfil']);
+        add_shortcode('flavor_radio_calendario', [$this, 'shortcode_calendario']);
+        add_shortcode('flavor_radio_favoritos', [$this, 'shortcode_mis_favoritos']);
+        add_shortcode('flavor_radio_canales', [$this, 'shortcode_canales']);
+
         // AJAX handlers (complementarios a los del módulo)
         add_action('wp_ajax_flavor_radio_frontend_dedicatoria', [$this, 'ajax_enviar_dedicatoria']);
         add_action('wp_ajax_flavor_radio_frontend_proponer', [$this, 'ajax_proponer_programa']);
@@ -345,9 +351,42 @@ class Flavor_Radio_Frontend_Controller {
                 </div>
             </div>
 
+            <!-- Visualizador de onda (Canvas) -->
+            <canvas id="radio-visualizer-canvas" class="radio-visualizer-canvas <?php echo $atts['estilo'] === 'compacto' ? 'compact' : ''; ?>"></canvas>
+
+            <!-- Canción actual (metadatos del stream) -->
+            <div class="radio-now-playing" id="radio-now-playing" style="display: none;">
+                <div class="now-playing-icon">
+                    <span class="dashicons dashicons-format-audio"></span>
+                </div>
+                <div class="now-playing-info">
+                    <div class="now-playing-title">-</div>
+                    <div class="now-playing-artist">-</div>
+                </div>
+                <button type="button" class="btn-share-song" title="<?php esc_attr_e('Compartir', 'flavor-chat-ia'); ?>">
+                    <span class="dashicons dashicons-share"></span>
+                </button>
+            </div>
+
             <?php if ($atts['estilo'] === 'completo'): ?>
             <div class="flavor-radio-programa-actual" id="programa-actual-container">
                 <!-- Se carga via AJAX -->
+            </div>
+
+            <!-- Botones de compartir -->
+            <div class="radio-share-buttons">
+                <button type="button" class="btn-share twitter" data-red="twitter" data-tipo="radio" title="Twitter">
+                    <span class="dashicons dashicons-twitter"></span>
+                </button>
+                <button type="button" class="btn-share facebook" data-red="facebook" data-tipo="radio" title="Facebook">
+                    <span class="dashicons dashicons-facebook"></span>
+                </button>
+                <button type="button" class="btn-share whatsapp" data-red="whatsapp" data-tipo="radio" title="WhatsApp">
+                    <span class="dashicons dashicons-whatsapp"></span>
+                </button>
+                <button type="button" class="btn-share copy-link" data-red="copy" data-tipo="radio" title="<?php esc_attr_e('Copiar enlace', 'flavor-chat-ia'); ?>">
+                    <span class="dashicons dashicons-admin-links"></span>
+                </button>
             </div>
             <?php endif; ?>
         </div>
@@ -434,6 +473,12 @@ class Flavor_Radio_Frontend_Controller {
                             </div>
                             <?php if (!empty($programa->categoria)): ?>
                             <span class="flavor-badge"><?php echo esc_html($programa->categoria); ?></span>
+                            <?php endif; ?>
+                            <?php if (is_user_logged_in()): ?>
+                            <button type="button" class="btn-favorito" data-programa-id="<?php echo esc_attr($programa->id); ?>"
+                                    title="<?php esc_attr_e('Añadir a favoritos', 'flavor-chat-ia'); ?>">
+                                <span class="dashicons dashicons-heart"></span>
+                            </button>
                             <?php endif; ?>
                         </div>
                         <?php endforeach; ?>
@@ -861,6 +906,263 @@ class Flavor_Radio_Frontend_Controller {
             'rechazada' => __('Rechazada', 'flavor-chat-ia'),
         ];
         return $etiquetas[$estado] ?? ucfirst($estado);
+    }
+
+    // =========================================================================
+    // NUEVOS SHORTCODES v2.0
+    // =========================================================================
+
+    /**
+     * Shortcode: Perfil de locutor
+     */
+    public function shortcode_locutor_perfil($atts) {
+        $this->cargar_assets();
+        global $wpdb;
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+
+        $atts = shortcode_atts([
+            'id' => 0,
+        ], $atts);
+
+        $locutor_id = absint($atts['id']);
+        if (!$locutor_id) {
+            return '<p class="flavor-aviso">' . __('Locutor no especificado', 'flavor-chat-ia') . '</p>';
+        }
+
+        $user = get_userdata($locutor_id);
+        if (!$user) {
+            return '<p class="flavor-aviso">' . __('Locutor no encontrado', 'flavor-chat-ia') . '</p>';
+        }
+
+        // Obtener programas
+        $programas = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+            $programas = $wpdb->get_results($wpdb->prepare(
+                "SELECT id, nombre, descripcion, imagen_url, categoria, oyentes_promedio, total_episodios
+                 FROM $tabla_programas
+                 WHERE locutor_id = %d AND estado = 'activo'
+                 ORDER BY nombre",
+                $locutor_id
+            ));
+        }
+
+        // Stats
+        $total_programas = count($programas);
+        $total_episodios = array_sum(array_column($programas, 'total_episodios'));
+        $oyentes_promedio = $total_programas > 0
+            ? round(array_sum(array_column($programas, 'oyentes_promedio')) / $total_programas)
+            : 0;
+
+        // Meta
+        $bio = get_user_meta($locutor_id, 'description', true);
+        $redes = get_user_meta($locutor_id, 'flavor_redes_sociales', true) ?: [];
+
+        ob_start();
+        ?>
+        <div class="locutor-perfil">
+            <div class="locutor-header">
+                <img src="<?php echo esc_url(get_avatar_url($locutor_id, ['size' => 200])); ?>" alt="" class="locutor-avatar">
+                <h2 class="locutor-nombre"><?php echo esc_html($user->display_name); ?></h2>
+                <p class="locutor-rol"><?php _e('Locutor', 'flavor-chat-ia'); ?></p>
+
+                <?php if (!empty($redes)): ?>
+                <div class="locutor-redes">
+                    <?php foreach ($redes as $red => $url): ?>
+                        <?php if (!empty($url)): ?>
+                        <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener">
+                            <span class="dashicons dashicons-<?php echo esc_attr($red); ?>"></span>
+                        </a>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="locutor-content">
+                <?php if (!empty($bio)): ?>
+                <p class="locutor-bio"><?php echo wp_kses_post($bio); ?></p>
+                <?php endif; ?>
+
+                <div class="locutor-stats">
+                    <div class="locutor-stat">
+                        <div class="locutor-stat-valor"><?php echo esc_html($total_programas); ?></div>
+                        <div class="locutor-stat-label"><?php _e('Programas', 'flavor-chat-ia'); ?></div>
+                    </div>
+                    <div class="locutor-stat">
+                        <div class="locutor-stat-valor"><?php echo esc_html($total_episodios); ?></div>
+                        <div class="locutor-stat-label"><?php _e('Episodios', 'flavor-chat-ia'); ?></div>
+                    </div>
+                    <div class="locutor-stat">
+                        <div class="locutor-stat-valor"><?php echo esc_html($oyentes_promedio); ?></div>
+                        <div class="locutor-stat-label"><?php _e('Oyentes/ep', 'flavor-chat-ia'); ?></div>
+                    </div>
+                </div>
+
+                <?php if (!empty($programas)): ?>
+                <div class="locutor-programas">
+                    <h4><span class="dashicons dashicons-playlist-audio"></span> <?php _e('Sus programas', 'flavor-chat-ia'); ?></h4>
+                    <div class="mis-favoritos-grid">
+                        <?php foreach ($programas as $prog): ?>
+                        <div class="favorito-card">
+                            <?php if (!empty($prog->imagen_url)): ?>
+                            <img src="<?php echo esc_url($prog->imagen_url); ?>" class="programa-thumb" alt="">
+                            <?php endif; ?>
+                            <div class="programa-info">
+                                <div class="programa-nombre"><?php echo esc_html($prog->nombre); ?></div>
+                                <div class="programa-horario"><?php echo esc_html($prog->categoria); ?></div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Calendario de eventos
+     */
+    public function shortcode_calendario($atts) {
+        $this->cargar_assets();
+
+        $atts = shortcode_atts([
+            'mes' => date('n'),
+            'año' => date('Y'),
+        ], $atts);
+
+        ob_start();
+        ?>
+        <div class="radio-calendario" data-mes="<?php echo esc_attr($atts['mes']); ?>" data-año="<?php echo esc_attr($atts['año']); ?>">
+            <div class="calendario-header">
+                <div class="calendario-nav">
+                    <button type="button" class="calendario-nav-prev">
+                        <span class="dashicons dashicons-arrow-left-alt2"></span>
+                    </button>
+                    <button type="button" class="calendario-nav-next">
+                        <span class="dashicons dashicons-arrow-right-alt2"></span>
+                    </button>
+                </div>
+                <span class="calendario-titulo"></span>
+            </div>
+            <div class="calendario-grid">
+                <!-- Se carga via JS -->
+            </div>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Mis programas favoritos
+     */
+    public function shortcode_mis_favoritos($atts) {
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-aviso">' . __('Inicia sesión para ver tus favoritos', 'flavor-chat-ia') . '</p>';
+        }
+
+        $this->cargar_assets();
+        global $wpdb;
+        $tabla_favoritos = $wpdb->prefix . 'flavor_radio_favoritos';
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+        $usuario_id = get_current_user_id();
+
+        $favoritos = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_favoritos)) {
+            $favoritos = $wpdb->get_results($wpdb->prepare(
+                "SELECT f.programa_id, f.notificaciones, p.nombre, p.imagen_url, p.categoria, p.hora_inicio
+                 FROM $tabla_favoritos f
+                 LEFT JOIN $tabla_programas p ON f.programa_id = p.id
+                 WHERE f.usuario_id = %d
+                 ORDER BY p.nombre",
+                $usuario_id
+            ));
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-radio-favoritos">
+            <h3>
+                <span class="dashicons dashicons-heart"></span>
+                <?php _e('Mis programas favoritos', 'flavor-chat-ia'); ?>
+            </h3>
+
+            <?php if (!empty($favoritos)): ?>
+            <div class="mis-favoritos-grid">
+                <?php foreach ($favoritos as $fav): ?>
+                <div class="favorito-card">
+                    <?php if (!empty($fav->imagen_url)): ?>
+                    <img src="<?php echo esc_url($fav->imagen_url); ?>" class="programa-thumb" alt="">
+                    <?php else: ?>
+                    <div class="programa-thumb" style="background: var(--radio-gray-200); display: flex; align-items: center; justify-content: center;">
+                        <span class="dashicons dashicons-microphone"></span>
+                    </div>
+                    <?php endif; ?>
+                    <div class="programa-info">
+                        <div class="programa-nombre"><?php echo esc_html($fav->nombre); ?></div>
+                        <div class="programa-horario">
+                            <?php echo esc_html($fav->categoria); ?>
+                            <?php if (!empty($fav->hora_inicio)): ?>
+                                · <?php echo esc_html(substr($fav->hora_inicio, 0, 5)); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-notificacion <?php echo $fav->notificaciones ? 'activo' : ''; ?>"
+                            data-programa-id="<?php echo esc_attr($fav->programa_id); ?>"
+                            title="<?php esc_attr_e('Notificaciones', 'flavor-chat-ia'); ?>">
+                        <span class="dashicons dashicons-bell"></span>
+                    </button>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php else: ?>
+            <p class="flavor-vacio"><?php _e('No tienes programas favoritos todavía', 'flavor-chat-ia'); ?></p>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Selector de canales
+     */
+    public function shortcode_canales($atts) {
+        $this->cargar_assets();
+        global $wpdb;
+        $tabla_canales = $wpdb->prefix . 'flavor_radio_canales';
+
+        $canales = [];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_canales)) {
+            $canales = $wpdb->get_results(
+                "SELECT id, nombre, descripcion, url_stream, url_stream_hd, logo_url
+                 FROM $tabla_canales
+                 WHERE activo = 1
+                 ORDER BY orden ASC"
+            );
+        }
+
+        // Si no hay canales, no mostrar nada
+        if (count($canales) <= 1) {
+            return '';
+        }
+
+        ob_start();
+        ?>
+        <div class="radio-canales">
+            <?php foreach ($canales as $index => $canal): ?>
+            <button type="button" class="canal-tab <?php echo $index === 0 ? 'activo' : ''; ?>"
+                    data-canal-id="<?php echo esc_attr($canal->id); ?>"
+                    data-stream="<?php echo esc_url($canal->url_stream); ?>"
+                    data-stream-hd="<?php echo esc_url($canal->url_stream_hd); ?>">
+                <span class="canal-nombre"><?php echo esc_html($canal->nombre); ?></span>
+            </button>
+            <?php endforeach; ?>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 }
 

@@ -410,6 +410,17 @@ final cartProvider = StateNotifierProvider<CartNotifier, CartState>((ref) {
 /// Provider para el usuario admin actual
 final adminUserProvider = StateProvider<User?>((ref) => null);
 
+/// Provider para el ID del usuario actual (cliente o admin)
+/// Se actualiza cuando el usuario se autentica
+final currentUserIdProvider = StateProvider<int?>((ref) {
+  // Intentar obtener del usuario admin si existe
+  final adminUser = ref.watch(adminUserProvider);
+  if (adminUser != null) {
+    return adminUser.id;
+  }
+  return null;
+});
+
 final dashboardProvider = FutureProvider<DashboardData>((ref) async {
   final api = ref.read(apiClientProvider);
   try {

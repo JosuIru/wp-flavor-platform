@@ -110,10 +110,310 @@ class _ThemacleScreenState extends ConsumerState<ThemacleScreen> {
                       ),
                     ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Implementar nueva prediccion
-        },
+        onPressed: _nuevaPrediccion,
         child: const Icon(Icons.play_arrow),
+      ),
+    );
+  }
+
+  void _nuevaPrediccion() {
+    final inputController = TextEditingController();
+    String? modeloSeleccionado;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.auto_awesome, color: Colors.purple),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Nueva Prediccion',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              if (_modelos.isNotEmpty) ...[
+                DropdownButtonFormField<String>(
+                  value: modeloSeleccionado,
+                  decoration: const InputDecoration(
+                    labelText: 'Seleccionar modelo',
+                    prefixIcon: Icon(Icons.auto_awesome),
+                    border: OutlineInputBorder(),
+                  ),
+                  hint: const Text('Elige un modelo'),
+                  items: _modelos.map((modelo) {
+                    final modeloMap = modelo as Map<String, dynamic>;
+                    final nombre = modeloMap['nombre'] ?? modeloMap['name'] ?? 'Modelo';
+                    final id = modeloMap['id']?.toString() ?? nombre.toString();
+                    return DropdownMenuItem<String>(
+                      value: id,
+                      child: Text(nombre.toString()),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setModalState(() => modeloSeleccionado = value);
+                  },
+                ),
+                const SizedBox(height: 16),
+              ],
+              TextFormField(
+                controller: inputController,
+                decoration: const InputDecoration(
+                  labelText: 'Datos de entrada',
+                  prefixIcon: Icon(Icons.input),
+                  border: OutlineInputBorder(),
+                  hintText: 'Introduce los datos para la prediccion...',
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () async {
+                    if (inputController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Introduce datos para la prediccion')),
+                      );
+                      return;
+                    }
+                    Navigator.pop(context);
+                    await _ejecutarPrediccion(
+                      modeloId: modeloSeleccionado,
+                      inputData: inputController.text,
+                    );
+                  },
+                  icon: const Icon(Icons.play_arrow),
+                  label: const Text('Ejecutar prediccion'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _ejecutarPrediccion({String? modeloId, required String inputData}) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    // Mostrar indicador de carga
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Ejecutando prediccion...'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    try {
+      final apiClient = ref.read(apiClientProvider);
+      final response = await apiClient.post('/themacle/predict', data: {
+        if (modeloId != null) 'modelo_id': modeloId,
+        'input': inputData,
+      });
+
+      if (mounted) Navigator.pop(context); // Cerrar diálogo de carga
+
+      if (response.success && response.data != null) {
+        final resultado = response.data!['resultado'] ?? response.data!['result'] ?? response.data!['prediction'];
+        final confianza = response.data!['confianza'] ?? response.data!['confidence'] ?? 0;
+
+        if (mounted) {
+          _mostrarResultadoPrediccion(resultado, confianza);
+        }
+      } else {
+        throw Exception(response.error ?? 'Error en la prediccion');
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); // Cerrar diálogo de carga si hay error
+        scaffoldMessenger.showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  void _mostrarResultadoPrediccion(dynamic resultado, dynamic confianza) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.check_circle, color: Colors.green),
+            const SizedBox(width: 8),
+            const Text('Resultado'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              color: Colors.purple.withOpacity(0.1),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Prediccion:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Text(
+                      resultado.toString(),
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (confianza is num && confianza > 0) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  const Icon(Icons.analytics, size: 16, color: Colors.blue),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Confianza: ${(confianza * 100).toStringAsFixed(1)}%',
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _ejecutarModelo(Map<String, dynamic> modelo) {
+    final nombre = modelo['nombre'] ?? modelo['name'] ?? 'Modelo';
+    final modeloId = modelo['id']?.toString();
+    final inputController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.purple.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.auto_awesome, color: Colors.purple),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Ejecutar Modelo',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        nombre.toString(),
+                        style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: inputController,
+              decoration: const InputDecoration(
+                labelText: 'Datos de entrada',
+                prefixIcon: Icon(Icons.input),
+                border: OutlineInputBorder(),
+                hintText: 'Introduce los datos para procesar...',
+              ),
+              maxLines: 4,
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: () async {
+                  if (inputController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Introduce los datos de entrada')),
+                    );
+                    return;
+                  }
+                  Navigator.pop(context);
+                  await _ejecutarPrediccion(
+                    modeloId: modeloId,
+                    inputData: inputController.text,
+                  );
+                },
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Procesar'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -256,9 +556,7 @@ class _ThemacleScreenState extends ConsumerState<ThemacleScreen> {
                     ],
                   ),
                 ElevatedButton.icon(
-                  onPressed: () {
-                    // TODO: Ejecutar modelo
-                  },
+                  onPressed: () => _ejecutarModelo(modeloMap),
                   icon: const Icon(Icons.play_arrow, size: 18),
                   label: const Text('Ejecutar'),
                   style: ElevatedButton.styleFrom(

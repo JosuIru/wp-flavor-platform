@@ -307,6 +307,48 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         $this->ensure_table_column($tabla_bloqueados, 'motivo', "ALTER TABLE {$tabla_bloqueados} ADD COLUMN motivo varchar(255) DEFAULT NULL AFTER bloqueado_id");
         $this->ensure_table_column($tabla_estados, 'mensaje_estado', "ALTER TABLE {$tabla_estados} ADD COLUMN mensaje_estado varchar(255) DEFAULT NULL AFTER estado");
+
+        // Columnas E2E para mensajes cifrados
+        $this->ensure_table_column($tabla_mensajes, 'cifrado', "ALTER TABLE {$tabla_mensajes} ADD COLUMN cifrado tinyint(1) DEFAULT 0 AFTER eliminado_para");
+        $this->ensure_table_column($tabla_mensajes, 'ciphertext', "ALTER TABLE {$tabla_mensajes} ADD COLUMN ciphertext text DEFAULT NULL AFTER cifrado");
+        $this->ensure_table_column($tabla_mensajes, 'e2e_version', "ALTER TABLE {$tabla_mensajes} ADD COLUMN e2e_version int DEFAULT NULL AFTER ciphertext");
+        $this->ensure_table_column($tabla_mensajes, 'ratchet_header', "ALTER TABLE {$tabla_mensajes} ADD COLUMN ratchet_header text DEFAULT NULL AFTER e2e_version");
+        $this->ensure_table_column($tabla_mensajes, 'legacy_plaintext', "ALTER TABLE {$tabla_mensajes} ADD COLUMN legacy_plaintext tinyint(1) DEFAULT 0 AFTER ratchet_header");
+
+        // Crear tablas E2E si no existen
+        $this->crear_tablas_e2e();
+
+        // Marcar mensajes existentes como legacy_plaintext (una sola vez)
+        $this->migrar_mensajes_legacy_e2e();
+    }
+
+    /**
+     * Marca los mensajes existentes sin cifrar como legacy_plaintext.
+     * Solo se ejecuta una vez.
+     */
+    private function migrar_mensajes_legacy_e2e() {
+        global $wpdb;
+
+        // Verificar si ya se ejecutó esta migración
+        $migracion_key = 'flavor_chat_e2e_legacy_migration_done';
+        if (get_option($migracion_key)) {
+            return;
+        }
+
+        $tabla_mensajes = $wpdb->prefix . 'flavor_chat_mensajes';
+
+        // Marcar todos los mensajes existentes con texto y sin cifrar como legacy
+        $wpdb->query(
+            "UPDATE {$tabla_mensajes}
+             SET legacy_plaintext = 1
+             WHERE cifrado = 0
+             AND mensaje IS NOT NULL
+             AND mensaje != ''
+             AND legacy_plaintext = 0"
+        );
+
+        // Marcar migración como completada
+        update_option($migracion_key, time());
     }
 
     /**
@@ -329,6 +371,177 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         if (!$exists) {
             $wpdb->query($sql);
+        }
+    }
+
+    /**
+     * Crea las tablas necesarias para el cifrado E2E (Signal Protocol)
+     */
+    private function crear_tablas_e2e() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        $prefix = $wpdb->prefix . 'flavor_';
+
+        // 1. Claves de identidad por usuario/dispositivo
+        $tabla_identity_keys = $prefix . 'e2e_identity_keys';
+        if (!$this->tabla_existe($tabla_identity_keys)) {
+            $sql = "CREATE TABLE {$tabla_identity_keys} (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                dispositivo_id varchar(64) NOT NULL,
+                public_key text NOT NULL,
+                private_key_encrypted text NOT NULL,
+                key_fingerprint varchar(100) DEFAULT NULL,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY usuario_dispositivo (usuario_id, dispositivo_id),
+                KEY usuario_id (usuario_id)
+            ) {$charset_collate};";
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
+        }
+
+        // 2. Signed PreKeys (rotan cada 30 dias)
+        $tabla_signed_prekeys = $prefix . 'e2e_signed_prekeys';
+        if (!$this->tabla_existe($tabla_signed_prekeys)) {
+            $sql = "CREATE TABLE {$tabla_signed_prekeys} (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                dispositivo_id varchar(64) NOT NULL,
+                prekey_id int unsigned NOT NULL,
+                public_key text NOT NULL,
+                signature text NOT NULL,
+                expires_at datetime NOT NULL,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY usuario_dispositivo (usuario_id, dispositivo_id),
+                KEY expires_at (expires_at)
+            ) {$charset_collate};";
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
+        }
+
+        // 3. One-time PreKeys (se consumen al usarse)
+        $tabla_one_time_prekeys = $prefix . 'e2e_one_time_prekeys';
+        if (!$this->tabla_existe($tabla_one_time_prekeys)) {
+            $sql = "CREATE TABLE {$tabla_one_time_prekeys} (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                dispositivo_id varchar(64) NOT NULL,
+                prekey_id int unsigned NOT NULL,
+                public_key text NOT NULL,
+                used tinyint(1) DEFAULT 0,
+                used_at datetime DEFAULT NULL,
+                used_by_usuario_id bigint(20) unsigned DEFAULT NULL,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY usuario_dispositivo_used (usuario_id, dispositivo_id, used),
+                KEY prekey_id (prekey_id)
+            ) {$charset_collate};";
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
+        }
+
+        // 4. Estado de sesiones Double Ratchet
+        $tabla_sessions = $prefix . 'e2e_sessions';
+        if (!$this->tabla_existe($tabla_sessions)) {
+            $sql = "CREATE TABLE {$tabla_sessions} (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                session_id varchar(128) NOT NULL,
+                usuario_local_id bigint(20) unsigned NOT NULL,
+                dispositivo_local_id varchar(64) NOT NULL,
+                usuario_remoto_id bigint(20) unsigned NOT NULL,
+                dispositivo_remoto_id varchar(64) NOT NULL,
+                state_encrypted longtext NOT NULL,
+                version int DEFAULT 1,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY session_id (session_id),
+                KEY local_user (usuario_local_id, dispositivo_local_id),
+                KEY remote_user (usuario_remoto_id, dispositivo_remoto_id)
+            ) {$charset_collate};";
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
+        }
+
+        // 5. Dispositivos registrados
+        $tabla_devices = $prefix . 'e2e_devices';
+        if (!$this->tabla_existe($tabla_devices)) {
+            $sql = "CREATE TABLE {$tabla_devices} (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                dispositivo_id varchar(64) NOT NULL,
+                nombre varchar(100) DEFAULT NULL,
+                tipo enum('web','android','ios','desktop') DEFAULT 'web',
+                is_primary tinyint(1) DEFAULT 0,
+                revoked tinyint(1) DEFAULT 0,
+                revoked_at datetime DEFAULT NULL,
+                last_seen datetime DEFAULT NULL,
+                user_agent text DEFAULT NULL,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY usuario_dispositivo (usuario_id, dispositivo_id),
+                KEY usuario_id (usuario_id),
+                KEY revoked (revoked)
+            ) {$charset_collate};";
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
+        }
+
+        // 6. Identidades verificadas
+        $tabla_verified = $prefix . 'e2e_verified_identities';
+        if (!$this->tabla_existe($tabla_verified)) {
+            $sql = "CREATE TABLE {$tabla_verified} (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_verificador_id bigint(20) unsigned NOT NULL,
+                usuario_verificado_id bigint(20) unsigned NOT NULL,
+                dispositivo_verificado_id varchar(64) NOT NULL,
+                fingerprint varchar(100) NOT NULL,
+                verified_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY verificacion_unica (usuario_verificador_id, usuario_verificado_id, dispositivo_verificado_id),
+                KEY usuario_verificador (usuario_verificador_id)
+            ) {$charset_collate};";
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
+        }
+
+        // 7. Backups cifrados de claves
+        $tabla_backups = $prefix . 'e2e_key_backups';
+        if (!$this->tabla_existe($tabla_backups)) {
+            $sql = "CREATE TABLE {$tabla_backups} (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                usuario_id bigint(20) unsigned NOT NULL,
+                backup_key_hash varchar(128) NOT NULL,
+                encrypted_bundle longtext NOT NULL,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY usuario_id (usuario_id),
+                KEY backup_key_hash (backup_key_hash)
+            ) {$charset_collate};";
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
+        }
+
+        // 8. Payloads de mensajes cifrados por dispositivo
+        $tabla_message_payloads = $prefix . 'e2e_message_payloads';
+        if (!$this->tabla_existe($tabla_message_payloads)) {
+            $sql = "CREATE TABLE {$tabla_message_payloads} (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                mensaje_id bigint(20) unsigned NOT NULL,
+                dispositivo_id varchar(64) NOT NULL,
+                ciphertext text NOT NULL,
+                ratchet_header text NOT NULL,
+                x3dh_header text DEFAULT NULL,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY mensaje_dispositivo (mensaje_id, dispositivo_id),
+                KEY mensaje_id (mensaje_id)
+            ) {$charset_collate};";
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta($sql);
         }
     }
 
@@ -384,6 +597,80 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'callback' => [$this, 'rest_estadisticas'],
             'permission_callback' => [$this, 'rest_check_admin_permission'],
         ]);
+
+        // Rutas E2E (End-to-End Encryption)
+        register_rest_route('flavor/v1', '/e2e/keys/register', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_e2e_registrar_claves'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        register_rest_route('flavor/v1', '/e2e/keys/status', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_e2e_estado_claves'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        register_rest_route('flavor/v1', '/e2e/prekey-bundle/(?P<usuario_id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_e2e_obtener_prekey_bundle'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        register_rest_route('flavor/v1', '/e2e/prekey-bundle/(?P<usuario_id>\d+)/(?P<dispositivo_id>[a-zA-Z0-9_-]+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_e2e_obtener_prekey_bundle'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        register_rest_route('flavor/v1', '/e2e/devices', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_e2e_listar_dispositivos'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        register_rest_route('flavor/v1', '/e2e/devices/register', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_e2e_registrar_dispositivo'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        register_rest_route('flavor/v1', '/e2e/devices/(?P<dispositivo_id>[a-zA-Z0-9_-]+)/revoke', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_e2e_revocar_dispositivo'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        register_rest_route('flavor/v1', '/e2e/session/store', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_e2e_guardar_sesion'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        register_rest_route('flavor/v1', '/e2e/session/(?P<session_id>[a-zA-Z0-9_-]+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_e2e_obtener_sesion'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        register_rest_route('flavor/v1', '/e2e/verify', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_e2e_verificar_identidad'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        // Backup y recuperación de claves
+        register_rest_route('flavor/v1', '/e2e/backup/create', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_e2e_crear_backup'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
+
+        register_rest_route('flavor/v1', '/e2e/backup/restore', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_e2e_restaurar_backup'],
+            'permission_callback' => [$this, 'rest_check_permission'],
+        ]);
     }
 
     /**
@@ -423,6 +710,32 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             true
         );
 
+        // Cargar scripts E2E si está habilitado
+        $configuracion_e2e = $this->get_settings()['encriptacion_e2e'] ?? false;
+
+        if ($configuracion_e2e) {
+            wp_enqueue_script(
+                'flavor-key-store',
+                FLAVOR_CHAT_IA_URL . 'includes/crypto/js/flavor-key-store.js',
+                [],
+                FLAVOR_CHAT_IA_VERSION,
+                true
+            );
+
+            wp_enqueue_script(
+                'flavor-signal-protocol',
+                FLAVOR_CHAT_IA_URL . 'includes/crypto/js/flavor-signal-protocol.js',
+                ['flavor-key-store'],
+                FLAVOR_CHAT_IA_VERSION,
+                true
+            );
+
+            wp_localize_script('flavor-signal-protocol', 'flavorE2E', [
+                'nonce' => wp_create_nonce('wp_rest'),
+                'apiUrl' => rest_url('flavor/v1/e2e/'),
+            ]);
+        }
+
         wp_localize_script('flavor-chat-interno', 'flavorChatInterno', [
             'ajaxurl' => admin_url('admin-ajax.php'),
             'resturl' => rest_url('flavor/v1/chat-interno/'),
@@ -434,6 +747,8 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'typing_timeout' => 3000,
             'max_file_size' => $this->get_settings()['max_tamano_archivo_mb'] * 1024 * 1024,
             'allowed_types' => $this->get_allowed_file_types(),
+            'e2e_enabled' => $configuracion_e2e,
+            'e2e_nonce' => wp_create_nonce('wp_rest'),
             'strings' => [
                 'escribiendo' => __('escribiendo...', 'flavor-chat-ia'),
                 'tu' => __('Tu', 'flavor-chat-ia'),
@@ -1015,7 +1330,34 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
                 'fecha_humana' => $this->tiempo_relativo($mensaje->fecha_creacion),
                 'hora' => date('H:i', strtotime($mensaje->fecha_creacion)),
                 'es_mio' => $es_mio,
+                // Campos E2E
+                'cifrado' => !empty($mensaje->cifrado),
+                'ciphertext' => $mensaje->ciphertext ?? null,
+                'e2e_header' => $mensaje->ratchet_header ?? null,
+                'e2e_version' => $mensaje->e2e_version ?? null,
+                'legacy_plaintext' => !empty($mensaje->legacy_plaintext),
             ];
+
+            // Si el mensaje es cifrado y no es mío, buscar payload para mi dispositivo
+            if (!empty($mensaje->cifrado) && !$es_mio && !empty($params['dispositivo_id'])) {
+                $tabla_payloads = $wpdb->prefix . 'flavor_e2e_message_payloads';
+                $mi_payload = $wpdb->get_row($wpdb->prepare(
+                    "SELECT ciphertext, ratchet_header, x3dh_header
+                     FROM {$tabla_payloads}
+                     WHERE mensaje_id = %d AND dispositivo_id = %s",
+                    $mensaje->id,
+                    $params['dispositivo_id']
+                ));
+
+                if ($mi_payload) {
+                    // Usar el payload específico para mi dispositivo
+                    $resultado[count($resultado) - 1]['ciphertext'] = $mi_payload->ciphertext;
+                    $resultado[count($resultado) - 1]['e2e_header'] = $mi_payload->ratchet_header;
+                    if ($mi_payload->x3dh_header) {
+                        $resultado[count($resultado) - 1]['x3dh_header'] = $mi_payload->x3dh_header;
+                    }
+                }
+            }
         }
 
         // Marcar como leidos los mensajes que no son mios
@@ -1107,6 +1449,24 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'tipo' => $tipo,
         ];
 
+        // Soporte E2E: si el mensaje viene cifrado, guardar ciphertext en lugar de plaintext
+        $es_cifrado_e2e = !empty($params['cifrado']) && $this->get_settings()['encriptacion_e2e'];
+        $e2e_payloads = null;
+
+        if ($es_cifrado_e2e) {
+            $datos_mensaje['mensaje'] = ''; // No guardar plaintext
+            $datos_mensaje['mensaje_html'] = '';
+            $datos_mensaje['cifrado'] = 1;
+            $datos_mensaje['ciphertext'] = sanitize_text_field($params['ciphertext'] ?? '');
+            $datos_mensaje['e2e_version'] = 1;
+            $datos_mensaje['ratchet_header'] = sanitize_text_field($params['e2e_header'] ?? '');
+
+            // Guardar payloads para múltiples dispositivos (se insertarán después)
+            if (!empty($params['e2e_payloads']) && is_array($params['e2e_payloads'])) {
+                $e2e_payloads = $params['e2e_payloads'];
+            }
+        }
+
         // Adjuntos
         if (!empty($params['adjuntos'])) {
             $adjunto = $params['adjuntos'];
@@ -1123,6 +1483,24 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         $wpdb->insert($tabla_mensajes, $datos_mensaje);
         $mensaje_id = $wpdb->insert_id;
+
+        // Guardar payloads E2E para múltiples dispositivos
+        if ($es_cifrado_e2e && $e2e_payloads && $mensaje_id) {
+            $tabla_payloads = $wpdb->prefix . 'flavor_e2e_message_payloads';
+            foreach ($e2e_payloads as $payload) {
+                $wpdb->insert(
+                    $tabla_payloads,
+                    [
+                        'mensaje_id' => $mensaje_id,
+                        'dispositivo_id' => sanitize_text_field($payload['dispositivo_id'] ?? 'default'),
+                        'ciphertext' => sanitize_text_field($payload['ciphertext'] ?? ''),
+                        'ratchet_header' => wp_json_encode($payload['header'] ?? []),
+                        'x3dh_header' => !empty($payload['x3dh_header']) ? wp_json_encode($payload['x3dh_header']) : null,
+                    ],
+                    ['%d', '%s', '%s', '%s', '%s']
+                );
+            }
+        }
 
         // Actualizar conversacion
         $wpdb->update(
@@ -1157,27 +1535,37 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         // Actualizar estado online
         $this->actualizar_actividad($usuario_id);
 
+        $respuesta_mensaje = [
+            'id' => $mensaje_id,
+            'remitente_id' => $usuario_id,
+            'remitente_nombre' => wp_get_current_user()->display_name,
+            'remitente_avatar' => get_avatar_url($usuario_id, ['size' => 48]),
+            'mensaje' => $es_cifrado_e2e ? '' : $mensaje,
+            'mensaje_html' => $es_cifrado_e2e ? '' : $this->formatear_mensaje($mensaje),
+            'tipo' => $tipo,
+            'adjunto' => !empty($params['adjuntos']) ? $params['adjuntos'] : null,
+            'responde_a' => $params['responde_a'] ?? null,
+            'leido' => false,
+            'editado' => false,
+            'eliminado' => false,
+            'fecha' => current_time('mysql'),
+            'fecha_humana' => __('ahora', 'flavor-chat-ia'),
+            'hora' => date('H:i'),
+            'es_mio' => true,
+        ];
+
+        // Añadir campos E2E si el mensaje está cifrado
+        if ($es_cifrado_e2e) {
+            $respuesta_mensaje['cifrado'] = true;
+            $respuesta_mensaje['ciphertext'] = $params['ciphertext'] ?? '';
+            $respuesta_mensaje['e2e_header'] = $params['e2e_header'] ?? '';
+            $respuesta_mensaje['e2e_version'] = 1;
+        }
+
         return [
             'success' => true,
             'mensaje_id' => $mensaje_id,
-            'mensaje' => [
-                'id' => $mensaje_id,
-                'remitente_id' => $usuario_id,
-                'remitente_nombre' => wp_get_current_user()->display_name,
-                'remitente_avatar' => get_avatar_url($usuario_id, ['size' => 48]),
-                'mensaje' => $mensaje,
-                'mensaje_html' => $this->formatear_mensaje($mensaje),
-                'tipo' => $tipo,
-                'adjunto' => !empty($params['adjuntos']) ? $params['adjuntos'] : null,
-                'responde_a' => $params['responde_a'] ?? null,
-                'leido' => false,
-                'editado' => false,
-                'eliminado' => false,
-                'fecha' => current_time('mysql'),
-                'fecha_humana' => __('ahora', 'flavor-chat-ia'),
-                'hora' => date('H:i'),
-                'es_mio' => true,
-            ],
+            'mensaje' => $respuesta_mensaje,
         ];
     }
 
@@ -1709,6 +2097,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             'limite' => intval($_GET['limite'] ?? 50),
             'antes_de' => intval($_GET['antes_de'] ?? 0),
             'desde' => intval($_GET['desde'] ?? 0),
+            'dispositivo_id' => sanitize_text_field($_GET['dispositivo_id'] ?? ''),
         ]);
 
         wp_send_json($resultado);
@@ -1730,13 +2119,27 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             ];
         }
 
-        $resultado = $this->action_enviar([
+        $parametros_envio = [
             'conversacion_id' => intval($_POST['conversacion_id'] ?? 0),
             'mensaje' => sanitize_textarea_field($_POST['mensaje'] ?? ''),
             'tipo' => sanitize_text_field($_POST['tipo'] ?? 'texto'),
             'responde_a' => intval($_POST['responde_a'] ?? 0),
             'adjuntos' => $adjuntos,
-        ]);
+        ];
+
+        // Parámetros E2E
+        if (!empty($_POST['cifrado'])) {
+            $parametros_envio['cifrado'] = true;
+            $parametros_envio['ciphertext'] = sanitize_text_field($_POST['ciphertext'] ?? '');
+            $parametros_envio['e2e_header'] = sanitize_text_field($_POST['e2e_header'] ?? '');
+
+            // Payloads para múltiples dispositivos
+            if (!empty($_POST['e2e_payloads'])) {
+                $parametros_envio['e2e_payloads'] = json_decode(stripslashes($_POST['e2e_payloads']), true);
+            }
+        }
+
+        $resultado = $this->action_enviar($parametros_envio);
 
         wp_send_json($resultado);
     }
@@ -1977,6 +2380,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
 
         $conversacion_id = intval($_GET['conversacion_id'] ?? 0);
         $ultimo_mensaje_id = intval($_GET['ultimo_mensaje_id'] ?? 0);
+        $dispositivo_id = sanitize_text_field($_GET['dispositivo_id'] ?? '');
 
         if (!$this->usuario_es_participante($usuario_id, $conversacion_id)) {
             wp_send_json(['success' => false, 'error' => __('mensajes', 'flavor-chat-ia')]);
@@ -2005,7 +2409,9 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
             ));
 
             foreach ($mensajes as $mensaje) {
-                $nuevos_mensajes[] = [
+                $es_mio = (int) $mensaje->remitente_id === $usuario_id;
+
+                $mensaje_data = [
                     'id' => (int) $mensaje->id,
                     'remitente_id' => (int) $mensaje->remitente_id,
                     'remitente_nombre' => $mensaje->remitente_nombre,
@@ -2022,8 +2428,36 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
                     'fecha' => $mensaje->fecha_creacion,
                     'fecha_humana' => $this->tiempo_relativo($mensaje->fecha_creacion),
                     'hora' => date('H:i', strtotime($mensaje->fecha_creacion)),
-                    'es_mio' => (int) $mensaje->remitente_id === $usuario_id,
+                    'es_mio' => $es_mio,
+                    // Campos E2E
+                    'cifrado' => !empty($mensaje->cifrado),
+                    'ciphertext' => $mensaje->ciphertext ?? null,
+                    'e2e_header' => $mensaje->ratchet_header ?? null,
+                    'e2e_version' => $mensaje->e2e_version ?? null,
+                    'legacy_plaintext' => !empty($mensaje->legacy_plaintext),
                 ];
+
+                // Si el mensaje es cifrado y no es mío, buscar payload para mi dispositivo
+                if (!empty($mensaje->cifrado) && !$es_mio && !empty($dispositivo_id)) {
+                    $tabla_payloads = $wpdb->prefix . 'flavor_e2e_message_payloads';
+                    $mi_payload = $wpdb->get_row($wpdb->prepare(
+                        "SELECT ciphertext, ratchet_header, x3dh_header
+                         FROM {$tabla_payloads}
+                         WHERE mensaje_id = %d AND dispositivo_id = %s",
+                        $mensaje->id,
+                        $dispositivo_id
+                    ));
+
+                    if ($mi_payload) {
+                        $mensaje_data['ciphertext'] = $mi_payload->ciphertext;
+                        $mensaje_data['e2e_header'] = $mi_payload->ratchet_header;
+                        if ($mi_payload->x3dh_header) {
+                            $mensaje_data['x3dh_header'] = $mi_payload->x3dh_header;
+                        }
+                    }
+                }
+
+                $nuevos_mensajes[] = $mensaje_data;
             }
         }
 
@@ -3444,5 +3878,516 @@ KNOWLEDGE;
                 Flavor_Chat_Interno_Dashboard_Tab::get_instance();
             }
         }
+    }
+
+    // =========================================================================
+    // METODOS E2E (End-to-End Encryption)
+    // =========================================================================
+
+    /**
+     * Obtiene el gestor de claves E2E
+     *
+     * @return Flavor_Signal_Key_Manager|null
+     */
+    private function obtener_key_manager() {
+        static $key_manager = null;
+
+        if ($key_manager === null) {
+            $archivo = FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-signal-key-manager.php';
+            if (file_exists($archivo)) {
+                require_once FLAVOR_CHAT_IA_PATH . 'includes/crypto/trait-crypto-helpers.php';
+                require_once $archivo;
+                $key_manager = new Flavor_Signal_Key_Manager();
+            }
+        }
+
+        return $key_manager;
+    }
+
+    /**
+     * Obtiene el gestor de dispositivos E2E
+     *
+     * @return Flavor_Device_Manager|null
+     */
+    private function obtener_device_manager() {
+        static $device_manager = null;
+
+        if ($device_manager === null) {
+            $archivo = FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-device-manager.php';
+            if (file_exists($archivo)) {
+                require_once $archivo;
+                $device_manager = new Flavor_Device_Manager();
+            }
+        }
+
+        return $device_manager;
+    }
+
+    /**
+     * Obtiene el gestor de sesiones E2E
+     *
+     * @return Flavor_Signal_Session_Manager|null
+     */
+    private function obtener_session_manager() {
+        static $session_manager = null;
+
+        if ($session_manager === null) {
+            $archivo = FLAVOR_CHAT_IA_PATH . 'includes/crypto/class-signal-session-manager.php';
+            if (file_exists($archivo)) {
+                require_once FLAVOR_CHAT_IA_PATH . 'includes/crypto/trait-crypto-helpers.php';
+                require_once $archivo;
+                $session_manager = new Flavor_Signal_Session_Manager();
+            }
+        }
+
+        return $session_manager;
+    }
+
+    /**
+     * REST: Registrar claves E2E para el usuario actual
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function rest_e2e_registrar_claves($request) {
+        $usuario_id = get_current_user_id();
+        $dispositivo_id = sanitize_text_field($request->get_param('dispositivo_id'));
+
+        if (empty($dispositivo_id)) {
+            // Generar ID de dispositivo si no se proporciona
+            $dispositivo_id = wp_generate_uuid4();
+        }
+
+        $key_manager = $this->obtener_key_manager();
+        if (!$key_manager) {
+            return new WP_Error('e2e_no_disponible', 'Sistema E2E no disponible', ['status' => 500]);
+        }
+
+        $resultado = $key_manager->inicializar_claves($usuario_id, $dispositivo_id);
+
+        if (is_wp_error($resultado)) {
+            return $resultado;
+        }
+
+        // Registrar dispositivo tambien
+        $device_manager = $this->obtener_device_manager();
+        if ($device_manager) {
+            $nombre_dispositivo = sanitize_text_field($request->get_param('nombre_dispositivo') ?: 'Navegador web');
+            $tipo_dispositivo = sanitize_text_field($request->get_param('tipo_dispositivo') ?: 'web');
+
+            $device_manager->registrar_dispositivo($usuario_id, $dispositivo_id, [
+                'nombre' => $nombre_dispositivo,
+                'tipo' => $tipo_dispositivo,
+                'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field($_SERVER['HTTP_USER_AGENT']) : '',
+            ]);
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'data' => $resultado,
+        ]);
+    }
+
+    /**
+     * REST: Obtener estado de claves E2E del usuario actual
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     */
+    public function rest_e2e_estado_claves($request) {
+        $usuario_id = get_current_user_id();
+
+        $key_manager = $this->obtener_key_manager();
+        if (!$key_manager) {
+            return rest_ensure_response([
+                'e2e_disponible' => false,
+                'tiene_claves' => false,
+            ]);
+        }
+
+        $tiene_claves = $key_manager->usuario_tiene_claves($usuario_id);
+        $dispositivos = $key_manager->obtener_dispositivos_con_claves($usuario_id);
+
+        return rest_ensure_response([
+            'e2e_disponible' => true,
+            'tiene_claves' => $tiene_claves,
+            'dispositivos' => $dispositivos,
+            'configuracion' => [
+                'e2e_habilitado' => (bool) $this->get_settings()['encriptacion_e2e'],
+            ],
+        ]);
+    }
+
+    /**
+     * REST: Obtener PreKey Bundle de un usuario
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function rest_e2e_obtener_prekey_bundle($request) {
+        $usuario_id = (int) $request->get_param('usuario_id');
+        $dispositivo_id = sanitize_text_field($request->get_param('dispositivo_id'));
+        $solicitante_id = get_current_user_id();
+
+        // No permitir obtener bundle propio
+        if ($usuario_id === $solicitante_id) {
+            return new WP_Error('e2e_bundle_propio', 'No puedes obtener tu propio PreKey Bundle', ['status' => 400]);
+        }
+
+        $key_manager = $this->obtener_key_manager();
+        if (!$key_manager) {
+            return new WP_Error('e2e_no_disponible', 'Sistema E2E no disponible', ['status' => 500]);
+        }
+
+        // Si no se especifica dispositivo, obtener todos los dispositivos del usuario
+        if (empty($dispositivo_id)) {
+            $dispositivos = $key_manager->obtener_dispositivos_con_claves($usuario_id);
+
+            if (empty($dispositivos)) {
+                return new WP_Error('e2e_sin_claves', 'El usuario no tiene claves E2E configuradas', ['status' => 404]);
+            }
+
+            $bundles = [];
+            foreach ($dispositivos as $dispositivo) {
+                $bundle = $key_manager->obtener_prekey_bundle($usuario_id, $dispositivo['dispositivo_id'], $solicitante_id);
+                if (!is_wp_error($bundle)) {
+                    $bundles[] = $bundle;
+                }
+            }
+
+            return rest_ensure_response([
+                'success' => true,
+                'bundles' => $bundles,
+            ]);
+        }
+
+        $bundle = $key_manager->obtener_prekey_bundle($usuario_id, $dispositivo_id, $solicitante_id);
+
+        if (is_wp_error($bundle)) {
+            return $bundle;
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'bundle' => $bundle,
+        ]);
+    }
+
+    /**
+     * REST: Listar dispositivos del usuario actual
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     */
+    public function rest_e2e_listar_dispositivos($request) {
+        $usuario_id = get_current_user_id();
+
+        $device_manager = $this->obtener_device_manager();
+        if (!$device_manager) {
+            return rest_ensure_response([
+                'success' => true,
+                'dispositivos' => [],
+            ]);
+        }
+
+        $dispositivos = $device_manager->obtener_dispositivos($usuario_id);
+
+        return rest_ensure_response([
+            'success' => true,
+            'dispositivos' => $dispositivos,
+        ]);
+    }
+
+    /**
+     * REST: Registrar nuevo dispositivo
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function rest_e2e_registrar_dispositivo($request) {
+        $usuario_id = get_current_user_id();
+        $dispositivo_id = sanitize_text_field($request->get_param('dispositivo_id'));
+        $nombre = sanitize_text_field($request->get_param('nombre') ?: 'Dispositivo');
+        $tipo = sanitize_text_field($request->get_param('tipo') ?: 'web');
+
+        if (empty($dispositivo_id)) {
+            $dispositivo_id = wp_generate_uuid4();
+        }
+
+        $device_manager = $this->obtener_device_manager();
+        if (!$device_manager) {
+            return new WP_Error('e2e_no_disponible', 'Sistema E2E no disponible', ['status' => 500]);
+        }
+
+        $resultado = $device_manager->registrar_dispositivo($usuario_id, $dispositivo_id, [
+            'nombre' => $nombre,
+            'tipo' => $tipo,
+            'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field($_SERVER['HTTP_USER_AGENT']) : '',
+        ]);
+
+        if (is_wp_error($resultado)) {
+            return $resultado;
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'dispositivo_id' => $dispositivo_id,
+        ]);
+    }
+
+    /**
+     * REST: Revocar dispositivo
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function rest_e2e_revocar_dispositivo($request) {
+        $usuario_id = get_current_user_id();
+        $dispositivo_id = sanitize_text_field($request->get_param('dispositivo_id'));
+
+        $device_manager = $this->obtener_device_manager();
+        $key_manager = $this->obtener_key_manager();
+
+        if (!$device_manager || !$key_manager) {
+            return new WP_Error('e2e_no_disponible', 'Sistema E2E no disponible', ['status' => 500]);
+        }
+
+        // Revocar dispositivo
+        $resultado = $device_manager->revocar_dispositivo($usuario_id, $dispositivo_id);
+
+        if (is_wp_error($resultado)) {
+            return $resultado;
+        }
+
+        // Eliminar claves del dispositivo
+        $key_manager->eliminar_claves_dispositivo($usuario_id, $dispositivo_id);
+
+        return rest_ensure_response([
+            'success' => true,
+            'mensaje' => 'Dispositivo revocado correctamente',
+        ]);
+    }
+
+    /**
+     * REST: Guardar estado de sesion E2E
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function rest_e2e_guardar_sesion($request) {
+        $usuario_id = get_current_user_id();
+        $session_id = sanitize_text_field($request->get_param('session_id'));
+        $dispositivo_local_id = sanitize_text_field($request->get_param('dispositivo_local_id'));
+        $usuario_remoto_id = (int) $request->get_param('usuario_remoto_id');
+        $dispositivo_remoto_id = sanitize_text_field($request->get_param('dispositivo_remoto_id'));
+        $state_encrypted = $request->get_param('state_encrypted');
+
+        if (empty($session_id) || empty($state_encrypted)) {
+            return new WP_Error('e2e_datos_invalidos', 'Datos de sesion incompletos', ['status' => 400]);
+        }
+
+        $session_manager = $this->obtener_session_manager();
+        if (!$session_manager) {
+            return new WP_Error('e2e_no_disponible', 'Sistema E2E no disponible', ['status' => 500]);
+        }
+
+        $resultado = $session_manager->guardar_sesion_cliente([
+            'session_id' => $session_id,
+            'usuario_local_id' => $usuario_id,
+            'dispositivo_local_id' => $dispositivo_local_id,
+            'usuario_remoto_id' => $usuario_remoto_id,
+            'dispositivo_remoto_id' => $dispositivo_remoto_id,
+            'state_encrypted' => $state_encrypted,
+        ]);
+
+        if (is_wp_error($resultado)) {
+            return $resultado;
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * REST: Obtener estado de sesion E2E
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function rest_e2e_obtener_sesion($request) {
+        $usuario_id = get_current_user_id();
+        $session_id = sanitize_text_field($request->get_param('session_id'));
+
+        $session_manager = $this->obtener_session_manager();
+        if (!$session_manager) {
+            return new WP_Error('e2e_no_disponible', 'Sistema E2E no disponible', ['status' => 500]);
+        }
+
+        $sesion = $session_manager->obtener_sesion_cliente($session_id, $usuario_id);
+
+        if (!$sesion) {
+            return new WP_Error('e2e_sesion_no_encontrada', 'Sesion no encontrada', ['status' => 404]);
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'sesion' => $sesion,
+        ]);
+    }
+
+    /**
+     * REST: Verificar identidad de otro usuario
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function rest_e2e_verificar_identidad($request) {
+        global $wpdb;
+
+        $usuario_verificador_id = get_current_user_id();
+        $usuario_verificado_id = (int) $request->get_param('usuario_verificado_id');
+        $dispositivo_verificado_id = sanitize_text_field($request->get_param('dispositivo_verificado_id'));
+        $fingerprint = sanitize_text_field($request->get_param('fingerprint'));
+
+        if (empty($usuario_verificado_id) || empty($fingerprint)) {
+            return new WP_Error('e2e_datos_invalidos', 'Datos incompletos', ['status' => 400]);
+        }
+
+        // Verificar que el fingerprint coincide
+        $key_manager = $this->obtener_key_manager();
+        if ($key_manager) {
+            $identity_key = $key_manager->obtener_identity_key($usuario_verificado_id, $dispositivo_verificado_id);
+            if ($identity_key && $identity_key['fingerprint'] !== $fingerprint) {
+                return new WP_Error('e2e_fingerprint_invalido', 'El fingerprint no coincide', ['status' => 400]);
+            }
+        }
+
+        // Guardar verificacion
+        $tabla = $wpdb->prefix . 'flavor_e2e_verified_identities';
+
+        // Eliminar verificacion anterior si existe
+        $wpdb->delete(
+            $tabla,
+            [
+                'usuario_verificador_id' => $usuario_verificador_id,
+                'usuario_verificado_id' => $usuario_verificado_id,
+                'dispositivo_verificado_id' => $dispositivo_verificado_id,
+            ],
+            ['%d', '%d', '%s']
+        );
+
+        // Insertar nueva verificacion
+        $wpdb->insert(
+            $tabla,
+            [
+                'usuario_verificador_id' => $usuario_verificador_id,
+                'usuario_verificado_id' => $usuario_verificado_id,
+                'dispositivo_verificado_id' => $dispositivo_verificado_id,
+                'fingerprint' => $fingerprint,
+            ],
+            ['%d', '%d', '%s', '%s']
+        );
+
+        return rest_ensure_response([
+            'success' => true,
+            'mensaje' => 'Identidad verificada correctamente',
+        ]);
+    }
+
+    /**
+     * REST: Crear backup cifrado de claves
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function rest_e2e_crear_backup($request) {
+        global $wpdb;
+
+        $usuario_id = get_current_user_id();
+        $encrypted_bundle = $request->get_param('encrypted_bundle');
+        $backup_key_hash = sanitize_text_field($request->get_param('backup_key_hash'));
+
+        if (empty($encrypted_bundle) || empty($backup_key_hash)) {
+            return new WP_Error('e2e_datos_invalidos', 'Datos incompletos', ['status' => 400]);
+        }
+
+        $tabla = $wpdb->prefix . 'flavor_e2e_key_backups';
+
+        // Eliminar backup anterior si existe
+        $wpdb->delete($tabla, ['usuario_id' => $usuario_id], ['%d']);
+
+        // Insertar nuevo backup
+        $resultado = $wpdb->insert(
+            $tabla,
+            [
+                'usuario_id' => $usuario_id,
+                'backup_key_hash' => $backup_key_hash,
+                'encrypted_bundle' => $encrypted_bundle,
+            ],
+            ['%d', '%s', '%s']
+        );
+
+        if ($resultado === false) {
+            return new WP_Error('e2e_error_backup', 'Error al guardar backup', ['status' => 500]);
+        }
+
+        // Generar código de recuperación legible (formato XXXX-XXXX-XXXX-XXXX)
+        $codigo_base = substr(hash('sha256', $backup_key_hash . $usuario_id), 0, 16);
+        $codigo_formateado = strtoupper(implode('-', str_split($codigo_base, 4)));
+
+        return rest_ensure_response([
+            'success' => true,
+            'codigo_recuperacion' => $codigo_formateado,
+            'mensaje' => 'Backup creado correctamente. Guarda tu código de recuperación.',
+        ]);
+    }
+
+    /**
+     * REST: Restaurar backup de claves
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function rest_e2e_restaurar_backup($request) {
+        global $wpdb;
+
+        $usuario_id = get_current_user_id();
+        $codigo = sanitize_text_field($request->get_param('codigo'));
+
+        if (empty($codigo)) {
+            return new WP_Error('e2e_codigo_vacio', 'Código de recuperación requerido', ['status' => 400]);
+        }
+
+        // Limpiar código (quitar guiones y espacios)
+        $codigo_limpio = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $codigo));
+
+        if (strlen($codigo_limpio) !== 16) {
+            return new WP_Error('e2e_codigo_invalido', 'Código de recuperación inválido', ['status' => 400]);
+        }
+
+        $tabla = $wpdb->prefix . 'flavor_e2e_key_backups';
+
+        // Buscar backup del usuario
+        $backup = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$tabla} WHERE usuario_id = %d",
+            $usuario_id
+        ));
+
+        if (!$backup) {
+            return new WP_Error('e2e_sin_backup', 'No hay backup disponible para este usuario', ['status' => 404]);
+        }
+
+        // Verificar que el código coincide
+        $codigo_esperado = substr(hash('sha256', $backup->backup_key_hash . $usuario_id), 0, 16);
+
+        if ($codigo_limpio !== $codigo_esperado) {
+            return new WP_Error('e2e_codigo_incorrecto', 'Código de recuperación incorrecto', ['status' => 401]);
+        }
+
+        return rest_ensure_response([
+            'success' => true,
+            'backup' => $backup->encrypted_bundle,
+        ]);
     }
 }

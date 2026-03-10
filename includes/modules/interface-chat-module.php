@@ -239,6 +239,22 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
     protected $ecosystem_base_for_modules = [];
 
     /**
+     * Principios transformadores Gailu que el módulo implementa.
+     * Valores posibles: economia_local, cuidados, gobernanza, regeneracion, aprendizaje
+     *
+     * @var array
+     */
+    protected $gailu_principios = [];
+
+    /**
+     * Capacidades regenerativas a las que contribuye el módulo.
+     * Valores posibles: autonomia, resiliencia, cohesion, impacto
+     *
+     * @var array
+     */
+    protected $gailu_contribuye_a = [];
+
+    /**
      * Metadata declarativa para dashboards.
      */
     protected $dashboard_parent_module = '';
@@ -461,13 +477,69 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
     public function get_ecosystem_metadata() {
         return [
             'module_role' => $this->module_role ?: 'vertical',
+            'display_role' => $this->get_display_ecosystem_role(),
+            'display_role_label' => $this->get_display_ecosystem_role_label(),
             'depends_on' => array_values(array_unique(array_filter((array) $this->get_dependencies()))),
             'supports_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_supports_modules))),
             'measures_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_measures_modules))),
             'governs_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_governs_modules))),
             'teaches_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_teaches_modules))),
             'base_for_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_base_for_modules))),
+            // Principios Gailu
+            'gailu_principios' => array_values(array_unique(array_filter((array) $this->gailu_principios))),
+            'gailu_contribuye_a' => array_values(array_unique(array_filter((array) $this->gailu_contribuye_a))),
         ];
+    }
+
+    /**
+     * Obtiene los principios Gailu que implementa el módulo.
+     *
+     * @return array
+     */
+    public function get_gailu_principios() {
+        return array_values(array_unique(array_filter((array) $this->gailu_principios)));
+    }
+
+    /**
+     * Obtiene las capacidades regenerativas a las que contribuye.
+     *
+     * @return array
+     */
+    public function get_gailu_contribuciones() {
+        return array_values(array_unique(array_filter((array) $this->gailu_contribuye_a)));
+    }
+
+    /**
+     * Devuelve el rol visible del módulo dentro del ecosistema.
+     *
+     * @return string
+     */
+    public function get_display_ecosystem_role() {
+        $role = $this->module_role ?: 'vertical';
+
+        if ($role === 'base' && empty($this->ecosystem_base_for_modules)) {
+            return 'base-standalone';
+        }
+
+        return $role;
+    }
+
+    /**
+     * Devuelve la etiqueta visible del rol ecosistémico.
+     *
+     * @return string
+     */
+    public function get_display_ecosystem_role_label() {
+        $labels = [
+            'base' => __('Base', 'flavor-chat-ia'),
+            'base-standalone' => __('Base local', 'flavor-chat-ia'),
+            'vertical' => __('Vertical', 'flavor-chat-ia'),
+            'transversal' => __('Transversal', 'flavor-chat-ia'),
+        ];
+
+        $role = $this->get_display_ecosystem_role();
+
+        return $labels[$role] ?? ucfirst((string) $role);
     }
 
     /**

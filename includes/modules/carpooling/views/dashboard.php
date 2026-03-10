@@ -6,106 +6,128 @@
  * @subpackage Carpooling
  */
 
-// Evitar acceso directo
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Verificar permisos
-if (!current_user_can('manage_options')) {
+if (!current_user_can('manage_options') && !current_user_can('flavor_ver_dashboard')) {
     wp_die(__('No tienes permisos suficientes para acceder a esta página.', 'flavor-chat-ia'));
 }
 
-// Obtener estadísticas
 global $wpdb;
 $tabla_viajes = $wpdb->prefix . 'flavor_carpooling_viajes';
 $tabla_reservas = $wpdb->prefix . 'flavor_carpooling_reservas';
 $tabla_vehiculos = $wpdb->prefix . 'flavor_carpooling_vehiculos';
 
-$fecha_inicio_mes = date('Y-m-01 00:00:00');
-$fecha_actual = current_time('mysql');
+// Verificar si las tablas existen
+$tabla_viajes_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_viajes)) === $tabla_viajes;
 
-// Viajes activos (usando fecha_salida que es la columna correcta)
-$viajes_activos = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_viajes} WHERE estado = 'activo' AND fecha_salida >= NOW()");
-$viajes_completados_mes = $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_viajes} WHERE estado = 'finalizado' AND fecha_salida >= %s AND fecha_salida <= %s",
-    $fecha_inicio_mes,
-    $fecha_actual
-));
+if ($tabla_viajes_existe) {
+    $fecha_inicio_mes = date('Y-m-01 00:00:00');
+    $fecha_actual = current_time('mysql');
 
-// Reservas
-$reservas_pendientes = $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'pendiente'");
-$reservas_confirmadas_mes = $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'confirmada' AND fecha_reserva >= %s",
-    $fecha_inicio_mes
-));
+    $viajes_activos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_viajes} WHERE estado = 'activo' AND fecha_salida >= NOW()");
+    $viajes_completados_mes = (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM {$tabla_viajes} WHERE estado = 'finalizado' AND fecha_salida >= %s AND fecha_salida <= %s",
+        $fecha_inicio_mes,
+        $fecha_actual
+    ));
 
-// Conductores activos (contamos usuarios únicos con viajes)
-$conductores_activos = $wpdb->get_var("SELECT COUNT(DISTINCT conductor_id) FROM {$tabla_viajes} WHERE estado = 'activo'");
-$conductores_pendientes_verificacion = 0; // Sin tabla de conductores separada
+    $tabla_reservas_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_reservas)) === $tabla_reservas;
+    $reservas_pendientes = $tabla_reservas_existe ? (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'pendiente'") : 0;
+    $reservas_confirmadas_mes = $tabla_reservas_existe ? (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'confirmada' AND fecha_reserva >= %s",
+        $fecha_inicio_mes
+    )) : 0;
 
-// Total de usuarios participantes este mes
-$usuarios_participantes = $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(DISTINCT r.pasajero_id)
-    FROM {$tabla_reservas} r
-    WHERE r.fecha_reserva >= %s",
-    $fecha_inicio_mes
-));
+    $conductores_activos = (int) $wpdb->get_var("SELECT COUNT(DISTINCT conductor_id) FROM {$tabla_viajes} WHERE estado = 'activo'");
+    $conductores_pendientes_verificacion = 0;
 
-// Calcular CO2 ahorrado (estimación: 120g CO2/km por persona)
-// Nota: No hay columna distancia_km, usamos estimación de plazas ocupadas
-$plazas_compartidas = $wpdb->get_var($wpdb->prepare(
-    "SELECT SUM(r.numero_plazas)
-    FROM {$tabla_viajes} v
-    INNER JOIN {$tabla_reservas} r ON v.id = r.viaje_id
-    WHERE v.estado = 'finalizado' AND r.estado = 'completada' AND v.fecha_salida >= %s AND v.fecha_salida <= %s",
-    $fecha_inicio_mes,
-    $fecha_actual
-)) ?? 0;
+    $usuarios_participantes = $tabla_reservas_existe ? (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(DISTINCT r.pasajero_id) FROM {$tabla_reservas} r WHERE r.fecha_reserva >= %s",
+        $fecha_inicio_mes
+    )) : 0;
 
-// Estimación: 20km promedio por viaje, 120g CO2/km
-$co2_ahorrado_kg = ($plazas_compartidas * 20 * 0.12);
+    $plazas_compartidas = $tabla_reservas_existe ? (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COALESCE(SUM(r.numero_plazas), 0)
+        FROM {$tabla_viajes} v
+        INNER JOIN {$tabla_reservas} r ON v.id = r.viaje_id
+        WHERE v.estado = 'finalizado' AND r.estado = 'completada' AND v.fecha_salida >= %s AND v.fecha_salida <= %s",
+        $fecha_inicio_mes,
+        $fecha_actual
+    )) : 0;
 
-// Rutas más populares
-$rutas_populares = $wpdb->get_results(
-    "SELECT
-        origen,
-        destino,
-        COUNT(*) as total_viajes,
-        SUM(plazas_disponibles) as total_plazas
-    FROM {$tabla_viajes}
-    WHERE fecha_salida >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-    GROUP BY origen, destino
-    ORDER BY total_viajes DESC
-    LIMIT 5"
-);
+    $co2_ahorrado_kg = ($plazas_compartidas * 20 * 0.12);
 
-// Top conductores (basado en viajes completados)
-$top_conductores = $wpdb->get_results(
-    "SELECT
-        v.conductor_id as id,
-        u.display_name,
-        COUNT(v.id) as total_viajes,
-        SUM(CASE WHEN v.estado = 'finalizado' THEN 1 ELSE 0 END) as viajes_completados
-    FROM {$tabla_viajes} v
-    INNER JOIN {$wpdb->users} u ON v.conductor_id = u.ID
-    GROUP BY v.conductor_id
-    ORDER BY viajes_completados DESC
-    LIMIT 5"
-);
+    $rutas_populares = $wpdb->get_results(
+        "SELECT origen, destino, COUNT(*) as total_viajes, SUM(plazas_disponibles) as total_plazas
+        FROM {$tabla_viajes}
+        WHERE fecha_salida >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+        GROUP BY origen, destino
+        ORDER BY total_viajes DESC
+        LIMIT 5"
+    ) ?: [];
 
-// Datos para gráfica de viajes (últimos 30 días)
-$datos_grafica_viajes = $wpdb->get_results(
-    "SELECT
-        DATE(fecha_salida) as fecha,
-        COUNT(*) as total_viajes,
-        SUM(plazas_disponibles) as plazas_ofertadas,
-        SUM(plazas_disponibles - plazas_ocupadas) as plazas_disponibles
-    FROM {$tabla_viajes}
-    WHERE fecha_salida >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-    GROUP BY DATE(fecha_salida)
-    ORDER BY fecha ASC"
-);
+    $top_conductores = $wpdb->get_results(
+        "SELECT v.conductor_id as id, u.display_name,
+            COUNT(v.id) as total_viajes,
+            SUM(CASE WHEN v.estado = 'finalizado' THEN 1 ELSE 0 END) as viajes_completados
+        FROM {$tabla_viajes} v
+        INNER JOIN {$wpdb->users} u ON v.conductor_id = u.ID
+        GROUP BY v.conductor_id
+        ORDER BY viajes_completados DESC
+        LIMIT 5"
+    ) ?: [];
+
+    $datos_grafica_viajes = $wpdb->get_results(
+        "SELECT DATE(fecha_salida) as fecha, COUNT(*) as total_viajes,
+            SUM(plazas_disponibles) as plazas_ofertadas,
+            SUM(plazas_disponibles - plazas_ocupadas) as plazas_disponibles
+        FROM {$tabla_viajes}
+        WHERE fecha_salida >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+        GROUP BY DATE(fecha_salida)
+        ORDER BY fecha ASC"
+    ) ?: [];
+
+    $usando_demo = ($viajes_activos + $viajes_completados_mes) === 0;
+} else {
+    $usando_demo = true;
+}
+
+if ($usando_demo) {
+    $viajes_activos = 12;
+    $viajes_completados_mes = 45;
+    $reservas_pendientes = 3;
+    $conductores_activos = 8;
+    $conductores_pendientes_verificacion = 2;
+    $co2_ahorrado_kg = 186.5;
+    $usuarios_participantes = 67;
+
+    $rutas_populares = [
+        (object) ['origen' => 'Centro Ciudad', 'destino' => 'Polígono Industrial', 'total_viajes' => 28, 'total_plazas' => 84],
+        (object) ['origen' => 'Barrio Norte', 'destino' => 'Universidad', 'total_viajes' => 22, 'total_plazas' => 66],
+        (object) ['origen' => 'Estación', 'destino' => 'Hospital', 'total_viajes' => 15, 'total_plazas' => 45],
+        (object) ['origen' => 'Parque Tecnológico', 'destino' => 'Centro', 'total_viajes' => 12, 'total_plazas' => 36],
+        (object) ['origen' => 'Zona Sur', 'destino' => 'Aeropuerto', 'total_viajes' => 8, 'total_plazas' => 24],
+    ];
+
+    $top_conductores = [
+        (object) ['id' => 1, 'display_name' => 'María García', 'total_viajes' => 35, 'viajes_completados' => 32],
+        (object) ['id' => 2, 'display_name' => 'Carlos López', 'total_viajes' => 28, 'viajes_completados' => 25],
+        (object) ['id' => 3, 'display_name' => 'Ana Martínez', 'total_viajes' => 22, 'viajes_completados' => 20],
+        (object) ['id' => 4, 'display_name' => 'Pedro Sánchez', 'total_viajes' => 18, 'viajes_completados' => 16],
+        (object) ['id' => 5, 'display_name' => 'Laura Fernández', 'total_viajes' => 15, 'viajes_completados' => 14],
+    ];
+
+    $datos_grafica_viajes = [];
+    for ($i = 29; $i >= 0; $i--) {
+        $datos_grafica_viajes[] = (object) [
+            'fecha' => date('Y-m-d', strtotime("-{$i} days")),
+            'total_viajes' => rand(1, 5),
+            'plazas_disponibles' => rand(2, 10),
+        ];
+    }
+}
 
 $fechas_grafica = [];
 $viajes_grafica = [];
@@ -118,106 +140,138 @@ foreach ($datos_grafica_viajes as $dato) {
 }
 ?>
 
-<div class="wrap">
-    <h1><?php echo esc_html__('Dashboard de Carpooling', 'flavor-chat-ia'); ?></h1>
+<div class="dm-dashboard">
+    <?php
+    if (function_exists('flavor_dashboard_help')) {
+        flavor_dashboard_help('carpooling');
+    }
+    ?>
 
-    <!-- Estadísticas principales -->
-    <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
+    <?php if ($usando_demo): ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Se muestran datos de ejemplo. Los datos reales aparecerán cuando se registren viajes.', 'flavor-chat-ia'); ?>
+    </div>
+    <?php endif; ?>
 
-        <!-- Viajes Activos -->
-        <div class="card" style="padding: 20px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Viajes Activos', 'flavor-chat-ia'); ?>
-            </h3>
-            <p style="margin: 0; font-size: 32px; font-weight: bold; color: #2271b1;">
-                <?php echo esc_html(number_format($viajes_activos, 0, ',', '.')); ?>
-            </p>
-            <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Disponibles ahora', 'flavor-chat-ia'); ?>
-            </p>
+    <!-- Cabecera -->
+    <div class="dm-header">
+        <div class="dm-header__title">
+            <span class="dashicons dashicons-car"></span>
+            <div>
+                <h1><?php esc_html_e('Dashboard de Carpooling', 'flavor-chat-ia'); ?></h1>
+                <p><?php esc_html_e('Comparte coche y reduce emisiones', 'flavor-chat-ia'); ?></p>
+            </div>
         </div>
-
-        <!-- Viajes Completados -->
-        <div class="card" style="padding: 20px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Viajes Completados', 'flavor-chat-ia'); ?>
-            </h3>
-            <p style="margin: 0; font-size: 32px; font-weight: bold; color: #00a32a;">
-                <?php echo esc_html(number_format($viajes_completados_mes, 0, ',', '.')); ?>
-            </p>
-            <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Este mes', 'flavor-chat-ia'); ?>
-            </p>
+        <div class="dm-header__actions">
+            <a href="<?php echo esc_url(home_url('/mi-portal/carpooling/publicar/')); ?>" class="dm-btn dm-btn--primary">
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Publicar Viaje', 'flavor-chat-ia'); ?>
+            </a>
         </div>
-
-        <!-- Reservas Pendientes -->
-        <div class="card" style="padding: 20px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Reservas Pendientes', 'flavor-chat-ia'); ?>
-            </h3>
-            <p style="margin: 0; font-size: 32px; font-weight: bold; color: #d63638;">
-                <?php echo esc_html(number_format($reservas_pendientes, 0, ',', '.')); ?>
-            </p>
-            <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Requieren atención', 'flavor-chat-ia'); ?>
-            </p>
-        </div>
-
-        <!-- Conductores Activos -->
-        <div class="card" style="padding: 20px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Conductores', 'flavor-chat-ia'); ?>
-            </h3>
-            <p style="margin: 0; font-size: 24px; font-weight: bold;">
-                <span style="color: #00a32a;"><?php echo esc_html($conductores_activos); ?></span>
-                <span style="color: #666; font-size: 18px;">/</span>
-                <span style="color: #d63638;"><?php echo esc_html($conductores_pendientes_verificacion); ?></span>
-            </p>
-            <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Activos / Pendientes', 'flavor-chat-ia'); ?>
-            </p>
-        </div>
-
-        <!-- CO2 Ahorrado -->
-        <div class="card" style="padding: 20px; text-align: center; background: linear-gradient(135deg, #00a32a 0%, #008a24 100%); color: white;">
-            <h3 style="margin: 0 0 10px 0; color: rgba(255,255,255,0.9); font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('CO₂ Ahorrado', 'flavor-chat-ia'); ?>
-            </h3>
-            <p style="margin: 0; font-size: 32px; font-weight: bold; color: white;">
-                <?php echo esc_html(number_format($co2_ahorrado_kg, 1, ',', '.')); ?> kg
-            </p>
-            <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9);">
-                <?php esc_html_e('Este mes', 'flavor-chat-ia'); ?>
-            </p>
-        </div>
-
-        <!-- Usuarios Participantes -->
-        <div class="card" style="padding: 20px; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase;">
-                <?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?>
-            </h3>
-            <p style="margin: 0; font-size: 32px; font-weight: bold; color: #2271b1;">
-                <?php echo esc_html(number_format($usuarios_participantes, 0, ',', '.')); ?>
-            </p>
-            <p class="description" style="margin: 10px 0 0 0;">
-                <?php esc_html_e('Este mes', 'flavor-chat-ia'); ?>
-            </p>
-        </div>
-
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+    <!-- Accesos rápidos -->
+    <div class="dm-quick-links">
+        <h2 class="dm-quick-links__title">
+            <span class="dashicons dashicons-admin-links"></span>
+            <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+        </h2>
+        <div class="dm-quick-links__grid">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=carpooling-viajes')); ?>" class="dm-quick-links__item">
+                <span class="dashicons dashicons-car"></span>
+                <span><?php esc_html_e('Viajes', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=carpooling-reservas')); ?>" class="dm-quick-links__item dm-quick-links__item--warning">
+                <span class="dashicons dashicons-tickets-alt"></span>
+                <span><?php esc_html_e('Reservas', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=carpooling-config')); ?>" class="dm-quick-links__item">
+                <span class="dashicons dashicons-admin-settings"></span>
+                <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(home_url('/mi-portal/carpooling/')); ?>" class="dm-quick-links__item dm-quick-links__item--purple">
+                <span class="dashicons dashicons-external"></span>
+                <span><?php esc_html_e('Portal', 'flavor-chat-ia'); ?></span>
+            </a>
+        </div>
+    </div>
 
-        <!-- Gráfica de viajes -->
-        <div class="card" style="padding: 20px;">
-            <h2><?php esc_html_e('Actividad de Viajes - Últimos 30 días', 'flavor-chat-ia'); ?></h2>
-            <canvas id="flavor-carpooling-chart" style="max-height: 300px;"></canvas>
+    <!-- Estadísticas principales -->
+    <div class="dm-stats-grid dm-stats-grid--6">
+        <div class="dm-stat-card dm-stat-card--primary">
+            <span class="dashicons dashicons-car dm-stat-card__icon"></span>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($viajes_activos); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Viajes Activos', 'flavor-chat-ia'); ?></div>
+            </div>
         </div>
 
-        <!-- Rutas Populares -->
-        <div class="card" style="padding: 20px;">
-            <h2><?php esc_html_e('Rutas Más Populares', 'flavor-chat-ia'); ?></h2>
-            <table class="wp-list-table widefat fixed striped">
+        <div class="dm-stat-card dm-stat-card--success">
+            <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($viajes_completados_mes); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></div>
+            </div>
+        </div>
+
+        <div class="dm-stat-card dm-stat-card--warning">
+            <span class="dashicons dashicons-clock dm-stat-card__icon"></span>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($reservas_pendientes); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Reservas Pendientes', 'flavor-chat-ia'); ?></div>
+            </div>
+        </div>
+
+        <div class="dm-stat-card dm-stat-card--purple">
+            <span class="dashicons dashicons-id dm-stat-card__icon"></span>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($conductores_activos); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Conductores', 'flavor-chat-ia'); ?></div>
+            </div>
+        </div>
+
+        <div class="dm-stat-card dm-stat-card--eco">
+            <span class="dashicons dashicons-palmtree dm-stat-card__icon"></span>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($co2_ahorrado_kg, 1); ?> kg</div>
+                <div class="dm-stat-card__label"><?php esc_html_e('CO₂ Ahorrado', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></div>
+            </div>
+        </div>
+
+        <div class="dm-stat-card dm-stat-card--info">
+            <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($usuarios_participantes); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Usuarios Activos', 'flavor-chat-ia'); ?></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfica y Rutas -->
+    <div class="dm-grid dm-grid--2">
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-chart-line"></span>
+                    <?php esc_html_e('Actividad de Viajes - Últimos 30 días', 'flavor-chat-ia'); ?>
+                </h3>
+            </div>
+            <div class="dm-card__chart">
+                <canvas id="flavor-carpooling-chart"></canvas>
+            </div>
+        </div>
+
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-location-alt"></span>
+                    <?php esc_html_e('Rutas Más Populares', 'flavor-chat-ia'); ?>
+                </h3>
+            </div>
+            <table class="dm-table">
                 <thead>
                     <tr>
                         <th><?php esc_html_e('Ruta', 'flavor-chat-ia'); ?></th>
@@ -226,68 +280,82 @@ foreach ($datos_grafica_viajes as $dato) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (!empty($rutas_populares)) : ?>
-                        <?php foreach ($rutas_populares as $ruta) : ?>
-                            <tr>
-                                <td>
-                                    <strong><?php echo esc_html($ruta->origen); ?></strong>
-                                    <span style="color: #666;"> → </span>
-                                    <strong><?php echo esc_html($ruta->destino); ?></strong>
-                                </td>
-                                <td><?php echo esc_html(number_format($ruta->total_viajes, 0, ',', '.')); ?></td>
-                                <td><?php echo esc_html(number_format($ruta->total_plazas, 0, ',', '.')); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else : ?>
+                    <?php if (!empty($rutas_populares)): ?>
+                        <?php foreach ($rutas_populares as $ruta): ?>
                         <tr>
-                            <td colspan="3" style="text-align: center; padding: 20px;">
-                                <?php esc_html_e('No hay datos disponibles.', 'flavor-chat-ia'); ?>
+                            <td>
+                                <strong><?php echo esc_html($ruta->origen); ?></strong>
+                                <span class="dm-text-muted"> → </span>
+                                <strong><?php echo esc_html($ruta->destino); ?></strong>
+                            </td>
+                            <td>
+                                <span class="dm-badge dm-badge--sm dm-badge--primary">
+                                    <?php echo number_format_i18n($ruta->total_viajes); ?>
+                                </span>
+                            </td>
+                            <td class="dm-text-muted">
+                                <?php echo number_format_i18n($ruta->total_plazas); ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="3" class="dm-table__empty">
+                                <span class="dashicons dashicons-location-alt"></span>
+                                <?php esc_html_e('No hay datos disponibles', 'flavor-chat-ia'); ?>
                             </td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
-
     </div>
 
     <!-- Top Conductores -->
-    <div class="card" style="margin: 20px 0; padding: 20px;">
-        <h2><?php esc_html_e('Top 5 Conductores', 'flavor-chat-ia'); ?></h2>
-        <table class="wp-list-table widefat fixed striped">
+    <div class="dm-card">
+        <div class="dm-card__header">
+            <h3>
+                <span class="dashicons dashicons-awards"></span>
+                <?php esc_html_e('Top 5 Conductores', 'flavor-chat-ia'); ?>
+            </h3>
+        </div>
+        <table class="dm-table">
             <thead>
                 <tr>
                     <th><?php esc_html_e('Conductor', 'flavor-chat-ia'); ?></th>
                     <th><?php esc_html_e('Total Viajes', 'flavor-chat-ia'); ?></th>
                     <th><?php esc_html_e('Completados', 'flavor-chat-ia'); ?></th>
-                    <th><?php esc_html_e('Valoración', 'flavor-chat-ia'); ?></th>
                     <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (!empty($top_conductores)) : ?>
-                    <?php foreach ($top_conductores as $conductor) : ?>
-                        <tr>
-                            <td><strong><?php echo esc_html($conductor->display_name); ?></strong></td>
-                            <td><?php echo esc_html(number_format($conductor->total_viajes, 0, ',', '.')); ?></td>
-                            <td><?php echo esc_html(number_format($conductor->viajes_completados, 0, ',', '.')); ?></td>
-                            <td>
-                                <?php
-                                $estrellas = round($conductor->valoracion_promedio);
-                                echo str_repeat('⭐', $estrellas) . ' ' . number_format($conductor->valoracion_promedio, 1);
-                                ?>
-                            </td>
-                            <td>
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores&conductor_id=' . $conductor->id)); ?>" class="button button-small">
-                                    <?php esc_html_e('Ver Perfil', 'flavor-chat-ia'); ?>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+                <?php if (!empty($top_conductores)): ?>
+                    <?php foreach ($top_conductores as $index => $conductor): ?>
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 20px;">
-                            <?php esc_html_e('No hay conductores disponibles.', 'flavor-chat-ia'); ?>
+                        <td>
+                            <span class="dm-badge dm-badge--sm <?php echo $index === 0 ? 'dm-badge--warning' : ($index === 1 ? 'dm-badge--secondary' : ($index === 2 ? 'dm-badge--info' : '')); ?>">
+                                #<?php echo $index + 1; ?>
+                            </span>
+                            <strong><?php echo esc_html($conductor->display_name); ?></strong>
+                        </td>
+                        <td><?php echo number_format_i18n($conductor->total_viajes); ?></td>
+                        <td>
+                            <span class="dm-badge dm-badge--sm dm-badge--success">
+                                <?php echo number_format_i18n($conductor->viajes_completados); ?>
+                            </span>
+                        </td>
+                        <td>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores&conductor_id=' . $conductor->id)); ?>" class="dm-btn dm-btn--sm dm-btn--ghost">
+                                <?php esc_html_e('Ver Perfil', 'flavor-chat-ia'); ?>
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="4" class="dm-table__empty">
+                            <span class="dashicons dashicons-id"></span>
+                            <?php esc_html_e('No hay conductores disponibles', 'flavor-chat-ia'); ?>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -296,32 +364,35 @@ foreach ($datos_grafica_viajes as $dato) {
     </div>
 
     <!-- Acciones rápidas -->
-    <div class="card" style="margin: 20px 0; padding: 20px;">
-        <h2><?php esc_html_e('Acciones Rápidas', 'flavor-chat-ia'); ?></h2>
-        <p>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-viajes')); ?>" class="button button-primary button-large">
-                <?php esc_html_e('Gestionar Viajes', 'flavor-chat-ia'); ?>
-            </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-reservas')); ?>" class="button button-large">
-                <?php esc_html_e('Ver Reservas', 'flavor-chat-ia'); ?>
-            </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores')); ?>" class="button button-large">
-                <?php esc_html_e('Gestionar Conductores', 'flavor-chat-ia'); ?>
-            </a>
-        </p>
+    <div class="dm-action-grid dm-action-grid--3">
+        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-viajes')); ?>" class="dm-action-card dm-action-card--primary">
+            <span class="dashicons dashicons-car"></span>
+            <span><?php esc_html_e('Gestionar Viajes', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-reservas')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-tickets-alt"></span>
+            <span><?php esc_html_e('Ver Reservas', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-carpooling-conductores')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-groups"></span>
+            <span><?php esc_html_e('Gestionar Conductores', 'flavor-chat-ia'); ?></span>
+        </a>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-jQuery(document).ready(function($) {
-    // Datos para la gráfica
-    const fechas = <?php echo json_encode($fechas_grafica); ?>;
-    const viajes = <?php echo json_encode($viajes_grafica); ?>;
-    const plazas = <?php echo json_encode($plazas_grafica); ?>;
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof Chart === 'undefined') return;
 
-    // Crear gráfica
-    const ctx = document.getElementById('flavor-carpooling-chart');
+    var rootStyles = getComputedStyle(document.documentElement);
+    var primaryColor = rootStyles.getPropertyValue('--dm-primary').trim() || '#3b82f6';
+    var successColor = rootStyles.getPropertyValue('--dm-success').trim() || '#10b981';
+
+    var fechas = <?php echo wp_json_encode($fechas_grafica); ?>;
+    var viajes = <?php echo wp_json_encode($viajes_grafica); ?>;
+    var plazas = <?php echo wp_json_encode($plazas_grafica); ?>;
+
+    var ctx = document.getElementById('flavor-carpooling-chart');
     if (ctx) {
         new Chart(ctx, {
             type: 'line',
@@ -329,30 +400,29 @@ jQuery(document).ready(function($) {
                 labels: fechas,
                 datasets: [
                     {
-                        label: '<?php esc_html_e('Viajes Publicados', 'flavor-chat-ia'); ?>',
+                        label: '<?php echo esc_js(__('Viajes Publicados', 'flavor-chat-ia')); ?>',
                         data: viajes,
-                        borderColor: '#2271b1',
-                        backgroundColor: 'rgba(34, 113, 177, 0.1)',
-                        tension: 0.4
+                        borderColor: primaryColor,
+                        backgroundColor: primaryColor + '1A',
+                        tension: 0.4,
+                        fill: true
                     },
                     {
-                        label: '<?php esc_html_e('Plazas Disponibles', 'flavor-chat-ia'); ?>',
+                        label: '<?php echo esc_js(__('Plazas Disponibles', 'flavor-chat-ia')); ?>',
                         data: plazas,
-                        borderColor: '#00a32a',
-                        backgroundColor: 'rgba(0, 163, 42, 0.1)',
-                        tension: 0.4
+                        borderColor: successColor,
+                        backgroundColor: successColor + '1A',
+                        tension: 0.4,
+                        fill: true
                     }
                 ]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: false
+                        position: 'top'
                     }
                 },
                 scales: {
@@ -365,14 +435,3 @@ jQuery(document).ready(function($) {
     }
 });
 </script>
-
-<style>
-@media (max-width: 782px) {
-    .flavor-stats-grid {
-        grid-template-columns: 1fr !important;
-    }
-    div[style*="grid-template-columns: 1fr 1fr"] {
-        grid-template-columns: 1fr !important;
-    }
-}
-</style>

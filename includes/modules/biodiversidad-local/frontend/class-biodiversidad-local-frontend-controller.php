@@ -626,7 +626,7 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
     public function shortcode_reportar($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   sprintf(__('<a href="%s">Inicia sesión</a> para reportar un avistamiento.', 'flavor-chat-ia'), wp_login_url(get_permalink())) .
+                   sprintf(__('<a href="%s">Inicia sesión</a> para reportar un avistamiento.', 'flavor-chat-ia'), wp_login_url(flavor_current_request_url())) .
                    '</div>';
         }
 

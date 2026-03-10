@@ -131,7 +131,7 @@ $estados = Flavor_Chat_Economia_Don_Module::ESTADOS_DON;
                         </button>
                         <?php endif; ?>
                     <?php elseif (!is_user_logged_in()) : ?>
-                        <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="ed-btn-solicitar">
+                        <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="ed-btn-solicitar">
                             <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
                         </a>
                     <?php endif; ?>

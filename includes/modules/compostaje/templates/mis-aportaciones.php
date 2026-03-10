@@ -12,7 +12,7 @@ if (!is_user_logged_in()) {
     echo '<span class="dashicons dashicons-lock"></span>';
     echo '<h3>' . esc_html__('Inicia sesión para ver tus aportaciones', 'flavor-chat-ia') . '</h3>';
     echo '<p>' . esc_html__('Necesitas estar conectado para acceder a tu historial de compostaje.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }

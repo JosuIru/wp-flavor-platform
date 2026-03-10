@@ -49,7 +49,7 @@ class Flavor_Unified_Modules_View {
      * Encola assets
      */
     public function enqueue_assets($hook) {
-        if (strpos($hook, 'flavor-app-composer') === false) {
+        if (strpos($hook, 'flavor-module-dashboards') === false) {
             return;
         }
 
@@ -136,6 +136,7 @@ class Flavor_Unified_Modules_View {
                 activeCategory: 'all',
                 filterStatus: 'all',
                 filterVisibility: 'all',
+                filterRole: 'all',
 
                 // Estado de operaciones
                 savingModules: [],
@@ -155,7 +156,7 @@ class Flavor_Unified_Modules_View {
                 },
 
                 // Filtrar módulos
-                shouldShowModule(moduleId, moduleName, category, isActive, visibility) {
+                shouldShowModule(moduleId, moduleName, category, isActive, visibility, role) {
                     if (this.activeCategory !== 'all' && category !== this.activeCategory) return false;
                     if (this.searchQuery) {
                         var query = this.searchQuery.toLowerCase();
@@ -164,6 +165,7 @@ class Flavor_Unified_Modules_View {
                     if (this.filterStatus === 'active' && !isActive) return false;
                     if (this.filterStatus === 'inactive' && isActive) return false;
                     if (this.filterVisibility !== 'all' && visibility !== this.filterVisibility) return false;
+                    if (this.filterRole !== 'all' && role !== this.filterRole) return false;
                     return true;
                 },
 
@@ -210,6 +212,59 @@ class Flavor_Unified_Modules_View {
                     } finally {
                         this.savingModules = this.savingModules.filter(function(id) { return id !== moduleId; });
                     }
+                },
+
+                async activatePack(moduleIds) {
+                    if (!Array.isArray(moduleIds) || moduleIds.length === 0) {
+                        return;
+                    }
+
+                    var activationOrder = this.resolveActivationOrder(moduleIds);
+                    for (var i = 0; i < activationOrder.length; i++) {
+                        await this.toggleModule(activationOrder[i], true);
+                    }
+
+                    window.location.reload();
+                },
+
+                getModuleDependencies(moduleId) {
+                    var card = document.querySelector('.fum-module-card[data-module-id="' + moduleId + '"]');
+                    if (!card) {
+                        return [];
+                    }
+
+                    var raw = card.getAttribute('data-depends-on') || '[]';
+                    try {
+                        var parsed = JSON.parse(raw);
+                        return Array.isArray(parsed) ? parsed : [];
+                    } catch (error) {
+                        return [];
+                    }
+                },
+
+                resolveActivationOrder(moduleIds) {
+                    var visited = new Set();
+                    var ordered = [];
+                    var self = this;
+
+                    function visit(moduleId) {
+                        if (!moduleId || visited.has(moduleId)) {
+                            return;
+                        }
+
+                        visited.add(moduleId);
+                        var dependencies = self.getModuleDependencies(moduleId);
+                        for (var i = 0; i < dependencies.length; i++) {
+                            visit(dependencies[i]);
+                        }
+                        ordered.push(moduleId);
+                    }
+
+                    for (var i = 0; i < moduleIds.length; i++) {
+                        visit(moduleIds[i]);
+                    }
+
+                    return ordered;
                 },
 
                 async saveVisibility(moduleId, visibility, capability) {
@@ -310,6 +365,22 @@ class Flavor_Unified_Modules_View {
         $gestor_perfiles = Flavor_App_Profiles::get_instance();
         $categorias_modulos = $gestor_perfiles->obtener_categorias_modulos();
 
+        $modulos_categorizados = [];
+        foreach ($categorias_modulos as $categoria_datos) {
+            foreach ($categoria_datos['modulos'] as $modulo_id) {
+                $modulos_categorizados[$modulo_id] = true;
+            }
+        }
+
+        $modulos_sin_categoria = array_diff(array_keys($modulos_registrados), array_keys($modulos_categorizados));
+        if (!empty($modulos_sin_categoria)) {
+            $categorias_modulos['otros'] = [
+                'nombre' => __('Otros', 'flavor-chat-ia'),
+                'icono' => 'dashicons-screenoptions',
+                'modulos' => array_values($modulos_sin_categoria),
+            ];
+        }
+
         // CRÍTICO: Limpiar caché y leer directamente de BD
         wp_cache_delete('flavor_chat_ia_settings', 'options');
         wp_cache_delete('alloptions', 'options');
@@ -357,14 +428,18 @@ class Flavor_Unified_Modules_View {
         // Obtener tipos de visibilidad y capacidades
         $tipos_visibilidad = $this->get_visibility_types();
         $capacidades_disponibles = $this->get_available_capabilities();
+        $recommended_packs = $this->get_recommended_ecosystem_packs($modulos_activos, $modulos_registrados);
+        $active_ecosystem_summary = $this->get_active_ecosystem_summary($modulos_registrados, $modulos_activos);
+        $ecosystem_gap_summary = $this->get_ecosystem_gap_summary($modulos_registrados, $modulos_activos);
+        $ecosystem_map = $this->get_ecosystem_map($modulos_registrados, $modulos_activos);
         ?>
         <div class="flavor-unified-modules" x-data="unifiedModulesState()">
             <!-- Header -->
             <div class="fum-header">
                 <div>
-                    <h2 class="fum-header__title"><?php esc_html_e('Gestión de Módulos', 'flavor-chat-ia'); ?></h2>
+                    <h2 class="fum-header__title"><?php esc_html_e('Gestión de Módulos Web', 'flavor-chat-ia'); ?></h2>
                     <p class="fum-header__description">
-                        <?php esc_html_e('Activa módulos, configura permisos de acceso y gestiona landings desde una sola vista.', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Activa módulos del portal web, configura permisos de acceso y gestiona landings desde una sola vista.', 'flavor-chat-ia'); ?>
                     </p>
                 </div>
                 <div class="fum-header__stats">
@@ -378,6 +453,134 @@ class Flavor_Unified_Modules_View {
                     </div>
                 </div>
             </div>
+
+            <?php if (!empty($recommended_packs)) : ?>
+            <div class="fum-packs">
+                <?php foreach ($recommended_packs as $pack) : ?>
+                <div class="fum-pack-card">
+                    <div class="fum-pack-card__header">
+                        <div>
+                            <h3 class="fum-pack-card__title"><?php echo esc_html($pack['title']); ?></h3>
+                            <p class="fum-pack-card__desc"><?php echo esc_html($pack['description']); ?></p>
+                            <?php if (!empty($pack['hint'])) : ?>
+                            <p class="fum-pack-card__hint"><?php echo esc_html($pack['hint']); ?></p>
+                            <?php endif; ?>
+                        </div>
+                        <div class="fum-pack-card__metrics">
+                            <span class="fum-pack-card__progress"><?php echo esc_html($pack['active_count'] . '/' . $pack['total_count']); ?></span>
+                            <?php if (!empty($pack['badge_label'])) : ?>
+                            <span class="fum-pack-card__recommended fum-pack-card__recommended--<?php echo esc_attr($pack['badge_variant']); ?>">
+                                <?php echo esc_html($pack['badge_label']); ?>
+                            </span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="fum-pack-card__tags">
+                        <?php foreach ($pack['modules'] as $module_id) : ?>
+                        <span class="fum-pack-card__tag <?php echo in_array($module_id, $modulos_activos, true) ? 'is-active' : ''; ?>">
+                            <?php echo esc_html($this->format_module_label($module_id)); ?>
+                        </span>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="fum-pack-card__actions">
+                        <?php if (!empty($pack['missing_modules'])) : ?>
+                        <button type="button"
+                                class="fum-btn fum-btn--primary fum-btn--small"
+                                @click='activatePack(<?php echo wp_json_encode(array_values($pack['missing_modules'])); ?>)'>
+                            <?php esc_html_e('Activar faltantes', 'flavor-chat-ia'); ?>
+                        </button>
+                        <?php else : ?>
+                        <span class="fum-pack-card__ready"><?php esc_html_e('Pack completo', 'flavor-chat-ia'); ?></span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($active_ecosystem_summary)) : ?>
+            <div class="fum-ecosystem-summary">
+                <?php foreach ($active_ecosystem_summary as $summary) : ?>
+                <div class="fum-ecosystem-summary__card">
+                    <div class="fum-ecosystem-summary__count"><?php echo esc_html($summary['count']); ?></div>
+                    <div class="fum-ecosystem-summary__title"><?php echo esc_html($summary['title']); ?></div>
+                    <?php if (!empty($summary['modules'])) : ?>
+                    <div class="fum-ecosystem-summary__tags">
+                        <?php foreach ($summary['modules'] as $module_name) : ?>
+                        <span class="fum-ecosystem-summary__tag"><?php echo esc_html($module_name); ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($ecosystem_gap_summary)) : ?>
+            <div class="fum-ecosystem-gaps">
+                <?php foreach ($ecosystem_gap_summary as $gap) : ?>
+                <div class="fum-ecosystem-gaps__card">
+                    <div class="fum-ecosystem-gaps__header">
+                        <div class="fum-ecosystem-gaps__title"><?php echo esc_html($gap['title']); ?></div>
+                        <div class="fum-ecosystem-gaps__count"><?php echo esc_html($gap['count']); ?></div>
+                    </div>
+                    <p class="fum-ecosystem-gaps__description"><?php echo esc_html($gap['description']); ?></p>
+                    <?php if (!empty($gap['modules'])) : ?>
+                    <div class="fum-ecosystem-gaps__tags">
+                        <?php foreach ($gap['modules'] as $module) : ?>
+                        <span class="fum-ecosystem-gaps__tag"><?php echo esc_html($module['name']); ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+                    <?php if (!empty($gap['missing_ids'])) : ?>
+                    <div class="fum-ecosystem-gaps__actions">
+                        <button type="button"
+                                class="fum-btn fum-btn--secondary fum-btn--small"
+                                @click='activatePack(<?php echo wp_json_encode(array_values($gap['missing_ids'])); ?>)'>
+                            <?php esc_html_e('Activar sugeridos', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($ecosystem_map)) : ?>
+            <div class="fum-ecosystem-map">
+                <div class="fum-ecosystem-map__header">
+                    <h3 class="fum-ecosystem-map__title"><?php esc_html_e('Mapa del ecosistema activo', 'flavor-chat-ia'); ?></h3>
+                    <p class="fum-ecosystem-map__description">
+                        <?php esc_html_e('Muestra como se conectan los modulos activos con otras piezas ya activas o sugeridas del ecosistema.', 'flavor-chat-ia'); ?>
+                    </p>
+                </div>
+                <div class="fum-ecosystem-map__grid">
+                    <?php foreach ($ecosystem_map as $node) : ?>
+                    <div class="fum-ecosystem-node">
+                        <div class="fum-ecosystem-node__head">
+                            <div>
+                                <div class="fum-ecosystem-node__name"><?php echo esc_html($node['name']); ?></div>
+                                <div class="fum-ecosystem-node__role"><?php echo esc_html($node['role_label']); ?></div>
+                            </div>
+                            <span class="fum-ecosystem-node__badge"><?php echo esc_html($node['connection_count']); ?></span>
+                        </div>
+                        <?php foreach ($node['groups'] as $group) : ?>
+                        <div class="fum-ecosystem-node__group">
+                            <div class="fum-ecosystem-node__group-title"><?php echo esc_html($group['label']); ?></div>
+                            <div class="fum-ecosystem-node__links">
+                                <?php foreach ($group['modules'] as $linked_module) : ?>
+                                <span class="fum-ecosystem-node__link <?php echo !empty($linked_module['is_active']) ? 'is-active' : 'is-suggested'; ?>">
+                                    <?php echo esc_html($linked_module['name']); ?>
+                                </span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
 
             <!-- Toolbar -->
             <div class="fum-toolbar">
@@ -399,6 +602,12 @@ class Flavor_Unified_Modules_View {
                     <option value="public"><?php esc_html_e('Públicos', 'flavor-chat-ia'); ?></option>
                     <option value="members_only"><?php esc_html_e('Solo miembros', 'flavor-chat-ia'); ?></option>
                     <option value="private"><?php esc_html_e('Privados', 'flavor-chat-ia'); ?></option>
+                </select>
+                <select class="fum-filter-select" x-model="filterRole" @change="filterModules()">
+                    <option value="all"><?php esc_html_e('Todos los roles', 'flavor-chat-ia'); ?></option>
+                    <option value="base"><?php esc_html_e('Base', 'flavor-chat-ia'); ?></option>
+                    <option value="vertical"><?php esc_html_e('Vertical', 'flavor-chat-ia'); ?></option>
+                    <option value="transversal"><?php esc_html_e('Transversal', 'flavor-chat-ia'); ?></option>
                 </select>
             </div>
 
@@ -428,14 +637,37 @@ class Flavor_Unified_Modules_View {
 
             <!-- Modules Grid -->
             <div class="fum-modules-grid">
-                <?php foreach ($categorias_modulos as $categoria_id => $categoria_datos) : ?>
+                    <?php foreach ($categorias_modulos as $categoria_id => $categoria_datos) : ?>
                     <?php foreach ($categoria_datos['modulos'] as $modulo_id) :
                         $info_modulo = $modulos_registrados[$modulo_id] ?? null;
                         if (!$info_modulo) continue;
 
-                        $nombre_modulo = $info_modulo['name'] ?? ucfirst(str_replace('_', ' ', $modulo_id));
-                        $descripcion_modulo = $info_modulo['description'] ?? '';
+                        $nombre_modulo = trim((string) ($info_modulo['name'] ?? ''));
+                        if ($nombre_modulo === '') {
+                            $nombre_modulo = ucwords(str_replace(['_', '-'], ' ', $modulo_id));
+                        }
+
+                        $descripcion_modulo = trim((string) ($info_modulo['description'] ?? ''));
+                        if ($descripcion_modulo === '') {
+                            $descripcion_modulo = sprintf(
+                                __('Módulo de %s disponible para activar y configurar.', 'flavor-chat-ia'),
+                                $categoria_datos['nombre']
+                            );
+                        }
+
                         $icono_modulo = $info_modulo['icon'] ?? 'dashicons-admin-plugins';
+                        $ecosystem = is_array($info_modulo['ecosystem'] ?? null) ? $info_modulo['ecosystem'] : [];
+                        $module_role = $ecosystem['module_role'] ?? 'vertical';
+                        $display_module_role = $this->get_display_ecosystem_role($ecosystem);
+                        $depends_on = array_values(array_filter((array) ($ecosystem['depends_on'] ?? [])));
+                        $supports_modules = array_values(array_filter((array) ($ecosystem['supports_modules'] ?? [])));
+                        $measures_modules = array_values(array_filter((array) ($ecosystem['measures_modules'] ?? [])));
+                        $governs_modules = array_values(array_filter((array) ($ecosystem['governs_modules'] ?? [])));
+                        $teaches_modules = array_values(array_filter((array) ($ecosystem['teaches_modules'] ?? [])));
+                        $base_for_modules = array_values(array_filter((array) ($ecosystem['base_for_modules'] ?? [])));
+                        $missing_dependencies = array_values(array_filter($depends_on, static function ($dependency) use ($modulos_activos) {
+                            return !in_array($dependency, $modulos_activos, true);
+                        }));
 
                         $is_active = in_array($modulo_id, $modulos_activos);
                         $is_required = in_array($modulo_id, $modulos_requeridos);
@@ -449,12 +681,13 @@ class Flavor_Unified_Modules_View {
                         $landing_url = $has_landing ? get_permalink($pagina_landing->ID) : '';
 
                         // Color de categoría
-                        $categoria_color = $this->get_category_color($categoria_datos['nombre']);
+                        $categoria_color = $info_modulo['color'] ?? $this->get_category_color($categoria_datos['nombre']);
                     ?>
                     <div class="fum-module-card <?php echo $is_active ? 'is-active' : 'is-inactive'; ?>"
-                         x-show="shouldShowModule('<?php echo esc_js($modulo_id); ?>', '<?php echo esc_js($nombre_modulo); ?>', '<?php echo esc_js($categoria_id); ?>', <?php echo $is_active ? 'true' : 'false'; ?>, '<?php echo esc_js($visibility); ?>')"
+                         x-show="shouldShowModule('<?php echo esc_js($modulo_id); ?>', '<?php echo esc_js($nombre_modulo); ?>', '<?php echo esc_js($categoria_id); ?>', <?php echo $is_active ? 'true' : 'false'; ?>, '<?php echo esc_js($visibility); ?>', '<?php echo esc_js($module_role); ?>')"
                          x-transition
                          data-module-id="<?php echo esc_attr($modulo_id); ?>"
+                         data-depends-on="<?php echo esc_attr(wp_json_encode(array_values($depends_on))); ?>"
                          data-category="<?php echo esc_attr($categoria_id); ?>">
 
                         <!-- Card Header -->
@@ -469,11 +702,17 @@ class Flavor_Unified_Modules_View {
                                     <?php if ($is_required) : ?>
                                         <span class="fum-badge fum-badge--required"><?php esc_html_e('Requerido', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
+                                    <span class="fum-badge fum-badge--role fum-badge--role-<?php echo esc_attr($display_module_role); ?>">
+                                        <?php echo esc_html($this->get_ecosystem_role_label($display_module_role)); ?>
+                                    </span>
                                     <span class="fum-badge fum-badge--<?php echo esc_attr($visibility); ?>">
                                         <?php echo esc_html($this->get_visibility_label($visibility)); ?>
                                     </span>
                                 </h4>
                                 <p class="fum-card__desc"><?php echo esc_html($descripcion_modulo); ?></p>
+                                <?php if ($display_module_role === 'base-standalone') : ?>
+                                    <p class="fum-card__role-note"><?php esc_html_e('Espacio base útil para gestión propia, pero sin satélites ecosistémicos declarados.', 'flavor-chat-ia'); ?></p>
+                                <?php endif; ?>
                             </div>
                             <div class="fum-card__toggle">
                                 <label class="fum-toggle">
@@ -488,6 +727,40 @@ class Flavor_Unified_Modules_View {
 
                         <!-- Card Body - Controls -->
                         <div class="fum-card__body">
+                            <?php if (!empty($missing_dependencies)) : ?>
+                            <div class="fum-dependency-warning">
+                                <span class="dashicons dashicons-warning"></span>
+                                <span>
+                                    <?php
+                                    printf(
+                                        esc_html__('Faltan dependencias activas: %s', 'flavor-chat-ia'),
+                                        esc_html(implode(', ', array_map([$this, 'format_module_label'], $missing_dependencies)))
+                                    );
+                                    ?>
+                                </span>
+                            </div>
+                            <?php endif; ?>
+                            <?php if (!empty($depends_on) || !empty($supports_modules) || !empty($measures_modules) || !empty($governs_modules) || !empty($teaches_modules) || !empty($base_for_modules)) : ?>
+                            <div class="fum-ecosystem-meta">
+                                <?php foreach ($this->get_ecosystem_relation_groups([
+                                    'depends_on' => $depends_on,
+                                    'supports_modules' => $supports_modules,
+                                    'measures_modules' => $measures_modules,
+                                    'governs_modules' => $governs_modules,
+                                    'teaches_modules' => $teaches_modules,
+                                    'base_for_modules' => $base_for_modules,
+                                ]) as $group) : ?>
+                                <div class="fum-ecosystem-group">
+                                    <span class="fum-ecosystem-group__label"><?php echo esc_html($group['label']); ?></span>
+                                    <div class="fum-ecosystem-tags">
+                                        <?php foreach ($group['items'] as $item) : ?>
+                                        <span class="fum-ecosystem-tag"><?php echo esc_html($this->format_module_label($item)); ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <?php endif; ?>
                             <div class="fum-control-row">
                                 <div class="fum-control-group">
                                     <label class="fum-control-group__label"><?php esc_html_e('Visibilidad', 'flavor-chat-ia'); ?></label>
@@ -521,6 +794,7 @@ class Flavor_Unified_Modules_View {
                             <?php if ($is_active) :
                                 $admin_pages = $this->get_module_admin_pages($modulo_id);
                                 $dashboard_url = $this->get_module_dashboard_url($modulo_id);
+                                $portal_url = $this->get_module_portal_url($modulo_id);
                                 if (!empty($admin_pages)) :
                             ?>
                                 <!-- Menú Administrar con dropdown -->
@@ -547,6 +821,13 @@ class Flavor_Unified_Modules_View {
                                     </div>
                                     <?php endif; ?>
                                 </div>
+                            <?php elseif ($portal_url) : ?>
+                                <a href="<?php echo esc_url($portal_url); ?>"
+                                   target="_blank"
+                                   class="fum-btn fum-btn--primary fum-btn--flex">
+                                    <span class="dashicons dashicons-external"></span>
+                                    <?php esc_html_e('Abrir portal', 'flavor-chat-ia'); ?>
+                                </a>
                             <?php endif; endif; ?>
 
                             <?php if ($has_landing) : ?>
@@ -736,6 +1017,527 @@ class Flavor_Unified_Modules_View {
         return $labels[$visibility] ?? $visibility;
     }
 
+    private function get_ecosystem_role_label($role) {
+        $labels = [
+            'base' => __('Base', 'flavor-chat-ia'),
+            'base-standalone' => __('Base local', 'flavor-chat-ia'),
+            'vertical' => __('Vertical', 'flavor-chat-ia'),
+            'transversal' => __('Transversal', 'flavor-chat-ia'),
+        ];
+
+        return $labels[$role] ?? ucfirst((string) $role);
+    }
+
+    private function get_display_ecosystem_role($ecosystem) {
+        return (string) ($ecosystem['display_role'] ?? $ecosystem['module_role'] ?? 'vertical');
+    }
+
+    private function get_ecosystem_relation_groups($relations) {
+        $labels = [
+            'depends_on' => __('Depende de', 'flavor-chat-ia'),
+            'supports_modules' => __('Soporta', 'flavor-chat-ia'),
+            'measures_modules' => __('Mide', 'flavor-chat-ia'),
+            'governs_modules' => __('Gobierna', 'flavor-chat-ia'),
+            'teaches_modules' => __('Enseña', 'flavor-chat-ia'),
+            'base_for_modules' => __('Base de', 'flavor-chat-ia'),
+        ];
+
+        $groups = [];
+        foreach ($labels as $key => $label) {
+            $items = array_values(array_filter((array) ($relations[$key] ?? [])));
+            if (empty($items)) {
+                continue;
+            }
+
+            $groups[] = [
+                'label' => $label,
+                'items' => $items,
+            ];
+        }
+
+        return $groups;
+    }
+
+    private function format_module_label($module_id) {
+        return ucwords(str_replace(['_', '-'], ' ', (string) $module_id));
+    }
+
+    private function get_recommended_ecosystem_packs($active_modules, $registered_modules = []) {
+        $packs = [
+            [
+                'title' => __('Autosuficiencia local', 'flavor-chat-ia'),
+                'description' => __('Combina comunidad, energía, impacto y consumo local para construir resiliencia territorial.', 'flavor-chat-ia'),
+                'modules' => ['comunidades', 'energia_comunitaria', 'huella_ecologica', 'grupos_consumo'],
+            ],
+            [
+                'title' => __('Red de cuidados', 'flavor-chat-ia'),
+                'description' => __('Activa ayuda mutua, tiempo compartido y tejido social de proximidad.', 'flavor-chat-ia'),
+                'modules' => ['comunidades', 'ayuda_vecinal', 'banco_tiempo', 'eventos'],
+            ],
+            [
+                'title' => __('Mercado regenerativo', 'flavor-chat-ia'),
+                'description' => __('Articula consumo local, transparencia e impacto para economía circular y cooperativa.', 'flavor-chat-ia'),
+                'modules' => ['grupos_consumo', 'marketplace', 'transparencia', 'economia_suficiencia'],
+            ],
+        ];
+
+        $packs = array_merge($packs, $this->build_dynamic_ecosystem_packs($active_modules, $registered_modules));
+        $packs = $this->deduplicate_ecosystem_packs($packs);
+
+        foreach ($packs as &$pack) {
+            $pack['active_count'] = count(array_intersect($pack['modules'], $active_modules));
+            $pack['total_count'] = count($pack['modules']);
+            $pack['missing_modules'] = array_values(array_diff($pack['modules'], $active_modules));
+            $pack['overlap_modules'] = array_values(array_intersect($pack['modules'], $active_modules));
+            $pack['score'] = $pack['active_count'] / max(1, $pack['total_count']);
+            $pack['is_recommended'] = $pack['active_count'] > 0 && !empty($pack['missing_modules']);
+            $pack['pack_state'] = $this->get_pack_state($pack);
+            $pack['badge_label'] = $this->get_pack_badge_label($pack);
+            $pack['badge_variant'] = $this->get_pack_badge_variant($pack);
+            $pack['hint'] = $this->get_pack_hint($pack);
+        }
+        unset($pack);
+
+        usort($packs, function ($a, $b) {
+            $priority_map = [
+                'suggested' => 0,
+                'starter' => 1,
+                'complete' => 2,
+            ];
+
+            $a_priority = $priority_map[$a['pack_state']] ?? 99;
+            $b_priority = $priority_map[$b['pack_state']] ?? 99;
+            if ($a_priority !== $b_priority) {
+                return $a_priority <=> $b_priority;
+            }
+
+            if ($a['score'] !== $b['score']) {
+                return $a['score'] > $b['score'] ? -1 : 1;
+            }
+
+            if (count($a['missing_modules']) !== count($b['missing_modules'])) {
+                return count($a['missing_modules']) <=> count($b['missing_modules']);
+            }
+
+            return strcmp($a['title'], $b['title']);
+        });
+
+        return array_slice($packs, 0, 6);
+    }
+
+    private function build_dynamic_ecosystem_packs($active_modules, $registered_modules) {
+        $packs = [];
+        $relation_keys = [
+            'depends_on',
+            'supports_modules',
+            'measures_modules',
+            'governs_modules',
+            'teaches_modules',
+            'base_for_modules',
+        ];
+
+        foreach ($active_modules as $module_id) {
+            $module = $registered_modules[$module_id] ?? null;
+            if (!$module) {
+                continue;
+            }
+
+            $ecosystem = is_array($module['ecosystem'] ?? null) ? $module['ecosystem'] : [];
+            $related_modules = [];
+            $used_relations = [];
+
+            foreach ($relation_keys as $relation_key) {
+                $relation_modules = array_values(array_filter((array) ($ecosystem[$relation_key] ?? [])));
+                if (empty($relation_modules)) {
+                    continue;
+                }
+
+                $related_modules = array_merge($related_modules, $relation_modules);
+                $used_relations[] = $relation_key;
+            }
+
+            $related_modules = array_values(array_unique(array_filter($related_modules, function ($related_module_id) use ($registered_modules, $module_id) {
+                return $related_module_id !== $module_id && isset($registered_modules[$related_module_id]);
+            })));
+
+            if (empty($related_modules)) {
+                continue;
+            }
+
+            $module_name = $this->get_registered_module_name($module_id, $registered_modules);
+            $pack_modules = array_values(array_unique(array_merge([$module_id], $related_modules)));
+            $pack_modules = array_slice($pack_modules, 0, 6);
+
+            if (count($pack_modules) < 2) {
+                continue;
+            }
+
+            $packs[] = [
+                'title' => sprintf(
+                    __('Expandir %s', 'flavor-chat-ia'),
+                    $module_name
+                ),
+                'description' => $this->build_dynamic_pack_description($module_name, $ecosystem, $used_relations),
+                'modules' => $pack_modules,
+                'source' => 'dynamic',
+                'anchor_module' => $module_id,
+            ];
+        }
+
+        return $packs;
+    }
+
+    private function deduplicate_ecosystem_packs($packs) {
+        $unique_packs = [];
+        $seen = [];
+
+        foreach ($packs as $pack) {
+            $modules = array_values(array_unique(array_filter((array) ($pack['modules'] ?? []))));
+            $signature_modules = $modules;
+            sort($signature_modules);
+            $signature = implode('|', $signature_modules);
+            if ($signature === '' || isset($seen[$signature])) {
+                continue;
+            }
+
+            $pack['modules'] = $modules;
+            $unique_packs[] = $pack;
+            $seen[$signature] = true;
+        }
+
+        return $unique_packs;
+    }
+
+    private function build_dynamic_pack_description($module_name, $ecosystem, $used_relations) {
+        $role = $ecosystem['module_role'] ?? 'vertical';
+        $relation_labels = [
+            'depends_on' => __('dependencias', 'flavor-chat-ia'),
+            'supports_modules' => __('soportes', 'flavor-chat-ia'),
+            'measures_modules' => __('metricas', 'flavor-chat-ia'),
+            'governs_modules' => __('gobernanza', 'flavor-chat-ia'),
+            'teaches_modules' => __('aprendizaje', 'flavor-chat-ia'),
+            'base_for_modules' => __('extensiones base', 'flavor-chat-ia'),
+        ];
+
+        $used_labels = array_values(array_unique(array_filter(array_map(function ($relation_key) use ($relation_labels) {
+            return $relation_labels[$relation_key] ?? null;
+        }, $used_relations))));
+
+        $relations_text = implode(', ', array_slice($used_labels, 0, 3));
+
+        switch ($role) {
+            case 'base':
+                return sprintf(
+                    __('Despliega capacidades alrededor de %1$s conectando %2$s.', 'flavor-chat-ia'),
+                    $module_name,
+                    $relations_text !== '' ? $relations_text : __('modulos relacionados', 'flavor-chat-ia')
+                );
+            case 'transversal':
+                return sprintf(
+                    __('Amplia %1$s como capa transversal para reforzar %2$s.', 'flavor-chat-ia'),
+                    $module_name,
+                    $relations_text !== '' ? $relations_text : __('otros modulos del ecosistema', 'flavor-chat-ia')
+                );
+            case 'vertical':
+            default:
+                return sprintf(
+                    __('Extiende %1$s con %2$s para cerrar mejor el flujo operativo.', 'flavor-chat-ia'),
+                    $module_name,
+                    $relations_text !== '' ? $relations_text : __('modulos complementarios', 'flavor-chat-ia')
+                );
+        }
+    }
+
+    private function get_registered_module_name($module_id, $registered_modules) {
+        $module = $registered_modules[$module_id] ?? null;
+        if (!$module) {
+            return $this->format_module_label($module_id);
+        }
+
+        $name = trim((string) ($module['name'] ?? ''));
+        if ($name !== '') {
+            return $name;
+        }
+
+        return $this->format_module_label($module_id);
+    }
+
+    private function get_pack_state($pack) {
+        if (empty($pack['missing_modules'])) {
+            return 'complete';
+        }
+
+        if (!empty($pack['overlap_modules'])) {
+            return 'suggested';
+        }
+
+        return 'starter';
+    }
+
+    private function get_pack_badge_label($pack) {
+        switch ($pack['pack_state']) {
+            case 'complete':
+                return __('Activo', 'flavor-chat-ia');
+            case 'suggested':
+                return __('Siguiente paso', 'flavor-chat-ia');
+            case 'starter':
+            default:
+                return __('Pack base', 'flavor-chat-ia');
+        }
+    }
+
+    private function get_pack_badge_variant($pack) {
+        switch ($pack['pack_state']) {
+            case 'complete':
+                return 'complete';
+            case 'suggested':
+                return 'suggested';
+            case 'starter':
+            default:
+                return 'starter';
+        }
+    }
+
+    private function get_pack_hint($pack) {
+        if ($pack['pack_state'] === 'suggested' && !empty($pack['overlap_modules'])) {
+            $names = array_map([$this, 'format_module_label'], array_slice($pack['overlap_modules'], 0, 2));
+            return sprintf(
+                __('Ya tienes %1$d/%2$d modulos activos. Encaja con: %3$s', 'flavor-chat-ia'),
+                $pack['active_count'],
+                $pack['total_count'],
+                implode(', ', $names)
+            );
+        }
+
+        if ($pack['pack_state'] === 'complete') {
+            return __('Ya tienes este pack completo y operativo.', 'flavor-chat-ia');
+        }
+
+        return __('Buen punto de partida si quieres activar esta capacidad del ecosistema desde cero.', 'flavor-chat-ia');
+    }
+
+    private function get_active_ecosystem_summary($registered_modules, $active_modules) {
+        $summary = [
+            'base' => [
+                'title' => __('Bases activas', 'flavor-chat-ia'),
+                'modules' => [],
+            ],
+            'vertical' => [
+                'title' => __('Verticales activos', 'flavor-chat-ia'),
+                'modules' => [],
+            ],
+            'transversal' => [
+                'title' => __('Transversales activos', 'flavor-chat-ia'),
+                'modules' => [],
+            ],
+        ];
+
+        foreach ($active_modules as $module_id) {
+            $module = $registered_modules[$module_id] ?? null;
+            if (!$module) {
+                continue;
+            }
+
+            $role = $module['ecosystem']['module_role'] ?? 'vertical';
+            if (!isset($summary[$role])) {
+                continue;
+            }
+
+            $name = trim((string) ($module['name'] ?? ''));
+            if ($name === '') {
+                $name = $this->format_module_label($module_id);
+            }
+
+            $summary[$role]['modules'][] = $name;
+        }
+
+        foreach ($summary as $role => &$data) {
+            $data['modules'] = array_values(array_slice($data['modules'], 0, 6));
+            $data['count'] = count(array_filter($active_modules, function ($module_id) use ($registered_modules, $role) {
+                return (($registered_modules[$module_id]['ecosystem']['module_role'] ?? 'vertical') === $role);
+            }));
+        }
+
+        return array_values($summary);
+    }
+
+    private function get_ecosystem_gap_summary($registered_modules, $active_modules) {
+        $groups = [
+            'dependencies' => [
+                'title' => __('Dependencias faltantes', 'flavor-chat-ia'),
+                'description' => __('Modulos necesarios para que algunas piezas activas funcionen con mejor coherencia.', 'flavor-chat-ia'),
+                'modules' => [],
+            ],
+            'extensions' => [
+                'title' => __('Extensiones relacionadas', 'flavor-chat-ia'),
+                'description' => __('Modulos conectados a lo que ya tienes activo y que ampliarían el ecosistema.', 'flavor-chat-ia'),
+                'modules' => [],
+            ],
+            'transversal' => [
+                'title' => __('Capas transversales ausentes', 'flavor-chat-ia'),
+                'description' => __('Gobernanza, metricas o aprendizaje que completarían mejor las capacidades actuales.', 'flavor-chat-ia'),
+                'modules' => [],
+            ],
+        ];
+
+        foreach ($active_modules as $module_id) {
+            $module = $registered_modules[$module_id] ?? null;
+            if (!$module) {
+                continue;
+            }
+
+            $ecosystem = is_array($module['ecosystem'] ?? null) ? $module['ecosystem'] : [];
+
+            foreach ((array) ($ecosystem['depends_on'] ?? []) as $dependency_id) {
+                $this->add_gap_module($groups['dependencies']['modules'], $dependency_id, $registered_modules, $active_modules);
+            }
+
+            foreach (['supports_modules', 'base_for_modules'] as $relation_key) {
+                foreach ((array) ($ecosystem[$relation_key] ?? []) as $related_id) {
+                    $this->add_gap_module($groups['extensions']['modules'], $related_id, $registered_modules, $active_modules);
+                }
+            }
+
+            foreach (['measures_modules', 'governs_modules', 'teaches_modules'] as $relation_key) {
+                foreach ((array) ($ecosystem[$relation_key] ?? []) as $related_id) {
+                    $this->add_gap_module($groups['transversal']['modules'], $related_id, $registered_modules, $active_modules);
+                }
+            }
+        }
+
+        $result = [];
+        foreach ($groups as $group) {
+            if (empty($group['modules'])) {
+                continue;
+            }
+
+            $modules = array_values($group['modules']);
+            usort($modules, function ($a, $b) {
+                if (($a['priority'] ?? 0) === ($b['priority'] ?? 0)) {
+                    return strcmp($a['name'], $b['name']);
+                }
+
+                return ($a['priority'] ?? 0) > ($b['priority'] ?? 0) ? -1 : 1;
+            });
+
+            $result[] = [
+                'title' => $group['title'],
+                'description' => $group['description'],
+                'count' => count($modules),
+                'modules' => array_slice(array_map(function ($module) {
+                    return [
+                        'id' => $module['id'],
+                        'name' => $module['name'],
+                    ];
+                }, $modules), 0, 6),
+                'missing_ids' => array_slice(array_values(array_map(function ($module) {
+                    return $module['id'];
+                }, $modules)), 0, 6),
+            ];
+        }
+
+        return $result;
+    }
+
+    private function add_gap_module(&$collection, $module_id, $registered_modules, $active_modules) {
+        if (in_array($module_id, $active_modules, true) || !isset($registered_modules[$module_id])) {
+            return;
+        }
+
+        if (!isset($collection[$module_id])) {
+            $collection[$module_id] = [
+                'id' => $module_id,
+                'name' => $this->get_registered_module_name($module_id, $registered_modules),
+                'priority' => 0,
+            ];
+        }
+
+        $collection[$module_id]['priority']++;
+    }
+
+    private function get_ecosystem_map($registered_modules, $active_modules) {
+        $relation_labels = [
+            'depends_on' => __('Depende de', 'flavor-chat-ia'),
+            'supports_modules' => __('Soporta', 'flavor-chat-ia'),
+            'measures_modules' => __('Mide', 'flavor-chat-ia'),
+            'governs_modules' => __('Gobierna', 'flavor-chat-ia'),
+            'teaches_modules' => __('Enseña', 'flavor-chat-ia'),
+            'base_for_modules' => __('Base de', 'flavor-chat-ia'),
+        ];
+
+        $nodes = [];
+        foreach ($active_modules as $module_id) {
+            $module = $registered_modules[$module_id] ?? null;
+            if (!$module) {
+                continue;
+            }
+
+            $ecosystem = is_array($module['ecosystem'] ?? null) ? $module['ecosystem'] : [];
+            $groups = [];
+            $connection_count = 0;
+
+            foreach ($relation_labels as $relation_key => $label) {
+                $related_ids = array_values(array_unique(array_filter((array) ($ecosystem[$relation_key] ?? []))));
+                if (empty($related_ids)) {
+                    continue;
+                }
+
+                $related_modules = [];
+                foreach ($related_ids as $related_id) {
+                    if (!isset($registered_modules[$related_id])) {
+                        continue;
+                    }
+
+                    $related_modules[] = [
+                        'id' => $related_id,
+                        'name' => $this->get_registered_module_name($related_id, $registered_modules),
+                        'is_active' => in_array($related_id, $active_modules, true),
+                    ];
+                }
+
+                if (empty($related_modules)) {
+                    continue;
+                }
+
+                usort($related_modules, function ($a, $b) {
+                    if ($a['is_active'] !== $b['is_active']) {
+                        return $a['is_active'] ? -1 : 1;
+                    }
+
+                    return strcmp($a['name'], $b['name']);
+                });
+
+                $groups[] = [
+                    'label' => $label,
+                    'modules' => array_slice($related_modules, 0, 5),
+                ];
+                $connection_count += count($related_modules);
+            }
+
+            if (empty($groups)) {
+                continue;
+            }
+
+            $nodes[] = [
+                'id' => $module_id,
+                'name' => $this->get_registered_module_name($module_id, $registered_modules),
+                'role_label' => $this->get_ecosystem_role_label($ecosystem['module_role'] ?? 'vertical'),
+                'groups' => $groups,
+                'connection_count' => $connection_count,
+            ];
+        }
+
+        usort($nodes, function ($a, $b) {
+            if ($a['connection_count'] === $b['connection_count']) {
+                return strcmp($a['name'], $b['name']);
+            }
+
+            return $a['connection_count'] > $b['connection_count'] ? -1 : 1;
+        });
+
+        return array_slice($nodes, 0, 8);
+    }
+
     /**
      * Obtiene el color de categoría
      */
@@ -819,8 +1621,65 @@ class Flavor_Unified_Modules_View {
             $paginas = $paginas_conocidas;
         }
 
+        $paginas = $this->normalize_module_dashboard_page($modulo_id, $paginas);
+
         $cache[$modulo_id] = $paginas;
         return $paginas;
+    }
+
+    /**
+     * Alinea la página principal con el dashboard canónico del módulo cuando existe.
+     *
+     * @param string $modulo_id
+     * @param array  $paginas
+     * @return array
+     */
+    private function normalize_module_dashboard_page($modulo_id, array $paginas) {
+        $mapped_slug = class_exists('Flavor_Module_Admin_Pages_Trait')
+            ? Flavor_Module_Admin_Pages_Helper::get_module_dashboard_page($modulo_id)
+            : null;
+        $mapped_url = class_exists('Flavor_Module_Admin_Pages_Trait')
+            ? Flavor_Module_Admin_Pages_Helper::get_module_dashboard_url($modulo_id)
+            : null;
+
+        if (empty($mapped_slug) || empty($mapped_url)) {
+            return $paginas;
+        }
+
+        $dashboard_index = null;
+        foreach ($paginas as $index => $pagina) {
+            $titulo = strtolower(wp_strip_all_tags((string) ($pagina['titulo'] ?? '')));
+            if ($titulo === 'dashboard') {
+                $dashboard_index = $index;
+                break;
+            }
+        }
+
+        if ($dashboard_index !== null) {
+            $paginas[$dashboard_index]['slug'] = $mapped_slug;
+            $paginas[$dashboard_index]['url'] = $mapped_url;
+            $paginas[$dashboard_index]['icon'] = $paginas[$dashboard_index]['icon'] ?? 'dashicons-dashboard';
+        } else {
+            array_unshift($paginas, [
+                'slug' => $mapped_slug,
+                'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                'url' => $mapped_url,
+                'icon' => 'dashicons-dashboard',
+            ]);
+        }
+
+        $seen = [];
+        $normalized = [];
+        foreach ($paginas as $pagina) {
+            $slug = (string) ($pagina['slug'] ?? '');
+            if ($slug === '' || isset($seen[$slug])) {
+                continue;
+            }
+            $seen[$slug] = true;
+            $normalized[] = $pagina;
+        }
+
+        return $normalized;
     }
 
     /**
@@ -990,11 +1849,41 @@ class Flavor_Unified_Modules_View {
      * @return string|null URL del dashboard o null
      */
     public function get_module_dashboard_url($modulo_id) {
+        $mapped_url = class_exists('Flavor_Module_Admin_Pages_Trait')
+            ? Flavor_Module_Admin_Pages_Helper::get_module_dashboard_url($modulo_id)
+            : null;
+
+        if (!empty($mapped_url)) {
+            return $mapped_url;
+        }
+
         $paginas = $this->get_module_admin_pages($modulo_id);
 
         if (!empty($paginas)) {
             // La primera página suele ser el dashboard
             return $paginas[0]['url'];
+        }
+
+        return null;
+    }
+
+    /**
+     * Obtiene la URL principal del módulo en el portal web.
+     *
+     * @param string $modulo_id ID del módulo
+     * @return string|null
+     */
+    private function get_module_portal_url($modulo_id) {
+        $slug = str_replace('_', '-', $modulo_id);
+        $portal_page = get_page_by_path('mi-portal/' . $slug);
+
+        if ($portal_page) {
+            return get_permalink($portal_page->ID);
+        }
+
+        $page = get_page_by_path($slug);
+        if ($page) {
+            return get_permalink($page->ID);
         }
 
         return null;

@@ -45,6 +45,7 @@ class Flavor_Pages_Admin {
     public function render_admin_page() {
         // Obtener estado de páginas
         $estado_paginas = Flavor_Page_Creator::get_pages_status();
+        $estado_v3 = $this->get_v3_status();
         $total_paginas = count($estado_paginas['exists']) + count($estado_paginas['missing']);
         $conteo_creadas = count($estado_paginas['exists']);
         $conteo_faltantes = count($estado_paginas['missing']);
@@ -54,7 +55,7 @@ class Flavor_Pages_Admin {
 
             <div class="notice notice-info">
                 <p><strong><?php _e('Sistema de Páginas Automáticas', 'flavor-chat-ia'); ?></strong></p>
-                <p><?php _e('Este asistente crea automáticamente todas las páginas necesarias para que los formularios de los módulos funcionen correctamente.', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('Esta pantalla combina la foto del creador legacy basado en listado fijo con el estado actual de la migración modular V3.', 'flavor-chat-ia'); ?></p>
             </div>
 
             <?php if (isset($_GET['created'])): ?>
@@ -71,9 +72,88 @@ class Flavor_Pages_Admin {
                 </div>
             <?php endif; ?>
 
+            <?php if ($estado_v3['available']): ?>
+                <div class="card" style="max-width: 1100px; margin-top: 20px;">
+                    <h2><?php _e('Estado Modular V3', 'flavor-chat-ia'); ?></h2>
+                    <p style="max-width: 900px;">
+                        <?php _e('La arquitectura actual del plugin ya permite que los módulos definan sus propias páginas con `get_pages_definition()`. Esta lectura refleja qué parte del ecosistema ya usa ese sistema.', 'flavor-chat-ia'); ?>
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0;">
+                        <div style="text-align: center; padding: 20px; background: var(--flavor-bg, #f0f0f1); border-radius: var(--flavor-radius-md, 8px);">
+                            <div style="font-size: var(--flavor-font-size-2xl, 42px); font-weight: bold; color: var(--flavor-primary, #2271b1);"><?php echo esc_html($estado_v3['total_modules']); ?></div>
+                            <div style="color: var(--flavor-text-secondary, #666);"><?php _e('Módulos cargados', 'flavor-chat-ia'); ?></div>
+                        </div>
+                        <div style="text-align: center; padding: 20px; background: var(--flavor-success-light, #d1e7dd); border-radius: var(--flavor-radius-md, 8px);">
+                            <div style="font-size: var(--flavor-font-size-2xl, 42px); font-weight: bold; color: var(--flavor-success, #0f5132);"><?php echo esc_html($estado_v3['migrated_modules']); ?></div>
+                            <div style="color: var(--flavor-success, #0f5132);"><?php _e('Módulos con páginas V3', 'flavor-chat-ia'); ?></div>
+                        </div>
+                        <div style="text-align: center; padding: 20px; background: #e8f1ff; border-radius: var(--flavor-radius-md, 8px);">
+                            <div style="font-size: var(--flavor-font-size-2xl, 42px); font-weight: bold; color: #135e96;"><?php echo esc_html($estado_v3['defined_pages']); ?></div>
+                            <div style="color: #135e96;"><?php _e('Páginas definidas en V3', 'flavor-chat-ia'); ?></div>
+                        </div>
+                        <div style="text-align: center; padding: 20px; background: #fff7e6; border-radius: var(--flavor-radius-md, 8px);">
+                            <div style="font-size: var(--flavor-font-size-2xl, 42px); font-weight: bold; color: #8a5300;"><?php echo esc_html($estado_v3['created_pages']); ?></div>
+                            <div style="color: #8a5300;"><?php _e('Páginas creadas con owner V3', 'flavor-chat-ia'); ?></div>
+                        </div>
+                    </div>
+
+                    <div style="margin: 18px 0 24px;">
+                        <strong><?php _e('Cobertura V3', 'flavor-chat-ia'); ?>:</strong>
+                        <?php echo esc_html($estado_v3['migration_percentage']); ?>%
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div style="background: #fff; padding: 16px; border-left: 4px solid var(--flavor-success, #0f5132);">
+                            <h3 style="margin-top: 0;"><?php printf(__('Módulos ya migrados (%d)', 'flavor-chat-ia'), $estado_v3['migrated_modules']); ?></h3>
+                            <?php if (!empty($estado_v3['migrated_preview'])): ?>
+                                <ul style="margin-bottom: 0;">
+                                    <?php foreach ($estado_v3['migrated_preview'] as $module_info): ?>
+                                        <li>
+                                            <strong><?php echo esc_html($module_info['name']); ?></strong>
+                                            <code><?php echo esc_html($module_info['id']); ?></code>
+                                            <?php printf(__('(%d páginas)', 'flavor-chat-ia'), intval($module_info['page_count'])); ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php else: ?>
+                                <p style="margin-bottom: 0;"><?php _e('Todavía no hay módulos con definiciones V3 activas.', 'flavor-chat-ia'); ?></p>
+                            <?php endif; ?>
+                        </div>
+
+                        <div style="background: #fff; padding: 16px; border-left: 4px solid #dba617;">
+                            <h3 style="margin-top: 0;"><?php printf(__('Módulos aún sin páginas V3 (%d)', 'flavor-chat-ia'), $estado_v3['pending_modules']); ?></h3>
+                            <?php if (!empty($estado_v3['pending_preview'])): ?>
+                                <ul style="margin-bottom: 0;">
+                                    <?php foreach ($estado_v3['pending_preview'] as $module_info): ?>
+                                        <li>
+                                            <strong><?php echo esc_html($module_info['name']); ?></strong>
+                                            <code><?php echo esc_html($module_info['id']); ?></code>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php else: ?>
+                                <p style="margin-bottom: 0;"><?php _e('Todos los módulos cargados exponen ya páginas V3.', 'flavor-chat-ia'); ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 20px;">
+                        <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=flavor-systems-panel')); ?>">
+                            <?php _e('Abrir Panel de Sistemas', 'flavor-chat-ia'); ?>
+                        </a>
+                    </p>
+                </div>
+            <?php else: ?>
+                <div class="notice notice-warning" style="margin-top: 20px;">
+                    <p><?php _e('No se ha podido obtener el estado de migración V3 en esta carga de admin. Se muestra solo el creador legacy.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php endif; ?>
+
             <!-- Estado actual -->
             <div class="card" style="max-width: 800px; margin-top: 20px;">
-                <h2><?php _e('Estado Actual', 'flavor-chat-ia'); ?></h2>
+                <h2><?php _e('Estado Legacy', 'flavor-chat-ia'); ?></h2>
+                <p><?php _e('Este bloque sigue mostrando el catálogo histórico de páginas que el creador clásico sabe generar de forma masiva.', 'flavor-chat-ia'); ?></p>
 
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0;">
                     <div style="text-align: center; padding: 20px; background: var(--flavor-bg, #f0f0f1); border-radius: var(--flavor-radius-md, 8px);">
@@ -154,6 +234,104 @@ class Flavor_Pages_Admin {
             .card h2 { margin-top: 0; }
         </style>
         <?php
+    }
+
+    /**
+     * Obtiene el estado resumido de la migración modular V3.
+     *
+     * @return array
+     */
+    private function get_v3_status() {
+        $empty = [
+            'available' => false,
+            'total_modules' => 0,
+            'migrated_modules' => 0,
+            'pending_modules' => 0,
+            'defined_pages' => 0,
+            'created_pages' => 0,
+            'migration_percentage' => 0,
+            'migrated_preview' => [],
+            'pending_preview' => [],
+        ];
+
+        if (!class_exists('Flavor_Page_Creator_V3') || !class_exists('Flavor_Chat_Module_Loader')) {
+            return $empty;
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        if (!$loader || !method_exists($loader, 'get_loaded_modules')) {
+            return $empty;
+        }
+
+        $creator = Flavor_Page_Creator_V3::get_instance();
+        $stats = method_exists($creator, 'get_stats') ? $creator->get_stats() : [];
+        $loaded_modules = $loader->get_loaded_modules();
+        $modules_info = [];
+
+        foreach ($loaded_modules as $module_id => $module_instance) {
+            $page_count = 0;
+            $is_migrated = method_exists($module_instance, 'get_pages_definition');
+
+            if ($is_migrated) {
+                $definitions = $module_instance->get_pages_definition();
+                $page_count = is_array($definitions) ? count($definitions) : 0;
+                $is_migrated = $page_count > 0;
+            }
+
+            $modules_info[] = [
+                'id' => (string) $module_id,
+                'name' => $this->get_module_label($module_instance, $module_id),
+                'page_count' => $page_count,
+                'is_migrated' => $is_migrated,
+            ];
+        }
+
+        usort($modules_info, function ($left, $right) {
+            return strcasecmp($left['name'], $right['name']);
+        });
+
+        $migrated = array_values(array_filter($modules_info, function ($module_info) {
+            return !empty($module_info['is_migrated']);
+        }));
+        $pending = array_values(array_filter($modules_info, function ($module_info) {
+            return empty($module_info['is_migrated']);
+        }));
+
+        $total_modules = count($modules_info);
+        $migrated_count = count($migrated);
+
+        return [
+            'available' => true,
+            'total_modules' => $total_modules,
+            'migrated_modules' => $migrated_count,
+            'pending_modules' => count($pending),
+            'defined_pages' => isset($stats['total_pages_defined']) ? (int) $stats['total_pages_defined'] : 0,
+            'created_pages' => isset($stats['total_pages_created']) ? (int) $stats['total_pages_created'] : 0,
+            'migration_percentage' => $total_modules > 0 ? round(($migrated_count / $total_modules) * 100, 2) : 0,
+            'migrated_preview' => array_slice($migrated, 0, 8),
+            'pending_preview' => array_slice($pending, 0, 8),
+        ];
+    }
+
+    /**
+     * Obtiene una etiqueta legible del módulo.
+     *
+     * @param object $module_instance Instancia del módulo.
+     * @param string $module_id ID del módulo.
+     * @return string
+     */
+    private function get_module_label($module_instance, $module_id) {
+        if (is_object($module_instance)) {
+            if (method_exists($module_instance, 'get_name')) {
+                return (string) $module_instance->get_name();
+            }
+
+            if (isset($module_instance->name) && is_string($module_instance->name) && $module_instance->name !== '') {
+                return $module_instance->name;
+            }
+        }
+
+        return (string) $module_id;
     }
 
     /**

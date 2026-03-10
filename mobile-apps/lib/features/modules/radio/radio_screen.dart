@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 import '../../../core/providers/providers.dart';
 
 class RadioScreen extends ConsumerStatefulWidget {
@@ -14,12 +15,43 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
   List<dynamic> _programacionRadio = [];
   bool _cargando = true;
   String? _mensajeError;
+
+  // Audio player
+  late AudioPlayer _audioPlayer;
   bool _estaReproduciendo = false;
+  bool _cargandoAudio = false;
+  double _volumen = 0.7;
+  String? _streamUrl;
 
   @override
   void initState() {
     super.initState();
+    _audioPlayer = AudioPlayer();
+    _setupAudioListeners();
     _cargarDatos();
+  }
+
+  void _setupAudioListeners() {
+    _audioPlayer.playingStream.listen((playing) {
+      if (mounted) {
+        setState(() => _estaReproduciendo = playing);
+      }
+    });
+
+    _audioPlayer.processingStateStream.listen((state) {
+      if (mounted) {
+        setState(() {
+          _cargandoAudio = state == ProcessingState.loading ||
+                          state == ProcessingState.buffering;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
   }
 
   Future<void> _cargarDatos() async {
@@ -35,12 +67,13 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
           _datosStream = respuesta.data;
           _programacionRadio =
               respuesta.data!['programacion'] ?? respuesta.data!['schedule'] ?? [];
+          _streamUrl = respuesta.data!['stream_url'] ?? respuesta.data!['url'];
           _cargando = false;
         });
       } else {
         setState(() {
           _mensajeError =
-              respuesta.error ?? 'Error al cargar la información de la radio';
+              respuesta.error ?? 'Error al cargar la informacion de la radio';
           _cargando = false;
         });
       }
@@ -52,10 +85,38 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
     }
   }
 
-  void _alternarReproduccion() {
-    setState(() {
-      _estaReproduciendo = !_estaReproduciendo;
-    });
+  Future<void> _alternarReproduccion() async {
+    if (_streamUrl == null || _streamUrl!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('URL del stream no disponible')),
+      );
+      return;
+    }
+
+    try {
+      if (_estaReproduciendo) {
+        await _audioPlayer.pause();
+      } else {
+        // Si no se ha cargado el audio, cargarlo primero
+        if (_audioPlayer.audioSource == null) {
+          setState(() => _cargandoAudio = true);
+          await _audioPlayer.setUrl(_streamUrl!);
+          await _audioPlayer.setVolume(_volumen);
+        }
+        await _audioPlayer.play();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al reproducir: $e')),
+        );
+      }
+    }
+  }
+
+  void _cambiarVolumen(double valor) {
+    setState(() => _volumen = valor);
+    _audioPlayer.setVolume(valor);
   }
 
   @override
@@ -100,7 +161,7 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
                               Icon(Icons.schedule, size: 20),
                               SizedBox(width: 8),
                               Text(
-                                'Programación',
+                                'Programacion',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -211,7 +272,11 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            _estaReproduciendo ? 'EN DIRECTO' : 'PAUSADO',
+                            _cargandoAudio
+                                ? 'CARGANDO...'
+                                : _estaReproduciendo
+                                    ? 'EN DIRECTO'
+                                    : 'PAUSADO',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 10,
@@ -257,10 +322,12 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Boton anterior (para radio en vivo no tiene sentido, pero lo dejamos deshabilitado)
               IconButton(
                 icon: const Icon(Icons.skip_previous,
-                    color: Colors.white, size: 32),
-                onPressed: () {},
+                    color: Colors.white54, size: 32),
+                onPressed: null, // Deshabilitado para streaming en vivo
+                tooltip: 'No disponible para radio en vivo',
               ),
               const SizedBox(width: 16),
               Container(
@@ -276,23 +343,33 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
                   ],
                 ),
                 child: IconButton(
-                  icon: Icon(
-                    _estaReproduciendo
-                        ? Icons.pause_rounded
-                        : Icons.play_arrow_rounded,
-                    color: Colors.deepOrange.shade700,
-                    size: 40,
-                  ),
-                  onPressed: _alternarReproduccion,
+                  icon: _cargandoAudio
+                      ? SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: Colors.deepOrange.shade700,
+                          ),
+                        )
+                      : Icon(
+                          _estaReproduciendo
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
+                          color: Colors.deepOrange.shade700,
+                          size: 40,
+                        ),
+                  onPressed: _cargandoAudio ? null : _alternarReproduccion,
                   iconSize: 40,
                   padding: const EdgeInsets.all(12),
                 ),
               ),
               const SizedBox(width: 16),
+              // Boton siguiente (para radio en vivo no tiene sentido)
               IconButton(
-                icon:
-                    const Icon(Icons.skip_next, color: Colors.white, size: 32),
-                onPressed: () {},
+                icon: const Icon(Icons.skip_next, color: Colors.white54, size: 32),
+                onPressed: null, // Deshabilitado para streaming en vivo
+                tooltip: 'No disponible para radio en vivo',
               ),
             ],
           ),
@@ -311,18 +388,33 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
                 ),
               ),
               const SizedBox(width: 24),
-              Icon(Icons.volume_up,
-                  color: Colors.white.withOpacity(0.8), size: 16),
+              Icon(
+                _volumen == 0 ? Icons.volume_off : Icons.volume_up,
+                color: Colors.white.withOpacity(0.8),
+                size: 16,
+              ),
               Expanded(
                 child: Slider(
-                  value: 0.7,
-                  onChanged: (valor) {},
+                  value: _volumen,
+                  onChanged: _cambiarVolumen,
                   activeColor: Colors.white,
                   inactiveColor: Colors.white.withOpacity(0.3),
                 ),
               ),
             ],
           ),
+          // Indicador de URL del stream (solo si no hay URL)
+          if (_streamUrl == null || _streamUrl!.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                'Stream no configurado',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.6),
+                  fontSize: 11,
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -331,7 +423,7 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
   Widget _construirItemProgramacion(dynamic elemento) {
     final mapa = elemento as Map<String, dynamic>;
     final nombrePrograma =
-        mapa['titulo'] ?? mapa['nombre'] ?? mapa['name'] ?? 'Sin título';
+        mapa['titulo'] ?? mapa['nombre'] ?? mapa['name'] ?? 'Sin titulo';
     final horarioPrograma = mapa['horario'] ?? mapa['time'] ?? mapa['hora'] ?? '';
     final descripcionPrograma = mapa['descripcion'] ?? mapa['description'] ?? '';
     final diaPrograma = mapa['dia'] ?? mapa['day'] ?? '';

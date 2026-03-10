@@ -968,7 +968,7 @@ class Flavor_Tramites_Dashboard_Tab {
         <div class="flavor-alert flavor-alert-warning">
             <span class="dashicons dashicons-lock"></span>
             <?php _e('Debes iniciar sesion para ver tus tramites.', 'flavor-chat-ia'); ?>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-btn flavor-btn-sm">
+            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-btn flavor-btn-sm">
                 <?php _e('Iniciar sesion', 'flavor-chat-ia'); ?>
             </a>
         </div>

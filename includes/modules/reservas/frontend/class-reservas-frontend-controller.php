@@ -126,6 +126,20 @@ class Flavor_Reservas_Frontend_Controller {
     }
 
     /**
+     * Renderiza un estado de login consistente para el portal.
+     *
+     * @param string $mensaje Mensaje principal.
+     * @return string
+     */
+    private function render_login_required($mensaje) {
+        return '<div class="flavor-empty-state">' .
+            '<p>' . esc_html($mensaje) . '</p>' .
+            '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' .
+            esc_html__('Iniciar sesión', 'flavor-chat-ia') .
+            '</a></div>';
+    }
+
+    /**
      * Shortcode: Listado de recursos reservables
      */
     public function shortcode_recursos($atts) {
@@ -149,13 +163,13 @@ class Flavor_Reservas_Frontend_Controller {
      */
     public function shortcode_mis_reservas($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para ver tus reservas.', 'flavor-chat-ia') . '</p>';
+            return $this->render_login_required(__('Inicia sesión para ver tus reservas.', 'flavor-chat-ia'));
         }
 
         $this->encolar_assets();
 
         $atts = shortcode_atts([
-            'estado' => '',
+            'estado' => isset($_GET['estado']) ? sanitize_text_field(wp_unslash($_GET['estado'])) : '',
             'limite' => 20,
         ], $atts);
 
@@ -186,7 +200,7 @@ class Flavor_Reservas_Frontend_Controller {
      */
     public function shortcode_formulario($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Inicia sesión para hacer una reserva.', 'flavor-chat-ia') . '</p>';
+            return $this->render_login_required(__('Inicia sesión para hacer una reserva.', 'flavor-chat-ia'));
         }
 
         $this->encolar_assets();
@@ -215,7 +229,11 @@ class Flavor_Reservas_Frontend_Controller {
         $recurso_id = $atts['id'] ?: (isset($_GET['recurso_id']) ? absint($_GET['recurso_id']) : 0);
 
         if (!$recurso_id) {
-            return '<p class="flavor-error">' . __('Recurso no especificado.', 'flavor-chat-ia') . '</p>';
+            return '<div class="flavor-empty-state">' .
+                '<p>' . esc_html__('Recurso no especificado.', 'flavor-chat-ia') . '</p>' .
+                '<a href="' . esc_url(home_url('/mi-portal/reservas/')) . '" class="flavor-btn flavor-btn-primary">' .
+                esc_html__('Ver recursos', 'flavor-chat-ia') .
+                '</a></div>';
         }
 
         ob_start();
@@ -307,7 +325,12 @@ class Flavor_Reservas_Frontend_Controller {
         ?>
         <div class="flavor-mis-reservas">
             <?php if (empty($reservas)) : ?>
-                <p class="no-resultados"><?php _e('No tienes reservas.', 'flavor-chat-ia'); ?></p>
+                <div class="flavor-empty-state">
+                    <p><?php _e('No tienes reservas.', 'flavor-chat-ia'); ?></p>
+                    <a href="<?php echo esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-primary">
+                        <?php _e('Ver recursos disponibles', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
             <?php else : ?>
                 <div class="reservas-lista">
                     <?php foreach ($reservas as $reserva) : ?>
@@ -378,7 +401,7 @@ class Flavor_Reservas_Frontend_Controller {
      */
     private function render_formulario_reserva($recurso_id) {
         if (!$recurso_id) {
-            echo '<p class="flavor-error">' . __('Selecciona un recurso para reservar.', 'flavor-chat-ia') . '</p>';
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Selecciona un recurso para reservar.', 'flavor-chat-ia') . '</p><a href="' . esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Ver recursos', 'flavor-chat-ia') . '</a></div>';
             return;
         }
 
@@ -391,7 +414,7 @@ class Flavor_Reservas_Frontend_Controller {
         ));
 
         if (!$recurso) {
-            echo '<p class="flavor-error">' . __('Recurso no encontrado.', 'flavor-chat-ia') . '</p>';
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Recurso no encontrado.', 'flavor-chat-ia') . '</p><a href="' . esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Volver a recursos', 'flavor-chat-ia') . '</a></div>';
             return;
         }
 
@@ -461,7 +484,7 @@ class Flavor_Reservas_Frontend_Controller {
         ));
 
         if (!$recurso) {
-            echo '<p class="flavor-error">' . __('Recurso no encontrado.', 'flavor-chat-ia') . '</p>';
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Recurso no encontrado.', 'flavor-chat-ia') . '</p><a href="' . esc_url(add_query_arg('tab', 'recursos', home_url('/mi-portal/reservas/'))) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Volver a recursos', 'flavor-chat-ia') . '</a></div>';
             return;
         }
 
@@ -496,7 +519,7 @@ class Flavor_Reservas_Frontend_Controller {
             <?php endif; ?>
 
             <div class="recurso-acciones">
-                <a href="<?php echo esc_url(home_url('/reservas/nueva/?recurso_id=' . $recurso->id)); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(add_query_arg(['tab' => 'nueva-reserva', 'recurso_id' => $recurso->id], home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-primary">
                     <?php _e('Reservar', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -789,10 +812,10 @@ class Flavor_Reservas_Frontend_Controller {
                     <p class="ubicacion"><?php echo esc_html($recurso->ubicacion); ?></p>
                 <?php endif; ?>
                 <div class="recurso-acciones">
-                    <a href="<?php echo esc_url(home_url('/reservas/?recurso_id=' . $recurso->id)); ?>" class="flavor-btn flavor-btn-sm">
+                    <a href="<?php echo esc_url(add_query_arg(['tab' => 'recursos', 'recurso_id' => $recurso->id], home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-sm">
                         <?php _e('Ver Detalles', 'flavor-chat-ia'); ?>
                     </a>
-                    <a href="<?php echo esc_url(home_url('/reservas/nueva/?recurso_id=' . $recurso->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
+                    <a href="<?php echo esc_url(add_query_arg(['tab' => 'nueva-reserva', 'recurso_id' => $recurso->id], home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
                         <?php _e('Reservar', 'flavor-chat-ia'); ?>
                     </a>
                 </div>

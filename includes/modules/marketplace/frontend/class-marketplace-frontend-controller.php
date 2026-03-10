@@ -46,6 +46,7 @@ class Flavor_Marketplace_Frontend_Controller {
         // Registrar shortcodes avanzados
         add_shortcode('marketplace_catalogo', [$this, 'shortcode_catalogo']);
         add_shortcode('marketplace_listado', [$this, 'shortcode_catalogo']); // Alias para páginas dinámicas
+        add_shortcode('marketplace_destacados', [$this, 'shortcode_destacados']); // Alias legacy para widgets dinámicos
         add_shortcode('marketplace_mis_anuncios', [$this, 'shortcode_mis_anuncios']);
         add_shortcode('marketplace_formulario', [$this, 'shortcode_formulario']);
         add_shortcode('marketplace_detalle', [$this, 'shortcode_detalle']);
@@ -98,7 +99,7 @@ class Flavor_Marketplace_Frontend_Controller {
             'nonce' => wp_create_nonce('marketplace_frontend_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'isLoggedIn' => is_user_logged_in(),
-            'loginUrl' => wp_login_url(get_permalink()),
+            'loginUrl' => wp_login_url($this->get_current_request_url()),
             'i18n' => [
                 'agregadoFavoritos' => __('Añadido a favoritos', 'flavor-chat-ia'),
                 'quitadoFavoritos' => __('Quitado de favoritos', 'flavor-chat-ia'),
@@ -120,6 +121,23 @@ class Flavor_Marketplace_Frontend_Controller {
     private function encolar_assets() {
         wp_enqueue_style('marketplace-frontend');
         wp_enqueue_script('marketplace-frontend');
+    }
+
+    /**
+     * Obtiene la URL actual para redirects de login en páginas dinámicas.
+     */
+    private function get_current_request_url(): string {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/mi-portal/marketplace/';
+        $request_uri = '/' . ltrim($request_uri, '/');
+
+        return home_url($request_uri);
+    }
+
+    /**
+     * Obtiene la URL canónica de detalle dentro del portal.
+     */
+    private function get_anuncio_url(int $anuncio_id): string {
+        return home_url('/mi-portal/marketplace/detalle/?anuncio_id=' . absint($anuncio_id));
     }
 
     /**
@@ -183,17 +201,51 @@ class Flavor_Marketplace_Frontend_Controller {
     public function shortcode_catalogo($atts) {
         $this->encolar_assets();
 
+        $request_tipo = isset($_GET['tipo']) ? sanitize_text_field(wp_unslash((string) $_GET['tipo'])) : '';
+        $request_categoria = isset($_GET['categoria']) ? sanitize_text_field(wp_unslash((string) $_GET['categoria'])) : '';
+        $request_comunidad = isset($_GET['comunidad']) ? absint($_GET['comunidad']) : '';
+
         $atributos = shortcode_atts([
-            'tipo' => '', // regalo, venta, cambio, alquiler
-            'categoria' => '',
+            'tipo' => $request_tipo, // regalo, venta, cambio, alquiler
+            'categoria' => $request_categoria,
             'columnas' => 3,
             'limite' => 12,
+            'limit' => null, // Compatibilidad con shortcodes legacy
             'mostrar_filtros' => 'si',
+            'comunidad' => $request_comunidad, // ID de comunidad para filtrar anuncios
         ], $atts);
+
+        if (!empty($atributos['limit']) && empty($atts['limite'])) {
+            $atributos['limite'] = intval($atributos['limit']);
+        }
 
         ob_start();
         $this->render_catalogo($atributos);
         return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Destacados (compatibilidad legacy)
+     *
+     * La lógica nueva no distingue destacados a nivel de shortcode frontend,
+     * así que este alias muestra los anuncios más recientes sin filtros.
+     */
+    public function shortcode_destacados($atts) {
+        $atributos = shortcode_atts([
+            'limit' => 4,
+            'limite' => '',
+            'columnas' => 2,
+            'tipo' => '',
+            'categoria' => '',
+        ], $atts);
+
+        if (empty($atributos['limite'])) {
+            $atributos['limite'] = intval($atributos['limit']);
+        }
+
+        $atributos['mostrar_filtros'] = 'no';
+
+        return $this->shortcode_catalogo($atributos);
     }
 
     /**
@@ -205,7 +257,7 @@ class Flavor_Marketplace_Frontend_Controller {
         if (!is_user_logged_in()) {
             return '<div class="flavor-login-required bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">'
                  . '<p class="text-yellow-800">' . __('Debes iniciar sesión para ver tus anuncios.', 'flavor-chat-ia') . '</p>'
-                 . '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="inline-block mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">' . __('Iniciar Sesión', 'flavor-chat-ia') . '</a>'
+                 . '<a href="' . esc_url(wp_login_url($this->get_current_request_url())) . '" class="inline-block mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">' . __('Iniciar Sesión', 'flavor-chat-ia') . '</a>'
                  . '</div>';
         }
 
@@ -229,12 +281,19 @@ class Flavor_Marketplace_Frontend_Controller {
     public function shortcode_formulario($atts) {
         $this->encolar_assets();
 
+        $atributos = shortcode_atts([
+            'comunidad' => '', // ID de comunidad si se publica desde una comunidad
+        ], $atts, 'marketplace_formulario');
+
         if (!is_user_logged_in()) {
             return '<div class="flavor-login-required bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">'
                  . '<p class="text-yellow-800">' . __('Debes iniciar sesión para publicar un anuncio.', 'flavor-chat-ia') . '</p>'
-                 . '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="inline-block mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">' . __('Iniciar Sesión', 'flavor-chat-ia') . '</a>'
+                 . '<a href="' . esc_url(wp_login_url($this->get_current_request_url())) . '" class="inline-block mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">' . __('Iniciar Sesión', 'flavor-chat-ia') . '</a>'
                  . '</div>';
         }
+
+        // Variable disponible para el template
+        $marketplace_comunidad_id = absint($atributos['comunidad']);
 
         // Cargar template
         $template_path = FLAVOR_CHAT_IA_PATH . 'templates/frontend/marketplace/formulario.php';
@@ -248,6 +307,165 @@ class Flavor_Marketplace_Frontend_Controller {
         return '<div class="marketplace-formulario-fallback">'
              . '<p>' . __('El formulario de publicación no está disponible.', 'flavor-chat-ia') . '</p>'
              . '</div>';
+    }
+
+    /**
+     * Shortcode: Detalle de anuncio
+     */
+    public function shortcode_detalle($atts) {
+        $this->encolar_assets();
+
+        $atts = shortcode_atts([
+            'id' => 0,
+            'anuncio_id' => 0,
+        ], $atts, 'marketplace_detalle');
+
+        $anuncio_id = absint(
+            $atts['id']
+            ?: $atts['anuncio_id']
+            ?: ($_GET['anuncio_id'] ?? 0)
+            ?: ($_GET['id'] ?? 0)
+        );
+
+        if (!$anuncio_id) {
+            return '<div class="marketplace-detalle-vacio">'
+                 . '<p>' . esc_html__('No se ha indicado ningún anuncio.', 'flavor-chat-ia') . '</p>'
+                 . '<a href="' . esc_url(home_url('/mi-portal/marketplace/')) . '" class="btn btn-primary">' . esc_html__('Volver al marketplace', 'flavor-chat-ia') . '</a>'
+                 . '</div>';
+        }
+
+        $anuncio = get_post($anuncio_id);
+        if (!$anuncio || 'marketplace_item' !== $anuncio->post_type || 'publish' !== $anuncio->post_status) {
+            return '<div class="marketplace-detalle-vacio">'
+                 . '<p>' . esc_html__('El anuncio no está disponible.', 'flavor-chat-ia') . '</p>'
+                 . '<a href="' . esc_url(home_url('/mi-portal/marketplace/')) . '" class="btn btn-primary">' . esc_html__('Ver otros anuncios', 'flavor-chat-ia') . '</a>'
+                 . '</div>';
+        }
+
+        $precio = get_post_meta($anuncio_id, '_marketplace_precio', true);
+        $estado = get_post_meta($anuncio_id, '_marketplace_estado', true) ?: 'disponible';
+        $ubicacion = get_post_meta($anuncio_id, '_marketplace_ubicacion', true);
+        $condicion = get_post_meta($anuncio_id, '_marketplace_condicion', true);
+        $comunidad_id = get_post_meta($anuncio_id, '_marketplace_comunidad_id', true);
+        $imagen = get_the_post_thumbnail_url($anuncio_id, 'large');
+        $autor = get_userdata((int) $anuncio->post_author);
+        $tipos = wp_get_post_terms($anuncio_id, 'marketplace_tipo');
+        $categorias = wp_get_post_terms($anuncio_id, 'marketplace_categoria');
+        $tipo_slug = (!empty($tipos) && !is_wp_error($tipos)) ? $tipos[0]->slug : '';
+        $tipo_label = (!empty($tipos) && !is_wp_error($tipos)) ? $tipos[0]->name : __('Anuncio', 'flavor-chat-ia');
+        $categoria_label = (!empty($categorias) && !is_wp_error($categorias)) ? $categorias[0]->name : '';
+
+        // Obtener información de la comunidad si existe
+        $comunidad_info = null;
+        if ($comunidad_id) {
+            global $wpdb;
+            $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+            $comunidad_info = $wpdb->get_row($wpdb->prepare(
+                "SELECT id, nombre FROM {$tabla_comunidades} WHERE id = %d AND estado = 'activa'",
+                absint($comunidad_id)
+            ));
+        }
+
+        // Etiquetas de condición
+        $condiciones_label = [
+            'nuevo' => __('Nuevo', 'flavor-chat-ia'),
+            'como_nuevo' => __('Como nuevo', 'flavor-chat-ia'),
+            'buen_estado' => __('Buen estado', 'flavor-chat-ia'),
+            'usado' => __('Usado', 'flavor-chat-ia'),
+            'para_piezas' => __('Para piezas', 'flavor-chat-ia'),
+        ];
+
+        ob_start();
+        ?>
+        <article class="marketplace-detalle">
+            <div class="marketplace-detalle-header">
+                <?php if ($comunidad_info): ?>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $comunidad_info->id . '/')); ?>" class="btn btn-secondary">
+                        <span class="dashicons dashicons-groups"></span>
+                        <?php echo esc_html($comunidad_info->nombre); ?>
+                    </a>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/?comunidad=' . $comunidad_info->id)); ?>" class="btn btn-outline">
+                        <?php _e('Ver marketplace de la comunidad', 'flavor-chat-ia'); ?>
+                    </a>
+                <?php else: ?>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/')); ?>" class="btn btn-secondary">
+                        <?php _e('Volver al marketplace', 'flavor-chat-ia'); ?>
+                    </a>
+                <?php endif; ?>
+            </div>
+
+            <div class="marketplace-detalle-grid">
+                <div class="marketplace-detalle-media">
+                    <?php if ($imagen): ?>
+                        <img src="<?php echo esc_url($imagen); ?>" alt="<?php echo esc_attr($anuncio->post_title); ?>">
+                    <?php else: ?>
+                        <div class="marketplace-detalle-placeholder">
+                            <span class="dashicons dashicons-format-image"></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <div class="marketplace-detalle-content">
+                    <div class="marketplace-detalle-badges">
+                        <span class="anuncio-tipo-badge tipo-<?php echo esc_attr($tipo_slug ?: 'general'); ?>">
+                            <?php echo esc_html($tipo_label); ?>
+                        </span>
+                        <span class="anuncio-estado-badge estado-<?php echo esc_attr($estado); ?>">
+                            <?php echo esc_html(ucfirst($estado)); ?>
+                        </span>
+                    </div>
+
+                    <h1><?php echo esc_html($anuncio->post_title); ?></h1>
+
+                    <?php if (!empty($precio) && in_array($tipo_slug, ['venta', 'alquiler'], true)): ?>
+                        <p class="marketplace-detalle-precio"><?php echo esc_html(number_format_i18n((float) $precio, 2)); ?>€</p>
+                    <?php elseif ('regalo' === $tipo_slug): ?>
+                        <p class="marketplace-detalle-precio"><?php _e('Gratis', 'flavor-chat-ia'); ?></p>
+                    <?php endif; ?>
+
+                    <div class="marketplace-detalle-meta">
+                        <?php if ($condicion && isset($condiciones_label[$condicion])): ?>
+                            <p><span class="dashicons dashicons-tag"></span> <?php echo esc_html($condiciones_label[$condicion]); ?></p>
+                        <?php endif; ?>
+                        <?php if ($ubicacion): ?>
+                            <p><span class="dashicons dashicons-location"></span> <?php echo esc_html($ubicacion); ?></p>
+                        <?php endif; ?>
+                        <?php if ($categoria_label): ?>
+                            <p><span class="dashicons dashicons-category"></span> <?php echo esc_html($categoria_label); ?></p>
+                        <?php endif; ?>
+                        <?php if ($comunidad_info): ?>
+                            <p>
+                                <span class="dashicons dashicons-groups"></span>
+                                <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $comunidad_info->id . '/')); ?>">
+                                    <?php echo esc_html($comunidad_info->nombre); ?>
+                                </a>
+                            </p>
+                        <?php endif; ?>
+                        <p><span class="dashicons dashicons-calendar-alt"></span> <?php echo esc_html(get_the_date('', $anuncio)); ?></p>
+                        <p><span class="dashicons dashicons-admin-users"></span> <?php echo esc_html($autor ? $autor->display_name : __('Usuario', 'flavor-chat-ia')); ?></p>
+                    </div>
+
+                    <div class="marketplace-detalle-descripcion">
+                        <?php echo wpautop(wp_kses_post($anuncio->post_content)); ?>
+                    </div>
+
+                    <div class="marketplace-detalle-acciones">
+                        <?php if (is_user_logged_in() && (int) $anuncio->post_author !== get_current_user_id() && 'vendido' !== $estado): ?>
+                            <button type="button" class="btn-contactar" data-anuncio-id="<?php echo esc_attr($anuncio_id); ?>">
+                                <?php _e('Contactar', 'flavor-chat-ia'); ?>
+                            </button>
+                        <?php elseif (!is_user_logged_in()): ?>
+                            <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="btn btn-primary">
+                                <?php _e('Iniciar sesión para contactar', 'flavor-chat-ia'); ?>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <?php
+
+        return ob_get_clean();
     }
 
     /**
@@ -280,6 +498,17 @@ class Flavor_Marketplace_Frontend_Controller {
             ]];
         }
 
+        // Filtrar por comunidad si se especifica
+        if (!empty($atts['comunidad'])) {
+            $args['meta_query'] = $args['meta_query'] ?? [];
+            $args['meta_query'][] = [
+                'key' => '_marketplace_comunidad_id',
+                'value' => absint($atts['comunidad']),
+                'compare' => '=',
+                'type' => 'NUMERIC',
+            ];
+        }
+
         $anuncios = get_posts($args);
 
         // Obtener categorías para filtros
@@ -300,8 +529,41 @@ class Flavor_Marketplace_Frontend_Controller {
             'cambio' => __('Cambio', 'flavor-chat-ia'),
             'alquiler' => __('Alquiler', 'flavor-chat-ia'),
         ];
+
+        // Obtener información de la comunidad si está filtrando
+        $comunidad_info = null;
+        if (!empty($atts['comunidad'])) {
+            global $wpdb;
+            $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+            $comunidad_info = $wpdb->get_row($wpdb->prepare(
+                "SELECT id, nombre FROM {$tabla_comunidades} WHERE id = %d AND estado = 'activa'",
+                absint($atts['comunidad'])
+            ));
+        }
         ?>
-        <div class="marketplace-catalogo" data-columnas="<?php echo esc_attr($atts['columnas']); ?>">
+        <div class="marketplace-catalogo" data-columnas="<?php echo esc_attr($atts['columnas']); ?>" <?php if ($comunidad_info): ?>data-comunidad="<?php echo esc_attr($comunidad_info->id); ?>"<?php endif; ?>>
+            <?php if ($comunidad_info): ?>
+                <div class="marketplace-comunidad-banner">
+                    <div class="banner-info">
+                        <span class="dashicons dashicons-groups"></span>
+                        <span>
+                            <?php printf(
+                                esc_html__('Mostrando anuncios de la comunidad: %s', 'flavor-chat-ia'),
+                                '<strong>' . esc_html($comunidad_info->nombre) . '</strong>'
+                            ); ?>
+                        </span>
+                    </div>
+                    <div class="banner-actions">
+                        <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $comunidad_info->id . '/')); ?>" class="btn-volver-comunidad">
+                            <?php esc_html_e('Volver a la comunidad', 'flavor-chat-ia'); ?>
+                        </a>
+                        <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/')); ?>" class="btn-ver-todos">
+                            <?php esc_html_e('Ver todo el marketplace', 'flavor-chat-ia'); ?>
+                        </a>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <?php if ($atts['mostrar_filtros'] === 'si'): ?>
                 <div class="marketplace-filtros">
                     <div class="filtro-buscar">
@@ -371,7 +633,7 @@ class Flavor_Marketplace_Frontend_Controller {
 
             <div class="anuncio-imagen">
                 <?php if ($imagen): ?>
-                    <a href="<?php echo get_permalink($anuncio->ID); ?>">
+                    <a href="<?php echo esc_url($this->get_anuncio_url((int) $anuncio->ID)); ?>">
                         <img src="<?php echo esc_url($imagen); ?>" alt="<?php echo esc_attr($anuncio->post_title); ?>">
                     </a>
                 <?php else: ?>
@@ -395,7 +657,7 @@ class Flavor_Marketplace_Frontend_Controller {
 
             <div class="anuncio-info">
                 <h3 class="anuncio-titulo">
-                    <a href="<?php echo get_permalink($anuncio->ID); ?>"><?php echo esc_html($anuncio->post_title); ?></a>
+                    <a href="<?php echo esc_url($this->get_anuncio_url((int) $anuncio->ID)); ?>"><?php echo esc_html($anuncio->post_title); ?></a>
                 </h3>
                 <?php if ($tipo === 'venta' || $tipo === 'alquiler'): ?>
                     <p class="anuncio-precio">
@@ -426,7 +688,7 @@ class Flavor_Marketplace_Frontend_Controller {
             </div>
 
             <div class="anuncio-acciones">
-                <a href="<?php echo get_permalink($anuncio->ID); ?>" class="btn-ver-detalle">
+                <a href="<?php echo esc_url($this->get_anuncio_url((int) $anuncio->ID)); ?>" class="btn-ver-detalle">
                     <?php _e('Ver detalle', 'flavor-chat-ia'); ?>
                 </a>
                 <?php if (is_user_logged_in() && (int) $anuncio->post_author !== get_current_user_id() && $estado !== 'vendido'): ?>
@@ -535,7 +797,7 @@ class Flavor_Marketplace_Frontend_Controller {
                     <div class="marketplace-card tipo-<?php echo esc_attr($tipo_anuncio); ?>">
                         <?php if (has_post_thumbnail($anuncio->ID)): ?>
                         <div class="marketplace-card-imagen">
-                            <a href="<?php echo get_permalink($anuncio->ID); ?>">
+                            <a href="<?php echo esc_url($this->get_anuncio_url((int) $anuncio->ID)); ?>">
                                 <?php echo get_the_post_thumbnail($anuncio->ID, 'medium'); ?>
                             </a>
                             <?php if ($tipo_anuncio): ?>
@@ -547,7 +809,7 @@ class Flavor_Marketplace_Frontend_Controller {
                         <?php endif; ?>
                         <div class="marketplace-card-content">
                             <h4 class="anuncio-titulo">
-                                <a href="<?php echo get_permalink($anuncio->ID); ?>"><?php echo esc_html($anuncio->post_title); ?></a>
+                                <a href="<?php echo esc_url($this->get_anuncio_url((int) $anuncio->ID)); ?>"><?php echo esc_html($anuncio->post_title); ?></a>
                             </h4>
                             <div class="anuncio-precio">
                                 <?php if ($tipo_anuncio === 'regalo'): ?>
@@ -713,7 +975,7 @@ class Flavor_Marketplace_Frontend_Controller {
                                 <a href="<?php echo get_edit_post_link($anuncio->ID); ?>" class="btn-editar" title="<?php _e('Editar', 'flavor-chat-ia'); ?>">
                                     <span class="dashicons dashicons-edit"></span>
                                 </a>
-                                <a href="<?php echo get_permalink($anuncio->ID); ?>" class="btn-ver" title="<?php _e('Ver', 'flavor-chat-ia'); ?>">
+                                <a href="<?php echo esc_url($this->get_anuncio_url((int) $anuncio->ID)); ?>" class="btn-ver" title="<?php _e('Ver', 'flavor-chat-ia'); ?>">
                                     <span class="dashicons dashicons-visibility"></span>
                                 </a>
                                 <?php if ($estado !== 'vendido'): ?>
@@ -896,6 +1158,7 @@ class Flavor_Marketplace_Frontend_Controller {
         $busqueda = sanitize_text_field($_POST['busqueda'] ?? '');
         $precio_min = floatval($_POST['precio_min'] ?? 0);
         $precio_max = floatval($_POST['precio_max'] ?? 0);
+        $comunidad_id = absint($_POST['comunidad_id'] ?? 0);
 
         $args = [
             'post_type' => 'marketplace_item',
@@ -922,6 +1185,17 @@ class Flavor_Marketplace_Frontend_Controller {
                 'field' => 'slug',
                 'terms' => $categoria,
             ]];
+        }
+
+        // Filtrar por comunidad
+        if ($comunidad_id > 0) {
+            $args['meta_query'] = $args['meta_query'] ?? [];
+            $args['meta_query'][] = [
+                'key' => '_marketplace_comunidad_id',
+                'value' => $comunidad_id,
+                'compare' => '=',
+                'type' => 'NUMERIC',
+            ];
         }
 
         if ($precio_min > 0 || $precio_max > 0) {

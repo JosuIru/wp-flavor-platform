@@ -763,7 +763,7 @@ class Flavor_App_Profiles {
             'sostenibilidad' => [
                 'nombre' => 'Sostenibilidad',
                 'icono'  => 'dashicons-palmtree',
-                'modulos' => ['huertos_urbanos', 'bicicletas_compartidas', 'compostaje', 'reciclaje', 'carpooling', 'huella_ecologica', 'biodiversidad_local'],
+                'modulos' => ['huertos_urbanos', 'bicicletas_compartidas', 'compostaje', 'energia_comunitaria', 'reciclaje', 'carpooling', 'huella_ecologica', 'biodiversidad_local'],
             ],
             'economia_social' => [
                 'nombre' => 'Economía Social',

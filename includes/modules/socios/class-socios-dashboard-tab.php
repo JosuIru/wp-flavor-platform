@@ -143,7 +143,7 @@ class Flavor_Socios_Dashboard_Tab {
                     </div>
 
                     <div class="membresia-footer">
-                        <a href="<?php echo esc_url(home_url('/mi-portal/socios/datos/')); ?>" class="flavor-btn flavor-btn-outline">
+                        <a href="<?php echo esc_url(home_url('/mi-portal/socios/mi-perfil/')); ?>" class="flavor-btn flavor-btn-outline">
                             <?php esc_html_e('Actualizar datos', 'flavor-chat-ia'); ?>
                         </a>
                         <?php if (!$socio->carnet_emitido): ?>

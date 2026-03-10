@@ -135,7 +135,7 @@ $tipos_proyecto = [
                     </button>
                     <?php endif; ?>
                 <?php else : ?>
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="he-btn he-btn--secondary">
+                <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="he-btn he-btn--secondary">
                     <?php esc_html_e('Inicia sesión para unirte', 'flavor-chat-ia'); ?>
                 </a>
                 <?php endif; ?>

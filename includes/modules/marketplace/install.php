@@ -61,6 +61,7 @@ function flavor_marketplace_crear_tablas() {
         contactos_count int(11) NOT NULL DEFAULT 0,
         etiquetas text DEFAULT NULL,
         metadata json DEFAULT NULL,
+        comunidad_id bigint(20) unsigned DEFAULT NULL,
         created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id),
@@ -75,6 +76,7 @@ function flavor_marketplace_crear_tablas() {
         KEY es_destacado (es_destacado),
         KEY fecha_publicacion (fecha_publicacion),
         KEY estado_tipo (estado, tipo),
+        KEY comunidad_id (comunidad_id),
         FULLTEXT KEY busqueda (titulo, descripcion)
     ) $charset_collate;";
 
@@ -210,7 +212,33 @@ function flavor_marketplace_crear_tablas() {
     // Insertar categorías por defecto
     flavor_marketplace_insertar_categorias_default();
 
-    update_option('flavor_marketplace_db_version', '1.0.0');
+    // Migración: añadir campo comunidad_id si no existe
+    flavor_marketplace_migrar_comunidad_id();
+
+    update_option('flavor_marketplace_db_version', '1.1.0');
+}
+
+/**
+ * Migración: añade el campo comunidad_id a la tabla de anuncios si no existe
+ *
+ * @return void
+ */
+function flavor_marketplace_migrar_comunidad_id() {
+    global $wpdb;
+    $tabla = $wpdb->prefix . 'flavor_marketplace_anuncios';
+
+    // Verificar si la columna ya existe
+    $columna_existe = $wpdb->get_results(
+        $wpdb->prepare(
+            "SHOW COLUMNS FROM {$tabla} LIKE %s",
+            'comunidad_id'
+        )
+    );
+
+    if (empty($columna_existe)) {
+        $wpdb->query("ALTER TABLE {$tabla} ADD COLUMN comunidad_id bigint(20) unsigned DEFAULT NULL AFTER metadata");
+        $wpdb->query("ALTER TABLE {$tabla} ADD INDEX idx_comunidad_id (comunidad_id)");
+    }
 }
 
 /**

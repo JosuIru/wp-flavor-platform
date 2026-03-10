@@ -11,7 +11,7 @@ $usuario_id = get_current_user_id();
 if (!$usuario_id) {
     echo '<div class="flavor-login-required bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">';
     echo '<p class="text-yellow-800">' . esc_html__('Debes iniciar sesión para ver tus anuncios.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="inline-block mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', 'flavor-chat-ia') . '</a>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="inline-block mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }
@@ -29,22 +29,38 @@ $query_args = [
 $query = new WP_Query($query_args);
 $mis_anuncios = [];
 
+// Preparar consulta de comunidades
+global $wpdb;
+$tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+
 if ($query->have_posts()) {
     while ($query->have_posts()) {
         $query->the_post();
         $post_id = get_the_ID();
 
+        // Obtener comunidad asociada si existe
+        $comunidad_id = get_post_meta($post_id, '_marketplace_comunidad_id', true);
+        $comunidad_nombre = null;
+        if ($comunidad_id) {
+            $comunidad_nombre = $wpdb->get_var($wpdb->prepare(
+                "SELECT nombre FROM {$tabla_comunidades} WHERE id = %d",
+                absint($comunidad_id)
+            ));
+        }
+
         $mis_anuncios[] = [
-            'id'          => $post_id,
-            'titulo'      => get_the_title(),
-            'descripcion' => wp_trim_words(get_the_excerpt(), 15),
-            'precio'      => get_post_meta($post_id, '_precio', true) ?: get_post_meta($post_id, 'precio', true) ?: '0',
-            'imagen'      => get_the_post_thumbnail_url($post_id, 'medium') ?: '',
-            'url'         => get_permalink($post_id),
-            'edit_url'    => get_edit_post_link($post_id),
-            'estado'      => get_post_status($post_id),
-            'fecha'       => get_the_date(),
-            'vistas'      => get_post_meta($post_id, '_vistas', true) ?: 0,
+            'id'              => $post_id,
+            'titulo'          => get_the_title(),
+            'descripcion'     => wp_trim_words(get_the_excerpt(), 15),
+            'precio'          => get_post_meta($post_id, '_marketplace_precio', true) ?: get_post_meta($post_id, '_precio', true) ?: '0',
+            'imagen'          => get_the_post_thumbnail_url($post_id, 'medium') ?: '',
+            'url'             => home_url('/mi-portal/marketplace/detalle/?anuncio_id=' . $post_id),
+            'edit_url'        => get_edit_post_link($post_id),
+            'estado'          => get_post_status($post_id),
+            'fecha'           => get_the_date(),
+            'vistas'          => get_post_meta($post_id, '_marketplace_vistas', true) ?: get_post_meta($post_id, '_vistas', true) ?: 0,
+            'comunidad_id'    => $comunidad_id,
+            'comunidad_nombre'=> $comunidad_nombre,
         ];
     }
     wp_reset_postdata();
@@ -131,6 +147,12 @@ $total_anuncios = $query->found_posts;
                             <span class="px-2 py-1 rounded-full <?php echo esc_attr($estado_class); ?>">
                                 <?php echo esc_html($estado_label); ?>
                             </span>
+                            <?php if (!empty($anuncio['comunidad_nombre'])): ?>
+                            <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/' . $anuncio['comunidad_id'] . '/')); ?>"
+                               class="px-2 py-1 rounded-full bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors">
+                                👥 <?php echo esc_html($anuncio['comunidad_nombre']); ?>
+                            </a>
+                            <?php endif; ?>
                             <span>📅 <?php echo esc_html($anuncio['fecha']); ?></span>
                             <span>👁 <?php echo esc_html($anuncio['vistas']); ?> <?php echo esc_html__('vistas', 'flavor-chat-ia'); ?></span>
                         </div>

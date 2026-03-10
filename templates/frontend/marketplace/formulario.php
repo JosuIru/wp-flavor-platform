@@ -9,9 +9,11 @@ if (!defined('ABSPATH')) exit;
 $usuario_id = get_current_user_id();
 
 if (!$usuario_id) {
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/mi-portal/marketplace/publicar/';
+    $request_url = home_url('/' . ltrim($request_uri, '/'));
     echo '<div class="flavor-login-required bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">';
     echo '<p class="text-yellow-800">' . esc_html__('Debes iniciar sesión para publicar un anuncio.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="inline-block mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', 'flavor-chat-ia') . '</a>';
+    echo '<a href="' . esc_url(wp_login_url($request_url)) . '" class="inline-block mt-4 bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600">' . esc_html__('Iniciar Sesión', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }
@@ -54,6 +56,35 @@ $tipos = [
     <!-- Formulario -->
     <form id="marketplace-publicar-form" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" enctype="multipart/form-data">
         <?php wp_nonce_field('marketplace_publicar', 'marketplace_nonce'); ?>
+        <?php
+        // Campo oculto para comunidad_id (si se publica desde una comunidad)
+        // Primero intenta desde el shortcode, luego desde GET
+        $comunidad_id = isset($marketplace_comunidad_id) && $marketplace_comunidad_id > 0
+            ? absint($marketplace_comunidad_id)
+            : (isset($_GET['comunidad_id']) ? absint($_GET['comunidad_id']) : 0);
+
+        if ($comunidad_id > 0):
+            // Obtener nombre de la comunidad para mostrar al usuario
+            global $wpdb;
+            $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+            $comunidad_nombre = $wpdb->get_var($wpdb->prepare(
+                "SELECT nombre FROM {$tabla_comunidades} WHERE id = %d AND estado = 'activa'",
+                $comunidad_id
+            ));
+        ?>
+        <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($comunidad_id); ?>">
+        <?php if ($comunidad_nombre): ?>
+        <div class="mb-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <p class="text-blue-800 flex items-center gap-2">
+                <span class="dashicons dashicons-groups"></span>
+                <?php printf(
+                    esc_html__('Este anuncio se publicará en la comunidad: %s', 'flavor-chat-ia'),
+                    '<strong>' . esc_html($comunidad_nombre) . '</strong>'
+                ); ?>
+            </p>
+        </div>
+        <?php endif; ?>
+        <?php endif; ?>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Columna izquierda -->

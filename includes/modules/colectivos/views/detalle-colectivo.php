@@ -61,7 +61,7 @@ $es_gestor = in_array($rol_usuario, ['presidente', 'secretario', 'tesorero'], tr
 
             <div class="flavor-col-acciones">
                 <?php if (!$identificador_usuario): ?>
-                    <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-col-btn flavor-col-btn-primary">
+                    <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-col-btn flavor-col-btn-primary">
                         <?php esc_html_e('Inicia sesión para unirte', 'flavor-chat-ia'); ?>
                     </a>
                 <?php elseif ($es_miembro): ?>

@@ -55,14 +55,24 @@ function vbpInspector() {
         },
 
         /**
-         * Obtener elemento seleccionado
+         * Obtener elemento seleccionado con estilos completos
          */
         get selectedElement() {
             var store = Alpine.store('vbp');
             if (store.selection.elementIds.length === 1) {
-                return store.getElement(store.selection.elementIds[0]);
+                var element = store.getElementDeep(store.selection.elementIds[0]);
+                // Usar el método del store para asegurar estilos completos
+                return store.ensureStylesComplete(element);
             }
             return null;
+        },
+
+        /**
+         * Verificar si el elemento tiene estilos completos
+         */
+        hasCompleteStyles() {
+            var el = this.selectedElement;
+            return el && el.styles && el.styles.spacing && el.styles.spacing.margin && el.styles.colors;
         },
 
         /**
@@ -136,6 +146,21 @@ function vbpInspector() {
          */
         hasVariants: function() {
             return this.getVariants().length > 0;
+        },
+
+        /**
+         * Verificar si el tipo de elemento es un bloque de sección
+         * @param {string} type - Tipo de elemento
+         * @returns {boolean}
+         */
+        isSectionBlock: function(type) {
+            var tiposSecciones = [
+                'features', 'testimonials', 'pricing', 'cta', 'faq',
+                'contact', 'team', 'gallery', 'stats', 'blog',
+                'video-section', 'countdown', 'newsletter', 'logo-grid',
+                'accordion', 'tabs'
+            ];
+            return tiposSecciones.indexOf(type) !== -1;
         },
 
         /**

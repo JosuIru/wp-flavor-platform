@@ -605,7 +605,15 @@ class Flavor_Setup_Wizard {
                         $datos_perfil = $perfiles->obtener_perfil($datos['perfil']);
 
                         if ($datos_perfil && isset($datos_perfil['modulos_requeridos'])) {
-                            update_option('flavor_active_modules', $datos_perfil['modulos_requeridos']);
+                            $modulos_perfil = $datos_perfil['modulos_requeridos'];
+
+                            // Guardar en flavor_chat_ia_settings['active_modules']
+                            $settings = get_option('flavor_chat_ia_settings', []);
+                            $settings['active_modules'] = $modulos_perfil;
+                            update_option('flavor_chat_ia_settings', $settings);
+
+                            // También guardar en flavor_active_modules (compatibilidad)
+                            update_option('flavor_active_modules', $modulos_perfil);
                         }
                     }
                 }
@@ -618,20 +626,39 @@ class Flavor_Setup_Wizard {
                 if (!empty($datos['logo_url'])) {
                     update_option('flavor_logo_url', $datos['logo_url']);
                 }
+
+                // Sincronizar colores con flavor_design_settings
+                $design_settings = get_option('flavor_design_settings', []);
+                $actualizar_design_settings = false;
+
                 if (!empty($datos['color_primario'])) {
                     update_option('flavor_primary_color', $datos['color_primario']);
+                    $design_settings['primary_color'] = $datos['color_primario'];
+                    $actualizar_design_settings = true;
                 }
                 if (!empty($datos['color_secundario'])) {
                     update_option('flavor_secondary_color', $datos['color_secundario']);
+                    $design_settings['secondary_color'] = $datos['color_secundario'];
+                    $actualizar_design_settings = true;
+                }
+
+                // Guardar design_settings si se actualizaron colores
+                if ($actualizar_design_settings) {
+                    update_option('flavor_design_settings', $design_settings);
                 }
                 break;
 
             case 'modulos':
                 if (!empty($datos['modulos_activos'])) {
-                    // Merge con los módulos requeridos del perfil
-                    $modulos_actuales = get_option('flavor_active_modules', []);
+                    // Guardar en flavor_chat_ia_settings['active_modules']
+                    $settings = get_option('flavor_chat_ia_settings', []);
+                    $modulos_actuales = $settings['active_modules'] ?? [];
                     $modulos_finales = array_unique(array_merge($modulos_actuales, $datos['modulos_activos']));
-                    update_option('flavor_active_modules', $modulos_finales);
+                    $settings['active_modules'] = array_values($modulos_finales);
+                    update_option('flavor_chat_ia_settings', $settings);
+
+                    // También guardar en flavor_active_modules (compatibilidad)
+                    update_option('flavor_active_modules', array_values($modulos_finales));
                 }
                 break;
 

@@ -52,6 +52,12 @@
 
             // Like en actividad
             $(document).on('click', '.flavor-com-btn-like', this.handleLike.bind(this));
+            $(document).on('click', '.btn-like', this.handleLegacyLike.bind(this));
+
+            // Comentarios en publicaciones legacy
+            $(document).on('click', '.btn-comentar', this.handleCommentToggle.bind(this));
+            $(document).on('click', '.com-comentario-cancelar', this.handleCommentCancel.bind(this));
+            $(document).on('submit', '.com-form-comentario', this.handleCommentSubmit.bind(this));
         },
 
         handleUnirse: function(e) {
@@ -220,6 +226,131 @@
                         $btn.attr('data-liked', response.data.liked ? '1' : '0');
                         $count.text(response.data.likes ?? 0);
                     }
+                }
+            });
+        },
+
+        handleLegacyLike: function(e) {
+            e.preventDefault();
+            var $btn = $(e.currentTarget);
+            var actividadId = $btn.data('actividad-id') || $btn.data('publicacion');
+
+            if (!actividadId) {
+                COM.showMessage('error', COM.config.strings.error);
+                return;
+            }
+
+            $.ajax({
+                url: this.config.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'comunidades_like',
+                    nonce: this.config.nonce,
+                    actividad_id: actividadId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var $count = $btn.find('.count');
+                        $btn.toggleClass('liked', !!response.data.liked);
+                        $count.text(response.data.likes ?? 0);
+                    } else {
+                        COM.showMessage('error', response.data && (response.data.message || response.data.mensaje) || COM.config.strings.error);
+                    }
+                },
+                error: function() {
+                    COM.showMessage('error', COM.config.strings.error);
+                }
+            });
+        },
+
+        handleCommentToggle: function(e) {
+            e.preventDefault();
+            var $btn = $(e.currentTarget);
+            var publicacionId = $btn.data('publicacion');
+            var $card = $btn.closest('.publicacion-card');
+            var $existing = $card.find('.com-comentario-box');
+
+            if (!publicacionId || !$card.length) {
+                COM.showMessage('error', COM.config.strings.error);
+                return;
+            }
+
+            if ($existing.length) {
+                $existing.toggle();
+                if ($existing.is(':visible')) {
+                    $existing.find('textarea').trigger('focus');
+                }
+                return;
+            }
+
+            var formHtml = [
+                '<div class="com-comentario-box" style="margin-top:12px;padding-top:12px;border-top:1px solid #e5e7eb;">',
+                    '<form class="com-form-comentario" data-publicacion-id="', publicacionId, '">',
+                        '<textarea name="contenido" rows="3" placeholder="Escribe tu comentario..." ',
+                            'style="width:100%;min-height:84px;padding:10px;border:1px solid #d1d5db;border-radius:8px;resize:vertical;"></textarea>',
+                        '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">',
+                            '<button type="button" class="com-comentario-cancelar" ',
+                                'style="padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;background:#fff;color:#374151;cursor:pointer;">Cancelar</button>',
+                            '<button type="submit" class="com-comentario-enviar" ',
+                                'style="padding:8px 12px;border:0;border-radius:8px;background:#0f766e;color:#fff;cursor:pointer;">Publicar comentario</button>',
+                        '</div>',
+                    '</form>',
+                '</div>'
+            ].join('');
+
+            $card.append(formHtml);
+            $card.find('.com-form-comentario textarea').trigger('focus');
+        },
+
+        handleCommentCancel: function(e) {
+            e.preventDefault();
+            $(e.currentTarget).closest('.com-comentario-box').hide();
+        },
+
+        handleCommentSubmit: function(e) {
+            e.preventDefault();
+
+            var $form = $(e.currentTarget);
+            var $btn = $form.find('.com-comentario-enviar');
+            var $textarea = $form.find('textarea[name="contenido"]');
+            var contenido = ($textarea.val() || '').trim();
+            var publicacionId = $form.data('publicacion-id');
+            var $card = $form.closest('.publicacion-card');
+            var $commentBtn = $card.find('.btn-comentar');
+
+            if (!publicacionId || !contenido) {
+                COM.showMessage('error', 'Escribe un comentario antes de publicarlo.');
+                return;
+            }
+
+            COM.setLoading($btn, true);
+
+            $.ajax({
+                url: this.config.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'comunidades_comentar',
+                    nonce: this.config.nonce,
+                    publicacion_id: publicacionId,
+                    contenido: contenido
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var $count = $commentBtn.find('.count');
+                        var currentCount = parseInt($count.text(), 10) || 0;
+                        $count.text(currentCount + 1);
+                        $textarea.val('');
+                        $form.closest('.com-comentario-box').hide();
+                        COM.showMessage('info', response.data && (response.data.message || response.data.mensaje) || 'Comentario publicado');
+                    } else {
+                        COM.showMessage('error', response.data && (response.data.message || response.data.mensaje) || COM.config.strings.error);
+                    }
+                },
+                error: function() {
+                    COM.showMessage('error', COM.config.strings.error);
+                },
+                complete: function() {
+                    COM.setLoading($btn, false);
                 }
             });
         },

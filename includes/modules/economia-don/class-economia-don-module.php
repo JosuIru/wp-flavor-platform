@@ -86,6 +86,10 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         $this->icon = 'dashicons-heart';
         $this->color = '#e74c3c';
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['economia_local', 'cuidados'];
+        $this->gailu_contribuye_a = ['cohesion', 'resiliencia'];
+
         parent::__construct();
     }
 
@@ -575,19 +579,25 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
      * Renderiza dashboard admin
      */
     public function render_admin_dashboard() {
-        echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Economía del Don', 'flavor-chat-ia'));
+        $rutaVista = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($rutaVista)) {
+            include $rutaVista;
+        } else {
+            // Fallback inline si no existe la vista
+            echo '<div class="wrap flavor-modulo-page">';
+            $this->render_page_header(__('Economía del Don', 'flavor-chat-ia'));
 
-        global $wpdb;
-        $disponibles = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id WHERE p.post_type = 'ed_don' AND p.post_status = 'publish' AND pm.meta_key = '_ed_estado' AND pm.meta_value = 'disponible'");
-        $entregados = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id WHERE p.post_type = 'ed_don' AND pm.meta_key = '_ed_estado' AND pm.meta_value IN ('entregado', 'recibido')");
-        $gratitudes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'ed_gratitud' AND post_status = 'publish'");
+            global $wpdb;
+            $disponibles = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id WHERE p.post_type = 'ed_don' AND p.post_status = 'publish' AND pm.meta_key = '_ed_estado' AND pm.meta_value = 'disponible'");
+            $entregados = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id WHERE p.post_type = 'ed_don' AND pm.meta_key = '_ed_estado' AND pm.meta_value IN ('entregado', 'recibido')");
+            $gratitudes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'ed_gratitud' AND post_status = 'publish'");
 
-        echo '<div class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-heart"></span><div class="stat-content"><span class="stat-number">' . esc_html($disponibles) . '</span><span class="stat-label">' . esc_html__('Disponibles', 'flavor-chat-ia') . '</span></div></div>';
-        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-yes"></span><div class="stat-content"><span class="stat-number">' . esc_html($entregados) . '</span><span class="stat-label">' . esc_html__('Entregados', 'flavor-chat-ia') . '</span></div></div>';
-        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-smiley"></span><div class="stat-content"><span class="stat-number">' . esc_html($gratitudes) . '</span><span class="stat-label">' . esc_html__('Gratitudes', 'flavor-chat-ia') . '</span></div></div>';
-        echo '</div></div>';
+            echo '<div class="flavor-stats-grid">';
+            echo '<div class="flavor-stat-card"><span class="dashicons dashicons-heart"></span><div class="stat-content"><span class="stat-number">' . esc_html($disponibles) . '</span><span class="stat-label">' . esc_html__('Disponibles', 'flavor-chat-ia') . '</span></div></div>';
+            echo '<div class="flavor-stat-card"><span class="dashicons dashicons-yes"></span><div class="stat-content"><span class="stat-number">' . esc_html($entregados) . '</span><span class="stat-label">' . esc_html__('Entregados', 'flavor-chat-ia') . '</span></div></div>';
+            echo '<div class="flavor-stat-card"><span class="dashicons dashicons-smiley"></span><div class="stat-content"><span class="stat-number">' . esc_html($gratitudes) . '</span><span class="stat-label">' . esc_html__('Gratitudes', 'flavor-chat-ia') . '</span></div></div>';
+            echo '</div></div>';
+        }
     }
 
     /**

@@ -44,8 +44,13 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         // Registrar assets
         add_action('wp_enqueue_scripts', [$this, 'registrar_assets']);
 
-        // Registrar shortcodes
-        add_action('init', [$this, 'registrar_shortcodes']);
+        // Registrar shortcodes. Si el controlador se instancia despues de `init`,
+        // registrarlos inmediatamente para no caer al fallback generico del portal.
+        if (did_action('init')) {
+            $this->registrar_shortcodes();
+        } else {
+            add_action('init', [$this, 'registrar_shortcodes']);
+        }
 
         // AJAX handlers
         add_action('wp_ajax_banco_tiempo_solicitar', [$this, 'ajax_solicitar_servicio']);
@@ -187,6 +192,43 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         add_shortcode('banco_tiempo_detalle', [$this, 'shortcode_detalle']);
         add_shortcode('banco_tiempo_ranking', [$this, 'shortcode_ranking']);
         add_shortcode('banco_tiempo_ultimos_intercambios', [$this, 'shortcode_ultimos_intercambios']);
+    }
+
+    /**
+     * Normaliza una categoría de servicio legacy a su clave canónica.
+     */
+    private function normalize_service_category($categoria) {
+        $categoria = sanitize_key(remove_accents((string) $categoria));
+        $map = [
+            'cuidados' => 'cuidados',
+            'educacion' => 'educacion',
+            'bricolaje' => 'bricolaje',
+            'tecnologia' => 'tecnologia',
+            'transporte' => 'transporte',
+            'otros' => 'otros',
+        ];
+
+        return $map[$categoria] ?? 'otros';
+    }
+
+    /**
+     * Normaliza un estado legacy del servicio.
+     */
+    private function normalize_service_status($estado) {
+        $estado = sanitize_key(remove_accents((string) $estado));
+        $map = [
+            'activo' => 'activo',
+            'active' => 'activo',
+            'pausado' => 'pausado',
+            'paused' => 'pausado',
+            'inactivo' => 'pausado',
+            'completado' => 'completado',
+            'completed' => 'completado',
+            'cancelado' => 'cancelado',
+            'cancelled' => 'cancelado',
+        ];
+
+        return $map[$estado] ?? 'activo';
     }
 
     /**
@@ -375,7 +417,10 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             'columnas' => 3,
             'mostrar_filtros' => 'true',
             'mostrar_propios' => 'false',
+            'comunidad_id' => 0,
         ], $atts);
+
+        $atts['modo'] = 'catalogo';
 
         ob_start();
         $this->render_servicios($atts);
@@ -410,10 +455,14 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $atts = shortcode_atts([
             'estado' => '',
             'limite' => 20,
+            'comunidad_id' => 0,
         ], $atts);
 
+        $atts['mostrar_propios'] = 'true';
+        $atts['modo'] = 'mis-servicios';
+
         ob_start();
-        $this->render_mis_servicios($atts);
+        $this->render_servicios($atts);
         return ob_get_clean();
     }
 
@@ -447,8 +496,12 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
 
         $this->encolar_assets();
 
+        $atts = shortcode_atts([
+            'comunidad_id' => 0,
+        ], $atts);
+
         ob_start();
-        $this->render_formulario_ofrecer();
+        $this->render_formulario_ofrecer($atts);
         return ob_get_clean();
     }
 
@@ -500,6 +553,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             return;
         }
 
+        $modo = sanitize_key($atts['modo'] ?? 'catalogo');
         $where = ["estado = 'activo'"];
         $params = [];
 
@@ -508,7 +562,18 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             $params[] = $atts['categoria'];
         }
 
+        $comunidad_id = absint($atts['comunidad_id'] ?? ($_GET['comunidad_id'] ?? 0));
+        if ($comunidad_id > 0) {
+            $where[] = "comunidad_id = %d";
+            $params[] = $comunidad_id;
+        }
+
         $atts['mostrar_propios'] = filter_var($atts['mostrar_propios'], FILTER_VALIDATE_BOOLEAN);
+
+        if ($modo === 'mis-servicios') {
+            $this->render_mis_servicios($atts);
+            return;
+        }
 
         $sql = "SELECT * FROM $tabla_servicios WHERE " . implode(' AND ', $where) . " ORDER BY fecha_publicacion DESC LIMIT %d";
         $params[] = intval($atts['limite']);
@@ -614,14 +679,16 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
 
         echo '<div class="fl-services-grid fl-services-mine">';
         foreach ($servicios as $servicio) {
-            $estado = $servicio->estado === 'activo'
+            $categoria = $this->normalize_service_category($servicio->categoria ?? '');
+            $estado_key = $this->normalize_service_status($servicio->estado ?? '');
+            $estado = $estado_key === 'activo'
                 ? __('Activo', 'flavor-chat-ia')
                 : __('Pausado', 'flavor-chat-ia');
 
-            echo '<div class="fl-service-card fl-service-mine ' . ($servicio->estado === 'pausado' ? 'fl-service-paused' : '') . '">';
+            echo '<div class="fl-service-card fl-service-mine ' . ($estado_key === 'pausado' ? 'fl-service-paused' : '') . '">';
             echo '<div class="fl-service-header">';
-            echo '<span class="fl-service-category">' . esc_html($categorias[$servicio->categoria] ?? __('Otros', 'flavor-chat-ia')) . '</span>';
-            echo '<span class="fl-service-status fl-status-' . esc_attr($servicio->estado) . '">' . esc_html($estado) . '</span>';
+            echo '<span class="fl-service-category">' . esc_html($categorias[$categoria] ?? __('Otros', 'flavor-chat-ia')) . '</span>';
+            echo '<span class="fl-service-status fl-status-' . esc_attr($estado_key) . '">' . esc_html($estado) . '</span>';
             echo '</div>';
             echo '<h4 class="fl-service-title">' . esc_html($servicio->titulo) . '</h4>';
             echo '<p class="fl-service-desc">' . esc_html(wp_trim_words($servicio->descripcion, 18)) . '</p>';
@@ -663,7 +730,8 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
     /**
      * Renderizar formulario para ofrecer servicio
      */
-    private function render_formulario_ofrecer() {
+    private function render_formulario_ofrecer($atts = []) {
+        $comunidad_id = absint($atts['comunidad_id'] ?? ($_GET['comunidad_id'] ?? 0));
         $template = dirname(__FILE__) . '/../templates/ofrecer-servicio.php';
         if (file_exists($template)) {
             include $template;
@@ -673,6 +741,9 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
                 <h3><?php _e('Ofrecer un Servicio', 'flavor-chat-ia'); ?></h3>
                 <form id="form-ofrecer-servicio" class="flavor-form">
                     <?php wp_nonce_field('banco_tiempo_nonce', 'bt_nonce_field'); ?>
+                    <?php if ($comunidad_id > 0): ?>
+                        <input type="hidden" name="comunidad_id" value="<?php echo esc_attr($comunidad_id); ?>">
+                    <?php endif; ?>
                     <p>
                         <label><?php _e('Título del servicio', 'flavor-chat-ia'); ?></label>
                         <input type="text" name="titulo" required>
@@ -733,6 +804,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             'transporte' => __('Transporte', 'flavor-chat-ia'),
             'otros' => __('Otros', 'flavor-chat-ia'),
         ];
+        $categoria = $this->normalize_service_category($servicio->categoria ?? '');
 
         $template = dirname(__FILE__) . '/single.php';
         if (file_exists($template)) {
@@ -744,7 +816,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         echo '<h3>' . esc_html($servicio->titulo) . '</h3>';
         echo '<p>' . esc_html($servicio->descripcion) . '</p>';
         echo '<div class="flavor-bt-detalle__meta">';
-        echo '<span><strong>' . esc_html__('Categoría:', 'flavor-chat-ia') . '</strong> ' . esc_html($categorias[$servicio->categoria] ?? __('Otros', 'flavor-chat-ia')) . '</span>';
+        echo '<span><strong>' . esc_html__('Categoría:', 'flavor-chat-ia') . '</strong> ' . esc_html($categorias[$categoria] ?? __('Otros', 'flavor-chat-ia')) . '</span>';
         echo '<span><strong>' . esc_html__('Horas estimadas:', 'flavor-chat-ia') . '</strong> ' . esc_html(number_format((float) $servicio->horas_estimadas, 1)) . 'h</span>';
         if ($usuario) {
             echo '<span><strong>' . esc_html__('Ofrecido por:', 'flavor-chat-ia') . '</strong> ' . esc_html($usuario->display_name) . '</span>';
@@ -910,6 +982,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
         $descripcion = isset($_POST['descripcion']) ? sanitize_textarea_field($_POST['descripcion']) : '';
         $categoria = isset($_POST['categoria']) ? sanitize_text_field($_POST['categoria']) : 'otros';
         $horas_estimadas = isset($_POST['horas_estimadas']) ? floatval($_POST['horas_estimadas']) : 1;
+        $comunidad_id = isset($_POST['comunidad_id']) ? absint($_POST['comunidad_id']) : 0;
         $usuario_id = get_current_user_id();
 
         if (empty($titulo) || empty($descripcion)) {
@@ -921,12 +994,15 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
 
         $resultado = $wpdb->insert($tabla_servicios, [
             'usuario_id' => $usuario_id,
+            'comunidad_id' => $comunidad_id ?: null,
             'titulo' => $titulo,
             'descripcion' => $descripcion,
             'categoria' => $categoria,
             'horas_estimadas' => $horas_estimadas,
             'estado' => 'activo',
             'fecha_publicacion' => current_time('mysql'),
+        ], [
+            '%d', '%d', '%s', '%s', '%s', '%f', '%s', '%s'
         ]);
 
         if ($resultado) {
@@ -1513,6 +1589,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      */
     private function render_servicio_card($servicio) {
         $usuario = get_userdata($servicio->usuario_id);
+        $categoria = $this->normalize_service_category($servicio->categoria ?? '');
         ?>
         <div class="flavor-bt-servicio-card" data-id="<?php echo esc_attr($servicio->id); ?>">
             <div class="servicio-header">
@@ -1523,7 +1600,7 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
                     'tecnologia' => __('Tecnología', 'flavor-chat-ia'),
                     'transporte' => __('Transporte', 'flavor-chat-ia'),
                     'otros' => __('Otros', 'flavor-chat-ia'),
-                ][$servicio->categoria] ?? __('Otros', 'flavor-chat-ia')); ?></span>
+                ][$categoria] ?? __('Otros', 'flavor-chat-ia')); ?></span>
                 <span class="horas"><?php echo esc_html(number_format($servicio->horas_estimadas, 1)); ?>h</span>
             </div>
             <h3><?php echo esc_html($servicio->titulo); ?></h3>

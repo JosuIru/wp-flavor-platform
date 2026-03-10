@@ -178,7 +178,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_comunidades,
                 'label' => __('Mis comunidades', 'flavor-chat-ia'),
                 'color' => $mis_comunidades > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=comunidades') : home_url('/mi-portal/comunidades/mis-comunidades/'),
+                'url' => $es_admin ? admin_url('admin.php?page=comunidades-dashboard') : home_url('/mi-portal/comunidades/mis-comunidades/'),
             ];
         }
 
@@ -189,7 +189,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $publicaciones_nuevas,
                 'label' => __('Nuevas publicaciones', 'flavor-chat-ia'),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=comunidades') : home_url('/mi-portal/comunidades/actividad/'),
+                'url' => $es_admin ? admin_url('admin.php?page=comunidades-miembros&estado=pendiente') : home_url('/mi-portal/comunidades/actividad/'),
             ];
         }
 
@@ -200,7 +200,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $soy_admin,
                 'label' => __('Administro', 'flavor-chat-ia'),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=comunidades&rol=admin') : home_url('/mi-portal/comunidades/mis-comunidades/'),
+                'url' => $es_admin ? admin_url('admin.php?page=comunidades-miembros') : home_url('/mi-portal/comunidades/mis-comunidades/'),
             ];
         }
 
@@ -210,7 +210,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_comunidades,
             'label' => __('Comunidades', 'flavor-chat-ia'),
             'color' => 'info',
-            'url' => $es_admin ? admin_url('admin.php?page=comunidades') : home_url('/mi-portal/comunidades/explorar/'),
+            'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado') : home_url('/mi-portal/comunidades/explorar/'),
         ];
 
         // Items: mis comunidades recientes
@@ -223,7 +223,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => $user_id ? __('Explorar comunidades', 'flavor-chat-ia') : __('Ver comunidades', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=comunidades') : home_url('/mi-portal/comunidades/explorar/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado') : home_url('/mi-portal/comunidades/explorar/'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -277,7 +277,7 @@ class Flavor_Comunidades_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $comunidad->icono ?: 'dashicons-groups',
                 'title' => $comunidad->nombre,
                 'meta' => $rol_texto ?: __('Miembro', 'flavor-chat-ia'),
-                'url' => $es_admin ? admin_url('admin.php?page=comunidades&id=' . $comunidad->id) : home_url('/mi-portal/comunidades/' . $comunidad->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=comunidades-listado&accion=ver&id=' . $comunidad->id) : home_url('/mi-portal/comunidades/' . $comunidad->id . '/'),
                 'badge' => $rol_texto,
             ];
         }

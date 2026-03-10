@@ -150,8 +150,10 @@ class Flavor_Theme_Customizer {
      */
     private function get_dark_mode_css() {
         return "
-        /* Dark Mode Auto Apply */
-        body {
+        /* Dark Mode Auto Apply - Mayor especificidad para sobrescribir temas de WordPress */
+        html body,
+        body.flavor-app-page,
+        body.flavor-portal-page {
             background-color: var(--flavor-bg);
             color: var(--flavor-text);
             transition: background-color 0.3s, color 0.3s;

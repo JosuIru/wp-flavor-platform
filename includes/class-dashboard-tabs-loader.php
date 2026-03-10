@@ -54,9 +54,18 @@ class Flavor_Dashboard_Tabs_Loader {
      * Carga los dashboard tabs de los módulos activos
      */
     public function cargar_dashboard_tabs() {
-        // Obtener configuración de módulos activos
-        $configuracion = get_option('flavor_chat_ia_settings', []);
-        $modulos_activos = $configuracion['active_modules'] ?? [];
+        // Usar caché centralizada para evitar múltiples get_option
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $modulos_activos = Flavor_Chat_Module_Loader::get_active_modules_cached();
+        } else {
+            // Fallback si el loader no está disponible
+            $configuracion = get_option('flavor_chat_ia_settings', []);
+            $modulos_activos = $configuracion['active_modules'] ?? [];
+            $modulos_activos_legacy = get_option('flavor_active_modules', []);
+            if (!empty($modulos_activos_legacy)) {
+                $modulos_activos = array_unique(array_merge($modulos_activos, $modulos_activos_legacy));
+            }
+        }
 
         if (empty($modulos_activos)) {
             return;

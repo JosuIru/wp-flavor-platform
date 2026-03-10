@@ -560,7 +560,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                                 <?php _e('Reservar', 'flavor-chat-ia'); ?>
                             </button>
                             <?php else: ?>
-                            <a href="<?php echo wp_login_url(get_permalink()); ?>" class="flavor-btn flavor-btn-outline">
+                            <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="flavor-btn flavor-btn-outline">
                                 <?php _e('Inicia sesión para reservar', 'flavor-chat-ia'); ?>
                             </a>
                             <?php endif; ?>
@@ -668,7 +668,7 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
                         <?php _e('Reservar esta bicicleta', 'flavor-chat-ia'); ?>
                     </button>
                     <?php elseif (!is_user_logged_in()): ?>
-                    <a href="<?php echo wp_login_url(get_permalink()); ?>" class="flavor-btn flavor-btn-lg flavor-btn-primary">
+                    <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="flavor-btn flavor-btn-lg flavor-btn-primary">
                         <?php _e('Inicia sesión para reservar', 'flavor-chat-ia'); ?>
                     </a>
                     <?php endif; ?>

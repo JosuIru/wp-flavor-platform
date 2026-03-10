@@ -291,6 +291,50 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
             'side',
             'default'
         );
+
+        // Meta box de Grupos de Consumo - siempre registrar, verificar disponibilidad en render
+        add_meta_box(
+            'flavor_receta_gc_productos',
+            __('Productos del Grupo de Consumo', 'flavor-chat-ia'),
+            [$this, 'render_meta_box_gc_productos'],
+            'flavor_receta',
+            'normal',
+            'default'
+        );
+
+        // Meta box de Videos - siempre registrar, verificar disponibilidad en render
+        add_meta_box(
+            'flavor_receta_videos',
+            __('Videos de la Receta', 'flavor-chat-ia'),
+            [$this, 'render_meta_box_videos'],
+            'flavor_receta',
+            'normal',
+            'default'
+        );
+    }
+
+    /**
+     * Verifica si un módulo está activo
+     */
+    private function is_module_active($module_id) {
+        // Para grupos_consumo, verificar si el CPT existe
+        if ($module_id === 'grupos_consumo') {
+            return post_type_exists('gc_producto');
+        }
+
+        // Para multimedia/videos, verificar si la tabla existe
+        if ($module_id === 'multimedia' || $module_id === 'videos') {
+            global $wpdb;
+            return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_multimedia');
+        }
+
+        // Fallback al Module Loader
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            return false;
+        }
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $active_modules = $loader->get_loaded_modules();
+        return isset($active_modules[$module_id]);
     }
 
     /**
@@ -619,6 +663,274 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Render meta box de productos de Grupos de Consumo
+     */
+    public function render_meta_box_gc_productos($post) {
+        $productos_gc_ids = get_post_meta($post->ID, '_receta_gc_productos', true);
+        if (!is_array($productos_gc_ids)) {
+            $productos_gc_ids = [];
+        }
+
+        // Obtener productos disponibles
+        $productos_gc = get_posts([
+            'post_type' => 'gc_producto',
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+            'orderby' => 'title',
+            'order' => 'ASC',
+        ]);
+
+        // Si no hay productos GC y el CPT no existe, mostrar mensaje
+        if (empty($productos_gc) && !post_type_exists('gc_producto')) {
+            echo '<div class="notice notice-info inline" style="margin: 0;"><p>';
+            echo __('El módulo de Grupos de Consumo no está activo o no hay productos disponibles.', 'flavor-chat-ia');
+            echo '</p></div>';
+            return;
+        }
+
+        // Si el CPT existe pero no hay productos
+        if (empty($productos_gc)) {
+            echo '<div class="notice notice-warning inline" style="margin: 0;"><p>';
+            echo __('No hay productos de Grupos de Consumo creados aún.', 'flavor-chat-ia');
+            echo ' <a href="' . admin_url('post-new.php?post_type=gc_producto') . '">' . __('Crear producto', 'flavor-chat-ia') . '</a>';
+            echo '</p></div>';
+            return;
+        }
+        ?>
+        <p class="description"><?php _e('Vincula productos del Grupo de Consumo que se usan en esta receta.', 'flavor-chat-ia'); ?></p>
+
+        <div id="gc-productos-lista" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 4px;">
+            <?php
+            if (!empty($productos_gc_ids)) {
+                foreach ($productos_gc_ids as $producto_id) {
+                    $producto = get_post($producto_id);
+                    if ($producto && $producto->post_type === 'gc_producto') {
+                        $precio = get_post_meta($producto_id, '_gc_precio', true);
+                        $unidad = get_post_meta($producto_id, '_gc_unidad', true);
+                        $productor_id = get_post_meta($producto_id, '_gc_productor_id', true);
+                        $productor_nombre = $productor_id ? get_the_title($productor_id) : '';
+                        ?>
+                        <div class="gc-producto-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; background: #f9f9f9; margin-bottom: 5px; border-radius: 4px;">
+                            <div>
+                                <strong><?php echo esc_html($producto->post_title); ?></strong>
+                                <?php if ($precio): ?>
+                                    <span style="color: #0073aa; margin-left: 10px;"><?php echo esc_html($precio); ?>€/<?php echo esc_html($unidad ?: 'ud'); ?></span>
+                                <?php endif; ?>
+                                <?php if ($productor_nombre): ?>
+                                    <br><small style="color: #666;"><?php echo esc_html($productor_nombre); ?></small>
+                                <?php endif; ?>
+                            </div>
+                            <button type="button" class="button-link desvincular-gc-producto" data-id="<?php echo esc_attr($producto_id); ?>" title="<?php esc_attr_e('Quitar', 'flavor-chat-ia'); ?>">
+                                <span class="dashicons dashicons-no-alt" style="color: #dc3232;"></span>
+                            </button>
+                            <input type="hidden" name="receta_gc_productos[]" value="<?php echo esc_attr($producto_id); ?>" />
+                        </div>
+                        <?php
+                    }
+                }
+            } else {
+                echo '<p class="no-gc-productos" style="color: #666; font-style: italic; margin: 0;">' . __('Sin productos de Grupos de Consumo vinculados', 'flavor-chat-ia') . '</p>';
+            }
+            ?>
+        </div>
+
+        <div style="display: flex; gap: 5px;">
+            <select id="agregar-gc-producto-selector" class="widefat" style="flex: 1;">
+                <option value=""><?php _e('Seleccionar producto del grupo...', 'flavor-chat-ia'); ?></option>
+                <?php
+                // Usar $productos_gc ya obtenido arriba
+                foreach ($productos_gc as $producto) {
+                    if (!in_array($producto->ID, $productos_gc_ids)) {
+                        $precio = get_post_meta($producto->ID, '_gc_precio', true);
+                        $unidad = get_post_meta($producto->ID, '_gc_unidad', true);
+                        $precio_str = $precio ? " ({$precio}€/{$unidad})" : '';
+                        echo '<option value="' . esc_attr($producto->ID) . '">' . esc_html($producto->post_title . $precio_str) . '</option>';
+                    }
+                }
+                ?>
+            </select>
+            <button type="button" class="button" id="agregar-gc-producto-btn">
+                <span class="dashicons dashicons-plus-alt" style="vertical-align: middle;"></span>
+            </button>
+        </div>
+
+        <script>
+        jQuery(document).ready(function($) {
+            $('#agregar-gc-producto-btn').on('click', function() {
+                var $selector = $('#agregar-gc-producto-selector');
+                var productoId = $selector.val();
+                var productoNombre = $selector.find('option:selected').text();
+
+                if (!productoId) return;
+
+                $('.no-gc-productos').remove();
+
+                var html = '<div class="gc-producto-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; background: #f9f9f9; margin-bottom: 5px; border-radius: 4px;">' +
+                    '<div><strong>' + productoNombre + '</strong></div>' +
+                    '<button type="button" class="button-link desvincular-gc-producto" data-id="' + productoId + '">' +
+                    '<span class="dashicons dashicons-no-alt" style="color: #dc3232;"></span>' +
+                    '</button>' +
+                    '<input type="hidden" name="receta_gc_productos[]" value="' + productoId + '" />' +
+                    '</div>';
+
+                $('#gc-productos-lista').append(html);
+                $selector.find('option:selected').remove();
+                $selector.val('');
+            });
+
+            $(document).on('click', '.desvincular-gc-producto', function() {
+                var productoId = $(this).data('id');
+                var productoNombre = $(this).siblings('div').find('strong').text();
+                $(this).closest('.gc-producto-item').remove();
+
+                $('#agregar-gc-producto-selector').append('<option value="' + productoId + '">' + productoNombre + '</option>');
+
+                if ($('#gc-productos-lista .gc-producto-item').length === 0) {
+                    $('#gc-productos-lista').html('<p class="no-gc-productos" style="color: #666; font-style: italic; margin: 0;"><?php echo esc_js(__('Sin productos de Grupos de Consumo vinculados', 'flavor-chat-ia')); ?></p>');
+                }
+            });
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Render meta box de videos del módulo multimedia
+     */
+    public function render_meta_box_videos($post) {
+        global $wpdb;
+
+        $videos_ids = get_post_meta($post->ID, '_receta_videos', true);
+        if (!is_array($videos_ids)) {
+            $videos_ids = [];
+        }
+
+        $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
+
+        // Verificar que la tabla existe
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_multimedia)) {
+            echo '<div class="notice notice-info inline" style="margin: 0;"><p>';
+            echo __('El módulo de Multimedia no está activo.', 'flavor-chat-ia');
+            echo '</p></div>';
+            return;
+        }
+
+        // Obtener videos disponibles
+        $videos_disponibles = $wpdb->get_results(
+            "SELECT id, titulo FROM {$tabla_multimedia}
+             WHERE tipo = 'video' AND estado IN ('publico', 'comunidad')
+             ORDER BY fecha_creacion DESC
+             LIMIT 100"
+        );
+
+        // Si no hay videos
+        if (empty($videos_disponibles) && empty($videos_ids)) {
+            echo '<div class="notice notice-warning inline" style="margin: 0;"><p>';
+            echo __('No hay videos disponibles en el módulo Multimedia.', 'flavor-chat-ia');
+            echo ' <a href="' . admin_url('admin.php?page=multimedia') . '">' . __('Subir videos', 'flavor-chat-ia') . '</a>';
+            echo '</p></div>';
+            return;
+        }
+        ?>
+        <p class="description"><?php _e('Vincula videos del módulo multimedia a esta receta (tutoriales, paso a paso, etc.).', 'flavor-chat-ia'); ?></p>
+
+        <div id="receta-videos-lista" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 4px;">
+            <?php
+            if (!empty($videos_ids)) {
+                foreach ($videos_ids as $video_id) {
+                    $video = $wpdb->get_row($wpdb->prepare(
+                        "SELECT id, titulo, archivo_url, tipo FROM {$tabla_multimedia} WHERE id = %d",
+                        $video_id
+                    ));
+                    if ($video) {
+                        ?>
+                        <div class="video-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; background: #f0f7ff; margin-bottom: 5px; border-radius: 4px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="dashicons dashicons-video-alt3" style="font-size: 24px; color: #0073aa;"></span>
+                                <strong><?php echo esc_html($video->titulo); ?></strong>
+                            </div>
+                            <button type="button" class="button-link desvincular-video" data-id="<?php echo esc_attr($video_id); ?>" title="<?php esc_attr_e('Quitar', 'flavor-chat-ia'); ?>">
+                                <span class="dashicons dashicons-no-alt" style="color: #dc3232;"></span>
+                            </button>
+                            <input type="hidden" name="receta_videos[]" value="<?php echo esc_attr($video_id); ?>" />
+                        </div>
+                        <?php
+                    }
+                }
+            } else {
+                echo '<p class="no-videos" style="color: #666; font-style: italic; margin: 0;">' . __('Sin videos vinculados', 'flavor-chat-ia') . '</p>';
+            }
+            ?>
+        </div>
+
+        <div style="display: flex; gap: 5px;">
+            <select id="agregar-video-selector" class="widefat" style="flex: 1;">
+                <option value=""><?php _e('Seleccionar video...', 'flavor-chat-ia'); ?></option>
+                <?php
+                // Usar $videos_disponibles ya obtenido arriba
+                foreach ($videos_disponibles as $video) {
+                    if (!in_array($video->id, $videos_ids)) {
+                        echo '<option value="' . esc_attr($video->id) . '">🎬 ' . esc_html($video->titulo) . '</option>';
+                    }
+                }
+                ?>
+            </select>
+            <button type="button" class="button" id="agregar-video-btn">
+                <span class="dashicons dashicons-plus-alt" style="vertical-align: middle;"></span>
+            </button>
+        </div>
+
+        <p style="margin-top: 10px;">
+            <a href="<?php echo admin_url('admin.php?page=multimedia'); ?>" class="button button-small" target="_blank">
+                <span class="dashicons dashicons-upload" style="vertical-align: middle;"></span>
+                <?php _e('Subir Video', 'flavor-chat-ia'); ?>
+            </a>
+        </p>
+
+        <script>
+        jQuery(document).ready(function($) {
+            $('#agregar-video-btn').on('click', function() {
+                var $selector = $('#agregar-video-selector');
+                var videoId = $selector.val();
+                var videoNombre = $selector.find('option:selected').text().replace('🎬 ', '');
+
+                if (!videoId) return;
+
+                $('.no-videos').remove();
+
+                var html = '<div class="video-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; background: #f0f7ff; margin-bottom: 5px; border-radius: 4px;">' +
+                    '<div style="display: flex; align-items: center; gap: 10px;">' +
+                    '<span class="dashicons dashicons-video-alt3" style="font-size: 24px; color: #0073aa;"></span>' +
+                    '<strong>' + videoNombre + '</strong>' +
+                    '</div>' +
+                    '<button type="button" class="button-link desvincular-video" data-id="' + videoId + '">' +
+                    '<span class="dashicons dashicons-no-alt" style="color: #dc3232;"></span>' +
+                    '</button>' +
+                    '<input type="hidden" name="receta_videos[]" value="' + videoId + '" />' +
+                    '</div>';
+
+                $('#receta-videos-lista').append(html);
+                $selector.find('option:selected').remove();
+                $selector.val('');
+            });
+
+            $(document).on('click', '.desvincular-video', function() {
+                var videoId = $(this).data('id');
+                var videoNombre = $(this).siblings('div').find('strong').text();
+                $(this).closest('.video-item').remove();
+
+                $('#agregar-video-selector').append('<option value="' + videoId + '">🎬 ' + videoNombre + '</option>');
+
+                if ($('#receta-videos-lista .video-item').length === 0) {
+                    $('#receta-videos-lista').html('<p class="no-videos" style="color: #666; font-style: italic; margin: 0;"><?php echo esc_js(__('Sin videos vinculados', 'flavor-chat-ia')); ?></p>');
+                }
+            });
+        });
+        </script>
+        <?php
+    }
+
+    /**
      * Guardar meta de receta
      */
     public function guardar_meta_receta($post_id) {
@@ -711,6 +1023,40 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
                     update_post_meta($producto_id, '_producto_recetas_vinculadas', $recetas_producto);
                 }
             }
+        }
+
+        // Productos de Grupos de Consumo
+        if ($this->is_module_active('grupos_consumo')) {
+            $gc_productos = [];
+            if (isset($_POST['receta_gc_productos']) && is_array($_POST['receta_gc_productos'])) {
+                $gc_productos = array_map('absint', $_POST['receta_gc_productos']);
+                // Filtrar solo los que realmente son gc_producto
+                $gc_productos = array_filter($gc_productos, function($id) {
+                    $post = get_post($id);
+                    return $post && $post->post_type === 'gc_producto';
+                });
+            }
+            update_post_meta($post_id, '_receta_gc_productos', array_values($gc_productos));
+        }
+
+        // Videos del módulo multimedia
+        if ($this->is_module_active('multimedia') || $this->is_module_active('videos')) {
+            $videos = [];
+            if (isset($_POST['receta_videos']) && is_array($_POST['receta_videos'])) {
+                $videos = array_map('absint', $_POST['receta_videos']);
+                // Verificar que los videos existen en la tabla multimedia
+                global $wpdb;
+                $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
+                if (Flavor_Chat_Helpers::tabla_existe($tabla_multimedia)) {
+                    $videos = array_filter($videos, function($id) use ($wpdb, $tabla_multimedia) {
+                        return (bool) $wpdb->get_var($wpdb->prepare(
+                            "SELECT id FROM {$tabla_multimedia} WHERE id = %d AND tipo = 'video'",
+                            $id
+                        ));
+                    });
+                }
+            }
+            update_post_meta($post_id, '_receta_videos', array_values($videos));
         }
     }
 

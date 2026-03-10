@@ -236,7 +236,10 @@ class Flavor_Foros_Frontend_Controller {
 
             <?php if (empty($foros)): ?>
                 <div class="flavor-alert flavor-alert-info">
-                    <?php _e('No hay foros disponibles.', 'flavor-chat-ia'); ?>
+                    <p><?php _e('No hay foros disponibles.', 'flavor-chat-ia'); ?></p>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/foros/')); ?>" class="flavor-btn flavor-btn-outline">
+                        <?php _e('Recargar listado', 'flavor-chat-ia'); ?>
+                    </a>
                 </div>
             <?php else: ?>
                 <div class="flavor-foros-grid">
@@ -582,7 +585,7 @@ class Flavor_Foros_Frontend_Controller {
                     <div class="flavor-alert flavor-alert-info">
                         <?php printf(
                             __('<a href="%s">Inicia sesión</a> para responder a este tema.', 'flavor-chat-ia'),
-                            wp_login_url(get_permalink())
+                            wp_login_url(flavor_current_request_url())
                         ); ?>
                     </div>
                 <?php endif; ?>
@@ -658,7 +661,7 @@ class Flavor_Foros_Frontend_Controller {
     public function shortcode_nuevo_tema($atts) {
         if (!is_user_logged_in()) {
             return '<div class="flavor-alert flavor-alert-warning">' .
-                   sprintf(__('<a href="%s">Inicia sesión</a> para crear un tema.', 'flavor-chat-ia'), wp_login_url(get_permalink())) .
+                   sprintf(__('<a href="%s">Inicia sesión</a> para crear un tema.', 'flavor-chat-ia'), wp_login_url(flavor_current_request_url())) .
                    '</div>';
         }
 
@@ -928,7 +931,12 @@ class Flavor_Foros_Frontend_Controller {
         <div class="flavor-actividad-reciente">
             <h3><?php _e('Actividad Reciente', 'flavor-chat-ia'); ?></h3>
             <?php if (empty($actividad)): ?>
-                <p class="flavor-no-actividad"><?php _e('No hay actividad reciente.', 'flavor-chat-ia'); ?></p>
+                <div class="flavor-empty-state">
+                    <p class="flavor-no-actividad"><?php _e('No hay actividad reciente.', 'flavor-chat-ia'); ?></p>
+                    <a href="<?php echo esc_url(home_url('/mi-portal/foros/')); ?>" class="flavor-btn flavor-btn-outline">
+                        <?php _e('Ver foros', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
             <?php else: ?>
                 <ul class="flavor-actividad-lista">
                     <?php foreach ($actividad as $item): ?>

@@ -106,7 +106,7 @@ class _TrabajoDignoScreenState extends ConsumerState<TrabajoDignoScreen> {
           children: [
             const Text('Ofertas de empleo', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: _mostrarFiltros,
               icon: const Icon(Icons.filter_list, size: 18),
               label: const Text('Filtrar'),
             ),
@@ -381,9 +381,360 @@ class _TrabajoDignoScreenState extends ConsumerState<TrabajoDignoScreen> {
   }
 
   void _editarPerfil() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Abriendo editor de perfil...')),
+    final nombreController = TextEditingController(text: _miPerfil?['nombre'] ?? '');
+    final profesionController = TextEditingController(text: _miPerfil?['profesion'] ?? '');
+    final telefonoController = TextEditingController(text: _miPerfil?['telefono'] ?? '');
+    final ubicacionController = TextEditingController(text: _miPerfil?['ubicacion'] ?? '');
+    final habilidadesController = TextEditingController(
+      text: (_miPerfil?['habilidades'] as List?)?.join(', ') ?? '',
     );
+    final experienciaController = TextEditingController(text: _miPerfil?['experiencia'] ?? '');
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.85,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.edit),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Editar perfil',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Actualiza tu informacion para mejorar tus oportunidades.',
+                style: TextStyle(color: Colors.grey.shade600),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: nombreController,
+                decoration: const InputDecoration(
+                  labelText: 'Nombre completo',
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: profesionController,
+                decoration: const InputDecoration(
+                  labelText: 'Profesion',
+                  prefixIcon: Icon(Icons.work),
+                  border: OutlineInputBorder(),
+                  hintText: 'Ej: Desarrollador/a, Disenador/a...',
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: telefonoController,
+                decoration: const InputDecoration(
+                  labelText: 'Telefono',
+                  prefixIcon: Icon(Icons.phone),
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: ubicacionController,
+                decoration: const InputDecoration(
+                  labelText: 'Ubicacion',
+                  prefixIcon: Icon(Icons.location_on),
+                  border: OutlineInputBorder(),
+                  hintText: 'Ciudad, Provincia',
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: habilidadesController,
+                decoration: const InputDecoration(
+                  labelText: 'Habilidades',
+                  prefixIcon: Icon(Icons.psychology),
+                  border: OutlineInputBorder(),
+                  hintText: 'Separadas por comas',
+                  helperText: 'Ej: Python, React, Gestion de proyectos',
+                ),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: experienciaController,
+                decoration: const InputDecoration(
+                  labelText: 'Experiencia laboral',
+                  prefixIcon: Icon(Icons.history),
+                  border: OutlineInputBorder(),
+                  hintText: 'Describe tu experiencia brevemente...',
+                ),
+                maxLines: 4,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await _guardarPerfil(
+                      nombre: nombreController.text,
+                      profesion: profesionController.text,
+                      telefono: telefonoController.text,
+                      ubicacion: ubicacionController.text,
+                      habilidades: habilidadesController.text,
+                      experiencia: experienciaController.text,
+                    );
+                  },
+                  icon: const Icon(Icons.save),
+                  label: const Text('Guardar cambios'),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _guardarPerfil({
+    required String nombre,
+    required String profesion,
+    required String telefono,
+    required String ubicacion,
+    required String habilidades,
+    required String experiencia,
+  }) async {
+    final api = ref.read(apiClientProvider);
+
+    try {
+      final habilidadesList = habilidades
+          .split(',')
+          .map((h) => h.trim())
+          .where((h) => h.isNotEmpty)
+          .toList();
+
+      final response = await api.post('/trabajo-digno/perfil', data: {
+        'nombre': nombre,
+        'profesion': profesion,
+        'telefono': telefono,
+        'ubicacion': ubicacion,
+        'habilidades': habilidadesList,
+        'experiencia': experiencia,
+      });
+
+      if (response.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Perfil actualizado correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _loadData();
+        }
+      } else {
+        throw Exception(response.error ?? 'Error al guardar');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  void _mostrarFiltros() {
+    String ubicacionFiltro = '';
+    bool soloTeletrabajo = false;
+    bool soloConciliacion = false;
+    bool soloSalarioJusto = false;
+    String tipoContrato = 'todos';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.filter_list),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Filtrar ofertas',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                initialValue: ubicacionFiltro,
+                decoration: const InputDecoration(
+                  labelText: 'Ubicacion',
+                  prefixIcon: Icon(Icons.location_on),
+                  border: OutlineInputBorder(),
+                  hintText: 'Ej: Madrid, Barcelona...',
+                ),
+                onChanged: (value) => ubicacionFiltro = value,
+              ),
+              const SizedBox(height: 16),
+              const Text('Tipo de contrato', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                value: tipoContrato,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.work),
+                  border: OutlineInputBorder(),
+                ),
+                items: const [
+                  DropdownMenuItem(value: 'todos', child: Text('Todos')),
+                  DropdownMenuItem(value: 'indefinido', child: Text('Indefinido')),
+                  DropdownMenuItem(value: 'temporal', child: Text('Temporal')),
+                  DropdownMenuItem(value: 'practicas', child: Text('Practicas')),
+                  DropdownMenuItem(value: 'autonomo', child: Text('Autonomo')),
+                ],
+                onChanged: (value) {
+                  setModalState(() => tipoContrato = value ?? 'todos');
+                },
+              ),
+              const SizedBox(height: 16),
+              const Text('Caracteristicas', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              CheckboxListTile(
+                value: soloTeletrabajo,
+                onChanged: (value) => setModalState(() => soloTeletrabajo = value ?? false),
+                title: const Text('Teletrabajo'),
+                secondary: const Icon(Icons.home_work, color: Colors.purple),
+                contentPadding: EdgeInsets.zero,
+              ),
+              CheckboxListTile(
+                value: soloConciliacion,
+                onChanged: (value) => setModalState(() => soloConciliacion = value ?? false),
+                title: const Text('Conciliacion'),
+                secondary: const Icon(Icons.family_restroom, color: Colors.teal),
+                contentPadding: EdgeInsets.zero,
+              ),
+              CheckboxListTile(
+                value: soloSalarioJusto,
+                onChanged: (value) => setModalState(() => soloSalarioJusto = value ?? false),
+                title: const Text('Salario justo'),
+                secondary: const Icon(Icons.euro, color: Colors.green),
+                contentPadding: EdgeInsets.zero,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Filtros limpiados')),
+                        );
+                        _loadData();
+                      },
+                      child: const Text('Limpiar'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        await _aplicarFiltros(
+                          ubicacion: ubicacionFiltro,
+                          tipoContrato: tipoContrato,
+                          teletrabajo: soloTeletrabajo,
+                          conciliacion: soloConciliacion,
+                          salarioJusto: soloSalarioJusto,
+                        );
+                      },
+                      icon: const Icon(Icons.check),
+                      label: const Text('Aplicar'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _aplicarFiltros({
+    required String ubicacion,
+    required String tipoContrato,
+    required bool teletrabajo,
+    required bool conciliacion,
+    required bool salarioJusto,
+  }) async {
+    setState(() => _isLoading = true);
+    final api = ref.read(apiClientProvider);
+
+    try {
+      final response = await api.get('/trabajo-digno/ofertas', queryParams: {
+        if (ubicacion.isNotEmpty) 'ubicacion': ubicacion,
+        if (tipoContrato != 'todos') 'tipo_contrato': tipoContrato,
+        if (teletrabajo) 'teletrabajo': '1',
+        if (conciliacion) 'conciliacion': '1',
+        if (salarioJusto) 'salario_justo': '1',
+      });
+
+      if (response.success && response.data != null) {
+        setState(() {
+          _ofertas = (response.data!['ofertas'] as List<dynamic>? ?? [])
+              .whereType<Map<String, dynamic>>()
+              .toList();
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('${_ofertas.length} ofertas encontradas')),
+          );
+        }
+      }
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   void _verDetalle(Map<String, dynamic> oferta) {

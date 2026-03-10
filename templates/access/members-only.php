@@ -96,7 +96,7 @@ $esta_logueado = is_user_logged_in();
 
         <div class="flavor-access-actions">
             <?php if (!$esta_logueado) : ?>
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-btn flavor-btn-secondary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
                     <?php esc_html_e('Ya soy miembro', 'flavor-chat-ia'); ?>
                 </a>

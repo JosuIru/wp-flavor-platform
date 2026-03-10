@@ -22,12 +22,19 @@
 
         // Estado
         conversacionActual: null,
+        otroUsuarioId: null,
         pollingTimer: null,
         typingTimer: null,
         lastMessageId: 0,
         isTyping: false,
         respondiendoA: null,
         pendingScroll: false,
+
+        // E2E
+        e2eEnabled: flavorChatInterno?.e2e_enabled || false,
+        signalProtocol: null,
+        e2eReady: false,
+        e2eInitializing: false,
     };
 
     // Inicializacion
@@ -50,8 +57,281 @@
         this.loadConversaciones();
         this.requestNotificationPermission();
 
+        // Inicializar E2E si está habilitado
+        if (this.e2eEnabled) {
+            this.initE2E();
+        }
+
         // Actualizar estado periodicamente
         setInterval(() => this.actualizarEstado(), 60000);
+    };
+
+    /**
+     * Inicializar cifrado E2E
+     */
+    FlavorChatInterno.initE2E = async function() {
+        if (this.e2eInitializing || this.e2eReady) {
+            return;
+        }
+
+        this.e2eInitializing = true;
+
+        try {
+            // Verificar que FlavorSignalProtocol esté disponible
+            if (typeof FlavorSignalProtocol === 'undefined') {
+                console.warn('FlavorSignalProtocol no disponible');
+                return;
+            }
+
+            this.signalProtocol = new FlavorSignalProtocol({
+                userId: this.userId,
+                apiEndpoint: flavorChatInterno.resturl.replace('chat-interno/', 'e2e/')
+            });
+
+            await this.signalProtocol.initialize();
+            this.e2eReady = true;
+            console.log('E2E inicializado correctamente');
+
+        } catch (error) {
+            if (error.message === 'NECESITA_VINCULACION') {
+                // El usuario tiene claves en otro dispositivo
+                this.mostrarModalVinculacion();
+            } else {
+                console.error('Error inicializando E2E:', error);
+            }
+        } finally {
+            this.e2eInitializing = false;
+        }
+    };
+
+    /**
+     * Mostrar modal de vinculación de dispositivo
+     */
+    FlavorChatInterno.mostrarModalVinculacion = function() {
+        // Crear modal de vinculación
+        const modalHtml = `
+            <div class="ci-modal ci-modal-vinculacion" id="ci-modal-vinculacion">
+                <div class="ci-modal-overlay"></div>
+                <div class="ci-modal-contenido">
+                    <div class="ci-modal-header">
+                        <h3><span class="dashicons dashicons-lock"></span> Configurar cifrado E2E</h3>
+                        <button type="button" class="ci-modal-cerrar">&times;</button>
+                    </div>
+                    <div class="ci-modal-body">
+                        <p class="ci-vinculacion-intro">
+                            Ya tienes claves de cifrado en otro dispositivo. Para usar mensajes cifrados en este navegador, elige una opción:
+                        </p>
+                        <div class="ci-vinculacion-opciones">
+                            <div class="ci-vinculacion-opcion" data-opcion="nuevo">
+                                <span class="dashicons dashicons-plus-alt2"></span>
+                                <div>
+                                    <strong>Crear nuevas claves</strong>
+                                    <p>Empezar desde cero. No podrás descifrar mensajes antiguos.</p>
+                                </div>
+                            </div>
+                            <div class="ci-vinculacion-opcion" data-opcion="recuperar">
+                                <span class="dashicons dashicons-backup"></span>
+                                <div>
+                                    <strong>Restaurar con código</strong>
+                                    <p>Usa tu código de recuperación de 16 dígitos.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ci-vinculacion-form ci-vinculacion-form-recuperar" style="display:none;">
+                            <label>Código de recuperación:</label>
+                            <input type="text" id="ci-codigo-recuperacion" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocomplete="off">
+                            <button type="button" class="ci-btn ci-btn-primary" id="ci-btn-restaurar">Restaurar claves</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Insertar modal
+        $('body').append(modalHtml);
+
+        const self = this;
+
+        // Eventos
+        $('#ci-modal-vinculacion .ci-modal-overlay, #ci-modal-vinculacion .ci-modal-cerrar').on('click', function() {
+            $('#ci-modal-vinculacion').remove();
+        });
+
+        $('.ci-vinculacion-opcion[data-opcion="nuevo"]').on('click', function() {
+            self.crearNuevasClaves();
+        });
+
+        $('.ci-vinculacion-opcion[data-opcion="recuperar"]').on('click', function() {
+            $('.ci-vinculacion-opciones').hide();
+            $('.ci-vinculacion-form-recuperar').show();
+            $('#ci-codigo-recuperacion').focus();
+        });
+
+        // Formatear código mientras se escribe
+        $('#ci-codigo-recuperacion').on('input', function() {
+            let valor = $(this).val().toUpperCase().replace(/[^A-Z0-9]/g, '');
+            let formateado = valor.match(/.{1,4}/g)?.join('-') || '';
+            $(this).val(formateado.substring(0, 19));
+        });
+
+        $('#ci-btn-restaurar').on('click', function() {
+            const codigo = $('#ci-codigo-recuperacion').val().replace(/-/g, '');
+            if (codigo.length === 16) {
+                self.restaurarConCodigo(codigo);
+            } else {
+                self.mostrarError('El código debe tener 16 caracteres');
+            }
+        });
+    };
+
+    /**
+     * Crear nuevas claves E2E (sobrescribe las anteriores)
+     */
+    FlavorChatInterno.crearNuevasClaves = async function() {
+        try {
+            $('#ci-modal-vinculacion').remove();
+
+            // Forzar generación de nuevas claves
+            if (this.signalProtocol && this.signalProtocol.keyStore) {
+                await this.signalProtocol.keyStore.limpiarTodo();
+            }
+
+            // Reinicializar
+            this.signalProtocol = new FlavorSignalProtocol({
+                userId: this.userId,
+                apiEndpoint: flavorChatInterno.resturl.replace('chat-interno/', 'e2e/')
+            });
+
+            await this.signalProtocol.generarNuevaIdentidad();
+            this.e2eReady = true;
+
+            // Crear backup y mostrar código de recuperación
+            await this.crearBackupE2E();
+        } catch (error) {
+            console.error('Error creando nuevas claves:', error);
+            this.mostrarError('Error al configurar cifrado E2E');
+        }
+    };
+
+    /**
+     * Crear backup de claves E2E y mostrar código de recuperación
+     */
+    FlavorChatInterno.crearBackupE2E = async function() {
+        try {
+            // Obtener datos cifrados del keyStore
+            const backupData = await this.signalProtocol.keyStore.crearBackup();
+
+            // Enviar al servidor
+            const response = await fetch(flavorChatInterno.resturl.replace('chat-interno/', 'e2e/') + 'backup/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': flavorChatInterno.e2e_nonce
+                },
+                body: JSON.stringify({
+                    encrypted_bundle: backupData.encrypted,
+                    backup_key_hash: backupData.keyHash
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.codigo_recuperacion) {
+                this.mostrarCodigoRecuperacion(data.codigo_recuperacion);
+            } else {
+                console.warn('No se pudo crear backup:', data.error);
+                this.mostrarAviso('Cifrado E2E configurado (sin código de recuperación)', 'success');
+            }
+        } catch (error) {
+            console.error('Error creando backup:', error);
+            this.mostrarAviso('Cifrado E2E configurado (sin código de recuperación)', 'success');
+        }
+    };
+
+    /**
+     * Mostrar modal con código de recuperación
+     */
+    FlavorChatInterno.mostrarCodigoRecuperacion = function(codigo) {
+        const modalHtml = `
+            <div class="ci-modal ci-modal-codigo" id="ci-modal-codigo">
+                <div class="ci-modal-overlay"></div>
+                <div class="ci-modal-contenido">
+                    <div class="ci-modal-header">
+                        <h3><span class="dashicons dashicons-shield-alt"></span> Código de recuperación</h3>
+                    </div>
+                    <div class="ci-modal-body">
+                        <p class="ci-codigo-intro">
+                            <strong>¡Guarda este código!</strong> Lo necesitarás para recuperar tus mensajes cifrados si cambias de dispositivo o navegador.
+                        </p>
+                        <div class="ci-codigo-display">
+                            <code id="ci-codigo-valor">${codigo}</code>
+                            <button type="button" class="ci-btn-copiar" id="ci-btn-copiar-codigo" title="Copiar">
+                                <span class="dashicons dashicons-clipboard"></span>
+                            </button>
+                        </div>
+                        <p class="ci-codigo-warning">
+                            <span class="dashicons dashicons-warning"></span>
+                            Sin este código, no podrás recuperar tus mensajes cifrados antiguos.
+                        </p>
+                    </div>
+                    <div class="ci-modal-footer">
+                        <button type="button" class="ci-btn ci-btn-primary" id="ci-btn-entendido">Lo he guardado</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $('body').append(modalHtml);
+
+        const self = this;
+
+        $('#ci-btn-copiar-codigo').on('click', function() {
+            navigator.clipboard.writeText(codigo).then(() => {
+                $(this).find('.dashicons').removeClass('dashicons-clipboard').addClass('dashicons-yes');
+                setTimeout(() => {
+                    $(this).find('.dashicons').removeClass('dashicons-yes').addClass('dashicons-clipboard');
+                }, 2000);
+            });
+        });
+
+        $('#ci-btn-entendido').on('click', function() {
+            $('#ci-modal-codigo').remove();
+            self.mostrarAviso('Cifrado E2E configurado correctamente', 'success');
+        });
+    };
+
+    /**
+     * Restaurar claves con código de recuperación
+     */
+    FlavorChatInterno.restaurarConCodigo = async function(codigo) {
+        try {
+            // Llamar al API para obtener backup cifrado
+            const response = await fetch(flavorChatInterno.resturl.replace('chat-interno/', 'e2e/') + 'backup/restore', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': flavorChatInterno.e2e_nonce
+                },
+                body: JSON.stringify({ codigo: codigo })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.backup) {
+                // Descifrar y restaurar claves
+                await this.signalProtocol.keyStore.restaurarDesdeBackup(data.backup, codigo);
+                await this.signalProtocol.cargarOGenerarIdentidad();
+                this.e2eReady = true;
+
+                $('#ci-modal-vinculacion').remove();
+                this.mostrarAviso('Claves restauradas correctamente', 'success');
+            } else {
+                this.mostrarError(data.error || 'Código de recuperación inválido');
+            }
+        } catch (error) {
+            console.error('Error restaurando claves:', error);
+            this.mostrarError('Error al restaurar claves');
+        }
     };
 
     /**
@@ -64,8 +344,17 @@
         if (conversacionId) {
             this.conversacionActual = conversacionId;
             this.bindEventsSingle();
-            this.cargarMensajes(conversacionId);
-            this.iniciarPolling();
+
+            // Inicializar E2E si está habilitado
+            if (this.e2eEnabled) {
+                this.initE2E().then(() => {
+                    this.cargarMensajes(conversacionId);
+                    this.iniciarPolling();
+                });
+            } else {
+                this.cargarMensajes(conversacionId);
+                this.iniciarPolling();
+            }
         }
     };
 
@@ -433,15 +722,21 @@
             params.antes_de = antesDeId;
         }
 
+        // Enviar dispositivo_id para obtener payload E2E correcto
+        if (this.e2eReady && this.signalProtocol && this.signalProtocol.dispositivoId) {
+            params.dispositivo_id = this.signalProtocol.dispositivoId;
+        }
+
         $.ajax({
             url: this.ajaxurl,
             type: 'GET',
             data: params,
             success: function(response) {
                 if (response.success) {
-                    // Actualizar header
+                    // Actualizar header y guardar ID del otro usuario
                     if (response.conversacion && response.conversacion.con_usuario) {
                         self.actualizarHeaderChat(response.conversacion.con_usuario);
+                        self.otroUsuarioId = response.conversacion.con_usuario.id;
                     }
 
                     if (antesDeId) {
@@ -513,9 +808,56 @@
     };
 
     /**
+     * Descifrar mensaje E2E
+     * @param {Object} msg - Mensaje con campos E2E
+     * @returns {Promise<Object>} Mensaje descifrado
+     */
+    FlavorChatInterno.descifrarMensaje = async function(msg) {
+        // Si no está cifrado o no tenemos E2E, devolver tal cual
+        if (!msg.cifrado || !this.e2eReady || msg.es_mio) {
+            return msg;
+        }
+
+        // Si ya tiene texto (mensaje propio o legacy), devolver tal cual
+        if (msg.mensaje && msg.mensaje.length > 0) {
+            return msg;
+        }
+
+        try {
+            // Parsear header E2E
+            const headerData = typeof msg.e2e_header === 'string'
+                ? JSON.parse(msg.e2e_header)
+                : msg.e2e_header;
+
+            // Descifrar
+            const textoDescifrado = await this.signalProtocol.decryptMessage(
+                msg.remitente_id,
+                msg.ciphertext,
+                headerData.header,
+                headerData.x3dh_header
+            );
+
+            return {
+                ...msg,
+                mensaje: textoDescifrado,
+                mensaje_html: this.escapeHtml(textoDescifrado),
+                descifrado_e2e: true
+            };
+        } catch (error) {
+            console.error('Error descifrando mensaje:', error);
+            return {
+                ...msg,
+                mensaje: '[Error al descifrar mensaje]',
+                mensaje_html: '<em>[Error al descifrar mensaje]</em>',
+                error_descifrado: true
+            };
+        }
+    };
+
+    /**
      * Renderizar mensajes
      */
-    FlavorChatInterno.renderMensajes = function(container, mensajes) {
+    FlavorChatInterno.renderMensajes = async function(container, mensajes) {
         if (!mensajes || !mensajes.length) {
             container.html(`
                 <div class="ci-empty">
@@ -524,6 +866,11 @@
                 </div>
             `);
             return;
+        }
+
+        // Descifrar mensajes E2E en paralelo
+        if (this.e2eReady) {
+            mensajes = await Promise.all(mensajes.map(msg => this.descifrarMensaje(msg)));
         }
 
         let html = '';
@@ -654,7 +1001,21 @@
         }
 
         // Meta del mensaje
-        let metaHtml = `<span class="ci-mensaje-hora">${msg.hora}</span>`;
+        let metaHtml = '';
+
+        // Indicador de cifrado E2E
+        if (msg.cifrado || msg.descifrado_e2e) {
+            const cifradoClase = msg.error_descifrado ? 'ci-e2e-error' : 'ci-e2e-ok';
+            const cifradoTitulo = msg.error_descifrado
+                ? 'Error de descifrado'
+                : 'Mensaje cifrado de extremo a extremo';
+            metaHtml += `<span class="ci-mensaje-cifrado ${cifradoClase}" title="${cifradoTitulo}"><span class="dashicons dashicons-lock"></span></span>`;
+        } else if (msg.legacy_plaintext && this.e2eEnabled) {
+            // Mensaje antiguo sin cifrar (cuando E2E está habilitado)
+            metaHtml += `<span class="ci-mensaje-legacy" title="Mensaje sin cifrar (anterior a E2E)"><span class="dashicons dashicons-unlock"></span></span>`;
+        }
+
+        metaHtml += `<span class="ci-mensaje-hora">${msg.hora}</span>`;
         if (msg.editado) {
             metaHtml += `<span class="ci-mensaje-editado">${this.strings.mensaje_editado || 'editado'}</span>`;
         }
@@ -718,7 +1079,7 @@
     /**
      * Enviar mensaje
      */
-    FlavorChatInterno.enviarMensaje = function() {
+    FlavorChatInterno.enviarMensaje = async function() {
         const input = $('#ci-mensaje-input');
         const mensaje = input.val().trim();
 
@@ -741,6 +1102,35 @@
             datos.responde_a = this.respondiendoA.id;
         }
 
+        // Cifrar mensaje E2E si está disponible
+        if (this.e2eReady && this.otroUsuarioId) {
+            try {
+                // Cifrar para TODOS los dispositivos del destinatario
+                const cifrados = await this.signalProtocol.encryptMessageForAllDevices(this.otroUsuarioId, mensaje);
+
+                datos.cifrado = 1;
+                datos.mensaje = ''; // No enviar plaintext
+
+                // Enviar array de ciphertexts (uno por dispositivo)
+                datos.e2e_payloads = JSON.stringify(cifrados.map(c => ({
+                    dispositivo_id: c.dispositivo_id,
+                    ciphertext: c.ciphertext,
+                    header: c.header,
+                    x3dh_header: c.x3dh_header
+                })));
+
+                // Para compatibilidad, también enviar el primer ciphertext en formato antiguo
+                datos.ciphertext = cifrados[0].ciphertext;
+                datos.e2e_header = JSON.stringify({
+                    header: cifrados[0].header,
+                    x3dh_header: cifrados[0].x3dh_header
+                });
+            } catch (error) {
+                console.error('Error cifrando mensaje:', error);
+                // Continuar sin cifrado si falla
+            }
+        }
+
         $.ajax({
             url: this.ajaxurl,
             type: 'POST',
@@ -751,6 +1141,12 @@
                     input.val('').trigger('input');
                     self.cancelarRespuesta();
 
+                    // Guardar plaintext local para mostrar
+                    if (datos.cifrado) {
+                        response.mensaje.mensaje = mensaje;
+                        response.mensaje.mensaje_html = self.escapeHtml(mensaje);
+                    }
+
                     // Agregar mensaje a la lista
                     self.agregarMensajeALista(response.mensaje);
                     self.scrollToBottom();
@@ -759,7 +1155,10 @@
                     self.lastMessageId = response.mensaje.id;
 
                     // Actualizar preview en lista
-                    self.actualizarPreviewConversacion(self.conversacionActual, response.mensaje);
+                    self.actualizarPreviewConversacion(self.conversacionActual, {
+                        ...response.mensaje,
+                        mensaje: mensaje // Para el preview usar plaintext
+                    });
                 } else {
                     self.mostrarError(response.error);
                 }
@@ -981,29 +1380,41 @@
         if (!this.conversacionActual) return;
 
         const self = this;
+        const pollData = {
+            action: 'flavor_chat_interno_poll',
+            nonce: this.nonce,
+            conversacion_id: this.conversacionActual,
+            ultimo_mensaje_id: this.lastMessageId,
+        };
+
+        // Enviar dispositivo_id para obtener payload E2E correcto
+        if (this.e2eReady && this.signalProtocol && this.signalProtocol.dispositivoId) {
+            pollData.dispositivo_id = this.signalProtocol.dispositivoId;
+        }
 
         $.ajax({
             url: this.ajaxurl,
             type: 'GET',
-            data: {
-                action: 'flavor_chat_interno_poll',
-                nonce: this.nonce,
-                conversacion_id: this.conversacionActual,
-                ultimo_mensaje_id: this.lastMessageId,
-            },
-            success: function(response) {
+            data: pollData,
+            success: async function(response) {
                 if (response.success) {
                     // Agregar nuevos mensajes
                     if (response.mensajes && response.mensajes.length) {
-                        response.mensajes.forEach(msg => {
-                            if (!msg.es_mio) {
-                                self.agregarMensajeALista(msg);
-                                self.mostrarNotificacion(msg);
+                        for (const msg of response.mensajes) {
+                            // Descifrar si es E2E y no es mío
+                            let msgDescifrado = msg;
+                            if (self.e2eReady && msg.cifrado && !msg.es_mio) {
+                                msgDescifrado = await self.descifrarMensaje(msg);
                             }
-                            if (msg.id > self.lastMessageId) {
-                                self.lastMessageId = msg.id;
+
+                            if (!msgDescifrado.es_mio) {
+                                self.agregarMensajeALista(msgDescifrado);
+                                self.mostrarNotificacion(msgDescifrado);
                             }
-                        });
+                            if (msgDescifrado.id > self.lastMessageId) {
+                                self.lastMessageId = msgDescifrado.id;
+                            }
+                        }
                         self.scrollToBottomIfNear();
                     }
 

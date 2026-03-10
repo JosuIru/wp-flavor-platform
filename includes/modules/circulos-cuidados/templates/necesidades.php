@@ -187,7 +187,7 @@ $urgencias_orden = ['urgente' => 1, 'alta' => 2, 'normal' => 3, 'baja' => 4];
                 </span>
 
                 <?php if (!is_user_logged_in()) : ?>
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="cc-btn-ayudar">
+                <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="cc-btn-ayudar">
                     <span class="dashicons dashicons-heart"></span>
                     <?php esc_html_e('Inicia sesión para ayudar', 'flavor-chat-ia'); ?>
                 </a>

@@ -1,0 +1,412 @@
+/**
+ * Kulturaka - Estilos Frontend
+ * Red Cultural Descentralizada
+ */
+
+/* Variables */
+:root {
+    --kulturaka-primary: #ec4899;
+    --kulturaka-secondary: #8b5cf6;
+    --kulturaka-accent: #3b82f6;
+    --kulturaka-success: #10b981;
+    --kulturaka-warning: #f59e0b;
+    --kulturaka-danger: #ef4444;
+    --kulturaka-dark: #1f2937;
+    --kulturaka-gray: #6b7280;
+    --kulturaka-light: #f3f4f6;
+    --kulturaka-radius: 12px;
+    --kulturaka-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Base */
+.kulturaka-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Cards */
+.kulturaka-card {
+    background: white;
+    border-radius: var(--kulturaka-radius);
+    box-shadow: var(--kulturaka-shadow);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kulturaka-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.kulturaka-card-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--kulturaka-light);
+}
+
+.kulturaka-card-body {
+    padding: 20px;
+}
+
+.kulturaka-card-footer {
+    padding: 16px 20px;
+    background: var(--kulturaka-light);
+}
+
+/* Gradients */
+.kulturaka-gradient {
+    background: linear-gradient(135deg, var(--kulturaka-primary) 0%, var(--kulturaka-secondary) 100%);
+}
+
+.kulturaka-gradient-text {
+    background: linear-gradient(135deg, var(--kulturaka-primary), var(--kulturaka-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Buttons */
+.kulturaka-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.kulturaka-btn-primary {
+    background: linear-gradient(135deg, var(--kulturaka-primary), var(--kulturaka-secondary));
+    color: white;
+}
+
+.kulturaka-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+    color: white;
+}
+
+.kulturaka-btn-secondary {
+    background: white;
+    color: var(--kulturaka-primary);
+    border: 2px solid var(--kulturaka-primary);
+}
+
+.kulturaka-btn-secondary:hover {
+    background: var(--kulturaka-light);
+}
+
+.kulturaka-btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+/* Progress bars */
+.kulturaka-progress {
+    height: 8px;
+    background: var(--kulturaka-light);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.kulturaka-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--kulturaka-primary), var(--kulturaka-secondary));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+/* Badges */
+.kulturaka-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.kulturaka-badge-primary {
+    background: rgba(236, 72, 153, 0.1);
+    color: var(--kulturaka-primary);
+}
+
+.kulturaka-badge-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--kulturaka-success);
+}
+
+.kulturaka-badge-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--kulturaka-warning);
+}
+
+.kulturaka-badge-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--kulturaka-danger);
+}
+
+/* Grid */
+.kulturaka-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.kulturaka-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.kulturaka-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.kulturaka-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1024px) {
+    .kulturaka-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .kulturaka-grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .kulturaka-grid-4,
+    .kulturaka-grid-3,
+    .kulturaka-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Forms */
+.kulturaka-form-group {
+    margin-bottom: 16px;
+}
+
+.kulturaka-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--kulturaka-dark);
+}
+
+.kulturaka-input,
+.kulturaka-select,
+.kulturaka-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.kulturaka-input:focus,
+.kulturaka-select:focus,
+.kulturaka-textarea:focus {
+    outline: none;
+    border-color: var(--kulturaka-primary);
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+}
+
+/* Modal */
+.kulturaka-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.kulturaka-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.kulturaka-modal {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: transform 0.3s;
+}
+
+.kulturaka-modal-overlay.active .kulturaka-modal {
+    transform: scale(1);
+}
+
+.kulturaka-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--kulturaka-light);
+}
+
+.kulturaka-modal-header h3 {
+    margin: 0;
+    color: var(--kulturaka-primary);
+}
+
+.kulturaka-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--kulturaka-gray);
+}
+
+.kulturaka-modal-body {
+    padding: 20px;
+}
+
+.kulturaka-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--kulturaka-light);
+}
+
+/* Empty state */
+.kulturaka-empty {
+    text-align: center;
+    padding: 48px 24px;
+    background: var(--kulturaka-light);
+    border-radius: var(--kulturaka-radius);
+}
+
+.kulturaka-empty-icon {
+    font-size: 48px;
+    color: #d1d5db;
+    margin-bottom: 16px;
+}
+
+.kulturaka-empty p {
+    color: var(--kulturaka-gray);
+    margin: 0;
+}
+
+/* Animations */
+@keyframes kulturaka-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.kulturaka-loading {
+    animation: kulturaka-pulse 2s infinite;
+}
+
+@keyframes kulturaka-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kulturaka-fade-in {
+    animation: kulturaka-fade-in 0.3s ease-out;
+}
+
+/* Muro de agradecimientos */
+.kulturaka-gratitude-wall {
+    column-count: 3;
+    column-gap: 16px;
+}
+
+.kulturaka-gratitude-item {
+    break-inside: avoid;
+    margin-bottom: 16px;
+    padding: 16px;
+    background: white;
+    border-radius: var(--kulturaka-radius);
+    border-left: 4px solid var(--kulturaka-primary);
+    box-shadow: var(--kulturaka-shadow);
+}
+
+.kulturaka-gratitude-emoji {
+    font-size: 28px;
+    margin-right: 12px;
+}
+
+.kulturaka-gratitude-message {
+    font-size: 14px;
+    color: var(--kulturaka-dark);
+    line-height: 1.5;
+}
+
+.kulturaka-gratitude-meta {
+    font-size: 12px;
+    color: var(--kulturaka-gray);
+    margin-top: 8px;
+}
+
+@media (max-width: 1024px) {
+    .kulturaka-gratitude-wall {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .kulturaka-gratitude-wall {
+        column-count: 1;
+    }
+}
+
+/* Verified badge */
+.kulturaka-verified {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: var(--kulturaka-success);
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+}
+
+/* Moneda badges */
+.kulturaka-moneda-eur {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.kulturaka-moneda-semilla {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.kulturaka-moneda-hours {
+    background: #fef3c7;
+    color: #92400e;
+}

@@ -239,6 +239,17 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
      * @return array
      */
     public function get_widget_config(): array {
+        $module_id = '';
+        if (is_object($this->module)) {
+            if (method_exists($this->module, 'get_id')) {
+                $module_id = (string) $this->module->get_id();
+            } elseif (method_exists($this->module, 'get_module_id')) {
+                $module_id = (string) $this->module->get_module_id();
+            }
+        } elseif (is_string($this->module)) {
+            $module_id = $this->module;
+        }
+
         return [
             'id'          => $this->widget_id,
             'title'       => $this->title,
@@ -248,6 +259,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
             'priority'    => $this->priority,
             'refreshable' => $this->refreshable,
             'cache_time'  => $this->cache_time,
+            'module'      => $module_id,
             'actions'     => $this->get_header_actions(),
             'level'       => $this->level,
             'description' => $this->description,
@@ -363,10 +375,14 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
      */
     protected function get_admin_url(): string {
         $admin_page_slug = $this->get_admin_page_slug();
+        $module_id = sanitize_key(str_replace('-', '_', (string) $this->widget_id));
+        $canonical_admin_url = class_exists('Flavor_Module_Admin_Pages_Trait')
+            ? Flavor_Module_Admin_Pages_Helper::get_module_dashboard_url($module_id)
+            : null;
 
         if (empty($admin_page_slug)) {
             // Fallback a la URL de frontend si no hay página de admin
-            return home_url('/mi-portal/' . $this->widget_id . '/');
+            return $canonical_admin_url ?: home_url('/mi-portal/' . $this->widget_id . '/');
         }
 
         // Si el slug comienza con '_frontend_:', es una URL de frontend
@@ -375,7 +391,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
             return home_url($ruta_frontend);
         }
 
-        return admin_url('admin.php?page=' . $admin_page_slug);
+        return $canonical_admin_url ?: admin_url('admin.php?page=' . $admin_page_slug);
     }
 
     /**
@@ -507,6 +523,11 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
      * @since 4.2.0
      */
     protected function get_context_url(string $ruta_frontend, string $pagina_admin = ''): string {
+        $module_id = sanitize_key(str_replace('-', '_', (string) $this->widget_id));
+        $canonical_admin_url = class_exists('Flavor_Module_Admin_Pages_Trait')
+            ? Flavor_Module_Admin_Pages_Helper::get_module_dashboard_url($module_id)
+            : null;
+
         // Consultar el mapeo para obtener el slug correcto
         $mapeo = $this->get_admin_pages_mapping();
 
@@ -526,6 +547,10 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
         // Detectar contexto
         if (is_admin() && !wp_doing_ajax()) {
             // En admin: usar slug mapeado
+            if (!empty($canonical_admin_url)) {
+                return $canonical_admin_url;
+            }
+
             if (!empty($slug_mapeado)) {
                 return admin_url('admin.php?page=' . $slug_mapeado);
             }

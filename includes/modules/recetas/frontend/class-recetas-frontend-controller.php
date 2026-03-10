@@ -242,7 +242,7 @@ class Flavor_Recetas_Frontend_Controller {
             <?php $this->render_recetas_recientes($user_id); ?>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/recetas/crear/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/recetas/nueva/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Nueva Receta', 'flavor-chat-ia'); ?>
                 </a>
@@ -278,7 +278,7 @@ class Flavor_Recetas_Frontend_Controller {
             echo '<div class="flavor-empty-state">';
             echo '<span class="dashicons dashicons-carrot"></span>';
             echo '<p>' . esc_html__('Aún no has creado ninguna receta.', 'flavor-chat-ia') . '</p>';
-            echo '<a href="' . esc_url(home_url('/mi-portal/recetas/crear/')) . '" class="flavor-btn flavor-btn-primary">';
+            echo '<a href="' . esc_url(home_url('/mi-portal/recetas/nueva/')) . '" class="flavor-btn flavor-btn-primary">';
             echo esc_html__('Crear mi primera receta', 'flavor-chat-ia') . '</a>';
             echo '</div>';
             return;
@@ -541,7 +541,7 @@ class Flavor_Recetas_Frontend_Controller {
         <div class="flavor-mis-recetas">
             <div class="flavor-panel-header">
                 <h2><?php esc_html_e('Mis Recetas', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/mi-portal/recetas/crear/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/recetas/nueva/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Nueva Receta', 'flavor-chat-ia'); ?>
                 </a>
@@ -758,6 +758,10 @@ class Flavor_Recetas_Frontend_Controller {
                     </button>
                 </div>
 
+                <?php $this->render_form_productos_gc(); ?>
+
+                <?php $this->render_form_videos(); ?>
+
                 <div class="flavor-form-actions">
                     <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                         <span class="dashicons dashicons-saved"></span>
@@ -774,6 +778,174 @@ class Flavor_Recetas_Frontend_Controller {
         </div>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Renderiza el campo de productos de Grupos de Consumo en el formulario
+     */
+    private function render_form_productos_gc() {
+        // Obtener productos disponibles
+        $productos_gc = get_posts([
+            'post_type' => 'gc_producto',
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+            'orderby' => 'title',
+            'order' => 'ASC',
+        ]);
+
+        // Si no hay productos o el CPT no existe, no mostrar
+        if (empty($productos_gc)) {
+            return;
+        }
+        ?>
+        <div class="flavor-form-row">
+            <label><?php esc_html_e('Productos del Grupo de Consumo', 'flavor-chat-ia'); ?></label>
+            <p class="flavor-form-help"><?php esc_html_e('Selecciona los productos locales que se usan en esta receta.', 'flavor-chat-ia'); ?></p>
+            <div class="flavor-chips-selector" id="gc-productos-chips">
+                <?php foreach ($productos_gc as $producto):
+                    $precio = get_post_meta($producto->ID, '_gc_precio', true);
+                    $unidad = get_post_meta($producto->ID, '_gc_unidad', true);
+                    $precio_str = $precio ? " · {$precio}€/" . ($unidad ?: 'ud') : '';
+                ?>
+                <label class="flavor-chip">
+                    <input type="checkbox" name="gc_productos[]" value="<?php echo esc_attr($producto->ID); ?>">
+                    <span class="flavor-chip-content">
+                        <span class="flavor-chip-icon">🥬</span>
+                        <span class="flavor-chip-text"><?php echo esc_html($producto->post_title); ?></span>
+                        <?php if ($precio_str): ?>
+                            <span class="flavor-chip-meta"><?php echo esc_html($precio_str); ?></span>
+                        <?php endif; ?>
+                    </span>
+                </label>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
+        $this->render_chips_styles();
+    }
+
+    /**
+     * Renderiza los estilos CSS para los chips (solo una vez)
+     */
+    private function render_chips_styles() {
+        static $rendered = false;
+        if ($rendered) {
+            return;
+        }
+        $rendered = true;
+        ?>
+        <style>
+            .flavor-chips-selector {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 12px;
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                max-height: 200px;
+                overflow-y: auto;
+            }
+            .flavor-chip {
+                display: inline-flex;
+                cursor: pointer;
+                margin: 0;
+            }
+            .flavor-chip input[type="checkbox"] {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+            }
+            .flavor-chip-content {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 12px;
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 20px;
+                font-size: 13px;
+                color: #475569;
+                transition: all 0.15s ease;
+            }
+            .flavor-chip:hover .flavor-chip-content {
+                border-color: #94a3b8;
+                background: #f1f5f9;
+            }
+            .flavor-chip input:checked + .flavor-chip-content {
+                background: #10b981;
+                border-color: #10b981;
+                color: #fff;
+            }
+            .flavor-chip input:checked + .flavor-chip-content .flavor-chip-meta {
+                color: rgba(255,255,255,0.8);
+            }
+            .flavor-chip-icon {
+                font-size: 14px;
+            }
+            .flavor-chip-text {
+                font-weight: 500;
+            }
+            .flavor-chip-meta {
+                font-size: 11px;
+                color: #94a3b8;
+            }
+            .flavor-chip--video .flavor-chip-content {
+                background: #f0f9ff;
+                border-color: #bae6fd;
+            }
+            .flavor-chip--video:hover .flavor-chip-content {
+                background: #e0f2fe;
+            }
+            .flavor-chip--video input:checked + .flavor-chip-content {
+                background: #0ea5e9;
+                border-color: #0ea5e9;
+            }
+        </style>
+        <?php
+    }
+
+    /**
+     * Renderiza el campo de videos en el formulario
+     */
+    private function render_form_videos() {
+        global $wpdb;
+        $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
+
+        // Verificar que la tabla existe
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_multimedia)) {
+            return;
+        }
+
+        // Obtener videos disponibles
+        $videos = $wpdb->get_results(
+            "SELECT id, titulo FROM {$tabla_multimedia}
+             WHERE tipo = 'video' AND estado IN ('publico', 'comunidad')
+             ORDER BY fecha_creacion DESC
+             LIMIT 50"
+        );
+
+        // Si no hay videos, no mostrar
+        if (empty($videos)) {
+            return;
+        }
+        ?>
+        <div class="flavor-form-row">
+            <label><?php esc_html_e('Videos de la Receta', 'flavor-chat-ia'); ?></label>
+            <p class="flavor-form-help"><?php esc_html_e('Vincula videos tutoriales o de preparación.', 'flavor-chat-ia'); ?></p>
+            <div class="flavor-chips-selector" id="videos-chips">
+                <?php foreach ($videos as $video): ?>
+                <label class="flavor-chip flavor-chip--video">
+                    <input type="checkbox" name="videos[]" value="<?php echo esc_attr($video->id); ?>">
+                    <span class="flavor-chip-content">
+                        <span class="flavor-chip-icon">🎬</span>
+                        <span class="flavor-chip-text"><?php echo esc_html($video->titulo); ?></span>
+                    </span>
+                </label>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
     }
 
     /**
@@ -1003,6 +1175,38 @@ class Flavor_Recetas_Frontend_Controller {
             if (!is_wp_error($attachment_id)) {
                 set_post_thumbnail($receta_id, $attachment_id);
             }
+        }
+
+        // Productos de Grupos de Consumo
+        if (!empty($_POST['gc_productos']) && is_array($_POST['gc_productos'])) {
+            $gc_productos = array_map('absint', $_POST['gc_productos']);
+            // Filtrar solo los que realmente son gc_producto
+            $gc_productos = array_filter($gc_productos, function($id) {
+                $post = get_post($id);
+                return $post && $post->post_type === 'gc_producto';
+            });
+            update_post_meta($receta_id, '_receta_gc_productos', array_values($gc_productos));
+        } else {
+            update_post_meta($receta_id, '_receta_gc_productos', []);
+        }
+
+        // Videos del módulo multimedia
+        if (!empty($_POST['videos']) && is_array($_POST['videos'])) {
+            global $wpdb;
+            $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia';
+            $videos = array_map('absint', $_POST['videos']);
+            // Verificar que los videos existen
+            if (Flavor_Chat_Helpers::tabla_existe($tabla_multimedia)) {
+                $videos = array_filter($videos, function($id) use ($wpdb, $tabla_multimedia) {
+                    return (bool) $wpdb->get_var($wpdb->prepare(
+                        "SELECT id FROM {$tabla_multimedia} WHERE id = %d AND tipo = 'video'",
+                        $id
+                    ));
+                });
+            }
+            update_post_meta($receta_id, '_receta_videos', array_values($videos));
+        } else {
+            update_post_meta($receta_id, '_receta_videos', []);
         }
 
         $message = $post_status === 'pending'

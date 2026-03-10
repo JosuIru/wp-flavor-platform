@@ -105,7 +105,7 @@ $usuario_logueado = is_user_logged_in();
                                 <span class="ec-cesion__propia"><?php esc_html_e('Tu cesión', 'flavor-chat-ia'); ?></span>
                             <?php endif; ?>
                         <?php else: ?>
-                            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="ec-btn ec-btn--outline">
+                            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="ec-btn ec-btn--outline">
                                 <?php esc_html_e('Inicia sesión para reclamar', 'flavor-chat-ia'); ?>
                             </a>
                         <?php endif; ?>

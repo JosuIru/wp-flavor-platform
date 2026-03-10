@@ -111,6 +111,19 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         });
     }
 
+    public function get_widget_config(): array {
+        $config = parent::get_widget_config();
+        $severity = $this->get_native_severity_payload($this->get_widget_data());
+
+        if (!empty($severity['slug'])) {
+            $config['severity_slug'] = $severity['slug'];
+            $config['severity_label'] = $severity['label'];
+            $config['severity_reason'] = $severity['reason'];
+        }
+
+        return $config;
+    }
+
     /**
      * Obtiene los datos frescos del widget
      *
@@ -171,7 +184,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_proximos,
             'label' => __('Próximos eventos', 'flavor-chat-ia'),
             'color' => 'primary',
-            'url' => $es_admin ? admin_url('admin.php?page=eventos') : home_url('/mi-portal/eventos/'),
+            'url' => $es_admin ? admin_url('admin.php?page=eventos-dashboard') : home_url('/mi-portal/eventos/'),
         ];
 
         // Stat 2: Mis inscripciones
@@ -181,7 +194,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_inscripciones,
                 'label' => __('Mis inscripciones', 'flavor-chat-ia'),
                 'color' => $mis_inscripciones > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=eventos') : home_url('/mi-portal/eventos/mis-inscripciones/'),
+                'url' => $es_admin ? admin_url('admin.php?page=eventos-asistentes') : home_url('/mi-portal/eventos/mis-inscripciones/'),
             ];
         }
 
@@ -193,7 +206,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $fecha_formateada,
                 'label' => wp_trim_words($evento_proximo->titulo, 3, '...'),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=eventos&evento=' . $evento_proximo->id) : home_url('/mi-portal/eventos/ver/' . $evento_proximo->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=eventos-proximos') : add_query_arg('evento_id', $evento_proximo->id, home_url('/mi-portal/eventos/detalle/')),
             ];
         }
 
@@ -203,11 +216,16 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
+            'summary' => [
+                'total_proximos' => $total_proximos,
+                'mis_inscripciones' => $mis_inscripciones,
+                'evento_proximo_fecha' => $evento_proximo->fecha_inicio ?? '',
+            ],
             'empty_state' => __('No hay eventos próximos programados', 'flavor-chat-ia'),
             'footer' => [
                 [
                     'label' => $es_admin ? __('Gestionar eventos', 'flavor-chat-ia') : __('Ver calendario', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=eventos') : home_url('/mi-portal/eventos/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=eventos-dashboard') : home_url('/mi-portal/eventos/'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -254,7 +272,7 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-calendar-alt',
                 'title' => $evento->titulo,
                 'meta' => $fecha . ($evento->lugar ? ' · ' . $evento->lugar : ''),
-                'url' => $es_admin ? admin_url('admin.php?page=eventos&evento=' . $evento->id) : home_url('/mi-portal/eventos/ver/' . $evento->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=eventos-proximos') : add_query_arg('evento_id', $evento->id, home_url('/mi-portal/eventos/detalle/')),
                 'badge' => $plazas,
             ];
         }
@@ -283,6 +301,35 @@ class Flavor_Eventos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
         $cache[$nombre_tabla] = ($resultado === $nombre_tabla);
         return $cache[$nombre_tabla];
+    }
+
+    /**
+     * Devuelve severidad nativa segun la agenda real del modulo.
+     *
+     * @param array $data
+     * @return array{slug:string,label:string,reason:string}
+     */
+    private function get_native_severity_payload(array $data): array {
+        $summary = is_array($data['summary'] ?? null) ? $data['summary'] : [];
+        $total_proximos = (int) ($summary['total_proximos'] ?? 0);
+        $mis_inscripciones = (int) ($summary['mis_inscripciones'] ?? 0);
+        $evento_proximo_fecha = (string) ($summary['evento_proximo_fecha'] ?? '');
+
+        if ($evento_proximo_fecha !== '' && Flavor_Dashboard_Severity::from_date($evento_proximo_fecha, 'followup') === 'attention') {
+            $severity = Flavor_Dashboard_Severity::get_payload('attention');
+            $severity['reason'] = __('Hay un evento próximo muy cercano en el tiempo y conviene atender la agenda del nodo.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        if ($total_proximos > 0 || $mis_inscripciones > 0) {
+            $severity = Flavor_Dashboard_Severity::get_payload('followup');
+            $severity['reason'] = __('Hay eventos próximos o inscripciones activas que conviene seguir.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        $severity = Flavor_Dashboard_Severity::get_payload('stable');
+        $severity['reason'] = __('No hay actividad de agenda urgente en este momento.', 'flavor-chat-ia');
+        return $severity;
     }
 
     /**

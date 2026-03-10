@@ -1,5 +1,9 @@
 # Plan de Mejoras - Red Social Federada
 
+> Documento de plan y cierre parcial de una iniciativa especifica.
+> Los porcentajes de completitud aqui reflejan esa fase de trabajo, no una garantia global de estado real vigente.
+> Para lectura canonica del estado actual, usa `ESTADO-REAL-PLUGIN.md` y `../reports/AUDITORIA-ESTADO-REAL-2026-03-04.md`.
+
 ## Diagramas de Arquitectura
 
 ### Arquitectura General de Red

@@ -1,5 +1,9 @@
 # ARQUITECTURA DE MÓDULOS - FLAVOR CHAT IA
 
+> Documento estructural de referencia tecnica.
+> Sigue siendo util para entender patrones del sistema, pero no debe leerse como fuente primaria de estado real o madurez modulo a modulo.
+> Para estado vigente, usa `ESTADO-REAL-PLUGIN.md` y `../reports/AUDITORIA-ESTADO-REAL-2026-03-04.md`.
+
 **Fecha:** 2026-02-26
 **Estado:** DOCUMENTO OFICIAL
 

@@ -38,6 +38,10 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         $this->dashboard_client_contexts = ['colectivos', 'asociacion', 'gobernanza', 'comunidad'];
         $this->dashboard_admin_contexts = ['colectivos', 'gobernanza', 'admin'];
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['gobernanza', 'cuidados'];
+        $this->gailu_contribuye_a = ['cohesion', 'autonomia'];
+
         parent::__construct();
     }
 
@@ -2826,6 +2830,16 @@ KNOWLEDGE;
             [$this, 'render_pagina_dashboard']
         );
 
+        // Dashboard - página para panel unificado
+        add_submenu_page(
+            null,
+            __('Dashboard Colectivos', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'flavor-colectivos-dashboard',
+            [$this, 'render_pagina_dashboard']
+        );
+
         // Página: Listado (oculta)
         add_submenu_page(
             null,
@@ -2875,19 +2889,35 @@ KNOWLEDGE;
             'colectivos-nuevo',
             [$this, 'render_pagina_nuevo']
         );
+
+        // Página: Solicitudes de unión (oculta)
+        add_submenu_page(
+            null,
+            __('Solicitudes de Unión', 'flavor-chat-ia'),
+            __('Solicitudes', 'flavor-chat-ia'),
+            $capability,
+            'colectivos-solicitudes',
+            [$this, 'render_pagina_solicitudes']
+        );
     }
 
     /**
      * Renderiza página dashboard
      */
     public function render_pagina_dashboard() {
-        echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Dashboard Colectivos', 'flavor-chat-ia') . '</h1>';
-        $views_path = dirname(__FILE__) . '/views/listado-colectivos.php';
-        if (file_exists($views_path)) {
-            include $views_path;
+        $rutaVistaDashboard = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($rutaVistaDashboard)) {
+            include $rutaVistaDashboard;
+        } else {
+            // Fallback si no existe dashboard.php
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Dashboard Colectivos', 'flavor-chat-ia') . '</h1>';
+            $views_path = dirname(__FILE__) . '/views/listado-colectivos.php';
+            if (file_exists($views_path)) {
+                include $views_path;
+            }
+            echo '</div>';
         }
-        echo '</div>';
     }
 
     /**
@@ -2951,6 +2981,19 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Nuevo Colectivo', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza página de solicitudes de unión
+     */
+    public function render_pagina_solicitudes() {
+        $views_path = dirname(__FILE__) . '/views/solicitudes.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Solicitudes de Unión', 'flavor-chat-ia') . '</h1>';
             echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p></div>';
         }
     }

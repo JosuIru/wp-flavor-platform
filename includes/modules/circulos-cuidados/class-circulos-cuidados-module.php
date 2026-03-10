@@ -75,6 +75,10 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
         $this->name = __('Círculos de Cuidados', 'flavor-chat-ia');
         $this->description = __('Organiza redes de apoyo mutuo para situaciones vitales.', 'flavor-chat-ia');
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['cuidados', 'aprendizaje'];
+        $this->gailu_contribuye_a = ['cohesion', 'resiliencia'];
+
         parent::__construct();
     }
 

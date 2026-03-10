@@ -52,6 +52,37 @@ class Flavor_Design_Settings {
     }
 
     /**
+     * Obtener módulos activos con sus metadatos (id, nombre, color)
+     *
+     * @return array Array de módulos con id, name, color
+     */
+    public function get_active_modules_with_colors() {
+        $modulos_con_colores = [];
+
+        // Intentar obtener desde Module Loader
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $loader = Flavor_Chat_Module_Loader::get_instance();
+            $metadata_cache = $loader->rebuild_metadata_cache();
+
+            foreach ($metadata_cache as $module_id => $meta) {
+                $modulos_con_colores[$module_id] = [
+                    'id' => $module_id,
+                    'name' => $meta['name'] ?? ucfirst(str_replace('_', ' ', $module_id)),
+                    'color' => $meta['color'] ?? '#3b82f6',
+                    'icon' => $meta['icon'] ?? 'dashicons-admin-plugins',
+                ];
+            }
+        }
+
+        // Ordenar alfabéticamente por nombre
+        uasort($modulos_con_colores, function ($a, $b) {
+            return strcasecmp($a['name'], $b['name']);
+        });
+
+        return $modulos_con_colores;
+    }
+
+    /**
      * Añadir página de menú
      */
     public function add_menu_page() {
@@ -110,6 +141,38 @@ class Flavor_Design_Settings {
             'components_section',
             __('Componentes', 'flavor-chat-ia'),
             [$this, 'render_components_section'],
+            self::PAGE_SLUG
+        );
+
+        // Sección: Header y Footer
+        add_settings_section(
+            'layout_section',
+            __('Header y Footer', 'flavor-chat-ia'),
+            [$this, 'render_layout_section'],
+            self::PAGE_SLUG
+        );
+
+        // Sección: Portal Unificado
+        add_settings_section(
+            'portal_section',
+            __('Portal Unificado', 'flavor-chat-ia'),
+            [$this, 'render_portal_section'],
+            self::PAGE_SLUG
+        );
+
+        // Sección: Módulos y Dashboards
+        add_settings_section(
+            'modules_section',
+            __('Modulos y Dashboards', 'flavor-chat-ia'),
+            [$this, 'render_modules_section'],
+            self::PAGE_SLUG
+        );
+
+        // Sección: Colores de Módulos Activos
+        add_settings_section(
+            'module_colors_section',
+            __('Colores de Módulos', 'flavor-chat-ia'),
+            [$this, 'render_module_colors_section'],
             self::PAGE_SLUG
         );
 
@@ -236,13 +299,330 @@ class Flavor_Design_Settings {
                 );
             }
         }
+
+        // HEADER Y FOOTER
+        $layout_fields = [
+            'header_bg_color' => ['label' => __('Fondo Header', 'flavor-chat-ia'), 'default' => '#ffffff'],
+            'header_text_color' => ['label' => __('Texto Header', 'flavor-chat-ia'), 'default' => '#1f2937'],
+            'footer_bg_color' => ['label' => __('Fondo Footer (Dark)', 'flavor-chat-ia'), 'default' => '#1f2937'],
+            'footer_text_color' => ['label' => __('Texto Footer (Dark)', 'flavor-chat-ia'), 'default' => '#ffffff'],
+        ];
+
+        foreach ($layout_fields as $field => $config) {
+            add_settings_field(
+                $field,
+                $config['label'],
+                [$this, 'render_color_field'],
+                self::PAGE_SLUG,
+                'layout_section',
+                ['field' => $field, 'default' => $config['default']]
+            );
+        }
+
+        // PORTAL UNIFICADO
+        add_settings_field(
+            'portal_layout',
+            __('Layout del Portal', 'flavor-chat-ia'),
+            [$this, 'render_portal_layout_field'],
+            self::PAGE_SLUG,
+            'portal_section',
+            ['field' => 'portal_layout', 'default' => 'legacy']
+        );
+
+        // MÓDULOS Y DASHBOARDS
+        $module_fields = [
+            'module_card_style' => [
+                'label' => __('Estilo Tarjetas Modulo', 'flavor-chat-ia'),
+                'type' => 'select',
+                'options' => [
+                    'elevated' => __('Elevadas (con sombra)', 'flavor-chat-ia'),
+                    'outlined' => __('Con borde', 'flavor-chat-ia'),
+                    'flat' => __('Planas', 'flavor-chat-ia'),
+                    'glass' => __('Glassmorphism', 'flavor-chat-ia'),
+                ],
+                'default' => 'elevated',
+            ],
+            'module_icon_style' => [
+                'label' => __('Estilo Iconos Modulo', 'flavor-chat-ia'),
+                'type' => 'select',
+                'options' => [
+                    'filled' => __('Relleno color', 'flavor-chat-ia'),
+                    'outlined' => __('Solo contorno', 'flavor-chat-ia'),
+                    'gradient' => __('Gradiente', 'flavor-chat-ia'),
+                    'minimal' => __('Minimalista', 'flavor-chat-ia'),
+                ],
+                'default' => 'filled',
+            ],
+            'module_border_style' => [
+                'label' => __('Indicador de Modulo', 'flavor-chat-ia'),
+                'type' => 'select',
+                'options' => [
+                    'left' => __('Borde izquierdo', 'flavor-chat-ia'),
+                    'top' => __('Borde superior', 'flavor-chat-ia'),
+                    'full' => __('Borde completo', 'flavor-chat-ia'),
+                    'none' => __('Sin indicador', 'flavor-chat-ia'),
+                ],
+                'default' => 'left',
+            ],
+            'dashboard_density' => [
+                'label' => __('Densidad Dashboard', 'flavor-chat-ia'),
+                'type' => 'select',
+                'options' => [
+                    'compact' => __('Compacto', 'flavor-chat-ia'),
+                    'normal' => __('Normal', 'flavor-chat-ia'),
+                    'comfortable' => __('Espacioso', 'flavor-chat-ia'),
+                ],
+                'default' => 'normal',
+            ],
+            'widget_animations' => [
+                'label' => __('Animaciones', 'flavor-chat-ia'),
+                'type' => 'select',
+                'options' => [
+                    'all' => __('Todas habilitadas', 'flavor-chat-ia'),
+                    'minimal' => __('Solo hover', 'flavor-chat-ia'),
+                    'none' => __('Sin animaciones', 'flavor-chat-ia'),
+                ],
+                'default' => 'all',
+            ],
+        ];
+
+        foreach ($module_fields as $field => $config) {
+            add_settings_field(
+                $field,
+                $config['label'],
+                [$this, 'render_select_field'],
+                self::PAGE_SLUG,
+                'modules_section',
+                ['field' => $field, 'options' => $config['options'], 'default' => $config['default']]
+            );
+        }
+
+        // Campo de color global para botones primarios del dashboard
+        add_settings_field(
+            'dashboard_btn_primary_color',
+            __('Color Fondo Botones (Global)', 'flavor-chat-ia'),
+            [$this, 'render_color_field'],
+            self::PAGE_SLUG,
+            'modules_section',
+            ['field' => 'dashboard_btn_primary_color', 'default' => '']
+        );
+
+        // Campo de color de texto para botones del dashboard
+        add_settings_field(
+            'dashboard_btn_text_color',
+            __('Color Texto Botones (Global)', 'flavor-chat-ia'),
+            [$this, 'render_color_field'],
+            self::PAGE_SLUG,
+            'modules_section',
+            ['field' => 'dashboard_btn_text_color', 'default' => '#ffffff']
+        );
+    }
+
+    /**
+     * Renderizar campo select genérico
+     */
+    public function render_select_field($args) {
+        $settings = $this->get_settings();
+        $value = $settings[$args['field']] ?? $args['default'];
+        ?>
+        <select name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>">
+            <?php foreach ($args['options'] as $key => $label): ?>
+                <option value="<?php echo esc_attr($key); ?>" <?php selected($value, $key); ?>>
+                    <?php echo esc_html($label); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <?php
+    }
+
+    /**
+     * Renderizar campo de layout del portal
+     */
+    public function render_portal_layout_field($args) {
+        $settings = $this->get_settings();
+        $value = $settings[$args['field']] ?? $args['default'];
+
+        // Obtener layouts disponibles
+        $layouts = [];
+        if (class_exists('Flavor_Unified_Portal')) {
+            $layouts = Flavor_Unified_Portal::get_available_layouts();
+        } else {
+            $layouts = [
+                'legacy'      => __('Legacy (Original)', 'flavor-chat-ia'),
+                'ecosystem'   => __('Ecosistema (Jerárquico)', 'flavor-chat-ia'),
+                'cards'       => __('Cards (Grid modular)', 'flavor-chat-ia'),
+                'sidebar'     => __('Sidebar (Panel lateral)', 'flavor-chat-ia'),
+                'compact'     => __('Compacto (Lista)', 'flavor-chat-ia'),
+                'dashboard'   => __('Dashboard (Widgets)', 'flavor-chat-ia'),
+            ];
+        }
+
+        ?>
+        <div class="flavor-portal-layout-selector">
+            <?php foreach ($layouts as $layout_id => $layout_label): ?>
+            <label class="flavor-layout-option<?php echo $value === $layout_id ? ' flavor-layout-option--active' : ''; ?>">
+                <input type="radio"
+                       name="<?php echo esc_attr(self::OPTION_NAME . '[portal_layout]'); ?>"
+                       value="<?php echo esc_attr($layout_id); ?>"
+                       <?php checked($value, $layout_id); ?>>
+                <div class="flavor-layout-option__preview flavor-layout-option__preview--<?php echo esc_attr($layout_id); ?>">
+                    <?php $this->render_layout_preview_icon($layout_id); ?>
+                </div>
+                <span class="flavor-layout-option__label"><?php echo esc_html($layout_label); ?></span>
+            </label>
+            <?php endforeach; ?>
+        </div>
+        <style>
+            .flavor-portal-layout-selector {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+                margin-top: 8px;
+            }
+            .flavor-layout-option {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 12px;
+                border: 2px solid #e5e7eb;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .flavor-layout-option:hover {
+                border-color: #93c5fd;
+            }
+            .flavor-layout-option--active {
+                border-color: #3b82f6;
+                background: #eff6ff;
+            }
+            .flavor-layout-option input {
+                display: none;
+            }
+            .flavor-layout-option__preview {
+                width: 80px;
+                height: 60px;
+                background: #f9fafb;
+                border-radius: 4px;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .flavor-layout-option__preview svg {
+                width: 50px;
+                height: 40px;
+                color: #6b7280;
+            }
+            .flavor-layout-option--active .flavor-layout-option__preview svg {
+                color: #3b82f6;
+            }
+            .flavor-layout-option__label {
+                font-size: 12px;
+                font-weight: 500;
+                color: #374151;
+                text-align: center;
+            }
+        </style>
+        <script>
+        (function() {
+            document.querySelectorAll('.flavor-portal-layout-selector .flavor-layout-option input[type="radio"]').forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    // Quitar clase activa de todas las opciones
+                    document.querySelectorAll('.flavor-portal-layout-selector .flavor-layout-option').forEach(function(opt) {
+                        opt.classList.remove('flavor-layout-option--active');
+                    });
+                    // Añadir clase activa a la opción seleccionada
+                    if (this.checked) {
+                        this.closest('.flavor-layout-option').classList.add('flavor-layout-option--active');
+                    }
+                });
+            });
+        })();
+        </script>
+        <?php
+    }
+
+    /**
+     * Renderizar icono de preview del layout
+     */
+    private function render_layout_preview_icon($layout_id) {
+        $icons = [
+            'ecosystem' => '<svg viewBox="0 0 50 40" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="5" y="2" width="40" height="6" rx="1"/>
+                <rect x="5" y="12" width="18" height="12" rx="1"/>
+                <rect x="27" y="12" width="18" height="12" rx="1"/>
+                <rect x="5" y="28" width="10" height="8" rx="1"/>
+                <rect x="20" y="28" width="10" height="8" rx="1"/>
+                <rect x="35" y="28" width="10" height="8" rx="1"/>
+            </svg>',
+            'cards' => '<svg viewBox="0 0 50 40" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="12" height="16" rx="1"/>
+                <rect x="19" y="3" width="12" height="16" rx="1"/>
+                <rect x="35" y="3" width="12" height="16" rx="1"/>
+                <rect x="3" y="23" width="12" height="14" rx="1"/>
+                <rect x="19" y="23" width="12" height="14" rx="1"/>
+                <rect x="35" y="23" width="12" height="14" rx="1"/>
+            </svg>',
+            'sidebar' => '<svg viewBox="0 0 50 40" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="12" height="34" rx="1"/>
+                <rect x="18" y="3" width="29" height="34" rx="1"/>
+                <line x1="6" y1="8" x2="12" y2="8"/>
+                <line x1="6" y1="14" x2="12" y2="14"/>
+                <line x1="6" y1="20" x2="12" y2="20"/>
+            </svg>',
+            'compact' => '<svg viewBox="0 0 50 40" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="5" y="4" width="40" height="8" rx="1"/>
+                <rect x="5" y="16" width="40" height="8" rx="1"/>
+                <rect x="5" y="28" width="40" height="8" rx="1"/>
+            </svg>',
+            'dashboard' => '<svg viewBox="0 0 50 40" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="28" height="16" rx="1"/>
+                <rect x="35" y="3" width="12" height="16" rx="1"/>
+                <rect x="3" y="23" width="12" height="14" rx="1"/>
+                <rect x="19" y="23" width="12" height="14" rx="1"/>
+                <rect x="35" y="23" width="12" height="14" rx="1"/>
+            </svg>',
+        ];
+
+        echo $icons[$layout_id] ?? '';
     }
 
     /**
      * Renderizar secciones
      */
     public function render_colors_section() {
-        echo '<p>' . __('Configura la paleta de colores principal de tus componentes.', 'flavor-chat-ia') . '</p>';
+        // Obtener tema activo del Theme Manager
+        $active_theme_id = get_option('flavor_active_theme', 'default');
+        $theme_manager = class_exists('Flavor_Theme_Manager') ? Flavor_Theme_Manager::get_instance() : null;
+        $theme_name = $active_theme_id;
+
+        if ($theme_manager) {
+            $theme = $theme_manager->get_theme($active_theme_id);
+            $theme_name = $theme['name'] ?? $active_theme_id;
+        }
+        ?>
+        <div class="flavor-colors-intro" style="display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px;">
+                <p style="margin: 0 0 12px;">
+                    <?php _e('Configura la paleta de colores principal. Estos colores se aplican a:', 'flavor-chat-ia'); ?>
+                </p>
+                <ul style="margin: 0 0 12px; padding-left: 20px; font-size: 13px; color: #6b7280;">
+                    <li><?php _e('Botones, enlaces y elementos interactivos', 'flavor-chat-ia'); ?></li>
+                    <li><?php _e('Tarjetas de módulos y widgets', 'flavor-chat-ia'); ?></li>
+                    <li><?php _e('Badges, alertas y notificaciones', 'flavor-chat-ia'); ?></li>
+                    <li><?php _e('Headers, footers y navegación', 'flavor-chat-ia'); ?></li>
+                </ul>
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; min-width: 220px;">
+                <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;"><?php _e('Tema activo:', 'flavor-chat-ia'); ?></div>
+                <div style="font-weight: 600; color: #1e293b;"><?php echo esc_html($theme_name); ?></div>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
+                    <?php _e('Los valores aqui sobreescriben los del tema.', 'flavor-chat-ia'); ?>
+                </div>
+            </div>
+        </div>
+        <?php
     }
 
     public function render_typography_section() {
@@ -259,6 +639,104 @@ class Flavor_Design_Settings {
 
     public function render_components_section() {
         echo '<p>' . __('Configuración específica de componentes.', 'flavor-chat-ia') . '</p>';
+    }
+
+    public function render_layout_section() {
+        echo '<p>' . __('Personaliza los colores del header y footer de tu sitio.', 'flavor-chat-ia') . '</p>';
+    }
+
+    public function render_portal_section() {
+        echo '<p>' . __('Configura la apariencia del portal unificado de módulos.', 'flavor-chat-ia') . '</p>';
+    }
+
+    public function render_modules_section() {
+        ?>
+        <div class="flavor-section-intro" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 16px 20px; border-radius: 10px; margin-bottom: 16px; border-left: 4px solid #0ea5e9;">
+            <p style="margin: 0 0 10px; font-size: 14px; color: #0c4a6e;">
+                <strong><?php _e('Estos estilos se aplican globalmente a:', 'flavor-chat-ia'); ?></strong>
+            </p>
+            <ul style="margin: 0; padding-left: 20px; color: #0369a1; font-size: 13px;">
+                <li><?php _e('Tarjetas de módulos en el portal unificado', 'flavor-chat-ia'); ?></li>
+                <li><?php _e('Widgets del dashboard de usuario', 'flavor-chat-ia'); ?></li>
+                <li><?php _e('Listas de módulos en la navegación lateral', 'flavor-chat-ia'); ?></li>
+                <li><?php _e('Paneles de administración de cada módulo', 'flavor-chat-ia'); ?></li>
+            </ul>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderizar sección de colores de módulos activos
+     */
+    public function render_module_colors_section() {
+        ?>
+        <div class="flavor-section-intro" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 16px 20px; border-radius: 10px; margin-bottom: 16px; border-left: 4px solid #f59e0b;">
+            <p style="margin: 0; font-size: 14px; color: #92400e;">
+                <strong><?php _e('Personaliza el color de cada módulo activo.', 'flavor-chat-ia'); ?></strong>
+                <?php _e('Estos colores se usan en botones, iconos y elementos destacados de cada módulo.', 'flavor-chat-ia'); ?>
+            </p>
+        </div>
+        <?php
+        $this->render_module_color_fields();
+    }
+
+    /**
+     * Renderizar campos de color para cada módulo activo
+     */
+    private function render_module_color_fields() {
+        $modulos = $this->get_active_modules_with_colors();
+        $settings = $this->get_settings();
+
+        if (empty($modulos)) {
+            echo '<p class="description">' . __('No hay módulos activos.', 'flavor-chat-ia') . '</p>';
+            return;
+        }
+
+        echo '<div class="flavor-module-colors-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px;">';
+
+        foreach ($modulos as $module_id => $module_data) {
+            $field_name = 'module_color_' . $module_id;
+            $default_color = $module_data['color'];
+            $current_color = $settings[$field_name] ?? $default_color;
+            $icon_class = $module_data['icon'];
+            ?>
+            <div class="flavor-module-color-card" style="background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; display: flex; align-items: center; gap: 12px;">
+                <div class="flavor-module-color-preview" style="width: 48px; height: 48px; border-radius: 10px; background: <?php echo esc_attr($current_color); ?>; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <span class="dashicons <?php echo esc_attr($icon_class); ?>" style="color: #fff; font-size: 24px; width: 24px; height: 24px;"></span>
+                </div>
+                <div class="flavor-module-color-info" style="flex: 1; min-width: 0;">
+                    <label style="display: block; font-weight: 600; color: #1f2937; margin-bottom: 6px; font-size: 13px;">
+                        <?php echo esc_html($module_data['name']); ?>
+                    </label>
+                    <input
+                        type="text"
+                        name="<?php echo esc_attr(self::OPTION_NAME . '[' . $field_name . ']'); ?>"
+                        value="<?php echo esc_attr($current_color); ?>"
+                        class="flavor-color-picker flavor-module-color-input"
+                        data-default-color="<?php echo esc_attr($default_color); ?>"
+                        data-module-id="<?php echo esc_attr($module_id); ?>"
+                        style="width: 100%;"
+                    />
+                </div>
+            </div>
+            <?php
+        }
+
+        echo '</div>';
+
+        // Script para actualizar preview en tiempo real
+        ?>
+        <script>
+        jQuery(document).ready(function($) {
+            $('.flavor-module-color-input').wpColorPicker({
+                change: function(event, ui) {
+                    var color = ui.color.toString();
+                    $(this).closest('.flavor-module-color-card').find('.flavor-module-color-preview').css('background', color);
+                }
+            });
+        });
+        </script>
+        <?php
     }
 
     /**
@@ -416,7 +894,19 @@ class Flavor_Design_Settings {
             <!-- Importar Plantillas Web -->
             <div class="flavor-web-templates-wrapper" style="margin-top:30px;">
                 <h2><?php _e('Plantillas de Sitios Web', 'flavor-chat-ia'); ?></h2>
-                <p class="description"><?php _e('Importa todas las páginas de un diseño web. Se crearán como Landing Pages en borrador con el tema correspondiente activado.', 'flavor-chat-ia'); ?></p>
+                <div class="flavor-web-templates-info" style="background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%); border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px 20px; margin-bottom: 20px;">
+                    <h4 style="margin: 0 0 8px; color: #1e40af; display: flex; align-items: center; gap: 8px;">
+                        <span class="dashicons dashicons-info" style="font-size: 18px;"></span>
+                        <?php _e('Que hacen las plantillas web', 'flavor-chat-ia'); ?>
+                    </h4>
+                    <ul style="margin: 0; padding-left: 20px; color: #374151; font-size: 13px; line-height: 1.6;">
+                        <li><strong><?php _e('Importan paginas completas:', 'flavor-chat-ia'); ?></strong> <?php _e('Home, Servicios, Contacto, etc. como Landing Pages en borrador.', 'flavor-chat-ia'); ?></li>
+                        <li><strong><?php _e('Activan el tema correspondiente:', 'flavor-chat-ia'); ?></strong> <?php _e('Cada plantilla tiene un tema de colores asociado que se aplica automaticamente.', 'flavor-chat-ia'); ?></li>
+                        <li><strong><?php _e('Incluyen contenido de ejemplo:', 'flavor-chat-ia'); ?></strong> <?php _e('Textos, imagenes y estructura listos para personalizar.', 'flavor-chat-ia'); ?></li>
+                        <li><strong><?php _e('Son editables:', 'flavor-chat-ia'); ?></strong> <?php _e('Puedes modificar todo desde el Visual Builder despues de importar.', 'flavor-chat-ia'); ?></li>
+                    </ul>
+                </div>
+                <p class="description"><?php _e('Elige una plantilla segun el tipo de proyecto. Las paginas se crean en borrador para que puedas revisarlas antes de publicar.', 'flavor-chat-ia'); ?></p>
                 <div id="flavor-web-templates-grid" class="flavor-themes-grid" style="margin-top:15px;">
                     <?php
                     $web_themes_info = [
@@ -980,48 +1470,345 @@ class Flavor_Design_Settings {
      */
     private function render_preview() {
         $settings = $this->get_settings();
+        $bg_color = $settings['background_color'] ?? '#ffffff';
+        $primary_color = $settings['primary_color'] ?? '#3b82f6';
+        $secondary_color = $settings['secondary_color'] ?? '#8b5cf6';
+        $accent_color = $settings['accent_color'] ?? '#f59e0b';
+        $success_color = $settings['success_color'] ?? '#10b981';
+        $error_color = $settings['error_color'] ?? '#ef4444';
+        $text_color = $settings['text_color'] ?? '#1f2937';
+        $text_muted = $settings['text_muted_color'] ?? '#6b7280';
+        $btn_radius = ($settings['button_border_radius'] ?? '8') . 'px';
+        $card_radius = ($settings['card_border_radius'] ?? '12') . 'px';
+        $btn_py = ($settings['button_padding_y'] ?? '12') . 'px';
+        $btn_px = ($settings['button_padding_x'] ?? '24') . 'px';
+        $btn_font = ($settings['button_font_size'] ?? '16') . 'px';
+        $btn_weight = $settings['button_font_weight'] ?? '600';
+
+        // Detectar si es tema oscuro
+        $is_dark = $this->is_dark_color($bg_color);
+        $card_bg = $is_dark ? $this->lighten_color($bg_color, 10) : '#ffffff';
+        $border_color = $is_dark ? 'rgba(255,255,255,0.1)' : '#e5e7eb';
         ?>
-        <div class="flavor-preview-section" style="background: <?php echo esc_attr($settings['background_color'] ?? '#ffffff'); ?>; padding: 40px; border-radius: 12px;">
-            <h1 style="color: <?php echo esc_attr($settings['primary_color'] ?? '#3b82f6'); ?>; font-size: <?php echo esc_attr($settings['font_size_h1'] ?? '48'); ?>px;">
-                <?php _e('Título de Ejemplo', 'flavor-chat-ia'); ?>
-            </h1>
-            <h2 style="color: <?php echo esc_attr($settings['secondary_color'] ?? '#8b5cf6'); ?>; font-size: <?php echo esc_attr($settings['font_size_h2'] ?? '36'); ?>px;">
-                <?php _e('Subtítulo de Ejemplo', 'flavor-chat-ia'); ?>
-            </h2>
-            <p style="color: <?php echo esc_attr($settings['text_color'] ?? '#1f2937'); ?>; font-size: <?php echo esc_attr($settings['font_size_base'] ?? '16'); ?>px;">
-                <?php _e('Este es un párrafo de ejemplo para visualizar cómo se verán los textos con la configuración actual.', 'flavor-chat-ia'); ?>
-            </p>
-            <p style="color: <?php echo esc_attr($settings['text_muted_color'] ?? '#6b7280'); ?>;">
-                <?php _e('Texto secundario o descripción complementaria.', 'flavor-chat-ia'); ?>
-            </p>
-            <div style="display: flex; gap: 16px; margin-top: 24px;">
-                <button class="flavor-preview-button" style="
-                    background: <?php echo esc_attr($settings['primary_color'] ?? '#3b82f6'); ?>;
-                    color: white;
-                    padding: <?php echo esc_attr($settings['button_padding_y'] ?? '12'); ?>px <?php echo esc_attr($settings['button_padding_x'] ?? '24'); ?>px;
-                    border-radius: <?php echo esc_attr($settings['button_border_radius'] ?? '8'); ?>px;
-                    font-size: <?php echo esc_attr($settings['button_font_size'] ?? '16'); ?>px;
-                    font-weight: <?php echo esc_attr($settings['button_font_weight'] ?? '600'); ?>;
-                    border: none;
-                    cursor: pointer;
-                ">
-                    <?php _e('Botón Primario', 'flavor-chat-ia'); ?>
+        <div class="flavor-preview-section" id="flavor-live-preview" style="background: <?php echo esc_attr($bg_color); ?>; padding: 24px; border-radius: 12px; max-height: 600px; overflow-y: auto;">
+
+            <!-- Tab Navigation -->
+            <div style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid <?php echo esc_attr($border_color); ?>; padding-bottom: 12px;">
+                <button type="button" class="flavor-preview-tab flavor-preview-tab--active" data-tab="general" style="background: <?php echo esc_attr($primary_color); ?>; color: white; border: none; padding: 8px 16px; border-radius: <?php echo $btn_radius; ?>; font-size: 13px; cursor: pointer;">
+                    <?php _e('General', 'flavor-chat-ia'); ?>
                 </button>
-                <button class="flavor-preview-button" style="
-                    background: <?php echo esc_attr($settings['secondary_color'] ?? '#8b5cf6'); ?>;
-                    color: white;
-                    padding: <?php echo esc_attr($settings['button_padding_y'] ?? '12'); ?>px <?php echo esc_attr($settings['button_padding_x'] ?? '24'); ?>px;
-                    border-radius: <?php echo esc_attr($settings['button_border_radius'] ?? '8'); ?>px;
-                    font-size: <?php echo esc_attr($settings['button_font_size'] ?? '16'); ?>px;
-                    font-weight: <?php echo esc_attr($settings['button_font_weight'] ?? '600'); ?>;
-                    border: none;
-                    cursor: pointer;
-                ">
-                    <?php _e('Botón Secundario', 'flavor-chat-ia'); ?>
+                <button type="button" class="flavor-preview-tab" data-tab="cards" style="background: transparent; color: <?php echo esc_attr($text_muted); ?>; border: 1px solid <?php echo esc_attr($border_color); ?>; padding: 8px 16px; border-radius: <?php echo $btn_radius; ?>; font-size: 13px; cursor: pointer;">
+                    <?php _e('Tarjetas', 'flavor-chat-ia'); ?>
+                </button>
+                <button type="button" class="flavor-preview-tab" data-tab="forms" style="background: transparent; color: <?php echo esc_attr($text_muted); ?>; border: 1px solid <?php echo esc_attr($border_color); ?>; padding: 8px 16px; border-radius: <?php echo $btn_radius; ?>; font-size: 13px; cursor: pointer;">
+                    <?php _e('Formularios', 'flavor-chat-ia'); ?>
+                </button>
+                <button type="button" class="flavor-preview-tab" data-tab="modules" style="background: transparent; color: <?php echo esc_attr($text_muted); ?>; border: 1px solid <?php echo esc_attr($border_color); ?>; padding: 8px 16px; border-radius: <?php echo $btn_radius; ?>; font-size: 13px; cursor: pointer;">
+                    <?php _e('Modulos', 'flavor-chat-ia'); ?>
                 </button>
             </div>
+
+            <!-- Tab: General -->
+            <div class="flavor-preview-tab-content" data-tab-content="general">
+                <h1 style="color: <?php echo esc_attr($primary_color); ?>; font-size: <?php echo esc_attr(($settings['font_size_h1'] ?? '48') / 1.5); ?>px; margin: 0 0 12px 0;">
+                    <?php _e('Titulo de Ejemplo', 'flavor-chat-ia'); ?>
+                </h1>
+                <h2 style="color: <?php echo esc_attr($secondary_color); ?>; font-size: <?php echo esc_attr(($settings['font_size_h2'] ?? '36') / 1.5); ?>px; margin: 0 0 12px 0;">
+                    <?php _e('Subtitulo de Ejemplo', 'flavor-chat-ia'); ?>
+                </h2>
+                <p style="color: <?php echo esc_attr($text_color); ?>; font-size: <?php echo esc_attr($settings['font_size_base'] ?? '16'); ?>px; margin: 0 0 8px 0;">
+                    <?php _e('Este es un parrafo de ejemplo para visualizar como se veran los textos.', 'flavor-chat-ia'); ?>
+                </p>
+                <p style="color: <?php echo esc_attr($text_muted); ?>; font-size: 14px; margin: 0 0 16px 0;">
+                    <?php _e('Texto secundario o descripcion complementaria.', 'flavor-chat-ia'); ?>
+                </p>
+
+                <!-- Botones -->
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
+                    <button style="background: <?php echo esc_attr($primary_color); ?>; color: white; padding: <?php echo $btn_py; ?> <?php echo $btn_px; ?>; border-radius: <?php echo $btn_radius; ?>; font-size: <?php echo $btn_font; ?>; font-weight: <?php echo $btn_weight; ?>; border: none;">
+                        <?php _e('Primario', 'flavor-chat-ia'); ?>
+                    </button>
+                    <button style="background: <?php echo esc_attr($secondary_color); ?>; color: white; padding: <?php echo $btn_py; ?> <?php echo $btn_px; ?>; border-radius: <?php echo $btn_radius; ?>; font-size: <?php echo $btn_font; ?>; font-weight: <?php echo $btn_weight; ?>; border: none;">
+                        <?php _e('Secundario', 'flavor-chat-ia'); ?>
+                    </button>
+                    <button style="background: transparent; color: <?php echo esc_attr($primary_color); ?>; padding: <?php echo $btn_py; ?> <?php echo $btn_px; ?>; border-radius: <?php echo $btn_radius; ?>; font-size: <?php echo $btn_font; ?>; font-weight: <?php echo $btn_weight; ?>; border: 2px solid <?php echo esc_attr($primary_color); ?>;">
+                        <?php _e('Outline', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+
+                <!-- Badges -->
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <span style="background: <?php echo esc_attr($primary_color); ?>20; color: <?php echo esc_attr($primary_color); ?>; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 500;">Primario</span>
+                    <span style="background: <?php echo esc_attr($success_color); ?>20; color: <?php echo esc_attr($success_color); ?>; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 500;">Exito</span>
+                    <span style="background: <?php echo esc_attr($accent_color); ?>20; color: <?php echo esc_attr($accent_color); ?>; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 500;">Acento</span>
+                    <span style="background: <?php echo esc_attr($error_color); ?>20; color: <?php echo esc_attr($error_color); ?>; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 500;">Error</span>
+                </div>
+            </div>
+
+            <!-- Tab: Tarjetas -->
+            <div class="flavor-preview-tab-content" data-tab-content="cards" style="display: none;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                    <!-- Card 1 -->
+                    <div style="background: <?php echo esc_attr($card_bg); ?>; border: 1px solid <?php echo esc_attr($border_color); ?>; border-radius: <?php echo $card_radius; ?>; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <div style="width: 40px; height: 40px; background: <?php echo esc_attr($primary_color); ?>; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <span class="dashicons dashicons-calendar-alt" style="color: white;"></span>
+                            </div>
+                            <div>
+                                <h4 style="margin: 0; color: <?php echo esc_attr($text_color); ?>; font-size: 14px;"><?php _e('Eventos', 'flavor-chat-ia'); ?></h4>
+                                <span style="color: <?php echo esc_attr($text_muted); ?>; font-size: 12px;">3 <?php _e('activos', 'flavor-chat-ia'); ?></span>
+                            </div>
+                        </div>
+                        <p style="margin: 0; color: <?php echo esc_attr($text_muted); ?>; font-size: 13px;"><?php _e('Proximos eventos de la comunidad', 'flavor-chat-ia'); ?></p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div style="background: <?php echo esc_attr($card_bg); ?>; border: 1px solid <?php echo esc_attr($border_color); ?>; border-radius: <?php echo $card_radius; ?>; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <div style="width: 40px; height: 40px; background: <?php echo esc_attr($secondary_color); ?>; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <span class="dashicons dashicons-groups" style="color: white;"></span>
+                            </div>
+                            <div>
+                                <h4 style="margin: 0; color: <?php echo esc_attr($text_color); ?>; font-size: 14px;"><?php _e('Comunidades', 'flavor-chat-ia'); ?></h4>
+                                <span style="color: <?php echo esc_attr($text_muted); ?>; font-size: 12px;">5 <?php _e('miembros', 'flavor-chat-ia'); ?></span>
+                            </div>
+                        </div>
+                        <p style="margin: 0; color: <?php echo esc_attr($text_muted); ?>; font-size: 13px;"><?php _e('Espacios colaborativos activos', 'flavor-chat-ia'); ?></p>
+                    </div>
+
+                    <!-- Card 3: Stats -->
+                    <div style="background: <?php echo esc_attr($card_bg); ?>; border: 1px solid <?php echo esc_attr($border_color); ?>; border-radius: <?php echo $card_radius; ?>; padding: 16px; grid-column: span 2;">
+                        <h4 style="margin: 0 0 12px; color: <?php echo esc_attr($text_color); ?>; font-size: 14px;"><?php _e('Estadisticas', 'flavor-chat-ia'); ?></h4>
+                        <div style="display: flex; gap: 24px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 24px; font-weight: 700; color: <?php echo esc_attr($primary_color); ?>;">42</div>
+                                <div style="font-size: 11px; color: <?php echo esc_attr($text_muted); ?>;"><?php _e('Usuarios', 'flavor-chat-ia'); ?></div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 24px; font-weight: 700; color: <?php echo esc_attr($success_color); ?>;">18</div>
+                                <div style="font-size: 11px; color: <?php echo esc_attr($text_muted); ?>;"><?php _e('Modulos', 'flavor-chat-ia'); ?></div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 24px; font-weight: 700; color: <?php echo esc_attr($accent_color); ?>;">127</div>
+                                <div style="font-size: 11px; color: <?php echo esc_attr($text_muted); ?>;"><?php _e('Acciones', 'flavor-chat-ia'); ?></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Formularios -->
+            <div class="flavor-preview-tab-content" data-tab-content="forms" style="display: none;">
+                <div style="background: <?php echo esc_attr($card_bg); ?>; border: 1px solid <?php echo esc_attr($border_color); ?>; border-radius: <?php echo $card_radius; ?>; padding: 20px;">
+                    <h4 style="margin: 0 0 16px; color: <?php echo esc_attr($text_color); ?>; font-size: 16px;"><?php _e('Formulario de ejemplo', 'flavor-chat-ia'); ?></h4>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 6px; color: <?php echo esc_attr($text_color); ?>; font-size: 13px; font-weight: 500;"><?php _e('Nombre', 'flavor-chat-ia'); ?></label>
+                        <input type="text" placeholder="<?php esc_attr_e('Tu nombre', 'flavor-chat-ia'); ?>" style="width: 100%; padding: 10px 14px; border: 1px solid <?php echo esc_attr($border_color); ?>; border-radius: <?php echo $btn_radius; ?>; font-size: 14px; background: <?php echo esc_attr($bg_color); ?>; color: <?php echo esc_attr($text_color); ?>; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 6px; color: <?php echo esc_attr($text_color); ?>; font-size: 13px; font-weight: 500;"><?php _e('Email', 'flavor-chat-ia'); ?></label>
+                        <input type="email" placeholder="tu@email.com" style="width: 100%; padding: 10px 14px; border: 1px solid <?php echo esc_attr($border_color); ?>; border-radius: <?php echo $btn_radius; ?>; font-size: 14px; background: <?php echo esc_attr($bg_color); ?>; color: <?php echo esc_attr($text_color); ?>; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: flex; align-items: center; gap: 8px; color: <?php echo esc_attr($text_color); ?>; font-size: 13px; cursor: pointer;">
+                            <input type="checkbox" style="accent-color: <?php echo esc_attr($primary_color); ?>;">
+                            <?php _e('Acepto los terminos y condiciones', 'flavor-chat-ia'); ?>
+                        </label>
+                    </div>
+
+                    <button style="background: <?php echo esc_attr($primary_color); ?>; color: white; padding: <?php echo $btn_py; ?> <?php echo $btn_px; ?>; border-radius: <?php echo $btn_radius; ?>; font-size: <?php echo $btn_font; ?>; font-weight: <?php echo $btn_weight; ?>; border: none; width: 100%;">
+                        <?php _e('Enviar', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab: Modulos -->
+            <div class="flavor-preview-tab-content" data-tab-content="modules" style="display: none;">
+                <?php
+                // Obtener configuración de módulos
+                $module_card_style = $settings['module_card_style'] ?? 'elevated';
+                $module_icon_style = $settings['module_icon_style'] ?? 'filled';
+                $module_border_style = $settings['module_border_style'] ?? 'left';
+                $dashboard_density = $settings['dashboard_density'] ?? 'normal';
+
+                // Estilos dinámicos según configuración
+                $card_styles = [
+                    'elevated' => "box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: none;",
+                    'outlined' => "box-shadow: none; border: 1px solid {$border_color};",
+                    'flat' => "box-shadow: none; border: none; background: " . ($is_dark ? 'rgba(255,255,255,0.05)' : '#f9fafb') . ";",
+                    'glass' => "background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);",
+                ];
+
+                $border_styles = [
+                    'left' => "border-left: 4px solid {$primary_color};",
+                    'top' => "border-top: 4px solid {$primary_color};",
+                    'full' => "border: 2px solid {$primary_color};",
+                    'none' => "",
+                ];
+
+                $density_padding = [
+                    'compact' => '10px 12px',
+                    'normal' => '14px 16px',
+                    'comfortable' => '18px 20px',
+                ];
+                ?>
+
+                <div style="display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;">
+                    <div style="background: <?php echo esc_attr($primary_color); ?>15; padding: 6px 12px; border-radius: 6px; font-size: 11px;">
+                        <strong><?php _e('Tarjeta:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(ucfirst($module_card_style)); ?>
+                    </div>
+                    <div style="background: <?php echo esc_attr($secondary_color); ?>15; padding: 6px 12px; border-radius: 6px; font-size: 11px;">
+                        <strong><?php _e('Icono:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(ucfirst($module_icon_style)); ?>
+                    </div>
+                    <div style="background: <?php echo esc_attr($accent_color); ?>15; padding: 6px 12px; border-radius: 6px; font-size: 11px;">
+                        <strong><?php _e('Borde:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(ucfirst($module_border_style)); ?>
+                    </div>
+                    <div style="background: <?php echo esc_attr($success_color); ?>15; padding: 6px 12px; border-radius: 6px; font-size: 11px;">
+                        <strong><?php _e('Densidad:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(ucfirst($dashboard_density)); ?>
+                    </div>
+                </div>
+
+                <!-- Module Cards Preview -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                    <?php
+                    $sample_modules = [
+                        ['icon' => 'dashicons-groups', 'name' => 'Comunidades', 'desc' => '5 activas', 'color' => $primary_color],
+                        ['icon' => 'dashicons-calendar-alt', 'name' => 'Eventos', 'desc' => '3 proximos', 'color' => $secondary_color],
+                        ['icon' => 'dashicons-carrot', 'name' => 'Huertos', 'desc' => '2 parcelas', 'color' => $success_color],
+                        ['icon' => 'dashicons-store', 'name' => 'Marketplace', 'desc' => '12 anuncios', 'color' => $accent_color],
+                    ];
+
+                    foreach ($sample_modules as $mod):
+                        // Generar estilo de icono
+                        $icon_style_css = '';
+                        switch ($module_icon_style) {
+                            case 'filled':
+                                $icon_style_css = "background: {$mod['color']}; color: white;";
+                                break;
+                            case 'outlined':
+                                $icon_style_css = "background: transparent; border: 2px solid {$mod['color']}; color: {$mod['color']};";
+                                break;
+                            case 'gradient':
+                                $icon_style_css = "background: linear-gradient(135deg, {$mod['color']} 0%, {$secondary_color} 100%); color: white;";
+                                break;
+                            case 'minimal':
+                                $icon_style_css = "background: {$mod['color']}15; color: {$mod['color']};";
+                                break;
+                        }
+
+                        // Combinar estilos de tarjeta
+                        $combined_card_style = ($card_styles[$module_card_style] ?? '') . ' ' . ($border_styles[$module_border_style] ?? '');
+                    ?>
+                    <div style="padding: <?php echo esc_attr($density_padding[$dashboard_density] ?? '14px 16px'); ?>; background: <?php echo esc_attr($card_bg); ?>; border-radius: <?php echo $card_radius; ?>; <?php echo $combined_card_style; ?>">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; <?php echo $icon_style_css; ?>">
+                                <span class="dashicons <?php echo esc_attr($mod['icon']); ?>" style="font-size: 20px;"></span>
+                            </div>
+                            <div>
+                                <div style="color: <?php echo esc_attr($text_color); ?>; font-size: 14px; font-weight: 600;"><?php echo esc_html($mod['name']); ?></div>
+                                <div style="color: <?php echo esc_attr($text_muted); ?>; font-size: 12px;"><?php echo esc_html($mod['desc']); ?></div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Dashboard Widget Preview -->
+                <div style="margin-top: 16px; padding: 16px; background: <?php echo esc_attr($card_bg); ?>; border: 1px solid <?php echo esc_attr($border_color); ?>; border-radius: <?php echo $card_radius; ?>;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <span style="color: <?php echo esc_attr($text_color); ?>; font-size: 14px; font-weight: 600;"><?php _e('Widget de Dashboard', 'flavor-chat-ia'); ?></span>
+                        <span style="background: <?php echo esc_attr($primary_color); ?>; color: white; padding: 2px 8px; border-radius: 9999px; font-size: 11px;">3</span>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <div style="flex: 1; height: 8px; background: <?php echo esc_attr($primary_color); ?>; border-radius: 4px;"></div>
+                        <div style="flex: 0.6; height: 8px; background: <?php echo esc_attr($secondary_color); ?>; border-radius: 4px;"></div>
+                        <div style="flex: 0.3; height: 8px; background: <?php echo esc_attr($accent_color); ?>; border-radius: 4px;"></div>
+                    </div>
+                    <p style="margin: 12px 0 0; color: <?php echo esc_attr($text_muted); ?>; font-size: 12px;"><?php _e('Los widgets usaran la densidad y animaciones configuradas.', 'flavor-chat-ia'); ?></p>
+                </div>
+            </div>
         </div>
+
+        <script>
+        (function() {
+            var tabs = document.querySelectorAll('.flavor-preview-tab');
+            var contents = document.querySelectorAll('.flavor-preview-tab-content');
+
+            tabs.forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    var targetTab = this.getAttribute('data-tab');
+
+                    // Update tab styles
+                    tabs.forEach(function(t) {
+                        t.classList.remove('flavor-preview-tab--active');
+                        t.style.background = 'transparent';
+                        t.style.color = '<?php echo esc_js($text_muted); ?>';
+                    });
+                    this.classList.add('flavor-preview-tab--active');
+                    this.style.background = '<?php echo esc_js($primary_color); ?>';
+                    this.style.color = 'white';
+
+                    // Show/hide content
+                    contents.forEach(function(c) {
+                        c.style.display = c.getAttribute('data-tab-content') === targetTab ? 'block' : 'none';
+                    });
+                });
+            });
+        })();
+        </script>
         <?php
+    }
+
+    /**
+     * Comprobar si un color es oscuro
+     */
+    private function is_dark_color($hex) {
+        $hex = ltrim($hex, '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+        }
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        $brightness = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+        return $brightness < 128;
+    }
+
+    /**
+     * Aclarar un color
+     */
+    private function lighten_color($hex, $percent) {
+        $hex = ltrim($hex, '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+        }
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        $r = min(255, $r + ($percent * 2.55));
+        $g = min(255, $g + ($percent * 2.55));
+        $b = min(255, $b + ($percent * 2.55));
+        return sprintf('#%02x%02x%02x', $r, $g, $b);
+    }
+
+    /**
+     * Oscurecer un color
+     */
+    private function darken_color($hex, $percent) {
+        $hex = ltrim($hex, '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+        }
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        $r = max(0, $r - ($percent * 2.55));
+        $g = max(0, $g - ($percent * 2.55));
+        $b = max(0, $b - ($percent * 2.55));
+        return sprintf('#%02x%02x%02x', $r, $g, $b);
     }
 
     /**
@@ -1297,7 +2084,7 @@ class Flavor_Design_Settings {
         $sanitized = [];
 
         // Campos de color
-        $color_fields = ['primary_color', 'secondary_color', 'accent_color', 'success_color', 'warning_color', 'error_color', 'background_color', 'text_color', 'text_muted_color'];
+        $color_fields = ['primary_color', 'secondary_color', 'accent_color', 'success_color', 'warning_color', 'error_color', 'background_color', 'text_color', 'text_muted_color', 'header_bg_color', 'header_text_color', 'footer_bg_color', 'footer_text_color'];
         foreach ($color_fields as $field) {
             if (isset($input[$field])) {
                 $sanitized[$field] = sanitize_hex_color($input[$field]);
@@ -1312,11 +2099,22 @@ class Flavor_Design_Settings {
             }
         }
 
-        // Campos de texto
-        $text_fields = ['font_family_headings', 'font_family_body', 'card_shadow'];
+        // Campos de texto y select
+        $text_fields = [
+            'font_family_headings', 'font_family_body', 'card_shadow', 'portal_layout',
+            'module_card_style', 'module_icon_style', 'module_border_style',
+            'dashboard_density', 'widget_animations'
+        ];
         foreach ($text_fields as $field) {
             if (isset($input[$field])) {
                 $sanitized[$field] = sanitize_text_field($input[$field]);
+            }
+        }
+
+        // Colores de módulos (campos dinámicos module_color_*)
+        foreach ($input as $key => $value) {
+            if (strpos($key, 'module_color_') === 0) {
+                $sanitized[$key] = sanitize_hex_color($value);
             }
         }
 
@@ -1465,6 +2263,13 @@ class Flavor_Design_Settings {
             'card_shadow' => 'medium',
             'hero_overlay_opacity' => 0.6,
             'image_border_radius' => 8,
+            // Header y Footer
+            'header_bg_color' => '#ffffff',
+            'header_text_color' => '#1f2937',
+            'footer_bg_color' => '#1f2937',
+            'footer_text_color' => '#ffffff',
+            // Portal
+            'portal_layout' => 'ecosystem',
         ];
     }
 
@@ -1543,6 +2348,90 @@ class Flavor_Design_Settings {
     --flavor-card-shadow: <?php echo $this->get_shadow_value($settings['card_shadow']); ?>;
     --flavor-hero-overlay: <?php echo esc_attr($settings['hero_overlay_opacity']); ?>;
     --flavor-image-radius: <?php echo esc_attr($settings['image_border_radius']); ?>px;
+
+    /* Header y Footer */
+    --flavor-header-bg: <?php echo esc_attr($settings['header_bg_color'] ?? '#ffffff'); ?>;
+    --flavor-header-text: <?php echo esc_attr($settings['header_text_color'] ?? '#1f2937'); ?>;
+    --flavor-footer-bg-dark: <?php echo esc_attr($settings['footer_bg_color'] ?? '#1f2937'); ?>;
+    --flavor-footer-text-dark: <?php echo esc_attr($settings['footer_text_color'] ?? '#ffffff'); ?>;
+
+    /* Módulos y Dashboards */
+    --flavor-module-card-style: <?php echo esc_attr($settings['module_card_style'] ?? 'elevated'); ?>;
+    --flavor-module-icon-style: <?php echo esc_attr($settings['module_icon_style'] ?? 'filled'); ?>;
+    --flavor-module-border-style: <?php echo esc_attr($settings['module_border_style'] ?? 'left'); ?>;
+    --flavor-dashboard-density: <?php echo esc_attr($settings['dashboard_density'] ?? 'normal'); ?>;
+    --flavor-widget-animations: <?php echo esc_attr($settings['widget_animations'] ?? 'all'); ?>;
+
+    /* Colores globales de botones dashboard */
+<?php if (!empty($settings['dashboard_btn_primary_color'])): ?>
+    --flavor-dashboard-btn-primary: <?php echo esc_attr($settings['dashboard_btn_primary_color']); ?>;
+<?php endif; ?>
+<?php if (!empty($settings['dashboard_btn_text_color'])): ?>
+    --flavor-dashboard-btn-text: <?php echo esc_attr($settings['dashboard_btn_text_color']); ?>;
+<?php endif; ?>
+
+    /* Colores de Módulos Activos */
+<?php
+$modulos_colores = $this->get_active_modules_with_colors();
+foreach ($modulos_colores as $module_id => $module_data) {
+    $field_name = 'module_color_' . $module_id;
+    $color = $settings[$field_name] ?? $module_data['color'];
+    echo "    --flavor-module-{$module_id}: " . esc_attr($color) . ";\n";
+}
+?>
+
+    /* ================================================
+       Variables del Sistema de Diseño (fl-*)
+       Usadas por: Unified Portal, Dashboards, Widgets
+       ================================================ */
+    --fl-primary-500: var(--flavor-primary);
+    --fl-primary-100: <?php echo esc_attr($this->lighten_color($settings['primary_color'], 40)); ?>;
+    --fl-primary-200: <?php echo esc_attr($this->lighten_color($settings['primary_color'], 30)); ?>;
+    --fl-primary-300: <?php echo esc_attr($this->lighten_color($settings['primary_color'], 20)); ?>;
+    --fl-primary-400: <?php echo esc_attr($this->lighten_color($settings['primary_color'], 10)); ?>;
+    --fl-primary-600: <?php echo esc_attr($this->darken_color($settings['primary_color'], 10)); ?>;
+    --fl-primary-700: <?php echo esc_attr($this->darken_color($settings['primary_color'], 20)); ?>;
+    --fl-primary-800: <?php echo esc_attr($this->darken_color($settings['primary_color'], 30)); ?>;
+    --fl-primary-900: <?php echo esc_attr($this->darken_color($settings['primary_color'], 40)); ?>;
+
+    --fl-secondary-500: var(--flavor-secondary);
+    --fl-accent-500: var(--flavor-accent);
+
+    --fl-neutral-0: #ffffff;
+    --fl-neutral-50: <?php echo esc_attr($settings['background_color']); ?>;
+    --fl-neutral-100: #f3f4f6;
+    --fl-neutral-200: #e5e7eb;
+    --fl-neutral-300: #d1d5db;
+    --fl-neutral-400: <?php echo esc_attr($settings['text_muted_color']); ?>;
+    --fl-neutral-500: #6b7280;
+    --fl-neutral-600: #4b5563;
+    --fl-neutral-700: #374151;
+    --fl-neutral-800: #1f2937;
+    --fl-neutral-900: <?php echo esc_attr($settings['text_color']); ?>;
+
+    --fl-success-500: var(--flavor-success);
+    --fl-warning-500: var(--flavor-warning);
+    --fl-error-500: var(--flavor-error);
+
+    --fl-radius-sm: 0.375rem;
+    --fl-radius-md: var(--flavor-button-radius);
+    --fl-radius-lg: var(--flavor-card-radius);
+    --fl-radius-xl: calc(var(--flavor-card-radius) * 1.5);
+
+    --fl-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --fl-shadow-md: var(--flavor-card-shadow);
+    --fl-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+    --fl-space-1: 0.25rem;
+    --fl-space-2: 0.5rem;
+    --fl-space-3: 0.75rem;
+    --fl-space-4: 1rem;
+    --fl-space-5: 1.25rem;
+    --fl-space-6: 1.5rem;
+    --fl-space-8: 2rem;
+
+    --fl-font-sans: var(--flavor-font-body);
+    --fl-text-base: var(--flavor-font-size-base);
 }
 
 /* Aplicar estilos globales */
@@ -1627,6 +2516,297 @@ class Flavor_Design_Settings {
 .flavor-image {
     border-radius: var(--flavor-image-radius);
 }
+
+/* ========================================
+   ESTILOS DE MÓDULOS Y DASHBOARDS
+   ======================================== */
+
+/* Estilos de tarjeta de módulo */
+.flavor-module-card {
+    background: var(--flavor-bg, #ffffff);
+    border-radius: var(--flavor-card-radius, 12px);
+    transition: all 0.2s ease;
+}
+
+/* Estilo: elevated (por defecto) */
+.flavor-module-card[data-card-style="elevated"],
+:root:has([data-module-card-style="elevated"]) .flavor-module-card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: none;
+}
+.flavor-module-card[data-card-style="elevated"]:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+/* Estilo: outlined */
+.flavor-module-card[data-card-style="outlined"] {
+    box-shadow: none;
+    border: 1px solid var(--flavor-border, #e5e7eb);
+}
+.flavor-module-card[data-card-style="outlined"]:hover {
+    border-color: var(--flavor-primary, #3b82f6);
+}
+
+/* Estilo: flat */
+.flavor-module-card[data-card-style="flat"] {
+    box-shadow: none;
+    border: none;
+    background: var(--flavor-bg-secondary, #f9fafb);
+}
+
+/* Estilo: glass */
+.flavor-module-card[data-card-style="glass"] {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos de icono de módulo */
+.flavor-module-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    font-size: 24px;
+}
+
+/* Icono: filled */
+.flavor-module-icon[data-icon-style="filled"] {
+    background: var(--flavor-primary, #3b82f6);
+    color: white;
+}
+
+/* Icono: outlined */
+.flavor-module-icon[data-icon-style="outlined"] {
+    background: transparent;
+    border: 2px solid var(--flavor-primary, #3b82f6);
+    color: var(--flavor-primary, #3b82f6);
+}
+
+/* Icono: gradient */
+.flavor-module-icon[data-icon-style="gradient"] {
+    background: linear-gradient(135deg, var(--flavor-primary, #3b82f6) 0%, var(--flavor-secondary, #8b5cf6) 100%);
+    color: white;
+}
+
+/* Icono: minimal */
+.flavor-module-icon[data-icon-style="minimal"] {
+    background: color-mix(in srgb, var(--flavor-primary, #3b82f6) 10%, transparent);
+    color: var(--flavor-primary, #3b82f6);
+}
+
+/* Estilos de borde de módulo */
+.flavor-module-card[data-border-style="left"] {
+    border-left: 4px solid var(--flavor-primary, #3b82f6);
+}
+.flavor-module-card[data-border-style="top"] {
+    border-top: 4px solid var(--flavor-primary, #3b82f6);
+}
+.flavor-module-card[data-border-style="full"] {
+    border: 2px solid var(--flavor-primary, #3b82f6);
+}
+.flavor-module-card[data-border-style="none"] {
+    border: none;
+}
+
+/* Densidad del dashboard */
+.flavor-dashboard[data-density="compact"] {
+    --dashboard-gap: 12px;
+    --dashboard-padding: 12px;
+    --dashboard-widget-padding: 12px;
+}
+.flavor-dashboard[data-density="normal"] {
+    --dashboard-gap: 16px;
+    --dashboard-padding: 16px;
+    --dashboard-widget-padding: 16px;
+}
+.flavor-dashboard[data-density="comfortable"] {
+    --dashboard-gap: 24px;
+    --dashboard-padding: 24px;
+    --dashboard-widget-padding: 20px;
+}
+
+.flavor-dashboard {
+    gap: var(--dashboard-gap, 16px);
+    padding: var(--dashboard-padding, 16px);
+}
+.flavor-dashboard-widget {
+    padding: var(--dashboard-widget-padding, 16px);
+}
+
+/* Animaciones de widgets */
+.flavor-dashboard[data-animations="all"] .flavor-dashboard-widget {
+    transition: all 0.3s ease;
+}
+.flavor-dashboard[data-animations="all"] .flavor-dashboard-widget:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-dashboard[data-animations="minimal"] .flavor-dashboard-widget {
+    transition: box-shadow 0.2s ease;
+}
+.flavor-dashboard[data-animations="minimal"] .flavor-dashboard-widget:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.flavor-dashboard[data-animations="none"] .flavor-dashboard-widget {
+    transition: none;
+}
+
+/* ========================================
+   INTEGRACIÓN CON DASHBOARD UNIFICADO (fud-*)
+   Aplica las configuraciones de módulos a las clases existentes
+   ======================================== */
+
+/* Densidad aplicada a widgets del dashboard unificado */
+:root {
+    --fud-density-gap: <?php
+        $density_settings = [
+            'compact' => '0.75rem',
+            'normal' => '1rem',
+            'comfortable' => '1.5rem',
+        ];
+        echo $density_settings[$settings['dashboard_density'] ?? 'normal'];
+    ?>;
+    --fud-density-padding: <?php
+        $density_padding = [
+            'compact' => '1rem',
+            'normal' => '1.25rem',
+            'comfortable' => '1.75rem',
+        ];
+        echo $density_padding[$settings['dashboard_density'] ?? 'normal'];
+    ?>;
+}
+
+.fud-widgets-grid {
+    gap: var(--fud-density-gap, 1rem);
+}
+
+.fud-widget,
+.fud-priority-panel {
+    padding: var(--fud-density-padding, 1.25rem);
+}
+
+/* Animaciones aplicadas a widgets existentes */
+<?php if (($settings['widget_animations'] ?? 'all') === 'all'): ?>
+.fud-widget,
+.fud-priority-panel {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.fud-widget:hover,
+.fud-priority-panel:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+}
+<?php elseif (($settings['widget_animations'] ?? 'all') === 'minimal'): ?>
+.fud-widget,
+.fud-priority-panel {
+    transition: box-shadow 0.2s ease;
+}
+.fud-widget:hover,
+.fud-priority-panel:hover {
+    box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.1);
+}
+<?php else: ?>
+.fud-widget,
+.fud-priority-panel {
+    transition: none;
+}
+<?php endif; ?>
+
+/* Estilo de tarjeta aplicado a widgets existentes */
+<?php
+$card_style = $settings['module_card_style'] ?? 'elevated';
+switch ($card_style):
+    case 'outlined':
+?>
+.fud-widget,
+.fud-priority-panel {
+    box-shadow: none;
+    border: 1px solid var(--fl-border-default, var(--flavor-border, #e5e7eb));
+}
+<?php break;
+    case 'flat':
+?>
+.fud-widget,
+.fud-priority-panel {
+    box-shadow: none;
+    border: none;
+    background: var(--fl-bg-muted, var(--flavor-bg-tertiary, #f3f4f6));
+}
+<?php break;
+    case 'glass':
+?>
+.fud-widget,
+.fud-priority-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+<?php break;
+    default: // elevated
+?>
+.fud-widget,
+.fud-priority-panel {
+    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+<?php endswitch; ?>
+
+/* ========================================
+   BOTONES DEL PORTAL UNIFICADO
+   ======================================== */
+.fup-btn--primary,
+.flavor-unified-portal .fup-btn--primary,
+a.fup-btn--primary {
+    background: var(--fl-primary-500, var(--flavor-primary, #3b82f6)) !important;
+    color: <?php echo !empty($settings['dashboard_btn_text_color']) ? esc_attr($settings['dashboard_btn_text_color']) : '#ffffff'; ?> !important;
+    border: none;
+}
+
+.fup-btn--primary:hover,
+.flavor-unified-portal .fup-btn--primary:hover,
+a.fup-btn--primary:hover {
+    background: var(--fl-primary-700, <?php echo esc_attr($this->darken_color($settings['primary_color'], 20)); ?>) !important;
+    color: <?php echo !empty($settings['dashboard_btn_text_color']) ? esc_attr($settings['dashboard_btn_text_color']) : '#ffffff'; ?> !important;
+    text-decoration: none;
+}
+
+.fup-btn--secondary,
+a.fup-btn--secondary {
+    background: var(--fl-neutral-100, #f3f4f6);
+    color: var(--fl-neutral-700, #374151);
+    border: 1px solid var(--fl-neutral-200, #e5e7eb);
+}
+
+.fup-btn--secondary:hover,
+a.fup-btn--secondary:hover {
+    background: var(--fl-neutral-200, #e5e7eb);
+    color: var(--fl-neutral-900, #111827);
+    text-decoration: none;
+}
+
+.fup-btn--outline,
+a.fup-btn--outline {
+    background: transparent;
+    color: var(--fl-primary-500, var(--flavor-primary, #3b82f6));
+    border: 2px solid var(--fl-primary-500, var(--flavor-primary, #3b82f6));
+}
+
+.fup-btn--outline:hover,
+a.fup-btn--outline:hover {
+    background: var(--fl-primary-500, var(--flavor-primary, #3b82f6));
+    color: #ffffff;
+    text-decoration: none;
+}
+
         <?php
         return ob_get_clean();
     }

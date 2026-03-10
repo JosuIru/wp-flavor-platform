@@ -10,9 +10,10 @@ if (!defined('ABSPATH')) exit;
 
 $usuario_actual_id = get_current_user_id();
 if (!$usuario_actual_id) {
-    echo '<div class="flavor-alert flavor-alert-warning">';
-    echo '<span class="dashicons dashicons-warning"></span> ';
-    echo esc_html__('Debes iniciar sesión para ver tus propuestas.', 'flavor-chat-ia');
+    echo '<div class="flavor-empty-state">';
+    echo '<div class="flavor-empty-icon"><span class="dashicons dashicons-lock"></span></div>';
+    echo '<p>' . esc_html__('Debes iniciar sesión para ver tus propuestas.', 'flavor-chat-ia') . '</p>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }
@@ -131,7 +132,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
             <p class="flavor-subtitle"><?php esc_html_e('Gestiona las propuestas que has presentado a la comunidad', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="flavor-header-actions">
-            <a href="<?php echo esc_url(home_url('/participacion/nueva-propuesta/')); ?>" class="flavor-btn flavor-btn-primary">
+            <a href="<?php echo esc_url(home_url('/mi-portal/participacion/crear/')); ?>" class="flavor-btn flavor-btn-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
                 <?php esc_html_e('Nueva Propuesta', 'flavor-chat-ia'); ?>
             </a>
@@ -212,7 +213,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
             </div>
             <h3><?php esc_html_e('No tienes propuestas', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Comparte tus ideas para mejorar la comunidad creando tu primera propuesta.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(home_url('/participacion/nueva-propuesta/')); ?>" class="flavor-btn flavor-btn-primary">
+            <a href="<?php echo esc_url(home_url('/mi-portal/participacion/crear/')); ?>" class="flavor-btn flavor-btn-primary">
                 <?php esc_html_e('Crear mi primera propuesta', 'flavor-chat-ia'); ?>
             </a>
         </div>
@@ -240,7 +241,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
                         </div>
 
                         <h3 class="flavor-propuesta-titulo">
-                            <a href="<?php echo esc_url(home_url('/participacion/' . ($propuesta->slug ?? $propuesta->id))); ?>">
+                            <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, home_url('/mi-portal/participacion/detalle/'))); ?>">
                                 <?php echo esc_html($propuesta->titulo); ?>
                             </a>
                         </h3>
@@ -288,18 +289,11 @@ $url_base = remove_query_arg(['pag', 'estado']);
                     </div>
 
                     <div class="flavor-propuesta-actions">
-                        <a href="<?php echo esc_url(home_url('/participacion/' . ($propuesta->slug ?? $propuesta->id))); ?>"
+                        <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, home_url('/mi-portal/participacion/detalle/'))); ?>"
                            class="flavor-btn flavor-btn-sm flavor-btn-outline"
                            title="<?php esc_attr_e('Ver detalles', 'flavor-chat-ia'); ?>">
                             <span class="dashicons dashicons-visibility"></span>
                         </a>
-                        <?php if ($propuesta->estado === 'borrador'): ?>
-                            <a href="<?php echo esc_url(home_url('/participacion/editar/' . $propuesta->id)); ?>"
-                               class="flavor-btn flavor-btn-sm flavor-btn-secondary"
-                               title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
-                                <span class="dashicons dashicons-edit"></span>
-                            </a>
-                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>

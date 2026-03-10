@@ -47,6 +47,10 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $this->name = 'Incidencias Urbanas'; // Translation loaded on init
         $this->description = 'Reportar y gestionar incidencias del barrio: baches, alumbrado, limpieza, etc.'; // Translation loaded on init
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['gobernanza'];
+        $this->gailu_contribuye_a = ['cohesion'];
+
         parent::__construct();
 
         // Integrar sistema de notificaciones

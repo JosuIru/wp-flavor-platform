@@ -705,7 +705,7 @@ class Flavor_Systems_Admin_Panel {
      * Contar módulos migrados
      */
     private function count_migrated_modules() {
-        $loader = class_exists('Flavor_Module_Loader') ? Flavor_Module_Loader::get_instance() : null;
+        $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
         if (!$loader) {
             return ['count' => 0, 'pages' => 0];
         }
@@ -731,7 +731,7 @@ class Flavor_Systems_Admin_Panel {
      * Contar módulos con dependencias
      */
     private function count_modules_with_dependencies() {
-        $loader = class_exists('Flavor_Module_Loader') ? Flavor_Module_Loader::get_instance() : null;
+        $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
         if (!$loader) {
             return 0;
         }
@@ -755,7 +755,7 @@ class Flavor_Systems_Admin_Panel {
      * Obtener estado de módulos V3
      */
     private function get_modules_v3_status() {
-        $loader = class_exists('Flavor_Module_Loader') ? Flavor_Module_Loader::get_instance() : null;
+        $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
         if (!$loader) {
             return [
                 'migrated_count' => 0,
@@ -912,7 +912,7 @@ class Flavor_Systems_Admin_Panel {
             wp_send_json_error(['message' => __('Categoría no especificada', 'flavor-chat-ia')]);
         }
 
-        $loader = class_exists('Flavor_Module_Loader') ? Flavor_Module_Loader::get_instance() : null;
+        $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
         if (!$loader) {
             wp_send_json_success(['modules' => []]);
             return;
@@ -940,7 +940,7 @@ class Flavor_Systems_Admin_Panel {
             wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
         }
 
-        $loader = class_exists('Flavor_Module_Loader') ? Flavor_Module_Loader::get_instance() : null;
+        $loader = class_exists('Flavor_Chat_Module_Loader') ? Flavor_Chat_Module_Loader::get_instance() : null;
         if (!$loader) {
             wp_send_json_success(['dependencies' => []]);
             return;

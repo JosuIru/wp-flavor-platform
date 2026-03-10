@@ -507,10 +507,7 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
                     child: OutlinedButton.icon(
                       onPressed: () {
                         Navigator.pop(context);
-                        // Chat del circulo
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Abriendo chat del circulo...')),
-                        );
+                        _abrirChatCirculo(circulo);
                       },
                       icon: const Icon(Icons.chat),
                       label: const Text('Chat'),
@@ -521,10 +518,7 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
                     child: FilledButton.icon(
                       onPressed: () {
                         Navigator.pop(context);
-                        // Proponer ayuda
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Abriendo formulario de ayuda...')),
-                        );
+                        _ofrecerAyuda(circulo);
                       },
                       icon: const Icon(Icons.volunteer_activism),
                       label: const Text('Ofrecer ayuda'),
@@ -551,6 +545,416 @@ class _CirculosCuidadosScreenState extends ConsumerState<CirculosCuidadosScreen>
         Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         Text(label, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
       ],
+    );
+  }
+
+  void _abrirChatCirculo(Map<String, dynamic> circulo) {
+    final circuloId = circulo['id'];
+    final nombre = circulo['nombre'] ?? 'Chat del circulo';
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _ChatCirculoScreen(
+          circuloId: circuloId,
+          nombreCirculo: nombre,
+        ),
+      ),
+    );
+  }
+
+  void _ofrecerAyuda(Map<String, dynamic> circulo) {
+    final descripcionController = TextEditingController();
+    String tipoAyuda = 'general';
+
+    final tiposAyuda = [
+      {'id': 'general', 'nombre': 'Ayuda general'},
+      {'id': 'cuidado_ninos', 'nombre': 'Cuidado de ninos'},
+      {'id': 'cuidado_mayores', 'nombre': 'Cuidado de mayores'},
+      {'id': 'compras', 'nombre': 'Compras y recados'},
+      {'id': 'transporte', 'nombre': 'Transporte'},
+      {'id': 'compania', 'nombre': 'Compania'},
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.volunteer_activism, color: Colors.pink.shade400),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Ofrecer Ayuda',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Circulo: ${circulo['nombre']}',
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 20),
+                DropdownButtonFormField<String>(
+                  value: tipoAyuda,
+                  decoration: const InputDecoration(
+                    labelText: 'Tipo de ayuda',
+                    prefixIcon: Icon(Icons.category),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: tiposAyuda.map((tipo) {
+                    return DropdownMenuItem<String>(
+                      value: tipo['id'],
+                      child: Text(tipo['nombre']!),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setModalState(() => tipoAyuda = value);
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: descripcionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descripcion de tu oferta',
+                    prefixIcon: Icon(Icons.description),
+                    border: OutlineInputBorder(),
+                    hintText: 'Describe como puedes ayudar...',
+                  ),
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () async {
+                      if (descripcionController.text.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Describe tu oferta de ayuda')),
+                        );
+                        return;
+                      }
+                      Navigator.pop(context);
+                      await _enviarOfertaAyuda(
+                        circuloId: circulo['id'],
+                        tipo: tipoAyuda,
+                        descripcion: descripcionController.text.trim(),
+                      );
+                    },
+                    icon: const Icon(Icons.send),
+                    label: const Text('Enviar oferta'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _enviarOfertaAyuda({
+    required dynamic circuloId,
+    required String tipo,
+    required String descripcion,
+  }) async {
+    final api = ref.read(apiClientProvider);
+
+    try {
+      final response = await api.post('/circulos-cuidados/$circuloId/ofrecer-ayuda', data: {
+        'tipo': tipo,
+        'descripcion': descripcion,
+      });
+
+      if (response.success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Oferta de ayuda enviada correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        throw Exception(response.error ?? 'Error al enviar');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+}
+
+/// Pantalla de chat del circulo
+class _ChatCirculoScreen extends ConsumerStatefulWidget {
+  final dynamic circuloId;
+  final String nombreCirculo;
+
+  const _ChatCirculoScreen({
+    required this.circuloId,
+    required this.nombreCirculo,
+  });
+
+  @override
+  ConsumerState<_ChatCirculoScreen> createState() => _ChatCirculoScreenState();
+}
+
+class _ChatCirculoScreenState extends ConsumerState<_ChatCirculoScreen> {
+  List<Map<String, dynamic>> _mensajes = [];
+  bool _cargando = true;
+  bool _enviando = false;
+  final TextEditingController _mensajeController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarMensajes();
+  }
+
+  @override
+  void dispose() {
+    _mensajeController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _cargarMensajes() async {
+    setState(() => _cargando = true);
+    final api = ref.read(apiClientProvider);
+
+    try {
+      final response = await api.get('/circulos-cuidados/${widget.circuloId}/mensajes');
+      if (response.success && response.data != null) {
+        setState(() {
+          _mensajes = (response.data!['mensajes'] as List<dynamic>? ?? [])
+              .whereType<Map<String, dynamic>>()
+              .toList();
+          _cargando = false;
+        });
+        _scrollAlFinal();
+      } else {
+        setState(() => _cargando = false);
+      }
+    } catch (e) {
+      setState(() => _cargando = false);
+    }
+  }
+
+  void _scrollAlFinal() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  Future<void> _enviarMensaje() async {
+    final texto = _mensajeController.text.trim();
+    if (texto.isEmpty || _enviando) return;
+
+    setState(() => _enviando = true);
+    _mensajeController.clear();
+
+    final api = ref.read(apiClientProvider);
+
+    try {
+      final response = await api.post(
+        '/circulos-cuidados/${widget.circuloId}/mensajes',
+        data: {'mensaje': texto},
+      );
+
+      if (response.success) {
+        _cargarMensajes();
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response.error ?? 'Error al enviar')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _enviando = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.nombreCirculo),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _cargarMensajes,
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: _cargando
+                ? const Center(child: CircularProgressIndicator())
+                : _mensajes.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.chat_bubble_outline,
+                                size: 64, color: Colors.grey.shade400),
+                            const SizedBox(height: 16),
+                            const Text('No hay mensajes aun'),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Se el primero en escribir',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      )
+                    : RefreshIndicator(
+                        onRefresh: _cargarMensajes,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.all(16),
+                          itemCount: _mensajes.length,
+                          itemBuilder: (context, index) {
+                            final mensaje = _mensajes[index];
+                            final texto = mensaje['mensaje'] ?? '';
+                            final autor = mensaje['autor'] ?? 'Usuario';
+                            final fecha = mensaje['fecha'] ?? '';
+                            final esMio = mensaje['es_mio'] == true;
+
+                            return Align(
+                              alignment: esMio
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 8),
+                                padding: const EdgeInsets.all(12),
+                                constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.75,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: esMio
+                                      ? Colors.pink.shade100
+                                      : Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (!esMio)
+                                      Text(
+                                        autor,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                          color: Colors.pink.shade700,
+                                        ),
+                                      ),
+                                    Text(texto),
+                                    Text(
+                                      fecha,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, -2),
+                ),
+              ],
+            ),
+            child: SafeArea(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _mensajeController,
+                      decoration: const InputDecoration(
+                        hintText: 'Escribe un mensaje...',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: (_) => _enviarMensaje(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton.filled(
+                    onPressed: _enviando ? null : _enviarMensaje,
+                    icon: _enviando
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.send),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

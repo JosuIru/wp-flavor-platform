@@ -40,6 +40,20 @@ class Flavor_Unified_Admin_Panel {
     private $categorias = [];
 
     /**
+     * Categorías de dashboards que pueden abrirse en modo gestor de grupos.
+     *
+     * @var string[]
+     */
+    private $categorias_gestor_dashboard = [
+        'comunidad',
+        'comunicacion',
+        'actividades',
+        'servicios',
+        'recursos',
+        'sostenibilidad',
+    ];
+
+    /**
      * Obtiene la instancia singleton
      */
     public static function get_instance() {
@@ -436,10 +450,12 @@ class Flavor_Unified_Admin_Panel {
             return;
         }
 
-        $capability = $modulo['capability'] ?? 'manage_options';
+        $default_capability = $modulo['capability'] ?? 'manage_options';
+        $paginas = array_values($modulo['paginas']);
 
-        foreach ($modulo['paginas'] as $pagina) {
+        foreach ($paginas as $index => $pagina) {
             $titulo_menu = $pagina['titulo'];
+            $capability = $this->resolve_page_capability($modulo, $pagina, $default_capability, $index === 0);
 
             // Añadir badge si existe
             if (!empty($pagina['badge'])) {
@@ -466,6 +482,34 @@ class Flavor_Unified_Admin_Panel {
                 $pagina['callback']
             );
         }
+    }
+
+    /**
+     * Resuelve la capacidad efectiva de una página admin de módulo.
+     *
+     * En vista/rol gestor de grupos sólo se expone la página principal del
+     * dashboard para categorías seguras, sin abrir subpáginas sensibles.
+     *
+     * @param array  $modulo
+     * @param array  $pagina
+     * @param string $default_capability
+     * @param bool   $is_primary_page
+     * @return string
+     */
+    private function resolve_page_capability(array $modulo, array $pagina, $default_capability, $is_primary_page) {
+        if (current_user_can('manage_options')) {
+            return $default_capability;
+        }
+
+        if (
+            $is_primary_page
+            && current_user_can('flavor_ver_dashboard')
+            && in_array($modulo['categoria'] ?? '', $this->categorias_gestor_dashboard, true)
+        ) {
+            return 'flavor_ver_dashboard';
+        }
+
+        return $default_capability;
     }
 
     /**

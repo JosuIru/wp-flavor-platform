@@ -473,12 +473,29 @@ function flavor_register_integration_config() {
 
 /**
  * Helper: Verificar si un modulo esta activo
+ *
+ * Nota: Esta función está definida centralizadamente en class-helpers.php
+ * Se mantiene este wrapper por compatibilidad si class-helpers.php no está cargado
  */
-function flavor_is_module_active($module_id) {
-    $settings = get_option('flavor_chat_ia_settings', []);
-    $active_modules = $settings['active_modules'] ?? [];
+if (!function_exists('flavor_is_module_active')) {
+    function flavor_is_module_active($module_id) {
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            return Flavor_Chat_Module_Loader::is_module_active($module_id);
+        }
 
-    return in_array($module_id, $active_modules);
+        // Fallback: verificar en ambas opciones
+        $settings = get_option('flavor_chat_ia_settings', []);
+        $active_modules = $settings['active_modules'] ?? [];
+
+        $modulos_legacy = get_option('flavor_active_modules', []);
+        if (!empty($modulos_legacy)) {
+            $active_modules = array_unique(array_merge($active_modules, $modulos_legacy));
+        }
+
+        $id_normalizado = str_replace('-', '_', $module_id);
+        return in_array($module_id, $active_modules, true)
+            || in_array($id_normalizado, $active_modules, true);
+    }
 }
 
 /**

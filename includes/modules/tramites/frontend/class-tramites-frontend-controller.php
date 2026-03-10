@@ -18,6 +18,30 @@ class Flavor_Tramites_Frontend_Controller {
     private static $instance = null;
     private $module_slug = 'tramites';
 
+    private function get_current_request_url(): string {
+        return function_exists('flavor_current_request_url')
+            ? flavor_current_request_url()
+            : home_url('/');
+    }
+
+    private function render_login_required($mensaje): string {
+        return '<div class="flavor-empty-state">' .
+            '<p>' . esc_html($mensaje) . '</p>' .
+            '<a href="' . esc_url(wp_login_url($this->get_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' .
+            esc_html__('Iniciar sesión', 'flavor-chat-ia') .
+            '</a></div>';
+    }
+
+    private function render_empty_state($mensaje, $cta_label = '', $cta_url = ''): string {
+        $html = '<div class="flavor-empty-state"><p>' . esc_html($mensaje) . '</p>';
+        if ($cta_label && $cta_url) {
+            $html .= '<a href="' . esc_url($cta_url) . '" class="flavor-btn flavor-btn-primary">' . esc_html($cta_label) . '</a>';
+        }
+        $html .= '</div>';
+
+        return $html;
+    }
+
     public static function get_instance() {
         if (null === self::$instance) {
             self::$instance = new self();
@@ -194,6 +218,9 @@ class Flavor_Tramites_Frontend_Controller {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-clipboard"></span>
                     <p><?php _e('No se encontraron trámites con los criterios seleccionados.', 'flavor-chat-ia'); ?></p>
+                    <a href="<?php echo esc_url($this->get_catalogo_url()); ?>" class="flavor-btn flavor-btn-outline">
+                        <?php _e('Ver todo el catálogo', 'flavor-chat-ia'); ?>
+                    </a>
                 </div>
                 <?php else: ?>
                     <?php foreach ($tramites as $tramite): ?>
@@ -248,13 +275,13 @@ class Flavor_Tramites_Frontend_Controller {
         $tramite_id = intval($atts['id']) ?: intval($_GET['tramite_id'] ?? 0);
 
         if (!$tramite_id) {
-            return '<div class="flavor-error">' . __('Trámite no especificado.', 'flavor-chat-ia') . '</div>';
+            return $this->render_empty_state(__('Trámite no especificado.', 'flavor-chat-ia'), __('Ver catálogo', 'flavor-chat-ia'), $this->get_catalogo_url());
         }
 
         $tramite = $this->obtener_tramite($tramite_id);
 
         if (!$tramite) {
-            return '<div class="flavor-error">' . __('Trámite no encontrado.', 'flavor-chat-ia') . '</div>';
+            return $this->render_empty_state(__('Trámite no encontrado.', 'flavor-chat-ia'), __('Ver catálogo', 'flavor-chat-ia'), $this->get_catalogo_url());
         }
 
         $documentos_requeridos = $this->obtener_documentos_requeridos($tramite_id);
@@ -309,7 +336,7 @@ class Flavor_Tramites_Frontend_Controller {
                             <?php _e('Iniciar trámite', 'flavor-chat-ia'); ?>
                         </a>
                         <?php else: ?>
-                        <a href="<?php echo wp_login_url(get_permalink()); ?>"
+                        <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>"
                            class="flavor-btn flavor-btn-primary flavor-btn-block flavor-btn-lg">
                             <?php _e('Inicia sesión para tramitar', 'flavor-chat-ia'); ?>
                         </a>
@@ -412,9 +439,7 @@ class Flavor_Tramites_Frontend_Controller {
 
     public function shortcode_solicitar($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' .
-                   __('Debes iniciar sesión para realizar un trámite.', 'flavor-chat-ia') .
-                   ' <a href="' . wp_login_url(get_permalink()) . '">' . __('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
+            return $this->render_login_required(__('Debes iniciar sesión para realizar un trámite.', 'flavor-chat-ia'));
         }
 
         $atts = shortcode_atts([
@@ -424,13 +449,13 @@ class Flavor_Tramites_Frontend_Controller {
         $tramite_id = intval($atts['id']) ?: intval($_GET['tramite_id'] ?? 0);
 
         if (!$tramite_id) {
-            return '<div class="flavor-error">' . __('Trámite no especificado.', 'flavor-chat-ia') . '</div>';
+            return $this->render_empty_state(__('Trámite no especificado.', 'flavor-chat-ia'), __('Ver catálogo', 'flavor-chat-ia'), $this->get_catalogo_url());
         }
 
         $tramite = $this->obtener_tramite($tramite_id);
 
         if (!$tramite) {
-            return '<div class="flavor-error">' . __('Trámite no encontrado.', 'flavor-chat-ia') . '</div>';
+            return $this->render_empty_state(__('Trámite no encontrado.', 'flavor-chat-ia'), __('Ver catálogo', 'flavor-chat-ia'), $this->get_catalogo_url());
         }
 
         $documentos_requeridos = $this->obtener_documentos_requeridos($tramite_id);
@@ -624,8 +649,7 @@ class Flavor_Tramites_Frontend_Controller {
 
     public function shortcode_mis_solicitudes($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' .
-                   __('Debes iniciar sesión para ver tus solicitudes.', 'flavor-chat-ia') . '</div>';
+            return $this->render_login_required(__('Debes iniciar sesión para ver tus solicitudes.', 'flavor-chat-ia'));
         }
 
         $user_id = get_current_user_id();
@@ -693,21 +717,21 @@ class Flavor_Tramites_Frontend_Controller {
 
     public function shortcode_seguimiento($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' . __('Debes iniciar sesión.', 'flavor-chat-ia') . '</div>';
+            return $this->render_login_required(__('Debes iniciar sesión para seguir un trámite.', 'flavor-chat-ia'));
         }
 
         $atts = shortcode_atts(['id' => 0], $atts);
         $solicitud_id = intval($atts['id']) ?: intval($_GET['solicitud_id'] ?? 0);
 
         if (!$solicitud_id) {
-            return '<div class="flavor-error">' . __('Solicitud no especificada.', 'flavor-chat-ia') . '</div>';
+            return $this->render_empty_state(__('Solicitud no especificada.', 'flavor-chat-ia'), __('Ver mis trámites', 'flavor-chat-ia'), $this->get_mis_solicitudes_url());
         }
 
         $user_id = get_current_user_id();
         $solicitud = $this->obtener_solicitud($solicitud_id, $user_id);
 
         if (!$solicitud) {
-            return '<div class="flavor-error">' . __('Solicitud no encontrada.', 'flavor-chat-ia') . '</div>';
+            return $this->render_empty_state(__('Solicitud no encontrada.', 'flavor-chat-ia'), __('Ver mis trámites', 'flavor-chat-ia'), $this->get_mis_solicitudes_url());
         }
 
         $historial = $this->obtener_historial_solicitud($solicitud_id);
@@ -846,7 +870,7 @@ class Flavor_Tramites_Frontend_Controller {
 
     public function shortcode_citas($atts) {
         if (!is_user_logged_in()) {
-            return '<div class="flavor-login-required">' . __('Debes iniciar sesión.', 'flavor-chat-ia') . '</div>';
+            return $this->render_login_required(__('Debes iniciar sesión para gestionar tus citas.', 'flavor-chat-ia'));
         }
 
         $atts = shortcode_atts([
@@ -1009,6 +1033,9 @@ class Flavor_Tramites_Frontend_Controller {
                 ?>
                 <div class="flavor-no-resultados">
                     <p><?php _e('No se encontraron trámites con ese criterio de búsqueda.', 'flavor-chat-ia'); ?></p>
+                    <a href="<?php echo esc_url($this->get_catalogo_url()); ?>" class="flavor-btn flavor-btn-outline">
+                        <?php _e('Ver catálogo completo', 'flavor-chat-ia'); ?>
+                    </a>
                 </div>
                 <?php else: ?>
                     <?php foreach ($resultados as $tramite): ?>
@@ -1852,19 +1879,19 @@ class Flavor_Tramites_Frontend_Controller {
     }
 
     private function get_tramite_url($tramite_id) {
-        return add_query_arg('tramite_id', $tramite_id, home_url('/tramites/detalle/'));
+        return add_query_arg('tramite_id', $tramite_id, home_url('/mi-portal/tramites/detalle/'));
     }
 
     private function get_solicitar_url($tramite_id) {
-        return add_query_arg('tramite_id', $tramite_id, home_url('/tramites/solicitar/'));
+        return add_query_arg('tramite_id', $tramite_id, home_url('/mi-portal/tramites/iniciar/'));
     }
 
     private function get_seguimiento_url($solicitud_id) {
-        return add_query_arg('solicitud_id', $solicitud_id, home_url('/tramites/seguimiento/'));
+        return add_query_arg('solicitud_id', $solicitud_id, home_url('/mi-portal/tramites/seguimiento/'));
     }
 
     private function get_citas_url($tramite_id = 0) {
-        $url = home_url('/tramites/citas/');
+        $url = home_url('/mi-portal/tramites/citas/');
         if ($tramite_id) {
             $url = add_query_arg('tramite_id', $tramite_id, $url);
         }
@@ -1872,11 +1899,11 @@ class Flavor_Tramites_Frontend_Controller {
     }
 
     private function get_catalogo_url() {
-        return home_url('/tramites/');
+        return home_url('/mi-portal/tramites/');
     }
 
     private function get_mis_solicitudes_url() {
-        return home_url('/mi-portal/?tab=tramites');
+        return home_url('/mi-portal/tramites/mis-tramites/');
     }
 
     private function get_demo_tramites() {

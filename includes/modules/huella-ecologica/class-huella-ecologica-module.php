@@ -183,6 +183,10 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
         $this->dashboard_client_contexts = ['impacto', 'sostenibilidad', 'energia', 'consumo'];
         $this->dashboard_admin_contexts = ['impacto', 'sostenibilidad', 'admin'];
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['regeneracion'];
+        $this->gailu_contribuye_a = ['impacto', 'autonomia'];
+
         parent::__construct();
     }
 

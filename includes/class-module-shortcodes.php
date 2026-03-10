@@ -23,6 +23,16 @@ class Flavor_Module_Shortcodes {
     private static $instance = null;
 
     /**
+     * Obtiene la URL actual para redirects de login en shortcodes dinámicos.
+     */
+    private function get_current_request_url(): string {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/';
+        $request_uri = '/' . ltrim($request_uri, '/');
+
+        return home_url($request_uri);
+    }
+
+    /**
      * Obtiene la instancia singleton
      */
     public static function get_instance() {
@@ -2460,7 +2470,7 @@ class Flavor_Module_Shortcodes {
      * Renderiza mensaje de login requerido
      */
     private function render_login_required_message() {
-        $login_url = wp_login_url(get_permalink());
+        $login_url = wp_login_url($this->get_current_request_url());
         return sprintf(
             '<div class="flavor-login-required">
                 <span class="dashicons dashicons-lock"></span>

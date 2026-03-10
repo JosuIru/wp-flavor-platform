@@ -129,7 +129,7 @@ class Flavor_Network_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'footer' => [
                     [
                         'label' => __('Configurar red', 'flavor-chat-ia'),
-                        'url' => admin_url('admin.php?page=flavor-network-settings'),
+                        'url' => admin_url('admin.php?page=flavor-network'),
                         'icon' => 'dashicons-admin-settings',
                     ],
                 ],

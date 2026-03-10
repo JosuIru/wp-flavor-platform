@@ -164,7 +164,7 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
             children: [
               Expanded(
                 child: FilledButton.icon(
-                  onPressed: () {},
+                  onPressed: () => _mostrarSwapModal(context),
                   icon: const Icon(Icons.swap_horiz),
                   label: const Text('Swap'),
                 ),
@@ -172,7 +172,7 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => _mostrarEnviarModal(context),
                   icon: const Icon(Icons.send),
                   label: const Text('Enviar'),
                 ),
@@ -234,6 +234,344 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
         },
       ),
     );
+  }
+
+  void _mostrarSwapModal(BuildContext context) {
+    final tokenOrigenController = TextEditingController();
+    final tokenDestinoController = TextEditingController();
+    final cantidadController = TextEditingController();
+    String? tokenOrigenSeleccionado;
+    String? tokenDestinoSeleccionado;
+    bool ejecutandoSwap = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.swap_horiz, color: Colors.orange),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Swap de Tokens',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                // Token origen
+                DropdownButtonFormField<String>(
+                  value: tokenOrigenSeleccionado,
+                  decoration: const InputDecoration(
+                    labelText: 'Token de origen',
+                    prefixIcon: Icon(Icons.currency_bitcoin),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _listaTokens.map((token) {
+                    final mapa = token as Map<String, dynamic>;
+                    final simbolo = mapa['symbol'] ?? mapa['simbolo'] ?? 'TOKEN';
+                    return DropdownMenuItem<String>(
+                      value: simbolo.toString(),
+                      child: Text(simbolo.toString()),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setModalState(() => tokenOrigenSeleccionado = value);
+                  },
+                ),
+                const SizedBox(height: 16),
+                // Cantidad
+                TextFormField(
+                  controller: cantidadController,
+                  decoration: const InputDecoration(
+                    labelText: 'Cantidad',
+                    prefixIcon: Icon(Icons.numbers),
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                ),
+                const SizedBox(height: 16),
+                // Icono de intercambio
+                const Center(
+                  child: Icon(Icons.swap_vert, size: 32, color: Colors.orange),
+                ),
+                const SizedBox(height: 16),
+                // Token destino
+                DropdownButtonFormField<String>(
+                  value: tokenDestinoSeleccionado,
+                  decoration: const InputDecoration(
+                    labelText: 'Token de destino',
+                    prefixIcon: Icon(Icons.currency_bitcoin),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _listaTokens.map((token) {
+                    final mapa = token as Map<String, dynamic>;
+                    final simbolo = mapa['symbol'] ?? mapa['simbolo'] ?? 'TOKEN';
+                    return DropdownMenuItem<String>(
+                      value: simbolo.toString(),
+                      child: Text(simbolo.toString()),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setModalState(() => tokenDestinoSeleccionado = value);
+                  },
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: ejecutandoSwap
+                        ? null
+                        : () async {
+                            if (tokenOrigenSeleccionado == null ||
+                                tokenDestinoSeleccionado == null ||
+                                cantidadController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Completa todos los campos')),
+                              );
+                              return;
+                            }
+                            setModalState(() => ejecutandoSwap = true);
+                            await _ejecutarSwap(
+                              tokenOrigenSeleccionado!,
+                              tokenDestinoSeleccionado!,
+                              cantidadController.text,
+                            );
+                            if (context.mounted) Navigator.pop(context);
+                          },
+                    icon: ejecutandoSwap
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.swap_horiz),
+                    label: Text(ejecutandoSwap ? 'Ejecutando...' : 'Ejecutar Swap'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _ejecutarSwap(String tokenOrigen, String tokenDestino, String cantidad) async {
+    try {
+      final clienteApi = ref.read(apiClientProvider);
+      final respuesta = await clienteApi.post('/dex-solana/swap', data: {
+        'token_origen': tokenOrigen,
+        'token_destino': tokenDestino,
+        'cantidad': cantidad,
+      });
+      if (mounted) {
+        if (respuesta.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Swap ejecutado correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _cargarDatos();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(respuesta.error ?? 'Error al ejecutar swap'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  void _mostrarEnviarModal(BuildContext context) {
+    final direccionDestinoController = TextEditingController();
+    final cantidadController = TextEditingController();
+    String? tokenSeleccionado;
+    bool enviando = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.send, color: Colors.orange),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Enviar Tokens',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                // Seleccionar token
+                DropdownButtonFormField<String>(
+                  value: tokenSeleccionado,
+                  decoration: const InputDecoration(
+                    labelText: 'Token a enviar',
+                    prefixIcon: Icon(Icons.currency_bitcoin),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _listaTokens.map((token) {
+                    final mapa = token as Map<String, dynamic>;
+                    final simbolo = mapa['symbol'] ?? mapa['simbolo'] ?? 'TOKEN';
+                    final balance = mapa['balance'] ?? mapa['cantidad'] ?? '0';
+                    return DropdownMenuItem<String>(
+                      value: simbolo.toString(),
+                      child: Text('$simbolo ($balance)'),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setModalState(() => tokenSeleccionado = value);
+                  },
+                ),
+                const SizedBox(height: 16),
+                // Cantidad
+                TextFormField(
+                  controller: cantidadController,
+                  decoration: const InputDecoration(
+                    labelText: 'Cantidad',
+                    prefixIcon: Icon(Icons.numbers),
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                ),
+                const SizedBox(height: 16),
+                // Dirección destino
+                TextFormField(
+                  controller: direccionDestinoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Dirección de destino',
+                    prefixIcon: Icon(Icons.account_balance_wallet),
+                    border: OutlineInputBorder(),
+                    hintText: 'Ej: 7xK9p...',
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: enviando
+                        ? null
+                        : () async {
+                            if (tokenSeleccionado == null ||
+                                cantidadController.text.isEmpty ||
+                                direccionDestinoController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Completa todos los campos')),
+                              );
+                              return;
+                            }
+                            setModalState(() => enviando = true);
+                            await _ejecutarEnvio(
+                              tokenSeleccionado!,
+                              cantidadController.text,
+                              direccionDestinoController.text,
+                            );
+                            if (context.mounted) Navigator.pop(context);
+                          },
+                    icon: enviando
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.send),
+                    label: Text(enviando ? 'Enviando...' : 'Enviar'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _ejecutarEnvio(String token, String cantidad, String direccionDestino) async {
+    try {
+      final clienteApi = ref.read(apiClientProvider);
+      final respuesta = await clienteApi.post('/dex-solana/send', data: {
+        'token': token,
+        'cantidad': cantidad,
+        'direccion_destino': direccionDestino,
+      });
+      if (mounted) {
+        if (respuesta.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Tokens enviados correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _cargarDatos();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(respuesta.error ?? 'Error al enviar'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 }
 
@@ -310,7 +648,7 @@ class _TokenDetalleScreenState extends ConsumerState<TokenDetalleScreen> {
                           children: [
                             Expanded(
                               child: FilledButton.icon(
-                                onPressed: () {},
+                                onPressed: () => _mostrarComprarModal(context),
                                 icon: const Icon(Icons.shopping_cart),
                                 label: const Text('Comprar'),
                               ),
@@ -318,7 +656,7 @@ class _TokenDetalleScreenState extends ConsumerState<TokenDetalleScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: OutlinedButton.icon(
-                                onPressed: () {},
+                                onPressed: () => _mostrarVenderModal(context),
                                 icon: const Icon(Icons.sell),
                                 label: const Text('Vender'),
                               ),
@@ -328,5 +666,303 @@ class _TokenDetalleScreenState extends ConsumerState<TokenDetalleScreen> {
                       ],
                     ),
     );
+  }
+
+  void _mostrarComprarModal(BuildContext context) {
+    final cantidadController = TextEditingController();
+    bool comprando = false;
+    final simboloToken = _datosToken?['symbol'] ?? _datosToken?['simbolo'] ?? 'TOKEN';
+    final precioToken = _datosToken?['price'] ?? _datosToken?['precio'] ?? '0.00';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.shopping_cart, color: Colors.green),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Comprar $simboloToken',
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  color: Colors.grey.shade100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Precio actual:'),
+                        Text(
+                          '\$$precioToken',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: cantidadController,
+                  decoration: InputDecoration(
+                    labelText: 'Cantidad de $simboloToken',
+                    prefixIcon: const Icon(Icons.numbers),
+                    border: const OutlineInputBorder(),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: comprando
+                        ? null
+                        : () async {
+                            if (cantidadController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Ingresa una cantidad')),
+                              );
+                              return;
+                            }
+                            setModalState(() => comprando = true);
+                            await _ejecutarCompra(cantidadController.text);
+                            if (context.mounted) Navigator.pop(context);
+                          },
+                    icon: comprando
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.shopping_cart),
+                    label: Text(comprando ? 'Comprando...' : 'Comprar'),
+                    style: FilledButton.styleFrom(backgroundColor: Colors.green),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _ejecutarCompra(String cantidad) async {
+    try {
+      final clienteApi = ref.read(apiClientProvider);
+      final respuesta = await clienteApi.post('/dex-solana/buy', data: {
+        'token_id': widget.tokenId,
+        'cantidad': cantidad,
+      });
+      if (mounted) {
+        if (respuesta.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Compra realizada correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _cargarDetalle();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(respuesta.error ?? 'Error en la compra'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  void _mostrarVenderModal(BuildContext context) {
+    final cantidadController = TextEditingController();
+    bool vendiendo = false;
+    final simboloToken = _datosToken?['symbol'] ?? _datosToken?['simbolo'] ?? 'TOKEN';
+    final precioToken = _datosToken?['price'] ?? _datosToken?['precio'] ?? '0.00';
+    final balanceToken = _datosToken?['balance'] ?? _datosToken?['cantidad'] ?? '0';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.sell, color: Colors.red),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Vender $simboloToken',
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  color: Colors.grey.shade100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Precio actual:'),
+                            Text(
+                              '\$$precioToken',
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Tu balance:'),
+                            Text(
+                              '$balanceToken $simboloToken',
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: cantidadController,
+                  decoration: InputDecoration(
+                    labelText: 'Cantidad de $simboloToken a vender',
+                    prefixIcon: const Icon(Icons.numbers),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: TextButton(
+                      onPressed: () {
+                        cantidadController.text = balanceToken.toString();
+                      },
+                      child: const Text('MAX'),
+                    ),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: vendiendo
+                        ? null
+                        : () async {
+                            if (cantidadController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Ingresa una cantidad')),
+                              );
+                              return;
+                            }
+                            setModalState(() => vendiendo = true);
+                            await _ejecutarVenta(cantidadController.text);
+                            if (context.mounted) Navigator.pop(context);
+                          },
+                    icon: vendiendo
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.sell),
+                    label: Text(vendiendo ? 'Vendiendo...' : 'Vender'),
+                    style: FilledButton.styleFrom(backgroundColor: Colors.red),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _ejecutarVenta(String cantidad) async {
+    try {
+      final clienteApi = ref.read(apiClientProvider);
+      final respuesta = await clienteApi.post('/dex-solana/sell', data: {
+        'token_id': widget.tokenId,
+        'cantidad': cantidad,
+      });
+      if (mounted) {
+        if (respuesta.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Venta realizada correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _cargarDetalle();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(respuesta.error ?? 'Error en la venta'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 }

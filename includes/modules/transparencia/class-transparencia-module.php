@@ -44,6 +44,10 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $this->dashboard_admin_contexts = ['transparencia', 'gobernanza', 'admin'];
         $this->prefijo_tabla = $wpdb->prefix . 'flavor_transparencia_';
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['gobernanza'];
+        $this->gailu_contribuye_a = ['autonomia', 'cohesion'];
+
         parent::__construct();
     }
 

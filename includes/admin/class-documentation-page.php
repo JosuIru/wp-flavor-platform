@@ -24,7 +24,7 @@ class Flavor_Documentation_Page {
     /**
      * Slug de la página
      */
-    const PAGE_SLUG = 'flavor-documentacion';
+    const PAGE_SLUG = 'flavor-documentation';
 
     /**
      * Obtiene la instancia singleton
@@ -63,9 +63,9 @@ class Flavor_Documentation_Page {
      * Encola assets
      */
     public function enqueue_assets($hook) {
-        // Detectar tanto el slug antiguo como el nuevo
+        // Detectar tanto el slug canonico como el alias heredado
         $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
-        if ($current_page !== 'flavor-documentation' && strpos($hook, self::PAGE_SLUG) === false) {
+        if ($current_page !== self::PAGE_SLUG && $current_page !== 'flavor-documentacion' && strpos($hook, self::PAGE_SLUG) === false) {
             return;
         }
 
@@ -114,6 +114,14 @@ class Flavor_Documentation_Page {
                 <?php _e('Documentación de Flavor Platform', 'flavor-chat-ia'); ?>
             </h1>
 
+            <div class="notice notice-info" style="margin: 16px 0 20px;">
+                <p>
+                    <?php _e('Auditoría vigente de estado real:', 'flavor-chat-ia'); ?>
+                    <strong>2026-03-04</strong>.
+                    <?php _e('Las referencias históricas anteriores deben leerse como contexto, no como foto final del sistema.', 'flavor-chat-ia'); ?>
+                </p>
+            </div>
+
             <div class="flavor-docs-container">
                 <!-- Sidebar con índice -->
                 <div class="flavor-docs-sidebar">
@@ -121,11 +129,16 @@ class Flavor_Documentation_Page {
                         <h3><?php _e('Índice', 'flavor-chat-ia'); ?></h3>
 
                         <div class="docs-section">
-                            <h4><?php _e('🚀 Inicio', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php _e('Inicio', 'flavor-chat-ia'); ?></h4>
                             <ul>
                                 <li class="<?php echo $current_doc === 'indice' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('indice'); ?>">
                                         <?php _e('Índice General', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </li>
+                                <li class="<?php echo $current_doc === 'filosofia' ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->get_doc_url('filosofia'); ?>">
+                                        <?php _e('Filosofía del Plugin', 'flavor-chat-ia'); ?>
                                     </a>
                                 </li>
                                 <li class="<?php echo $current_doc === 'inicio-rapido' ? 'active' : ''; ?>">
@@ -133,20 +146,41 @@ class Flavor_Documentation_Page {
                                         <?php _e('Guía de Inicio Rápido', 'flavor-chat-ia'); ?>
                                     </a>
                                 </li>
+                                <li class="<?php echo $current_doc === 'plugin-completo' ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->get_doc_url('plugin-completo'); ?>">
+                                        <?php _e('Plugin Completo', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
                         <div class="docs-section">
-                            <h4><?php _e('🔗 Sistemas Modulares', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php _e('Operación', 'flavor-chat-ia'); ?></h4>
                             <ul>
+                                <li class="<?php echo $current_doc === 'admin' ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->get_doc_url('admin'); ?>">
+                                        <?php _e('Guía de Administración', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </li>
+                                <li class="<?php echo $current_doc === 'estado-real' ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->get_doc_url('estado-real'); ?>">
+                                        <?php _e('Estado Real y Límites', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="docs-section">
+                            <h4><?php _e('Arquitectura', 'flavor-chat-ia'); ?></h4>
+                            <ul>
+                                <li class="<?php echo $current_doc === 'arquitectura' ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->get_doc_url('arquitectura'); ?>">
+                                        <?php _e('Arquitectura del Plugin', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </li>
                                 <li class="<?php echo $current_doc === 'integraciones' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('integraciones'); ?>">
                                         <?php _e('Integraciones entre Módulos', 'flavor-chat-ia'); ?>
-                                    </a>
-                                </li>
-                                <li class="<?php echo $current_doc === 'red-nodos' ? 'active' : ''; ?>">
-                                    <a href="<?php echo $this->get_doc_url('red-nodos'); ?>">
-                                        <?php _e('Red de Nodos Federada', 'flavor-chat-ia'); ?>
                                     </a>
                                 </li>
                                 <li class="<?php echo $current_doc === 'funcionalidades' ? 'active' : ''; ?>">
@@ -158,28 +192,23 @@ class Flavor_Documentation_Page {
                         </div>
 
                         <div class="docs-section">
-                            <h4><?php _e('📖 Referencia', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php _e('Módulos', 'flavor-chat-ia'); ?></h4>
                             <ul>
-                                <li class="<?php echo $current_doc === 'componentes' ? 'active' : ''; ?>">
-                                    <a href="<?php echo $this->get_doc_url('componentes'); ?>">
-                                        <?php _e('Componentes y Shortcodes', 'flavor-chat-ia'); ?>
-                                    </a>
-                                </li>
-                                <li class="<?php echo $current_doc === 'ejemplo-modulo' ? 'active' : ''; ?>">
-                                    <a href="<?php echo $this->get_doc_url('ejemplo-modulo'); ?>">
-                                        <?php _e('Ejemplo de Módulo', 'flavor-chat-ia'); ?>
-                                    </a>
-                                </li>
                                 <li class="<?php echo $current_doc === 'guia-modulos' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('guia-modulos'); ?>">
                                         <?php _e('Guía de Módulos', 'flavor-chat-ia'); ?>
+                                    </a>
+                                </li>
+                                <li class="<?php echo $current_doc === 'catalogo-modulos' ? 'active' : ''; ?>">
+                                    <a href="<?php echo $this->get_doc_url('catalogo-modulos'); ?>">
+                                        <?php _e('Catálogo Detallado', 'flavor-chat-ia'); ?>
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
                         <div class="docs-section">
-                            <h4><?php _e('⚙️ Técnico', 'flavor-chat-ia'); ?></h4>
+                            <h4><?php _e('Técnico', 'flavor-chat-ia'); ?></h4>
                             <ul>
                                 <li class="<?php echo $current_doc === 'permisos' ? 'active' : ''; ?>">
                                     <a href="<?php echo $this->get_doc_url('permisos'); ?>">
@@ -227,33 +256,45 @@ class Flavor_Documentation_Page {
                 'title' => __('Índice de Documentación', 'flavor-chat-ia'),
                 'file'  => 'INDICE-DOCUMENTACION.md',
             ],
+            'filosofia' => [
+                'title' => __('Filosofía del Plugin', 'flavor-chat-ia'),
+                'file'  => 'FILOSOFIA-PLUGIN.md',
+            ],
             'inicio-rapido' => [
                 'title' => __('Guía de Inicio Rápido', 'flavor-chat-ia'),
                 'file'  => 'GUIA-INICIO-RAPIDO.md',
+            ],
+            'plugin-completo' => [
+                'title' => __('Plugin Completo', 'flavor-chat-ia'),
+                'file'  => 'PLUGIN-COMPLETO.md',
+            ],
+            'admin' => [
+                'title' => __('Guía de Administración', 'flavor-chat-ia'),
+                'file'  => 'GUIA-ADMINISTRACION.md',
+            ],
+            'estado-real' => [
+                'title' => __('Estado Real y Límites', 'flavor-chat-ia'),
+                'file'  => 'ESTADO-REAL-PLUGIN.md',
+            ],
+            'arquitectura' => [
+                'title' => __('Arquitectura del Plugin', 'flavor-chat-ia'),
+                'file'  => 'ARQUITECTURA-PLUGIN.md',
             ],
             'integraciones' => [
                 'title' => __('Integraciones entre Módulos', 'flavor-chat-ia'),
                 'file'  => 'INTEGRACIONES.md',
             ],
-            'red-nodos' => [
-                'title' => __('Red de Nodos Federada', 'flavor-chat-ia'),
-                'file'  => 'RED-DE-NODOS.md',
-            ],
             'funcionalidades' => [
                 'title' => __('Funcionalidades Compartidas', 'flavor-chat-ia'),
                 'file'  => 'FUNCIONALIDADES-COMPARTIDAS.md',
             ],
-            'componentes' => [
-                'title' => __('Componentes y Shortcodes', 'flavor-chat-ia'),
-                'file'  => 'COMPONENTES-NUEVOS.md',
-            ],
-            'ejemplo-modulo' => [
-                'title' => __('Ejemplo de Módulo Completo', 'flavor-chat-ia'),
-                'file'  => 'EJEMPLO-MODULO-COMPLETO.md',
-            ],
             'guia-modulos' => [
                 'title' => __('Guía de Módulos', 'flavor-chat-ia'),
                 'file'  => 'GUIA_MODULOS.md',
+            ],
+            'catalogo-modulos' => [
+                'title' => __('Catálogo de Módulos', 'flavor-chat-ia'),
+                'file'  => 'CATALOGO-MODULOS.md',
             ],
             'permisos' => [
                 'title' => __('Sistema de Permisos', 'flavor-chat-ia'),
@@ -282,7 +323,8 @@ class Flavor_Documentation_Page {
         echo '<h2>' . esc_html($doc['title']) . '</h2>';
         echo '</div>';
 
-        echo '<div class="doc-body">';
+        $doc_body_class = 'doc-body doc-body--' . sanitize_html_class($doc_id);
+        echo '<div class="' . esc_attr($doc_body_class) . '">';
 
         if (isset($doc['callback'])) {
             call_user_func([$this, $doc['callback']]);
@@ -309,6 +351,22 @@ class Flavor_Documentation_Page {
         $content = file_get_contents($filepath);
         $html = $this->parse_markdown($content);
 
+        if ($filename === 'CATALOGO-MODULOS.md') {
+            $html = str_replace(
+                [
+                    '<code>Repasado intensivo</code>',
+                    '<code>Parcial</code>',
+                    '<code>Pendiente / no prioritario</code>',
+                ],
+                [
+                    '<span class="flavor-docs-status flavor-docs-status--intensive">Repasado intensivo</span>',
+                    '<span class="flavor-docs-status flavor-docs-status--partial">Parcial</span>',
+                    '<span class="flavor-docs-status flavor-docs-status--pending">Pendiente / no prioritario</span>',
+                ],
+                $html
+            );
+        }
+
         echo $html;
     }
 
@@ -320,12 +378,30 @@ class Flavor_Documentation_Page {
         $text = esc_html($text);
 
         // Headers
-        $text = preg_replace('/^######\s*(.+)$/m', '<h6>$1</h6>', $text);
-        $text = preg_replace('/^#####\s*(.+)$/m', '<h5>$1</h5>', $text);
-        $text = preg_replace('/^####\s*(.+)$/m', '<h4>$1</h4>', $text);
-        $text = preg_replace('/^###\s*(.+)$/m', '<h3>$1</h3>', $text);
-        $text = preg_replace('/^##\s*(.+)$/m', '<h2>$1</h2>', $text);
-        $text = preg_replace('/^#\s*(.+)$/m', '<h1>$1</h1>', $text);
+        $text = preg_replace_callback('/^######\s*(.+)$/m', function($matches) {
+            $id = $this->slugify_heading($matches[1]);
+            return '<h6 id="' . esc_attr($id) . '">' . $matches[1] . '</h6>';
+        }, $text);
+        $text = preg_replace_callback('/^#####\s*(.+)$/m', function($matches) {
+            $id = $this->slugify_heading($matches[1]);
+            return '<h5 id="' . esc_attr($id) . '">' . $matches[1] . '</h5>';
+        }, $text);
+        $text = preg_replace_callback('/^####\s*(.+)$/m', function($matches) {
+            $id = $this->slugify_heading($matches[1]);
+            return '<h4 id="' . esc_attr($id) . '">' . $matches[1] . '</h4>';
+        }, $text);
+        $text = preg_replace_callback('/^###\s*(.+)$/m', function($matches) {
+            $id = $this->slugify_heading($matches[1]);
+            return '<h3 id="' . esc_attr($id) . '">' . $matches[1] . '</h3>';
+        }, $text);
+        $text = preg_replace_callback('/^##\s*(.+)$/m', function($matches) {
+            $id = $this->slugify_heading($matches[1]);
+            return '<h2 id="' . esc_attr($id) . '">' . $matches[1] . '</h2>';
+        }, $text);
+        $text = preg_replace_callback('/^#\s*(.+)$/m', function($matches) {
+            $id = $this->slugify_heading($matches[1]);
+            return '<h1 id="' . esc_attr($id) . '">' . $matches[1] . '</h1>';
+        }, $text);
 
         // Code blocks con lenguaje
         $text = preg_replace_callback('/```(\w+)?\n(.*?)```/s', function($matches) {
@@ -376,6 +452,18 @@ class Flavor_Documentation_Page {
         $text = str_replace('</table></p>', '</table>', $text);
 
         return $text;
+    }
+
+    /**
+     * Genera un id estable para encabezados Markdown.
+     *
+     * @param string $text
+     * @return string
+     */
+    private function slugify_heading($text) {
+        $text = wp_strip_all_tags(html_entity_decode((string) $text, ENT_QUOTES, 'UTF-8'));
+        $slug = sanitize_title($text);
+        return $slug ?: 'section';
     }
 
     /**

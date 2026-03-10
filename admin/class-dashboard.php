@@ -81,59 +81,56 @@ class Flavor_Dashboard {
         register_rest_route('flavor/v1', '/admin/dashboard-stats', [
             'methods'             => 'GET',
             'callback'            => [$this, 'api_obtener_estadisticas'],
-            'permission_callback' => function () {
-                return current_user_can('manage_options');
-            },
+            'permission_callback' => [$this, 'usuario_puede_ver_dashboard'],
         ]);
 
         register_rest_route('flavor/v1', '/admin/dashboard-charts', [
             'methods'             => 'GET',
             'callback'            => [$this, 'api_obtener_datos_graficos'],
-            'permission_callback' => function () {
-                return current_user_can('manage_options');
-            },
+            'permission_callback' => [$this, 'usuario_puede_ver_dashboard'],
         ]);
 
         register_rest_route('flavor/v1', '/admin/dashboard-alerts', [
             'methods'             => 'GET',
             'callback'            => [$this, 'api_obtener_alertas'],
-            'permission_callback' => function () {
-                return current_user_can('manage_options');
-            },
+            'permission_callback' => [$this, 'usuario_puede_ver_dashboard'],
         ]);
 
         // Endpoints para Red de Comunidades
         register_rest_route('flavor/v1', '/admin/network-stats', [
             'methods'             => 'GET',
             'callback'            => [$this, 'api_obtener_estadisticas_red'],
-            'permission_callback' => function () {
-                return current_user_can('manage_options');
-            },
+            'permission_callback' => [$this, 'usuario_puede_ver_dashboard'],
         ]);
 
         register_rest_route('flavor/v1', '/admin/network-sync', [
             'methods'             => 'POST',
             'callback'            => [$this, 'api_sincronizar_red'],
-            'permission_callback' => function () {
-                return current_user_can('manage_options');
-            },
+            'permission_callback' => [$this, 'usuario_puede_ver_dashboard'],
         ]);
 
         register_rest_route('flavor/v1', '/admin/activity-map', [
             'methods'             => 'GET',
             'callback'            => [$this, 'api_obtener_mapa_actividad'],
-            'permission_callback' => function () {
-                return current_user_can('manage_options');
-            },
+            'permission_callback' => [$this, 'usuario_puede_ver_dashboard'],
         ]);
 
         register_rest_route('flavor/v1', '/admin/export-stats', [
             'methods'             => 'GET',
             'callback'            => [$this, 'api_exportar_estadisticas_csv'],
-            'permission_callback' => function () {
-                return current_user_can('manage_options');
-            },
+            'permission_callback' => [$this, 'usuario_puede_ver_dashboard'],
         ]);
+    }
+
+    /**
+     * Determina si el usuario puede acceder al dashboard principal.
+     *
+     * @return bool
+     */
+    public function usuario_puede_ver_dashboard() {
+        return current_user_can('manage_options')
+            || current_user_can('flavor_ver_dashboard')
+            || current_user_can('flavor_gestor_grupos');
     }
 
     /**
@@ -146,7 +143,16 @@ class Flavor_Dashboard {
      */
     public function enqueue_dashboard_assets($sufijo_hook) {
         $sufijo_hook = (string) $sufijo_hook;
-        if (strpos($sufijo_hook, 'flavor-dashboard') === false) {
+        $dashboard_hooks = [
+            'toplevel_page_flavor-chat-ia',
+            'flavor-platform_page_flavor-dashboard',
+            'toplevel_page_flavor-dashboard',
+        ];
+
+        $is_dashboard_hook = strpos($sufijo_hook, 'flavor-dashboard') !== false
+            || in_array($sufijo_hook, $dashboard_hooks, true);
+
+        if (!$is_dashboard_hook) {
             return;
         }
 
@@ -329,8 +335,14 @@ class Flavor_Dashboard {
      */
     public function render_dashboard_page() {
         $estadisticas = $this->get_dashboard_stats();
-        $addons_activos = Flavor_Addon_Manager::get_active_addons();
-        $addons_registrados = Flavor_Addon_Manager::get_registered_addons();
+        $vista_dashboard = Flavor_Admin_Menu_Manager::VISTA_ADMIN;
+        if (class_exists('Flavor_Admin_Menu_Manager')) {
+            $vista_dashboard = Flavor_Admin_Menu_Manager::get_instance()->obtener_vista_activa();
+        }
+        $es_vista_gestor_grupos = ($vista_dashboard === Flavor_Admin_Menu_Manager::VISTA_GESTOR_GRUPOS);
+
+        $addons_activos = $es_vista_gestor_grupos ? [] : Flavor_Addon_Manager::get_active_addons();
+        $addons_registrados = $es_vista_gestor_grupos ? [] : Flavor_Addon_Manager::get_registered_addons();
 
         // Datos del perfil activo
         $datos_perfil_activo = $this->obtener_datos_perfil_activo();
@@ -341,16 +353,69 @@ class Flavor_Dashboard {
         $alertas = $this->obtener_alertas_pendientes();
         $actividad_reciente = $this->obtener_actividad_reciente();
         $acciones_rapidas = $this->obtener_acciones_rapidas_completas($datos_perfil_activo['id']);
+        $acciones_rapidas = $this->filtrar_acciones_rapidas_por_vista($acciones_rapidas, $vista_dashboard);
 
-        // Datos de Red de Comunidades
-        $estadisticas_red = $this->obtener_estadisticas_red();
-        $modulos_compartidos = $this->obtener_modulos_compartidos();
-        $datos_mapa_actividad = $this->obtener_datos_mapa_actividad();
-        $kpis_principales = $this->obtener_kpis_principales();
-        $comparativas_temporales = $this->obtener_comparativas_temporales();
+        // Datos avanzados solo para la vista completa
+        $estadisticas_red = [];
+        $modulos_compartidos = [];
+        $datos_mapa_actividad = [
+            'centro' => [],
+            'zoom' => 6,
+            'estadisticas_zona' => [],
+        ];
+        $kpis_principales = [];
+        $comparativas_temporales = [];
+
+        if (!$es_vista_gestor_grupos) {
+            $estadisticas_red = $this->obtener_estadisticas_red();
+            $modulos_compartidos = $this->obtener_modulos_compartidos();
+            $datos_mapa_actividad = $this->obtener_datos_mapa_actividad();
+            $kpis_principales = $this->obtener_kpis_principales();
+            $comparativas_temporales = $this->obtener_comparativas_temporales();
+        }
 
         // Incluir la vista del dashboard
         include FLAVOR_CHAT_IA_PATH . 'admin/views/dashboard.php';
+    }
+
+    /**
+     * Ajusta las acciones rápidas al contexto de vista activa.
+     *
+     * @param array  $acciones
+     * @param string $vista_dashboard
+     * @return array
+     */
+    private function filtrar_acciones_rapidas_por_vista($acciones, $vista_dashboard) {
+        if ($vista_dashboard !== Flavor_Admin_Menu_Manager::VISTA_GESTOR_GRUPOS) {
+            return $acciones;
+        }
+
+        $principales_permitidas = ['configuracion'];
+        $generales_permitidas = ['ver_logs'];
+
+        $acciones['principales'] = array_values(array_filter(
+            $acciones['principales'],
+            function ($accion) use ($principales_permitidas) {
+                return in_array($accion['id'], $principales_permitidas, true);
+            }
+        ));
+
+        $acciones['generales'] = array_values(array_filter(
+            $acciones['generales'],
+            function ($accion) use ($generales_permitidas) {
+                return in_array($accion['id'], $generales_permitidas, true);
+            }
+        ));
+
+        array_unshift($acciones['generales'], [
+            'id'       => 'crear_paginas',
+            'etiqueta' => __('Páginas', 'flavor-chat-ia'),
+            'icono'    => 'dashicons-admin-page',
+            'url'      => admin_url('admin.php?page=flavor-create-pages'),
+            'color'    => '#2271b1',
+        ]);
+
+        return $acciones;
     }
 
     /**
@@ -837,10 +902,10 @@ class Flavor_Dashboard {
                     'color'    => '#2271b1',
                 ],
                 [
-                    'id'       => 'compositor',
-                    'etiqueta' => __('Compositor', 'flavor-chat-ia'),
-                    'icono'    => 'dashicons-smartphone',
-                    'url'      => admin_url('admin.php?page=flavor-app-composer'),
+                    'id'       => 'modulos',
+                    'etiqueta' => __('Módulos', 'flavor-chat-ia'),
+                    'icono'    => 'dashicons-screenoptions',
+                    'url'      => admin_url('admin.php?page=flavor-module-dashboards'),
                     'color'    => '#8e44ad',
                 ],
                 [
@@ -1012,25 +1077,36 @@ class Flavor_Dashboard {
         global $wpdb;
 
         $fecha_limite = gmdate('Y-m-d H:i:s', strtotime("-{$dias_limite} days"));
+        $timestamp_limite = strtotime("-{$dias_limite} days");
 
-        // Contar usuarios que han iniciado sesion recientemente
+        // Aproximación consistente:
+        // - usuarios con last_activity reciente
+        // - o usuarios registrados dentro del periodo
+        // Evita el falso fallback al total de usuarios.
         $conteo_usuarios = $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(DISTINCT user_id)
-             FROM {$wpdb->usermeta}
-             WHERE meta_key = 'session_tokens'
-             AND user_id IN (
-                 SELECT ID FROM {$wpdb->users} WHERE user_registered >= %s
+             FROM (
+                 SELECT ID AS user_id
+                 FROM {$wpdb->users}
+                 WHERE user_registered >= %s
+
                  UNION
-                 SELECT user_id FROM {$wpdb->usermeta}
-                 WHERE meta_key = 'last_activity' AND meta_value >= %s
-             )",
+
+                 SELECT user_id
+                 FROM {$wpdb->usermeta}
+                 WHERE meta_key = 'last_activity'
+                 AND CAST(meta_value AS UNSIGNED) >= %d
+             ) AS usuarios_activos",
             $fecha_limite,
-            strtotime("-{$dias_limite} days")
+            $timestamp_limite
         ));
 
-        // Si no hay dato, usar conteo total de usuarios
+        // Fallback razonable: si no hay señales de actividad, contar solo usuarios recientes.
         if (!$conteo_usuarios) {
-            $conteo_usuarios = count_users()['total_users'];
+            $conteo_usuarios = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$wpdb->users} WHERE user_registered >= %s",
+                $fecha_limite
+            ));
         }
 
         return intval($conteo_usuarios);

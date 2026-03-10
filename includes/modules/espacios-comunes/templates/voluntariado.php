@@ -130,7 +130,7 @@ $colores_urgencia = [
                                 <?php esc_html_e('Apuntarme', 'flavor-chat-ia'); ?>
                             </button>
                         <?php elseif (!$usuario_logueado): ?>
-                            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="ec-btn ec-btn--outline">
+                            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="ec-btn ec-btn--outline">
                                 <?php esc_html_e('Inicia sesión', 'flavor-chat-ia'); ?>
                             </a>
                         <?php elseif ($plazas_libres == 0): ?>

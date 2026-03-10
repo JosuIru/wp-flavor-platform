@@ -60,6 +60,8 @@ Con salida:
 ```php
 [
     'module_role' => 'base|vertical|transversal',
+    'display_role' => 'base|base-standalone|vertical|transversal',
+    'display_role_label' => 'Base|Base local|Vertical|Transversal',
     'depends_on' => [],
     'supports_modules' => [],
     'measures_modules' => [],
@@ -140,6 +142,35 @@ Valores permitidos:
 - `base`
 - `vertical`
 - `transversal`
+
+### `display_role`
+
+Rol visible derivado para interfaces.
+
+No sustituye a `module_role`; sirve para que una `base` sin descendencia ecosistémica declarada no se renderice como raíz fuerte del sistema en dashboards, portal o compositor.
+
+Valores:
+
+- `base`
+- `base-standalone`
+- `vertical`
+- `transversal`
+
+Regla actual en la clase base:
+
+- si `module_role = base` y `ecosystem_base_for_modules` está vacío:
+  - `display_role = base-standalone`
+- en otro caso:
+  - `display_role = module_role`
+
+Uso recomendado:
+
+- usar `module_role` para filtros, lógica y contratos
+- usar `display_role` y `display_role_label` para badges, copy y jerarquía visible
+- no forzar `base_for_modules` por intuición:
+  - si un módulo base todavía no tiene verticales o transversales claramente derivados, es preferible que se vea como `Base local`
+  - ejemplo actual: `colectivos`
+  - ejemplo ya formalizado como base con descendencia explícita: `comunidades`, `socios`
 
 ### `depends_on`
 

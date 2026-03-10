@@ -1698,6 +1698,233 @@
 }
 
 /* ========================================
+   E2E Encryption Indicators
+======================================== */
+.ci-mensaje-cifrado {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 4px;
+}
+
+.ci-mensaje-cifrado .dashicons {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+}
+
+.ci-mensaje-cifrado.ci-e2e-ok {
+    color: var(--ci-success);
+}
+
+.ci-mensaje-cifrado.ci-e2e-ok .dashicons {
+    color: var(--ci-success);
+}
+
+.ci-mensaje-cifrado.ci-e2e-error {
+    color: var(--ci-danger);
+}
+
+.ci-mensaje-cifrado.ci-e2e-error .dashicons {
+    color: var(--ci-danger);
+}
+
+/* E2E status banner */
+.ci-e2e-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    background: var(--ci-success-light);
+    color: var(--ci-success);
+    font-size: 12px;
+    gap: 6px;
+    border-bottom: 1px solid var(--ci-border-light);
+}
+
+.ci-e2e-banner .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* E2E Vinculación Modal */
+.ci-modal-vinculacion .ci-modal-contenido {
+    max-width: 420px;
+}
+
+.ci-vinculacion-intro {
+    color: var(--ci-text-light);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.ci-vinculacion-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ci-vinculacion-opcion {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border: 2px solid var(--ci-border-light);
+    border-radius: var(--ci-radius);
+    cursor: pointer;
+    transition: all var(--ci-transition);
+}
+
+.ci-vinculacion-opcion:hover {
+    border-color: var(--ci-primary);
+    background: var(--ci-primary-light);
+}
+
+.ci-vinculacion-opcion .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: var(--ci-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.ci-vinculacion-opcion strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--ci-text);
+}
+
+.ci-vinculacion-opcion p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ci-text-muted);
+}
+
+.ci-vinculacion-form {
+    margin-top: 20px;
+}
+
+.ci-vinculacion-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--ci-text);
+}
+
+.ci-vinculacion-form input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--ci-border);
+    border-radius: var(--ci-radius-sm);
+    font-size: 16px;
+    font-family: monospace;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.ci-vinculacion-form input:focus {
+    outline: none;
+    border-color: var(--ci-primary);
+}
+
+.ci-vinculacion-form .ci-btn {
+    width: 100%;
+}
+
+/* Legacy plaintext indicator */
+.ci-mensaje-legacy {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 4px;
+    color: var(--ci-text-muted);
+}
+
+.ci-mensaje-legacy .dashicons {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+}
+
+/* Código de recuperación modal */
+.ci-modal-codigo .ci-modal-contenido {
+    max-width: 400px;
+}
+
+.ci-codigo-intro {
+    color: var(--ci-text);
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.ci-codigo-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px;
+    background: var(--ci-bg);
+    border-radius: var(--ci-radius);
+    margin-bottom: 16px;
+}
+
+.ci-codigo-display code {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: var(--ci-primary);
+    background: none;
+    padding: 0;
+}
+
+.ci-btn-copiar {
+    background: var(--ci-white);
+    border: 1px solid var(--ci-border);
+    border-radius: var(--ci-radius-sm);
+    padding: 8px;
+    cursor: pointer;
+    transition: all var(--ci-transition);
+}
+
+.ci-btn-copiar:hover {
+    background: var(--ci-primary-light);
+    border-color: var(--ci-primary);
+}
+
+.ci-btn-copiar .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--ci-primary);
+}
+
+.ci-codigo-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+    background: var(--ci-danger-light);
+    border-radius: var(--ci-radius-sm);
+    color: var(--ci-danger);
+    font-size: 13px;
+    margin: 0;
+}
+
+.ci-codigo-warning .dashicons {
+    flex-shrink: 0;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.ci-modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--ci-border-light);
+    text-align: right;
+}
+
+/* ========================================
    Dark Mode Support (optional)
 ======================================== */
 @media (prefers-color-scheme: dark) {

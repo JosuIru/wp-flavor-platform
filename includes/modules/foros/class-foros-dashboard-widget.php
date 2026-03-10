@@ -271,7 +271,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-format-chat',
                 'title' => wp_trim_words($tema->titulo, 6, '...'),
                 'meta' => $tema->nombre_autor ?: __('Anónimo', 'flavor-chat-ia'),
-                'url' => $es_admin ? admin_url('admin.php?page=foros&tema=' . $tema->id) : home_url('/mi-portal/foros/tema/' . $tema->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=foros&tema=' . $tema->id) : add_query_arg('tema_id', $tema->id, home_url('/mi-portal/foros/')),
                 'badge' => $total_respuestas > 0 ? $total_respuestas : null,
             ];
         }

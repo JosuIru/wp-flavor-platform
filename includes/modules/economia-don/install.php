@@ -109,9 +109,24 @@ function flavor_economia_don_tables_installed() {
 add_action('admin_init', function() {
     // Solo ejecutar si no están instaladas las tablas
     if (!flavor_economia_don_tables_installed()) {
-        // Verificar que el módulo está activo
-        $modulos_activos = get_option('flavor_active_modules', []);
-        if (in_array('economia_don', $modulos_activos) || in_array('economia-don', $modulos_activos)) {
+        // Verificar que el módulo está activo usando función centralizada
+        $modulo_activo = false;
+
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $modulo_activo = Flavor_Chat_Module_Loader::is_module_active('economia-don')
+                          || Flavor_Chat_Module_Loader::is_module_active('economia_don');
+        } else {
+            // Fallback: verificar en ambas opciones
+            $settings = get_option('flavor_chat_ia_settings', []);
+            $modulos_activos = $settings['active_modules'] ?? [];
+            $modulos_legacy = get_option('flavor_active_modules', []);
+            $modulos_activos = array_unique(array_merge($modulos_activos, $modulos_legacy));
+
+            $modulo_activo = in_array('economia_don', $modulos_activos, true)
+                          || in_array('economia-don', $modulos_activos, true);
+        }
+
+        if ($modulo_activo) {
             flavor_economia_don_install_tables();
         }
     }

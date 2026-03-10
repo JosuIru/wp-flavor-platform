@@ -65,11 +65,15 @@ class Flavor_Admin_Menu_Manager {
      * @return array
      */
     private function get_menus_base_obligatorios($vista) {
+        // Menús que siempre deben estar visibles en cualquier vista
+        $menus_base = [
+            'flavor-dashboard',
+            'flavor-unified-dashboard',
+            'flavor-app-composer',  // Compositor de módulos - siempre necesario para gestión
+        ];
+
         if ($vista === self::VISTA_GESTOR_GRUPOS) {
-            return [
-                'flavor-dashboard',
-                'flavor-unified-dashboard',
-            ];
+            return $menus_base;
         }
 
         return [];
@@ -205,6 +209,7 @@ class Flavor_Admin_Menu_Manager {
                 'flavor-module-dashboards',
 
                 // Gestión básica de la app
+                'flavor-app-composer',      // Compositor de módulos - importante para gestión
                 'flavor-layouts',           // Para gestionar menús y footers
                 'flavor-create-pages',      // Para crear páginas de grupos
 
@@ -229,6 +234,7 @@ class Flavor_Admin_Menu_Manager {
             'flavor-dashboard',
             'flavor-unified-dashboard',
             'flavor-module-dashboards',
+            'flavor-app-composer',
             'flavor-design-settings',
             'flavor-layouts',
             'flavor-create-pages',
@@ -246,6 +252,8 @@ class Flavor_Admin_Menu_Manager {
             'flavor-dashboard',
             'flavor-unified-dashboard',
             'flavor-module-dashboards',
+            'flavor-app-composer',  // Compositor de módulos - importante para gestión
+            'flavor-design-settings', // Diseño y apariencia
             'flavor-layouts',
             'flavor-create-pages',
             'flavor-activity-log',
@@ -275,6 +283,7 @@ class Flavor_Admin_Menu_Manager {
             'mi_app' => [
                 'label' => __('Mi App', 'flavor-chat-ia'),
                 'items' => [
+                    'flavor-app-composer'    => __('Compositor de Módulos', 'flavor-chat-ia'),
                     'flavor-design-settings' => __('Diseño y Apariencia', 'flavor-chat-ia'),
                     'flavor-layouts'         => __('Layouts (Menús y Footers)', 'flavor-chat-ia'),
                     'flavor-create-pages'    => __('Crear Páginas', 'flavor-chat-ia'),
@@ -344,7 +353,11 @@ class Flavor_Admin_Menu_Manager {
         }
 
         $config = get_option('flavor_menus_por_vista_config', []);
-        $config[$vista] = $this->normalizar_menus_vista($vista, $menus);
+        $menus_normalizados = $this->normalizar_menus_vista($vista, $menus);
+        $config[$vista] = $menus_normalizados;
+
+        // Actualizar también la propiedad en memoria
+        $this->menus_por_vista[$vista] = $menus_normalizados;
 
         return update_option('flavor_menus_por_vista_config', $config);
     }
@@ -411,15 +424,120 @@ class Flavor_Admin_Menu_Manager {
     }
 
     /**
+     * Mapeo de slugs de dashboard a IDs de módulo
+     *
+     * Los items que no están en este mapeo se consideran siempre visibles
+     * (como los items de Mi App, Chat IA, Apps, Herramientas, etc.)
+     */
+    private $dashboard_to_module_map = [
+        // Comunidad
+        'socios-dashboard' => 'socios',
+        'flavor-colectivos-dashboard' => 'colectivos',
+        'comunidades-dashboard' => 'comunidades',
+        'foros-dashboard' => 'foros',
+        'flavor-red-social-dashboard' => 'red_social',
+        'actores-dashboard' => 'mapa_actores',
+
+        // Economía
+        'gc-dashboard' => 'grupos_consumo',
+        'marketplace-dashboard' => 'marketplace',
+        'banco-tiempo-dashboard' => 'banco_tiempo',
+        'economia-don-dashboard' => 'economia_don',
+        'suficiencia-dashboard' => 'economia_suficiencia',
+
+        // Actividades
+        'eventos-dashboard' => 'eventos',
+        'cursos-dashboard' => 'cursos',
+        'talleres-dashboard' => 'talleres',
+        'reservas-dashboard' => 'reservas',
+
+        // Servicios
+        'tramites-dashboard' => 'tramites',
+        'incidencias-dashboard' => 'incidencias',
+        'ayuda-dashboard' => 'ayuda_vecinal',
+        'participacion-dashboard' => 'participacion',
+        'presupuestos-dashboard' => 'presupuestos_participativos',
+        'transparencia-dashboard' => 'transparencia',
+        'denuncias-dashboard' => 'seguimiento_denuncias',
+        'documentos-dashboard' => 'documentacion_legal',
+        'avisos-dashboard' => 'avisos_municipales',
+
+        // Recursos
+        'huertos-dashboard' => 'huertos_urbanos',
+        'espacios-dashboard' => 'espacios_comunes',
+        'biblioteca-dashboard' => 'biblioteca',
+        'carpooling-dashboard' => 'carpooling',
+        'fichaje-dashboard' => 'fichaje_empleados',
+        'parkings-dashboard' => 'parkings',
+        'bares-dashboard' => 'bares',
+        'recetas-dashboard' => 'recetas',
+
+        // Sostenibilidad
+        'reciclaje-dashboard' => 'reciclaje',
+        'compostaje-dashboard' => 'compostaje',
+        'flavor-energia-dashboard' => 'energia_comunitaria',
+        'bicicletas-dashboard' => 'bicicletas_compartidas',
+        'biodiversidad-dashboard' => 'biodiversidad_local',
+        'huella-ecologica-dashboard' => 'huella_ecologica',
+        'saberes-dashboard' => 'saberes_ancestrales',
+        'circulos-cuidados-dashboard' => 'circulos_cuidados',
+        'trabajo-digno-dashboard' => 'trabajo_digno',
+        'justicia-restaurativa-dashboard' => 'justicia_restaurativa',
+
+        // Comunicación
+        'multimedia-dashboard' => 'multimedia',
+        'flavor-radio-dashboard' => 'radio',
+        'podcast-dashboard' => 'podcast',
+        'campanias-dashboard' => 'campanias',
+        'email-marketing-dashboard' => 'email_marketing',
+        'encuestas-dashboard' => 'encuestas',
+
+        // Chat
+        'chat-estados-dashboard' => 'chat_estados',
+        'chat-grupos-dashboard' => 'chat_grupos',
+        'chat-interno-dashboard' => 'chat_interno',
+
+        // Negocios
+        'clientes-dashboard' => 'clientes',
+        'facturas-dashboard' => 'facturas',
+        'empresarial-dashboard' => 'empresarial',
+        'flavor-woocommerce-dashboard' => 'woocommerce',
+        'crowdfunding-dashboard' => 'crowdfunding',
+        'themacle-dashboard' => 'themacle',
+        'trading-ia-dashboard' => 'trading_ia',
+        'dex-solana-dashboard' => 'dex_solana',
+
+        // Social
+        'sello-conciencia-dashboard' => 'sello_conciencia',
+    ];
+
+    /**
+     * Caché de módulos activos
+     */
+    private $active_modules_cache = null;
+
+    /**
      * Verifica si un menú debe mostrarse en la vista actual
+     *
+     * Un menú es visible si:
+     * - No está asociado a un módulo (items generales como Dashboard, Diseño, etc.)
+     * - Está asociado a un módulo Y ese módulo está activo
+     * - Y además cumple las restricciones de vista del usuario
      *
      * @param string $slug
      * @return bool
      */
     public function menu_visible_en_vista($slug) {
+        // PRIMERO: Verificar si es un dashboard de módulo y si el módulo está activo
+        $module_id = $this->get_module_from_dashboard_slug($slug);
+        if ($module_id !== null && !$this->is_module_active_check($module_id)) {
+            return false; // El módulo no está activo, ocultar el menú
+        }
+
+        // SEGUNDO: Verificar restricciones de vista del usuario
         $vista = $this->obtener_vista_activa();
 
-        // Vista admin ve todo
+        // Vista admin ve todo (si el módulo está activo)
         if ($vista === self::VISTA_ADMIN) {
             return true;
         }
@@ -433,6 +551,100 @@ class Flavor_Admin_Menu_Manager {
 
         // Verificar si el slug está en la lista
         return in_array($slug, $menus_permitidos);
+    }
+
+    /**
+     * Obtiene el ID del módulo a partir del slug del menú
+     *
+     * @param string $menu_slug
+     * @return string|null ID del módulo o null si no es un dashboard de módulo
+     */
+    private function get_module_from_dashboard_slug($menu_slug) {
+        // Verificar en el mapeo explícito
+        if (isset($this->dashboard_to_module_map[$menu_slug])) {
+            return $this->dashboard_to_module_map[$menu_slug];
+        }
+
+        // Intentar inferir el módulo del slug si termina en -dashboard
+        if (preg_match('/^(?:flavor-)?([a-z0-9_-]+)-dashboard$/', $menu_slug, $matches)) {
+            $inferred_module_id = str_replace('-', '_', $matches[1]);
+
+            // Solo devolver si existe en el Module Loader
+            if (class_exists('Flavor_Chat_Module_Loader')) {
+                $loader = Flavor_Chat_Module_Loader::get_instance();
+                $registered_modules = $loader->get_registered_modules();
+
+                if (isset($registered_modules[$inferred_module_id])) {
+                    return $inferred_module_id;
+                }
+            }
+        }
+
+        // No es un dashboard de módulo
+        return null;
+    }
+
+    /**
+     * Verifica si un módulo está activo
+     *
+     * @param string $module_id
+     * @return bool
+     */
+    private function is_module_active_check($module_id) {
+        // Usar caché para evitar múltiples consultas a la BD
+        if ($this->active_modules_cache === null) {
+            $this->load_active_modules_cache();
+        }
+
+        // Normalizar ID (guiones a guiones bajos)
+        $normalized_id = str_replace('-', '_', $module_id);
+
+        return in_array($module_id, $this->active_modules_cache, true)
+            || in_array($normalized_id, $this->active_modules_cache, true);
+    }
+
+    /**
+     * Carga la caché de módulos activos
+     */
+    private function load_active_modules_cache() {
+        // Buscar en flavor_chat_ia_settings['active_modules'] (preferido)
+        $settings = get_option('flavor_chat_ia_settings', []);
+        $modulos_activos = $settings['active_modules'] ?? [];
+
+        // También buscar en flavor_active_modules (legacy/compatibilidad)
+        $modulos_activos_legacy = get_option('flavor_active_modules', []);
+        if (!empty($modulos_activos_legacy)) {
+            $modulos_activos = array_unique(array_merge($modulos_activos, $modulos_activos_legacy));
+        }
+
+        // Default: woocommerce siempre activo si no hay módulos configurados
+        if (empty($modulos_activos)) {
+            $modulos_activos = ['woocommerce'];
+        }
+
+        $this->active_modules_cache = $modulos_activos;
+    }
+
+    /**
+     * Invalida la caché de módulos activos
+     *
+     * Debe llamarse cuando se activan/desactivan módulos
+     */
+    public function invalidate_modules_cache() {
+        $this->active_modules_cache = null;
+    }
+
+    /**
+     * Obtiene todos los módulos activos
+     *
+     * @return array
+     */
+    public function get_active_modules() {
+        if ($this->active_modules_cache === null) {
+            $this->load_active_modules_cache();
+        }
+
+        return $this->active_modules_cache;
     }
 
     /**
@@ -461,6 +673,26 @@ class Flavor_Admin_Menu_Manager {
      */
     private function usar_menu_wp_compacto() {
         return (bool) apply_filters('flavor_use_compact_wp_submenu', true);
+    }
+
+    /**
+     * Verifica si el Flavor Shell está habilitado para el usuario actual
+     *
+     * Si el shell está habilitado, no se muestran submenús en WordPress
+     * porque la navegación completa está disponible en el shell.
+     *
+     * @return bool
+     */
+    private function shell_habilitado_para_usuario() {
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return false;
+        }
+
+        // Verificar si el usuario ha deshabilitado el shell
+        $shell_disabled = get_user_meta($user_id, 'flavor_admin_shell_disabled', true);
+
+        return empty($shell_disabled);
     }
 
     /**
@@ -690,10 +922,22 @@ class Flavor_Admin_Menu_Manager {
             30
         );
 
+        // Determinar si el shell está habilitado
+        $shell_activo = $this->shell_habilitado_para_usuario();
+
+        // Si el Shell está habilitado, registrar páginas como ocultas (parent null)
+        // para que existan en WordPress pero no aparezcan en el menú tradicional
+        $parent_menu = $shell_activo ? null : self::MENU_SLUG;
+
+        if ($shell_activo) {
+            // Eliminar el submenú duplicado del menú principal
+            remove_submenu_page(self::MENU_SLUG, self::MENU_SLUG);
+        }
+
         // Dashboard (pos 0) - Siempre visible
         if ($this->menu_visible_en_menu_wp('flavor-dashboard')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Dashboard', 'flavor-chat-ia'),
                 __('Dashboard', 'flavor-chat-ia'),
                 $cap_menu_principal,
@@ -706,7 +950,7 @@ class Flavor_Admin_Menu_Manager {
         // Dashboard Unificado (pos 1) - Siempre visible
         if ($this->menu_visible_en_menu_wp('flavor-unified-dashboard')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Dashboard Unificado', 'flavor-chat-ia'),
                 __('Unificado', 'flavor-chat-ia'),
                 'read',
@@ -722,13 +966,13 @@ class Flavor_Admin_Menu_Manager {
         // ══════════════════════════════════════════════════════════════
         // SECCIÓN: MI APP (10-19)
         // ══════════════════════════════════════════════════════════════
-        if ($this->seccion_tiene_items_visibles(['flavor-module-dashboards', 'flavor-design-settings', 'flavor-layouts', 'flavor-create-pages', 'flavor-landing-editor', 'flavor-permissions'])) {
+        if ($this->seccion_tiene_items_visibles(['flavor-module-dashboards', 'flavor-app-composer', 'flavor-design-settings', 'flavor-layouts', 'flavor-create-pages', 'flavor-landing-editor', 'flavor-permissions'])) {
             $this->agregar_separador(__('Mi App', 'flavor-chat-ia'), 10);
         }
 
         if ($this->menu_visible_en_menu_wp('flavor-module-dashboards')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Dashboards de Módulos', 'flavor-chat-ia'),
                 __('Dashboards', 'flavor-chat-ia'),
                 $cap_menu_principal,
@@ -738,12 +982,24 @@ class Flavor_Admin_Menu_Manager {
             );
         }
 
+        if ($this->menu_visible_en_menu_wp('flavor-app-composer')) {
+            add_submenu_page(
+                $parent_menu,
+                __('Compositor de Módulos', 'flavor-chat-ia'),
+                __('Módulos', 'flavor-chat-ia'),
+                'manage_options',
+                'flavor-app-composer',
+                [$this, 'callback_app_composer'],
+                11
+            );
+        }
+
         if ($this->menu_visible_en_menu_wp('flavor-design-settings')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Diseño y Apariencia', 'flavor-chat-ia'),
                 __('Diseño', 'flavor-chat-ia'),
-                'manage_options',
+                $cap_menu_principal,
                 'flavor-design-settings',
                 [$this, 'callback_design_settings'],
                 12
@@ -752,7 +1008,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-layouts')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Menús y Footers', 'flavor-chat-ia'),
                 __('Layouts', 'flavor-chat-ia'),
                 $cap_menu_principal,
@@ -764,7 +1020,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-create-pages')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Crear Páginas', 'flavor-chat-ia'),
                 __('Páginas', 'flavor-chat-ia'),
                 $cap_menu_principal,
@@ -776,7 +1032,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-landing-editor')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Editor Visual', 'flavor-chat-ia'),
                 __('Editor Visual', 'flavor-chat-ia'),
                 'manage_options',
@@ -788,7 +1044,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-permissions')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Permisos', 'flavor-chat-ia'),
                 __('Permisos', 'flavor-chat-ia'),
                 'manage_options',
@@ -807,7 +1063,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-chat-config')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Configuración IA', 'flavor-chat-ia'),
                 __('Configuración', 'flavor-chat-ia'),
                 'manage_options',
@@ -819,7 +1075,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-chat-ia-escalations')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Escalados', 'flavor-chat-ia'),
                 __('Escalados', 'flavor-chat-ia'),
                 'manage_options',
@@ -838,7 +1094,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-apps-config')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Apps Móviles', 'flavor-chat-ia'),
                 __('Apps Móviles', 'flavor-chat-ia'),
                 'manage_options',
@@ -850,7 +1106,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-deep-links')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Deep Links', 'flavor-chat-ia'),
                 __('Deep Links', 'flavor-chat-ia'),
                 'manage_options',
@@ -862,7 +1118,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-network')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Red de Nodos', 'flavor-chat-ia'),
                 __('Red', 'flavor-chat-ia'),
                 'manage_options',
@@ -881,7 +1137,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-addons')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Addons', 'flavor-chat-ia'),
                 __('Addons', 'flavor-chat-ia'),
                 'manage_options',
@@ -893,7 +1149,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-marketplace')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Marketplace', 'flavor-chat-ia'),
                 __('Marketplace', 'flavor-chat-ia'),
                 'manage_options',
@@ -905,7 +1161,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-newsletter')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Newsletter', 'flavor-chat-ia'),
                 __('Newsletter', 'flavor-chat-ia'),
                 'manage_options',
@@ -924,7 +1180,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-export-import')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Exportar / Importar', 'flavor-chat-ia'),
                 __('Export / Import', 'flavor-chat-ia'),
                 'manage_options',
@@ -936,7 +1192,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-health-check')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Diagnóstico', 'flavor-chat-ia'),
                 __('Diagnóstico', 'flavor-chat-ia'),
                 'manage_options',
@@ -948,7 +1204,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-activity-log')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Registro de Actividad', 'flavor-chat-ia'),
                 __('Actividad', 'flavor-chat-ia'),
                 $cap_menu_principal,
@@ -960,7 +1216,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-analytics')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Analytics Dashboard', 'flavor-chat-ia'),
                 __('Analytics', 'flavor-chat-ia'),
                 'manage_options',
@@ -972,7 +1228,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-api-docs')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('API Docs', 'flavor-chat-ia'),
                 __('API Docs', 'flavor-chat-ia'),
                 'manage_options',
@@ -984,7 +1240,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-systems-panel')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Panel de Sistemas', 'flavor-chat-ia'),
                 __('Sistemas V3', 'flavor-chat-ia'),
                 'manage_options',
@@ -1003,7 +1259,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-documentation')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Documentación', 'flavor-chat-ia'),
                 __('Documentación', 'flavor-chat-ia'),
                 $cap_menu_principal,
@@ -1015,7 +1271,7 @@ class Flavor_Admin_Menu_Manager {
 
         if ($this->menu_visible_en_menu_wp('flavor-tours')) {
             add_submenu_page(
-                self::MENU_SLUG,
+                $parent_menu,
                 __('Tours Guiados', 'flavor-chat-ia'),
                 __('Tours', 'flavor-chat-ia'),
                 $cap_menu_principal,
@@ -1684,6 +1940,12 @@ class Flavor_Admin_Menu_Manager {
         }
     }
 
+    public function callback_app_composer() {
+        if (class_exists('Flavor_App_Profile_Admin')) {
+            Flavor_App_Profile_Admin::get_instance()->renderizar_pagina_perfil();
+        }
+    }
+
     public function callback_design_settings() {
         if (class_exists('Flavor_Design_Settings')) {
             Flavor_Design_Settings::get_instance()->render_settings_page();
@@ -2245,3 +2507,10 @@ class Flavor_Admin_Menu_Manager {
 
 // Inicializar el gestor de menús
 Flavor_Admin_Menu_Manager::get_instance();
+
+// Invalidar caché de módulos activos cuando se actualizan las opciones del plugin
+add_action('update_option_flavor_chat_ia_settings', function() {
+    if (class_exists('Flavor_Admin_Menu_Manager')) {
+        Flavor_Admin_Menu_Manager::get_instance()->invalidate_modules_cache();
+    }
+});

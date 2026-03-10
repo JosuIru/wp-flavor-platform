@@ -17,6 +17,16 @@ class Flavor_Adaptive_Menu {
     private static $instance = null;
 
     /**
+     * Obtiene la URL actual para redirects de login en menús adaptativos.
+     */
+    private function get_current_request_url(): string {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/';
+        $request_uri = '/' . ltrim($request_uri, '/');
+
+        return home_url($request_uri);
+    }
+
+    /**
      * Obtiene la instancia singleton
      */
     public static function get_instance() {
@@ -216,7 +226,7 @@ class Flavor_Adaptive_Menu {
         } else {
             ?>
             <div class="flavor-auth-buttons">
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-button flavor-button--secondary flavor-button--small">
+                <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="flavor-button flavor-button--secondary flavor-button--small">
                     <?php _e('Acceder', 'flavor-chat-ia'); ?>
                 </a>
                 <a href="<?php echo esc_url(wp_registration_url()); ?>" class="flavor-button flavor-button--primary flavor-button--small">

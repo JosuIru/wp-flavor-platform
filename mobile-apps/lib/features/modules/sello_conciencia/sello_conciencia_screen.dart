@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/providers/providers.dart';
 
 class SelloConcienciaScreen extends ConsumerStatefulWidget {
@@ -154,7 +155,7 @@ class _SelloConcienciaScreenState extends ConsumerState<SelloConcienciaScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('Negocios certificados', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            TextButton(onPressed: () {}, child: const Text('Ver todos')),
+            TextButton(onPressed: _verTodosNegocios, child: const Text('Ver todos')),
           ],
         ),
         const SizedBox(height: 12),
@@ -177,7 +178,283 @@ class _SelloConcienciaScreenState extends ConsumerState<SelloConcienciaScreen> {
         title: Text(negocio['nombre'] ?? ''),
         subtitle: Text(negocio['categoria'] ?? ''),
         trailing: const Icon(Icons.verified, color: Colors.green),
-        onTap: () {},
+        onTap: () => _verDetalleNegocio(negocio),
+      ),
+    );
+  }
+
+  void _verTodosNegocios() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.85,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Icon(Icons.verified, color: Colors.green.shade600),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Negocios Certificados',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: _negocios.isEmpty
+                  ? const Center(child: Text('No hay negocios certificados aun'))
+                  : ListView.builder(
+                      controller: scrollController,
+                      padding: const EdgeInsets.all(16),
+                      itemCount: _negocios.length,
+                      itemBuilder: (context, index) {
+                        final negocio = _negocios[index];
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.green.shade100,
+                              child: Icon(Icons.store, color: Colors.green.shade600),
+                            ),
+                            title: Text(negocio['nombre'] ?? ''),
+                            subtitle: Text(negocio['categoria'] ?? ''),
+                            trailing: const Icon(Icons.verified, color: Colors.green),
+                            onTap: () {
+                              Navigator.pop(context);
+                              _verDetalleNegocio(negocio);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _verDetalleNegocio(Map<String, dynamic> negocio) {
+    final nombre = negocio['nombre'] ?? 'Negocio';
+    final categoria = negocio['categoria'] ?? '';
+    final descripcion = negocio['descripcion'] ?? '';
+    final direccion = negocio['direccion'] ?? '';
+    final telefono = negocio['telefono'] ?? '';
+    final email = negocio['email'] ?? '';
+    final web = negocio['web'] ?? '';
+    final fechaCertificacion = negocio['fecha_certificacion'] ?? '';
+    final criteriosCumplidos = (negocio['criterios_cumplidos'] as List<dynamic>? ?? [])
+        .whereType<String>()
+        .toList();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.green.shade100,
+                    child: Icon(Icons.store, size: 32, color: Colors.green.shade600),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          nombre,
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        if (categoria.isNotEmpty)
+                          Chip(
+                            label: Text(categoria),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.verified, color: Colors.green, size: 32),
+                ],
+              ),
+              const SizedBox(height: 20),
+              if (descripcion.isNotEmpty) ...[
+                const Text('Descripcion', style: TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                Text(descripcion),
+                const SizedBox(height: 16),
+              ],
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      if (direccion.isNotEmpty)
+                        _buildContactoRow(Icons.location_on, 'Direccion', direccion),
+                      if (telefono.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        _buildContactoRow(Icons.phone, 'Telefono', telefono),
+                      ],
+                      if (email.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        _buildContactoRow(Icons.email, 'Email', email),
+                      ],
+                      if (web.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        _buildContactoRow(Icons.language, 'Web', web),
+                      ],
+                      if (fechaCertificacion.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        _buildContactoRow(Icons.calendar_today, 'Certificado desde', fechaCertificacion),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              if (criteriosCumplidos.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                const Text('Criterios certificados', style: TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: criteriosCumplidos.map((criterio) {
+                    return Chip(
+                      avatar: Icon(Icons.check_circle, size: 16, color: Colors.green.shade600),
+                      label: Text(criterio),
+                      backgroundColor: Colors.green.shade50,
+                    );
+                  }).toList(),
+                ),
+              ],
+              const SizedBox(height: 24),
+              if (telefono.isNotEmpty || email.isNotEmpty)
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _mostrarOpcionesContacto(nombre, telefono, email);
+                    },
+                    icon: const Icon(Icons.message),
+                    label: const Text('Contactar'),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContactoRow(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 18, color: Colors.grey),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+              Text(value),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _mostrarOpcionesContacto(String nombre, String telefono, String email) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Contactar con $nombre',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              if (telefono.isNotEmpty)
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.green.shade100,
+                    child: Icon(Icons.phone, color: Colors.green.shade600),
+                  ),
+                  title: const Text('Llamar'),
+                  subtitle: Text(telefono),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    final uri = Uri.parse('tel:$telefono');
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri);
+                    } else if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('No se puede realizar la llamada')),
+                      );
+                    }
+                  },
+                ),
+              if (email.isNotEmpty)
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.blue.shade100,
+                    child: Icon(Icons.email, color: Colors.blue.shade600),
+                  ),
+                  title: const Text('Enviar email'),
+                  subtitle: Text(email),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    final uri = Uri.parse('mailto:$email?subject=Consulta sobre $nombre');
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri);
+                    } else if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('No se puede abrir el cliente de email')),
+                      );
+                    }
+                  },
+                ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
       ),
     );
   }

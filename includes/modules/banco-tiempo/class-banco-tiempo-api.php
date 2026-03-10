@@ -289,6 +289,7 @@ class Flavor_Banco_Tiempo_API {
 
         $busqueda = $request->get_param('busqueda');
         $categoria = $request->get_param('categoria');
+        $comunidad_id = absint($request->get_param('comunidad_id'));
         $limite = $request->get_param('limite');
         $pagina = $request->get_param('pagina');
         $offset = ($pagina - 1) * $limite;
@@ -306,6 +307,11 @@ class Flavor_Banco_Tiempo_API {
         if (!empty($categoria) && $categoria !== 'todos') {
             $where[] = "categoria = %s";
             $valores[] = $categoria;
+        }
+
+        if ($comunidad_id > 0) {
+            $where[] = "comunidad_id = %d";
+            $valores[] = $comunidad_id;
         }
 
         $sql_where = implode(' AND ', $where);
@@ -356,6 +362,7 @@ class Flavor_Banco_Tiempo_API {
         $descripcion = $request->get_param('descripcion');
         $categoria = $request->get_param('categoria');
         $horas_estimadas = floatval($request->get_param('horas_estimadas'));
+        $comunidad_id = absint($request->get_param('comunidad_id'));
 
         // Validaciones
         if (empty($titulo) || empty($descripcion)) {
@@ -381,6 +388,7 @@ class Flavor_Banco_Tiempo_API {
             $tabla,
             [
                 'usuario_id' => $usuario_id,
+                'comunidad_id' => $comunidad_id ?: null,
                 'titulo' => $titulo,
                 'descripcion' => $descripcion,
                 'categoria' => $categoria,
@@ -388,7 +396,7 @@ class Flavor_Banco_Tiempo_API {
                 'estado' => 'activo',
                 'fecha_publicacion' => current_time('mysql'),
             ],
-            ['%d', '%s', '%s', '%s', '%f', '%s', '%s']
+            ['%d', '%d', '%s', '%s', '%s', '%f', '%s', '%s']
         );
 
         if ($resultado === false) {

@@ -25,6 +25,10 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         $this->name = 'Presupuestos Participativos'; // Translation loaded on init
         $this->description = 'Democracia participativa: los vecinos deciden en qué invertir el presupuesto del barrio.'; // Translation loaded on init
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['gobernanza', 'economia_local'];
+        $this->gailu_contribuye_a = ['autonomia', 'impacto'];
+
         parent::__construct();
 
         // Admin pages

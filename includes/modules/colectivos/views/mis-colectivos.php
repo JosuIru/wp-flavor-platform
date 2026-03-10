@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 <div class="flavor-col-mis-colectivos">
     <div class="flavor-col-header">
         <h2><?php esc_html_e('Mis colectivos', 'flavor-chat-ia'); ?></h2>
-        <a href="<?php echo esc_url(home_url('/colectivos/crear/')); ?>" class="flavor-col-btn flavor-col-btn-primary">
+        <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/crear/')); ?>" class="flavor-col-btn flavor-col-btn-primary">
             <span class="dashicons dashicons-plus-alt"></span>
             <?php esc_html_e('Crear colectivo', 'flavor-chat-ia'); ?>
         </a>
@@ -28,10 +28,10 @@ if (!defined('ABSPATH')) {
             <h3><?php esc_html_e('Aún no perteneces a ningún colectivo', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Explora los colectivos disponibles y únete a los que te interesen.', 'flavor-chat-ia'); ?></p>
             <div class="flavor-col-vacio-acciones">
-                <a href="<?php echo esc_url(home_url('/colectivos/')); ?>" class="flavor-col-btn flavor-col-btn-secondary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/')); ?>" class="flavor-col-btn flavor-col-btn-secondary">
                     <?php esc_html_e('Explorar colectivos', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/colectivos/crear/')); ?>" class="flavor-col-btn flavor-col-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/crear/')); ?>" class="flavor-col-btn flavor-col-btn-primary">
                     <?php esc_html_e('Crear mi colectivo', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -53,7 +53,7 @@ if (!defined('ABSPATH')) {
                     <div class="flavor-col-item-content">
                         <div class="flavor-col-item-header">
                             <h3 class="flavor-col-item-nombre">
-                                <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], home_url('/colectivos/'))); ?>">
+                                <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], home_url('/mi-portal/colectivos/'))); ?>">
                                     <?php echo esc_html($colectivo['nombre']); ?>
                                 </a>
                             </h3>
@@ -83,7 +83,7 @@ if (!defined('ABSPATH')) {
                     </div>
 
                     <div class="flavor-col-item-acciones">
-                        <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], home_url('/colectivos/'))); ?>"
+                        <a href="<?php echo esc_url(add_query_arg('colectivo', $colectivo['id'], home_url('/mi-portal/colectivos/'))); ?>"
                            class="flavor-col-btn flavor-col-btn-ver">
                             <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                         </a>

@@ -59,6 +59,10 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
         $this->tabla_turnos_riego = $wpdb->prefix . 'flavor_huertos_turnos_riego';
         $this->tabla_actividades = $wpdb->prefix . 'flavor_huertos_actividades';
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['regeneracion', 'economia_local'];
+        $this->gailu_contribuye_a = ['autonomia', 'impacto'];
+
         parent::__construct();
 
         // Admin pages

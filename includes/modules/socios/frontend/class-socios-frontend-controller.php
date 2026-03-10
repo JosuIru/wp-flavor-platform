@@ -110,6 +110,20 @@ class Flavor_Socios_Frontend_Controller {
     }
 
     /**
+     * Devuelve un estado de login accionable para rutas del portal.
+     *
+     * @param string $mensaje Texto principal.
+     * @return string
+     */
+    private function render_login_required($mensaje) {
+        return '<div class="flavor-empty-state">' .
+            '<p>' . esc_html($mensaje) . '</p>' .
+            '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' .
+            esc_html__('Iniciar sesión', 'flavor-chat-ia') .
+            '</a></div>';
+    }
+
+    /**
      * Shortcode: Formulario de alta
      */
     public function shortcode_formulario_alta($atts) {
@@ -302,7 +316,7 @@ class Flavor_Socios_Frontend_Controller {
      */
     public function shortcode_mi_perfil($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            return $this->render_login_required(__('Debes iniciar sesión para ver tu perfil de socio.', 'flavor-chat-ia'));
         }
 
         $this->encolar_assets();
@@ -466,7 +480,7 @@ class Flavor_Socios_Frontend_Controller {
      */
     public function shortcode_mi_carnet($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            return $this->render_login_required(__('Debes iniciar sesión para ver tu carnet digital.', 'flavor-chat-ia'));
         }
 
         $this->encolar_assets();
@@ -544,7 +558,7 @@ class Flavor_Socios_Frontend_Controller {
      */
     public function shortcode_mis_cuotas($atts) {
         if (!is_user_logged_in()) {
-            return '<p class="flavor-login-required">' . __('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            return $this->render_login_required(__('Debes iniciar sesión para ver tus cuotas.', 'flavor-chat-ia'));
         }
 
         $this->encolar_assets();

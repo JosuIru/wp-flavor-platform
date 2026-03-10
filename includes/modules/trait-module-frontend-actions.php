@@ -604,7 +604,7 @@ trait Flavor_Module_Frontend_Actions {
         ?>
         <div class="flavor-login-required">
             <p><?php _e('Debes iniciar sesión para realizar esta acción.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="flavor-button flavor-button--primary">
+            <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>" class="flavor-button flavor-button--primary">
                 <?php _e('Iniciar Sesión', 'flavor-chat-ia'); ?>
             </a>
         </div>

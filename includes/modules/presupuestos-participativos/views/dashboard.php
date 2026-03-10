@@ -12,351 +12,421 @@ if (!defined('ABSPATH')) {
 }
 
 global $wpdb;
-// Nombres correctos de tablas
 $tabla_proyectos = $wpdb->prefix . 'flavor_pp_propuestas';
 $tabla_votos_pp = $wpdb->prefix . 'flavor_pp_votos';
 $tabla_categorias = $wpdb->prefix . 'flavor_pp_categorias';
 
-// Presupuesto total y asignado
-$presupuesto_total = 500000; // Ejemplo: 500k euros
-$presupuesto_asignado = $wpdb->get_var("SELECT SUM(presupuesto_estimado) FROM $tabla_proyectos WHERE estado = 'aprobada'") ?? 0;
+// Verificar existencia de tablas
+$tabla_proyectos_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_proyectos)) === $tabla_proyectos;
+$tabla_votos_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_votos_pp)) === $tabla_votos_pp;
+$tabla_categorias_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_categorias)) === $tabla_categorias;
+
+// Inicializar variables
+$presupuesto_total = 500000;
+$presupuesto_asignado = 0;
+$total_proyectos = 0;
+$proyectos_votacion = 0;
+$proyectos_aprobados = 0;
+$total_votos_pp = 0;
+$votantes_unicos_pp = 0;
+$stats_proyectos_estado = [];
+$proyectos_mas_votados = [];
+$distribucion_categoria = [];
+$tendencia_votos = [];
+$usando_demo = false;
+
+if ($tabla_proyectos_existe && $tabla_votos_existe) {
+    $presupuesto_asignado = (float) $wpdb->get_var("SELECT COALESCE(SUM(presupuesto_estimado), 0) FROM $tabla_proyectos WHERE estado = 'aprobada'");
+    $total_proyectos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos");
+    $proyectos_votacion = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos WHERE estado = 'en_votacion'");
+    $proyectos_aprobados = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos WHERE estado = 'aprobada'");
+    $total_votos_pp = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_votos_pp");
+    $votantes_unicos_pp = (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_votos_pp");
+
+    $stats_proyectos_estado = $wpdb->get_results("
+        SELECT estado, COUNT(*) as total
+        FROM $tabla_proyectos
+        GROUP BY estado
+    ");
+
+    $proyectos_mas_votados = $wpdb->get_results("
+        SELECT p.*, COUNT(v.id) as total_votos
+        FROM $tabla_proyectos p
+        LEFT JOIN $tabla_votos_pp v ON p.id = v.propuesta_id
+        WHERE p.estado = 'en_votacion'
+        GROUP BY p.id
+        ORDER BY total_votos DESC
+        LIMIT 5
+    ");
+
+    if ($tabla_categorias_existe) {
+        $distribucion_categoria = $wpdb->get_results("
+            SELECT COALESCE(c.nombre, 'Sin categoría') as categoria, SUM(p.presupuesto_estimado) as total_presupuesto
+            FROM $tabla_proyectos p
+            LEFT JOIN $tabla_categorias c ON p.categoria_id = c.id
+            WHERE p.estado IN ('en_votacion', 'aprobada')
+            GROUP BY p.categoria_id, c.nombre
+            ORDER BY total_presupuesto DESC
+            LIMIT 6
+        ");
+    }
+
+    $tendencia_votos = $wpdb->get_results("
+        SELECT DATE(fecha_voto) as fecha, COUNT(*) as total
+        FROM $tabla_votos_pp
+        WHERE fecha_voto >= DATE_SUB(CURDATE(), INTERVAL 14 DAY)
+        GROUP BY DATE(fecha_voto)
+        ORDER BY fecha ASC
+    ");
+}
+
+// Datos de demostración si no hay datos reales
+if ($total_proyectos == 0 && $total_votos_pp == 0) {
+    $usando_demo = true;
+    $presupuesto_asignado = 235000;
+    $total_proyectos = 24;
+    $proyectos_votacion = 12;
+    $proyectos_aprobados = 8;
+    $votantes_unicos_pp = 1245;
+    $total_votos_pp = 3560;
+
+    $stats_proyectos_estado = [
+        (object) ['estado' => 'borrador', 'total' => 4],
+        (object) ['estado' => 'en_votacion', 'total' => 12],
+        (object) ['estado' => 'aprobada', 'total' => 8],
+        (object) ['estado' => 'rechazada', 'total' => 0],
+    ];
+
+    $proyectos_mas_votados = [
+        (object) ['titulo' => 'Parque Infantil Inclusivo', 'presupuesto_estimado' => 45000, 'total_votos' => 456],
+        (object) ['titulo' => 'Carril Bici Centro-Norte', 'presupuesto_estimado' => 85000, 'total_votos' => 389],
+        (object) ['titulo' => 'Huerto Comunitario La Paz', 'presupuesto_estimado' => 25000, 'total_votos' => 312],
+        (object) ['titulo' => 'Mejora Iluminación Barrio Sur', 'presupuesto_estimado' => 35000, 'total_votos' => 278],
+        (object) ['titulo' => 'Centro Cultural Juvenil', 'presupuesto_estimado' => 65000, 'total_votos' => 245],
+    ];
+
+    $distribucion_categoria = [
+        (object) ['categoria' => 'Urbanismo', 'total_presupuesto' => 120000],
+        (object) ['categoria' => 'Medio Ambiente', 'total_presupuesto' => 75000],
+        (object) ['categoria' => 'Cultura', 'total_presupuesto' => 65000],
+        (object) ['categoria' => 'Deportes', 'total_presupuesto' => 45000],
+        (object) ['categoria' => 'Servicios Sociales', 'total_presupuesto' => 30000],
+    ];
+
+    for ($i = 13; $i >= 0; $i--) {
+        $tendencia_votos[] = (object) [
+            'fecha' => date('Y-m-d', strtotime("-$i days")),
+            'total' => rand(15, 85)
+        ];
+    }
+}
+
 $presupuesto_disponible = $presupuesto_total - $presupuesto_asignado;
 $porcentaje_asignado = $presupuesto_total > 0 ? round(($presupuesto_asignado / $presupuesto_total) * 100, 1) : 0;
 
-// Estadísticas de proyectos
-$total_proyectos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos");
-$proyectos_votacion = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos WHERE estado = 'en_votacion'");
-$proyectos_aprobados = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_proyectos WHERE estado = 'aprobada'");
+// Preparar datos para gráficos
+$tendencia_labels = array_map(function($t) {
+    return date_i18n('d/m', strtotime($t->fecha));
+}, $tendencia_votos);
+$tendencia_data = array_map(function($t) { return (int) $t->total; }, $tendencia_votos);
 
-// Participación
-$total_votos_pp = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_votos_pp");
-$votantes_unicos_pp = $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_votos_pp");
+$estado_labels = array_map(function($e) {
+    $nombres = ['borrador' => 'Borrador', 'en_votacion' => 'En votación', 'aprobada' => 'Aprobada', 'rechazada' => 'Rechazada'];
+    return $nombres[$e->estado] ?? ucfirst(str_replace('_', ' ', $e->estado));
+}, $stats_proyectos_estado);
+$estado_data = array_map(function($e) { return (int) $e->total; }, $stats_proyectos_estado);
 
-// Proyectos por estado
-$stats_proyectos_estado = $wpdb->get_results("
-    SELECT estado, COUNT(*) as total
-    FROM $tabla_proyectos
-    GROUP BY estado
-");
-
-// Proyectos más votados
-$proyectos_mas_votados = $wpdb->get_results("
-    SELECT p.*, COUNT(v.id) as total_votos
-    FROM $tabla_proyectos p
-    LEFT JOIN $tabla_votos_pp v ON p.id = v.propuesta_id
-    WHERE p.estado = 'en_votacion'
-    GROUP BY p.id
-    ORDER BY total_votos DESC
-    LIMIT 5
-");
-
-// Distribución presupuestaria por categoría
-$distribucion_categoria = $wpdb->get_results("
-    SELECT COALESCE(c.nombre, 'Sin categoría') as categoria, SUM(p.presupuesto_estimado) as total_presupuesto
-    FROM $tabla_proyectos p
-    LEFT JOIN $tabla_categorias c ON p.categoria_id = c.id
-    WHERE p.estado IN ('en_votacion', 'aprobada')
-    GROUP BY p.categoria_id, c.nombre
-    ORDER BY total_presupuesto DESC
-    LIMIT 6
-");
-
-// Tendencia de votación últimos 14 días
-$tendencia_votos = $wpdb->get_results("
-    SELECT DATE(fecha_voto) as fecha, COUNT(*) as total
-    FROM $tabla_votos_pp
-    WHERE fecha_voto >= DATE_SUB(CURDATE(), INTERVAL 14 DAY)
-    GROUP BY DATE(fecha_voto)
-    ORDER BY fecha ASC
-");
+$categoria_labels = array_column($distribucion_categoria, 'categoria');
+$categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
 ?>
 
-<div class="wrap">
-    <h1 class="wp-heading-inline">
-        <span class="dashicons dashicons-money-alt" style="color: #00a32a;"></span>
-        <?php echo esc_html__('Dashboard de Presupuestos Participativos', 'flavor-chat-ia'); ?>
-    </h1>
+<div class="dm-dashboard">
+    <div class="dm-header">
+        <h1 class="dm-header__title">
+            <span class="dashicons dashicons-money-alt"></span>
+            <?php esc_html_e('Dashboard de Presupuestos Participativos', 'flavor-chat-ia'); ?>
+        </h1>
+        <?php if ($usando_demo): ?>
+            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
+        <?php endif; ?>
+    </div>
 
-    <hr class="wp-header-end">
-
-    <!-- Accesos Rapidos -->
-    <div class="pp-quick-access" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0;">
-        <a href="<?php echo admin_url('admin.php?page=pp-proyectos'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-portfolio" style="font-size: 24px; color: #2271b1;"></span>
-            <span><?php echo esc_html__('Proyectos', 'flavor-chat-ia'); ?></span>
+    <!-- Accesos Rápidos -->
+    <div class="dm-action-grid dm-action-grid--4">
+        <a href="<?php echo esc_url(admin_url('admin.php?page=pp-proyectos')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-portfolio dm-text-primary"></span>
+            <span><?php esc_html_e('Proyectos', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=pp-presupuesto'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-money-alt" style="font-size: 24px; color: #00a32a;"></span>
-            <span><?php echo esc_html__('Presupuesto', 'flavor-chat-ia'); ?></span>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=pp-presupuesto')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-money-alt dm-text-success"></span>
+            <span><?php esc_html_e('Presupuesto', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=pp-votos'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-chart-pie" style="font-size: 24px; color: #8c52ff;"></span>
-            <span><?php echo esc_html__('Votos', 'flavor-chat-ia'); ?></span>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=pp-votos')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-chart-pie dm-text-purple"></span>
+            <span><?php esc_html_e('Votos', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=pp-resultados'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-chart-bar" style="font-size: 24px; color: #dba617;"></span>
-            <span><?php echo esc_html__('Resultados', 'flavor-chat-ia'); ?></span>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=pp-resultados')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-chart-bar dm-text-warning"></span>
+            <span><?php esc_html_e('Resultados', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo admin_url('admin.php?page=flavor-app-composer&module=presupuestos_participativos'); ?>" class="pp-quick-link" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; text-decoration: none; color: #1d2327; transition: all 0.2s;">
-            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; color: #646970;"></span>
-            <span><?php echo esc_html__('Configuración', 'flavor-chat-ia'); ?></span>
+        <a href="<?php echo esc_url(home_url('/mi-portal/presupuestos-participativos/')); ?>" class="dm-action-card" target="_blank">
+            <span class="dashicons dashicons-external"></span>
+            <span><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
         </a>
     </div>
 
-    <!-- Metricas principales -->
-    <div class="flavor-metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 20px 0;">
-
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Presupuesto Total', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($presupuesto_total, 0, ',', '.'); ?> €</h2>
-                    <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
-                        <?php echo esc_html__('para el ejercicio actual', 'flavor-chat-ia'); ?>
-                    </p>
-                </div>
-                <span class="dashicons dashicons-money-alt" style="font-size: 40px; color: #00a32a; opacity: 0.3;"></span>
-            </div>
+    <!-- Métricas principales -->
+    <div class="dm-stats-grid dm-stats-grid--4">
+        <div class="dm-stat-card dm-stat-card--success">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($presupuesto_total); ?> €</div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Presupuesto Total', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('para el ejercicio actual', 'flavor-chat-ia'); ?></div>
+            <span class="dashicons dashicons-money-alt dm-stat-card__icon"></span>
         </div>
 
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Presupuesto Asignado', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($presupuesto_asignado, 0, ',', '.'); ?> €</h2>
-                    <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
-                        <?php echo $porcentaje_asignado; ?>% del total
-                    </p>
-                </div>
-                <span class="dashicons dashicons-chart-pie" style="font-size: 40px; color: #2271b1; opacity: 0.3;"></span>
-            </div>
+        <div class="dm-stat-card dm-stat-card--primary">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($presupuesto_asignado); ?> €</div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Presupuesto Asignado', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta"><?php echo esc_html($porcentaje_asignado); ?>% del total</div>
+            <span class="dashicons dashicons-chart-pie dm-stat-card__icon"></span>
         </div>
 
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #f0b849; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Proyectos en Votación', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($proyectos_votacion); ?></h2>
-                    <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
-                        de <?php echo $total_proyectos; ?> totales
-                    </p>
-                </div>
-                <span class="dashicons dashicons-portfolio" style="font-size: 40px; color: #f0b849; opacity: 0.3;"></span>
-            </div>
+        <div class="dm-stat-card dm-stat-card--warning">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($proyectos_votacion); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Proyectos en Votación', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta"><?php printf(esc_html__('de %s totales', 'flavor-chat-ia'), number_format_i18n($total_proyectos)); ?></div>
+            <span class="dashicons dashicons-portfolio dm-stat-card__icon"></span>
         </div>
 
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #d63638; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Participación', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($votantes_unicos_pp); ?></h2>
-                    <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
-                        <?php echo esc_html__('ciudadanos han votado', 'flavor-chat-ia'); ?>
-                    </p>
-                </div>
-                <span class="dashicons dashicons-groups" style="font-size: 40px; color: #d63638; opacity: 0.3;"></span>
-            </div>
+        <div class="dm-stat-card dm-stat-card--error">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($votantes_unicos_pp); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Participación', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('ciudadanos han votado', 'flavor-chat-ia'); ?></div>
+            <span class="dashicons dashicons-groups dm-stat-card__icon"></span>
         </div>
-
     </div>
 
     <!-- Indicador de presupuesto -->
-    <div class="postbox" style="margin: 20px 0;">
-        <div class="postbox-header">
-            <h2><?php echo esc_html__('Estado del Presupuesto', 'flavor-chat-ia'); ?></h2>
+    <div class="dm-card">
+        <div class="dm-card__header">
+            <h3>
+                <span class="dashicons dashicons-money-alt"></span>
+                <?php esc_html_e('Estado del Presupuesto', 'flavor-chat-ia'); ?>
+            </h3>
         </div>
-        <div class="inside">
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; padding: 20px;">
-                <div style="text-align: center;">
-                    <div style="font-size: 14px; color: #646970; margin-bottom: 10px; text-transform: uppercase;"><?php echo esc_html__('Total Disponible', 'flavor-chat-ia'); ?></div>
-                    <div style="font-size: 36px; font-weight: 700; color: #00a32a;">
-                        <?php echo number_format($presupuesto_total, 0, ',', '.'); ?> €
-                    </div>
+        <div class="dm-budget-indicator">
+            <div class="dm-budget-indicator__values">
+                <div class="dm-budget-indicator__item">
+                    <span class="dm-budget-indicator__label"><?php esc_html_e('Total Disponible', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-budget-indicator__value dm-text-success"><?php echo number_format_i18n($presupuesto_total); ?> €</span>
                 </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 14px; color: #646970; margin-bottom: 10px; text-transform: uppercase;"><?php echo esc_html__('Asignado', 'flavor-chat-ia'); ?></div>
-                    <div style="font-size: 36px; font-weight: 700; color: #2271b1;">
-                        <?php echo number_format($presupuesto_asignado, 0, ',', '.'); ?> €
-                    </div>
+                <div class="dm-budget-indicator__item">
+                    <span class="dm-budget-indicator__label"><?php esc_html_e('Asignado', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-budget-indicator__value dm-text-primary"><?php echo number_format_i18n($presupuesto_asignado); ?> €</span>
                 </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 14px; color: #646970; margin-bottom: 10px; text-transform: uppercase;"><?php echo esc_html__('Disponible', 'flavor-chat-ia'); ?></div>
-                    <div style="font-size: 36px; font-weight: 700; color: #f0b849;">
-                        <?php echo number_format($presupuesto_disponible, 0, ',', '.'); ?> €
-                    </div>
+                <div class="dm-budget-indicator__item">
+                    <span class="dm-budget-indicator__label"><?php esc_html_e('Disponible', 'flavor-chat-ia'); ?></span>
+                    <span class="dm-budget-indicator__value dm-text-warning"><?php echo number_format_i18n($presupuesto_disponible); ?> €</span>
                 </div>
             </div>
-            <div style="background: #f0f0f1; height: 30px; border-radius: 15px; overflow: hidden; margin: 20px;">
-                <div style="background: linear-gradient(90deg, #00a32a 0%, #2271b1 100%); height: 100%; width: <?php echo $porcentaje_asignado; ?>%; transition: width 0.5s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px;">
-                    <?php echo $porcentaje_asignado; ?>% Asignado
+            <div class="dm-progress dm-progress--lg">
+                <div class="dm-progress__fill dm-progress__fill--gradient" style="width: <?php echo esc_attr($porcentaje_asignado); ?>%;">
+                    <span class="dm-progress__label"><?php echo esc_html($porcentaje_asignado); ?>% Asignado</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Gráficos -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-
-        <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 20px 0;">
-                <span class="dashicons dashicons-chart-line"></span>
-                <?php echo esc_html__('Tendencia de Votación (14 días)', 'flavor-chat-ia'); ?>
-            </h3>
-            <canvas id="chart-tendencia-votos" style="max-height: 300px;"></canvas>
+    <div class="dm-grid dm-grid--2">
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-chart-line"></span>
+                    <?php esc_html_e('Tendencia de Votación (14 días)', 'flavor-chat-ia'); ?>
+                </h3>
+            </div>
+            <div class="dm-card__chart">
+                <canvas id="chart-tendencia-votos"></canvas>
+            </div>
         </div>
 
-        <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 20px 0;">
-                <span class="dashicons dashicons-chart-pie"></span>
-                <?php echo esc_html__('Proyectos por Estado', 'flavor-chat-ia'); ?>
-            </h3>
-            <canvas id="chart-proyectos-estado" style="max-height: 300px;"></canvas>
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-chart-pie"></span>
+                    <?php esc_html_e('Proyectos por Estado', 'flavor-chat-ia'); ?>
+                </h3>
+            </div>
+            <div class="dm-card__chart">
+                <canvas id="chart-proyectos-estado"></canvas>
+            </div>
         </div>
-
     </div>
 
     <!-- Distribución y proyectos más votados -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-
-        <div class="postbox">
-            <div class="postbox-header">
-                <h2><?php echo esc_html__('Distribución Presupuestaria por Categoría', 'flavor-chat-ia'); ?></h2>
+    <div class="dm-grid dm-grid--2">
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-chart-bar"></span>
+                    <?php esc_html_e('Distribución Presupuestaria por Categoría', 'flavor-chat-ia'); ?>
+                </h3>
             </div>
-            <div class="inside">
-                <canvas id="chart-distribucion-categoria" style="max-height: 300px;"></canvas>
-            </div>
-        </div>
-
-        <div class="postbox">
-            <div class="postbox-header">
-                <h2><?php echo esc_html__('Proyectos Más Votados', 'flavor-chat-ia'); ?></h2>
-            </div>
-            <div class="inside">
-                <?php if (!empty($proyectos_mas_votados)): ?>
-                    <table class="wp-list-table widefat">
-                        <tbody>
-                            <?php foreach ($proyectos_mas_votados as $proyecto): ?>
-                            <tr>
-                                <td>
-                                    <strong><?php echo esc_html($proyecto->titulo); ?></strong><br>
-                                    <small style="color: #00a32a; font-weight: 600;">
-                                        <?php echo number_format($proyecto->presupuesto_estimado, 0, ',', '.'); ?> €
-                                    </small>
-                                </td>
-                                <td style="text-align: right;">
-                                    <div style="font-size: 18px; font-weight: 600; color: #2271b1;">
-                                        <?php echo number_format($proyecto->total_votos); ?>
-                                    </div>
-                                    <small style="color: #646970;"><?php echo esc_html__('votos', 'flavor-chat-ia'); ?></small>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <p style="color: #646970; text-align: center; padding: 20px 0;"><?php echo esc_html__('No hay proyectos en votación', 'flavor-chat-ia'); ?></p>
-                <?php endif; ?>
+            <div class="dm-card__chart">
+                <canvas id="chart-distribucion-categoria"></canvas>
             </div>
         </div>
 
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-star-filled"></span>
+                    <?php esc_html_e('Proyectos Más Votados', 'flavor-chat-ia'); ?>
+                </h3>
+            </div>
+            <?php if (!empty($proyectos_mas_votados)): ?>
+                <div class="dm-ranking">
+                    <?php foreach ($proyectos_mas_votados as $indice => $proyecto): ?>
+                        <div class="dm-ranking__item">
+                            <span class="dm-ranking__number"><?php echo $indice + 1; ?></span>
+                            <div class="dm-ranking__content">
+                                <span class="dm-ranking__label"><?php echo esc_html($proyecto->titulo); ?></span>
+                                <span class="dm-ranking__value dm-text-success"><?php echo number_format_i18n($proyecto->presupuesto_estimado); ?> €</span>
+                            </div>
+                            <div class="dm-ranking__votes">
+                                <span class="dm-text-primary"><?php echo number_format_i18n($proyecto->total_votos); ?></span>
+                                <small class="dm-text-muted"><?php esc_html_e('votos', 'flavor-chat-ia'); ?></small>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="dm-empty">
+                    <span class="dashicons dashicons-portfolio"></span>
+                    <p><?php esc_html_e('No hay proyectos en votación', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+jQuery(document).ready(function($) {
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js no está cargado');
+        return;
+    }
+
+    // Obtener colores del tema
+    var rootStyles = getComputedStyle(document.documentElement);
+    var primaryColor = rootStyles.getPropertyValue('--dm-primary').trim() || '#3b82f6';
+    var successColor = rootStyles.getPropertyValue('--dm-success').trim() || '#22c55e';
+    var warningColor = rootStyles.getPropertyValue('--dm-warning').trim() || '#f59e0b';
+    var errorColor = rootStyles.getPropertyValue('--dm-error').trim() || '#ef4444';
 
     // Gráfico de tendencia de votos
-    new Chart(document.getElementById('chart-tendencia-votos'), {
-        type: 'line',
-        data: {
-            labels: <?php echo json_encode(array_map(function($t) { return date('d/m', strtotime($t->fecha)); }, $tendencia_votos)); ?>,
-            datasets: [{
-                label: 'Votos',
-                data: <?php echo json_encode(array_column($tendencia_votos, 'total')); ?>,
-                borderColor: 'rgb(0, 163, 42)',
-                backgroundColor: 'rgba(0, 163, 42, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+    var ctxTendencia = document.getElementById('chart-tendencia-votos');
+    if (ctxTendencia) {
+        new Chart(ctxTendencia.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: <?php echo wp_json_encode($tendencia_labels); ?>,
+                datasets: [{
+                    label: '<?php esc_attr_e('Votos', 'flavor-chat-ia'); ?>',
+                    data: <?php echo wp_json_encode($tendencia_data); ?>,
+                    borderColor: successColor,
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: { grid: { display: false } }
+                }
             }
-        }
-    });
+        });
+    }
 
     // Gráfico de proyectos por estado
-    new Chart(document.getElementById('chart-proyectos-estado'), {
-        type: 'doughnut',
-        data: {
-            labels: <?php echo json_encode(array_column($stats_proyectos_estado, 'estado')); ?>,
-            datasets: [{
-                data: <?php echo json_encode(array_column($stats_proyectos_estado, 'total')); ?>,
-                backgroundColor: [
-                    'rgba(240, 184, 73, 0.8)',
-                    'rgba(34, 113, 177, 0.8)',
-                    'rgba(0, 163, 42, 0.8)',
-                    'rgba(214, 54, 56, 0.8)'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: { legend: { position: 'bottom' } }
-        }
-    });
+    var ctxEstado = document.getElementById('chart-proyectos-estado');
+    if (ctxEstado) {
+        new Chart(ctxEstado.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: <?php echo wp_json_encode($estado_labels); ?>,
+                datasets: [{
+                    data: <?php echo wp_json_encode($estado_data); ?>,
+                    backgroundColor: [warningColor, primaryColor, successColor, errorColor],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { usePointStyle: true, padding: 15 }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+    }
 
     // Gráfico de distribución por categoría
-    new Chart(document.getElementById('chart-distribucion-categoria'), {
-        type: 'bar',
-        data: {
-            labels: <?php echo json_encode(array_column($distribucion_categoria, 'categoria')); ?>,
-            datasets: [{
-                label: 'Presupuesto (€)',
-                data: <?php echo json_encode(array_column($distribucion_categoria, 'total_presupuesto')); ?>,
-                backgroundColor: 'rgba(0, 163, 42, 0.8)',
-                borderColor: 'rgb(0, 163, 42)',
-                borderWidth: 2
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return new Intl.NumberFormat('es-ES', {
-                                style: 'currency',
-                                currency: 'EUR',
-                                minimumFractionDigits: 0
-                            }).format(context.parsed.x);
+    var ctxDistribucion = document.getElementById('chart-distribucion-categoria');
+    if (ctxDistribucion) {
+        new Chart(ctxDistribucion.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: <?php echo wp_json_encode($categoria_labels); ?>,
+                datasets: [{
+                    label: '<?php esc_attr_e('Presupuesto (€)', 'flavor-chat-ia'); ?>',
+                    data: <?php echo wp_json_encode($categoria_data); ?>,
+                    backgroundColor: successColor,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return new Intl.NumberFormat('es-ES', {
+                                    style: 'currency',
+                                    currency: 'EUR',
+                                    minimumFractionDigits: 0
+                                }).format(context.parsed.x);
+                            }
                         }
                     }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    y: { grid: { display: false } }
                 }
-            },
-            scales: {
-                x: { beginAtZero: true }
             }
-        }
-    });
-
+        });
+    }
 });
 </script>
-
-<style>
-.flavor-metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-    transition: all 0.3s ease;
-}
-</style>

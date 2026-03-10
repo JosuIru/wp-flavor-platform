@@ -25,6 +25,15 @@ class Flavor_Participacion_Dashboard_Tab {
         return self::$instancia;
     }
 
+    private function get_portal_url($action, array $args = []) {
+        $url = home_url('/mi-portal/participacion/' . trim($action, '/') . '/');
+        if (!empty($args)) {
+            $url = add_query_arg($args, $url);
+        }
+
+        return $url;
+    }
+
     public function registrar_tabs($tabs) {
         $tabs['participacion-resumen'] = [
             'label' => __('Participación', 'flavor-chat-ia'),
@@ -139,7 +148,7 @@ class Flavor_Participacion_Dashboard_Tab {
                                     <h4><?php echo esc_html($propuesta->titulo); ?></h4>
                                     <p><?php echo esc_html(wp_trim_words($propuesta->descripcion, 15)); ?></p>
                                 </div>
-                                <a href="<?php echo esc_url(home_url('/participacion/' . $propuesta->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
+                                <a href="<?php echo esc_url($this->get_portal_url('detalle', ['propuesta_id' => $propuesta->id])); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
                                     <?php esc_html_e('Votar', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
@@ -149,15 +158,15 @@ class Flavor_Participacion_Dashboard_Tab {
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/participacion/nueva-propuesta/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url($this->get_portal_url('crear')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nueva Propuesta', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/participacion/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url($this->get_portal_url('propuestas')); ?>" class="flavor-btn flavor-btn-secondary">
                     <?php esc_html_e('Ver todas', 'flavor-chat-ia'); ?>
                 </a>
                 <?php if ($encuestas_activas > 0): ?>
-                    <a href="<?php echo esc_url(home_url('/participacion/encuestas/')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url($this->get_portal_url('votaciones')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php esc_html_e('Responder encuestas', 'flavor-chat-ia'); ?>
                     </a>
                 <?php endif; ?>
@@ -169,7 +178,7 @@ class Flavor_Participacion_Dashboard_Tab {
     public function render_tab_mis_propuestas() {
         $user_id = get_current_user_id();
         if (!$user_id) {
-            echo '<p>' . esc_html__('Debes iniciar sesión.', 'flavor-chat-ia') . '</p>';
+            echo '<div class="flavor-empty-state"><p>' . esc_html__('Debes iniciar sesión para ver tus propuestas.', 'flavor-chat-ia') . '</p><a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="flavor-btn flavor-btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a></div>';
             return;
         }
 
@@ -199,7 +208,7 @@ class Flavor_Participacion_Dashboard_Tab {
         <div class="flavor-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Mis Propuestas', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/participacion/nueva-propuesta/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url($this->get_portal_url('crear')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nueva', 'flavor-chat-ia'); ?>
                 </a>
@@ -209,7 +218,7 @@ class Flavor_Participacion_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-lightbulb"></span>
                     <p><?php esc_html_e('No has creado ninguna propuesta todavía.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/participacion/nueva-propuesta/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url($this->get_portal_url('crear')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Crear mi primera propuesta', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -240,14 +249,9 @@ class Flavor_Participacion_Dashboard_Tab {
                                     </td>
                                     <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($propuesta->created_at))); ?></td>
                                     <td>
-                                        <a href="<?php echo esc_url(home_url('/participacion/' . $propuesta->slug)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                        <a href="<?php echo esc_url($this->get_portal_url('detalle', ['propuesta_id' => $propuesta->id])); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                             <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                                         </a>
-                                        <?php if ($propuesta->estado === 'borrador'): ?>
-                                            <a href="<?php echo esc_url(home_url('/participacion/editar/' . $propuesta->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
-                                                <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
-                                            </a>
-                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

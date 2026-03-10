@@ -118,6 +118,10 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
         $this->dashboard_client_contexts = ['aprendizaje', 'comunidad', 'cultura', 'saberes'];
         $this->dashboard_admin_contexts = ['aprendizaje', 'cultura', 'admin'];
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['aprendizaje', 'cuidados'];
+        $this->gailu_contribuye_a = ['cohesion', 'resiliencia'];
+
         parent::__construct();
     }
 

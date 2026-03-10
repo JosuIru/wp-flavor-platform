@@ -1,3 +1,0 @@
-severity,host,source_page,target,fail_count,evidence
-MEDIO,http://localhost:10028,http://localhost:10028/mi-portal/,,1,runtime crawl dashboard cliente
-MEDIO,http://localhost:10003,http://localhost:10003/mi-portal/,,1,runtime crawl dashboard cliente

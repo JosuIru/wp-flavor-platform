@@ -408,12 +408,25 @@ class Flavor_Layout_API {
 
     /**
      * Obtener URL del logo
+     *
+     * Prioriza el logo configurado en Flavor Platform (flavor_logo_url),
+     * luego el custom logo del tema de WordPress.
      */
     private function get_logo_url() {
+        // Usar función helper centralizada que prioriza flavor_logo_url
+        if (class_exists('Flavor_Chat_Helpers')) {
+            $logo_url = Flavor_Chat_Helpers::get_site_logo();
+            if (!empty($logo_url)) {
+                return $logo_url;
+            }
+        }
+
+        // Fallback al custom logo del tema
         $custom_logo_id = get_theme_mod('custom_logo');
         if ($custom_logo_id) {
             return wp_get_attachment_image_url($custom_logo_id, 'full');
         }
+
         return '';
     }
 

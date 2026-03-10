@@ -1,7 +1,0 @@
-priority,module,file,line,element,description,status
-P1,parkings,assets/js/parkings.js,nuevo,.btn-ver-parking,Handler para ver disponibilidad de parking,arreglado
-P1,compostaje,views/composteras.php,nuevo,abrirModalCompostera(),Funcion y modal para nueva compostera,arreglado
-P2,email-marketing,assets/js/em-admin.js,nuevo,.em-duplicar,Handler para duplicar campania,arreglado
-P2,email-marketing,assets/js/em-admin.js,nuevo,.em-eliminar,Handler para eliminar campania,arreglado
-P2,email-marketing,assets/js/em-admin.js,nuevo,.em-editar-suscriptor,Handler para editar suscriptor,arreglado
-P2,email-marketing,assets/js/em-admin.js,nuevo,.em-eliminar-suscriptor,Handler para eliminar suscriptor,arreglado

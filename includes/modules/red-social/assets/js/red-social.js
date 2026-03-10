@@ -25,6 +25,12 @@
         },
 
         init: function() {
+            // Verificar si tenemos sesión válida antes de inicializar
+            if (!this.config.nonce) {
+                console.warn('RedSocial: Sin sesión válida, funcionalidades AJAX desactivadas');
+                this.state.hayMas = false; // Desactivar infinite scroll sin sesión
+            }
+
             this.bindEvents();
             this.initInfiniteScroll();
             this.initMenciones();
@@ -562,6 +568,12 @@
         },
 
         cargarMasPosts: function() {
+            // Verificar sesión válida antes de hacer llamada AJAX
+            if (!this.config.nonce) {
+                this.state.hayMas = false;
+                return;
+            }
+
             this.state.cargando = true;
             const $feed = $('.rs-feed');
             const $loader = $('<div class="rs-loading"><div class="rs-spinner"></div></div>');
@@ -583,7 +595,15 @@
                             this.state.ultimoPostId = response.data.ultimo_id;
                         }
                         this.state.hayMas = response.data.hay_mas;
+                    } else {
+                        // Error del servidor - detener infinite scroll
+                        this.state.hayMas = false;
                     }
+                },
+                error: () => {
+                    // Error de red o 400/500 - detener infinite scroll para evitar bucle
+                    this.state.hayMas = false;
+                    console.warn('RedSocial: Error cargando feed, infinite scroll desactivado');
                 },
                 complete: () => {
                     $loader.remove();

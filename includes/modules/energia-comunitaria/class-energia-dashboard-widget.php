@@ -45,6 +45,19 @@ class Flavor_Energia_Comunitaria_Dashboard_Widget extends Flavor_Dashboard_Widge
         });
     }
 
+    public function get_widget_config(): array {
+        $config = parent::get_widget_config();
+        $severity = $this->get_native_severity_payload($this->get_widget_data());
+
+        if (!empty($severity['slug'])) {
+            $config['severity_slug'] = $severity['slug'];
+            $config['severity_label'] = $severity['label'];
+            $config['severity_reason'] = $severity['reason'];
+        }
+
+        return $config;
+    }
+
     private function fetch_widget_data(): array {
         global $wpdb;
 
@@ -140,6 +153,12 @@ class Flavor_Energia_Comunitaria_Dashboard_Widget extends Flavor_Dashboard_Widge
         return [
             'stats' => $stats,
             'items' => $items_formateados,
+            'summary' => [
+                'comunidades_activas' => $comunidades_activas,
+                'instalaciones_activas' => $instalaciones_activas,
+                'autosuficiencia' => $autosuficiencia,
+                'incidencias_abiertas' => $incidencias_abiertas,
+            ],
             'empty_state' => __('Todavia no hay comunidades energeticas registradas', 'flavor-chat-ia'),
             'footer' => [
                 [
@@ -149,5 +168,41 @@ class Flavor_Energia_Comunitaria_Dashboard_Widget extends Flavor_Dashboard_Widge
                 ],
             ],
         ];
+    }
+
+    /**
+     * Devuelve severidad nativa del widget segun el estado real del modulo.
+     *
+     * @param array $data
+     * @return array{slug:string,label:string,reason:string}
+     */
+    private function get_native_severity_payload(array $data): array {
+        $summary = is_array($data['summary'] ?? null) ? $data['summary'] : [];
+        $incidencias_abiertas = (int) ($summary['incidencias_abiertas'] ?? 0);
+        $autosuficiencia = (float) ($summary['autosuficiencia'] ?? 0);
+        $instalaciones_activas = (int) ($summary['instalaciones_activas'] ?? 0);
+        $comunidades_activas = (int) ($summary['comunidades_activas'] ?? 0);
+
+        if ($incidencias_abiertas > 0) {
+            $severity = Flavor_Dashboard_Severity::get_payload('attention');
+            $severity['reason'] = __('Hay incidencias energéticas abiertas que requieren seguimiento operativo.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        if ($instalaciones_activas > 0 && $autosuficiencia > 0 && $autosuficiencia < 60) {
+            $severity = Flavor_Dashboard_Severity::get_payload('followup');
+            $severity['reason'] = __('La autosuficiencia del periodo actual está por debajo del nivel deseable.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        if ($comunidades_activas > 0 || $instalaciones_activas > 0) {
+            $severity = Flavor_Dashboard_Severity::get_payload('stable');
+            $severity['reason'] = __('El ecosistema energético está activo y sin alertas operativas inmediatas.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        $severity = Flavor_Dashboard_Severity::get_payload('stable');
+        $severity['reason'] = __('Todavía no hay actividad suficiente para elevar prioridad en este módulo.', 'flavor-chat-ia');
+        return $severity;
     }
 }

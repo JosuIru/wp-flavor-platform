@@ -84,7 +84,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $tramites_disponibles,
                 'label' => __('Trámites', 'flavor-chat-ia'),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=tramites') : home_url('/mi-portal/tramites/'),
+                'url' => $es_admin ? admin_url('admin.php?page=tramites-dashboard') : home_url('/mi-portal/tramites/'),
             ],
         ];
 
@@ -95,7 +95,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                     'valor' => $solicitudes_pendientes,
                     'label' => __('En proceso', 'flavor-chat-ia'),
                     'color' => 'warning',
-                    'url' => $es_admin ? admin_url('admin.php?page=tramites&tab=mis-solicitudes') : home_url('/mi-portal/tramites/mis-solicitudes/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=tramites-pendientes') : home_url('/mi-portal/tramites/mis-tramites/'),
                 ];
             }
 
@@ -105,7 +105,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                     'valor' => $mis_solicitudes,
                     'label' => __('Mis trámites', 'flavor-chat-ia'),
                     'color' => 'info',
-                    'url' => $es_admin ? admin_url('admin.php?page=tramites&tab=mis-solicitudes') : home_url('/mi-portal/tramites/mis-solicitudes/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=tramites-historial') : home_url('/mi-portal/tramites/mis-tramites/'),
                 ];
             }
         }
@@ -119,7 +119,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Iniciar trámite', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=tramites') : home_url('/mi-portal/tramites/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=tramites-dashboard') : home_url('/mi-portal/tramites/'),
                     'icon' => 'dashicons-plus-alt2',
                 ],
             ],
@@ -155,7 +155,7 @@ class Flavor_Tramites_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-media-text',
                 'title' => wp_trim_words($tramite->titulo, 4, '...'),
                 'meta' => $meta,
-                'url' => $es_admin ? admin_url('admin.php?page=tramites&tramite=' . $tramite->id) : home_url('/mi-portal/tramites/iniciar/' . $tramite->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=tramites-tipos') : add_query_arg('tramite_id', $tramite->id, home_url('/mi-portal/tramites/iniciar/')),
             ];
         }
 

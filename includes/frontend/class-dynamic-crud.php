@@ -31,6 +31,16 @@ class Flavor_Dynamic_CRUD {
     private $module_config = [];
 
     /**
+     * Obtiene la URL actual para redirects de login en formularios dinámicos.
+     */
+    private function get_current_request_url(): string {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '/';
+        $request_uri = '/' . ltrim($request_uri, '/');
+
+        return home_url($request_uri);
+    }
+
+    /**
      * Obtener instancia singleton
      */
     public static function get_instance() {
@@ -1518,7 +1528,7 @@ class Flavor_Dynamic_CRUD {
             <span class="dashicons dashicons-lock"></span>
             <h3><?php esc_html_e('Acceso restringido', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Debes iniciar sesión para acceder a esta sección.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="fcrud-btn fcrud-btn-primary">
+            <a href="<?php echo esc_url(wp_login_url($this->get_current_request_url())); ?>" class="fcrud-btn fcrud-btn-primary">
                 <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
             </a>
         </div>

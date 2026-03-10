@@ -1,5 +1,9 @@
 # Plan de Desarrollo - Flavor Chat IA
 
+> Documento historico de planificacion.
+> Sus cifras agregadas y etiquetas de `completo` pueden no reflejar el estado real vigente del arbol actual.
+> Para estado actual, usa `ESTADO-REAL-PLUGIN.md` y `../reports/AUDITORIA-ESTADO-REAL-2026-03-04.md`.
+
 ## Estado Actual del Sistema (Actualizado 2026-02-28)
 
 ### Resumen de Auditoría

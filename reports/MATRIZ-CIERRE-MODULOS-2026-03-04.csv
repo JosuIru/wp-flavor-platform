@@ -1,0 +1,61 @@
+modulo,ola_prioridad,estado_tecnico_actual,criticidad_negocio,fuente_principal,necesita_runtime,decision_release,notas
+advertising,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+avisos-municipales,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+ayuda-vecinal,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+banco-tiempo,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+bares,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto
+biblioteca,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+bicicletas-compartidas,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+biodiversidad-local,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+campanias,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+carpooling,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+chat-estados,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+chat-grupos,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto
+chat-interno,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto
+circulos-cuidados,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+clientes,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto
+colectivos,ola_2,runtime_parcial_validado,alta,arbol+auditoria_2026_03_04,si,pendiente,rutas portal y shortcode frontend validados; quedan vacios UX y flujos secundarios
+compostaje,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+comunidades,ola_1,en_validacion,alta,arbol+auditoria_2026_03_04,si,pendiente,infraestructura o modulo transversal del portal
+cursos,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+dex-solana,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto
+documentacion-legal,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+economia-don,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+economia-suficiencia,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+email-marketing,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+empresarial,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto
+encuestas,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+energia-comunitaria,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+espacios-comunes,ola_1,en_validacion,alta,arbol+auditoria_2026_03_04,si,pendiente,infraestructura o modulo transversal del portal
+eventos,ola_2,runtime_parcial_validado,alta,arbol+auditoria_2026_03_04,si,pendiente,ruta detalle y mis-inscripciones validadas; quedan flujos secundarios y cierre funcional
+facturas,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto
+fichaje-empleados,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+foros,ola_2,runtime_parcial_validado,alta,arbol+auditoria_2026_03_04,si,pendiente,hilos y actividad reciente reencauzados al frontend; faltan estados vacios y callbacks secundarios
+grupos-consumo,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+huella-ecologica,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+huertos-urbanos,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+incidencias,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+justicia-restaurativa,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+mapa-actores,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+marketplace,ola_2,runtime_parcial_validado,alta,arbol+auditoria_2026_03_04,si,pendiente,listado y detalle portal validados; login y routing corregidos; faltan flujos secundarios y datos
+multimedia,ola_1,en_validacion,alta,arbol+auditoria_2026_03_04,si,pendiente,infraestructura o modulo transversal del portal
+parkings,ola_1,en_validacion,alta,arbol+auditoria_2026_03_04,si,pendiente,infraestructura o modulo transversal del portal
+participacion,ola_2,runtime_parcial_validado,alta,arbol+auditoria_2026_03_04,si,pendiente,enlaces a foros corregidos en runtime; pendiente validacion funcional mas amplia
+podcast,ola_1,en_validacion,alta,arbol+auditoria_2026_03_04,si,pendiente,infraestructura o modulo transversal del portal
+presupuestos-participativos,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+radio,ola_1,en_validacion,alta,arbol+auditoria_2026_03_04,si,pendiente,infraestructura o modulo transversal del portal
+recetas,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,clasificacion inicial pendiente de ajuste
+reciclaje,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+red-social,ola_1,en_validacion,alta,arbol+auditoria_2026_03_04,si,pendiente,infraestructura o modulo transversal del portal
+reservas,ola_2,runtime_parcial_validado,alta,arbol+auditoria_2026_03_04,si,pendiente,routing y tabs principales corregidos; falta validacion runtime mas profunda y UX de vacios
+saberes-ancestrales,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+seguimiento-denuncias,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+sello-conciencia,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto
+socios,ola_2,runtime_parcial_validado,alta,arbol+auditoria_2026_03_04,si,pendiente,naming canonico de rutas visible corregido; faltan flujos secundarios y cierre funcional
+talleres,ola_3,en_validacion,media_alta,arbol+auditoria_2026_03_04,si,pendiente,madurez estatica mejor posicionada; falta runtime
+themacle,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto
+trabajo-digno,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+trading-ia,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto
+tramites,ola_2,runtime_parcial_validado,alta,arbol+auditoria_2026_03_04,si,pendiente,catalogo y detalle portal validados; login y tabs secundarios corregidos; faltan datos y cierre funcional
+transparencia,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,pendiente,requiere validacion especifica por flujo
+woocommerce,ola_4,parcial,media,arbol+auditoria_2026_03_04,si,redefinir,deuda alta, dependencia externa o rol incierto

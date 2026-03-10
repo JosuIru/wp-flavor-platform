@@ -65,6 +65,7 @@ class Flavor_VBP_Block_Library {
         $this->registrar_bloques_formularios();
         $this->registrar_bloques_media();
         $this->registrar_bloques_modulos();
+        $this->registrar_bloques_dashboard_widgets();
 
         // Hook para que otros plugins puedan añadir bloques
         do_action( 'vbp_register_blocks', $this );
@@ -146,6 +147,149 @@ class Flavor_VBP_Block_Library {
                     'bounce'    => __( 'Rebote', 'flavor-chat-ia' ),
                 ),
                 'default' => 'fade',
+            ),
+        );
+    }
+
+    /**
+     * Campos de colores para secciones (Hero, CTA, Features, etc.)
+     *
+     * @return array
+     */
+    private function get_campos_colores_seccion() {
+        return array(
+            // Colores de texto
+            '_separator_colores_texto' => array(
+                'type'  => 'separator',
+                'label' => __( '🎨 Colores de Texto', 'flavor-chat-ia' ),
+            ),
+            'titulo_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Color del título', 'flavor-chat-ia' ),
+                'default' => '#1f2937',
+            ),
+            'subtitulo_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Color del subtítulo', 'flavor-chat-ia' ),
+                'default' => '#6b7280',
+            ),
+            'texto_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Color del texto', 'flavor-chat-ia' ),
+                'default' => '#374151',
+            ),
+
+            // Colores de botón
+            '_separator_colores_boton' => array(
+                'type'  => 'separator',
+                'label' => __( '🔘 Colores de Botón', 'flavor-chat-ia' ),
+            ),
+            'boton_color_fondo' => array(
+                'type'    => 'color',
+                'label'   => __( 'Fondo del botón', 'flavor-chat-ia' ),
+                'default' => '#3b82f6',
+            ),
+            'boton_color_texto' => array(
+                'type'    => 'color',
+                'label'   => __( 'Texto del botón', 'flavor-chat-ia' ),
+                'default' => '#ffffff',
+            ),
+            'boton_color_hover' => array(
+                'type'    => 'color',
+                'label'   => __( 'Fondo hover', 'flavor-chat-ia' ),
+                'default' => '#2563eb',
+            ),
+
+            // Fondo de sección
+            '_separator_fondo_seccion' => array(
+                'type'  => 'separator',
+                'label' => __( '🖼️ Fondo de Sección', 'flavor-chat-ia' ),
+            ),
+            'seccion_fondo_tipo' => array(
+                'type'    => 'select',
+                'label'   => __( 'Tipo de fondo', 'flavor-chat-ia' ),
+                'options' => array(
+                    'color'    => __( 'Color sólido', 'flavor-chat-ia' ),
+                    'gradient' => __( 'Gradiente', 'flavor-chat-ia' ),
+                    'image'    => __( 'Imagen', 'flavor-chat-ia' ),
+                ),
+                'default' => 'color',
+            ),
+            'seccion_fondo_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Color de fondo', 'flavor-chat-ia' ),
+                'default' => '#ffffff',
+            ),
+            'seccion_fondo_gradiente_inicio' => array(
+                'type'    => 'color',
+                'label'   => __( 'Gradiente inicio', 'flavor-chat-ia' ),
+                'default' => '#3b82f6',
+            ),
+            'seccion_fondo_gradiente_fin' => array(
+                'type'    => 'color',
+                'label'   => __( 'Gradiente fin', 'flavor-chat-ia' ),
+                'default' => '#8b5cf6',
+            ),
+            'seccion_fondo_imagen' => array(
+                'type'  => 'image',
+                'label' => __( 'Imagen de fondo', 'flavor-chat-ia' ),
+            ),
+            'seccion_overlay_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Color overlay', 'flavor-chat-ia' ),
+                'default' => 'rgba(0,0,0,0.5)',
+            ),
+
+            // Tarjetas/Cards
+            '_separator_tarjetas' => array(
+                'type'  => 'separator',
+                'label' => __( '🃏 Colores de Tarjetas', 'flavor-chat-ia' ),
+            ),
+            'card_fondo_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Fondo de tarjeta', 'flavor-chat-ia' ),
+                'default' => '#ffffff',
+            ),
+            'card_borde_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Borde de tarjeta', 'flavor-chat-ia' ),
+                'default' => '#e5e7eb',
+            ),
+            'card_titulo_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Título de tarjeta', 'flavor-chat-ia' ),
+                'default' => '#1f2937',
+            ),
+            'card_texto_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Texto de tarjeta', 'flavor-chat-ia' ),
+                'default' => '#6b7280',
+            ),
+            'card_icono_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Color de iconos', 'flavor-chat-ia' ),
+                'default' => '#3b82f6',
+            ),
+
+            // Acentos
+            '_separator_acentos' => array(
+                'type'  => 'separator',
+                'label' => __( '✨ Colores de Acento', 'flavor-chat-ia' ),
+            ),
+            'acento_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Color de acento', 'flavor-chat-ia' ),
+                'default' => '#3b82f6',
+            ),
+            'destacado_fondo' => array(
+                'type'    => 'color',
+                'label'   => __( 'Fondo destacado', 'flavor-chat-ia' ),
+                'default' => '#eff6ff',
+            ),
+            'destacado_borde' => array(
+                'type'    => 'color',
+                'label'   => __( 'Borde destacado', 'flavor-chat-ia' ),
+                'default' => '#3b82f6',
             ),
         );
     }
@@ -421,6 +565,12 @@ class Flavor_VBP_Block_Library {
                 'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
                 'order' => 90,
             ),
+            'dashboard' => array(
+                'id'    => 'dashboard',
+                'name'  => __( 'Widgets Dashboard', 'flavor-chat-ia' ),
+                'icon'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="3" height="5" fill="currentColor" opacity="0.3"/><rect x="14" y="7" width="3" height="9" fill="currentColor" opacity="0.3"/><path d="M7 16h3M14 16h3"/></svg>',
+                'order' => 95,
+            ),
         );
     }
 
@@ -449,18 +599,44 @@ class Flavor_VBP_Block_Library {
                 'typewriter'   => __( 'Efecto máquina de escribir', 'flavor-chat-ia' ),
             ),
             'fields'   => array(
+                // Contenido
+                '_separator_contenido' => array( 'type' => 'separator', 'label' => __( '📝 Contenido', 'flavor-chat-ia' ) ),
                 'titulo'        => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ), 'ai' => true ),
                 'subtitulo'     => array( 'type' => 'textarea', 'label' => __( 'Subtítulo', 'flavor-chat-ia' ), 'ai' => true ),
                 'boton_texto'   => array( 'type' => 'text', 'label' => __( 'Texto del botón', 'flavor-chat-ia' ) ),
                 'boton_url'     => array( 'type' => 'url', 'label' => __( 'URL del botón', 'flavor-chat-ia' ) ),
                 'boton_2_texto' => array( 'type' => 'text', 'label' => __( 'Segundo botón (texto)', 'flavor-chat-ia' ) ),
                 'boton_2_url'   => array( 'type' => 'url', 'label' => __( 'Segundo botón (URL)', 'flavor-chat-ia' ) ),
+
+                // Colores de texto
+                '_separator_colores_texto' => array( 'type' => 'separator', 'label' => __( '🎨 Colores de Texto', 'flavor-chat-ia' ) ),
+                'titulo_color'    => array( 'type' => 'color', 'label' => __( 'Color del título', 'flavor-chat-ia' ), 'default' => '#ffffff' ),
+                'subtitulo_color' => array( 'type' => 'color', 'label' => __( 'Color del subtítulo', 'flavor-chat-ia' ), 'default' => '#e0e0e0' ),
+
+                // Colores de botones
+                '_separator_colores_botones' => array( 'type' => 'separator', 'label' => __( '🔘 Botón Principal', 'flavor-chat-ia' ) ),
+                'boton_color_fondo' => array( 'type' => 'color', 'label' => __( 'Color de fondo', 'flavor-chat-ia' ), 'default' => '#3b82f6' ),
+                'boton_color_texto' => array( 'type' => 'color', 'label' => __( 'Color del texto', 'flavor-chat-ia' ), 'default' => '#ffffff' ),
+                'boton_border_radius' => array( 'type' => 'text', 'label' => __( 'Border radius', 'flavor-chat-ia' ), 'default' => '8px' ),
+
+                '_separator_boton_secundario' => array( 'type' => 'separator', 'label' => __( '🔘 Botón Secundario', 'flavor-chat-ia' ) ),
+                'boton_2_color_fondo' => array( 'type' => 'color', 'label' => __( 'Color de fondo', 'flavor-chat-ia' ), 'default' => 'transparent' ),
+                'boton_2_color_texto' => array( 'type' => 'color', 'label' => __( 'Color del texto', 'flavor-chat-ia' ), 'default' => '#ffffff' ),
+                'boton_2_color_borde' => array( 'type' => 'color', 'label' => __( 'Color del borde', 'flavor-chat-ia' ), 'default' => '#ffffff' ),
+
+                // Fondo
+                '_separator_fondo' => array( 'type' => 'separator', 'label' => __( '🖼️ Fondo', 'flavor-chat-ia' ) ),
                 'imagen_fondo'  => array( 'type' => 'image', 'label' => __( 'Imagen de fondo', 'flavor-chat-ia' ) ),
                 'video_url'     => array( 'type' => 'url', 'label' => __( 'URL del video (YouTube/Vimeo)', 'flavor-chat-ia' ) ),
+                'color_fondo'   => array( 'type' => 'color', 'label' => __( 'Color de fondo', 'flavor-chat-ia' ), 'default' => '#1a1a2e' ),
                 'overlay_color' => array( 'type' => 'color', 'label' => __( 'Color overlay', 'flavor-chat-ia' ) ),
                 'overlay_opacity' => array( 'type' => 'range', 'label' => __( 'Opacidad overlay', 'flavor-chat-ia' ), 'min' => 0, 'max' => 100 ),
+
+                // Layout
+                '_separator_layout' => array( 'type' => 'separator', 'label' => __( '📐 Layout', 'flavor-chat-ia' ) ),
                 'altura'        => array( 'type' => 'select', 'label' => __( 'Altura', 'flavor-chat-ia' ), 'options' => array( 'auto' => 'Auto', '50vh' => '50%', '75vh' => '75%', '100vh' => '100%' ) ),
                 'alineacion'    => array( 'type' => 'select', 'label' => __( 'Alineación', 'flavor-chat-ia' ), 'options' => array( 'left' => 'Izquierda', 'center' => 'Centro', 'right' => 'Derecha' ) ),
+                'padding_vertical' => array( 'type' => 'text', 'label' => __( 'Padding vertical', 'flavor-chat-ia' ), 'default' => '80px' ),
             ),
             'presets' => array(
                 'startup' => array(
@@ -1306,8 +1482,15 @@ class Flavor_VBP_Block_Library {
      * Registra bloques de módulos de Flavor
      */
     private function registrar_bloques_modulos() {
-        // Verificar qué módulos están activos
-        $modulos_activos = get_option( 'flavor_active_modules', array() );
+        // Verificar qué módulos están activos (preferido + legacy)
+        $configuracion = get_option( 'flavor_chat_ia_settings', array() );
+        $modulos_activos = $configuracion['active_modules'] ?? array();
+
+        // Fusionar con opción legacy para compatibilidad
+        $modulos_legacy = get_option( 'flavor_active_modules', array() );
+        if ( ! empty( $modulos_legacy ) ) {
+            $modulos_activos = array_unique( array_merge( $modulos_activos, $modulos_legacy ) );
+        }
 
         // ============ MAPAS INTERACTIVOS ============
         // Campos comunes para todos los mapas
@@ -3503,15 +3686,29 @@ class Flavor_VBP_Block_Library {
     /**
      * Verifica si un módulo está activo
      *
+     * En el contexto del editor VBP (admin), se muestran todos los bloques
+     * para que el diseñador pueda trabajar con cualquier módulo.
+     * En el frontend, se verifica realmente si el módulo está activo.
+     *
      * @param string $modulo_id        ID del módulo.
-     * @param array  $modulos_activos  Lista de módulos activos.
+     * @param array  $modulos_activos  Lista de módulos activos (legacy, no usado).
      * @return bool
      */
     private function modulo_activo( $modulo_id, $modulos_activos ) {
-        // En el editor VBP, mostrar todos los bloques de módulos
-        // para que el usuario pueda diseñar páginas con cualquier módulo
-        // Los módulos se activarán cuando sea necesario
-        return true;
+        // En el editor VBP (admin), mostrar todos los bloques para diseño
+        if ( is_admin() && ! wp_doing_ajax() ) {
+            return true;
+        }
+
+        // En el frontend, usar la función centralizada que verifica ambas fuentes
+        if ( class_exists( 'Flavor_Chat_Module_Loader' ) ) {
+            return Flavor_Chat_Module_Loader::is_module_active( $modulo_id );
+        }
+
+        // Fallback: verificar en el array proporcionado (legacy)
+        $id_normalizado = str_replace( '-', '_', $modulo_id );
+        return in_array( $modulo_id, $modulos_activos, true )
+            || in_array( $id_normalizado, $modulos_activos, true );
     }
 
     /**
@@ -3534,6 +3731,14 @@ class Flavor_VBP_Block_Library {
         );
 
         $bloque = wp_parse_args( $args, $defaults );
+
+        // Añadir campos de colores para bloques de sección
+        if ( 'sections' === $bloque['category'] ) {
+            $bloque['fields'] = array_merge(
+                $bloque['fields'],
+                $this->get_campos_colores_seccion()
+            );
+        }
 
         // Añadir campos de estilo para bloques de módulos
         if ( ! empty( $bloque['module'] ) ) {
@@ -3720,13 +3925,39 @@ class Flavor_VBP_Block_Library {
      */
     public function get_categorias_con_bloques() {
         $resultado = array();
+        $previews = $this->get_preview_data();
 
         foreach ( $this->categorias as $categoria ) {
             $bloques_categoria = $this->get_bloques_por_categoria( $categoria['id'] );
 
             if ( ! empty( $bloques_categoria ) ) {
+                // Agregar preview_html a cada bloque de módulo
+                $bloques_con_preview = array();
+                foreach ( $bloques_categoria as $bloque_id => $bloque ) {
+                    // Si es un bloque de módulo, agregar el preview HTML
+                    if ( ! empty( $bloque['module'] ) || ! empty( $bloque['shortcode'] ) ) {
+                        $preview_html = '';
+
+                        // Buscar preview específico del bloque
+                        if ( isset( $previews[ $bloque_id ] ) ) {
+                            $preview_html = $previews[ $bloque_id ];
+                        } elseif ( isset( $previews[ 'category_' . $categoria['id'] ] ) ) {
+                            // Fallback a preview de categoría
+                            $preview_html = $previews[ 'category_' . $categoria['id'] ];
+                        } elseif ( isset( $previews['category_modules'] ) ) {
+                            // Fallback genérico
+                            $preview_html = $previews['category_modules'];
+                        }
+
+                        if ( ! empty( $preview_html ) ) {
+                            $bloque['preview_html'] = $preview_html;
+                        }
+                    }
+                    $bloques_con_preview[] = $bloque;
+                }
+
                 $resultado[] = array_merge( $categoria, array(
-                    'blocks' => array_values( $bloques_categoria ),
+                    'blocks' => $bloques_con_preview,
                 ) );
             }
         }
@@ -3903,6 +4134,247 @@ class Flavor_VBP_Block_Library {
         }
 
         return '';
+    }
+
+    /**
+     * Registra bloques de widgets del Dashboard Unificado
+     *
+     * Permite usar cualquier widget del dashboard como bloque
+     * insertable en páginas públicas mediante shortcodes.
+     *
+     * @since 4.2.0
+     */
+    private function registrar_bloques_dashboard_widgets() {
+        // Verificar que existe la clase del registro de widgets
+        if ( ! class_exists( 'Flavor_Widget_Registry' ) ) {
+            return;
+        }
+
+        // Obtener todos los widgets registrados
+        $registry = Flavor_Widget_Registry::get_instance();
+        $all_widgets = $registry->get_all( true );
+        $categories = $registry->get_categories();
+
+        if ( empty( $all_widgets ) ) {
+            return;
+        }
+
+        // Bloque genérico para insertar cualquier widget
+        $widget_options = array( '' => __( 'Seleccionar widget...', 'flavor-chat-ia' ) );
+        foreach ( $all_widgets as $widget_id => $widget_data ) {
+            $config = $widget_data['config'];
+            $cat_id = $config['category'] ?? 'sistema';
+            $cat_label = isset( $categories[ $cat_id ]['label'] ) ? $categories[ $cat_id ]['label'] : $cat_id;
+            $widget_options[ $widget_id ] = sprintf( '[%s] %s', $cat_label, $config['title'] ?? $widget_id );
+        }
+
+        // Bloque principal: Widget Individual
+        $this->registrar_bloque( array(
+            'id'        => 'dashboard-widget',
+            'name'      => __( 'Widget Dashboard', 'flavor-chat-ia' ),
+            'category'  => 'dashboard',
+            'shortcode' => 'flavor_widget',
+            'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="4" height="6" fill="currentColor" opacity="0.2"/><rect x="13" y="7" width="4" height="10" fill="currentColor" opacity="0.2"/></svg>',
+            'fields'    => array(
+                'id' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Widget', 'flavor-chat-ia' ),
+                    'options' => $widget_options,
+                    'default' => '',
+                ),
+                'titulo' => array(
+                    'type'    => 'text',
+                    'label'   => __( 'Título personalizado', 'flavor-chat-ia' ),
+                    'default' => '',
+                    'placeholder' => __( 'Dejar vacío para usar el del widget', 'flavor-chat-ia' ),
+                ),
+                'titulo_visible' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Mostrar título', 'flavor-chat-ia' ),
+                    'default' => true,
+                ),
+                'estilo' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Estilo visual', 'flavor-chat-ia' ),
+                    'options' => array(
+                        'elevated' => __( 'Elevado (sombra)', 'flavor-chat-ia' ),
+                        'outlined' => __( 'Con borde', 'flavor-chat-ia' ),
+                        'flat'     => __( 'Plano', 'flavor-chat-ia' ),
+                        'glass'    => __( 'Glassmorphism', 'flavor-chat-ia' ),
+                    ),
+                    'default' => 'elevated',
+                ),
+                'animacion' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Animación hover', 'flavor-chat-ia' ),
+                    'default' => true,
+                ),
+                'acciones' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Mostrar acciones', 'flavor-chat-ia' ),
+                    'default' => true,
+                ),
+            ),
+        ) );
+
+        // Bloque: Grid de Múltiples Widgets
+        $this->registrar_bloque( array(
+            'id'        => 'dashboard-widgets-grid',
+            'name'      => __( 'Grid de Widgets', 'flavor-chat-ia' ),
+            'category'  => 'dashboard',
+            'shortcode' => 'flavor_widgets',
+            'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+            'fields'    => array(
+                'ids' => array(
+                    'type'    => 'text',
+                    'label'   => __( 'IDs de widgets', 'flavor-chat-ia' ),
+                    'default' => '',
+                    'placeholder' => __( 'eventos,reservas,socios', 'flavor-chat-ia' ),
+                    'description' => __( 'Separar IDs con comas', 'flavor-chat-ia' ),
+                ),
+                'columnas' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                    'options' => array(
+                        '1' => '1',
+                        '2' => '2',
+                        '3' => '3',
+                        '4' => '4',
+                    ),
+                    'default' => '2',
+                ),
+                'gap' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Espaciado', 'flavor-chat-ia' ),
+                    'options' => array(
+                        'compact'     => __( 'Compacto', 'flavor-chat-ia' ),
+                        'normal'      => __( 'Normal', 'flavor-chat-ia' ),
+                        'comfortable' => __( 'Espacioso', 'flavor-chat-ia' ),
+                    ),
+                    'default' => 'normal',
+                ),
+                'estilo' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Estilo visual', 'flavor-chat-ia' ),
+                    'options' => array(
+                        'elevated' => __( 'Elevado', 'flavor-chat-ia' ),
+                        'outlined' => __( 'Con borde', 'flavor-chat-ia' ),
+                        'flat'     => __( 'Plano', 'flavor-chat-ia' ),
+                        'glass'    => __( 'Glass', 'flavor-chat-ia' ),
+                    ),
+                    'default' => 'elevated',
+                ),
+            ),
+        ) );
+
+        // Bloque: Widgets por Categoría
+        $categoria_options = array( '' => __( 'Seleccionar categoría...', 'flavor-chat-ia' ) );
+        foreach ( $categories as $cat_id => $cat_info ) {
+            $categoria_options[ $cat_id ] = $cat_info['label'];
+        }
+
+        $this->registrar_bloque( array(
+            'id'        => 'dashboard-widgets-category',
+            'name'      => __( 'Widgets por Categoría', 'flavor-chat-ia' ),
+            'category'  => 'dashboard',
+            'shortcode' => 'flavor_widgets_categoria',
+            'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3H6a2 2 0 00-2 2v14c0 1.1.9 2 2 2h12a2 2 0 002-2V9l-6-6z"/><path d="M14 3v6h6"/></svg>',
+            'fields'    => array(
+                'categoria' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Categoría', 'flavor-chat-ia' ),
+                    'options' => $categoria_options,
+                    'default' => '',
+                ),
+                'limite' => array(
+                    'type'    => 'number',
+                    'label'   => __( 'Límite', 'flavor-chat-ia' ),
+                    'default' => 4,
+                    'min'     => 1,
+                    'max'     => 12,
+                ),
+                'columnas' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                    'options' => array( '1' => '1', '2' => '2', '3' => '3', '4' => '4' ),
+                    'default' => '2',
+                ),
+                'titulo' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Mostrar título de categoría', 'flavor-chat-ia' ),
+                    'default' => true,
+                ),
+            ),
+        ) );
+
+        // Registrar widgets individuales más populares como bloques directos
+        $widgets_populares = array(
+            'eventos'     => array( 'name' => __( 'Widget: Eventos', 'flavor-chat-ia' ), 'icon' => 'dashicons-calendar-alt' ),
+            'reservas'    => array( 'name' => __( 'Widget: Reservas', 'flavor-chat-ia' ), 'icon' => 'dashicons-tickets-alt' ),
+            'socios'      => array( 'name' => __( 'Widget: Socios', 'flavor-chat-ia' ), 'icon' => 'dashicons-id-alt' ),
+            'comunidades' => array( 'name' => __( 'Widget: Comunidades', 'flavor-chat-ia' ), 'icon' => 'dashicons-groups' ),
+            'foros'       => array( 'name' => __( 'Widget: Foros', 'flavor-chat-ia' ), 'icon' => 'dashicons-format-chat' ),
+            'marketplace' => array( 'name' => __( 'Widget: Marketplace', 'flavor-chat-ia' ), 'icon' => 'dashicons-store' ),
+        );
+
+        foreach ( $widgets_populares as $widget_id => $widget_info ) {
+            // Solo registrar si el widget existe
+            if ( ! isset( $all_widgets[ $widget_id ] ) ) {
+                continue;
+            }
+
+            $config = $all_widgets[ $widget_id ]['config'];
+            $icon_svg = $this->dashicon_to_svg( $config['icon'] ?? $widget_info['icon'] );
+
+            $this->registrar_bloque( array(
+                'id'        => 'widget-' . $widget_id,
+                'name'      => $widget_info['name'],
+                'category'  => 'dashboard',
+                'shortcode' => 'flavor_widget',
+                'shortcode_defaults' => array( 'id' => $widget_id ),
+                'icon'      => $icon_svg,
+                'fields'    => array(
+                    'titulo' => array(
+                        'type'    => 'text',
+                        'label'   => __( 'Título personalizado', 'flavor-chat-ia' ),
+                        'default' => '',
+                    ),
+                    'estilo' => array(
+                        'type'    => 'select',
+                        'label'   => __( 'Estilo', 'flavor-chat-ia' ),
+                        'options' => array(
+                            'elevated' => __( 'Elevado', 'flavor-chat-ia' ),
+                            'outlined' => __( 'Con borde', 'flavor-chat-ia' ),
+                            'flat'     => __( 'Plano', 'flavor-chat-ia' ),
+                            'glass'    => __( 'Glass', 'flavor-chat-ia' ),
+                        ),
+                        'default' => 'elevated',
+                    ),
+                ),
+            ) );
+        }
+    }
+
+    /**
+     * Convierte un dashicon a SVG para usar en el editor
+     *
+     * @param string $dashicon Clase dashicon (ej: dashicons-calendar)
+     * @return string SVG string
+     */
+    private function dashicon_to_svg( $dashicon ) {
+        // Mapa básico de dashicons a SVG
+        $svg_map = array(
+            'dashicons-calendar-alt' => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+            'dashicons-tickets-alt'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9a3 3 0 013-3h14a3 3 0 013 3M2 9v6a3 3 0 003 3h14a3 3 0 003-3V9M2 9l3-3M22 9l-3-3M9 12h6"/></svg>',
+            'dashicons-id-alt'       => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="11" r="2"/><path d="M14 11h4M14 15h2"/></svg>',
+            'dashicons-groups'       => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
+            'dashicons-format-chat'  => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
+            'dashicons-store'        => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>',
+        );
+
+        return isset( $svg_map[ $dashicon ] )
+            ? $svg_map[ $dashicon ]
+            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
     }
 
     /**

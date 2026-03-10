@@ -133,7 +133,7 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
                         <?php _e('Solicitar mediación', 'flavor-chat-ia'); ?>
                     </a>
                     <?php else: ?>
-                    <a href="<?php echo wp_login_url(get_permalink()); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
+                    <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                         <?php _e('Inicia sesión para solicitar', 'flavor-chat-ia'); ?>
                     </a>
                     <?php endif; ?>

@@ -1,5 +1,9 @@
 # 📋 Resumen Ejecutivo - Implementación Completa
 
+> Documento historico de cierre ejecutivo de una fase concreta.
+> Las afirmaciones de `100% completado` y `listo para produccion` no deben leerse como estado real vigente del plugin.
+> Para lectura actual, usa `ESTADO-REAL-PLUGIN.md` y `../reports/AUDITORIA-ESTADO-REAL-2026-03-04.md`.
+
 ## 🎯 Objetivo Alcanzado
 Modernizar completamente el sistema de páginas, navegación y experiencia de usuario del plugin Flavor Platform.
 

@@ -82,7 +82,7 @@ $usuario_logueado = is_user_logged_in();
             </button>
         <?php else: ?>
             <p class="bt-fondo__login-aviso">
-                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>">
+                <a href="<?php echo esc_url(wp_login_url(flavor_current_request_url())); ?>">
                     <?php esc_html_e('Inicia sesión para contribuir o solicitar', 'flavor-chat-ia'); ?>
                 </a>
             </p>

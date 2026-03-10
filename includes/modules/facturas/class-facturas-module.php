@@ -298,18 +298,40 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
      * Renderiza formulario de nueva factura
      */
     public function render_admin_nueva() {
+        // Obtener datos pre-rellenados desde parámetros GET
+        $datos_cliente = $this->obtener_datos_cliente_desde_params();
+
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(__('Nueva Factura', 'flavor-chat-ia'));
         $this->handle_admin_create_factura();
-        echo '<p>' . __('Formulario para crear nueva factura.', 'flavor-chat-ia') . '</p>';
+
+        // Mostrar info del cliente si viene pre-rellenado
+        if (!empty($datos_cliente['nombre'])) {
+            echo '<div class="notice notice-info" style="padding: 12px;">';
+            echo '<strong>' . esc_html__('Creando factura para:', 'flavor-chat-ia') . '</strong> ';
+            echo esc_html($datos_cliente['nombre']);
+            if (!empty($datos_cliente['tipo'])) {
+                echo ' <span class="description">(' . esc_html($datos_cliente['tipo']) . ')</span>';
+            }
+            echo '</div>';
+        } else {
+            echo '<p>' . __('Formulario para crear nueva factura.', 'flavor-chat-ia') . '</p>';
+        }
 
         echo '<form method="post">';
         wp_nonce_field('facturas_crear', 'facturas_crear_nonce');
+
+        // Campos ocultos para referencia del cliente
+        if (!empty($datos_cliente['id'])) {
+            echo '<input type="hidden" name="cliente_ref_id" value="' . esc_attr($datos_cliente['id']) . '">';
+            echo '<input type="hidden" name="cliente_ref_tipo" value="' . esc_attr($datos_cliente['tipo']) . '">';
+        }
+
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . esc_html__('Cliente', 'flavor-chat-ia') . '</th><td><input type="text" name="cliente_nombre" class="regular-text" required></td></tr>';
-        echo '<tr><th>' . esc_html__('NIF', 'flavor-chat-ia') . '</th><td><input type="text" name="cliente_nif" class="regular-text"></td></tr>';
-        echo '<tr><th>' . esc_html__('Email', 'flavor-chat-ia') . '</th><td><input type="email" name="cliente_email" class="regular-text"></td></tr>';
-        echo '<tr><th>' . esc_html__('Dirección', 'flavor-chat-ia') . '</th><td><textarea name="cliente_direccion" rows="2" class="large-text"></textarea></td></tr>';
+        echo '<tr><th>' . esc_html__('Cliente', 'flavor-chat-ia') . '</th><td><input type="text" name="cliente_nombre" class="regular-text" value="' . esc_attr($datos_cliente['nombre']) . '" required></td></tr>';
+        echo '<tr><th>' . esc_html__('NIF', 'flavor-chat-ia') . '</th><td><input type="text" name="cliente_nif" class="regular-text" value="' . esc_attr($datos_cliente['nif']) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Email', 'flavor-chat-ia') . '</th><td><input type="email" name="cliente_email" class="regular-text" value="' . esc_attr($datos_cliente['email']) . '"></td></tr>';
+        echo '<tr><th>' . esc_html__('Dirección', 'flavor-chat-ia') . '</th><td><textarea name="cliente_direccion" rows="2" class="large-text">' . esc_textarea($datos_cliente['direccion']) . '</textarea></td></tr>';
         echo '<tr><th>' . esc_html__('Fecha emisión', 'flavor-chat-ia') . '</th><td><input type="date" name="fecha_emision" value="' . esc_attr(date('Y-m-d')) . '"></td></tr>';
         echo '<tr><th>' . esc_html__('Fecha vencimiento', 'flavor-chat-ia') . '</th><td><input type="date" name="fecha_vencimiento" value="' . esc_attr(date('Y-m-d', strtotime('+' . $this->get_setting('dias_vencimiento') . ' days'))) . '"></td></tr>';
         echo '</tbody></table>';
@@ -332,6 +354,99 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         submit_button(__('Crear Factura', 'flavor-chat-ia'));
         echo '</form>';
         echo '</div>';
+    }
+
+    /**
+     * Obtiene datos del cliente desde parámetros GET
+     *
+     * Soporta clientes desde: productores (gc_productor), consumidores (usuario WP),
+     * clientes del módulo clientes, etc.
+     *
+     * @return array Datos del cliente pre-rellenados
+     */
+    private function obtener_datos_cliente_desde_params() {
+        $datos = [
+            'id'        => '',
+            'tipo'      => '',
+            'nombre'    => '',
+            'email'     => '',
+            'nif'       => '',
+            'direccion' => '',
+        ];
+
+        // Parámetros básicos de la URL
+        $cliente_id = isset($_GET['cliente_id']) ? absint($_GET['cliente_id']) : 0;
+        $cliente_tipo = isset($_GET['cliente_tipo']) ? sanitize_text_field($_GET['cliente_tipo']) : '';
+        $cliente_nombre = isset($_GET['cliente_nombre']) ? sanitize_text_field(urldecode($_GET['cliente_nombre'])) : '';
+        $cliente_email = isset($_GET['cliente_email']) ? sanitize_email(urldecode($_GET['cliente_email'])) : '';
+
+        if (!$cliente_id && !$cliente_nombre) {
+            return $datos;
+        }
+
+        $datos['id'] = $cliente_id;
+        $datos['tipo'] = $cliente_tipo;
+        $datos['nombre'] = $cliente_nombre;
+        $datos['email'] = $cliente_email;
+
+        // Obtener datos adicionales según el tipo de cliente
+        if ($cliente_id && $cliente_tipo) {
+            switch ($cliente_tipo) {
+                case 'productor':
+                    // Productor de Grupos de Consumo (CPT gc_productor)
+                    $productor = get_post($cliente_id);
+                    if ($productor && $productor->post_type === 'gc_productor') {
+                        if (empty($datos['nombre'])) {
+                            $datos['nombre'] = $productor->post_title;
+                        }
+                        if (empty($datos['email'])) {
+                            $datos['email'] = get_post_meta($cliente_id, '_gc_contacto_email', true);
+                        }
+                        $datos['nif'] = get_post_meta($cliente_id, '_gc_nif', true);
+                        $datos['direccion'] = get_post_meta($cliente_id, '_gc_direccion', true);
+                    }
+                    break;
+
+                case 'consumidor':
+                    // Usuario de WordPress
+                    $usuario = get_user_by('ID', $cliente_id);
+                    if ($usuario) {
+                        if (empty($datos['nombre'])) {
+                            $datos['nombre'] = $usuario->display_name;
+                        }
+                        if (empty($datos['email'])) {
+                            $datos['email'] = $usuario->user_email;
+                        }
+                        // Intentar obtener NIF y dirección de usermeta
+                        $datos['nif'] = get_user_meta($cliente_id, 'billing_nif', true)
+                                      ?: get_user_meta($cliente_id, 'nif', true);
+                        $direccion_partes = array_filter([
+                            get_user_meta($cliente_id, 'billing_address_1', true),
+                            get_user_meta($cliente_id, 'billing_city', true),
+                            get_user_meta($cliente_id, 'billing_postcode', true),
+                        ]);
+                        $datos['direccion'] = implode(', ', $direccion_partes);
+                    }
+                    break;
+
+                case 'cliente':
+                    // Cliente del módulo Clientes (CPT flavor_cliente)
+                    $cliente = get_post($cliente_id);
+                    if ($cliente && $cliente->post_type === 'flavor_cliente') {
+                        if (empty($datos['nombre'])) {
+                            $datos['nombre'] = $cliente->post_title;
+                        }
+                        if (empty($datos['email'])) {
+                            $datos['email'] = get_post_meta($cliente_id, '_cliente_email', true);
+                        }
+                        $datos['nif'] = get_post_meta($cliente_id, '_cliente_nif', true);
+                        $datos['direccion'] = get_post_meta($cliente_id, '_cliente_direccion', true);
+                    }
+                    break;
+            }
+        }
+
+        return $datos;
     }
 
     /**
@@ -427,12 +542,30 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         $busqueda = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
         $desde = isset($_GET['desde']) ? sanitize_text_field($_GET['desde']) : '';
         $hasta = isset($_GET['hasta']) ? sanitize_text_field($_GET['hasta']) : '';
+        $filtro_cliente = isset($_GET['filtro_cliente']) ? absint($_GET['filtro_cliente']) : 0;
 
         global $wpdb;
         $series = $wpdb->get_results("SELECT codigo FROM {$this->tablas['series']} ORDER BY codigo ASC");
 
+        // Mostrar info del cliente si hay filtro activo
+        if ($filtro_cliente) {
+            $nombre_cliente = $wpdb->get_var($wpdb->prepare(
+                "SELECT cliente_nombre FROM {$this->tablas['facturas']} WHERE cliente_id = %d LIMIT 1",
+                $filtro_cliente
+            ));
+            if ($nombre_cliente) {
+                echo '<div class="notice notice-info" style="padding: 8px 12px; margin-bottom: 12px;">';
+                echo '<strong>' . esc_html__('Filtrando facturas de:', 'flavor-chat-ia') . '</strong> ' . esc_html($nombre_cliente);
+                echo ' <a href="' . esc_url(admin_url('admin.php?page=facturas-listado')) . '" style="margin-left: 10px;">' . esc_html__('Ver todas', 'flavor-chat-ia') . '</a>';
+                echo '</div>';
+            }
+        }
+
         echo '<form method="get" style="margin: 12px 0;">';
         echo '<input type="hidden" name="page" value="facturas-listado">';
+        if ($filtro_cliente) {
+            echo '<input type="hidden" name="filtro_cliente" value="' . esc_attr($filtro_cliente) . '">';
+        }
         echo '<select name="estado">';
         echo '<option value="">' . esc_html__('Todos los estados', 'flavor-chat-ia') . '</option>';
         foreach (['borrador','emitida','parcial','pagada','vencida','cancelada'] as $estado_key) {
@@ -453,6 +586,10 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
 
         $where = [];
         $params = [];
+        if ($filtro_cliente) {
+            $where[] = 'cliente_id = %d';
+            $params[] = $filtro_cliente;
+        }
         if ($estado) {
             $where[] = 'estado = %s';
             $params[] = $estado;
@@ -594,6 +731,12 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
             'lineas' => [$linea],
         ];
 
+        // Añadir referencia al cliente si viene desde otro módulo
+        if (!empty($_POST['cliente_ref_id'])) {
+            $datos['cliente_id'] = absint($_POST['cliente_ref_id']);
+            $datos['cliente_tipo'] = sanitize_text_field($_POST['cliente_ref_tipo'] ?? '');
+        }
+
         $resultado = $this->crear_factura($datos);
         if (is_wp_error($resultado)) {
             echo '<div class="notice notice-error"><p>' . esc_html($resultado->get_error_message()) . '</p></div>';
@@ -721,11 +864,30 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
-     * Crea las tablas si no existen
+     * Crea las tablas si no existen y actualiza estructura si es necesario
      */
     public function maybe_create_tables() {
         if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['facturas'])) {
             $this->create_tables();
+        } else {
+            // Migrar: añadir columna cliente_tipo si no existe
+            $this->maybe_add_cliente_tipo_column();
+        }
+    }
+
+    /**
+     * Añade la columna cliente_tipo si no existe (migración)
+     */
+    private function maybe_add_cliente_tipo_column() {
+        global $wpdb;
+
+        $columna_existe = $wpdb->get_results($wpdb->prepare(
+            "SHOW COLUMNS FROM {$this->tablas['facturas']} LIKE %s",
+            'cliente_tipo'
+        ));
+
+        if (empty($columna_existe)) {
+            $wpdb->query("ALTER TABLE {$this->tablas['facturas']} ADD COLUMN cliente_tipo varchar(50) DEFAULT NULL AFTER cliente_id");
         }
     }
 
@@ -743,6 +905,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
             numero_serie int(11) NOT NULL,
             año int(4) NOT NULL,
             cliente_id bigint(20) unsigned DEFAULT NULL,
+            cliente_tipo varchar(50) DEFAULT NULL,
             cliente_nombre varchar(255) NOT NULL,
             cliente_nif varchar(50) DEFAULT NULL,
             cliente_direccion text DEFAULT NULL,
@@ -1123,6 +1286,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
             'numero_serie' => $numero_factura['numero'],
             'año' => date('Y'),
             'cliente_id' => $datos['cliente_id'] ?? null,
+            'cliente_tipo' => !empty($datos['cliente_tipo']) ? sanitize_text_field($datos['cliente_tipo']) : null,
             'cliente_nombre' => sanitize_text_field($datos['cliente_nombre']),
             'cliente_nif' => sanitize_text_field($datos['cliente_nif'] ?? ''),
             'cliente_direccion' => sanitize_textarea_field($datos['cliente_direccion'] ?? ''),

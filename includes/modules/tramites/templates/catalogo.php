@@ -182,7 +182,7 @@ $tramites_base_url = home_url('/mi-portal/tramites/');
                             <?php endif; ?>
                         </div>
                         <div class="tramite-footer">
-                            <a href="<?php echo esc_url($tramites_base_url . 'iniciar/?tipo=' . $tramite->id); ?>" class="btn btn-primary btn-block">
+                            <a href="<?php echo esc_url(add_query_arg('tramite_id', $tramite->id, $tramites_base_url . 'iniciar/')); ?>" class="btn btn-primary btn-block">
                                 <?php esc_html_e('Iniciar tramite', 'flavor-chat-ia'); ?>
                             </a>
                         </div>

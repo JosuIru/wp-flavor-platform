@@ -17,7 +17,7 @@ if (!is_user_logged_in()) {
     echo '<span class="dashicons dashicons-lock"></span>';
     echo '<h3>' . esc_html__('Inicia sesion para realizar un tramite', 'flavor-chat-ia') . '</h3>';
     echo '<p>' . esc_html__('Necesitas una cuenta para poder iniciar y dar seguimiento a tus tramites.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }
@@ -92,7 +92,7 @@ if (!$tipo_tramite) {
     echo '<span class="dashicons dashicons-warning"></span>';
     echo '<h3>' . esc_html__('Tramite no encontrado', 'flavor-chat-ia') . '</h3>';
     echo '<p>' . esc_html__('El tipo de tramite seleccionado no existe o no esta disponible.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(home_url('/mi-portal/tramites/catalogo/')) . '" class="btn btn-primary">' . esc_html__('Ver catalogo', 'flavor-chat-ia') . '</a>';
+    echo '<a href="' . esc_url(home_url('/mi-portal/tramites/')) . '" class="btn btn-primary">' . esc_html__('Ver catalogo', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }
@@ -114,7 +114,7 @@ $tramites_base_url = home_url('/mi-portal/tramites/');
 <div class="tramites-iniciar-wrapper">
     <!-- Breadcrumb -->
     <nav class="tramites-breadcrumb">
-        <a href="<?php echo esc_url($tramites_base_url . 'catalogo/'); ?>"><?php esc_html_e('Tramites', 'flavor-chat-ia'); ?></a>
+        <a href="<?php echo esc_url($tramites_base_url); ?>"><?php esc_html_e('Tramites', 'flavor-chat-ia'); ?></a>
         <span class="separator">&rsaquo;</span>
         <span><?php echo esc_html($tipo_tramite->nombre); ?></span>
     </nav>

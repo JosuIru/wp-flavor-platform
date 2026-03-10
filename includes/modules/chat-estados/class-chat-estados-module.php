@@ -852,7 +852,7 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
         ));
 
         // Iniciar conversación privada si existe el módulo de chat interno
-        $chat_interno = Flavor_Module_Loader::get_instance()->get_module('chat_interno');
+        $chat_interno = Flavor_Chat_Module_Loader::get_instance()->get_module('chat_interno');
         if ($chat_interno && method_exists($chat_interno, 'iniciar_conversacion')) {
             $contexto = sprintf(
                 __('Respondiendo a tu estado: "%s"', 'flavor-chat-ia'),
@@ -1769,8 +1769,8 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
 
 // Inicializar
 add_action('plugins_loaded', function() {
-    if (class_exists('Flavor_Module_Loader') && method_exists('Flavor_Module_Loader', 'get_instance')) {
-        $loader = Flavor_Module_Loader::get_instance();
+    if (class_exists('Flavor_Chat_Module_Loader') && method_exists('Flavor_Chat_Module_Loader', 'get_instance')) {
+        $loader = Flavor_Chat_Module_Loader::get_instance();
         if ($loader && method_exists($loader, 'get_module') && $loader->get_module('chat_estados')) {
             return;
         }

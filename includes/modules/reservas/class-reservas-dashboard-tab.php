@@ -698,7 +698,7 @@ class Flavor_Reservas_Dashboard_Tab {
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-calendar-alt"></span>
                             <p><?php esc_html_e('No tienes reservas activas en este momento.', 'flavor-chat-ia'); ?></p>
-                            <a href="<?php echo esc_url(home_url('/reservas/')); ?>" class="flavor-btn flavor-btn-primary">
+                            <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-primary">
                                 <?php esc_html_e('Hacer una reserva', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
@@ -731,11 +731,11 @@ class Flavor_Reservas_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/reservas/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nueva Reserva', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mis-reservas/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(add_query_arg('tab', 'mis-reservas', home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-secondary">
                     <?php esc_html_e('Ver todas mis reservas', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -813,7 +813,7 @@ class Flavor_Reservas_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-clock"></span>
                     <p><?php esc_html_e('No tienes reservas confirmadas para los proximos dias.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/reservas/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Hacer una reserva', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -862,7 +862,7 @@ class Flavor_Reservas_Dashboard_Tab {
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/reservas/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nueva Reserva', 'flavor-chat-ia'); ?>
                 </a>
@@ -1027,7 +1027,7 @@ class Flavor_Reservas_Dashboard_Tab {
             <?php endif; ?>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/reservas/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(add_query_arg('tab', 'nueva-reserva', home_url('/mi-portal/reservas/'))); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nueva Reserva', 'flavor-chat-ia'); ?>
                 </a>

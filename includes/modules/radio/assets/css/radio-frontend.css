@@ -894,6 +894,797 @@
 }
 
 /* ==========================================================================
+   Visualizador de Onda Avanzado (Canvas)
+   ========================================================================== */
+
+.radio-visualizer-canvas {
+    width: 100%;
+    height: 60px;
+    margin: 1rem 0;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.radio-visualizer-canvas.compact {
+    height: 40px;
+    margin: 0.5rem 0;
+}
+
+/* Metadatos de canción actual */
+.radio-now-playing {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    margin-top: 1rem;
+    animation: nowPlayingPulse 3s ease-in-out infinite;
+}
+
+@keyframes nowPlayingPulse {
+    0%, 100% { background: rgba(255, 255, 255, 0.15); }
+    50% { background: rgba(255, 255, 255, 0.2); }
+}
+
+.radio-now-playing .now-playing-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: discSpin 4s linear infinite;
+}
+
+@keyframes discSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.radio-now-playing .now-playing-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.radio-now-playing .now-playing-title {
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.radio-now-playing .now-playing-artist {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.radio-now-playing .btn-share-song {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.radio-now-playing .btn-share-song:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* ==========================================================================
+   Sistema de Favoritos
+   ========================================================================== */
+
+.btn-favorito {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--radio-gray-200);
+    border-radius: 20px;
+    background: #fff;
+    color: var(--radio-gray-600);
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.btn-favorito:hover {
+    border-color: var(--radio-primary);
+    color: var(--radio-primary);
+}
+
+.btn-favorito.activo {
+    background: var(--radio-primary);
+    border-color: var(--radio-primary);
+    color: #fff;
+}
+
+.btn-favorito .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.btn-favorito.activo .dashicons-heart::before {
+    content: '\f487';
+}
+
+.mis-favoritos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.favorito-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--radio-gray-50);
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.favorito-card:hover {
+    background: var(--radio-gray-100);
+    transform: translateY(-2px);
+}
+
+.favorito-card .programa-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.favorito-card .programa-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.favorito-card .programa-nombre {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.favorito-card .programa-horario {
+    font-size: 0.8rem;
+    color: var(--radio-gray-500);
+}
+
+.favorito-card .btn-notificacion {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    color: var(--radio-gray-400);
+}
+
+.favorito-card .btn-notificacion.activo {
+    color: var(--radio-warning);
+}
+
+/* ==========================================================================
+   Compartir en Redes Sociales
+   ========================================================================== */
+
+.radio-share-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.btn-share {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    color: #fff;
+}
+
+.btn-share:hover {
+    transform: scale(1.1);
+}
+
+.btn-share.twitter { background: #1DA1F2; }
+.btn-share.facebook { background: #4267B2; }
+.btn-share.whatsapp { background: #25D366; }
+.btn-share.telegram { background: #0088cc; }
+.btn-share.copy-link { background: var(--radio-gray-600); }
+
+.share-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.share-modal.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.share-modal-content {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.share-modal h4 {
+    margin: 0 0 1rem 0;
+}
+
+.share-preview {
+    background: var(--radio-gray-50);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.share-preview img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    margin-right: 1rem;
+    float: left;
+}
+
+.share-preview .share-title {
+    font-weight: 600;
+}
+
+.share-preview .share-subtitle {
+    font-size: 0.875rem;
+    color: var(--radio-gray-500);
+}
+
+/* ==========================================================================
+   Reacciones en Chat
+   ========================================================================== */
+
+.chat-mensaje-reacciones {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.chat-reaccion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.5rem;
+    background: var(--radio-gray-100);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.chat-reaccion:hover {
+    background: var(--radio-gray-200);
+}
+
+.chat-reaccion.mi-reaccion {
+    border-color: var(--radio-primary);
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.chat-reaccion .emoji {
+    font-size: 1rem;
+}
+
+.chat-reaccion .count {
+    font-size: 0.75rem;
+    color: var(--radio-gray-600);
+}
+
+.btn-add-reaccion {
+    width: 28px;
+    height: 28px;
+    border: 1px dashed var(--radio-gray-300);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--radio-gray-400);
+    transition: all 0.2s;
+}
+
+.btn-add-reaccion:hover {
+    border-color: var(--radio-primary);
+    color: var(--radio-primary);
+}
+
+.emoji-picker {
+    position: absolute;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.25rem;
+    z-index: 1000;
+}
+
+.emoji-picker button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.25rem;
+    transition: background 0.2s;
+}
+
+.emoji-picker button:hover {
+    background: var(--radio-gray-100);
+}
+
+/* ==========================================================================
+   Perfil de Locutor
+   ========================================================================== */
+
+.locutor-perfil {
+    background: #fff;
+    border-radius: var(--radio-radius);
+    overflow: hidden;
+    box-shadow: var(--radio-shadow);
+}
+
+.locutor-header {
+    background: linear-gradient(135deg, var(--radio-primary) 0%, var(--radio-primary-dark) 100%);
+    padding: 2rem;
+    color: #fff;
+    text-align: center;
+}
+
+.locutor-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    margin: 0 auto 1rem;
+    object-fit: cover;
+}
+
+.locutor-nombre {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+}
+
+.locutor-rol {
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.locutor-redes {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.locutor-redes a {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: all 0.2s;
+}
+
+.locutor-redes a:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.locutor-content {
+    padding: 1.5rem;
+}
+
+.locutor-bio {
+    color: var(--radio-gray-600);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.locutor-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.locutor-stat {
+    text-align: center;
+    padding: 1rem;
+    background: var(--radio-gray-50);
+    border-radius: 10px;
+}
+
+.locutor-stat-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--radio-primary);
+}
+
+.locutor-stat-label {
+    font-size: 0.8rem;
+    color: var(--radio-gray-500);
+}
+
+.locutor-programas h4 {
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ==========================================================================
+   Calendario de Eventos
+   ========================================================================== */
+
+.radio-calendario {
+    background: #fff;
+    border-radius: var(--radio-radius);
+    box-shadow: var(--radio-shadow);
+    overflow: hidden;
+}
+
+.calendario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: var(--radio-gray-50);
+    border-bottom: 1px solid var(--radio-gray-100);
+}
+
+.calendario-nav {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.calendario-nav button {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--radio-gray-200);
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+}
+
+.calendario-titulo {
+    font-weight: 600;
+}
+
+.calendario-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.calendario-dia-header {
+    padding: 0.75rem;
+    text-align: center;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: var(--radio-gray-500);
+    background: var(--radio-gray-50);
+}
+
+.calendario-dia {
+    min-height: 80px;
+    padding: 0.5rem;
+    border: 1px solid var(--radio-gray-100);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.calendario-dia:hover {
+    background: var(--radio-gray-50);
+}
+
+.calendario-dia.otro-mes {
+    background: var(--radio-gray-50);
+    color: var(--radio-gray-400);
+}
+
+.calendario-dia.hoy {
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.calendario-dia .numero {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.calendario-dia.hoy .numero {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--radio-primary);
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendario-evento {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.35rem;
+    background: var(--radio-primary);
+    color: #fff;
+    border-radius: 3px;
+    margin-bottom: 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.calendario-evento.especial {
+    background: var(--radio-warning);
+}
+
+.evento-detalle-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+}
+
+.evento-detalle {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    overflow: hidden;
+}
+
+.evento-detalle-header {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--radio-primary) 0%, var(--radio-primary-dark) 100%);
+    color: #fff;
+}
+
+.evento-detalle-body {
+    padding: 1.5rem;
+}
+
+.evento-detalle-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--radio-gray-500);
+    font-size: 0.9rem;
+}
+
+.evento-detalle-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* ==========================================================================
+   Múltiples Canales
+   ========================================================================== */
+
+.radio-canales {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.canal-tab {
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.canal-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.canal-tab.activo {
+    background: #fff;
+    color: var(--radio-primary);
+    border-color: #fff;
+}
+
+.canal-tab .canal-nombre {
+    font-weight: 500;
+}
+
+.canal-tab .canal-oyentes {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-left: 0.5rem;
+}
+
+/* ==========================================================================
+   Analytics (Mini Dashboard)
+   ========================================================================== */
+
+.radio-analytics-mini {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.analytics-card {
+    background: var(--radio-gray-50);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.analytics-card .valor {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--radio-primary);
+}
+
+.analytics-card .label {
+    font-size: 0.8rem;
+    color: var(--radio-gray-500);
+}
+
+.analytics-card .tendencia {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.analytics-card .tendencia.up {
+    color: var(--radio-success);
+}
+
+.analytics-card .tendencia.down {
+    color: var(--radio-danger);
+}
+
+/* Gráfico de audiencia simple */
+.audiencia-chart {
+    background: #fff;
+    border-radius: var(--radio-radius);
+    padding: 1.5rem;
+    box-shadow: var(--radio-shadow);
+}
+
+.audiencia-chart h4 {
+    margin: 0 0 1rem 0;
+}
+
+.audiencia-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 150px;
+}
+
+.audiencia-bar {
+    flex: 1;
+    background: var(--radio-primary-light);
+    border-radius: 4px 4px 0 0;
+    min-height: 10px;
+    transition: height 0.3s;
+    position: relative;
+}
+
+.audiencia-bar:hover {
+    background: var(--radio-primary);
+}
+
+.audiencia-bar::after {
+    content: attr(data-hora);
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    color: var(--radio-gray-500);
+}
+
+/* ==========================================================================
+   Transcripción de Podcasts
+   ========================================================================== */
+
+.podcast-transcripcion {
+    background: var(--radio-gray-50);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.podcast-transcripcion h5 {
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.transcripcion-texto {
+    line-height: 1.8;
+    color: var(--radio-gray-700);
+}
+
+.transcripcion-timestamp {
+    display: inline-block;
+    background: var(--radio-primary);
+    color: #fff;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+.transcripcion-buscar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.transcripcion-buscar input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--radio-gray-200);
+    border-radius: 20px;
+}
+
+.transcripcion-highlight {
+    background: rgba(245, 158, 11, 0.3);
+    padding: 0 0.2rem;
+    border-radius: 2px;
+}
+
+/* ==========================================================================
    Responsive
    ========================================================================== */
 

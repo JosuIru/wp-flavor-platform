@@ -11,7 +11,7 @@ if (!is_user_logged_in()) {
     echo '<div class="incidencias-login-required">';
     echo '<span class="dashicons dashicons-lock"></span>';
     echo '<h3>' . esc_html__('Inicia sesión para ver tus incidencias', 'flavor-chat-ia') . '</h3>';
-    echo '<a href="' . esc_url(wp_login_url(get_permalink())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
+    echo '<a href="' . esc_url(wp_login_url(flavor_current_request_url())) . '" class="btn btn-primary">' . esc_html__('Iniciar sesión', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }

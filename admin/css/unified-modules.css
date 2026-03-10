@@ -223,6 +223,394 @@
 }
 
 /* ==========================================================================
+   Ecosystem Packs
+   ========================================================================== */
+
+.fum-packs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.fum-pack-card {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid var(--fum-gray-200);
+    border-radius: var(--fum-radius);
+    padding: 16px;
+    box-shadow: var(--fum-shadow);
+}
+
+.fum-pack-card__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.fum-pack-card__title {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--fum-gray-800);
+}
+
+.fum-pack-card__desc {
+    margin: 0;
+    font-size: 13px;
+    color: var(--fum-gray-500);
+    line-height: 1.4;
+}
+
+.fum-pack-card__hint {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--fum-gray-600);
+    line-height: 1.45;
+}
+
+.fum-pack-card__metrics {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+.fum-pack-card__progress {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.fum-pack-card__recommended {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid transparent;
+}
+
+.fum-pack-card__recommended--suggested {
+    background: #dbeafe;
+    border-color: #93c5fd;
+    color: #1d4ed8;
+}
+
+.fum-pack-card__recommended--starter {
+    background: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
+}
+
+.fum-pack-card__recommended--complete {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #166534;
+}
+
+.fum-pack-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.fum-pack-card__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid var(--fum-gray-200);
+    color: var(--fum-gray-600);
+    font-size: 12px;
+}
+
+.fum-pack-card__tag.is-active {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #166534;
+    font-weight: 600;
+}
+
+.fum-pack-card__actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.fum-pack-card__ready {
+    font-size: 12px;
+    font-weight: 700;
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 999px;
+    padding: 6px 10px;
+}
+
+/* ==========================================================================
+   Active Ecosystem Summary
+   ========================================================================== */
+
+.fum-ecosystem-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.fum-ecosystem-summary__card {
+    background: white;
+    border: 1px solid var(--fum-gray-200);
+    border-radius: var(--fum-radius);
+    padding: 16px;
+    box-shadow: var(--fum-shadow);
+}
+
+.fum-ecosystem-summary__count {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--fum-gray-800);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.fum-ecosystem-summary__title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--fum-gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 10px;
+}
+
+.fum-ecosystem-summary__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.fum-ecosystem-summary__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 999px;
+    background: var(--fum-gray-50);
+    border: 1px solid var(--fum-gray-200);
+    color: var(--fum-gray-700);
+    font-size: 12px;
+}
+
+/* ==========================================================================
+   Ecosystem Gaps
+   ========================================================================== */
+
+.fum-ecosystem-gaps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.fum-ecosystem-gaps__card {
+    background: linear-gradient(180deg, #fffdf7 0%, #ffffff 100%);
+    border: 1px solid #fcd34d;
+    border-radius: var(--fum-radius);
+    padding: 16px;
+    box-shadow: var(--fum-shadow);
+}
+
+.fum-ecosystem-gaps__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.fum-ecosystem-gaps__title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fum-gray-800);
+}
+
+.fum-ecosystem-gaps__count {
+    min-width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.fum-ecosystem-gaps__description {
+    margin: 0 0 12px;
+    color: var(--fum-gray-600);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.fum-ecosystem-gaps__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.fum-ecosystem-gaps__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 999px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    font-size: 12px;
+}
+
+.fum-ecosystem-gaps__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+/* ==========================================================================
+   Ecosystem Map
+   ========================================================================== */
+
+.fum-ecosystem-map {
+    margin-bottom: 24px;
+    padding: 18px;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid var(--fum-gray-200);
+    border-radius: var(--fum-radius);
+    box-shadow: var(--fum-shadow);
+}
+
+.fum-ecosystem-map__header {
+    margin-bottom: 14px;
+}
+
+.fum-ecosystem-map__title {
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--fum-gray-800);
+}
+
+.fum-ecosystem-map__description {
+    margin: 0;
+    font-size: 13px;
+    color: var(--fum-gray-600);
+    line-height: 1.45;
+}
+
+.fum-ecosystem-map__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.fum-ecosystem-node {
+    background: white;
+    border: 1px solid var(--fum-gray-200);
+    border-radius: var(--fum-radius);
+    padding: 14px;
+}
+
+.fum-ecosystem-node__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.fum-ecosystem-node__name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fum-gray-800);
+}
+
+.fum-ecosystem-node__role {
+    margin-top: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--fum-gray-500);
+}
+
+.fum-ecosystem-node__badge {
+    min-width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.fum-ecosystem-node__group + .fum-ecosystem-node__group {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--fum-gray-100);
+}
+
+.fum-ecosystem-node__group-title {
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fum-gray-600);
+}
+
+.fum-ecosystem-node__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.fum-ecosystem-node__link {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--fum-gray-200);
+    font-size: 12px;
+}
+
+.fum-ecosystem-node__link.is-active {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #166534;
+}
+
+.fum-ecosystem-node__link.is-suggested {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+}
+
+/* ==========================================================================
    Modules Grid
    ========================================================================== */
 
@@ -325,6 +713,13 @@
     line-height: 1.4;
 }
 
+.fum-card__role-note {
+    margin: 6px 0 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--fum-gray-600);
+}
+
 .fum-card__toggle {
     flex-shrink: 0;
 }
@@ -413,6 +808,76 @@
     color: #991b1b;
 }
 
+.fum-badge--role {
+    border: 1px solid transparent;
+}
+
+.fum-badge--role-base {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+.fum-badge--role-base-standalone {
+    background: #f1f5f9;
+    color: #334155;
+    border-color: #cbd5e1;
+}
+
+.fum-badge--role-vertical {
+    background: #dcfce7;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+.fum-badge--role-transversal {
+    background: #f3e8ff;
+    color: #7e22ce;
+    border-color: #e9d5ff;
+}
+
+.fum-ecosystem-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: linear-gradient(180deg, #fafafc 0%, #f5f7fb 100%);
+    border: 1px solid var(--fum-gray-200);
+    border-radius: 10px;
+}
+
+.fum-ecosystem-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fum-ecosystem-group__label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--fum-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.fum-ecosystem-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.fum-ecosystem-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid var(--fum-gray-200);
+    color: var(--fum-gray-700);
+    font-size: 12px;
+    line-height: 1.2;
+}
+
 /* Card Body - Controls */
 .fum-card__body {
     padding: 16px;
@@ -457,6 +922,27 @@
     outline: none;
     border-color: var(--fum-primary);
     background: white;
+}
+
+.fum-dependency-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #fff7ed;
+    border: 1px solid #fdba74;
+    color: #9a3412;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.fum-dependency-warning .dashicons {
+    margin-top: 1px;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
 }
 
 /* Card Footer - Actions */

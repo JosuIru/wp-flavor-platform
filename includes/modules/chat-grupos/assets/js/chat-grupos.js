@@ -778,6 +778,154 @@
     };
 
     /**
+     * Mostrar modal para crear grupo
+     */
+    FlavorChatGrupos.mostrarModalCrear = function() {
+        const self = this;
+
+        // Verificar si ya existe el modal
+        if ($('#cg-modal-crear').length) {
+            $('#cg-modal-crear').addClass('is-visible');
+            return;
+        }
+
+        // Crear el HTML del modal
+        const modalHtml = `
+            <div id="cg-modal-crear" class="cg-modal is-visible">
+                <div class="cg-modal-overlay"></div>
+                <div class="cg-modal-container">
+                    <div class="cg-modal-header">
+                        <h3>${this.strings.crear_grupo || 'Crear nuevo grupo'}</h3>
+                        <button type="button" class="cg-modal-close"><span class="dashicons dashicons-no-alt"></span></button>
+                    </div>
+                    <div class="cg-modal-body">
+                        <form id="cg-modal-form-crear" class="cg-form">
+                            <div class="cg-form-group">
+                                <label for="cg-modal-nombre">${this.strings.nombre || 'Nombre del grupo'} *</label>
+                                <input type="text" id="cg-modal-nombre" name="nombre" required maxlength="100" placeholder="${this.strings.nombre_placeholder || 'Ej: Vecinos del barrio'}">
+                            </div>
+                            <div class="cg-form-group">
+                                <label for="cg-modal-descripcion">${this.strings.descripcion || 'Descripción'}</label>
+                                <textarea id="cg-modal-descripcion" name="descripcion" rows="3" maxlength="500" placeholder="${this.strings.descripcion_placeholder || 'Describe el propósito del grupo...'}"></textarea>
+                            </div>
+                            <div class="cg-form-row">
+                                <div class="cg-form-group cg-form-group-half">
+                                    <label for="cg-modal-tipo">${this.strings.tipo || 'Tipo de grupo'}</label>
+                                    <select id="cg-modal-tipo" name="tipo">
+                                        <option value="abierto">${this.strings.tipo_abierto || 'Abierto'}</option>
+                                        <option value="cerrado">${this.strings.tipo_cerrado || 'Cerrado'}</option>
+                                        <option value="privado">${this.strings.tipo_privado || 'Privado'}</option>
+                                    </select>
+                                </div>
+                                <div class="cg-form-group cg-form-group-half">
+                                    <label for="cg-modal-color">${this.strings.color || 'Color'}</label>
+                                    <input type="color" id="cg-modal-color" name="color" value="#2271b1">
+                                </div>
+                            </div>
+                            <div class="cg-form-group">
+                                <label for="cg-modal-categoria">${this.strings.categoria || 'Categoría'}</label>
+                                <select id="cg-modal-categoria" name="categoria">
+                                    <option value="">${this.strings.seleccionar || 'Seleccionar...'}</option>
+                                    <option value="vecinos">${this.strings.cat_vecinos || 'Vecinos'}</option>
+                                    <option value="deportes">${this.strings.cat_deportes || 'Deportes'}</option>
+                                    <option value="cultura">${this.strings.cat_cultura || 'Cultura'}</option>
+                                    <option value="educacion">${this.strings.cat_educacion || 'Educación'}</option>
+                                    <option value="trabajo">${this.strings.cat_trabajo || 'Trabajo'}</option>
+                                    <option value="ocio">${this.strings.cat_ocio || 'Ocio'}</option>
+                                    <option value="otros">${this.strings.cat_otros || 'Otros'}</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="cg-modal-footer">
+                        <button type="button" class="cg-btn cg-btn-secondary cg-modal-cancelar">${this.strings.cancelar || 'Cancelar'}</button>
+                        <button type="submit" form="cg-modal-form-crear" class="cg-btn cg-btn-primary cg-modal-crear-btn">${this.strings.crear || 'Crear grupo'}</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Añadir modal al DOM
+        $('body').append(modalHtml);
+
+        // Eventos del modal
+        const modal = $('#cg-modal-crear');
+
+        // Cerrar modal
+        modal.find('.cg-modal-overlay, .cg-modal-close, .cg-modal-cancelar').on('click', function() {
+            modal.removeClass('is-visible');
+            setTimeout(function() {
+                modal.remove();
+            }, 300);
+        });
+
+        // Enviar formulario
+        modal.find('#cg-modal-form-crear').on('submit', function(e) {
+            e.preventDefault();
+            self.crearGrupoDesdeModal(modal);
+        });
+
+        // Focus en el primer campo
+        setTimeout(function() {
+            modal.find('#cg-modal-nombre').focus();
+        }, 100);
+    };
+
+    /**
+     * Crear grupo desde el modal
+     */
+    FlavorChatGrupos.crearGrupoDesdeModal = function(modal) {
+        const self = this;
+        const btn = modal.find('.cg-modal-crear-btn');
+        const textoOriginal = btn.text();
+
+        btn.prop('disabled', true).text(this.strings.creando || 'Creando...');
+
+        $.ajax({
+            url: this.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'flavor_chat_grupos_create',
+                nonce: this.nonce,
+                nombre: modal.find('#cg-modal-nombre').val(),
+                descripcion: modal.find('#cg-modal-descripcion').val(),
+                tipo: modal.find('#cg-modal-tipo').val(),
+                categoria: modal.find('#cg-modal-categoria').val(),
+                color: modal.find('#cg-modal-color').val(),
+            },
+            success: function(response) {
+                if (response.success) {
+                    self.mostrarAviso(self.strings.grupo_creado || 'Grupo creado correctamente', 'success');
+
+                    // Cerrar modal
+                    modal.removeClass('is-visible');
+                    setTimeout(function() {
+                        modal.remove();
+                    }, 300);
+
+                    // Recargar lista de grupos
+                    self.fetchMisGrupos();
+
+                    // Si hay un grupo_id, abrir el grupo
+                    if (response.grupo_id) {
+                        setTimeout(function() {
+                            self.abrirGrupo(response.grupo_id);
+                        }, 500);
+                    }
+                } else {
+                    self.mostrarAviso(response.error || self.strings.error_crear || 'Error al crear el grupo', 'error');
+                }
+            },
+            error: function() {
+                self.mostrarAviso(self.strings.error || 'Error de conexión', 'error');
+            },
+            complete: function() {
+                btn.prop('disabled', false).text(textoOriginal);
+            }
+        });
+    };
+
+    /**
      * Mostrar panel de info del grupo
      */
     FlavorChatGrupos.mostrarPanelInfo = function() {

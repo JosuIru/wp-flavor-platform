@@ -67,6 +67,116 @@
 }
 
 /* ── Galería de plantillas ── */
+.flavor-template-suggestions {
+    margin: 0 0 20px;
+    padding: 18px;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid #dbe4f0;
+    border-radius: 12px;
+}
+
+.flavor-template-suggestions__header {
+    margin-bottom: 14px;
+}
+
+.flavor-template-suggestions__header h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+}
+
+.flavor-template-suggestions__header p {
+    margin: 0;
+    color: #64748b;
+}
+
+.flavor-template-suggestions__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.flavor-template-suggestion-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.flavor-template-suggestion-card__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.flavor-template-suggestion-card__head h3 {
+    margin: 0;
+    font-size: 15px;
+    color: #111827;
+}
+
+.flavor-template-suggestion-card__score {
+    min-width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.flavor-template-suggestion-card__desc {
+    margin: 0 0 12px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.flavor-template-suggestion-card__block + .flavor-template-suggestion-card__block {
+    margin-top: 10px;
+}
+
+.flavor-template-suggestion-card__label {
+    margin-bottom: 6px;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.flavor-template-suggestion-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.flavor-template-suggestion-card__footer {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.flavor-template-suggestion-card__meta {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.flavor-template-suggestion-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
 .flavor-templates-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

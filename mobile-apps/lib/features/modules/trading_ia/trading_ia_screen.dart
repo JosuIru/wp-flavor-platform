@@ -351,11 +351,263 @@ class _TradingIaScreenState extends ConsumerState<TradingIaScreen> {
           ],
         ),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          // TODO: Ver detalle de senal
-        },
+        onTap: () => _verDetalleSenial(senalMap),
       ),
     );
+  }
+
+  void _verDetalleSenial(Map<String, dynamic> senal) {
+    final simbolo = senal['simbolo'] ?? senal['symbol'] ?? senal['par'] ?? 'N/A';
+    final tipo = senal['tipo'] ?? senal['type'] ?? senal['accion'] ?? 'hold';
+    final precio = senal['precio'] ?? senal['price'] ?? senal['entrada'] ?? 0;
+    final confianza = senal['confianza'] ?? senal['confidence'] ?? senal['probabilidad'] ?? 0;
+    final descripcion = senal['descripcion'] ?? senal['description'] ?? senal['razon'] ?? '';
+    final takeProfit = senal['take_profit'] ?? senal['tp'] ?? '';
+    final stopLoss = senal['stop_loss'] ?? senal['sl'] ?? '';
+    final timestamp = senal['timestamp'] ?? senal['fecha'] ?? senal['created_at'] ?? '';
+    final indicadores = senal['indicadores'] ?? senal['indicators'] ?? <String, dynamic>{};
+
+    Color tipoColor;
+    IconData tipoIcon;
+    switch (tipo.toString().toLowerCase()) {
+      case 'compra':
+      case 'buy':
+      case 'long':
+        tipoColor = Colors.green;
+        tipoIcon = Icons.arrow_upward;
+        break;
+      case 'venta':
+      case 'sell':
+      case 'short':
+        tipoColor = Colors.red;
+        tipoIcon = Icons.arrow_downward;
+        break;
+      default:
+        tipoColor = Colors.grey;
+        tipoIcon = Icons.remove;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 28,
+                    backgroundColor: tipoColor.withOpacity(0.1),
+                    child: Icon(tipoIcon, color: tipoColor, size: 28),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          simbolo.toString(),
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: tipoColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            tipo.toString().toUpperCase(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: tipoColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      _buildDetalleRow(Icons.attach_money, 'Precio entrada', '\$${_formatNumber(precio)}'),
+                      const Divider(),
+                      _buildDetalleRow(Icons.analytics, 'Confianza', '${_formatNumber(confianza)}%'),
+                      if (takeProfit.toString().isNotEmpty) ...[
+                        const Divider(),
+                        _buildDetalleRow(Icons.trending_up, 'Take Profit', '\$${_formatNumber(takeProfit)}'),
+                      ],
+                      if (stopLoss.toString().isNotEmpty) ...[
+                        const Divider(),
+                        _buildDetalleRow(Icons.trending_down, 'Stop Loss', '\$${_formatNumber(stopLoss)}'),
+                      ],
+                      if (timestamp.toString().isNotEmpty) ...[
+                        const Divider(),
+                        _buildDetalleRow(Icons.schedule, 'Fecha', timestamp.toString()),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              if (descripcion.toString().isNotEmpty) ...[
+                const SizedBox(height: 16),
+                const Text('Analisis', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                const SizedBox(height: 8),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(descripcion.toString()),
+                  ),
+                ),
+              ],
+              if (indicadores is Map && indicadores.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                const Text('Indicadores', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                const SizedBox(height: 8),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: (indicadores as Map<String, dynamic>).entries.map((entry) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(entry.key, style: TextStyle(color: Colors.grey.shade600)),
+                              Text(_formatNumber(entry.value), style: const TextStyle(fontWeight: FontWeight.w500)),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Senal $simbolo ignorada')),
+                        );
+                      },
+                      icon: const Icon(Icons.close),
+                      label: const Text('Ignorar'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () => _ejecutarSenal(senal),
+                      icon: Icon(tipoIcon),
+                      label: Text(tipo.toString().toUpperCase()),
+                      style: FilledButton.styleFrom(backgroundColor: tipoColor),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetalleRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: Colors.grey.shade600),
+          const SizedBox(width: 12),
+          Text(label, style: TextStyle(color: Colors.grey.shade600)),
+          const Spacer(),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _ejecutarSenal(Map<String, dynamic> senal) async {
+    Navigator.pop(context);
+    final simbolo = senal['simbolo'] ?? senal['symbol'] ?? 'N/A';
+    final tipo = senal['tipo'] ?? senal['type'] ?? 'compra';
+    final senalId = senal['id'];
+
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Ejecutar ${tipo.toString().toUpperCase()}'),
+        content: Text('¿Confirmar operacion de ${tipo.toString().toLowerCase()} en $simbolo?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Ejecutar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmar != true) return;
+
+    try {
+      final apiClient = ref.read(apiClientProvider);
+      final response = await apiClient.post('/trading-ia/ejecutar', data: {
+        'senal_id': senalId,
+        'simbolo': simbolo,
+        'tipo': tipo,
+      });
+
+      if (mounted) {
+        if (response.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Orden de $tipo ejecutada para $simbolo'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _loadData();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.error ?? 'Error al ejecutar orden'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 
   String _formatNumber(dynamic number) {

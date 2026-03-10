@@ -2,7 +2,7 @@
 /**
  * Vista Dashboard - Modulo Transparencia
  *
- * Panel de control con estadisticas de datos publicos y solicitudes
+ * Panel de control con estadísticas de datos públicos y solicitudes
  *
  * @package FlavorChatIA
  */
@@ -12,275 +12,490 @@ if (!defined('ABSPATH')) {
 }
 
 global $wpdb;
+$is_dashboard_viewer = current_user_can('flavor_ver_dashboard') && !current_user_can('manage_options');
+
 $tabla_datos = $wpdb->prefix . 'flavor_transparencia_datos';
 $tabla_solicitudes = $wpdb->prefix . 'flavor_transparencia_solicitudes';
+$tabla_categorias = $wpdb->prefix . 'flavor_transparencia_categorias';
 
-// Estadisticas generales
-$total_datos_publicados = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_datos WHERE estado = 'publicado'");
-$total_solicitudes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes");
-$solicitudes_pendientes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado IN ('recibida', 'en_tramite')");
-$solicitudes_resueltas_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado = 'resuelta' AND MONTH(fecha_resolucion) = MONTH(CURRENT_DATE())");
+// Verificar existencia de tablas
+$tabla_datos_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_datos)) === $tabla_datos;
+$tabla_solicitudes_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_solicitudes)) === $tabla_solicitudes;
 
-// Tiempo promedio de resolucion (en dias)
-$tiempo_promedio_resolucion = $wpdb->get_var("
-    SELECT AVG(DATEDIFF(fecha_resolucion, fecha_solicitud))
-    FROM $tabla_solicitudes
-    WHERE estado = 'resuelta' AND fecha_resolucion IS NOT NULL
-");
+// Inicializar estadísticas
+$total_datos_publicados = 0;
+$total_solicitudes = 0;
+$solicitudes_pendientes = 0;
+$solicitudes_resueltas_mes = 0;
+$tiempo_promedio_resolucion = 0;
+$tasa_resolucion = 0;
+$descargas_documentos = 0;
+$estadisticas_estado_solicitudes = [];
+$tendencia_publicaciones_semana = [];
+$solicitudes_recientes = [];
+$datos_recientes = [];
 
-// Estadisticas por estado de solicitudes
-$estadisticas_estado_solicitudes = $wpdb->get_results("
-    SELECT estado, COUNT(*) as total
-    FROM $tabla_solicitudes
-    GROUP BY estado
-");
+if ($tabla_datos_existe) {
+    $total_datos_publicados = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_datos WHERE estado = 'publicado'");
 
-// Estadisticas por categoria de datos publicados
-$estadisticas_categoria_datos = $wpdb->get_results("
-    SELECT categoria, COUNT(*) as total
-    FROM $tabla_datos
-    WHERE estado = 'publicado'
-    GROUP BY categoria
-    ORDER BY total DESC
-    LIMIT 8
-");
+    // Tendencia últimos 7 días
+    $tendencia_publicaciones_semana = $wpdb->get_results("
+        SELECT DATE(fecha_publicacion) as fecha, COUNT(*) as total
+        FROM $tabla_datos
+        WHERE fecha_publicacion >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        AND estado = 'publicado'
+        GROUP BY DATE(fecha_publicacion)
+        ORDER BY fecha ASC
+    ");
 
-// Tasa de resolucion
-$total_tramitadas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado IN ('resuelta', 'denegada')");
-$total_resueltas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado = 'resuelta'");
-$tasa_resolucion = $total_tramitadas > 0 ? round(($total_resueltas / $total_tramitadas) * 100, 1) : 0;
+    // Datos recientes
+    $datos_recientes = $wpdb->get_results("
+        SELECT d.*, u.display_name as publicado_por
+        FROM $tabla_datos d
+        LEFT JOIN {$wpdb->users} u ON d.usuario_id = u.ID
+        WHERE d.estado = 'publicado'
+        ORDER BY d.fecha_publicacion DESC
+        LIMIT 5
+    ");
 
-// Importe total presupuestos publicados
-$importe_total_presupuestos = $wpdb->get_var("SELECT SUM(importe) FROM $tabla_datos WHERE categoria = 'presupuestos' AND estado = 'publicado'");
+    // Descargas de documentos
+    $descargas_documentos = (int) $wpdb->get_var("SELECT COALESCE(SUM(descargas), 0) FROM $tabla_datos");
+}
 
-// Tendencia ultimos 7 dias
-$tendencia_publicaciones_semana = $wpdb->get_results("
-    SELECT DATE(fecha_publicacion) as fecha, COUNT(*) as total
-    FROM $tabla_datos
-    WHERE fecha_publicacion >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-    AND estado = 'publicado'
-    GROUP BY DATE(fecha_publicacion)
-    ORDER BY fecha ASC
-");
+if ($tabla_solicitudes_existe) {
+    $total_solicitudes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes");
+    $solicitudes_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado IN ('recibida', 'en_tramite')");
+    $solicitudes_resueltas_mes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado = 'resuelta' AND MONTH(fecha_resolucion) = MONTH(CURRENT_DATE())");
 
-// Solicitudes recientes
-$solicitudes_recientes = $wpdb->get_results("
-    SELECT *
-    FROM $tabla_solicitudes
-    ORDER BY fecha_solicitud DESC
-    LIMIT 5
-");
+    // Tiempo promedio de resolución
+    $tiempo_promedio_resolucion = (float) $wpdb->get_var("
+        SELECT AVG(DATEDIFF(fecha_resolucion, fecha_solicitud))
+        FROM $tabla_solicitudes
+        WHERE estado = 'resuelta' AND fecha_resolucion IS NOT NULL
+    ");
+
+    // Por estado
+    $estadisticas_estado_solicitudes = $wpdb->get_results("
+        SELECT estado, COUNT(*) as total
+        FROM $tabla_solicitudes
+        GROUP BY estado
+    ");
+
+    // Tasa de resolución
+    $total_tramitadas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado IN ('resuelta', 'denegada')");
+    $total_resueltas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado = 'resuelta'");
+    $tasa_resolucion = $total_tramitadas > 0 ? round(($total_resueltas / $total_tramitadas) * 100, 1) : 0;
+
+    // Solicitudes recientes
+    $solicitudes_recientes = $wpdb->get_results("
+        SELECT s.*, u.display_name as solicitante_nombre
+        FROM $tabla_solicitudes s
+        LEFT JOIN {$wpdb->users} u ON s.usuario_id = u.ID
+        ORDER BY s.fecha_solicitud DESC
+        LIMIT 5
+    ");
+}
+
+// Datos de demostración si no hay datos reales
+$usando_demo = ($total_datos_publicados == 0 && $total_solicitudes == 0);
+
+if ($usando_demo) {
+    $total_datos_publicados = 156;
+    $total_solicitudes = 89;
+    $solicitudes_pendientes = 12;
+    $solicitudes_resueltas_mes = 8;
+    $tiempo_promedio_resolucion = 5.3;
+    $tasa_resolucion = 87.5;
+    $descargas_documentos = 567;
+
+    $estadisticas_estado_solicitudes = [
+        (object) ['estado' => 'recibida', 'total' => 8],
+        (object) ['estado' => 'en_tramite', 'total' => 4],
+        (object) ['estado' => 'resuelta', 'total' => 67],
+        (object) ['estado' => 'denegada', 'total' => 10],
+    ];
+
+    $tendencia_publicaciones_semana = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $fecha = date('Y-m-d', strtotime("-$i days"));
+        $tendencia_publicaciones_semana[] = (object) [
+            'fecha' => $fecha,
+            'total' => rand(2, 8)
+        ];
+    }
+
+    $solicitudes_recientes = [
+        (object) ['id' => 1, 'titulo' => 'Información sobre contratos de limpieza', 'estado' => 'en_tramite', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-2 days')), 'solicitante_nombre' => 'Juan García'],
+        (object) ['id' => 2, 'titulo' => 'Presupuesto detallado obras 2024', 'estado' => 'resuelta', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-5 days')), 'solicitante_nombre' => 'María López'],
+        (object) ['id' => 3, 'titulo' => 'Actas del pleno de febrero', 'estado' => 'recibida', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-1 day')), 'solicitante_nombre' => 'Pedro Martínez'],
+        (object) ['id' => 4, 'titulo' => 'Subvenciones asociaciones culturales', 'estado' => 'resuelta', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-10 days')), 'solicitante_nombre' => 'Ana Fernández'],
+        (object) ['id' => 5, 'titulo' => 'Plantilla personal municipal', 'estado' => 'denegada', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-15 days')), 'solicitante_nombre' => 'Carlos Ruiz'],
+    ];
+
+    $datos_recientes = [
+        (object) ['id' => 1, 'titulo' => 'Presupuesto General 2024', 'categoria' => 'presupuestos', 'fecha_publicacion' => date('Y-m-d H:i:s', strtotime('-1 day')), 'descargas' => 89, 'publicado_por' => 'Administrador'],
+        (object) ['id' => 2, 'titulo' => 'Contrato Mantenimiento Jardines', 'categoria' => 'contratos', 'fecha_publicacion' => date('Y-m-d H:i:s', strtotime('-3 days')), 'descargas' => 45, 'publicado_por' => 'Secretaría'],
+        (object) ['id' => 3, 'titulo' => 'Acta Pleno Ordinario Marzo', 'categoria' => 'actas', 'fecha_publicacion' => date('Y-m-d H:i:s', strtotime('-5 days')), 'descargas' => 123, 'publicado_por' => 'Secretaría'],
+        (object) ['id' => 4, 'titulo' => 'Subvenciones Deportivas 2024', 'categoria' => 'subvenciones', 'fecha_publicacion' => date('Y-m-d H:i:s', strtotime('-7 days')), 'descargas' => 67, 'publicado_por' => 'Deportes'],
+        (object) ['id' => 5, 'titulo' => 'Relación Puestos de Trabajo', 'categoria' => 'plantilla', 'fecha_publicacion' => date('Y-m-d H:i:s', strtotime('-10 days')), 'descargas' => 234, 'publicado_por' => 'RRHH'],
+    ];
+}
+
+// Preparar datos para gráficos
+$tendencia_labels = array_map(function($t) {
+    return date_i18n('D', strtotime($t->fecha));
+}, $tendencia_publicaciones_semana);
+$tendencia_data = array_map(function($t) { return (int) $t->total; }, $tendencia_publicaciones_semana);
+
+$estado_labels = array_map(function($e) {
+    $nombres = ['recibida' => 'Recibida', 'en_tramite' => 'En trámite', 'resuelta' => 'Resuelta', 'denegada' => 'Denegada'];
+    return $nombres[$e->estado] ?? ucfirst(str_replace('_', ' ', $e->estado));
+}, $estadisticas_estado_solicitudes);
+$estado_data = array_map(function($e) { return (int) $e->total; }, $estadisticas_estado_solicitudes);
+
+// Mapeo de estados a clases de badge
+$estado_badge_classes = [
+    'recibida' => 'dm-badge--warning',
+    'en_tramite' => 'dm-badge--info',
+    'resuelta' => 'dm-badge--success',
+    'denegada' => 'dm-badge--error',
+];
 ?>
 
-<div class="wrap">
-    <h1 class="wp-heading-inline">
-        <span class="dashicons dashicons-visibility" style="color: #2271b1;"></span>
-        <?php echo esc_html__('Dashboard de Transparencia', 'flavor-chat-ia'); ?>
-    </h1>
+<div class="dm-dashboard">
+    <?php
+    if (function_exists('flavor_dashboard_help')) {
+        flavor_dashboard_help('transparencia');
+    }
+    ?>
 
-    <hr class="wp-header-end">
-
-    <!-- Metricas principales -->
-    <div class="flavor-metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 20px 0;">
-
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Datos Publicados', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($total_datos_publicados); ?></h2>
-                </div>
-                <span class="dashicons dashicons-media-spreadsheet" style="font-size: 40px; color: #2271b1; opacity: 0.3;"></span>
-            </div>
-        </div>
-
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #f0b849; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Solicitudes Pendientes', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($solicitudes_pendientes); ?></h2>
-                    <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
-                        de <?php echo number_format($total_solicitudes); ?> totales
-                    </p>
-                </div>
-                <span class="dashicons dashicons-clock" style="font-size: 40px; color: #f0b849; opacity: 0.3;"></span>
-            </div>
-        </div>
-
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #00a32a; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Resueltas (Mes)', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;"><?php echo number_format($solicitudes_resueltas_mes); ?></h2>
-                    <p style="margin: 5px 0 0 0; color: #646970; font-size: 12px;">
-                        Tasa: <?php echo $tasa_resolucion; ?>%
-                    </p>
-                </div>
-                <span class="dashicons dashicons-yes-alt" style="font-size: 40px; color: #00a32a; opacity: 0.3;"></span>
-            </div>
-        </div>
-
-        <div class="flavor-metric-card" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <p style="margin: 0; color: #646970; font-size: 13px; text-transform: uppercase;"><?php echo esc_html__('Tiempo Promedio', 'flavor-chat-ia'); ?></p>
-                    <h2 style="margin: 10px 0 0 0; font-size: 32px; font-weight: 600;">
-                        <?php echo $tiempo_promedio_resolucion ? round($tiempo_promedio_resolucion) : '0'; ?> dias
-                    </h2>
-                </div>
-                <span class="dashicons dashicons-calendar-alt" style="font-size: 40px; color: #2271b1; opacity: 0.3;"></span>
-            </div>
-        </div>
-
+    <div class="dm-header">
+        <h1 class="dm-header__title">
+            <span class="dashicons dashicons-visibility"></span>
+            <?php esc_html_e('Dashboard de Transparencia', 'flavor-chat-ia'); ?>
+        </h1>
+        <?php if ($usando_demo): ?>
+            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
+        <?php endif; ?>
     </div>
 
-    <!-- Graficos -->
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin: 20px 0;">
-
-        <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 20px 0;">
-                <span class="dashicons dashicons-chart-line"></span>
-                <?php echo esc_html__('Publicaciones Ultimos 7 Dias', 'flavor-chat-ia'); ?>
-            </h3>
-            <canvas id="chart-tendencia-transparencia" style="max-height: 300px;"></canvas>
+    <?php if ($is_dashboard_viewer): ?>
+        <div class="dm-alert dm-alert--info">
+            <span class="dashicons dashicons-info"></span>
+            <p><?php esc_html_e('Vista resumida para gestor de grupos. La gestión de datos y solicitudes sigue reservada a administración.', 'flavor-chat-ia'); ?></p>
         </div>
+    <?php endif; ?>
 
-        <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 20px 0;">
-                <span class="dashicons dashicons-chart-pie"></span>
-                <?php echo esc_html__('Solicitudes por Estado', 'flavor-chat-ia'); ?>
-            </h3>
-            <canvas id="chart-estado-solicitudes" style="max-height: 300px;"></canvas>
+    <?php if ($solicitudes_pendientes > 10 && !$is_dashboard_viewer): ?>
+        <div class="dm-alert dm-alert--warning">
+            <span class="dashicons dashicons-warning"></span>
+            <div>
+                <?php printf(
+                    esc_html__('Hay %d solicitudes pendientes de tramitar. Se recomienda revisarlas pronto.', 'flavor-chat-ia'),
+                    $solicitudes_pendientes
+                ); ?>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-solicitudes')); ?>" class="dm-btn dm-btn--sm dm-btn--warning" style="margin-left: 10px;">
+                    <?php esc_html_e('Ver solicitudes', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
         </div>
+    <?php endif; ?>
 
+    <!-- Accesos Rápidos -->
+    <div class="dm-action-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+        <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-datos')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-media-spreadsheet dm-text-primary"></span>
+            <span><?php esc_html_e('Datos Públicos', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-solicitudes')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-clipboard dm-text-warning"></span>
+            <span><?php esc_html_e('Solicitudes', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-publicar')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-upload dm-text-success"></span>
+            <span><?php esc_html_e('Publicar', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(home_url('/transparencia/')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-external dm-text-purple"></span>
+            <span><?php esc_html_e('Ver Portal', 'flavor-chat-ia'); ?></span>
+        </a>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-informes')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-chart-bar dm-text-error"></span>
+            <span><?php esc_html_e('Informes', 'flavor-chat-ia'); ?></span>
+        </a>
+        <?php if (!$is_dashboard_viewer): ?>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=transparencia-configuracion')); ?>" class="dm-action-card">
+            <span class="dashicons dashicons-admin-settings dm-text-muted"></span>
+            <span><?php esc_html_e('Configuración', 'flavor-chat-ia'); ?></span>
+        </a>
+        <?php endif; ?>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-
-        <div class="flavor-chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 20px 0;">
-                <span class="dashicons dashicons-category"></span>
-                <?php echo esc_html__('Datos por Categoria', 'flavor-chat-ia'); ?>
-            </h3>
-            <canvas id="chart-categorias-datos" style="max-height: 300px;"></canvas>
+    <!-- Métricas principales -->
+    <div class="dm-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+        <div class="dm-stat-card dm-stat-card--primary">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($total_datos_publicados); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Datos Publicados', 'flavor-chat-ia'); ?></div>
+            <span class="dashicons dashicons-media-spreadsheet dm-stat-card__icon"></span>
         </div>
 
-        <div class="flavor-table-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin: 0 0 20px 0;">
-                <span class="dashicons dashicons-list-view"></span>
-                <?php echo esc_html__('Solicitudes Recientes', 'flavor-chat-ia'); ?>
-            </h3>
-            <?php if (!empty($solicitudes_recientes)): ?>
-                <table class="wp-list-table widefat">
-                    <tbody>
+        <div class="dm-stat-card dm-stat-card--warning">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($solicitudes_pendientes); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Solicitudes Pendientes', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta"><?php printf(esc_html__('de %s totales', 'flavor-chat-ia'), number_format_i18n($total_solicitudes)); ?></div>
+            <span class="dashicons dashicons-clock dm-stat-card__icon"></span>
+        </div>
+
+        <div class="dm-stat-card dm-stat-card--success">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($solicitudes_resueltas_mes); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Resueltas (Mes)', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta dm-text-success"><?php printf(esc_html__('Tasa: %s%%', 'flavor-chat-ia'), $tasa_resolucion); ?></div>
+            <span class="dashicons dashicons-yes-alt dm-stat-card__icon"></span>
+        </div>
+
+        <div class="dm-stat-card dm-stat-card--purple">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n(round($tiempo_promedio_resolucion, 1)); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Tiempo Promedio', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('días de resolución', 'flavor-chat-ia'); ?></div>
+            <span class="dashicons dashicons-calendar-alt dm-stat-card__icon"></span>
+        </div>
+
+        <div class="dm-stat-card dm-stat-card--error">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($descargas_documentos); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('documentos', 'flavor-chat-ia'); ?></div>
+            <span class="dashicons dashicons-download dm-stat-card__icon"></span>
+        </div>
+
+        <div class="dm-stat-card dm-stat-card--info">
+            <div class="dm-stat-card__value"><?php echo number_format_i18n($total_solicitudes); ?></div>
+            <div class="dm-stat-card__label"><?php esc_html_e('Total Solicitudes', 'flavor-chat-ia'); ?></div>
+            <div class="dm-stat-card__meta"><?php esc_html_e('históricas', 'flavor-chat-ia'); ?></div>
+            <span class="dashicons dashicons-clipboard dm-stat-card__icon"></span>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="dm-grid dm-grid--2">
+        <!-- Gráfico de tendencia -->
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-chart-line"></span>
+                    <?php esc_html_e('Publicaciones Últimos 7 Días', 'flavor-chat-ia'); ?>
+                </h3>
+            </div>
+            <div class="dm-card__chart">
+                <canvas id="chart-tendencia"></canvas>
+            </div>
+        </div>
+
+        <!-- Gráfico de estados -->
+        <div class="dm-card dm-card--chart">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-chart-pie"></span>
+                    <?php esc_html_e('Solicitudes por Estado', 'flavor-chat-ia'); ?>
+                </h3>
+            </div>
+            <div class="dm-card__chart">
+                <canvas id="chart-estados"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tablas -->
+    <div class="dm-grid dm-grid--2">
+        <!-- Solicitudes recientes -->
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-clipboard"></span>
+                    <?php esc_html_e('Solicitudes Recientes', 'flavor-chat-ia'); ?>
+                </h3>
+            </div>
+            <table class="dm-table">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e('Solicitud', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Solicitante', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($solicitudes_recientes)): ?>
                         <?php foreach ($solicitudes_recientes as $solicitud): ?>
+                            <?php $badge_class = $estado_badge_classes[$solicitud->estado] ?? 'dm-badge--secondary'; ?>
+                            <tr>
+                                <td>
+                                    <strong>#<?php echo esc_html($solicitud->id); ?></strong>
+                                    <div class="dm-table__subtitle"><?php echo esc_html(wp_trim_words($solicitud->titulo ?? '', 6)); ?></div>
+                                </td>
+                                <td class="dm-table__muted"><?php echo esc_html($solicitud->solicitante_nombre ?? __('Anónimo', 'flavor-chat-ia')); ?></td>
+                                <td>
+                                    <span class="dm-badge <?php echo esc_attr($badge_class); ?>">
+                                        <?php echo esc_html(ucfirst(str_replace('_', ' ', $solicitud->estado))); ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
                         <tr>
-                            <td>
-                                <strong>#<?php echo esc_html($solicitud->id); ?></strong><br>
-                                <small><?php echo esc_html(wp_trim_words($solicitud->titulo, 8)); ?></small>
-                            </td>
-                            <td style="text-align: right;">
-                                <?php
-                                $colores_estado_solicitud = [
-                                    'recibida' => '#f0b849',
-                                    'en_tramite' => '#2271b1',
-                                    'resuelta' => '#00a32a',
-                                    'denegada' => '#d63638'
-                                ];
-                                $color_estado = $colores_estado_solicitud[$solicitud->estado] ?? '#646970';
-                                ?>
-                                <span style="background: <?php echo $color_estado; ?>; color: white; padding: 3px 8px; border-radius: 3px; font-size: 11px;">
-                                    <?php echo esc_html(ucfirst(str_replace('_', ' ', $solicitud->estado))); ?>
-                                </span>
+                            <td colspan="3">
+                                <div class="dm-empty">
+                                    <span class="dashicons dashicons-clipboard"></span>
+                                    <p><?php esc_html_e('No hay solicitudes recientes', 'flavor-chat-ia'); ?></p>
+                                </div>
                             </td>
                         </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p style="color: #646970; text-align: center; padding: 20px 0;"><?php echo esc_html__('No hay solicitudes recientes', 'flavor-chat-ia'); ?></p>
-            <?php endif; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
 
+        <!-- Datos recientes -->
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-media-spreadsheet"></span>
+                    <?php esc_html_e('Últimas Publicaciones', 'flavor-chat-ia'); ?>
+                </h3>
+            </div>
+            <table class="dm-table">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e('Documento', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Categoría', 'flavor-chat-ia'); ?></th>
+                        <th><?php esc_html_e('Descargas', 'flavor-chat-ia'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($datos_recientes)): ?>
+                        <?php foreach ($datos_recientes as $dato): ?>
+                            <tr>
+                                <td>
+                                    <strong><?php echo esc_html(wp_trim_words($dato->titulo ?? '', 5)); ?></strong>
+                                    <div class="dm-table__subtitle"><?php echo esc_html(human_time_diff(strtotime($dato->fecha_publicacion), current_time('timestamp'))); ?></div>
+                                </td>
+                                <td>
+                                    <span class="dm-badge dm-badge--info">
+                                        <?php echo esc_html(ucfirst($dato->categoria ?? 'Otros')); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="dashicons dashicons-download dm-text-muted"></span>
+                                    <?php echo number_format_i18n($dato->descargas ?? 0); ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="3">
+                                <div class="dm-empty">
+                                    <span class="dashicons dashicons-media-spreadsheet"></span>
+                                    <p><?php esc_html_e('No hay datos publicados', 'flavor-chat-ia'); ?></p>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+jQuery(document).ready(function($) {
+    // Verificar que Chart.js esté disponible
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js no está cargado');
+        return;
+    }
 
-    // Grafico de tendencia de publicaciones
-    new Chart(document.getElementById('chart-tendencia-transparencia'), {
-        type: 'line',
-        data: {
-            labels: <?php echo json_encode(array_map(function($tendencia) { return date('d/m', strtotime($tendencia->fecha)); }, $tendencia_publicaciones_semana)); ?>,
-            datasets: [{
-                label: 'Publicaciones',
-                data: <?php echo json_encode(array_column($tendencia_publicaciones_semana, 'total')); ?>,
-                borderColor: 'rgb(34, 113, 177)',
-                backgroundColor: 'rgba(34, 113, 177, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+    // Obtener colores del tema
+    var rootStyles = getComputedStyle(document.documentElement);
+    var primaryColor = rootStyles.getPropertyValue('--dm-primary').trim() || '#3b82f6';
+    var successColor = rootStyles.getPropertyValue('--dm-success').trim() || '#22c55e';
+    var warningColor = rootStyles.getPropertyValue('--dm-warning').trim() || '#f59e0b';
+    var errorColor = rootStyles.getPropertyValue('--dm-error').trim() || '#ef4444';
+
+    // Gráfico de tendencia (Línea)
+    var ctxTendencia = document.getElementById('chart-tendencia');
+    if (ctxTendencia) {
+        new Chart(ctxTendencia.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: <?php echo wp_json_encode($tendencia_labels); ?>,
+                datasets: [{
+                    label: '<?php esc_attr_e('Publicaciones', 'flavor-chat-ia'); ?>',
+                    data: <?php echo wp_json_encode($tendencia_data); ?>,
+                    borderColor: primaryColor,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: primaryColor,
+                    pointRadius: 4,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
             }
-        }
-    });
+        });
+    }
 
-    // Grafico de estado de solicitudes
-    new Chart(document.getElementById('chart-estado-solicitudes'), {
-        type: 'doughnut',
-        data: {
-            labels: <?php echo json_encode(array_map(function($estadistica) { return ucfirst(str_replace('_', ' ', $estadistica->estado)); }, $estadisticas_estado_solicitudes)); ?>,
-            datasets: [{
-                data: <?php echo json_encode(array_column($estadisticas_estado_solicitudes, 'total')); ?>,
-                backgroundColor: ['rgba(240, 184, 73, 0.8)', 'rgba(34, 113, 177, 0.8)', 'rgba(0, 163, 42, 0.8)', 'rgba(214, 54, 56, 0.8)']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: { legend: { position: 'bottom' } }
-        }
-    });
-
-    // Grafico de categorias de datos
-    new Chart(document.getElementById('chart-categorias-datos'), {
-        type: 'bar',
-        data: {
-            labels: <?php echo json_encode(array_map(function($estadistica) { return ucfirst($estadistica->categoria); }, $estadisticas_categoria_datos)); ?>,
-            datasets: [{
-                label: 'Datos publicados',
-                data: <?php echo json_encode(array_column($estadisticas_categoria_datos, 'total')); ?>,
-                backgroundColor: 'rgba(34, 113, 177, 0.8)',
-                borderColor: 'rgb(34, 113, 177)',
-                borderWidth: 2
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { beginAtZero: true, ticks: { stepSize: 1 } }
+    // Gráfico de estados (Doughnut)
+    var ctxEstados = document.getElementById('chart-estados');
+    if (ctxEstados) {
+        new Chart(ctxEstados.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: <?php echo wp_json_encode($estado_labels); ?>,
+                datasets: [{
+                    data: <?php echo wp_json_encode($estado_data); ?>,
+                    backgroundColor: [warningColor, primaryColor, successColor, errorColor],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    }
+                },
+                cutout: '60%'
             }
-        }
-    });
-
+        });
+    }
 });
 </script>
-
-<style>
-.flavor-metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-    transition: all 0.3s ease;
-}
-</style>

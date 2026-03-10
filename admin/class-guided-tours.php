@@ -157,7 +157,7 @@ class Flavor_Guided_Tours {
             'descripcion' => __('Aprende a activar y configurar módulos especializados', 'flavor-chat-ia'),
             'icono' => 'dashicons-admin-plugins',
             'duracion' => '3 min',
-            'paginas' => ['flavor-platform_page_flavor-app-composer', 'toplevel_page_flavor-app-composer'],
+            'paginas' => ['flavor-platform_page_flavor-module-dashboards', 'toplevel_page_flavor-module-dashboards'],
             'video_url' => '',
             'pasos' => [
                 [
@@ -416,6 +416,222 @@ class Flavor_Guided_Tours {
                     'titulo' => __('Vincular con App', 'flavor-chat-ia'),
                     'contenido' => __('Conecta tu app móvil escaneando un código QR o ingresando el código de vinculación.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
+                ],
+            ],
+        ];
+
+        // =====================================================
+        // TOURS DEMO - Tejido Empresarial y Emprendimiento
+        // =====================================================
+
+        // Tour: Demo Completo (Admin)
+        $this->tours['demo_admin'] = [
+            'id' => 'demo_admin',
+            'titulo' => __('Demo - Panel Admin', 'flavor-chat-ia'),
+            'descripcion' => __('Recorrido completo por las funcionalidades de administracion del ecosistema', 'flavor-chat-ia'),
+            'icono' => 'dashicons-building',
+            'duracion' => '5 min',
+            'paginas' => ['toplevel_page_flavor-chat-ia', 'flavor-platform_page_flavor-dashboard', 'toplevel_page_flavor-dashboard'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '#adminmenu .toplevel_page_flavor-chat-ia, #adminmenu [href*="flavor"]',
+                    'titulo' => __('Menu Flavor Platform', 'flavor-chat-ia'),
+                    'contenido' => __('Todo el ecosistema se gestiona desde este menu. Configuracion, modulos, usuarios, contenido... cada seccion tiene su area dedicada.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.wrap h1, .flavor-dashboard-header',
+                    'titulo' => __('Panel de Control', 'flavor-chat-ia'),
+                    'contenido' => __('Vision general del ecosistema: usuarios activos, modulos habilitados, actividad reciente. Ideal para monitorear el uso de la plataforma.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.nav-tab-wrapper, .flavor-tabs',
+                    'titulo' => __('Configuracion por Pestanas', 'flavor-chat-ia'),
+                    'contenido' => __('Cada aspecto de la plataforma se configura en su propia pestana: modulos activos, diseno, permisos, notificaciones...', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.submit, #submit, .button-primary',
+                    'titulo' => __('Guardar Cambios', 'flavor-chat-ia'),
+                    'contenido' => __('Todos los cambios se guardan de forma segura. El sistema valida automaticamente que no haya errores.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+            ],
+        ];
+
+        // Tour: Marketplace para Emprendedores
+        $this->tours['demo_marketplace'] = [
+            'id' => 'demo_marketplace',
+            'titulo' => __('Marketplace Local', 'flavor-chat-ia'),
+            'descripcion' => __('Plataforma de compra-venta entre emprendedores y ciudadanos de la comunidad', 'flavor-chat-ia'),
+            'icono' => 'dashicons-store',
+            'duracion' => '4 min',
+            'paginas' => ['flavor-platform_page_flavor-marketplace', 'toplevel_page_marketplace'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.wrap h1, .marketplace-header',
+                    'titulo' => __('Marketplace Local', 'flavor-chat-ia'),
+                    'contenido' => __('Alternativa local a Wallapop/Amazon. Los emprendedores publican productos y servicios, los ciudadanos compran. El dinero se queda en el territorio.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.tablenav, .search-box, .marketplace-filters',
+                    'titulo' => __('Busqueda y Filtros', 'flavor-chat-ia'),
+                    'contenido' => __('Los usuarios pueden buscar por categoria, precio, ubicacion y tipo (venta, intercambio, regalo). Perfecto para encontrar proveedores locales.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.wp-list-table, .marketplace-items',
+                    'titulo' => __('Listado de Anuncios', 'flavor-chat-ia'),
+                    'contenido' => __('Cada anuncio muestra foto, precio, vendedor y estado. El admin puede moderar contenido inapropiado.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.page-title-action, .add-new',
+                    'titulo' => __('Publicar Anuncio', 'flavor-chat-ia'),
+                    'contenido' => __('Los emprendedores pueden publicar facilmente: foto, descripcion, precio y categoria. Sin comisiones, contacto directo.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+            ],
+        ];
+
+        // Tour: Banco de Tiempo
+        $this->tours['demo_banco_tiempo'] = [
+            'id' => 'demo_banco_tiempo',
+            'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'),
+            'descripcion' => __('Intercambio de servicios sin dinero: 1 hora dada = 1 hora recibida', 'flavor-chat-ia'),
+            'icono' => 'dashicons-clock',
+            'duracion' => '4 min',
+            'paginas' => ['flavor-platform_page_flavor-banco-tiempo', 'toplevel_page_banco-tiempo'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.wrap h1, .banco-tiempo-header',
+                    'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                    'contenido' => __('Sistema de intercambio de servicios sin dinero. Ideal para emprendedores que empiezan con poco capital. Un disenador hace un logo a cambio de asesoria fiscal.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.tablenav, .banco-tiempo-stats',
+                    'titulo' => __('Estadisticas del Banco', 'flavor-chat-ia'),
+                    'contenido' => __('Horas totales intercambiadas, usuarios activos, servicios mas demandados... Metricas utiles para reportar el impacto del programa.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.wp-list-table, .servicios-lista',
+                    'titulo' => __('Servicios Disponibles', 'flavor-chat-ia'),
+                    'contenido' => __('Cada usuario ofrece sus habilidades: diseno, reparaciones, formacion, cuidados, transporte... La comunidad decide el valor en horas.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+            ],
+        ];
+
+        // Tour: Grupos de Consumo
+        $this->tours['demo_grupos_consumo'] = [
+            'id' => 'demo_grupos_consumo',
+            'titulo' => __('Grupos de Consumo', 'flavor-chat-ia'),
+            'descripcion' => __('Pedidos colectivos a productores locales de la zona', 'flavor-chat-ia'),
+            'icono' => 'dashicons-carrot',
+            'duracion' => '3 min',
+            'paginas' => ['flavor-platform_page_flavor-grupos-consumo', 'toplevel_page_grupos-consumo'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.wrap h1, .grupos-consumo-header',
+                    'titulo' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                    'contenido' => __('Conecta productores agroalimentarios de la zona con consumidores. Pedidos colectivos semanales que reducen intermediarios y aseguran demanda al productor.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.wp-list-table, .grupos-lista',
+                    'titulo' => __('Grupos Activos', 'flavor-chat-ia'),
+                    'contenido' => __('Cada grupo tiene su ciclo (semanal, quincenal), punto de recogida (Plaza de los Fueros, por ejemplo) y productores asociados.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+            ],
+        ];
+
+        // Tour: Talleres y Formacion
+        $this->tours['demo_talleres'] = [
+            'id' => 'demo_talleres',
+            'titulo' => __('Formacion y Talleres', 'flavor-chat-ia'),
+            'descripcion' => __('Capacitacion entre emprendedores de la comarca', 'flavor-chat-ia'),
+            'icono' => 'dashicons-welcome-learn-more',
+            'duracion' => '3 min',
+            'paginas' => ['flavor-platform_page_flavor-talleres', 'flavor-platform_page_flavor-cursos', 'toplevel_page_talleres'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.wrap h1, .talleres-header',
+                    'titulo' => __('Talleres y Formacion', 'flavor-chat-ia'),
+                    'contenido' => __('Los propios emprendedores comparten conocimiento: marketing digital, contabilidad, oficios... Pueden cobrar en euros o en horas de banco de tiempo.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.wp-list-table, .talleres-lista',
+                    'titulo' => __('Catalogo de Formacion', 'flavor-chat-ia'),
+                    'contenido' => __('Fecha, lugar, formador, plazas disponibles. El sistema gestiona inscripciones, lista de espera y certificados digitales.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+            ],
+        ];
+
+        // Tour: Directorio de Emprendedores (Socios)
+        $this->tours['teder_directorio'] = [
+            'id' => 'teder_directorio',
+            'titulo' => __('Directorio de Emprendedores', 'flavor-chat-ia'),
+            'descripcion' => __('Mapa del tejido empresarial de Tierra Estella', 'flavor-chat-ia'),
+            'icono' => 'dashicons-groups',
+            'duracion' => '2 min',
+            'paginas' => ['flavor-platform_page_flavor-socios', 'toplevel_page_socios'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.wrap h1, .socios-header',
+                    'titulo' => __('Directorio de Emprendedores', 'flavor-chat-ia'),
+                    'contenido' => __('Cada emprendedor tiene su perfil completo: negocio, servicios, ubicacion, contacto. El ciudadano puede buscar "carpintero en Estella" y encontrarlo al instante.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.wp-list-table, .socios-lista',
+                    'titulo' => __('Listado de Emprendedores', 'flavor-chat-ia'),
+                    'contenido' => __('Filtrable por categoria, ubicacion, servicios. Perfecto para fomentar colaboraciones y que los negocios locales sean visibles online.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+            ],
+        ];
+
+        // Tour: Red Social / Networking
+        $this->tours['teder_networking'] = [
+            'id' => 'teder_networking',
+            'titulo' => __('Red Social de Emprendedores', 'flavor-chat-ia'),
+            'descripcion' => __('LinkedIn local para la comunidad emprendedora', 'flavor-chat-ia'),
+            'icono' => 'dashicons-networking',
+            'duracion' => '2 min',
+            'paginas' => ['flavor-platform_page_flavor-red-social', 'flavor-platform_page_flavor-comunidades', 'toplevel_page_red-social'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.wrap h1, .red-social-header',
+                    'titulo' => __('Red Social Interna', 'flavor-chat-ia'),
+                    'contenido' => __('Espacio para que los emprendedores conecten, compartan oportunidades y colaboren. Como un LinkedIn pero local y cercano.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.wp-list-table, .comunidades-lista, .grupos-lista',
+                    'titulo' => __('Grupos Tematicos', 'flavor-chat-ia'),
+                    'contenido' => __('Grupos por sector (hosteleria, agricultura, servicios...) o por interes (sostenibilidad, digitalizacion...). Facilita el networking natural.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
                 ],
             ],
         ];

@@ -37,7 +37,10 @@ class Flavor_Database_Installer {
         // Añadir campos WhatsApp a tabla de mensajes
         self::upgrade_whatsapp_fields();
 
-        update_option('flavor_db_version', '1.8.0');
+        // Añadir campos E2E (cifrado extremo a extremo) a tablas de mensajes
+        self::upgrade_e2e_fields();
+
+        update_option('flavor_db_version', '2.1.0');
     }
 
     /**
@@ -54,6 +57,9 @@ class Flavor_Database_Installer {
             fecha_inicio datetime NOT NULL,
             fecha_fin datetime,
             lugar varchar(255),
+            ubicacion varchar(255) DEFAULT NULL,
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
             capacidad int(11) DEFAULT 0,
             precio decimal(10,2) DEFAULT 0,
             imagen varchar(500),
@@ -216,17 +222,23 @@ class Flavor_Database_Installer {
         // Foros - Temas (legacy)
         $tables[] = "CREATE TABLE {$prefix}foros_temas (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            foro_id bigint(20) UNSIGNED DEFAULT NULL,
             titulo varchar(255) NOT NULL,
             contenido text,
             autor_id bigint(20) UNSIGNED NOT NULL,
             respuestas int(11) DEFAULT 0,
+            respuestas_count int(11) DEFAULT 0,
             vistas int(11) DEFAULT 0,
             estado varchar(50) DEFAULT 'abierto',
+            ultima_actividad datetime DEFAULT NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
+            KEY foro_id (foro_id),
             KEY autor_id (autor_id),
-            KEY estado (estado)
+            KEY estado (estado),
+            KEY ultima_actividad (ultima_actividad),
+            KEY respuestas_count (respuestas_count)
         ) $charset_collate;";
 
         // Foros - Hilos (nueva estructura)
@@ -246,10 +258,13 @@ class Flavor_Database_Installer {
             estado varchar(50) DEFAULT 'abierto',
             fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
             fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             UNIQUE KEY slug (slug),
             KEY foro_id (foro_id),
             KEY autor_id (autor_id),
+            KEY created_at (created_at),
             KEY estado (estado),
             KEY fecha_creacion (fecha_creacion),
             KEY es_fijado (es_fijado)
@@ -427,9 +442,11 @@ class Flavor_Database_Installer {
             colectivo_id bigint(20) UNSIGNED NOT NULL,
             usuario_id bigint(20) UNSIGNED NOT NULL,
             rol varchar(50) DEFAULT 'miembro',
+            estado varchar(50) DEFAULT 'activo',
             fecha_union datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
-            UNIQUE KEY colectivo_usuario (colectivo_id, usuario_id)
+            UNIQUE KEY colectivo_usuario (colectivo_id, usuario_id),
+            KEY estado (estado)
         ) $charset_collate;";
 
         // Socios
@@ -451,18 +468,27 @@ class Flavor_Database_Installer {
         $tables[] = "CREATE TABLE {$prefix}incidencias (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             usuario_id bigint(20) UNSIGNED NOT NULL,
+            reportado_por bigint(20) UNSIGNED DEFAULT NULL,
             numero_incidencia varchar(50) NOT NULL,
             titulo varchar(255) NOT NULL,
             descripcion text,
             ubicacion varchar(255),
+            latitud decimal(10,8) DEFAULT NULL,
+            longitud decimal(11,8) DEFAULT NULL,
             categoria varchar(100),
+            prioridad varchar(20) DEFAULT 'normal',
+            asignado_a bigint(20) UNSIGNED DEFAULT NULL,
             estado varchar(50) DEFAULT 'pendiente',
+            fecha_resolucion datetime DEFAULT NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             UNIQUE KEY numero_incidencia (numero_incidencia),
             KEY usuario_id (usuario_id),
+            KEY reportado_por (reportado_por),
             KEY estado (estado),
-            KEY categoria (categoria)
+            KEY categoria (categoria),
+            KEY prioridad (prioridad)
         ) $charset_collate;";
 
         // Trámites
@@ -478,6 +504,81 @@ class Flavor_Database_Installer {
             KEY usuario_id (usuario_id),
             KEY tipo (tipo),
             KEY estado (estado)
+        ) $charset_collate;";
+
+        // Expedientes (sistema de trámites avanzado)
+        $tables[] = "CREATE TABLE {$prefix}expedientes (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            numero_expediente varchar(50) DEFAULT NULL,
+            tipo_tramite_id bigint(20) UNSIGNED DEFAULT NULL,
+            solicitante_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            estado varchar(50) DEFAULT 'pendiente',
+            estado_actual varchar(50) DEFAULT 'pendiente',
+            prioridad varchar(20) DEFAULT 'normal',
+            observaciones text DEFAULT NULL,
+            datos longtext DEFAULT NULL,
+            fecha_solicitud datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_inicio datetime DEFAULT NULL,
+            fecha_limite datetime DEFAULT NULL,
+            fecha_resolucion datetime DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY numero_expediente (numero_expediente),
+            KEY tipo_tramite_id (tipo_tramite_id),
+            KEY solicitante_id (solicitante_id),
+            KEY estado (estado),
+            KEY estado_actual (estado_actual),
+            KEY prioridad (prioridad)
+        ) $charset_collate;";
+
+        // Tipos de trámite
+        $tables[] = "CREATE TABLE {$prefix}tipos_tramite (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            slug varchar(100) DEFAULT NULL,
+            descripcion text DEFAULT NULL,
+            icono varchar(50) DEFAULT 'dashicons-clipboard',
+            color varchar(20) DEFAULT '#2271b1',
+            requisitos text DEFAULT NULL,
+            plazo_dias int(11) DEFAULT 30,
+            activo tinyint(1) DEFAULT 1,
+            orden int(11) DEFAULT 0,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY activo (activo),
+            KEY orden (orden)
+        ) $charset_collate;";
+
+        // Historial de expedientes
+        $tables[] = "CREATE TABLE {$prefix}expedientes_historial (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            expediente_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            accion varchar(100) NOT NULL,
+            estado_anterior varchar(50) DEFAULT NULL,
+            estado_nuevo varchar(50) DEFAULT NULL,
+            observaciones text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY expediente_id (expediente_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
+        // Documentos de expedientes
+        $tables[] = "CREATE TABLE {$prefix}expedientes_documentos (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            expediente_id bigint(20) UNSIGNED NOT NULL,
+            nombre varchar(255) NOT NULL,
+            archivo_url varchar(500) DEFAULT NULL,
+            tipo varchar(50) DEFAULT NULL,
+            tamaño bigint(20) DEFAULT NULL,
+            subido_por bigint(20) UNSIGNED DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY expediente_id (expediente_id)
         ) $charset_collate;";
 
         // Participación procesos
@@ -528,13 +629,19 @@ class Flavor_Database_Installer {
         $tables[] = "CREATE TABLE {$prefix}biblioteca_prestamos (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             usuario_id bigint(20) UNSIGNED NOT NULL,
+            libro_id bigint(20) UNSIGNED DEFAULT NULL,
             libro_titulo varchar(255) NOT NULL,
             fecha_prestamo date NOT NULL,
-            fecha_devolucion date,
+            fecha_devolucion_prevista date DEFAULT NULL,
+            fecha_devolucion date DEFAULT NULL,
             estado varchar(50) DEFAULT 'activo',
+            notas text DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY usuario_id (usuario_id),
-            KEY estado (estado)
+            KEY libro_id (libro_id),
+            KEY estado (estado),
+            KEY fecha_devolucion_prevista (fecha_devolucion_prevista)
         ) $charset_collate;";
 
         // Bares y restaurantes
@@ -552,16 +659,48 @@ class Flavor_Database_Installer {
             KEY estado (estado)
         ) $charset_collate;";
 
+        // Podcast series
+        $tables[] = "CREATE TABLE {$prefix}podcast_series (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            slug varchar(255) DEFAULT NULL,
+            descripcion text,
+            imagen_url varchar(500) DEFAULT NULL,
+            autor_id bigint(20) UNSIGNED DEFAULT NULL,
+            categoria varchar(100) DEFAULT NULL,
+            idioma varchar(10) DEFAULT 'es',
+            episodios_count int(11) DEFAULT 0,
+            suscriptores_count int(11) DEFAULT 0,
+            estado varchar(50) DEFAULT 'activo',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY slug (slug),
+            KEY autor_id (autor_id),
+            KEY categoria (categoria),
+            KEY estado (estado)
+        ) $charset_collate;";
+
         // Podcast episodios
         $tables[] = "CREATE TABLE {$prefix}podcast_episodios (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            serie_id bigint(20) UNSIGNED DEFAULT NULL,
+            programa_id bigint(20) UNSIGNED DEFAULT NULL,
             titulo varchar(255) NOT NULL,
             descripcion text,
             duracion_segundos int(11) DEFAULT 0,
             url_audio varchar(500),
+            imagen_url varchar(500) DEFAULT NULL,
+            numero_episodio int(11) DEFAULT NULL,
+            temporada int(11) DEFAULT 1,
+            reproducciones int(11) DEFAULT 0,
+            descargas int(11) DEFAULT 0,
             estado varchar(50) DEFAULT 'publicado',
             fecha_publicacion datetime DEFAULT CURRENT_TIMESTAMP,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
+            KEY serie_id (serie_id),
+            KEY programa_id (programa_id),
             KEY estado (estado),
             KEY fecha_publicacion (fecha_publicacion)
         ) $charset_collate;";
@@ -652,17 +791,33 @@ class Flavor_Database_Installer {
         // Facturas
         $tables[] = "CREATE TABLE {$prefix}facturas (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            usuario_id bigint(20) UNSIGNED NOT NULL,
             numero_factura varchar(50) NOT NULL,
-            concepto varchar(255),
-            total decimal(10,2) NOT NULL,
-            estado varchar(50) DEFAULT 'pendiente',
-            fecha date NOT NULL,
+            serie varchar(10) DEFAULT 'F',
+            numero_serie int(11) DEFAULT NULL,
+            año int(4) DEFAULT NULL,
+            usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            cliente_id bigint(20) UNSIGNED DEFAULT NULL,
+            cliente_nombre varchar(255) DEFAULT NULL,
+            cliente_nif varchar(50) DEFAULT NULL,
+            cliente_direccion text DEFAULT NULL,
+            cliente_email varchar(255) DEFAULT NULL,
+            concepto varchar(255) DEFAULT NULL,
+            base_imponible decimal(12,2) DEFAULT 0.00,
+            total_iva decimal(12,2) DEFAULT 0.00,
+            total decimal(12,2) NOT NULL DEFAULT 0.00,
+            estado enum('borrador','emitida','parcial','pagada','vencida','cancelada','pendiente') DEFAULT 'pendiente',
+            fecha_emision date DEFAULT NULL,
+            fecha_vencimiento date DEFAULT NULL,
+            metodo_pago varchar(50) DEFAULT NULL,
+            observaciones text DEFAULT NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY usuario_id (usuario_id),
+            KEY cliente_id (cliente_id),
             UNIQUE KEY numero_factura (numero_factura),
-            KEY estado (estado)
+            KEY estado (estado),
+            KEY fecha_emision (fecha_emision)
         ) $charset_collate;";
 
         // Bicicletas
@@ -1579,6 +1734,168 @@ class Flavor_Database_Installer {
             KEY tipo_interaccion (tipo_interaccion)
         ) $charset_collate;";
 
+        // Registro de publicaciones federadas recibidas
+        $tables[] = "CREATE TABLE {$prefix}social_federacion (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            publicacion_id bigint(20) UNSIGNED NOT NULL,
+            nodo_origen varchar(500) NOT NULL,
+            nodo_id bigint(20) UNSIGNED DEFAULT NULL,
+            publicacion_origen_id bigint(20) UNSIGNED DEFAULT NULL,
+            fecha_recibido datetime DEFAULT CURRENT_TIMESTAMP,
+            estado enum('recibido','procesado','rechazado') DEFAULT 'recibido',
+            PRIMARY KEY (id),
+            KEY publicacion_id (publicacion_id),
+            KEY nodo_origen (nodo_origen(191)),
+            KEY nodo_id (nodo_id),
+            KEY fecha_recibido (fecha_recibido)
+        ) $charset_collate;";
+
+        // =====================================================
+        // TABLAS PARA INTEGRACIONES POST-MÓDULOS
+        // =====================================================
+
+        // Relaciones posts WP con eventos
+        $tables[] = "CREATE TABLE {$prefix}eventos_posts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            evento_id bigint(20) UNSIGNED NOT NULL,
+            post_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('noticia','recurso','relacionado') DEFAULT 'relacionado',
+            orden int(11) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY evento_post (evento_id, post_id),
+            KEY evento_id (evento_id),
+            KEY post_id (post_id)
+        ) $charset_collate;";
+
+        // Relaciones posts WP con cursos
+        $tables[] = "CREATE TABLE {$prefix}cursos_posts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            curso_id bigint(20) UNSIGNED NOT NULL,
+            post_id bigint(20) UNSIGNED NOT NULL,
+            leccion_id bigint(20) UNSIGNED DEFAULT NULL,
+            tipo enum('material','lectura','recurso') DEFAULT 'recurso',
+            orden int(11) DEFAULT 0,
+            obligatorio tinyint(1) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY curso_post (curso_id, post_id),
+            KEY curso_id (curso_id),
+            KEY post_id (post_id),
+            KEY leccion_id (leccion_id)
+        ) $charset_collate;";
+
+        // Relaciones posts WP con talleres
+        $tables[] = "CREATE TABLE {$prefix}talleres_posts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            taller_id bigint(20) UNSIGNED NOT NULL,
+            post_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('material','recurso','resultado') DEFAULT 'recurso',
+            orden int(11) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY taller_post (taller_id, post_id),
+            KEY taller_id (taller_id),
+            KEY post_id (post_id)
+        ) $charset_collate;";
+
+        // Relaciones posts WP con campañas
+        $tables[] = "CREATE TABLE {$prefix}campanias_posts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            campania_id bigint(20) UNSIGNED NOT NULL,
+            post_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('noticia','apoyo','resultado') DEFAULT 'apoyo',
+            destacado tinyint(1) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY campania_post (campania_id, post_id),
+            KEY campania_id (campania_id),
+            KEY post_id (post_id)
+        ) $charset_collate;";
+
+        // Relaciones posts WP con comunidades
+        $tables[] = "CREATE TABLE {$prefix}comunidades_posts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            comunidad_id bigint(20) UNSIGNED NOT NULL,
+            post_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            mensaje text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY comunidad_post (comunidad_id, post_id),
+            KEY comunidad_id (comunidad_id),
+            KEY post_id (post_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Relaciones posts WP con colectivos
+        $tables[] = "CREATE TABLE {$prefix}colectivos_posts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            colectivo_id bigint(20) UNSIGNED NOT NULL,
+            post_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            tipo enum('compartido','creado','referencia') DEFAULT 'compartido',
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY colectivo_post (colectivo_id, post_id),
+            KEY colectivo_id (colectivo_id),
+            KEY post_id (post_id)
+        ) $charset_collate;";
+
+        // Contenidos de newsletters
+        $tables[] = "CREATE TABLE {$prefix}email_newsletter_posts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            newsletter_id bigint(20) UNSIGNED NOT NULL,
+            post_id bigint(20) UNSIGNED NOT NULL,
+            titulo_personalizado varchar(255) DEFAULT NULL,
+            extracto_personalizado text DEFAULT NULL,
+            orden int(11) DEFAULT 0,
+            incluido tinyint(1) DEFAULT 1,
+            fecha_agregado datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY newsletter_post (newsletter_id, post_id),
+            KEY newsletter_id (newsletter_id),
+            KEY post_id (post_id)
+        ) $charset_collate;";
+
+        // Recursos de biblioteca desde posts
+        $tables[] = "CREATE TABLE {$prefix}biblioteca_posts (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            categoria_id bigint(20) UNSIGNED DEFAULT NULL,
+            post_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            titulo varchar(255) DEFAULT NULL,
+            descripcion text DEFAULT NULL,
+            tipo enum('articulo','guia','tutorial','referencia') DEFAULT 'articulo',
+            destacado tinyint(1) DEFAULT 0,
+            vistas int(11) DEFAULT 0,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY post_id (post_id),
+            KEY categoria_id (categoria_id),
+            KEY usuario_id (usuario_id),
+            KEY tipo (tipo)
+        ) $charset_collate;";
+
+        // Historial de integraciones realizadas
+        $tables[] = "CREATE TABLE {$prefix}posts_integraciones_log (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            post_id bigint(20) UNSIGNED NOT NULL,
+            modulo varchar(50) NOT NULL,
+            elemento_id bigint(20) UNSIGNED DEFAULT NULL,
+            elemento_tipo varchar(50) DEFAULT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            resultado_id bigint(20) UNSIGNED DEFAULT NULL,
+            estado enum('exito','error','pendiente') DEFAULT 'exito',
+            mensaje text DEFAULT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY post_id (post_id),
+            KEY modulo (modulo),
+            KEY usuario_id (usuario_id),
+            KEY fecha (fecha)
+        ) $charset_collate;";
+
         // =====================================================
         // TABLAS PARA ECONOMÍA DEL DON
         // =====================================================
@@ -1877,13 +2194,21 @@ class Flavor_Database_Installer {
         $tables[] = "CREATE TABLE {$prefix}banco_tiempo_intercambios (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             transaccion_id bigint(20) UNSIGNED NOT NULL,
+            ofertante_id bigint(20) UNSIGNED DEFAULT NULL,
+            solicitante_id bigint(20) UNSIGNED DEFAULT NULL,
+            servicio_id bigint(20) UNSIGNED DEFAULT NULL,
             fecha_programada datetime NOT NULL,
             lugar varchar(255) DEFAULT NULL,
             notas text DEFAULT NULL,
+            estado varchar(50) DEFAULT 'pendiente',
             recordatorio_enviado tinyint(1) DEFAULT 0,
             fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY transaccion_id (transaccion_id),
+            KEY ofertante_id (ofertante_id),
+            KEY solicitante_id (solicitante_id),
+            KEY estado (estado),
             KEY fecha_programada (fecha_programada)
         ) $charset_collate;";
 
@@ -4766,6 +5091,160 @@ class Flavor_Database_Installer {
             KEY usuario_id (usuario_id)
         ) $charset_collate;";
 
+        // =========================================================================
+        // TABLAS E2E (Cifrado extremo a extremo - Signal Protocol)
+        // =========================================================================
+
+        // Claves de identidad por usuario/dispositivo
+        $tables[] = "CREATE TABLE {$prefix}e2e_identity_keys (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            dispositivo_id varchar(64) NOT NULL,
+            public_key text NOT NULL,
+            private_key_encrypted text NOT NULL,
+            key_fingerprint varchar(128) DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_dispositivo (usuario_id, dispositivo_id),
+            KEY usuario_id (usuario_id),
+            KEY key_fingerprint (key_fingerprint)
+        ) $charset_collate;";
+
+        // Signed PreKeys (rotan cada 30 días)
+        $tables[] = "CREATE TABLE {$prefix}e2e_signed_prekeys (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            dispositivo_id varchar(64) NOT NULL,
+            prekey_id int(11) UNSIGNED NOT NULL,
+            public_key text NOT NULL,
+            signature text NOT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            expires_at datetime NOT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_dispositivo_prekey (usuario_id, dispositivo_id, prekey_id),
+            KEY usuario_id (usuario_id),
+            KEY expires_at (expires_at)
+        ) $charset_collate;";
+
+        // One-time PreKeys (se consumen al usarse)
+        $tables[] = "CREATE TABLE {$prefix}e2e_one_time_prekeys (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            dispositivo_id varchar(64) NOT NULL,
+            prekey_id int(11) UNSIGNED NOT NULL,
+            public_key text NOT NULL,
+            used tinyint(1) DEFAULT 0,
+            used_at datetime DEFAULT NULL,
+            used_by_usuario_id bigint(20) UNSIGNED DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_dispositivo_prekey (usuario_id, dispositivo_id, prekey_id),
+            KEY usuario_id (usuario_id),
+            KEY used (used)
+        ) $charset_collate;";
+
+        // Estado de sesiones Double Ratchet
+        $tables[] = "CREATE TABLE {$prefix}e2e_sessions (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            session_id varchar(128) NOT NULL,
+            usuario_local_id bigint(20) UNSIGNED NOT NULL,
+            dispositivo_local_id varchar(64) NOT NULL,
+            usuario_remoto_id bigint(20) UNSIGNED NOT NULL,
+            dispositivo_remoto_id varchar(64) NOT NULL,
+            state_encrypted text NOT NULL,
+            root_key_hash varchar(64) DEFAULT NULL,
+            message_number int(11) UNSIGNED DEFAULT 0,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY session_id (session_id),
+            KEY usuario_local_id (usuario_local_id),
+            KEY usuario_remoto_id (usuario_remoto_id),
+            KEY local_remoto (usuario_local_id, dispositivo_local_id, usuario_remoto_id, dispositivo_remoto_id)
+        ) $charset_collate;";
+
+        // Dispositivos registrados
+        $tables[] = "CREATE TABLE {$prefix}e2e_devices (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            dispositivo_id varchar(64) NOT NULL,
+            nombre varchar(255) DEFAULT NULL,
+            tipo enum('web','android','ios','desktop') DEFAULT 'web',
+            user_agent text DEFAULT NULL,
+            is_primary tinyint(1) DEFAULT 0,
+            revoked tinyint(1) DEFAULT 0,
+            revoked_at datetime DEFAULT NULL,
+            last_seen datetime DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_dispositivo (usuario_id, dispositivo_id),
+            KEY usuario_id (usuario_id),
+            KEY revoked (revoked),
+            KEY last_seen (last_seen)
+        ) $charset_collate;";
+
+        // Sender Keys para grupos
+        $tables[] = "CREATE TABLE {$prefix}e2e_sender_keys (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            grupo_id bigint(20) UNSIGNED NOT NULL,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            dispositivo_id varchar(64) NOT NULL,
+            chain_key_encrypted text NOT NULL,
+            iteration int(11) UNSIGNED DEFAULT 0,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY grupo_usuario_dispositivo (grupo_id, usuario_id, dispositivo_id),
+            KEY grupo_id (grupo_id),
+            KEY usuario_id (usuario_id)
+        ) $charset_collate;";
+
+        // Distribución de Sender Keys
+        $tables[] = "CREATE TABLE {$prefix}e2e_sender_key_distribution (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            grupo_id bigint(20) UNSIGNED NOT NULL,
+            propietario_id bigint(20) UNSIGNED NOT NULL,
+            propietario_dispositivo_id varchar(64) NOT NULL,
+            receptor_id bigint(20) UNSIGNED NOT NULL,
+            receptor_dispositivo_id varchar(64) NOT NULL,
+            distribuido tinyint(1) DEFAULT 0,
+            distribuido_at datetime DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY distribucion_unica (grupo_id, propietario_id, propietario_dispositivo_id, receptor_id, receptor_dispositivo_id),
+            KEY grupo_id (grupo_id),
+            KEY receptor_id (receptor_id)
+        ) $charset_collate;";
+
+        // Identidades verificadas
+        $tables[] = "CREATE TABLE {$prefix}e2e_verified_identities (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_verificador_id bigint(20) UNSIGNED NOT NULL,
+            usuario_verificado_id bigint(20) UNSIGNED NOT NULL,
+            dispositivo_verificado_id varchar(64) NOT NULL,
+            fingerprint varchar(128) NOT NULL,
+            verified_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY verificacion_unica (usuario_verificador_id, usuario_verificado_id, dispositivo_verificado_id),
+            KEY usuario_verificador_id (usuario_verificador_id),
+            KEY usuario_verificado_id (usuario_verificado_id)
+        ) $charset_collate;";
+
+        // Backups cifrados de claves
+        $tables[] = "CREATE TABLE {$prefix}e2e_key_backups (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) UNSIGNED NOT NULL,
+            backup_key_hash varchar(128) NOT NULL,
+            encrypted_bundle longtext NOT NULL,
+            version int(11) UNSIGNED DEFAULT 1,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY backup_key_hash (backup_key_hash)
+        ) $charset_collate;";
+
         return $tables;
     }
 
@@ -5206,6 +5685,30 @@ class Flavor_Database_Installer {
                 continue;
             }
 
+            // Verificar que todas las columnas del índice existen
+            $columnas_array = array_map('trim', explode(',', $indice['columnas']));
+            $todas_columnas_existen = true;
+
+            foreach ($columnas_array as $columna) {
+                $columna_existe = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+                     WHERE table_schema = DATABASE()
+                     AND table_name = %s
+                     AND column_name = %s",
+                    $tabla_completa,
+                    $columna
+                ));
+                if (!$columna_existe) {
+                    $todas_columnas_existen = false;
+                    break;
+                }
+            }
+
+            if (!$todas_columnas_existen) {
+                // Las columnas no existen, saltamos este índice silenciosamente
+                continue;
+            }
+
             // Verificar si el índice ya existe
             $indice_existe = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(1) FROM INFORMATION_SCHEMA.STATISTICS
@@ -5256,9 +5759,23 @@ class Flavor_Database_Installer {
     }
 
     /**
-     * Crea el nodo local si no existe
+     * Programa la creación del nodo local para un hook más tardío
+     * donde todas las funciones de WordPress están disponibles
      */
     private static function maybe_create_local_node() {
+        // Diferir a 'init' porque durante 'plugins_loaded' las funciones REST
+        // y get_bloginfo() pueden no estar completamente disponibles
+        if (!did_action('init')) {
+            add_action('init', [__CLASS__, 'create_local_node_deferred'], 20);
+            return;
+        }
+        self::create_local_node_deferred();
+    }
+
+    /**
+     * Crea el nodo local si no existe (ejecución diferida)
+     */
+    public static function create_local_node_deferred() {
         global $wpdb;
         $prefix = $wpdb->prefix . 'flavor_';
 
@@ -5277,14 +5794,24 @@ class Flavor_Database_Installer {
             return;
         }
 
-        // Crear nodo local
+        // Crear nodo local - ahora es seguro usar rest_url() porque estamos en 'init' o después
         $site_name = get_bloginfo('name') ?: 'Mi Comunidad';
+
+        // Construir API URL de forma segura
+        if (function_exists('rest_url')) {
+            $api_url = rest_url('flavor-integration/v1/');
+        } else {
+            // Fallback manual si rest_url no está disponible
+            $rest_prefix = defined('REST_API_VERSION') ? rest_get_url_prefix() : 'wp-json';
+            $api_url = trailingslashit(home_url()) . trailingslashit($rest_prefix) . 'flavor-integration/v1/';
+        }
+
         $wpdb->insert("{$prefix}network_nodes", [
             'nombre' => $site_name,
             'slug' => sanitize_title($site_name),
             'descripcion' => get_bloginfo('description'),
             'site_url' => home_url(),
-            'api_url' => rest_url('flavor-integration/v1/'),
+            'api_url' => $api_url,
             'logo_url' => get_site_icon_url(),
             'es_nodo_local' => 1,
             'activo' => 1
@@ -5638,6 +6165,123 @@ class Flavor_Database_Installer {
 
             if (!$indice_existe) {
                 $wpdb->query($sql);
+            }
+        }
+    }
+
+    /**
+     * Añade campos E2E (cifrado extremo a extremo) a las tablas de mensajes existentes
+     *
+     * Campos añadidos:
+     * - cifrado: 1 si el mensaje está cifrado E2E
+     * - ciphertext: Texto cifrado del mensaje
+     * - e2e_version: Versión del protocolo E2E usado
+     * - ratchet_header: Header del ratchet para descifrado (JSON)
+     * - sender_key_id: ID del Sender Key usado (para grupos)
+     * - sender_key_iteration: Iteración del Sender Key (para grupos)
+     * - legacy_plaintext: 1 si es un mensaje anterior a E2E (sin cifrar)
+     */
+    public static function upgrade_e2e_fields() {
+        global $wpdb;
+
+        // Tablas de mensajes a actualizar
+        $tablas_mensajes = [
+            $wpdb->prefix . 'flavor_chat_mensajes',
+            $wpdb->prefix . 'flavor_chat_grupos_mensajes',
+        ];
+
+        foreach ($tablas_mensajes as $tabla_mensajes) {
+            self::add_e2e_fields_to_table($tabla_mensajes);
+        }
+    }
+
+    /**
+     * Añade campos E2E a una tabla específica de mensajes
+     *
+     * @param string $tabla_mensajes Nombre completo de la tabla
+     */
+    private static function add_e2e_fields_to_table($tabla_mensajes) {
+        global $wpdb;
+
+        // Verificar si la tabla existe
+        $tabla_existe = $wpdb->get_var(
+            $wpdb->prepare("SHOW TABLES LIKE %s", $tabla_mensajes)
+        );
+
+        if (!$tabla_existe) {
+            return;
+        }
+
+        // Obtener columnas existentes
+        $columnas_existentes = $wpdb->get_col("DESCRIBE {$tabla_mensajes}", 0);
+
+        // Determinar columna de referencia para AFTER
+        $columna_referencia = 'fecha_creacion';
+        if (in_array('link_previews', $columnas_existentes)) {
+            $columna_referencia = 'link_previews';
+        }
+
+        // Campos E2E a añadir con sus definiciones SQL
+        $campos_e2e = [
+            'cifrado' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN cifrado tinyint(1) DEFAULT 0 AFTER {$columna_referencia}",
+            'ciphertext' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN ciphertext text DEFAULT NULL AFTER cifrado",
+            'e2e_version' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN e2e_version smallint UNSIGNED DEFAULT NULL AFTER ciphertext",
+            'ratchet_header' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN ratchet_header text DEFAULT NULL AFTER e2e_version",
+            'sender_key_id' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN sender_key_id bigint(20) UNSIGNED DEFAULT NULL AFTER ratchet_header",
+            'sender_key_iteration' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN sender_key_iteration int(11) UNSIGNED DEFAULT NULL AFTER sender_key_id",
+            'legacy_plaintext' => "ALTER TABLE {$tabla_mensajes} ADD COLUMN legacy_plaintext tinyint(1) DEFAULT 0 AFTER sender_key_iteration",
+        ];
+
+        foreach ($campos_e2e as $campo => $sql) {
+            if (!in_array($campo, $columnas_existentes)) {
+                $wpdb->query($sql);
+            }
+        }
+
+        // Añadir índices para campos E2E
+        $indices_e2e = [
+            'idx_cifrado' => "ALTER TABLE {$tabla_mensajes} ADD INDEX idx_cifrado (cifrado)",
+            'idx_legacy_plaintext' => "ALTER TABLE {$tabla_mensajes} ADD INDEX idx_legacy_plaintext (legacy_plaintext)",
+        ];
+
+        foreach ($indices_e2e as $nombre_indice => $sql) {
+            $indice_existe = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(1) FROM INFORMATION_SCHEMA.STATISTICS
+                 WHERE table_schema = DATABASE()
+                 AND table_name = %s
+                 AND index_name = %s",
+                $tabla_mensajes,
+                $nombre_indice
+            ));
+
+            if (!$indice_existe) {
+                $wpdb->query($sql);
+            }
+        }
+    }
+
+    /**
+     * Marca los mensajes existentes como legacy_plaintext
+     * Ejecutar una sola vez durante la migración a E2E
+     */
+    public static function mark_existing_messages_as_legacy() {
+        global $wpdb;
+
+        $tablas_mensajes = [
+            $wpdb->prefix . 'flavor_chat_mensajes',
+            $wpdb->prefix . 'flavor_chat_grupos_mensajes',
+        ];
+
+        foreach ($tablas_mensajes as $tabla) {
+            $tabla_existe = $wpdb->get_var(
+                $wpdb->prepare("SHOW TABLES LIKE %s", $tabla)
+            );
+
+            if ($tabla_existe) {
+                // Marcar como legacy todos los mensajes que no están cifrados
+                $wpdb->query(
+                    "UPDATE {$tabla} SET legacy_plaintext = 1 WHERE cifrado = 0 AND legacy_plaintext = 0"
+                );
             }
         }
     }

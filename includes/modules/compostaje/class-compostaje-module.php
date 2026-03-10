@@ -68,6 +68,10 @@ class Flavor_Chat_Compostaje_Module extends Flavor_Chat_Module_Base {
         $this->name = 'Compostaje Comunitario'; // Translation loaded on init
         $this->description = 'Sistema completo de compostaje comunitario con gamificacion, turnos y estadisticas.'; // Translation loaded on init
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['regeneracion'];
+        $this->gailu_contribuye_a = ['autonomia', 'impacto'];
+
         parent::__construct();
     }
 

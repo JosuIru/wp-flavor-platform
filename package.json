@@ -1,14 +1,23 @@
 {
   "name": "flavor-chat-ia",
-  "version": "3.0.0",
+  "version": "3.3.0",
   "private": true,
   "scripts": {
     "build": "bash build.sh",
     "build:js": "bash build.sh js",
-    "build:css": "bash build.sh css"
+    "build:css": "bash build.sh css",
+    "css:bundle": "postcss assets/css/flavor-core.css -o assets/css/dist/flavor-core.bundle.css",
+    "css:minify": "postcss assets/css/dist/flavor-core.bundle.css -o assets/css/dist/flavor-core.min.css --env production",
+    "css:build": "npm run css:bundle && npm run css:minify",
+    "css:watch": "postcss assets/css/flavor-core.css -o assets/css/dist/flavor-core.bundle.css --watch"
   },
   "devDependencies": {
     "terser": "^5.31.0",
-    "cssnano-cli": "^1.0.5"
+    "cssnano-cli": "^1.0.5",
+    "postcss": "^8.4.35",
+    "postcss-cli": "^11.0.0",
+    "postcss-import": "^16.0.1",
+    "cssnano": "^6.0.3",
+    "autoprefixer": "^10.4.17"
   }
 }

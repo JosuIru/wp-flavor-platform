@@ -201,7 +201,7 @@ class Flavor_Marketplace_Dashboard_Tab {
                                 </p>
                             </div>
                             <div class="flavor-card-footer">
-                                <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/anuncio/' . $anuncio->id . '/')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/detalle/?anuncio_id=' . $anuncio->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                                 </a>
                                 <a href="<?php echo esc_url(add_query_arg(['tab' => 'publicar', 'editar' => $anuncio->id], home_url('/mi-portal/marketplace/'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
@@ -268,7 +268,7 @@ class Flavor_Marketplace_Dashboard_Tab {
                                 <?php endif; ?>
                             </div>
                             <div class="flavor-card-footer">
-                                <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/anuncio/' . $anuncio->id . '/')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/detalle/?anuncio_id=' . $anuncio->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>

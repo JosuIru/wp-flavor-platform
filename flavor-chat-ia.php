@@ -265,6 +265,19 @@ final class Flavor_Chat_IA {
 
         // Cargar estilos comunes de admin (modales, etc.)
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_common_styles']);
+
+        // Cargar generador de datos de demo
+        add_action('plugins_loaded', [$this, 'init_demo_data_generator'], 20);
+    }
+
+    /**
+     * Inicializa el generador de datos de demostración
+     * Solo se carga en el área de administración
+     */
+    public function init_demo_data_generator() {
+        if (is_admin()) {
+            require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-demo-data-generator.php';
+        }
     }
 
     /**

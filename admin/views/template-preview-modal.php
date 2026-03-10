@@ -65,6 +65,82 @@ if (!defined('ABSPATH')) {
                 <!-- Contenido del Preview -->
                 <div class="flavor-template-preview">
 
+                    <template x-if="esPreviewSugerencia()">
+                        <section class="flavor-template-section flavor-template-section--suggested">
+                            <div class="flavor-template-suggestion-note">
+                                <span class="dashicons dashicons-star-filled"></span>
+                                <div>
+                                    <strong><?php _e('Sugerencia automática', 'flavor-chat-ia'); ?></strong>
+                                    <p class="description"><?php _e('Esta plantilla encaja con los módulos, contextos y capacidades que ya tienes activos.', 'flavor-chat-ia'); ?></p>
+                                </div>
+                            </div>
+                        </section>
+                    </template>
+
+                    <template x-if="plantillaSeleccionadaData?.ecosistema">
+                        <section class="flavor-template-section">
+                            <h3>
+                                <span class="dashicons dashicons-networking"></span>
+                                <?php _e('Lectura ecosistemica', 'flavor-chat-ia'); ?>
+                            </h3>
+
+                            <template x-if="plantillaSeleccionadaData.ecosistema.roles && plantillaSeleccionadaData.ecosistema.roles.length > 0">
+                                <div class="flavor-template-ecosystem-block">
+                                    <div class="flavor-template-ecosystem-label"><?php _e('Capas del perfil', 'flavor-chat-ia'); ?></div>
+                                    <div class="flavor-template-ecosystem-tags">
+                                        <template x-for="rol in plantillaSeleccionadaData.ecosistema.roles" :key="rol">
+                                            <span class="flavor-template-ecosystem-tag" x-text="rol"></span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="plantillaSeleccionadaData.ecosistema.capacidades && plantillaSeleccionadaData.ecosistema.capacidades.length > 0">
+                                <div class="flavor-template-ecosystem-block">
+                                    <div class="flavor-template-ecosystem-label"><?php _e('Capacidades activadas', 'flavor-chat-ia'); ?></div>
+                                    <div class="flavor-template-ecosystem-tags">
+                                        <template x-for="capacidad in plantillaSeleccionadaData.ecosistema.capacidades" :key="capacidad">
+                                            <span class="flavor-template-ecosystem-tag is-capability" x-text="capacidad"></span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="plantillaSeleccionadaData.ecosistema.contextos && plantillaSeleccionadaData.ecosistema.contextos.length > 0">
+                                <div class="flavor-template-ecosystem-block">
+                                    <div class="flavor-template-ecosystem-label"><?php _e('Contextos prioritarios', 'flavor-chat-ia'); ?></div>
+                                    <div class="flavor-template-ecosystem-tags">
+                                        <template x-for="contexto in plantillaSeleccionadaData.ecosistema.contextos" :key="contexto">
+                                            <span class="flavor-template-ecosystem-tag" x-text="contexto"></span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="plantillaSeleccionadaData.ecosistema.recomendados && plantillaSeleccionadaData.ecosistema.recomendados.length > 0">
+                                <div class="flavor-template-ecosystem-block">
+                                    <div class="flavor-template-ecosystem-label"><?php _e('Capas recomendadas', 'flavor-chat-ia'); ?></div>
+                                    <div class="flavor-template-ecosystem-tags">
+                                        <template x-for="recomendado in plantillaSeleccionadaData.ecosistema.recomendados" :key="recomendado">
+                                            <span class="flavor-template-ecosystem-tag is-recommended" x-text="recomendado"></span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="plantillaSeleccionadaData.ecosistema.recomendados_contexto && plantillaSeleccionadaData.ecosistema.recomendados_contexto.length > 0">
+                                <div class="flavor-template-ecosystem-block">
+                                    <div class="flavor-template-ecosystem-label"><?php _e('Siguientes capas por contexto', 'flavor-chat-ia'); ?></div>
+                                    <div class="flavor-template-ecosystem-tags">
+                                        <template x-for="recomendadoContexto in plantillaSeleccionadaData.ecosistema.recomendados_contexto" :key="recomendadoContexto">
+                                            <span class="flavor-template-ecosystem-tag is-recommended" x-text="recomendadoContexto"></span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </section>
+                    </template>
+
                     <!-- Seccion de Modulos -->
                     <section class="flavor-template-section">
                         <h3>
@@ -180,7 +256,11 @@ if (!defined('ABSPATH')) {
                             class="button button-primary button-hero"
                             @click="activarPlantilla(plantillaSeleccionadaId)"
                             :disabled="activandoPlantilla">
-                        <span x-show="!activandoPlantilla">
+                        <span x-show="!activandoPlantilla && esPreviewSugerencia()">
+                            <span class="dashicons dashicons-star-filled"></span>
+                            <?php _e('Activar sugerencia', 'flavor-chat-ia'); ?>
+                        </span>
+                        <span x-show="!activandoPlantilla && !esPreviewSugerencia()">
                             <span class="dashicons dashicons-yes-alt"></span>
                             <?php _e('Activar Plantilla', 'flavor-chat-ia'); ?>
                         </span>

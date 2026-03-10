@@ -86,6 +86,11 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * @var Flavor_Radio_Media_Manager
+     */
+    private $media_manager;
+
+    /**
      * {@inheritdoc}
      */
     public function init() {
@@ -94,6 +99,8 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         $this->registrar_en_panel_unificado();
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
+        // Cargar Media Manager
+        $this->inicializar_media_manager();
 
         add_action('init', [$this, 'maybe_create_tables']);
 
@@ -118,6 +125,22 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_flavor_radio_podcasts', [$this, 'ajax_podcasts']);
         add_action('wp_ajax_nopriv_flavor_radio_podcasts', [$this, 'ajax_podcasts']);
 
+        // Nuevas funcionalidades v2.0
+        add_action('wp_ajax_flavor_radio_get_metadata', [$this, 'ajax_get_stream_metadata']);
+        add_action('wp_ajax_nopriv_flavor_radio_get_metadata', [$this, 'ajax_get_stream_metadata']);
+        add_action('wp_ajax_flavor_radio_toggle_favorito', [$this, 'ajax_toggle_favorito']);
+        add_action('wp_ajax_flavor_radio_mis_favoritos', [$this, 'ajax_mis_favoritos']);
+        add_action('wp_ajax_flavor_radio_toggle_notificacion', [$this, 'ajax_toggle_notificacion']);
+        add_action('wp_ajax_flavor_radio_chat_reaccion', [$this, 'ajax_chat_reaccion']);
+        add_action('wp_ajax_flavor_radio_calendario_eventos', [$this, 'ajax_calendario_eventos']);
+        add_action('wp_ajax_nopriv_flavor_radio_calendario_eventos', [$this, 'ajax_calendario_eventos']);
+        add_action('wp_ajax_flavor_radio_eventos_dia', [$this, 'ajax_eventos_dia']);
+        add_action('wp_ajax_nopriv_flavor_radio_eventos_dia', [$this, 'ajax_eventos_dia']);
+        add_action('wp_ajax_flavor_radio_podcast_transcripcion', [$this, 'ajax_podcast_transcripcion']);
+        add_action('wp_ajax_nopriv_flavor_radio_podcast_transcripcion', [$this, 'ajax_podcast_transcripcion']);
+        add_action('wp_ajax_flavor_radio_locutor_perfil', [$this, 'ajax_locutor_perfil']);
+        add_action('wp_ajax_nopriv_flavor_radio_locutor_perfil', [$this, 'ajax_locutor_perfil']);
+
         // Admin AJAX
         add_action('wp_ajax_flavor_radio_admin_aprobar_dedicatoria', [$this, 'ajax_admin_aprobar_dedicatoria']);
         add_action('wp_ajax_flavor_radio_admin_emitir_dedicatoria', [$this, 'ajax_admin_emitir_dedicatoria']);
@@ -136,6 +159,9 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
 
         // Admin pages
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
+
+        // Registrar settings
+        add_action('admin_init', [$this, 'registrar_settings']);
 
         // Dashboard tab (básico)
         add_filter('flavor_user_dashboard_tabs', [$this, 'add_dashboard_tab']);
@@ -460,6 +486,73 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             'methods' => 'GET',
             'callback' => [$this, 'rest_contar_oyentes'],
             'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // ========== NUEVOS ENDPOINTS v2.0 ==========
+
+        // Metadatos del stream (canción actual)
+        register_rest_route($namespace, '/radio/metadata', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_get_metadata'],
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // Canales disponibles
+        register_rest_route($namespace, '/radio/canales', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_canales'],
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // Favoritos del usuario
+        register_rest_route($namespace, '/radio/favoritos', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_mis_favoritos'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+
+        // Toggle favorito
+        register_rest_route($namespace, '/radio/favorito/(?P<programa_id>\d+)', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_toggle_favorito'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+
+        // Calendario de eventos
+        register_rest_route($namespace, '/radio/calendario', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_calendario'],
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // Perfil de locutor
+        register_rest_route($namespace, '/radio/locutor/(?P<id>\d+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_locutor_perfil'],
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // Transcripción de podcast
+        register_rest_route($namespace, '/radio/podcast/(?P<id>\d+)/transcripcion', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_podcast_transcripcion'],
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // Reacciones de chat
+        register_rest_route($namespace, '/radio/chat/mensaje/(?P<mensaje_id>\d+)/reaccion', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_chat_reaccion'],
+            'permission_callback' => [$this, 'check_user_logged_in'],
+        ]);
+
+        // Analytics (admin)
+        register_rest_route($namespace, '/radio/analytics', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_analytics'],
+            'permission_callback' => function() {
+                return current_user_can('manage_options');
+            },
         ]);
     }
 
@@ -1535,9 +1628,13 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
             'autoplay' => 'false',
             'mostrar_programa' => 'true',
             'mostrar_oyentes' => 'true',
+            'modo' => 'auto', // auto, stream, local
         ], $atts);
 
         $settings = $this->get_settings();
+
+        // Determinar si usar playlist local (cuando no hay URL de stream)
+        $usar_local = empty($settings['url_stream']) || $atts['modo'] === 'local';
 
         ob_start();
         $this->enqueue_frontend_assets();
@@ -1545,7 +1642,8 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         <div class="flavor-radio-player <?php echo esc_attr('estilo-' . $atts['estilo']); ?>"
              data-autoplay="<?php echo esc_attr($atts['autoplay']); ?>"
              data-stream="<?php echo esc_attr($settings['url_stream']); ?>"
-             data-stream-hd="<?php echo esc_attr($settings['url_stream_hd']); ?>">
+             data-stream-hd="<?php echo esc_attr($settings['url_stream_hd']); ?>"
+             data-use-local="<?php echo $usar_local ? 'true' : 'false'; ?>">
 
             <div class="radio-player-visual">
                 <?php if ($settings['logo_url']): ?>
@@ -2963,10 +3061,291 @@ KNOWLEDGE;
      */
     public function registrar_paginas_admin() {
         $capability = 'manage_options';
+        $capability_locutor = 'edit_posts';
 
-        // Páginas ocultas (sin menú visible en el sidebar)
-        add_submenu_page(null, __('Emisiones', 'flavor-chat-ia'), __('Emisiones', 'flavor-chat-ia'), $capability, 'flavor-radio-emisiones', [$this, 'render_pagina_emisiones']);
-        add_submenu_page(null, __('Programas', 'flavor-chat-ia'), __('Programas', 'flavor-chat-ia'), $capability, 'flavor-radio-programas', [$this, 'render_pagina_programas']);
+        // Menú principal Radio (si se quiere menú separado, de lo contrario usar el panel unificado)
+        add_menu_page(
+            __('Radio Comunitaria', 'flavor-chat-ia'),
+            __('Radio', 'flavor-chat-ia'),
+            $capability,
+            'flavor-radio',
+            [$this, 'render_pagina_dashboard'],
+            'dashicons-microphone',
+            30
+        );
+
+        // Submenús visibles
+        add_submenu_page(
+            'flavor-radio',
+            __('Dashboard', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'flavor-radio',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        add_submenu_page(
+            'flavor-radio',
+            __('Gestor de Medios', 'flavor-chat-ia'),
+            __('Biblioteca de Audio', 'flavor-chat-ia'),
+            $capability,
+            'flavor-radio-media',
+            [$this, 'render_pagina_media_manager']
+        );
+
+        add_submenu_page(
+            'flavor-radio',
+            __('Panel del Locutor', 'flavor-chat-ia'),
+            __('Mi Panel de Locutor', 'flavor-chat-ia'),
+            $capability_locutor,
+            'flavor-radio-locutor',
+            [$this, 'render_pagina_locutor_panel']
+        );
+
+        add_submenu_page(
+            'flavor-radio',
+            __('Programas', 'flavor-chat-ia'),
+            __('Programas', 'flavor-chat-ia'),
+            $capability,
+            'flavor-radio-programas',
+            [$this, 'render_pagina_programas']
+        );
+
+        add_submenu_page(
+            'flavor-radio',
+            __('Emisiones', 'flavor-chat-ia'),
+            __('Emisiones', 'flavor-chat-ia'),
+            $capability,
+            'flavor-radio-emisiones',
+            [$this, 'render_pagina_emisiones']
+        );
+
+        add_submenu_page(
+            'flavor-radio',
+            __('Configuración', 'flavor-chat-ia'),
+            __('Configuración', 'flavor-chat-ia'),
+            $capability,
+            'flavor-radio-settings',
+            [$this, 'render_pagina_settings']
+        );
+    }
+
+    /**
+     * Renderiza la página del gestor de medios
+     */
+    public function render_pagina_media_manager() {
+        $archivo = dirname(__FILE__) . '/views/media-manager.php';
+        if (file_exists($archivo)) {
+            include $archivo;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Gestor de Medios', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('El archivo de vista no existe.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página del panel del locutor
+     */
+    public function render_pagina_locutor_panel() {
+        $archivo = dirname(__FILE__) . '/views/locutor-panel.php';
+        if (file_exists($archivo)) {
+            include $archivo;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Panel del Locutor', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('El archivo de vista no existe.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_pagina_settings() {
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('Configuración de Radio', 'flavor-chat-ia'); ?></h1>
+            <form method="post" action="options.php" x-data="radioSettings()">
+                <?php settings_fields('flavor_radio_settings'); ?>
+
+                <h2 class="title"><?php esc_html_e('Configuración del Stream', 'flavor-chat-ia'); ?></h2>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('URL del Stream Principal', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="url" name="flavor_radio[url_stream]"
+                                   value="<?php echo esc_attr($this->get_setting('url_stream')); ?>"
+                                   class="regular-text"
+                                   placeholder="https://stream.example.com:8000/radio.mp3">
+                            <p class="description"><?php esc_html_e('URL de tu servidor Shoutcast/Icecast. Déjalo vacío para usar la biblioteca de audio local.', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('URL del Stream HD', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="url" name="flavor_radio[url_stream_hd]"
+                                   value="<?php echo esc_attr($this->get_setting('url_stream_hd')); ?>"
+                                   class="regular-text"
+                                   placeholder="https://stream.example.com:8000/radio-hd.mp3">
+                            <p class="description"><?php esc_html_e('Stream de alta calidad (opcional).', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Nombre de la Radio', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="text" name="flavor_radio[nombre_radio]"
+                                   value="<?php echo esc_attr($this->get_setting('nombre_radio')); ?>"
+                                   class="regular-text">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Slogan', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="text" name="flavor_radio[slogan]"
+                                   value="<?php echo esc_attr($this->get_setting('slogan')); ?>"
+                                   class="regular-text">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Frecuencia FM', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="text" name="flavor_radio[frecuencia_fm]"
+                                   value="<?php echo esc_attr($this->get_setting('frecuencia_fm')); ?>"
+                                   class="small-text" placeholder="107.5">
+                            <span>FM</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <h2 class="title"><?php esc_html_e('Opciones de Participación', 'flavor-chat-ia'); ?></h2>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Permitir locutores de la comunidad', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="flavor_radio[permite_locutores_comunidad]"
+                                       value="1" <?php checked($this->get_setting('permite_locutores_comunidad'), true); ?>>
+                                <?php esc_html_e('Los usuarios pueden proponer y conducir programas', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Chat en vivo', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="flavor_radio[chat_en_vivo]"
+                                       value="1" <?php checked($this->get_setting('chat_en_vivo'), true); ?>>
+                                <?php esc_html_e('Permitir chat durante las emisiones', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Dedicatorias', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="flavor_radio[permite_dedicatorias]"
+                                       value="1" <?php checked($this->get_setting('permite_dedicatorias'), true); ?>>
+                                <?php esc_html_e('Permitir que los oyentes envíen dedicatorias', 'flavor-chat-ia'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Máximo dedicatorias por día', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="number" name="flavor_radio[max_dedicatorias_dia]"
+                                   value="<?php echo esc_attr($this->get_setting('max_dedicatorias_dia')); ?>"
+                                   class="small-text" min="1" max="20">
+                        </td>
+                    </tr>
+                </table>
+
+                <h2 class="title"><?php esc_html_e('Servidor de Streaming (para locutores)', 'flavor-chat-ia'); ?></h2>
+                <p class="description"><?php esc_html_e('Configura estos datos si tienes un servidor Shoutcast/Icecast donde los locutores pueden transmitir.', 'flavor-chat-ia'); ?></p>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Host del servidor', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="text" name="flavor_radio[server_host]"
+                                   value="<?php echo esc_attr($this->get_setting('server_host', '')); ?>"
+                                   class="regular-text" placeholder="stream.turadio.com">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Puerto', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="number" name="flavor_radio[server_port]"
+                                   value="<?php echo esc_attr($this->get_setting('server_port', '8000')); ?>"
+                                   class="small-text">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Contraseña del stream', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="password" name="flavor_radio[server_password]"
+                                   value="<?php echo esc_attr($this->get_setting('server_password', '')); ?>"
+                                   class="regular-text">
+                            <p class="description"><?php esc_html_e('Se mostrará a los locutores en su panel.', 'flavor-chat-ia'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Mount point', 'flavor-chat-ia'); ?></th>
+                        <td>
+                            <input type="text" name="flavor_radio[server_mount]"
+                                   value="<?php echo esc_attr($this->get_setting('server_mount', '/live')); ?>"
+                                   class="regular-text" placeholder="/live">
+                        </td>
+                    </tr>
+                </table>
+
+                <?php submit_button(); ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Registra las opciones de configuración
+     */
+    public function registrar_settings() {
+        register_setting('flavor_radio_settings', 'flavor_radio', [
+            'sanitize_callback' => [$this, 'sanitize_radio_settings'],
+            'default' => $this->get_default_settings(),
+        ]);
+    }
+
+    /**
+     * Sanitiza las opciones de configuración
+     */
+    public function sanitize_radio_settings($input) {
+        $sanitized = [];
+
+        // URLs
+        $sanitized['url_stream'] = esc_url_raw($input['url_stream'] ?? '');
+        $sanitized['url_stream_hd'] = esc_url_raw($input['url_stream_hd'] ?? '');
+
+        // Textos
+        $sanitized['nombre_radio'] = sanitize_text_field($input['nombre_radio'] ?? '');
+        $sanitized['slogan'] = sanitize_text_field($input['slogan'] ?? '');
+        $sanitized['frecuencia_fm'] = sanitize_text_field($input['frecuencia_fm'] ?? '');
+
+        // Checkboxes
+        $sanitized['permite_locutores_comunidad'] = !empty($input['permite_locutores_comunidad']);
+        $sanitized['chat_en_vivo'] = !empty($input['chat_en_vivo']);
+        $sanitized['permite_dedicatorias'] = !empty($input['permite_dedicatorias']);
+
+        // Números
+        $sanitized['max_dedicatorias_dia'] = absint($input['max_dedicatorias_dia'] ?? 3);
+
+        // Configuración del servidor de streaming
+        $sanitized['server_host'] = sanitize_text_field($input['server_host'] ?? '');
+        $sanitized['server_port'] = absint($input['server_port'] ?? 8000);
+        $sanitized['server_password'] = $input['server_password'] ?? ''; // No sanitizar contraseñas
+        $sanitized['server_mount'] = sanitize_text_field($input['server_mount'] ?? '/live');
+
+        // Guardar en las opciones del módulo
+        $settings = get_option('flavor_chat_ia_settings', []);
+        $settings['radio'] = $sanitized;
+        update_option('flavor_chat_ia_settings', $settings);
+
+        return $sanitized;
     }
 
     /**
@@ -2980,5 +3359,1048 @@ KNOWLEDGE;
                 Flavor_Radio_Dashboard_Tab::get_instance();
             }
         }
+    }
+
+    /**
+     * Inicializa el gestor de medios
+     */
+    private function inicializar_media_manager() {
+        $archivo = dirname(__FILE__) . '/class-radio-media-manager.php';
+        if (file_exists($archivo)) {
+            require_once $archivo;
+            if (class_exists('Flavor_Radio_Media_Manager')) {
+                $this->media_manager = Flavor_Radio_Media_Manager::get_instance();
+            }
+        }
+    }
+
+    /**
+     * Obtiene la instancia del Media Manager
+     */
+    public function get_media_manager() {
+        return $this->media_manager;
+    }
+
+    // =========================================================================
+    // NUEVAS FUNCIONALIDADES v2.0
+    // =========================================================================
+
+    /**
+     * Crea tablas adicionales para nuevas funcionalidades
+     */
+    public function create_additional_tables() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+
+        // Tabla de favoritos
+        $tabla_favoritos = $wpdb->prefix . 'flavor_radio_favoritos';
+        $sql_favoritos = "CREATE TABLE IF NOT EXISTS $tabla_favoritos (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) unsigned NOT NULL,
+            programa_id bigint(20) unsigned NOT NULL,
+            notificaciones tinyint(1) DEFAULT 1,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_programa (usuario_id, programa_id),
+            KEY programa_id (programa_id)
+        ) $charset_collate;";
+
+        // Tabla de reacciones de chat
+        $tabla_reacciones = $wpdb->prefix . 'flavor_radio_chat_reacciones';
+        $sql_reacciones = "CREATE TABLE IF NOT EXISTS $tabla_reacciones (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            mensaje_id bigint(20) unsigned NOT NULL,
+            usuario_id bigint(20) unsigned NOT NULL,
+            emoji varchar(10) NOT NULL,
+            fecha datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY usuario_mensaje_emoji (usuario_id, mensaje_id, emoji),
+            KEY mensaje_id (mensaje_id)
+        ) $charset_collate;";
+
+        // Tabla de eventos especiales
+        $tabla_eventos = $wpdb->prefix . 'flavor_radio_eventos';
+        $sql_eventos = "CREATE TABLE IF NOT EXISTS $tabla_eventos (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            descripcion text,
+            fecha date NOT NULL,
+            hora_inicio time NOT NULL,
+            hora_fin time NOT NULL,
+            programa_id bigint(20) unsigned DEFAULT NULL,
+            tipo enum('especial','maraton','invitado','aniversario','otro') DEFAULT 'especial',
+            imagen_url varchar(500) DEFAULT NULL,
+            notificar tinyint(1) DEFAULT 1,
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY fecha (fecha),
+            KEY programa_id (programa_id)
+        ) $charset_collate;";
+
+        // Tabla de transcripciones
+        $tabla_transcripciones = $wpdb->prefix . 'flavor_radio_transcripciones';
+        $sql_transcripciones = "CREATE TABLE IF NOT EXISTS $tabla_transcripciones (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            podcast_id bigint(20) unsigned NOT NULL,
+            contenido longtext NOT NULL,
+            segmentos JSON DEFAULT NULL,
+            idioma varchar(10) DEFAULT 'es',
+            estado enum('pendiente','procesando','completado','error') DEFAULT 'pendiente',
+            fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY podcast_id (podcast_id)
+        ) $charset_collate;";
+
+        // Tabla de canales
+        $tabla_canales = $wpdb->prefix . 'flavor_radio_canales';
+        $sql_canales = "CREATE TABLE IF NOT EXISTS $tabla_canales (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            nombre varchar(255) NOT NULL,
+            descripcion text,
+            url_stream varchar(500) NOT NULL,
+            url_stream_hd varchar(500) DEFAULT NULL,
+            logo_url varchar(500) DEFAULT NULL,
+            color varchar(7) DEFAULT '#8b5cf6',
+            orden int(11) DEFAULT 0,
+            activo tinyint(1) DEFAULT 1,
+            PRIMARY KEY (id),
+            KEY activo (activo)
+        ) $charset_collate;";
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta($sql_favoritos);
+        dbDelta($sql_reacciones);
+        dbDelta($sql_eventos);
+        dbDelta($sql_transcripciones);
+        dbDelta($sql_canales);
+    }
+
+    /**
+     * AJAX: Obtener metadatos del stream (Shoutcast/Icecast)
+     */
+    public function ajax_get_stream_metadata() {
+        $settings = $this->get_settings();
+        $stream_url = $settings['url_stream'] ?? '';
+
+        if (empty($stream_url)) {
+            wp_send_json_error(['message' => 'No hay stream configurado']);
+        }
+
+        // Intentar obtener metadatos de Shoutcast/Icecast
+        $metadata = $this->fetch_stream_metadata($stream_url);
+
+        wp_send_json_success($metadata);
+    }
+
+    /**
+     * Obtiene metadatos del servidor de streaming
+     */
+    private function fetch_stream_metadata($stream_url) {
+        $metadata = [
+            'title' => '',
+            'artist' => '',
+            'album' => '',
+            'listeners' => 0,
+        ];
+
+        // Parsear URL para obtener host y puerto
+        $parsed = parse_url($stream_url);
+        $host = $parsed['host'] ?? '';
+        $port = $parsed['port'] ?? 8000;
+
+        if (empty($host)) {
+            return $metadata;
+        }
+
+        // Intentar Shoutcast v2 (JSON)
+        $shoutcast_url = "http://{$host}:{$port}/stats?json=1";
+        $response = wp_remote_get($shoutcast_url, [
+            'timeout' => 5,
+            'headers' => ['User-Agent' => 'Mozilla/5.0'],
+        ]);
+
+        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if ($data) {
+                $song = $data['songtitle'] ?? $data['title'] ?? '';
+                $parts = explode(' - ', $song, 2);
+
+                $metadata['artist'] = trim($parts[0] ?? '');
+                $metadata['title'] = trim($parts[1] ?? $song);
+                $metadata['listeners'] = $data['currentlisteners'] ?? $data['listeners'] ?? 0;
+
+                return $metadata;
+            }
+        }
+
+        // Intentar Icecast (JSON)
+        $icecast_url = "http://{$host}:{$port}/status-json.xsl";
+        $response = wp_remote_get($icecast_url, [
+            'timeout' => 5,
+            'headers' => ['User-Agent' => 'Mozilla/5.0'],
+        ]);
+
+        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body, true);
+
+            if ($data && isset($data['icestats']['source'])) {
+                $source = $data['icestats']['source'];
+                if (is_array($source) && isset($source[0])) {
+                    $source = $source[0];
+                }
+
+                $song = $source['title'] ?? '';
+                $parts = explode(' - ', $song, 2);
+
+                $metadata['artist'] = trim($source['artist'] ?? $parts[0] ?? '');
+                $metadata['title'] = trim($parts[1] ?? $song);
+                $metadata['listeners'] = $source['listeners'] ?? 0;
+            }
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * AJAX: Toggle favorito de programa
+     */
+    public function ajax_toggle_favorito() {
+        check_ajax_referer('flavor_radio_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_radio_favoritos';
+        $usuario_id = get_current_user_id();
+        $programa_id = absint($_POST['programa_id'] ?? 0);
+
+        if (!$programa_id) {
+            wp_send_json_error(['message' => __('Programa no válido', 'flavor-chat-ia')]);
+        }
+
+        // Crear tabla si no existe
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            $this->create_additional_tables();
+        }
+
+        // Verificar si ya es favorito
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla WHERE usuario_id = %d AND programa_id = %d",
+            $usuario_id, $programa_id
+        ));
+
+        if ($existe) {
+            $wpdb->delete($tabla, ['id' => $existe]);
+            wp_send_json_success(['favorito' => false, 'message' => __('Eliminado de favoritos', 'flavor-chat-ia')]);
+        } else {
+            $wpdb->insert($tabla, [
+                'usuario_id' => $usuario_id,
+                'programa_id' => $programa_id,
+                'fecha' => current_time('mysql'),
+            ]);
+            wp_send_json_success(['favorito' => true, 'message' => __('Añadido a favoritos', 'flavor-chat-ia')]);
+        }
+    }
+
+    /**
+     * AJAX: Obtener mis programas favoritos
+     */
+    public function ajax_mis_favoritos() {
+        if (!is_user_logged_in()) {
+            wp_send_json_success(['favoritos' => []]);
+        }
+
+        global $wpdb;
+        $tabla_favoritos = $wpdb->prefix . 'flavor_radio_favoritos';
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+        $usuario_id = get_current_user_id();
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_favoritos)) {
+            wp_send_json_success(['favoritos' => []]);
+        }
+
+        $favoritos = $wpdb->get_results($wpdb->prepare(
+            "SELECT f.programa_id, f.notificaciones, p.nombre, p.imagen_url, p.categoria
+             FROM $tabla_favoritos f
+             LEFT JOIN $tabla_programas p ON f.programa_id = p.id
+             WHERE f.usuario_id = %d
+             ORDER BY f.fecha DESC",
+            $usuario_id
+        ));
+
+        $ids = array_map(function($f) { return $f->programa_id; }, $favoritos);
+
+        wp_send_json_success([
+            'favoritos' => $ids,
+            'programas' => $favoritos,
+        ]);
+    }
+
+    /**
+     * AJAX: Toggle notificaciones de programa
+     */
+    public function ajax_toggle_notificacion() {
+        check_ajax_referer('flavor_radio_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_radio_favoritos';
+        $usuario_id = get_current_user_id();
+        $programa_id = absint($_POST['programa_id'] ?? 0);
+
+        $actual = $wpdb->get_var($wpdb->prepare(
+            "SELECT notificaciones FROM $tabla WHERE usuario_id = %d AND programa_id = %d",
+            $usuario_id, $programa_id
+        ));
+
+        if ($actual === null) {
+            wp_send_json_error(['message' => __('Primero añade a favoritos', 'flavor-chat-ia')]);
+        }
+
+        $nuevo = $actual ? 0 : 1;
+        $wpdb->update(
+            $tabla,
+            ['notificaciones' => $nuevo],
+            ['usuario_id' => $usuario_id, 'programa_id' => $programa_id]
+        );
+
+        wp_send_json_success(['notificaciones' => (bool)$nuevo]);
+    }
+
+    /**
+     * AJAX: Añadir/quitar reacción en chat
+     */
+    public function ajax_chat_reaccion() {
+        check_ajax_referer('flavor_radio_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')]);
+        }
+
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_radio_chat_reacciones';
+        $usuario_id = get_current_user_id();
+        $mensaje_id = absint($_POST['mensaje_id'] ?? 0);
+        $emoji = sanitize_text_field($_POST['emoji'] ?? '');
+
+        if (!$mensaje_id || !$emoji) {
+            wp_send_json_error(['message' => __('Datos incompletos', 'flavor-chat-ia')]);
+        }
+
+        // Crear tabla si no existe
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            $this->create_additional_tables();
+        }
+
+        // Verificar si ya existe esta reacción
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla WHERE usuario_id = %d AND mensaje_id = %d AND emoji = %s",
+            $usuario_id, $mensaje_id, $emoji
+        ));
+
+        if ($existe) {
+            $wpdb->delete($tabla, ['id' => $existe]);
+        } else {
+            $wpdb->insert($tabla, [
+                'usuario_id' => $usuario_id,
+                'mensaje_id' => $mensaje_id,
+                'emoji' => $emoji,
+                'fecha' => current_time('mysql'),
+            ]);
+        }
+
+        // Obtener todas las reacciones del mensaje
+        $reacciones = $wpdb->get_results($wpdb->prepare(
+            "SELECT emoji, GROUP_CONCAT(usuario_id) as usuarios, COUNT(*) as count
+             FROM $tabla
+             WHERE mensaje_id = %d
+             GROUP BY emoji
+             ORDER BY count DESC",
+            $mensaje_id
+        ));
+
+        $result = array_map(function($r) {
+            return [
+                'emoji' => $r->emoji,
+                'count' => (int)$r->count,
+                'usuarios' => array_map('intval', explode(',', $r->usuarios)),
+            ];
+        }, $reacciones);
+
+        wp_send_json_success(['reacciones' => $result]);
+    }
+
+    /**
+     * AJAX: Obtener eventos del calendario
+     */
+    public function ajax_calendario_eventos() {
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_radio_eventos';
+        $tabla_emision = $wpdb->prefix . 'flavor_radio_programacion';
+
+        $año = absint($_GET['año'] ?? date('Y'));
+        $mes = absint($_GET['mes'] ?? date('n'));
+
+        $primer_dia = sprintf('%04d-%02d-01', $año, $mes);
+        $ultimo_dia = date('Y-m-t', strtotime($primer_dia));
+
+        $eventos = [];
+
+        // Eventos especiales
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            $especiales = $wpdb->get_results($wpdb->prepare(
+                "SELECT id, titulo, DATE(fecha) as fecha, hora_inicio, hora_fin, tipo, programa_id
+                 FROM $tabla_eventos
+                 WHERE fecha BETWEEN %s AND %s
+                 ORDER BY fecha, hora_inicio",
+                $primer_dia, $ultimo_dia
+            ));
+
+            foreach ($especiales as $e) {
+                $eventos[] = [
+                    'id' => $e->id,
+                    'titulo' => $e->titulo,
+                    'fecha' => $e->fecha,
+                    'hora_inicio' => substr($e->hora_inicio, 0, 5),
+                    'hora_fin' => substr($e->hora_fin, 0, 5),
+                    'especial' => true,
+                    'tipo' => $e->tipo,
+                ];
+            }
+        }
+
+        // Emisiones programadas
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_emision)) {
+            $emisiones = $wpdb->get_results($wpdb->prepare(
+                "SELECT id, titulo, DATE(fecha_hora_inicio) as fecha,
+                        TIME(fecha_hora_inicio) as hora_inicio,
+                        TIME(fecha_hora_fin) as hora_fin,
+                        programa_id
+                 FROM $tabla_emision
+                 WHERE DATE(fecha_hora_inicio) BETWEEN %s AND %s
+                   AND estado != 'cancelado'
+                 ORDER BY fecha_hora_inicio",
+                $primer_dia, $ultimo_dia
+            ));
+
+            foreach ($emisiones as $e) {
+                $eventos[] = [
+                    'id' => $e->id,
+                    'titulo' => $e->titulo,
+                    'fecha' => $e->fecha,
+                    'hora_inicio' => substr($e->hora_inicio, 0, 5),
+                    'hora_fin' => substr($e->hora_fin, 0, 5),
+                    'especial' => false,
+                    'programa_id' => $e->programa_id,
+                ];
+            }
+        }
+
+        wp_send_json_success(['eventos' => $eventos]);
+    }
+
+    /**
+     * AJAX: Obtener eventos de un día específico
+     */
+    public function ajax_eventos_dia() {
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_radio_eventos';
+        $tabla_emision = $wpdb->prefix . 'flavor_radio_programacion';
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+
+        $fecha = sanitize_text_field($_GET['fecha'] ?? '');
+
+        if (!$fecha) {
+            wp_send_json_error(['message' => 'Fecha no válida']);
+        }
+
+        $eventos = [];
+
+        // Eventos especiales
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            $especiales = $wpdb->get_results($wpdb->prepare(
+                "SELECT e.*, p.nombre as programa
+                 FROM $tabla_eventos e
+                 LEFT JOIN $tabla_programas p ON e.programa_id = p.id
+                 WHERE e.fecha = %s
+                 ORDER BY e.hora_inicio",
+                $fecha
+            ));
+
+            foreach ($especiales as $e) {
+                $eventos[] = [
+                    'id' => $e->id,
+                    'titulo' => $e->titulo,
+                    'descripcion' => $e->descripcion,
+                    'hora_inicio' => substr($e->hora_inicio, 0, 5),
+                    'hora_fin' => substr($e->hora_fin, 0, 5),
+                    'tipo' => $e->tipo,
+                    'programa' => $e->programa,
+                    'especial' => true,
+                ];
+            }
+        }
+
+        // Emisiones del día
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_emision)) {
+            $emisiones = $wpdb->get_results($wpdb->prepare(
+                "SELECT e.*, p.nombre as programa
+                 FROM $tabla_emision e
+                 LEFT JOIN $tabla_programas p ON e.programa_id = p.id
+                 WHERE DATE(e.fecha_hora_inicio) = %s
+                   AND e.estado != 'cancelado'
+                 ORDER BY e.fecha_hora_inicio",
+                $fecha
+            ));
+
+            foreach ($emisiones as $e) {
+                $eventos[] = [
+                    'id' => $e->id,
+                    'titulo' => $e->titulo,
+                    'descripcion' => $e->descripcion,
+                    'hora_inicio' => date('H:i', strtotime($e->fecha_hora_inicio)),
+                    'hora_fin' => date('H:i', strtotime($e->fecha_hora_fin)),
+                    'programa' => $e->programa,
+                    'especial' => false,
+                ];
+            }
+        }
+
+        // Ordenar por hora
+        usort($eventos, function($a, $b) {
+            return strcmp($a['hora_inicio'], $b['hora_inicio']);
+        });
+
+        wp_send_json_success(['eventos' => $eventos]);
+    }
+
+    /**
+     * AJAX: Obtener transcripción de podcast
+     */
+    public function ajax_podcast_transcripcion() {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_radio_transcripciones';
+
+        $podcast_id = absint($_GET['podcast_id'] ?? 0);
+
+        if (!$podcast_id) {
+            wp_send_json_error(['message' => 'Podcast no válido']);
+        }
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            wp_send_json_success(['transcripcion' => null]);
+        }
+
+        $transcripcion = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $tabla WHERE podcast_id = %d AND estado = 'completado'",
+            $podcast_id
+        ));
+
+        if (!$transcripcion) {
+            wp_send_json_success(['transcripcion' => null]);
+        }
+
+        $segmentos = json_decode($transcripcion->segmentos, true) ?: [];
+
+        wp_send_json_success([
+            'transcripcion' => [
+                'contenido' => $transcripcion->contenido,
+                'segments' => $segmentos,
+                'idioma' => $transcripcion->idioma,
+            ],
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener perfil de locutor
+     */
+    public function ajax_locutor_perfil() {
+        global $wpdb;
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+
+        $locutor_id = absint($_GET['locutor_id'] ?? 0);
+
+        if (!$locutor_id) {
+            wp_send_json_error(['message' => 'Locutor no válido']);
+        }
+
+        $user = get_userdata($locutor_id);
+        if (!$user) {
+            wp_send_json_error(['message' => 'Usuario no encontrado']);
+        }
+
+        // Obtener programas del locutor
+        $programas = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+            $programas = $wpdb->get_results($wpdb->prepare(
+                "SELECT id, nombre, descripcion, imagen_url, categoria, frecuencia, oyentes_promedio, total_episodios
+                 FROM $tabla_programas
+                 WHERE locutor_id = %d AND estado = 'activo'
+                 ORDER BY nombre",
+                $locutor_id
+            ));
+        }
+
+        // Estadísticas
+        $total_programas = count($programas);
+        $total_episodios = array_sum(array_column($programas, 'total_episodios'));
+        $oyentes_promedio = $total_programas > 0
+            ? round(array_sum(array_column($programas, 'oyentes_promedio')) / $total_programas)
+            : 0;
+
+        // Obtener meta del usuario
+        $bio = get_user_meta($locutor_id, 'description', true);
+        $redes = get_user_meta($locutor_id, 'flavor_redes_sociales', true) ?: [];
+
+        wp_send_json_success([
+            'locutor' => [
+                'id' => $locutor_id,
+                'nombre' => $user->display_name,
+                'avatar' => get_avatar_url($locutor_id, ['size' => 200]),
+                'bio' => $bio,
+                'redes' => $redes,
+                'desde' => date_i18n('F Y', strtotime($user->user_registered)),
+            ],
+            'stats' => [
+                'programas' => $total_programas,
+                'episodios' => $total_episodios,
+                'oyentes_promedio' => $oyentes_promedio,
+            ],
+            'programas' => $programas,
+        ]);
+    }
+
+    /**
+     * Enviar notificación cuando empieza un programa favorito
+     */
+    public function enviar_notificaciones_programa($programa_id) {
+        global $wpdb;
+        $tabla_favoritos = $wpdb->prefix . 'flavor_radio_favoritos';
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_favoritos)) {
+            return;
+        }
+
+        // Obtener info del programa
+        $programa = $wpdb->get_row($wpdb->prepare(
+            "SELECT nombre FROM $tabla_programas WHERE id = %d",
+            $programa_id
+        ));
+
+        if (!$programa) {
+            return;
+        }
+
+        // Obtener usuarios con notificaciones activas
+        $usuarios = $wpdb->get_col($wpdb->prepare(
+            "SELECT usuario_id FROM $tabla_favoritos
+             WHERE programa_id = %d AND notificaciones = 1",
+            $programa_id
+        ));
+
+        foreach ($usuarios as $usuario_id) {
+            // Enviar notificación usando el sistema de notificaciones del plugin
+            if (method_exists($this, 'enviar_notificacion')) {
+                $this->enviar_notificacion($usuario_id, [
+                    'titulo' => __('¡Tu programa favorito está en vivo!', 'flavor-chat-ia'),
+                    'mensaje' => sprintf(__('%s acaba de empezar. ¡No te lo pierdas!', 'flavor-chat-ia'), $programa->nombre),
+                    'tipo' => 'radio_programa_en_vivo',
+                    'enlace' => home_url('/radio'),
+                    'icono' => '📻',
+                ]);
+            }
+        }
+    }
+
+    // =========================================================================
+    // REST API v2.0 - Endpoints adicionales
+    // =========================================================================
+
+    /**
+     * REST: Obtener metadatos del stream
+     */
+    public function rest_get_metadata($request) {
+        $settings = $this->get_settings();
+        $metadata = $this->fetch_stream_metadata($settings['url_stream'] ?? '');
+
+        return new WP_REST_Response([
+            'success' => true,
+            'data' => $metadata,
+        ], 200);
+    }
+
+    /**
+     * REST: Obtener canales disponibles
+     */
+    public function rest_canales($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_radio_canales';
+
+        $canales = [];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            $canales = $wpdb->get_results(
+                "SELECT id, nombre, descripcion, url_stream, url_stream_hd, logo_url, color
+                 FROM $tabla
+                 WHERE activo = 1
+                 ORDER BY orden ASC"
+            );
+        }
+
+        // Si no hay canales, devolver el principal desde settings
+        if (empty($canales)) {
+            $settings = $this->get_settings();
+            $canales = [
+                (object)[
+                    'id' => 0,
+                    'nombre' => $settings['nombre_radio'] ?? 'Radio Principal',
+                    'descripcion' => $settings['slogan'] ?? '',
+                    'url_stream' => $settings['url_stream'] ?? '',
+                    'url_stream_hd' => $settings['url_stream_hd'] ?? '',
+                    'logo_url' => $settings['logo_url'] ?? '',
+                    'color' => $settings['color_marca'] ?? '#8b5cf6',
+                ],
+            ];
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'canales' => $canales,
+        ], 200);
+    }
+
+    /**
+     * REST: Obtener favoritos del usuario
+     */
+    public function rest_mis_favoritos($request) {
+        global $wpdb;
+        $tabla_favoritos = $wpdb->prefix . 'flavor_radio_favoritos';
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+        $usuario_id = get_current_user_id();
+
+        $favoritos = [];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_favoritos)) {
+            $favoritos = $wpdb->get_results($wpdb->prepare(
+                "SELECT f.programa_id, f.notificaciones, p.nombre, p.imagen_url, p.categoria
+                 FROM $tabla_favoritos f
+                 LEFT JOIN $tabla_programas p ON f.programa_id = p.id
+                 WHERE f.usuario_id = %d
+                 ORDER BY f.fecha DESC",
+                $usuario_id
+            ));
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'favoritos' => $favoritos,
+        ], 200);
+    }
+
+    /**
+     * REST: Toggle favorito
+     */
+    public function rest_toggle_favorito($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_radio_favoritos';
+        $usuario_id = get_current_user_id();
+        $programa_id = $request['programa_id'];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            $this->create_additional_tables();
+        }
+
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla WHERE usuario_id = %d AND programa_id = %d",
+            $usuario_id, $programa_id
+        ));
+
+        if ($existe) {
+            $wpdb->delete($tabla, ['id' => $existe]);
+            return new WP_REST_Response(['success' => true, 'favorito' => false], 200);
+        } else {
+            $wpdb->insert($tabla, [
+                'usuario_id' => $usuario_id,
+                'programa_id' => $programa_id,
+                'fecha' => current_time('mysql'),
+            ]);
+            return new WP_REST_Response(['success' => true, 'favorito' => true], 200);
+        }
+    }
+
+    /**
+     * REST: Calendario de eventos
+     */
+    public function rest_calendario($request) {
+        global $wpdb;
+        $tabla_eventos = $wpdb->prefix . 'flavor_radio_eventos';
+        $tabla_emision = $wpdb->prefix . 'flavor_radio_programacion';
+
+        $año = $request->get_param('year') ?: date('Y');
+        $mes = $request->get_param('month') ?: date('n');
+
+        $primer_dia = sprintf('%04d-%02d-01', $año, $mes);
+        $ultimo_dia = date('Y-m-t', strtotime($primer_dia));
+
+        $eventos = [];
+
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            $especiales = $wpdb->get_results($wpdb->prepare(
+                "SELECT id, titulo, DATE(fecha) as fecha, hora_inicio, hora_fin, tipo, descripcion
+                 FROM $tabla_eventos
+                 WHERE fecha BETWEEN %s AND %s
+                 ORDER BY fecha, hora_inicio",
+                $primer_dia, $ultimo_dia
+            ));
+
+            foreach ($especiales as $e) {
+                $eventos[] = [
+                    'id' => $e->id,
+                    'titulo' => $e->titulo,
+                    'fecha' => $e->fecha,
+                    'hora_inicio' => substr($e->hora_inicio, 0, 5),
+                    'hora_fin' => substr($e->hora_fin, 0, 5),
+                    'tipo' => $e->tipo,
+                    'descripcion' => $e->descripcion,
+                    'especial' => true,
+                ];
+            }
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'year' => (int)$año,
+            'month' => (int)$mes,
+            'eventos' => $eventos,
+        ], 200);
+    }
+
+    /**
+     * REST: Perfil de locutor
+     */
+    public function rest_locutor_perfil($request) {
+        global $wpdb;
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+        $locutor_id = $request['id'];
+
+        $user = get_userdata($locutor_id);
+        if (!$user) {
+            return new WP_REST_Response(['success' => false, 'message' => 'Usuario no encontrado'], 404);
+        }
+
+        $programas = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+            $programas = $wpdb->get_results($wpdb->prepare(
+                "SELECT id, nombre, descripcion, imagen_url, categoria, frecuencia, oyentes_promedio
+                 FROM $tabla_programas
+                 WHERE locutor_id = %d AND estado = 'activo'",
+                $locutor_id
+            ));
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'locutor' => [
+                'id' => $locutor_id,
+                'nombre' => $user->display_name,
+                'avatar' => get_avatar_url($locutor_id, ['size' => 200]),
+                'bio' => get_user_meta($locutor_id, 'description', true),
+                'redes' => get_user_meta($locutor_id, 'flavor_redes_sociales', true) ?: [],
+            ],
+            'programas' => $programas,
+            'stats' => [
+                'total_programas' => count($programas),
+                'oyentes_promedio' => count($programas) > 0
+                    ? round(array_sum(array_column($programas, 'oyentes_promedio')) / count($programas))
+                    : 0,
+            ],
+        ], 200);
+    }
+
+    /**
+     * REST: Transcripción de podcast
+     */
+    public function rest_podcast_transcripcion($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_radio_transcripciones';
+        $podcast_id = $request['id'];
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            return new WP_REST_Response(['success' => true, 'transcripcion' => null], 200);
+        }
+
+        $transcripcion = $wpdb->get_row($wpdb->prepare(
+            "SELECT contenido, segmentos, idioma FROM $tabla WHERE podcast_id = %d AND estado = 'completado'",
+            $podcast_id
+        ));
+
+        return new WP_REST_Response([
+            'success' => true,
+            'transcripcion' => $transcripcion ? [
+                'contenido' => $transcripcion->contenido,
+                'segments' => json_decode($transcripcion->segmentos, true) ?: [],
+                'idioma' => $transcripcion->idioma,
+            ] : null,
+        ], 200);
+    }
+
+    /**
+     * REST: Reacción en chat
+     */
+    public function rest_chat_reaccion($request) {
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_radio_chat_reacciones';
+        $usuario_id = get_current_user_id();
+        $mensaje_id = $request['mensaje_id'];
+        $emoji = sanitize_text_field($request->get_param('emoji'));
+
+        if (!$emoji) {
+            return new WP_REST_Response(['success' => false, 'message' => 'Emoji requerido'], 400);
+        }
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla)) {
+            $this->create_additional_tables();
+        }
+
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla WHERE usuario_id = %d AND mensaje_id = %d AND emoji = %s",
+            $usuario_id, $mensaje_id, $emoji
+        ));
+
+        if ($existe) {
+            $wpdb->delete($tabla, ['id' => $existe]);
+        } else {
+            $wpdb->insert($tabla, [
+                'usuario_id' => $usuario_id,
+                'mensaje_id' => $mensaje_id,
+                'emoji' => $emoji,
+                'fecha' => current_time('mysql'),
+            ]);
+        }
+
+        // Obtener reacciones actualizadas
+        $reacciones = $wpdb->get_results($wpdb->prepare(
+            "SELECT emoji, COUNT(*) as count FROM $tabla WHERE mensaje_id = %d GROUP BY emoji",
+            $mensaje_id
+        ));
+
+        return new WP_REST_Response([
+            'success' => true,
+            'reacciones' => $reacciones,
+        ], 200);
+    }
+
+    /**
+     * REST: Analytics del módulo (admin)
+     */
+    public function rest_analytics($request) {
+        global $wpdb;
+        $tabla_oyentes = $wpdb->prefix . 'flavor_radio_oyentes';
+        $tabla_emision = $wpdb->prefix . 'flavor_radio_programacion';
+        $tabla_programas = $wpdb->prefix . 'flavor_radio_programas';
+        $tabla_dedicatorias = $wpdb->prefix . 'flavor_radio_dedicatorias';
+
+        $periodo = $request->get_param('periodo') ?: '7d';
+
+        // Determinar rango de fechas
+        switch ($periodo) {
+            case '24h':
+                $desde = date('Y-m-d H:i:s', strtotime('-24 hours'));
+                break;
+            case '7d':
+                $desde = date('Y-m-d', strtotime('-7 days'));
+                break;
+            case '30d':
+                $desde = date('Y-m-d', strtotime('-30 days'));
+                break;
+            default:
+                $desde = date('Y-m-d', strtotime('-7 days'));
+        }
+
+        $stats = [
+            'oyentes_unicos' => 0,
+            'horas_escuchadas' => 0,
+            'dedicatorias' => 0,
+            'programas_activos' => 0,
+            'emisiones' => 0,
+        ];
+
+        // Oyentes únicos
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_oyentes)) {
+            $stats['oyentes_unicos'] = (int)$wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(DISTINCT session_id) FROM $tabla_oyentes WHERE inicio >= %s",
+                $desde
+            ));
+
+            $segundos = (int)$wpdb->get_var($wpdb->prepare(
+                "SELECT SUM(duracion_segundos) FROM $tabla_oyentes WHERE inicio >= %s",
+                $desde
+            ));
+            $stats['horas_escuchadas'] = round($segundos / 3600, 1);
+        }
+
+        // Dedicatorias
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_dedicatorias)) {
+            $stats['dedicatorias'] = (int)$wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_dedicatorias WHERE fecha_solicitud >= %s",
+                $desde
+            ));
+        }
+
+        // Programas activos
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+            $stats['programas_activos'] = (int)$wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_programas WHERE estado = 'activo'"
+            );
+        }
+
+        // Emisiones
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_emision)) {
+            $stats['emisiones'] = (int)$wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $tabla_emision WHERE fecha_hora_inicio >= %s",
+                $desde
+            ));
+        }
+
+        // Audiencia por hora (últimas 24h)
+        $audiencia_por_hora = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_oyentes)) {
+            $audiencia_por_hora = $wpdb->get_results(
+                "SELECT HOUR(inicio) as hora, COUNT(DISTINCT session_id) as oyentes
+                 FROM $tabla_oyentes
+                 WHERE inicio >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+                 GROUP BY HOUR(inicio)
+                 ORDER BY hora"
+            );
+        }
+
+        // Programas más escuchados
+        $top_programas = [];
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_programas)) {
+            $top_programas = $wpdb->get_results(
+                "SELECT id, nombre, oyentes_promedio, total_episodios
+                 FROM $tabla_programas
+                 WHERE estado = 'activo'
+                 ORDER BY oyentes_promedio DESC
+                 LIMIT 5"
+            );
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'periodo' => $periodo,
+            'stats' => $stats,
+            'audiencia_por_hora' => $audiencia_por_hora,
+            'top_programas' => $top_programas,
+        ], 200);
     }
 }

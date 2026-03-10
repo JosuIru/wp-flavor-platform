@@ -338,7 +338,7 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
                     <div class="flavor-candidatura-card">
                         <?php if (!is_user_logged_in()): ?>
                         <p><?php _e('Inicia sesión para enviar tu candidatura.', 'flavor-chat-ia'); ?></p>
-                        <a href="<?php echo wp_login_url(get_permalink()); ?>" class="flavor-btn flavor-btn-primary flavor-btn-block">
+                        <a href="<?php echo wp_login_url(flavor_current_request_url()); ?>" class="flavor-btn flavor-btn-primary flavor-btn-block">
                             <?php _e('Iniciar sesión', 'flavor-chat-ia'); ?>
                         </a>
                         <?php elseif ($ya_candidato): ?>

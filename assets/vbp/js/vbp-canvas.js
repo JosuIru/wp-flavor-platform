@@ -910,3 +910,265 @@ window.vbpCanvasUtils = {
         }
     }
 };
+
+/**
+ * Sistema de redimensionamiento de elementos
+ */
+window.vbpResize = {
+    isResizing: false,
+    currentElement: null,
+    currentHandle: null,
+    startX: 0,
+    startY: 0,
+    startWidth: 0,
+    startHeight: 0,
+    startLeft: 0,
+    startTop: 0,
+    aspectRatio: null,
+
+    /**
+     * Inicializar sistema de resize
+     */
+    init: function() {
+        var self = this;
+
+        // Delegate event para handles
+        document.addEventListener('mousedown', function(e) {
+            var handle = e.target.closest('.vbp-handle');
+            if (handle) {
+                e.preventDefault();
+                e.stopPropagation();
+                self.startResize(handle, e);
+            }
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (self.isResizing) {
+                e.preventDefault();
+                self.doResize(e);
+            }
+        });
+
+        document.addEventListener('mouseup', function(e) {
+            if (self.isResizing) {
+                self.endResize();
+            }
+        });
+    },
+
+    /**
+     * Iniciar redimensionamiento
+     */
+    startResize: function(handle, event) {
+        var elementWrapper = handle.closest('.vbp-element');
+        if (!elementWrapper) return;
+
+        this.isResizing = true;
+        this.currentElement = elementWrapper;
+        this.currentHandle = this.getHandleType(handle);
+        this.startX = event.clientX;
+        this.startY = event.clientY;
+
+        // Obtener dimensiones actuales
+        var rect = elementWrapper.getBoundingClientRect();
+        var content = elementWrapper.querySelector('.vbp-element-content');
+        
+        this.startWidth = rect.width;
+        this.startHeight = rect.height;
+        this.startLeft = rect.left;
+        this.startTop = rect.top;
+
+        // Guardar aspect ratio si se mantiene Shift
+        this.aspectRatio = event.shiftKey ? (this.startWidth / this.startHeight) : null;
+
+        // Clase visual
+        document.body.classList.add('vbp-resizing');
+        elementWrapper.classList.add('vbp-element-resizing');
+
+        // Mostrar dimensiones
+        this.showSizeIndicator(this.startWidth, this.startHeight);
+    },
+
+    /**
+     * Obtener tipo de handle
+     */
+    getHandleType: function(handle) {
+        var classes = handle.className;
+        if (classes.includes('handle-nw')) return 'nw';
+        if (classes.includes('handle-n')) return 'n';
+        if (classes.includes('handle-ne')) return 'ne';
+        if (classes.includes('handle-w')) return 'w';
+        if (classes.includes('handle-e')) return 'e';
+        if (classes.includes('handle-sw')) return 'sw';
+        if (classes.includes('handle-s')) return 's';
+        if (classes.includes('handle-se')) return 'se';
+        return 'se';
+    },
+
+    /**
+     * Realizar redimensionamiento
+     */
+    doResize: function(event) {
+        if (!this.currentElement) return;
+
+        var deltaX = event.clientX - this.startX;
+        var deltaY = event.clientY - this.startY;
+
+        // Aplicar snap to grid si está activo
+        if (window.vbpKeyboard && window.vbpKeyboard.snapToGridEnabled) {
+            var gridSize = window.vbpKeyboard.gridSize || 8;
+            deltaX = Math.round(deltaX / gridSize) * gridSize;
+            deltaY = Math.round(deltaY / gridSize) * gridSize;
+        }
+
+        var newWidth = this.startWidth;
+        var newHeight = this.startHeight;
+        var translateX = 0;
+        var translateY = 0;
+
+        // Calcular nuevas dimensiones según el handle
+        switch (this.currentHandle) {
+            case 'e':
+                newWidth = this.startWidth + deltaX;
+                break;
+            case 'w':
+                newWidth = this.startWidth - deltaX;
+                translateX = deltaX;
+                break;
+            case 's':
+                newHeight = this.startHeight + deltaY;
+                break;
+            case 'n':
+                newHeight = this.startHeight - deltaY;
+                translateY = deltaY;
+                break;
+            case 'se':
+                newWidth = this.startWidth + deltaX;
+                newHeight = this.startHeight + deltaY;
+                break;
+            case 'sw':
+                newWidth = this.startWidth - deltaX;
+                newHeight = this.startHeight + deltaY;
+                translateX = deltaX;
+                break;
+            case 'ne':
+                newWidth = this.startWidth + deltaX;
+                newHeight = this.startHeight - deltaY;
+                translateY = deltaY;
+                break;
+            case 'nw':
+                newWidth = this.startWidth - deltaX;
+                newHeight = this.startHeight - deltaY;
+                translateX = deltaX;
+                translateY = deltaY;
+                break;
+        }
+
+        // Mantener aspect ratio con Shift
+        if (event.shiftKey && this.aspectRatio) {
+            if (this.currentHandle.includes('e') || this.currentHandle.includes('w')) {
+                newHeight = newWidth / this.aspectRatio;
+            } else {
+                newWidth = newHeight * this.aspectRatio;
+            }
+        }
+
+        // Mínimos
+        newWidth = Math.max(50, newWidth);
+        newHeight = Math.max(30, newHeight);
+
+        // Aplicar estilos
+        var content = this.currentElement.querySelector('.vbp-element-content');
+        if (content) {
+            content.style.width = newWidth + 'px';
+            content.style.minHeight = newHeight + 'px';
+        }
+
+        // Actualizar indicador
+        this.showSizeIndicator(Math.round(newWidth), Math.round(newHeight));
+    },
+
+    /**
+     * Finalizar redimensionamiento
+     */
+    endResize: function() {
+        if (!this.currentElement) return;
+
+        var elementId = this.currentElement.dataset.elementId;
+        var content = this.currentElement.querySelector('.vbp-element-content');
+
+        if (elementId && content) {
+            var newWidth = content.style.width;
+            var newHeight = content.style.minHeight;
+
+            // Guardar en el store
+            var store = Alpine.store('vbp');
+            if (store) {
+                var element = store.getElement(elementId);
+                if (element) {
+                    store.saveToHistory();
+
+                    // Hacer merge profundo de estilos para no perder otras propiedades
+                    var currentStyles = element.styles ? JSON.parse(JSON.stringify(element.styles)) : store.getDefaultStyles();
+
+                    // Asegurar que dimensions existe
+                    if (!currentStyles.dimensions) {
+                        currentStyles.dimensions = { width: '', height: '', minHeight: '', maxWidth: '' };
+                    }
+
+                    // Actualizar solo width y height
+                    currentStyles.dimensions.width = newWidth;
+                    currentStyles.dimensions.height = newHeight;
+
+                    store.updateElement(elementId, { styles: currentStyles });
+                    store.isDirty = true;
+                }
+            }
+        }
+
+        // Limpiar
+        document.body.classList.remove('vbp-resizing');
+        this.currentElement.classList.remove('vbp-element-resizing');
+        this.hideSizeIndicator();
+
+        this.isResizing = false;
+        this.currentElement = null;
+        this.currentHandle = null;
+    },
+
+    /**
+     * Mostrar indicador de tamaño
+     */
+    showSizeIndicator: function(width, height) {
+        var indicator = document.getElementById('vbp-size-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'vbp-size-indicator';
+            indicator.style.cssText = 'position: fixed; bottom: 60px; right: 20px; padding: 8px 14px; background: rgba(30, 30, 46, 0.95); color: #cdd6f4; border-radius: 6px; font-size: 13px; font-family: monospace; z-index: 10001; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+            document.body.appendChild(indicator);
+        }
+        indicator.innerHTML = '<span style="color: #89b4fa;">' + width + '</span> × <span style="color: #a6e3a1;">' + height + '</span> px';
+    },
+
+    /**
+     * Ocultar indicador de tamaño
+     */
+    hideSizeIndicator: function() {
+        var indicator = document.getElementById('vbp-size-indicator');
+        if (indicator) {
+            indicator.remove();
+        }
+    }
+};
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    window.vbpResize.init();
+});
+
+// También inicializar cuando Alpine esté listo (por si el DOM ya cargó)
+document.addEventListener('alpine:initialized', function() {
+    if (!window.vbpResize.isResizing) {
+        window.vbpResize.init();
+    }
+});

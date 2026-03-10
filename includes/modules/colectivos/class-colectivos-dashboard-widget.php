@@ -138,7 +138,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-groups',
                 'title' => wp_trim_words($colectivo->nombre, 4, '...'),
                 'meta' => $colectivo->categoria ?: $miembros_texto,
-                'url' => $es_admin ? admin_url('admin.php?page=colectivos&colectivo=' . $colectivo->id) : home_url('/mi-portal/colectivos/colectivo/' . $colectivo->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=colectivos&colectivo=' . $colectivo->id) : home_url('/mi-portal/colectivos/?colectivo=' . $colectivo->id),
             ];
         }
 

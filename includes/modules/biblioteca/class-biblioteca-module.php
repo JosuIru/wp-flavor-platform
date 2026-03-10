@@ -38,6 +38,10 @@ class Flavor_Chat_Biblioteca_Module extends Flavor_Chat_Module_Base {
         $this->name = __('Biblioteca Comunitaria', 'flavor-chat-ia');
         $this->description = __('Sistema de préstamo e intercambio de libros entre vecinos de la comunidad.', 'flavor-chat-ia');
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['aprendizaje', 'economia_local'];
+        $this->gailu_contribuye_a = ['cohesion', 'resiliencia'];
+
         parent::__construct();
     }
 

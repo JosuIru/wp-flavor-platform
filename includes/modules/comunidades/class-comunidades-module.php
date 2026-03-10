@@ -40,11 +40,15 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Crea y gestiona comunidades tematicas con miembros, actividades y contenido compartido'; // Translation loaded on init
         $this->module_role = 'base';
         $this->ecosystem_base_for_modules = ['eventos', 'ayuda_vecinal', 'foros', 'energia_comunitaria'];
-        $this->ecosystem_supports_modules = ['eventos', 'ayuda_vecinal', 'foros', 'presupuestos_participativos', 'energia_comunitaria'];
+        $this->ecosystem_supports_modules = ['eventos', 'ayuda_vecinal', 'foros', 'presupuestos_participativos', 'energia_comunitaria', 'marketplace'];
         $this->dashboard_parent_module = 'comunidades';
         $this->dashboard_satellite_priority = 10;
         $this->dashboard_client_contexts = ['comunidad', 'miembro', 'coordinacion'];
         $this->dashboard_admin_contexts = ['comunidad', 'coordinacion', 'admin'];
+
+        // Principios Gailu: Comunidades es modulo base que soporta todos los principios
+        $this->gailu_principios = ['economia_local', 'cuidados', 'gobernanza', 'regeneracion', 'aprendizaje'];
+        $this->gailu_contribuye_a = ['autonomia', 'resiliencia', 'cohesion', 'impacto'];
 
         if (did_action('init')) {
             $this->register_shortcodes();
@@ -258,6 +262,12 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                     'icon'    => 'dashicons-clock',
                     'content' => 'callback:render_tab_banco_tiempo',
                     'requires_login' => true,
+                ],
+                'marketplace' => [
+                    'label'   => __('Mercadillo', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-cart',
+                    'content' => 'callback:render_tab_marketplace',
+                    'requires_login' => false,
                 ],
                 'recetas' => [
                     'label'   => __('Recetas', 'flavor-chat-ia'),
@@ -596,6 +606,12 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
                 'icon'    => 'dashicons-clock',
                 'content' => 'callback:render_tab_banco_tiempo',
                 'requires_login' => true,
+            ],
+            'marketplace' => [
+                'label'   => __('Mercadillo', 'flavor-chat-ia'),
+                'icon'    => 'dashicons-cart',
+                'content' => 'callback:render_tab_marketplace',
+                'requires_login' => false,
             ],
             'recetas' => [
                 'label'   => __('Recetas', 'flavor-chat-ia'),
@@ -1075,6 +1091,50 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         $header .= '</div>';
 
         return $header . do_shortcode('[banco_tiempo_servicios limite="12" columnas="3" comunidad_id="' . $comunidad_id . '"]');
+    }
+
+    /**
+     * Renderiza el tab contextual de marketplace (mercadillo de la comunidad).
+     *
+     * @return string
+     */
+    public function render_tab_marketplace() {
+        $comunidad_ids = $this->get_contextual_comunidad_ids_for_eventos_tab();
+        if (empty($comunidad_ids)) {
+            return '<div class="flavor-empty-state bg-gray-50 rounded-xl p-8 text-center">
+                <span class="text-5xl mb-4 block">🛒</span>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">' . esc_html__('Mercadillo de la comunidad', 'flavor-chat-ia') . '</h3>
+                <p class="text-gray-500 mb-4">' . esc_html__('Accede a una comunidad concreta para explorar su mercadillo local.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $comunidad_id = absint($comunidad_ids[0]);
+        $comunidad = $this->obtener_comunidad($comunidad_id);
+
+        $header = '<div class="flavor-integrated-tab-header bg-white rounded-xl p-4 mb-4 border border-gray-100 flex items-center justify-between gap-4 flex-wrap">';
+        $header .= '<div>';
+        $header .= '<h3 class="text-lg font-semibold text-gray-900 mb-1">' . esc_html__('Mercadillo de la comunidad', 'flavor-chat-ia') . '</h3>';
+        if (!empty($comunidad->nombre)) {
+            $header .= '<p class="text-sm text-gray-500">' . esc_html($comunidad->nombre) . '</p>';
+        }
+        $header .= '</div>';
+        $header .= '<div class="flex items-center gap-2 flex-wrap">';
+
+        if (is_user_logged_in()) {
+            $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-lime-600 text-white text-sm font-medium hover:opacity-90" href="' . esc_url(add_query_arg(['comunidad' => $comunidad_id], home_url('/mi-portal/marketplace/publicar/'))) . '">';
+            $header .= '<span class="dashicons dashicons-plus-alt" style="font-size:16px;width:16px;height:16px;"></span>';
+            $header .= esc_html__('Publicar anuncio', 'flavor-chat-ia');
+            $header .= '</a>';
+        }
+
+        $header .= '<a class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-lime-700 text-sm font-medium border border-lime-200 hover:bg-lime-50" href="' . esc_url(home_url('/mi-portal/marketplace/')) . '">';
+        $header .= '<span class="dashicons dashicons-external" style="font-size:16px;width:16px;height:16px;"></span>';
+        $header .= esc_html__('Ver todo el marketplace', 'flavor-chat-ia');
+        $header .= '</a>';
+        $header .= '</div>';
+        $header .= '</div>';
+
+        return $header . do_shortcode('[marketplace_catalogo limite="12" columnas="3" comunidad="' . $comunidad_id . '" mostrar_filtros="si"]');
     }
 
     /**
@@ -3086,8 +3146,8 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             ['label' => __('Nueva Comunidad', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=comunidades-listado&accion=nueva'), 'class' => 'button-primary'],
         ]);
 
-        // Tabs de filtro
-        $estado_filtro = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : 'activa';
+        // Tabs de filtro (usar 'tab' que es lo que genera render_page_tabs)
+        $estado_filtro = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'activa';
         $this->render_page_tabs([
             ['slug' => 'activa', 'label' => __('Activas', 'flavor-chat-ia')],
             ['slug' => 'pausada', 'label' => __('Pausadas', 'flavor-chat-ia')],
@@ -3510,8 +3570,8 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             echo '<div class="notice notice-error is-dismissible"><p>' . esc_html($mensaje_error) . '</p></div>';
         }
 
-        // Tabs de filtro
-        $estado_filtro = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : 'todos';
+        // Tabs de filtro (usar 'tab' que es lo que genera render_page_tabs)
+        $estado_filtro = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'todos';
         $pendientes_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_miembros WHERE estado = 'pendiente'");
 
         $this->render_page_tabs([
@@ -4797,7 +4857,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         }
 
         // Obtener instancia del módulo de chat-grupos
-        $modulo_chat_grupos = Flavor_Module_Loader::get_instance()->get_module('chat_grupos');
+        $modulo_chat_grupos = Flavor_Chat_Module_Loader::get_instance()->get_module('chat_grupos');
         if (!$modulo_chat_grupos) {
             return false;
         }
@@ -4826,7 +4886,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             return false;
         }
 
-        $module_loader = Flavor_Module_Loader::get_instance();
+        $module_loader = Flavor_Chat_Module_Loader::get_instance();
         if (!$module_loader) {
             return false;
         }
@@ -7678,6 +7738,16 @@ KNOWLEDGE;
             [$this, 'render_pagina_dashboard']
         );
 
+        // Dashboard - página para panel unificado
+        add_submenu_page(
+            null,
+            __('Dashboard Comunidades', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'comunidades-dashboard',
+            [$this, 'render_pagina_dashboard']
+        );
+
         // Página: Listado (oculta)
         add_submenu_page(
             null,
@@ -7685,7 +7755,7 @@ KNOWLEDGE;
             __('Listado', 'flavor-chat-ia'),
             $capability,
             'comunidades-listado',
-            [$this, 'render_pagina_listado']
+            [$this, 'render_admin_listado']
         );
 
         // Página: Feed de Actividad (oculta)
@@ -7763,13 +7833,19 @@ KNOWLEDGE;
      * Renderiza página dashboard
      */
     public function render_pagina_dashboard() {
-        echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Dashboard Comunidades', 'flavor-chat-ia') . '</h1>';
-        $views_path = dirname(__FILE__) . '/views/listado-comunidades.php';
-        if (file_exists($views_path)) {
-            include $views_path;
+        $rutaVistaDashboard = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($rutaVistaDashboard)) {
+            include $rutaVistaDashboard;
+        } else {
+            // Fallback si no existe dashboard.php
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Dashboard Comunidades', 'flavor-chat-ia') . '</h1>';
+            $views_path = dirname(__FILE__) . '/views/listado-comunidades.php';
+            if (file_exists($views_path)) {
+                include $views_path;
+            }
+            echo '</div>';
         }
-        echo '</div>';
     }
 
     /**
@@ -7789,13 +7865,16 @@ KNOWLEDGE;
      * Renderiza página de actividad
      */
     public function render_pagina_actividad() {
-        echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Feed de Actividad', 'flavor-chat-ia') . '</h1>';
-        $views_path = dirname(__FILE__) . '/views/feed-actividad.php';
+        // Primero intentar la vista de admin, luego fallback a frontend
+        $views_path = dirname(__FILE__) . '/views/actividad.php';
         if (file_exists($views_path)) {
             include $views_path;
+        } else {
+            echo '<div class="wrap">';
+            echo '<h1>' . esc_html__('Feed de Actividad', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Vista en desarrollo.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
         }
-        echo '</div>';
     }
 
     /**

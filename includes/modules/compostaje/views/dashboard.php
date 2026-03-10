@@ -16,288 +16,390 @@ $tabla_depositos_compostaje = $wpdb->prefix . 'flavor_compostaje_depositos';
 $tabla_recogidas_compost = $wpdb->prefix . 'flavor_compostaje_recogidas';
 $tabla_mantenimiento = $wpdb->prefix . 'flavor_compostaje_mantenimiento';
 
-// Estadísticas generales
-$total_composteras = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_composteras WHERE estado != 'inactiva'");
-$total_depositos_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_depositos_compostaje WHERE MONTH(fecha_deposito) = MONTH(CURRENT_DATE())");
-$total_kg_organicos_mes = $wpdb->get_var("SELECT SUM(cantidad_kg) FROM $tabla_depositos_compostaje WHERE MONTH(fecha_deposito) = MONTH(CURRENT_DATE())");
-$compost_listo = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_composteras WHERE estado = 'listo_recoger'");
+// Verificar si las tablas existen
+$tabla_composteras_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_composteras)) === $tabla_composteras;
 
-// Estadísticas por compostera
-$stats_composteras = $wpdb->get_results("
-    SELECT c.*,
-           COUNT(d.id) as total_depositos,
-           SUM(d.cantidad_kg) as total_kg_depositado
-    FROM $tabla_composteras c
-    LEFT JOIN $tabla_depositos_compostaje d ON c.id = d.compostera_id
-    WHERE MONTH(d.fecha_deposito) = MONTH(CURRENT_DATE())
-    GROUP BY c.id
-    ORDER BY total_kg_depositado DESC
-    LIMIT 5
-");
+if ($tabla_composteras_existe) {
+    $total_composteras = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_composteras WHERE estado != 'inactiva'");
 
-// Usuarios más activos
-$usuarios_activos_compostaje = $wpdb->get_results("
-    SELECT u.ID, u.display_name,
-           COUNT(d.id) as total_depositos,
-           SUM(d.cantidad_kg) as total_kg
-    FROM {$wpdb->users} u
-    INNER JOIN $tabla_depositos_compostaje d ON u.ID = d.usuario_id
-    WHERE MONTH(d.fecha_deposito) = MONTH(CURRENT_DATE())
-    GROUP BY u.ID
-    ORDER BY total_kg DESC
-    LIMIT 10
-");
+    $tabla_depositos_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_depositos_compostaje)) === $tabla_depositos_compostaje;
 
-// Evolución mensual (últimos 6 meses)
-$evolucion_compostaje = $wpdb->get_results("
-    SELECT DATE_FORMAT(fecha_deposito, '%Y-%m') as mes,
-           SUM(cantidad_kg) as total_kg,
-           COUNT(*) as total_depositos
-    FROM $tabla_depositos_compostaje
-    WHERE fecha_deposito >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
-    GROUP BY mes
-    ORDER BY mes ASC
-");
+    $total_depositos_mes = $tabla_depositos_existe ? (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_depositos_compostaje WHERE MONTH(fecha_deposito) = MONTH(CURRENT_DATE())") : 0;
+    $total_kg_organicos_mes = $tabla_depositos_existe ? (float) $wpdb->get_var("SELECT COALESCE(SUM(cantidad_kg), 0) FROM $tabla_depositos_compostaje WHERE MONTH(fecha_deposito) = MONTH(CURRENT_DATE())") : 0;
+    $compost_listo = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_composteras WHERE estado = 'listo_recoger'");
 
-// Tareas de mantenimiento pendientes
-$mantenimiento_pendiente = $wpdb->get_results("
-    SELECT m.*, c.nombre as compostera_nombre
-    FROM $tabla_mantenimiento m
-    INNER JOIN $tabla_composteras c ON m.compostera_id = c.id
-    WHERE m.estado = 'pendiente'
-    ORDER BY m.fecha_programada ASC
-    LIMIT 5
-");
+    $stats_composteras = $tabla_depositos_existe ? $wpdb->get_results("
+        SELECT c.*, COUNT(d.id) as total_depositos, SUM(d.cantidad_kg) as total_kg_depositado
+        FROM $tabla_composteras c
+        LEFT JOIN $tabla_depositos_compostaje d ON c.id = d.compostera_id
+        WHERE MONTH(d.fecha_deposito) = MONTH(CURRENT_DATE())
+        GROUP BY c.id ORDER BY total_kg_depositado DESC LIMIT 5
+    ") : [];
 
-// Composteras que necesitan atención
-$composteras_atencion = $wpdb->get_results("
-    SELECT *
-    FROM $tabla_composteras
-    WHERE estado IN ('llena', 'mantenimiento', 'problema')
-    ORDER BY estado DESC
-    LIMIT 5
-");
+    $usuarios_activos_compostaje = $tabla_depositos_existe ? $wpdb->get_results("
+        SELECT u.ID, u.display_name, COUNT(d.id) as total_depositos, SUM(d.cantidad_kg) as total_kg
+        FROM {$wpdb->users} u
+        INNER JOIN $tabla_depositos_compostaje d ON u.ID = d.usuario_id
+        WHERE MONTH(d.fecha_deposito) = MONTH(CURRENT_DATE())
+        GROUP BY u.ID ORDER BY total_kg DESC LIMIT 10
+    ") : [];
+
+    $evolucion_compostaje = $tabla_depositos_existe ? $wpdb->get_results("
+        SELECT DATE_FORMAT(fecha_deposito, '%Y-%m') as mes, SUM(cantidad_kg) as total_kg, COUNT(*) as total_depositos
+        FROM $tabla_depositos_compostaje
+        WHERE fecha_deposito >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+        GROUP BY mes ORDER BY mes ASC
+    ") : [];
+
+    $tabla_mantenimiento_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_mantenimiento)) === $tabla_mantenimiento;
+    $mantenimiento_pendiente = $tabla_mantenimiento_existe ? $wpdb->get_results("
+        SELECT m.*, c.nombre as compostera_nombre
+        FROM $tabla_mantenimiento m
+        INNER JOIN $tabla_composteras c ON m.compostera_id = c.id
+        WHERE m.estado = 'pendiente'
+        ORDER BY m.fecha_programada ASC LIMIT 5
+    ") : [];
+
+    $composteras_atencion = $wpdb->get_results("
+        SELECT * FROM $tabla_composteras
+        WHERE estado IN ('llena', 'mantenimiento', 'problema')
+        ORDER BY estado DESC LIMIT 5
+    ") ?: [];
+
+    $usando_demo = $total_composteras === 0;
+} else {
+    $usando_demo = true;
+}
+
+if ($usando_demo) {
+    $total_composteras = 8;
+    $total_depositos_mes = 156;
+    $total_kg_organicos_mes = 523.5;
+    $compost_listo = 2;
+
+    $stats_composteras = [
+        (object) ['id' => 1, 'nombre' => 'Compostera Parque Norte', 'total_depositos' => 45, 'total_kg_depositado' => 156.3, 'nivel_llenado' => 75],
+        (object) ['id' => 2, 'nombre' => 'Compostera Plaza Mayor', 'total_depositos' => 38, 'total_kg_depositado' => 132.5, 'nivel_llenado' => 60],
+        (object) ['id' => 3, 'nombre' => 'Compostera Centro Cívico', 'total_depositos' => 32, 'total_kg_depositado' => 118.2, 'nivel_llenado' => 45],
+        (object) ['id' => 4, 'nombre' => 'Compostera Mercado', 'total_depositos' => 25, 'total_kg_depositado' => 87.5, 'nivel_llenado' => 80],
+        (object) ['id' => 5, 'nombre' => 'Compostera Barrio Sur', 'total_depositos' => 16, 'total_kg_depositado' => 29.0, 'nivel_llenado' => 25],
+    ];
+
+    $usuarios_activos_compostaje = [
+        (object) ['ID' => 1, 'display_name' => 'María García', 'total_depositos' => 18, 'total_kg' => 42.5],
+        (object) ['ID' => 2, 'display_name' => 'Carlos López', 'total_depositos' => 15, 'total_kg' => 38.2],
+        (object) ['ID' => 3, 'display_name' => 'Ana Martínez', 'total_depositos' => 12, 'total_kg' => 31.8],
+        (object) ['ID' => 4, 'display_name' => 'Pedro Sánchez', 'total_depositos' => 10, 'total_kg' => 25.3],
+        (object) ['ID' => 5, 'display_name' => 'Laura Fernández', 'total_depositos' => 9, 'total_kg' => 22.1],
+    ];
+
+    $evolucion_compostaje = [];
+    for ($i = 5; $i >= 0; $i--) {
+        $evolucion_compostaje[] = (object) [
+            'mes' => date('Y-m', strtotime("-{$i} months")),
+            'total_kg' => rand(300, 600),
+            'total_depositos' => rand(80, 180),
+        ];
+    }
+
+    $mantenimiento_pendiente = [
+        (object) ['id' => 1, 'compostera_nombre' => 'Compostera Mercado', 'tipo_mantenimiento' => 'Volteo', 'fecha_programada' => date('Y-m-d', strtotime('+3 days'))],
+        (object) ['id' => 2, 'compostera_nombre' => 'Compostera Parque Norte', 'tipo_mantenimiento' => 'Revisión humedad', 'fecha_programada' => date('Y-m-d', strtotime('+5 days'))],
+    ];
+
+    $composteras_atencion = [
+        (object) ['id' => 4, 'nombre' => 'Compostera Mercado', 'estado' => 'llena'],
+    ];
+}
+
+$co2_evitado = $total_kg_organicos_mes * 0.5;
+$compost_producido = $total_kg_organicos_mes * 0.3;
+
+$estados_labels = [
+    'llena' => __('Compostera llena', 'flavor-chat-ia'),
+    'mantenimiento' => __('En mantenimiento', 'flavor-chat-ia'),
+    'problema' => __('Problema reportado', 'flavor-chat-ia'),
+];
+
+$estado_badge_classes = [
+    'llena' => 'dm-badge--warning',
+    'mantenimiento' => 'dm-badge--info',
+    'problema' => 'dm-badge--error',
+];
 ?>
 
-<div class="wrap flavor-compostaje-dashboard">
-    <h1 class="wp-heading-inline">
-        <span class="dashicons dashicons-admin-site"></span>
-        <?php echo esc_html__('Dashboard de Compostaje', 'flavor-chat-ia'); ?>
-    </h1>
+<div class="dm-dashboard">
+    <?php
+    if (function_exists('flavor_dashboard_help')) {
+        flavor_dashboard_help('compostaje');
+    }
+    ?>
 
-    <hr class="wp-header-end">
+    <?php if ($usando_demo): ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Se muestran datos de ejemplo. Los datos reales aparecerán cuando se registren composteras.', 'flavor-chat-ia'); ?>
+    </div>
+    <?php endif; ?>
 
-    <!-- Tarjetas de estadísticas principales -->
-    <div class="flavor-stats-cards">
-        <div class="flavor-stat-card flavor-stat-primary">
-            <div class="flavor-stat-icon">
-                <span class="dashicons dashicons-admin-site"></span>
+    <!-- Cabecera -->
+    <div class="dm-header">
+        <div class="dm-header__title">
+            <span class="dashicons dashicons-carrot"></span>
+            <div>
+                <h1><?php esc_html_e('Dashboard de Compostaje', 'flavor-chat-ia'); ?></h1>
+                <p><?php esc_html_e('Gestiona el compostaje comunitario', 'flavor-chat-ia'); ?></p>
             </div>
-            <div class="flavor-stat-content">
-                <h3><?php echo number_format($total_composteras); ?></h3>
-                <p><?php echo esc_html__('Composteras Activas', 'flavor-chat-ia'); ?></p>
+        </div>
+        <div class="dm-header__actions">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-nueva')); ?>" class="dm-btn dm-btn--primary">
+                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nueva Compostera', 'flavor-chat-ia'); ?>
+            </a>
+        </div>
+    </div>
+
+    <!-- Accesos rápidos -->
+    <div class="dm-quick-links">
+        <h2 class="dm-quick-links__title">
+            <span class="dashicons dashicons-admin-links"></span>
+            <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
+        </h2>
+        <div class="dm-quick-links__grid">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-composteras')); ?>" class="dm-quick-links__item dm-quick-links__item--success">
+                <span class="dashicons dashicons-carrot"></span>
+                <span><?php esc_html_e('Composteras', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-participantes')); ?>" class="dm-quick-links__item">
+                <span class="dashicons dashicons-groups"></span>
+                <span><?php esc_html_e('Participantes', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-mantenimiento')); ?>" class="dm-quick-links__item dm-quick-links__item--warning">
+                <span class="dashicons dashicons-admin-tools"></span>
+                <span><?php esc_html_e('Mantenimiento', 'flavor-chat-ia'); ?></span>
+            </a>
+            <a href="<?php echo esc_url(home_url('/mi-portal/compostaje/')); ?>" class="dm-quick-links__item dm-quick-links__item--purple">
+                <span class="dashicons dashicons-external"></span>
+                <span><?php esc_html_e('Portal', 'flavor-chat-ia'); ?></span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas principales -->
+    <div class="dm-stats-grid dm-stats-grid--4">
+        <div class="dm-stat-card dm-stat-card--primary">
+            <span class="dashicons dashicons-carrot dm-stat-card__icon"></span>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($total_composteras); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Composteras Activas', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
-        <div class="flavor-stat-card flavor-stat-success">
-            <div class="flavor-stat-icon">
-                <span class="dashicons dashicons-chart-line"></span>
-            </div>
-            <div class="flavor-stat-content">
-                <h3><?php echo number_format($total_kg_organicos_mes, 2); ?> kg</h3>
-                <p><?php echo esc_html__('Orgánicos Compostados', 'flavor-chat-ia'); ?></p>
-            </div>
-        </div>
-
-        <div class="flavor-stat-card flavor-stat-info">
-            <div class="flavor-stat-icon">
-                <span class="dashicons dashicons-clipboard"></span>
-            </div>
-            <div class="flavor-stat-content">
-                <h3><?php echo number_format($total_depositos_mes); ?></h3>
-                <p><?php echo esc_html__('Depósitos este Mes', 'flavor-chat-ia'); ?></p>
+        <div class="dm-stat-card dm-stat-card--eco">
+            <span class="dashicons dashicons-chart-line dm-stat-card__icon"></span>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($total_kg_organicos_mes, 1); ?> kg</div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Orgánicos Compostados', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
 
-        <div class="flavor-stat-card flavor-stat-warning">
-            <div class="flavor-stat-icon">
-                <span class="dashicons dashicons-yes"></span>
+        <div class="dm-stat-card dm-stat-card--info">
+            <span class="dashicons dashicons-clipboard dm-stat-card__icon"></span>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($total_depositos_mes); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Depósitos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></div>
             </div>
-            <div class="flavor-stat-content">
-                <h3><?php echo number_format($compost_listo); ?></h3>
-                <p><?php echo esc_html__('Compost Listo', 'flavor-chat-ia'); ?></p>
+        </div>
+
+        <div class="dm-stat-card dm-stat-card--warning">
+            <span class="dashicons dashicons-yes dm-stat-card__icon"></span>
+            <div class="dm-stat-card__content">
+                <div class="dm-stat-card__value"><?php echo number_format_i18n($compost_listo); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Compost Listo', 'flavor-chat-ia'); ?></div>
             </div>
         </div>
     </div>
 
-    <div class="flavor-dashboard-grid">
-        <!-- Gráfica de evolución -->
-        <div class="flavor-dashboard-widget flavor-widget-large">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Evolución del Compostaje', 'flavor-chat-ia'); ?></h2>
-                <span class="flavor-widget-subtitle"><?php echo esc_html__('Últimos 6 meses', 'flavor-chat-ia'); ?></span>
-            </div>
-            <div class="flavor-widget-body">
-                <canvas id="grafica-evolucion-compostaje" height="80"></canvas>
-            </div>
+    <!-- Gráfica de evolución -->
+    <div class="dm-card dm-card--chart">
+        <div class="dm-card__header">
+            <h3>
+                <span class="dashicons dashicons-chart-area"></span>
+                <?php esc_html_e('Evolución del Compostaje', 'flavor-chat-ia'); ?>
+            </h3>
+            <span class="dm-card__meta"><?php esc_html_e('Últimos 6 meses', 'flavor-chat-ia'); ?></span>
         </div>
+        <div class="dm-card__chart">
+            <canvas id="grafica-evolucion-compostaje"></canvas>
+        </div>
+    </div>
 
+    <!-- Grid de contenido -->
+    <div class="dm-grid dm-grid--2">
         <!-- Composteras más activas -->
-        <div class="flavor-dashboard-widget">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Composteras Más Activas', 'flavor-chat-ia'); ?></h2>
-                <span class="flavor-widget-subtitle"><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></span>
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-carrot"></span>
+                    <?php esc_html_e('Composteras Más Activas', 'flavor-chat-ia'); ?>
+                </h3>
+                <span class="dm-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
             </div>
-            <div class="flavor-widget-body">
-                <?php if (!empty($stats_composteras)) : ?>
-                    <div class="flavor-composteras-list">
-                        <?php foreach ($stats_composteras as $compostera) : ?>
-                            <div class="flavor-compostera-item">
-                                <div class="flavor-compostera-info">
-                                    <strong><?php echo esc_html($compostera->nombre); ?></strong>
-                                    <span><?php echo sprintf(__('%s kg • %s depósitos', 'flavor-chat-ia'), number_format($compostera->total_kg_depositado, 2), number_format($compostera->total_depositos)); ?></span>
-                                </div>
-                                <div class="flavor-compostera-nivel">
-                                    <div class="flavor-nivel-bar">
-                                        <div class="flavor-nivel-fill" style="width: <?php echo min(100, ($compostera->nivel_llenado ?? 0)); ?>%;"></div>
-                                    </div>
-                                    <span><?php echo ($compostera->nivel_llenado ?? 0); ?>%</span>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
+            <?php if (!empty($stats_composteras)): ?>
+            <div class="dm-item-list">
+                <?php foreach ($stats_composteras as $compostera): ?>
+                <div class="dm-item-list__item">
+                    <div class="dm-item-list__content">
+                        <strong><?php echo esc_html($compostera->nombre); ?></strong>
+                        <span class="dm-item-list__muted">
+                            <?php printf(__('%s kg - %s depósitos', 'flavor-chat-ia'), number_format_i18n($compostera->total_kg_depositado, 1), number_format_i18n($compostera->total_depositos)); ?>
+                        </span>
                     </div>
-                <?php else : ?>
-                    <p class="flavor-no-data"><?php echo esc_html__('No hay datos disponibles.', 'flavor-chat-ia'); ?></p>
-                <?php endif; ?>
+                    <div class="dm-item-list__meta">
+                        <div class="dm-progress dm-progress--sm" style="width: 80px;">
+                            <div class="dm-progress__fill <?php echo ($compostera->nivel_llenado ?? 0) >= 80 ? 'dm-progress__fill--warning' : 'dm-progress__fill--success'; ?>" style="width: <?php echo min(100, ($compostera->nivel_llenado ?? 0)); ?>%;"></div>
+                        </div>
+                        <span class="dm-text-sm"><?php echo ($compostera->nivel_llenado ?? 0); ?>%</span>
+                    </div>
+                </div>
+                <?php endforeach; ?>
             </div>
+            <?php else: ?>
+            <div class="dm-empty">
+                <span class="dashicons dashicons-carrot"></span>
+                <p><?php esc_html_e('No hay datos disponibles', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php endif; ?>
         </div>
 
         <!-- Usuarios más activos -->
-        <div class="flavor-dashboard-widget">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Usuarios Más Activos', 'flavor-chat-ia'); ?></h2>
-                <span class="flavor-widget-subtitle"><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></span>
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-awards"></span>
+                    <?php esc_html_e('Usuarios Más Activos', 'flavor-chat-ia'); ?>
+                </h3>
+                <span class="dm-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
             </div>
-            <div class="flavor-widget-body">
-                <?php if (!empty($usuarios_activos_compostaje)) : ?>
-                    <div class="flavor-ranking-list">
-                        <?php foreach ($usuarios_activos_compostaje as $index => $usuario) : ?>
-                            <div class="flavor-ranking-item">
-                                <span class="flavor-ranking-position"><?php echo $index + 1; ?></span>
-                                <div class="flavor-ranking-user">
-                                    <?php echo get_avatar($usuario->ID, 32); ?>
-                                    <div class="flavor-ranking-info">
-                                        <strong><?php echo esc_html($usuario->display_name); ?></strong>
-                                        <span><?php echo sprintf(__('%s kg • %s depósitos', 'flavor-chat-ia'), number_format($usuario->total_kg, 2), number_format($usuario->total_depositos)); ?></span>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
+            <?php if (!empty($usuarios_activos_compostaje)): ?>
+            <div class="dm-ranking">
+                <?php foreach ($usuarios_activos_compostaje as $index => $usuario): ?>
+                <div class="dm-ranking__item">
+                    <div class="dm-ranking__number"><?php echo $index + 1; ?></div>
+                    <div class="dm-ranking__content">
+                        <span class="dm-ranking__label"><?php echo esc_html($usuario->display_name); ?></span>
+                        <span class="dm-ranking__value"><?php printf(__('%s kg - %s dep.', 'flavor-chat-ia'), number_format_i18n($usuario->total_kg, 1), $usuario->total_depositos); ?></span>
                     </div>
-                <?php else : ?>
-                    <p class="flavor-no-data"><?php echo esc_html__('No hay usuarios activos este mes.', 'flavor-chat-ia'); ?></p>
-                <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
             </div>
+            <?php else: ?>
+            <div class="dm-empty">
+                <span class="dashicons dashicons-groups"></span>
+                <p><?php esc_html_e('No hay usuarios activos este mes', 'flavor-chat-ia'); ?></p>
+            </div>
+            <?php endif; ?>
         </div>
 
         <!-- Mantenimiento pendiente -->
-        <div class="flavor-dashboard-widget">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Mantenimiento Pendiente', 'flavor-chat-ia'); ?></h2>
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-admin-tools"></span>
+                    <?php esc_html_e('Mantenimiento Pendiente', 'flavor-chat-ia'); ?>
+                </h3>
             </div>
-            <div class="flavor-widget-body">
-                <?php if (!empty($mantenimiento_pendiente)) : ?>
-                    <div class="flavor-alert-list">
-                        <?php foreach ($mantenimiento_pendiente as $tarea) : ?>
-                            <div class="flavor-alert-item">
-                                <span class="dashicons dashicons-admin-tools"></span>
-                                <div class="flavor-alert-content">
-                                    <strong><?php echo esc_html($tarea->compostera_nombre); ?></strong>
-                                    <span><?php echo esc_html($tarea->tipo_mantenimiento); ?> - <?php echo date_i18n(get_option('date_format'), strtotime($tarea->fecha_programada)); ?></span>
-                                </div>
-                                <a href="<?php echo admin_url('admin.php?page=flavor-compostaje-mantenimiento&id=' . $tarea->id); ?>" class="button button-small">
-                                    <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
+            <?php if (!empty($mantenimiento_pendiente)): ?>
+            <div class="dm-item-list">
+                <?php foreach ($mantenimiento_pendiente as $tarea): ?>
+                <div class="dm-item-list__item">
+                    <div class="dm-item-list__content">
+                        <strong><?php echo esc_html($tarea->compostera_nombre); ?></strong>
+                        <span class="dm-item-list__muted"><?php echo esc_html($tarea->tipo_mantenimiento); ?></span>
                     </div>
-                <?php else : ?>
-                    <div class="flavor-success-message">
-                        <span class="dashicons dashicons-yes-alt"></span>
-                        <p><?php echo esc_html__('No hay tareas de mantenimiento pendientes.', 'flavor-chat-ia'); ?></p>
+                    <div class="dm-item-list__meta">
+                        <span class="dm-badge dm-badge--sm dm-badge--warning">
+                            <?php echo date_i18n('j M', strtotime($tarea->fecha_programada)); ?>
+                        </span>
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-mantenimiento&id=' . $tarea->id)); ?>" class="dm-btn dm-btn--sm dm-btn--ghost">
+                            <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                        </a>
                     </div>
-                <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
             </div>
+            <?php else: ?>
+            <div class="dm-alert dm-alert--success">
+                <span class="dashicons dashicons-yes-alt"></span>
+                <?php esc_html_e('No hay tareas de mantenimiento pendientes.', 'flavor-chat-ia'); ?>
+            </div>
+            <?php endif; ?>
         </div>
 
         <!-- Composteras que necesitan atención -->
-        <div class="flavor-dashboard-widget">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Composteras que Necesitan Atención', 'flavor-chat-ia'); ?></h2>
+        <div class="dm-card">
+            <div class="dm-card__header">
+                <h3>
+                    <span class="dashicons dashicons-warning"></span>
+                    <?php esc_html_e('Requieren Atención', 'flavor-chat-ia'); ?>
+                </h3>
             </div>
-            <div class="flavor-widget-body">
-                <?php if (!empty($composteras_atencion)) : ?>
-                    <div class="flavor-alert-list">
-                        <?php foreach ($composteras_atencion as $compostera) : ?>
-                            <div class="flavor-alert-item flavor-alert-<?php echo esc_attr($compostera->estado); ?>">
-                                <span class="dashicons dashicons-location-alt"></span>
-                                <div class="flavor-alert-content">
-                                    <strong><?php echo esc_html($compostera->nombre); ?></strong>
-                                    <span>
-                                        <?php
-                                        $estados_labels = [
-                                            'llena' => __('Compostera llena', 'flavor-chat-ia'),
-                                            'mantenimiento' => __('En mantenimiento', 'flavor-chat-ia'),
-                                            'problema' => __('Problema reportado', 'flavor-chat-ia'),
-                                        ];
-                                        echo esc_html($estados_labels[$compostera->estado] ?? $compostera->estado);
-                                        ?>
-                                    </span>
-                                </div>
-                                <a href="<?php echo admin_url('admin.php?page=flavor-compostaje-composteras&action=edit&id=' . $compostera->id); ?>" class="button button-small">
-                                    <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
+            <?php if (!empty($composteras_atencion)): ?>
+            <div class="dm-item-list">
+                <?php foreach ($composteras_atencion as $compostera): ?>
+                <div class="dm-item-list__item">
+                    <div class="dm-item-list__content">
+                        <strong><?php echo esc_html($compostera->nombre); ?></strong>
+                        <span class="dm-badge dm-badge--sm <?php echo esc_attr($estado_badge_classes[$compostera->estado] ?? 'dm-badge--secondary'); ?>">
+                            <?php echo esc_html($estados_labels[$compostera->estado] ?? $compostera->estado); ?>
+                        </span>
                     </div>
-                <?php else : ?>
-                    <div class="flavor-success-message">
-                        <span class="dashicons dashicons-yes-alt"></span>
-                        <p><?php echo esc_html__('Todas las composteras están operativas.', 'flavor-chat-ia'); ?></p>
-                    </div>
-                <?php endif; ?>
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-compostaje-composteras&action=edit&id=' . $compostera->id)); ?>" class="dm-btn dm-btn--sm dm-btn--ghost">
+                        <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
+                    </a>
+                </div>
+                <?php endforeach; ?>
             </div>
+            <?php else: ?>
+            <div class="dm-alert dm-alert--success">
+                <span class="dashicons dashicons-yes-alt"></span>
+                <?php esc_html_e('Todas las composteras están operativas.', 'flavor-chat-ia'); ?>
+            </div>
+            <?php endif; ?>
         </div>
+    </div>
 
-        <!-- Impacto ambiental -->
-        <div class="flavor-dashboard-widget flavor-widget-highlight">
-            <div class="flavor-widget-header">
-                <h2><?php echo esc_html__('Impacto Ambiental', 'flavor-chat-ia'); ?></h2>
-                <span class="flavor-widget-subtitle"><?php echo esc_html__('Este mes', 'flavor-chat-ia'); ?></span>
+    <!-- Impacto ambiental -->
+    <div class="dm-card dm-card--eco-highlight">
+        <div class="dm-card__header">
+            <h3>
+                <span class="dashicons dashicons-palmtree"></span>
+                <?php esc_html_e('Impacto Ambiental', 'flavor-chat-ia'); ?>
+            </h3>
+            <span class="dm-card__meta"><?php esc_html_e('Este mes', 'flavor-chat-ia'); ?></span>
+        </div>
+        <div class="dm-eco-stats">
+            <div class="dm-eco-stat">
+                <span class="dashicons dashicons-cloud"></span>
+                <div class="dm-eco-stat__content">
+                    <strong><?php echo number_format_i18n($co2_evitado, 1); ?> kg</strong>
+                    <span><?php esc_html_e('CO₂ evitado', 'flavor-chat-ia'); ?></span>
+                </div>
             </div>
-            <div class="flavor-widget-body">
-                <div class="flavor-impact-stats">
-                    <div class="flavor-impact-item">
-                        <span class="dashicons dashicons-admin-site"></span>
-                        <div>
-                            <strong><?php echo number_format($total_kg_organicos_mes * 0.5, 2); ?> kg</strong>
-                            <p><?php echo esc_html__('CO₂ evitado', 'flavor-chat-ia'); ?></p>
-                        </div>
-                    </div>
-                    <div class="flavor-impact-item">
-                        <span class="dashicons dashicons-carrot"></span>
-                        <div>
-                            <strong><?php echo number_format($total_kg_organicos_mes * 0.3, 2); ?> kg</strong>
-                            <p><?php echo esc_html__('Compost producido', 'flavor-chat-ia'); ?></p>
-                        </div>
-                    </div>
-                    <div class="flavor-impact-item">
-                        <span class="dashicons dashicons-trash"></span>
-                        <div>
-                            <strong><?php echo number_format($total_kg_organicos_mes, 2); ?> kg</strong>
-                            <p><?php echo esc_html__('Residuos evitados', 'flavor-chat-ia'); ?></p>
-                        </div>
-                    </div>
+            <div class="dm-eco-stat">
+                <span class="dashicons dashicons-carrot"></span>
+                <div class="dm-eco-stat__content">
+                    <strong><?php echo number_format_i18n($compost_producido, 1); ?> kg</strong>
+                    <span><?php esc_html_e('Compost producido', 'flavor-chat-ia'); ?></span>
+                </div>
+            </div>
+            <div class="dm-eco-stat">
+                <span class="dashicons dashicons-trash"></span>
+                <div class="dm-eco-stat__content">
+                    <strong><?php echo number_format_i18n($total_kg_organicos_mes, 1); ?> kg</strong>
+                    <span><?php esc_html_e('Residuos evitados', 'flavor-chat-ia'); ?></span>
                 </div>
             </div>
         </div>
@@ -305,44 +407,42 @@ $composteras_atencion = $wpdb->get_results("
 </div>
 
 <script>
-jQuery(document).ready(function($) {
-    const datosEvolucion = <?php echo json_encode($evolucion_compostaje); ?>;
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof Chart === 'undefined') return;
 
-    // Gráfica de evolución mensual
-    const ctxEvolucion = document.getElementById('grafica-evolucion-compostaje');
+    var rootStyles = getComputedStyle(document.documentElement);
+    var successColor = rootStyles.getPropertyValue('--dm-success').trim() || '#10b981';
+
+    var datosEvolucion = <?php echo wp_json_encode($evolucion_compostaje); ?>;
+
+    var ctxEvolucion = document.getElementById('grafica-evolucion-compostaje');
     if (ctxEvolucion) {
         new Chart(ctxEvolucion, {
             type: 'line',
             data: {
-                labels: datosEvolucion.map(d => {
-                    const [year, month] = d.mes.split('-');
-                    const date = new Date(year, month - 1);
+                labels: datosEvolucion.map(function(d) {
+                    var parts = d.mes.split('-');
+                    var date = new Date(parts[0], parts[1] - 1);
                     return date.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
                 }),
                 datasets: [{
                     label: '<?php echo esc_js(__('Kg compostados', 'flavor-chat-ia')); ?>',
-                    data: datosEvolucion.map(d => parseFloat(d.total_kg)),
-                    borderColor: '#28a745',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    data: datosEvolucion.map(function(d) { return parseFloat(d.total_kg); }),
+                    borderColor: successColor,
+                    backgroundColor: successColor + '1A',
                     tension: 0.4,
                     fill: true
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
                 scales: {
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            callback: function(value) {
-                                return value + ' kg';
-                            }
+                            callback: function(value) { return value + ' kg'; }
                         }
                     }
                 }
@@ -351,296 +451,3 @@ jQuery(document).ready(function($) {
     }
 });
 </script>
-
-<style>
-.flavor-compostaje-dashboard {
-    padding: 20px;
-}
-
-.flavor-stats-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.flavor-stat-card {
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-left: 4px solid;
-}
-
-.flavor-stat-primary { border-left-color: #0073aa; }
-.flavor-stat-success { border-left-color: #28a745; }
-.flavor-stat-info { border-left-color: #17a2b8; }
-.flavor-stat-warning { border-left-color: #ffc107; }
-
-.flavor-stat-icon {
-    font-size: 40px;
-    opacity: 0.8;
-}
-
-.flavor-stat-content h3 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 600;
-}
-
-.flavor-stat-content p {
-    margin: 5px 0 0;
-    color: #666;
-    font-size: 14px;
-}
-
-.flavor-dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 20px;
-}
-
-.flavor-widget-large {
-    grid-column: span 2;
-}
-
-.flavor-dashboard-widget {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    overflow: hidden;
-}
-
-.flavor-widget-header {
-    padding: 20px;
-    border-bottom: 1px solid #eee;
-}
-
-.flavor-widget-header h2 {
-    margin: 0;
-    font-size: 18px;
-}
-
-.flavor-widget-subtitle {
-    color: #666;
-    font-size: 13px;
-}
-
-.flavor-widget-body {
-    padding: 20px;
-}
-
-.flavor-composteras-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.flavor-compostera-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 6px;
-}
-
-.flavor-compostera-info {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.flavor-compostera-info strong {
-    font-size: 14px;
-}
-
-.flavor-compostera-info span {
-    font-size: 12px;
-    color: #666;
-}
-
-.flavor-compostera-nivel {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.flavor-nivel-bar {
-    width: 100px;
-    height: 10px;
-    background: #e0e0e0;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-.flavor-nivel-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #28a745, #20c997);
-    transition: width 0.3s;
-}
-
-.flavor-ranking-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.flavor-ranking-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 6px;
-}
-
-.flavor-ranking-position {
-    font-size: 20px;
-    font-weight: 700;
-    color: #0073aa;
-    min-width: 30px;
-    text-align: center;
-}
-
-.flavor-ranking-user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-}
-
-.flavor-ranking-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.flavor-ranking-info strong {
-    font-size: 14px;
-}
-
-.flavor-ranking-info span {
-    font-size: 12px;
-    color: #666;
-}
-
-.flavor-alert-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.flavor-alert-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px;
-    border-radius: 6px;
-    background: #f8f9fa;
-}
-
-.flavor-alert-item.flavor-alert-llena {
-    background: #fff3cd;
-}
-
-.flavor-alert-item.flavor-alert-mantenimiento {
-    background: #f8d7da;
-}
-
-.flavor-alert-item.flavor-alert-problema {
-    background: #f8d7da;
-}
-
-.flavor-alert-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.flavor-alert-content strong {
-    font-size: 14px;
-}
-
-.flavor-alert-content span {
-    font-size: 12px;
-    color: #666;
-}
-
-.flavor-success-message {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px;
-    background: #d4edda;
-    border-radius: 6px;
-    color: #155724;
-}
-
-.flavor-widget-highlight {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: #fff;
-}
-
-.flavor-widget-highlight .flavor-widget-header {
-    border-bottom-color: rgba(255,255,255,0.2);
-}
-
-.flavor-widget-highlight h2,
-.flavor-widget-highlight .flavor-widget-subtitle {
-    color: #fff;
-}
-
-.flavor-impact-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
-}
-
-.flavor-impact-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.flavor-impact-item .dashicons {
-    font-size: 40px;
-    opacity: 0.9;
-}
-
-.flavor-impact-item strong {
-    display: block;
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-.flavor-impact-item p {
-    margin: 0;
-    font-size: 13px;
-    opacity: 0.9;
-}
-
-.flavor-no-data {
-    text-align: center;
-    color: #666;
-    padding: 40px 20px;
-}
-
-@media (max-width: 1200px) {
-    .flavor-widget-large {
-        grid-column: span 1;
-    }
-}
-
-@media (max-width: 768px) {
-    .flavor-dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .flavor-stats-cards {
-        grid-template-columns: 1fr;
-    }
-}
-</style>

@@ -319,6 +319,19 @@ document.addEventListener('alpine:init', function() {
                 if (gridSize) {
                     this.gridSize = parseInt(gridSize, 10);
                 }
+
+                // Grid visible - restaurar después de que el canvas exista
+                var self = this;
+                var gridVisible = localStorage.getItem('vbp_grid_visible');
+                if (gridVisible === 'true') {
+                    setTimeout(function() {
+                        var canvas = document.querySelector('.vbp-canvas');
+                        if (canvas) {
+                            canvas.classList.add('vbp-show-grid');
+                            self.updateGridStyles();
+                        }
+                    }, 500);
+                }
             },
 
             /**
@@ -2147,18 +2160,38 @@ document.addEventListener('alpine:init', function() {
 
                 var isVisible = canvas.classList.toggle('vbp-show-grid');
 
-                // Crear CSS de grid si no existe
-                if (!document.getElementById('vbp-grid-styles')) {
-                    var style = document.createElement('style');
-                    style.id = 'vbp-grid-styles';
-                    style.textContent = '.vbp-canvas.vbp-show-grid { background-image: linear-gradient(rgba(139, 180, 250, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 180, 250, 0.1) 1px, transparent 1px); background-size: 20px 20px; }';
-                    document.head.appendChild(style);
-                }
+                // Actualizar estilos de grid con el tamaño actual
+                this.updateGridStyles();
 
                 // Guardar preferencia
                 localStorage.setItem('vbp_grid_visible', isVisible);
 
                 this.showNotification(isVisible ? '⊞ Cuadrícula visible' : '⊞ Cuadrícula oculta');
+            },
+
+            /**
+             * Actualizar estilos de grid con el tamaño configurado
+             */
+            updateGridStyles: function() {
+                var size = this.gridSize || 8;
+                var styleId = 'vbp-grid-styles';
+                var existingStyle = document.getElementById(styleId);
+
+                var css = '.vbp-canvas.vbp-show-grid { ' +
+                    'background-image: ' +
+                    'linear-gradient(rgba(139, 180, 250, 0.15) 1px, transparent 1px), ' +
+                    'linear-gradient(90deg, rgba(139, 180, 250, 0.15) 1px, transparent 1px); ' +
+                    'background-size: ' + size + 'px ' + size + 'px; ' +
+                    'background-position: -1px -1px; }';
+
+                if (existingStyle) {
+                    existingStyle.textContent = css;
+                } else {
+                    var style = document.createElement('style');
+                    style.id = styleId;
+                    style.textContent = css;
+                    document.head.appendChild(style);
+                }
             },
 
             /**
@@ -3959,7 +3992,7 @@ document.addEventListener('alpine:init', function() {
 
                 html += '<div style="margin-bottom: 16px;">';
                 html += '<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">';
-                html += '<input type="checkbox" id="vbp-grid-visible" ' + (document.querySelector('.vbp-canvas.vbp-grid-visible') ? 'checked' : '') + '>';
+                html += '<input type="checkbox" id="vbp-grid-visible" ' + (document.querySelector('.vbp-canvas.vbp-show-grid') ? 'checked' : '') + '>';
                 html += '<span style="font-size: 14px;">Mostrar grid visual</span></label>';
                 html += '</div>';
 
@@ -3982,18 +4015,26 @@ document.addEventListener('alpine:init', function() {
                 localStorage.setItem('vbp_grid_size', gridSize);
                 localStorage.setItem('vbp_grid_visible', gridVisible);
 
+                // Actualizar estilos de grid
+                this.updateGridStyles();
+
                 var canvas = document.querySelector('.vbp-canvas');
                 if (canvas) {
                     if (gridVisible) {
-                        canvas.classList.add('vbp-grid-visible');
-                        canvas.style.backgroundSize = gridSize + 'px ' + gridSize + 'px';
+                        canvas.classList.add('vbp-show-grid');
                     } else {
-                        canvas.classList.remove('vbp-grid-visible');
+                        canvas.classList.remove('vbp-show-grid');
+                    }
+
+                    if (snapEnabled) {
+                        canvas.classList.add('vbp-snap-grid-enabled');
+                    } else {
+                        canvas.classList.remove('vbp-snap-grid-enabled');
                     }
                 }
 
                 document.getElementById('vbp-grid-settings-modal').remove();
-                this.showNotification('Configuración de grid guardada');
+                this.showNotification('⊞ Configuración de grid guardada');
             },
 
             /**

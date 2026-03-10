@@ -2,6 +2,11 @@
  * Visual Builder Pro - Responsive CSS
  */
 
+/* Base styles - Desktop first */
+.vbp-sidebar-mobile-header {
+    display: none;
+}
+
 /* ============================================
    Large Desktop (< 1400px)
    ============================================ */

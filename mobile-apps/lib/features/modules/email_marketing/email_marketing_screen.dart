@@ -58,7 +58,7 @@ class _EmailMarketingScreenState extends ConsumerState<EmailMarketingScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () => _crearNuevaCampana(context),
         icon: const Icon(Icons.add),
         label: const Text('Nueva campana'),
       ),
@@ -234,6 +234,152 @@ class _EmailMarketingScreenState extends ConsumerState<EmailMarketingScreen> {
       ],
     );
   }
+
+  void _crearNuevaCampana(BuildContext context) {
+    final nombreController = TextEditingController();
+    final asuntoController = TextEditingController();
+    final contenidoController = TextEditingController();
+    bool creando = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.email, color: Colors.blue),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Text(
+                        'Nueva Campana',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: nombreController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre de la campana',
+                    prefixIcon: Icon(Icons.campaign),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: asuntoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Asunto del email',
+                    prefixIcon: Icon(Icons.subject),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: contenidoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Contenido del email',
+                    prefixIcon: Icon(Icons.article),
+                    border: OutlineInputBorder(),
+                    alignLabelWithHint: true,
+                  ),
+                  maxLines: 5,
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: creando
+                        ? null
+                        : () async {
+                            if (nombreController.text.isEmpty || asuntoController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Completa nombre y asunto')),
+                              );
+                              return;
+                            }
+                            setModalState(() => creando = true);
+                            await _guardarCampana(
+                              nombreController.text,
+                              asuntoController.text,
+                              contenidoController.text,
+                            );
+                            if (context.mounted) Navigator.pop(context);
+                          },
+                    icon: creando
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.save),
+                    label: Text(creando ? 'Guardando...' : 'Crear campana'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _guardarCampana(String nombre, String asunto, String contenido) async {
+    try {
+      final clienteApi = ref.read(apiClientProvider);
+      final respuesta = await clienteApi.post('/email-marketing/campanas', data: {
+        'nombre': nombre,
+        'asunto': asunto,
+        'contenido': contenido,
+        'estado': 'borrador',
+      });
+      if (mounted) {
+        if (respuesta.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Campana creada correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _cargarDatos();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(respuesta.error ?? 'Error al crear campana'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
 }
 
 class CampanaDetalleScreen extends ConsumerStatefulWidget {
@@ -288,7 +434,10 @@ class _CampanaDetalleScreenState extends ConsumerState<CampanaDetalleScreen> {
       appBar: AppBar(
         title: const Text('Detalle de Campana'),
         actions: [
-          IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () => _editarCampana(context),
+          ),
         ],
       ),
       body: _cargando
@@ -329,13 +478,196 @@ class _CampanaDetalleScreenState extends ConsumerState<CampanaDetalleScreen> {
                         ),
                         const SizedBox(height: 16),
                         FilledButton.icon(
-                          onPressed: () {},
+                          onPressed: () => _enviarCampana(context),
                           icon: const Icon(Icons.send),
                           label: const Text('Enviar ahora'),
                         ),
                       ],
                     ),
     );
+  }
+
+  void _editarCampana(BuildContext context) {
+    if (_datosCampana == null) return;
+
+    final nombreController = TextEditingController(
+        text: _datosCampana!['nombre'] ?? _datosCampana!['titulo'] ?? '');
+    final asuntoController =
+        TextEditingController(text: _datosCampana!['asunto'] ?? '');
+    final contenidoController =
+        TextEditingController(text: _datosCampana!['contenido'] ?? '');
+    bool guardando = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.edit, color: Colors.blue),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Text(
+                        'Editar Campana',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: nombreController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: asuntoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Asunto',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: contenidoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Contenido',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 5,
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: guardando
+                        ? null
+                        : () async {
+                            setModalState(() => guardando = true);
+                            final clienteApi = ref.read(apiClientProvider);
+                            final respuesta = await clienteApi.put(
+                              '/email-marketing/campanas/${widget.campanaId}',
+                              data: {
+                                'nombre': nombreController.text,
+                                'asunto': asuntoController.text,
+                                'contenido': contenidoController.text,
+                              },
+                            );
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                              if (respuesta.success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Campana actualizada'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                                _cargarDetalle();
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(respuesta.error ?? 'Error'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                    icon: guardando
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.save),
+                    label: Text(guardando ? 'Guardando...' : 'Guardar cambios'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _enviarCampana(BuildContext context) async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Enviar campana'),
+        content: const Text(
+          '¿Estas seguro de enviar esta campana ahora? Esta accion no se puede deshacer.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Enviar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmar != true || !mounted) return;
+
+    try {
+      final clienteApi = ref.read(apiClientProvider);
+      final respuesta = await clienteApi.post(
+        '/email-marketing/campanas/${widget.campanaId}/enviar',
+      );
+
+      if (mounted) {
+        if (respuesta.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Campana enviada correctamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _cargarDetalle();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(respuesta.error ?? 'Error al enviar'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 
   Widget _construirFilaEstadistica(String etiqueta, String valor) {

@@ -102,7 +102,7 @@
                 .done(function(res) {
                     if (res.success) {
                         FlavorColectivos.toast(res.mensaje || 'Has abandonado el colectivo', 'success');
-                        setTimeout(() => window.location.href = '/colectivos/', 1500);
+                        setTimeout(() => window.location.href = '/mi-portal/colectivos/', 1500);
                     } else {
                         FlavorColectivos.toast(res.error || 'Error', 'error');
                         $btn.prop('disabled', false);
@@ -142,7 +142,7 @@
                         $form.hide();
                         $('#col-mensaje-exito').show();
                         $('#col-ir-colectivo').attr('href',
-                            '/colectivos/?colectivo=' + res.colectivo_id);
+                            '/mi-portal/colectivos/?colectivo=' + res.colectivo_id);
                     } else {
                         FlavorColectivos.toast(res.error || 'Error', 'error');
                         $btn.prop('disabled', false)

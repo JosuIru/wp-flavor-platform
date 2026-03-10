@@ -6,6 +6,36 @@
  * @since 2.0.0
  */
 
+/**
+ * Sanitiza elementos asegurando que todos tengan ID válido
+ * @param {Array} elements - Array de elementos
+ * @returns {Array} - Array filtrado con elementos válidos
+ */
+function sanitizeElements(elements) {
+    if (!Array.isArray(elements)) return [];
+    return elements.filter(function(el) {
+        // Filtrar elementos sin ID o con ID undefined/null
+        if (!el || typeof el.id !== 'string' || !el.id) {
+            console.warn('[VBP] Elemento inválido filtrado:', el);
+            return false;
+        }
+        return true;
+    }).map(function(el) {
+        // Asegurar que cada elemento tenga las propiedades mínimas
+        return Object.assign({
+            id: el.id,
+            type: el.type || 'unknown',
+            name: el.name || el.type || 'Elemento',
+            visible: el.visible !== false,
+            locked: el.locked || false,
+            data: el.data || {},
+            styles: el.styles || {},
+            children: el.children || [],
+            _version: el._version || 0
+        }, el);
+    });
+}
+
 function vbpApp() {
     return {
         // Getter seguro para elementos del store
@@ -135,7 +165,7 @@ function vbpApp() {
 
         initEditor: function(datos) {
             if (datos && datos.elements) {
-                Alpine.store('vbp').elements = datos.elements;
+                Alpine.store('vbp').elements = sanitizeElements(datos.elements);
             }
             if (datos && datos.settings) {
                 Alpine.store('vbp').settings = datos.settings;
@@ -199,12 +229,38 @@ function vbpApp() {
             });
         },
 
-        // Inicializar elementos interactivos (accordion, tabs)
+        // Inicializar elementos interactivos (accordion, tabs, elementos hijos)
         initInteractiveElements: function() {
             var self = this;
 
-            // Delegación de eventos para accordion y tabs
+            // Delegación de eventos para accordion, tabs y elementos hijos de contenedores
             document.addEventListener('click', function(e) {
+                // Selección de elementos hijos dentro de contenedores
+                var childElement = e.target.closest('.vbp-element-child');
+                if (childElement) {
+                    var elementId = childElement.getAttribute('data-element-id');
+                    if (elementId) {
+                        e.stopPropagation();
+                        var store = Alpine.store('vbp');
+                        var multiSelect = e.ctrlKey || e.metaKey || e.shiftKey;
+
+                        if (multiSelect) {
+                            store.toggleSelection(elementId);
+                        } else {
+                            store.setSelection([elementId]);
+                        }
+
+                        // Marcar visualmente como seleccionado
+                        document.querySelectorAll('.vbp-element-child.selected').forEach(function(el) {
+                            el.classList.remove('selected');
+                        });
+                        if (store.selection.elementIds.includes(elementId)) {
+                            childElement.classList.add('selected');
+                        }
+                        return;
+                    }
+                }
+
                 // Accordion toggle
                 var accordionHeader = e.target.closest('.vbp-accordion-header');
                 if (accordionHeader) {
@@ -395,7 +451,7 @@ function vbpApp() {
                 if (result.success) {
                     self.documentTitle = result.data.post.title;
                     if (result.data.data) {
-                        Alpine.store('vbp').elements = result.data.data.elements || [];
+                        Alpine.store('vbp').elements = sanitizeElements(result.data.data.elements || []);
                         Alpine.store('vbp').settings = result.data.data.settings || {};
                     }
                 }
@@ -579,7 +635,7 @@ function vbpApp() {
 
             // Si el template tiene elementos directamente, aplicarlos
             if (template.elements) {
-                Alpine.store('vbp').elements = template.elements;
+                Alpine.store('vbp').elements = sanitizeElements(template.elements);
                 if (template.settings) {
                     Alpine.store('vbp').settings = Object.assign({}, Alpine.store('vbp').settings, template.settings);
                 }
@@ -603,7 +659,7 @@ function vbpApp() {
             .then(function(response) { return response.json(); })
             .then(function(result) {
                 if (result.success && result.document) {
-                    Alpine.store('vbp').elements = result.document.elements || [];
+                    Alpine.store('vbp').elements = sanitizeElements(result.document.elements || []);
                     if (result.document.settings) {
                         Alpine.store('vbp').settings = Object.assign({}, Alpine.store('vbp').settings, result.document.settings);
                     }
@@ -945,57 +1001,90 @@ function vbpApp() {
 
             if (type === 'hero') {
                 var heroVariant = element.variant || 'centered';
+
+                // Colores personalizables
+                var tituloColor = data.titulo_color || '#ffffff';
+                var subtituloColor = data.subtitulo_color || '#e0e0e0';
+                var botonFondo = data.boton_color_fondo || primaryColor;
+                var botonTexto = data.boton_color_texto || '#ffffff';
+                var colorFondo = data.color_fondo || '#1a1a2e';
+                var overlayColor = data.overlay_color || 'rgba(0,0,0,0.3)';
+                var overlayOpacity = (data.overlay_opacity || 30) / 100;
+                var alineacion = data.alineacion || 'center';
+                var altura = data.altura || 'auto';
+
+                // Segundo botón
+                var boton2Html = '';
+                if (data.boton_2_texto) {
+                    var boton2Fondo = data.boton_2_color_fondo || 'transparent';
+                    var boton2Texto = data.boton_2_color_texto || '#ffffff';
+                    var boton2Borde = data.boton_2_color_borde || '#ffffff';
+                    boton2Html = ' <a href="' + (data.boton_2_url || '#') + '" contenteditable="true" data-field="boton_2_texto" class="flavor-button flavor-button--secondary" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + boton2Fondo + '; color: ' + boton2Texto + '; border: 2px solid ' + boton2Borde + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight); margin-left: 12px;">' + data.boton_2_texto + '</a>';
+                }
+
+                // Estilo de fondo
                 var bgStyle = data.imagen_fondo
                     ? 'background-image: url(' + data.imagen_fondo + '); background-size: cover; background-position: center;'
-                    : 'background: linear-gradient(135deg, ' + primaryColor + ' 0%, ' + secondaryColor + ' 100%);';
+                    : 'background: ' + colorFondo + ';';
+
+                // Altura de la sección
+                var alturaStyle = altura !== 'auto' ? 'min-height: ' + altura + ';' : '';
 
                 // Variante: Centrado (default)
                 if (heroVariant === 'centered' || heroVariant === 'default') {
-                    return '<section class="vbp-hero vbp-hero--centered flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: center; color: white; ' + bgStyle + customStyle + '">' +
-                        '<div class="vbp-hero-overlay" style="background: rgba(0,0,0,var(--flavor-hero-overlay, 0.3)); padding: 40px; border-radius: ' + cardRadius + '; display: inline-block; max-width: 800px;">' +
-                        '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título Principal') + '</h1>' +
-                        '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; opacity: 0.9; margin: 0 0 32px; line-height: var(--flavor-line-height-base);">' + (data.subtitulo || 'Subtítulo descriptivo que explica el valor de tu propuesta') + '</p>' +
-                        '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: white; color: ' + primaryColor + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight); font-size: var(--flavor-button-font-size);">' + (data.boton_texto || 'Comenzar ahora') + '</a>' +
-                        '</div></section>';
+                    return '<section class="vbp-hero vbp-hero--centered flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: ' + alineacion + '; ' + alturaStyle + ' display: flex; align-items: center; justify-content: center; ' + bgStyle + customStyle + '">' +
+                        '<div class="vbp-hero-overlay" style="background: ' + overlayColor + '; padding: 40px; border-radius: ' + cardRadius + '; display: inline-block; max-width: 800px;">' +
+                        '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; font-family: var(--flavor-font-headings); color: ' + tituloColor + ';">' + (data.titulo || 'Título Principal') + '</h1>' +
+                        '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; margin: 0 0 32px; line-height: var(--flavor-line-height-base); color: ' + subtituloColor + ';">' + (data.subtitulo || 'Subtítulo descriptivo que explica el valor de tu propuesta') + '</p>' +
+                        '<div class="vbp-hero-buttons">' +
+                        '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + botonFondo + '; color: ' + botonTexto + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight); font-size: var(--flavor-button-font-size);">' + (data.boton_texto || 'Comenzar ahora') + '</a>' +
+                        boton2Html +
+                        '</div></div></section>';
                 }
 
                 // Variante: Izquierda
                 if (heroVariant === 'left') {
-                    return '<section class="vbp-hero vbp-hero--left flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: left; color: white; ' + bgStyle + customStyle + '">' +
-                        '<div style="max-width: 600px; background: rgba(0,0,0,0.3); padding: 40px; border-radius: ' + cardRadius + ';">' +
-                        '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título Principal') + '</h1>' +
-                        '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; opacity: 0.9; margin: 0 0 32px; line-height: var(--flavor-line-height-base);">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
-                        '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: white; color: ' + primaryColor + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight);">' + (data.boton_texto || 'Comenzar') + '</a>' +
-                        '</div></section>';
+                    return '<section class="vbp-hero vbp-hero--left flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: left; ' + alturaStyle + ' display: flex; align-items: center; ' + bgStyle + customStyle + '">' +
+                        '<div style="max-width: 600px; background: ' + overlayColor + '; padding: 40px; border-radius: ' + cardRadius + ';">' +
+                        '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; font-family: var(--flavor-font-headings); color: ' + tituloColor + ';">' + (data.titulo || 'Título Principal') + '</h1>' +
+                        '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; margin: 0 0 32px; line-height: var(--flavor-line-height-base); color: ' + subtituloColor + ';">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
+                        '<div class="vbp-hero-buttons">' +
+                        '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + botonFondo + '; color: ' + botonTexto + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight);">' + (data.boton_texto || 'Comenzar') + '</a>' +
+                        boton2Html +
+                        '</div></div></section>';
                 }
 
                 // Variante: Dividido (Split)
                 if (heroVariant === 'split') {
                     return '<section class="vbp-hero vbp-hero--split flavor-component" style="padding: 0; display: grid; grid-template-columns: 1fr 1fr; min-height: 500px; ' + customStyle + '">' +
-                        '<div style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; display: flex; flex-direction: column; justify-content: center; background: ' + primaryColor + ';">' +
-                        '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; color: white; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título Principal') + '</h1>' +
-                        '<p contenteditable="true" data-field="subtitulo" style="font-size: 18px; margin: 0 0 32px; color: rgba(255,255,255,0.9); line-height: var(--flavor-line-height-base);">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
-                        '<div><a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: white; color: ' + primaryColor + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight);">' + (data.boton_texto || 'Comenzar') + '</a></div>' +
+                        '<div style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; display: flex; flex-direction: column; justify-content: center; background: ' + colorFondo + ';">' +
+                        '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; color: ' + tituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título Principal') + '</h1>' +
+                        '<p contenteditable="true" data-field="subtitulo" style="font-size: 18px; margin: 0 0 32px; color: ' + subtituloColor + '; line-height: var(--flavor-line-height-base);">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
+                        '<div class="vbp-hero-buttons"><a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + botonFondo + '; color: ' + botonTexto + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight);">' + (data.boton_texto || 'Comenzar') + '</a>' + boton2Html + '</div>' +
                         '</div>' +
-                        '<div style="' + bgStyle + '"></div></section>';
+                        '<div style="' + (data.imagen_fondo ? 'background-image: url(' + data.imagen_fondo + '); background-size: cover; background-position: center;' : 'background: linear-gradient(135deg, ' + primaryColor + ' 0%, ' + secondaryColor + ' 100%);') + '"></div></section>';
                 }
 
                 // Variante: Minimalista
                 if (heroVariant === 'minimal') {
-                    return '<section class="vbp-hero vbp-hero--minimal flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: center; background: white; ' + customStyle + '">' +
-                        '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; color: ' + textColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título Principal') + '</h1>' +
-                        '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; margin: 0 0 32px; color: ' + textMutedColor + '; max-width: 600px; margin-left: auto; margin-right: auto; line-height: var(--flavor-line-height-base);">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
-                        '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + primaryColor + '; color: white; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight);">' + (data.boton_texto || 'Comenzar') + '</a>' +
-                        '</section>';
+                    return '<section class="vbp-hero vbp-hero--minimal flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: center; background: ' + colorFondo + '; ' + alturaStyle + ' display: flex; align-items: center; justify-content: center; flex-direction: column; ' + customStyle + '">' +
+                        '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; color: ' + tituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título Principal') + '</h1>' +
+                        '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; margin: 0 0 32px; color: ' + subtituloColor + '; max-width: 600px; line-height: var(--flavor-line-height-base);">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
+                        '<div class="vbp-hero-buttons">' +
+                        '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + botonFondo + '; color: ' + botonTexto + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight);">' + (data.boton_texto || 'Comenzar') + '</a>' +
+                        boton2Html +
+                        '</div></section>';
                 }
 
                 // Fallback al centered
-                return '<section class="vbp-hero flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: center; color: white; ' + bgStyle + customStyle + '">' +
-                    '<div class="vbp-hero-overlay" style="background: rgba(0,0,0,0.3); padding: 40px; border-radius: ' + cardRadius + '; display: inline-block; max-width: 800px;">' +
-                    '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título Principal') + '</h1>' +
-                    '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; opacity: 0.9; margin: 0 0 32px;">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
-                    '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: white; color: ' + primaryColor + '; border-radius: ' + buttonRadius + '; text-decoration: none;">' + (data.boton_texto || 'Comenzar') + '</a>' +
-                    '</div></section>';
+                return '<section class="vbp-hero flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: ' + alineacion + '; ' + alturaStyle + ' display: flex; align-items: center; justify-content: center; ' + bgStyle + customStyle + '">' +
+                    '<div class="vbp-hero-overlay" style="background: ' + overlayColor + '; padding: 40px; border-radius: ' + cardRadius + '; display: inline-block; max-width: 800px;">' +
+                    '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; font-family: var(--flavor-font-headings); color: ' + tituloColor + ';">' + (data.titulo || 'Título Principal') + '</h1>' +
+                    '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; margin: 0 0 32px; color: ' + subtituloColor + ';">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
+                    '<div class="vbp-hero-buttons">' +
+                    '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + botonFondo + '; color: ' + botonTexto + '; border-radius: ' + buttonRadius + '; text-decoration: none;">' + (data.boton_texto || 'Comenzar') + '</a>' +
+                    boton2Html +
+                    '</div></div></section>';
             }
 
             if (type === 'features') {
@@ -1006,18 +1095,42 @@ function vbpApp() {
                     { icono: '📱', titulo: 'Responsive', descripcion: 'Funciona en todos los dispositivos' }
                 ];
 
-                var featuresHtml = '<section class="vbp-features vbp-features--' + featuresVariant + ' flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + customStyle + '">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; color: ' + textColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Nuestras Características') + '</h2>';
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || textColor;
+                var secTextoColor = data.texto_color || textMutedColor;
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#ffffff';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var cardFondo = data.card_fondo_color || '#ffffff';
+                var cardBorde = data.card_borde_color || '#e5e7eb';
+                var cardTitulo = data.card_titulo_color || textColor;
+                var cardTexto = data.card_texto_color || textMutedColor;
+                var cardIcono = data.card_icono_color || primaryColor;
+                var acentoColor = data.acento_color || primaryColor;
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                var featuresHtml = '<section class="vbp-features vbp-features--' + featuresVariant + ' flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + customStyle + '">' +
+                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; color: ' + secTituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Nuestras Características') + '</h2>';
 
                 // Variante: Grid (default)
                 if (featuresVariant === 'grid' || featuresVariant === 'default') {
                     featuresHtml += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: ' + gridGap + '; max-width: var(--flavor-container-max); margin: 0 auto;">';
                     for (var i = 0; i < items.length; i++) {
                         var item = items[i];
-                        featuresHtml += '<div class="vbp-feature-card flavor-card" style="padding: ' + cardPadding + '; background: white; border-radius: ' + cardRadius + '; box-shadow: var(--flavor-card-shadow); text-align: center;">' +
-                            '<div style="font-size: 48px; margin-bottom: 16px;">' + (item.icono || '✨') + '</div>' +
-                            '<h3 contenteditable="true" style="font-size: 20px; margin: 0 0 12px; color: ' + textColor + '; font-family: var(--flavor-font-headings);">' + (item.titulo || 'Característica') + '</h3>' +
-                            '<p contenteditable="true" style="margin: 0; color: ' + textMutedColor + '; line-height: var(--flavor-line-height-base);">' + (item.descripcion || 'Descripción') + '</p></div>';
+                        featuresHtml += '<div class="vbp-feature-card flavor-card" style="padding: ' + cardPadding + '; background: ' + cardFondo + '; border: 1px solid ' + cardBorde + '; border-radius: ' + cardRadius + '; box-shadow: var(--flavor-card-shadow); text-align: center;">' +
+                            '<div style="font-size: 48px; margin-bottom: 16px; color: ' + cardIcono + ';">' + (item.icono || '✨') + '</div>' +
+                            '<h3 contenteditable="true" style="font-size: 20px; margin: 0 0 12px; color: ' + cardTitulo + '; font-family: var(--flavor-font-headings);">' + (item.titulo || 'Característica') + '</h3>' +
+                            '<p contenteditable="true" style="margin: 0; color: ' + cardTexto + '; line-height: var(--flavor-line-height-base);">' + (item.descripcion || 'Descripción') + '</p></div>';
                     }
                     featuresHtml += '</div>';
                 }
@@ -1027,10 +1140,10 @@ function vbpApp() {
                     featuresHtml += '<div style="max-width: 700px; margin: 0 auto;">';
                     for (var i = 0; i < items.length; i++) {
                         var item = items[i];
-                        featuresHtml += '<div style="display: flex; align-items: flex-start; gap: 20px; padding: 24px 0; border-bottom: 1px solid #e0e0e0;">' +
-                            '<div style="font-size: 32px; flex-shrink: 0;">' + (item.icono || '✨') + '</div>' +
-                            '<div style="flex: 1;"><h3 contenteditable="true" style="font-size: 18px; margin: 0 0 8px; color: ' + textColor + ';">' + (item.titulo || 'Característica') + '</h3>' +
-                            '<p contenteditable="true" style="margin: 0; color: ' + textMutedColor + ';">' + (item.descripcion || 'Descripción') + '</p></div></div>';
+                        featuresHtml += '<div style="display: flex; align-items: flex-start; gap: 20px; padding: 24px 0; border-bottom: 1px solid ' + cardBorde + ';">' +
+                            '<div style="font-size: 32px; flex-shrink: 0; color: ' + cardIcono + ';">' + (item.icono || '✨') + '</div>' +
+                            '<div style="flex: 1;"><h3 contenteditable="true" style="font-size: 18px; margin: 0 0 8px; color: ' + cardTitulo + ';">' + (item.titulo || 'Característica') + '</h3>' +
+                            '<p contenteditable="true" style="margin: 0; color: ' + cardTexto + ';">' + (item.descripcion || 'Descripción') + '</p></div></div>';
                     }
                     featuresHtml += '</div>';
                 }
@@ -1041,9 +1154,9 @@ function vbpApp() {
                     for (var i = 0; i < items.length; i++) {
                         var item = items[i];
                         featuresHtml += '<div style="text-align: center; flex: 0 0 200px;">' +
-                            '<div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, ' + primaryColor + ', ' + secondaryColor + '); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px;">' + (item.icono || '✨') + '</div>' +
-                            '<h3 contenteditable="true" style="font-size: 18px; margin: 0 0 8px; color: ' + textColor + ';">' + (item.titulo || 'Característica') + '</h3>' +
-                            '<p contenteditable="true" style="margin: 0; font-size: 14px; color: ' + textMutedColor + ';">' + (item.descripcion || 'Descripción') + '</p></div>';
+                            '<div style="width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, ' + acentoColor + ', ' + secondaryColor + '); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; color: white;">' + (item.icono || '✨') + '</div>' +
+                            '<h3 contenteditable="true" style="font-size: 18px; margin: 0 0 8px; color: ' + cardTitulo + ';">' + (item.titulo || 'Característica') + '</h3>' +
+                            '<p contenteditable="true" style="margin: 0; font-size: 14px; color: ' + cardTexto + ';">' + (item.descripcion || 'Descripción') + '</p></div>';
                     }
                     featuresHtml += '</div>';
                 }
@@ -1053,10 +1166,10 @@ function vbpApp() {
                     featuresHtml += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: ' + gridGap + '; max-width: var(--flavor-container-max); margin: 0 auto;">';
                     for (var i = 0; i < items.length; i++) {
                         var item = items[i];
-                        featuresHtml += '<div style="padding: ' + cardPadding + '; background: white; border: 2px solid #e0e0e0; border-radius: ' + cardRadius + '; text-align: left; transition: border-color 0.2s;">' +
-                            '<div style="width: 48px; height: 48px; background: ' + primaryColor + '15; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px;">' + (item.icono || '✨') + '</div>' +
-                            '<h3 contenteditable="true" style="font-size: 18px; margin: 0 0 8px; color: ' + textColor + ';">' + (item.titulo || 'Característica') + '</h3>' +
-                            '<p contenteditable="true" style="margin: 0; color: ' + textMutedColor + '; font-size: 14px;">' + (item.descripcion || 'Descripción') + '</p></div>';
+                        featuresHtml += '<div style="padding: ' + cardPadding + '; background: ' + cardFondo + '; border: 2px solid ' + cardBorde + '; border-radius: ' + cardRadius + '; text-align: left; transition: border-color 0.2s;">' +
+                            '<div style="width: 48px; height: 48px; background: ' + acentoColor + '15; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; color: ' + cardIcono + ';">' + (item.icono || '✨') + '</div>' +
+                            '<h3 contenteditable="true" style="font-size: 18px; margin: 0 0 8px; color: ' + cardTitulo + ';">' + (item.titulo || 'Característica') + '</h3>' +
+                            '<p contenteditable="true" style="margin: 0; color: ' + cardTexto + '; font-size: 14px;">' + (item.descripcion || 'Descripción') + '</p></div>';
                     }
                     featuresHtml += '</div>';
                 }
@@ -1071,20 +1184,42 @@ function vbpApp() {
                     { texto: 'Excelente servicio, muy recomendado. Ha superado todas nuestras expectativas.', autor: 'María García', cargo: 'CEO, Empresa X' }
                 ];
 
-                var testiHtml = '<section class="vbp-testimonials vbp-testimonials--' + testimonialsVariant + ' flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; background: #f8f9fa; ' + customStyle + '">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Lo que dicen nuestros clientes') + '</h2>';
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || textColor;
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#f8f9fa';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var cardFondo = data.card_fondo_color || '#ffffff';
+                var cardBorde = data.card_borde_color || '#e5e7eb';
+                var cardTitulo = data.card_titulo_color || textColor;
+                var cardTexto = data.card_texto_color || textMutedColor;
+                var acentoColor = data.acento_color || primaryColor;
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                var testiHtml = '<section class="vbp-testimonials vbp-testimonials--' + testimonialsVariant + ' flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + customStyle + '">' +
+                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; color: ' + secTituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Lo que dicen nuestros clientes') + '</h2>';
 
                 // Variante: Tarjetas (default)
                 if (testimonialsVariant === 'cards' || testimonialsVariant === 'default') {
                     testiHtml += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: ' + gridGap + '; max-width: 1000px; margin: 0 auto;">';
                     for (var t = 0; t < testimonios.length; t++) {
                         var testi = testimonios[t];
-                        testiHtml += '<div class="flavor-card" style="background: white; padding: ' + cardPadding + '; border-radius: ' + cardRadius + '; box-shadow: var(--flavor-card-shadow);">' +
-                            '<p contenteditable="true" style="font-size: var(--flavor-font-size-base); line-height: var(--flavor-line-height-base); color: ' + textColor + '; margin: 0 0 20px; font-style: italic;">"' + (testi.texto || 'Testimonio') + '"</p>' +
+                        testiHtml += '<div class="flavor-card" style="background: ' + cardFondo + '; border: 1px solid ' + cardBorde + '; padding: ' + cardPadding + '; border-radius: ' + cardRadius + '; box-shadow: var(--flavor-card-shadow);">' +
+                            '<p contenteditable="true" style="font-size: var(--flavor-font-size-base); line-height: var(--flavor-line-height-base); color: ' + cardTexto + '; margin: 0 0 20px; font-style: italic;">"' + (testi.texto || 'Testimonio') + '"</p>' +
                             '<div style="display: flex; align-items: center; gap: 12px;">' +
-                            '<div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, ' + primaryColor + ', ' + secondaryColor + '); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">' + (testi.autor ? testi.autor.charAt(0) : 'U') + '</div>' +
-                            '<div><div contenteditable="true" style="font-weight: 600; color: ' + textColor + ';">' + (testi.autor || 'Nombre') + '</div>' +
-                            '<div contenteditable="true" style="font-size: 14px; color: ' + textMutedColor + ';">' + (testi.cargo || 'Cargo') + '</div></div></div></div>';
+                            '<div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, ' + acentoColor + ', ' + secondaryColor + '); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">' + (testi.autor ? testi.autor.charAt(0) : 'U') + '</div>' +
+                            '<div><div contenteditable="true" style="font-weight: 600; color: ' + cardTitulo + ';">' + (testi.autor || 'Nombre') + '</div>' +
+                            '<div contenteditable="true" style="font-size: 14px; color: ' + cardTexto + ';">' + (testi.cargo || 'Cargo') + '</div></div></div></div>';
                     }
                     testiHtml += '</div>';
                 }
@@ -1094,13 +1229,13 @@ function vbpApp() {
                     testiHtml += '<div style="max-width: 800px; margin: 0 auto;">';
                     for (var t = 0; t < testimonios.length; t++) {
                         var testi = testimonios[t];
-                        testiHtml += '<div style="text-align: center; padding: 40px 0; border-bottom: 1px solid #e0e0e0;">' +
-                            '<div style="font-size: 64px; color: ' + primaryColor + '; line-height: 1; margin-bottom: 20px;">❝</div>' +
-                            '<p contenteditable="true" style="font-size: 24px; line-height: 1.6; color: ' + textColor + '; margin: 0 0 24px; font-style: italic;">' + (testi.texto || 'Testimonio') + '</p>' +
+                        testiHtml += '<div style="text-align: center; padding: 40px 0; border-bottom: 1px solid ' + cardBorde + ';">' +
+                            '<div style="font-size: 64px; color: ' + acentoColor + '; line-height: 1; margin-bottom: 20px;">❝</div>' +
+                            '<p contenteditable="true" style="font-size: 24px; line-height: 1.6; color: ' + cardTitulo + '; margin: 0 0 24px; font-style: italic;">' + (testi.texto || 'Testimonio') + '</p>' +
                             '<div style="display: flex; align-items: center; justify-content: center; gap: 12px;">' +
-                            '<div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, ' + primaryColor + ', ' + secondaryColor + '); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 20px;">' + (testi.autor ? testi.autor.charAt(0) : 'U') + '</div>' +
-                            '<div style="text-align: left;"><div contenteditable="true" style="font-weight: 600; color: ' + textColor + '; font-size: 16px;">' + (testi.autor || 'Nombre') + '</div>' +
-                            '<div contenteditable="true" style="color: ' + textMutedColor + ';">' + (testi.cargo || 'Cargo') + '</div></div></div></div>';
+                            '<div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, ' + acentoColor + ', ' + secondaryColor + '); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 20px;">' + (testi.autor ? testi.autor.charAt(0) : 'U') + '</div>' +
+                            '<div style="text-align: left;"><div contenteditable="true" style="font-weight: 600; color: ' + cardTitulo + '; font-size: 16px;">' + (testi.autor || 'Nombre') + '</div>' +
+                            '<div contenteditable="true" style="color: ' + cardTexto + ';">' + (testi.cargo || 'Cargo') + '</div></div></div></div>';
                     }
                     testiHtml += '</div>';
                 }
@@ -1110,10 +1245,10 @@ function vbpApp() {
                     testiHtml += '<div style="max-width: 700px; margin: 0 auto;">';
                     for (var t = 0; t < testimonios.length; t++) {
                         var testi = testimonios[t];
-                        testiHtml += '<div style="padding: 32px 0; border-left: 4px solid ' + primaryColor + '; padding-left: 24px; margin-bottom: 24px;">' +
-                            '<p contenteditable="true" style="font-size: 18px; line-height: 1.7; color: ' + textColor + '; margin: 0 0 16px;">' + (testi.texto || 'Testimonio') + '</p>' +
-                            '<div><span contenteditable="true" style="font-weight: 600; color: ' + textColor + ';">— ' + (testi.autor || 'Nombre') + '</span>' +
-                            '<span contenteditable="true" style="color: ' + textMutedColor + ';">, ' + (testi.cargo || 'Cargo') + '</span></div></div>';
+                        testiHtml += '<div style="padding: 32px 0; border-left: 4px solid ' + acentoColor + '; padding-left: 24px; margin-bottom: 24px;">' +
+                            '<p contenteditable="true" style="font-size: 18px; line-height: 1.7; color: ' + cardTitulo + '; margin: 0 0 16px;">' + (testi.texto || 'Testimonio') + '</p>' +
+                            '<div><span contenteditable="true" style="font-weight: 600; color: ' + cardTitulo + ';">— ' + (testi.autor || 'Nombre') + '</span>' +
+                            '<span contenteditable="true" style="color: ' + cardTexto + ';">, ' + (testi.cargo || 'Cargo') + '</span></div></div>';
                     }
                     testiHtml += '</div>';
                 }
@@ -1121,17 +1256,17 @@ function vbpApp() {
                 // Variante: Carrusel (visual placeholder)
                 if (testimonialsVariant === 'carousel') {
                     testiHtml += '<div style="max-width: 700px; margin: 0 auto; position: relative;">' +
-                        '<div style="text-align: center; padding: 40px; background: white; border-radius: ' + cardRadius + '; box-shadow: var(--flavor-card-shadow);">';
+                        '<div style="text-align: center; padding: 40px; background: ' + cardFondo + '; border: 1px solid ' + cardBorde + '; border-radius: ' + cardRadius + '; box-shadow: var(--flavor-card-shadow);">';
                     var firstTesti = testimonios[0] || {};
-                    testiHtml += '<div style="font-size: 48px; color: ' + primaryColor + '; margin-bottom: 16px;">❝</div>' +
-                        '<p contenteditable="true" style="font-size: 20px; line-height: 1.6; color: ' + textColor + '; margin: 0 0 24px;">' + (firstTesti.texto || 'Testimonio') + '</p>' +
-                        '<div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, ' + primaryColor + ', ' + secondaryColor + '); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px; margin: 0 auto 12px;">' + (firstTesti.autor ? firstTesti.autor.charAt(0) : 'U') + '</div>' +
-                        '<div contenteditable="true" style="font-weight: 600; color: ' + textColor + ';">' + (firstTesti.autor || 'Nombre') + '</div>' +
-                        '<div contenteditable="true" style="color: ' + textMutedColor + '; font-size: 14px;">' + (firstTesti.cargo || 'Cargo') + '</div>' +
+                    testiHtml += '<div style="font-size: 48px; color: ' + acentoColor + '; margin-bottom: 16px;">❝</div>' +
+                        '<p contenteditable="true" style="font-size: 20px; line-height: 1.6; color: ' + cardTitulo + '; margin: 0 0 24px;">' + (firstTesti.texto || 'Testimonio') + '</p>' +
+                        '<div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, ' + acentoColor + ', ' + secondaryColor + '); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px; margin: 0 auto 12px;">' + (firstTesti.autor ? firstTesti.autor.charAt(0) : 'U') + '</div>' +
+                        '<div contenteditable="true" style="font-weight: 600; color: ' + cardTitulo + ';">' + (firstTesti.autor || 'Nombre') + '</div>' +
+                        '<div contenteditable="true" style="color: ' + cardTexto + '; font-size: 14px;">' + (firstTesti.cargo || 'Cargo') + '</div>' +
                         '</div>' +
                         '<div style="display: flex; justify-content: center; gap: 8px; margin-top: 20px;">';
                     for (var d = 0; d < testimonios.length; d++) {
-                        testiHtml += '<div style="width: 10px; height: 10px; border-radius: 50%; background: ' + (d === 0 ? primaryColor : '#ccc') + ';"></div>';
+                        testiHtml += '<div style="width: 10px; height: 10px; border-radius: 50%; background: ' + (d === 0 ? acentoColor : cardBorde) + ';"></div>';
                     }
                     testiHtml += '</div></div>';
                 }
@@ -1146,33 +1281,81 @@ function vbpApp() {
                     { nombre: 'Pro', precio: '29', periodo: '/mes', caracteristicas: ['25 usuarios', '100GB almacenamiento', 'Soporte prioritario'], destacado: true },
                     { nombre: 'Enterprise', precio: '99', periodo: '/mes', caracteristicas: ['Usuarios ilimitados', '1TB almacenamiento', 'Soporte 24/7'], destacado: false }
                 ];
-                var html = '<section class="vbp-pricing flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + customStyle + '">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 16px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Planes y Precios') + '</h2>' +
-                    '<p contenteditable="true" data-field="subtitulo" style="text-align: center; color: ' + textMutedColor + '; margin: 0 0 48px;">' + (data.subtitulo || 'Elige el plan que mejor se adapte a tus necesidades') + '</p>' +
+
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || textColor;
+                var secSubtituloColor = data.subtitulo_color || textMutedColor;
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#ffffff';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var cardFondo = data.card_fondo_color || '#ffffff';
+                var cardBorde = data.card_borde_color || '#e5e7eb';
+                var cardTitulo = data.card_titulo_color || textColor;
+                var cardTexto = data.card_texto_color || textMutedColor;
+                var acentoColor = data.acento_color || primaryColor;
+                var botonFondo = data.boton_color_fondo || primaryColor;
+                var botonTexto = data.boton_color_texto || '#ffffff';
+                var destacadoFondo = data.destacado_fondo || '#eff6ff';
+                var destacadoBorde = data.destacado_borde || acentoColor;
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                var html = '<section class="vbp-pricing flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + customStyle + '">' +
+                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 16px; color: ' + secTituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Planes y Precios') + '</h2>' +
+                    '<p contenteditable="true" data-field="subtitulo" style="text-align: center; color: ' + secSubtituloColor + '; margin: 0 0 48px;">' + (data.subtitulo || 'Elige el plan que mejor se adapte a tus necesidades') + '</p>' +
                     '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: ' + gridGap + '; max-width: 1000px; margin: 0 auto;">';
                 for (var p = 0; p < planes.length; p++) {
                     var plan = planes[p];
-                    var destacadoStyle = plan.destacado ? 'transform: scale(1.05); border: 2px solid ' + primaryColor + ';' : 'border: 1px solid #e0e0e0;';
-                    html += '<div class="flavor-card" style="background: white; padding: ' + cardPadding + '; border-radius: ' + cardRadius + '; text-align: center; ' + destacadoStyle + '">' +
-                        (plan.destacado ? '<div style="background: ' + primaryColor + '; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; display: inline-block; margin-bottom: 16px;">MÁS POPULAR</div>' : '') +
-                        '<h3 contenteditable="true" style="font-size: 24px; margin: 0 0 8px; font-family: var(--flavor-font-headings);">' + (plan.nombre || 'Plan') + '</h3>' +
-                        '<div style="font-size: 48px; font-weight: 700; color: ' + primaryColor + '; margin: 16px 0;">' + (plan.precio || '0') + '<span style="font-size: 16px; color: ' + textMutedColor + ';">' + (plan.periodo || '/mes') + '</span></div>' +
+                    var destacadoStyle = plan.destacado ? 'transform: scale(1.05); border: 2px solid ' + destacadoBorde + '; background: ' + destacadoFondo + ';' : 'border: 1px solid ' + cardBorde + '; background: ' + cardFondo + ';';
+                    html += '<div class="flavor-card" style="padding: ' + cardPadding + '; border-radius: ' + cardRadius + '; text-align: center; ' + destacadoStyle + '">' +
+                        (plan.destacado ? '<div style="background: ' + acentoColor + '; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; display: inline-block; margin-bottom: 16px;">MÁS POPULAR</div>' : '') +
+                        '<h3 contenteditable="true" style="font-size: 24px; margin: 0 0 8px; color: ' + cardTitulo + '; font-family: var(--flavor-font-headings);">' + (plan.nombre || 'Plan') + '</h3>' +
+                        '<div style="font-size: 48px; font-weight: 700; color: ' + acentoColor + '; margin: 16px 0;">' + (plan.precio || '0') + '<span style="font-size: 16px; color: ' + cardTexto + ';">' + (plan.periodo || '/mes') + '</span></div>' +
                         '<ul style="list-style: none; padding: 0; margin: 24px 0; text-align: left;">';
                     var caracteristicas = plan.caracteristicas || [];
                     for (var c = 0; c < caracteristicas.length; c++) {
-                        html += '<li style="padding: 8px 0; color: ' + textColor + ';"><span style="color: var(--flavor-success); margin-right: 8px;">✓</span>' + caracteristicas[c] + '</li>';
+                        html += '<li style="padding: 8px 0; color: ' + cardTexto + ';"><span style="color: ' + acentoColor + '; margin-right: 8px;">✓</span>' + caracteristicas[c] + '</li>';
                     }
-                    html += '</ul><button class="flavor-button" style="width: 100%; padding: var(--flavor-button-py); background: ' + (plan.destacado ? primaryColor : '#f0f0f0') + '; color: ' + (plan.destacado ? 'white' : textColor) + '; border: none; border-radius: ' + buttonRadius + '; font-size: var(--flavor-button-font-size); cursor: pointer; font-weight: var(--flavor-button-weight);">Elegir plan</button></div>';
+                    html += '</ul><button class="flavor-button" style="width: 100%; padding: var(--flavor-button-py); background: ' + (plan.destacado ? botonFondo : cardBorde) + '; color: ' + (plan.destacado ? botonTexto : cardTitulo) + '; border: none; border-radius: ' + buttonRadius + '; font-size: var(--flavor-button-font-size); cursor: pointer; font-weight: var(--flavor-button-weight);">Elegir plan</button></div>';
                 }
                 html += '</div></section>';
                 return html;
             }
 
             if (type === 'cta') {
-                return '<section class="vbp-cta flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; background: linear-gradient(135deg, ' + primaryColor + ' 0%, ' + secondaryColor + ' 100%); text-align: center; ' + customStyle + '">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="font-size: 40px; color: white; margin: 0 0 16px; font-family: var(--flavor-font-headings);">' + (data.titulo || '¿Listo para empezar?') + '</h2>' +
-                    '<p contenteditable="true" data-field="subtitulo" style="font-size: 18px; color: rgba(255,255,255,0.9); margin: 0 0 32px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: var(--flavor-line-height-base);">' + (data.subtitulo || 'Únete a miles de usuarios que ya confían en nosotros') + '</p>' +
-                    '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: white; color: ' + primaryColor + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight); font-size: 18px;">' + (data.boton_texto || 'Empezar gratis') + '</a>' +
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || '#ffffff';
+                var secSubtituloColor = data.subtitulo_color || 'rgba(255,255,255,0.9)';
+                var secFondoTipo = data.seccion_fondo_tipo || 'gradient';
+                var secFondoColor = data.seccion_fondo_color || primaryColor;
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var botonFondo = data.boton_color_fondo || '#ffffff';
+                var botonTexto = data.boton_color_texto || primaryColor;
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ' 0%, ' + secGradienteFin + ' 100%);';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                return '<section class="vbp-cta flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + ' text-align: center; ' + customStyle + '">' +
+                    '<h2 contenteditable="true" data-field="titulo" style="font-size: 40px; color: ' + secTituloColor + '; margin: 0 0 16px; font-family: var(--flavor-font-headings);">' + (data.titulo || '¿Listo para empezar?') + '</h2>' +
+                    '<p contenteditable="true" data-field="subtitulo" style="font-size: 18px; color: ' + secSubtituloColor + '; margin: 0 0 32px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: var(--flavor-line-height-base);">' + (data.subtitulo || 'Únete a miles de usuarios que ya confían en nosotros') + '</p>' +
+                    '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + botonFondo + '; color: ' + botonTexto + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight); font-size: 18px;">' + (data.boton_texto || 'Empezar gratis') + '</a>' +
                     '</section>';
             }
 
@@ -1182,29 +1365,72 @@ function vbpApp() {
                     { pregunta: '¿Puedo cancelar en cualquier momento?', respuesta: 'Sí, puedes cancelar tu suscripción cuando quieras sin penalizaciones.' },
                     { pregunta: '¿Ofrecen soporte técnico?', respuesta: 'Sí, ofrecemos soporte técnico 24/7 para todos nuestros usuarios.' }
                 ];
-                var html = '<section class="vbp-faq flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + customStyle + '">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Preguntas Frecuentes') + '</h2>' +
+
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || textColor;
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#ffffff';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var cardTitulo = data.card_titulo_color || textColor;
+                var cardTexto = data.card_texto_color || textMutedColor;
+                var cardBorde = data.card_borde_color || '#e5e7eb';
+                var acentoColor = data.acento_color || primaryColor;
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                var html = '<section class="vbp-faq flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + customStyle + '">' +
+                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; color: ' + secTituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Preguntas Frecuentes') + '</h2>' +
                     '<div style="max-width: 800px; margin: 0 auto;">';
                 for (var f = 0; f < preguntas.length; f++) {
                     var faq = preguntas[f];
-                    html += '<div style="border-bottom: 1px solid #e0e0e0; padding: 24px 0;">' +
-                        '<h3 contenteditable="true" style="font-size: 18px; margin: 0 0 12px; color: ' + textColor + '; cursor: pointer; font-family: var(--flavor-font-headings);">❓ ' + (faq.pregunta || 'Pregunta') + '</h3>' +
-                        '<p contenteditable="true" style="margin: 0; color: ' + textMutedColor + '; line-height: var(--flavor-line-height-base);">' + (faq.respuesta || 'Respuesta') + '</p></div>';
+                    html += '<div style="border-bottom: 1px solid ' + cardBorde + '; padding: 24px 0;">' +
+                        '<h3 contenteditable="true" style="font-size: 18px; margin: 0 0 12px; color: ' + cardTitulo + '; cursor: pointer; font-family: var(--flavor-font-headings);"><span style="color: ' + acentoColor + ';">❓</span> ' + (faq.pregunta || 'Pregunta') + '</h3>' +
+                        '<p contenteditable="true" style="margin: 0; color: ' + cardTexto + '; line-height: var(--flavor-line-height-base);">' + (faq.respuesta || 'Respuesta') + '</p></div>';
                 }
                 html += '</div></section>';
                 return html;
             }
 
             if (type === 'contact') {
-                return '<section class="vbp-contact flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + customStyle + '">' +
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || textColor;
+                var secSubtituloColor = data.subtitulo_color || textMutedColor;
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#ffffff';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var cardBorde = data.card_borde_color || '#e5e7eb';
+                var botonFondo = data.boton_color_fondo || primaryColor;
+                var botonTexto = data.boton_color_texto || '#ffffff';
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                return '<section class="vbp-contact flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + customStyle + '">' +
                     '<div style="max-width: 600px; margin: 0 auto;">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 16px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Contáctanos') + '</h2>' +
-                    '<p contenteditable="true" data-field="subtitulo" style="text-align: center; color: ' + textMutedColor + '; margin: 0 0 32px;">' + (data.subtitulo || 'Estaremos encantados de ayudarte') + '</p>' +
+                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 16px; color: ' + secTituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Contáctanos') + '</h2>' +
+                    '<p contenteditable="true" data-field="subtitulo" style="text-align: center; color: ' + secSubtituloColor + '; margin: 0 0 32px;">' + (data.subtitulo || 'Estaremos encantados de ayudarte') + '</p>' +
                     '<form style="display: flex; flex-direction: column; gap: 16px;">' +
-                    '<input type="text" placeholder="Nombre" style="padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base);">' +
-                    '<input type="email" placeholder="Email" style="padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base);">' +
-                    '<textarea placeholder="Mensaje" rows="4" style="padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base); resize: vertical;"></textarea>' +
-                    '<button type="submit" class="flavor-button flavor-button-primary" style="padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + primaryColor + '; color: white; border: none; border-radius: ' + buttonRadius + '; font-size: var(--flavor-button-font-size); cursor: pointer; font-weight: var(--flavor-button-weight);">Enviar mensaje</button>' +
+                    '<input type="text" placeholder="Nombre" style="padding: 14px 16px; border: 1px solid ' + cardBorde + '; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base);">' +
+                    '<input type="email" placeholder="Email" style="padding: 14px 16px; border: 1px solid ' + cardBorde + '; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base);">' +
+                    '<textarea placeholder="Mensaje" rows="4" style="padding: 14px 16px; border: 1px solid ' + cardBorde + '; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base); resize: vertical;"></textarea>' +
+                    '<button type="submit" class="flavor-button flavor-button-primary" style="padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + botonFondo + '; color: ' + botonTexto + '; border: none; border-radius: ' + buttonRadius + '; font-size: var(--flavor-button-font-size); cursor: pointer; font-weight: var(--flavor-button-weight);">Enviar mensaje</button>' +
                     '</form></div></section>';
             }
 
@@ -1214,16 +1440,37 @@ function vbpApp() {
                     { nombre: 'Carlos López', cargo: 'CTO', bio: 'Experto en tecnología e innovación.' },
                     { nombre: 'María Rodríguez', cargo: 'CMO', bio: 'Especialista en marketing digital.' }
                 ];
-                var html = '<section class="vbp-team flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + customStyle + '">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Nuestro Equipo') + '</h2>' +
+
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || textColor;
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#ffffff';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var cardTitulo = data.card_titulo_color || textColor;
+                var cardTexto = data.card_texto_color || textMutedColor;
+                var acentoColor = data.acento_color || primaryColor;
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                var html = '<section class="vbp-team flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + customStyle + '">' +
+                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; color: ' + secTituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Nuestro Equipo') + '</h2>' +
                     '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: ' + gridGap + '; max-width: 1000px; margin: 0 auto;">';
                 for (var m = 0; m < miembros.length; m++) {
                     var miembro = miembros[m];
                     html += '<div style="text-align: center;">' +
-                        '<div style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, ' + primaryColor + ', ' + secondaryColor + '); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;">' + (miembro.nombre ? miembro.nombre.charAt(0) : '?') + '</div>' +
-                        '<h3 contenteditable="true" style="font-size: 20px; margin: 0 0 4px; font-family: var(--flavor-font-headings);">' + (miembro.nombre || 'Nombre') + '</h3>' +
-                        '<p contenteditable="true" style="color: ' + primaryColor + '; margin: 0 0 12px; font-size: 14px;">' + (miembro.cargo || 'Cargo') + '</p>' +
-                        '<p contenteditable="true" style="color: ' + textMutedColor + '; margin: 0; font-size: 14px; line-height: var(--flavor-line-height-base);">' + (miembro.bio || 'Biografía') + '</p></div>';
+                        '<div style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, ' + acentoColor + ', ' + secondaryColor + '); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;">' + (miembro.nombre ? miembro.nombre.charAt(0) : '?') + '</div>' +
+                        '<h3 contenteditable="true" style="font-size: 20px; margin: 0 0 4px; color: ' + cardTitulo + '; font-family: var(--flavor-font-headings);">' + (miembro.nombre || 'Nombre') + '</h3>' +
+                        '<p contenteditable="true" style="color: ' + acentoColor + '; margin: 0 0 12px; font-size: 14px;">' + (miembro.cargo || 'Cargo') + '</p>' +
+                        '<p contenteditable="true" style="color: ' + cardTexto + '; margin: 0; font-size: 14px; line-height: var(--flavor-line-height-base);">' + (miembro.bio || 'Biografía') + '</p></div>';
                 }
                 html += '</div></section>';
                 return html;
@@ -1236,13 +1483,34 @@ function vbpApp() {
                     { numero: '24/7', label: 'Soporte' },
                     { numero: '50+', label: 'Países' }
                 ];
-                var html = '<section class="vbp-stats flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; background: #1a1a2e; color: white; ' + customStyle + '">' +
+
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || '#ffffff';
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#1a1a2e';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var cardTitulo = data.card_titulo_color || '#ffffff';
+                var cardTexto = data.card_texto_color || 'rgba(255,255,255,0.7)';
+                var acentoColor = data.acento_color || primaryColor;
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                var html = '<section class="vbp-stats flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + ' color: ' + secTituloColor + '; ' + customStyle + '">' +
                     '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: ' + gridGap + '; max-width: 800px; margin: 0 auto; text-align: center;">';
                 for (var s = 0; s < estadisticas.length; s++) {
                     var stat = estadisticas[s];
                     html += '<div>' +
-                        '<div contenteditable="true" style="font-size: 48px; font-weight: 700; color: ' + primaryColor + '; margin-bottom: 8px;">' + (stat.numero || '0') + '</div>' +
-                        '<div contenteditable="true" style="font-size: 14px; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px;">' + (stat.label || 'Estadística') + '</div></div>';
+                        '<div contenteditable="true" style="font-size: 48px; font-weight: 700; color: ' + acentoColor + '; margin-bottom: 8px;">' + (stat.numero || '0') + '</div>' +
+                        '<div contenteditable="true" style="font-size: 14px; color: ' + cardTexto + '; text-transform: uppercase; letter-spacing: 1px;">' + (stat.label || 'Estadística') + '</div></div>';
                 }
                 html += '</div></section>';
                 return html;
@@ -1251,8 +1519,26 @@ function vbpApp() {
             if (type === 'gallery') {
                 var imagenes = data.items || [];
                 var imgRadius = (ds.image_border_radius || 8) + 'px';
-                var html = '<section class="vbp-gallery flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + customStyle + '">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Galería') + '</h2>';
+
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || textColor;
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#ffffff';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                var html = '<section class="vbp-gallery flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + customStyle + '">' +
+                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; color: ' + secTituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Galería') + '</h2>';
                 if (imagenes.length > 0) {
                     html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: ' + gridGap + ';">';
                     for (var g = 0; g < imagenes.length; g++) {
@@ -1272,32 +1558,73 @@ function vbpApp() {
             }
 
             if (type === 'blog') {
-                return '<section class="vbp-blog flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + customStyle + '">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Últimas Noticias') + '</h2>' +
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || textColor;
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#ffffff';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var cardFondo = data.card_fondo_color || '#ffffff';
+                var cardBorde = data.card_borde_color || '#e5e7eb';
+                var cardTitulo = data.card_titulo_color || textColor;
+                var cardTexto = data.card_texto_color || textMutedColor;
+                var acentoColor = data.acento_color || primaryColor;
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                return '<section class="vbp-blog flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + customStyle + '">' +
+                    '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: ' + fontH2 + '; margin: 0 0 48px; color: ' + secTituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Últimas Noticias') + '</h2>' +
                     '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: ' + gridGap + '; max-width: var(--flavor-container-max); margin: 0 auto;">' +
-                    '<div class="flavor-card" style="background: white; border-radius: ' + cardRadius + '; overflow: hidden; box-shadow: var(--flavor-card-shadow);">' +
-                    '<div style="height: 200px; background: linear-gradient(135deg, ' + primaryColor + ', ' + secondaryColor + ');"></div>' +
-                    '<div style="padding: ' + cardPadding + ';"><span style="color: ' + primaryColor + '; font-size: 12px;">CATEGORÍA</span>' +
-                    '<h3 contenteditable="true" style="margin: 8px 0 12px; font-size: 20px; font-family: var(--flavor-font-headings);">Título del artículo</h3>' +
-                    '<p contenteditable="true" style="color: ' + textMutedColor + '; margin: 0 0 16px; line-height: var(--flavor-line-height-base);">Descripción breve del artículo que resume el contenido...</p>' +
-                    '<a href="#" style="color: ' + primaryColor + '; text-decoration: none; font-weight: 500;">Leer más →</a></div></div>' +
-                    '<div class="flavor-card" style="background: white; border-radius: ' + cardRadius + '; overflow: hidden; box-shadow: var(--flavor-card-shadow);">' +
-                    '<div style="height: 200px; background: linear-gradient(135deg, ' + secondaryColor + ', ' + primaryColor + ');"></div>' +
-                    '<div style="padding: ' + cardPadding + ';"><span style="color: ' + primaryColor + '; font-size: 12px;">CATEGORÍA</span>' +
-                    '<h3 contenteditable="true" style="margin: 8px 0 12px; font-size: 20px; font-family: var(--flavor-font-headings);">Otro artículo interesante</h3>' +
-                    '<p contenteditable="true" style="color: ' + textMutedColor + '; margin: 0 0 16px; line-height: var(--flavor-line-height-base);">Más contenido relevante para tus usuarios...</p>' +
-                    '<a href="#" style="color: ' + primaryColor + '; text-decoration: none; font-weight: 500;">Leer más →</a></div></div>' +
+                    '<div class="flavor-card" style="background: ' + cardFondo + '; border: 1px solid ' + cardBorde + '; border-radius: ' + cardRadius + '; overflow: hidden; box-shadow: var(--flavor-card-shadow);">' +
+                    '<div style="height: 200px; background: linear-gradient(135deg, ' + acentoColor + ', ' + secondaryColor + ');"></div>' +
+                    '<div style="padding: ' + cardPadding + ';"><span style="color: ' + acentoColor + '; font-size: 12px;">CATEGORÍA</span>' +
+                    '<h3 contenteditable="true" style="margin: 8px 0 12px; font-size: 20px; color: ' + cardTitulo + '; font-family: var(--flavor-font-headings);">Título del artículo</h3>' +
+                    '<p contenteditable="true" style="color: ' + cardTexto + '; margin: 0 0 16px; line-height: var(--flavor-line-height-base);">Descripción breve del artículo que resume el contenido...</p>' +
+                    '<a href="#" style="color: ' + acentoColor + '; text-decoration: none; font-weight: 500;">Leer más →</a></div></div>' +
+                    '<div class="flavor-card" style="background: ' + cardFondo + '; border: 1px solid ' + cardBorde + '; border-radius: ' + cardRadius + '; overflow: hidden; box-shadow: var(--flavor-card-shadow);">' +
+                    '<div style="height: 200px; background: linear-gradient(135deg, ' + secondaryColor + ', ' + acentoColor + ');"></div>' +
+                    '<div style="padding: ' + cardPadding + ';"><span style="color: ' + acentoColor + '; font-size: 12px;">CATEGORÍA</span>' +
+                    '<h3 contenteditable="true" style="margin: 8px 0 12px; font-size: 20px; color: ' + cardTitulo + '; font-family: var(--flavor-font-headings);">Otro artículo interesante</h3>' +
+                    '<p contenteditable="true" style="color: ' + cardTexto + '; margin: 0 0 16px; line-height: var(--flavor-line-height-base);">Más contenido relevante para tus usuarios...</p>' +
+                    '<a href="#" style="color: ' + acentoColor + '; text-decoration: none; font-weight: 500;">Leer más →</a></div></div>' +
                     '</div></section>';
             }
 
             if (type === 'video-section') {
-                return '<section class="vbp-video flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; background: #1a1a2e; ' + customStyle + '">' +
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || '#ffffff';
+                var secTextoColor = data.texto_color || 'rgba(255,255,255,0.7)';
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#1a1a2e';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var videoFondo = data.card_fondo_color || '#000000';
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                return '<section class="vbp-video flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + customStyle + '">' +
                     '<div style="max-width: 900px; margin: 0 auto; text-align: center;">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="color: white; font-size: ' + fontH2 + '; margin: 0 0 32px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Mira cómo funciona') + '</h2>' +
-                    '<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: ' + cardRadius + '; background: #000;">' +
-                    '<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 64px; cursor: pointer;">▶️</div>' +
+                    '<h2 contenteditable="true" data-field="titulo" style="color: ' + secTituloColor + '; font-size: ' + fontH2 + '; margin: 0 0 32px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Mira cómo funciona') + '</h2>' +
+                    '<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: ' + cardRadius + '; background: ' + videoFondo + ';">' +
+                    '<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: ' + secTituloColor + '; font-size: 64px; cursor: pointer;">▶️</div>' +
                     '</div>' +
-                    '<p contenteditable="true" data-field="descripcion" style="color: rgba(255,255,255,0.7); margin: 24px 0 0; font-size: var(--flavor-font-size-base); line-height: var(--flavor-line-height-base);">' + (data.descripcion || 'Descripción del video') + '</p>' +
+                    '<p contenteditable="true" data-field="descripcion" style="color: ' + secTextoColor + '; margin: 24px 0 0; font-size: var(--flavor-font-size-base); line-height: var(--flavor-line-height-base);">' + (data.descripcion || 'Descripción del video') + '</p>' +
                     '</div></section>';
             }
 
@@ -1390,10 +1717,12 @@ function vbpApp() {
 
             // ============ LAYOUT ============
             if (type === 'container') {
-                var containerMaxWidth = ds.container_max_width ? ds.container_max_width + 'px' : '1200px';
+                var containerMaxWidth = data.max_width || (ds.container_max_width ? ds.container_max_width + 'px' : '1200px');
+                var containerBg = data.background || 'transparent';
+                var containerPadding = data.padding || '20px';
                 var containerChildren = element.children || [];
                 var containerSelf = this;
-                var containerHtml = '<div class="vbp-container vbp-container-dropzone flavor-container" data-container-id="' + element.id + '" style="max-width: ' + (data.maxWidth || containerMaxWidth) + '; margin: 0 auto; padding: 20px; border: 2px dashed ' + primaryColor + '40; min-height: 100px; border-radius: ' + cardRadius + '; ' + customStyle + '">';
+                var containerHtml = '<div class="vbp-container vbp-container-dropzone flavor-container" data-container-id="' + element.id + '" style="max-width: ' + containerMaxWidth + '; margin: 0 auto; padding: ' + containerPadding + '; background: ' + containerBg + '; border: 2px dashed ' + primaryColor + '40; min-height: 100px; border-radius: ' + cardRadius + '; ' + customStyle + '">';
 
                 if (containerChildren.length > 0) {
                     containerHtml += '<div style="display: flex; flex-direction: column; gap: 16px;">';
@@ -1409,10 +1738,13 @@ function vbpApp() {
             }
 
             if (type === 'columns' || type === 'row') {
-                var cols = data.columns || 2;
+                var cols = parseInt(data.columnas) || 2;
+                var colsGap = data.gap ? data.gap + 'px' : gridGap;
+                var colsReverse = data.reverse ? 'direction: rtl;' : '';
+                var colsAlign = data.align || 'stretch';
                 var children = element.children || [];
                 var self = this;
-                var html = '<div class="vbp-columns vbp-container-dropzone" data-container-id="' + element.id + '" style="display: grid; grid-template-columns: repeat(' + cols + ', 1fr); gap: ' + gridGap + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; border-radius: ' + cardRadius + '; min-height: 100px; ' + customStyle + '">';
+                var html = '<div class="vbp-columns vbp-container-dropzone" data-container-id="' + element.id + '" style="display: grid; grid-template-columns: repeat(' + cols + ', 1fr); gap: ' + colsGap + '; align-items: ' + colsAlign + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; border-radius: ' + cardRadius + '; min-height: 100px; ' + colsReverse + customStyle + '">';
                 for (var ci = 0; ci < cols; ci++) {
                     // Filtrar hijos para esta columna
                     var columnChildren = children.filter(function(child) {
@@ -1435,9 +1767,12 @@ function vbpApp() {
             }
 
             if (type === 'grid') {
+                var gridCols = parseInt(data.columnas) || 3;
+                var gridRows = data.filas ? 'repeat(' + parseInt(data.filas) + ', auto)' : 'auto';
+                var gridGapValue = data.gap ? data.gap + 'px' : gridGap;
                 var gridChildren = element.children || [];
                 var gridSelf = this;
-                var gridHtml = '<div class="vbp-grid vbp-container-dropzone flavor-grid" data-container-id="' + element.id + '" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: ' + gridGap + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; min-height: 100px; border-radius: ' + cardRadius + '; ' + customStyle + '">';
+                var gridHtml = '<div class="vbp-grid vbp-container-dropzone flavor-grid" data-container-id="' + element.id + '" style="display: grid; grid-template-columns: repeat(' + gridCols + ', 1fr); grid-template-rows: ' + gridRows + '; gap: ' + gridGapValue + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; min-height: 100px; border-radius: ' + cardRadius + '; ' + customStyle + '">';
 
                 if (gridChildren.length > 0) {
                     for (var gi = 0; gi < gridChildren.length; gi++) {
@@ -1564,6 +1899,26 @@ function vbpApp() {
             // ============ NUEVOS BLOQUES ============
 
             if (type === 'countdown') {
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || '#ffffff';
+                var secFondoTipo = data.seccion_fondo_tipo || 'gradient';
+                var secFondoColor = data.seccion_fondo_color || primaryColor;
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var cardFondo = data.card_fondo_color || 'rgba(255,255,255,0.2)';
+                var cardTitulo = data.card_titulo_color || '#ffffff';
+                var cardTexto = data.card_texto_color || 'rgba(255,255,255,0.8)';
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ' 0%, ' + secGradienteFin + ' 100%);';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
                 // Calcular tiempo restante
                 var targetDate = data.fecha ? new Date(data.fecha + 'T' + (data.hora || '23:59')) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
                 var now = new Date();
@@ -1573,21 +1928,21 @@ function vbpApp() {
                 var mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 var secs = Math.floor((diff % (1000 * 60)) / 1000);
 
-                var countdownHtml = '<section class="vbp-countdown flavor-component" data-countdown-id="' + element.id + '" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; background: linear-gradient(135deg, ' + primaryColor + ' 0%, ' + secondaryColor + ' 100%); text-align: center; ' + customStyle + '">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="color: white; font-size: ' + fontH2 + '; margin: 0 0 32px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'La oferta termina en') + '</h2>' +
+                var countdownHtml = '<section class="vbp-countdown flavor-component" data-countdown-id="' + element.id + '" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + ' text-align: center; ' + customStyle + '">' +
+                    '<h2 contenteditable="true" data-field="titulo" style="color: ' + secTituloColor + '; font-size: ' + fontH2 + '; margin: 0 0 32px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'La oferta termina en') + '</h2>' +
                     '<div class="vbp-countdown-timer" style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">';
 
                 if (data.mostrar_dias !== false) {
-                    countdownHtml += '<div class="vbp-countdown-unit" style="background: rgba(255,255,255,0.2); padding: 24px 32px; border-radius: ' + cardRadius + '; min-width: 100px;"><div class="vbp-countdown-value" data-unit="days" style="font-size: 48px; font-weight: 700; color: white;">' + String(days).padStart(2, '0') + '</div><div style="color: rgba(255,255,255,0.8); font-size: 14px; text-transform: uppercase;">Días</div></div>';
+                    countdownHtml += '<div class="vbp-countdown-unit" style="background: ' + cardFondo + '; padding: 24px 32px; border-radius: ' + cardRadius + '; min-width: 100px;"><div class="vbp-countdown-value" data-unit="days" style="font-size: 48px; font-weight: 700; color: ' + cardTitulo + ';">' + String(days).padStart(2, '0') + '</div><div style="color: ' + cardTexto + '; font-size: 14px; text-transform: uppercase;">Días</div></div>';
                 }
                 if (data.mostrar_horas !== false) {
-                    countdownHtml += '<div class="vbp-countdown-unit" style="background: rgba(255,255,255,0.2); padding: 24px 32px; border-radius: ' + cardRadius + '; min-width: 100px;"><div class="vbp-countdown-value" data-unit="hours" style="font-size: 48px; font-weight: 700; color: white;">' + String(hours).padStart(2, '0') + '</div><div style="color: rgba(255,255,255,0.8); font-size: 14px; text-transform: uppercase;">Horas</div></div>';
+                    countdownHtml += '<div class="vbp-countdown-unit" style="background: ' + cardFondo + '; padding: 24px 32px; border-radius: ' + cardRadius + '; min-width: 100px;"><div class="vbp-countdown-value" data-unit="hours" style="font-size: 48px; font-weight: 700; color: ' + cardTitulo + ';">' + String(hours).padStart(2, '0') + '</div><div style="color: ' + cardTexto + '; font-size: 14px; text-transform: uppercase;">Horas</div></div>';
                 }
                 if (data.mostrar_minutos !== false) {
-                    countdownHtml += '<div class="vbp-countdown-unit" style="background: rgba(255,255,255,0.2); padding: 24px 32px; border-radius: ' + cardRadius + '; min-width: 100px;"><div class="vbp-countdown-value" data-unit="mins" style="font-size: 48px; font-weight: 700; color: white;">' + String(mins).padStart(2, '0') + '</div><div style="color: rgba(255,255,255,0.8); font-size: 14px; text-transform: uppercase;">Min</div></div>';
+                    countdownHtml += '<div class="vbp-countdown-unit" style="background: ' + cardFondo + '; padding: 24px 32px; border-radius: ' + cardRadius + '; min-width: 100px;"><div class="vbp-countdown-value" data-unit="mins" style="font-size: 48px; font-weight: 700; color: ' + cardTitulo + ';">' + String(mins).padStart(2, '0') + '</div><div style="color: ' + cardTexto + '; font-size: 14px; text-transform: uppercase;">Min</div></div>';
                 }
                 if (data.mostrar_segundos !== false) {
-                    countdownHtml += '<div class="vbp-countdown-unit" style="background: rgba(255,255,255,0.2); padding: 24px 32px; border-radius: ' + cardRadius + '; min-width: 100px;"><div class="vbp-countdown-value" data-unit="secs" style="font-size: 48px; font-weight: 700; color: white;">' + String(secs).padStart(2, '0') + '</div><div style="color: rgba(255,255,255,0.8); font-size: 14px; text-transform: uppercase;">Seg</div></div>';
+                    countdownHtml += '<div class="vbp-countdown-unit" style="background: ' + cardFondo + '; padding: 24px 32px; border-radius: ' + cardRadius + '; min-width: 100px;"><div class="vbp-countdown-value" data-unit="secs" style="font-size: 48px; font-weight: 700; color: ' + cardTitulo + ';">' + String(secs).padStart(2, '0') + '</div><div style="color: ' + cardTexto + '; font-size: 14px; text-transform: uppercase;">Seg</div></div>';
                 }
 
                 countdownHtml += '</div></section>';
@@ -1612,23 +1967,63 @@ function vbpApp() {
             }
 
             if (type === 'newsletter') {
-                return '<section class="vbp-newsletter flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; background: #f8f9fa; text-align: center; ' + customStyle + '">' +
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || textColor;
+                var secTextoColor = data.texto_color || textMutedColor;
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#f8f9fa';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var cardBorde = data.card_borde_color || '#e0e0e0';
+                var botonFondo = data.boton_color_fondo || primaryColor;
+                var botonTexto = data.boton_color_texto || '#ffffff';
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
+                return '<section class="vbp-newsletter flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + ' text-align: center; ' + customStyle + '">' +
                     '<div style="max-width: 500px; margin: 0 auto;">' +
-                    '<h2 contenteditable="true" data-field="titulo" style="font-size: ' + fontH2 + '; margin: 0 0 12px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Suscríbete a nuestro newsletter') + '</h2>' +
-                    '<p contenteditable="true" data-field="subtitulo" style="color: ' + textMutedColor + '; margin: 0 0 24px;">' + (data.subtitulo || 'Recibe las últimas novedades directamente en tu email') + '</p>' +
+                    '<h2 contenteditable="true" data-field="titulo" style="color: ' + secTituloColor + '; font-size: ' + fontH2 + '; margin: 0 0 12px; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Suscríbete a nuestro newsletter') + '</h2>' +
+                    '<p contenteditable="true" data-field="subtitulo" style="color: ' + secTextoColor + '; margin: 0 0 24px;">' + (data.subtitulo || 'Recibe las últimas novedades directamente en tu email') + '</p>' +
                     '<form style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">' +
-                    (data.mostrar_nombre ? '<input type="text" placeholder="Tu nombre" style="flex: 1; min-width: 150px; padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base);">' : '') +
-                    '<input type="email" placeholder="' + (data.placeholder_email || 'tu@email.com') + '" style="flex: 2; min-width: 200px; padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base);">' +
-                    '<button type="submit" class="flavor-button" style="padding: 14px 32px; background: ' + primaryColor + '; color: white; border: none; border-radius: ' + buttonRadius + '; font-weight: var(--flavor-button-weight); cursor: pointer;">' + (data.boton_texto || 'Suscribirse') + '</button>' +
+                    (data.mostrar_nombre ? '<input type="text" placeholder="Tu nombre" style="flex: 1; min-width: 150px; padding: 14px 16px; border: 1px solid ' + cardBorde + '; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base);">' : '') +
+                    '<input type="email" placeholder="' + (data.placeholder_email || 'tu@email.com') + '" style="flex: 2; min-width: 200px; padding: 14px 16px; border: 1px solid ' + cardBorde + '; border-radius: ' + buttonRadius + '; font-size: var(--flavor-font-size-base);">' +
+                    '<button type="submit" class="flavor-button" style="padding: 14px 32px; background: ' + botonFondo + '; color: ' + botonTexto + '; border: none; border-radius: ' + buttonRadius + '; font-weight: var(--flavor-button-weight); cursor: pointer;">' + (data.boton_texto || 'Suscribirse') + '</button>' +
                     '</form></div></section>';
             }
 
             if (type === 'logo-grid') {
+                // Colores personalizables de sección
+                var secTituloColor = data.titulo_color || textMutedColor;
+                var secFondoTipo = data.seccion_fondo_tipo || 'color';
+                var secFondoColor = data.seccion_fondo_color || '#ffffff';
+                var secGradienteInicio = data.seccion_fondo_gradiente_inicio || primaryColor;
+                var secGradienteFin = data.seccion_fondo_gradiente_fin || secondaryColor;
+                var placeholderFondo = data.card_fondo_color || '#e0e0e0';
+                var placeholderTexto = data.card_texto_color || textMutedColor;
+
+                // Fondo de sección
+                var secFondoStyle = '';
+                if (secFondoTipo === 'gradient') {
+                    secFondoStyle = 'background: linear-gradient(135deg, ' + secGradienteInicio + ', ' + secGradienteFin + ');';
+                } else if (secFondoTipo === 'image' && data.seccion_fondo_imagen) {
+                    secFondoStyle = 'background-image: url(' + data.seccion_fondo_imagen + '); background-size: cover; background-position: center;';
+                } else {
+                    secFondoStyle = 'background: ' + secFondoColor + ';';
+                }
+
                 var logos = data.logos || [];
                 var cols = data.columnas || 4;
-                var html = '<section class="vbp-logo-grid flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + customStyle + '">';
+                var html = '<section class="vbp-logo-grid flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; ' + secFondoStyle + ' ' + customStyle + '">';
                 if (data.titulo) {
-                    html += '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: 18px; color: ' + textMutedColor + '; margin: 0 0 32px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px;">' + data.titulo + '</h2>';
+                    html += '<h2 contenteditable="true" data-field="titulo" style="text-align: center; font-size: 18px; color: ' + secTituloColor + '; margin: 0 0 32px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px;">' + data.titulo + '</h2>';
                 }
                 html += '<div style="display: grid; grid-template-columns: repeat(' + cols + ', 1fr); gap: ' + gridGap + '; align-items: center; justify-items: center;">';
                 if (logos.length > 0) {
@@ -1637,7 +2032,7 @@ function vbpApp() {
                     }
                 } else {
                     for (var pi = 0; pi < cols; pi++) {
-                        html += '<div style="width: 100px; height: 50px; background: #e0e0e0; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: ' + textMutedColor + '; font-size: 12px;">Logo ' + (pi + 1) + '</div>';
+                        html += '<div style="width: 100px; height: 50px; background: ' + placeholderFondo + '; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: ' + placeholderTexto + '; font-size: 12px;">Logo ' + (pi + 1) + '</div>';
                     }
                 }
                 html += '</div></section>';
@@ -1685,6 +2080,14 @@ function vbpApp() {
             }
 
             if (type === 'accordion') {
+                // Colores personalizables
+                var cardFondo = data.card_fondo_color || '#f8f9fa';
+                var cardBorde = data.card_borde_color || '#e0e0e0';
+                var cardTitulo = data.card_titulo_color || textColor;
+                var cardTexto = data.card_texto_color || textMutedColor;
+                var acentoColor = data.acento_color || primaryColor;
+                var contenidoFondo = data.seccion_fondo_color || '#ffffff';
+
                 var accordionVariant = element.variant || 'simple';
                 var items = data.items || [{ titulo: 'Elemento 1', contenido: 'Contenido del elemento', abierto: true }];
                 var accordionHtml = '<div class="vbp-accordion vbp-accordion--' + accordionVariant + ' flavor-component" style="padding: 16px; ' + customStyle + '">';
@@ -1695,28 +2098,28 @@ function vbpApp() {
 
                     // Variante: Simple (default)
                     if (accordionVariant === 'simple' || accordionVariant === 'default') {
-                        accordionHtml += '<div class="vbp-accordion-item" style="border: 1px solid #e0e0e0; border-radius: ' + buttonRadius + '; margin-bottom: 8px; overflow: hidden;">' +
-                            '<div class="vbp-accordion-header" style="padding: 16px; background: #f8f9fa; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;">' +
-                            '<span contenteditable="true" style="font-weight: 500;">' + (item.titulo || 'Título') + '</span>' +
-                            '<span class="vbp-accordion-icon" style="transition: transform 0.2s;">' + (isOpen ? '▼' : '▶') + '</span></div>' +
-                            '<div class="vbp-accordion-content" style="padding: 16px; background: white; display: ' + (isOpen ? 'block' : 'none') + ';"><p contenteditable="true" style="margin: 0; color: ' + textMutedColor + ';">' + (item.contenido || 'Contenido') + '</p></div></div>';
+                        accordionHtml += '<div class="vbp-accordion-item" style="border: 1px solid ' + cardBorde + '; border-radius: ' + buttonRadius + '; margin-bottom: 8px; overflow: hidden;">' +
+                            '<div class="vbp-accordion-header" style="padding: 16px; background: ' + cardFondo + '; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;">' +
+                            '<span contenteditable="true" style="font-weight: 500; color: ' + cardTitulo + ';">' + (item.titulo || 'Título') + '</span>' +
+                            '<span class="vbp-accordion-icon" style="transition: transform 0.2s; color: ' + cardTexto + ';">' + (isOpen ? '▼' : '▶') + '</span></div>' +
+                            '<div class="vbp-accordion-content" style="padding: 16px; background: ' + contenidoFondo + '; display: ' + (isOpen ? 'block' : 'none') + ';"><p contenteditable="true" style="margin: 0; color: ' + cardTexto + ';">' + (item.contenido || 'Contenido') + '</p></div></div>';
                     }
 
                     // Variante: Bordeado
                     if (accordionVariant === 'bordered') {
-                        accordionHtml += '<div class="vbp-accordion-item" style="border: 2px solid ' + (isOpen ? primaryColor : '#e0e0e0') + '; border-radius: ' + cardRadius + '; margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s;">' +
-                            '<div class="vbp-accordion-header" style="padding: 18px 20px; background: white; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">' +
-                            '<span contenteditable="true" style="font-weight: 600; color: ' + (isOpen ? primaryColor : textColor) + ';">' + (item.titulo || 'Título') + '</span>' +
-                            '<span style="width: 24px; height: 24px; background: ' + (isOpen ? primaryColor : '#e0e0e0') + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: ' + (isOpen ? 'white' : textMutedColor) + '; font-size: 12px;">' + (isOpen ? '−' : '+') + '</span></div>' +
-                            '<div class="vbp-accordion-content" style="padding: 0 20px ' + (isOpen ? '20px' : '0') + '; background: white; display: ' + (isOpen ? 'block' : 'none') + '; border-top: ' + (isOpen ? '1px solid #e0e0e0' : 'none') + ';"><p contenteditable="true" style="margin: 16px 0 0; color: ' + textMutedColor + ';">' + (item.contenido || 'Contenido') + '</p></div></div>';
+                        accordionHtml += '<div class="vbp-accordion-item" style="border: 2px solid ' + (isOpen ? acentoColor : cardBorde) + '; border-radius: ' + cardRadius + '; margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s;">' +
+                            '<div class="vbp-accordion-header" style="padding: 18px 20px; background: ' + contenidoFondo + '; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">' +
+                            '<span contenteditable="true" style="font-weight: 600; color: ' + (isOpen ? acentoColor : cardTitulo) + ';">' + (item.titulo || 'Título') + '</span>' +
+                            '<span style="width: 24px; height: 24px; background: ' + (isOpen ? acentoColor : cardBorde) + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: ' + (isOpen ? contenidoFondo : cardTexto) + '; font-size: 12px;">' + (isOpen ? '−' : '+') + '</span></div>' +
+                            '<div class="vbp-accordion-content" style="padding: 0 20px ' + (isOpen ? '20px' : '0') + '; background: ' + contenidoFondo + '; display: ' + (isOpen ? 'block' : 'none') + '; border-top: ' + (isOpen ? '1px solid ' + cardBorde : 'none') + ';"><p contenteditable="true" style="margin: 16px 0 0; color: ' + cardTexto + ';">' + (item.contenido || 'Contenido') + '</p></div></div>';
                     }
 
                     // Variante: Relleno
                     if (accordionVariant === 'filled') {
-                        accordionHtml += '<div class="vbp-accordion-item" style="background: ' + (isOpen ? primaryColor : '#f8f9fa') + '; border-radius: ' + buttonRadius + '; margin-bottom: 8px; overflow: hidden; transition: background 0.2s;">' +
+                        accordionHtml += '<div class="vbp-accordion-item" style="background: ' + (isOpen ? acentoColor : cardFondo) + '; border-radius: ' + buttonRadius + '; margin-bottom: 8px; overflow: hidden; transition: background 0.2s;">' +
                             '<div class="vbp-accordion-header" style="padding: 16px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">' +
-                            '<span contenteditable="true" style="font-weight: 500; color: ' + (isOpen ? 'white' : textColor) + ';">' + (item.titulo || 'Título') + '</span>' +
-                            '<span style="color: ' + (isOpen ? 'white' : textMutedColor) + '; font-size: 14px;">' + (isOpen ? '▲' : '▼') + '</span></div>' +
+                            '<span contenteditable="true" style="font-weight: 500; color: ' + (isOpen ? contenidoFondo : cardTitulo) + ';">' + (item.titulo || 'Título') + '</span>' +
+                            '<span style="color: ' + (isOpen ? contenidoFondo : cardTexto) + '; font-size: 14px;">' + (isOpen ? '▲' : '▼') + '</span></div>' +
                             '<div class="vbp-accordion-content" style="padding: 0 20px ' + (isOpen ? '20px' : '0') + '; display: ' + (isOpen ? 'block' : 'none') + ';"><p contenteditable="true" style="margin: 0; color: rgba(255,255,255,0.9);">' + (item.contenido || 'Contenido') + '</p></div></div>';
                     }
                 }
@@ -1726,6 +2129,15 @@ function vbpApp() {
             }
 
             if (type === 'tabs') {
+                // Colores personalizables
+                var cardBorde = data.card_borde_color || '#e0e0e0';
+                var cardFondo = data.card_fondo_color || '#f8f9fa';
+                var cardTitulo = data.card_titulo_color || textColor;
+                var cardTexto = data.card_texto_color || textMutedColor;
+                var acentoColor = data.acento_color || primaryColor;
+                var contenidoFondo = data.seccion_fondo_color || '#ffffff';
+                var tabInactivoFondo = data.tab_inactivo_fondo || '#f0f0f0';
+
                 var tabsVariant = element.variant || 'horizontal';
                 var tabItems = data.items || [{ titulo: 'Tab 1', contenido: 'Contenido de la pestaña 1' }];
                 var activeTab = data.tab_activa || 0;
@@ -1733,14 +2145,14 @@ function vbpApp() {
                 // Variante: Horizontal (default)
                 if (tabsVariant === 'horizontal' || tabsVariant === 'default') {
                     var tabsHtml = '<div class="vbp-tabs vbp-tabs--horizontal flavor-component" style="padding: 16px; ' + customStyle + '">' +
-                        '<div class="vbp-tabs-header" style="display: flex; border-bottom: 2px solid #e0e0e0; margin-bottom: 16px;">';
+                        '<div class="vbp-tabs-header" style="display: flex; border-bottom: 2px solid ' + cardBorde + '; margin-bottom: 16px;">';
                     for (var ti = 0; ti < tabItems.length; ti++) {
                         var isActive = ti === activeTab;
-                        tabsHtml += '<button class="vbp-tab-button' + (isActive ? ' active' : '') + '" data-tab-index="' + ti + '" style="padding: 12px 24px; background: transparent; border: none; border-bottom: 2px solid ' + (isActive ? primaryColor : 'transparent') + '; margin-bottom: -2px; color: ' + (isActive ? primaryColor : textMutedColor) + '; font-weight: ' + (isActive ? '600' : '400') + '; cursor: pointer;">' + (tabItems[ti].titulo || 'Tab') + '</button>';
+                        tabsHtml += '<button class="vbp-tab-button' + (isActive ? ' active' : '') + '" data-tab-index="' + ti + '" style="padding: 12px 24px; background: transparent; border: none; border-bottom: 2px solid ' + (isActive ? acentoColor : 'transparent') + '; margin-bottom: -2px; color: ' + (isActive ? acentoColor : cardTexto) + '; font-weight: ' + (isActive ? '600' : '400') + '; cursor: pointer;">' + (tabItems[ti].titulo || 'Tab') + '</button>';
                     }
                     tabsHtml += '</div><div class="vbp-tabs-content">';
                     for (var tc = 0; tc < tabItems.length; tc++) {
-                        tabsHtml += '<div class="vbp-tab-panel" style="display: ' + (tc === activeTab ? 'block' : 'none') + '; padding: 16px;"><p contenteditable="true" style="margin: 0; color: ' + textColor + ';">' + (tabItems[tc].contenido || 'Contenido') + '</p></div>';
+                        tabsHtml += '<div class="vbp-tab-panel" style="display: ' + (tc === activeTab ? 'block' : 'none') + '; padding: 16px;"><p contenteditable="true" style="margin: 0; color: ' + cardTitulo + ';">' + (tabItems[tc].contenido || 'Contenido') + '</p></div>';
                     }
                     tabsHtml += '</div></div>';
                     return tabsHtml;
@@ -1749,14 +2161,14 @@ function vbpApp() {
                 // Variante: Vertical
                 if (tabsVariant === 'vertical') {
                     var tabsHtml = '<div class="vbp-tabs vbp-tabs--vertical flavor-component" style="padding: 16px; display: flex; gap: 20px; ' + customStyle + '">' +
-                        '<div class="vbp-tabs-header" style="display: flex; flex-direction: column; gap: 4px; min-width: 150px; border-right: 2px solid #e0e0e0; padding-right: 20px;">';
+                        '<div class="vbp-tabs-header" style="display: flex; flex-direction: column; gap: 4px; min-width: 150px; border-right: 2px solid ' + cardBorde + '; padding-right: 20px;">';
                     for (var ti = 0; ti < tabItems.length; ti++) {
                         var isActive = ti === activeTab;
-                        tabsHtml += '<button class="vbp-tab-button' + (isActive ? ' active' : '') + '" data-tab-index="' + ti + '" style="padding: 12px 16px; background: ' + (isActive ? primaryColor + '15' : 'transparent') + '; border: none; border-radius: ' + buttonRadius + '; text-align: left; color: ' + (isActive ? primaryColor : textMutedColor) + '; font-weight: ' + (isActive ? '600' : '400') + '; cursor: pointer;">' + (tabItems[ti].titulo || 'Tab') + '</button>';
+                        tabsHtml += '<button class="vbp-tab-button' + (isActive ? ' active' : '') + '" data-tab-index="' + ti + '" style="padding: 12px 16px; background: ' + (isActive ? acentoColor + '15' : 'transparent') + '; border: none; border-radius: ' + buttonRadius + '; text-align: left; color: ' + (isActive ? acentoColor : cardTexto) + '; font-weight: ' + (isActive ? '600' : '400') + '; cursor: pointer;">' + (tabItems[ti].titulo || 'Tab') + '</button>';
                     }
                     tabsHtml += '</div><div class="vbp-tabs-content" style="flex: 1;">';
                     for (var tc = 0; tc < tabItems.length; tc++) {
-                        tabsHtml += '<div class="vbp-tab-panel" style="display: ' + (tc === activeTab ? 'block' : 'none') + ';"><p contenteditable="true" style="margin: 0; color: ' + textColor + ';">' + (tabItems[tc].contenido || 'Contenido') + '</p></div>';
+                        tabsHtml += '<div class="vbp-tab-panel" style="display: ' + (tc === activeTab ? 'block' : 'none') + ';"><p contenteditable="true" style="margin: 0; color: ' + cardTitulo + ';">' + (tabItems[tc].contenido || 'Contenido') + '</p></div>';
                     }
                     tabsHtml += '</div></div>';
                     return tabsHtml;
@@ -1768,11 +2180,11 @@ function vbpApp() {
                         '<div class="vbp-tabs-header" style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">';
                     for (var ti = 0; ti < tabItems.length; ti++) {
                         var isActive = ti === activeTab;
-                        tabsHtml += '<button class="vbp-tab-button' + (isActive ? ' active' : '') + '" data-tab-index="' + ti + '" style="padding: 10px 20px; background: ' + (isActive ? primaryColor : '#f0f0f0') + '; border: none; border-radius: 50px; color: ' + (isActive ? 'white' : textMutedColor) + '; font-weight: 500; cursor: pointer; transition: all 0.2s;">' + (tabItems[ti].titulo || 'Tab') + '</button>';
+                        tabsHtml += '<button class="vbp-tab-button' + (isActive ? ' active' : '') + '" data-tab-index="' + ti + '" style="padding: 10px 20px; background: ' + (isActive ? acentoColor : tabInactivoFondo) + '; border: none; border-radius: 50px; color: ' + (isActive ? contenidoFondo : cardTexto) + '; font-weight: 500; cursor: pointer; transition: all 0.2s;">' + (tabItems[ti].titulo || 'Tab') + '</button>';
                     }
-                    tabsHtml += '</div><div class="vbp-tabs-content" style="background: #f8f9fa; padding: 24px; border-radius: ' + cardRadius + ';">';
+                    tabsHtml += '</div><div class="vbp-tabs-content" style="background: ' + cardFondo + '; padding: 24px; border-radius: ' + cardRadius + ';">';
                     for (var tc = 0; tc < tabItems.length; tc++) {
-                        tabsHtml += '<div class="vbp-tab-panel" style="display: ' + (tc === activeTab ? 'block' : 'none') + ';"><p contenteditable="true" style="margin: 0; color: ' + textColor + ';">' + (tabItems[tc].contenido || 'Contenido') + '</p></div>';
+                        tabsHtml += '<div class="vbp-tab-panel" style="display: ' + (tc === activeTab ? 'block' : 'none') + ';"><p contenteditable="true" style="margin: 0; color: ' + cardTitulo + ';">' + (tabItems[tc].contenido || 'Contenido') + '</p></div>';
                     }
                     tabsHtml += '</div></div>';
                     return tabsHtml;
@@ -1945,11 +2357,50 @@ function vbpApp() {
                     '</div></div></div>';
             }
 
+            // ============ MÓDULO CON PREVIEW HTML ============
+            // Buscar si hay un preview_html disponible para este tipo de bloque
+            var previewHtml = this.getBlockPreviewHtml(type, element);
+            if (previewHtml) {
+                var moduleName = element.name || type;
+                return '<div class="vbp-module-preview" data-module-type="' + type + '" style="' + customStyle + '">' +
+                    '<div class="vbp-module-preview-badge" style="position: absolute; top: 8px; right: 8px; background: ' + primaryColor + '; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; z-index: 10; text-transform: uppercase; letter-spacing: 0.5px;">Preview</div>' +
+                    '<div class="vbp-module-preview-content" style="position: relative;">' +
+                    previewHtml +
+                    '</div></div>';
+            }
+
             // ============ FALLBACK ============
             return '<div style="padding: 32px; background: linear-gradient(135deg, #f5f5f5, #ebebeb); text-align: center; border-radius: ' + cardRadius + '; margin: 16px; border: 2px dashed ' + primaryColor + '40; ' + customStyle + '">' +
                 '<div style="font-size: 32px; margin-bottom: 12px;">📦</div>' +
                 '<div style="color: ' + textColor + '; font-weight: 600; font-size: 16px;">' + (element.name || type) + '</div>' +
                 '<div style="color: ' + textMutedColor + '; font-size: 13px; margin-top: 6px;">Tipo: ' + type + '</div></div>';
+        },
+
+        /**
+         * Busca el preview_html de un bloque en VBP_Config.blocks
+         */
+        getBlockPreviewHtml: function(blockType, element) {
+            // Verificar si hay un preview_html en los datos del elemento
+            if (element.preview_html) {
+                return element.preview_html;
+            }
+
+            // Buscar en VBP_Config.blocks
+            if (typeof VBP_Config !== 'undefined' && VBP_Config.blocks) {
+                for (var i = 0; i < VBP_Config.blocks.length; i++) {
+                    var categoria = VBP_Config.blocks[i];
+                    if (categoria.blocks) {
+                        for (var j = 0; j < categoria.blocks.length; j++) {
+                            var bloque = categoria.blocks[j];
+                            if (bloque.id === blockType && bloque.preview_html) {
+                                return bloque.preview_html;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
         },
 
         buildInlineStyles: function(styles) {
@@ -1998,26 +2449,88 @@ function vbpApp() {
                 css += 'box-shadow: ' + styles.shadows.boxShadow + '; ';
             }
 
+            // Dimensions
+            if (styles.dimensions) {
+                if (styles.dimensions.width) css += 'width: ' + styles.dimensions.width + '; ';
+                if (styles.dimensions.height) css += 'height: ' + styles.dimensions.height + '; ';
+                if (styles.dimensions.minHeight) css += 'min-height: ' + styles.dimensions.minHeight + '; ';
+                if (styles.dimensions.maxWidth) css += 'max-width: ' + styles.dimensions.maxWidth + '; ';
+            }
+
             return css;
         },
 
         handleDragOver: function(event) {
             event.preventDefault();
-            var canvasRect = this.$refs.canvas.getBoundingClientRect();
-            var y = event.clientY - canvasRect.top;
-            this.dropIndicator.visible = true;
-            this.dropIndicator.y = this.getDropPosition(y);
+
+            // Detectar si estamos sobre un dropzone de contenedor
+            var dropzone = event.target.closest('.vbp-column-dropzone, .vbp-container-dropzone');
+
+            if (dropzone) {
+                // Estamos sobre un contenedor - mostrar indicador en el contenedor
+                this.dropIndicator.visible = false;
+                dropzone.classList.add('vbp-dropzone-active');
+
+                // Remover clase de otros dropzones
+                document.querySelectorAll('.vbp-dropzone-active').forEach(function(el) {
+                    if (el !== dropzone) el.classList.remove('vbp-dropzone-active');
+                });
+            } else {
+                // Drop en canvas principal
+                document.querySelectorAll('.vbp-dropzone-active').forEach(function(el) {
+                    el.classList.remove('vbp-dropzone-active');
+                });
+
+                var canvasRect = this.$refs.canvas.getBoundingClientRect();
+                var y = event.clientY - canvasRect.top;
+                this.dropIndicator.visible = true;
+                this.dropIndicator.y = this.getDropPosition(y);
+            }
         },
 
         handleDrop: function(event) {
             event.preventDefault();
             this.dropIndicator.visible = false;
+
+            // Limpiar indicadores de dropzone
+            document.querySelectorAll('.vbp-dropzone-active').forEach(function(el) {
+                el.classList.remove('vbp-dropzone-active');
+            });
+
             var blockData = event.dataTransfer.getData('application/json');
-            if (blockData) {
-                var block = JSON.parse(blockData);
-                var index = this.getDropIndex(event.clientY);
-                Alpine.store('vbp').addElement(block.type, index);
+            if (!blockData) return;
+
+            var block = JSON.parse(blockData);
+            var store = Alpine.store('vbp');
+
+            // Detectar si el drop fue dentro de un contenedor
+            var columnDropzone = event.target.closest('.vbp-column-dropzone');
+            var containerDropzone = event.target.closest('.vbp-container-dropzone');
+
+            if (columnDropzone) {
+                // Drop en una columna específica
+                var containerId = columnDropzone.getAttribute('data-container-id');
+                var columnIndex = parseInt(columnDropzone.getAttribute('data-column-index') || '0');
+
+                if (containerId) {
+                    store.addElementToContainer(block.type, containerId, columnIndex);
+                    this.showNotification('Elemento añadido a la columna ' + (columnIndex + 1), 'success');
+                    return;
+                }
+            } else if (containerDropzone) {
+                // Drop en un contenedor (no en columna específica)
+                var containerId = containerDropzone.getAttribute('data-container-id');
+
+                if (containerId) {
+                    store.addElementToContainer(block.type, containerId, 0);
+                    this.showNotification('Elemento añadido al contenedor', 'success');
+                    return;
+                }
             }
+
+            // Drop en canvas principal
+            var index = this.getDropIndex(event.clientY);
+            store.addElement(block.type, index);
         },
 
         getDropPosition: function(y) {
@@ -2297,7 +2810,7 @@ function vbpApp() {
             .then(function(response) { return response.json(); })
             .then(function(result) {
                 if (result.document) {
-                    Alpine.store('vbp').elements = result.document.elements || [];
+                    Alpine.store('vbp').elements = sanitizeElements(result.document.elements || []);
                     Alpine.store('vbp').settings = result.document.settings || {};
                     self.showNotification('Template aplicado correctamente', 'success');
                     self.showTemplatesModal = false;
@@ -2431,7 +2944,7 @@ function vbpApp() {
             }
 
             if (data.elements) {
-                Alpine.store('vbp').elements = data.elements;
+                Alpine.store('vbp').elements = sanitizeElements(data.elements);
             }
             if (data.settings) {
                 Alpine.store('vbp').settings = data.settings;
@@ -3011,7 +3524,7 @@ function vbpApp() {
                     // Recargar el contenido en el store
                     var store = Alpine.store('vbp');
                     if (store && data.content) {
-                        store.elements = data.content;
+                        store.elements = sanitizeElements(data.content);
                     }
                     self.showVersionHistoryModal = false;
                     self.loadVersions();

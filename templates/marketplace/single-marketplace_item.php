@@ -199,7 +199,7 @@ while (have_posts()) : the_post();
                             <?php
                             printf(
                                 __('<a href="%s">Inicia sesión</a> para contactar con el vendedor', 'flavor-chat-ia'),
-                                wp_login_url(get_permalink())
+                                wp_login_url(flavor_current_request_url())
                             );
                             ?>
                         </p>

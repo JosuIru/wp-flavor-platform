@@ -108,7 +108,184 @@ class Flavor_Chat_Module_Loader {
     /**
      * Versión del caché (incrementar al cambiar estructura)
      */
-    private const METADATA_CACHE_VERSION = 1;
+    private const METADATA_CACHE_VERSION = 2;
+
+    /**
+     * Registro de fallback de principios Gailu por módulo.
+     * Se usa solo cuando la caché de metadatos no contiene los principios
+     * (por ejemplo, antes de que se regenere la caché tras actualización).
+     *
+     * Los principios reales se leen dinámicamente desde cada módulo y se
+     * almacenan en la caché de metadatos (ver rebuild_metadata_cache).
+     *
+     * Principios: economia_local, cuidados, gobernanza, regeneracion, aprendizaje
+     * Contribuciones: autonomia, resiliencia, cohesion, impacto
+     *
+     * @since 3.1.0
+     * @deprecated Se eliminará cuando todos los módulos tengan gailu_principios definidos
+     */
+    private const GAILU_MODULOS_REGISTRO = [
+        // Economía y recursos
+        'grupos_consumo'        => ['principios' => ['economia_local', 'regeneracion'], 'contribuye_a' => ['autonomia', 'resiliencia']],
+        'banco_tiempo'          => ['principios' => ['economia_local', 'cuidados'], 'contribuye_a' => ['cohesion', 'resiliencia']],
+        'marketplace'           => ['principios' => ['economia_local'], 'contribuye_a' => ['autonomia']],
+        'economia_don'          => ['principios' => ['economia_local', 'cuidados'], 'contribuye_a' => ['cohesion', 'resiliencia']],
+        'economia_suficiencia'  => ['principios' => ['economia_local', 'regeneracion'], 'contribuye_a' => ['resiliencia', 'impacto']],
+
+        // Energía y medio ambiente
+        'energia_comunitaria'   => ['principios' => ['economia_local', 'regeneracion'], 'contribuye_a' => ['autonomia', 'impacto']],
+        'huertos_urbanos'       => ['principios' => ['economia_local', 'regeneracion'], 'contribuye_a' => ['autonomia', 'resiliencia']],
+        'compostaje'            => ['principios' => ['regeneracion'], 'contribuye_a' => ['impacto', 'cohesion']],
+        'reciclaje'             => ['principios' => ['regeneracion'], 'contribuye_a' => ['impacto']],
+        'huella_ecologica'      => ['principios' => ['regeneracion', 'aprendizaje'], 'contribuye_a' => ['impacto', 'autonomia']],
+        'biodiversidad_local'   => ['principios' => ['regeneracion'], 'contribuye_a' => ['impacto', 'resiliencia']],
+
+        // Cuidados y bienestar
+        'ayuda_vecinal'         => ['principios' => ['cuidados'], 'contribuye_a' => ['cohesion', 'resiliencia']],
+        'circulos_cuidados'     => ['principios' => ['cuidados', 'gobernanza'], 'contribuye_a' => ['cohesion', 'resiliencia']],
+
+        // Gobernanza y participación
+        'participacion'             => ['principios' => ['gobernanza'], 'contribuye_a' => ['autonomia', 'cohesion']],
+        'presupuestos_participativos' => ['principios' => ['gobernanza', 'economia_local'], 'contribuye_a' => ['autonomia', 'impacto']],
+        'transparencia'             => ['principios' => ['gobernanza'], 'contribuye_a' => ['autonomia']],
+        'colectivos'                => ['principios' => ['gobernanza', 'cuidados'], 'contribuye_a' => ['cohesion', 'autonomia']],
+        'comunidades'               => ['principios' => ['gobernanza', 'cuidados'], 'contribuye_a' => ['cohesion']],
+
+        // Aprendizaje y cultura
+        'cursos'            => ['principios' => ['aprendizaje'], 'contribuye_a' => ['autonomia', 'impacto']],
+        'talleres'          => ['principios' => ['aprendizaje', 'economia_local'], 'contribuye_a' => ['autonomia', 'cohesion']],
+        'biblioteca'        => ['principios' => ['aprendizaje'], 'contribuye_a' => ['autonomia']],
+        'saberes_ancestrales' => ['principios' => ['aprendizaje', 'cuidados'], 'contribuye_a' => ['resiliencia', 'cohesion']],
+        'foros'             => ['principios' => ['aprendizaje', 'gobernanza'], 'contribuye_a' => ['cohesion']],
+
+        // Eventos y comunicación
+        'eventos'           => ['principios' => ['cuidados'], 'contribuye_a' => ['cohesion']],
+        'radio'             => ['principios' => ['aprendizaje', 'gobernanza'], 'contribuye_a' => ['cohesion', 'autonomia']],
+        'podcast'           => ['principios' => ['aprendizaje'], 'contribuye_a' => ['autonomia']],
+
+        // Movilidad
+        'carpooling'            => ['principios' => ['economia_local', 'regeneracion'], 'contribuye_a' => ['resiliencia', 'cohesion']],
+        'bicicletas_compartidas' => ['principios' => ['regeneracion', 'economia_local'], 'contribuye_a' => ['impacto', 'cohesion']],
+        'parkings'              => ['principios' => ['economia_local'], 'contribuye_a' => ['resiliencia']],
+
+        // Espacios y recursos compartidos
+        'espacios_comunes'  => ['principios' => ['economia_local', 'cuidados'], 'contribuye_a' => ['cohesion', 'autonomia']],
+        'reservas'          => ['principios' => ['economia_local'], 'contribuye_a' => ['autonomia']],
+
+        // Gestión de miembros
+        'socios'            => ['principios' => ['gobernanza'], 'contribuye_a' => ['cohesion', 'autonomia']],
+        'tramites'          => ['principios' => ['gobernanza'], 'contribuye_a' => ['autonomia']],
+
+        // Incidencias y conflictos
+        'incidencias'           => ['principios' => ['gobernanza', 'cuidados'], 'contribuye_a' => ['resiliencia']],
+        'justicia_restaurativa' => ['principios' => ['cuidados', 'gobernanza'], 'contribuye_a' => ['cohesion', 'resiliencia']],
+
+        // Red social y comunicación
+        'red_social'        => ['principios' => ['cuidados'], 'contribuye_a' => ['cohesion']],
+        'campanias'         => ['principios' => ['gobernanza', 'cuidados'], 'contribuye_a' => ['impacto', 'cohesion']],
+        'email_marketing'   => ['principios' => ['gobernanza'], 'contribuye_a' => ['impacto']],
+
+        // Trabajo y empleo
+        'trabajo_digno'     => ['principios' => ['economia_local', 'cuidados'], 'contribuye_a' => ['autonomia', 'resiliencia']],
+
+        // Mapeo y documentación
+        'mapa_actores'          => ['principios' => ['gobernanza'], 'contribuye_a' => ['cohesion', 'impacto']],
+        'documentacion_legal'   => ['principios' => ['gobernanza'], 'contribuye_a' => ['autonomia']],
+        'seguimiento_denuncias' => ['principios' => ['gobernanza', 'cuidados'], 'contribuye_a' => ['resiliencia']],
+    ];
+
+    /**
+     * Obtiene los principios Gailu para un conjunto de módulos activos.
+     * Lee los principios desde la caché de metadatos o directamente de los módulos.
+     *
+     * @param array $modulos_activos Array de IDs de módulos activos
+     * @return array [
+     *   'principios' => ['economia_local' => ['modulo1', 'modulo2'], ...],
+     *   'contribuciones' => ['autonomia' => ['modulo1', ...], ...],
+     *   'totales' => ['principios' => 5, 'contribuciones' => 4],
+     *   'cubiertos' => ['principios' => 3, 'contribuciones' => 2]
+     * ]
+     * @since 3.1.0
+     */
+    public static function get_gailu_metricas($modulos_activos) {
+        $principios = [
+            'economia_local' => [],
+            'cuidados' => [],
+            'gobernanza' => [],
+            'regeneracion' => [],
+            'aprendizaje' => [],
+        ];
+
+        $contribuciones = [
+            'autonomia' => [],
+            'resiliencia' => [],
+            'cohesion' => [],
+            'impacto' => [],
+        ];
+
+        // Obtener instancia para acceder a la caché
+        $loader = self::get_instance();
+        $cache = $loader->modules_metadata_cache;
+
+        // Si no hay caché, intentar reconstruirla
+        if (empty($cache)) {
+            $cache = $loader->rebuild_metadata_cache();
+        }
+
+        foreach ($modulos_activos as $modulo_id) {
+            $gailu_principios = [];
+            $gailu_contribuye = [];
+
+            // Primero intentar desde caché de metadatos
+            if (isset($cache[$modulo_id])) {
+                $gailu_principios = $cache[$modulo_id]['gailu_principios'] ?? [];
+                $gailu_contribuye = $cache[$modulo_id]['gailu_contribuye_a'] ?? [];
+            }
+
+            // Si no hay en caché, usar registro estático como fallback
+            if (empty($gailu_principios) && isset(self::GAILU_MODULOS_REGISTRO[$modulo_id])) {
+                $registro = self::GAILU_MODULOS_REGISTRO[$modulo_id];
+                $gailu_principios = $registro['principios'] ?? [];
+                $gailu_contribuye = $registro['contribuye_a'] ?? [];
+            }
+
+            // Registrar principios
+            foreach ($gailu_principios as $principio) {
+                if (isset($principios[$principio])) {
+                    $principios[$principio][] = $modulo_id;
+                }
+            }
+
+            // Registrar contribuciones
+            foreach ($gailu_contribuye as $contribucion) {
+                if (isset($contribuciones[$contribucion])) {
+                    $contribuciones[$contribucion][] = $modulo_id;
+                }
+            }
+        }
+
+        // Calcular cubiertos (los que tienen al menos un módulo)
+        $principios_cubiertos = count(array_filter($principios, function ($modulos) {
+            return !empty($modulos);
+        }));
+
+        $contribuciones_cubiertas = count(array_filter($contribuciones, function ($modulos) {
+            return !empty($modulos);
+        }));
+
+        return [
+            'principios' => $principios,
+            'contribuciones' => $contribuciones,
+            'totales' => [
+                'principios' => 5,
+                'contribuciones' => 4,
+            ],
+            'cubiertos' => [
+                'principios' => $principios_cubiertos,
+                'contribuciones' => $contribuciones_cubiertas,
+            ],
+        ];
+    }
 
     /**
      * Obtiene la instancia singleton
@@ -244,6 +421,13 @@ class Flavor_Chat_Module_Loader {
                 'capability' => method_exists($module, 'get_default_capability')
                     ? $module->get_default_capability()
                     : 'read',
+                // Principios Gailu (filosofia regenerativa)
+                'gailu_principios' => method_exists($module, 'get_gailu_principios')
+                    ? $module->get_gailu_principios()
+                    : [],
+                'gailu_contribuye_a' => method_exists($module, 'get_gailu_contribuciones')
+                    ? $module->get_gailu_contribuciones()
+                    : [],
             ];
         }
 
@@ -527,8 +711,8 @@ class Flavor_Chat_Module_Loader {
      * @return array Módulos cargados
      */
     public function load_active_modules() {
-        $settings = get_option('flavor_chat_ia_settings', []);
-        $active_modules = $settings['active_modules'] ?? ['woocommerce'];
+        // Usar caché estática para evitar múltiples get_option
+        $active_modules = self::get_active_modules_cached();
 
         foreach ($active_modules as $module_id) {
             if (isset($this->registered_modules[$module_id])) {
@@ -618,14 +802,58 @@ class Flavor_Chat_Module_Loader {
     }
 
     /**
+     * Caché estática de módulos activos (compartida entre todas las instancias)
+     *
+     * @var array|null
+     */
+    private static $active_modules_cache = null;
+
+    /**
+     * Obtiene la lista de módulos activos (con caché por request)
+     *
+     * @return array Lista de IDs de módulos activos
+     */
+    public static function get_active_modules_cached(): array {
+        if (self::$active_modules_cache !== null) {
+            return self::$active_modules_cache;
+        }
+
+        // Buscar en flavor_chat_ia_settings['active_modules'] (preferido)
+        $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
+        $modulos_activos = $configuracion_plugin['active_modules'] ?? [];
+
+        // También buscar en flavor_active_modules (legacy/compatibilidad)
+        $modulos_activos_legacy = get_option('flavor_active_modules', []);
+        if (!empty($modulos_activos_legacy)) {
+            $modulos_activos = array_unique(array_merge($modulos_activos, $modulos_activos_legacy));
+        }
+
+        // Default: woocommerce siempre activo si no hay módulos configurados
+        if (empty($modulos_activos)) {
+            $modulos_activos = ['woocommerce'];
+        }
+
+        self::$active_modules_cache = $modulos_activos;
+        return self::$active_modules_cache;
+    }
+
+    /**
+     * Invalida la caché de módulos activos (llamar al cambiar configuración)
+     *
+     * @return void
+     */
+    public static function invalidate_active_modules_cache(): void {
+        self::$active_modules_cache = null;
+    }
+
+    /**
      * Verifica si un módulo está activo (método estático para dependency checker)
      *
      * @param string $module_id ID del módulo (acepta guiones o guiones bajos)
      * @return bool
      */
     public static function is_module_active($module_id) {
-        $configuracion_plugin = get_option('flavor_chat_ia_settings', []);
-        $modulos_activos = $configuracion_plugin['active_modules'] ?? ['woocommerce'];
+        $modulos_activos = self::get_active_modules_cached();
 
         // Normalizar: el dependency checker puede enviar 'chat-core' pero
         // el loader usa 'chat_core' con guiones bajos
@@ -1074,3 +1302,12 @@ class Flavor_Chat_Module_Loader {
         }
     }
 }
+
+// Invalidar caché de módulos activos cuando se actualizan los settings
+add_action('update_option_flavor_chat_ia_settings', function () {
+    Flavor_Chat_Module_Loader::invalidate_active_modules_cache();
+}, 10, 0);
+
+add_action('update_option_flavor_active_modules', function () {
+    Flavor_Chat_Module_Loader::invalidate_active_modules_cache();
+}, 10, 0);

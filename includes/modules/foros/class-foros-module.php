@@ -30,6 +30,10 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
         $this->name = 'Foros de Discusion'; // Translation loaded on init
         $this->description = 'Sistema de foros comunitarios con categorias, hilos y respuestas'; // Translation loaded on init
 
+        // Principios Gailu que implementa este modulo
+        $this->gailu_principios = ['gobernanza', 'aprendizaje'];
+        $this->gailu_contribuye_a = ['cohesion'];
+
         parent::__construct();
 
         // Admin pages
@@ -4235,13 +4239,23 @@ KNOWLEDGE;
     public function registrar_paginas_admin() {
         $capability = 'manage_options';
 
-        // Dashboard - página oculta
+        // Dashboard - página oculta (slug principal)
         add_submenu_page(
             null,
             __('Dashboard Foros', 'flavor-chat-ia'),
             __('Dashboard', 'flavor-chat-ia'),
             $capability,
             'foros',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Dashboard - página oculta (slug para panel unificado)
+        add_submenu_page(
+            null,
+            __('Dashboard Foros', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'foros-dashboard',
             [$this, 'render_pagina_dashboard']
         );
 

@@ -315,3 +315,266 @@
         transform: rotate(360deg);
     }
 }
+
+/* ==========================================================================
+   Banner de comunidad
+   ========================================================================== */
+.marketplace-comunidad-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-radius: 10px;
+    color: white;
+}
+
+.marketplace-comunidad-banner .banner-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.marketplace-comunidad-banner .banner-info .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    opacity: 0.9;
+}
+
+.marketplace-comunidad-banner .banner-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.marketplace-comunidad-banner .btn-volver-comunidad,
+.marketplace-comunidad-banner .btn-ver-todos {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.marketplace-comunidad-banner .btn-volver-comunidad {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.marketplace-comunidad-banner .btn-volver-comunidad:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.marketplace-comunidad-banner .btn-ver-todos {
+    background: white;
+    color: #6366f1;
+}
+
+.marketplace-comunidad-banner .btn-ver-todos:hover {
+    background: #f8f9fa;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 576px) {
+    .marketplace-comunidad-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .marketplace-comunidad-banner .banner-info {
+        flex-direction: column;
+    }
+
+    .marketplace-comunidad-banner .banner-actions {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ==========================================================================
+   Marketplace dentro de comunidad
+   ========================================================================== */
+.flavor-comunidad-marketplace {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.flavor-comunidad-marketplace .marketplace-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.flavor-comunidad-marketplace .marketplace-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 1.1rem;
+    color: #374151;
+}
+
+.flavor-comunidad-marketplace .marketplace-header h3 .dashicons {
+    color: #6366f1;
+}
+
+.flavor-comunidad-marketplace .marketplace-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.flavor-comunidad-marketplace .marketplace-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flavor-comunidad-marketplace .marketplace-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.flavor-comunidad-marketplace .marketplace-ver-mas {
+    text-align: center;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.flavor-comunidad-marketplace .placeholder-image {
+    aspect-ratio: 4/3;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+}
+
+.flavor-comunidad-marketplace .placeholder-image .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+}
+
+.flavor-comunidad-marketplace .tipo-badge {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: white;
+}
+
+.flavor-comunidad-marketplace .tipo-regalo { background: #10b981; }
+.flavor-comunidad-marketplace .tipo-venta { background: #3b82f6; }
+.flavor-comunidad-marketplace .tipo-cambio { background: #f59e0b; }
+.flavor-comunidad-marketplace .tipo-alquiler { background: #8b5cf6; }
+
+.flavor-comunidad-marketplace .vendido-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    background: #dc2626;
+    color: white;
+    padding: 0.25rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 4px;
+}
+
+.flavor-comunidad-marketplace .flavor-card-body {
+    padding: 0.75rem;
+}
+
+.flavor-comunidad-marketplace .flavor-card-body h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.3;
+}
+
+.flavor-comunidad-marketplace .flavor-card-body h4 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.flavor-comunidad-marketplace .flavor-card-body h4 a:hover {
+    color: #6366f1;
+}
+
+.flavor-comunidad-marketplace .precio {
+    font-weight: 700;
+    color: #3b82f6;
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+}
+
+.flavor-comunidad-marketplace .precio.gratis {
+    color: #10b981;
+}
+
+.flavor-comunidad-marketplace .autor {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.flavor-comunidad-marketplace .autor .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.flavor-comunidad-marketplace .flavor-card-footer {
+    padding: 0.5rem 0.75rem 0.75rem;
+}
+
+/* ==========================================================================
+   Notificaciones
+   ========================================================================== */
+.marketplace-notificacion {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 9999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.marketplace-notificacion.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.marketplace-notificacion.success {
+    background: #10b981;
+}
+
+.marketplace-notificacion.error {
+    background: #ef4444;
+}
