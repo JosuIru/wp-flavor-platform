@@ -1883,7 +1883,7 @@ class Flavor_Theme_Manager {
 
         wp_enqueue_style(
             'flavor-base-css',
-            FLAVOR_CHAT_IA_URL . "assets/css/flavor-base{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/core/flavor-base{$sufijo_asset}.css",
             [],
             filemtime($ruta_archivo_css)
         );
