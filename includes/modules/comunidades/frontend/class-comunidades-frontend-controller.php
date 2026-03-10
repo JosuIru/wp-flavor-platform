@@ -68,7 +68,7 @@ class Flavor_Comunidades_Frontend_Controller {
         wp_register_style(
             'flavor-comunidades',
             $base_url . 'css/comunidades.css',
-            [],
+            ['flavor-modules-common'],
             $version
         );
 

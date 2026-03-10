@@ -110,7 +110,7 @@ class Flavor_Eventos_Frontend_Controller {
         wp_enqueue_style(
             'flavor-eventos',
             $base_url . '/assets/css/eventos.css',
-            [],
+            ['flavor-modules-common'],
             $version
         );
 

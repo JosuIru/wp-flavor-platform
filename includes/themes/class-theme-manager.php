@@ -1887,6 +1887,17 @@ class Flavor_Theme_Manager {
             [],
             filemtime($ruta_archivo_css)
         );
+
+        // CSS común de módulos (v4.2.0)
+        $modules_css_path = FLAVOR_CHAT_IA_PATH . 'assets/css/modules/modules-common.css';
+        if (file_exists($modules_css_path)) {
+            wp_enqueue_style(
+                'flavor-modules-common',
+                FLAVOR_CHAT_IA_URL . 'assets/css/modules/modules-common.css',
+                ['flavor-base-css'],
+                filemtime($modules_css_path)
+            );
+        }
     }
 
     /**

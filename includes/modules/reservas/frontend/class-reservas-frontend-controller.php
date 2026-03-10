@@ -75,7 +75,7 @@ class Flavor_Reservas_Frontend_Controller {
         wp_register_style(
             'flavor-reservas',
             $base_url . '/assets/css/reservas.css',
-            [],
+            ['flavor-modules-common'],
             $version
         );
 
