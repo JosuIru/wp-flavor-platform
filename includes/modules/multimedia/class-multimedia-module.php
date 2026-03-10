@@ -2034,17 +2034,31 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         $tabla_albumes = $wpdb->prefix . 'flavor_multimedia_albumes';
         $tabla_reportes = $wpdb->prefix . 'flavor_multimedia_reportes';
 
+        // Consolidar 7 queries a tabla multimedia en 1 query
+        $mm_stats = $wpdb->get_row(
+            "SELECT
+                COUNT(*) AS total_archivos,
+                SUM(CASE WHEN tipo = 'imagen' THEN 1 ELSE 0 END) AS imagenes,
+                SUM(CASE WHEN tipo = 'video' THEN 1 ELSE 0 END) AS videos,
+                SUM(CASE WHEN tipo = 'audio' THEN 1 ELSE 0 END) AS audios,
+                SUM(CASE WHEN estado = 'pendiente' THEN 1 ELSE 0 END) AS pendientes_moderacion,
+                COALESCE(SUM(vistas), 0) AS total_vistas,
+                COALESCE(SUM(me_gusta), 0) AS total_likes,
+                COALESCE(SUM(tamano_bytes), 0) AS espacio_usado_bytes
+            FROM $tabla"
+        );
+
         $stats = [
-            'total_archivos' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla"),
-            'imagenes' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE tipo = 'imagen'"),
-            'videos' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE tipo = 'video'"),
-            'audios' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE tipo = 'audio'"),
+            'total_archivos' => (int) ($mm_stats->total_archivos ?? 0),
+            'imagenes' => (int) ($mm_stats->imagenes ?? 0),
+            'videos' => (int) ($mm_stats->videos ?? 0),
+            'audios' => (int) ($mm_stats->audios ?? 0),
             'total_albumes' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_albumes"),
-            'pendientes_moderacion' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'pendiente'"),
+            'pendientes_moderacion' => (int) ($mm_stats->pendientes_moderacion ?? 0),
             'reportes_pendientes' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_reportes WHERE estado = 'pendiente'"),
-            'total_vistas' => (int) $wpdb->get_var("SELECT SUM(vistas) FROM $tabla"),
-            'total_likes' => (int) $wpdb->get_var("SELECT SUM(me_gusta) FROM $tabla"),
-            'espacio_usado_bytes' => (int) $wpdb->get_var("SELECT SUM(tamano_bytes) FROM $tabla"),
+            'total_vistas' => (int) ($mm_stats->total_vistas ?? 0),
+            'total_likes' => (int) ($mm_stats->total_likes ?? 0),
+            'espacio_usado_bytes' => (int) ($mm_stats->espacio_usado_bytes ?? 0),
         ];
 
         // Top archivos

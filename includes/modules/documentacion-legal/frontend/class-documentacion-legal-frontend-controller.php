@@ -365,14 +365,20 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
             return ['total' => 0, 'leyes' => 0, 'modelos' => 0];
         }
 
-        $total = $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'publicado'");
-        $leyes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE tipo IN ('ley', 'decreto', 'ordenanza') AND estado = 'publicado'");
-        $modelos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE tipo IN ('modelo_denuncia', 'modelo_recurso') AND estado = 'publicado'");
+        // Consolidar 3 queries en 1 usando CASE WHEN
+        $stats = $wpdb->get_row(
+            "SELECT
+                COUNT(*) AS total,
+                SUM(CASE WHEN tipo IN ('ley', 'decreto', 'ordenanza') THEN 1 ELSE 0 END) AS leyes,
+                SUM(CASE WHEN tipo IN ('modelo_denuncia', 'modelo_recurso') THEN 1 ELSE 0 END) AS modelos
+            FROM $tabla
+            WHERE estado = 'publicado'"
+        );
 
         return [
-            'total' => intval($total),
-            'leyes' => intval($leyes),
-            'modelos' => intval($modelos)
+            'total' => intval($stats->total ?? 0),
+            'leyes' => intval($stats->leyes ?? 0),
+            'modelos' => intval($stats->modelos ?? 0)
         ];
     }
 

@@ -36,12 +36,23 @@ $docs_populares = [];
 $docs_recientes = [];
 
 if ($tabla_docs_existe) {
-    $total_docs = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_docs WHERE estado = 'publicado'");
-    $total_borradores = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_docs WHERE estado = 'borrador'");
-    $total_revision = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_docs WHERE estado = 'revision'");
-    $total_descargas = (int) $wpdb->get_var("SELECT IFNULL(SUM(descargas), 0) FROM $tabla_docs");
-    $total_visitas = (int) $wpdb->get_var("SELECT IFNULL(SUM(visitas), 0) FROM $tabla_docs");
-    $pendientes_verificar = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_docs WHERE verificado = 0 AND estado = 'publicado'");
+    // Consolidar 6 queries en 1 usando CASE WHEN
+    $stats = $wpdb->get_row(
+        "SELECT
+            SUM(CASE WHEN estado = 'publicado' THEN 1 ELSE 0 END) AS total_docs,
+            SUM(CASE WHEN estado = 'borrador' THEN 1 ELSE 0 END) AS total_borradores,
+            SUM(CASE WHEN estado = 'revision' THEN 1 ELSE 0 END) AS total_revision,
+            IFNULL(SUM(descargas), 0) AS total_descargas,
+            IFNULL(SUM(visitas), 0) AS total_visitas,
+            SUM(CASE WHEN verificado = 0 AND estado = 'publicado' THEN 1 ELSE 0 END) AS pendientes_verificar
+        FROM $tabla_docs"
+    );
+    $total_docs = (int) ($stats->total_docs ?? 0);
+    $total_borradores = (int) ($stats->total_borradores ?? 0);
+    $total_revision = (int) ($stats->total_revision ?? 0);
+    $total_descargas = (int) ($stats->total_descargas ?? 0);
+    $total_visitas = (int) ($stats->total_visitas ?? 0);
+    $pendientes_verificar = (int) ($stats->pendientes_verificar ?? 0);
 
     $docs_por_tipo = $wpdb->get_results("SELECT tipo, COUNT(*) as total FROM $tabla_docs WHERE estado = 'publicado' GROUP BY tipo ORDER BY total DESC");
     $docs_por_ambito = $wpdb->get_results("SELECT ambito, COUNT(*) as total FROM $tabla_docs WHERE estado = 'publicado' GROUP BY ambito ORDER BY total DESC");

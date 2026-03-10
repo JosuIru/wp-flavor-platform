@@ -1111,17 +1111,23 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
         $tabla_documentos = $wpdb->prefix . 'flavor_documentacion_legal';
         $tabla_categorias = $wpdb->prefix . 'flavor_documentacion_legal_categorias';
 
-        $total_documentos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_documentos}");
-        $documentos_publicados = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_documentos} WHERE estado = 'publicado'");
-        $documentos_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_documentos} WHERE estado IN ('borrador', 'revision')");
-        $total_descargas = (int) $wpdb->get_var("SELECT COALESCE(SUM(descargas), 0) FROM {$tabla_documentos}");
+        // Consolidar 4 queries a tabla_documentos en 1 sola query
+        $stats = $wpdb->get_row(
+            "SELECT
+                COUNT(*) AS total_documentos,
+                SUM(CASE WHEN estado = 'publicado' THEN 1 ELSE 0 END) AS documentos_publicados,
+                SUM(CASE WHEN estado IN ('borrador', 'revision') THEN 1 ELSE 0 END) AS documentos_pendientes,
+                COALESCE(SUM(descargas), 0) AS total_descargas
+            FROM {$tabla_documentos}"
+        );
+
         $total_categorias = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_categorias}");
 
         return [
-            'total_documentos'      => $total_documentos,
-            'documentos_publicados' => $documentos_publicados,
-            'documentos_pendientes' => $documentos_pendientes,
-            'total_descargas'       => $total_descargas,
+            'total_documentos'      => (int) ($stats->total_documentos ?? 0),
+            'documentos_publicados' => (int) ($stats->documentos_publicados ?? 0),
+            'documentos_pendientes' => (int) ($stats->documentos_pendientes ?? 0),
+            'total_descargas'       => (int) ($stats->total_descargas ?? 0),
             'total_categorias'      => $total_categorias,
         ];
     }
