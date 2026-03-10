@@ -108,7 +108,19 @@ class Flavor_Chat_Module_Loader {
     /**
      * Versión del caché (incrementar al cambiar estructura)
      */
-    private const METADATA_CACHE_VERSION = 2;
+    private const METADATA_CACHE_VERSION = 3;
+
+    /**
+     * TTL del caché de metadatos en segundos
+     * Producción: 7 días (metadatos rara vez cambian)
+     * Desarrollo (WP_DEBUG): 1 hora
+     */
+    private static function get_metadata_cache_ttl(): int {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            return HOUR_IN_SECONDS;
+        }
+        return 7 * DAY_IN_SECONDS;
+    }
 
     /**
      * Registro de fallback de principios Gailu por módulo.
@@ -329,7 +341,8 @@ class Flavor_Chat_Module_Loader {
         set_transient(self::METADATA_CACHE_KEY, [
             'version' => self::METADATA_CACHE_VERSION,
             'data' => $metadata,
-        ], DAY_IN_SECONDS);
+            'created_at' => time(),
+        ], self::get_metadata_cache_ttl());
     }
 
     /**
@@ -1311,3 +1324,19 @@ add_action('update_option_flavor_chat_ia_settings', function () {
 add_action('update_option_flavor_active_modules', function () {
     Flavor_Chat_Module_Loader::invalidate_active_modules_cache();
 }, 10, 0);
+
+// Auto-rebuild metadata cache cuando se actualiza el plugin
+add_action('upgrader_process_complete', function ($upgrader, $options) {
+    if ($options['action'] !== 'update' || $options['type'] !== 'plugin') {
+        return;
+    }
+
+    $our_plugin = plugin_basename(FLAVOR_CHAT_IA_FILE);
+    $updated_plugins = $options['plugins'] ?? [];
+
+    if (in_array($our_plugin, $updated_plugins, true)) {
+        // Invalidar caché para forzar rebuild en próxima carga
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $loader->invalidate_metadata_cache();
+    }
+}, 10, 2);
