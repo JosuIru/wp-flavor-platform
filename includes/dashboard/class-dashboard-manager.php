@@ -290,6 +290,7 @@ class Flavor_Dashboard_Manager {
 
     /**
      * AJAX: Obtener datos del dashboard
+     * Incluye caché transient para evitar re-renderizar widgets frecuentemente.
      */
     public function ajax_get_dashboard_data() {
         check_ajax_referer('flavor_dashboard_nonce', 'nonce');
@@ -298,9 +299,24 @@ class Flavor_Dashboard_Manager {
             wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
         }
 
+        $user_id = get_current_user_id();
         $layout = $this->get_user_layout();
-        $widgets_data = [];
+        $force_refresh = !empty($_POST['refresh']);
 
+        // Generar clave de caché única por usuario y layout
+        $cache_key = 'flavor_dash_' . $user_id . '_' . md5(wp_json_encode($layout));
+
+        // Intentar obtener del caché (si no se fuerza refresh)
+        if (!$force_refresh) {
+            $cached = get_transient($cache_key);
+            if ($cached !== false) {
+                wp_send_json_success($cached);
+                return;
+            }
+        }
+
+        // Renderizar widgets (operación costosa)
+        $widgets_data = [];
         foreach ($layout as $widget_id) {
             if (isset($this->widgets[$widget_id])) {
                 ob_start();
@@ -315,10 +331,31 @@ class Flavor_Dashboard_Manager {
             }
         }
 
-        wp_send_json_success([
+        $response_data = [
             'layout' => $layout,
             'widgets' => $widgets_data,
-        ]);
+            'cached_at' => current_time('mysql'),
+        ];
+
+        // Cachear por 5 minutos
+        set_transient($cache_key, $response_data, 5 * MINUTE_IN_SECONDS);
+
+        wp_send_json_success($response_data);
+    }
+
+    /**
+     * Invalida el caché del dashboard para todos los usuarios.
+     * Llamar cuando cambien datos que afecten los widgets.
+     */
+    public static function invalidate_dashboard_cache() {
+        global $wpdb;
+
+        // Eliminar todos los transients de dashboard
+        $wpdb->query(
+            "DELETE FROM {$wpdb->options}
+            WHERE option_name LIKE '_transient_flavor_dash_%'
+            OR option_name LIKE '_transient_timeout_flavor_dash_%'"
+        );
     }
 
     /**
@@ -343,6 +380,10 @@ class Flavor_Dashboard_Manager {
 
         $user_id = get_current_user_id();
         update_user_meta($user_id, 'flavor_dashboard_layout', $valid_layout);
+
+        // Invalidar caché del usuario actual
+        $cache_key = 'flavor_dash_' . $user_id . '_' . md5(wp_json_encode($valid_layout));
+        delete_transient($cache_key);
 
         wp_send_json_success(['message' => __('Layout guardado', 'flavor-chat-ia')]);
     }
