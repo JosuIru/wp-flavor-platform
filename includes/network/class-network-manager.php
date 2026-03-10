@@ -1434,7 +1434,7 @@ class Flavor_Network_Manager {
 
         wp_enqueue_style(
             'flavor-network-frontend',
-            FLAVOR_CHAT_IA_URL . "assets/css/network-frontend{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/modules/network-frontend{$sufijo_asset}.css",
             [],
             self::VERSION
         );

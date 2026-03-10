@@ -50,7 +50,7 @@ class Flavor_Chat_Assets {
         // CSS
         wp_enqueue_style(
             'flavor-chat-ia',
-            FLAVOR_CHAT_IA_URL . "assets/css/chat-widget{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/modules/chat-widget{$sufijo_asset}.css",
             [],
             FLAVOR_CHAT_IA_VERSION
         );

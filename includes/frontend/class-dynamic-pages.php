@@ -546,22 +546,22 @@ class Flavor_Dynamic_Pages {
 
         // CSS del portal unificado (sistema de layouts)
         $sufijo_min = (defined('WP_DEBUG') && WP_DEBUG) ? '' : '.min';
-        $unified_portal_css = FLAVOR_CHAT_IA_PATH . "assets/css/unified-portal{$sufijo_min}.css";
+        $unified_portal_css = FLAVOR_CHAT_IA_PATH . "assets/css/layouts/unified-portal{$sufijo_min}.css";
         if (file_exists($unified_portal_css)) {
             wp_enqueue_style(
                 'flavor-unified-portal',
-                FLAVOR_CHAT_IA_URL . "assets/css/unified-portal{$sufijo_min}.css",
+                FLAVOR_CHAT_IA_URL . "assets/css/layouts/unified-portal{$sufijo_min}.css",
                 ['flavor-portal'],
                 FLAVOR_CHAT_IA_VERSION
             );
         }
 
         // CSS del dashboard unificado (paneles de prioridad, Gailu, social)
-        $unified_dashboard_css = FLAVOR_CHAT_IA_PATH . "assets/css/unified-dashboard{$sufijo_min}.css";
+        $unified_dashboard_css = FLAVOR_CHAT_IA_PATH . "assets/css/layouts/unified-dashboard{$sufijo_min}.css";
         if (file_exists($unified_dashboard_css)) {
             wp_enqueue_style(
                 'flavor-unified-dashboard',
-                FLAVOR_CHAT_IA_URL . "assets/css/unified-dashboard{$sufijo_min}.css",
+                FLAVOR_CHAT_IA_URL . "assets/css/layouts/unified-dashboard{$sufijo_min}.css",
                 ['flavor-portal'],
                 FLAVOR_CHAT_IA_VERSION
             );

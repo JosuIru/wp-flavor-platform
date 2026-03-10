@@ -3094,7 +3094,7 @@ class Flavor_Client_Dashboard {
         // CSS del mapa del dashboard
         wp_enqueue_style(
             'flavor-dashboard-map',
-            FLAVOR_CHAT_IA_URL . "assets/css/dashboard-map{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/layouts/dashboard-map{$sufijo_asset}.css",
             ['leaflet', 'leaflet-markercluster'],
             FLAVOR_CHAT_IA_VERSION
         );

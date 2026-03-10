@@ -27,8 +27,8 @@ class Flavor_Network_Admin {
     }
 
     private function __construct() {
-        // NOTA: El menú se registra centralizadamente en class-admin-menu-manager.php
-        // add_action('admin_menu', [$this, 'add_admin_menus'], 20);
+        // El menú se registra centralizadamente en admin/class-admin-menu-manager.php
+        // No registrar aquí para evitar duplicados
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
 
@@ -64,7 +64,7 @@ class Flavor_Network_Admin {
 
         wp_enqueue_style(
             'flavor-network-admin',
-            FLAVOR_CHAT_IA_URL . "assets/css/network-admin{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/admin/network-admin{$sufijo_asset}.css",
             [],
             Flavor_Network_Manager::VERSION
         );

@@ -155,7 +155,7 @@ class Flavor_Frontend_Assets {
         // Encolar CSS de módulos
         wp_enqueue_style(
             'flavor-modules',
-            FLAVOR_CHAT_IA_URL . "assets/css/flavor-modules{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/modules/flavor-modules{$sufijo_asset}.css",
             [],
             FLAVOR_CHAT_IA_VERSION
         );
@@ -210,7 +210,7 @@ class Flavor_Frontend_Assets {
 
         wp_enqueue_style(
             'flavor-modules-admin',
-            FLAVOR_CHAT_IA_URL . "assets/css/flavor-modules{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/modules/flavor-modules{$sufijo_asset}.css",
             [],
             FLAVOR_CHAT_IA_VERSION
         );

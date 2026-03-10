@@ -78,7 +78,7 @@ class Flavor_User_Dashboard {
 
         wp_enqueue_style(
             'flavor-user-dashboard',
-            FLAVOR_CHAT_IA_URL . "assets/css/user-dashboard{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/layouts/user-dashboard{$sufijo_asset}.css",
             [],
             FLAVOR_CHAT_IA_VERSION
         );

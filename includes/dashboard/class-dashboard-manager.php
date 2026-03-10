@@ -154,7 +154,7 @@ class Flavor_Dashboard_Manager {
 
         wp_enqueue_style(
             'flavor-dashboard-widgets',
-            FLAVOR_CHAT_IA_URL . "assets/css/dashboard{$sufijo_asset}.css",
+            FLAVOR_CHAT_IA_URL . "assets/css/layouts/dashboard{$sufijo_asset}.css",
             [],
             FLAVOR_CHAT_IA_VERSION
         );
@@ -524,7 +524,7 @@ class Flavor_Dashboard_Manager {
                 </div>
             <?php endforeach; ?>
         </div>
-        <a href="<?php echo admin_url('admin.php?page=flavor-app-composer'); ?>" class="flavor-link-small">
+        <a href="<?php echo admin_url('admin.php?page=flavor-module-dashboards'); ?>" class="flavor-link-small">
             Gestionar módulos
         </a>
         <?php
