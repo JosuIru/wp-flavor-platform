@@ -99,6 +99,7 @@ class Flavor_Unified_Dashboard {
         add_action('wp_ajax_fud_get_dashboard_data', [$this, 'ajax_get_dashboard_data']);
         add_action('wp_ajax_fud_save_layout', [$this, 'ajax_save_layout']);
         add_action('wp_ajax_fud_refresh_all', [$this, 'ajax_refresh_all']);
+        add_action('wp_ajax_fud_load_widget', [$this, 'ajax_load_widget']);
 
         // REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -304,6 +305,15 @@ class Flavor_Unified_Dashboard {
             );
         }
 
+        // Lazy Loading de Widgets (v4.2.0)
+        wp_enqueue_script(
+            'fud-lazy-load',
+            $plugin_url . 'assets/js/dashboard-lazy-load.js',
+            [],
+            $version,
+            true
+        );
+
         // =====================================================================
         // Localizacion de scripts
         // =====================================================================
@@ -312,17 +322,19 @@ class Flavor_Unified_Dashboard {
         $dashboard_config = [
             'ajaxUrl'         => admin_url('admin-ajax.php'),
             'restUrl'         => rest_url('flavor/v1/dashboard/'),
-            'nonce'           => wp_create_nonce('fud_nonce'),
+            'nonce'           => wp_create_nonce('fud_dashboard_nonce'),
             'refreshInterval' => self::AUTO_REFRESH_INTERVAL * 1000,
             'features'        => [
                 'sortable'     => true,
                 'groups'       => true,
                 'levels'       => true,
                 'accessibility' => true,
+                'lazyLoad'     => true,
             ],
             'i18n'            => $this->get_i18n_strings(),
         ];
 
+        wp_localize_script('fud-lazy-load', 'fudDashboard', $dashboard_config);
         wp_localize_script('fl-dashboard-sortable', 'flDashboard', $dashboard_config);
         wp_localize_script('fud-unified-dashboard', 'fudConfig', $dashboard_config);
     }
@@ -1226,6 +1238,42 @@ class Flavor_Unified_Dashboard {
 
         // Devolver datos frescos
         $this->ajax_get_dashboard_data();
+    }
+
+    /**
+     * AJAX: Cargar un widget individual (para lazy loading)
+     *
+     * @return void
+     */
+    public function ajax_load_widget(): void {
+        check_ajax_referer('fud_dashboard_nonce', 'nonce');
+
+        if (!current_user_can('read')) {
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+        }
+
+        $widget_id = isset($_POST['widget_id']) ? sanitize_key($_POST['widget_id']) : '';
+
+        if (empty($widget_id)) {
+            wp_send_json_error(['message' => __('Widget ID requerido', 'flavor-chat-ia')]);
+        }
+
+        $widget = $this->registry->get($widget_id);
+
+        if (!$widget) {
+            wp_send_json_error(['message' => __('Widget no encontrado', 'flavor-chat-ia')]);
+        }
+
+        ob_start();
+        $widget->render_widget();
+        $html = ob_get_clean();
+
+        wp_send_json_success([
+            'widget_id' => $widget_id,
+            'html'      => $html,
+            'data'      => $widget->get_widget_data(),
+            'timestamp' => current_time('c'),
+        ]);
     }
 
     // =========================================================================
@@ -4080,6 +4128,154 @@ class Flavor_Unified_Dashboard {
             </div>
         </section>
         <?php
+    }
+
+    // =========================================================================
+    // AJAX Handlers
+    // =========================================================================
+
+    /**
+     * AJAX: Cargar widget lazy
+     *
+     * Carga el contenido de un widget específico cuando entra en el viewport.
+     *
+     * @since 4.2.0
+     * @return void
+     */
+    public function ajax_load_widget(): void {
+        check_ajax_referer('fud_dashboard_nonce', 'nonce');
+
+        if (!current_user_can('read')) {
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+        }
+
+        $widget_id = isset($_POST['widget_id']) ? sanitize_key($_POST['widget_id']) : '';
+
+        if (empty($widget_id)) {
+            wp_send_json_error(['message' => __('Widget ID requerido', 'flavor-chat-ia')]);
+        }
+
+        // Asegurar que el registry está disponible
+        if (!$this->registry) {
+            wp_send_json_error(['message' => __('Sistema de widgets no disponible', 'flavor-chat-ia')]);
+        }
+
+        $widget = $this->registry->get($widget_id);
+
+        if (!$widget) {
+            wp_send_json_error(['message' => __('Widget no encontrado', 'flavor-chat-ia')]);
+        }
+
+        // Verificar permisos del widget
+        if (method_exists($widget, 'can_view') && !$widget->can_view()) {
+            wp_send_json_error(['message' => __('Sin acceso a este widget', 'flavor-chat-ia')]);
+        }
+
+        // Renderizar widget
+        ob_start();
+        if (method_exists($widget, 'render_content')) {
+            $widget->render_content();
+        } elseif (method_exists($widget, 'render')) {
+            $widget->render();
+        } else {
+            echo '<p class="fud-widget__empty">' . esc_html__('Sin contenido', 'flavor-chat-ia') . '</p>';
+        }
+        $html = ob_get_clean();
+
+        // Obtener datos adicionales si existen
+        $widget_data = [];
+        if (method_exists($widget, 'get_data')) {
+            $widget_data = $widget->get_data();
+        }
+
+        wp_send_json_success([
+            'widget_id' => $widget_id,
+            'html'      => $html,
+            'data'      => $widget_data,
+            'timestamp' => current_time('c'),
+        ]);
+    }
+
+    /**
+     * AJAX: Obtener datos del dashboard
+     *
+     * @since 4.0.0
+     * @return void
+     */
+    public function ajax_get_dashboard_data(): void {
+        check_ajax_referer('fud_dashboard_nonce', 'nonce');
+
+        if (!current_user_can('read')) {
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+        }
+
+        $widgets_data = [];
+
+        if ($this->registry) {
+            foreach ($this->registry->get_all() as $widget_id => $widget) {
+                if (method_exists($widget, 'can_view') && !$widget->can_view()) {
+                    continue;
+                }
+                if (method_exists($widget, 'get_data')) {
+                    $widgets_data[$widget_id] = $widget->get_data();
+                }
+            }
+        }
+
+        wp_send_json_success([
+            'widgets'   => $widgets_data,
+            'timestamp' => current_time('c'),
+        ]);
+    }
+
+    /**
+     * AJAX: Guardar layout del dashboard
+     *
+     * @since 4.0.0
+     * @return void
+     */
+    public function ajax_save_layout(): void {
+        check_ajax_referer('fud_dashboard_nonce', 'nonce');
+
+        if (!current_user_can('read')) {
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+        }
+
+        $layout = isset($_POST['layout']) ? json_decode(stripslashes($_POST['layout']), true) : [];
+
+        if (!is_array($layout)) {
+            wp_send_json_error(['message' => __('Formato de layout inválido', 'flavor-chat-ia')]);
+        }
+
+        $user_id = get_current_user_id();
+        update_user_meta($user_id, 'fud_dashboard_layout', $layout);
+
+        wp_send_json_success([
+            'message'   => __('Layout guardado', 'flavor-chat-ia'),
+            'timestamp' => current_time('c'),
+        ]);
+    }
+
+    /**
+     * AJAX: Refrescar todos los widgets
+     *
+     * @since 4.0.0
+     * @return void
+     */
+    public function ajax_refresh_all(): void {
+        check_ajax_referer('fud_dashboard_nonce', 'nonce');
+
+        if (!current_user_can('read')) {
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+        }
+
+        // Limpiar cache de widgets
+        if (function_exists('wp_cache_delete')) {
+            wp_cache_delete('fud_widgets_data_' . get_current_user_id(), 'flavor_dashboard');
+        }
+
+        // Obtener datos frescos
+        $this->ajax_get_dashboard_data();
     }
 }
 
