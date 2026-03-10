@@ -111,6 +111,19 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         });
     }
 
+    public function get_widget_config(): array {
+        $config = parent::get_widget_config();
+        $severity = $this->get_native_severity_payload($this->get_widget_data());
+
+        if (!empty($severity['slug'])) {
+            $config['severity_slug'] = $severity['slug'];
+            $config['severity_label'] = $severity['label'];
+            $config['severity_reason'] = $severity['reason'];
+        }
+
+        return $config;
+    }
+
     /**
      * Obtiene los datos frescos del widget
      *
@@ -130,7 +143,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         if ($user_id && $this->table_exists($tabla_incidencias)) {
             $mis_abiertas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_incidencias}
-                 WHERE reportado_por = %d
+                 WHERE usuario_id = %d
                  AND estado NOT IN ('resuelta', 'cerrada', 'rechazada')",
                 $user_id
             ));
@@ -141,7 +154,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         if ($user_id && $this->table_exists($tabla_incidencias)) {
             $mis_resueltas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_incidencias}
-                 WHERE reportado_por = %d
+                 WHERE usuario_id = %d
                  AND estado = 'resuelta'",
                 $user_id
             ));
@@ -162,7 +175,7 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             $actualizaciones_nuevas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_seguimiento} s
                  INNER JOIN {$tabla_incidencias} i ON s.incidencia_id = i.id
-                 WHERE i.reportado_por = %d
+                 WHERE i.usuario_id = %d
                  AND s.fecha_creacion > DATE_SUB(NOW(), INTERVAL 7 DAY)
                  AND s.autor_id != %d",
                 $user_id,
@@ -221,6 +234,12 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         return [
             'stats' => $stats,
             'items' => $items,
+            'summary' => [
+                'mis_abiertas' => $mis_abiertas,
+                'mis_resueltas' => $mis_resueltas,
+                'total_abiertas' => $total_abiertas,
+                'actualizaciones_nuevas' => $actualizaciones_nuevas,
+            ],
             'empty_state' => __('No hay incidencias reportadas recientemente', 'flavor-chat-ia'),
             'footer' => [
                 [
@@ -315,6 +334,35 @@ class Flavor_Incidencias_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
         $cache[$nombre_tabla] = ($resultado === $nombre_tabla);
         return $cache[$nombre_tabla];
+    }
+
+    /**
+     * Devuelve severidad nativa segun el estado real de incidencias.
+     *
+     * @param array $data
+     * @return array{slug:string,label:string,reason:string}
+     */
+    private function get_native_severity_payload(array $data): array {
+        $summary = is_array($data['summary'] ?? null) ? $data['summary'] : [];
+        $mis_abiertas = (int) ($summary['mis_abiertas'] ?? 0);
+        $total_abiertas = (int) ($summary['total_abiertas'] ?? 0);
+        $actualizaciones_nuevas = (int) ($summary['actualizaciones_nuevas'] ?? 0);
+
+        if ($mis_abiertas > 0 || $actualizaciones_nuevas > 0) {
+            $severity = Flavor_Dashboard_Severity::get_payload('attention');
+            $severity['reason'] = __('Tienes incidencias abiertas o actualizaciones recientes que requieren atención.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        if ($total_abiertas > 0) {
+            $severity = Flavor_Dashboard_Severity::get_payload('followup');
+            $severity['reason'] = __('Hay incidencias comunitarias activas que conviene seguir aunque no te afecten directamente.', 'flavor-chat-ia');
+            return $severity;
+        }
+
+        $severity = Flavor_Dashboard_Severity::get_payload('stable');
+        $severity['reason'] = __('No hay incidencias activas relevantes en este momento.', 'flavor-chat-ia');
+        return $severity;
     }
 
     /**

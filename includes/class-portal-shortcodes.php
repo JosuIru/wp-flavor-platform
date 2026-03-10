@@ -2590,22 +2590,21 @@ class Flavor_Portal_Shortcodes {
         global $wpdb;
 
         $notifications = [];
-        $tabla_temas = $wpdb->prefix . 'flavor_foros_temas';
+        $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
         $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_temas'") !== $tabla_temas) {
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_hilos'") !== $tabla_hilos) {
             return $notifications;
         }
 
-        // Respuestas nuevas en temas del usuario
+        // Respuestas nuevas en hilos del usuario
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_respuestas'") === $tabla_respuestas) {
             $respuestas_nuevas = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_respuestas} r
-                 INNER JOIN {$tabla_temas} t ON r.tema_id = t.id
-                 WHERE t.autor_id = %d
+                 INNER JOIN {$tabla_hilos} h ON r.hilo_id = h.id
+                 WHERE h.autor_id = %d
                  AND r.autor_id != %d
-                 AND r.created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)
-                 AND r.leida = 0",
+                 AND r.fecha_creacion > DATE_SUB(NOW(), INTERVAL 7 DAY)",
                 $user_id,
                 $user_id
             ));
@@ -2628,19 +2627,19 @@ class Flavor_Portal_Shortcodes {
             }
         }
 
-        // Temas nuevos esta semana
-        $temas_nuevos = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$tabla_temas}
+        // Hilos nuevos esta semana
+        $hilos_nuevos = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$tabla_hilos}
              WHERE estado = 'abierto'
-             AND created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)"
+             AND fecha_creacion > DATE_SUB(NOW(), INTERVAL 7 DAY)"
         );
 
-        if ($temas_nuevos > 3) {
+        if ($hilos_nuevos > 3) {
             $notifications[] = [
                 'module_id' => 'foros',
                 'type' => 'info',
                 'icon' => '📢',
-                'text' => sprintf(__('%d temas nuevos esta semana', 'flavor-chat-ia'), $temas_nuevos),
+                'text' => sprintf(__('%d hilos nuevos esta semana', 'flavor-chat-ia'), $hilos_nuevos),
                 'link' => home_url('/mi-portal/foros/'),
                 'severity_slug' => 'stable',
                 'severity_label' => $this->get_tool_severity_label('stable'),
@@ -2698,15 +2697,21 @@ class Flavor_Portal_Shortcodes {
 
         // Programas de radio en directo
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_programas'") === $tabla_programas) {
-            $programa_hoy = $wpdb->get_row(
-                "SELECT nombre, hora_inicio FROM {$tabla_programas}
+            // Obtener día actual (1=Domingo en MySQL DAYOFWEEK, pero el módulo usa 1=Lunes)
+            $dia_actual = (int) date('N'); // 1=Lunes, 7=Domingo
+            $hora_actual = date('H:i:s');
+
+            $programa_hoy = $wpdb->get_row($wpdb->prepare(
+                "SELECT nombre, hora_inicio, duracion_minutos FROM {$tabla_programas}
                  WHERE estado = 'activo'
-                 AND DAYOFWEEK(NOW()) = dia_semana
-                 AND hora_inicio <= TIME(NOW())
-                 AND hora_fin >= TIME(NOW())
+                 AND JSON_CONTAINS(dias_semana, %s)
+                 AND hora_inicio <= %s
+                 AND ADDTIME(hora_inicio, SEC_TO_TIME(duracion_minutos * 60)) >= %s
                  LIMIT 1",
-                ARRAY_A
-            );
+                json_encode($dia_actual),
+                $hora_actual,
+                $hora_actual
+            ), ARRAY_A);
 
             if (!empty($programa_hoy)) {
                 $notifications[] = [
@@ -2741,8 +2746,8 @@ class Flavor_Portal_Shortcodes {
             $menciones = (int) $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$tabla_menciones}
                  WHERE usuario_mencionado_id = %d
-                 AND leida = 0
-                 AND created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)",
+                 AND notificado = 0
+                 AND fecha > DATE_SUB(NOW(), INTERVAL 7 DAY)",
                 $user_id
             ));
 
@@ -3145,16 +3150,16 @@ class Flavor_Portal_Shortcodes {
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_liquidaciones'") === $tabla_liquidaciones) {
             $liquidacion = $wpdb->get_row(
-                "SELECT referencia, fecha_notificacion, fecha_aceptacion, fecha_creacion, estado
+                "SELECT referencia, fecha_notificacion, fecha_aceptacion, created_at, estado
                  FROM {$tabla_liquidaciones}
                  WHERE estado IN ('generada', 'notificada')
-                 ORDER BY COALESCE(fecha_notificacion, fecha_creacion) DESC
+                 ORDER BY COALESCE(fecha_notificacion, created_at) DESC
                  LIMIT 1",
                 ARRAY_A
             );
 
             if (!empty($liquidacion)) {
-                $fecha_base = (string) ($liquidacion['fecha_notificacion'] ?: $liquidacion['fecha_creacion'] ?: current_time('mysql'));
+                $fecha_base = (string) ($liquidacion['fecha_notificacion'] ?: $liquidacion['created_at'] ?: current_time('mysql'));
                 $severity_slug = ($liquidacion['estado'] ?? '') === 'generada' ? 'attention' : 'followup';
                 $acciones[] = [
                     'tipo'   => 'energia-liquidacion',
@@ -3185,26 +3190,29 @@ class Flavor_Portal_Shortcodes {
             return $acciones;
         }
 
-        // Talleres inscritos con fecha próxima
+        // Talleres inscritos con sesión próxima
+        $tabla_sesiones = $wpdb->prefix . 'flavor_talleres_sesiones';
         $inscripciones = (array) $wpdb->get_results($wpdb->prepare(
-            "SELECT i.id, t.nombre, t.fecha_inicio
+            "SELECT i.id, t.titulo, MIN(s.fecha) as proxima_sesion
              FROM {$tabla_inscripciones} i
              INNER JOIN {$tabla_talleres} t ON i.taller_id = t.id
+             LEFT JOIN {$tabla_sesiones} s ON t.id = s.taller_id AND s.fecha >= NOW()
              WHERE i.usuario_id = %d
              AND i.estado = 'confirmada'
-             AND t.fecha_inicio >= NOW()
-             ORDER BY t.fecha_inicio ASC
+             GROUP BY i.id, t.titulo
+             HAVING proxima_sesion IS NOT NULL
+             ORDER BY proxima_sesion ASC
              LIMIT 2",
             $user_id
         ), ARRAY_A);
 
         foreach ($inscripciones as $inscripcion) {
-            $fecha = (string) ($inscripcion['fecha_inicio'] ?? '');
+            $fecha = (string) ($inscripcion['proxima_sesion'] ?? '');
             $severity_slug = $this->get_portal_action_severity_from_date($fecha);
             $acciones[] = [
                 'tipo'   => 'taller',
                 'icono'  => '🎨',
-                'titulo' => $inscripcion['nombre'] ?? __('Taller', 'flavor-chat-ia'),
+                'titulo' => $inscripcion['titulo'] ?? __('Taller', 'flavor-chat-ia'),
                 'fecha'  => $fecha,
                 'url'    => home_url('/mi-portal/talleres/mis-inscripciones/'),
                 'severity_slug' => $severity_slug,
@@ -3374,20 +3382,19 @@ class Flavor_Portal_Shortcodes {
             return $acciones;
         }
 
-        // Solicitudes de ayuda que el usuario ofreció responder
+        // Solicitudes de ayuda abiertas del usuario
         $solicitudes = (array) $wpdb->get_results($wpdb->prepare(
-            "SELECT id, titulo, fecha_necesidad
+            "SELECT id, titulo, fecha_creacion
              FROM {$tabla_solicitudes}
-             WHERE ayudante_id = %d
-             AND estado = 'asignada'
-             AND fecha_necesidad >= NOW()
-             ORDER BY fecha_necesidad ASC
+             WHERE usuario_id = %d
+             AND estado IN ('abierta', 'en_progreso')
+             ORDER BY fecha_creacion DESC
              LIMIT 2",
             $user_id
         ), ARRAY_A);
 
         foreach ($solicitudes as $solicitud) {
-            $fecha = (string) ($solicitud['fecha_necesidad'] ?? '');
+            $fecha = (string) ($solicitud['fecha_creacion'] ?? '');
             $severity_slug = $this->get_portal_action_severity_from_date($fecha);
             $acciones[] = [
                 'tipo'   => 'ayuda-vecinal',
