@@ -379,23 +379,27 @@ class Flavor_Dashboard_Manager {
         $table_conversations = $wpdb->prefix . 'flavor_chat_conversations';
         $table_messages = $wpdb->prefix . 'flavor_chat_messages';
 
-        // Estadísticas de hoy
+        // Obtener todas las estadísticas en una sola consulta optimizada
         $today = current_time('Y-m-d');
-        $today_conversations = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$table_conversations} WHERE DATE(started_at) = %s",
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+        $stats = $wpdb->get_row($wpdb->prepare(
+            "SELECT
+                SUM(CASE WHEN DATE(c.started_at) = %s THEN 1 ELSE 0 END) as today_conversations,
+                COUNT(*) as total_conversations,
+                SUM(CASE WHEN c.escalated = 1 THEN 1 ELSE 0 END) as total_escalations,
+                (SELECT COUNT(*) FROM {$table_messages} m
+                 JOIN {$table_conversations} c2 ON m.conversation_id = c2.id
+                 WHERE DATE(c2.started_at) = %s) as today_messages
+            FROM {$table_conversations} c",
+            $today,
             $today
         ));
 
-        $today_messages = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$table_messages} m
-            JOIN {$table_conversations} c ON m.conversation_id = c.id
-            WHERE DATE(c.started_at) = %s",
-            $today
-        ));
-
-        // Total
-        $total_conversations = $wpdb->get_var("SELECT COUNT(*) FROM {$table_conversations}");
-        $total_escalations = $wpdb->get_var("SELECT COUNT(*) FROM {$table_conversations} WHERE escalated = 1");
+        $today_conversations = $stats->today_conversations ?? 0;
+        $today_messages = $stats->today_messages ?? 0;
+        $total_conversations = $stats->total_conversations ?? 0;
+        $total_escalations = $stats->total_escalations ?? 0;
 
         ?>
         <div class="flavor-widget-stats-grid">
@@ -538,19 +542,21 @@ class Flavor_Dashboard_Manager {
 
         $table_messages = $wpdb->prefix . 'flavor_chat_messages';
 
-        // Tokens usados este mes
+        // Obtener tokens y llamadas API en una sola consulta
         $month_start = current_time('Y-m-01');
-        $tokens_used = $wpdb->get_var($wpdb->prepare(
-            "SELECT SUM(tokens_used) FROM {$table_messages} WHERE created_at >= %s",
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+        $stats = $wpdb->get_row($wpdb->prepare(
+            "SELECT
+                COALESCE(SUM(tokens_used), 0) as tokens_used,
+                SUM(CASE WHEN role = 'assistant' THEN 1 ELSE 0 END) as api_calls
+            FROM {$table_messages}
+            WHERE created_at >= %s",
             $month_start
         ));
 
-        // Llamadas a la API este mes
-        $api_calls = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$table_messages}
-            WHERE role = 'assistant' AND created_at >= %s",
-            $month_start
-        ));
+        $tokens_used = $stats->tokens_used ?? 0;
+        $api_calls = $stats->api_calls ?? 0;
 
         ?>
         <div class="flavor-api-stats">
@@ -635,17 +641,34 @@ class Flavor_Dashboard_Manager {
 
         $table_conversations = $wpdb->prefix . 'flavor_chat_conversations';
 
-        // Datos de los últimos 7 días
+        // Obtener datos de los últimos 7 días en una sola consulta
+        $start_date = date('Y-m-d', strtotime('-6 days'));
+        $end_date = current_time('Y-m-d');
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+        $results = $wpdb->get_results($wpdb->prepare(
+            "SELECT DATE(started_at) as conv_date, COUNT(*) as conv_count
+            FROM {$table_conversations}
+            WHERE DATE(started_at) BETWEEN %s AND %s
+            GROUP BY DATE(started_at)
+            ORDER BY conv_date ASC",
+            $start_date,
+            $end_date
+        ));
+
+        // Indexar resultados por fecha para acceso rápido
+        $counts_by_date = [];
+        foreach ($results as $row) {
+            $counts_by_date[$row->conv_date] = intval($row->conv_count);
+        }
+
+        // Generar array de 7 días (incluyendo días sin actividad)
         $chart_data = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = date('Y-m-d', strtotime("-{$i} days"));
-            $count = $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table_conversations} WHERE DATE(started_at) = %s",
-                $date
-            ));
             $chart_data[] = [
                 'date' => date_i18n('D j', strtotime($date)),
-                'count' => intval($count),
+                'count' => $counts_by_date[$date] ?? 0,
             ];
         }
 
