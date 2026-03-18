@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <!-- Bretaña: Gwenn-ha-du (blanco y negro con armiños) -->
+  <rect width="300" height="200" fill="#fff"/>
+  <rect width="150" height="100" fill="#000"/>
+  <g fill="#000">
+    <!-- Franjas horizontales -->
+    <rect y="110" width="300" height="10"/>
+    <rect y="130" width="300" height="10"/>
+    <rect y="150" width="300" height="10"/>
+    <rect y="170" width="300" height="10"/>
+    <rect y="190" width="300" height="10"/>
+  </g>
+  <!-- Armiños simplificados -->
+  <g fill="#000">
+    <polygon points="40,30 50,50 30,50"/>
+    <polygon points="100,30 110,50 90,50"/>
+    <polygon points="40,70 50,90 30,90"/>
+    <polygon points="100,70 110,90 90,90"/>
+  </g>
+</svg>

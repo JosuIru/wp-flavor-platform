@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <!-- Gales: Franjas verde y blanca con dragón rojo -->
+  <rect width="300" height="100" fill="#fff"/>
+  <rect width="300" height="100" y="100" fill="#00AB39"/>
+  <g fill="#C8102E" transform="translate(150,100) scale(0.4)">
+    <!-- Dragón simplificado -->
+    <ellipse cx="0" cy="0" rx="80" ry="40"/>
+    <polygon points="-100,-20 -120,20 -80,0"/>
+    <polygon points="80,-30 120,-50 100,0 120,50 80,30"/>
+  </g>
+</svg>

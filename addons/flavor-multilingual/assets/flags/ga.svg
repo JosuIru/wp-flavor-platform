@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <!-- Irlanda: Tricolor verde-blanco-naranja -->
+  <rect width="100" height="200" fill="#169B62"/>
+  <rect width="100" height="200" x="100" fill="#fff"/>
+  <rect width="100" height="200" x="200" fill="#FF883E"/>
+</svg>

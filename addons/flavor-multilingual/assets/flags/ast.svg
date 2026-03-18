@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <!-- Asturias: Fondo azul con Cruz de la Victoria -->
+  <rect width="300" height="200" fill="#0066B3"/>
+  <g fill="#FFD700" transform="translate(150,100)">
+    <!-- Cruz de la Victoria simplificada -->
+    <rect x="-8" y="-60" width="16" height="120"/>
+    <rect x="-50" y="-8" width="100" height="16"/>
+    <text x="-40" y="-45" font-size="20" fill="#FFD700">α</text>
+    <text x="30" y="-45" font-size="20" fill="#FFD700">ω</text>
+  </g>
+</svg>

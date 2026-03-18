@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <!-- Occitania: Cruz occitana sobre fondo rojo -->
+  <rect width="300" height="200" fill="#DA121A"/>
+  <g fill="#FFD700" transform="translate(150,100)">
+    <!-- Cruz occitana simplificada -->
+    <rect x="-8" y="-70" width="16" height="140"/>
+    <rect x="-70" y="-8" width="140" height="16"/>
+    <!-- Círculos en las puntas -->
+    <circle cx="0" cy="-70" r="12"/>
+    <circle cx="0" cy="70" r="12"/>
+    <circle cx="-70" cy="0" r="12"/>
+    <circle cx="70" cy="0" r="12"/>
+  </g>
+</svg>

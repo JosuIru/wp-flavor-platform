@@ -1,0 +1,124 @@
+/**
+ * Flavor Multilingual - Menu Admin Styles
+ */
+
+/* Menu translations in nav-menus.php */
+.flavor-ml-menu-translations {
+    padding: 12px 0;
+    border-top: 1px dashed #c3c4c7;
+    margin-top: 12px;
+}
+
+.flavor-ml-menu-translations .description {
+    margin-bottom: 10px;
+}
+
+.flavor-ml-menu-item-langs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.flavor-ml-menu-lang-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.flavor-ml-lang-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 40px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #646970;
+}
+
+.flavor-ml-lang-label img {
+    width: 16px;
+    height: 11px;
+}
+
+.flavor-ml-menu-lang-row input.flavor-ml-menu-title {
+    flex: 2;
+}
+
+.flavor-ml-menu-lang-row input.flavor-ml-menu-attr {
+    flex: 1;
+}
+
+.flavor-ml-menu-lang-row .button {
+    flex-shrink: 0;
+    padding: 0 6px;
+}
+
+.flavor-ml-menu-lang-row .button .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+}
+
+/* Metabox sidebar */
+.flavor-ml-menu-metabox .description {
+    color: #646970;
+    font-style: italic;
+    margin-bottom: 12px;
+}
+
+.flavor-ml-menu-metabox h4 {
+    margin: 15px 0 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #1d2327;
+}
+
+.flavor-ml-active-langs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.flavor-ml-active-langs li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 13px;
+}
+
+.flavor-ml-active-langs li img {
+    width: 16px;
+    height: 11px;
+}
+
+.flavor-ml-default-badge {
+    background: #2271b1;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: auto;
+}
+
+#flavor-ml-translate-all-menu-items {
+    margin-top: 15px;
+    width: 100%;
+}
+
+#flavor-ml-translate-all-menu-items .dashicons {
+    margin-right: 5px;
+}
+
+/* Loading states */
+.flavor-ml-translating {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.flavor-ml-translated {
+    border-color: #00a32a !important;
+    background-color: #f0fff0 !important;
+}

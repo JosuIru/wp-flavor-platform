@@ -1,0 +1,34 @@
+/**
+ * Flavor Multilingual - RTL Styles
+ */
+
+/* Reverse flex direction for horizontal switcher */
+.flavor-ml-rtl .flavor-ml-switcher-horizontal {
+    flex-direction: row-reverse;
+}
+
+/* Dropdown positioning */
+.flavor-ml-rtl .flavor-ml-dropdown-menu {
+    left: auto;
+    right: 0;
+}
+
+.flavor-ml-rtl .flavor-ml-menu-switcher .flavor-ml-dropdown-menu {
+    left: 0;
+    right: auto;
+}
+
+/* Gap direction */
+.flavor-ml-rtl .flavor-ml-lang-link {
+    flex-direction: row-reverse;
+}
+
+.flavor-ml-rtl .flavor-ml-dropdown-arrow {
+    margin-left: 0;
+    margin-right: 4px;
+}
+
+/* Text alignment */
+.flavor-ml-rtl .flavor-ml-dropdown-menu .flavor-ml-lang-link {
+    text-align: right;
+}

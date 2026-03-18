@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <!-- Aragón: Barras rojas y amarillas -->
+  <rect width="300" height="200" fill="#FCDD09"/>
+  <path stroke="#DA121A" stroke-width="22" d="M0,22H300 M0,66H300 M0,110H300 M0,154H300"/>
+</svg>

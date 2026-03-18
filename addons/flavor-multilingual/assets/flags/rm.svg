@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <!-- Grisones (Romanche): Tricolor gris-blanco-azul con escudo -->
+  <rect width="100" height="200" fill="#4A4A4A"/>
+  <rect width="100" height="200" x="100" fill="#fff"/>
+  <rect width="100" height="200" x="200" fill="#0066B3"/>
+  <!-- Símbolo simplificado del cabrio -->
+  <g fill="none" stroke="#000" stroke-width="3">
+    <path d="M140,70 L150,50 L160,70"/>
+    <path d="M140,100 L150,80 L160,100"/>
+  </g>
+</svg>

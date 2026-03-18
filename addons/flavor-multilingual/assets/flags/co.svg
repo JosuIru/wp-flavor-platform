@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <!-- Córcega: Cabeza de moro sobre fondo blanco -->
+  <rect width="300" height="200" fill="#fff"/>
+  <g transform="translate(150,100)">
+    <!-- Cabeza de moro simplificada -->
+    <circle cx="0" cy="0" r="40" fill="#000"/>
+    <rect x="-50" y="-15" width="100" height="8" fill="#fff"/>
+  </g>
+</svg>
