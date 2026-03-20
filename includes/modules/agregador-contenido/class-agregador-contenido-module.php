@@ -17,12 +17,54 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Clase principal del módulo Agregador de Contenido
  */
-class Flavor_Agregador_Contenido_Module {
+class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
+
+    use Flavor_Module_Admin_Pages_Trait;
 
     /**
      * ID del módulo
      */
-    const MODULE_ID = 'agregador_contenido';
+    protected $id = 'agregador_contenido';
+
+    /**
+     * Nombre del módulo
+     */
+    protected $name = 'Agregador de Contenido';
+
+    /**
+     * Descripción del módulo
+     */
+    protected $description = 'Importa noticias de fuentes RSS externas y gestiona videos de YouTube relacionados con la comunidad';
+
+    /**
+     * Icono del módulo
+     */
+    protected $icon = 'dashicons-rss';
+
+    /**
+     * Color del módulo
+     */
+    protected $color = '#f97316';
+
+    /**
+     * Visibilidad por defecto
+     */
+    protected $default_visibility = 'public';
+
+    /**
+     * Capacidad requerida
+     */
+    protected $required_capability = 'read';
+
+    /**
+     * Principios Gailu
+     */
+    protected $gailu_principios = ['aprendizaje', 'gobernanza'];
+
+    /**
+     * Contribuciones Gailu
+     */
+    protected $gailu_contribuye_a = ['cohesion', 'impacto'];
 
     /**
      * CPT para fuentes RSS
@@ -45,28 +87,16 @@ class Flavor_Agregador_Contenido_Module {
     const TAX_CATEGORIA = 'flavor_contenido_cat';
 
     /**
-     * Instancia singleton
-     *
-     * @var Flavor_Agregador_Contenido_Module|null
+     * Constructor
      */
-    private static $instance = null;
-
-    /**
-     * Obtiene la instancia singleton
-     *
-     * @return Flavor_Agregador_Contenido_Module
-     */
-    public static function get_instance() {
-        if ( null === self::$instance ) {
-            self::$instance = new self();
-        }
-        return self::$instance;
+    public function __construct() {
+        parent::__construct();
     }
 
     /**
-     * Constructor
+     * Inicializa el módulo
      */
-    private function __construct() {
+    public function init() {
         add_action( 'init', array( $this, 'register_post_types' ) );
         add_action( 'init', array( $this, 'register_taxonomies' ) );
         add_action( 'init', array( $this, 'register_shortcodes' ) );
@@ -91,6 +121,268 @@ class Flavor_Agregador_Contenido_Module {
 
         // REST API
         add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+
+        // Registrar páginas de administración
+        $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Verifica si el módulo puede activarse
+     *
+     * @return bool
+     */
+    public function can_activate() {
+        return true; // No requiere tablas específicas
+    }
+
+    /**
+     * Obtiene las acciones disponibles del módulo
+     *
+     * @return array
+     */
+    public function get_actions() {
+        return array(
+            'listar_noticias'     => __( 'Listar noticias importadas', 'flavor-chat-ia' ),
+            'listar_videos'       => __( 'Listar videos de YouTube', 'flavor-chat-ia' ),
+            'importar_feed'       => __( 'Importar artículos de un feed RSS', 'flavor-chat-ia' ),
+            'agregar_video'       => __( 'Añadir un video de YouTube', 'flavor-chat-ia' ),
+            'listar_fuentes'      => __( 'Listar fuentes RSS configuradas', 'flavor-chat-ia' ),
+        );
+    }
+
+    /**
+     * Ejecuta una acción del módulo
+     *
+     * @param string $action_name Nombre de la acción.
+     * @param array  $params      Parámetros.
+     * @return array
+     */
+    public function execute_action( $action_name, $params ) {
+        switch ( $action_name ) {
+            case 'listar_noticias':
+                return $this->action_listar_noticias( $params );
+            case 'listar_videos':
+                return $this->action_listar_videos( $params );
+            case 'importar_feed':
+                return $this->action_importar_feed( $params );
+            case 'agregar_video':
+                return $this->action_agregar_video( $params );
+            case 'listar_fuentes':
+                return $this->action_listar_fuentes( $params );
+            default:
+                return array(
+                    'success' => false,
+                    'message' => __( 'Acción no reconocida', 'flavor-chat-ia' ),
+                );
+        }
+    }
+
+    /**
+     * Acción: Listar noticias
+     */
+    private function action_listar_noticias( $params ) {
+        $args = array(
+            'post_type'      => self::CPT_NOTICIA,
+            'posts_per_page' => $params['limit'] ?? 10,
+            'post_status'    => 'publish',
+        );
+        $query = new WP_Query( $args );
+        $items = array();
+        foreach ( $query->posts as $post ) {
+            $items[] = array(
+                'id'        => $post->ID,
+                'titulo'    => $post->post_title,
+                'extracto'  => wp_trim_words( $post->post_content, 30 ),
+                'fecha'     => $post->post_date,
+                'fuente'    => get_post_meta( $post->ID, '_source_name', true ),
+                'url'       => get_post_meta( $post->ID, '_source_url', true ),
+            );
+        }
+        return array( 'success' => true, 'data' => $items );
+    }
+
+    /**
+     * Acción: Listar videos
+     */
+    private function action_listar_videos( $params ) {
+        $args = array(
+            'post_type'      => self::CPT_VIDEO,
+            'posts_per_page' => $params['limit'] ?? 10,
+            'post_status'    => 'publish',
+        );
+        $query = new WP_Query( $args );
+        $items = array();
+        foreach ( $query->posts as $post ) {
+            $items[] = array(
+                'id'        => $post->ID,
+                'titulo'    => $post->post_title,
+                'video_id'  => get_post_meta( $post->ID, '_video_id', true ),
+                'canal'     => get_post_meta( $post->ID, '_channel_name', true ),
+                'duracion'  => get_post_meta( $post->ID, '_duration', true ),
+            );
+        }
+        return array( 'success' => true, 'data' => $items );
+    }
+
+    /**
+     * Acción: Importar feed
+     */
+    private function action_importar_feed( $params ) {
+        if ( empty( $params['fuente_id'] ) ) {
+            return array( 'success' => false, 'message' => __( 'ID de fuente requerido', 'flavor-chat-ia' ) );
+        }
+        $result = $this->import_feed( intval( $params['fuente_id'] ) );
+        return array( 'success' => true, 'data' => $result );
+    }
+
+    /**
+     * Acción: Agregar video
+     */
+    private function action_agregar_video( $params ) {
+        if ( empty( $params['url'] ) ) {
+            return array( 'success' => false, 'message' => __( 'URL del video requerida', 'flavor-chat-ia' ) );
+        }
+        $result = $this->add_video_from_url( $params['url'] );
+        return $result;
+    }
+
+    /**
+     * Acción: Listar fuentes
+     */
+    private function action_listar_fuentes( $params ) {
+        $args = array(
+            'post_type'      => self::CPT_FUENTE,
+            'posts_per_page' => -1,
+            'post_status'    => 'publish',
+        );
+        $query = new WP_Query( $args );
+        $items = array();
+        foreach ( $query->posts as $post ) {
+            $items[] = array(
+                'id'          => $post->ID,
+                'nombre'      => $post->post_title,
+                'url'         => get_post_meta( $post->ID, '_feed_url', true ),
+                'keywords'    => get_post_meta( $post->ID, '_keywords', true ),
+                'last_import' => get_post_meta( $post->ID, '_last_import', true ),
+            );
+        }
+        return array( 'success' => true, 'data' => $items );
+    }
+
+    /**
+     * Añade un video desde una URL de YouTube (versión programática)
+     *
+     * @param string $video_url URL del video de YouTube.
+     * @return array
+     */
+    public function add_video_from_url( $video_url ) {
+        $video_url = esc_url_raw( $video_url );
+        $video_id  = $this->extract_youtube_id( $video_url );
+
+        if ( ! $video_id ) {
+            return array( 'success' => false, 'message' => __( 'URL de YouTube no válida', 'flavor-chat-ia' ) );
+        }
+
+        // Verificar si ya existe
+        $existing = get_posts(
+            array(
+                'post_type'      => self::CPT_VIDEO,
+                'meta_key'       => '_video_id',
+                'meta_value'     => $video_id,
+                'posts_per_page' => 1,
+            )
+        );
+
+        if ( ! empty( $existing ) ) {
+            return array( 'success' => false, 'message' => __( 'Este video ya existe', 'flavor-chat-ia' ) );
+        }
+
+        // Obtener info del video via oEmbed
+        $oembed_url = 'https://www.youtube.com/oembed?url=' . urlencode( $video_url ) . '&format=json';
+        $response   = wp_remote_get( $oembed_url );
+
+        if ( is_wp_error( $response ) ) {
+            return array( 'success' => false, 'message' => __( 'No se pudo obtener información del video', 'flavor-chat-ia' ) );
+        }
+
+        $data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+        // Crear video
+        $post_id = wp_insert_post(
+            array(
+                'post_type'   => self::CPT_VIDEO,
+                'post_title'  => sanitize_text_field( $data['title'] ?? 'Video YouTube' ),
+                'post_status' => 'publish',
+            )
+        );
+
+        if ( is_wp_error( $post_id ) ) {
+            return array( 'success' => false, 'message' => $post_id->get_error_message() );
+        }
+
+        update_post_meta( $post_id, '_video_url', $video_url );
+        update_post_meta( $post_id, '_video_id', $video_id );
+        update_post_meta( $post_id, '_channel_name', $data['author_name'] ?? '' );
+        update_post_meta( $post_id, '_thumbnail_url', $data['thumbnail_url'] ?? '' );
+
+        // Guardar thumbnail como imagen destacada
+        if ( ! empty( $data['thumbnail_url'] ) ) {
+            $this->set_featured_image_from_url( $post_id, $data['thumbnail_url'] );
+        }
+
+        return array(
+            'success' => true,
+            'data'    => array(
+                'post_id' => $post_id,
+                'title'   => $data['title'] ?? '',
+                'url'     => get_permalink( $post_id ),
+            ),
+        );
+    }
+
+    /**
+     * Obtiene las definiciones de tools para Claude
+     *
+     * @return array
+     */
+    public function get_tool_definitions() {
+        return array(
+            array(
+                'name'        => 'agregador_listar_noticias',
+                'description' => __( 'Lista las noticias importadas de fuentes RSS externas', 'flavor-chat-ia' ),
+                'input_schema' => array(
+                    'type'       => 'object',
+                    'properties' => array(
+                        'limit' => array(
+                            'type'        => 'integer',
+                            'description' => __( 'Número máximo de noticias a listar', 'flavor-chat-ia' ),
+                        ),
+                    ),
+                ),
+            ),
+            array(
+                'name'        => 'agregador_listar_videos',
+                'description' => __( 'Lista los videos de YouTube guardados', 'flavor-chat-ia' ),
+                'input_schema' => array(
+                    'type'       => 'object',
+                    'properties' => array(
+                        'limit' => array(
+                            'type'        => 'integer',
+                            'description' => __( 'Número máximo de videos a listar', 'flavor-chat-ia' ),
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
+
+    /**
+     * Obtiene el conocimiento base del módulo
+     *
+     * @return string
+     */
+    public function get_knowledge_base() {
+        return __( 'El módulo Agregador de Contenido permite importar noticias de fuentes RSS externas filtradas por palabras clave relacionadas con la comunidad, y gestionar videos de YouTube relevantes. Incluye shortcodes para mostrar grids de noticias, videos y feeds combinados.', 'flavor-chat-ia' );
     }
 
     /**

@@ -477,6 +477,14 @@ class Flavor_Chat_Module_Loader {
                 'file' => $modules_path . 'facturas/class-facturas-module.php',
                 'class' => 'Flavor_Chat_Facturas_Module',
             ],
+            'contabilidad' => [
+                'file' => $modules_path . 'contabilidad/class-contabilidad-module.php',
+                'class' => 'Flavor_Chat_Contabilidad_Module',
+            ],
+            'empresas' => [
+                'file' => $modules_path . 'empresas/class-empresas-module.php',
+                'class' => 'Flavor_Chat_Empresas_Module',
+            ],
             'fichaje_empleados' => [
                 'file' => $modules_path . 'fichaje-empleados/class-fichaje-empleados-module.php',
                 'class' => 'Flavor_Chat_Fichaje_Empleados_Module',
@@ -697,6 +705,10 @@ class Flavor_Chat_Module_Loader {
                 'file' => $modules_path . 'encuestas/class-encuestas-module.php',
                 'class' => 'Flavor_Chat_Encuestas_Module',
             ],
+            'agregador_contenido' => [
+                'file' => $modules_path . 'agregador-contenido/class-agregador-contenido-module.php',
+                'class' => 'Flavor_Agregador_Contenido_Module',
+            ],
         ];
 
         foreach ($builtin_modules as $id => $module) {
@@ -844,6 +856,12 @@ class Flavor_Chat_Module_Loader {
         // Default: woocommerce siempre activo si no hay módulos configurados
         if (empty($modulos_activos)) {
             $modulos_activos = ['woocommerce'];
+        }
+
+        // Integración económica: si Facturas está activa, Contabilidad también.
+        // Esto evita menús/páginas "fantasma" de facturación sin libro contable.
+        if (in_array('facturas', $modulos_activos, true) && !in_array('contabilidad', $modulos_activos, true)) {
+            $modulos_activos[] = 'contabilidad';
         }
 
         self::$active_modules_cache = $modulos_activos;
@@ -1393,7 +1411,14 @@ add_action('upgrader_process_complete', function ($upgrader, $options) {
         return;
     }
 
-    $our_plugin = plugin_basename(FLAVOR_CHAT_IA_FILE);
+    $plugin_file = defined('FLAVOR_CHAT_IA_FILE') && is_string(FLAVOR_CHAT_IA_FILE)
+        ? trim(FLAVOR_CHAT_IA_FILE)
+        : '';
+    if ($plugin_file === '') {
+        return;
+    }
+
+    $our_plugin = plugin_basename($plugin_file);
     $updated_plugins = $options['plugins'] ?? [];
 
     if (in_array($our_plugin, $updated_plugins, true)) {
