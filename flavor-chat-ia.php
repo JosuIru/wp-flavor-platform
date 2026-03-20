@@ -39,6 +39,11 @@ define('FLAVOR_CHAT_IA_LOADED', true);
  */
 if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY) {
     $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    $is_flavor_settings_save = (
+        isset($_SERVER['REQUEST_METHOD'], $_POST['flavor_chat_ia_action'])
+        && $_SERVER['REQUEST_METHOD'] === 'POST'
+        && $_POST['flavor_chat_ia_action'] === 'save_settings'
+    );
     $is_feed_or_api_request = (
         strpos($request_uri, '/wp-json/') !== false ||
         strpos($request_uri, '/feed/') !== false ||
@@ -49,7 +54,7 @@ if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY) {
         preg_match('/\.(xml|rss|atom|json)$/', $request_uri)
     );
 
-    if ($is_feed_or_api_request) {
+    if ($is_feed_or_api_request || $is_flavor_settings_save) {
         @ini_set('display_errors', 0);
     }
 }
@@ -131,12 +136,110 @@ function flavor_log_error( $message, $module = '' ) {
     flavor_chat_ia_log( $message, 'error', $module );
 }
 
-// Cargar clases de bootstrap (v3.2.0+)
-require_once FLAVOR_CHAT_IA_PATH . 'includes/bootstrap/class-bootstrap-dependencies.php';
-require_once FLAVOR_CHAT_IA_PATH . 'includes/bootstrap/class-starter-theme-manager.php';
-require_once FLAVOR_CHAT_IA_PATH . 'includes/bootstrap/class-database-setup.php';
-require_once FLAVOR_CHAT_IA_PATH . 'includes/bootstrap/class-cron-manager.php';
-require_once FLAVOR_CHAT_IA_PATH . 'includes/bootstrap/class-system-initializer.php';
+/**
+ * Carga segura de archivos bootstrap para evitar fatales por despliegues incompletos.
+ *
+ * @param string $relative_path Ruta relativa desde FLAVOR_CHAT_IA_PATH.
+ * @param string $expected_class Clase esperada tras incluir el archivo.
+ *
+ * @return bool
+ */
+function flavor_chat_ia_require_bootstrap_file( $relative_path, $expected_class = '' ) {
+    static $missing_files = [];
+
+    $file = FLAVOR_CHAT_IA_PATH . ltrim( $relative_path, '/' );
+    if ( ! file_exists( $file ) ) {
+        $missing_files[] = $relative_path;
+        $missing_files = array_values( array_unique( $missing_files ) );
+        flavor_log_error( 'Archivo bootstrap faltante: ' . $relative_path, 'bootstrap' );
+        update_option( 'flavor_chat_ia_missing_bootstrap_files', $missing_files, false );
+        return false;
+    }
+
+    require_once $file;
+
+    if ( $expected_class && ! class_exists( $expected_class ) ) {
+        flavor_log_error(
+            'La clase bootstrap esperada no existe tras include: ' . $expected_class . ' (' . $relative_path . ')',
+            'bootstrap'
+        );
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Aviso de administración cuando faltan archivos bootstrap.
+ *
+ * @return void
+ */
+function flavor_chat_ia_missing_bootstrap_admin_notice() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    $missing_files = get_option( 'flavor_chat_ia_missing_bootstrap_files', [] );
+    if ( empty( $missing_files ) || ! is_array( $missing_files ) ) {
+        return;
+    }
+
+    $items = '';
+    foreach ( $missing_files as $missing_file ) {
+        $items .= '<li><code>' . esc_html( $missing_file ) . '</code></li>';
+    }
+
+    echo '<div class="notice notice-error"><p><strong>Flavor Platform:</strong> faltan archivos de bootstrap en el servidor. El plugin se cargó en modo degradado.</p><ul style="margin-left:1.2em;list-style:disc;">' . $items . '</ul></div>';
+}
+add_action( 'admin_notices', 'flavor_chat_ia_missing_bootstrap_admin_notice' );
+
+// Cargar clases de bootstrap (v3.2.0+) con tolerancia a faltantes.
+flavor_chat_ia_require_bootstrap_file( 'includes/bootstrap/class-bootstrap-dependencies.php', 'Flavor_Bootstrap_Dependencies' );
+flavor_chat_ia_require_bootstrap_file( 'includes/bootstrap/class-starter-theme-manager.php', 'Flavor_Starter_Theme_Manager' );
+flavor_chat_ia_require_bootstrap_file( 'includes/bootstrap/class-database-setup.php', 'Flavor_Database_Setup' );
+flavor_chat_ia_require_bootstrap_file( 'includes/bootstrap/class-cron-manager.php', 'Flavor_Cron_Manager' );
+flavor_chat_ia_require_bootstrap_file( 'includes/bootstrap/class-system-initializer.php', 'Flavor_System_Initializer' );
+
+// Stubs de seguridad para evitar fatales si faltan archivos en producción.
+if ( ! class_exists( 'Flavor_Bootstrap_Dependencies' ) ) {
+    class Flavor_Bootstrap_Dependencies {
+        public static function get_instance() { return new self(); }
+        public function load_all() {}
+    }
+}
+
+if ( ! class_exists( 'Flavor_Starter_Theme_Manager' ) ) {
+    class Flavor_Starter_Theme_Manager {
+        public static function get_instance() { return new self(); }
+        public function register_hooks() {}
+        public function check_on_activation() {}
+    }
+}
+
+if ( ! class_exists( 'Flavor_Database_Setup' ) ) {
+    class Flavor_Database_Setup {
+        public static function get_instance() { return new self(); }
+        public function install() {}
+        public function maybe_install_legal_pages() {}
+        public function maybe_fix_placeholder_urls() {}
+    }
+}
+
+if ( ! class_exists( 'Flavor_Cron_Manager' ) ) {
+    class Flavor_Cron_Manager {
+        public static function get_instance() { return new self(); }
+        public function register_hooks() {}
+        public function schedule_all() {}
+        public function unschedule_all() {}
+    }
+}
+
+if ( ! class_exists( 'Flavor_System_Initializer' ) ) {
+    class Flavor_System_Initializer {
+        public static function get_instance() { return new self(); }
+        public function init() {}
+    }
+}
 
 /**
  * Clase principal del plugin
@@ -327,7 +430,7 @@ final class Flavor_Chat_IA {
         if ($es_pagina_plugin) {
             wp_enqueue_style(
                 'flavor-admin-modals',
-                FLAVOR_CHAT_IA_URL . 'assets/css/admin-modals.css',
+                FLAVOR_CHAT_IA_URL . 'assets/css/admin/admin-modals.css',
                 [],
                 FLAVOR_CHAT_IA_VERSION
             );
@@ -370,9 +473,10 @@ final class Flavor_Chat_IA {
     public function init() {
         $this->system_initializer->init();
 
-        // Crear páginas del portal después de inicializar shortcodes
+        // Crear páginas del portal en 'init' de WordPress (no plugins_loaded)
+        // para que $wp_rewrite esté inicializado
         if (class_exists('Flavor_Portal_Shortcodes')) {
-            $this->maybe_create_portal_pages();
+            add_action('init', array($this, 'maybe_create_portal_pages'), 99);
         }
     }
 
@@ -453,8 +557,10 @@ final class Flavor_Chat_IA {
 
     /**
      * Crea páginas del portal si no existen
+     *
+     * @since 3.5.0 Movido a hook 'init' para evitar error de $wp_rewrite null
      */
-    private function maybe_create_portal_pages() {
+    public function maybe_create_portal_pages() {
         // Solo crear una vez
         if (get_option('flavor_portal_pages_created')) {
             return;
@@ -551,6 +657,11 @@ final class Flavor_Chat_IA {
 
         // Programar todos los crons (delegado a Cron Manager)
         $this->cron_manager->schedule_all();
+
+        // Registrar post type de Visual Builder y regenerar permalinks
+        if (class_exists('Flavor_Visual_Builder')) {
+            Flavor_Visual_Builder::on_plugin_activation();
+        }
 
         // Limpiar caché de rewrite
         flush_rewrite_rules();
@@ -736,3 +847,20 @@ add_action('plugins_loaded', 'flavor_chat_ia', 1);
 if (is_admin() && file_exists(__DIR__ . '/debug-portal-layout.php')) {
     require_once __DIR__ . '/debug-portal-layout.php';
 }
+
+/**
+ * Registrar y encolar estilos visuales del VBP para el frontend
+ * Estos estilos aplican las personalizaciones de tarjetas, colores, animaciones, etc.
+ *
+ * @since 2.4.0
+ */
+add_action('wp_enqueue_scripts', function() {
+    wp_register_style(
+        'flavor-vbp-visual-styles',
+        FLAVOR_CHAT_IA_URL . 'assets/css/vbp-visual-styles.css',
+        [],
+        FLAVOR_CHAT_IA_VERSION
+    );
+    // Encolar siempre en el frontend (es ligero y necesario para módulos con estilos VBP)
+    wp_enqueue_style('flavor-vbp-visual-styles');
+}, 20);
