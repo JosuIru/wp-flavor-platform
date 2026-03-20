@@ -123,6 +123,102 @@ class Flavor_VBP_Canvas {
     }
 
     /**
+     * Cache de mapeo de colores a variables CSS
+     *
+     * @var array|null
+     */
+    private $color_to_variable_map = null;
+
+    /**
+     * Obtiene el mapeo de colores hex a variables CSS
+     *
+     * NOTA: NO hacemos mapeo automático basado en el tema activo porque
+     * el mismo color puede tener diferentes propósitos según el tema
+     * (ej: #ffffff es fondo en tema claro pero texto en tema oscuro).
+     *
+     * Solo mapeamos colores que son claramente del sistema de diseño
+     * (primary, secondary, etc.) basados en los defaults del plugin.
+     *
+     * @return array Mapeo color_hex => variable_css
+     */
+    private function get_color_variable_map() {
+        if ( null !== $this->color_to_variable_map ) {
+            return $this->color_to_variable_map;
+        }
+
+        // Mapeo de colores del sistema de diseño por defecto
+        // Estos son los colores "canónicos" del tema claro por defecto
+        $this->color_to_variable_map = array(
+            // Primary (azul por defecto)
+            '#3b82f6' => 'var(--flavor-primary)',
+            '#2563eb' => 'var(--flavor-primary-dark)',
+            '#1d4ed8' => 'var(--flavor-primary-hover)',
+            '#dbeafe' => 'var(--flavor-primary-light)',
+
+            // Secondary (morado por defecto)
+            '#8b5cf6' => 'var(--flavor-secondary)',
+
+            // Semantic colors
+            '#22c55e' => 'var(--flavor-success)',
+            '#10b981' => 'var(--flavor-success)',
+            '#f59e0b' => 'var(--flavor-warning)',
+            '#ef4444' => 'var(--flavor-error)',
+            '#dc2626' => 'var(--flavor-error)',
+
+            // Borders
+            '#e5e7eb' => 'var(--flavor-border)',
+            '#e2e8f0' => 'var(--flavor-border)',
+
+            // Grays for secondary/muted
+            '#6b7280' => 'var(--flavor-text-muted)',
+            '#64748b' => 'var(--flavor-text-muted)',
+            '#9ca3af' => 'var(--flavor-text-muted)',
+        );
+
+        // NO mapeamos #ffffff, #000000, ni colores de fondo/texto
+        // porque su significado depende del tema (claro vs oscuro)
+
+        return $this->color_to_variable_map;
+    }
+
+    /**
+     * Convierte un color hex a variable CSS si corresponde
+     *
+     * @param string $color Color en formato hex.
+     * @param bool   $force_variable Si es true, siempre intenta usar variable.
+     * @return string Color original o variable CSS.
+     */
+    public function map_color_to_variable( $color, $force_variable = false ) {
+        if ( empty( $color ) || 'transparent' === $color ) {
+            return $color;
+        }
+
+        // Normalizar color
+        $normalized = strtolower( trim( $color ) );
+
+        // Si ya es una variable CSS, devolverla
+        if ( strpos( $normalized, 'var(' ) === 0 ) {
+            return $color;
+        }
+
+        // Obtener mapeo
+        $map = $this->get_color_variable_map();
+
+        // Buscar en el mapeo
+        if ( isset( $map[ $normalized ] ) ) {
+            $var_name = $map[ $normalized ];
+            // Si ya es var(...), devolverlo; si no, envolverlo
+            if ( strpos( $var_name, 'var(' ) === 0 ) {
+                return $var_name;
+            }
+            return 'var(' . $var_name . ')';
+        }
+
+        // No encontrado, devolver color original
+        return $color;
+    }
+
+    /**
      * Renderiza el contenido de una landing page
      *
      * @param string $content Contenido original.
@@ -162,9 +258,19 @@ class Flavor_VBP_Canvas {
         $elementos  = isset( $datos['elements'] ) ? $datos['elements'] : array();
         $settings   = isset( $datos['settings'] ) ? $datos['settings'] : array();
 
-        $estilos_pagina = $this->generar_estilos_pagina( $settings );
+        $html = '';
 
-        $html = '<div class="vbp-landing" style="' . esc_attr( $estilos_pagina ) . '">';
+        // Generar CSS global para body y contenedor (si es fullWidth)
+        $css_global = $this->generar_css_global( $settings );
+        if ( ! empty( $css_global ) ) {
+            $html .= '<style>' . $css_global . '</style>';
+        }
+
+        // Estilos inline del contenedor (si no es fullWidth)
+        $estilos_pagina = $this->generar_estilos_pagina( $settings );
+        $style_attr = ! empty( $estilos_pagina ) ? ' style="' . esc_attr( $estilos_pagina ) . '"' : '';
+
+        $html .= '<div class="vbp-landing"' . $style_attr . '>';
 
         foreach ( $elementos as $elemento ) {
             if ( isset( $elemento['visible'] ) && false === $elemento['visible'] ) {
@@ -184,6 +290,131 @@ class Flavor_VBP_Canvas {
     }
 
     /**
+     * Genera CSS global para la página (body, contenedor, variables)
+     *
+     * @param array $settings Configuración de la página.
+     * @return string
+     */
+    private function generar_css_global( $settings ) {
+        $css = array();
+
+        // Generar variables CSS desde la configuración del tema
+        $css_variables = $this->generar_css_variables( $settings );
+        if ( ! empty( $css_variables ) ) {
+            $css[] = ':root { ' . $css_variables . ' }';
+        }
+
+        // Determinar si es full width (acepta boolean, string "true", "1", 1)
+        $full_width = isset( $settings['fullWidth'] ) && filter_var( $settings['fullWidth'], FILTER_VALIDATE_BOOLEAN );
+
+        // Estilos del body
+        $body_styles = array();
+        if ( ! empty( $settings['backgroundColor'] ) ) {
+            // NO mapear backgroundColor - usar el color tal cual
+            // Los usuarios pueden usar var(--flavor-bg) directamente si quieren theme-awareness
+            $body_styles[] = 'background-color: ' . esc_attr( $settings['backgroundColor'] ) . ' !important';
+        }
+        if ( ! empty( $body_styles ) ) {
+            $css[] = 'body.single-flavor_landing { ' . implode( '; ', $body_styles ) . '; }';
+        }
+
+        // Si es fullWidth, el contenedor es 100vw
+        if ( $full_width ) {
+            $css[] = '.vbp-landing { width: 100%; max-width: 100%; margin: 0; padding: 0; }';
+
+            // En fullWidth, limitar el contenido interno de las secciones si hay pageWidth
+            if ( ! empty( $settings['pageWidth'] ) ) {
+                $max_width = absint( $settings['pageWidth'] ) . 'px';
+                $css[] = '.vbp-landing .vbp-features__grid,
+                          .vbp-landing .vbp-testimonials__grid,
+                          .vbp-landing .vbp-pricing__grid,
+                          .vbp-landing .vbp-team__grid,
+                          .vbp-landing .vbp-faq__list,
+                          .vbp-landing .vbp-cta__content,
+                          .vbp-landing .vbp-two-columns,
+                          .vbp-landing .vbp-process,
+                          .vbp-landing .vbp-timeline__items,
+                          .vbp-landing .vbp-product-grid,
+                          .vbp-landing .vbp-blog-grid { max-width: ' . $max_width . '; margin-left: auto; margin-right: auto; }';
+            }
+        }
+
+        return implode( "\n", $css );
+    }
+
+    /**
+     * Genera variables CSS desde la configuración del tema
+     *
+     * Obtiene colores de:
+     * 1. Settings de la página actual
+     * 2. Configuración global del diseño
+     * 3. Preset del tema activo
+     *
+     * @param array $settings Configuración de la página.
+     * @return string Variables CSS en formato "--var: value; --var2: value2;"
+     */
+    private function generar_css_variables( $settings ) {
+        $variables = array();
+
+        // Colores desde los settings de la página
+        $page_colors = array(
+            'primaryColor'   => '--flavor-primary',
+            'secondaryColor' => '--flavor-secondary',
+            'accentColor'    => '--flavor-accent',
+            'textColor'      => '--flavor-text',
+            'backgroundColor' => '--flavor-bg',
+        );
+
+        foreach ( $page_colors as $setting_key => $var_name ) {
+            if ( ! empty( $settings[ $setting_key ] ) ) {
+                $color = sanitize_hex_color( $settings[ $setting_key ] );
+                if ( $color ) {
+                    $variables[] = $var_name . ': ' . $color;
+                }
+            }
+        }
+
+        // Colores desde design settings globales
+        $design_settings = get_option( 'flavor_design_settings', array() );
+        $global_colors = array(
+            'primary_color'    => '--flavor-primary',
+            'secondary_color'  => '--flavor-secondary',
+            'accent_color'     => '--flavor-accent',
+            'text_color'       => '--flavor-text',
+            'text_muted_color' => '--flavor-text-muted',
+            'background_color' => '--flavor-bg',
+            'border_color'     => '--flavor-border',
+        );
+
+        foreach ( $global_colors as $setting_key => $var_name ) {
+            // Solo añadir si no existe ya (page settings tienen prioridad)
+            if ( ! empty( $design_settings[ $setting_key ] ) && ! in_array( $var_name, array_map( function( $v ) { return explode( ':', $v )[0]; }, $variables ), true ) ) {
+                $color = sanitize_hex_color( $design_settings[ $setting_key ] );
+                if ( $color ) {
+                    $variables[] = $var_name . ': ' . $color;
+                }
+            }
+        }
+
+        // Colores desde el preset del tema activo
+        $active_theme = get_option( 'flavor_active_theme', '' );
+        if ( $active_theme && function_exists( 'flavor_get_theme_presets' ) ) {
+            $presets = flavor_get_theme_presets();
+            if ( isset( $presets[ $active_theme ]['variables'] ) ) {
+                foreach ( $presets[ $active_theme ]['variables'] as $var_name => $var_value ) {
+                    // Solo añadir si no existe ya
+                    $existing_vars = array_map( function( $v ) { return trim( explode( ':', $v )[0] ); }, $variables );
+                    if ( ! in_array( $var_name, $existing_vars, true ) ) {
+                        $variables[] = $var_name . ': ' . esc_attr( $var_value );
+                    }
+                }
+            }
+        }
+
+        return implode( '; ', $variables );
+    }
+
+    /**
      * Genera estilos CSS para la página
      *
      * @param array $settings Configuración de la página.
@@ -192,13 +423,21 @@ class Flavor_VBP_Canvas {
     private function generar_estilos_pagina( $settings ) {
         $estilos = array();
 
-        if ( ! empty( $settings['backgroundColor'] ) ) {
-            $estilos[] = 'background-color: ' . esc_attr( $settings['backgroundColor'] );
-        }
+        // Si no es fullWidth, aplicar estilos tradicionales al contenedor
+        // Acepta boolean, string "true", "1", 1
+        $full_width = isset( $settings['fullWidth'] ) && filter_var( $settings['fullWidth'], FILTER_VALIDATE_BOOLEAN );
 
-        if ( ! empty( $settings['pageWidth'] ) ) {
-            $estilos[] = 'max-width: ' . absint( $settings['pageWidth'] ) . 'px';
-            $estilos[] = 'margin: 0 auto';
+        if ( ! $full_width ) {
+            if ( ! empty( $settings['backgroundColor'] ) ) {
+                // NO mapear backgroundColor a variables - usar el color tal cual
+                // El usuario puede usar var(--flavor-bg) directamente si quiere theme-awareness
+                $estilos[] = 'background-color: ' . esc_attr( $settings['backgroundColor'] );
+            }
+
+            if ( ! empty( $settings['pageWidth'] ) ) {
+                $estilos[] = 'max-width: ' . absint( $settings['pageWidth'] ) . 'px';
+                $estilos[] = 'margin: 0 auto';
+            }
         }
 
         return implode( '; ', $estilos );
@@ -215,6 +454,10 @@ class Flavor_VBP_Canvas {
         $data     = isset( $elemento['data'] ) ? $elemento['data'] : array();
         $estilos  = isset( $elemento['styles'] ) ? $elemento['styles'] : array();
         $variante = isset( $elemento['variant'] ) ? $elemento['variant'] : 'default';
+
+        // Mapear alias de tipos a tipos registrados
+        $tipo = $this->mapear_tipo_elemento( $tipo );
+        $elemento['type'] = $tipo;
 
         // Buscar renderizador específico
         $metodo_render = 'render_' . str_replace( '-', '_', $tipo );
@@ -245,6 +488,64 @@ class Flavor_VBP_Canvas {
     }
 
     /**
+     * Mapea alias de tipos de elemento a tipos registrados
+     *
+     * Los tipos que comienzan con render_ son manejados por métodos locales,
+     * los demás buscan en Block Library y luego en render genérico.
+     *
+     * @param string $tipo Tipo original.
+     * @return string Tipo mapeado.
+     */
+    private function mapear_tipo_elemento( $tipo ) {
+        // Alias que mapean a métodos de renderizado locales
+        $alias = array(
+            // Widgets con métodos de renderizado propios
+            'widget_social_feed'      => 'social_feed',      // render_social_feed
+            'widget_sello_conciencia' => 'sello_conciencia_widget', // render_sello_conciencia_widget
+
+            // Tipos que tienen método render_* propio
+            'product_grid'            => 'product_grid',     // render_product_grid
+            'blog_grid'               => 'blog_grid',        // render_blog_grid
+            'two_columns'             => 'contact_section',   // render_contact_section (legacy alias)
+            'contact_section'         => 'contact_section',   // render_contact_section
+            'registration_form'       => 'registration_form',// render_registration_form
+            'contact_form'            => 'contact_form',     // render_contact_form
+            'contact_info'            => 'contact_info',     // render_contact_info
+            'audio'                   => 'audio',            // render_audio
+            'embed'                   => 'embed',            // render_embed
+
+            // Alias que mapean a tipos de Block Library (con shortcodes)
+            'widget_red_social'       => 'rs-feed',
+            'widget_historias'        => 'rs-historias',
+            'widget_eventos'          => 'eventos-proximos',
+            'widget_socios'           => 'socios-listado',
+            'widget_foros'            => 'foros-listado',
+            'widget_biblioteca'       => 'biblioteca-catalogo',
+            'widget_marketplace'      => 'marketplace-productos',
+            'widget_grupos_consumo'   => 'gc-proximos-ciclos',
+            'widget_comunidades'      => 'comunidades-listado',
+            'widget_carpooling'       => 'carpooling-viajes',
+            'widget_encuestas'        => 'encuestas-activas',
+            'widget_participacion'    => 'participacion-procesos',
+            'widget_transparencia'    => 'transparencia-portal',
+            'widget_noticias'         => 'blog_grid',
+            'widget_productos'        => 'product_grid',
+            'widget_timeline'         => 'timeline',
+
+            // Alias con guiones bajos
+            'social_feed'             => 'social_feed',
+            'red_social'              => 'rs-feed',
+            'grupos_consumo'          => 'gc-proximos-ciclos',
+
+            // Alias simplificados
+            'feed_social'             => 'social_feed',
+            'feed_comunidad'          => 'comunidades-actividad',
+        );
+
+        return isset( $alias[ $tipo ] ) ? $alias[ $tipo ] : $tipo;
+    }
+
+    /**
      * Verifica si estamos en contexto de editor
      *
      * @return bool
@@ -264,43 +565,402 @@ class Flavor_VBP_Canvas {
         $module_name  = isset( $bloque['module'] ) ? $bloque['module'] : 'módulo';
         $widget_name  = isset( $bloque['name'] ) ? $bloque['name'] : $elemento['type'];
         $icon         = isset( $bloque['icon'] ) ? $bloque['icon'] : '';
+        $shortcode    = isset( $bloque['shortcode'] ) ? $bloque['shortcode'] : '';
         $estilos      = isset( $elemento['styles'] ) ? $elemento['styles'] : array();
         $estilos_css  = $this->generar_estilos_elemento( $estilos );
+        $data         = isset( $elemento['data'] ) ? $elemento['data'] : array();
 
         // Determinar color de gradiente basado en categoría
         $categoria = isset( $bloque['category'] ) ? $bloque['category'] : 'modules';
-        $gradientes = array(
-            'modules'   => 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            'maps'      => 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
-            'economy'   => 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-            'community' => 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+        $colores = array(
+            'modules'     => array( 'bg' => '#667eea', 'accent' => '#764ba2' ),
+            'maps'        => array( 'bg' => '#11998e', 'accent' => '#38ef7d' ),
+            'economy'     => array( 'bg' => '#f093fb', 'accent' => '#f5576c' ),
+            'community'   => array( 'bg' => '#4facfe', 'accent' => '#00f2fe' ),
+            'social'      => array( 'bg' => '#ff6b6b', 'accent' => '#feca57' ),
+            'governance'  => array( 'bg' => '#5f27cd', 'accent' => '#341f97' ),
+            'commerce'    => array( 'bg' => '#00d2d3', 'accent' => '#01a3a4' ),
+            'education'   => array( 'bg' => '#ff9f43', 'accent' => '#ee5a24' ),
+            'dashboard'   => array( 'bg' => '#576574', 'accent' => '#222f3e' ),
         );
-        $gradiente = isset( $gradientes[ $categoria ] ) ? $gradientes[ $categoria ] : $gradientes['modules'];
+        $color = isset( $colores[ $categoria ] ) ? $colores[ $categoria ] : $colores['modules'];
 
-        $html = '<div class="vbp-module-preview" style="background: ' . esc_attr( $gradiente ) . '; ' . esc_attr( $estilos_css ) . '">';
-        $html .= '<div class="vbp-module-preview__icon">' . $icon . '</div>';
-        $html .= '<div class="vbp-module-preview__info">';
-        $html .= '<span class="vbp-module-preview__name">' . esc_html( $widget_name ) . '</span>';
-        $html .= '<span class="vbp-module-preview__badge">' . esc_html( ucfirst( str_replace( '-', ' ', $module_name ) ) ) . '</span>';
+        // Generar preview visual según el tipo de widget
+        $preview_content = $this->generar_preview_visual( $elemento['type'], $data, $bloque );
+
+        $html = '<div class="vbp-widget-preview" data-widget-type="' . esc_attr( $elemento['type'] ) . '" style="' . esc_attr( $estilos_css ) . '">';
+
+        // Header del widget
+        $html .= '<div class="vbp-widget-preview__header" style="background: linear-gradient(135deg, ' . esc_attr( $color['bg'] ) . ' 0%, ' . esc_attr( $color['accent'] ) . ' 100%);">';
+        $html .= '<div class="vbp-widget-preview__icon">' . $icon . '</div>';
+        $html .= '<div class="vbp-widget-preview__meta">';
+        $html .= '<span class="vbp-widget-preview__name">' . esc_html( $widget_name ) . '</span>';
+        $html .= '<span class="vbp-widget-preview__module">' . esc_html( ucfirst( str_replace( '-', ' ', $module_name ) ) ) . '</span>';
+        $html .= '</div>';
+        if ( $shortcode ) {
+            $html .= '<code class="vbp-widget-preview__shortcode">[' . esc_html( $shortcode ) . ']</code>';
+        }
         $html .= '</div>';
 
-        // Mostrar configuración actual si hay datos
-        if ( ! empty( $elemento['data'] ) ) {
-            $config_items = array();
-            foreach ( $elemento['data'] as $key => $value ) {
-                if ( ! empty( $value ) && is_scalar( $value ) ) {
+        // Contenido del preview
+        $html .= '<div class="vbp-widget-preview__content">';
+        $html .= $preview_content;
+        $html .= '</div>';
+
+        // Footer con configuración
+        if ( ! empty( $data ) ) {
+            $html .= '<div class="vbp-widget-preview__footer">';
+            $config_count = 0;
+            foreach ( $data as $key => $value ) {
+                if ( $config_count >= 4 ) break;
+                if ( ! empty( $value ) && is_scalar( $value ) && ! in_array( $key, array( 'titulo', 'subtitulo', 'fondo' ) ) ) {
                     $label = ucfirst( str_replace( '_', ' ', $key ) );
-                    $display_value = is_bool( $value ) ? ( $value ? '✓' : '✗' ) : $value;
-                    $config_items[] = '<span class="vbp-config-item">' . esc_html( $label ) . ': ' . esc_html( $display_value ) . '</span>';
+                    $display_value = is_bool( $value ) ? ( $value ? '✓' : '✗' ) : ( strlen( $value ) > 20 ? substr( $value, 0, 17 ) . '...' : $value );
+                    $html .= '<span class="vbp-widget-preview__config-item"><strong>' . esc_html( $label ) . ':</strong> ' . esc_html( $display_value ) . '</span>';
+                    $config_count++;
                 }
             }
-            if ( ! empty( $config_items ) ) {
-                $html .= '<div class="vbp-module-preview__config">' . implode( '', array_slice( $config_items, 0, 4 ) ) . '</div>';
-            }
+            $html .= '</div>';
         }
 
         $html .= '</div>';
 
+        return $html;
+    }
+
+    /**
+     * Genera contenido visual de preview para diferentes tipos de widgets
+     *
+     * @param string $tipo  Tipo de widget.
+     * @param array  $data  Datos del widget.
+     * @param array  $bloque Información del bloque.
+     * @return string HTML del preview visual.
+     */
+    private function generar_preview_visual( $tipo, $data, $bloque ) {
+        $titulo = $data['titulo'] ?? $data['title'] ?? '';
+        $subtitulo = $data['subtitulo'] ?? $data['subtitle'] ?? '';
+
+        // Determinar tipo base (sin prefijo widget_)
+        $tipo_base = preg_replace( '/^widget_/', '', $tipo );
+        $tipo_base = str_replace( '-', '_', $tipo_base );
+
+        // Previews específicos por tipo de widget
+        switch ( $tipo_base ) {
+            case 'social_feed':
+            case 'rs_feed':
+            case 'red_social':
+                return $this->preview_social_feed( $data );
+
+            case 'eventos':
+            case 'eventos_proximos':
+                return $this->preview_eventos( $data );
+
+            case 'socios':
+            case 'socios_listado':
+                return $this->preview_listado_cards( $data, 'usuarios' );
+
+            case 'marketplace':
+            case 'marketplace_productos':
+                return $this->preview_productos( $data );
+
+            case 'grupos_consumo':
+            case 'gc_proximos_ciclos':
+                return $this->preview_ciclos( $data );
+
+            case 'foros':
+            case 'foros_listado':
+                return $this->preview_listado_filas( $data, 'temas' );
+
+            case 'biblioteca':
+            case 'biblioteca_catalogo':
+                return $this->preview_catalogo( $data );
+
+            case 'cursos':
+            case 'cursos_catalogo':
+                return $this->preview_cursos( $data );
+
+            case 'encuestas':
+            case 'encuestas_activas':
+                return $this->preview_encuestas( $data );
+
+            case 'transparencia':
+            case 'transparencia_portal':
+                return $this->preview_transparencia( $data );
+
+            case 'participacion':
+            case 'participacion_procesos':
+                return $this->preview_participacion( $data );
+
+            case 'comunidades':
+            case 'comunidades_listado':
+                return $this->preview_comunidades( $data );
+
+            case 'mapa':
+            case 'mapa_actores':
+                return $this->preview_mapa( $data );
+
+            case 'sello_conciencia':
+                return $this->preview_sello( $data );
+
+            case 'estadisticas':
+            case 'stats':
+                return $this->preview_stats( $data );
+
+            default:
+                return $this->preview_generico( $data, $bloque );
+        }
+    }
+
+    // =========================================================================
+    // Métodos de preview visual para cada tipo de widget
+    // =========================================================================
+
+    private function preview_social_feed( $data ) {
+        $limite = $data['limite'] ?? $data['mostrar_ultimos'] ?? 3;
+        $html = '<div class="vbp-preview-feed">';
+        for ( $i = 0; $i < min( $limite, 3 ); $i++ ) {
+            $html .= '<div class="vbp-preview-post">';
+            $html .= '<div class="vbp-preview-avatar"></div>';
+            $html .= '<div class="vbp-preview-post-content">';
+            $html .= '<div class="vbp-preview-line w-40"></div>';
+            $html .= '<div class="vbp-preview-line w-80"></div>';
+            $html .= '<div class="vbp-preview-line w-60"></div>';
+            $html .= '</div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_eventos( $data ) {
+        $html = '<div class="vbp-preview-eventos">';
+        for ( $i = 0; $i < 2; $i++ ) {
+            $html .= '<div class="vbp-preview-evento">';
+            $html .= '<div class="vbp-preview-fecha"><span class="dia">' . ( 15 + $i * 3 ) . '</span><span class="mes">MAR</span></div>';
+            $html .= '<div class="vbp-preview-evento-info">';
+            $html .= '<div class="vbp-preview-line w-70"></div>';
+            $html .= '<div class="vbp-preview-line w-50 light"></div>';
+            $html .= '</div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_listado_cards( $data, $tipo ) {
+        $html = '<div class="vbp-preview-cards">';
+        for ( $i = 0; $i < 3; $i++ ) {
+            $html .= '<div class="vbp-preview-card">';
+            $html .= '<div class="vbp-preview-card-avatar"></div>';
+            $html .= '<div class="vbp-preview-line w-60"></div>';
+            $html .= '<div class="vbp-preview-line w-40 light"></div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_productos( $data ) {
+        $html = '<div class="vbp-preview-productos">';
+        for ( $i = 0; $i < 3; $i++ ) {
+            $html .= '<div class="vbp-preview-producto">';
+            $html .= '<div class="vbp-preview-producto-img"></div>';
+            $html .= '<div class="vbp-preview-line w-70"></div>';
+            $html .= '<div class="vbp-preview-precio"></div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_ciclos( $data ) {
+        $html = '<div class="vbp-preview-ciclos">';
+        $html .= '<div class="vbp-preview-ciclo activo">';
+        $html .= '<div class="vbp-preview-ciclo-estado">● Abierto</div>';
+        $html .= '<div class="vbp-preview-line w-60"></div>';
+        $html .= '<div class="vbp-preview-line w-40 light"></div>';
+        $html .= '</div>';
+        $html .= '<div class="vbp-preview-ciclo">';
+        $html .= '<div class="vbp-preview-ciclo-estado pending">○ Próximo</div>';
+        $html .= '<div class="vbp-preview-line w-50"></div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_listado_filas( $data, $tipo ) {
+        $html = '<div class="vbp-preview-filas">';
+        for ( $i = 0; $i < 3; $i++ ) {
+            $html .= '<div class="vbp-preview-fila">';
+            $html .= '<div class="vbp-preview-fila-icon">💬</div>';
+            $html .= '<div class="vbp-preview-fila-content">';
+            $html .= '<div class="vbp-preview-line w-' . ( 70 - $i * 10 ) . '"></div>';
+            $html .= '<div class="vbp-preview-line w-30 light"></div>';
+            $html .= '</div>';
+            $html .= '<div class="vbp-preview-badge">' . ( 5 - $i ) . '</div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_catalogo( $data ) {
+        $html = '<div class="vbp-preview-catalogo">';
+        for ( $i = 0; $i < 3; $i++ ) {
+            $html .= '<div class="vbp-preview-libro">';
+            $html .= '<div class="vbp-preview-libro-cover"></div>';
+            $html .= '<div class="vbp-preview-line w-80"></div>';
+            $html .= '<div class="vbp-preview-line w-50 light"></div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_cursos( $data ) {
+        $html = '<div class="vbp-preview-cursos">';
+        for ( $i = 0; $i < 2; $i++ ) {
+            $html .= '<div class="vbp-preview-curso">';
+            $html .= '<div class="vbp-preview-curso-img"></div>';
+            $html .= '<div class="vbp-preview-curso-info">';
+            $html .= '<div class="vbp-preview-line w-70"></div>';
+            $html .= '<div class="vbp-preview-line w-40 light"></div>';
+            $html .= '<div class="vbp-preview-progress"><div class="vbp-preview-progress-bar" style="width:' . ( 40 + $i * 30 ) . '%"></div></div>';
+            $html .= '</div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_encuestas( $data ) {
+        $html = '<div class="vbp-preview-encuestas">';
+        $html .= '<div class="vbp-preview-encuesta">';
+        $html .= '<div class="vbp-preview-line w-80"></div>';
+        $html .= '<div class="vbp-preview-opciones">';
+        $html .= '<div class="vbp-preview-opcion"><div class="vbp-preview-radio"></div><div class="vbp-preview-line w-50"></div></div>';
+        $html .= '<div class="vbp-preview-opcion"><div class="vbp-preview-radio"></div><div class="vbp-preview-line w-60"></div></div>';
+        $html .= '<div class="vbp-preview-opcion"><div class="vbp-preview-radio checked"></div><div class="vbp-preview-line w-40"></div></div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_transparencia( $data ) {
+        $html = '<div class="vbp-preview-transparencia">';
+        $html .= '<div class="vbp-preview-stat-row">';
+        $html .= '<div class="vbp-preview-stat"><div class="vbp-preview-stat-value">€12.5K</div><div class="vbp-preview-stat-label">Ingresos</div></div>';
+        $html .= '<div class="vbp-preview-stat"><div class="vbp-preview-stat-value">€8.2K</div><div class="vbp-preview-stat-label">Gastos</div></div>';
+        $html .= '</div>';
+        $html .= '<div class="vbp-preview-chart"></div>';
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_participacion( $data ) {
+        $html = '<div class="vbp-preview-participacion">';
+        $html .= '<div class="vbp-preview-proceso">';
+        $html .= '<div class="vbp-preview-proceso-estado activo">En curso</div>';
+        $html .= '<div class="vbp-preview-line w-70"></div>';
+        $html .= '<div class="vbp-preview-votos">';
+        $html .= '<span class="vbp-preview-voto si">👍 24</span>';
+        $html .= '<span class="vbp-preview-voto no">👎 8</span>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_comunidades( $data ) {
+        $html = '<div class="vbp-preview-comunidades">';
+        for ( $i = 0; $i < 2; $i++ ) {
+            $html .= '<div class="vbp-preview-comunidad">';
+            $html .= '<div class="vbp-preview-comunidad-avatar">🏘</div>';
+            $html .= '<div class="vbp-preview-comunidad-info">';
+            $html .= '<div class="vbp-preview-line w-60"></div>';
+            $html .= '<div class="vbp-preview-line w-40 light"></div>';
+            $html .= '</div>';
+            $html .= '<div class="vbp-preview-miembros">👥 ' . ( 45 - $i * 15 ) . '</div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_mapa( $data ) {
+        $html = '<div class="vbp-preview-mapa">';
+        $html .= '<div class="vbp-preview-mapa-bg">';
+        $html .= '<div class="vbp-preview-marker" style="top:30%;left:40%">📍</div>';
+        $html .= '<div class="vbp-preview-marker" style="top:50%;left:60%">📍</div>';
+        $html .= '<div class="vbp-preview-marker" style="top:70%;left:35%">📍</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_sello( $data ) {
+        $html = '<div class="vbp-preview-sello">';
+        $html .= '<div class="vbp-preview-sello-badge">🌿</div>';
+        $html .= '<div class="vbp-preview-sello-score">';
+        $html .= '<div class="vbp-preview-score-circle"><span>75</span>/100</div>';
+        $html .= '</div>';
+        $html .= '<div class="vbp-preview-sello-criterios">';
+        $html .= '<div class="vbp-preview-criterio"><span class="check">✓</span> Ecológico</div>';
+        $html .= '<div class="vbp-preview-criterio"><span class="check">✓</span> Local</div>';
+        $html .= '<div class="vbp-preview-criterio"><span class="check partial">◐</span> Justo</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_stats( $data ) {
+        $items = $data['items'] ?? array();
+        $html = '<div class="vbp-preview-stats">';
+        if ( ! empty( $items ) ) {
+            foreach ( array_slice( $items, 0, 3 ) as $item ) {
+                $html .= '<div class="vbp-preview-stat-item">';
+                $html .= '<div class="vbp-preview-stat-number">' . esc_html( $item['numero'] ?? '0' ) . '</div>';
+                $html .= '<div class="vbp-preview-stat-label">' . esc_html( $item['etiqueta'] ?? '' ) . '</div>';
+                $html .= '</div>';
+            }
+        } else {
+            for ( $i = 0; $i < 3; $i++ ) {
+                $html .= '<div class="vbp-preview-stat-item">';
+                $html .= '<div class="vbp-preview-stat-number">###</div>';
+                $html .= '<div class="vbp-preview-line w-60"></div>';
+                $html .= '</div>';
+            }
+        }
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function preview_generico( $data, $bloque ) {
+        $titulo = $data['titulo'] ?? $data['title'] ?? '';
+        $subtitulo = $data['subtitulo'] ?? $data['subtitle'] ?? '';
+        $descripcion = $bloque['description'] ?? '';
+
+        $html = '<div class="vbp-preview-generico">';
+
+        if ( $titulo ) {
+            $html .= '<div class="vbp-preview-titulo">' . esc_html( $titulo ) . '</div>';
+        }
+        if ( $subtitulo ) {
+            $html .= '<div class="vbp-preview-subtitulo">' . esc_html( $subtitulo ) . '</div>';
+        }
+        if ( ! $titulo && ! $subtitulo && $descripcion ) {
+            $html .= '<div class="vbp-preview-descripcion">' . esc_html( $descripcion ) . '</div>';
+        }
+
+        // Placeholder visual
+        $html .= '<div class="vbp-preview-placeholder">';
+        $html .= '<div class="vbp-preview-line w-80"></div>';
+        $html .= '<div class="vbp-preview-line w-60"></div>';
+        $html .= '<div class="vbp-preview-line w-70"></div>';
+        $html .= '</div>';
+
+        $html .= '</div>';
         return $html;
     }
 
@@ -335,6 +995,61 @@ class Flavor_VBP_Canvas {
      * @param array $estilos Configuración de estilos.
      * @return string
      */
+    /**
+     * Genera todos los atributos de estilo para un elemento (estilos + animaciones)
+     *
+     * Devuelve un array con:
+     * - 'style' => string de estilos CSS inline
+     * - 'class' => string de clases CSS (incluye animaciones)
+     * - 'attrs' => string de atributos data-* para animaciones
+     *
+     * @param array  $estilos   Configuración de estilos del elemento.
+     * @param string $clase_base Clase CSS base del elemento.
+     * @return array
+     */
+    public function generar_atributos_completos( $estilos, $clase_base = '' ) {
+        $estilos_css    = $this->generar_estilos_elemento( $estilos );
+        $estilos_anim   = $this->generar_estilos_animacion( $estilos );
+        $clases_anim    = $this->generar_clases_animacion( $estilos );
+        $atributos_anim = $this->generar_atributos_animacion( $estilos );
+
+        // Combinar estilos
+        $estilo_final = trim( $estilos_css . ( $estilos_anim ? '; ' . $estilos_anim : '' ) );
+
+        // Combinar clases
+        $clases_final = trim( $clase_base . ' ' . $clases_anim );
+
+        return array(
+            'style' => $estilo_final,
+            'class' => $clases_final,
+            'attrs' => $atributos_anim,
+        );
+    }
+
+    /**
+     * Genera la cadena de atributos HTML para un elemento
+     *
+     * @param array  $estilos    Configuración de estilos del elemento.
+     * @param string $clase_base Clase CSS base del elemento.
+     * @return string Atributos HTML listos para usar (class="..." style="..." data-*...)
+     */
+    public function generar_atributos_html( $estilos, $clase_base = '' ) {
+        $attrs = $this->generar_atributos_completos( $estilos, $clase_base );
+
+        $html = '';
+        if ( ! empty( $attrs['class'] ) ) {
+            $html .= ' class="' . esc_attr( $attrs['class'] ) . '"';
+        }
+        if ( ! empty( $attrs['style'] ) ) {
+            $html .= ' style="' . esc_attr( $attrs['style'] ) . '"';
+        }
+        if ( ! empty( $attrs['attrs'] ) ) {
+            $html .= ' ' . $attrs['attrs'];
+        }
+
+        return trim( $html );
+    }
+
     public function generar_estilos_elemento( $estilos ) {
         $css = array();
 
@@ -375,13 +1090,15 @@ class Flavor_VBP_Canvas {
             }
         }
 
-        // Colors
+        // Colors - Usar variables CSS cuando el color coincide con el tema
         if ( ! empty( $estilos['colors'] ) ) {
             if ( ! empty( $estilos['colors']['background'] ) ) {
-                $css[] = 'background-color: ' . esc_attr( $estilos['colors']['background'] );
+                $bg_color = $this->map_color_to_variable( $estilos['colors']['background'] );
+                $css[] = 'background-color: ' . esc_attr( $bg_color );
             }
             if ( ! empty( $estilos['colors']['text'] ) ) {
-                $css[] = 'color: ' . esc_attr( $estilos['colors']['text'] );
+                $text_color = $this->map_color_to_variable( $estilos['colors']['text'] );
+                $css[] = 'color: ' . esc_attr( $text_color );
             }
         }
 
@@ -402,7 +1119,7 @@ class Flavor_VBP_Canvas {
             }
         }
 
-        // Borders
+        // Borders - Usar variables CSS para colores de borde
         if ( ! empty( $estilos['borders'] ) ) {
             $borders = $estilos['borders'];
             if ( ! empty( $borders['radius'] ) ) {
@@ -410,7 +1127,8 @@ class Flavor_VBP_Canvas {
             }
             if ( ! empty( $borders['width'] ) && ! empty( $borders['color'] ) ) {
                 $estilo_borde = ! empty( $borders['style'] ) ? $borders['style'] : 'solid';
-                $css[] = 'border: ' . esc_attr( $borders['width'] ) . ' ' . esc_attr( $estilo_borde ) . ' ' . esc_attr( $borders['color'] );
+                $border_color = $this->map_color_to_variable( $borders['color'] );
+                $css[] = 'border: ' . esc_attr( $borders['width'] ) . ' ' . esc_attr( $estilo_borde ) . ' ' . esc_attr( $border_color );
             }
         }
 
@@ -433,6 +1151,140 @@ class Flavor_VBP_Canvas {
             }
             if ( ! empty( $dims['maxWidth'] ) ) {
                 $css[] = 'max-width: ' . esc_attr( $dims['maxWidth'] );
+            }
+        }
+
+        // Layout (flexbox, grid)
+        if ( ! empty( $estilos['layout'] ) ) {
+            $layout = $estilos['layout'];
+            if ( ! empty( $layout['display'] ) ) {
+                $css[] = 'display: ' . esc_attr( $layout['display'] );
+            }
+            if ( ! empty( $layout['gap'] ) ) {
+                $css[] = 'gap: ' . esc_attr( $layout['gap'] );
+            }
+            if ( ! empty( $layout['flexDirection'] ) ) {
+                $css[] = 'flex-direction: ' . esc_attr( $layout['flexDirection'] );
+            }
+            if ( ! empty( $layout['alignItems'] ) ) {
+                $css[] = 'align-items: ' . esc_attr( $layout['alignItems'] );
+            }
+            if ( ! empty( $layout['justifyContent'] ) ) {
+                $css[] = 'justify-content: ' . esc_attr( $layout['justifyContent'] );
+            }
+            if ( ! empty( $layout['flexWrap'] ) ) {
+                $css[] = 'flex-wrap: ' . esc_attr( $layout['flexWrap'] );
+            }
+            if ( ! empty( $layout['gridTemplateColumns'] ) ) {
+                $css[] = 'grid-template-columns: ' . esc_attr( $layout['gridTemplateColumns'] );
+            }
+        }
+
+        // Position
+        if ( ! empty( $estilos['position'] ) ) {
+            $pos = $estilos['position'];
+            if ( ! empty( $pos['position'] ) ) {
+                $css[] = 'position: ' . esc_attr( $pos['position'] );
+            }
+            if ( isset( $pos['top'] ) && '' !== $pos['top'] ) {
+                $css[] = 'top: ' . esc_attr( $pos['top'] );
+            }
+            if ( isset( $pos['right'] ) && '' !== $pos['right'] ) {
+                $css[] = 'right: ' . esc_attr( $pos['right'] );
+            }
+            if ( isset( $pos['bottom'] ) && '' !== $pos['bottom'] ) {
+                $css[] = 'bottom: ' . esc_attr( $pos['bottom'] );
+            }
+            if ( isset( $pos['left'] ) && '' !== $pos['left'] ) {
+                $css[] = 'left: ' . esc_attr( $pos['left'] );
+            }
+            if ( ! empty( $pos['zIndex'] ) ) {
+                $css[] = 'z-index: ' . intval( $pos['zIndex'] );
+            }
+        }
+
+        // Overflow
+        if ( ! empty( $estilos['overflow'] ) ) {
+            $css[] = 'overflow: ' . esc_attr( $estilos['overflow'] );
+        }
+
+        // Opacity
+        if ( isset( $estilos['opacity'] ) && '' !== $estilos['opacity'] ) {
+            $css[] = 'opacity: ' . floatval( $estilos['opacity'] );
+        }
+
+        // Transform (compatibilidad: string directo)
+        if ( ! empty( $estilos['transform'] ) && is_string( $estilos['transform'] ) ) {
+            $css[] = 'transform: ' . esc_attr( $estilos['transform'] );
+        }
+
+        // Transition
+        if ( ! empty( $estilos['transition'] ) ) {
+            $css[] = 'transition: ' . esc_attr( $estilos['transition'] );
+        }
+
+        // Background gradient/image
+        if ( ! empty( $estilos['background'] ) ) {
+            $bg = $estilos['background'];
+
+            // Tipo de fondo: gradient
+            if ( isset( $bg['type'] ) && 'gradient' === $bg['type'] ) {
+                $direction = ! empty( $bg['gradientDirection'] ) ? $bg['gradientDirection'] : 'to bottom';
+                $start     = ! empty( $bg['gradientStart'] ) ? $bg['gradientStart'] : '#3b82f6';
+                $end       = ! empty( $bg['gradientEnd'] ) ? $bg['gradientEnd'] : '#8b5cf6';
+                $css[]     = 'background: linear-gradient(' . esc_attr( $direction ) . ', ' . esc_attr( $start ) . ', ' . esc_attr( $end ) . ')';
+            }
+            // Gradiente directo (compatibilidad hacia atrás)
+            elseif ( ! empty( $bg['gradient'] ) ) {
+                $css[] = 'background: ' . esc_attr( $bg['gradient'] );
+            }
+
+            // Tipo de fondo: image
+            if ( ( isset( $bg['type'] ) && 'image' === $bg['type'] ) || ! empty( $bg['image'] ) ) {
+                if ( ! empty( $bg['image'] ) ) {
+                    $css[] = 'background-image: url(' . esc_url( $bg['image'] ) . ')';
+                    if ( ! empty( $bg['size'] ) ) {
+                        $css[] = 'background-size: ' . esc_attr( $bg['size'] );
+                    }
+                    if ( ! empty( $bg['position'] ) ) {
+                        $css[] = 'background-position: ' . esc_attr( $bg['position'] );
+                    }
+                    if ( ! empty( $bg['repeat'] ) ) {
+                        $css[] = 'background-repeat: ' . esc_attr( $bg['repeat'] );
+                    }
+                    if ( ! empty( $bg['fixed'] ) ) {
+                        $css[] = 'background-attachment: fixed';
+                    }
+                }
+            }
+        }
+
+        // Transform (propiedades individuales como array)
+        if ( ! empty( $estilos['transform'] ) && is_array( $estilos['transform'] ) ) {
+            $tr         = $estilos['transform'];
+            $transforms = array();
+
+            if ( ! empty( $tr['rotate'] ) && '0' !== $tr['rotate'] && '' !== $tr['rotate'] ) {
+                $transforms[] = 'rotate(' . esc_attr( $tr['rotate'] ) . 'deg)';
+            }
+            if ( ! empty( $tr['scale'] ) && '1' !== $tr['scale'] && '' !== $tr['scale'] ) {
+                $transforms[] = 'scale(' . esc_attr( $tr['scale'] ) . ')';
+            }
+            if ( ! empty( $tr['translateX'] ) ) {
+                $transforms[] = 'translateX(' . esc_attr( $tr['translateX'] ) . ')';
+            }
+            if ( ! empty( $tr['translateY'] ) ) {
+                $transforms[] = 'translateY(' . esc_attr( $tr['translateY'] ) . ')';
+            }
+            if ( ! empty( $tr['skewX'] ) ) {
+                $transforms[] = 'skewX(' . esc_attr( $tr['skewX'] ) . ')';
+            }
+            if ( ! empty( $tr['skewY'] ) ) {
+                $transforms[] = 'skewY(' . esc_attr( $tr['skewY'] ) . ')';
+            }
+
+            if ( ! empty( $transforms ) ) {
+                $css[] = 'transform: ' . implode( ' ', $transforms );
             }
         }
 
@@ -536,18 +1388,50 @@ class Flavor_VBP_Canvas {
         $estilos  = $elemento['styles'] ?? array();
         $variante = $elemento['variant'] ?? 'centered';
 
-        $titulo      = $data['titulo'] ?? '';
-        $subtitulo   = $data['subtitulo'] ?? '';
-        $boton_texto = $data['boton_texto'] ?? '';
-        $boton_url   = $data['boton_url'] ?? '#';
-        $imagen      = $data['imagen_fondo'] ?? '';
+        // Soportar ambos formatos: español e inglés
+        $titulo        = $data['titulo'] ?? $data['title'] ?? '';
+        $subtitulo     = $data['subtitulo'] ?? $data['subtitle'] ?? '';
+        $descripcion   = $data['descripcion'] ?? $data['description'] ?? '';
+        $boton_texto   = $data['boton_texto'] ?? $data['buttonText'] ?? $data['cta_text'] ?? '';
+        $boton_url     = $data['boton_url'] ?? $data['buttonUrl'] ?? $data['cta_url'] ?? '#';
+        $imagen        = $data['imagen_fondo'] ?? $data['backgroundImage'] ?? $data['image'] ?? '';
+        $overlay_color = $data['overlay_color'] ?? $data['overlayColor'] ?? '';
+        $altura        = $data['altura'] ?? $data['height'] ?? '';
+        $boton_color   = $data['boton_color'] ?? $data['buttonColor'] ?? '';
+        $boton_bg      = $data['boton_bg'] ?? $data['buttonBg'] ?? '';
 
         $clase_variante = 'vbp-hero--' . esc_attr( $variante );
-        $estilo_fondo   = $imagen ? 'background-image: url(' . esc_url( $imagen ) . ');' : '';
-        $estilos_css    = $this->generar_estilos_elemento( $estilos );
 
-        $html = '<section class="vbp-hero ' . $clase_variante . '" style="' . esc_attr( $estilos_css . $estilo_fondo ) . '">';
-        $html .= '<div class="vbp-hero__content">';
+        // Estilos del contenedor principal (imagen de fondo)
+        $estilos_hero = array();
+        if ( $imagen ) {
+            $estilos_hero[] = 'background-image: url(' . esc_url( $imagen ) . ')';
+            $estilos_hero[] = 'background-size: cover';
+            $estilos_hero[] = 'background-position: center';
+        }
+        if ( $altura ) {
+            $estilos_hero[] = 'min-height: ' . esc_attr( $altura );
+        }
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+        $estilos_hero_str = implode( '; ', $estilos_hero );
+
+        // Combinar estilos evitando punto y coma inicial
+        $estilos_combinados = array_filter( array( $estilos_css, $estilos_hero_str ) );
+        $estilo_final = implode( '; ', $estilos_combinados );
+
+        $html = '<section class="vbp-hero ' . $clase_variante . '" style="' . esc_attr( $estilo_final ) . '">';
+
+        // Estilos del contenedor de contenido (overlay como fondo del contenido)
+        $estilos_content = array();
+        if ( $overlay_color ) {
+            $estilos_content[] = 'background: ' . esc_attr( $overlay_color );
+            $estilos_content[] = 'border-radius: 16px';
+            $estilos_content[] = 'padding: 40px 60px';
+        }
+        $estilos_content_str = implode( '; ', $estilos_content );
+
+        $html .= '<div class="vbp-hero__content" style="' . esc_attr( $estilos_content_str ) . '">';
 
         if ( $titulo ) {
             $html .= '<h1 class="vbp-hero__title">' . wp_kses_post( $titulo ) . '</h1>';
@@ -557,8 +1441,20 @@ class Flavor_VBP_Canvas {
             $html .= '<p class="vbp-hero__subtitle">' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
+        if ( $descripcion ) {
+            $html .= '<p class="vbp-hero__description">' . wp_kses_post( $descripcion ) . '</p>';
+        }
+
         if ( $boton_texto ) {
-            $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-hero__button">' . esc_html( $boton_texto ) . '</a>';
+            $estilos_boton = array();
+            if ( $boton_color ) {
+                $estilos_boton[] = 'color: ' . esc_attr( $this->map_color_to_variable( $boton_color ) );
+            }
+            if ( $boton_bg ) {
+                $estilos_boton[] = 'background-color: ' . esc_attr( $this->map_color_to_variable( $boton_bg ) );
+            }
+            $estilo_boton = ! empty( $estilos_boton ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton ) ) . '"' : '';
+            $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-hero__button"' . $estilo_boton . '>' . esc_html( $boton_texto ) . '</a>';
         }
 
         $html .= '</div>';
@@ -717,12 +1613,35 @@ class Flavor_VBP_Canvas {
         $estilos     = $elemento['styles'] ?? array();
         $estilos_css = $this->generar_estilos_elemento( $estilos );
 
-        $titulo      = $data['titulo'] ?? '';
-        $subtitulo   = $data['subtitulo'] ?? '';
-        $boton_texto = $data['boton_texto'] ?? '';
-        $boton_url   = $data['boton_url'] ?? '#';
+        $titulo       = $data['titulo'] ?? '';
+        $subtitulo    = $data['subtitulo'] ?? '';
+        $boton_texto  = $data['boton_texto'] ?? '';
+        $boton_url    = $data['boton_url'] ?? '#';
+        $fondo        = $data['fondo'] ?? $data['background'] ?? '';
+        $boton_color  = $data['boton_color'] ?? $data['buttonColor'] ?? '';
+        $boton_bg     = $data['boton_bg'] ?? $data['buttonBg'] ?? '';
+        $texto_color  = $data['texto_color'] ?? $data['textColor'] ?? '';
 
-        $html = '<section class="vbp-cta" style="' . esc_attr( $estilos_css ) . '">';
+        // Construir estilos del contenedor
+        $estilos_cta = array();
+        if ( $fondo ) {
+            // Soportar gradientes y colores sólidos
+            if ( strpos( $fondo, 'gradient' ) !== false || strpos( $fondo, 'linear' ) !== false || strpos( $fondo, 'radial' ) !== false ) {
+                $estilos_cta[] = 'background: ' . esc_attr( $fondo );
+            } else {
+                $estilos_cta[] = 'background-color: ' . esc_attr( $this->map_color_to_variable( $fondo ) );
+            }
+        }
+        if ( $texto_color ) {
+            $estilos_cta[] = 'color: ' . esc_attr( $this->map_color_to_variable( $texto_color ) );
+        }
+        $estilos_cta_str = implode( '; ', $estilos_cta );
+
+        // Combinar estilos evitando punto y coma inicial
+        $estilos_combinados = array_filter( array( $estilos_css, $estilos_cta_str ) );
+        $estilo_final = implode( '; ', $estilos_combinados );
+
+        $html = '<section class="vbp-cta" style="' . esc_attr( $estilo_final ) . '">';
         $html .= '<div class="vbp-cta__content">';
 
         if ( $titulo ) {
@@ -734,7 +1653,15 @@ class Flavor_VBP_Canvas {
         }
 
         if ( $boton_texto ) {
-            $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-cta__button">' . esc_html( $boton_texto ) . '</a>';
+            $estilos_boton = array();
+            if ( $boton_color ) {
+                $estilos_boton[] = 'color: ' . esc_attr( $this->map_color_to_variable( $boton_color ) );
+            }
+            if ( $boton_bg ) {
+                $estilos_boton[] = 'background-color: ' . esc_attr( $this->map_color_to_variable( $boton_bg ) );
+            }
+            $estilo_boton = ! empty( $estilos_boton ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton ) ) . '"' : '';
+            $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-cta__button"' . $estilo_boton . '>' . esc_html( $boton_texto ) . '</a>';
         }
 
         $html .= '</div>';
@@ -1398,7 +2325,11 @@ class Flavor_VBP_Canvas {
         $element_id = 'vbp-cols-' . substr( md5( wp_json_encode( $elemento ) ), 0, 8 );
 
         // Generar grid-template-columns
-        if ( ! empty( $column_widths ) && count( $column_widths ) === intval( $columnas ) ) {
+        // Prioridad: gridTemplateColumns directo > columnWidths > distribución equitativa
+        if ( ! empty( $data['gridTemplateColumns'] ) ) {
+            // Usar gridTemplateColumns directo si viene del inspector
+            $grid_columns = $data['gridTemplateColumns'];
+        } elseif ( ! empty( $column_widths ) && count( $column_widths ) === intval( $columnas ) ) {
             $grid_columns = implode( ' ', array_map( function( $width ) {
                 // Convertir porcentaje a fracción para mejor comportamiento con gap
                 $percentage = floatval( str_replace( '%', '', $width ) );
@@ -1479,15 +2410,30 @@ class Flavor_VBP_Canvas {
         $estilos_css = $this->generar_estilos_elemento( $estilos );
         $children    = $elemento['children'] ?? array();
 
-        $max_width  = $data['max_width'] ?? '1200px';
-        $padding    = $data['padding'] ?? '20px';
-        $background = $data['background'] ?? 'transparent';
+        $max_width   = $data['max_width'] ?? '1200px';
+        $padding     = $data['padding'] ?? '20px';
+        $background  = $data['background'] ?? 'transparent';
+        $align       = $data['align'] ?? 'center';
+        $full_height = ! empty( $data['full_height'] );
+
+        // Determinar margin según alineación
+        $margin = '0 auto'; // Centro por defecto
+        if ( 'left' === $align ) {
+            $margin = '0 auto 0 0';
+        } elseif ( 'right' === $align ) {
+            $margin = '0 0 0 auto';
+        }
+
+        // Altura completa
+        $height_css = $full_height ? 'min-height: 100vh;' : '';
 
         $container_css = sprintf(
-            'max-width: %s; margin: 0 auto; padding: %s; background: %s; %s',
-            esc_attr( $max_width ),
+            'max-width: %s; margin: %s; padding: %s; background: %s; %s %s',
+            'full' === $max_width ? '100%' : esc_attr( $max_width ),
+            esc_attr( $margin ),
             esc_attr( $padding ),
             esc_attr( $background ),
+            $height_css,
             esc_attr( $estilos_css )
         );
 
@@ -1513,15 +2459,35 @@ class Flavor_VBP_Canvas {
         $estilos_css = $this->generar_estilos_elemento( $estilos );
         $children    = $elemento['children'] ?? array();
 
-        $columnas = $data['columnas'] ?? 3;
-        $filas    = $data['filas'] ?? '';
-        $gap      = isset( $data['gap'] ) ? $data['gap'] . 'px' : '24px';
+        $columnas      = $data['columnas'] ?? 3;
+        $filas         = $data['filas'] ?? '';
+        $gap           = isset( $data['gap'] ) ? $data['gap'] : '24px';
+        $auto_fit      = $data['auto_fit'] ?? '';
+        $min_col_width = $data['min_col_width'] ?? '200px';
+
+        // Añadir unidad si no tiene
+        if ( is_numeric( $gap ) ) {
+            $gap .= 'px';
+        }
+
+        // Grid template columns
+        if ( ! empty( $auto_fit ) ) {
+            // Usar auto-fit o auto-fill con minmax
+            $grid_cols = sprintf(
+                'repeat(%s, minmax(%s, 1fr))',
+                esc_attr( $auto_fit ),
+                esc_attr( $min_col_width )
+            );
+        } else {
+            // Columnas fijas
+            $grid_cols = sprintf( 'repeat(%d, 1fr)', intval( $columnas ) );
+        }
 
         $grid_rows = ! empty( $filas ) ? 'grid-template-rows: repeat(' . intval( $filas ) . ', auto);' : '';
 
         $grid_css = sprintf(
-            'display: grid; grid-template-columns: repeat(%d, 1fr); %s gap: %s; %s',
-            intval( $columnas ),
+            'display: grid; grid-template-columns: %s; %s gap: %s; %s',
+            $grid_cols,
             $grid_rows,
             esc_attr( $gap ),
             esc_attr( $estilos_css )
@@ -1583,6 +2549,1017 @@ class Flavor_VBP_Canvas {
         $html .= '</div>';
 
         return $html;
+    }
+
+    /**
+     * Renderiza Card
+     */
+    private function render_card( $elemento ) {
+        $data         = $elemento['data'] ?? array();
+        $estilos      = $elemento['styles'] ?? array();
+        $estilos_css  = $this->generar_estilos_elemento( $estilos );
+        $estilos_anim = $this->generar_estilos_animacion( $estilos );
+        $clases_anim  = $this->generar_clases_animacion( $estilos );
+        $atributos    = $this->generar_atributos_animacion( $estilos );
+        $children     = $elemento['children'] ?? array();
+
+        // Soportar ambos formatos
+        $titulo      = $data['titulo'] ?? $data['title'] ?? '';
+        $descripcion = $data['descripcion'] ?? $data['description'] ?? $data['content'] ?? '';
+        $icono       = $data['icono'] ?? $data['icon'] ?? '';
+        $imagen      = $data['imagen'] ?? $data['image'] ?? '';
+        $enlace      = $data['enlace'] ?? $data['url'] ?? $data['link'] ?? '';
+
+        $estilo_all = trim( $estilos_css . ( $estilos_anim ? '; ' . $estilos_anim : '' ) );
+        $clases     = trim( 'vbp-card ' . $clases_anim );
+
+        $html = '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos . '>';
+
+        if ( $imagen ) {
+            $html .= '<div class="vbp-card__image"><img src="' . esc_url( $imagen ) . '" alt="' . esc_attr( $titulo ) . '" loading="lazy"></div>';
+        }
+
+        if ( $icono ) {
+            $html .= '<div class="vbp-card__icon">' . wp_kses_post( $icono ) . '</div>';
+        }
+
+        $html .= '<div class="vbp-card__content">';
+
+        if ( $titulo ) {
+            if ( $enlace ) {
+                $html .= '<h3 class="vbp-card__title"><a href="' . esc_url( $enlace ) . '">' . esc_html( $titulo ) . '</a></h3>';
+            } else {
+                $html .= '<h3 class="vbp-card__title">' . esc_html( $titulo ) . '</h3>';
+            }
+        }
+
+        if ( $descripcion ) {
+            $html .= '<p class="vbp-card__description">' . wp_kses_post( $descripcion ) . '</p>';
+        }
+
+        // Renderizar hijos
+        if ( ! empty( $children ) ) {
+            foreach ( $children as $hijo ) {
+                $html .= $this->renderizar_elemento( $hijo );
+            }
+        }
+
+        $html .= '</div>';
+
+        if ( $enlace && ! $titulo ) {
+            $html .= '<a href="' . esc_url( $enlace ) . '" class="vbp-card__link"></a>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza Section
+     */
+    private function render_section( $elemento ) {
+        $data         = $elemento['data'] ?? array();
+        $estilos      = $elemento['styles'] ?? array();
+        $estilos_css  = $this->generar_estilos_elemento( $estilos );
+        $estilos_anim = $this->generar_estilos_animacion( $estilos );
+        $clases_anim  = $this->generar_clases_animacion( $estilos );
+        $atributos    = $this->generar_atributos_animacion( $estilos );
+        $children     = $elemento['children'] ?? array();
+        $nombre       = $elemento['name'] ?? '';
+
+        // Soportar ambos formatos: español e inglés
+        $titulo      = $data['titulo'] ?? $data['title'] ?? '';
+        $subtitulo   = $data['subtitulo'] ?? $data['subtitle'] ?? '';
+        $contenido   = $data['contenido'] ?? $data['content'] ?? $data['text'] ?? '';
+        $html_custom = $data['html'] ?? '';
+
+        $estilo_all = trim( $estilos_css . ( $estilos_anim ? '; ' . $estilos_anim : '' ) );
+        $clases     = trim( 'vbp-section ' . $clases_anim );
+
+        $html = '<section class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos . '>';
+        $html .= '<div class="vbp-section__container flavor-container">';
+
+        if ( $titulo ) {
+            $html .= '<h2 class="vbp-section__title">' . wp_kses_post( $titulo ) . '</h2>';
+        }
+
+        if ( $subtitulo ) {
+            $html .= '<p class="vbp-section__subtitle">' . wp_kses_post( $subtitulo ) . '</p>';
+        }
+
+        if ( $contenido ) {
+            $html .= '<div class="vbp-section__content">' . wp_kses_post( $contenido ) . '</div>';
+        }
+
+        if ( $html_custom ) {
+            $html .= '<div class="vbp-section__html">' . $html_custom . '</div>';
+        }
+
+        // Renderizar hijos
+        if ( ! empty( $children ) ) {
+            $html .= '<div class="vbp-section__children">';
+            foreach ( $children as $hijo ) {
+                $html .= $this->renderizar_elemento( $hijo );
+            }
+            $html .= '</div>';
+        }
+
+        // Si no hay contenido, mostrar el nombre como fallback
+        if ( empty( $titulo ) && empty( $subtitulo ) && empty( $contenido ) && empty( $html_custom ) && empty( $children ) && $nombre ) {
+            $html .= '<div class="vbp-section__placeholder">' . esc_html( $nombre ) . '</div>';
+        }
+
+        $html .= '</div>';
+        $html .= '</section>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un timeline/proceso
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_timeline( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $titulo  = $data['titulo'] ?? '';
+        $items   = $data['items'] ?? array();
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+
+        $html = '<div class="vbp-timeline" style="' . esc_attr( $estilos_css ) . '">';
+
+        if ( $titulo ) {
+            $html .= '<h3 class="vbp-timeline__title">' . esc_html( $titulo ) . '</h3>';
+        }
+
+        $html .= '<div class="vbp-timeline__items">';
+        foreach ( $items as $item ) {
+            $paso   = $item['paso'] ?? '';
+            $titulo_item = $item['titulo'] ?? '';
+            $desc   = $item['descripcion'] ?? '';
+            $icono  = $item['icono'] ?? '';
+
+            $html .= '<div class="vbp-timeline__item">';
+            $html .= '<div class="vbp-timeline__marker">';
+            if ( $icono ) {
+                $html .= '<span class="vbp-timeline__icon">' . esc_html( $icono ) . '</span>';
+            } else {
+                $html .= '<span class="vbp-timeline__number">' . esc_html( $paso ) . '</span>';
+            }
+            $html .= '</div>';
+            $html .= '<div class="vbp-timeline__content">';
+            $html .= '<h4 class="vbp-timeline__item-title">' . esc_html( $titulo_item ) . '</h4>';
+            if ( $desc ) {
+                $html .= '<p class="vbp-timeline__item-desc">' . esc_html( $desc ) . '</p>';
+            }
+            $html .= '</div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un grid de productos
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_product_grid( $elemento ) {
+        $data     = $elemento['data'] ?? array();
+        $estilos  = $elemento['styles'] ?? array();
+        $items    = $data['items'] ?? array();
+        $columnas = $data['columnas'] ?? 4;
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+
+        $html = '<div class="vbp-product-grid vbp-product-grid--cols-' . intval( $columnas ) . '" style="' . esc_attr( $estilos_css ) . '">';
+
+        foreach ( $items as $item ) {
+            $nombre    = $item['nombre'] ?? '';
+            $precio    = $item['precio'] ?? '';
+            $imagen    = $item['imagen'] ?? '';
+            $productor = $item['productor'] ?? '';
+
+            $html .= '<div class="vbp-product-card">';
+            if ( $imagen ) {
+                $html .= '<div class="vbp-product-card__image">';
+                $html .= '<img src="' . esc_url( $imagen ) . '" alt="' . esc_attr( $nombre ) . '" loading="lazy" />';
+                $html .= '</div>';
+            }
+            $html .= '<div class="vbp-product-card__content">';
+            $html .= '<h4 class="vbp-product-card__title">' . esc_html( $nombre ) . '</h4>';
+            if ( $productor ) {
+                $html .= '<p class="vbp-product-card__producer">' . esc_html( $productor ) . '</p>';
+            }
+            if ( $precio ) {
+                $html .= '<span class="vbp-product-card__price">' . esc_html( $precio ) . '</span>';
+            }
+            $html .= '</div>';
+            $html .= '</div>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un grid de blog/noticias
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_blog_grid( $elemento ) {
+        $data     = $elemento['data'] ?? array();
+        $estilos  = $elemento['styles'] ?? array();
+        $items    = $data['items'] ?? array();
+        $columnas = $data['columnas'] ?? 3;
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+
+        $html = '<div class="vbp-blog-grid vbp-blog-grid--cols-' . intval( $columnas ) . '" style="' . esc_attr( $estilos_css ) . '">';
+
+        foreach ( $items as $item ) {
+            $titulo    = $item['titulo'] ?? '';
+            $extracto  = $item['extracto'] ?? '';
+            $imagen    = $item['imagen'] ?? '';
+            $fecha     = $item['fecha'] ?? '';
+            $categoria = $item['categoria'] ?? '';
+
+            $html .= '<article class="vbp-blog-card">';
+            if ( $imagen ) {
+                $html .= '<div class="vbp-blog-card__image">';
+                $html .= '<img src="' . esc_url( $imagen ) . '" alt="' . esc_attr( $titulo ) . '" loading="lazy" />';
+                if ( $categoria ) {
+                    $html .= '<span class="vbp-blog-card__category">' . esc_html( $categoria ) . '</span>';
+                }
+                $html .= '</div>';
+            }
+            $html .= '<div class="vbp-blog-card__content">';
+            $html .= '<h4 class="vbp-blog-card__title">' . esc_html( $titulo ) . '</h4>';
+            if ( $fecha ) {
+                $html .= '<time class="vbp-blog-card__date">' . esc_html( $fecha ) . '</time>';
+            }
+            if ( $extracto ) {
+                $html .= '<p class="vbp-blog-card__excerpt">' . esc_html( $extracto ) . '</p>';
+            }
+            $html .= '</div>';
+            $html .= '</article>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza dos columnas
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_two_columns( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $gap     = isset( $data['gap'] ) ? absint( $data['gap'] ) : 24;
+
+        $col_izquierda = $data['columna_izquierda'] ?? array();
+        $col_derecha   = $data['columna_derecha'] ?? array();
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+
+        $html = '<div class="vbp-two-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: ' . $gap . 'px; ' . esc_attr( $estilos_css ) . '">';
+        $html .= '<div class="vbp-two-columns__left">';
+        $html .= $this->render_column_content( $col_izquierda );
+        $html .= '</div>';
+        $html .= '<div class="vbp-two-columns__right">';
+        $html .= $this->render_column_content( $col_derecha );
+        $html .= '</div>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza el contenido de una columna en two_columns
+     *
+     * @param array $col_data Datos de la columna.
+     * @return string
+     */
+    private function render_column_content( $col_data ) {
+        if ( empty( $col_data ) || empty( $col_data['type'] ) ) {
+            return '';
+        }
+
+        $tipo      = $col_data['type'];
+        $contenido = $col_data['data'] ?? array();
+
+        // Renderizar según tipo
+        switch ( $tipo ) {
+            case 'contact_info':
+                return $this->render_contact_info( array( 'data' => $contenido ) );
+
+            case 'contact_form':
+                return $this->render_contact_form( array( 'data' => $contenido ) );
+
+            case 'text':
+                $texto = $contenido['contenido'] ?? '';
+                return '<div class="vbp-column-text">' . wp_kses_post( $texto ) . '</div>';
+
+            case 'image':
+                $src = $contenido['src'] ?? '';
+                $alt = $contenido['alt'] ?? '';
+                if ( $src ) {
+                    return '<div class="vbp-column-image"><img src="' . esc_url( $src ) . '" alt="' . esc_attr( $alt ) . '" style="max-width: 100%; height: auto;"></div>';
+                }
+                return '';
+
+            default:
+                // Intentar renderizar como elemento genérico
+                return $this->renderizar_elemento( $col_data );
+        }
+    }
+
+    /**
+     * Renderiza lista de beneficios
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_benefits( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $titulo  = $data['titulo'] ?? '';
+        $items   = $data['items'] ?? array();
+        $nota    = $data['nota'] ?? '';
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+
+        $html = '<div class="vbp-benefits" style="' . esc_attr( $estilos_css ) . '">';
+
+        if ( $titulo ) {
+            $html .= '<h3 class="vbp-benefits__title">' . esc_html( $titulo ) . '</h3>';
+        }
+
+        $html .= '<ul class="vbp-benefits__list">';
+        foreach ( $items as $item ) {
+            $icono = $item['icono'] ?? '✓';
+            $texto = $item['texto'] ?? '';
+            $html .= '<li class="vbp-benefits__item">';
+            $html .= '<span class="vbp-benefits__icon">' . esc_html( $icono ) . '</span>';
+            $html .= '<span class="vbp-benefits__text">' . esc_html( $texto ) . '</span>';
+            $html .= '</li>';
+        }
+        $html .= '</ul>';
+
+        if ( $nota ) {
+            $html .= '<p class="vbp-benefits__note">' . esc_html( $nota ) . '</p>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza formulario de registro
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_registration_form( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $titulo  = $data['titulo'] ?? '';
+        $campos  = $data['campos'] ?? array();
+        $checkbox_text = $data['checkbox'] ?? '';
+        $boton_texto = $data['boton_texto'] ?? __( 'Enviar', 'flavor-chat-ia' );
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+
+        $html = '<div class="vbp-form vbp-registration-form" style="' . esc_attr( $estilos_css ) . '">';
+
+        if ( $titulo ) {
+            $html .= '<h3 class="vbp-form__title">' . esc_html( $titulo ) . '</h3>';
+        }
+
+        $html .= '<form class="vbp-form__form" action="" method="post">';
+
+        foreach ( $campos as $campo ) {
+            $nombre    = $campo['nombre'] ?? '';
+            $label     = $campo['label'] ?? '';
+            $tipo      = $campo['tipo'] ?? 'text';
+            $requerido = ! empty( $campo['requerido'] );
+            $opciones  = $campo['opciones'] ?? array();
+
+            $html .= '<div class="vbp-form__field">';
+            $html .= '<label class="vbp-form__label" for="' . esc_attr( $nombre ) . '">' . esc_html( $label );
+            if ( $requerido ) {
+                $html .= ' <span class="vbp-form__required">*</span>';
+            }
+            $html .= '</label>';
+
+            if ( 'textarea' === $tipo ) {
+                $html .= '<textarea class="vbp-form__input vbp-form__textarea" name="' . esc_attr( $nombre ) . '" id="' . esc_attr( $nombre ) . '"' . ( $requerido ? ' required' : '' ) . '></textarea>';
+            } elseif ( 'select' === $tipo ) {
+                $html .= '<select class="vbp-form__input vbp-form__select" name="' . esc_attr( $nombre ) . '" id="' . esc_attr( $nombre ) . '"' . ( $requerido ? ' required' : '' ) . '>';
+                $html .= '<option value="">' . __( 'Seleccionar...', 'flavor-chat-ia' ) . '</option>';
+                foreach ( $opciones as $opcion ) {
+                    $html .= '<option value="' . esc_attr( $opcion ) . '">' . esc_html( $opcion ) . '</option>';
+                }
+                $html .= '</select>';
+            } else {
+                $html .= '<input class="vbp-form__input" type="' . esc_attr( $tipo ) . '" name="' . esc_attr( $nombre ) . '" id="' . esc_attr( $nombre ) . '"' . ( $requerido ? ' required' : '' ) . ' />';
+            }
+
+            $html .= '</div>';
+        }
+
+        if ( $checkbox_text ) {
+            $html .= '<div class="vbp-form__field vbp-form__checkbox-field">';
+            $html .= '<label class="vbp-form__checkbox-label">';
+            $html .= '<input type="checkbox" name="acepto" required class="vbp-form__checkbox" />';
+            $html .= ' ' . esc_html( $checkbox_text );
+            $html .= '</label>';
+            $html .= '</div>';
+        }
+
+        $html .= '<button type="submit" class="vbp-form__submit vbp-button">' . esc_html( $boton_texto ) . '</button>';
+        $html .= '</form>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza formulario de contacto
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_contact_form( $elemento ) {
+        return $this->render_registration_form( $elemento );
+    }
+
+    /**
+     * Renderiza info de contacto
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_contact_info( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $titulo  = $data['titulo'] ?? '';
+        $items   = $data['items'] ?? array();
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+
+        $html = '<div class="vbp-contact-info" style="' . esc_attr( $estilos_css ) . '">';
+
+        if ( $titulo ) {
+            $html .= '<h3 class="vbp-contact-info__title">' . esc_html( $titulo ) . '</h3>';
+        }
+
+        $html .= '<ul class="vbp-contact-info__list">';
+        foreach ( $items as $item ) {
+            $icono  = $item['icono'] ?? '';
+            $titulo_item = $item['titulo'] ?? '';
+            $valor  = $item['valor'] ?? '';
+
+            $html .= '<li class="vbp-contact-info__item">';
+            if ( $icono ) {
+                $html .= '<span class="vbp-contact-info__icon">' . esc_html( $icono ) . '</span>';
+            }
+            $html .= '<div class="vbp-contact-info__content">';
+            if ( $titulo_item ) {
+                $html .= '<strong class="vbp-contact-info__label">' . esc_html( $titulo_item ) . '</strong>';
+            }
+            $html .= '<span class="vbp-contact-info__value">' . esc_html( $valor ) . '</span>';
+            $html .= '</div>';
+            $html .= '</li>';
+        }
+        $html .= '</ul>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza proceso/pasos
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_process( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $titulo  = $data['titulo'] ?? '';
+        $items   = $data['items'] ?? array();
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+
+        $html = '<div class="vbp-process" style="' . esc_attr( $estilos_css ) . '">';
+
+        if ( $titulo ) {
+            $html .= '<h3 class="vbp-process__title">' . esc_html( $titulo ) . '</h3>';
+        }
+
+        $html .= '<div class="vbp-process__steps">';
+        foreach ( $items as $item ) {
+            $paso = $item['paso'] ?? '';
+            $titulo_step = $item['titulo'] ?? '';
+            $desc = $item['descripcion'] ?? '';
+
+            $html .= '<div class="vbp-process__step">';
+            $html .= '<div class="vbp-process__number">' . esc_html( $paso ) . '</div>';
+            $html .= '<div class="vbp-process__content">';
+            $html .= '<h4 class="vbp-process__step-title">' . esc_html( $titulo_step ) . '</h4>';
+            if ( $desc ) {
+                $html .= '<p class="vbp-process__step-desc">' . esc_html( $desc ) . '</p>';
+            }
+            $html .= '</div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza feed social
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_social_feed( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $titulo  = $data['titulo'] ?? '';
+        $subtitulo = $data['subtitulo'] ?? '';
+        $tipo    = $data['tipo'] ?? 'grid';
+        $limite  = $data['mostrar_ultimos'] ?? 6;
+        $fondo   = $data['fondo'] ?? '';
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+        if ( $fondo ) {
+            $fondo_mapped = $this->map_color_to_variable( $fondo );
+            $estilos_css .= '; background-color: ' . esc_attr( $fondo_mapped );
+        }
+
+        // Intentar usar shortcode si está disponible
+        if ( shortcode_exists( 'rs_feed' ) ) {
+            $html = '<div class="vbp-social-feed-wrapper" style="' . esc_attr( $estilos_css ) . '">';
+            if ( $titulo ) {
+                $html .= '<h3 class="vbp-section__title">' . esc_html( $titulo ) . '</h3>';
+            }
+            if ( $subtitulo ) {
+                $html .= '<p class="vbp-section__subtitle">' . esc_html( $subtitulo ) . '</p>';
+            }
+            $html .= do_shortcode( '[rs_feed limite="' . intval( $limite ) . '" tipo="' . esc_attr( $tipo ) . '"]' );
+            $html .= '</div>';
+            return $html;
+        }
+
+        // Fallback: mostrar mensaje de placeholder
+        $html = '<div class="vbp-social-feed vbp-placeholder" style="' . esc_attr( $estilos_css ) . '">';
+        if ( $titulo ) {
+            $html .= '<h3 class="vbp-section__title">' . esc_html( $titulo ) . '</h3>';
+        }
+        $html .= '<p class="vbp-placeholder__message">' . __( 'Activa el módulo Red Social para ver el feed.', 'flavor-chat-ia' ) . '</p>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza sello de conciencia widget
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string
+     */
+    private function render_sello_conciencia_widget( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $titulo  = $data['titulo'] ?? '';
+        $subtitulo = $data['subtitulo'] ?? '';
+        $sellos  = $data['sellos'] ?? array();
+        $fondo   = $data['fondo'] ?? '';
+
+        $estilos_css = $this->generar_estilos_elemento( $estilos );
+        if ( $fondo ) {
+            $fondo_mapped = $this->map_color_to_variable( $fondo );
+            $estilos_css .= '; background-color: ' . esc_attr( $fondo_mapped );
+        }
+
+        // Si hay shortcode de sello conciencia, usarlo
+        if ( shortcode_exists( 'sello_conciencia' ) ) {
+            $html = '<div class="vbp-sello-wrapper" style="' . esc_attr( $estilos_css ) . '">';
+            if ( $titulo ) {
+                $html .= '<h3 class="vbp-section__title">' . esc_html( $titulo ) . '</h3>';
+            }
+            if ( $subtitulo ) {
+                $html .= '<p class="vbp-section__subtitle">' . esc_html( $subtitulo ) . '</p>';
+            }
+            $html .= do_shortcode( '[sello_conciencia]' );
+            $html .= '</div>';
+            return $html;
+        }
+
+        // Fallback con sellos manuales
+        $html = '<div class="vbp-sellos" style="' . esc_attr( $estilos_css ) . '; padding: 3rem 2rem;">';
+        if ( $titulo ) {
+            $html .= '<h3 class="vbp-section__title" style="text-align: center; margin-bottom: 0.5rem;">' . esc_html( $titulo ) . '</h3>';
+        }
+        if ( $subtitulo ) {
+            $html .= '<p class="vbp-section__subtitle" style="text-align: center; margin-bottom: 2rem; color: var(--flavor-text-muted, #666);">' . esc_html( $subtitulo ) . '</p>';
+        }
+
+        if ( ! empty( $sellos ) ) {
+            $html .= '<div class="vbp-sellos__grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">';
+            foreach ( $sellos as $sello ) {
+                $nombre = $sello['nombre'] ?? '';
+                $icono  = $sello['icono'] ?? '';
+                $desc   = $sello['descripcion'] ?? '';
+
+                $html .= '<div class="vbp-sello-card" style="background: var(--flavor-bg-card, #fff); padding: 1.5rem; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">';
+                if ( $icono ) {
+                    $html .= '<div class="vbp-sello-card__icon" style="font-size: 2.5rem; margin-bottom: 1rem;">' . esc_html( $icono ) . '</div>';
+                }
+                $html .= '<h4 class="vbp-sello-card__title" style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">' . esc_html( $nombre ) . '</h4>';
+                if ( $desc ) {
+                    $html .= '<p class="vbp-sello-card__desc" style="color: var(--flavor-text-muted, #666); font-size: 0.9rem; line-height: 1.5;">' . esc_html( $desc ) . '</p>';
+                }
+                $html .= '</div>';
+            }
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    // =========================================================================
+    // Métodos públicos para API
+    // =========================================================================
+
+    /**
+     * Genera preview HTML de un widget para uso desde API REST
+     *
+     * @param array $elemento Datos del elemento (type, data, etc).
+     * @param array $widget_info Información del widget (name, icon, shortcode, module).
+     * @return string HTML del preview.
+     */
+    public function render_widget_preview_public( $elemento, $widget_info = array() ) {
+        // Construir estructura de bloque compatible
+        $bloque = array(
+            'name'      => $widget_info['name'] ?? $elemento['name'] ?? ucfirst( str_replace( '_', ' ', $elemento['type'] ?? '' ) ),
+            'icon'      => $widget_info['icon'] ?? '📦',
+            'module'    => $widget_info['module'] ?? '',
+            'shortcode' => $widget_info['shortcode'] ?? '',
+            'category'  => $widget_info['category'] ?? 'modules',
+            'defaults'  => $widget_info['defaults'] ?? array(),
+        );
+
+        // Usar el método de preview existente
+        return $this->render_module_preview( $elemento, $bloque );
+    }
+
+    /**
+     * Renderiza una sección de contacto (antes two_columns)
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string HTML de la sección.
+     */
+    private function render_contact_section( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $attrs   = $this->generar_atributos_completos( $estilos, 'vbp-two-columns vbp-contact-section' );
+
+        $gap           = isset( $data['gap'] ) ? absint( $data['gap'] ) : 24;
+        $col_izquierda = $data['columna_izquierda'] ?? array();
+        $col_derecha   = $data['columna_derecha'] ?? array();
+
+        // Añadir estilos de grid al style existente
+        $estilo_grid  = 'display: grid; grid-template-columns: 1fr 1fr; gap: ' . $gap . 'px';
+        $estilo_final = $attrs['style'] ? $attrs['style'] . '; ' . $estilo_grid : $estilo_grid;
+
+        $html = '<div class="' . esc_attr( $attrs['class'] ) . '" style="' . esc_attr( $estilo_final ) . '" ' . $attrs['attrs'] . '>';
+
+        // Columna izquierda
+        $html .= '<div class="vbp-column vbp-column--left">';
+        $html .= $this->render_column_content( $col_izquierda );
+        $html .= '</div>';
+
+        // Columna derecha
+        $html .= '<div class="vbp-column vbp-column--right">';
+        $html .= $this->render_column_content( $col_derecha );
+        $html .= '</div>';
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza columna de información de contacto
+     *
+     * @param array $content Contenido.
+     * @return string HTML.
+     */
+    private function render_contact_info_column( $content ) {
+        $titulo = $content['titulo'] ?? '';
+        $items  = $content['items'] ?? array();
+
+        $html = '<div class="vbp-contact-info">';
+
+        if ( $titulo ) {
+            $html .= '<h3 class="vbp-contact-info__title">' . esc_html( $titulo ) . '</h3>';
+        }
+
+        if ( ! empty( $items ) ) {
+            $html .= '<ul class="vbp-contact-info__list">';
+            foreach ( $items as $item ) {
+                $icono  = $item['icono'] ?? '';
+                $label  = $item['titulo'] ?? '';
+                $valor  = $item['valor'] ?? '';
+
+                $html .= '<li class="vbp-contact-info__item">';
+                if ( $icono ) {
+                    $html .= '<span class="vbp-contact-info__icon">' . esc_html( $icono ) . '</span>';
+                }
+                $html .= '<div class="vbp-contact-info__content">';
+                if ( $label ) {
+                    $html .= '<strong>' . esc_html( $label ) . '</strong>';
+                }
+                if ( $valor ) {
+                    $html .= '<span>' . esc_html( $valor ) . '</span>';
+                }
+                $html .= '</div>';
+                $html .= '</li>';
+            }
+            $html .= '</ul>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza columna de formulario de contacto
+     *
+     * @param array $content Contenido.
+     * @return string HTML.
+     */
+    private function render_contact_form_column( $content ) {
+        $titulo      = $content['titulo'] ?? '';
+        $campos      = $content['campos'] ?? array();
+        $boton_texto = $content['boton_texto'] ?? __( 'Enviar', 'flavor-chat-ia' );
+
+        $html = '<div class="vbp-contact-form">';
+
+        if ( $titulo ) {
+            $html .= '<h3 class="vbp-contact-form__title">' . esc_html( $titulo ) . '</h3>';
+        }
+
+        $html .= '<form class="vbp-contact-form__form" method="post">';
+
+        foreach ( $campos as $campo ) {
+            $tipo      = $campo['tipo'] ?? 'text';
+            $label     = $campo['label'] ?? '';
+            $requerido = ! empty( $campo['requerido'] );
+            $name      = sanitize_title( $label );
+            $req_attr  = $requerido ? 'required' : '';
+            $req_mark  = $requerido ? ' <span class="required">*</span>' : '';
+
+            $html .= '<div class="vbp-contact-form__field">';
+            $html .= '<label>' . esc_html( $label ) . $req_mark . '</label>';
+
+            switch ( $tipo ) {
+                case 'textarea':
+                    $html .= '<textarea name="' . esc_attr( $name ) . '" ' . $req_attr . '></textarea>';
+                    break;
+
+                case 'select':
+                    $opciones = $campo['opciones'] ?? array();
+                    $html .= '<select name="' . esc_attr( $name ) . '" ' . $req_attr . '>';
+                    $html .= '<option value="">' . esc_html__( 'Selecciona...', 'flavor-chat-ia' ) . '</option>';
+                    foreach ( $opciones as $opcion ) {
+                        $html .= '<option value="' . esc_attr( $opcion ) . '">' . esc_html( $opcion ) . '</option>';
+                    }
+                    $html .= '</select>';
+                    break;
+
+                default:
+                    $html .= '<input type="' . esc_attr( $tipo ) . '" name="' . esc_attr( $name ) . '" ' . $req_attr . '>';
+            }
+
+            $html .= '</div>';
+        }
+
+        $html .= '<button type="submit" class="vbp-contact-form__submit">' . esc_html( $boton_texto ) . '</button>';
+        $html .= '</form>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un bloque de audio
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string HTML del audio.
+     */
+    private function render_audio( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $attrs_html = $this->generar_atributos_html( $estilos, 'vbp-audio' );
+
+        $src      = $data['src'] ?? '';
+        $titulo   = $data['titulo'] ?? '';
+        $autoplay = ! empty( $data['autoplay'] ) ? 'autoplay' : '';
+        $loop     = ! empty( $data['loop'] ) ? 'loop' : '';
+        $muted    = ! empty( $data['muted'] ) ? 'muted' : '';
+        $controls = ( $data['controls'] ?? true ) !== false ? 'controls' : '';
+        $preload  = $data['preload'] ?? 'metadata';
+
+        $html = '<div ' . $attrs_html . '>';
+
+        if ( $titulo ) {
+            $html .= '<div class="vbp-audio__title">' . esc_html( $titulo ) . '</div>';
+        }
+
+        if ( $src ) {
+            $html .= sprintf(
+                '<audio src="%s" %s %s %s %s preload="%s" style="width: 100%%;"></audio>',
+                esc_url( $src ),
+                $controls,
+                $autoplay,
+                $loop,
+                $muted,
+                esc_attr( $preload )
+            );
+        } else {
+            $html .= '<div class="vbp-audio__placeholder">Audio no disponible</div>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un bloque embed (iframe, video externo, etc.)
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string HTML del embed.
+     */
+    private function render_embed( $elemento ) {
+        $data    = $elemento['data'] ?? array();
+        $estilos = $elemento['styles'] ?? array();
+        $attrs_html = $this->generar_atributos_html( $estilos, 'vbp-embed' );
+
+        $code         = $data['code'] ?? '';
+        $url          = $data['url'] ?? '';
+        $width        = $data['width'] ?? '100%';
+        $height       = $data['height'] ?? '400px';
+        $aspect_ratio = $data['aspect_ratio'] ?? '';
+        $lazy_load    = ( $data['lazy_load'] ?? true ) !== false;
+
+        $html = '<div ' . $attrs_html . '>';
+
+        // Si hay código embed directo, usarlo
+        if ( $code ) {
+            // Contenedor responsive si hay aspect ratio
+            if ( $aspect_ratio ) {
+                $html .= '<div class="vbp-embed__responsive" style="aspect-ratio: ' . esc_attr( $aspect_ratio ) . '; width: ' . esc_attr( $width ) . ';">';
+                $html .= wp_kses(
+                    $code,
+                    array(
+                        'iframe' => array(
+                            'src'             => true,
+                            'width'           => true,
+                            'height'          => true,
+                            'frameborder'     => true,
+                            'allow'           => true,
+                            'allowfullscreen' => true,
+                            'loading'         => true,
+                            'title'           => true,
+                            'style'           => true,
+                        ),
+                        'video'  => array(
+                            'src'      => true,
+                            'width'    => true,
+                            'height'   => true,
+                            'controls' => true,
+                            'autoplay' => true,
+                            'loop'     => true,
+                            'muted'    => true,
+                            'poster'   => true,
+                        ),
+                        'source' => array(
+                            'src'  => true,
+                            'type' => true,
+                        ),
+                    )
+                );
+                $html .= '</div>';
+            } else {
+                $html .= '<div class="vbp-embed__container" style="width: ' . esc_attr( $width ) . '; height: ' . esc_attr( $height ) . ';">';
+                $html .= wp_kses(
+                    $code,
+                    array(
+                        'iframe' => array(
+                            'src'             => true,
+                            'width'           => true,
+                            'height'          => true,
+                            'frameborder'     => true,
+                            'allow'           => true,
+                            'allowfullscreen' => true,
+                            'loading'         => true,
+                            'title'           => true,
+                            'style'           => true,
+                        ),
+                        'video'  => array(
+                            'src'      => true,
+                            'width'    => true,
+                            'height'   => true,
+                            'controls' => true,
+                            'autoplay' => true,
+                            'loop'     => true,
+                            'muted'    => true,
+                            'poster'   => true,
+                        ),
+                        'source' => array(
+                            'src'  => true,
+                            'type' => true,
+                        ),
+                    )
+                );
+                $html .= '</div>';
+            }
+        } elseif ( $url ) {
+            // Convertir URL a embed
+            $embed_url = $this->url_to_embed( $url );
+            if ( $embed_url ) {
+                $loading_attr = $lazy_load ? 'loading="lazy"' : '';
+                $aspect_style = $aspect_ratio ? 'aspect-ratio: ' . esc_attr( $aspect_ratio ) . ';' : 'height: ' . esc_attr( $height ) . ';';
+                $html .= '<div class="vbp-embed__responsive" style="width: ' . esc_attr( $width ) . '; ' . $aspect_style . '">';
+                $html .= sprintf(
+                    '<iframe src="%s" width="100%%" height="100%%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen %s style="position: absolute; top: 0; left: 0; width: 100%%; height: 100%%;"></iframe>',
+                    esc_url( $embed_url ),
+                    $loading_attr
+                );
+                $html .= '</div>';
+            } else {
+                $html .= '<div class="vbp-embed__placeholder">No se pudo convertir la URL a embed</div>';
+            }
+        } else {
+            $html .= '<div class="vbp-embed__placeholder">Embed no configurado</div>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Convierte una URL de video a formato embed
+     *
+     * @param string $url URL del video.
+     * @return string|false URL de embed o false si no se reconoce.
+     */
+    private function url_to_embed( $url ) {
+        // YouTube
+        if ( preg_match( '/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/', $url, $matches ) ) {
+            return 'https://www.youtube.com/embed/' . $matches[1];
+        }
+
+        // Vimeo
+        if ( preg_match( '/vimeo\.com\/(\d+)/', $url, $matches ) ) {
+            return 'https://player.vimeo.com/video/' . $matches[1];
+        }
+
+        // Spotify
+        if ( preg_match( '/open\.spotify\.com\/(track|album|playlist|episode)\/([a-zA-Z0-9]+)/', $url, $matches ) ) {
+            return 'https://open.spotify.com/embed/' . $matches[1] . '/' . $matches[2];
+        }
+
+        // SoundCloud
+        if ( strpos( $url, 'soundcloud.com' ) !== false ) {
+            return 'https://w.soundcloud.com/player/?url=' . rawurlencode( $url );
+        }
+
+        return false;
     }
 
     /**

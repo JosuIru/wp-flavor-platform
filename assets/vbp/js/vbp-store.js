@@ -95,7 +95,8 @@ document.addEventListener('alpine:init', () => {
         isDirty: false,
         elements: [],
         settings: {
-            pageWidth: 1200,
+            pageWidth: '1200',
+            pageWidthUnit: 'px',
             backgroundColor: '#ffffff',
             customCss: ''
         },
@@ -278,21 +279,34 @@ document.addEventListener('alpine:init', () => {
         },
 
         /**
-         * Obtener elemento por ID incluyendo hijos de contenedores
+         * Obtener elemento por ID incluyendo hijos de contenedores (recursivo)
          */
         getElementDeep(id) {
             // Primero buscar en elementos principales
             var element = this.getElement(id);
             if (element) return element;
 
-            // Buscar en hijos de contenedores
+            // Función recursiva para buscar en hijos anidados
+            function findInChildren(children) {
+                if (!children || children.length === 0) return null;
+                for (var j = 0; j < children.length; j++) {
+                    if (children[j].id === id) {
+                        return children[j];
+                    }
+                    // Buscar recursivamente en hijos anidados
+                    if (children[j].children && children[j].children.length > 0) {
+                        var found = findInChildren(children[j].children);
+                        if (found) return found;
+                    }
+                }
+                return null;
+            }
+
+            // Buscar en hijos de contenedores de nivel raíz
             for (var i = 0; i < this.elements.length; i++) {
                 if (this.elements[i].children && this.elements[i].children.length > 0) {
-                    for (var j = 0; j < this.elements[i].children.length; j++) {
-                        if (this.elements[i].children[j].id === id) {
-                            return this.elements[i].children[j];
-                        }
-                    }
+                    var found = findInChildren(this.elements[i].children);
+                    if (found) return found;
                 }
             }
             return null;
@@ -375,23 +389,41 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
 
-            // Buscar en hijos de contenedores
+            // Buscar en hijos de contenedores (recursivo para múltiples niveles)
+            var self = this;
+            function findAndUpdateChild(children, parentElement) {
+                if (!children || children.length === 0) return false;
+                for (var j = 0; j < children.length; j++) {
+                    if (children[j].id === id) {
+                        self.saveToHistory();
+                        // Actualizar el hijo
+                        var newChildVersion = (children[j]._version || 0) + 1;
+                        children[j] = { ...children[j], ...cambios, _version: newChildVersion };
+                        return true;
+                    }
+                    // Buscar recursivamente en hijos anidados
+                    if (children[j].children && children[j].children.length > 0) {
+                        if (findAndUpdateChild(children[j].children, children[j])) {
+                            // Actualizar versión del contenedor intermedio
+                            var intermediateVersion = (children[j]._version || 0) + 1;
+                            children[j] = { ...children[j], _version: intermediateVersion };
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
             for (var i = 0; i < this.elements.length; i++) {
                 if (this.elements[i].children && this.elements[i].children.length > 0) {
-                    for (var j = 0; j < this.elements[i].children.length; j++) {
-                        if (this.elements[i].children[j].id === id) {
-                            this.saveToHistory();
-                            // Actualizar el hijo
-                            var newChildVersion = (this.elements[i].children[j]._version || 0) + 1;
-                            this.elements[i].children[j] = { ...this.elements[i].children[j], ...cambios, _version: newChildVersion };
-                            // Forzar re-render del contenedor padre
-                            var parentVersion = (this.elements[i]._version || 0) + 1;
-                            this.elements[i] = { ...this.elements[i], _version: parentVersion };
-                            elementIndex.set(this.elements[i].id, { element: this.elements[i], index: i });
-                            this.isDirty = true;
-                            debouncedSave(this);
-                            return;
-                        }
+                    if (findAndUpdateChild(this.elements[i].children, this.elements[i])) {
+                        // Forzar re-render del contenedor padre raíz
+                        var parentVersion = (this.elements[i]._version || 0) + 1;
+                        this.elements[i] = { ...this.elements[i], _version: parentVersion };
+                        elementIndex.set(this.elements[i].id, { element: this.elements[i], index: i });
+                        this.isDirty = true;
+                        debouncedSave(this);
+                        return;
                     }
                 }
             }
@@ -412,17 +444,33 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
 
-            // Buscar y eliminar de hijos de contenedores
+            // Buscar y eliminar de hijos de contenedores (recursivo)
+            var self = this;
+            function findAndRemoveChild(children) {
+                if (!children || children.length === 0) return false;
+                for (var j = 0; j < children.length; j++) {
+                    if (children[j].id === id) {
+                        self.saveToHistory();
+                        children.splice(j, 1);
+                        return true;
+                    }
+                    // Buscar recursivamente en hijos anidados
+                    if (children[j].children && children[j].children.length > 0) {
+                        if (findAndRemoveChild(children[j].children)) {
+                            // Actualizar versión del contenedor intermedio
+                            var intermediateVersion = (children[j]._version || 0) + 1;
+                            children[j] = { ...children[j], _version: intermediateVersion };
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
             for (var i = 0; i < this.elements.length; i++) {
                 if (this.elements[i].children && this.elements[i].children.length > 0) {
-                    var childIndex = this.elements[i].children.findIndex(function(child) {
-                        return child.id === id;
-                    });
-                    if (childIndex !== -1) {
-                        this.saveToHistory();
-                        // Eliminar el hijo
-                        this.elements[i].children.splice(childIndex, 1);
-                        // Forzar re-render del contenedor padre
+                    if (findAndRemoveChild(this.elements[i].children)) {
+                        // Forzar re-render del contenedor padre raíz
                         var parentVersion = (this.elements[i]._version || 0) + 1;
                         this.elements[i] = { ...this.elements[i], _version: parentVersion };
                         elementIndex.set(this.elements[i].id, { element: this.elements[i], index: i });
@@ -850,11 +898,41 @@ document.addEventListener('alpine:init', () => {
                     padding: { top: '', right: '', bottom: '', left: '' }
                 },
                 colors: { background: '', text: '' },
+                background: {
+                    type: '',
+                    gradientDirection: 'to bottom',
+                    gradientStart: '#3b82f6',
+                    gradientEnd: '#8b5cf6',
+                    image: '',
+                    size: 'cover',
+                    position: 'center',
+                    repeat: 'no-repeat',
+                    fixed: false,
+                    overlayOpacity: 0
+                },
                 typography: { fontSize: '', fontWeight: '', lineHeight: '', textAlign: '' },
                 borders: { radius: '', width: '', color: '', style: '' },
                 shadows: { boxShadow: '' },
                 layout: { display: '', flexDirection: '', justifyContent: '', alignItems: '', gap: '' },
                 dimensions: { width: '', height: '', minHeight: '', maxWidth: '' },
+                position: {
+                    position: '',
+                    top: '',
+                    right: '',
+                    bottom: '',
+                    left: '',
+                    zIndex: ''
+                },
+                transform: {
+                    rotate: '',
+                    scale: '',
+                    translateX: '',
+                    translateY: '',
+                    skewX: '',
+                    skewY: ''
+                },
+                overflow: '',
+                opacity: '',
                 advanced: {
                     cssId: '',
                     cssClasses: '',
@@ -882,7 +960,7 @@ document.addEventListener('alpine:init', () => {
             }
 
             // Merge profundo para cada sección
-            var sections = ['spacing', 'colors', 'typography', 'borders', 'shadows', 'layout', 'dimensions', 'advanced'];
+            var sections = ['spacing', 'colors', 'background', 'typography', 'borders', 'shadows', 'layout', 'dimensions', 'position', 'transform', 'advanced'];
             var self = this;
 
             sections.forEach(function(section) {
@@ -906,6 +984,14 @@ document.addEventListener('alpine:init', () => {
                 if (!element.styles.spacing.padding) {
                     element.styles.spacing.padding = { top: '', right: '', bottom: '', left: '' };
                 }
+            }
+
+            // Asegurar propiedades simples
+            if (element.styles.overflow === undefined) {
+                element.styles.overflow = '';
+            }
+            if (element.styles.opacity === undefined) {
+                element.styles.opacity = '';
             }
 
             return element;

@@ -430,9 +430,25 @@ function vbpApp() {
             };
             // Solo aplicar maxWidth en desktop, tablet y mobile usan las clases CSS
             if (this.devicePreview === 'desktop') {
-                styles.maxWidth = settings.pageWidth + 'px';
+                var pageWidth = settings.pageWidth || '1200';
+                var pageWidthUnit = settings.pageWidthUnit || 'px';
+                // Si el valor ya incluye unidad, usarlo directamente
+                if (typeof pageWidth === 'string' && (pageWidth.includes('%') || pageWidth.includes('px'))) {
+                    styles.maxWidth = pageWidth;
+                } else {
+                    styles.maxWidth = pageWidth + pageWidthUnit;
+                }
+                // Si es porcentaje, también ajustar el width
+                if (pageWidthUnit === '%' || (typeof pageWidth === 'string' && pageWidth.includes('%'))) {
+                    styles.width = styles.maxWidth;
+                }
             }
             return styles;
+        },
+
+        updatePageWidthUnit: function() {
+            // Forzar actualización del canvas al cambiar unidad
+            Alpine.store('vbp').isDirty = true;
         },
 
         loadDocument: function() {
@@ -452,7 +468,29 @@ function vbpApp() {
                     self.documentTitle = result.data.post.title;
                     if (result.data.data) {
                         Alpine.store('vbp').elements = sanitizeElements(result.data.data.elements || []);
-                        Alpine.store('vbp').settings = result.data.data.settings || {};
+                        var settings = result.data.data.settings || {};
+                        // Normalizar pageWidth para compatibilidad con formato antiguo (numérico)
+                        if (settings.pageWidth !== undefined) {
+                            var pageWidth = settings.pageWidth;
+                            if (typeof pageWidth === 'number') {
+                                settings.pageWidth = String(pageWidth);
+                                settings.pageWidthUnit = 'px';
+                            } else if (typeof pageWidth === 'string') {
+                                if (pageWidth.includes('%')) {
+                                    settings.pageWidthUnit = '%';
+                                    settings.pageWidth = pageWidth.replace('%', '');
+                                } else if (pageWidth.includes('px')) {
+                                    settings.pageWidthUnit = 'px';
+                                    settings.pageWidth = pageWidth.replace('px', '');
+                                } else if (!settings.pageWidthUnit) {
+                                    settings.pageWidthUnit = 'px';
+                                }
+                            }
+                        }
+                        if (!settings.pageWidthUnit) {
+                            settings.pageWidthUnit = 'px';
+                        }
+                        Alpine.store('vbp').settings = settings;
                     }
                 }
             })
@@ -525,7 +563,16 @@ function vbpApp() {
             var canvas = document.querySelector('.vbp-canvas');
             if (canvasArea && canvas) {
                 var areaWidth = canvasArea.clientWidth - 40;
-                var canvasWidth = parseInt(Alpine.store('vbp').settings.pageWidth) || 1200;
+                var settings = Alpine.store('vbp').settings;
+                var pageWidthUnit = settings.pageWidthUnit || 'px';
+                var pageWidth = settings.pageWidth || '1200';
+                // Si es porcentaje, usar el ancho real del área
+                if (pageWidthUnit === '%' || (typeof pageWidth === 'string' && pageWidth.includes('%'))) {
+                    var percent = parseInt(pageWidth) || 100;
+                    var canvasWidth = (areaWidth * percent) / 100;
+                } else {
+                    var canvasWidth = parseInt(pageWidth) || 1200;
+                }
                 var fitZoom = Math.floor((areaWidth / canvasWidth) * 100);
                 this.setZoom(Math.min(fitZoom, 100));
             }
@@ -973,6 +1020,77 @@ function vbpApp() {
 
         getElementClasses: function(element) {
             return { 'selected': this.isSelected(element.id), 'hidden': element.visible === false, 'locked': element.locked };
+        },
+
+        // ============ RENDER TWO COLUMN CONTENT ============
+        // Renderiza el contenido de una columna en bloques two_columns
+        renderTwoColumnContent: function(colData, lado) {
+            if (!colData || !colData.type) {
+                return '<div style="text-align: center; color: #6b7280; padding: 20px; font-size: 12px;">📥 Columna ' + lado + '</div>';
+            }
+
+            var colType = colData.type;
+            var colContent = colData.data || {};
+            var ds = (typeof VBP_Config !== 'undefined' && VBP_Config.designSettings) ? VBP_Config.designSettings : {};
+            var primaryColor = ds.primary_color || '#3b82f6';
+            var textColor = ds.text_color || '#1f2937';
+            var textMutedColor = ds.text_muted_color || '#6b7280';
+            var buttonRadius = (ds.button_border_radius || 8) + 'px';
+
+            // Contact Info
+            if (colType === 'contact_info') {
+                var infoHtml = '<div class="vbp-contact-info">';
+                infoHtml += '<h3 contenteditable="true" style="margin: 0 0 16px; font-size: 20px; color: ' + textColor + ';">' + (colContent.titulo || 'Información') + '</h3>';
+                var items = colContent.items || [];
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    infoHtml += '<div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px solid #eee;">';
+                    infoHtml += '<span style="font-size: 20px;">' + (item.icono || '📌') + '</span>';
+                    infoHtml += '<div>';
+                    infoHtml += '<div style="font-weight: 600; color: ' + textColor + '; font-size: 14px;">' + (item.titulo || 'Campo') + '</div>';
+                    infoHtml += '<div style="color: ' + textMutedColor + '; font-size: 13px;">' + (item.valor || '') + '</div>';
+                    infoHtml += '</div></div>';
+                }
+                if (items.length === 0) {
+                    infoHtml += '<div style="color: ' + textMutedColor + '; padding: 12px; text-align: center;">Sin información</div>';
+                }
+                infoHtml += '</div>';
+                return infoHtml;
+            }
+
+            // Contact Form
+            if (colType === 'contact_form') {
+                var formHtml = '<div class="vbp-contact-form">';
+                formHtml += '<h3 contenteditable="true" style="margin: 0 0 16px; font-size: 20px; color: ' + textColor + ';">' + (colContent.titulo || 'Formulario') + '</h3>';
+                formHtml += '<form style="display: flex; flex-direction: column; gap: 12px;" onsubmit="return false;">';
+                var campos = colContent.campos || [];
+                for (var ci = 0; ci < campos.length; ci++) {
+                    var campo = campos[ci];
+                    var inputStyle = 'width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: ' + buttonRadius + '; font-size: 14px; box-sizing: border-box;';
+                    formHtml += '<div>';
+                    formHtml += '<label style="display: block; margin-bottom: 4px; font-weight: 500; font-size: 13px; color: ' + textColor + ';">' + (campo.label || campo.nombre || 'Campo') + (campo.requerido ? ' *' : '') + '</label>';
+                    if (campo.tipo === 'textarea') {
+                        formHtml += '<textarea rows="3" style="' + inputStyle + ' resize: vertical;" placeholder="' + (campo.placeholder || '') + '"></textarea>';
+                    } else if (campo.tipo === 'select') {
+                        formHtml += '<select style="' + inputStyle + '">';
+                        formHtml += '<option value="">Selecciona...</option>';
+                        var opciones = campo.opciones || [];
+                        for (var oi = 0; oi < opciones.length; oi++) {
+                            formHtml += '<option>' + opciones[oi] + '</option>';
+                        }
+                        formHtml += '</select>';
+                    } else {
+                        formHtml += '<input type="' + (campo.tipo || 'text') + '" style="' + inputStyle + '" placeholder="' + (campo.placeholder || '') + '">';
+                    }
+                    formHtml += '</div>';
+                }
+                formHtml += '<button type="button" style="padding: 12px 24px; background: ' + primaryColor + '; color: #fff; border: none; border-radius: ' + buttonRadius + '; cursor: pointer; font-weight: 600;">' + (colContent.boton_texto || 'Enviar') + '</button>';
+                formHtml += '</form></div>';
+                return formHtml;
+            }
+
+            // Generic/Unknown type
+            return '<div style="padding: 16px; background: #f0f0f0; border-radius: 8px; text-align: center; color: ' + textMutedColor + ';">Tipo: ' + colType + '</div>';
         },
 
         // ============ RENDER ELEMENT - TODOS LOS BLOQUES ============
@@ -1715,14 +1833,89 @@ function vbpApp() {
                     '<code contenteditable="true" data-field="shortcode" style="font-family: monospace; color: #78350f;">' + (data.shortcode || '[tu_shortcode]') + '</code></div></div>';
             }
 
+            if (type === 'audio') {
+                var audioSrc = data.src || '';
+                var audioTitle = data.titulo || '';
+                var audioAutoplay = data.autoplay ? 'autoplay' : '';
+                var audioLoop = data.loop ? 'loop' : '';
+                var audioMuted = data.muted ? 'muted' : '';
+                var audioControls = data.controls !== false ? 'controls' : '';
+                var audioPreload = data.preload || 'metadata';
+
+                if (audioSrc) {
+                    return '<div class="vbp-audio-block" style="padding: 16px; ' + customStyle + '">' +
+                        (audioTitle ? '<div style="font-weight: 500; margin-bottom: 8px; color: ' + textColor + ';">🎵 ' + audioTitle + '</div>' : '') +
+                        '<audio src="' + audioSrc + '" ' + audioControls + ' ' + audioAutoplay + ' ' + audioLoop + ' ' + audioMuted + ' preload="' + audioPreload + '" style="width: 100%; border-radius: 8px;"></audio>' +
+                        '</div>';
+                }
+                return '<div class="vbp-audio-block" style="padding: 16px; ' + customStyle + '">' +
+                    '<div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 24px; border-radius: 12px; text-align: center; color: white;">' +
+                    '<div style="font-size: 32px; margin-bottom: 12px;">🎵</div>' +
+                    '<div style="font-size: 14px; opacity: 0.9;">Selecciona un archivo de audio</div>' +
+                    '<div style="font-size: 11px; opacity: 0.7; margin-top: 8px;">MP3, WAV, OGG</div>' +
+                    '</div></div>';
+            }
+
+            if (type === 'embed') {
+                var embedCode = data.code || '';
+                var embedUrl = data.url || '';
+                var embedWidth = data.width || '100%';
+                var embedHeight = data.height || '400px';
+                var embedAspect = data.aspect_ratio || '';
+
+                // Si hay código embed directo, mostrarlo
+                if (embedCode) {
+                    var aspectStyle = embedAspect ? 'aspect-ratio: ' + embedAspect + '; height: auto;' : 'height: ' + embedHeight + ';';
+                    return '<div class="vbp-embed-block" style="padding: 16px; ' + customStyle + '">' +
+                        '<div style="width: ' + embedWidth + '; ' + aspectStyle + ' overflow: hidden; border-radius: 8px; background: #000;">' +
+                        embedCode +
+                        '</div></div>';
+                }
+
+                // Si hay URL, mostrar preview
+                if (embedUrl) {
+                    var isYouTube = embedUrl.includes('youtube.com') || embedUrl.includes('youtu.be');
+                    var isVimeo = embedUrl.includes('vimeo.com');
+                    var platformIcon = isYouTube ? '📺' : (isVimeo ? '🎬' : '🌐');
+                    var platformName = isYouTube ? 'YouTube' : (isVimeo ? 'Vimeo' : 'Embed');
+
+                    return '<div class="vbp-embed-block" style="padding: 16px; ' + customStyle + '">' +
+                        '<div style="background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 40px; border-radius: 12px; text-align: center; color: white;">' +
+                        '<div style="font-size: 48px; margin-bottom: 16px;">' + platformIcon + '</div>' +
+                        '<div style="font-weight: 500; margin-bottom: 8px;">' + platformName + '</div>' +
+                        '<div style="font-size: 12px; opacity: 0.7; word-break: break-all; max-width: 300px; margin: 0 auto;">' + embedUrl + '</div>' +
+                        '</div></div>';
+                }
+
+                // Sin contenido, mostrar placeholder
+                return '<div class="vbp-embed-block" style="padding: 16px; ' + customStyle + '">' +
+                    '<div style="background: #1a1a2e; padding: 40px; border-radius: 12px; text-align: center; color: white;">' +
+                    '<div style="font-size: 32px; margin-bottom: 12px;">🔗</div>' +
+                    '<div style="font-size: 14px; opacity: 0.9;">Pega tu código embed</div>' +
+                    '<div style="font-size: 11px; opacity: 0.7; margin-top: 8px;">YouTube, Vimeo, Spotify, etc.</div>' +
+                    '</div></div>';
+            }
+
             // ============ LAYOUT ============
             if (type === 'container') {
                 var containerMaxWidth = data.max_width || (ds.container_max_width ? ds.container_max_width + 'px' : '1200px');
+                if (containerMaxWidth === 'full') containerMaxWidth = '100%';
                 var containerBg = data.background || 'transparent';
                 var containerPadding = data.padding || '20px';
+                var containerAlign = data.align || 'center';
+                var containerFullHeight = data.full_height;
                 var containerChildren = element.children || [];
                 var containerSelf = this;
-                var containerHtml = '<div class="vbp-container vbp-container-dropzone flavor-container" data-container-id="' + element.id + '" style="max-width: ' + containerMaxWidth + '; margin: 0 auto; padding: ' + containerPadding + '; background: ' + containerBg + '; border: 2px dashed ' + primaryColor + '40; min-height: 100px; border-radius: ' + cardRadius + '; ' + customStyle + '">';
+
+                // Determinar margin según alineación
+                var containerMargin = '0 auto';
+                if (containerAlign === 'left') containerMargin = '0 auto 0 0';
+                else if (containerAlign === 'right') containerMargin = '0 0 0 auto';
+
+                // Altura completa
+                var containerMinHeight = containerFullHeight ? '100vh' : '100px';
+
+                var containerHtml = '<div class="vbp-container vbp-container-dropzone flavor-container" data-container-id="' + element.id + '" style="max-width: ' + containerMaxWidth + '; margin: ' + containerMargin + '; padding: ' + containerPadding + '; background: ' + containerBg + '; border: 2px dashed ' + primaryColor + '40; min-height: ' + containerMinHeight + '; border-radius: ' + cardRadius + '; ' + customStyle + '">';
 
                 if (containerChildren.length > 0) {
                     containerHtml += '<div style="display: flex; flex-direction: column; gap: 16px;">';
@@ -1744,7 +1937,18 @@ function vbpApp() {
                 var colsAlign = data.align || 'stretch';
                 var children = element.children || [];
                 var self = this;
-                var html = '<div class="vbp-columns vbp-container-dropzone" data-container-id="' + element.id + '" style="display: grid; grid-template-columns: repeat(' + cols + ', 1fr); gap: ' + colsGap + '; align-items: ' + colsAlign + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; border-radius: ' + cardRadius + '; min-height: 100px; ' + colsReverse + customStyle + '">';
+
+                // Determinar grid-template-columns: usar anchos personalizados o iguales
+                var gridCols;
+                if (data.gridTemplateColumns) {
+                    gridCols = data.gridTemplateColumns;
+                } else if (data.columnWidths && data.columnWidths.length === cols) {
+                    gridCols = data.columnWidths.join(' ');
+                } else {
+                    gridCols = 'repeat(' + cols + ', 1fr)';
+                }
+
+                var html = '<div class="vbp-columns vbp-container-dropzone" data-container-id="' + element.id + '" style="display: grid; grid-template-columns: ' + gridCols + '; gap: ' + colsGap + '; align-items: ' + colsAlign + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; border-radius: ' + cardRadius + '; min-height: 100px; ' + colsReverse + customStyle + '">';
                 for (var ci = 0; ci < cols; ci++) {
                     // Filtrar hijos para esta columna
                     var columnChildren = children.filter(function(child) {
@@ -1766,13 +1970,47 @@ function vbpApp() {
                 return html;
             }
 
+            // Bloque contact_section (antes two_columns) - Sección de contacto predefinida
+            if (type === 'two_columns' || type === 'contact_section') {
+                var twoColsGap = data.gap ? data.gap + 'px' : gridGap;
+                var leftCol = data.columna_izquierda || {};
+                var rightCol = data.columna_derecha || {};
+                var self = this;
+
+                var twoColsHtml = '<div class="vbp-two-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: ' + twoColsGap + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; border-radius: ' + cardRadius + '; min-height: 100px; ' + customStyle + '">';
+
+                // Columna izquierda
+                twoColsHtml += '<div class="vbp-column-left" style="background: rgba(248,249,250,0.5); border-radius: ' + buttonRadius + '; padding: 16px; border: 1px dashed #dee2e6;">';
+                twoColsHtml += self.renderTwoColumnContent(leftCol, 'izquierda');
+                twoColsHtml += '</div>';
+
+                // Columna derecha
+                twoColsHtml += '<div class="vbp-column-right" style="background: rgba(248,249,250,0.5); border-radius: ' + buttonRadius + '; padding: 16px; border: 1px dashed #dee2e6;">';
+                twoColsHtml += self.renderTwoColumnContent(rightCol, 'derecha');
+                twoColsHtml += '</div>';
+
+                twoColsHtml += '</div>';
+                return twoColsHtml;
+            }
+
             if (type === 'grid') {
-                var gridCols = parseInt(data.columnas) || 3;
+                var gridColsNum = parseInt(data.columnas) || 3;
                 var gridRows = data.filas ? 'repeat(' + parseInt(data.filas) + ', auto)' : 'auto';
-                var gridGapValue = data.gap ? data.gap + 'px' : gridGap;
+                var gridGapValue = data.gap ? (isNaN(data.gap) ? data.gap : data.gap + 'px') : gridGap;
+                var gridAutoFit = data.auto_fit || '';
+                var gridMinColWidth = data.min_col_width || '200px';
                 var gridChildren = element.children || [];
                 var gridSelf = this;
-                var gridHtml = '<div class="vbp-grid vbp-container-dropzone flavor-grid" data-container-id="' + element.id + '" style="display: grid; grid-template-columns: repeat(' + gridCols + ', 1fr); grid-template-rows: ' + gridRows + '; gap: ' + gridGapValue + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; min-height: 100px; border-radius: ' + cardRadius + '; ' + customStyle + '">';
+
+                // Determinar grid-template-columns
+                var gridColsTemplate;
+                if (gridAutoFit) {
+                    gridColsTemplate = 'repeat(' + gridAutoFit + ', minmax(' + gridMinColWidth + ', 1fr))';
+                } else {
+                    gridColsTemplate = 'repeat(' + gridColsNum + ', 1fr)';
+                }
+
+                var gridHtml = '<div class="vbp-grid vbp-container-dropzone flavor-grid" data-container-id="' + element.id + '" style="display: grid; grid-template-columns: ' + gridColsTemplate + '; grid-template-rows: ' + gridRows + '; gap: ' + gridGapValue + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; min-height: 100px; border-radius: ' + cardRadius + '; ' + customStyle + '">';
 
                 if (gridChildren.length > 0) {
                     for (var gi = 0; gi < gridChildren.length; gi++) {
@@ -2342,19 +2580,29 @@ function vbpApp() {
             if (data.shortcode || element.shortcode) {
                 var shortcodeTag = data.shortcode || element.shortcode;
                 var elementId = element.id || 'temp_' + Date.now();
+                var moduleType = element.module || type || '';
+                var moduleName = element.name || shortcodeTag;
 
-                // Marcar el elemento para carga diferida de previsualización
+                // Generar preview estática según tipo de módulo
+                var modulePreview = this.generateModulePreview(moduleType, shortcodeTag, moduleName, {
+                    primaryColor: primaryColor,
+                    secondaryColor: secondaryColor,
+                    textColor: textColor,
+                    textMutedColor: textMutedColor,
+                    cardRadius: cardRadius,
+                    cardPadding: cardPadding,
+                    data: data
+                });
+
+                // Marcar el elemento para carga diferida de previsualización real
                 setTimeout(function() {
                     window.vbpModulePreview && window.vbpModulePreview.loadPreview(elementId, shortcodeTag);
                 }, 100);
 
-                return '<div class="vbp-module-block vbp-module-preview-container" data-element-id="' + elementId + '" data-shortcode="' + shortcodeTag + '" style="' + customStyle + '">' +
+                return '<div class="vbp-module-block vbp-module-preview-container" data-element-id="' + elementId + '" data-shortcode="' + shortcodeTag + '" data-module="' + moduleType + '" style="' + customStyle + '">' +
                     '<div class="vbp-module-preview-content" style="min-height: 100px; position: relative;">' +
-                    '<div class="vbp-module-preview-loading" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; background: linear-gradient(135deg, ' + primaryColor + '08, ' + secondaryColor + '12); border: 1px dashed ' + primaryColor + '40; border-radius: ' + cardRadius + ';">' +
-                    '<div class="vbp-preview-spinner" style="width: 32px; height: 32px; border: 3px solid ' + primaryColor + '30; border-top-color: ' + primaryColor + '; border-radius: 50%; animation: vbp-spin 0.8s linear infinite;"></div>' +
-                    '<div style="margin-top: 12px; color: ' + primaryColor + '; font-weight: 500; font-size: 14px;">Cargando ' + (element.name || shortcodeTag) + '...</div>' +
-                    '<code style="margin-top: 8px; font-size: 12px; color: ' + textMutedColor + ';">[' + shortcodeTag + ']</code>' +
-                    '</div></div></div>';
+                    modulePreview +
+                    '</div></div>';
             }
 
             // ============ MÓDULO CON PREVIEW HTML ============
@@ -2369,11 +2617,137 @@ function vbpApp() {
                     '</div></div>';
             }
 
-            // ============ FALLBACK ============
-            return '<div style="padding: 32px; background: linear-gradient(135deg, #f5f5f5, #ebebeb); text-align: center; border-radius: ' + cardRadius + '; margin: 16px; border: 2px dashed ' + primaryColor + '40; ' + customStyle + '">' +
-                '<div style="font-size: 32px; margin-bottom: 12px;">📦</div>' +
-                '<div style="color: ' + textColor + '; font-weight: 600; font-size: 16px;">' + (element.name || type) + '</div>' +
-                '<div style="color: ' + textMutedColor + '; font-size: 13px; margin-top: 6px;">Tipo: ' + type + '</div></div>';
+            // ============ FALLBACK MEJORADO ============
+            var fallbackIcon = this.getTypeIcon(type);
+            return '<div style="padding: 32px; background: linear-gradient(135deg, ' + primaryColor + '08, ' + secondaryColor + '06); text-align: center; border-radius: ' + cardRadius + '; border: 2px dashed ' + primaryColor + '30; position: relative; ' + customStyle + '">' +
+                '<div style="position: absolute; top: 8px; right: 8px; background: ' + primaryColor + '20; color: ' + primaryColor + '; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; text-transform: uppercase;">Componente</div>' +
+                '<div style="width: 64px; height: 64px; margin: 0 auto 16px; background: linear-gradient(135deg, ' + primaryColor + ', ' + secondaryColor + '); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; box-shadow: 0 4px 12px ' + primaryColor + '30;">' + fallbackIcon + '</div>' +
+                '<div style="color: ' + textColor + '; font-weight: 600; font-size: 16px; margin-bottom: 6px;">' + (element.name || type) + '</div>' +
+                '<div style="color: ' + textMutedColor + '; font-size: 12px;">' + type + '</div>' +
+                '<div style="margin-top: 16px; display: flex; justify-content: center; gap: 8px;">' +
+                '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: white; border-radius: 12px; font-size: 11px; color: ' + textMutedColor + '; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">✏️ Editable</span>' +
+                '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: white; border-radius: 12px; font-size: 11px; color: ' + textMutedColor + '; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">⚙️ Configurable</span></div></div>';
+        },
+
+        /**
+         * Renderiza el contenido de una columna en un bloque two_columns
+         * Soporta tipos: contact_info, contact_form, text, image, etc.
+         */
+        renderTwoColumnContent: function(colData, lado) {
+            var ds = (typeof VBP_Config !== 'undefined' && VBP_Config.designSettings) ? VBP_Config.designSettings : {};
+            var primaryColor = ds.primary_color || '#3b82f6';
+            var textColor = ds.text_color || '#1f2937';
+            var textMutedColor = ds.text_muted_color || '#6b7280';
+            var buttonRadius = (ds.button_border_radius || 8) + 'px';
+
+            if (!colData || !colData.type) {
+                return '<div style="text-align: center; color: #6b7280; padding: 20px; font-size: 12px;">📥 Columna ' + lado + '</div>';
+            }
+
+            var colType = colData.type;
+            var colContent = colData.data || {};
+
+            // Renderizar contact_info
+            if (colType === 'contact_info') {
+                var titulo = colContent.titulo || 'Información';
+                var items = colContent.items || [];
+                var html = '<div class="vbp-contact-info" style="padding: 16px;">';
+                html += '<h3 style="font-size: 18px; font-weight: 600; margin: 0 0 16px; color: ' + textColor + ';">' + titulo + '</h3>';
+                html += '<ul style="list-style: none; padding: 0; margin: 0;">';
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    html += '<li style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">';
+                    if (item.icono) {
+                        html += '<span style="font-size: 18px; flex-shrink: 0;">' + item.icono + '</span>';
+                    }
+                    html += '<div>';
+                    if (item.titulo) {
+                        html += '<strong style="display: block; color: ' + textColor + '; font-size: 13px;">' + item.titulo + '</strong>';
+                    }
+                    if (item.valor) {
+                        html += '<span style="color: ' + textMutedColor + '; font-size: 13px;">' + item.valor + '</span>';
+                    }
+                    html += '</div></li>';
+                }
+                html += '</ul></div>';
+                return html;
+            }
+
+            // Renderizar contact_form
+            if (colType === 'contact_form') {
+                var titulo = colContent.titulo || 'Contacto';
+                var campos = colContent.campos || [];
+                var botonTexto = colContent.boton_texto || 'Enviar';
+                var html = '<div class="vbp-contact-form" style="padding: 16px;">';
+                html += '<h3 style="font-size: 18px; font-weight: 600; margin: 0 0 16px; color: ' + textColor + ';">' + titulo + '</h3>';
+                html += '<form style="display: flex; flex-direction: column; gap: 12px;">';
+                for (var i = 0; i < campos.length; i++) {
+                    var campo = campos[i];
+                    var label = campo.label || campo.nombre || 'Campo';
+                    var tipo = campo.tipo || 'text';
+                    var requerido = campo.requerido ? ' *' : '';
+                    html += '<div style="display: flex; flex-direction: column; gap: 4px;">';
+                    html += '<label style="font-size: 12px; font-weight: 500; color: ' + textColor + ';">' + label + requerido + '</label>';
+                    if (tipo === 'textarea') {
+                        html += '<textarea style="padding: 8px 12px; border: 1px solid #ddd; border-radius: ' + buttonRadius + '; font-size: 13px; resize: vertical; min-height: 80px;" placeholder="' + label + '"></textarea>';
+                    } else if (tipo === 'select') {
+                        html += '<select style="padding: 8px 12px; border: 1px solid #ddd; border-radius: ' + buttonRadius + '; font-size: 13px; background: white;">';
+                        html += '<option>Selecciona...</option>';
+                        var opciones = campo.opciones || [];
+                        for (var o = 0; o < opciones.length; o++) {
+                            html += '<option>' + opciones[o] + '</option>';
+                        }
+                        html += '</select>';
+                    } else {
+                        html += '<input type="' + tipo + '" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: ' + buttonRadius + '; font-size: 13px;" placeholder="' + label + '">';
+                    }
+                    html += '</div>';
+                }
+                html += '<button type="button" style="padding: 10px 20px; background: ' + primaryColor + '; color: white; border: none; border-radius: ' + buttonRadius + '; font-weight: 500; cursor: pointer; margin-top: 8px;">' + botonTexto + '</button>';
+                html += '</form></div>';
+                return html;
+            }
+
+            // Renderizar texto libre
+            if (colType === 'text') {
+                var contenido = colContent.contenido || 'Tu texto aquí...';
+                return '<div class="vbp-column-text" style="padding: 16px; color: ' + textColor + '; line-height: 1.6; font-size: 14px;">' + contenido + '</div>';
+            }
+
+            // Renderizar imagen
+            if (colType === 'image') {
+                var imgSrc = colContent.src || '';
+                var imgAlt = colContent.alt || 'Imagen';
+                if (imgSrc) {
+                    return '<div class="vbp-column-image" style="padding: 16px;"><img src="' + imgSrc + '" alt="' + imgAlt + '" style="max-width: 100%; height: auto; border-radius: ' + buttonRadius + ';"></div>';
+                }
+                return '<div style="padding: 32px; text-align: center; color: ' + textMutedColor + '; border: 2px dashed #ddd; border-radius: ' + buttonRadius + '; font-size: 12px;">🖼️ Añade una imagen</div>';
+            }
+
+            // Fallback: tipo desconocido
+            if (colType && colContent) {
+                return '<div style="padding: 16px; text-align: center; color: ' + textMutedColor + '; font-size: 12px;">📦 ' + colType + '</div>';
+            }
+
+            return '<div style="text-align: center; color: #6b7280; padding: 20px; font-size: 12px;">📥 Columna ' + lado + '</div>';
+        },
+
+        /**
+         * Obtiene icono según tipo de bloque
+         */
+        getTypeIcon: function(type) {
+            var icons = {
+                'hero': '🚀', 'features': '✨', 'testimonials': '💬', 'pricing': '💰',
+                'cta': '📢', 'faq': '❓', 'contact': '📧', 'team': '👥',
+                'stats': '📊', 'gallery': '🖼️', 'blog': '📝', 'video-section': '🎬',
+                'heading': '📌', 'text': '📄', 'image': '🖼️', 'button': '🔘',
+                'divider': '➖', 'spacer': '↕️', 'icon': '⭐', 'html': '💻',
+                'shortcode': '⚡', 'container': '📦', 'columns': '▦', 'row': '═',
+                'grid': '▦', 'form': '📋', 'input': '📝', 'countdown': '⏱️',
+                'newsletter': '📮', 'social-icons': '🔗', 'accordion': '📑',
+                'tabs': '📑', 'progress-bar': '📊', 'alert': '⚠️', 'map': '🗺️'
+            };
+            return icons[type] || '📦';
         },
 
         /**
@@ -2401,6 +2775,287 @@ function vbpApp() {
             }
 
             return null;
+        },
+
+        /**
+         * Genera preview visual según tipo de módulo
+         */
+        generateModulePreview: function(moduleType, shortcodeTag, moduleName, opts) {
+            var pc = opts.primaryColor || '#3b82f6';
+            var sc = opts.secondaryColor || '#8b5cf6';
+            var tc = opts.textColor || '#1f2937';
+            var tm = opts.textMutedColor || '#6b7280';
+            var cr = opts.cardRadius || '12px';
+            var cp = opts.cardPadding || '24px';
+            var data = opts.data || {};
+
+            // Configuración del módulo desde el inspector
+            var numCols = parseInt(data.columnas) || 3;
+            var itemsLimit = data.limite || '12';
+            var tipoFiltro = data.tipo || '';
+            var colorScheme = data.esquema_color || 'default';
+            var cardStyle = data.estilo_tarjeta || 'elevated';
+            var showTitle = data.mostrar_titulo !== false;
+            var showFilters = data.mostrar_filtros === 'si' || data.mostrar_filtros === 'true' || data.mostrar_filtros === true;
+            var customTitle = data.titulo_personalizado || '';
+
+            // Aplicar esquema de color personalizado
+            var schemeColors = {
+                'default': pc,
+                'primary': '#3b82f6',
+                'success': '#22c55e',
+                'warning': '#f59e0b',
+                'danger': '#ef4444',
+                'purple': '#8b5cf6',
+                'dark': '#1f2937'
+            };
+            var themeColor = schemeColors[colorScheme] || pc;
+
+            // Mapeo de iconos y colores según tipo de módulo
+            var moduleConfig = {
+                // Mapas
+                'parkings': { icon: '🅿️', color: '#3b82f6', label: 'Mapa de Parkings', preview: 'map' },
+                'huertos-urbanos': { icon: '🌱', color: '#22c55e', label: 'Mapa de Huertos', preview: 'map' },
+                'compostaje': { icon: '♻️', color: '#84cc16', label: 'Mapa de Composteras', preview: 'map' },
+                'biodiversidad-local': { icon: '🦋', color: '#10b981', label: 'Mapa Biodiversidad', preview: 'map' },
+                'incidencias': { icon: '⚠️', color: '#ef4444', label: 'Mapa de Incidencias', preview: 'map' },
+                // Economía
+                'banco-tiempo': { icon: '⏱️', color: '#f59e0b', label: 'Banco de Tiempo', preview: 'dashboard' },
+                'economia-don': { icon: '🎁', color: '#ec4899', label: 'Economía del Don', preview: 'cards' },
+                'grupos-consumo': { icon: '🛒', color: '#22c55e', label: 'Grupos de Consumo', preview: 'grid' },
+                'marketplace': { icon: '🏪', color: '#8b5cf6', label: 'Marketplace', preview: 'grid' },
+                // Comunidad
+                'eventos': { icon: '📅', color: '#6366f1', label: 'Eventos', preview: 'calendar' },
+                'socios': { icon: '👥', color: '#0ea5e9', label: 'Socios', preview: 'list' },
+                'comunidades': { icon: '🏘️', color: '#14b8a6', label: 'Comunidades', preview: 'cards' },
+                'foros': { icon: '💬', color: '#8b5cf6', label: 'Foros', preview: 'list' },
+                // Formación
+                'cursos': { icon: '🎓', color: '#3b82f6', label: 'Cursos', preview: 'grid' },
+                'talleres': { icon: '🔧', color: '#f97316', label: 'Talleres', preview: 'grid' },
+                'biblioteca': { icon: '📚', color: '#a855f7', label: 'Biblioteca', preview: 'grid' },
+                // Multimedia
+                'multimedia': { icon: '🎬', color: '#ef4444', label: 'Galería', preview: 'gallery' },
+                'podcast': { icon: '🎙️', color: '#ec4899', label: 'Podcast', preview: 'audio' },
+                'radio': { icon: '📻', color: '#f59e0b', label: 'Radio', preview: 'audio' },
+                // Dashboard widgets
+                'dashboard-widget': { icon: '📊', color: '#6366f1', label: 'Widget', preview: 'widget' },
+                'dashboard-widgets-grid': { icon: '📋', color: '#6366f1', label: 'Grid de Widgets', preview: 'widget-grid' },
+                // Participación
+                'encuestas': { icon: '📝', color: '#14b8a6', label: 'Encuestas', preview: 'form' },
+                'participacion': { icon: '🗳️', color: '#8b5cf6', label: 'Participación', preview: 'form' },
+                'presupuestos-participativos': { icon: '💰', color: '#22c55e', label: 'Presupuestos', preview: 'cards' },
+                // Reservas
+                'reservas': { icon: '📆', color: '#0ea5e9', label: 'Reservas', preview: 'calendar' },
+                'espacios-comunes': { icon: '🏛️', color: '#6366f1', label: 'Espacios', preview: 'grid' }
+            };
+
+            var config = moduleConfig[moduleType] || { icon: '📦', color: pc, label: moduleName, preview: 'default' };
+            var modColor = colorScheme !== 'default' ? themeColor : config.color;
+
+            // Badge del módulo con configuración
+            var configBadges = '';
+            if (numCols && numCols !== 3) {
+                configBadges += '<span style="background: rgba(255,255,255,0.3); padding: 2px 6px; border-radius: 8px; font-size: 10px;">' + numCols + ' col</span>';
+            }
+            if (itemsLimit && itemsLimit !== '12') {
+                configBadges += '<span style="background: rgba(255,255,255,0.3); padding: 2px 6px; border-radius: 8px; font-size: 10px; margin-left: 4px;">' + (itemsLimit === '-1' ? '∞' : itemsLimit) + ' items</span>';
+            }
+            if (tipoFiltro) {
+                configBadges += '<span style="background: rgba(255,255,255,0.3); padding: 2px 6px; border-radius: 8px; font-size: 10px; margin-left: 4px;">' + tipoFiltro + '</span>';
+            }
+            var badge = '<div style="position: absolute; top: 8px; right: 8px; background: ' + modColor + '; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; z-index: 10; display: flex; align-items: center; gap: 6px;">' +
+                '<span>' + config.icon + '</span> <span>' + config.label + '</span>' + (configBadges ? configBadges : '') + '</div>';
+
+            // Título personalizado si está configurado
+            var titleSection = '';
+            if (showTitle && customTitle) {
+                titleSection = '<div style="margin-bottom: 16px; text-align: center;"><h3 style="margin: 0; font-size: 20px; color: ' + tc + ';">' + customTitle + '</h3></div>';
+            }
+
+            // Filtros si están activados
+            var filtersSection = '';
+            if (showFilters) {
+                filtersSection = '<div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">' +
+                    '<span style="padding: 6px 12px; background: ' + modColor + '; color: white; border-radius: 16px; font-size: 12px;">Todos</span>' +
+                    '<span style="padding: 6px 12px; background: #f3f4f6; color: ' + tm + '; border-radius: 16px; font-size: 12px;">Categoría 1</span>' +
+                    '<span style="padding: 6px 12px; background: #f3f4f6; color: ' + tm + '; border-radius: 16px; font-size: 12px;">Categoría 2</span></div>';
+            }
+
+            // Paginación visual
+            var paginationSection = '';
+            if (pagination === 'numbers') {
+                paginationSection = '<div style="display: flex; justify-content: center; gap: 6px; margin-top: 16px;">' +
+                    '<span style="padding: 6px 10px; background: ' + modColor + '; color: white; border-radius: 6px; font-size: 12px;">1</span>' +
+                    '<span style="padding: 6px 10px; background: #f3f4f6; color: ' + tm + '; border-radius: 6px; font-size: 12px;">2</span>' +
+                    '<span style="padding: 6px 10px; background: #f3f4f6; color: ' + tm + '; border-radius: 6px; font-size: 12px;">3</span>' +
+                    '<span style="padding: 6px 10px; color: ' + tm + '; font-size: 12px;">→</span></div>';
+            } else if (pagination === 'loadmore') {
+                paginationSection = '<div style="text-align: center; margin-top: 16px;">' +
+                    '<button style="padding: 10px 24px; background: ' + modColor + '15; color: ' + modColor + '; border: 1px solid ' + modColor + '30; border-radius: 8px; font-size: 13px; font-weight: 500;">Cargar más</button></div>';
+            } else if (pagination === 'infinite') {
+                paginationSection = '<div style="text-align: center; margin-top: 16px; color: ' + tm + '; font-size: 12px;">' +
+                    '<span style="display: inline-flex; align-items: center; gap: 6px;">⏳ Scroll infinito activo</span></div>';
+            }
+
+            // Generar preview según tipo
+            var previewContent = '';
+
+            switch(config.preview) {
+                case 'map':
+                    previewContent = '<div style="height: 250px; background: linear-gradient(135deg, #e8f4ea 0%, #d4e8d8 100%); border-radius: ' + cr + '; position: relative; overflow: hidden;">' +
+                        '<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column;">' +
+                        '<div style="font-size: 48px; margin-bottom: 12px;">' + config.icon + '</div>' +
+                        '<div style="font-size: 18px; font-weight: 600; color: ' + tc + ';">' + config.label + '</div>' +
+                        '<div style="font-size: 13px; color: ' + tm + '; margin-top: 4px;">Mapa interactivo</div></div>' +
+                        '<div style="position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: ' + modColor + '20; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; color: ' + tm + ';">' +
+                        '<span>🔍 Filtros</span> <span>📍 Marcadores</span> <span>📋 Listado</span></div></div>';
+                    break;
+
+                case 'dashboard':
+                    previewContent = '<div style="padding: ' + cp + '; background: linear-gradient(135deg, ' + modColor + '10, ' + modColor + '05); border-radius: ' + cr + '; border: 1px solid ' + modColor + '20;">' +
+                        '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px;">' +
+                        '<div style="background: white; padding: 16px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">' +
+                        '<div style="font-size: 28px; font-weight: 700; color: ' + modColor + ';">24</div><div style="font-size: 12px; color: ' + tm + ';">Activos</div></div>' +
+                        '<div style="background: white; padding: 16px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">' +
+                        '<div style="font-size: 28px; font-weight: 700; color: #22c55e;">156h</div><div style="font-size: 12px; color: ' + tm + ';">Total</div></div>' +
+                        '<div style="background: white; padding: 16px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">' +
+                        '<div style="font-size: 28px; font-weight: 700; color: #f59e0b;">87%</div><div style="font-size: 12px; color: ' + tm + ';">Completado</div></div></div>' +
+                        '<div style="text-align: center; font-size: 13px; color: ' + tm + ';">' + config.icon + ' ' + config.label + '</div></div>';
+                    break;
+
+                case 'grid':
+                    // Generar items según número de columnas
+                    var gridItems = '';
+                    var gridColsDisplay = Math.min(numCols || 3, 4);
+                    for (var gi = 0; gi < gridColsDisplay; gi++) {
+                        var cardBg = cardStyle === 'glass' ? 'rgba(255,255,255,0.7); backdrop-filter: blur(10px)' :
+                                     cardStyle === 'filled' ? modColor + '10' :
+                                     cardStyle === 'outlined' ? 'white; border: 2px solid ' + modColor + '30' : 'white';
+                        var cardShadow = cardStyle === 'elevated' ? '0 4px 12px rgba(0,0,0,0.1)' :
+                                         cardStyle === 'minimal' ? 'none' : '0 1px 3px rgba(0,0,0,0.08)';
+                        gridItems += '<div style="background: ' + cardBg + '; height: 120px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: ' + cardShadow + ';">' + config.icon + '</div>';
+                    }
+                    previewContent = '<div style="padding: ' + cp + '; background: ' + modColor + '05; border-radius: ' + cr + '; border: 1px solid ' + modColor + '15;">' +
+                        titleSection + filtersSection +
+                        '<div style="display: grid; grid-template-columns: repeat(' + gridColsDisplay + ', 1fr); gap: 12px;">' +
+                        gridItems + '</div>' +
+                        paginationSection +
+                        '<div style="text-align: center; margin-top: 16px; font-size: 14px; color: ' + tm + ';">' + config.icon + ' ' + config.label + '</div></div>';
+                    break;
+
+                case 'cards':
+                    var cardsColsDisplay = Math.min(numCols || 2, 4);
+                    var cardsItems = '';
+                    for (var ci = 0; ci < cardsColsDisplay; ci++) {
+                        var cardBgCards = cardStyle === 'glass' ? 'rgba(255,255,255,0.7); backdrop-filter: blur(10px)' :
+                                          cardStyle === 'filled' ? modColor + '10' :
+                                          cardStyle === 'outlined' ? 'white; border: 2px solid ' + modColor + '30' : 'white';
+                        cardsItems += '<div style="background: ' + cardBgCards + '; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">' +
+                            '<div style="width: 40px; height: 40px; background: ' + modColor + '20; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px;">' + config.icon + '</div>' +
+                            '<div style="height: 10px; background: #e5e7eb; border-radius: 4px; width: ' + (70 + ci * 5) + '%; margin-bottom: 8px;"></div>' +
+                            '<div style="height: 8px; background: #f3f4f6; border-radius: 4px; width: ' + (50 + ci * 5) + '%;"></div></div>';
+                    }
+                    previewContent = '<div style="padding: ' + cp + '; background: ' + modColor + '05; border-radius: ' + cr + '; border: 1px solid ' + modColor + '15;">' +
+                        titleSection + filtersSection +
+                        '<div style="display: grid; grid-template-columns: repeat(' + cardsColsDisplay + ', 1fr); gap: 16px;">' +
+                        cardsItems + '</div>' +
+                        paginationSection +
+                        '<div style="text-align: center; margin-top: 16px; font-size: 14px; color: ' + tm + ';">' + config.label + '</div></div>';
+                    break;
+
+                case 'calendar':
+                    previewContent = '<div style="padding: ' + cp + '; background: white; border-radius: ' + cr + '; border: 1px solid ' + modColor + '20;">' +
+                        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">' +
+                        '<span style="font-weight: 600; color: ' + tc + ';">Marzo 2026</span>' +
+                        '<div style="display: flex; gap: 8px;"><span style="cursor: pointer;">◀</span><span style="cursor: pointer;">▶</span></div></div>' +
+                        '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 12px;">' +
+                        '<div style="color: ' + tm + '; padding: 8px 0;">L</div><div style="color: ' + tm + '; padding: 8px 0;">M</div><div style="color: ' + tm + '; padding: 8px 0;">X</div><div style="color: ' + tm + '; padding: 8px 0;">J</div><div style="color: ' + tm + '; padding: 8px 0;">V</div><div style="color: ' + tm + '; padding: 8px 0;">S</div><div style="color: ' + tm + '; padding: 8px 0;">D</div>' +
+                        '<div style="padding: 8px 0;">1</div><div style="padding: 8px 0;">2</div><div style="padding: 8px 0;">3</div><div style="padding: 8px 0; background: ' + modColor + '; color: white; border-radius: 50%;">4</div><div style="padding: 8px 0;">5</div><div style="padding: 8px 0;">6</div><div style="padding: 8px 0;">7</div>' +
+                        '<div style="padding: 8px 0;">8</div><div style="padding: 8px 0; background: ' + modColor + '20; border-radius: 50%;">9</div><div style="padding: 8px 0;">10</div><div style="padding: 8px 0;">11</div><div style="padding: 8px 0;">12</div><div style="padding: 8px 0;">13</div><div style="padding: 8px 0;">14</div></div>' +
+                        '<div style="text-align: center; margin-top: 12px; font-size: 13px; color: ' + tm + ';">' + config.icon + ' ' + config.label + '</div></div>';
+                    break;
+
+                case 'list':
+                    previewContent = '<div style="padding: ' + cp + '; background: white; border-radius: ' + cr + '; border: 1px solid #e5e7eb;">' +
+                        titleSection + filtersSection +
+                        '<div style="display: flex; flex-direction: column; gap: 12px;">' +
+                        '<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 8px;">' +
+                        '<div style="width: 36px; height: 36px; background: ' + modColor + '20; border-radius: 50%; display: flex; align-items: center; justify-content: center;">' + config.icon + '</div>' +
+                        '<div style="flex: 1;"><div style="height: 10px; background: #e5e7eb; border-radius: 4px; width: 70%; margin-bottom: 6px;"></div><div style="height: 8px; background: #f3f4f6; border-radius: 4px; width: 50%;"></div></div></div>' +
+                        '<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 8px;">' +
+                        '<div style="width: 36px; height: 36px; background: ' + modColor + '20; border-radius: 50%; display: flex; align-items: center; justify-content: center;">' + config.icon + '</div>' +
+                        '<div style="flex: 1;"><div style="height: 10px; background: #e5e7eb; border-radius: 4px; width: 60%; margin-bottom: 6px;"></div><div style="height: 8px; background: #f3f4f6; border-radius: 4px; width: 40%;"></div></div></div>' +
+                        '<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 8px;">' +
+                        '<div style="width: 36px; height: 36px; background: ' + modColor + '20; border-radius: 50%; display: flex; align-items: center; justify-content: center;">' + config.icon + '</div>' +
+                        '<div style="flex: 1;"><div style="height: 10px; background: #e5e7eb; border-radius: 4px; width: 80%; margin-bottom: 6px;"></div><div style="height: 8px; background: #f3f4f6; border-radius: 4px; width: 55%;"></div></div></div></div>' +
+                        paginationSection +
+                        '<div style="text-align: center; margin-top: 12px; font-size: 13px; color: ' + tm + ';">' + config.label + '</div></div>';
+                    break;
+
+                case 'gallery':
+                    previewContent = '<div style="padding: ' + cp + '; background: #1a1a2e; border-radius: ' + cr + ';">' +
+                        '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">' +
+                        '<div style="aspect-ratio: 1; background: linear-gradient(135deg, ' + modColor + ', ' + sc + '); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🖼️</div>' +
+                        '<div style="aspect-ratio: 1; background: linear-gradient(135deg, ' + sc + ', #ec4899); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📷</div>' +
+                        '<div style="aspect-ratio: 1; background: linear-gradient(135deg, #ec4899, #f59e0b); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🎬</div>' +
+                        '<div style="aspect-ratio: 1; background: linear-gradient(135deg, #f59e0b, #22c55e); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🎨</div>' +
+                        '<div style="aspect-ratio: 1; background: linear-gradient(135deg, #22c55e, #0ea5e9); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📸</div>' +
+                        '<div style="aspect-ratio: 1; background: linear-gradient(135deg, #0ea5e9, ' + modColor + '); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white;">+12</div></div>' +
+                        '<div style="text-align: center; margin-top: 12px; font-size: 13px; color: rgba(255,255,255,0.7);">' + config.icon + ' ' + config.label + '</div></div>';
+                    break;
+
+                case 'audio':
+                    previewContent = '<div style="padding: ' + cp + '; background: linear-gradient(135deg, ' + modColor + ', ' + sc + '); border-radius: ' + cr + ';">' +
+                        '<div style="display: flex; align-items: center; gap: 16px;">' +
+                        '<div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 36px;">' + config.icon + '</div>' +
+                        '<div style="flex: 1; color: white;">' +
+                        '<div style="font-weight: 600; font-size: 16px; margin-bottom: 8px;">' + config.label + '</div>' +
+                        '<div style="height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; margin-bottom: 8px;"><div style="height: 100%; width: 35%; background: white; border-radius: 2px;"></div></div>' +
+                        '<div style="display: flex; justify-content: space-between; font-size: 12px; opacity: 0.8;"><span>1:23</span><span>3:45</span></div></div>' +
+                        '<button style="width: 48px; height: 48px; border-radius: 50%; background: white; border: none; font-size: 20px; cursor: pointer;">▶️</button></div></div>';
+                    break;
+
+                case 'widget':
+                    previewContent = '<div style="padding: ' + cp + '; background: white; border-radius: ' + cr + '; box-shadow: 0 4px 6px rgba(0,0,0,0.07);">' +
+                        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">' +
+                        '<span style="font-weight: 600; color: ' + tc + '; display: flex; align-items: center; gap: 8px;">' + config.icon + ' Widget</span>' +
+                        '<span style="font-size: 20px;">⋮</span></div>' +
+                        '<div style="display: flex; justify-content: center; align-items: center; height: 80px; background: ' + modColor + '10; border-radius: 8px;">' +
+                        '<div style="text-align: center;"><div style="font-size: 32px; font-weight: 700; color: ' + modColor + ';">42</div><div style="font-size: 12px; color: ' + tm + ';">Contenido dinámico</div></div></div></div>';
+                    break;
+
+                case 'widget-grid':
+                    previewContent = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 16px; background: #f3f4f6; border-radius: ' + cr + ';">' +
+                        '<div style="background: white; padding: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">' +
+                        '<div style="font-size: 24px; margin-bottom: 8px;">📊</div><div style="height: 8px; background: #e5e7eb; border-radius: 4px; width: 70%;"></div></div>' +
+                        '<div style="background: white; padding: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">' +
+                        '<div style="font-size: 24px; margin-bottom: 8px;">📈</div><div style="height: 8px; background: #e5e7eb; border-radius: 4px; width: 60%;"></div></div>' +
+                        '<div style="background: white; padding: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">' +
+                        '<div style="font-size: 24px; margin-bottom: 8px;">📋</div><div style="height: 8px; background: #e5e7eb; border-radius: 4px; width: 80%;"></div></div>' +
+                        '<div style="background: white; padding: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">' +
+                        '<div style="font-size: 24px; margin-bottom: 8px;">📅</div><div style="height: 8px; background: #e5e7eb; border-radius: 4px; width: 55%;"></div></div></div>';
+                    break;
+
+                case 'form':
+                    previewContent = '<div style="padding: ' + cp + '; background: white; border-radius: ' + cr + '; border: 1px solid #e5e7eb;">' +
+                        '<div style="text-align: center; margin-bottom: 20px;">' +
+                        '<div style="font-size: 32px; margin-bottom: 8px;">' + config.icon + '</div>' +
+                        '<div style="font-weight: 600; color: ' + tc + ';">' + config.label + '</div></div>' +
+                        '<div style="display: flex; flex-direction: column; gap: 12px;">' +
+                        '<div style="height: 40px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;"></div>' +
+                        '<div style="height: 40px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;"></div>' +
+                        '<div style="height: 80px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;"></div>' +
+                        '<button style="padding: 12px; background: ' + modColor + '; color: white; border: none; border-radius: 8px; font-weight: 500;">Enviar</button></div></div>';
+                    break;
+
+                default:
+                    previewContent = '<div style="padding: 32px; background: linear-gradient(135deg, ' + modColor + '10, ' + modColor + '05); border-radius: ' + cr + '; border: 1px solid ' + modColor + '20; text-align: center;">' +
+                        '<div style="font-size: 48px; margin-bottom: 16px;">' + config.icon + '</div>' +
+                        '<div style="font-size: 18px; font-weight: 600; color: ' + tc + '; margin-bottom: 8px;">' + moduleName + '</div>' +
+                        '<code style="display: inline-block; padding: 6px 12px; background: ' + modColor + '15; color: ' + modColor + '; border-radius: 6px; font-size: 12px;">[' + shortcodeTag + ']</code></div>';
+            }
+
+            return '<div style="position: relative;">' + badge + previewContent + '</div>';
         },
 
         buildInlineStyles: function(styles) {
@@ -2433,7 +3088,17 @@ function vbpApp() {
             if (styles.typography) {
                 if (styles.typography.fontSize) css += 'font-size: ' + styles.typography.fontSize + '; ';
                 if (styles.typography.fontWeight) css += 'font-weight: ' + styles.typography.fontWeight + '; ';
+                if (styles.typography.lineHeight) css += 'line-height: ' + styles.typography.lineHeight + '; ';
                 if (styles.typography.textAlign) css += 'text-align: ' + styles.typography.textAlign + '; ';
+            }
+
+            // Layout (flex/grid)
+            if (styles.layout) {
+                if (styles.layout.display) css += 'display: ' + styles.layout.display + '; ';
+                if (styles.layout.flexDirection) css += 'flex-direction: ' + styles.layout.flexDirection + '; ';
+                if (styles.layout.justifyContent) css += 'justify-content: ' + styles.layout.justifyContent + '; ';
+                if (styles.layout.alignItems) css += 'align-items: ' + styles.layout.alignItems + '; ';
+                if (styles.layout.gap) css += 'gap: ' + styles.layout.gap + '; ';
             }
 
             // Borders
@@ -2455,6 +3120,61 @@ function vbpApp() {
                 if (styles.dimensions.height) css += 'height: ' + styles.dimensions.height + '; ';
                 if (styles.dimensions.minHeight) css += 'min-height: ' + styles.dimensions.minHeight + '; ';
                 if (styles.dimensions.maxWidth) css += 'max-width: ' + styles.dimensions.maxWidth + '; ';
+            }
+
+            // Background avanzado (gradient, image)
+            if (styles.background && styles.background.type) {
+                if (styles.background.type === 'gradient') {
+                    var dir = styles.background.gradientDirection || 'to bottom';
+                    var start = styles.background.gradientStart || '#3b82f6';
+                    var end = styles.background.gradientEnd || '#8b5cf6';
+                    css += 'background: linear-gradient(' + dir + ', ' + start + ', ' + end + '); ';
+                } else if (styles.background.type === 'image' && styles.background.image) {
+                    var bgSize = styles.background.size || 'cover';
+                    var bgPos = styles.background.position || 'center';
+                    var bgRepeat = styles.background.repeat || 'no-repeat';
+                    css += 'background-image: url(' + styles.background.image + '); ';
+                    css += 'background-size: ' + bgSize + '; ';
+                    css += 'background-position: ' + bgPos + '; ';
+                    css += 'background-repeat: ' + bgRepeat + '; ';
+                    if (styles.background.fixed) {
+                        css += 'background-attachment: fixed; ';
+                    }
+                }
+            }
+
+            // Position
+            if (styles.position) {
+                if (styles.position.position) css += 'position: ' + styles.position.position + '; ';
+                if (styles.position.top) css += 'top: ' + styles.position.top + '; ';
+                if (styles.position.right) css += 'right: ' + styles.position.right + '; ';
+                if (styles.position.bottom) css += 'bottom: ' + styles.position.bottom + '; ';
+                if (styles.position.left) css += 'left: ' + styles.position.left + '; ';
+                if (styles.position.zIndex) css += 'z-index: ' + styles.position.zIndex + '; ';
+            }
+
+            // Transform
+            if (styles.transform) {
+                var transforms = [];
+                if (styles.transform.rotate) transforms.push('rotate(' + styles.transform.rotate + 'deg)');
+                if (styles.transform.scale && styles.transform.scale !== '1') transforms.push('scale(' + styles.transform.scale + ')');
+                if (styles.transform.translateX) transforms.push('translateX(' + styles.transform.translateX + ')');
+                if (styles.transform.translateY) transforms.push('translateY(' + styles.transform.translateY + ')');
+                if (styles.transform.skewX) transforms.push('skewX(' + styles.transform.skewX + 'deg)');
+                if (styles.transform.skewY) transforms.push('skewY(' + styles.transform.skewY + 'deg)');
+                if (transforms.length > 0) {
+                    css += 'transform: ' + transforms.join(' ') + '; ';
+                }
+            }
+
+            // Overflow
+            if (styles.overflow) {
+                css += 'overflow: ' + styles.overflow + '; ';
+            }
+
+            // Opacity
+            if (styles.opacity && styles.opacity !== '' && styles.opacity !== '1') {
+                css += 'opacity: ' + styles.opacity + '; ';
             }
 
             return css;

@@ -1334,7 +1334,7 @@ class Flavor_VBP_Block_Library {
             'category' => 'layout',
             'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/></svg>',
             'fields'   => array(
-                'columnas' => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '6' => '6' ) ),
+                'columnas' => array( 'type' => 'select', 'label' => __( 'Columnas', 'flavor-chat-ia' ), 'options' => array( '2' => '2', '3' => '3', '4' => '4', '5' => '5', '6' => '6' ) ),
                 'gap'      => array( 'type' => 'number', 'label' => __( 'Espacio', 'flavor-chat-ia' ) ),
                 'stack_on' => array( 'type' => 'select', 'label' => __( 'Apilar en', 'flavor-chat-ia' ), 'options' => array( 'mobile' => 'Móvil', 'tablet' => 'Tablet', 'never' => 'Nunca' ) ),
             ),
@@ -2297,6 +2297,53 @@ class Flavor_VBP_Block_Library {
                 ),
             ) );
         }
+
+        // ============ LANDING PAGES ============
+        // Bloque para insertar landing pages completas de módulos
+        $this->registrar_bloque( array(
+            'id'        => 'flavor-landing',
+            'name'      => __( 'Landing de Módulo', 'flavor-chat-ia' ),
+            'category'  => 'sections',
+            'shortcode' => 'flavor_landing',
+            'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>',
+            'fields'    => array(
+                'module' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Módulo', 'flavor-chat-ia' ),
+                    'options' => array(
+                        ''                 => __( '-- Seleccionar módulo --', 'flavor-chat-ia' ),
+                        'grupos-consumo'   => __( 'Grupos de Consumo', 'flavor-chat-ia' ),
+                        'banco-tiempo'     => __( 'Banco de Tiempo', 'flavor-chat-ia' ),
+                        'ayuntamiento'     => __( 'Ayuntamiento', 'flavor-chat-ia' ),
+                        'comunidades'      => __( 'Comunidades', 'flavor-chat-ia' ),
+                        'espacios-comunes' => __( 'Espacios Comunes', 'flavor-chat-ia' ),
+                        'ayuda-vecinal'    => __( 'Ayuda Vecinal', 'flavor-chat-ia' ),
+                        'huertos-urbanos'  => __( 'Huertos Urbanos', 'flavor-chat-ia' ),
+                        'biblioteca'       => __( 'Biblioteca', 'flavor-chat-ia' ),
+                        'cursos'           => __( 'Cursos', 'flavor-chat-ia' ),
+                        'eventos'          => __( 'Eventos', 'flavor-chat-ia' ),
+                        'marketplace'      => __( 'Marketplace', 'flavor-chat-ia' ),
+                        'incidencias'      => __( 'Incidencias', 'flavor-chat-ia' ),
+                        'bicicletas'       => __( 'Bicicletas Compartidas', 'flavor-chat-ia' ),
+                        'reciclaje'        => __( 'Reciclaje', 'flavor-chat-ia' ),
+                        'restaurante'      => __( 'Restaurante', 'flavor-chat-ia' ),
+                        'peluqueria'       => __( 'Peluquería', 'flavor-chat-ia' ),
+                        'gimnasio'         => __( 'Gimnasio', 'flavor-chat-ia' ),
+                        'clinica'          => __( 'Clínica', 'flavor-chat-ia' ),
+                        'hotel'            => __( 'Hotel', 'flavor-chat-ia' ),
+                        'inmobiliaria'     => __( 'Inmobiliaria', 'flavor-chat-ia' ),
+                        'tienda'           => __( 'Tienda', 'flavor-chat-ia' ),
+                        'podcast'          => __( 'Podcast', 'flavor-chat-ia' ),
+                    ),
+                    'default' => '',
+                ),
+                'color' => array(
+                    'type'    => 'color',
+                    'label'   => __( 'Color primario', 'flavor-chat-ia' ),
+                    'default' => '',
+                ),
+            ),
+        ) );
 
         // ============ NUEVOS MÓDULOS ============
         $this->registrar_nuevos_modulos( $modulos_activos );
@@ -4311,7 +4358,7 @@ class Flavor_VBP_Block_Library {
         $widgets_populares = array(
             'eventos'     => array( 'name' => __( 'Widget: Eventos', 'flavor-chat-ia' ), 'icon' => 'dashicons-calendar-alt' ),
             'reservas'    => array( 'name' => __( 'Widget: Reservas', 'flavor-chat-ia' ), 'icon' => 'dashicons-tickets-alt' ),
-            'socios'      => array( 'name' => __( 'Widget: Socios', 'flavor-chat-ia' ), 'icon' => 'dashicons-id-alt' ),
+            'socios'      => array( 'name' => __( 'Widget: Miembros', 'flavor-chat-ia' ), 'icon' => 'dashicons-id-alt' ),
             'comunidades' => array( 'name' => __( 'Widget: Comunidades', 'flavor-chat-ia' ), 'icon' => 'dashicons-groups' ),
             'foros'       => array( 'name' => __( 'Widget: Foros', 'flavor-chat-ia' ), 'icon' => 'dashicons-format-chat' ),
             'marketplace' => array( 'name' => __( 'Widget: Marketplace', 'flavor-chat-ia' ), 'icon' => 'dashicons-store' ),

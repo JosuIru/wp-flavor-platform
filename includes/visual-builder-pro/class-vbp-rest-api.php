@@ -127,6 +127,28 @@ class Flavor_VBP_REST_API {
             )
         );
 
+        // Schema de bloques (para Claude Code y automatización)
+        register_rest_route(
+            self::NAMESPACE,
+            '/blocks/schema',
+            array(
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => array( $this, 'obtener_schema_bloques' ),
+                'permission_callback' => '__return_true', // Público para facilitar integración
+            )
+        );
+
+        // Shortcodes disponibles por módulo
+        register_rest_route(
+            self::NAMESPACE,
+            '/shortcodes',
+            array(
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => array( $this, 'obtener_shortcodes' ),
+                'permission_callback' => '__return_true',
+            )
+        );
+
         // Templates
         register_rest_route(
             self::NAMESPACE,
@@ -508,7 +530,7 @@ class Flavor_VBP_REST_API {
 
         // Si está vacío, mostrar mensaje
         if ( empty( trim( $html ) ) ) {
-            $html = '<div class="vbp-preview-empty" style="padding: 24px; text-align: center; background: #f5f5f5; border-radius: 8px; color: #666;">'
+            $html = '<div class="vbp-preview-empty" style="padding: 24px; text-align: center; background: var(--flavor-bg-muted, #f5f5f5); border-radius: 8px; color: var(--flavor-text-muted, #666);">'
                   . '<p style="margin: 0;">El módulo <strong>' . esc_html( $shortcode ) . '</strong> no tiene contenido para mostrar.</p>'
                   . '<p style="margin: 8px 0 0; font-size: 13px;">Esto puede deberse a que no hay datos o la configuración está incompleta.</p>'
                   . '</div>';
@@ -541,6 +563,190 @@ class Flavor_VBP_REST_API {
         }
 
         return new WP_REST_Response( array(), 200 );
+    }
+
+    /**
+     * Obtiene el schema JSON de todos los bloques disponibles
+     * Diseñado para Claude Code y automatización
+     *
+     * @return WP_REST_Response
+     */
+    public function obtener_schema_bloques() {
+        if ( ! class_exists( 'Flavor_VBP_Block_Library' ) ) {
+            return new WP_REST_Response( array( 'error' => 'Block Library not available' ), 500 );
+        }
+
+        $libreria   = Flavor_VBP_Block_Library::get_instance();
+        $categorias = $libreria->get_categorias_con_bloques();
+        $schema     = array(
+            'version'    => FLAVOR_CHAT_IA_VERSION ?? '2.0.0',
+            'generated'  => gmdate( 'c' ),
+            'categories' => array(),
+            'blocks'     => array(),
+        );
+
+        foreach ( $categorias as $categoria ) {
+            $schema['categories'][] = array(
+                'id'    => $categoria['id'],
+                'name'  => $categoria['name'],
+                'order' => $categoria['order'] ?? 0,
+            );
+
+            if ( ! empty( $categoria['blocks'] ) ) {
+                foreach ( $categoria['blocks'] as $bloque ) {
+                    $block_schema = array(
+                        'id'          => $bloque['id'],
+                        'name'        => $bloque['name'],
+                        'category'    => $categoria['id'],
+                        'icon'        => $bloque['icon'] ?? '',
+                        'description' => $bloque['description'] ?? '',
+                    );
+
+                    // Variantes
+                    if ( ! empty( $bloque['variants'] ) ) {
+                        $block_schema['variants'] = array_keys( $bloque['variants'] );
+                    }
+
+                    // Campos (data properties)
+                    if ( ! empty( $bloque['fields'] ) ) {
+                        $block_schema['fields'] = array();
+                        foreach ( $bloque['fields'] as $field_id => $field ) {
+                            if ( strpos( $field_id, '_separator' ) === 0 ) {
+                                continue; // Ignorar separadores
+                            }
+                            $block_schema['fields'][ $field_id ] = array(
+                                'type'    => $field['type'] ?? 'text',
+                                'label'   => $field['label'] ?? $field_id,
+                                'default' => $field['default'] ?? null,
+                            );
+                            if ( ! empty( $field['options'] ) ) {
+                                $block_schema['fields'][ $field_id ]['options'] = array_keys( $field['options'] );
+                            }
+                            if ( ! empty( $field['fields'] ) ) {
+                                // Repeater fields
+                                $block_schema['fields'][ $field_id ]['subfields'] = array_keys( $field['fields'] );
+                            }
+                        }
+                    }
+
+                    // Presets
+                    if ( ! empty( $bloque['presets'] ) ) {
+                        $block_schema['presets'] = array_keys( $bloque['presets'] );
+                    }
+
+                    // Módulo (si es widget de módulo)
+                    if ( ! empty( $bloque['module'] ) ) {
+                        $block_schema['module'] = $bloque['module'];
+                    }
+
+                    // Shortcode
+                    if ( ! empty( $bloque['shortcode'] ) ) {
+                        $block_schema['shortcode'] = $bloque['shortcode'];
+                    }
+
+                    $schema['blocks'][ $bloque['id'] ] = $block_schema;
+                }
+            }
+        }
+
+        // Añadir estructura de estilos común
+        $schema['styles_schema'] = array(
+            'spacing'    => array(
+                'margin'  => array( 'top', 'right', 'bottom', 'left' ),
+                'padding' => array( 'top', 'right', 'bottom', 'left' ),
+            ),
+            'colors'     => array( 'background', 'text' ),
+            'background' => array( 'type', 'gradientDirection', 'gradientStart', 'gradientEnd', 'image', 'size', 'position', 'repeat', 'fixed' ),
+            'typography' => array( 'fontSize', 'fontWeight', 'lineHeight', 'textAlign' ),
+            'borders'    => array( 'radius', 'width', 'color', 'style' ),
+            'shadows'    => array( 'boxShadow' ),
+            'layout'     => array( 'display', 'flexDirection', 'justifyContent', 'alignItems', 'gap' ),
+            'dimensions' => array( 'width', 'height', 'minHeight', 'maxWidth' ),
+            'position'   => array( 'position', 'top', 'right', 'bottom', 'left', 'zIndex' ),
+            'transform'  => array( 'rotate', 'scale', 'translateX', 'translateY', 'skewX', 'skewY' ),
+            'overflow'   => 'string',
+            'opacity'    => 'number',
+        );
+
+        return new WP_REST_Response( $schema, 200 );
+    }
+
+    /**
+     * Obtiene lista de shortcodes disponibles por módulo
+     *
+     * @return WP_REST_Response
+     */
+    public function obtener_shortcodes() {
+        global $shortcode_tags;
+
+        $shortcodes = array();
+
+        // Filtrar shortcodes de Flavor
+        foreach ( $shortcode_tags as $tag => $callback ) {
+            // Detectar shortcodes de flavor
+            if (
+                strpos( $tag, 'flavor_' ) === 0 ||
+                strpos( $tag, 'gc_' ) === 0 ||
+                strpos( $tag, 'ev_' ) === 0 ||
+                strpos( $tag, 'bt_' ) === 0 ||
+                strpos( $tag, 'cursos_' ) === 0 ||
+                strpos( $tag, 'socios_' ) === 0 ||
+                strpos( $tag, 'rs_' ) === 0 ||
+                strpos( $tag, 'chat_' ) === 0
+            ) {
+                $module = 'general';
+                if ( strpos( $tag, 'gc_' ) === 0 ) {
+                    $module = 'grupos_consumo';
+                } elseif ( strpos( $tag, 'ev_' ) === 0 ) {
+                    $module = 'eventos';
+                } elseif ( strpos( $tag, 'bt_' ) === 0 ) {
+                    $module = 'banco_tiempo';
+                } elseif ( strpos( $tag, 'cursos_' ) === 0 ) {
+                    $module = 'cursos';
+                } elseif ( strpos( $tag, 'socios_' ) === 0 ) {
+                    $module = 'socios';
+                } elseif ( strpos( $tag, 'rs_' ) === 0 ) {
+                    $module = 'red_social';
+                } elseif ( strpos( $tag, 'chat_' ) === 0 ) {
+                    $module = 'chat';
+                }
+
+                if ( ! isset( $shortcodes[ $module ] ) ) {
+                    $shortcodes[ $module ] = array();
+                }
+                $shortcodes[ $module ][] = $tag;
+            }
+        }
+
+        // Obtener shortcodes de la Block Library también
+        if ( class_exists( 'Flavor_VBP_Block_Library' ) ) {
+            $libreria   = Flavor_VBP_Block_Library::get_instance();
+            $categorias = $libreria->get_categorias_con_bloques();
+
+            foreach ( $categorias as $categoria ) {
+                if ( ! empty( $categoria['blocks'] ) ) {
+                    foreach ( $categoria['blocks'] as $bloque ) {
+                        if ( ! empty( $bloque['shortcode'] ) && ! empty( $bloque['module'] ) ) {
+                            $module = $bloque['module'];
+                            if ( ! isset( $shortcodes[ $module ] ) ) {
+                                $shortcodes[ $module ] = array();
+                            }
+                            if ( ! in_array( $bloque['shortcode'], $shortcodes[ $module ], true ) ) {
+                                $shortcodes[ $module ][] = $bloque['shortcode'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return new WP_REST_Response(
+            array(
+                'shortcodes' => $shortcodes,
+                'total'      => array_sum( array_map( 'count', $shortcodes ) ),
+            ),
+            200
+        );
     }
 
     /**
