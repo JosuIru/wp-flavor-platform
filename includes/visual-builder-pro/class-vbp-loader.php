@@ -93,6 +93,7 @@ class Flavor_VBP_Loader {
             'class-vbp-popup-builder.php',
             'class-vbp-ab-testing.php',
             'class-vbp-version-history.php',
+            'class-vbp-single-templates.php',
             'ai/class-vbp-ai-content.php',
         );
 
@@ -172,6 +173,11 @@ class Flavor_VBP_Loader {
         // Version History
         if ( class_exists( 'Flavor_VBP_Version_History' ) ) {
             Flavor_VBP_Version_History::get_instance();
+        }
+
+        // Single Templates (plantillas VBP para singles de cualquier CPT)
+        if ( class_exists( 'Flavor_VBP_Single_Templates' ) ) {
+            Flavor_VBP_Single_Templates::get_instance();
         }
 
         // Registrar CPT de templates

@@ -39,6 +39,7 @@ Guía completa de bloques disponibles para crear páginas con el Visual Builder 
 | `forms` | Formularios | form, input, textarea, select, checkbox, radio |
 | `media` | Contenido multimedia | image, video, audio, gallery, slider |
 | `modules` | Widgets de módulos | 150+ widgets de los 64 módulos |
+| `dynamic` | Campos dinámicos para Singles | dynamic-field, dynamic-featured-image, dynamic-author, dynamic-date, dynamic-terms, dynamic-related-posts |
 
 ---
 
@@ -792,6 +793,214 @@ Estructura completa del objeto `styles`:
     "entranceAnimation": "fade-up|fade-down|zoom-in",
     "hoverAnimation": "scale|glow|lift"
   }
+}
+```
+
+---
+
+## BLOQUES DINÁMICOS (Para Single Templates)
+
+Bloques especiales para diseñar plantillas de páginas single de CPTs.
+
+### dynamic-field
+Campo dinámico genérico que muestra cualquier campo del post.
+
+**Tipo:** `dynamic-field`
+**Categoría:** `dynamic`
+
+**Campos:**
+| Campo | Tipo | Opciones | Default |
+|-------|------|----------|---------|
+| `field_key` | text | post_title, post_content, post_excerpt, meta_*, taxonomy_* | post_title |
+| `tag` | select | div, p, span, h1, h2, h3, h4 | div |
+| `fallback` | text | Texto si campo vacío | - |
+
+**Ejemplo:**
+```json
+{
+  "type": "dynamic-field",
+  "data": {
+    "field_key": "meta_precio",
+    "tag": "span",
+    "fallback": "Consultar precio"
+  },
+  "styles": {
+    "typography": {"fontSize": "24px", "fontWeight": "bold"},
+    "colors": {"text": "#22c55e"}
+  }
+}
+```
+
+### dynamic-featured-image
+Imagen destacada del post actual.
+
+**Tipo:** `dynamic-featured-image`
+**Categoría:** `dynamic`
+
+**Campos:**
+| Campo | Tipo | Opciones | Default |
+|-------|------|----------|---------|
+| `size` | select | thumbnail, medium, large, full | large |
+| `aspect_ratio` | select | auto, 16/9, 4/3, 1/1, 3/2 | auto |
+| `fallback_image` | image | URL imagen por defecto | - |
+
+**Ejemplo:**
+```json
+{
+  "type": "dynamic-featured-image",
+  "data": {
+    "size": "large",
+    "aspect_ratio": "16/9"
+  },
+  "styles": {
+    "borders": {"radius": "12px"}
+  }
+}
+```
+
+### dynamic-author
+Información del autor del post.
+
+**Tipo:** `dynamic-author`
+**Categoría:** `dynamic`
+
+**Campos:**
+| Campo | Tipo | Default |
+|-------|------|---------|
+| `show_avatar` | toggle | true |
+| `show_name` | toggle | true |
+| `show_bio` | toggle | false |
+| `avatar_size` | number | 48 |
+
+**Ejemplo:**
+```json
+{
+  "type": "dynamic-author",
+  "data": {
+    "show_avatar": true,
+    "show_name": true,
+    "show_bio": true,
+    "avatar_size": 64
+  }
+}
+```
+
+### dynamic-date
+Fecha de publicación del post.
+
+**Tipo:** `dynamic-date`
+**Categoría:** `dynamic`
+
+**Campos:**
+| Campo | Tipo | Opciones | Default |
+|-------|------|----------|---------|
+| `format` | select | human, full, short, custom | full |
+| `custom_format` | text | Formato PHP (j F, Y) | j F, Y |
+| `prefix` | text | Texto antes de fecha | - |
+
+**Ejemplo:**
+```json
+{
+  "type": "dynamic-date",
+  "data": {
+    "format": "human",
+    "prefix": "Publicado hace"
+  },
+  "styles": {
+    "colors": {"text": "#64748b"}
+  }
+}
+```
+
+### dynamic-terms
+Taxonomías del post (categorías, tags, etc).
+
+**Tipo:** `dynamic-terms`
+**Categoría:** `dynamic`
+
+**Campos:**
+| Campo | Tipo | Opciones | Default |
+|-------|------|----------|---------|
+| `taxonomy` | text | category, post_tag, o personalizada | category |
+| `style` | select | links, badges, pills, plain | badges |
+| `separator` | text | Separador entre términos | , |
+
+**Ejemplo:**
+```json
+{
+  "type": "dynamic-terms",
+  "data": {
+    "taxonomy": "gc_categoria",
+    "style": "badges"
+  }
+}
+```
+
+### dynamic-related-posts
+Posts relacionados automáticos.
+
+**Tipo:** `dynamic-related-posts`
+**Categoría:** `dynamic`
+
+**Campos:**
+| Campo | Tipo | Opciones | Default |
+|-------|------|----------|---------|
+| `count` | number | 1-12 | 3 |
+| `columns` | select | 1, 2, 3, 4 | 3 |
+| `show_image` | toggle | - | true |
+| `show_excerpt` | toggle | - | true |
+| `show_date` | toggle | - | true |
+
+**Ejemplo:**
+```json
+{
+  "type": "dynamic-related-posts",
+  "data": {
+    "count": 3,
+    "columns": "3",
+    "show_image": true,
+    "show_excerpt": true
+  }
+}
+```
+
+### Uso en Single Template Completa
+
+Ejemplo de plantilla para un CPT de producto:
+
+```json
+{
+  "elements": [
+    {
+      "type": "container",
+      "data": {"maxWidth": "1200px"},
+      "children": [
+        {
+          "type": "columns",
+          "data": {"columns": 2, "gap": "32px"},
+          "children": [
+            {
+              "type": "column",
+              "children": [
+                {"type": "dynamic-featured-image", "data": {"size": "large", "aspect_ratio": "1/1"}}
+              ]
+            },
+            {
+              "type": "column",
+              "children": [
+                {"type": "dynamic-terms", "data": {"taxonomy": "gc_categoria", "style": "badges"}},
+                {"type": "dynamic-field", "data": {"field_key": "post_title", "tag": "h1"}},
+                {"type": "dynamic-field", "data": {"field_key": "meta_precio", "tag": "span"}},
+                {"type": "dynamic-field", "data": {"field_key": "post_content", "tag": "div"}},
+                {"type": "dynamic-author", "data": {"show_avatar": true, "show_name": true}}
+              ]
+            }
+          ]
+        },
+        {"type": "dynamic-related-posts", "data": {"count": 4, "columns": "4"}}
+      ]
+    }
+  ]
 }
 ```
 

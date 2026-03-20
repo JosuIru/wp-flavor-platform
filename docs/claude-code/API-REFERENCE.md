@@ -141,6 +141,126 @@ Aplica un template a un documento.
 }
 ```
 
+### Single Templates (Plantillas para CPTs)
+
+Sistema para diseñar plantillas de páginas single de cualquier Custom Post Type usando VBP.
+
+#### GET /single-templates
+Lista todas las plantillas single creadas.
+
+**Respuesta:**
+```json
+{
+  "templates": [
+    {
+      "id": 456,
+      "title": "Plantilla Producto",
+      "post_type": "gc_producto",
+      "created": "2024-01-15T10:30:00",
+      "edit_url": "/wp-admin/admin.php?page=flavor-vbp-editor&post_id=456"
+    }
+  ]
+}
+```
+
+#### POST /single-templates
+Crea una nueva plantilla single.
+
+**Body:**
+```json
+{
+  "title": "Plantilla Evento",
+  "post_type": "flavor_evento",
+  "canvas": {
+    "elements": [
+      {
+        "type": "dynamic-featured-image",
+        "data": {"size": "large", "aspect_ratio": "16/9"}
+      },
+      {
+        "type": "dynamic-field",
+        "data": {"field_key": "post_title", "tag": "h1"}
+      },
+      {
+        "type": "dynamic-date",
+        "data": {"format": "full"}
+      },
+      {
+        "type": "dynamic-field",
+        "data": {"field_key": "post_content", "tag": "div"}
+      }
+    ]
+  }
+}
+```
+
+#### GET /single-templates/{id}
+Obtiene una plantilla single por ID (incluye canvas completo).
+
+#### PUT /single-templates/{id}
+Actualiza una plantilla single.
+
+#### DELETE /single-templates/{id}
+Elimina una plantilla single.
+
+#### GET /single-templates/by-cpt/{post_type}
+Obtiene la plantilla asignada a un CPT específico.
+
+#### GET /single-templates/available-cpts
+Lista todos los CPTs disponibles con sus campos.
+
+**Respuesta:**
+```json
+[
+  {
+    "name": "gc_producto",
+    "label": "Productos",
+    "has_template": true,
+    "template_id": 456,
+    "fields": [
+      {"key": "post_title", "label": "Título", "type": "text", "source": "core"},
+      {"key": "post_content", "label": "Contenido", "type": "html", "source": "core"},
+      {"key": "featured_image", "label": "Imagen destacada", "type": "image", "source": "core"},
+      {"key": "precio", "label": "Precio", "type": "meta", "source": "meta"},
+      {"key": "taxonomy_gc_categoria", "label": "Categorías", "type": "taxonomy", "source": "taxonomy"}
+    ]
+  }
+]
+```
+
+#### GET /single-templates/{id}/preview/{post_id}
+Previsualiza una plantilla con datos de un post real.
+
+### Bloques Dinámicos
+
+Bloques especiales para plantillas single que muestran datos del post actual:
+
+| Bloque | Descripción | Campos principales |
+|--------|-------------|--------------------|
+| `dynamic-field` | Campo dinámico genérico | `field_key`, `tag`, `fallback` |
+| `dynamic-featured-image` | Imagen destacada | `size`, `aspect_ratio`, `fallback_image` |
+| `dynamic-author` | Información del autor | `show_avatar`, `show_name`, `show_bio` |
+| `dynamic-date` | Fecha de publicación | `format`, `custom_format`, `prefix` |
+| `dynamic-terms` | Taxonomías (categorías/tags) | `taxonomy`, `style`, `separator` |
+| `dynamic-related-posts` | Posts relacionados | `count`, `columns`, `show_image` |
+
+**Ejemplo de uso en Claude Code:**
+```json
+{
+  "type": "dynamic-field",
+  "data": {
+    "field_key": "meta_precio",
+    "tag": "span",
+    "fallback": "Precio no disponible"
+  },
+  "styles": {
+    "color": "#22c55e",
+    "fontSize": "24px",
+    "fontWeight": "bold"
+  }
+}
+```
+
 ### Renderizado
 
 #### POST /render-element

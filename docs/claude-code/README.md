@@ -12,17 +12,28 @@ Guías y referencias para crear sitios con Flavor Chat IA desde Claude Code.
 
 ## Endpoints Principales
 
-### Obtener Schema de Bloques (Nuevo)
+### Obtener Schema de Bloques
 ```bash
 GET /wp-json/flavor-vbp/v1/blocks/schema
 ```
-Retorna el schema JSON completo de todos los bloques disponibles con sus campos, variantes y opciones.
+Retorna el schema JSON completo de todos los bloques disponibles (114 bloques, 10 categorías) con sus campos, variantes y opciones.
 
-### Obtener Shortcodes (Nuevo)
+### Obtener Shortcodes
 ```bash
 GET /wp-json/flavor-vbp/v1/shortcodes
 ```
 Lista todos los shortcodes disponibles organizados por módulo.
+
+### Single Templates (Plantillas para CPTs)
+```bash
+GET /wp-json/flavor-vbp/v1/single-templates/available-cpts
+```
+Lista todos los CPTs con sus campos disponibles para diseñar plantillas single.
+
+```bash
+POST /wp-json/flavor-vbp/v1/single-templates
+```
+Crea una plantilla VBP para páginas single de un CPT específico.
 
 ### Crear Sitio Completo
 ```bash
