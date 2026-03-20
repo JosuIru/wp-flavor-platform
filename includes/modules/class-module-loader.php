@@ -204,6 +204,9 @@ class Flavor_Chat_Module_Loader {
         'mapa_actores'          => ['principios' => ['gobernanza'], 'contribuye_a' => ['cohesion', 'impacto']],
         'documentacion_legal'   => ['principios' => ['gobernanza'], 'contribuye_a' => ['autonomia']],
         'seguimiento_denuncias' => ['principios' => ['gobernanza', 'cuidados'], 'contribuye_a' => ['resiliencia']],
+
+        // Contenido y comunicación externa
+        'agregador_contenido'   => ['principios' => ['aprendizaje', 'gobernanza'], 'contribuye_a' => ['cohesion', 'impacto']],
     ];
 
     /**
