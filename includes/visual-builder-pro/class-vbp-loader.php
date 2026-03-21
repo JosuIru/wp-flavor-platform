@@ -94,6 +94,8 @@ class Flavor_VBP_Loader {
             'class-vbp-ab-testing.php',
             'class-vbp-version-history.php',
             'class-vbp-single-templates.php',
+            'class-vbp-component-library.php',
+            'class-vbp-design-presets.php',
             'ai/class-vbp-ai-content.php',
         );
 
@@ -178,6 +180,16 @@ class Flavor_VBP_Loader {
         // Single Templates (plantillas VBP para singles de cualquier CPT)
         if ( class_exists( 'Flavor_VBP_Single_Templates' ) ) {
             Flavor_VBP_Single_Templates::get_instance();
+        }
+
+        // Biblioteca de componentes reutilizables
+        if ( class_exists( 'Flavor_VBP_Component_Library' ) ) {
+            Flavor_VBP_Component_Library::get_instance();
+        }
+
+        // Presets de diseño (colores, tipografía, espaciado)
+        if ( class_exists( 'Flavor_VBP_Design_Presets' ) ) {
+            Flavor_VBP_Design_Presets::get_instance();
         }
 
         // Registrar CPT de templates
