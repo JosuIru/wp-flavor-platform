@@ -26,14 +26,17 @@ class Flavor_VBP_Editor {
      *
      * @var string
      */
-    const VERSION = '2.0.15';
+    const VERSION = '2.0.16';
 
     /**
      * Post types soportados
      *
+     * Solo flavor_landing usa el VBP por defecto.
+     * Las páginas normales usan Gutenberg.
+     *
      * @var array
      */
-    const POST_TYPES_SOPORTADOS = array( 'flavor_landing', 'page' );
+    const POST_TYPES_SOPORTADOS = array( 'flavor_landing' );
 
     /**
      * Meta key para datos del builder
@@ -112,8 +115,9 @@ class Flavor_VBP_Editor {
         // Cargar assets del editor
         add_action( 'admin_enqueue_scripts', array( $this, 'cargar_assets_editor' ) );
 
-        // Agregar link de edición rápida
+        // Agregar link de edición rápida (posts y páginas)
         add_filter( 'post_row_actions', array( $this, 'agregar_link_edicion_visual' ), 10, 2 );
+        add_filter( 'page_row_actions', array( $this, 'agregar_link_edicion_visual' ), 10, 2 );
 
         // AJAX handlers
         add_action( 'wp_ajax_vbp_guardar_documento', array( $this, 'ajax_guardar_documento' ) );
@@ -454,7 +458,7 @@ class Flavor_VBP_Editor {
             'canvas'       => array( 'vbp-canvas.js', array( 'sortablejs', 'vbp-performance' ) ),
             'rulers'       => array( 'vbp-rulers.js', array() ),
             'text-editor'  => array( 'vbp-text-editor.js', array() ),
-            'keyboard'     => array( 'vbp-keyboard.js', array() ),
+            'keyboard'     => array( 'vbp-keyboard-modular.js', array() ), // Versión modularizada para carga optimizada
             'history'      => array( 'vbp-history.js', array() ),
             'api'          => array( 'vbp-api.js', array() ),
             'minimap'      => array( 'vbp-minimap.js', array() ), // Mini mapa de navegación
@@ -832,7 +836,10 @@ class Flavor_VBP_Editor {
      * @return array
      */
     public function agregar_link_edicion_visual( $acciones, $post ) {
-        if ( in_array( $post->post_type, self::POST_TYPES_SOPORTADOS, true ) ) {
+        // Mostrar enlace en flavor_landing y page
+        $tipos_con_enlace = array_merge( self::POST_TYPES_SOPORTADOS, array( 'page' ) );
+
+        if ( in_array( $post->post_type, $tipos_con_enlace, true ) ) {
             $url_editor = add_query_arg(
                 array(
                     'page'    => 'vbp-editor',
