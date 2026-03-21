@@ -2865,6 +2865,23 @@
     min-width: 30px;
 }
 
+.vbp-select-unit {
+    padding: 6px 8px;
+    font-size: 13px;
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 6px;
+    background: var(--vbp-bg-primary);
+    color: var(--vbp-text-primary);
+    cursor: pointer;
+    min-width: 50px;
+}
+
+.vbp-select-unit:focus {
+    outline: none;
+    border-color: var(--vbp-primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
 .vbp-color-input-wrapper {
     display: flex;
     gap: 8px;
@@ -4835,4 +4852,270 @@
 .vbp-ai-retry-btn:hover {
     background: var(--vbp-bg-secondary);
     color: var(--vbp-text-primary);
+}
+
+/* ============================================
+   Layout Presets para Columns
+   ============================================ */
+.vbp-layout-presets {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.vbp-layout-preset {
+    padding: 6px;
+    background: var(--vbp-bg-tertiary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-layout-preset:hover {
+    border-color: var(--vbp-accent-color);
+    background: var(--vbp-bg-secondary);
+}
+
+.vbp-layout-preset:active {
+    transform: scale(0.95);
+}
+
+.vbp-preset-preview {
+    display: flex;
+    gap: 2px;
+    height: 24px;
+    background: var(--vbp-bg-primary);
+    border-radius: 3px;
+    padding: 3px;
+    overflow: hidden;
+}
+
+.vbp-preset-preview span {
+    background: var(--vbp-accent-color);
+    border-radius: 2px;
+    opacity: 0.6;
+    transition: opacity 0.15s ease;
+}
+
+.vbp-layout-preset:hover .vbp-preset-preview span {
+    opacity: 1;
+}
+
+/* Botón invertir columnas */
+.vbp-columns-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.vbp-columns-actions .vbp-btn {
+    flex: 1;
+}
+
+/* ==========================================================================
+   Layers Panel - Search & Filters
+   ========================================================================== */
+
+.vbp-layers-header {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--vbp-border-color);
+}
+
+.vbp-layers-search {
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.vbp-layers-search-input {
+    width: 100%;
+    padding: 8px 32px 8px 32px;
+    background: var(--vbp-bg-tertiary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 6px;
+    color: var(--vbp-text-primary);
+    font-size: 13px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vbp-layers-search-input:focus {
+    outline: none;
+    border-color: var(--vbp-accent-color);
+    box-shadow: 0 0 0 2px rgba(var(--vbp-accent-rgb), 0.15);
+}
+
+.vbp-layers-search-input::placeholder {
+    color: var(--vbp-text-muted);
+}
+
+.vbp-layers-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--vbp-text-muted);
+    pointer-events: none;
+    width: 14px;
+    height: 14px;
+}
+
+.vbp-layers-search-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    background: var(--vbp-bg-secondary);
+    border: none;
+    border-radius: 50%;
+    color: var(--vbp-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.vbp-layers-search-clear:hover {
+    background: var(--vbp-accent-color);
+    color: white;
+}
+
+/* Filters toolbar */
+.vbp-layers-filters {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-layers-filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 4px;
+    color: var(--vbp-text-secondary);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-layers-filter-toggle:hover,
+.vbp-layers-filter-toggle.active {
+    background: var(--vbp-accent-color);
+    border-color: var(--vbp-accent-color);
+    color: white;
+}
+
+.vbp-layers-filter-toggle svg {
+    width: 12px;
+    height: 12px;
+}
+
+.vbp-layers-type-select {
+    flex: 1;
+    padding: 4px 8px;
+    background: var(--vbp-bg-tertiary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 4px;
+    color: var(--vbp-text-primary);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.vbp-layers-type-select:focus {
+    outline: none;
+    border-color: var(--vbp-accent-color);
+}
+
+/* Filter count badge */
+.vbp-layers-filter-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--vbp-accent-color);
+    border-radius: 9px;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* Search highlight */
+.vbp-search-highlight {
+    background: rgba(var(--vbp-warning-rgb), 0.3);
+    color: inherit;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* No results message */
+.vbp-layers-no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    text-align: center;
+    color: var(--vbp-text-muted);
+}
+
+.vbp-layers-no-results svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.vbp-layers-no-results-text {
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.vbp-layers-no-results-hint {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.vbp-layers-clear-filters {
+    margin-top: 12px;
+    padding: 6px 12px;
+    background: var(--vbp-bg-tertiary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 4px;
+    color: var(--vbp-text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-layers-clear-filters:hover {
+    background: var(--vbp-accent-color);
+    border-color: var(--vbp-accent-color);
+    color: white;
+}
+
+/* Active filter indicator on layers list */
+.vbp-layers-list.filtered {
+    border-top: 2px solid var(--vbp-accent-color);
+}
+
+.vbp-layers-list.filtered .vbp-layer-item {
+    animation: vbp-filter-highlight 0.3s ease;
+}
+
+@keyframes vbp-filter-highlight {
+    0% {
+        background: rgba(var(--vbp-accent-rgb), 0.2);
+    }
+    100% {
+        background: transparent;
+    }
 }

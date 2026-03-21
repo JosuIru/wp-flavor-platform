@@ -19,6 +19,11 @@ function vbpLayersComponent() {
         draggedIndex: null,
         sortableInstance: null,
 
+        // Búsqueda y filtrado
+        searchQuery: '',
+        filterType: '',
+        showFilters: false,
+
         init() {
             this.$nextTick(() => {
                 this.initSortable();
@@ -39,6 +44,97 @@ function vbpLayersComponent() {
         get selectedElements() {
             const store = Alpine.store('vbp');
             return store && store.selection && store.selection.elementIds ? store.selection.elementIds : [];
+        },
+
+        /**
+         * Obtiene los elementos filtrados según búsqueda y tipo
+         */
+        get filteredElements() {
+            let resultado = this.elements;
+
+            // Filtrar por texto de búsqueda
+            if (this.searchQuery && this.searchQuery.trim() !== '') {
+                const busqueda = this.searchQuery.toLowerCase().trim();
+                resultado = resultado.filter(elemento => {
+                    const nombreElemento = (elemento.name || elemento.type || '').toLowerCase();
+                    const tipoElemento = (elemento.type || '').toLowerCase();
+                    const idElemento = (elemento.id || '').toLowerCase();
+                    return nombreElemento.includes(busqueda) ||
+                           tipoElemento.includes(busqueda) ||
+                           idElemento.includes(busqueda);
+                });
+            }
+
+            // Filtrar por tipo
+            if (this.filterType && this.filterType !== '') {
+                resultado = resultado.filter(elemento => elemento.type === this.filterType);
+            }
+
+            return resultado;
+        },
+
+        /**
+         * Obtiene los tipos de elementos únicos para el filtro
+         */
+        get availableTypes() {
+            const tiposUnicos = [...new Set(this.elements.map(elemento => elemento.type))];
+            return tiposUnicos.sort();
+        },
+
+        /**
+         * Indica si hay filtros activos
+         */
+        get hasActiveFilters() {
+            return (this.searchQuery && this.searchQuery.trim() !== '') ||
+                   (this.filterType && this.filterType !== '');
+        },
+
+        /**
+         * Cuenta de elementos filtrados
+         */
+        get filterCount() {
+            return this.filteredElements.length;
+        },
+
+        /**
+         * Limpia todos los filtros
+         */
+        clearFilters() {
+            this.searchQuery = '';
+            this.filterType = '';
+        },
+
+        /**
+         * Toggle del panel de filtros
+         */
+        toggleFilters() {
+            this.showFilters = !this.showFilters;
+        },
+
+        /**
+         * Filtra capas por texto (método para compatibilidad)
+         */
+        filterLayers(query) {
+            this.searchQuery = query;
+        },
+
+        /**
+         * Filtra capas por tipo
+         */
+        filterByType(type) {
+            this.filterType = type;
+        },
+
+        /**
+         * Resalta el texto que coincide con la búsqueda
+         */
+        highlightMatch(text) {
+            if (!this.searchQuery || this.searchQuery.trim() === '') {
+                return text;
+            }
+            const busqueda = this.searchQuery.trim();
+            const regex = new RegExp(`(${busqueda})`, 'gi');
+            return text.replace(regex, '<mark class="vbp-search-highlight">$1</mark>');
         },
 
         /**

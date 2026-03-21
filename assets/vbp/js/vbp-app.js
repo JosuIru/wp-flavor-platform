@@ -50,6 +50,9 @@ function vbpApp() {
         saveStatusClass: '',
         zoom: 100,
         devicePreview: 'desktop',
+        splitScreenMode: false,
+        splitScreenSyncScroll: true,
+        splitScreenDevices: ['desktop', 'mobile'],
         showRulers: true,
         activeLeftTab: 'blocks',
         panels: { blocks: true, inspector: true, layers: true },
@@ -585,6 +588,166 @@ function vbpApp() {
             if (widths[device]) {
                 Alpine.store('vbp').settings.previewWidth = widths[device];
             }
+        },
+
+        // ============ SPLIT SCREEN / RESPONSIVE PREVIEW ============
+
+        /**
+         * Activa/desactiva el modo split-screen
+         */
+        toggleSplitScreen: function() {
+            this.splitScreenMode = !this.splitScreenMode;
+
+            if (this.splitScreenMode) {
+                this.initSplitScreen();
+                this.showNotification('Modo split-screen activado', 'info');
+            } else {
+                this.destroySplitScreen();
+                this.showNotification('Modo split-screen desactivado', 'info');
+            }
+        },
+
+        /**
+         * Inicializa el modo split-screen
+         */
+        initSplitScreen: function() {
+            var self = this;
+
+            // Crear contenedor split si no existe
+            this.$nextTick(function() {
+                var canvasArea = document.querySelector('.vbp-canvas-area');
+                if (!canvasArea) return;
+
+                // Añadir clase split-screen
+                canvasArea.classList.add('vbp-split-screen-active');
+
+                // Inicializar sincronización de scroll
+                if (self.splitScreenSyncScroll) {
+                    self.initSplitScreenScrollSync();
+                }
+            });
+        },
+
+        /**
+         * Destruye el modo split-screen
+         */
+        destroySplitScreen: function() {
+            var canvasArea = document.querySelector('.vbp-canvas-area');
+            if (canvasArea) {
+                canvasArea.classList.remove('vbp-split-screen-active');
+            }
+
+            // Remover listeners de scroll
+            this.removeSplitScreenScrollSync();
+        },
+
+        /**
+         * Cambia los dispositivos mostrados en split-screen
+         */
+        setSplitScreenDevices: function(device1, device2) {
+            this.splitScreenDevices = [device1, device2];
+        },
+
+        /**
+         * Toggle sincronización de scroll en split-screen
+         */
+        toggleSplitScreenSyncScroll: function() {
+            this.splitScreenSyncScroll = !this.splitScreenSyncScroll;
+
+            if (this.splitScreenSyncScroll) {
+                this.initSplitScreenScrollSync();
+                this.showNotification('Sincronización de scroll activada', 'info');
+            } else {
+                this.removeSplitScreenScrollSync();
+                this.showNotification('Sincronización de scroll desactivada', 'info');
+            }
+        },
+
+        /**
+         * Inicializa la sincronización de scroll entre paneles
+         */
+        initSplitScreenScrollSync: function() {
+            var self = this;
+            var paneles = document.querySelectorAll('.vbp-split-panel');
+
+            if (paneles.length < 2) return;
+
+            this._splitScrollHandler = function(event) {
+                if (self._isSyncingScroll) return;
+                self._isSyncingScroll = true;
+
+                var sourcePanel = event.target;
+                var scrollPercentage = sourcePanel.scrollTop / (sourcePanel.scrollHeight - sourcePanel.clientHeight);
+
+                paneles.forEach(function(panel) {
+                    if (panel !== sourcePanel) {
+                        var targetScrollTop = scrollPercentage * (panel.scrollHeight - panel.clientHeight);
+                        panel.scrollTop = targetScrollTop;
+                    }
+                });
+
+                requestAnimationFrame(function() {
+                    self._isSyncingScroll = false;
+                });
+            };
+
+            paneles.forEach(function(panel) {
+                panel.addEventListener('scroll', self._splitScrollHandler);
+            });
+        },
+
+        /**
+         * Remueve la sincronización de scroll
+         */
+        removeSplitScreenScrollSync: function() {
+            var self = this;
+            var paneles = document.querySelectorAll('.vbp-split-panel');
+
+            if (this._splitScrollHandler) {
+                paneles.forEach(function(panel) {
+                    panel.removeEventListener('scroll', self._splitScrollHandler);
+                });
+                this._splitScrollHandler = null;
+            }
+        },
+
+        /**
+         * Obtiene el ancho para un dispositivo
+         */
+        getDeviceWidth: function(device) {
+            var widths = {
+                desktop: 1200,
+                laptop: 1024,
+                tablet: 768,
+                mobile: 375
+            };
+            return widths[device] || 1200;
+        },
+
+        /**
+         * Obtiene la etiqueta para un dispositivo
+         */
+        getDeviceLabel: function(device) {
+            var labels = {
+                desktop: 'Escritorio (1200px)',
+                laptop: 'Portátil (1024px)',
+                tablet: 'Tablet (768px)',
+                mobile: 'Móvil (375px)'
+            };
+            return labels[device] || device;
+        },
+
+        /**
+         * Obtiene el icono SVG para un dispositivo
+         */
+        getDeviceIcon: function(device) {
+            var icons = {
+                desktop: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+                laptop: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8H4V6z"/><path d="M2 18h20"/></svg>',
+                tablet: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>',
+                mobile: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></svg>'
+            };
+            return icons[device] || icons.desktop;
         },
 
         // Page Settings
