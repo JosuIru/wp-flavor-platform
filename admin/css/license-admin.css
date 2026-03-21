@@ -1,0 +1,507 @@
+/**
+ * Flavor Platform - License Admin Styles
+ * @since 3.2.0
+ */
+
+/* ============================================
+   Layout Principal
+   ============================================ */
+.flavor-license-wrap {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.flavor-license-wrap h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 30px;
+}
+
+.flavor-license-container {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 1200px) {
+    .flavor-license-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   Cards de Licencia
+   ============================================ */
+.flavor-license-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.flavor-license-card.active {
+    border-left: 4px solid var(--plan-color, #22c55e);
+}
+
+.flavor-license-card.expired {
+    border-left: 4px solid #ef4444;
+    background: linear-gradient(135deg, #fff 0%, #fef2f2 100%);
+}
+
+.flavor-license-card.no-license {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+/* Status Badge */
+.license-status {
+    margin-bottom: 20px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-badge svg {
+    width: 18px;
+    height: 18px;
+}
+
+.status-badge.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.expired {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge.inactive {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* Plan Info */
+.license-plan h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--plan-color, #1e293b);
+    margin: 0 0 8px 0;
+}
+
+.license-plan p {
+    color: #64748b;
+    margin: 0 0 24px 0;
+}
+
+/* Details Grid */
+.license-details {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item .label {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.detail-item .value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.detail-item .value.warning {
+    color: #f59e0b;
+}
+
+.license-key {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background: #e2e8f0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+/* Actions */
+.license-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.license-actions .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.license-actions .button svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================
+   Formulario de Licencia
+   ============================================ */
+.license-message {
+    margin-bottom: 24px;
+}
+
+.license-message h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+.license-message p {
+    color: #64748b;
+    margin: 0;
+}
+
+.license-form {
+    margin-bottom: 24px;
+}
+
+.license-form .form-field {
+    margin-bottom: 16px;
+}
+
+.license-form label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.license-form input[type="text"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 14px 18px;
+    font-size: 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    letter-spacing: 2px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.license-form input[type="text"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.license-form .description {
+    display: block;
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 6px;
+}
+
+.form-actions {
+    margin-top: 20px;
+}
+
+.button-hero {
+    padding: 14px 28px !important;
+    font-size: 15px !important;
+    height: auto !important;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 10px;
+}
+
+.button-hero svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Feedback */
+.license-feedback {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.license-feedback.success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.license-feedback.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+/* Help */
+.license-help {
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.license-help p {
+    color: #64748b;
+    margin: 0;
+}
+
+.license-help a {
+    color: #3b82f6;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.license-help a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+   Sidebar - Lista de Planes
+   ============================================ */
+.flavor-license-sidebar h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 20px 0;
+}
+
+.flavor-plans-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.plan-card {
+    position: relative;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.2s ease;
+}
+
+.plan-card:hover {
+    border-color: var(--plan-color, #3b82f6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.plan-card.current {
+    border-color: var(--plan-color, #22c55e);
+    background: linear-gradient(135deg, #fff 0%, rgba(var(--plan-color-rgb, 59, 130, 246), 0.05) 100%);
+}
+
+.plan-badge {
+    position: absolute;
+    top: -10px;
+    right: 16px;
+    background: var(--plan-color, #22c55e);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+
+.plan-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+}
+
+.plan-price {
+    margin-bottom: 8px;
+}
+
+.plan-price .price {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--plan-color, #1e293b);
+}
+
+.plan-price .period {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.plan-sites {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 16px;
+}
+
+.plan-features {
+    list-style: none;
+    margin: 0 0 20px 0;
+    padding: 0;
+}
+
+.plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #475569;
+    padding: 6px 0;
+}
+
+.plan-features li svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: #22c55e;
+}
+
+.plan-cta {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+}
+
+/* ============================================
+   Comparativa de Módulos
+   ============================================ */
+.flavor-license-modules {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 30px;
+}
+
+.flavor-license-modules h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 24px 0;
+}
+
+.modules-comparison {
+    overflow-x: auto;
+}
+
+.modules-comparison table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 600px;
+}
+
+.modules-comparison th,
+.modules-comparison td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modules-comparison th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #374151;
+    font-size: 13px;
+}
+
+.modules-comparison .plan-col {
+    text-align: center;
+    width: 100px;
+}
+
+.modules-comparison td strong {
+    color: #1e293b;
+}
+
+.modules-comparison .check svg {
+    width: 20px;
+    height: 20px;
+}
+
+.modules-comparison .no-check {
+    color: #cbd5e1;
+    font-size: 18px;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 768px) {
+    .flavor-license-wrap {
+        padding: 0 10px;
+    }
+
+    .flavor-license-card {
+        padding: 20px;
+    }
+
+    .license-form input[type="text"] {
+        max-width: 100%;
+        font-size: 14px;
+        letter-spacing: 1px;
+    }
+
+    .plan-card {
+        padding: 18px;
+    }
+
+    .plan-price .price {
+        font-size: 26px;
+    }
+}
+
+/* ============================================
+   Loading States
+   ============================================ */
+.button.loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.button.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin: -8px 0 0 -8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

@@ -64,12 +64,18 @@ class Flavor_Autoloader {
         'Flavor_Module_Admin_UI_Trait' => 'modules/trait-module-admin-ui.php',
         'Flavor_Module_Frontend_Actions' => 'modules/trait-module-frontend-actions.php',
         'Flavor_Module_Admin_Pages_Trait' => 'admin/trait-module-admin-pages.php',
-        'Flavor_Demo_Data_Generator' => 'admin/class-demo-data-generator.php',
+        'Flavor_Demo_Data_Generator' => 'class-demo-data-generator.php',
+        'Flavor_Demo_Data_Admin' => 'admin/class-demo-data-generator.php',
         'Flavor_Dashboard_Widget_Trait' => 'modules/trait-dashboard-widget.php',
         'Flavor_WhatsApp_Features' => 'modules/trait-whatsapp-features.php',
         'Flavor_Encuestas_Features' => 'modules/trait-encuestas-features.php',
+        'Flavor_Chat_Grupos_Frontend_Controller' => 'modules/chat-grupos/frontend/class-chat-grupos-frontend-controller.php',
+        'Flavor_Chat_Interno_Frontend_Controller' => 'modules/chat-interno/frontend/class-chat-interno-frontend-controller.php',
         // Portal unificado está en frontend, no en admin
         'Flavor_Unified_Portal' => 'frontend/class-unified-portal.php',
+        // Sistema de licencias
+        'Flavor_License_Plans' => 'licensing/class-license-plans.php',
+        'Flavor_License_Manager' => 'licensing/class-license-manager.php',
     ];
 
     /**
