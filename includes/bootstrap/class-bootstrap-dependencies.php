@@ -232,8 +232,12 @@ final class Flavor_Bootstrap_Dependencies {
      * @return void
      */
     private function load_api_system() {
-        // Rate Limiter para APIs
+        // Rate Limiter para APIs (v1 - compatibilidad)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-api-rate-limiter.php';
+
+        // Rate Limiter v2 (sliding window, headers, whitelist, ban)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-api-rate-limiter-v2.php';
+        // Se auto-inicializa
 
         // API de Configuración de Módulos para Apps Dinámicas
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-config-api.php';
@@ -304,6 +308,26 @@ final class Flavor_Bootstrap_Dependencies {
         // API de Configuración de Apps/APKs (branding, temas, permisos, build)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-app-config-api.php';
         Flavor_App_Config_API::get_instance();
+
+        // API de Manifiesto de Apps v2 (endpoint unificado, versionado, sincronización bidireccional)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-app-manifest-api.php';
+        Flavor_App_Manifest_API::get_instance();
+
+        // API de Push Notifications (Firebase Cloud Messaging)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-push-notifications-api.php';
+        Flavor_Push_Notifications_API::get_instance();
+
+        // API de Analytics (tracking de eventos, estadísticas de uso)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-analytics-api.php';
+        Flavor_Analytics_API::get_instance();
+
+        // API de Crash Reporting (reportes de errores, estadísticas de crashes)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-crash-reporting-api.php';
+        Flavor_Crash_Reporting_API::get_instance();
+
+        // API de Lazy Loading (carga bajo demanda de módulos y recursos)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-lazy-loading-api.php';
+        Flavor_Lazy_Loading_API::get_instance();
 
         // API de SEO (meta tags, Open Graph, Twitter Cards, Schema.org, sitemap)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-seo-api.php';
