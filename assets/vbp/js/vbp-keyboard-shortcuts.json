@@ -1,0 +1,289 @@
+{
+    "version": "2.0.0",
+    "categories": {
+        "file": {
+            "label": "Archivo",
+            "shortcuts": {
+                "ctrl+s": "save",
+                "ctrl+shift+s": "saveAs",
+                "ctrl+p": "preview",
+                "ctrl+e": "export",
+                "ctrl+t": "templates"
+            }
+        },
+        "edit": {
+            "label": "Edición",
+            "shortcuts": {
+                "ctrl+z": "undo",
+                "ctrl+shift+z": "redo",
+                "ctrl+y": "redo",
+                "ctrl+c": "copy",
+                "ctrl+x": "cut",
+                "ctrl+v": "paste",
+                "ctrl+d": "duplicate",
+                "ctrl+shift+c": "copyStyles",
+                "ctrl+shift+v": "pasteStyles",
+                "ctrl+shift+r": "resetStyles"
+            }
+        },
+        "group": {
+            "label": "Agrupar",
+            "shortcuts": {
+                "ctrl+g": "group",
+                "ctrl+shift+u": "ungroup"
+            }
+        },
+        "selection": {
+            "label": "Selección",
+            "shortcuts": {
+                "delete": "delete",
+                "backspace": "delete",
+                "escape": "deselect",
+                "ctrl+a": "selectAll",
+                "ctrl+shift+a": "invertSelection",
+                "ctrl+alt+a": "selectSimilar",
+                "enter": "editInline",
+                "f2": "editInline",
+                "tab": "selectNext",
+                "shift+tab": "selectPrevious"
+            }
+        },
+        "navigation": {
+            "label": "Navegación",
+            "shortcuts": {
+                "arrowup": "nudgeUp",
+                "arrowdown": "nudgeDown",
+                "arrowleft": "nudgeLeft",
+                "arrowright": "nudgeRight",
+                "shift+arrowup": "nudgeUpLarge",
+                "shift+arrowdown": "nudgeDownLarge",
+                "shift+arrowleft": "nudgeLeftLarge",
+                "shift+arrowright": "nudgeRightLarge",
+                "ctrl+arrowup": "moveToTop",
+                "ctrl+arrowdown": "moveToBottom",
+                "alt+arrowup": "selectParent",
+                "alt+arrowdown": "selectFirstChild",
+                "alt+enter": "centerInViewport"
+            }
+        },
+        "duplicate": {
+            "label": "Duplicado",
+            "shortcuts": {
+                "ctrl+shift+d": "duplicateInPlace"
+            }
+        },
+        "collapse": {
+            "label": "Colapsar",
+            "shortcuts": {
+                "ctrl+.": "toggleCollapse"
+            }
+        },
+        "spacing": {
+            "label": "Espaciado",
+            "shortcuts": {
+                "alt+1": "setSpacing8",
+                "alt+2": "setSpacing16",
+                "alt+3": "setSpacing24",
+                "alt+4": "setSpacing32"
+            }
+        },
+        "transform": {
+            "label": "Transformación",
+            "shortcuts": {
+                "alt+shift+h": "flipHorizontal",
+                "alt+shift+v": "flipVertical",
+                "ctrl+shift+0": "resetPosition",
+                "r": "rotate15",
+                "shift+r": "rotateNeg15",
+                "ctrl+r": "rotate90",
+                "ctrl+alt+0": "resetRotation"
+            }
+        },
+        "bookmarks": {
+            "label": "Marcadores",
+            "shortcuts": {
+                "ctrl+shift+1": "goToBookmark1",
+                "ctrl+shift+2": "goToBookmark2",
+                "ctrl+shift+3": "goToBookmark3",
+                "ctrl+alt+1": "setBookmark1",
+                "ctrl+alt+2": "setBookmark2",
+                "ctrl+alt+3": "setBookmark3"
+            }
+        },
+        "tools": {
+            "label": "Herramientas",
+            "shortcuts": {
+                "ctrl+alt+r": "quickRename",
+                "ctrl+shift+p": "toggleAspectRatioLock",
+                "ctrl+alt+g": "toggleSmartGuides",
+                "m": "toggleMeasureTool",
+                "ctrl+shift+.": "toggleSnapToGrid",
+                "ctrl+alt+shift+r": "toggleRulers",
+                "alt+shift+g": "openGridSettings"
+            }
+        },
+        "favorites": {
+            "label": "Favoritos",
+            "shortcuts": {
+                "ctrl+alt+k": "saveAsFavorite",
+                "ctrl+alt+shift+k": "openFavorites"
+            }
+        },
+        "editors": {
+            "label": "Editores",
+            "shortcuts": {
+                "ctrl+alt+c": "openCSSVariables",
+                "ctrl+alt+d": "openVersionCompare",
+                "ctrl+alt+shift+s": "openShadowEditor",
+                "ctrl+alt+shift+x": "openGradientEditor",
+                "ctrl+alt+a": "openAnimationEditor",
+                "ctrl+shift+t": "openTypographyEditor",
+                "ctrl+shift+b": "openBorderEditor",
+                "ctrl+alt+p": "openSpacingEditor",
+                "ctrl+alt+shift+h": "openHoverStatesEditor",
+                "ctrl+alt+shift+y": "openScrollAnimationEditor"
+            }
+        },
+        "templates": {
+            "label": "Plantillas",
+            "shortcuts": {
+                "ctrl+shift+k": "openTemplatesLibrary",
+                "ctrl+alt+shift+c": "saveAsComponent",
+                "ctrl+shift+i": "openComponentsLibrary",
+                "ctrl+alt+shift+t": "openDesignTokens",
+                "ctrl+alt+e": "openExportOptions",
+                "ctrl+alt+shift+f": "openFigmaImporter"
+            }
+        },
+        "constraints": {
+            "label": "Restricciones",
+            "shortcuts": {
+                "ctrl+alt+t": "toggleConstraintTop",
+                "ctrl+alt+b": "toggleConstraintBottom",
+                "ctrl+alt+l": "toggleConstraintLeft",
+                "ctrl+alt+right": "toggleConstraintRight"
+            }
+        },
+        "breakpoints": {
+            "label": "Breakpoints",
+            "shortcuts": {
+                "1": "breakpointDesktop",
+                "2": "breakpointTablet",
+                "3": "breakpointMobile"
+            }
+        },
+        "pan": {
+            "label": "Pan/Navegación",
+            "shortcuts": {
+                " ": "togglePanMode"
+            }
+        },
+        "autoLayout": {
+            "label": "Auto-Layout",
+            "shortcuts": {
+                "shift+a": "toggleAutoLayout",
+                "ctrl+shift+arrowup": "decreaseGap",
+                "ctrl+shift+arrowdown": "increaseGap"
+            }
+        },
+        "zoom": {
+            "label": "Zoom",
+            "shortcuts": {
+                "ctrl++": "zoomIn",
+                "ctrl+=": "zoomIn",
+                "ctrl+-": "zoomOut",
+                "ctrl+0": "zoomReset",
+                "ctrl+1": "zoom100",
+                "ctrl+2": "zoom200",
+                "ctrl+5": "zoom50"
+            }
+        },
+        "panels": {
+            "label": "Paneles",
+            "shortcuts": {
+                "ctrl+\\": "togglePanels",
+                "ctrl+b": "toggleBlocksPanel",
+                "ctrl+i": "toggleInspectorPanel",
+                "ctrl+l": "toggleLayersPanel"
+            }
+        },
+        "modals": {
+            "label": "Modales",
+            "shortcuts": {
+                "ctrl+k": "commandPalette",
+                "?": "help",
+                "f1": "help",
+                "ctrl+,": "settings"
+            }
+        },
+        "alignment": {
+            "label": "Alineación",
+            "shortcuts": {
+                "alt+a": "alignLeft",
+                "alt+d": "alignRight",
+                "alt+w": "alignTop",
+                "alt+s": "alignBottom",
+                "alt+h": "alignCenterH",
+                "alt+v": "alignCenterV",
+                "alt+shift+a": "alignLeftEdge",
+                "alt+shift+d": "alignRightEdge",
+                "alt+shift+w": "alignTopEdge",
+                "alt+shift+s": "alignBottomEdge",
+                "ctrl+alt+h": "distributeH",
+                "ctrl+alt+v": "distributeV",
+                "ctrl+alt+s": "distributeSpacingH",
+                "ctrl+alt+w": "distributeSpacingV"
+            }
+        },
+        "zOrder": {
+            "label": "Orden Z",
+            "shortcuts": {
+                "ctrl+]": "bringForward",
+                "ctrl+[": "sendBackward",
+                "ctrl+shift+]": "bringToFront",
+                "ctrl+shift+[": "sendToBack"
+            }
+        },
+        "size": {
+            "label": "Tamaño",
+            "shortcuts": {
+                "ctrl+alt+m": "matchSize",
+                "ctrl+alt+f": "fitContent",
+                "ctrl+alt+shift+f": "fillParent",
+                "ctrl+shift+w": "wrapInContainer"
+            }
+        },
+        "visibility": {
+            "label": "Visibilidad",
+            "shortcuts": {
+                "ctrl+h": "toggleVisibility",
+                "ctrl+shift+h": "hideOthers",
+                "ctrl+alt+l": "toggleLock"
+            }
+        },
+        "clipboard": {
+            "label": "Portapapeles",
+            "shortcuts": {
+                "ctrl+alt+shift+h": "copyAsHTML",
+                "ctrl+alt+shift+j": "copyAsJSON",
+                "ctrl+alt+shift+v": "pasteFromJSON"
+            }
+        },
+        "find": {
+            "label": "Buscar",
+            "shortcuts": {
+                "ctrl+f": "find",
+                "ctrl+shift+f": "findReplace"
+            }
+        },
+        "arrange": {
+            "label": "Organizar",
+            "shortcuts": {
+                "ctrl+alt+shift+a": "stackHorizontal",
+                "ctrl+alt+shift+d": "stackVertical",
+                "ctrl+alt+shift+e": "swapElements"
+            }
+        }
+    },
+    "flatMap": {}
+}

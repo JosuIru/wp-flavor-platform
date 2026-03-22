@@ -296,6 +296,115 @@ class Flavor_VBP_REST_API {
                 'permission_callback' => '__return_true',
             )
         );
+
+        // ============================================
+        // Endpoints IA para generación de contenido
+        // ============================================
+
+        // Generar sección con IA
+        register_rest_route(
+            self::NAMESPACE,
+            '/ai/generate-section',
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'generar_seccion_ia' ),
+                'permission_callback' => array( $this, 'verificar_permiso_escritura' ),
+                'args'                => array(
+                    'type'     => array(
+                        'required'          => true,
+                        'sanitize_callback' => 'sanitize_text_field',
+                        'description'       => __( 'Tipo de sección: hero, features, faq, testimonials, cta, etc.', 'flavor-chat-ia' ),
+                    ),
+                    'context'  => array(
+                        'required'          => false,
+                        'sanitize_callback' => 'sanitize_textarea_field',
+                        'description'       => __( 'Contexto adicional: industria, tono, público objetivo.', 'flavor-chat-ia' ),
+                    ),
+                    'language' => array(
+                        'default'           => 'es',
+                        'sanitize_callback' => 'sanitize_text_field',
+                    ),
+                    'style'    => array(
+                        'default'           => 'professional',
+                        'sanitize_callback' => 'sanitize_text_field',
+                        'description'       => __( 'Estilo: professional, casual, creative, formal.', 'flavor-chat-ia' ),
+                    ),
+                ),
+            )
+        );
+
+        // Mejorar texto con IA
+        register_rest_route(
+            self::NAMESPACE,
+            '/ai/improve-text',
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'mejorar_texto_ia' ),
+                'permission_callback' => array( $this, 'verificar_permiso_escritura' ),
+                'args'                => array(
+                    'text'   => array(
+                        'required'          => true,
+                        'sanitize_callback' => 'sanitize_textarea_field',
+                    ),
+                    'action' => array(
+                        'required'          => true,
+                        'sanitize_callback' => 'sanitize_text_field',
+                        'description'       => __( 'Acción: expand, shorten, rephrase, formal, casual, seo.', 'flavor-chat-ia' ),
+                    ),
+                ),
+            )
+        );
+
+        // Traducir contenido con IA
+        register_rest_route(
+            self::NAMESPACE,
+            '/ai/translate',
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'traducir_contenido_ia' ),
+                'permission_callback' => array( $this, 'verificar_permiso_escritura' ),
+                'args'                => array(
+                    'text'      => array(
+                        'required'          => true,
+                        'sanitize_callback' => 'sanitize_textarea_field',
+                    ),
+                    'from_lang' => array(
+                        'default'           => 'auto',
+                        'sanitize_callback' => 'sanitize_text_field',
+                    ),
+                    'to_lang'   => array(
+                        'required'          => true,
+                        'sanitize_callback' => 'sanitize_text_field',
+                    ),
+                ),
+            )
+        );
+
+        // Generar variaciones de contenido
+        register_rest_route(
+            self::NAMESPACE,
+            '/ai/generate-variations',
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'generar_variaciones_ia' ),
+                'permission_callback' => array( $this, 'verificar_permiso_escritura' ),
+                'args'                => array(
+                    'text'  => array(
+                        'required'          => true,
+                        'sanitize_callback' => 'sanitize_textarea_field',
+                    ),
+                    'count' => array(
+                        'default'           => 3,
+                        'sanitize_callback' => 'absint',
+                    ),
+                    'type'  => array(
+                        'default'           => 'headlines',
+                        'sanitize_callback' => 'sanitize_text_field',
+                        'description'       => __( 'Tipo: headlines, descriptions, cta, taglines.', 'flavor-chat-ia' ),
+                    ),
+                ),
+            )
+        );
     }
 
     /**
@@ -1384,5 +1493,369 @@ class Flavor_VBP_REST_API {
             ),
             200
         );
+    }
+
+    // ============================================
+    // Métodos de IA para generación de contenido
+    // ============================================
+
+    /**
+     * Genera una sección completa con IA
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function generar_seccion_ia( $request ) {
+        $tipo     = $request->get_param( 'type' );
+        $contexto = $request->get_param( 'context' ) ?? '';
+        $idioma   = $request->get_param( 'language' ) ?? 'es';
+        $estilo   = $request->get_param( 'style' ) ?? 'professional';
+
+        // Verificar si IA está disponible
+        if ( ! class_exists( 'Flavor_VBP_AI_Content' ) ) {
+            // Usar contenido de plantilla predefinido si no hay IA
+            $contenido_plantilla = $this->get_seccion_plantilla( $tipo, $contexto );
+            return new WP_REST_Response( $contenido_plantilla, 200 );
+        }
+
+        try {
+            $generador_ia = Flavor_VBP_AI_Content::get_instance();
+            $resultado    = $generador_ia->generar_seccion( $tipo, array(
+                'context'  => $contexto,
+                'language' => $idioma,
+                'style'    => $estilo,
+            ) );
+
+            return new WP_REST_Response( $resultado, 200 );
+
+        } catch ( Exception $e ) {
+            return new WP_Error(
+                'ai_error',
+                $e->getMessage(),
+                array( 'status' => 500 )
+            );
+        }
+    }
+
+    /**
+     * Obtiene contenido de plantilla predefinido para una sección
+     *
+     * @param string $tipo    Tipo de sección.
+     * @param string $contexto Contexto adicional.
+     * @return array
+     */
+    private function get_seccion_plantilla( $tipo, $contexto = '' ) {
+        $plantillas = array(
+            'hero' => array(
+                'titulo'       => __( 'Bienvenido a nuestra plataforma', 'flavor-chat-ia' ),
+                'subtitulo'    => __( 'La solución que estabas buscando para potenciar tu negocio', 'flavor-chat-ia' ),
+                'boton_texto'  => __( 'Comenzar ahora', 'flavor-chat-ia' ),
+                'boton_url'    => '#contacto',
+            ),
+            'features' => array(
+                'titulo' => __( 'Nuestras características', 'flavor-chat-ia' ),
+                'items'  => array(
+                    array(
+                        'icono'       => '⚡',
+                        'titulo'      => __( 'Rápido y eficiente', 'flavor-chat-ia' ),
+                        'descripcion' => __( 'Implementación en minutos con resultados inmediatos.', 'flavor-chat-ia' ),
+                    ),
+                    array(
+                        'icono'       => '🔒',
+                        'titulo'      => __( 'Seguro y confiable', 'flavor-chat-ia' ),
+                        'descripcion' => __( 'Protección de datos con los más altos estándares.', 'flavor-chat-ia' ),
+                    ),
+                    array(
+                        'icono'       => '📱',
+                        'titulo'      => __( '100% responsive', 'flavor-chat-ia' ),
+                        'descripcion' => __( 'Funciona perfectamente en todos los dispositivos.', 'flavor-chat-ia' ),
+                    ),
+                ),
+            ),
+            'faq' => array(
+                'titulo' => __( 'Preguntas frecuentes', 'flavor-chat-ia' ),
+                'items'  => array(
+                    array(
+                        'pregunta'  => __( '¿Cómo funciona el servicio?', 'flavor-chat-ia' ),
+                        'respuesta' => __( 'Nuestro servicio es muy sencillo de usar. Solo tienes que registrarte y empezar a disfrutar de todas las funcionalidades.', 'flavor-chat-ia' ),
+                    ),
+                    array(
+                        'pregunta'  => __( '¿Puedo cancelar en cualquier momento?', 'flavor-chat-ia' ),
+                        'respuesta' => __( 'Sí, puedes cancelar tu suscripción cuando quieras sin penalizaciones ni compromisos.', 'flavor-chat-ia' ),
+                    ),
+                    array(
+                        'pregunta'  => __( '¿Ofrecen soporte técnico?', 'flavor-chat-ia' ),
+                        'respuesta' => __( 'Contamos con un equipo de soporte disponible 24/7 para ayudarte con cualquier duda o incidencia.', 'flavor-chat-ia' ),
+                    ),
+                ),
+            ),
+            'testimonials' => array(
+                'titulo' => __( 'Lo que dicen nuestros clientes', 'flavor-chat-ia' ),
+                'items'  => array(
+                    array(
+                        'texto' => __( 'Excelente servicio, ha superado todas nuestras expectativas. Lo recomendamos sin duda.', 'flavor-chat-ia' ),
+                        'autor' => 'María García',
+                        'cargo' => 'CEO, Empresa ABC',
+                    ),
+                    array(
+                        'texto' => __( 'La mejor inversión que hemos hecho. El ROI fue inmediato y el soporte es increíble.', 'flavor-chat-ia' ),
+                        'autor' => 'Carlos López',
+                        'cargo' => 'Director de Marketing',
+                    ),
+                ),
+            ),
+            'cta' => array(
+                'titulo'      => __( '¿Listo para empezar?', 'flavor-chat-ia' ),
+                'subtitulo'   => __( 'Únete a miles de usuarios que ya confían en nosotros', 'flavor-chat-ia' ),
+                'boton_texto' => __( 'Empezar gratis', 'flavor-chat-ia' ),
+                'boton_url'   => '#',
+            ),
+        );
+
+        return isset( $plantillas[ $tipo ] )
+            ? array( 'success' => true, 'data' => $plantillas[ $tipo ], 'source' => 'template' )
+            : array( 'success' => false, 'error' => __( 'Tipo de sección no reconocido', 'flavor-chat-ia' ) );
+    }
+
+    /**
+     * Mejora texto con IA
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function mejorar_texto_ia( $request ) {
+        $texto  = $request->get_param( 'text' );
+        $accion = $request->get_param( 'action' );
+
+        if ( empty( $texto ) ) {
+            return new WP_Error(
+                'texto_vacio',
+                __( 'El texto no puede estar vacío', 'flavor-chat-ia' ),
+                array( 'status' => 400 )
+            );
+        }
+
+        // Verificar si IA está disponible
+        if ( ! class_exists( 'Flavor_VBP_AI_Content' ) ) {
+            // Devolver texto original con mensaje
+            return new WP_REST_Response(
+                array(
+                    'success'  => false,
+                    'original' => $texto,
+                    'message'  => __( 'La función de IA no está disponible. Por favor, configure la API de IA.', 'flavor-chat-ia' ),
+                ),
+                200
+            );
+        }
+
+        try {
+            $generador_ia     = Flavor_VBP_AI_Content::get_instance();
+            $texto_mejorado = $generador_ia->mejorar_texto( $texto, $accion );
+
+            return new WP_REST_Response(
+                array(
+                    'success'  => true,
+                    'original' => $texto,
+                    'improved' => $texto_mejorado,
+                    'action'   => $accion,
+                ),
+                200
+            );
+
+        } catch ( Exception $e ) {
+            return new WP_Error(
+                'ai_error',
+                $e->getMessage(),
+                array( 'status' => 500 )
+            );
+        }
+    }
+
+    /**
+     * Traduce contenido con IA
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function traducir_contenido_ia( $request ) {
+        $texto     = $request->get_param( 'text' );
+        $desde     = $request->get_param( 'from_lang' ) ?? 'auto';
+        $hacia     = $request->get_param( 'to_lang' );
+
+        if ( empty( $texto ) ) {
+            return new WP_Error(
+                'texto_vacio',
+                __( 'El texto no puede estar vacío', 'flavor-chat-ia' ),
+                array( 'status' => 400 )
+            );
+        }
+
+        // Verificar si IA o multilingual está disponible
+        if ( class_exists( 'Flavor_Multilingual' ) ) {
+            try {
+                $multilingual    = Flavor_Multilingual::get_instance();
+                $texto_traducido = $multilingual->traducir( $texto, $desde, $hacia );
+
+                return new WP_REST_Response(
+                    array(
+                        'success'    => true,
+                        'original'   => $texto,
+                        'translated' => $texto_traducido,
+                        'from_lang'  => $desde,
+                        'to_lang'    => $hacia,
+                    ),
+                    200
+                );
+            } catch ( Exception $e ) {
+                return new WP_Error(
+                    'translation_error',
+                    $e->getMessage(),
+                    array( 'status' => 500 )
+                );
+            }
+        }
+
+        // Fallback: usar IA directamente
+        if ( class_exists( 'Flavor_VBP_AI_Content' ) ) {
+            try {
+                $generador_ia    = Flavor_VBP_AI_Content::get_instance();
+                $texto_traducido = $generador_ia->traducir( $texto, $hacia, $desde );
+
+                return new WP_REST_Response(
+                    array(
+                        'success'    => true,
+                        'original'   => $texto,
+                        'translated' => $texto_traducido,
+                        'from_lang'  => $desde,
+                        'to_lang'    => $hacia,
+                    ),
+                    200
+                );
+            } catch ( Exception $e ) {
+                return new WP_Error(
+                    'ai_error',
+                    $e->getMessage(),
+                    array( 'status' => 500 )
+                );
+            }
+        }
+
+        return new WP_Error(
+            'service_unavailable',
+            __( 'El servicio de traducción no está disponible.', 'flavor-chat-ia' ),
+            array( 'status' => 503 )
+        );
+    }
+
+    /**
+     * Genera variaciones de contenido con IA
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function generar_variaciones_ia( $request ) {
+        $texto    = $request->get_param( 'text' );
+        $cantidad = $request->get_param( 'count' ) ?? 3;
+        $tipo     = $request->get_param( 'type' ) ?? 'headlines';
+
+        if ( empty( $texto ) ) {
+            return new WP_Error(
+                'texto_vacio',
+                __( 'El texto no puede estar vacío', 'flavor-chat-ia' ),
+                array( 'status' => 400 )
+            );
+        }
+
+        $cantidad = max( 1, min( 10, intval( $cantidad ) ) );
+
+        // Verificar si IA está disponible
+        if ( ! class_exists( 'Flavor_VBP_AI_Content' ) ) {
+            // Generar variaciones simples sin IA
+            $variaciones = $this->generar_variaciones_simples( $texto, $cantidad, $tipo );
+
+            return new WP_REST_Response(
+                array(
+                    'success'    => true,
+                    'original'   => $texto,
+                    'variations' => $variaciones,
+                    'type'       => $tipo,
+                    'source'     => 'simple',
+                ),
+                200
+            );
+        }
+
+        try {
+            $generador_ia = Flavor_VBP_AI_Content::get_instance();
+            $variaciones  = $generador_ia->generar_variaciones( $texto, $cantidad, $tipo );
+
+            return new WP_REST_Response(
+                array(
+                    'success'    => true,
+                    'original'   => $texto,
+                    'variations' => $variaciones,
+                    'type'       => $tipo,
+                    'source'     => 'ai',
+                ),
+                200
+            );
+
+        } catch ( Exception $e ) {
+            return new WP_Error(
+                'ai_error',
+                $e->getMessage(),
+                array( 'status' => 500 )
+            );
+        }
+    }
+
+    /**
+     * Genera variaciones simples sin IA
+     *
+     * @param string $texto    Texto original.
+     * @param int    $cantidad Cantidad de variaciones.
+     * @param string $tipo     Tipo de variación.
+     * @return array
+     */
+    private function generar_variaciones_simples( $texto, $cantidad, $tipo ) {
+        $variaciones = array();
+
+        $prefijos_titulo = array(
+            __( 'Descubre', 'flavor-chat-ia' ),
+            __( 'Conoce', 'flavor-chat-ia' ),
+            __( 'Explora', 'flavor-chat-ia' ),
+            __( 'Aprende sobre', 'flavor-chat-ia' ),
+            __( 'Todo sobre', 'flavor-chat-ia' ),
+        );
+
+        $sufijos_cta = array(
+            __( 'ahora', 'flavor-chat-ia' ),
+            __( 'hoy', 'flavor-chat-ia' ),
+            __( 'ya', 'flavor-chat-ia' ),
+            __( 'gratis', 'flavor-chat-ia' ),
+            __( 'sin compromiso', 'flavor-chat-ia' ),
+        );
+
+        for ( $i = 0; $i < $cantidad; $i++ ) {
+            switch ( $tipo ) {
+                case 'headlines':
+                    $prefijo       = $prefijos_titulo[ $i % count( $prefijos_titulo ) ];
+                    $variaciones[] = $prefijo . ' ' . lcfirst( $texto );
+                    break;
+
+                case 'cta':
+                    $sufijo        = $sufijos_cta[ $i % count( $sufijos_cta ) ];
+                    $variaciones[] = $texto . ' ' . $sufijo;
+                    break;
+
+                case 'descriptions':
+                case 'taglines':
+                default:
+                    $variaciones[] = $texto . ' (variación ' . ( $i + 1 ) . ')';
+                    break;
+            }
+        }
+
+        return $variaciones;
     }
 }

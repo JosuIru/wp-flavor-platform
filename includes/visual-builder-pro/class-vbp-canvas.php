@@ -61,6 +61,14 @@ class Flavor_VBP_Canvas {
             return;
         }
 
+        // Cargar Font Awesome para iconos
+        wp_enqueue_style(
+            'font-awesome',
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+            array(),
+            '6.4.0'
+        );
+
         $css_url = FLAVOR_CHAT_IA_URL . 'assets/vbp/css/frontend-components.css';
         $css_path = FLAVOR_CHAT_IA_PATH . 'assets/vbp/css/frontend-components.css';
 
@@ -68,7 +76,7 @@ class Flavor_VBP_Canvas {
             wp_enqueue_style(
                 'vbp-frontend-components',
                 $css_url,
-                array(),
+                array( 'font-awesome' ),
                 '2.0.0'
             );
         }
@@ -1394,8 +1402,8 @@ class Flavor_VBP_Canvas {
         $descripcion   = $data['descripcion'] ?? $data['description'] ?? '';
         $boton_texto   = $data['boton_texto'] ?? $data['buttonText'] ?? $data['cta_text'] ?? '';
         $boton_url     = $data['boton_url'] ?? $data['buttonUrl'] ?? $data['cta_url'] ?? '#';
-        $imagen        = $data['imagen_fondo'] ?? $data['backgroundImage'] ?? $data['image'] ?? '';
-        $overlay_color = $data['overlay_color'] ?? $data['overlayColor'] ?? '';
+        $imagen        = $data['imagen_fondo'] ?? $data['backgroundImage'] ?? $data['background_image'] ?? $data['image'] ?? '';
+        $overlay_color = $data['overlay_color'] ?? $data['overlayColor'] ?? $data['background_overlay_color'] ?? '';
         $altura        = $data['altura'] ?? $data['height'] ?? '';
         $boton_color   = $data['boton_color'] ?? $data['buttonColor'] ?? '';
         $boton_bg      = $data['boton_bg'] ?? $data['buttonBg'] ?? '';
@@ -1488,8 +1496,11 @@ class Flavor_VBP_Canvas {
 
             foreach ( $items as $item ) {
                 $html .= '<div class="vbp-feature-card">';
-                $html .= '<h3 class="vbp-feature-card__title">' . esc_html( $item['titulo'] ?? '' ) . '</h3>';
-                $html .= '<p class="vbp-feature-card__description">' . esc_html( $item['descripcion'] ?? '' ) . '</p>';
+                if ( ! empty( $item['icono'] ) ) {
+                    $html .= '<div class="vbp-feature-card__icon"><i class="fas fa-' . esc_attr( $item['icono'] ) . '"></i></div>';
+                }
+                $html .= '<h3 class="vbp-feature-card__title">' . esc_html( $item['titulo'] ?? $item['title'] ?? '' ) . '</h3>';
+                $html .= '<p class="vbp-feature-card__description">' . esc_html( $item['descripcion'] ?? $item['description'] ?? '' ) . '</p>';
                 $html .= '</div>';
             }
 
@@ -1873,17 +1884,26 @@ class Flavor_VBP_Canvas {
         $estilos     = $elemento['styles'] ?? array();
         $estilos_css = $this->generar_estilos_elemento( $estilos );
 
-        $items = $data['items'] ?? array();
+        // Soportar ambos nombres de campo: items y stats
+        $items = $data['items'] ?? $data['stats'] ?? array();
+        $titulo = $data['titulo'] ?? $data['title'] ?? '';
 
         $html = '<section class="vbp-stats" style="' . esc_attr( $estilos_css ) . '">';
+
+        if ( $titulo ) {
+            $html .= '<h2 class="vbp-stats__title">' . wp_kses_post( $titulo ) . '</h2>';
+        }
 
         if ( ! empty( $items ) ) {
             $html .= '<div class="vbp-stats__grid">';
 
             foreach ( $items as $item ) {
                 $html .= '<div class="vbp-stat-item">';
-                $html .= '<span class="vbp-stat-item__number">' . esc_html( $item['numero'] ?? '0' ) . '</span>';
-                $html .= '<span class="vbp-stat-item__label">' . esc_html( $item['label'] ?? '' ) . '</span>';
+                if ( ! empty( $item['icono'] ) ) {
+                    $html .= '<div class="vbp-stat-item__icon"><i class="fas fa-' . esc_attr( $item['icono'] ) . '"></i></div>';
+                }
+                $html .= '<span class="vbp-stat-item__number">' . esc_html( $item['numero'] ?? $item['number'] ?? '0' ) . '</span>';
+                $html .= '<span class="vbp-stat-item__label">' . esc_html( $item['label'] ?? $item['texto'] ?? '' ) . '</span>';
                 $html .= '</div>';
             }
 
@@ -3578,5 +3598,283 @@ class Flavor_VBP_Canvas {
         $clases     = trim( 'vbp-element vbp-element--' . esc_attr( $tipo ) . ' ' . $clases_anim );
 
         return '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos_anim . '>' . esc_html( $nombre ) . '</div>';
+    }
+
+    /**
+     * Renderiza un componente carrusel
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string HTML del carrusel.
+     */
+    private function render_carousel( $elemento ) {
+        $datos           = $elemento['data'] ?? array();
+        $variante        = $elemento['variant'] ?? 'simple';
+        $estilos         = $elemento['styles'] ?? array();
+        $items           = $datos['items'] ?? array();
+        $autoplay        = isset( $datos['autoplay'] ) ? $datos['autoplay'] : true;
+        $intervalo       = isset( $datos['intervalo'] ) ? intval( $datos['intervalo'] ) : 5;
+        $mostrar_flechas = isset( $datos['mostrar_flechas'] ) ? $datos['mostrar_flechas'] : true;
+        $mostrar_dots    = isset( $datos['mostrar_dots'] ) ? $datos['mostrar_dots'] : true;
+        $loop            = isset( $datos['loop'] ) ? $datos['loop'] : true;
+        $slides_visibles = isset( $datos['slides_visibles'] ) ? intval( $datos['slides_visibles'] ) : 1;
+        $efecto          = $datos['efecto_transicion'] ?? 'slide';
+
+        $estilos_css     = $this->generar_estilos_elemento( $estilos );
+        $clases_base     = 'vbp-carousel vbp-carousel--' . esc_attr( $variante );
+
+        $html = '<div class="' . esc_attr( $clases_base ) . '" style="' . esc_attr( $estilos_css ) . '"';
+        $html .= ' data-autoplay="' . ( $autoplay ? 'true' : 'false' ) . '"';
+        $html .= ' data-interval="' . esc_attr( $intervalo * 1000 ) . '"';
+        $html .= ' data-loop="' . ( $loop ? 'true' : 'false' ) . '"';
+        $html .= ' data-slides-visible="' . esc_attr( $slides_visibles ) . '"';
+        $html .= ' data-effect="' . esc_attr( $efecto ) . '">';
+
+        // Track de slides
+        $html .= '<div class="vbp-carousel__track">';
+        foreach ( $items as $indice => $item ) {
+            $html .= '<div class="vbp-carousel__slide">';
+            if ( ! empty( $item['imagen'] ) ) {
+                $html .= '<img src="' . esc_url( $item['imagen'] ) . '" alt="' . esc_attr( $item['titulo'] ?? '' ) . '" class="vbp-carousel__image">';
+            }
+            if ( ! empty( $item['titulo'] ) || ! empty( $item['descripcion'] ) ) {
+                $html .= '<div class="vbp-carousel__content">';
+                if ( ! empty( $item['titulo'] ) ) {
+                    $html .= '<h3 class="vbp-carousel__title">' . esc_html( $item['titulo'] ) . '</h3>';
+                }
+                if ( ! empty( $item['descripcion'] ) ) {
+                    $html .= '<p class="vbp-carousel__description">' . wp_kses_post( $item['descripcion'] ) . '</p>';
+                }
+                if ( ! empty( $item['enlace_url'] ) ) {
+                    $texto_enlace = ! empty( $item['enlace_texto'] ) ? $item['enlace_texto'] : __( 'Ver más', 'flavor-chat-ia' );
+                    $html .= '<a href="' . esc_url( $item['enlace_url'] ) . '" class="vbp-carousel__link">' . esc_html( $texto_enlace ) . '</a>';
+                }
+                $html .= '</div>';
+            }
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+
+        // Flechas de navegación
+        if ( $mostrar_flechas ) {
+            $html .= '<button type="button" class="vbp-carousel__arrow vbp-carousel__arrow--prev" aria-label="' . esc_attr__( 'Anterior', 'flavor-chat-ia' ) . '">';
+            $html .= '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>';
+            $html .= '</button>';
+            $html .= '<button type="button" class="vbp-carousel__arrow vbp-carousel__arrow--next" aria-label="' . esc_attr__( 'Siguiente', 'flavor-chat-ia' ) . '">';
+            $html .= '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+            $html .= '</button>';
+        }
+
+        // Indicadores (dots)
+        if ( $mostrar_dots && count( $items ) > 1 ) {
+            $html .= '<div class="vbp-carousel__dots">';
+            foreach ( $items as $indice => $item ) {
+                $activo = 0 === $indice ? ' vbp-carousel__dot--active' : '';
+                $html .= '<button type="button" class="vbp-carousel__dot' . $activo . '" data-index="' . esc_attr( $indice ) . '" aria-label="' . esc_attr( sprintf( __( 'Ir al slide %d', 'flavor-chat-ia' ), $indice + 1 ) ) . '"></button>';
+            }
+            $html .= '</div>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un componente de pestañas (tabs)
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string HTML de las pestañas.
+     */
+    private function render_tabs( $elemento ) {
+        $datos           = $elemento['data'] ?? array();
+        $variante        = $elemento['variant'] ?? 'horizontal';
+        $estilos         = $elemento['styles'] ?? array();
+        $tabs            = $datos['tabs'] ?? array();
+        $tab_activa      = isset( $datos['tab_activa_defecto'] ) ? intval( $datos['tab_activa_defecto'] ) : 0;
+        $alineacion      = $datos['alineacion_tabs'] ?? 'left';
+        $animacion       = isset( $datos['animacion'] ) ? $datos['animacion'] : true;
+
+        $estilos_css     = $this->generar_estilos_elemento( $estilos );
+        $clases_base     = 'vbp-tabs vbp-tabs--' . esc_attr( $variante );
+        $clases_base    .= ' vbp-tabs--align-' . esc_attr( $alineacion );
+        if ( $animacion ) {
+            $clases_base .= ' vbp-tabs--animated';
+        }
+
+        $id_unico = 'vbp-tabs-' . wp_rand( 1000, 9999 );
+
+        $html = '<div class="' . esc_attr( $clases_base ) . '" style="' . esc_attr( $estilos_css ) . '" id="' . esc_attr( $id_unico ) . '">';
+
+        // Navegación de tabs
+        $html .= '<div class="vbp-tabs__nav" role="tablist">';
+        foreach ( $tabs as $indice => $tab ) {
+            $activa = $indice === $tab_activa ? ' vbp-tabs__button--active' : '';
+            $html .= '<button type="button" class="vbp-tabs__button' . $activa . '" role="tab"';
+            $html .= ' aria-selected="' . ( $indice === $tab_activa ? 'true' : 'false' ) . '"';
+            $html .= ' aria-controls="' . esc_attr( $id_unico . '-panel-' . $indice ) . '"';
+            $html .= ' data-index="' . esc_attr( $indice ) . '">';
+            if ( ! empty( $tab['icono'] ) ) {
+                $html .= '<span class="vbp-tabs__icon">' . wp_kses_post( $tab['icono'] ) . '</span>';
+            }
+            $html .= '<span class="vbp-tabs__label">' . esc_html( $tab['titulo'] ?? __( 'Tab', 'flavor-chat-ia' ) ) . '</span>';
+            $html .= '</button>';
+        }
+        $html .= '</div>';
+
+        // Contenido de tabs
+        $html .= '<div class="vbp-tabs__content">';
+        foreach ( $tabs as $indice => $tab ) {
+            $activa = $indice === $tab_activa ? ' vbp-tabs__panel--active' : '';
+            $html .= '<div class="vbp-tabs__panel' . $activa . '" role="tabpanel"';
+            $html .= ' id="' . esc_attr( $id_unico . '-panel-' . $indice ) . '"';
+            $html .= ' aria-hidden="' . ( $indice === $tab_activa ? 'false' : 'true' ) . '">';
+            $html .= wp_kses_post( $tab['contenido'] ?? '' );
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un componente acordeón
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string HTML del acordeón.
+     */
+    private function render_accordion( $elemento ) {
+        $datos             = $elemento['data'] ?? array();
+        $variante          = $elemento['variant'] ?? 'simple';
+        $estilos           = $elemento['styles'] ?? array();
+        $items             = $datos['items'] ?? array();
+        $multiple_abiertos = isset( $datos['multiple_abiertos'] ) ? $datos['multiple_abiertos'] : false;
+        $icono_tipo        = $datos['icono_expandir'] ?? 'chevron';
+        $animacion         = isset( $datos['animacion'] ) ? $datos['animacion'] : true;
+
+        $estilos_css     = $this->generar_estilos_elemento( $estilos );
+        $clases_base     = 'vbp-accordion vbp-accordion--' . esc_attr( $variante );
+        if ( $animacion ) {
+            $clases_base .= ' vbp-accordion--animated';
+        }
+
+        $icono_svg = $this->get_accordion_icon( $icono_tipo );
+
+        $html = '<div class="' . esc_attr( $clases_base ) . '" style="' . esc_attr( $estilos_css ) . '"';
+        $html .= ' data-allow-multiple="' . ( $multiple_abiertos ? 'true' : 'false' ) . '">';
+
+        foreach ( $items as $indice => $item ) {
+            $abierto = isset( $item['abierto'] ) && $item['abierto'] ? true : false;
+            $clases_item = 'vbp-accordion__item';
+            if ( $abierto ) {
+                $clases_item .= ' vbp-accordion__item--open';
+            }
+
+            $html .= '<div class="' . esc_attr( $clases_item ) . '">';
+            $html .= '<button type="button" class="vbp-accordion__header" aria-expanded="' . ( $abierto ? 'true' : 'false' ) . '">';
+            if ( ! empty( $item['icono'] ) ) {
+                $html .= '<span class="vbp-accordion__item-icon">' . wp_kses_post( $item['icono'] ) . '</span>';
+            }
+            $html .= '<span class="vbp-accordion__title">' . esc_html( $item['titulo'] ?? '' ) . '</span>';
+            $html .= '<span class="vbp-accordion__icon">' . $icono_svg . '</span>';
+            $html .= '</button>';
+            $html .= '<div class="vbp-accordion__content"' . ( $abierto ? '' : ' style="display: none;"' ) . '>';
+            $html .= '<div class="vbp-accordion__body">' . wp_kses_post( $item['contenido'] ?? '' ) . '</div>';
+            $html .= '</div>';
+            $html .= '</div>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Obtiene el SVG del icono del acordeón según el tipo
+     *
+     * @param string $tipo Tipo de icono.
+     * @return string SVG del icono.
+     */
+    private function get_accordion_icon( $tipo ) {
+        switch ( $tipo ) {
+            case 'plus':
+                return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+            case 'arrow':
+                return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>';
+            case 'chevron':
+            default:
+                return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+        }
+    }
+
+    /**
+     * Renderiza un componente línea de tiempo (timeline)
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string HTML de la línea de tiempo.
+     */
+    private function render_timeline( $elemento ) {
+        $datos              = $elemento['data'] ?? array();
+        $variante           = $elemento['variant'] ?? 'vertical';
+        $estilos            = $elemento['styles'] ?? array();
+        $eventos            = $datos['eventos'] ?? array();
+        $color_linea        = $datos['color_linea'] ?? '#3b82f6';
+        $color_marcador     = $datos['color_marcador'] ?? '#3b82f6';
+        $animacion_scroll   = isset( $datos['animacion_scroll'] ) ? $datos['animacion_scroll'] : true;
+        $mostrar_conectores = isset( $datos['mostrar_conectores'] ) ? $datos['mostrar_conectores'] : true;
+
+        $estilos_css     = $this->generar_estilos_elemento( $estilos );
+        $clases_base     = 'vbp-timeline vbp-timeline--' . esc_attr( $variante );
+        if ( $animacion_scroll ) {
+            $clases_base .= ' vbp-timeline--animated';
+        }
+
+        $estilos_inline = $estilos_css;
+        $estilos_inline .= '--timeline-line-color: ' . $this->map_color_to_variable( $color_linea ) . ';';
+        $estilos_inline .= '--timeline-marker-color: ' . $this->map_color_to_variable( $color_marcador ) . ';';
+
+        $html = '<div class="' . esc_attr( $clases_base ) . '" style="' . esc_attr( $estilos_inline ) . '">';
+
+        if ( $mostrar_conectores && 'horizontal' !== $variante ) {
+            $html .= '<div class="vbp-timeline__line"></div>';
+        }
+
+        foreach ( $eventos as $indice => $evento ) {
+            $estado       = $evento['estado'] ?? 'completed';
+            $color_evento = ! empty( $evento['color'] ) ? $evento['color'] : $color_marcador;
+            $clases_item  = 'vbp-timeline__item vbp-timeline__item--' . esc_attr( $estado );
+
+            $html .= '<div class="' . esc_attr( $clases_item ) . '"' . ( $animacion_scroll ? ' data-animation="fade-up"' : '' ) . '>';
+
+            // Marcador
+            $html .= '<div class="vbp-timeline__marker" style="background-color: ' . esc_attr( $this->map_color_to_variable( $color_evento ) ) . ';">';
+            if ( ! empty( $evento['icono'] ) ) {
+                $html .= '<span class="vbp-timeline__marker-icon">' . wp_kses_post( $evento['icono'] ) . '</span>';
+            }
+            $html .= '</div>';
+
+            // Contenido
+            $html .= '<div class="vbp-timeline__content">';
+            if ( ! empty( $evento['fecha'] ) ) {
+                $html .= '<span class="vbp-timeline__date">' . esc_html( $evento['fecha'] ) . '</span>';
+            }
+            if ( ! empty( $evento['titulo'] ) ) {
+                $html .= '<h4 class="vbp-timeline__title">' . esc_html( $evento['titulo'] ) . '</h4>';
+            }
+            if ( ! empty( $evento['descripcion'] ) ) {
+                $html .= '<p class="vbp-timeline__description">' . wp_kses_post( $evento['descripcion'] ) . '</p>';
+            }
+            if ( ! empty( $evento['imagen'] ) ) {
+                $html .= '<img src="' . esc_url( $evento['imagen'] ) . '" alt="' . esc_attr( $evento['titulo'] ?? '' ) . '" class="vbp-timeline__image">';
+            }
+            $html .= '</div>';
+
+            $html .= '</div>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
     }
 }

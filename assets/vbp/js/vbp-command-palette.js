@@ -173,6 +173,7 @@ document.addEventListener('alpine:init', function() {
             { id: 'device-desktop', label: 'Vista Escritorio', category: 'responsive', icon: '🖥', action: 'breakpointDesktop', shortcut: '1' },
             { id: 'device-tablet', label: 'Vista Tablet (768px)', category: 'responsive', icon: '📱', action: 'breakpointTablet', shortcut: '2' },
             { id: 'device-mobile', label: 'Vista Móvil (375px)', category: 'responsive', icon: '📱', action: 'breakpointMobile', shortcut: '3' },
+            { id: 'split-screen', label: 'Vista dividida Desktop + Mobile', category: 'responsive', icon: '⬜', action: 'toggleSplitScreen', shortcut: 'Ctrl+\\' },
 
             // Templates y Componentes
             { id: 'templates-library', label: 'Biblioteca de templates', category: 'templates', icon: '📐', action: 'openTemplatesLibrary', shortcut: 'Ctrl+Shift+K' },
@@ -747,6 +748,56 @@ document.addEventListener('alpine:init', function() {
                 case 'device':
                     if (typeof store.setDevice === 'function') {
                         store.setDevice(cmd.value);
+                    }
+                    break;
+
+                // Biblioteca de Componentes
+                case 'saveAsComponent':
+                    if (typeof window.VBPComponentLibrary !== 'undefined') {
+                        window.VBPComponentLibrary.guardarSeleccionComoComponente();
+                    }
+                    break;
+
+                case 'openComponentsLibrary':
+                    // Abrir pestaña de componentes en el panel izquierdo
+                    var appElement = document.querySelector('[x-data="vbpApp()"]');
+                    if (appElement && appElement.__x) {
+                        appElement.__x.$data.activeLeftTab = 'components';
+                    }
+                    break;
+
+                case 'openTemplatesLibrary':
+                    var appEl = document.querySelector('[x-data="vbpApp()"]');
+                    if (appEl && appEl.__x) {
+                        appEl.__x.$data.showTemplatesModal = true;
+                    }
+                    break;
+
+                case 'breakpointDesktop':
+                    var appDesktop = document.querySelector('[x-data="vbpApp()"]');
+                    if (appDesktop && appDesktop.__x) {
+                        appDesktop.__x.$data.setDevicePreview('desktop');
+                    }
+                    break;
+
+                case 'breakpointTablet':
+                    var appTablet = document.querySelector('[x-data="vbpApp()"]');
+                    if (appTablet && appTablet.__x) {
+                        appTablet.__x.$data.setDevicePreview('tablet');
+                    }
+                    break;
+
+                case 'breakpointMobile':
+                    var appMobile = document.querySelector('[x-data="vbpApp()"]');
+                    if (appMobile && appMobile.__x) {
+                        appMobile.__x.$data.setDevicePreview('mobile');
+                    }
+                    break;
+
+                case 'toggleSplitScreen':
+                    var appSplitScreen = document.querySelector('[x-data="vbpApp()"]');
+                    if (appSplitScreen && appSplitScreen.__x) {
+                        appSplitScreen.__x.$data.toggleSplitScreen();
                     }
                     break;
             }
