@@ -1,0 +1,707 @@
+/**
+ * APK Builder Styles
+ *
+ * @package Flavor_Chat_IA
+ */
+
+/* ==========================================================================
+   Layout Principal
+   ========================================================================== */
+
+.flavor-apk-builder-wrap {
+    max-width: 1600px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.flavor-apk-builder-wrap h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.flavor-apk-builder-wrap h1 .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #3DDC84; /* Android green */
+}
+
+.apk-builder-layout {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 30px;
+    align-items: start;
+}
+
+/* ==========================================================================
+   Panel de Configuración
+   ========================================================================== */
+
+.config-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.config-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.config-section h2 {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2327;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+/* Environment Check */
+#environment-status {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.env-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    background: #f6f7f7;
+    border-radius: 8px;
+}
+
+.status-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-icon.pending { background: #c3c4c7; }
+.status-icon.ok { background: #00a32a; }
+.status-icon.warning { background: #dba617; }
+.status-icon.error { background: #d63638; }
+
+.env-label {
+    font-weight: 500;
+    flex: 1;
+}
+
+.env-value {
+    font-size: 12px;
+    color: #646970;
+    font-family: monospace;
+}
+
+/* Form Rows */
+.form-row {
+    margin-bottom: 20px;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
+}
+
+.form-row label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #1d2327;
+}
+
+.form-row input[type="text"],
+.form-row input[type="url"],
+.form-row input[type="number"],
+.form-row select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.form-row input:focus,
+.form-row select:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+.form-row .description {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #646970;
+}
+
+/* Version inputs */
+.version-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.version-inputs input[type="text"] {
+    flex: 1;
+}
+
+.version-inputs input[type="number"] {
+    width: 80px;
+}
+
+.version-inputs span {
+    color: #646970;
+    font-weight: 500;
+}
+
+/* Icon selector */
+.icon-selector {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.icon-preview {
+    width: 80px;
+    height: 80px;
+    background: #f6f7f7;
+    border: 2px dashed #c3c4c7;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.icon-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.icon-preview .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #c3c4c7;
+}
+
+.icon-selector .button {
+    margin-top: 10px;
+}
+
+/* Colors row */
+.colors-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.color-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.color-field label {
+    margin-bottom: 8px;
+}
+
+/* API Key field */
+.api-key-field {
+    display: flex;
+    gap: 10px;
+}
+
+.api-key-field input {
+    flex: 1;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+/* Modules grid */
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.module-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 10px;
+    background: #f6f7f7;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.module-item:hover {
+    background: #f0f0f1;
+}
+
+.module-item input {
+    display: none;
+}
+
+.module-item input:checked + .module-icon + .module-name,
+.module-item input:checked + .module-icon {
+    color: #2271b1;
+}
+
+.module-item input:checked ~ * {
+    color: #2271b1;
+}
+
+.module-item:has(input:checked) {
+    border-color: #2271b1;
+    background: #f0f6fc;
+}
+
+.module-icon .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #646970;
+}
+
+.module-item:has(input:checked) .module-icon .dashicons {
+    color: #2271b1;
+}
+
+.module-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #50575e;
+}
+
+/* Collapsible sections */
+.config-section.collapsible .collapsible-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.config-section.collapsible .collapsible-content {
+    display: none;
+    padding-top: 20px;
+    margin-top: 15px;
+    border-top: 1px solid #f0f0f1;
+}
+
+.config-section.collapsible.open .collapsible-content {
+    display: block;
+}
+
+.config-section.collapsible.open .collapsible-header .dashicons {
+    transform: rotate(180deg);
+}
+
+/* Config actions */
+.config-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.config-actions .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.config-actions .button-hero {
+    padding: 12px 30px;
+    font-size: 16px;
+}
+
+.config-actions .button-hero .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* ==========================================================================
+   Panel de Preview
+   ========================================================================== */
+
+.preview-panel {
+    position: sticky;
+    top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.preview-section,
+.builds-section,
+.build-log-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.preview-section h2,
+.builds-section h2,
+.build-log-section h2 {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+/* Phone preview */
+.phone-preview {
+    display: flex;
+    justify-content: center;
+}
+
+.phone-frame {
+    width: 220px;
+    height: 450px;
+    background: #1d2327;
+    border-radius: 30px;
+    padding: 10px;
+    position: relative;
+}
+
+.phone-notch {
+    width: 80px;
+    height: 25px;
+    background: #1d2327;
+    border-radius: 0 0 15px 15px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-header {
+    padding: 35px 15px 15px;
+    background: var(--preview-primary, #2271b1);
+    color: #fff;
+}
+
+.app-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.app-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.preview-modules {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.preview-module-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 5px;
+    background: #f6f7f7;
+    border-radius: 8px;
+}
+
+.preview-module-item .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--preview-primary, #2271b1);
+}
+
+.preview-module-item span {
+    font-size: 9px;
+    color: #50575e;
+    text-align: center;
+}
+
+.app-navbar {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background: #fff;
+    border-top: 1px solid #f0f0f1;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: #a7aaad;
+    font-size: 9px;
+}
+
+.nav-item .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.nav-item.active {
+    color: var(--preview-primary, #2271b1);
+}
+
+/* ==========================================================================
+   Builds List
+   ========================================================================== */
+
+.builds-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.build-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.build-item:last-child {
+    border-bottom: none;
+}
+
+.build-status-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.build-status-icon.success {
+    background: #d4edda;
+    color: #00a32a;
+}
+
+.build-status-icon.error {
+    background: #f8d7da;
+    color: #d63638;
+}
+
+.build-status-icon.running {
+    background: #fff3cd;
+    color: #dba617;
+}
+
+.build-info {
+    flex: 1;
+}
+
+.build-info .build-name {
+    font-weight: 500;
+    color: #1d2327;
+    font-size: 13px;
+}
+
+.build-info .build-date {
+    font-size: 11px;
+    color: #646970;
+}
+
+.build-actions .button {
+    padding: 4px 10px;
+    font-size: 11px;
+}
+
+/* ==========================================================================
+   Build Log
+   ========================================================================== */
+
+.build-log-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.build-status {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.build-status.running {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.build-status.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.build-status.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.build-progress {
+    height: 6px;
+    background: #f0f0f1;
+    border-radius: 3px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #3DDC84, #00a32a);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.build-log {
+    background: #1d2327;
+    border-radius: 8px;
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 11px;
+    color: #a7aaad;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.build-log .log-success {
+    color: #3DDC84;
+}
+
+.build-log .log-error {
+    color: #d63638;
+}
+
+.build-log .log-warning {
+    color: #dba617;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+    .apk-builder-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-panel {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .preview-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .colors-row {
+        grid-template-columns: 1fr;
+    }
+
+    .modules-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .config-actions {
+        flex-direction: column;
+    }
+
+    .config-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ==========================================================================
+   Loading & States
+   ========================================================================== */
+
+.loading {
+    text-align: center;
+    padding: 30px;
+    color: #646970;
+}
+
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+}
+
+.spinner-content {
+    text-align: center;
+}
+
+.spinner-content .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f0f0f1;
+    border-top-color: #2271b1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* WordPress Color Picker overrides */
+.wp-picker-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.wp-picker-container .wp-color-result {
+    margin-bottom: 5px;
+}
