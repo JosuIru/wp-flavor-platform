@@ -1,0 +1,310 @@
+/**
+ * App Dashboard Widget Styles
+ *
+ * @package Flavor_Chat_IA
+ */
+
+/* ==========================================================================
+   Widget Container
+   ========================================================================== */
+
+.flavor-app-widget {
+    margin: -12px;
+}
+
+/* ==========================================================================
+   Metrics Grid
+   ========================================================================== */
+
+.app-widget-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px 8px 0 0;
+}
+
+.metric-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+}
+
+.metric-icon {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 8px;
+}
+
+.metric-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.metric-label {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+.metric-trend {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.metric-trend.up {
+    background: rgba(46, 204, 113, 0.3);
+    color: #2ecc71;
+}
+
+.metric-trend.down {
+    background: rgba(231, 76, 60, 0.3);
+    color: #e74c3c;
+}
+
+/* ==========================================================================
+   Mini Chart
+   ========================================================================== */
+
+.app-widget-chart {
+    padding: 15px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.app-widget-chart canvas {
+    width: 100% !important;
+}
+
+/* ==========================================================================
+   Version Info
+   ========================================================================== */
+
+.app-widget-version {
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 15px;
+    background: #fff;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.version-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.version-platform {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.version-platform .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.version-number {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1d2327;
+    background: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   Alerts
+   ========================================================================== */
+
+.app-widget-alerts {
+    padding: 10px 15px;
+    background: #fff;
+}
+
+.widget-alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.widget-alert:last-child {
+    margin-bottom: 0;
+}
+
+.widget-alert .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.widget-alert.warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.widget-alert.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.widget-alert.info {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.widget-alert.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* ==========================================================================
+   Actions
+   ========================================================================== */
+
+.app-widget-actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+.app-widget-actions .button {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    padding: 6px 10px;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.app-widget-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 15px;
+    background: #fff;
+    border-top: 1px solid #e9ecef;
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.refresh-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: #6c757d;
+    transition: color 0.2s;
+}
+
+.refresh-btn:hover {
+    color: #2271b1;
+}
+
+.refresh-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.refresh-btn.spinning .dashicons {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 782px) {
+    .app-widget-metrics {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .metric-card {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        text-align: left;
+    }
+
+    .metric-content {
+        flex: 1;
+    }
+
+    .app-widget-actions {
+        flex-direction: column;
+    }
+
+    .app-widget-actions .button {
+        width: 100%;
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .app-widget-chart,
+    .app-widget-footer {
+        background: #1d2327;
+        border-color: #3c434a;
+    }
+
+    .app-widget-version {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+
+    .version-number {
+        background: #3c434a;
+        color: #f0f0f1;
+    }
+
+    .app-widget-alerts {
+        background: #2c3338;
+    }
+
+    .app-widget-actions {
+        background: #1d2327;
+        border-color: #3c434a;
+    }
+}
