@@ -612,19 +612,69 @@ function vbpApp() {
          */
         initSplitScreen: function() {
             var self = this;
+            var devices = this.splitScreenDevices;
 
-            // Crear contenedor split si no existe
             this.$nextTick(function() {
                 var canvasArea = document.querySelector('.vbp-canvas-area');
-                if (!canvasArea) return;
+                var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+                var canvas = document.querySelector('.vbp-canvas');
+
+                if (!canvasArea || !canvasWrapper || !canvas) return;
+
+                // Guardar referencia al canvas original
+                self._originalCanvasParent = canvasWrapper;
+                self._originalCanvas = canvas.cloneNode(true);
 
                 // Añadir clase split-screen
                 canvasArea.classList.add('vbp-split-screen-active');
+
+                // Crear panel izquierdo (primer dispositivo)
+                var panelLeft = document.createElement('div');
+                panelLeft.className = 'vbp-split-panel';
+                panelLeft.setAttribute('data-device', self.getDeviceLabel(devices[0]));
+                panelLeft.style.cssText = 'flex: 1; overflow: auto; background: var(--vbp-bg-secondary, #f9fafb); border-radius: 12px; position: relative;';
+
+                // Crear canvas para panel izquierdo
+                var canvasLeft = document.createElement('div');
+                canvasLeft.className = 'vbp-canvas vbp-canvas--' + devices[0];
+                canvasLeft.style.cssText = 'width: ' + self.getDeviceWidth(devices[0]) + 'px; max-width: 100%; margin: 16px auto; background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.1); border-radius: 8px;';
+                canvasLeft.innerHTML = canvas.innerHTML;
+                panelLeft.appendChild(canvasLeft);
+
+                // Crear panel derecho (segundo dispositivo)
+                var panelRight = document.createElement('div');
+                panelRight.className = 'vbp-split-panel';
+                panelRight.setAttribute('data-device', self.getDeviceLabel(devices[1]));
+                panelRight.style.cssText = 'width: 420px; flex-shrink: 0; overflow: auto; background: var(--vbp-bg-secondary, #f9fafb); border-radius: 12px; position: relative;';
+
+                // Crear canvas para panel derecho
+                var canvasRight = document.createElement('div');
+                canvasRight.className = 'vbp-canvas vbp-canvas--' + devices[1];
+                canvasRight.style.cssText = 'width: ' + self.getDeviceWidth(devices[1]) + 'px; max-width: 100%; margin: 16px auto; background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.1); border-radius: 8px;';
+                canvasRight.innerHTML = canvas.innerHTML;
+                panelRight.appendChild(canvasRight);
+
+                // Limpiar y añadir paneles
+                canvasWrapper.style.display = 'none';
+                canvasArea.appendChild(panelLeft);
+                canvasArea.appendChild(panelRight);
 
                 // Inicializar sincronización de scroll
                 if (self.splitScreenSyncScroll) {
                     self.initSplitScreenScrollSync();
                 }
+
+                // Crear indicador de sincronización
+                var syncIndicator = document.createElement('div');
+                syncIndicator.className = 'vbp-split-sync-indicator' + (self.splitScreenSyncScroll ? ' active' : '');
+                syncIndicator.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> <span>Scroll sincronizado</span>';
+                syncIndicator.style.cursor = 'pointer';
+                syncIndicator.addEventListener('click', function() {
+                    self.toggleSplitScreenSyncScroll();
+                    syncIndicator.classList.toggle('active', self.splitScreenSyncScroll);
+                });
+                document.body.appendChild(syncIndicator);
+                self._splitSyncIndicator = syncIndicator;
             });
         },
 
@@ -633,8 +683,27 @@ function vbpApp() {
          */
         destroySplitScreen: function() {
             var canvasArea = document.querySelector('.vbp-canvas-area');
+            var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+
             if (canvasArea) {
                 canvasArea.classList.remove('vbp-split-screen-active');
+
+                // Remover paneles split
+                var paneles = canvasArea.querySelectorAll('.vbp-split-panel');
+                paneles.forEach(function(panel) {
+                    panel.remove();
+                });
+
+                // Mostrar canvas wrapper original
+                if (canvasWrapper) {
+                    canvasWrapper.style.display = '';
+                }
+            }
+
+            // Remover indicador de sincronización
+            if (this._splitSyncIndicator) {
+                this._splitSyncIndicator.remove();
+                this._splitSyncIndicator = null;
             }
 
             // Remover listeners de scroll
@@ -4525,6 +4594,194 @@ function vbpApp() {
                 modified: 'Modificado'
             };
             return labels[type] || type;
+        },
+
+        // ============ RESPONSIVE PREVIEW ============
+
+        /**
+         * Establece el dispositivo de previsualización
+         * @param {string} device - 'desktop', 'tablet', o 'mobile'
+         */
+        setDevicePreview: function(device) {
+            this.devicePreview = device;
+
+            // Si estamos en modo split-screen, salir de él primero
+            if (this.splitScreenMode) {
+                this.splitScreenMode = false;
+                this.destroySplitScreen();
+            }
+
+            // Aplicar clases al canvas
+            var canvasArea = document.querySelector('.vbp-canvas-area');
+            if (canvasArea) {
+                canvasArea.classList.remove('vbp-device-desktop', 'vbp-device-tablet', 'vbp-device-mobile');
+                canvasArea.classList.add('vbp-device-' + device);
+            }
+
+            // Mostrar notificación
+            var deviceNames = {
+                'desktop': 'Escritorio',
+                'tablet': 'Tablet (768px)',
+                'mobile': 'Móvil (375px)'
+            };
+            this.showNotification('Vista: ' + deviceNames[device], 'info');
+        },
+
+        /**
+         * Activa/desactiva el modo split-screen (Desktop + Mobile lado a lado)
+         */
+        toggleSplitScreen: function() {
+            this.splitScreenMode = !this.splitScreenMode;
+
+            var canvasArea = document.querySelector('.vbp-canvas-area');
+            var splitButton = document.querySelector('.vbp-split-screen-btn');
+
+            if (this.splitScreenMode) {
+                // Activar split-screen
+                if (canvasArea) {
+                    canvasArea.classList.add('vbp-split-screen-active');
+                }
+                if (splitButton) {
+                    splitButton.classList.add('active');
+                }
+                this.initSplitScreen();
+                this.showNotification('Vista dividida activada: Desktop + Mobile', 'success');
+            } else {
+                // Desactivar split-screen
+                if (canvasArea) {
+                    canvasArea.classList.remove('vbp-split-screen-active');
+                }
+                if (splitButton) {
+                    splitButton.classList.remove('active');
+                }
+                this.destroySplitScreen();
+                this.showNotification('Vista dividida desactivada', 'info');
+            }
+        },
+
+        /**
+         * Inicializa los paneles de split-screen
+         */
+        initSplitScreen: function() {
+            var self = this;
+            var canvasArea = document.querySelector('.vbp-canvas-area');
+            if (!canvasArea) return;
+
+            // Limpiar contenido existente del canvas (temporalmente ocultarlo)
+            var existingCanvas = canvasArea.querySelector('.vbp-canvas');
+            if (existingCanvas) {
+                existingCanvas.style.display = 'none';
+            }
+
+            // Crear panel izquierdo (desktop)
+            var panelLeft = document.createElement('div');
+            panelLeft.className = 'vbp-split-panel vbp-split-panel-left';
+            panelLeft.innerHTML = '<div class="vbp-split-panel-header">' +
+                '<span class="vbp-split-device-label">🖥️ Desktop</span>' +
+                '<span class="vbp-split-device-size">1920px</span>' +
+                '</div>' +
+                '<div class="vbp-split-panel-content vbp-device-desktop"></div>';
+
+            // Crear panel derecho (mobile)
+            var panelRight = document.createElement('div');
+            panelRight.className = 'vbp-split-panel vbp-split-panel-right';
+            panelRight.innerHTML = '<div class="vbp-split-panel-header">' +
+                '<span class="vbp-split-device-label">📱 Mobile</span>' +
+                '<span class="vbp-split-device-size">375px</span>' +
+                '</div>' +
+                '<div class="vbp-split-panel-content vbp-device-mobile"></div>';
+
+            // Crear indicador de sincronización
+            var syncIndicator = document.createElement('div');
+            syncIndicator.className = 'vbp-split-sync-indicator';
+            syncIndicator.innerHTML = '<span class="vbp-sync-icon">🔗</span> <span>Scroll sincronizado</span>';
+            syncIndicator.onclick = function() {
+                self.splitScreenSyncScroll = !self.splitScreenSyncScroll;
+                syncIndicator.classList.toggle('disabled', !self.splitScreenSyncScroll);
+                syncIndicator.querySelector('span:last-child').textContent =
+                    self.splitScreenSyncScroll ? 'Scroll sincronizado' : 'Scroll independiente';
+            };
+
+            // Insertar paneles
+            canvasArea.appendChild(panelLeft);
+            canvasArea.appendChild(panelRight);
+            canvasArea.appendChild(syncIndicator);
+
+            // Clonar contenido del canvas en ambos paneles
+            this.$nextTick(function() {
+                self.renderSplitPanels();
+                self.setupSplitScrollSync();
+            });
+        },
+
+        /**
+         * Renderiza el contenido en los paneles de split-screen
+         */
+        renderSplitPanels: function() {
+            var store = Alpine.store('vbp');
+            var elements = store && store.elements ? store.elements : [];
+
+            var leftContent = document.querySelector('.vbp-split-panel-left .vbp-split-panel-content');
+            var rightContent = document.querySelector('.vbp-split-panel-right .vbp-split-panel-content');
+
+            if (leftContent && rightContent) {
+                var html = '';
+                for (var i = 0; i < elements.length; i++) {
+                    html += this.renderElement(elements[i]);
+                }
+
+                leftContent.innerHTML = '<div class="vbp-split-canvas">' + html + '</div>';
+                rightContent.innerHTML = '<div class="vbp-split-canvas">' + html + '</div>';
+            }
+        },
+
+        /**
+         * Configura la sincronización de scroll entre paneles
+         */
+        setupSplitScrollSync: function() {
+            var self = this;
+            var leftPanel = document.querySelector('.vbp-split-panel-left .vbp-split-panel-content');
+            var rightPanel = document.querySelector('.vbp-split-panel-right .vbp-split-panel-content');
+
+            if (!leftPanel || !rightPanel) return;
+
+            var syncing = false;
+
+            leftPanel.addEventListener('scroll', function() {
+                if (syncing || !self.splitScreenSyncScroll) return;
+                syncing = true;
+                var scrollPercent = leftPanel.scrollTop / (leftPanel.scrollHeight - leftPanel.clientHeight);
+                rightPanel.scrollTop = scrollPercent * (rightPanel.scrollHeight - rightPanel.clientHeight);
+                setTimeout(function() { syncing = false; }, 10);
+            });
+
+            rightPanel.addEventListener('scroll', function() {
+                if (syncing || !self.splitScreenSyncScroll) return;
+                syncing = true;
+                var scrollPercent = rightPanel.scrollTop / (rightPanel.scrollHeight - rightPanel.clientHeight);
+                leftPanel.scrollTop = scrollPercent * (leftPanel.scrollHeight - leftPanel.clientHeight);
+                setTimeout(function() { syncing = false; }, 10);
+            });
+        },
+
+        /**
+         * Destruye los paneles de split-screen y restaura el canvas original
+         */
+        destroySplitScreen: function() {
+            var canvasArea = document.querySelector('.vbp-canvas-area');
+            if (!canvasArea) return;
+
+            // Eliminar paneles de split
+            var panels = canvasArea.querySelectorAll('.vbp-split-panel, .vbp-split-sync-indicator');
+            panels.forEach(function(panel) {
+                panel.remove();
+            });
+
+            // Restaurar canvas original
+            var existingCanvas = canvasArea.querySelector('.vbp-canvas');
+            if (existingCanvas) {
+                existingCanvas.style.display = '';
+            }
         }
     };
 }
