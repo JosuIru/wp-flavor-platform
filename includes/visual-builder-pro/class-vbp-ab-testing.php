@@ -72,14 +72,26 @@ class Flavor_VBP_AB_Testing {
         add_action( 'rest_api_init', array( $this, 'registrar_rutas_rest' ) );
         add_action( 'wp_footer', array( $this, 'cargar_tracking_script' ) );
 
-        // Crear tablas si no existen
-        $this->maybe_crear_tablas();
+        // OPTIMIZACIÓN: Solo verificar tablas en admin o cuando sea necesario
+        // No hacer queries DB en cada request de frontend
+        if ( is_admin() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+            $this->maybe_crear_tablas();
+        }
     }
 
     /**
      * Crea las tablas si no existen
+     * Usa cache en opción de WP para evitar queries repetidas
      */
     private function maybe_crear_tablas() {
+        // Usar opción cacheada para evitar SHOW TABLES en cada request
+        $version_actual = '1.0.0';
+        $version_db = get_option( 'vbp_ab_testing_db_version', '' );
+
+        if ( $version_db === $version_actual ) {
+            return; // Tablas ya creadas en esta versión
+        }
+
         global $wpdb;
 
         // Verificar si las tablas existen
@@ -93,6 +105,9 @@ class Flavor_VBP_AB_Testing {
         if ( ! $tabla_existe ) {
             $this->crear_tablas();
         }
+
+        // Marcar como creadas para no verificar de nuevo
+        update_option( 'vbp_ab_testing_db_version', $version_actual, true );
     }
 
     /**
@@ -669,6 +684,40 @@ class Flavor_VBP_AB_Testing {
             return new WP_REST_Response( array( 'error' => 'Invalid data' ), 400 );
         }
 
+        // Validar visitor_id (debe ser un hash válido de 32 caracteres o UUID)
+        if ( empty( $visitor_id ) || strlen( $visitor_id ) < 16 || strlen( $visitor_id ) > 64 ) {
+            return new WP_REST_Response( array( 'error' => 'Invalid visitor' ), 400 );
+        }
+
+        // SEGURIDAD: Verificar que la variante pertenece a un test activo con post publicado
+        $variante_valida = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT v.id, t.post_id
+                 FROM {$this->tabla_variantes} v
+                 INNER JOIN {$this->tabla_tests} t ON v.test_id = t.id
+                 WHERE v.id = %d AND t.status = 'running'",
+                $variant_id
+            )
+        );
+
+        if ( ! $variante_valida ) {
+            return new WP_REST_Response( array( 'error' => 'Invalid variant' ), 404 );
+        }
+
+        // SEGURIDAD: Verificar que el post asociado está publicado
+        $post_status = get_post_status( $variante_valida->post_id );
+        if ( 'publish' !== $post_status ) {
+            return new WP_REST_Response( array( 'error' => 'Test not available' ), 404 );
+        }
+
+        // Rate limiting básico por IP + visitor_id (máx 10 eventos/minuto)
+        $rate_limit_key = 'vbp_ab_rate_' . md5( $this->obtener_ip_cliente() . $visitor_id );
+        $rate_count = get_transient( $rate_limit_key );
+        if ( false !== $rate_count && (int) $rate_count >= 10 ) {
+            return new WP_REST_Response( array( 'error' => 'Rate limit exceeded' ), 429 );
+        }
+        set_transient( $rate_limit_key, ( (int) $rate_count ) + 1, 60 );
+
         if ( 'view' === $event_type ) {
             $wpdb->query(
                 $wpdb->prepare(
@@ -710,6 +759,35 @@ class Flavor_VBP_AB_Testing {
     }
 
     /**
+     * Obtiene la IP del cliente de forma segura
+     *
+     * @return string
+     */
+    private function obtener_ip_cliente() {
+        $headers = array(
+            'HTTP_CF_CONNECTING_IP', // Cloudflare
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'REMOTE_ADDR',
+        );
+
+        foreach ( $headers as $header ) {
+            if ( ! empty( $_SERVER[ $header ] ) ) {
+                $ip = sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) );
+                // Si hay múltiples IPs, tomar la primera
+                if ( strpos( $ip, ',' ) !== false ) {
+                    $ip = trim( explode( ',', $ip )[0] );
+                }
+                if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+                    return $ip;
+                }
+            }
+        }
+
+        return '0.0.0.0';
+    }
+
+    /**
      * Obtiene la variante a mostrar para un visitante
      *
      * @param WP_REST_Request $request Petición REST.
@@ -721,6 +799,11 @@ class Flavor_VBP_AB_Testing {
         $test_id    = absint( $request->get_param( 'test_id' ) );
         $visitor_id = sanitize_text_field( $request->get_param( 'visitor_id' ) );
 
+        // Validar visitor_id
+        if ( empty( $visitor_id ) || strlen( $visitor_id ) < 16 || strlen( $visitor_id ) > 64 ) {
+            return new WP_REST_Response( array( 'error' => 'Invalid visitor' ), 400 );
+        }
+
         // Verificar que el test esté activo
         $test = $wpdb->get_row(
             $wpdb->prepare( "SELECT * FROM {$this->tabla_tests} WHERE id = %d AND status = 'running'", $test_id )
@@ -728,6 +811,12 @@ class Flavor_VBP_AB_Testing {
 
         if ( ! $test ) {
             return new WP_REST_Response( array( 'error' => 'Test not active' ), 404 );
+        }
+
+        // SEGURIDAD: Verificar que el post asociado está publicado
+        $post_status = get_post_status( $test->post_id );
+        if ( 'publish' !== $post_status ) {
+            return new WP_REST_Response( array( 'error' => 'Test not available' ), 404 );
         }
 
         // Obtener variantes
@@ -745,27 +834,92 @@ class Flavor_VBP_AB_Testing {
         // Seleccionar variante basada en visitor_id (consistente)
         $hash   = crc32( $visitor_id . $test_id );
         $total  = array_sum( array_column( $variantes, 'traffic_weight' ) );
-        $random = $hash % $total;
+
+        // Evitar división por cero
+        if ( $total <= 0 ) {
+            $total = count( $variantes );
+        }
+
+        $random = abs( $hash ) % $total;
 
         $acumulado = 0;
         $seleccionada = $variantes[0];
 
         foreach ( $variantes as $v ) {
-            $acumulado += $v->traffic_weight;
+            $acumulado += max( 1, (int) $v->traffic_weight );
             if ( $random < $acumulado ) {
                 $seleccionada = $v;
                 break;
             }
         }
 
+        // SEGURIDAD: Solo devolver datos mínimos necesarios para aplicar la variante
+        // No exponer element_data completo - solo estilos y propiedades visuales
+        $element_data = json_decode( $seleccionada->element_data, true );
+        $safe_data = $this->filtrar_datos_variante_publicos( $element_data );
+
         return new WP_REST_Response(
             array(
                 'variantId'   => (int) $seleccionada->id,
-                'elementData' => json_decode( $seleccionada->element_data, true ),
+                'elementData' => $safe_data,
                 'isControl'   => (bool) $seleccionada->is_control,
             ),
             200
         );
+    }
+
+    /**
+     * Filtra los datos de variante para exposición pública
+     * Solo permite propiedades visuales seguras, no contenido sensible
+     *
+     * @param array $data Datos del elemento.
+     * @return array Datos filtrados.
+     */
+    private function filtrar_datos_variante_publicos( $data ) {
+        if ( ! is_array( $data ) ) {
+            return array();
+        }
+
+        // Propiedades permitidas para variantes A/B (solo visuales)
+        $allowed_keys = array(
+            'styles',
+            'variant',
+            'className',
+            'backgroundColor',
+            'textColor',
+            'fontSize',
+            'fontWeight',
+            'padding',
+            'margin',
+            'borderRadius',
+            'borderColor',
+            'borderWidth',
+            'boxShadow',
+            'opacity',
+            'textAlign',
+            'display',
+            'flexDirection',
+            'justifyContent',
+            'alignItems',
+            'gap',
+            'width',
+            'height',
+            'maxWidth',
+            'minHeight',
+        );
+
+        $filtered = array();
+        foreach ( $data as $key => $value ) {
+            if ( in_array( $key, $allowed_keys, true ) ) {
+                if ( is_array( $value ) ) {
+                    $filtered[ $key ] = $this->filtrar_datos_variante_publicos( $value );
+                } else {
+                    $filtered[ $key ] = $value;
+                }
+            }
+        }
+
+        return $filtered;
     }
 
     /**

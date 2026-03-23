@@ -405,6 +405,68 @@ class Flavor_VBP_REST_API {
                 ),
             )
         );
+
+        // Batch Operations para Claude Code
+        register_rest_route(
+            self::NAMESPACE,
+            '/claude/batch',
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'ejecutar_batch_operations' ),
+                'permission_callback' => array( $this, 'verificar_api_key_claude' ),
+                'args'                => array(
+                    'operations' => array(
+                        'required'    => true,
+                        'type'        => 'array',
+                        'description' => __( 'Array de operaciones a ejecutar', 'flavor-chat-ia' ),
+                    ),
+                    'stop_on_error' => array(
+                        'default'     => false,
+                        'type'        => 'boolean',
+                        'description' => __( 'Detener si hay error en alguna operación', 'flavor-chat-ia' ),
+                    ),
+                ),
+            )
+        );
+
+        // Batch Create - Crear múltiples páginas
+        register_rest_route(
+            self::NAMESPACE,
+            '/claude/batch/pages',
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'crear_paginas_batch' ),
+                'permission_callback' => array( $this, 'verificar_api_key_claude' ),
+                'args'                => array(
+                    'pages' => array(
+                        'required'    => true,
+                        'type'        => 'array',
+                        'description' => __( 'Array de páginas a crear', 'flavor-chat-ia' ),
+                    ),
+                ),
+            )
+        );
+
+        // Batch Update - Actualizar múltiples elementos
+        register_rest_route(
+            self::NAMESPACE,
+            '/claude/batch/elements',
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'actualizar_elementos_batch' ),
+                'permission_callback' => array( $this, 'verificar_api_key_claude' ),
+                'args'                => array(
+                    'page_id'  => array(
+                        'required' => true,
+                        'type'     => 'integer',
+                    ),
+                    'elements' => array(
+                        'required' => true,
+                        'type'     => 'array',
+                    ),
+                ),
+            )
+        );
     }
 
     /**
@@ -1364,7 +1426,7 @@ class Flavor_VBP_REST_API {
      */
     public function obtener_blog_posts( $request ) {
         $category  = $request->get_param( 'category' );
-        $per_page  = min( 20, max( 1, $request->get_param( 'per_page' ) ) );
+        $per_page  = min( 12, max( 1, $request->get_param( 'per_page' ) ) ); // Máximo reducido a 12
         $page      = max( 1, $request->get_param( 'page' ) );
         $orderby   = $request->get_param( 'orderby' );
         $order     = strtoupper( $request->get_param( 'order' ) ) === 'ASC' ? 'ASC' : 'DESC';
@@ -1377,9 +1439,28 @@ class Flavor_VBP_REST_API {
             $orderby = 'date';
         }
 
+        // SEGURIDAD: Lista blanca de post types públicos permitidos
+        $allowed_post_types = apply_filters(
+            'flavor_vbp_allowed_blog_post_types',
+            array( 'post', 'page', 'flavor_evento', 'flavor_noticia' )
+        );
+
+        $sanitized_post_type = sanitize_text_field( $post_type ) ?: 'post';
+
+        // Verificar que el post_type está en la lista blanca Y es público
+        if ( ! in_array( $sanitized_post_type, $allowed_post_types, true ) ) {
+            $sanitized_post_type = 'post';
+        }
+
+        // Doble verificación: asegurar que el post type es realmente público
+        $post_type_obj = get_post_type_object( $sanitized_post_type );
+        if ( ! $post_type_obj || ! $post_type_obj->public ) {
+            $sanitized_post_type = 'post';
+        }
+
         // Construir argumentos de consulta
         $args = array(
-            'post_type'      => sanitize_text_field( $post_type ) ?: 'post',
+            'post_type'      => $sanitized_post_type,
             'posts_per_page' => $per_page,
             'paged'          => $page,
             'orderby'        => $orderby,
@@ -1429,16 +1510,16 @@ class Flavor_VBP_REST_API {
                     }
                 }
 
+                // SEGURIDAD: No exponer contenido completo en endpoint público
+                // Solo devolver excerpt para prevenir scraping de contenido
                 $posts[] = array(
                     'id'           => $post_id,
                     'title'        => get_the_title(),
-                    'excerpt'      => wp_trim_words( get_the_excerpt(), 20, '...' ),
-                    'content'      => get_the_content(),
+                    'excerpt'      => wp_trim_words( get_the_excerpt(), 30, '...' ),
                     'url'          => get_permalink( $post_id ),
                     'date'         => get_the_date( 'c' ),
                     'date_display' => get_the_date(),
                     'author'       => array(
-                        'id'     => get_the_author_meta( 'ID' ),
                         'name'   => get_the_author(),
                         'avatar' => get_avatar_url( get_the_author_meta( 'ID' ), array( 'size' => 48 ) ),
                     ),
@@ -1857,5 +1938,612 @@ class Flavor_VBP_REST_API {
         }
 
         return $variaciones;
+    }
+
+    /**
+     * Verificar API Key de Claude
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return bool
+     */
+    public function verificar_api_key_claude( $request ) {
+        $api_key = $request->get_header( 'X-VBP-Key' );
+        $valid_key = 'flavor-vbp-2024';
+
+        if ( $api_key === $valid_key ) {
+            return true;
+        }
+
+        // Fallback: verificar permisos normales
+        return current_user_can( 'edit_posts' );
+    }
+
+    /**
+     * Ejecutar batch de operaciones
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function ejecutar_batch_operations( $request ) {
+        $operations    = $request->get_param( 'operations' );
+        $stop_on_error = $request->get_param( 'stop_on_error' );
+
+        if ( ! is_array( $operations ) || empty( $operations ) ) {
+            return new WP_Error(
+                'operaciones_invalidas',
+                __( 'Se requiere un array de operaciones', 'flavor-chat-ia' ),
+                array( 'status' => 400 )
+            );
+        }
+
+        $resultados        = array();
+        $operaciones_total = count( $operations );
+        $operaciones_ok    = 0;
+        $operaciones_error = 0;
+
+        foreach ( $operations as $indice => $operacion ) {
+            $tipo    = sanitize_text_field( $operacion['type'] ?? '' );
+            $datos   = $operacion['data'] ?? array();
+            $op_id   = $operacion['id'] ?? "op_$indice";
+
+            $resultado = array(
+                'id'      => $op_id,
+                'type'    => $tipo,
+                'success' => false,
+            );
+
+            try {
+                switch ( $tipo ) {
+                    case 'create_page':
+                        $resultado = $this->batch_crear_pagina( $datos, $op_id );
+                        break;
+
+                    case 'update_page':
+                        $resultado = $this->batch_actualizar_pagina( $datos, $op_id );
+                        break;
+
+                    case 'delete_page':
+                        $resultado = $this->batch_eliminar_pagina( $datos, $op_id );
+                        break;
+
+                    case 'add_element':
+                        $resultado = $this->batch_agregar_elemento( $datos, $op_id );
+                        break;
+
+                    case 'update_element':
+                        $resultado = $this->batch_actualizar_elemento( $datos, $op_id );
+                        break;
+
+                    case 'delete_element':
+                        $resultado = $this->batch_eliminar_elemento( $datos, $op_id );
+                        break;
+
+                    case 'apply_styles':
+                        $resultado = $this->batch_aplicar_estilos( $datos, $op_id );
+                        break;
+
+                    case 'publish_page':
+                        $resultado = $this->batch_publicar_pagina( $datos, $op_id );
+                        break;
+
+                    default:
+                        $resultado['error'] = __( 'Tipo de operación no soportado', 'flavor-chat-ia' );
+                }
+
+                if ( $resultado['success'] ) {
+                    $operaciones_ok++;
+                } else {
+                    $operaciones_error++;
+                    if ( $stop_on_error ) {
+                        $resultado['stopped_at'] = $indice;
+                        $resultados[] = $resultado;
+                        break;
+                    }
+                }
+
+            } catch ( Exception $e ) {
+                $resultado['success'] = false;
+                $resultado['error']   = $e->getMessage();
+                $operaciones_error++;
+
+                if ( $stop_on_error ) {
+                    $resultado['stopped_at'] = $indice;
+                    $resultados[] = $resultado;
+                    break;
+                }
+            }
+
+            $resultados[] = $resultado;
+        }
+
+        return new WP_REST_Response(
+            array(
+                'success'  => $operaciones_error === 0,
+                'summary'  => array(
+                    'total'     => $operaciones_total,
+                    'success'   => $operaciones_ok,
+                    'failed'    => $operaciones_error,
+                    'processed' => count( $resultados ),
+                ),
+                'results'  => $resultados,
+            ),
+            200
+        );
+    }
+
+    /**
+     * Batch: Crear página
+     */
+    private function batch_crear_pagina( $datos, $op_id ) {
+        $titulo = sanitize_text_field( $datos['title'] ?? '' );
+        $slug   = sanitize_title( $datos['slug'] ?? $titulo );
+        $blocks = $datos['blocks'] ?? array();
+        $status = sanitize_text_field( $datos['status'] ?? 'draft' );
+
+        if ( empty( $titulo ) ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'create_page',
+                'success' => false,
+                'error'   => __( 'Se requiere un título', 'flavor-chat-ia' ),
+            );
+        }
+
+        $post_id = wp_insert_post(
+            array(
+                'post_title'  => $titulo,
+                'post_name'   => $slug,
+                'post_type'   => 'flavor_landing',
+                'post_status' => $status,
+            )
+        );
+
+        if ( is_wp_error( $post_id ) ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'create_page',
+                'success' => false,
+                'error'   => $post_id->get_error_message(),
+            );
+        }
+
+        // Guardar bloques VBP
+        if ( ! empty( $blocks ) ) {
+            update_post_meta( $post_id, '_vbp_content', wp_json_encode( $blocks ) );
+        }
+
+        return array(
+            'id'      => $op_id,
+            'type'    => 'create_page',
+            'success' => true,
+            'page_id' => $post_id,
+            'url'     => get_permalink( $post_id ),
+        );
+    }
+
+    /**
+     * Batch: Actualizar página
+     */
+    private function batch_actualizar_pagina( $datos, $op_id ) {
+        $page_id = absint( $datos['page_id'] ?? 0 );
+        $blocks  = $datos['blocks'] ?? null;
+
+        if ( ! $page_id || ! get_post( $page_id ) ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'update_page',
+                'success' => false,
+                'error'   => __( 'Página no encontrada', 'flavor-chat-ia' ),
+            );
+        }
+
+        // Actualizar campos de post si se proporcionan
+        $actualizar = array( 'ID' => $page_id );
+        if ( isset( $datos['title'] ) ) {
+            $actualizar['post_title'] = sanitize_text_field( $datos['title'] );
+        }
+        if ( isset( $datos['status'] ) ) {
+            $actualizar['post_status'] = sanitize_text_field( $datos['status'] );
+        }
+
+        if ( count( $actualizar ) > 1 ) {
+            wp_update_post( $actualizar );
+        }
+
+        // Actualizar bloques VBP
+        if ( $blocks !== null ) {
+            update_post_meta( $page_id, '_vbp_content', wp_json_encode( $blocks ) );
+        }
+
+        return array(
+            'id'      => $op_id,
+            'type'    => 'update_page',
+            'success' => true,
+            'page_id' => $page_id,
+        );
+    }
+
+    /**
+     * Batch: Eliminar página
+     */
+    private function batch_eliminar_pagina( $datos, $op_id ) {
+        $page_id = absint( $datos['page_id'] ?? 0 );
+        $force   = (bool) ( $datos['force'] ?? false );
+
+        if ( ! $page_id || ! get_post( $page_id ) ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'delete_page',
+                'success' => false,
+                'error'   => __( 'Página no encontrada', 'flavor-chat-ia' ),
+            );
+        }
+
+        $eliminado = wp_delete_post( $page_id, $force );
+
+        return array(
+            'id'      => $op_id,
+            'type'    => 'delete_page',
+            'success' => (bool) $eliminado,
+            'page_id' => $page_id,
+        );
+    }
+
+    /**
+     * Batch: Agregar elemento a página
+     */
+    private function batch_agregar_elemento( $datos, $op_id ) {
+        $page_id  = absint( $datos['page_id'] ?? 0 );
+        $elemento = $datos['element'] ?? array();
+        $parent   = sanitize_text_field( $datos['parent_id'] ?? '' );
+        $position = absint( $datos['position'] ?? -1 );
+
+        if ( ! $page_id || ! get_post( $page_id ) ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'add_element',
+                'success' => false,
+                'error'   => __( 'Página no encontrada', 'flavor-chat-ia' ),
+            );
+        }
+
+        $contenido = get_post_meta( $page_id, '_vbp_content', true );
+        $elementos = $contenido ? json_decode( $contenido, true ) : array();
+
+        // Generar ID único
+        if ( empty( $elemento['id'] ) ) {
+            $elemento['id'] = 'el_' . wp_generate_uuid4();
+        }
+
+        // Insertar en posición
+        if ( $position >= 0 && $position < count( $elementos ) ) {
+            array_splice( $elementos, $position, 0, array( $elemento ) );
+        } else {
+            $elementos[] = $elemento;
+        }
+
+        update_post_meta( $page_id, '_vbp_content', wp_json_encode( $elementos ) );
+
+        return array(
+            'id'         => $op_id,
+            'type'       => 'add_element',
+            'success'    => true,
+            'element_id' => $elemento['id'],
+            'page_id'    => $page_id,
+        );
+    }
+
+    /**
+     * Batch: Actualizar elemento
+     */
+    private function batch_actualizar_elemento( $datos, $op_id ) {
+        $page_id    = absint( $datos['page_id'] ?? 0 );
+        $element_id = sanitize_text_field( $datos['element_id'] ?? '' );
+        $updates    = $datos['updates'] ?? array();
+
+        if ( ! $page_id || ! $element_id ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'update_element',
+                'success' => false,
+                'error'   => __( 'Se requiere page_id y element_id', 'flavor-chat-ia' ),
+            );
+        }
+
+        $contenido = get_post_meta( $page_id, '_vbp_content', true );
+        $elementos = $contenido ? json_decode( $contenido, true ) : array();
+
+        $encontrado = $this->actualizar_elemento_recursivo( $elementos, $element_id, $updates );
+
+        if ( ! $encontrado ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'update_element',
+                'success' => false,
+                'error'   => __( 'Elemento no encontrado', 'flavor-chat-ia' ),
+            );
+        }
+
+        update_post_meta( $page_id, '_vbp_content', wp_json_encode( $elementos ) );
+
+        return array(
+            'id'         => $op_id,
+            'type'       => 'update_element',
+            'success'    => true,
+            'element_id' => $element_id,
+        );
+    }
+
+    /**
+     * Actualizar elemento recursivamente
+     */
+    private function actualizar_elemento_recursivo( &$elementos, $id, $updates ) {
+        foreach ( $elementos as &$elemento ) {
+            if ( isset( $elemento['id'] ) && $elemento['id'] === $id ) {
+                $elemento = array_merge( $elemento, $updates );
+                return true;
+            }
+            if ( isset( $elemento['children'] ) && is_array( $elemento['children'] ) ) {
+                if ( $this->actualizar_elemento_recursivo( $elemento['children'], $id, $updates ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Batch: Eliminar elemento
+     */
+    private function batch_eliminar_elemento( $datos, $op_id ) {
+        $page_id    = absint( $datos['page_id'] ?? 0 );
+        $element_id = sanitize_text_field( $datos['element_id'] ?? '' );
+
+        if ( ! $page_id || ! $element_id ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'delete_element',
+                'success' => false,
+                'error'   => __( 'Se requiere page_id y element_id', 'flavor-chat-ia' ),
+            );
+        }
+
+        $contenido = get_post_meta( $page_id, '_vbp_content', true );
+        $elementos = $contenido ? json_decode( $contenido, true ) : array();
+
+        $encontrado = $this->eliminar_elemento_recursivo( $elementos, $element_id );
+
+        if ( ! $encontrado ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'delete_element',
+                'success' => false,
+                'error'   => __( 'Elemento no encontrado', 'flavor-chat-ia' ),
+            );
+        }
+
+        update_post_meta( $page_id, '_vbp_content', wp_json_encode( $elementos ) );
+
+        return array(
+            'id'         => $op_id,
+            'type'       => 'delete_element',
+            'success'    => true,
+            'element_id' => $element_id,
+        );
+    }
+
+    /**
+     * Eliminar elemento recursivamente
+     */
+    private function eliminar_elemento_recursivo( &$elementos, $id ) {
+        foreach ( $elementos as $indice => &$elemento ) {
+            if ( isset( $elemento['id'] ) && $elemento['id'] === $id ) {
+                array_splice( $elementos, $indice, 1 );
+                return true;
+            }
+            if ( isset( $elemento['children'] ) && is_array( $elemento['children'] ) ) {
+                if ( $this->eliminar_elemento_recursivo( $elemento['children'], $id ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Batch: Aplicar estilos
+     */
+    private function batch_aplicar_estilos( $datos, $op_id ) {
+        $page_id    = absint( $datos['page_id'] ?? 0 );
+        $element_id = sanitize_text_field( $datos['element_id'] ?? '' );
+        $estilos    = $datos['styles'] ?? array();
+
+        if ( ! $page_id || ! $element_id ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'apply_styles',
+                'success' => false,
+                'error'   => __( 'Se requiere page_id y element_id', 'flavor-chat-ia' ),
+            );
+        }
+
+        // Actualizar solo los estilos del elemento
+        $updates = array( 'styles' => $estilos );
+        $contenido = get_post_meta( $page_id, '_vbp_content', true );
+        $elementos = $contenido ? json_decode( $contenido, true ) : array();
+
+        $encontrado = $this->actualizar_elemento_recursivo( $elementos, $element_id, $updates );
+
+        if ( ! $encontrado ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'apply_styles',
+                'success' => false,
+                'error'   => __( 'Elemento no encontrado', 'flavor-chat-ia' ),
+            );
+        }
+
+        update_post_meta( $page_id, '_vbp_content', wp_json_encode( $elementos ) );
+
+        return array(
+            'id'         => $op_id,
+            'type'       => 'apply_styles',
+            'success'    => true,
+            'element_id' => $element_id,
+        );
+    }
+
+    /**
+     * Batch: Publicar página
+     */
+    private function batch_publicar_pagina( $datos, $op_id ) {
+        $page_id = absint( $datos['page_id'] ?? 0 );
+
+        if ( ! $page_id || ! get_post( $page_id ) ) {
+            return array(
+                'id'      => $op_id,
+                'type'    => 'publish_page',
+                'success' => false,
+                'error'   => __( 'Página no encontrada', 'flavor-chat-ia' ),
+            );
+        }
+
+        $resultado = wp_update_post(
+            array(
+                'ID'          => $page_id,
+                'post_status' => 'publish',
+            )
+        );
+
+        return array(
+            'id'      => $op_id,
+            'type'    => 'publish_page',
+            'success' => ! is_wp_error( $resultado ),
+            'page_id' => $page_id,
+            'url'     => get_permalink( $page_id ),
+        );
+    }
+
+    /**
+     * Crear múltiples páginas en batch
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function crear_paginas_batch( $request ) {
+        $paginas = $request->get_param( 'pages' );
+
+        if ( ! is_array( $paginas ) || empty( $paginas ) ) {
+            return new WP_Error(
+                'paginas_invalidas',
+                __( 'Se requiere un array de páginas', 'flavor-chat-ia' ),
+                array( 'status' => 400 )
+            );
+        }
+
+        $resultados = array();
+        $exitos     = 0;
+        $errores    = 0;
+
+        foreach ( $paginas as $indice => $pagina ) {
+            $resultado = $this->batch_crear_pagina( $pagina, "page_$indice" );
+            $resultados[] = $resultado;
+
+            if ( $resultado['success'] ) {
+                $exitos++;
+            } else {
+                $errores++;
+            }
+        }
+
+        return new WP_REST_Response(
+            array(
+                'success' => $errores === 0,
+                'created' => $exitos,
+                'failed'  => $errores,
+                'pages'   => $resultados,
+            ),
+            200
+        );
+    }
+
+    /**
+     * Actualizar múltiples elementos en batch
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function actualizar_elementos_batch( $request ) {
+        $page_id   = $request->get_param( 'page_id' );
+        $elementos = $request->get_param( 'elements' );
+
+        if ( ! $page_id || ! get_post( $page_id ) ) {
+            return new WP_Error(
+                'pagina_no_encontrada',
+                __( 'Página no encontrada', 'flavor-chat-ia' ),
+                array( 'status' => 404 )
+            );
+        }
+
+        if ( ! is_array( $elementos ) || empty( $elementos ) ) {
+            return new WP_Error(
+                'elementos_invalidos',
+                __( 'Se requiere un array de elementos', 'flavor-chat-ia' ),
+                array( 'status' => 400 )
+            );
+        }
+
+        $contenido       = get_post_meta( $page_id, '_vbp_content', true );
+        $elementos_actual = $contenido ? json_decode( $contenido, true ) : array();
+
+        $resultados = array();
+        $exitos     = 0;
+        $errores    = 0;
+
+        foreach ( $elementos as $elemento ) {
+            $element_id = sanitize_text_field( $elemento['id'] ?? '' );
+            $updates    = $elemento['updates'] ?? array();
+
+            if ( ! $element_id ) {
+                $errores++;
+                $resultados[] = array(
+                    'element_id' => null,
+                    'success'    => false,
+                    'error'      => __( 'Se requiere id de elemento', 'flavor-chat-ia' ),
+                );
+                continue;
+            }
+
+            $encontrado = $this->actualizar_elemento_recursivo( $elementos_actual, $element_id, $updates );
+
+            if ( $encontrado ) {
+                $exitos++;
+                $resultados[] = array(
+                    'element_id' => $element_id,
+                    'success'    => true,
+                );
+            } else {
+                $errores++;
+                $resultados[] = array(
+                    'element_id' => $element_id,
+                    'success'    => false,
+                    'error'      => __( 'Elemento no encontrado', 'flavor-chat-ia' ),
+                );
+            }
+        }
+
+        // Guardar cambios
+        update_post_meta( $page_id, '_vbp_content', wp_json_encode( $elementos_actual ) );
+
+        return new WP_REST_Response(
+            array(
+                'success'  => $errores === 0,
+                'page_id'  => $page_id,
+                'updated'  => $exitos,
+                'failed'   => $errores,
+                'elements' => $resultados,
+            ),
+            200
+        );
     }
 }
