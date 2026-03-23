@@ -192,7 +192,7 @@ $vista = $args['vista'] ?? 'mes';
 
                     <div class="gc-ciclo-accion">
                         <?php if ($ciclo['estado'] === 'abierto'): ?>
-                            <a href="<?php echo esc_url(add_query_arg('ciclo', intval($ciclo['id']), home_url('/mi-portal/grupos-consumo/ciclo/'))); ?>" class="gc-btn gc-btn-primary">
+                            <a href="<?php echo esc_url(add_query_arg('ciclo', intval($ciclo['id']), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'ciclo'))); ?>" class="gc-btn gc-btn-primary">
                                 <?php _e('Hacer pedido', 'flavor-chat-ia'); ?>
                             </a>
                         <?php else: ?>

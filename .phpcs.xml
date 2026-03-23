@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<ruleset name="Flavor Chat IA Coding Standards">
+    <description>WordPress Coding Standards para Flavor Chat IA plugin</description>
+
+    <!-- ====================================================================
+         Configuracion general
+         ==================================================================== -->
+
+    <!-- Mostrar progreso y colores -->
+    <arg value="ps"/>
+    <arg name="colors"/>
+
+    <!-- Usar extension PHP -->
+    <arg name="extensions" value="php"/>
+
+    <!-- Codificacion de archivos -->
+    <arg name="encoding" value="UTF-8"/>
+
+    <!-- Nivel de reporte -->
+    <arg name="report" value="summary"/>
+    <arg name="report" value="source"/>
+
+    <!-- ====================================================================
+         Archivos y directorios a analizar
+         ==================================================================== -->
+
+    <!-- Directorios principales del plugin -->
+    <file>./flavor-chat-ia.php</file>
+    <file>./uninstall.php</file>
+    <file>./includes/</file>
+    <file>./admin/</file>
+    <file>./addons/</file>
+    <file>./templates/</file>
+
+    <!-- ====================================================================
+         Exclusiones
+         ==================================================================== -->
+
+    <!-- Archivos y directorios a excluir -->
+    <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/node_modules/*</exclude-pattern>
+    <exclude-pattern>/tests/*</exclude-pattern>
+    <exclude-pattern>/dev-scripts/*</exclude-pattern>
+    <exclude-pattern>/reports/*</exclude-pattern>
+    <exclude-pattern>/docs/*</exclude-pattern>
+    <exclude-pattern>/mobile-apps/*</exclude-pattern>
+    <exclude-pattern>/mcp-server/*</exclude-pattern>
+    <exclude-pattern>/tools/*</exclude-pattern>
+    <exclude-pattern>/assets/*</exclude-pattern>
+    <exclude-pattern>/languages/*</exclude-pattern>
+
+    <!-- Archivos de diagnostico y scripts temporales -->
+    <exclude-pattern>*diagnostico*.php</exclude-pattern>
+    <exclude-pattern>*activar-*.php</exclude-pattern>
+    <exclude-pattern>*actualizar-*.php</exclude-pattern>
+    <exclude-pattern>*check-*.php</exclude-pattern>
+    <exclude-pattern>*crear-*.php</exclude-pattern>
+    <exclude-pattern>*setup-*.php</exclude-pattern>
+
+    <!-- Archivos minificados -->
+    <exclude-pattern>*.min.js</exclude-pattern>
+    <exclude-pattern>*.min.css</exclude-pattern>
+
+    <!-- ====================================================================
+         Reglas WordPress Coding Standards
+         ==================================================================== -->
+
+    <!-- WordPress Core standards -->
+    <rule ref="WordPress">
+        <!-- Excluir reglas demasiado estrictas para este proyecto -->
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+        <exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound"/>
+        <exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound"/>
+        <exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+        <exclude name="WordPress.WP.I18n.MissingTranslatorsComment"/>
+    </rule>
+
+    <!-- WordPress Extra (mejores practicas) -->
+    <rule ref="WordPress-Extra">
+        <exclude name="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents"/>
+    </rule>
+
+    <!-- WordPress Docs -->
+    <rule ref="WordPress-Docs">
+        <exclude name="Squiz.Commenting.FileComment.Missing"/>
+        <exclude name="Squiz.Commenting.ClassComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+    </rule>
+
+    <!-- ====================================================================
+         Configuracion de reglas especificas
+         ==================================================================== -->
+
+    <!-- Prefijo para funciones y clases globales -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <element value="flavor"/>
+                <element value="Flavor"/>
+                <element value="FLAVOR"/>
+                <element value="fcia"/>
+                <element value="FCIA"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Text domain para traducciones -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="flavor-chat-ia"/>
+                <element value="flavor"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Longitud maxima de linea -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="150"/>
+            <property name="absoluteLineLimit" value="200"/>
+        </properties>
+    </rule>
+
+    <!-- Permitir short arrays [] -->
+    <rule ref="Generic.Arrays.DisallowShortArraySyntax">
+        <severity>0</severity>
+    </rule>
+
+    <!-- ====================================================================
+         Reglas de seguridad WordPress VIP
+         ==================================================================== -->
+
+    <!-- Escapado y sanitizacion -->
+    <rule ref="WordPress.Security.EscapeOutput"/>
+    <rule ref="WordPress.Security.NonceVerification"/>
+    <rule ref="WordPress.Security.ValidatedSanitizedInput"/>
+
+    <!-- Prevenir inyeccion SQL -->
+    <rule ref="WordPress.DB.PreparedSQL"/>
+    <rule ref="WordPress.DB.PreparedSQLPlaceholders"/>
+    <rule ref="WordPress.DB.DirectDatabaseQuery"/>
+
+    <!-- ====================================================================
+         Reglas PHP generales
+         ==================================================================== -->
+
+    <!-- Version PHP minima -->
+    <config name="testVersion" value="7.4-"/>
+
+    <!-- Compatibilidad PHP -->
+    <rule ref="PHPCompatibilityWP"/>
+
+    <!-- Detectar codigo muerto -->
+    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter">
+        <severity>5</severity>
+    </rule>
+
+    <!-- Evitar funciones peligrosas -->
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array">
+                <element key="eval" value="null"/>
+                <element key="create_function" value="null"/>
+                <element key="exec" value="null"/>
+                <element key="passthru" value="null"/>
+                <element key="shell_exec" value="null"/>
+                <element key="system" value="null"/>
+                <element key="proc_open" value="null"/>
+                <element key="popen" value="null"/>
+            </property>
+        </properties>
+    </rule>
+
+</ruleset>

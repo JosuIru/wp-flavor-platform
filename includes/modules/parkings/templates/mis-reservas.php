@@ -95,7 +95,7 @@ $estados_colores = [
     'expirada' => '#9ca3af',
 ];
 
-$parkings_base_url = home_url('/mi-portal/parkings/');
+$parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
 ?>
 
 <div class="parkings-mis-reservas">

@@ -151,7 +151,7 @@ class Flavor_Chat_Grupos_Dashboard_Tab {
                             </div>
                         </div>
                         <div class="grupo-acciones">
-                            <a href="<?php echo home_url('/mi-portal/chat-grupos/mensajes/?grupo_id=' . $grupo->id); ?>"
+                            <a href="<?php echo Flavor_Chat_Helpers::get_action_url('chat_grupos', 'mensajes') . '?grupo_id=' . $grupo->id; ?>"
                                class="flavor-btn flavor-btn-primary flavor-btn-sm">
                                 Abrir Chat
                             </a>

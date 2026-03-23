@@ -184,7 +184,7 @@ class QrSetupService {
       final apiUrl = '$siteUrl$_v2ApiNamespace';
       final apiClient = ApiClient(baseUrl: apiUrl);
 
-      final response = await apiClient.postData('/qr/validate', {
+      final response = await apiClient.postData('/qr/validate', data: {
         'payload': payload,
         if (deviceId != null) 'device_id': deviceId,
       });

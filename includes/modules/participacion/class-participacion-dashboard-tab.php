@@ -26,7 +26,7 @@ class Flavor_Participacion_Dashboard_Tab {
     }
 
     private function get_portal_url($action, array $args = []) {
-        $url = home_url('/mi-portal/participacion/' . trim($action, '/') . '/');
+        $url = Flavor_Chat_Helpers::get_action_url('participacion', trim($action, '/'));
         if (!empty($args)) {
             $url = add_query_arg($args, $url);
         }

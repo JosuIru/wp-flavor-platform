@@ -84,14 +84,14 @@ $estados_colors = [
 <div class="mis-incidencias-wrapper">
     <div class="incidencias-header">
         <h2><?php esc_html_e('Mis Incidencias', 'flavor-chat-ia'); ?></h2>
-        <a href="<?php echo esc_url(home_url('/mi-portal/incidencias/nueva/')); ?>" class="btn btn-primary">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('incidencias', 'nueva')); ?>" class="btn btn-primary">
             <span class="dashicons dashicons-plus-alt2"></span>
             <?php esc_html_e('Nueva incidencia', 'flavor-chat-ia'); ?>
         </a>
     </div>
 
     <!-- Resumen -->
-    <?php $base_url = home_url('/mi-portal/incidencias/'); ?>
+    <?php $base_url = Flavor_Chat_Helpers::get_action_url('incidencias', ''); ?>
     <div class="incidencias-stats">
         <a href="<?php echo esc_url($base_url); ?>" class="stat-card" title="<?php esc_attr_e('Ver todas las incidencias', 'flavor-chat-ia'); ?>">
             <span class="stat-value"><?php echo esc_html($stats['total']); ?></span>
@@ -141,7 +141,7 @@ $estados_colors = [
                         </div>
                     </div>
                     <div class="incidencia-actions">
-                        <a href="<?php echo esc_url(home_url('/mi-portal/incidencias/' . $incidencia->id . '/')); ?>" class="btn btn-sm btn-outline">
+                        <a href="<?php echo esc_url(add_query_arg('incidencia_id', $incidencia->id, Flavor_Chat_Helpers::get_action_url('incidencias', 'detalle'))); ?>" class="btn btn-sm btn-outline">
                             <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
@@ -153,7 +153,7 @@ $estados_colors = [
             <span class="dashicons dashicons-flag"></span>
             <h3><?php esc_html_e('No has reportado incidencias', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Cuando reportes una incidencia, aparecerá aquí para que puedas seguir su estado.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(home_url('/mi-portal/incidencias/nueva/')); ?>" class="btn btn-primary">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('incidencias', 'nueva')); ?>" class="btn btn-primary">
                 <?php esc_html_e('Reportar incidencia', 'flavor-chat-ia'); ?>
             </a>
         </div>

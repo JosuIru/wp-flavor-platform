@@ -32,7 +32,7 @@ class Flavor_License_Manager {
      *
      * @var string
      */
-    private $license_server = 'https://api.gailu.net/v1/platform-licenses';
+    private $license_server = 'https://licencias.gailu.net/wp-json/fls/v1';
 
     /**
      * Opción donde se guarda la licencia
@@ -78,8 +78,36 @@ class Flavor_License_Manager {
      * Constructor privado
      */
     private function __construct() {
+        $this->configure_server_url();
         $this->load_license();
         $this->init_hooks();
+    }
+
+    /**
+     * Configura la URL del servidor de licencias
+     *
+     * Permite sobrescribir vía:
+     * - Constante FLAVOR_LICENSE_SERVER_URL
+     * - Filtro 'flavor_license_server_url'
+     * - Opción 'flavor_license_server_url'
+     *
+     * @return void
+     */
+    private function configure_server_url() {
+        // Prioridad 1: Constante
+        if (defined('FLAVOR_LICENSE_SERVER_URL')) {
+            $this->license_server = FLAVOR_LICENSE_SERVER_URL;
+            return;
+        }
+
+        // Prioridad 2: Opción de base de datos (para configuración desde admin)
+        $custom_url = get_option('flavor_license_server_url');
+        if (!empty($custom_url)) {
+            $this->license_server = trailingslashit($custom_url);
+        }
+
+        // Prioridad 3: Filtro (última oportunidad de modificar)
+        $this->license_server = apply_filters('flavor_license_server_url', $this->license_server);
     }
 
     /**
@@ -166,11 +194,12 @@ class Flavor_License_Manager {
             'plan'           => $response['plan'] ?? 'starter',
             'activated_at'   => current_time('mysql'),
             'expires_at'     => $response['expires_at'] ?? null,
-            'sites_allowed'  => $response['sites_allowed'] ?? 1,
-            'sites_active'   => $response['sites_active'] ?? 1,
+            'sites_allowed'  => $response['sites_allowed'] ?? $response['max_activations'] ?? 1,
+            'sites_active'   => $response['sites_active'] ?? $response['active_count'] ?? 1,
             'customer_email' => $response['customer_email'] ?? '',
             'customer_name'  => $response['customer_name'] ?? '',
             'last_verified'  => current_time('mysql'),
+            'modules'        => $response['modules'] ?? [],
         ];
 
         $this->save_license();
@@ -256,11 +285,16 @@ class Flavor_License_Manager {
         }
 
         // Actualizar datos locales
-        $this->license_data['status'] = $response['status'];
+        $this->license_data['status'] = $response['valid'] ? 'active' : 'inactive';
         $this->license_data['plan'] = $response['plan'] ?? $this->license_data['plan'];
         $this->license_data['expires_at'] = $response['expires_at'] ?? $this->license_data['expires_at'];
-        $this->license_data['sites_active'] = $response['sites_active'] ?? $this->license_data['sites_active'];
+        $this->license_data['sites_active'] = $response['sites_active'] ?? $response['active_count'] ?? $this->license_data['sites_active'];
         $this->license_data['last_verified'] = current_time('mysql');
+
+        // Actualizar módulos permitidos
+        if (!empty($response['modules'])) {
+            $this->license_data['modules'] = $response['modules'];
+        }
 
         $this->save_license();
 
@@ -281,7 +315,15 @@ class Flavor_License_Manager {
      * @return array|WP_Error
      */
     private function make_api_request($action, $data) {
-        $url = trailingslashit($this->license_server) . $action;
+        // Mapear acciones a endpoints REST
+        $endpoint_map = [
+            'activate'   => 'license/activate',
+            'deactivate' => 'license/deactivate',
+            'verify'     => 'license/verify',
+        ];
+
+        $endpoint = $endpoint_map[$action] ?? $action;
+        $url = trailingslashit($this->license_server) . $endpoint;
 
         $response = wp_remote_post($url, [
             'body'    => wp_json_encode($data),
@@ -301,7 +343,8 @@ class Flavor_License_Manager {
         $body = wp_remote_retrieve_body($response);
         $result = json_decode($body, true);
 
-        if ($code !== 200) {
+        // El servidor devuelve 200 con success:true/false
+        if ($code !== 200 || (isset($result['success']) && $result['success'] === false)) {
             return new WP_Error(
                 'license_error',
                 $result['message'] ?? __('Error del servidor de licencias', 'flavor-chat-ia'),
@@ -309,7 +352,8 @@ class Flavor_License_Manager {
             );
         }
 
-        return $result;
+        // El servidor puede devolver datos en 'data' o directamente
+        return $result['data'] ?? $result;
     }
 
     // =========================================================================
@@ -403,10 +447,38 @@ class Flavor_License_Manager {
      * @return bool
      */
     public function can_use_module($module_slug) {
+        // Si no hay licencia activa, solo módulos gratuitos
+        if (!$this->is_license_active()) {
+            $plans = Flavor_License_Plans::get_instance();
+            return $plans->is_module_in_plan($module_slug, 'free');
+        }
+
+        // Verificar primero en los módulos de la licencia del servidor
+        if (!empty($this->license_data['modules'])) {
+            // Si los módulos vienen como array de slugs
+            if (is_array($this->license_data['modules'])) {
+                return in_array($module_slug, $this->license_data['modules']);
+            }
+        }
+
+        // Fallback a planes locales
         $current_plan = $this->get_current_plan();
         $plans = Flavor_License_Plans::get_instance();
 
         return $plans->is_module_in_plan($module_slug, $current_plan);
+    }
+
+    /**
+     * Obtiene los módulos permitidos por la licencia
+     *
+     * @return array
+     */
+    public function get_allowed_modules() {
+        if (!$this->is_license_active()) {
+            return [];
+        }
+
+        return $this->license_data['modules'] ?? [];
     }
 
     /**
@@ -694,4 +766,13 @@ function flavor_get_current_plan() {
  */
 function flavor_can_use_module($module_slug) {
     return Flavor_License_Manager::get_instance()->can_use_module($module_slug);
+}
+
+/**
+ * Obtiene los módulos permitidos por la licencia
+ *
+ * @return array
+ */
+function flavor_get_allowed_modules() {
+    return Flavor_License_Manager::get_instance()->get_allowed_modules();
 }

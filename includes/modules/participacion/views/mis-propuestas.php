@@ -132,7 +132,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
             <p class="flavor-subtitle"><?php esc_html_e('Gestiona las propuestas que has presentado a la comunidad', 'flavor-chat-ia'); ?></p>
         </div>
         <div class="flavor-header-actions">
-            <a href="<?php echo esc_url(home_url('/mi-portal/participacion/crear/')); ?>" class="flavor-btn flavor-btn-primary">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('participacion', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
                 <?php esc_html_e('Nueva Propuesta', 'flavor-chat-ia'); ?>
             </a>
@@ -213,7 +213,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
             </div>
             <h3><?php esc_html_e('No tienes propuestas', 'flavor-chat-ia'); ?></h3>
             <p><?php esc_html_e('Comparte tus ideas para mejorar la comunidad creando tu primera propuesta.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(home_url('/mi-portal/participacion/crear/')); ?>" class="flavor-btn flavor-btn-primary">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('participacion', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                 <?php esc_html_e('Crear mi primera propuesta', 'flavor-chat-ia'); ?>
             </a>
         </div>
@@ -241,7 +241,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
                         </div>
 
                         <h3 class="flavor-propuesta-titulo">
-                            <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, home_url('/mi-portal/participacion/detalle/'))); ?>">
+                            <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, Flavor_Chat_Helpers::get_action_url('participacion', 'detalle'))); ?>">
                                 <?php echo esc_html($propuesta->titulo); ?>
                             </a>
                         </h3>
@@ -289,7 +289,7 @@ $url_base = remove_query_arg(['pag', 'estado']);
                     </div>
 
                     <div class="flavor-propuesta-actions">
-                        <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, home_url('/mi-portal/participacion/detalle/'))); ?>"
+                        <a href="<?php echo esc_url(add_query_arg('propuesta_id', $propuesta->id, Flavor_Chat_Helpers::get_action_url('participacion', 'detalle'))); ?>"
                            class="flavor-btn flavor-btn-sm flavor-btn-outline"
                            title="<?php esc_attr_e('Ver detalles', 'flavor-chat-ia'); ?>">
                             <span class="dashicons dashicons-visibility"></span>

@@ -247,11 +247,11 @@ class Flavor_Bares_Dashboard_Tab {
 
             <!-- Acciones rápidas -->
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/bares/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar Bares', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/bares/mapa/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', 'mapa')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-location"></span>
                     <?php esc_html_e('Ver en Mapa', 'flavor-chat-ia'); ?>
                 </a>
@@ -400,7 +400,7 @@ class Flavor_Bares_Dashboard_Tab {
                     <span class="dashicons dashicons-calendar-alt"></span>
                     <?php esc_html_e('Mis Reservas', 'flavor-chat-ia'); ?>
                 </h2>
-                <a href="<?php echo esc_url(home_url('/mi-portal/bares/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Nueva Reserva', 'flavor-chat-ia'); ?>
                 </a>
@@ -435,7 +435,7 @@ class Flavor_Bares_Dashboard_Tab {
                     <span class="dashicons dashicons-calendar-alt"></span>
                     <h3><?php esc_html_e('No tienes reservas', 'flavor-chat-ia'); ?></h3>
                     <p><?php esc_html_e('Explora los bares y restaurantes disponibles para hacer tu primera reserva.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/bares/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar Bares', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -527,7 +527,7 @@ class Flavor_Bares_Dashboard_Tab {
                     <span class="dashicons dashicons-star-empty"></span>
                     <h3><?php esc_html_e('Aún no has valorado ningún local', 'flavor-chat-ia'); ?></h3>
                     <p><?php esc_html_e('Visita bares y restaurantes y comparte tu experiencia con la comunidad.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/bares/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('bares', '')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar Bares', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -550,7 +550,7 @@ class Flavor_Bares_Dashboard_Tab {
     private function render_card_bar_mini($bar) {
         $imagen_url = !empty($bar->imagen) ? esc_url($bar->imagen) : '';
         $tipo_etiqueta = $this->etiquetas_tipos[$bar->tipo] ?? ucfirst($bar->tipo);
-        $url_bar = add_query_arg('bar_id', $bar->id, home_url('/mi-portal/bares/'));
+        $url_bar = add_query_arg('bar_id', $bar->id, Flavor_Chat_Helpers::get_action_url('bares', ''));
 
         ?>
         <div class="flavor-card flavor-bar-card-mini">
@@ -657,7 +657,7 @@ class Flavor_Bares_Dashboard_Tab {
         $imagen_url = !empty($valoracion->bar_imagen) ? esc_url($valoracion->bar_imagen) : '';
         $tipo_etiqueta = $this->etiquetas_tipos[$valoracion->bar_tipo] ?? ucfirst($valoracion->bar_tipo ?? '');
         $fecha_formateada = date_i18n('d \d\e F \d\e Y', strtotime($valoracion->created_at));
-        $url_bar = add_query_arg('bar_id', $valoracion->bar_id, home_url('/mi-portal/bares/'));
+        $url_bar = add_query_arg('bar_id', $valoracion->bar_id, Flavor_Chat_Helpers::get_action_url('bares', ''));
 
         ?>
         <div class="flavor-card flavor-valoracion-card">

@@ -1,0 +1,88 @@
+{
+  "$schema": "../module-schema.json",
+  "id": "bug-tracker",
+  "name": "Bug Tracker y Notificaciones",
+  "version": "1.0.0",
+  "description": "Sistema de captura automática de errores PHP, reportes manuales y notificaciones multicanal (Email, Slack, Discord, WordPress)",
+  "author": {
+    "name": "Flavor Platform Team",
+    "email": "dev@flavor-platform.com"
+  },
+  "license": "GPL-2.0-or-later",
+  "dependencies": {},
+  "optional_dependencies": {},
+  "wp_version_min": "6.0",
+  "php_version_min": "7.4",
+  "flavor_version_min": "3.3.0",
+  "category": "utilities",
+  "tags": ["bugs", "errores", "notificaciones", "slack", "discord", "monitoreo"],
+  "icon": "dashicons-warning",
+  "main_class": "Flavor_Bug_Tracker_Module",
+  "autoload": {
+    "files": [
+      "class-bug-tracker-module.php",
+      "class-bug-tracker-error-handler.php",
+      "class-bug-tracker-channels.php",
+      "class-bug-tracker-api.php",
+      "class-bug-tracker-dashboard-tab.php"
+    ]
+  },
+  "database": {
+    "tables": [
+      "flavor_bug_reports",
+      "flavor_bug_channels"
+    ]
+  },
+  "rest_api": {
+    "namespace": "flavor/v1",
+    "endpoints": [
+      {
+        "route": "/bugs",
+        "methods": ["GET", "POST"],
+        "description": "Listar y crear reportes de bugs"
+      },
+      {
+        "route": "/bugs/(?P<id>\\d+)",
+        "methods": ["GET", "PUT", "DELETE"],
+        "description": "Obtener, actualizar o eliminar un bug específico"
+      },
+      {
+        "route": "/bugs/(?P<id>\\d+)/resolve",
+        "methods": ["POST"],
+        "description": "Marcar un bug como resuelto"
+      },
+      {
+        "route": "/bugs/stats",
+        "methods": ["GET"],
+        "description": "Obtener estadísticas de bugs"
+      }
+    ]
+  },
+  "hooks": {
+    "actions": [
+      "flavor_bug_reported",
+      "flavor_bug_resolved",
+      "flavor_bug_ignored",
+      "flavor_bug_notification_sent"
+    ],
+    "filters": [
+      "flavor_bug_tracker_severidades",
+      "flavor_bug_tracker_tipos",
+      "flavor_bug_tracker_canales",
+      "flavor_bug_tracker_debe_capturar"
+    ]
+  },
+  "capabilities": [
+    "flavor_view_bugs",
+    "flavor_manage_bugs",
+    "flavor_resolve_bugs",
+    "flavor_configure_bug_channels"
+  ],
+  "extra": {
+    "gailu_principios": [],
+    "gailu_contribuye_a": ["resiliencia"],
+    "dashboard_parent_module": "",
+    "dashboard_satellite_priority": 90,
+    "is_system_module": true
+  }
+}

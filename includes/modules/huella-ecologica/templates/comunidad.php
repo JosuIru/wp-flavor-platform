@@ -172,7 +172,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
                     <?php esc_html_e('Cada acción cuenta para reducir nuestra huella colectiva', 'flavor-chat-ia'); ?>
                 </p>
                 <?php if (is_user_logged_in()) : ?>
-                <a href="<?php echo esc_url(home_url('/mi-portal/huella-ecologica/calculadora/')); ?>" class="he-btn" style="background: white; color: var(--he-primary);">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'calculadora')); ?>" class="he-btn" style="background: white; color: var(--he-primary);">
                     <?php esc_html_e('Calcular mi huella', 'flavor-chat-ia'); ?>
                 </a>
                 <?php else : ?>
@@ -189,7 +189,7 @@ $top_contribuyentes = $stats_comunidad['top_contribuyentes'];
                     <?php esc_html_e('Proyectos activos', 'flavor-chat-ia'); ?>
                 </h4>
                 <?php if ($stats_comunidad['proyectos_activos'] > 0) : ?>
-                <a href="<?php echo esc_url(home_url('/mi-portal/huella-ecologica/proyectos/')); ?>" class="he-btn he-btn--secondary" style="width: 100%; justify-content: center;">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'proyectos')); ?>" class="he-btn he-btn--secondary" style="width: 100%; justify-content: center;">
                     <?php printf(esc_html__('Ver %d proyectos', 'flavor-chat-ia'), $stats_comunidad['proyectos_activos']); ?>
                 </a>
                 <?php else : ?>

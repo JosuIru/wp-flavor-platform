@@ -358,7 +358,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
         }
 
         // En contexto frontend, usar URL del portal
-        return home_url('/mi-portal/' . $this->widget_id . '/');
+        return Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $this->widget_id), '');
     }
 
     /**
@@ -382,7 +382,7 @@ abstract class Flavor_Dashboard_Widget_Base implements Flavor_Dashboard_Widget_I
 
         if (empty($admin_page_slug)) {
             // Fallback a la URL de frontend si no hay página de admin
-            return $canonical_admin_url ?: home_url('/mi-portal/' . $this->widget_id . '/');
+            return $canonical_admin_url ?: Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $this->widget_id), '');
         }
 
         // Si el slug comienza con '_frontend_:', es una URL de frontend

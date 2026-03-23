@@ -332,7 +332,7 @@ if (empty($locutor_token)) {
                         <span class="dashicons dashicons-calendar-alt"></span>
                         <?php _e('Ver Programación', 'flavor-chat-ia'); ?>
                     </a>
-                    <a href="<?php echo home_url('/mi-portal/radio/'); ?>" class="button" target="_blank">
+                    <a href="<?php echo Flavor_Chat_Helpers::get_action_url('radio', ''); ?>" class="button" target="_blank">
                         <span class="dashicons dashicons-visibility"></span>
                         <?php _e('Ver Portal Público', 'flavor-chat-ia'); ?>
                     </a>

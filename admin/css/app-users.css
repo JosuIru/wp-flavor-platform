@@ -1,0 +1,618 @@
+/**
+ * App Users Panel Styles
+ *
+ * @package Flavor_Chat_IA
+ */
+
+/* Container */
+.flavor-app-users {
+    max-width: 1400px;
+}
+
+.flavor-app-users .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.flavor-app-users .page-header h1 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flavor-app-users .page-header .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.flavor-app-users .header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.flavor-app-users .header-actions .button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Stats Cards */
+.users-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.stat-card .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-card .stat-icon .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+
+.stat-card.total .stat-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card.active .stat-icon {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.stat-card.devices .stat-icon {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stat-card.sessions .stat-icon {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.stat-card .stat-content .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1d2327;
+    line-height: 1;
+}
+
+.stat-card .stat-content .stat-label {
+    font-size: 13px;
+    color: #646970;
+    margin-top: 3px;
+}
+
+/* Platform Distribution */
+.platform-distribution {
+    margin-bottom: 20px;
+}
+
+.platform-bar {
+    display: flex;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #e5e5e5;
+}
+
+.platform-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-width: 50px;
+}
+
+.platform-segment.ios {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.platform-segment.android {
+    background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+}
+
+.platform-label {
+    position: absolute;
+    top: 12px;
+    font-size: 11px;
+    color: #646970;
+    white-space: nowrap;
+}
+
+/* Toolbar */
+.users-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.users-toolbar .search-box {
+    flex: 1;
+    min-width: 250px;
+}
+
+.users-toolbar .search-box input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.users-toolbar .filter-group {
+    display: flex;
+    gap: 10px;
+}
+
+.users-toolbar select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 150px;
+}
+
+/* Users Table */
+.users-table-container {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#users-table {
+    border: none;
+    margin: 0;
+}
+
+#users-table th {
+    background: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+    padding: 12px 15px;
+    font-weight: 600;
+}
+
+#users-table td {
+    padding: 12px 15px;
+    vertical-align: middle;
+}
+
+#users-table .column-avatar {
+    width: 50px;
+}
+
+#users-table .column-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+#users-table .column-user {
+    width: 25%;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #1d2327;
+    display: block;
+}
+
+.user-email {
+    font-size: 12px;
+    color: #646970;
+}
+
+#users-table .column-devices,
+#users-table .column-sessions {
+    width: 80px;
+    text-align: center;
+}
+
+.device-count,
+.session-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 24px;
+    padding: 0 8px;
+    background: #f0f0f1;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+#users-table .column-platform {
+    width: 120px;
+}
+
+.platform-badges {
+    display: flex;
+    gap: 5px;
+}
+
+.platform-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.platform-badge.ios {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.platform-badge.android {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+#users-table .column-last-seen {
+    width: 140px;
+}
+
+.last-seen {
+    font-size: 13px;
+    color: #646970;
+}
+
+.last-seen.recent {
+    color: #00a32a;
+}
+
+#users-table .column-actions {
+    width: 100px;
+    text-align: right;
+}
+
+.row-actions {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-end;
+}
+
+.row-actions button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.row-actions .btn-view {
+    background: #f0f0f1;
+    color: #1d2327;
+}
+
+.row-actions .btn-view:hover {
+    background: #e0e0e0;
+}
+
+.row-actions .btn-push {
+    background: #2271b1;
+    color: #fff;
+}
+
+.row-actions .btn-push:hover {
+    background: #135e96;
+}
+
+/* Loading row */
+.loading-row td {
+    text-align: center;
+    padding: 40px !important;
+}
+
+.loading-row .spinner {
+    float: none;
+    margin: 0 10px 0 0;
+}
+
+/* Pagination */
+.tablenav.bottom {
+    padding: 15px;
+    border-top: 1px solid #f0f0f0;
+    margin: 0;
+}
+
+.tablenav-pages {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.displaying-num {
+    color: #646970;
+}
+
+.pagination-links {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.pagination-links .button {
+    min-width: 30px;
+    height: 30px;
+    padding: 0;
+}
+
+.paging-input {
+    margin: 0 5px;
+}
+
+/* Modal */
+.user-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.user-modal-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.user-modal {
+    background: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(-20px);
+    transition: transform 0.3s;
+}
+
+.user-modal-overlay.is-visible .user-modal {
+    transform: translateY(0);
+}
+
+.user-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.user-modal-header h3 {
+    margin: 0;
+}
+
+.user-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #646970;
+    line-height: 1;
+}
+
+.user-modal-body {
+    padding: 20px;
+}
+
+.user-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 15px 20px;
+    border-top: 1px solid #ddd;
+    background: #f9f9f9;
+}
+
+/* User Detail in Modal */
+.user-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.user-detail-header img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+.user-detail-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+}
+
+.user-detail-info .email {
+    color: #646970;
+}
+
+.user-detail-info .registered {
+    font-size: 12px;
+    color: #a0a0a0;
+    margin-top: 5px;
+}
+
+/* Devices List in Modal */
+.devices-list {
+    margin-bottom: 20px;
+}
+
+.devices-list h5 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+}
+
+.device-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.device-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.device-info .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #646970;
+}
+
+.device-info .device-name {
+    font-weight: 500;
+}
+
+.device-info .device-meta {
+    font-size: 12px;
+    color: #a0a0a0;
+}
+
+.device-actions button {
+    padding: 5px 10px;
+    font-size: 11px;
+}
+
+/* Sessions List */
+.sessions-list {
+    margin-top: 20px;
+}
+
+.sessions-list h5 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+}
+
+.session-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 13px;
+}
+
+.session-item:last-child {
+    border-bottom: none;
+}
+
+.session-time {
+    color: #646970;
+}
+
+.session-duration {
+    font-weight: 500;
+}
+
+/* Broadcast Form */
+#broadcast-form .form-group {
+    margin-bottom: 15px;
+}
+
+#broadcast-form label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+#broadcast-form input,
+#broadcast-form textarea,
+#broadcast-form select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#broadcast-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Empty State */
+.no-users {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.no-users .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #ddd;
+}
+
+.no-users h3 {
+    margin: 15px 0 10px;
+}
+
+.no-users p {
+    color: #646970;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .users-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .users-toolbar {
+        flex-direction: column;
+    }
+
+    .users-toolbar .filter-group {
+        flex-direction: column;
+    }
+
+    #users-table .column-devices,
+    #users-table .column-sessions,
+    #users-table .column-platform {
+        display: none;
+    }
+
+    .row-actions {
+        flex-direction: column;
+    }
+}

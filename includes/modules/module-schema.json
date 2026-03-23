@@ -1,0 +1,458 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://flavor-platform.com/schemas/module-schema.json",
+  "title": "Flavor Platform Module Schema",
+  "description": "Schema definition for Flavor Platform module configuration files (module.json)",
+  "type": "object",
+  "required": ["id", "name", "version"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the module (slug format)",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "minLength": 2,
+      "maxLength": 64,
+      "examples": ["eventos", "marketplace", "grupos-consumo"]
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name of the module",
+      "minLength": 1,
+      "maxLength": 128,
+      "examples": ["Eventos", "Marketplace", "Grupos de Consumo"]
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version of the module (semver format)",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+      "examples": ["1.0.0", "2.1.3", "1.0.0-beta.1"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the module functionality",
+      "maxLength": 500
+    },
+    "long_description": {
+      "type": "string",
+      "description": "Extended description with full details about the module"
+    },
+    "author": {
+      "type": "object",
+      "description": "Author information",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Author name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Author email"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Author website"
+        }
+      },
+      "required": ["name"]
+    },
+    "contributors": {
+      "type": "array",
+      "description": "List of contributors",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role in the project (developer, designer, tester, etc.)"
+          }
+        },
+        "required": ["name"]
+      }
+    },
+    "license": {
+      "type": "string",
+      "description": "SPDX license identifier",
+      "default": "GPL-2.0-or-later",
+      "examples": ["GPL-2.0-or-later", "GPL-3.0-or-later", "MIT"]
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Other Flavor modules required by this module",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Version constraint (semver range)",
+        "examples": ["^1.0.0", ">=2.0.0", "~1.2.0", "1.0.0 - 2.0.0"]
+      },
+      "examples": [
+        {
+          "comunidades": "^1.0.0",
+          "chat-interno": ">=2.0.0"
+        }
+      ]
+    },
+    "optional_dependencies": {
+      "type": "object",
+      "description": "Optional modules that enhance functionality if present",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Version constraint (semver range)"
+      }
+    },
+    "conflicts": {
+      "type": "object",
+      "description": "Modules that conflict with this module",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Version constraint of conflicting versions"
+      }
+    },
+    "wp_version_min": {
+      "type": "string",
+      "description": "Minimum WordPress version required",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "default": "6.0",
+      "examples": ["6.0", "6.4", "6.5.2"]
+    },
+    "wp_version_tested": {
+      "type": "string",
+      "description": "WordPress version tested up to",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "examples": ["6.7", "6.6.2"]
+    },
+    "php_version_min": {
+      "type": "string",
+      "description": "Minimum PHP version required",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "default": "7.4",
+      "examples": ["7.4", "8.0", "8.1"]
+    },
+    "flavor_version_min": {
+      "type": "string",
+      "description": "Minimum Flavor Platform version required",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$",
+      "examples": ["3.0.0", "3.3.0"]
+    },
+    "category": {
+      "type": "string",
+      "description": "Module category for organization",
+      "enum": [
+        "core",
+        "social",
+        "economy",
+        "environment",
+        "governance",
+        "communication",
+        "services",
+        "business",
+        "education",
+        "culture",
+        "utilities"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "description": "Keywords for module discovery",
+      "items": {
+        "type": "string",
+        "maxLength": 32
+      },
+      "maxItems": 10
+    },
+    "icon": {
+      "type": "string",
+      "description": "Dashicons class or custom icon path",
+      "examples": ["dashicons-calendar-alt", "assets/icons/module-icon.svg"]
+    },
+    "main_class": {
+      "type": "string",
+      "description": "Fully qualified class name of the main module class",
+      "examples": ["Flavor_Eventos_Module", "Flavor_Marketplace_Module"]
+    },
+    "autoload": {
+      "type": "object",
+      "description": "PSR-4 autoload configuration",
+      "properties": {
+        "psr-4": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "classmap": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "database": {
+      "type": "object",
+      "description": "Database requirements",
+      "properties": {
+        "tables": {
+          "type": "array",
+          "description": "Custom database tables created by this module",
+          "items": {
+            "type": "string"
+          }
+        },
+        "migrations": {
+          "type": "string",
+          "description": "Path to migrations directory"
+        }
+      }
+    },
+    "assets": {
+      "type": "object",
+      "description": "Frontend and admin assets",
+      "properties": {
+        "css": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "js": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "admin_css": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "admin_js": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "shortcodes": {
+      "type": "array",
+      "description": "List of shortcodes provided by this module",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "Shortcode tag"
+          },
+          "description": {
+            "type": "string",
+            "description": "Shortcode description"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "default": {},
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "required": ["tag"]
+      }
+    },
+    "rest_api": {
+      "type": "object",
+      "description": "REST API endpoints configuration",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "description": "API namespace"
+        },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "route": {
+                "type": "string"
+              },
+              "methods": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+                }
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "hooks": {
+      "type": "object",
+      "description": "WordPress hooks used by this module",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "description": "Custom capabilities registered by this module",
+      "items": {
+        "type": "string"
+      }
+    },
+    "settings": {
+      "type": "object",
+      "description": "Module settings configuration",
+      "properties": {
+        "page": {
+          "type": "string",
+          "description": "Settings page slug"
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "changelog": {
+      "type": "array",
+      "description": "Version changelog entries",
+      "items": {
+        "type": "object",
+        "required": ["version", "date"],
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "Version number"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Release date (YYYY-MM-DD)"
+          },
+          "changes": {
+            "type": "array",
+            "description": "List of changes in this version",
+            "items": {
+              "type": "object",
+              "required": ["type", "description"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["added", "changed", "deprecated", "removed", "fixed", "security"],
+                  "description": "Type of change"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Change description"
+                },
+                "issue": {
+                  "type": "string",
+                  "description": "Related issue or ticket number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stability": {
+      "type": "string",
+      "description": "Module stability status",
+      "enum": ["experimental", "alpha", "beta", "rc", "stable", "deprecated"],
+      "default": "stable"
+    },
+    "deprecated": {
+      "type": "boolean",
+      "description": "Whether this module is deprecated",
+      "default": false
+    },
+    "deprecated_message": {
+      "type": "string",
+      "description": "Message explaining deprecation and alternatives"
+    },
+    "support": {
+      "type": "object",
+      "description": "Support information",
+      "properties": {
+        "docs": {
+          "type": "string",
+          "format": "uri",
+          "description": "Documentation URL"
+        },
+        "issues": {
+          "type": "string",
+          "format": "uri",
+          "description": "Issue tracker URL"
+        },
+        "forum": {
+          "type": "string",
+          "format": "uri",
+          "description": "Support forum URL"
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "description": "Source code repository",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["git", "svn", "hg"]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "extra": {
+      "type": "object",
+      "description": "Additional custom metadata",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,66 +1,99 @@
 <?php
 /**
- * Componente: Empty State
+ * Empty State Component
  *
- * Estado vacío reutilizable con icono, mensaje y CTA opcional.
+ * Componente reutilizable para mostrar estados vacíos de forma visual y accionable.
  *
  * @package FlavorChatIA
- * @since 5.0.0
- *
- * @param string $icon       Emoji o icono grande
- * @param string $title      Título del estado vacío
- * @param string $text       Texto descriptivo
- * @param string $cta_text   Texto del botón CTA (opcional)
- * @param string $cta_action Acción onclick del CTA (JS)
- * @param string $cta_url    URL del CTA (alternativa a cta_action)
- * @param string $color      Color del botón CTA (red, green, blue, etc.)
+ * @since 3.3.0
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Cargar funciones helper si no están cargadas
-if (!function_exists('flavor_get_color_classes')) {
-    require_once __DIR__ . '/_functions.php';
-}
+/**
+ * Renderiza un estado vacío visual con icono, mensaje y acciones
+ *
+ * @param array $args {
+ *     Argumentos del componente de estado vacío
+ *
+ *     @type string $icon       Clase de Dashicon (ej: 'dashicons-carrot', 'dashicons-groups')
+ *     @type string $title      Título principal del estado vacío
+ *     @type string $message    Mensaje descriptivo (opcional)
+ *     @type array  $actions    Array de botones de acción: ['text' => '...', 'url' => '...', 'class' => 'primary']
+ *     @type string $image      URL de imagen SVG personalizada (alternativa al icono)
+ *     @type string $class      Clase CSS adicional para el contenedor
+ * }
+ *
+ * @example
+ * flavor_render_empty_state([
+ *     'icon' => 'dashicons-admin-post',
+ *     'title' => 'No hay eventos',
+ *     'message' => 'Aún no se han creado eventos. ¡Sé el primero en crear uno!',
+ *     'actions' => [
+ *         ['text' => 'Crear evento', 'url' => '/crear-evento', 'class' => 'primary']
+ *     ]
+ * ]);
+ */
+function flavor_render_empty_state($args = []) {
+    $defaults = [
+        'icon' => 'dashicons-info',
+        'title' => __('No hay contenido disponible', 'flavor-chat-ia'),
+        'message' => '',
+        'actions' => [],
+        'image' => '',
+        'class' => '',
+    ];
 
-// Valores por defecto
-$icon = $icon ?? '📭';
-$title = $title ?? __('No hay elementos', 'flavor-chat-ia');
-$text = $text ?? '';
-$cta_text = $cta_text ?? '';
-$cta_action = $cta_action ?? '';
-$cta_url = $cta_url ?? '';
-$color = $color ?? 'blue';
+    $args = wp_parse_args($args, $defaults);
 
-$color_classes = flavor_get_color_classes($color);
-?>
+    $container_classes = ['flavor-empty-state'];
+    if (!empty($args['class'])) {
+        $container_classes[] = $args['class'];
+    }
+    ?>
+    <div class="<?php echo esc_attr(implode(' ', $container_classes)); ?>">
+        <div class="empty-state-icon">
+            <?php if (!empty($args['image'])): ?>
+                <img src="<?php echo esc_url($args['image']); ?>"
+                     alt=""
+                     class="empty-state-image">
+            <?php else: ?>
+                <span class="dashicons <?php echo esc_attr($args['icon']); ?>"></span>
+            <?php endif; ?>
+        </div>
 
-<div class="text-center py-16 bg-gray-50 rounded-2xl">
-    <div class="text-6xl mb-4"><?php echo esc_html($icon); ?></div>
+        <h3 class="empty-state-title"><?php echo esc_html($args['title']); ?></h3>
 
-    <h3 class="text-xl font-semibold text-gray-700 mb-2">
-        <?php echo esc_html($title); ?>
-    </h3>
-
-    <?php if ($text): ?>
-    <p class="text-gray-500 mb-6">
-        <?php echo esc_html($text); ?>
-    </p>
-    <?php endif; ?>
-
-    <?php if ($cta_text): ?>
-        <?php if ($cta_url): ?>
-        <a href="<?php echo esc_url($cta_url); ?>"
-           class="<?php echo esc_attr($color_classes['bg_solid']); ?> text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity inline-block">
-            <?php echo esc_html($cta_text); ?>
-        </a>
-        <?php elseif ($cta_action): ?>
-        <button class="<?php echo esc_attr($color_classes['bg_solid']); ?> text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity"
-                onclick="<?php echo esc_attr($cta_action); ?>">
-            <?php echo esc_html($cta_text); ?>
-        </button>
+        <?php if (!empty($args['message'])): ?>
+            <p class="empty-state-message"><?php echo esc_html($args['message']); ?></p>
         <?php endif; ?>
-    <?php endif; ?>
-</div>
+
+        <?php if (!empty($args['actions'])): ?>
+            <div class="empty-state-actions">
+                <?php foreach ($args['actions'] as $action): ?>
+                    <?php
+                    $button_class = 'button';
+                    if (isset($action['class'])) {
+                        $button_class .= ' button-' . esc_attr($action['class']);
+                    } else {
+                        $button_class .= ' button-secondary';
+                    }
+
+                    $target = isset($action['target']) ? $action['target'] : '_self';
+                    ?>
+                    <a href="<?php echo esc_url($action['url']); ?>"
+                       class="<?php echo esc_attr($button_class); ?>"
+                       target="<?php echo esc_attr($target); ?>">
+                        <?php if (isset($action['icon'])): ?>
+                            <span class="dashicons <?php echo esc_attr($action['icon']); ?>"></span>
+                        <?php endif; ?>
+                        <?php echo esc_html($action['text']); ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?php
+}

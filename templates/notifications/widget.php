@@ -112,7 +112,7 @@ if (!defined('ABSPATH')) {
 
     <?php if ($atts['show_all_link'] === 'yes' && !empty($notifications)) : ?>
         <div class="flavor-notifications-footer">
-            <a href="<?php echo home_url('/mi-portal/#notifications'); ?>" class="flavor-notifications-view-all">
+            <a href="<?php echo Flavor_Chat_Helpers::get_action_url('', '') . '#notifications'; ?>" class="flavor-notifications-view-all">
                 <?php _e('Ver todas las notificaciones', 'flavor-chat-ia'); ?> →
             </a>
         </div>

@@ -206,7 +206,7 @@ $tipos = [
 
         <!-- Botones de acción -->
         <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
-            <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/')); ?>"
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', '')); ?>"
                class="px-6 py-3 text-gray-600 hover:text-gray-800 transition-colors">
                 <?php echo esc_html__('← Cancelar', 'flavor-chat-ia'); ?>
             </a>

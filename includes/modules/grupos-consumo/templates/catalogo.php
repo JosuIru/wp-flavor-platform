@@ -343,7 +343,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
 
                             <div class="flavor-gc-producto-contenido">
                                 <h3 class="flavor-gc-producto-nombre">
-                                    <a href="<?php echo esc_url(add_query_arg('product', intval($producto_id), home_url('/mi-portal/grupos-consumo/productos/'))); ?>">
+                                    <a href="<?php echo esc_url(add_query_arg('product', intval($producto_id), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'))); ?>">
                                         <?php echo esc_html($producto->post_title); ?>
                                     </a>
                                 </h3>
@@ -351,7 +351,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                                 <?php if ($productor): ?>
                                     <p class="flavor-gc-producto-productor">
                                         <span class="dashicons dashicons-admin-users"></span>
-                                        <a href="<?php echo esc_url(add_query_arg('productor', intval($productor_id), home_url('/mi-portal/grupos-consumo/productores-cercanos/'))); ?>">
+                                        <a href="<?php echo esc_url(add_query_arg('productor', intval($productor_id), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productores-cercanos'))); ?>">
                                             <?php echo esc_html($productor->post_title); ?>
                                         </a>
                                     </p>
@@ -402,7 +402,7 @@ $precio_maximo_catalogo = !empty($precios) ? ceil(max($precios)) : 100;
                                                 </span>
                                             </button>
                                         <?php else: ?>
-                                            <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/productos/'))); ?>" class="flavor-gc-btn-login">
+                                            <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'))); ?>" class="flavor-gc-btn-login">
                                                 <span class="dashicons dashicons-lock"></span>
                                                 <?php _e('Inicia sesion para pedir', 'flavor-chat-ia'); ?>
                                             </a>

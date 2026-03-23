@@ -282,7 +282,7 @@ function obtener_etiqueta_tipo_anuncio($tipo_anuncio_variable) {
             </svg>
             <h3 class="text-lg font-semibold text-gray-600 mb-2"><?php echo esc_html__('No hay anuncios', 'flavor-chat-ia'); ?></h3>
             <p class="text-gray-500"><?php echo esc_html__('Se el primero en publicar un anuncio', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/publicar/')); ?>" class="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-colors">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>

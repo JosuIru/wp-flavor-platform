@@ -1,34 +1,129 @@
 <?xml version="1.0"?>
 <phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
     bootstrap="tests/bootstrap.php"
     colors="true"
+    convertDeprecationsToExceptions="true"
     convertErrorsToExceptions="true"
     convertNoticesToExceptions="true"
     convertWarningsToExceptions="true"
     stopOnFailure="false"
+    beStrictAboutTestsThatDoNotTestAnything="true"
+    beStrictAboutOutputDuringTests="true"
+    cacheResultFile=".phpunit.cache/test-results"
 >
+    <!-- ====================================================================
+         Test Suites
+         ==================================================================== -->
     <testsuites>
+        <!-- Tests unitarios (rapidos, sin dependencias externas) -->
         <testsuite name="unit">
-            <directory>tests/unit</directory>
+            <directory suffix="Test.php">tests/unit</directory>
         </testsuite>
+
+        <!-- Tests de integracion (requieren WordPress) -->
         <testsuite name="integration">
-            <directory>tests/integration</directory>
+            <directory suffix="Test.php">tests/integration</directory>
+        </testsuite>
+
+        <!-- Tests PHP generales -->
+        <testsuite name="php">
+            <directory suffix="Test.php">tests/php</directory>
+        </testsuite>
+
+        <!-- Todos los tests -->
+        <testsuite name="all">
+            <directory suffix="Test.php">tests/unit</directory>
+            <directory suffix="Test.php">tests/integration</directory>
+            <directory suffix="Test.php">tests/php</directory>
         </testsuite>
     </testsuites>
 
-    <coverage>
+    <!-- ====================================================================
+         Code Coverage
+         ==================================================================== -->
+    <coverage
+        includeUncoveredFiles="true"
+        processUncoveredFiles="true"
+    >
         <include>
             <directory suffix=".php">includes</directory>
             <directory suffix=".php">admin</directory>
+            <directory suffix=".php">addons</directory>
         </include>
         <exclude>
+            <!-- Vistas y templates -->
             <directory>includes/modules/*/views</directory>
             <directory>templates</directory>
+            <directory>admin/views</directory>
+
+            <!-- Archivos de terceros -->
+            <directory>vendor</directory>
+            <directory>node_modules</directory>
+
+            <!-- Scripts de desarrollo -->
+            <directory>dev-scripts</directory>
+            <directory>reports</directory>
+            <directory>docs</directory>
+            <directory>tools</directory>
+
+            <!-- Apps moviles y MCP -->
+            <directory>mobile-apps</directory>
+            <directory>mcp-server</directory>
+
+            <!-- Archivos de diagnostico -->
+            <file>diagnostico-completo.php</file>
+            <file>diagnostico-modulos.php</file>
+            <file>diagnostico-ia.php</file>
         </exclude>
+        <report>
+            <clover outputFile="coverage.xml"/>
+            <html outputDirectory="reports/coverage-html"/>
+            <text outputFile="php://stdout" showOnlySummary="true"/>
+        </report>
     </coverage>
 
+    <!-- ====================================================================
+         PHP Constants
+         ==================================================================== -->
     <php>
+        <!-- WordPress testing -->
         <const name="WP_TESTS_MULTISITE" value="0"/>
+
+        <!-- Flavor testing mode -->
         <const name="FLAVOR_TESTING" value="1"/>
+        <const name="FLAVOR_DEBUG" value="1"/>
+
+        <!-- Database config for integration tests -->
+        <env name="WP_TESTS_DIR" value="/tmp/wordpress-tests-lib"/>
+        <env name="WP_CORE_DIR" value="/tmp/wordpress"/>
+
+        <!-- Disable external HTTP requests in tests -->
+        <const name="WP_TESTS_SKIP_INSTALL" value="0"/>
+
+        <!-- Memory limit -->
+        <ini name="memory_limit" value="256M"/>
+
+        <!-- Error reporting -->
+        <ini name="error_reporting" value="E_ALL"/>
+        <ini name="display_errors" value="On"/>
     </php>
+
+    <!-- ====================================================================
+         Logging
+         ==================================================================== -->
+    <logging>
+        <junit outputFile="reports/junit.xml"/>
+    </logging>
+
+    <!-- ====================================================================
+         Groups (para ejecutar tests selectivamente)
+         ==================================================================== -->
+    <groups>
+        <exclude>
+            <group>slow</group>
+            <group>external</group>
+        </exclude>
+    </groups>
 </phpunit>

@@ -11,6 +11,22 @@ if (!defined('ABSPATH')) {
 ?>
 
 <div class="wrap flavor-deep-links-admin">
+    <?php if (class_exists('Flavor_Admin_Page_Chrome')) : ?>
+        <?php Flavor_Admin_Page_Chrome::render_breadcrumbs('configuration', 'flavor-deep-links', __('Deep Links', 'flavor-chat-ia')); ?>
+        <?php Flavor_Admin_Page_Chrome::render_compact_nav(Flavor_Admin_Page_Chrome::get_section_links('configuration', 'flavor-deep-links')); ?>
+    <?php endif; ?>
+    <div class="notice notice-info flavor-admin-callout">
+        <div class="flavor-admin-callout__content">
+            <p class="flavor-admin-callout__text">
+                <?php _e('Este gestor dedicado complementa la pestaña de Deep Links dentro de Apps Móviles. Aquí puedes revisar configuraciones multiempresa y gestionar registros específicos.', 'flavor-chat-ia'); ?>
+            </p>
+            <div class="flavor-admin-callout__actions">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-apps-config&tab=deeplinks')); ?>" class="button button-secondary">
+                    <?php _e('Volver a Apps Móviles', 'flavor-chat-ia'); ?>
+                </a>
+            </div>
+        </div>
+    </div>
     <h1 class="wp-heading-inline">
         <?php _e('Gestión de Deep Links para Apps', 'flavor-chat-ia'); ?>
     </h1>
@@ -66,13 +82,13 @@ if (!defined('ABSPATH')) {
 
                             <div class="flavor-dl-colors">
                                 <?php if (!empty($colores['primario'])): ?>
-                                    <span class="flavor-dl-color-sample" style="background-color: <?php echo esc_attr($colores['primario']); ?>" title="Color primario"></span>
+                                    <span class="flavor-dl-color-sample" data-color="<?php echo esc_attr($colores['primario']); ?>" title="Color primario"></span>
                                 <?php endif; ?>
                                 <?php if (!empty($colores['secundario'])): ?>
-                                    <span class="flavor-dl-color-sample" style="background-color: <?php echo esc_attr($colores['secundario']); ?>" title="Color secundario"></span>
+                                    <span class="flavor-dl-color-sample" data-color="<?php echo esc_attr($colores['secundario']); ?>" title="Color secundario"></span>
                                 <?php endif; ?>
                                 <?php if (!empty($colores['acento'])): ?>
-                                    <span class="flavor-dl-color-sample" style="background-color: <?php echo esc_attr($colores['acento']); ?>" title="Color acento"></span>
+                                    <span class="flavor-dl-color-sample" data-color="<?php echo esc_attr($colores['acento']); ?>" title="Color acento"></span>
                                 <?php endif; ?>
                             </div>
 
@@ -102,7 +118,7 @@ if (!defined('ABSPATH')) {
     </div>
 
     <!-- Modal para crear/editar empresa -->
-    <div id="flavor-dl-modal" class="flavor-dl-modal" style="display: none;">
+    <div id="flavor-dl-modal" class="flavor-dl-modal flavor-dl-modal--hidden">
         <div class="flavor-dl-modal-overlay"></div>
         <div class="flavor-dl-modal-content">
             <div class="flavor-dl-modal-header">
@@ -247,7 +263,7 @@ if (!defined('ABSPATH')) {
     </div>
 
     <!-- Modal para enlaces generados -->
-    <div id="flavor-dl-links-modal" class="flavor-dl-modal" style="display: none;">
+    <div id="flavor-dl-links-modal" class="flavor-dl-modal flavor-dl-modal--hidden">
         <div class="flavor-dl-modal-overlay"></div>
         <div class="flavor-dl-modal-content">
             <div class="flavor-dl-modal-header">

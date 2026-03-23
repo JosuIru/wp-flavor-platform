@@ -55,6 +55,12 @@ dependencies:
   # Vibration for feedback
   vibration: ^1.8.4
 
+  # Home Screen Widgets
+  home_widget: ^0.4.1
+
+  # Quick Actions (3D Touch / App Shortcuts)
+  quick_actions: ^1.0.0
+
   # Push Notifications (deshabilitado temporalmente)
   # firebase_core: ^2.24.2
   # firebase_messaging: ^14.7.10
@@ -72,8 +78,8 @@ dependencies:
   # QR Code generation
   qr_flutter: ^4.1.0
 
-  # Add to device calendar
-  add_2_calendar: ^2.2.5
+  # Add to device calendar (disabled temporarily due to Kotlin compatibility)
+  # add_2_calendar: ^3.0.1
 
   # Maps launcher
   map_launcher: ^3.1.0
@@ -97,7 +103,25 @@ dependencies:
   # Audio player for radio streaming
   just_audio: ^0.9.36
 
+  # Voice recording
+  record: ^5.2.0
+
+  # Keep screen awake during calls
+  wakelock_plus: ^1.1.4
+
+  # Video player
+  video_player: ^2.8.2
+  chewie: ^1.7.4
+
+  # App Reviews
+  in_app_review: ^2.0.8
+
+  # Deep Links (app_links reemplaza a uni_links descontinuado)
+  app_links: ^6.0.0
+
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.1
@@ -114,6 +138,9 @@ flutter_launcher_icons:
   image_path: "assets/icon/app_icon.png"
   adaptive_icon_background: "#2E7D32"
   adaptive_icon_foreground: "assets/icon/app_icon.png"
+
+dependency_overrides:
+  record_linux: ^1.0.0
 
 flutter:
   uses-material-design: true

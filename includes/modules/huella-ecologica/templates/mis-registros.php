@@ -215,11 +215,11 @@ $acciones_registradas = $wpdb->get_results($wpdb->prepare(
 
     <!-- Acciones rápidas -->
     <div style="text-align: center; margin-top: 2rem;">
-        <a href="<?php echo esc_url(home_url('/mi-portal/huella-ecologica/acciones/')); ?>" class="he-btn he-btn--primary">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'acciones')); ?>" class="he-btn he-btn--primary">
             <span class="dashicons dashicons-yes-alt"></span>
             <?php esc_html_e('Registrar acción reductora', 'flavor-chat-ia'); ?>
         </a>
-        <a href="<?php echo esc_url(home_url('/mi-portal/huella-ecologica/logros/')); ?>" class="he-btn he-btn--secondary">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('huella_ecologica', 'logros')); ?>" class="he-btn he-btn--secondary">
             <span class="dashicons dashicons-awards"></span>
             <?php esc_html_e('Ver mis logros', 'flavor-chat-ia'); ?>
         </a>

@@ -82,7 +82,7 @@ class Flavor_Radio_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => __('EN VIVO', 'flavor-chat-ia'),
                 'label' => wp_trim_words($emision_actual->programa_titulo, 2, '...'),
                 'color' => 'success',
-                'url' => $es_admin ? admin_url('admin.php?page=flavor-radio-dashboard') : home_url('/mi-portal/radio/'),
+                'url' => $es_admin ? admin_url('admin.php?page=flavor-radio-dashboard') : Flavor_Chat_Helpers::get_action_url('radio', ''),
             ];
         } else {
             $stats[] = [
@@ -90,7 +90,7 @@ class Flavor_Radio_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => __('Sin emisión', 'flavor-chat-ia'),
                 'label' => __('Radio', 'flavor-chat-ia'),
                 'color' => 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=flavor-radio-dashboard') : home_url('/mi-portal/radio/'),
+                'url' => $es_admin ? admin_url('admin.php?page=flavor-radio-dashboard') : Flavor_Chat_Helpers::get_action_url('radio', ''),
             ];
         }
 
@@ -99,7 +99,7 @@ class Flavor_Radio_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_programas,
             'label' => __('Programas', 'flavor-chat-ia'),
             'color' => $total_programas > 0 ? 'info' : 'gray',
-            'url' => $es_admin ? admin_url('admin.php?page=flavor-radio-programas') : home_url('/mi-portal/radio/programas/'),
+            'url' => $es_admin ? admin_url('admin.php?page=flavor-radio-programas') : Flavor_Chat_Helpers::get_action_url('radio', 'programas'),
         ];
 
         $items = $this->get_programas_destacados(4);
@@ -111,7 +111,7 @@ class Flavor_Radio_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Escuchar radio', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=flavor-radio-dashboard') : home_url('/mi-portal/radio/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=flavor-radio-dashboard') : Flavor_Chat_Helpers::get_action_url('radio', ''),
                     'icon' => 'dashicons-controls-play',
                 ],
             ],
@@ -142,7 +142,7 @@ class Flavor_Radio_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-microphone',
                 'title' => wp_trim_words($programa->titulo, 4, '...'),
                 'meta' => $programa->horario ?: '',
-                'url' => $es_admin ? admin_url('admin.php?page=flavor-radio-programas') : home_url('/mi-portal/radio/programa/' . $programa->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=flavor-radio-programas') : Flavor_Chat_Helpers::get_action_url('radio', 'programa') . '/' . $programa->id . '/',
             ];
         }
 

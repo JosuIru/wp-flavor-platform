@@ -116,7 +116,7 @@ class Flavor_GC_Gateway_Pickup extends Flavor_GC_Payment_Gateway {
             'success' => true,
             'message' => __('Pedido confirmado. Recuerda llevar el pago exacto cuando vayas a recogerlo.', 'flavor-chat-ia'),
             'transaction_id' => $transaction_id,
-            'redirect_url' => home_url('/mi-portal/grupos-consumo/mis-pedidos/'),
+            'redirect_url' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'),
         ];
     }
 

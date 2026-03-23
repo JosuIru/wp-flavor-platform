@@ -79,7 +79,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $total_colectivos,
                 'label' => __('Colectivos', 'flavor-chat-ia'),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=colectivos') : home_url('/mi-portal/colectivos/'),
+                'url' => $es_admin ? admin_url('admin.php?page=colectivos') : Flavor_Chat_Helpers::get_action_url('colectivos', ''),
             ],
         ];
 
@@ -89,7 +89,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_colectivos,
                 'label' => __('Mis colectivos', 'flavor-chat-ia'),
                 'color' => $mis_colectivos > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=colectivos&tab=mis-colectivos') : home_url('/mi-portal/colectivos/mis-colectivos/'),
+                'url' => $es_admin ? admin_url('admin.php?page=colectivos&tab=mis-colectivos') : Flavor_Chat_Helpers::get_action_url('colectivos', 'mis-colectivos'),
             ];
         }
 
@@ -102,7 +102,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Explorar colectivos', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=colectivos') : home_url('/mi-portal/colectivos/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=colectivos') : Flavor_Chat_Helpers::get_action_url('colectivos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -138,7 +138,7 @@ class Flavor_Colectivos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-groups',
                 'title' => wp_trim_words($colectivo->nombre, 4, '...'),
                 'meta' => $colectivo->categoria ?: $miembros_texto,
-                'url' => $es_admin ? admin_url('admin.php?page=colectivos&colectivo=' . $colectivo->id) : home_url('/mi-portal/colectivos/?colectivo=' . $colectivo->id),
+                'url' => $es_admin ? admin_url('admin.php?page=colectivos&colectivo=' . $colectivo->id) : Flavor_Chat_Helpers::get_action_url('colectivos', '') . '?colectivo=' . $colectivo->id,
             ];
         }
 

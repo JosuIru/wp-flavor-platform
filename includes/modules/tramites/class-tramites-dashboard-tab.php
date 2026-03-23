@@ -310,7 +310,7 @@ class Flavor_Tramites_Dashboard_Tab {
                         <?php _e('Expedientes en curso', 'flavor-chat-ia'); ?>
                     </h3>
                     <?php if (!empty($expedientes_activos)) : ?>
-                        <a href="<?php echo esc_url(home_url('/mi-portal/?tab=tramites-pendientes')); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '') . '?tab=tramites-pendientes'); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                             <?php _e('Ver todos', 'flavor-chat-ia'); ?>
                         </a>
                     <?php endif; ?>
@@ -321,7 +321,7 @@ class Flavor_Tramites_Dashboard_Tab {
                         <div class="flavor-empty-state">
                             <span class="dashicons dashicons-portfolio"></span>
                             <p><?php _e('No tienes expedientes activos en este momento.', 'flavor-chat-ia'); ?></p>
-                            <a href="<?php echo esc_url(home_url('/tramites/')); ?>" class="flavor-btn flavor-btn-primary">
+                            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '')); ?>" class="flavor-btn flavor-btn-primary">
                                 <?php _e('Iniciar un tramite', 'flavor-chat-ia'); ?>
                             </a>
                         </div>
@@ -345,15 +345,15 @@ class Flavor_Tramites_Dashboard_Tab {
                 </div>
                 <div class="flavor-panel-body">
                     <div class="flavor-acciones-grid">
-                        <a href="<?php echo esc_url(home_url('/tramites/')); ?>" class="flavor-accion-card">
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '')); ?>" class="flavor-accion-card">
                             <span class="dashicons dashicons-plus-alt2"></span>
                             <span><?php _e('Nuevo tramite', 'flavor-chat-ia'); ?></span>
                         </a>
-                        <a href="<?php echo esc_url(home_url('/mi-portal/?tab=tramites-pendientes')); ?>" class="flavor-accion-card">
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '') . '?tab=tramites-pendientes'); ?>" class="flavor-accion-card">
                             <span class="dashicons dashicons-warning"></span>
                             <span><?php _e('Pendientes', 'flavor-chat-ia'); ?></span>
                         </a>
-                        <a href="<?php echo esc_url(home_url('/mi-portal/?tab=tramites-historial')); ?>" class="flavor-accion-card">
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '') . '?tab=tramites-historial'); ?>" class="flavor-accion-card">
                             <span class="dashicons dashicons-backup"></span>
                             <span><?php _e('Historial', 'flavor-chat-ia'); ?></span>
                         </a>

@@ -188,7 +188,8 @@ class Flavor_Chat_Interno_Dashboard_Tab {
                 if ($conversacion_actual) {
                     // Obtener mensajes
                     $conversacion_actual->mensajes = $wpdb->get_results($wpdb->prepare(
-                        "SELECT * FROM $tabla_msg
+                        "SELECT id, remitente_id, mensaje, created_at, leido
+                         FROM $tabla_msg
                          WHERE conversacion_id = %d
                          ORDER BY created_at ASC
                          LIMIT 100",

@@ -93,7 +93,7 @@ class Flavor_Espacios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $espacios_disponibles,
                 'label' => __('Espacios', 'flavor-chat-ia'),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes') : home_url('/mi-portal/espacios-comunes/'),
+                'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes') : Flavor_Chat_Helpers::get_action_url('espacios_comunes', ''),
             ],
         ];
 
@@ -103,7 +103,7 @@ class Flavor_Espacios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_reservas,
                 'label' => __('Mis reservas', 'flavor-chat-ia'),
                 'color' => $mis_reservas > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes&tab=mis-reservas') : home_url('/mi-portal/espacios-comunes/mis-reservas/'),
+                'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes&tab=mis-reservas') : Flavor_Chat_Helpers::get_action_url('espacios_comunes', 'mis-reservas'),
             ];
         }
 
@@ -114,7 +114,7 @@ class Flavor_Espacios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $fecha,
                 'label' => wp_trim_words($proxima_reserva->espacio_nombre, 2, '...'),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes&reserva=' . $proxima_reserva->id) : home_url('/mi-portal/espacios-comunes/reserva/' . $proxima_reserva->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes&reserva=' . $proxima_reserva->id) : Flavor_Chat_Helpers::get_action_url('espacios_comunes', 'reserva') . '/' . $proxima_reserva->id . '/',
             ];
         }
 
@@ -127,7 +127,7 @@ class Flavor_Espacios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Reservar espacio', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes&action=reservar') : home_url('/mi-portal/espacios-comunes/reservar/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes&action=reservar') : Flavor_Chat_Helpers::get_action_url('espacios_comunes', 'reservar'),
                     'icon' => 'dashicons-plus-alt2',
                 ],
             ],
@@ -160,7 +160,7 @@ class Flavor_Espacios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-building',
                 'title' => $espacio->nombre,
                 'meta' => $capacidad ?: $espacio->ubicacion,
-                'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes&espacio=' . $espacio->id) : home_url('/mi-portal/espacios-comunes/espacio/' . $espacio->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=espacios-comunes&espacio=' . $espacio->id) : Flavor_Chat_Helpers::get_action_url('espacios_comunes', 'espacio') . '/' . $espacio->id . '/',
             ];
         }
 

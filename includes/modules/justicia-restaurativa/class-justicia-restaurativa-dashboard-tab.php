@@ -208,15 +208,15 @@ class Flavor_Justicia_Restaurativa_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/justicia-restaurativa/solicitar/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('justicia_restaurativa', 'solicitar')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-format-chat"></span>
                     <?php esc_html_e('Solicitar Proceso', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/justicia-restaurativa/formacion/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('justicia_restaurativa', 'formacion')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-welcome-learn-more"></span>
                     <?php esc_html_e('Formación', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/justicia-restaurativa/facilitadores/')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('justicia_restaurativa', 'facilitadores')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-businessman"></span>
                     <?php esc_html_e('Ser Facilitador/a', 'flavor-chat-ia'); ?>
                 </a>

@@ -217,11 +217,11 @@ class MarketplaceCrudService extends CrudService<Anuncio> with MarketplaceCrudMi
   /// Obtener categorías
   Future<List<CategoriaMarketplace>> getCategorias() async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/marketplace/categorias',
       );
 
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => CategoriaMarketplace.fromJson(json)).toList();
     } catch (e) {
       debugPrint('[MarketplaceCrudService] Error getting categorias: $e');
@@ -232,7 +232,7 @@ class MarketplaceCrudService extends CrudService<Anuncio> with MarketplaceCrudMi
   /// Contactar vendedor
   Future<bool> contactarVendedor(String anuncioId, String mensaje) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/marketplace/anuncios/$anuncioId/contactar',
         data: {'mensaje': mensaje},
       );
@@ -246,7 +246,7 @@ class MarketplaceCrudService extends CrudService<Anuncio> with MarketplaceCrudMi
   /// Reportar anuncio
   Future<bool> reportarAnuncio(String anuncioId, String motivo) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/marketplace/anuncios/$anuncioId/reportar',
         data: {'motivo': motivo},
       );
@@ -260,12 +260,12 @@ class MarketplaceCrudService extends CrudService<Anuncio> with MarketplaceCrudMi
   /// Subir imagen
   Future<String?> subirImagen(String filePath) async {
     try {
-      final response = await _apiClient.uploadFile(
+      final response = await apiClient.uploadFile(
         '/flavor-app/v2/media/upload',
         filePath,
         'imagen',
       );
-      return response.data['url'];
+      return response.data?['url'];
     } catch (e) {
       debugPrint('[MarketplaceCrudService] Error subiendo imagen: $e');
       return null;

@@ -220,11 +220,11 @@ class Flavor_Colectivos_Dashboard_Tab {
 
             <!-- Acciones rápidas -->
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', '')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar Colectivos', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/crear/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', 'crear')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Crear Colectivo', 'flavor-chat-ia'); ?>
                 </a>
@@ -236,7 +236,7 @@ class Flavor_Colectivos_Dashboard_Tab {
                     <span class="dashicons dashicons-groups"></span>
                     <h3><?php esc_html_e('No perteneces a ningún colectivo', 'flavor-chat-ia'); ?></h3>
                     <p><?php esc_html_e('Únete a un colectivo existente o crea uno nuevo para empezar a participar.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/colectivos/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('colectivos', '')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar Colectivos', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -537,7 +537,7 @@ class Flavor_Colectivos_Dashboard_Tab {
     private function render_card_colectivo($colectivo) {
         global $wpdb;
 
-        $url_detalle = home_url('/mi-portal/colectivos/?colectivo=' . $colectivo->id);
+        $url_detalle = Flavor_Chat_Helpers::get_action_url('colectivos', '') . '?colectivo=' . $colectivo->id;
         $etiqueta_tipo = $this->etiquetas_tipos[$colectivo->tipo] ?? $colectivo->tipo;
         $etiqueta_rol = $this->etiquetas_roles[$colectivo->rol] ?? ucfirst($colectivo->rol);
 
@@ -629,7 +629,7 @@ class Flavor_Colectivos_Dashboard_Tab {
                     <?php esc_html_e('Ver Colectivo', 'flavor-chat-ia'); ?>
                 </a>
                 <?php if (in_array($colectivo->rol, ['presidente', 'secretario', 'admin'])): ?>
-                    <a href="<?php echo esc_url(add_query_arg(['colectivo' => $colectivo->id, 'accion' => 'gestionar'], home_url('/mi-portal/colectivos/'))); ?>"
+                    <a href="<?php echo esc_url(add_query_arg(['colectivo' => $colectivo->id, 'accion' => 'gestionar'], Flavor_Chat_Helpers::get_action_url('colectivos', ''))); ?>"
                        class="flavor-btn flavor-btn-sm flavor-btn-primary">
                         <span class="dashicons dashicons-admin-generic"></span>
                         <?php esc_html_e('Gestionar', 'flavor-chat-ia'); ?>

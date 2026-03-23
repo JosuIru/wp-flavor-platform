@@ -1,6 +1,7 @@
 <?php
 /**
- * Vista del Dashboard de WooCommerce
+ * Dashboard mejorado de WooCommerce con Widgets de Datos en Vivo
+ * Vista del Dashboard con integración a módulos relacionados
  *
  * @package FlavorChatIA
  * @subpackage WooCommerce
@@ -28,6 +29,8 @@ if (!class_exists('WooCommerce')) {
     <?php
     return;
 }
+
+global $wpdb;
 
 // Obtener estadísticas
 $fecha_inicio_mes = date('Y-m-01');
@@ -166,12 +169,304 @@ $productos_mas_vendidos = wc_get_products([
 // Formatear precios
 $currency_symbol = get_woocommerce_currency_symbol();
 
+// ==================== WIDGETS DE DATOS EN VIVO ====================
+$modulos_relacionados = [];
+$active_modules = get_option('flavor_active_modules', []);
+
+// 1. Marketplace - Productos del marketplace local
+if (in_array('marketplace', $active_modules)) {
+    $tabla_marketplace = $wpdb->prefix . 'flavor_marketplace_productos';
+    $tabla_marketplace_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_marketplace'") === $tabla_marketplace;
+
+    if ($tabla_marketplace_existe) {
+        $productos_marketplace = $wpdb->get_results(
+            "SELECT id, nombre, precio, stock, created_at
+             FROM $tabla_marketplace
+             WHERE estado = 'publicado'
+             ORDER BY created_at DESC
+             LIMIT 3"
+        );
+
+        if (!empty($productos_marketplace)) {
+            $datos_html = '<div class="dm-widget-data-list">';
+            foreach ($productos_marketplace as $producto) {
+                $precio_formateado = !empty($producto->precio) ? number_format((float)$producto->precio, 2) . '€' : 'N/D';
+                $datos_html .= sprintf(
+                    '<div class="dm-widget-item">
+                        <strong>%s</strong>
+                        <span class="dm-widget-meta">💰 %s · Stock: %d</span>
+                    </div>',
+                    esc_html(wp_trim_words($producto->nombre, 5)),
+                    esc_html($precio_formateado),
+                    (int)$producto->stock
+                );
+            }
+            $datos_html .= '</div>';
+
+            $modulos_relacionados['marketplace'] = [
+                'titulo' => sprintf(__('Productos Marketplace (%d)', 'flavor-chat-ia'), count($productos_marketplace)),
+                'descripcion' => __('Productos del marketplace local', 'flavor-chat-ia'),
+                'icono' => 'dashicons-store',
+                'url' => admin_url('admin.php?page=flavor-marketplace'),
+                'datos' => $datos_html,
+            ];
+        }
+    }
+}
+
+// 2. Socios - Socios activos que compran
+if (in_array('socios', $active_modules)) {
+    $tabla_socios = $wpdb->prefix . 'flavor_socios';
+    $tabla_socios_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_socios'") === $tabla_socios;
+
+    if ($tabla_socios_existe) {
+        $socios_recientes = $wpdb->get_results(
+            "SELECT id, nombre, apellidos, numero_socio, created_at
+             FROM $tabla_socios
+             WHERE estado = 'activo'
+             ORDER BY created_at DESC
+             LIMIT 3"
+        );
+
+        if (!empty($socios_recientes)) {
+            $datos_html = '<div class="dm-widget-data-list">';
+            foreach ($socios_recientes as $socio) {
+                $dias_desde_alta = floor((time() - strtotime($socio->created_at)) / DAY_IN_SECONDS);
+                $datos_html .= sprintf(
+                    '<div class="dm-widget-item">
+                        <strong>%s</strong>
+                        <span class="dm-widget-meta">👤 Alta hace %d días · Nº %s</span>
+                    </div>',
+                    esc_html($socio->nombre . ' ' . $socio->apellidos),
+                    $dias_desde_alta,
+                    esc_html($socio->numero_socio)
+                );
+            }
+            $datos_html .= '</div>';
+
+            $modulos_relacionados['socios'] = [
+                'titulo' => sprintf(__('Socios Recientes (%d)', 'flavor-chat-ia'), count($socios_recientes)),
+                'descripcion' => __('Socios activos de la plataforma', 'flavor-chat-ia'),
+                'icono' => 'dashicons-groups',
+                'url' => admin_url('admin.php?page=socios-dashboard'),
+                'datos' => $datos_html,
+            ];
+        }
+    }
+}
+
+// 3. Eventos - Eventos con entradas/tickets
+if (in_array('eventos', $active_modules)) {
+    $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+    $tabla_eventos_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_eventos'") === $tabla_eventos;
+
+    if ($tabla_eventos_existe) {
+        $eventos_con_precio = $wpdb->get_results(
+            "SELECT id, titulo, fecha, precio, precio_socio, plazas_max, estado
+             FROM $tabla_eventos
+             WHERE estado = 'publicado'
+             AND fecha >= CURDATE()
+             AND (precio > 0 OR precio_socio > 0)
+             ORDER BY fecha ASC
+             LIMIT 3"
+        );
+
+        if (!empty($eventos_con_precio)) {
+            $datos_html = '<div class="dm-widget-data-list">';
+            foreach ($eventos_con_precio as $evento) {
+                $fecha_formateada = date_i18n('d M', strtotime($evento->fecha));
+                $precio_info = !empty($evento->precio) ? number_format((float)$evento->precio, 2) . '€' : 'Gratis';
+                $datos_html .= sprintf(
+                    '<div class="dm-widget-item">
+                        <strong>%s</strong>
+                        <span class="dm-widget-meta">🎟️ %s · %s · %d plazas</span>
+                    </div>',
+                    esc_html(wp_trim_words($evento->titulo, 5)),
+                    esc_html($precio_info),
+                    esc_html($fecha_formateada),
+                    (int)$evento->plazas_max
+                );
+            }
+            $datos_html .= '</div>';
+
+            $modulos_relacionados['eventos'] = [
+                'titulo' => sprintf(__('Eventos de Pago (%d)', 'flavor-chat-ia'), count($eventos_con_precio)),
+                'descripcion' => __('Eventos con venta de entradas', 'flavor-chat-ia'),
+                'icono' => 'dashicons-tickets-alt',
+                'url' => admin_url('admin.php?page=flavor-eventos'),
+                'datos' => $datos_html,
+            ];
+        }
+    }
+}
+
+// 4. Grupos Consumo - Pedidos de productos ecológicos
+if (in_array('grupos_consumo', $active_modules)) {
+    $tabla_pedidos_gc = $wpdb->prefix . 'flavor_gc_pedidos';
+    $tabla_pedidos_gc_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_pedidos_gc'") === $tabla_pedidos_gc;
+
+    if ($tabla_pedidos_gc_existe) {
+        $pedidos_gc_activos = $wpdb->get_results(
+            "SELECT id, ciclo_id, total, estado, fecha_cierre
+             FROM $tabla_pedidos_gc
+             WHERE estado IN ('abierto', 'cerrado')
+             ORDER BY fecha_cierre ASC
+             LIMIT 3"
+        );
+
+        if (!empty($pedidos_gc_activos)) {
+            $datos_html = '<div class="dm-widget-data-list">';
+            foreach ($pedidos_gc_activos as $pedido_gc) {
+                $total_formateado = !empty($pedido_gc->total) ? number_format((float)$pedido_gc->total, 2) . '€' : '0€';
+                $estado_emoji = $pedido_gc->estado === 'abierto' ? '🟢' : '🔵';
+                $datos_html .= sprintf(
+                    '<div class="dm-widget-item">
+                        <strong>Ciclo #%d</strong>
+                        <span class="dm-widget-meta">%s %s · Total: %s</span>
+                    </div>',
+                    (int)$pedido_gc->ciclo_id,
+                    $estado_emoji,
+                    esc_html(ucfirst($pedido_gc->estado)),
+                    esc_html($total_formateado)
+                );
+            }
+            $datos_html .= '</div>';
+
+            $modulos_relacionados['grupos_consumo'] = [
+                'titulo' => sprintf(__('Pedidos G. Consumo (%d)', 'flavor-chat-ia'), count($pedidos_gc_activos)),
+                'descripcion' => __('Pedidos activos de grupos de consumo', 'flavor-chat-ia'),
+                'icono' => 'dashicons-carrot',
+                'url' => admin_url('admin.php?page=flavor-grupos-consumo'),
+                'datos' => $datos_html,
+            ];
+        }
+    }
+}
+
+// 5. Biblioteca - Préstamos o material en venta
+if (in_array('biblioteca', $active_modules)) {
+    $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+    $tabla_prestamos_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_prestamos'") === $tabla_prestamos;
+
+    if ($tabla_prestamos_existe) {
+        $prestamos_activos = $wpdb->get_results(
+            "SELECT p.*, i.titulo
+             FROM $tabla_prestamos p
+             LEFT JOIN {$wpdb->prefix}flavor_biblioteca_items i ON p.item_id = i.id
+             WHERE p.estado = 'activo'
+             ORDER BY p.fecha_devolucion ASC
+             LIMIT 3"
+        );
+
+        if (!empty($prestamos_activos)) {
+            $datos_html = '<div class="dm-widget-data-list">';
+            foreach ($prestamos_activos as $prestamo) {
+                $dias_restantes = floor((strtotime($prestamo->fecha_devolucion) - time()) / DAY_IN_SECONDS);
+                $color_emoji = $dias_restantes < 3 ? '🔴' : ($dias_restantes < 7 ? '🟡' : '🟢');
+                $datos_html .= sprintf(
+                    '<div class="dm-widget-item">
+                        <strong>%s</strong>
+                        <span class="dm-widget-meta">%s Devolución en %d días</span>
+                    </div>',
+                    esc_html(wp_trim_words($prestamo->titulo, 5)),
+                    $color_emoji,
+                    $dias_restantes
+                );
+            }
+            $datos_html .= '</div>';
+
+            $modulos_relacionados['biblioteca'] = [
+                'titulo' => sprintf(__('Préstamos Activos (%d)', 'flavor-chat-ia'), count($prestamos_activos)),
+                'descripcion' => __('Material prestado de la biblioteca', 'flavor-chat-ia'),
+                'icono' => 'dashicons-book',
+                'url' => admin_url('admin.php?page=flavor-biblioteca'),
+                'datos' => $datos_html,
+            ];
+        }
+    }
+}
+
+// 6. Talleres - Talleres con inscripción de pago
+if (in_array('talleres', $active_modules)) {
+    $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+    $tabla_talleres_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_talleres'") === $tabla_talleres;
+
+    if ($tabla_talleres_existe) {
+        $talleres_pago = $wpdb->get_results(
+            "SELECT id, titulo, precio, plazas_max, inscritos, fecha_inicio, fecha_fin, estado
+             FROM $tabla_talleres
+             WHERE estado = 'activo'
+             AND (precio > 0 OR precio_socio > 0)
+             AND (fecha_fin >= CURDATE() OR fecha_fin IS NULL)
+             ORDER BY fecha_inicio ASC
+             LIMIT 3"
+        );
+
+        if (!empty($talleres_pago)) {
+            $datos_html = '<div class="dm-widget-data-list">';
+            foreach ($talleres_pago as $taller) {
+                $precio_formateado = !empty($taller->precio) ? number_format((float)$taller->precio, 2) . '€' : 'Gratis';
+                $plazas_disponibles = (int)$taller->plazas_max - (int)$taller->inscritos;
+                $datos_html .= sprintf(
+                    '<div class="dm-widget-item">
+                        <strong>%s</strong>
+                        <span class="dm-widget-meta">🎓 %s · %d plazas libres</span>
+                    </div>',
+                    esc_html(wp_trim_words($taller->titulo, 5)),
+                    esc_html($precio_formateado),
+                    $plazas_disponibles
+                );
+            }
+            $datos_html .= '</div>';
+
+            $modulos_relacionados['talleres'] = [
+                'titulo' => sprintf(__('Talleres de Pago (%d)', 'flavor-chat-ia'), count($talleres_pago)),
+                'descripcion' => __('Talleres con inscripción de pago', 'flavor-chat-ia'),
+                'icono' => 'dashicons-welcome-learn-more',
+                'url' => admin_url('admin.php?page=flavor-talleres'),
+                'datos' => $datos_html,
+            ];
+        }
+    }
+}
+
 ?>
 <div class="wrap flavor-admin-page flavor-woocommerce-dashboard">
     <h1>
         <span class="dashicons dashicons-cart"></span>
         <?php esc_html_e('Dashboard de WooCommerce', 'flavor-chat-ia'); ?>
     </h1>
+
+    <!-- ==================== WIDGETS DE MÓDULOS RELACIONADOS ==================== -->
+    <?php if (!empty($modulos_relacionados)): ?>
+    <div class="dm-widgets-relacionados">
+        <h2 class="dm-widgets-titulo">
+            <span class="dashicons dashicons-networking"></span>
+            <?php _e('Ecosistema de Ventas', 'flavor-chat-ia'); ?>
+        </h2>
+        <div class="dm-widgets-grid">
+            <?php foreach ($modulos_relacionados as $modulo_key => $modulo): ?>
+                <div class="dm-widget-card">
+                    <div class="dm-widget-header">
+                        <span class="dashicons <?php echo esc_attr($modulo['icono']); ?>"></span>
+                        <div class="dm-widget-header-text">
+                            <h3><?php echo esc_html($modulo['titulo']); ?></h3>
+                            <p><?php echo esc_html($modulo['descripcion']); ?></p>
+                        </div>
+                    </div>
+                    <div class="dm-widget-content">
+                        <?php echo $modulo['datos']; ?>
+                    </div>
+                    <div class="dm-widget-footer">
+                        <a href="<?php echo esc_url($modulo['url']); ?>" class="dm-widget-link">
+                            <?php _e('Ver todo', 'flavor-chat-ia'); ?> →
+                        </a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <!-- Estadísticas principales -->
     <div class="flavor-stats-grid">
@@ -376,6 +671,140 @@ $currency_symbol = get_woocommerce_currency_symbol();
 </div>
 
 <style>
+/* ==================== ESTILOS WIDGETS DE DATOS EN VIVO ==================== */
+.dm-widgets-relacionados {
+    margin: 0 0 32px;
+    background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid #60a5fa;
+}
+
+.dm-widgets-titulo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 20px;
+    font-size: 20px;
+    color: #1e40af;
+    font-weight: 600;
+}
+
+.dm-widgets-titulo .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.dm-widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.dm-widget-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #dbeafe;
+}
+
+.dm-widget-card:hover {
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.15);
+    transform: translateY(-2px);
+    border-color: #60a5fa;
+}
+
+.dm-widget-header {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f9ff;
+}
+
+.dm-widget-header .dashicons {
+    color: #2563eb;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.dm-widget-header-text h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    color: #1e40af;
+    font-weight: 600;
+}
+
+.dm-widget-header-text p {
+    margin: 0;
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.dm-widget-content {
+    margin-bottom: 12px;
+}
+
+.dm-widget-data-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dm-widget-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f0f9ff;
+    border-radius: 6px;
+    border: 1px solid #e0f2fe;
+    transition: all 0.2s;
+}
+
+.dm-widget-item:hover {
+    border-color: #60a5fa;
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.1);
+}
+
+.dm-widget-item strong {
+    color: #374151;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.dm-widget-meta {
+    font-size: 11px;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+
+.dm-widget-footer {
+    padding-top: 10px;
+    border-top: 1px solid #f0f9ff;
+}
+
+.dm-widget-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.dm-widget-link:hover {
+    color: #1d4ed8;
+    gap: 6px;
+}
+
+/* ==================== ESTILOS ORIGINALES WOOCOMMERCE ==================== */
 .flavor-woocommerce-dashboard h1 {
     display: flex;
     align-items: center;
@@ -562,6 +991,10 @@ $currency_symbol = get_woocommerce_currency_symbol();
 
 @media (max-width: 782px) {
     .flavor-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .dm-widgets-grid {
         grid-template-columns: 1fr;
     }
 }

@@ -78,7 +78,7 @@ $estados_colors = [
 ];
 
 // URL base para incidencias
-$incidencias_base_url = home_url('/mi-portal/incidencias/');
+$incidencias_base_url = Flavor_Chat_Helpers::get_action_url('incidencias', '');
 
 // Preparar datos para JS
 $incidencias_json = [];

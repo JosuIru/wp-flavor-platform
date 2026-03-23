@@ -1,0 +1,307 @@
+{
+  "$schema": "../module-schema.json",
+  "id": "eventos",
+  "name": "Eventos y Calendario",
+  "version": "2.0.0",
+  "description": "Gestion completa de eventos, calendario comunitario e inscripciones. Incluye soporte para aforo, lista de espera, recordatorios y precios diferenciados para socios.",
+  "long_description": "Modulo vertical para la gestion integral de eventos en comunidades. Permite crear eventos con multiples tipos (conferencias, talleres, charlas, festivales, deportivos, culturales, sociales, networking), gestionar inscripciones con control de aforo, lista de espera automatica, envio de recordatorios, y precios diferenciados entre publico general y socios. Se integra nativamente con el modulo de comunidades para heredar contexto y permisos.",
+  "author": {
+    "name": "Flavor Platform Team",
+    "email": "dev@flavor-platform.com",
+    "url": "https://flavor-platform.com"
+  },
+  "license": "GPL-2.0-or-later",
+  "dependencies": {
+    "comunidades": "^1.0.0"
+  },
+  "optional_dependencies": {
+    "chat-grupos": "^1.0.0",
+    "encuestas": "^1.0.0",
+    "socios": "^1.0.0"
+  },
+  "wp_version_min": "6.0",
+  "wp_version_tested": "6.7",
+  "php_version_min": "7.4",
+  "flavor_version_min": "3.3.0",
+  "category": "social",
+  "tags": [
+    "eventos",
+    "calendario",
+    "inscripciones",
+    "agenda",
+    "comunidad",
+    "aforo"
+  ],
+  "icon": "dashicons-calendar-alt",
+  "main_class": "Flavor_Chat_Eventos_Module",
+  "autoload": {
+    "files": [
+      "class-eventos-module.php",
+      "class-eventos-api.php",
+      "class-eventos-conciencia-features.php",
+      "class-eventos-dashboard-tab.php",
+      "class-eventos-dashboard-widget.php"
+    ]
+  },
+  "database": {
+    "tables": [
+      "flavor_eventos",
+      "flavor_eventos_inscripciones",
+      "flavor_eventos_recordatorios"
+    ],
+    "migrations": "migrations/"
+  },
+  "assets": {
+    "css": [
+      "assets/css/eventos-frontend.css"
+    ],
+    "js": [
+      "assets/js/eventos-frontend.js"
+    ],
+    "admin_css": [
+      "assets/css/eventos-admin.css"
+    ],
+    "admin_js": [
+      "assets/js/eventos-admin.js"
+    ]
+  },
+  "shortcodes": [
+    {
+      "tag": "flavor_eventos_lista",
+      "description": "Muestra una lista de eventos filtrable",
+      "attributes": [
+        {
+          "name": "comunidad_id",
+          "type": "integer",
+          "default": null,
+          "description": "ID de comunidad para filtrar eventos"
+        },
+        {
+          "name": "limite",
+          "type": "integer",
+          "default": 10,
+          "description": "Numero maximo de eventos a mostrar"
+        },
+        {
+          "name": "tipo",
+          "type": "string",
+          "default": null,
+          "description": "Tipo de evento a filtrar"
+        }
+      ]
+    },
+    {
+      "tag": "flavor_eventos_calendario",
+      "description": "Muestra un calendario visual de eventos",
+      "attributes": [
+        {
+          "name": "vista",
+          "type": "string",
+          "default": "month",
+          "description": "Vista inicial: month, week, day"
+        }
+      ]
+    },
+    {
+      "tag": "flavor_evento_detalle",
+      "description": "Muestra el detalle completo de un evento",
+      "attributes": [
+        {
+          "name": "id",
+          "type": "integer",
+          "default": null,
+          "description": "ID del evento"
+        }
+      ]
+    }
+  ],
+  "rest_api": {
+    "namespace": "flavor/v1",
+    "endpoints": [
+      {
+        "route": "/eventos",
+        "methods": ["GET", "POST"],
+        "description": "Listar y crear eventos"
+      },
+      {
+        "route": "/eventos/(?P<id>\\d+)",
+        "methods": ["GET", "PUT", "DELETE"],
+        "description": "Obtener, actualizar o eliminar un evento"
+      },
+      {
+        "route": "/eventos/(?P<id>\\d+)/inscribirse",
+        "methods": ["POST"],
+        "description": "Inscribirse a un evento"
+      },
+      {
+        "route": "/eventos/(?P<id>\\d+)/cancelar-inscripcion",
+        "methods": ["POST"],
+        "description": "Cancelar inscripcion a un evento"
+      }
+    ]
+  },
+  "hooks": {
+    "actions": [
+      "flavor_evento_creado",
+      "flavor_evento_actualizado",
+      "flavor_evento_eliminado",
+      "flavor_inscripcion_realizada",
+      "flavor_inscripcion_cancelada",
+      "flavor_recordatorio_enviado"
+    ],
+    "filters": [
+      "flavor_eventos_tipos",
+      "flavor_evento_puede_inscribirse",
+      "flavor_evento_precio",
+      "flavor_eventos_query_args"
+    ]
+  },
+  "capabilities": [
+    "flavor_manage_eventos",
+    "flavor_create_eventos",
+    "flavor_edit_eventos",
+    "flavor_delete_eventos",
+    "flavor_view_inscripciones"
+  ],
+  "settings": {
+    "page": "flavor-eventos-settings",
+    "sections": [
+      "general",
+      "inscripciones",
+      "recordatorios",
+      "precios"
+    ]
+  },
+  "changelog": [
+    {
+      "version": "2.0.0",
+      "date": "2026-03-22",
+      "changes": [
+        {
+          "type": "added",
+          "description": "Sistema de versionado independiente con module.json"
+        },
+        {
+          "type": "added",
+          "description": "Soporte para dashboard tabs personalizados"
+        },
+        {
+          "type": "added",
+          "description": "Integracion con principios Gailu (aprendizaje, cuidados)"
+        },
+        {
+          "type": "changed",
+          "description": "Refactorizacion completa de la API REST"
+        }
+      ]
+    },
+    {
+      "version": "1.5.0",
+      "date": "2026-02-15",
+      "changes": [
+        {
+          "type": "added",
+          "description": "Soporte para encuestas post-evento"
+        },
+        {
+          "type": "added",
+          "description": "Widget de dashboard para eventos proximos"
+        },
+        {
+          "type": "fixed",
+          "description": "Correccion en el calculo de plazas disponibles"
+        }
+      ]
+    },
+    {
+      "version": "1.4.0",
+      "date": "2026-01-20",
+      "changes": [
+        {
+          "type": "added",
+          "description": "Lista de espera automatica cuando se completa aforo"
+        },
+        {
+          "type": "added",
+          "description": "Notificaciones por WhatsApp opcionales"
+        }
+      ]
+    },
+    {
+      "version": "1.3.0",
+      "date": "2025-12-10",
+      "changes": [
+        {
+          "type": "added",
+          "description": "Precios diferenciados para socios"
+        },
+        {
+          "type": "changed",
+          "description": "Mejora en el sistema de recordatorios"
+        }
+      ]
+    },
+    {
+      "version": "1.2.0",
+      "date": "2025-11-05",
+      "changes": [
+        {
+          "type": "added",
+          "description": "Tipos de evento configurables"
+        },
+        {
+          "type": "added",
+          "description": "Filtros avanzados en listados"
+        }
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "date": "2025-10-15",
+      "changes": [
+        {
+          "type": "added",
+          "description": "Relacion con comunidades via comunidad_id"
+        },
+        {
+          "type": "fixed",
+          "description": "Correccion de permisos de visualizacion"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2025-09-01",
+      "changes": [
+        {
+          "type": "added",
+          "description": "Version inicial del modulo de eventos"
+        },
+        {
+          "type": "added",
+          "description": "CRUD completo de eventos"
+        },
+        {
+          "type": "added",
+          "description": "Sistema de inscripciones basico"
+        },
+        {
+          "type": "added",
+          "description": "Calendario visual"
+        }
+      ]
+    }
+  ],
+  "stability": "stable",
+  "deprecated": false,
+  "support": {
+    "docs": "https://docs.flavor-platform.com/modules/eventos",
+    "issues": "https://github.com/flavor-platform/flavor-chat-ia/issues"
+  },
+  "extra": {
+    "gailu_principios": ["aprendizaje", "cuidados"],
+    "gailu_contribuye_a": ["cohesion"],
+    "dashboard_parent_module": "comunidades",
+    "dashboard_satellite_priority": 35
+  }
+}

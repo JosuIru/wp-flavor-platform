@@ -185,14 +185,14 @@ class ReservasCrudService extends CrudService<Reserva> {
   /// Obtener espacios disponibles
   Future<List<EspacioReservable>> getEspacios({String? categoria}) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/reservas/espacios',
         queryParameters: {
           if (categoria != null) 'categoria': categoria,
         },
       );
 
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => EspacioReservable.fromJson(json)).toList();
     } catch (e) {
       debugPrint('[ReservasCrudService] Error obteniendo espacios: $e');
@@ -203,10 +203,10 @@ class ReservasCrudService extends CrudService<Reserva> {
   /// Obtener detalle de un espacio
   Future<EspacioReservable?> getEspacio(String espacioId) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/reservas/espacios/$espacioId',
       );
-      return EspacioReservable.fromJson(response.data);
+      return EspacioReservable.fromJson(response.data ?? {});
     } catch (e) {
       debugPrint('[ReservasCrudService] Error obteniendo espacio: $e');
       return null;
@@ -219,14 +219,14 @@ class ReservasCrudService extends CrudService<Reserva> {
     DateTime fecha,
   ) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/reservas/espacios/$espacioId/disponibilidad',
         queryParameters: {
           'fecha': fecha.toIso8601String().split('T')[0],
         },
       );
 
-      final List<dynamic> data = response.data['slots'] ?? response.data;
+      final List<dynamic> data = response.data?['slots'] ?? response.data;
       return data.map((json) => SlotDisponibilidad.fromJson(json)).toList();
     } catch (e) {
       debugPrint('[ReservasCrudService] Error obteniendo disponibilidad: $e');
@@ -241,7 +241,7 @@ class ReservasCrudService extends CrudService<Reserva> {
     DateTime fin,
   ) async {
     try {
-      final response = await _apiClient.post(
+      final response = await apiClient.post(
         '/flavor-app/v2/reservas/verificar',
         data: {
           'espacio_id': espacioId,
@@ -249,7 +249,7 @@ class ReservasCrudService extends CrudService<Reserva> {
           'fecha_fin': fin.toIso8601String(),
         },
       );
-      return response.data['disponible'] == true;
+      return response.data?['disponible'] == true;
     } catch (e) {
       debugPrint('[ReservasCrudService] Error verificando disponibilidad: $e');
       return false;
@@ -302,7 +302,7 @@ class ReservasCrudService extends CrudService<Reserva> {
   /// Cancelar reserva
   Future<bool> cancelarReserva(String reservaId, {String? motivo}) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/reservas/$reservaId/cancelar',
         data: {
           if (motivo != null) 'motivo': motivo,
@@ -310,14 +310,14 @@ class ReservasCrudService extends CrudService<Reserva> {
       );
 
       // Actualizar cache
-      final reserva = _cache[reservaId];
+      final reserva = cache[reservaId];
       if (reserva != null) {
         final actualizada = Reserva.fromJson({
           ...reserva.toJson(),
           'estado': 'cancelada',
         });
-        _cache[reservaId] = actualizada;
-        _notifyListeners(CrudEvent(type: CrudEventType.updated, item: actualizada));
+        cache[reservaId] = actualizada;
+        notifyListeners(CrudEvent(type: CrudEventType.updated, item: actualizada));
       }
 
       return true;
@@ -334,7 +334,7 @@ class ReservasCrudService extends CrudService<Reserva> {
     DateTime? nuevaFechaFin,
   }) async {
     try {
-      await _apiClient.patch(
+      await apiClient.patch(
         '/flavor-app/v2/reservas/$reservaId',
         data: {
           if (nuevaFechaInicio != null) 'fecha_inicio': nuevaFechaInicio.toIso8601String(),
@@ -362,8 +362,8 @@ class ReservasCrudService extends CrudService<Reserva> {
   /// Obtener categorías de espacios
   Future<List<Map<String, dynamic>>> getCategorias() async {
     try {
-      final response = await _apiClient.get('/flavor-app/v2/reservas/categorias');
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final response = await apiClient.get('/flavor-app/v2/reservas/categorias');
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => Map<String, dynamic>.from(json)).toList();
     } catch (e) {
       debugPrint('[ReservasCrudService] Error obteniendo categorías: $e');

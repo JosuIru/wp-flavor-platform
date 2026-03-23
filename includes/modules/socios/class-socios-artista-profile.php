@@ -867,7 +867,7 @@ class Flavor_Socios_Artista_Profile {
         $disciplinas = $this->get_disciplinas();
 
         ob_start();
-        include dirname(__FILE__) . '/views/listado-artistas.php';
+        include dirname(__FILE__) . '/views/listado.php';
         return ob_get_clean();
     }
 
@@ -888,7 +888,7 @@ class Flavor_Socios_Artista_Profile {
         $artistas = $resultado['artistas'];
 
         ob_start();
-        include dirname(__FILE__) . '/views/artistas-destacados.php';
+        include dirname(__FILE__) . '/views/listado.php';
         return ob_get_clean();
     }
 }

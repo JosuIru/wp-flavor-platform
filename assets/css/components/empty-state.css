@@ -1,0 +1,182 @@
+/**
+ * Empty State Component Styles
+ *
+ * Estilos para el componente de estados vacíos reutilizable.
+ *
+ * @package FlavorChatIA
+ * @since 3.3.0
+ */
+
+/* Contenedor principal */
+.flavor-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 500px;
+    margin: 0 auto;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 2px dashed #ddd;
+}
+
+/* Contenedor del icono */
+.empty-state-icon {
+    margin-bottom: 20px;
+}
+
+/* Icono Dashicons */
+.flavor-empty-state .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #999;
+    opacity: 0.7;
+}
+
+/* Imagen personalizada */
+.empty-state-image {
+    max-width: 120px;
+    height: auto;
+    opacity: 0.8;
+}
+
+/* Título */
+.empty-state-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 12px 0;
+    line-height: 1.4;
+}
+
+/* Mensaje descriptivo */
+.empty-state-message {
+    font-size: 15px;
+    color: #666;
+    margin: 0 0 24px 0;
+    line-height: 1.6;
+}
+
+/* Contenedor de acciones/botones */
+.empty-state-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Botones dentro del empty state */
+.empty-state-actions .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.empty-state-actions .button .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-top: -2px;
+}
+
+/* Botón primario */
+.empty-state-actions .button-primary {
+    background: #2d5016;
+    color: #fff;
+    border-color: #2d5016;
+}
+
+.empty-state-actions .button-primary:hover {
+    background: #3d6b20;
+    border-color: #3d6b20;
+    color: #fff;
+}
+
+/* Botón secundario */
+.empty-state-actions .button-secondary {
+    background: #fff;
+    color: #2d5016;
+    border: 1px solid #2d5016;
+}
+
+.empty-state-actions .button-secondary:hover {
+    background: #f0f5ed;
+    color: #2d5016;
+}
+
+/* Variante compacta */
+.flavor-empty-state.compact {
+    padding: 40px 20px;
+    max-width: 400px;
+}
+
+.flavor-empty-state.compact .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.flavor-empty-state.compact .empty-state-title {
+    font-size: 18px;
+}
+
+.flavor-empty-state.compact .empty-state-message {
+    font-size: 14px;
+}
+
+/* Variante sin borde */
+.flavor-empty-state.borderless {
+    background: transparent;
+    border: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flavor-empty-state {
+        padding: 40px 16px;
+        max-width: 100%;
+    }
+
+    .flavor-empty-state .dashicons {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+    }
+
+    .empty-state-title {
+        font-size: 18px;
+    }
+
+    .empty-state-message {
+        font-size: 14px;
+    }
+
+    .empty-state-actions {
+        flex-direction: column;
+    }
+
+    .empty-state-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animación de entrada suave */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.flavor-empty-state {
+    animation: fadeInUp 0.4s ease-out;
+}

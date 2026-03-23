@@ -49,7 +49,7 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
 
     <div class="flavor-com-acciones-header">
         <?php if (is_user_logged_in()): ?>
-        <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/crear/')); ?>" class="flavor-com-boton flavor-com-boton-primario">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', 'crear')); ?>" class="flavor-com-boton flavor-com-boton-primario">
             <span class="dashicons dashicons-plus-alt"></span>
             <?php esc_html_e('Crear comunidad', 'flavor-chat-ia'); ?>
         </a>
@@ -61,7 +61,7 @@ $mostrar_filtros = ($atributos['mostrar_filtros'] ?? 'si') === 'si';
             <span class="dashicons dashicons-groups"></span>
             <p><?php esc_html_e('No hay comunidades disponibles.', 'flavor-chat-ia'); ?></p>
             <?php if (is_user_logged_in()): ?>
-                <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/crear/')); ?>" class="flavor-com-boton flavor-com-boton-primario">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', 'crear')); ?>" class="flavor-com-boton flavor-com-boton-primario">
                     <?php esc_html_e('Crea la primera comunidad', 'flavor-chat-ia'); ?>
                 </a>
             <?php endif; ?>

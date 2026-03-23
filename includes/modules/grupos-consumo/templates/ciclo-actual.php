@@ -230,12 +230,12 @@ if ($ciclo_activo) {
             </div>
 
             <div class="gc-ciclo-footer">
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                     <span class="dashicons dashicons-products"></span>
                     <?php esc_html_e('Ver catalogo', 'flavor-chat-ia'); ?>
                 </a>
                 <?php if (is_user_logged_in()) : ?>
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')); ?>" class="gc-btn gc-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido')); ?>" class="gc-btn gc-btn-secondary">
                     <span class="dashicons dashicons-cart"></span>
                     <?php esc_html_e('Pedido actual', 'flavor-chat-ia'); ?>
                 </a>
@@ -295,7 +295,7 @@ if ($ciclo_activo) {
             </div>
 
             <div class="gc-ciclo-footer">
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-secondary">
                     <span class="dashicons dashicons-visibility"></span>
                     <?php esc_html_e('Ver productos disponibles', 'flavor-chat-ia'); ?>
                 </a>
@@ -309,7 +309,7 @@ if ($ciclo_activo) {
                 <span class="dashicons dashicons-calendar-alt"></span>
                 <h3><?php esc_html_e('No hay ciclos programados', 'flavor-chat-ia'); ?></h3>
                 <p><?php esc_html_e('Actualmente no hay ciclos de pedidos activos ni programados. Vuelve pronto para ver las novedades.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/')); ?>" class="gc-btn gc-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', '')); ?>" class="gc-btn gc-btn-secondary">
                     <?php esc_html_e('Volver al inicio', 'flavor-chat-ia'); ?>
                 </a>
             </div>

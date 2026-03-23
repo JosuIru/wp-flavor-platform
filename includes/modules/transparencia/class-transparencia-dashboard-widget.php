@@ -77,14 +77,14 @@ class Flavor_Transparencia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'valor' => $total_documentos,
                 'label' => __('Documentos', 'flavor-chat-ia'),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=transparencia') : home_url('/mi-portal/transparencia/'),
+                'url' => $es_admin ? admin_url('admin.php?page=transparencia') : Flavor_Chat_Helpers::get_action_url('transparencia', ''),
             ],
             [
                 'icon' => 'dashicons-category',
                 'valor' => $total_categorias,
                 'label' => __('Categorías', 'flavor-chat-ia'),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=transparencia&tab=categorias') : home_url('/mi-portal/transparencia/categorias/'),
+                'url' => $es_admin ? admin_url('admin.php?page=transparencia&tab=categorias') : Flavor_Chat_Helpers::get_action_url('transparencia', 'categorias'),
             ],
         ];
 
@@ -97,7 +97,7 @@ class Flavor_Transparencia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
             'footer' => [
                 [
                     'label' => __('Portal transparencia', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=transparencia') : home_url('/mi-portal/transparencia/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=transparencia') : Flavor_Chat_Helpers::get_action_url('transparencia', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -128,7 +128,7 @@ class Flavor_Transparencia_Dashboard_Widget extends Flavor_Dashboard_Widget_Base
                 'icon' => 'dashicons-media-document',
                 'title' => wp_trim_words($documento->titulo, 4, '...'),
                 'meta' => $documento->categoria ?: date_i18n('j M Y', strtotime($documento->fecha_publicacion)),
-                'url' => $es_admin ? admin_url('admin.php?page=transparencia&documento=' . $documento->id) : home_url('/mi-portal/transparencia/documento/' . $documento->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=transparencia&documento=' . $documento->id) : Flavor_Chat_Helpers::get_action_url('transparencia', 'documento') . '/' . $documento->id . '/',
             ];
         }
 

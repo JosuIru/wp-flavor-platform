@@ -80,7 +80,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $encuestas_activas,
                 'label' => __('Activas', 'flavor-chat-ia'),
                 'color' => $encuestas_activas > 0 ? 'warning' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=encuestas') : home_url('/mi-portal/encuestas/'),
+                'url' => $es_admin ? admin_url('admin.php?page=encuestas') : Flavor_Chat_Helpers::get_action_url('encuestas', ''),
             ],
         ];
 
@@ -90,7 +90,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_respuestas,
                 'label' => __('Respondidas', 'flavor-chat-ia'),
                 'color' => $mis_respuestas > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=encuestas&tab=mis-respuestas') : home_url('/mi-portal/encuestas/mis-respuestas/'),
+                'url' => $es_admin ? admin_url('admin.php?page=encuestas&tab=mis-respuestas') : Flavor_Chat_Helpers::get_action_url('encuestas', 'mis-respuestas'),
             ];
         }
 
@@ -103,7 +103,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver encuestas', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=encuestas') : home_url('/mi-portal/encuestas/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=encuestas') : Flavor_Chat_Helpers::get_action_url('encuestas', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -139,7 +139,7 @@ class Flavor_Encuestas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-clipboard',
                 'title' => wp_trim_words($encuesta->titulo, 5, '...'),
                 'meta' => $meta,
-                'url' => $es_admin ? admin_url('admin.php?page=encuestas&encuesta=' . $encuesta->id) : home_url('/mi-portal/encuestas/responder/' . $encuesta->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=encuestas&encuesta=' . $encuesta->id) : Flavor_Chat_Helpers::get_action_url('encuestas', 'responder') . '/' . $encuesta->id . '/',
                 'badge' => isset($encuesta->total_respuestas) && $encuesta->total_respuestas > 0 ? $encuesta->total_respuestas . ' resp.' : null,
             ];
         }

@@ -49,3 +49,15 @@ mobile-apps/ios/Pods/
 mobile-apps/ios/.symlinks/
 mobile-apps/.flutter-plugins
 mobile-apps/.flutter-plugins-dependencies
+
+# CI/CD Cache
+.phpunit.cache/
+.phpcs.cache
+.eslintcache
+coverage.xml
+reports/coverage-html/
+reports/junit.xml
+
+# Build artifacts
+dist/
+*.zip

@@ -18,7 +18,7 @@ if (!is_user_logged_in()) {
     echo '<span class="dashicons dashicons-lock"></span>';
     echo '<h3>' . esc_html__('Acceso restringido', 'flavor-chat-ia') . '</h3>';
     echo '<p>' . esc_html__('Inicia sesion para ver los detalles de tu pedido.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/mi-pedido/'))) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Iniciar sesion', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -61,7 +61,7 @@ if (!$entrega) {
     echo '<span class="dashicons dashicons-clipboard"></span>';
     echo '<h3>' . esc_html__('Pedido no encontrado', 'flavor-chat-ia') . '</h3>';
     echo '<p>' . esc_html__('No se ha encontrado el pedido solicitado o no tienes pedidos aun.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(home_url('/mi-portal/grupos-consumo/productos/')) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Ver catalogo', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -131,7 +131,7 @@ foreach ($items_pedido as $item) {
     <!-- Cabecera del pedido -->
     <header class="gc-pedido-header">
         <div class="gc-pedido-titulo">
-            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/')); ?>" class="gc-btn-back">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos')); ?>" class="gc-btn-back">
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
             </a>
             <div>
@@ -337,7 +337,7 @@ foreach ($items_pedido as $item) {
                 </div>
 
                 <?php if ($entrega->estado_pago === 'pendiente') : ?>
-                <a href="<?php echo esc_url(add_query_arg('entrega_id', $entrega->id, home_url('/mi-portal/grupos-consumo/checkout/'))); ?>"
+                <a href="<?php echo esc_url(add_query_arg('entrega_id', $entrega->id, Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'checkout'))); ?>"
                    class="gc-btn gc-btn-primary gc-btn-block">
                     <span class="dashicons dashicons-money-alt"></span>
                     <?php esc_html_e('Pagar ahora', 'flavor-chat-ia'); ?>
@@ -392,7 +392,7 @@ foreach ($items_pedido as $item) {
 
             <!-- Acciones -->
             <div class="gc-sidebar-acciones">
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/')); ?>" class="gc-btn gc-btn-text gc-btn-block">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos')); ?>" class="gc-btn gc-btn-text gc-btn-block">
                     <span class="dashicons dashicons-list-view"></span>
                     <?php esc_html_e('Ver todos mis pedidos', 'flavor-chat-ia'); ?>
                 </a>

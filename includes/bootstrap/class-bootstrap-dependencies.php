@@ -681,6 +681,30 @@ final class Flavor_Bootstrap_Dependencies {
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-generator/class-app-generator.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-generator/class-app-generator-admin.php';
 
+        // Gestión de APKs y Apps Móviles
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-analytics-dashboard.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-apk-builder.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-releases.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-dashboard-widget.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-keystore-manager.php';
+
+        // Inicializar clases de gestión de apps
+        Flavor_App_Analytics_Dashboard::get_instance();
+        Flavor_APK_Builder::get_instance();
+        Flavor_App_Releases::get_instance();
+        // Widget y Keystore se auto-inicializan
+
+        // Feature Flags para apps móviles
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-feature-flags.php';
+        Flavor_Feature_Flags::get_instance();
+
+        // Panel de usuarios de app
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-users-panel.php';
+        // Se auto-inicializa
+
+        // Configurador de menús de app drag-drop
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-menu-configurator.php';
+        // Se auto-inicializa
         // Admin de Newsletter
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-newsletter-admin.php';
 

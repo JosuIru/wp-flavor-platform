@@ -80,7 +80,7 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $total_puntos,
                 'label' => __('Puntos limpios', 'flavor-chat-ia'),
                 'color' => $total_puntos > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=reciclaje') : home_url('/mi-portal/reciclaje/puntos/'),
+                'url' => $es_admin ? admin_url('admin.php?page=reciclaje') : Flavor_Chat_Helpers::get_action_url('reciclaje', 'puntos'),
             ],
         ];
 
@@ -91,7 +91,7 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $fecha_formateada,
                 'label' => $proxima_recogida->tipo ?: __('Próx. recogida', 'flavor-chat-ia'),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=reciclaje&tab=recogidas') : home_url('/mi-portal/reciclaje/calendario/'),
+                'url' => $es_admin ? admin_url('admin.php?page=reciclaje&tab=recogidas') : Flavor_Chat_Helpers::get_action_url('reciclaje', 'calendario'),
             ];
         }
 
@@ -104,7 +104,7 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver mapa', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=reciclaje') : home_url('/mi-portal/reciclaje/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=reciclaje') : Flavor_Chat_Helpers::get_action_url('reciclaje', ''),
                     'icon' => 'dashicons-location',
                 ],
             ],
@@ -135,7 +135,7 @@ class Flavor_Reciclaje_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-location-alt',
                 'title' => wp_trim_words($punto->nombre, 4, '...'),
                 'meta' => $punto->tipo ?: $punto->direccion,
-                'url' => $es_admin ? admin_url('admin.php?page=reciclaje&punto=' . $punto->id) : home_url('/mi-portal/reciclaje/punto/' . $punto->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=reciclaje&punto=' . $punto->id) : Flavor_Chat_Helpers::get_action_url('reciclaje', 'punto') . '/' . $punto->id . '/',
             ];
         }
 

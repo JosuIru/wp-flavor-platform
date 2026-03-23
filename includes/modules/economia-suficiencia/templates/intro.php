@@ -88,7 +88,7 @@ if (!defined('ABSPATH')) {
         <p style="color: var(--es-text-light); margin-bottom: 1.5rem;">
             <?php esc_html_e('Evalúa cómo estás satisfaciendo tus necesidades y descubre tu camino hacia la suficiencia.', 'flavor-chat-ia'); ?>
         </p>
-        <a href="<?php echo esc_url(home_url('/mi-portal/economia-suficiencia/evaluacion/')); ?>" class="es-btn es-btn--primary">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'evaluacion')); ?>" class="es-btn es-btn--primary">
             <span class="dashicons dashicons-chart-bar"></span>
             <?php esc_html_e('Evaluar mis necesidades', 'flavor-chat-ia'); ?>
         </a>

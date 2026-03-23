@@ -1,8 +1,24 @@
-# Configuración de firma para release
-# Copia este archivo a key.properties y completa los valores
-# IMPORTANTE: No subas key.properties a git (está en .gitignore)
+# Configuración de firma para APKs de Release
+# ============================================
+#
+# INSTRUCCIONES:
+# 1. Copia este archivo a "key.properties" (sin .example)
+# 2. Genera un keystore con: ../scripts/generate-keystore.sh
+# 3. Rellena los valores con tus contraseñas
+#
+# IMPORTANTE:
+# - NO commits key.properties al repositorio
+# - Guarda el keystore y contraseñas en lugar seguro
+# - Si pierdes el keystore, no podrás publicar actualizaciones
 
-storePassword=TU_PASSWORD_AQUI
-keyPassword=TU_PASSWORD_AQUI
-keyAlias=upload
-storeFile=../keystore/upload-keystore.jks
+# Contraseña del keystore
+storePassword=TU_CONTRASEÑA_STORE
+
+# Contraseña de la clave
+keyPassword=TU_CONTRASEÑA_KEY
+
+# Alias de la clave (debe coincidir con el usado al crear el keystore)
+keyAlias=flavor-release-key
+
+# Ruta al archivo keystore (relativa al directorio android/)
+storeFile=../../keystores/flavor-release.jks

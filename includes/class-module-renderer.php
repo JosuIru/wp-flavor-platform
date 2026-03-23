@@ -234,7 +234,7 @@ class Flavor_Module_Renderer {
         <div class="flavor-module-single flavor-<?php echo esc_attr($module); ?>-single">
             <!-- Breadcrumb -->
             <nav class="mb-4 text-sm">
-                <a href="<?php echo esc_url(home_url("/mi-portal/{$module}/")); ?>"
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $module), '')); ?>"
                    class="text-gray-500 hover:text-gray-700">
                     <?php echo esc_html($config['title'] ?? ucfirst($module)); ?>
                 </a>
@@ -395,7 +395,7 @@ class Flavor_Module_Renderer {
 
                     <!-- Botones -->
                     <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                        <a href="<?php echo esc_url(home_url("/mi-portal/{$module}/")); ?>"
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $module), '')); ?>"
                            class="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors">
                             <?php _e('Cancelar', 'flavor-chat-ia'); ?>
                         </a>
@@ -423,7 +423,7 @@ class Flavor_Module_Renderer {
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = data.data.redirect || '<?php echo esc_js(home_url("/mi-portal/{$module}/")); ?>';
+                    window.location.href = data.data.redirect || '<?php echo esc_js(Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $module), '')); ?>';
                 } else {
                     alert(data.data.message || 'Error al guardar');
                 }
@@ -609,7 +609,7 @@ class Flavor_Module_Renderer {
 
             // URL
             if (!isset($item['url']) && $module) {
-                $item['url'] = home_url("/mi-portal/{$module}/{$item['id']}/");
+                $item['url'] = Flavor_Chat_Helpers::get_item_url(str_replace('-', '_', $module), $item['id'], '');
             }
 
             // Fecha formateada

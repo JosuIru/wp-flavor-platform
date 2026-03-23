@@ -101,7 +101,7 @@ $estados_colores = [
     'cancelado' => '#6b7280',
 ];
 
-$tramites_base_url = home_url('/mi-portal/tramites/');
+$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 ?>
 
 <div class="mis-tramites-wrapper">

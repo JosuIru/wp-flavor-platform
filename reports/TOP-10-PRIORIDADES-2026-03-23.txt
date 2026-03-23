@@ -1,0 +1,146 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║                   🎯 TOP 10 PRIORIDADES INMEDIATAS                            ║
+║                        (Ordenadas por criticidad)                              ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+ 1️⃣  🔴 COLISIONES DE SHORTCODES (22 duplicados)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Criticidad:  🔥🔥🔥🔥🔥 (MÁXIMA)
+    Impacto:     Bugs silenciosos, sobrescrituras según orden de carga
+    Tiempo:      1-2 días
+    Acción:      Implementar namespacing único + aliases legacy
+    Archivo:     includes/class-module-shortcodes.php
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+ 2️⃣  🔴 FACTURAS - PAGO ONLINE SIN IMPLEMENTAR
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Criticidad:  🔥🔥🔥🔥🔥 (MÁXIMA)
+    Impacto:     Flujo de cobro ROTO, monetización bloqueada
+    Tiempo:      3-4 días
+    Acción:      Integrar gateway (Stripe/PayPal/Redsys) + generar PDF
+    Evidencia:   "Sistema de pago online proximamente disponible"
+    Archivo:     includes/modules/facturas/class-facturas-module.php
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+ 3️⃣  🔴 TRANSPARENCIA - 5 TEMPLATES PLACEHOLDER
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Criticidad:  🔥🔥🔥🔥 (MUY ALTA)
+    Impacto:     Cumplimiento legal/normativo, UX rota
+    Tiempo:      2-3 días
+    Acción:      Implementar actas, presupuestos, gastos, contratos
+    Templates:   actas.php, presupuestos.php, presupuesto-actual.php,
+                 ultimos-gastos.php, contratos.php
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+ 4️⃣  🔴 SELLO CONCIENCIA - ENVÍO BLOQUEADO
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Criticidad:  🔥🔥🔥🔥 (MUY ALTA)
+    Impacto:     Funcionalidad core bloqueada
+    Tiempo:      2-3 días
+    Acción:      Desbloquear envío + implementar workflow aprobación
+    Evidencia:   Botón deshabilitado "Envío pendiente de integración"
+    Archivo:     includes/modules/sello-conciencia/class-*-dashboard-tab.php
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+ 5️⃣  🔴 CHAT GRUPOS + CHAT INTERNO
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Criticidad:  🔥🔥🔥🔥 (MUY ALTA)
+    Impacto:     Comunicación interna rota
+    Tiempo:      3-4 días
+    Acción:      Crear dashboard + frontend para ambos módulos
+    Archivos:    includes/modules/chat-grupos/views/dashboard.php
+                 includes/modules/chat-grupos/frontend/*.php
+                 includes/modules/chat-interno/views/dashboard.php
+                 includes/modules/chat-interno/frontend/*.php
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+ 6️⃣  🔴 TABLAS BD NO CREADAS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Criticidad:  🔥🔥🔥 (ALTA)
+    Impacto:     Módulos no funcionan por falta de tablas
+    Tiempo:      0.5 día
+    Acción:      Verificar/ejecutar scripts install.php en cada módulo
+    Módulos:     Clientes, Reservas, Socios, Eventos
+    Evidencia:   "tabla principal no está disponible"
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+ 7️⃣  🔴 LOADING INFINITO EN DASHBOARDS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Criticidad:  🔥🔥🔥 (ALTA)
+    Impacto:     UX degradada, dashboards inaccesibles
+    Tiempo:      1 día
+    Acción:      Implementar fallback + timeout en carga
+    Archivos:    admin/class-admin-menu-manager.php
+                 admin/class-dashboard.php
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+ 8️⃣  🔴 MOBILE APK - SOLO DEBUG (No distribuible)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Criticidad:  🔥🔥🔥 (ALTA)
+    Impacto:     No se puede distribuir en stores
+    Tiempo:      1-2 días
+    Acción:      Generar keystore + build release firmado
+    Archivos:    mobile-apps/android/app/build.gradle
+                 mobile-apps/build_app.sh
+    APK actual:  build/app/outputs/apk/client/debug/app-client-debug.apk
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+ 9️⃣  🔴 EMAIL MARKETING - 8 VISTAS EN FALLBACK
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Criticidad:  🔥🔥 (MEDIA-ALTA)
+    Impacto:     Experiencia inconsistente
+    Tiempo:      2-3 días
+    Acción:      Eliminar render_vista_fallback, crear vistas canónicas
+    Vistas:      Dashboard, Campañas, Automatizaciones, Suscriptores,
+                 Listas, Plantillas, Estadísticas, Configuración
+    Archivo:     includes/modules/email-marketing/class-*-module.php
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+🔟  🔴 RED SOCIAL - 3 VISTAS ADMIN EN FALLBACK
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Criticidad:  🔥🔥 (MEDIA-ALTA)
+    Impacto:     Panel admin no fully templated
+    Tiempo:      1-2 días
+    Acción:      Eliminar fallbacks, crear vistas canónicas
+    Vistas:      Dashboard, Publicaciones, Moderación
+    Archivo:     includes/modules/red-social/class-red-social-module.php
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⏱️  TIEMPO TOTAL TOP 10: 17-24 días laborables (3-5 semanas)
+
+🎯 ORDEN DE EJECUCIÓN RECOMENDADO:
+   1. Colisiones shortcodes (día 1-2)          ← RESOLVER PRIMERO
+   2. Tablas BD (día 3)                         ← QUICK WIN
+   3. Loading infinito (día 4)                  ← QUICK WIN
+   4. Facturas + pago (día 5-8)                 ← BLOQUEANTE NEGOCIO
+   5. Transparencia (día 9-11)                  ← BLOQUEANTE LEGAL
+   6. Sello Conciencia (día 12-14)              ← BLOQUEANTE FUNCIONAL
+   7. Chat Grupos/Interno (día 15-18)           ← BLOQUEANTE COMUNICACIÓN
+   8. Mobile release (día 19-20)                ← BLOQUEANTE DISTRIBUCIÓN
+   9. Email Marketing (día 21-23)               ← MEJORA CALIDAD
+  10. Red Social (día 24)                       ← MEJORA CALIDAD
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TRAS RESOLVER ESTAS 10 PRIORIDADES:
+  ✅ Se desbloquean todos los flujos críticos
+  ✅ Se eliminan todos los bloqueantes P0
+  ✅ El proyecto estará listo para P1 (módulos ROJO/AMARILLO restantes)
+  ✅ Tiempo restante hasta producción: 2-5 semanas adicionales (P1 + P2 + testing)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

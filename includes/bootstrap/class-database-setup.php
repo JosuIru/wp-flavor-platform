@@ -171,18 +171,36 @@ final class Flavor_Database_Setup {
      * @return void
      */
     public function create_module_tables() {
-        // Banco de Tiempo
-        $this->maybe_run_module_installer('banco-tiempo', 'flavor_banco_tiempo_install');
+        // Módulos principales con install.php propio
+        $modules_con_install = [
+            'socios',
+            'eventos',
+            'reservas',
+            'clientes',
+            'facturas',
+            'banco-tiempo',
+            'grupos-consumo',
+        ];
 
-        // Grupos de Consumo
-        $this->maybe_run_module_installer('grupos-consumo', 'flavor_grupos_consumo_install');
+        foreach ($modules_con_install as $module_slug) {
+            // Convertir guiones a guiones bajos para nombre de función
+            $function_slug = str_replace('-', '_', $module_slug);
 
-        // Reservas
-        if (file_exists(FLAVOR_CHAT_IA_PATH . 'includes/modules/reservas/install.php')) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/modules/reservas/install.php';
-            if (function_exists('flavor_reservas_crear_tabla')) {
-                flavor_reservas_crear_tabla();
+            // Determinar nombre de función
+            $function_name = ($module_slug === 'reservas')
+                ? "flavor_{$function_slug}_crear_tabla"  // Reservas usa singular
+                : "flavor_{$function_slug}_crear_tablas"; // El resto usa plural
+
+            // Banco-tiempo usa nombre especial
+            if ($module_slug === 'banco-tiempo') {
+                $function_name = 'flavor_banco_tiempo_install';
             }
+            // Grupos-consumo usa nombre especial
+            if ($module_slug === 'grupos-consumo') {
+                $function_name = 'flavor_grupos_consumo_install';
+            }
+
+            $this->maybe_run_module_installer($module_slug, $function_name);
         }
 
         // Deep Link Manager

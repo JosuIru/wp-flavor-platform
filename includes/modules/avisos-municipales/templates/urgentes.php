@@ -42,7 +42,7 @@ $avisos_urgentes = $wpdb->get_results($wpdb->prepare(
 ));
 
 // URL base para los detalles
-$avisos_base_url = home_url('/mi-portal/avisos/');
+$avisos_base_url = Flavor_Chat_Helpers::get_action_url('avisos_municipales', '');
 ?>
 
 <div class="avisos-urgentes-wrapper">

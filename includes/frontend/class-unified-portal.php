@@ -218,7 +218,7 @@ class Flavor_Unified_Portal {
                 'ajaxUrl'     => admin_url('admin-ajax.php'),
                 'nonce'       => wp_create_nonce('flavor_unified_portal'),
                 'userId'      => get_current_user_id(),
-                'settingsUrl' => home_url('/mi-portal/configuracion/'),
+                'settingsUrl' => Flavor_Chat_Helpers::get_action_url('configuracion', ''),
                 'i18n'        => [
                     'loading'                 => __('Cargando...', 'flavor-chat-ia'),
                     'error'                   => __('Error al cargar datos', 'flavor-chat-ia'),
@@ -434,7 +434,7 @@ class Flavor_Unified_Portal {
         }
 
         // Usar ruta dinámica del portal: /mi-portal/{modulo}/
-        return home_url('/mi-portal/' . $slug . '/');
+        return Flavor_Chat_Helpers::get_action_url(str_replace('-', '_', $slug), '');
     }
 
     /**
@@ -937,7 +937,7 @@ class Flavor_Unified_Portal {
                     'source' => __('Aviso oficial', 'flavor-chat-ia'),
                     'title' => $aviso['titulo'],
                     'excerpt' => wp_trim_words($aviso['contenido'], 15, '...'),
-                    'url' => home_url('/mi-portal/avisos-municipales/'),
+                    'url' => Flavor_Chat_Helpers::get_action_url('avisos_municipales', ''),
                     'time' => strtotime($aviso['fecha_publicacion']),
                     'time_ago' => $this->time_ago($aviso['fecha_publicacion']),
                     'meta' => !empty($aviso['categoria']) ? $aviso['categoria'] : '',
@@ -968,7 +968,7 @@ class Flavor_Unified_Portal {
                     'source' => $nombre_autor,
                     'title' => '',
                     'excerpt' => wp_trim_words($pub['contenido'], 20, '...'),
-                    'url' => home_url('/mi-portal/red-social/?pub=' . $pub['id']),
+                    'url' => Flavor_Chat_Helpers::get_action_url('red_social', '') . '?pub=' . $pub['id'],
                     'time' => strtotime($pub['fecha_creacion']),
                     'time_ago' => $this->time_ago($pub['fecha_creacion']),
                     'meta' => $pub['reacciones'] > 0 ? sprintf(_n('%d reacción', '%d reacciones', (int) $pub['reacciones'], 'flavor-chat-ia'), (int) $pub['reacciones']) : '',
@@ -996,7 +996,7 @@ class Flavor_Unified_Portal {
                     'source' => __('Evento', 'flavor-chat-ia'),
                     'title' => $evento['titulo'],
                     'excerpt' => !empty($evento['descripcion']) ? wp_trim_words($evento['descripcion'], 12, '...') : '',
-                    'url' => home_url('/mi-portal/eventos/'),
+                    'url' => Flavor_Chat_Helpers::get_action_url('eventos', ''),
                     'time' => strtotime($evento['fecha']),
                     'time_ago' => date_i18n(get_option('date_format'), strtotime($evento['fecha'])),
                     'meta' => !empty($evento['lugar']) ? '📍 ' . $evento['lugar'] : '',
@@ -1025,7 +1025,7 @@ class Flavor_Unified_Portal {
                     'source' => __('Foro', 'flavor-chat-ia'),
                     'title' => $tema['titulo'],
                     'excerpt' => '',
-                    'url' => home_url('/mi-portal/foros/'),
+                    'url' => Flavor_Chat_Helpers::get_action_url('foros', ''),
                     'time' => strtotime($tema['fecha_creacion']),
                     'time_ago' => $this->time_ago($tema['fecha_creacion']),
                     'meta' => $tema['respuestas'] > 0 ? sprintf(_n('%d respuesta', '%d respuestas', (int) $tema['respuestas'], 'flavor-chat-ia'), (int) $tema['respuestas']) : __('Sin respuestas', 'flavor-chat-ia'),
@@ -1052,7 +1052,7 @@ class Flavor_Unified_Portal {
                     'source' => __('Podcast', 'flavor-chat-ia'),
                     'title' => $ep['titulo'],
                     'excerpt' => !empty($ep['descripcion']) ? wp_trim_words($ep['descripcion'], 10, '...') : '',
-                    'url' => home_url('/mi-portal/podcast/'),
+                    'url' => Flavor_Chat_Helpers::get_action_url('podcast', ''),
                     'time' => strtotime($ep['fecha_publicacion']),
                     'time_ago' => $this->time_ago($ep['fecha_publicacion']),
                     'meta' => !empty($ep['duracion']) ? '⏱️ ' . $ep['duracion'] . ' min' : '',
@@ -1130,7 +1130,7 @@ class Flavor_Unified_Portal {
                 $actions[] = [
                     'icon' => '📅',
                     'text' => $evento['titulo'],
-                    'url' => home_url('/mi-portal/eventos/'),
+                    'url' => Flavor_Chat_Helpers::get_action_url('eventos', ''),
                     'module' => __('Eventos', 'flavor-chat-ia'),
                     'priority' => 'normal',
                 ];
@@ -1150,7 +1150,7 @@ class Flavor_Unified_Portal {
                 $actions[] = [
                     'icon' => '📆',
                     'text' => sprintf(_n('%d reserva pendiente', '%d reservas pendientes', $reservas, 'flavor-chat-ia'), $reservas),
-                    'url' => home_url('/mi-portal/reservas/'),
+                    'url' => Flavor_Chat_Helpers::get_action_url('reservas', ''),
                     'module' => __('Reservas', 'flavor-chat-ia'),
                     'priority' => 'high',
                 ];
@@ -1170,7 +1170,7 @@ class Flavor_Unified_Portal {
                 $actions[] = [
                     'icon' => '📋',
                     'text' => sprintf(_n('%d trámite activo', '%d trámites activos', $tramites, 'flavor-chat-ia'), $tramites),
-                    'url' => home_url('/mi-portal/tramites/'),
+                    'url' => Flavor_Chat_Helpers::get_action_url('tramites', ''),
                     'module' => __('Trámites', 'flavor-chat-ia'),
                     'priority' => 'normal',
                 ];
@@ -1188,7 +1188,7 @@ class Flavor_Unified_Portal {
                 $actions[] = [
                     'icon' => '🗳️',
                     'text' => sprintf(_n('%d votación abierta', '%d votaciones abiertas', $votaciones, 'flavor-chat-ia'), $votaciones),
-                    'url' => home_url('/mi-portal/participacion/'),
+                    'url' => Flavor_Chat_Helpers::get_action_url('participacion', ''),
                     'module' => __('Participación', 'flavor-chat-ia'),
                     'priority' => 'high',
                 ];

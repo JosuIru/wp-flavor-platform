@@ -16,7 +16,7 @@ $usuario_id = get_current_user_id();
 if (!$usuario_id) {
     echo '<div class="rs-login-required">';
     echo '<p>' . esc_html__('Debes iniciar sesion para ver tu actividad.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/red-social/mi-actividad/'))) . '" class="rs-btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>';
+    echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('red_social', 'mi-actividad'))) . '" class="rs-btn-primary">' . esc_html__('Iniciar sesion', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }
@@ -296,11 +296,11 @@ $historial_puntos = $wpdb->get_results($wpdb->prepare(
                                     <span class="rs-actividad-tiempo"><?php echo human_time_diff(strtotime($actividad->fecha), current_time('timestamp')); ?></span>
                                 </div>
                                 <?php if ($actividad->tipo_actividad !== 'seguir'): ?>
-                                    <a href="<?php echo esc_url(add_query_arg('publicacion_id', intval($actividad->referencia_id), home_url('/mi-portal/red-social/'))); ?>" class="rs-actividad-ver">
+                                    <a href="<?php echo esc_url(add_query_arg('publicacion_id', intval($actividad->referencia_id), Flavor_Chat_Helpers::get_action_url('red_social', ''))); ?>" class="rs-actividad-ver">
                                         <?php echo esc_html__('Ver', 'flavor-chat-ia'); ?>
                                     </a>
                                 <?php else: ?>
-                                    <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($actividad->referencia_id), home_url('/mi-portal/red-social/perfil/'))); ?>" class="rs-actividad-ver">
+                                    <a href="<?php echo esc_url(add_query_arg('usuario_id', intval($actividad->referencia_id), Flavor_Chat_Helpers::get_action_url('red_social', 'perfil'))); ?>" class="rs-actividad-ver">
                                         <?php echo esc_html__('Ver perfil', 'flavor-chat-ia'); ?>
                                     </a>
                                 <?php endif; ?>

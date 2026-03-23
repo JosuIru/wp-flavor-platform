@@ -668,7 +668,7 @@ class Flavor_GC_Telegram_Channel {
         $mensaje .= "Fecha de entrega: " . date_i18n('j M Y', strtotime($fecha_entrega)) . "\n";
 
         $this->enviar_con_botones_inline($chat_id, $mensaje, [
-            [['texto' => 'Ver productos', 'url' => add_query_arg('ciclo', intval($ciclo->ID), home_url('/mi-portal/grupos-consumo/ciclo/'))]],
+            [['texto' => 'Ver productos', 'url' => add_query_arg('ciclo', intval($ciclo->ID), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'ciclo'))]],
         ]);
     }
 

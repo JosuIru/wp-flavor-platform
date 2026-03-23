@@ -77,7 +77,7 @@ if ($ciclo):
                     </div>
 
                     <div class="flavor-gc-ciclo-cta">
-                        <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="flavor-btn flavor-btn--primary flavor-btn--lg">
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="flavor-btn flavor-btn--primary flavor-btn--lg">
                             <span class="dashicons dashicons-cart"></span>
                             <?php _e('Hacer mi pedido', 'flavor-chat-ia'); ?>
                         </a>
@@ -157,7 +157,7 @@ if ($ciclo):
                 <span class="dashicons dashicons-calendar-alt flavor-gc-ciclo-icono-grande"></span>
                 <h3><?php _e('El ciclo de pedidos está cerrado', 'flavor-chat-ia'); ?></h3>
                 <p><?php _e('Te avisaremos cuando abra el próximo ciclo de pedidos.', 'flavor-chat-ia'); ?></p>
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/unirme/')); ?>" class="flavor-btn flavor-btn--outline">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'unirme')); ?>" class="flavor-btn flavor-btn--outline">
                     <?php _e('Unirme al grupo para recibir avisos', 'flavor-chat-ia'); ?>
                 </a>
             </div>

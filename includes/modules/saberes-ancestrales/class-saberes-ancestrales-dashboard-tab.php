@@ -176,15 +176,15 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/saberes/explorar/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'explorar')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar Saberes', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/saberes/compartir/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-share"></span>
                     <?php esc_html_e('Compartir un Saber', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/saberes/transmisiones/')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'transmisiones')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-groups"></span>
                     <?php esc_html_e('Transmisiones', 'flavor-chat-ia'); ?>
                 </a>
@@ -218,7 +218,7 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
         <div class="flavor-panel flavor-aportes-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-edit"></span> <?php esc_html_e('Mis Aportes', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/mi-portal/saberes/compartir/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Compartir Saber', 'flavor-chat-ia'); ?>
                 </a>
@@ -229,7 +229,7 @@ class Flavor_Saberes_Ancestrales_Dashboard_Tab {
                     <span class="dashicons dashicons-book-alt"></span>
                     <p><?php esc_html_e('Aún no has compartido ningún saber ancestral.', 'flavor-chat-ia'); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('Tu conocimiento es valioso. Compártelo con la comunidad para que perdure.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/saberes/compartir/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Compartir mi primer saber', 'flavor-chat-ia'); ?>
                     </a>
                 </div>

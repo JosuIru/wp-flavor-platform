@@ -370,7 +370,7 @@ class CrashReportingService {
 
     // Intentar envío en batch
     try {
-      final response = await _apiClient.postData('/crashes/batch', {
+      final response = await _apiClient.postData('/crashes/batch', data: {
         'crashes': crashesToSend.map((c) => c.toJson()).toList(),
       });
 
@@ -438,7 +438,7 @@ class CrashReportingService {
   /// Envía un crash al servidor
   Future<CrashReportResult> _sendCrash(CrashReport crash) async {
     try {
-      final response = await _apiClient.postData('/crashes', crash.toJson());
+      final response = await _apiClient.postData('/crashes', data: crash.toJson());
 
       if (response.success) {
         final data = response.data;

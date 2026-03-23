@@ -160,8 +160,8 @@ class SociosCrudService extends CrudService<Socio> {
   /// Obtener mi perfil de socio
   Future<Socio?> getMiPerfil() async {
     try {
-      final response = await _apiClient.get('/flavor-app/v2/socios/me');
-      return Socio.fromJson(response.data);
+      final response = await apiClient.get('/flavor-app/v2/socios/me');
+      return Socio.fromJson(response.data ?? {});
     } catch (e) {
       debugPrint('[SociosCrudService] Error obteniendo perfil: $e');
       return null;
@@ -171,7 +171,7 @@ class SociosCrudService extends CrudService<Socio> {
   /// Solicitar alta como socio
   Future<bool> solicitarAlta(Socio solicitud) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/socios/solicitar',
         data: solicitud.toJson(),
       );
@@ -185,14 +185,14 @@ class SociosCrudService extends CrudService<Socio> {
   /// Obtener mis cuotas
   Future<List<CuotaSocio>> getMisCuotas({String? estado}) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/socios/me/cuotas',
         queryParameters: {
           if (estado != null) 'estado': estado,
         },
       );
 
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => CuotaSocio.fromJson(json)).toList();
     } catch (e) {
       debugPrint('[SociosCrudService] Error obteniendo cuotas: $e');
@@ -208,7 +208,7 @@ class SociosCrudService extends CrudService<Socio> {
   /// Pagar cuota
   Future<Map<String, dynamic>?> pagarCuota(String cuotaId, String metodoPago) async {
     try {
-      final response = await _apiClient.post(
+      final response = await apiClient.post(
         '/flavor-app/v2/socios/cuotas/$cuotaId/pagar',
         data: {
           'metodo_pago': metodoPago,
@@ -233,7 +233,7 @@ class SociosCrudService extends CrudService<Socio> {
     String? direccion,
   }) async {
     try {
-      await _apiClient.patch(
+      await apiClient.patch(
         '/flavor-app/v2/socios/me',
         data: {
           if (email != null) 'email': email,
@@ -251,7 +251,7 @@ class SociosCrudService extends CrudService<Socio> {
   /// Solicitar baja
   Future<bool> solicitarBaja(String motivo) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/socios/me/baja',
         data: {'motivo': motivo},
       );
@@ -265,7 +265,7 @@ class SociosCrudService extends CrudService<Socio> {
   /// Obtener carnet digital
   Future<Map<String, dynamic>?> getCarnetDigital() async {
     try {
-      final response = await _apiClient.get('/flavor-app/v2/socios/me/carnet');
+      final response = await apiClient.get('/flavor-app/v2/socios/me/carnet');
       return response.data;
     } catch (e) {
       debugPrint('[SociosCrudService] Error obteniendo carnet: $e');
@@ -276,8 +276,8 @@ class SociosCrudService extends CrudService<Socio> {
   /// Obtener beneficios del socio
   Future<List<Map<String, dynamic>>> getBeneficios() async {
     try {
-      final response = await _apiClient.get('/flavor-app/v2/socios/beneficios');
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final response = await apiClient.get('/flavor-app/v2/socios/beneficios');
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => Map<String, dynamic>.from(json)).toList();
     } catch (e) {
       debugPrint('[SociosCrudService] Error obteniendo beneficios: $e');

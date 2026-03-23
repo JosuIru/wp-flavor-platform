@@ -1,23 +1,74 @@
 {
   "name": "flavor-chat-ia",
   "version": "3.3.0",
+  "description": "Plataforma integral para WordPress: Red de Comunidades, Asistente IA, Page Builder y más",
   "private": true,
   "scripts": {
-    "build": "bash build.sh",
-    "build:js": "bash build.sh js",
-    "build:css": "bash build.sh css",
-    "css:bundle": "postcss assets/css/flavor-core.css -o assets/css/dist/flavor-core.bundle.css",
-    "css:minify": "postcss assets/css/dist/flavor-core.bundle.css -o assets/css/dist/flavor-core.min.css --env production",
-    "css:build": "npm run css:bundle && npm run css:minify",
-    "css:watch": "postcss assets/css/flavor-core.css -o assets/css/dist/flavor-core.bundle.css --watch"
+    "build": "node scripts/build.js",
+    "build:dev": "node scripts/build.js --mode=development",
+    "build:prod": "node scripts/build.js --mode=production",
+    "build:js": "node scripts/build.js --type=js",
+    "build:css": "node scripts/build.js --type=css",
+    "watch": "node scripts/build.js --watch",
+    "watch:js": "node scripts/build.js --type=js --watch",
+    "watch:css": "node scripts/build.js --type=css --watch",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:php",
+    "lint:js": "eslint 'assets/js/**/*.js' 'admin/js/**/*.js' --ignore-pattern '*.min.js'",
+    "lint:css": "stylelint 'assets/css/**/*.css' 'admin/css/**/*.css' --ignore-pattern '*.min.css'",
+    "lint:php": "composer lint",
+    "lint:fix": "npm run lint:js:fix && npm run lint:css:fix && npm run lint:php:fix",
+    "lint:js:fix": "eslint 'assets/js/**/*.js' 'admin/js/**/*.js' --ignore-pattern '*.min.js' --fix",
+    "lint:css:fix": "stylelint 'assets/css/**/*.css' 'admin/css/**/*.css' --ignore-pattern '*.min.css' --fix",
+    "lint:php:fix": "composer lint:fix",
+    "test": "npm run test:php && npm run test:js",
+    "test:php": "composer test",
+    "test:js": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage && composer test:coverage",
+    "release": "bash scripts/release.sh",
+    "release:patch": "bash scripts/release.sh patch",
+    "release:minor": "bash scripts/release.sh minor",
+    "release:major": "bash scripts/release.sh major",
+    "prepare": "husky",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.css": [
+      "stylelint --fix",
+      "git add"
+    ],
+    "*.php": [
+      "composer lint:file"
+    ]
   },
   "devDependencies": {
-    "terser": "^5.31.0",
-    "cssnano-cli": "^1.0.5",
+    "autoprefixer": "^10.4.17",
+    "chokidar": "^3.5.3",
+    "cssnano": "^6.0.3",
+    "eslint": "^8.57.0",
+    "eslint-config-wordpress": "^2.0.0",
+    "glob": "^10.3.10",
+    "husky": "^9.0.11",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.2.2",
     "postcss": "^8.4.35",
     "postcss-cli": "^11.0.0",
     "postcss-import": "^16.0.1",
-    "cssnano": "^6.0.3",
-    "autoprefixer": "^10.4.17"
+    "stylelint": "^16.2.1",
+    "stylelint-config-standard": "^36.0.0",
+    "terser": "^5.31.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }

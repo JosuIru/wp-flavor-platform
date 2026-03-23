@@ -242,7 +242,7 @@ class TalleresCrudService extends CrudService<Taller> {
   /// Inscribirse a un taller
   Future<bool> inscribirse(String tallerId) async {
     try {
-      await _apiClient.post('/flavor-app/v2/talleres/$tallerId/inscribir');
+      await apiClient.post('/flavor-app/v2/talleres/$tallerId/inscribir');
 
       // Actualizar cache
       final taller = await getById(tallerId);
@@ -252,8 +252,8 @@ class TalleresCrudService extends CrudService<Taller> {
           'esta_inscrito': true,
           'inscritos': taller.inscritos + 1,
         });
-        _cache[tallerId] = actualizado;
-        _notifyListeners(CrudEvent(type: CrudEventType.updated, item: actualizado));
+        cache[tallerId] = actualizado;
+        notifyListeners(CrudEvent(type: CrudEventType.updated, item: actualizado));
       }
 
       return true;
@@ -266,7 +266,7 @@ class TalleresCrudService extends CrudService<Taller> {
   /// Cancelar inscripción
   Future<bool> cancelarInscripcion(String tallerId) async {
     try {
-      await _apiClient.delete('/flavor-app/v2/talleres/$tallerId/inscripcion');
+      await apiClient.delete('/flavor-app/v2/talleres/$tallerId/inscripcion');
 
       // Actualizar cache
       final taller = await getById(tallerId);
@@ -276,8 +276,8 @@ class TalleresCrudService extends CrudService<Taller> {
           'esta_inscrito': false,
           'inscritos': taller.inscritos > 0 ? taller.inscritos - 1 : 0,
         });
-        _cache[tallerId] = actualizado;
-        _notifyListeners(CrudEvent(type: CrudEventType.updated, item: actualizado));
+        cache[tallerId] = actualizado;
+        notifyListeners(CrudEvent(type: CrudEventType.updated, item: actualizado));
       }
 
       return true;
@@ -290,10 +290,10 @@ class TalleresCrudService extends CrudService<Taller> {
   /// Obtener materiales del taller
   Future<List<Map<String, dynamic>>> getMateriales(String tallerId) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/talleres/$tallerId/materiales',
       );
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => Map<String, dynamic>.from(json)).toList();
     } catch (e) {
       debugPrint('[TalleresCrudService] Error obteniendo materiales: $e');
@@ -304,10 +304,10 @@ class TalleresCrudService extends CrudService<Taller> {
   /// Obtener sesiones del taller
   Future<List<Map<String, dynamic>>> getSesiones(String tallerId) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/talleres/$tallerId/sesiones',
       );
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => Map<String, dynamic>.from(json)).toList();
     } catch (e) {
       debugPrint('[TalleresCrudService] Error obteniendo sesiones: $e');
@@ -318,7 +318,7 @@ class TalleresCrudService extends CrudService<Taller> {
   /// Obtener progreso del usuario en el taller
   Future<Map<String, dynamic>?> getMiProgreso(String tallerId) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/talleres/$tallerId/mi-progreso',
       );
       return response.data;
@@ -331,8 +331,8 @@ class TalleresCrudService extends CrudService<Taller> {
   /// Obtener categorías de talleres
   Future<List<Map<String, dynamic>>> getCategorias() async {
     try {
-      final response = await _apiClient.get('/flavor-app/v2/talleres/categorias');
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final response = await apiClient.get('/flavor-app/v2/talleres/categorias');
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => Map<String, dynamic>.from(json)).toList();
     } catch (e) {
       debugPrint('[TalleresCrudService] Error obteniendo categorías: $e');

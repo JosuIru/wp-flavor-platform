@@ -171,7 +171,7 @@ $fecha_maxima = date('Y-m-d', strtotime("+{$dias_antelacion} days"));
             <button type="submit" class="flavor-btn flavor-btn-primary flavor-btn-lg">
                 <?php _e('Solicitar Reserva', 'flavor-chat-ia'); ?>
             </button>
-            <a href="<?php echo esc_url(home_url('/mi-portal/reservas/')); ?>" class="flavor-btn flavor-btn-secondary flavor-btn-lg">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('reservas', '')); ?>" class="flavor-btn flavor-btn-secondary flavor-btn-lg">
                 <?php _e('Cancelar', 'flavor-chat-ia'); ?>
             </a>
         </div>

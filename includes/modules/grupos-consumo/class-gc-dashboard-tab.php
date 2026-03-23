@@ -469,16 +469,16 @@ class Flavor_GC_Dashboard_Tab {
             </div>
 
             <div class="gc-panel-actions">
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>">
                     <?php _e('Ver productos', 'flavor-chat-ia'); ?>
                 </a>
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido')); ?>">
                     <?php _e('Pedido actual', 'flavor-chat-ia'); ?>
                 </a>
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos')); ?>">
                     <?php _e('Historial', 'flavor-chat-ia'); ?>
                 </a>
-                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/suscripciones/')); ?>">
+                <a class="gc-btn gc-btn-primary" href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'suscripciones')); ?>">
                     <?php _e('Suscripciones', 'flavor-chat-ia'); ?>
                 </a>
                 <a class="gc-btn gc-btn-secondary" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=gc_exportar_resumen_usuario'), 'gc_exportar_resumen_usuario')); ?>">
@@ -514,7 +514,7 @@ class Flavor_GC_Dashboard_Tab {
         $current = trim(parse_url(home_url(add_query_arg([])), PHP_URL_PATH), '/');
         $links = [];
         foreach ($items as $item) {
-            $url = home_url('/mi-portal/' . trim($item['path'], '/') . '/');
+            $url = home_url('/' . trim($item['path'], '/') . '/');
             $links[] = [
                 'label' => $item['label'],
                 'url' => $url,
@@ -1116,7 +1116,7 @@ class Flavor_GC_Dashboard_Tab {
                 <div class="gc-empty-state">
                     <span class="gc-empty-icon dashicons dashicons-cart"></span>
                     <p><?php _e('Tu lista de la compra está vacía.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                         <?php _e('Ver Productos', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -1956,11 +1956,11 @@ class Flavor_GC_Dashboard_Tab {
                                 <?php endif; ?>
                             </div>
                             <div class="gc-grupo-acciones">
-                                <a href="<?php echo esc_url(add_query_arg('grupo', intval($membresia->grupo_id), home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-outline">
+                                <a href="<?php echo esc_url(add_query_arg('grupo', intval($membresia->grupo_id), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'unirme'))); ?>" class="gc-btn gc-btn-outline">
                                     <?php _e('Ver Grupo', 'flavor-chat-ia'); ?>
                                 </a>
                                 <?php if ($membresia->estado === 'activo'): ?>
-                                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
+                                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                                         <?php _e('Hacer Pedido', 'flavor-chat-ia'); ?>
                                     </a>
                                 <?php endif; ?>
@@ -2002,7 +2002,7 @@ class Flavor_GC_Dashboard_Tab {
                                         <?php printf(_n('%d miembro', '%d miembros', $num_miembros, 'flavor-chat-ia'), $num_miembros); ?>
                                     </p>
                                 </div>
-                                <a href="<?php echo esc_url(add_query_arg('grupo', intval($grupo->ID), home_url('/mi-portal/grupos-consumo/unirme/'))); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
+                                <a href="<?php echo esc_url(add_query_arg('grupo', intval($grupo->ID), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'unirme'))); ?>" class="gc-btn gc-btn-outline gc-btn-sm">
                                     <?php _e('Ver Detalles', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
@@ -2178,7 +2178,7 @@ class Flavor_GC_Dashboard_Tab {
                 <div class="gc-empty-state gc-empty-sm">
                     <span class="gc-empty-icon dashicons dashicons-calendar-alt"></span>
                     <p><?php _e('No tienes entregas programadas proximamente.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
                         <?php _e('Hacer un Pedido', 'flavor-chat-ia'); ?>
                     </a>
                 </div>

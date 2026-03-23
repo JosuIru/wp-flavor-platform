@@ -402,7 +402,7 @@ class Flavor_Notifications_System {
             'info',
             __('Pedido Listo', 'flavor-chat-ia'),
             __('Tu pedido está listo para recoger', 'flavor-chat-ia'),
-            ['link' => home_url('/mi-portal/grupos-consumo/mi-grupo/'), 'icon' => '🛒']
+            ['link' => Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-grupo'), 'icon' => '🛒']
         );
     }
 }

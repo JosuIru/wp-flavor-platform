@@ -80,7 +80,7 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $cursos_activos,
                 'label' => __('Cursos disponibles', 'flavor-chat-ia'),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=cursos') : home_url('/mi-portal/cursos/'),
+                'url' => $es_admin ? admin_url('admin.php?page=cursos') : Flavor_Chat_Helpers::get_action_url('cursos', ''),
             ],
         ];
 
@@ -90,7 +90,7 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_cursos,
                 'label' => __('Mis cursos', 'flavor-chat-ia'),
                 'color' => $mis_cursos > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=cursos&tab=mis-cursos') : home_url('/mi-portal/cursos/mis-cursos/'),
+                'url' => $es_admin ? admin_url('admin.php?page=cursos&tab=mis-cursos') : Flavor_Chat_Helpers::get_action_url('cursos', 'mis-cursos'),
             ];
         }
 
@@ -103,7 +103,7 @@ class Flavor_Cursos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver catálogo', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=cursos') : home_url('/mi-portal/cursos/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=cursos') : Flavor_Chat_Helpers::get_action_url('cursos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],

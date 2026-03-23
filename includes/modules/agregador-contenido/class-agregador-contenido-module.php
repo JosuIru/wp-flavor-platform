@@ -91,6 +91,7 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         parent::__construct();
+        $this->cargar_frontend_controller();
     }
 
     /**
@@ -1539,7 +1540,40 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
      * Renderiza página de administración
      */
     public function render_admin_page() {
-        include __DIR__ . '/views/dashboard.php';
+        echo '<div class="wrap flavor-modulo-page">';
+        if (method_exists($this, 'render_page_header')) {
+            $this->render_page_header(__('Agregador de Contenido', 'flavor-chat-ia'));
+        }
+
+        $vista = __DIR__ . '/views/dashboard.php';
+        if (file_exists($vista)) {
+            include $vista;
+        } else {
+            echo '<div class="notice notice-warning inline"><p>' . esc_html__('El panel del agregador no está disponible en este momento.', 'flavor-chat-ia') . '</p></div>';
+        }
+        echo '</div>';
+    }
+
+    /**
+     * Configuración admin canónica del módulo.
+     *
+     * @return array
+     */
+    protected function get_admin_config() {
+        return [
+            'id' => 'agregador_contenido',
+            'label' => __('Agregador de Contenido', 'flavor-chat-ia'),
+            'icon' => 'dashicons-rss',
+            'capability' => 'manage_options',
+            'categoria' => 'comunicacion',
+            'paginas' => [
+                [
+                    'slug' => 'flavor-agregador',
+                    'titulo' => __('Dashboard', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_page'],
+                ],
+            ],
+        ];
     }
 
     /**
@@ -1564,6 +1598,17 @@ class Flavor_Agregador_Contenido_Module extends Flavor_Chat_Module_Base {
             'cpts'        => array( self::CPT_NOTICIA, self::CPT_VIDEO, self::CPT_FUENTE ),
             'taxonomies'  => array( self::TAX_CATEGORIA ),
         );
+    }
+
+    /**
+     * Cargar frontend controller
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-agregador-contenido-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Agregador_Contenido_Frontend_Controller::get_instance();
+        }
     }
 }
 

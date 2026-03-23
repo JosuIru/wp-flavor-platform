@@ -97,7 +97,7 @@ $saberes = get_posts([
         <span class="dashicons dashicons-book"></span>
         <p><?php esc_html_e('Aún no hay saberes documentados.', 'flavor-chat-ia'); ?></p>
         <?php if (is_user_logged_in()) : ?>
-        <a href="<?php echo esc_url(home_url('/mi-portal/saberes-ancestrales/compartir/')); ?>" class="sa-btn sa-btn--primary">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('saberes_ancestrales', 'compartir')); ?>" class="sa-btn sa-btn--primary">
             <?php esc_html_e('Compartir un saber', 'flavor-chat-ia'); ?>
         </a>
         <?php endif; ?>

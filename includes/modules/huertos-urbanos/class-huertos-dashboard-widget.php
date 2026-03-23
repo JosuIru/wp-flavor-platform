@@ -82,7 +82,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $mis_parcelas,
                 'label' => __('Mis parcelas', 'flavor-chat-ia'),
                 'color' => $mis_parcelas > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos') : home_url('/mi-portal/huertos-urbanos/mis-parcelas/'),
+                'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos') : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', 'mis-parcelas'),
             ];
         }
 
@@ -91,7 +91,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $parcelas_disponibles,
             'label' => __('Disponibles', 'flavor-chat-ia'),
             'color' => $parcelas_disponibles > 0 ? 'info' : 'gray',
-            'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos&tab=disponibles') : home_url('/mi-portal/huertos-urbanos/disponibles/'),
+            'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos&tab=disponibles') : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', 'disponibles'),
         ];
 
         $items = $user_id ? $this->get_mis_parcelas($user_id, 3) : [];
@@ -103,7 +103,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver huertos', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos') : home_url('/mi-portal/huertos-urbanos/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos') : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -137,7 +137,7 @@ class Flavor_Huertos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-carrot',
                 'title' => $parcela->nombre ?: __('Parcela', 'flavor-chat-ia'),
                 'meta' => $parcela->ubicacion ?: '',
-                'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos&parcela=' . $parcela->id) : home_url('/mi-portal/huertos-urbanos/parcela/' . $parcela->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=huertos-urbanos&parcela=' . $parcela->id) : Flavor_Chat_Helpers::get_action_url('huertos_urbanos', 'parcela') . '/' . $parcela->id . '/',
             ];
         }
 

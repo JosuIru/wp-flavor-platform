@@ -72,7 +72,7 @@ foreach ($grupos as $grupo) {
         <h3><?php esc_html_e('No hay grupos disponibles', 'flavor-chat-ia'); ?></h3>
         <p><?php esc_html_e('Actualmente no hay grupos de consumo activos. Se el primero en crear uno.', 'flavor-chat-ia'); ?></p>
         <?php if (is_user_logged_in() && current_user_can('gc_crear_grupo')) : ?>
-        <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/crear-grupo/')); ?>" class="gc-btn gc-btn-primary">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'crear-grupo')); ?>" class="gc-btn gc-btn-primary">
             <span class="dashicons dashicons-plus-alt2"></span>
             <?php esc_html_e('Crear grupo', 'flavor-chat-ia'); ?>
         </a>
@@ -118,7 +118,7 @@ foreach ($grupos as $grupo) {
             $es_miembro = in_array($grupo->ID, $grupos_usuario);
             $estado_usuario = $estadisticas['estado_usuario'];
             $admite_nuevos = $meta_grupo['admite_nuevos'] !== '0';
-            $url_portal_grupo = add_query_arg('grupo', $grupo->ID, home_url('/mi-portal/grupos-consumo/unirme/'));
+            $url_portal_grupo = add_query_arg('grupo', $grupo->ID, Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'unirme'));
         ?>
         <div class="gc-grupo-card <?php echo $es_miembro ? 'gc-grupo-miembro' : ''; ?> <?php echo !$admite_nuevos ? 'gc-grupo-cerrado' : ''; ?>"
              data-nombre="<?php echo esc_attr(strtolower($grupo->post_title)); ?>"

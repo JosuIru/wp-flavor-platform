@@ -118,7 +118,7 @@ $nonce = wp_create_nonce('gc_conciencia_nonce');
                             </form>
                         <?php else: ?>
                             <p class="gc-excedente-card__login">
-                                <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/'))); ?>">
+                                <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', ''))); ?>">
                                     <?php esc_html_e('Inicia sesión para reclamar', 'flavor-chat-ia'); ?>
                                 </a>
                             </p>

@@ -76,7 +76,7 @@ class Flavor_Avisos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $avisos_activos,
                 'label' => __('Avisos activos', 'flavor-chat-ia'),
                 'color' => $avisos_activos > 0 ? 'info' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales') : home_url('/mi-portal/avisos/'),
+                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales') : Flavor_Chat_Helpers::get_action_url('avisos_municipales', ''),
             ],
         ];
 
@@ -86,7 +86,7 @@ class Flavor_Avisos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $avisos_urgentes,
                 'label' => __('Urgentes', 'flavor-chat-ia'),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales&urgente=1') : home_url('/mi-portal/avisos/?urgente=1'),
+                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales&urgente=1') : Flavor_Chat_Helpers::get_action_url('avisos_municipales', '') . '?urgente=1',
             ];
         }
 
@@ -99,7 +99,7 @@ class Flavor_Avisos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver todos', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales') : home_url('/mi-portal/avisos/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales') : Flavor_Chat_Helpers::get_action_url('avisos_municipales', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -130,7 +130,7 @@ class Flavor_Avisos_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $aviso->urgente ? 'dashicons-warning' : 'dashicons-megaphone',
                 'title' => wp_trim_words($aviso->titulo, 5, '...'),
                 'meta' => human_time_diff(strtotime($aviso->fecha_publicacion)),
-                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales&aviso=' . $aviso->id) : home_url('/mi-portal/avisos/aviso/' . $aviso->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=avisos-municipales&aviso=' . $aviso->id) : Flavor_Chat_Helpers::get_action_url('avisos_municipales', 'aviso') . '/' . $aviso->id . '/',
                 'badge' => $aviso->urgente ? __('Urgente', 'flavor-chat-ia') : null,
             ];
         }

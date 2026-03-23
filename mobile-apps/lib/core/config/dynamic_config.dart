@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_config.dart';
+import '../theme/app_colors.dart';
 
 /// Configuración dinámica cargada desde el servidor WordPress
 ///
@@ -37,31 +38,31 @@ class DynamicConfig {
   /// Color primario de la app
   Color get primaryColor => _parseColor(
         _config?['colors']?['primary'],
-        Color(AppColors.primaryValue),
+        Color(AppColors.primary.value),
       );
 
   /// Color secundario
   Color get secondaryColor => _parseColor(
         _config?['colors']?['secondary'],
-        Color(AppColors.secondaryValue),
+        Color(AppColors.secondary.value),
       );
 
   /// Color de acento
   Color get accentColor => _parseColor(
         _config?['colors']?['accent'],
-        Color(AppColors.accentValue),
+        Color(AppColors.secondary.value),
       );
 
   /// Color de fondo principal
   Color get backgroundColor => _parseColor(
         _config?['colors']?['background'],
-        Color(AppColors.backgroundValue),
+        Color(AppColors.background.value),
       );
 
   /// Color de superficie (tarjetas, etc.)
   Color get surfaceColor => _parseColor(
         _config?['colors']?['surface'],
-        Color(AppColors.surfaceValue),
+        Color(AppColors.surface.value),
       );
 
   /// Color de texto principal
@@ -79,13 +80,13 @@ class DynamicConfig {
   /// Color de error
   Color get errorColor => _parseColor(
         _config?['colors']?['error'],
-        Color(AppColors.errorValue),
+        Color(AppColors.error.value),
       );
 
   /// Color de éxito
   Color get successColor => _parseColor(
         _config?['colors']?['success'],
-        Color(AppColors.successValue),
+        Color(AppColors.onPrimary.value),
       );
 
   // ==========================================

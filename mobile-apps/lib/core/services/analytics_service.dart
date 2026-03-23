@@ -276,7 +276,7 @@ class AnalyticsService {
     final eventsToSend = List<AnalyticsEvent>.from(_eventQueue);
     
     try {
-      final response = await _apiClient.postData('/analytics/batch', {
+      final response = await _apiClient.postData('/analytics/batch', data: {
         'events': eventsToSend.map((e) => e.toJson()).toList(),
         'device_id': deviceId,
       });

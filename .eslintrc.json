@@ -1,0 +1,205 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jquery": true,
+    "node": false
+  },
+  "globals": {
+    "wp": "readonly",
+    "jQuery": "readonly",
+    "$": "readonly",
+    "ajaxurl": "readonly",
+    "flavorChatIA": "readonly",
+    "flavorConfig": "readonly",
+    "flavorData": "readonly",
+    "FlavorChat": "readonly",
+    "FlavorDashboard": "readonly",
+    "FlavorNotifications": "readonly",
+    "FlavorWidgets": "readonly",
+    "FlavorPageBuilder": "readonly",
+    "FlavorNetwork": "readonly",
+    "FlavorAI": "readonly",
+    "L": "readonly",
+    "Chart": "readonly",
+    "Sortable": "readonly",
+    "flatpickr": "readonly",
+    "tinymce": "readonly",
+    "console": "readonly",
+    "window": "readonly",
+    "document": "readonly",
+    "localStorage": "readonly",
+    "sessionStorage": "readonly",
+    "fetch": "readonly",
+    "FormData": "readonly",
+    "URLSearchParams": "readonly",
+    "MutationObserver": "readonly",
+    "IntersectionObserver": "readonly",
+    "ResizeObserver": "readonly",
+    "requestAnimationFrame": "readonly",
+    "cancelAnimationFrame": "readonly",
+    "setTimeout": "readonly",
+    "clearTimeout": "readonly",
+    "setInterval": "readonly",
+    "clearInterval": "readonly",
+    "navigator": "readonly",
+    "location": "readonly",
+    "history": "readonly",
+    "alert": "readonly",
+    "confirm": "readonly",
+    "prompt": "readonly",
+    "Event": "readonly",
+    "CustomEvent": "readonly",
+    "Promise": "readonly",
+    "Map": "readonly",
+    "Set": "readonly",
+    "WeakMap": "readonly",
+    "WeakSet": "readonly",
+    "Symbol": "readonly",
+    "Blob": "readonly",
+    "File": "readonly",
+    "FileReader": "readonly",
+    "Audio": "readonly",
+    "Image": "readonly",
+    "Worker": "readonly",
+    "ServiceWorkerRegistration": "readonly"
+  },
+  "rules": {
+    "indent": ["warn", "tab", {
+      "SwitchCase": 1
+    }],
+    "linebreak-style": ["off"],
+    "quotes": ["warn", "single", {
+      "avoidEscape": true,
+      "allowTemplateLiterals": true
+    }],
+    "semi": ["error", "always"],
+    "no-unused-vars": ["warn", {
+      "args": "none",
+      "varsIgnorePattern": "^_",
+      "ignoreRestSiblings": true
+    }],
+    "no-console": ["off"],
+    "no-debugger": ["warn"],
+    "no-alert": ["off"],
+    "no-undef": ["error"],
+    "no-redeclare": ["error"],
+    "no-duplicate-case": ["error"],
+    "no-empty": ["warn", {
+      "allowEmptyCatch": true
+    }],
+    "no-extra-semi": ["error"],
+    "no-func-assign": ["error"],
+    "no-irregular-whitespace": ["error"],
+    "no-unreachable": ["error"],
+    "valid-typeof": ["error"],
+    "curly": ["warn", "all"],
+    "eqeqeq": ["warn", "smart"],
+    "no-caller": ["error"],
+    "no-eval": ["error"],
+    "no-implied-eval": ["error"],
+    "no-new-func": ["error"],
+    "no-new-wrappers": ["error"],
+    "no-with": ["error"],
+    "radix": ["warn"],
+    "no-delete-var": ["error"],
+    "no-shadow-restricted-names": ["error"],
+    "no-use-before-define": ["warn", {
+      "functions": false,
+      "classes": true
+    }],
+    "brace-style": ["warn", "1tbs", {
+      "allowSingleLine": true
+    }],
+    "comma-spacing": ["warn", {
+      "before": false,
+      "after": true
+    }],
+    "comma-style": ["warn", "last"],
+    "key-spacing": ["warn", {
+      "beforeColon": false,
+      "afterColon": true
+    }],
+    "keyword-spacing": ["warn", {
+      "before": true,
+      "after": true
+    }],
+    "no-mixed-spaces-and-tabs": ["warn"],
+    "no-multiple-empty-lines": ["warn", {
+      "max": 2,
+      "maxEOF": 1
+    }],
+    "no-trailing-spaces": ["warn"],
+    "space-before-blocks": ["warn", "always"],
+    "space-before-function-paren": ["warn", {
+      "anonymous": "always",
+      "named": "never",
+      "asyncArrow": "always"
+    }],
+    "space-in-parens": ["warn", "never"],
+    "space-infix-ops": ["warn"],
+    "space-unary-ops": ["warn", {
+      "words": true,
+      "nonwords": false
+    }],
+    "spaced-comment": ["warn", "always", {
+      "markers": ["!"]
+    }],
+    "arrow-spacing": ["warn", {
+      "before": true,
+      "after": true
+    }],
+    "no-var": ["off"],
+    "prefer-const": ["warn", {
+      "destructuring": "all"
+    }],
+    "object-shorthand": ["off"],
+    "prefer-arrow-callback": ["off"],
+    "prefer-template": ["off"]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.min.js"],
+      "rules": {
+        "indent": "off",
+        "no-unused-vars": "off",
+        "semi": "off",
+        "quotes": "off"
+      }
+    },
+    {
+      "files": ["tests/**/*.js"],
+      "env": {
+        "jest": true,
+        "mocha": true
+      },
+      "globals": {
+        "describe": "readonly",
+        "it": "readonly",
+        "test": "readonly",
+        "expect": "readonly",
+        "beforeEach": "readonly",
+        "afterEach": "readonly",
+        "beforeAll": "readonly",
+        "afterAll": "readonly",
+        "jest": "readonly"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "*.min.js",
+    "node_modules/",
+    "vendor/",
+    "dist/",
+    "mobile-apps/",
+    "mcp-server/"
+  ]
+}

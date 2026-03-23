@@ -222,7 +222,7 @@ class Flavor_User_Messages {
                 </div>
                 <div class="error-actions">
                     <?php if ($args['home_link']) : ?>
-                        <a href="<?php echo esc_url(home_url('/mi-portal/')); ?>" class="error-button error-button--primary">
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('', '')); ?>" class="error-button error-button--primary">
                             🏠 <?php _e('Ir a Mi Portal', 'flavor-chat-ia'); ?>
                         </a>
                     <?php endif; ?>

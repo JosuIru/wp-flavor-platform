@@ -209,7 +209,7 @@ if (!$in_dynamic_pages) {
             <!-- Enlaces rápidos -->
             <div class="mi-red-widget mi-red-widget--links">
                 <ul class="mi-red-quick-links">
-                    <li><a href="<?php echo esc_url(home_url('/mi-portal/')); ?>"><?php esc_html_e('Mi Portal', 'flavor-chat-ia'); ?></a></li>
+                    <li><a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('', '')); ?>"><?php esc_html_e('Mi Portal', 'flavor-chat-ia'); ?></a></li>
                     <li><a href="<?php echo esc_url(home_url('/red-social/')); ?>"><?php esc_html_e('Red Social', 'flavor-chat-ia'); ?></a></li>
                     <li><a href="<?php echo esc_url(home_url('/comunidades/')); ?>"><?php esc_html_e('Comunidades', 'flavor-chat-ia'); ?></a></li>
                     <li><a href="<?php echo esc_url(home_url('/foros/')); ?>"><?php esc_html_e('Foros', 'flavor-chat-ia'); ?></a></li>

@@ -64,7 +64,7 @@ foreach ($comunidades as $comunidad) {
         'titulo'          => $comunidad->nombre ?? '',
         'descripcion'     => $comunidad->descripcion ?? '',
         'imagen'          => $comunidad->imagen_portada ?? $comunidad->imagen ?? '',
-        'url'             => home_url('/mi-portal/comunidades/' . ($comunidad->id ?? 0) . '/'),
+        'url'             => add_query_arg('comunidad_id', ($comunidad->id ?? 0), Flavor_Chat_Helpers::get_action_url('comunidades', 'detalle')),
         'categoria'       => $categoria,
         'categoria_nombre'=> $categoria_nombre,
         'rol'             => $rol,
@@ -154,7 +154,7 @@ $empty_config = [
     'title'    => __('Aún no perteneces a ninguna comunidad', 'flavor-chat-ia'),
     'text'     => __('Explora las comunidades disponibles y únete a las que te interesen.', 'flavor-chat-ia'),
     'cta_text' => __('Explorar comunidades', 'flavor-chat-ia'),
-    'cta_url'  => home_url('/mi-portal/comunidades/'),
+    'cta_url'  => Flavor_Chat_Helpers::get_action_url('comunidades', ''),
     'color'    => 'teal',
 ];
 ?>
@@ -177,7 +177,7 @@ $empty_config = [
                 ?>
             </p>
         </div>
-        <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/crear/')); ?>"
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', 'crear')); ?>"
            class="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-medium transition-colors">
             <span>➕</span>
             <?php esc_html_e('Crear comunidad', 'flavor-chat-ia'); ?>
@@ -232,7 +232,7 @@ $empty_config = [
     <?php if ($compacto && count($items_preparados) > 0): ?>
     <!-- Ver más en modo compacto -->
     <div class="mt-4 text-center">
-        <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/mis-comunidades/')); ?>"
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('comunidades', 'mis-comunidades')); ?>"
            class="text-teal-600 hover:text-teal-700 font-medium inline-flex items-center gap-1">
             <?php esc_html_e('Ver todas mis comunidades', 'flavor-chat-ia'); ?>
             <span>→</span>

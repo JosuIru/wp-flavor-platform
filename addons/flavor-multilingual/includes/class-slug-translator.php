@@ -36,6 +36,13 @@ class Flavor_Slug_Translator {
     private $slug_cache = array();
 
     /**
+     * Flag que indica si hay slugs traducidos en la BD
+     *
+     * @var bool|null
+     */
+    private $has_translations = null;
+
+    /**
      * Obtiene la instancia singleton
      *
      * @return Flavor_Slug_Translator
@@ -54,14 +61,25 @@ class Flavor_Slug_Translator {
         global $wpdb;
         $this->table_slugs = $wpdb->prefix . 'flavor_translated_slugs';
 
-        // Hooks para reescritura de URLs
-        add_filter('post_link', array($this, 'filter_post_permalink'), 20, 3);
-        add_filter('page_link', array($this, 'filter_page_permalink'), 20, 3);
-        add_filter('post_type_link', array($this, 'filter_cpt_permalink'), 20, 4);
-        add_filter('term_link', array($this, 'filter_term_permalink'), 20, 3);
+        // Verificar si hay traducciones en la BD (cachear resultado en transient)
+        $this->has_translations = get_transient('flavor_ml_has_slug_translations');
+        if ($this->has_translations === false) {
+            $count = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_slugs} LIMIT 1");
+            $this->has_translations = $count > 0;
+            set_transient('flavor_ml_has_slug_translations', $this->has_translations, HOUR_IN_SECONDS);
+        }
 
-        // Hook para resolver slugs traducidos
-        add_action('parse_request', array($this, 'resolve_translated_slug'), 5);
+        // Solo activar filtros si hay traducciones
+        if ($this->has_translations) {
+            // Hooks para reescritura de URLs
+            add_filter('post_link', array($this, 'filter_post_permalink'), 20, 3);
+            add_filter('page_link', array($this, 'filter_page_permalink'), 20, 3);
+            add_filter('post_type_link', array($this, 'filter_cpt_permalink'), 20, 4);
+            add_filter('term_link', array($this, 'filter_term_permalink'), 20, 3);
+
+            // Hook para resolver slugs traducidos
+            add_action('parse_request', array($this, 'resolve_translated_slug'), 5);
+        }
 
         // Hooks admin
         if (is_admin()) {
@@ -154,6 +172,12 @@ class Flavor_Slug_Translator {
         // Limpiar cache
         $this->clear_cache($object_type, $object_id);
 
+        // Invalidar transient si es la primera traducción
+        if (!$existing_id) {
+            delete_transient('flavor_ml_has_slug_translations');
+            $this->has_translations = true;
+        }
+
         // Flush rewrite rules
         flush_rewrite_rules(false);
 
@@ -171,8 +195,15 @@ class Flavor_Slug_Translator {
     public function get_translated_slug($object_type, $object_id, $lang) {
         $cache_key = "{$object_type}_{$object_id}_{$lang}";
 
-        if (isset($this->slug_cache[$cache_key])) {
+        // Retornar desde cache (incluyendo NULL)
+        if (array_key_exists($cache_key, $this->slug_cache)) {
             return $this->slug_cache[$cache_key];
+        }
+
+        // Si no hay traducciones, no consultar
+        if (!$this->has_translations) {
+            $this->slug_cache[$cache_key] = null;
+            return null;
         }
 
         global $wpdb;
@@ -183,6 +214,7 @@ class Flavor_Slug_Translator {
             $object_type, $object_id, $lang
         ));
 
+        // Cachear resultado (incluyendo NULL)
         $this->slug_cache[$cache_key] = $slug;
 
         return $slug;

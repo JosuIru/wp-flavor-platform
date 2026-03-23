@@ -149,7 +149,7 @@ $procesos_pendientes = $wpdb->get_results($wpdb->prepare(
     </section>
 
     <div style="text-align: center; margin-top: 2rem;">
-        <a href="<?php echo esc_url(home_url('/mi-portal/justicia-restaurativa/solicitar/')); ?>" class="jr-btn jr-btn--primary">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('justicia_restaurativa', 'solicitar')); ?>" class="jr-btn jr-btn--primary">
             <span class="dashicons dashicons-plus-alt"></span>
             <?php esc_html_e('Iniciar nuevo proceso', 'flavor-chat-ia'); ?>
         </a>

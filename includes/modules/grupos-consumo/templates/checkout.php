@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="gc-checkout-error">';
     echo '<p>' . esc_html__('Debes iniciar sesión para continuar.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/checkout/'))) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'checkout'))) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Iniciar sesión', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -31,7 +31,7 @@ $entrega_id = isset($entrega_id) ? absint($entrega_id) : absint($_GET['entrega_i
 if (!$entrega_id) {
     echo '<div class="gc-checkout-error">';
     echo '<p>' . esc_html__('No se especificó una entrega válida.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')) . '" class="gc-btn gc-btn-secondary">';
+    echo '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido')) . '" class="gc-btn gc-btn-secondary">';
     echo esc_html__('Ir a mi cesta', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -69,7 +69,7 @@ if ($checkout_data['estado_pago'] === 'completado') {
     echo '<span class="dashicons dashicons-yes-alt"></span>';
     echo '<h2>' . esc_html__('Pedido ya pagado', 'flavor-chat-ia') . '</h2>';
     echo '<p>' . esc_html__('Este pedido ya ha sido pagado correctamente.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/')) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos')) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Ver mis pedidos', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -169,7 +169,7 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
                 </div>
 
                 <div class="gc-checkout-actions">
-                    <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mi-pedido/')); ?>" class="gc-btn gc-btn-secondary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido')); ?>" class="gc-btn gc-btn-secondary">
                         <?php esc_html_e('Volver a la cesta', 'flavor-chat-ia'); ?>
                     </a>
                     <button type="submit" class="gc-btn gc-btn-primary gc-btn-pay" id="gc-btn-pay">
@@ -272,7 +272,7 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
                         // Manejar acciones adicionales (ej: Stripe 3D Secure)
                         handlePaymentAction(response.data);
                     } else {
-                        window.location.href = '<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/?payment=success')); ?>';
+                        window.location.href = '<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos') . '?payment=success'); ?>';
                     }
                 } else {
                     mostrarAviso(response.data.error || '<?php echo esc_js(__('Error al procesar el pago.', 'flavor-chat-ia')); ?>', 'error');
@@ -305,7 +305,7 @@ $selected_gateway = $pasarelas[0]['id'] ?? '';
                     $btnPay.find('.gc-btn-text').show();
                     $btnPay.find('.gc-btn-loading').hide();
                 } else {
-                    window.location.href = '<?php echo esc_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/?payment=success')); ?>';
+                    window.location.href = '<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos') . '?payment=success'); ?>';
                 }
             });
         } else {

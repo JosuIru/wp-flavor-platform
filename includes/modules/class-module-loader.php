@@ -712,6 +712,10 @@ class Flavor_Chat_Module_Loader {
                 'file' => $modules_path . 'agregador-contenido/class-agregador-contenido-module.php',
                 'class' => 'Flavor_Agregador_Contenido_Module',
             ],
+            'bug_tracker' => [
+                'file' => $modules_path . 'bug-tracker/class-bug-tracker-module.php',
+                'class' => 'Flavor_Bug_Tracker_Module',
+            ],
         ];
 
         foreach ($builtin_modules as $id => $module) {
@@ -865,6 +869,11 @@ class Flavor_Chat_Module_Loader {
         // Esto evita menús/páginas "fantasma" de facturación sin libro contable.
         if (in_array('facturas', $modulos_activos, true) && !in_array('contabilidad', $modulos_activos, true)) {
             $modulos_activos[] = 'contabilidad';
+        }
+
+        // Bug Tracker siempre activo para capturar errores del sistema
+        if (!in_array('bug_tracker', $modulos_activos, true)) {
+            $modulos_activos[] = 'bug_tracker';
         }
 
         self::$active_modules_cache = $modulos_activos;

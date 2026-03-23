@@ -56,6 +56,7 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Directorio y gestion de bares, restaurantes y locales de hosteleria con carta, eventos y reservas'; // Translation loaded on init
 
         parent::__construct();
+        $this->cargar_frontend_controller();
     }
 
     /**
@@ -679,47 +680,17 @@ class Flavor_Chat_Bares_Module extends Flavor_Chat_Module_Base {
      * Renderiza el dashboard del módulo de bares
      */
     public function render_admin_dashboard() {
-        echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Bares y Hostelería', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Local', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=bares-locales&action=nuevo'), 'class' => 'button-primary'],
-        ]);
-
-        // Resumen de estadísticas
-        $resultado_estadisticas = $this->action_estadisticas([]);
-        if ($resultado_estadisticas['success'] && !empty($resultado_estadisticas['estadisticas'])) {
-            $datos = $resultado_estadisticas['estadisticas'];
-            echo '<div class="flavor-stats-grid">';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['total_bares']) . '</span><span class="stat-label">' . __('Locales Activos', 'flavor-chat-ia') . '</span></div>';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['reservas_pendientes']) . '</span><span class="stat-label">' . __('Reservas Pendientes', 'flavor-chat-ia') . '</span></div>';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['reservas_este_mes']) . '</span><span class="stat-label">' . __('Reservas Este Mes', 'flavor-chat-ia') . '</span></div>';
-            echo '<div class="flavor-stat-card"><span class="stat-number">' . esc_html($datos['valoracion_media_global']) . '</span><span class="stat-label">' . __('Valoración Media', 'flavor-chat-ia') . '</span></div>';
+        // Renderizar el dashboard completo desde el archivo de vista
+        $dashboard_view_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($dashboard_view_path)) {
+            include $dashboard_view_path;
+        } else {
+            echo '<div class="wrap flavor-modulo-page">';
+            $this->render_page_header(__('Dashboard de Bares', 'flavor-chat-ia'));
+            echo '<p>' . __('Panel de control del módulo de bares.', 'flavor-chat-ia') . '</p>';
             echo '</div>';
-
-            // Top bares
-            if (!empty($datos['top_bares'])) {
-                echo '<h3>' . __('Top Locales Mejor Valorados', 'flavor-chat-ia') . '</h3>';
-                echo '<table class="wp-list-table widefat fixed striped">';
-                echo '<thead><tr><th>' . __('Nombre', 'flavor-chat-ia') . '</th><th>' . __('Tipo', 'flavor-chat-ia') . '</th><th>' . __('Valoración', 'flavor-chat-ia') . '</th><th>' . __('Reseñas', 'flavor-chat-ia') . '</th></tr></thead>';
-                echo '<tbody>';
-                foreach ($datos['top_bares'] as $bar) {
-                    echo '<tr>';
-                    echo '<td><strong>' . esc_html($bar['nombre']) . '</strong></td>';
-                    echo '<td>' . esc_html(ucfirst($bar['tipo'])) . '</td>';
-                    echo '<td>' . esc_html(number_format($bar['valoracion_media'], 1)) . ' / 5</td>';
-                    echo '<td>' . esc_html($bar['valoraciones_count']) . '</td>';
-                    echo '</tr>';
-                }
-                echo '</tbody></table>';
-            }
         }
-
-        echo '<p>' . __('Panel de control del módulo de bares y hostelería con métricas y accesos rápidos.', 'flavor-chat-ia') . '</p>';
-        echo '</div>';
     }
-
-    /**
-     * Renderiza la página de gestión de locales
-     */
     public function render_admin_locales() {
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(__('Gestión de Locales', 'flavor-chat-ia'), [
@@ -2352,4 +2323,16 @@ KNOWLEDGE;
             Flavor_Bares_Dashboard_Tab::get_instance();
         }
     }
+
+    /**
+     * Cargar frontend controller
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-bares-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Bares_Frontend_Controller::get_instance();
+        }
+    }
+
 }

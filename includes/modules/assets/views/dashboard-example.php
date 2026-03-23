@@ -1,0 +1,233 @@
+<?php
+/**
+ * Ejemplo de Dashboard Mejorado
+ *
+ * Esta es una plantilla de ejemplo que muestra cómo usar
+ * los componentes mejorados para crear dashboards atractivos.
+ *
+ * @package FlavorChatIA
+ */
+
+if (!defined('ABSPATH')) exit;
+
+// Cargar componentes
+require_once dirname(__DIR__, 3) . '/dashboard/class-dashboard-components.php';
+$DC = 'Flavor_Dashboard_Components';
+
+// Encolar assets
+wp_enqueue_style('flavor-dashboard-enhanced', plugins_url('assets/css/dashboard-components-enhanced.css', dirname(__DIR__, 3)), [], '3.3.0');
+wp_enqueue_script('flavor-dashboard-components', plugins_url('assets/js/dashboard-components.js', dirname(__DIR__, 3)), ['jquery'], '3.3.0', true);
+
+// Datos de ejemplo (en un módulo real, estos vendrían de la BD)
+$stats_data = [
+    [
+        'value' => '1,234',
+        'label' => __('Total Recursos', 'flavor-chat-ia'),
+        'icon' => 'dashicons-admin-appearance',
+        'color' => 'primary',
+        'trend' => 'up',
+        'trend_value' => '+12%',
+        'meta' => __('vs mes anterior', 'flavor-chat-ia'),
+    ],
+    [
+        'value' => '856',
+        'label' => __('Descargas', 'flavor-chat-ia'),
+        'icon' => 'dashicons-download',
+        'color' => 'success',
+        'trend' => 'up',
+        'trend_value' => '+23%',
+    ],
+    [
+        'value' => '45',
+        'label' => __('En Uso', 'flavor-chat-ia'),
+        'icon' => 'dashicons-editor-code',
+        'color' => 'info',
+    ],
+    [
+        'value' => '98%',
+        'label' => __('Disponibilidad', 'flavor-chat-ia'),
+        'icon' => 'dashicons-yes-alt',
+        'color' => 'eco',
+        'highlight' => true,
+    ],
+];
+
+$table_data = [
+    'title' => __('Recursos Recientes', 'flavor-chat-ia'),
+    'icon' => 'dashicons-list-view',
+    'columns' => [
+        'name' => __('Nombre', 'flavor-chat-ia'),
+        'type' => __('Tipo', 'flavor-chat-ia'),
+        'size' => __('Tamaño', 'flavor-chat-ia'),
+        'downloads' => __('Descargas', 'flavor-chat-ia'),
+        'status' => __('Estado', 'flavor-chat-ia'),
+    ],
+    'data' => [
+        [
+            'name' => 'admin-common.css',
+            'type' => 'CSS',
+            'size' => '24 KB',
+            'downloads' => '1,245',
+            'status' => $DC::badge('Activo', 'success'),
+        ],
+        [
+            'name' => 'utilities.css',
+            'type' => 'CSS',
+            'size' => '18 KB',
+            'downloads' => '856',
+            'status' => $DC::badge('Activo', 'success'),
+        ],
+        [
+            'name' => 'helpers.js',
+            'type' => 'JavaScript',
+            'size' => '32 KB',
+            'downloads' => '643',
+            'status' => $DC::badge('Activo', 'success'),
+        ],
+        [
+            'name' => 'legacy-bridge.css',
+            'type' => 'CSS',
+            'size' => '12 KB',
+            'downloads' => '234',
+            'status' => $DC::badge('Deprecated', 'warning'),
+        ],
+    ],
+    'striped' => true,
+    'hoverable' => true,
+];
+?>
+
+<div class="wrap flavor-dashboard-wrap">
+
+    <!-- Header del dashboard -->
+    <div class="dm-dashboard-header">
+        <h1 class="dm-dashboard-title">
+            <span class="dashicons dashicons-media-code"></span>
+            <?php _e('Dashboard de Assets y Recursos', 'flavor-chat-ia'); ?>
+        </h1>
+        <p class="dm-dashboard-subtitle">
+            <?php _e('Gestión centralizada de recursos CSS, JS y plantillas', 'flavor-chat-ia'); ?>
+        </p>
+    </div>
+
+    <!-- Alerta informativa -->
+    <?php echo $DC::alert(
+        __('Este dashboard utiliza componentes mejorados con animaciones y mejor UX. Los datos se actualizan automáticamente.', 'flavor-chat-ia'),
+        'info',
+        true
+    ); ?>
+
+    <!-- Grid de estadísticas -->
+    <?php echo $DC::stats_grid($stats_data, 4); ?>
+
+    <!-- Secciones -->
+    <div class="dm-grid-2">
+
+        <!-- Tabla de recursos -->
+        <div>
+            <?php echo $DC::data_table($table_data); ?>
+        </div>
+
+        <!-- Sección colapsable con progreso -->
+        <div>
+            <?php
+            $progress_content = '';
+            $progress_content .= $DC::progress_bar(856, 1000, __('CSS Files', 'flavor-chat-ia'), 'primary');
+            $progress_content .= $DC::progress_bar(643, 800, __('JS Files', 'flavor-chat-ia'), 'success');
+            $progress_content .= $DC::progress_bar(234, 500, __('Templates', 'flavor-chat-ia'), 'warning');
+            $progress_content .= $DC::progress_bar(45, 50, __('Assets en Uso', 'flavor-chat-ia'), 'info');
+
+            echo $DC::section(
+                __('Uso de Recursos', 'flavor-chat-ia'),
+                $progress_content,
+                [
+                    'icon' => 'dashicons-chart-bar',
+                    'collapsible' => true,
+                ]
+            );
+            ?>
+
+            <!-- Mini chart de actividad -->
+            <?php
+            $chart_html = '<div class="dm-mb-2">';
+            $chart_html .= '<p style="font-size: 13px; color: var(--dm-text-secondary); margin-bottom: 8px;">';
+            $chart_html .= __('Descargas de los últimos 7 días', 'flavor-chat-ia');
+            $chart_html .= '</p>';
+            $chart_html .= $DC::mini_chart([45, 52, 48, 61, 58, 73, 69], 'success');
+            $chart_html .= '</div>';
+
+            echo $DC::section(
+                __('Actividad Reciente', 'flavor-chat-ia'),
+                $chart_html,
+                [
+                    'icon' => 'dashicons-chart-line',
+                ]
+            );
+            ?>
+        </div>
+    </div>
+
+    <!-- Estado vacío (ejemplo) -->
+    <?php
+    /*
+    echo $DC::empty_state(
+        __('No hay recursos disponibles', 'flavor-chat-ia'),
+        'dashicons-admin-media',
+        '<a href="#" class="button button-primary">Subir Recursos</a>'
+    );
+    */
+    ?>
+
+    <!-- Sección de ayuda -->
+    <?php
+    $help_content = '
+    <p>' . __('Este dashboard muestra las estadísticas y estado de todos los recursos compartidos del sistema:', 'flavor-chat-ia') . '</p>
+    <ul style="list-style: disc; margin-left: 20px;">
+        <li>' . __('CSS Común de Administración', 'flavor-chat-ia') . '</li>
+        <li>' . __('JavaScript Helpers', 'flavor-chat-ia') . '</li>
+        <li>' . __('Templates Compartidas', 'flavor-chat-ia') . '</li>
+        <li>' . __('Shortcodes de Utilidad', 'flavor-chat-ia') . '</li>
+    </ul>
+    ';
+
+    echo $DC::section(
+        __('Ayuda', 'flavor-chat-ia'),
+        $help_content,
+        [
+            'icon' => 'dashicons-info-outline',
+            'collapsible' => true,
+            'collapsed' => true,
+        ]
+    );
+    ?>
+
+</div>
+
+<style>
+.flavor-dashboard-wrap {
+    max-width: 1400px;
+}
+
+.dm-dashboard-header {
+    margin-bottom: 32px;
+}
+
+.dm-dashboard-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    margin: 0 0 8px;
+    color: var(--dm-text);
+}
+
+.dm-dashboard-title .dashicons {
+    color: var(--dm-primary);
+}
+
+.dm-dashboard-subtitle {
+    font-size: 15px;
+    color: var(--dm-text-secondary);
+    margin: 0;
+}
+</style>

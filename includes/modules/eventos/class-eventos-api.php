@@ -189,7 +189,7 @@ class Flavor_Eventos_API {
             'data' => [
                 'id' => $evento_id,
                 'message' => __('Evento creado correctamente', 'flavor-chat-ia'),
-                'redirect' => home_url('/mi-portal/eventos/' . $evento_id . '/'),
+                'redirect' => add_query_arg('evento_id', $evento_id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle')),
             ],
         ]);
     }
@@ -255,7 +255,7 @@ class Flavor_Eventos_API {
         wp_send_json_success([
             'id' => $evento_id,
             'message' => __('Evento creado correctamente', 'flavor-chat-ia'),
-            'redirect' => home_url('/mi-portal/eventos/' . $evento_id . '/'),
+            'redirect' => add_query_arg('evento_id', $evento_id, Flavor_Chat_Helpers::get_action_url('eventos', 'detalle')),
         ]);
     }
 

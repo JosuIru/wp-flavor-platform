@@ -864,3 +864,8 @@ add_action('wp_enqueue_scripts', function() {
     // Encolar siempre en el frontend (es ligero y necesario para módulos con estilos VBP)
     wp_enqueue_style('flavor-vbp-visual-styles');
 }, 20);
+
+// Cargar diagnóstico de performance (solo si se solicita con ?flavor_perf=1)
+if (isset($_GET['flavor_perf'])) {
+    require_once FLAVOR_CHAT_IA_PATH . 'diagnostico-performance.php';
+}

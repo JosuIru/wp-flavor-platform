@@ -151,15 +151,15 @@ class Flavor_Biodiversidad_Local_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/biodiversidad/catalogo/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad_local', 'catalogo')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar Catálogo', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/biodiversidad/nuevo-avistamiento/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad_local', 'nuevo-avistamiento')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Registrar Avistamiento', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/biodiversidad/proyectos/')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad_local', 'proyectos')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-groups"></span>
                     <?php esc_html_e('Ver Proyectos', 'flavor-chat-ia'); ?>
                 </a>
@@ -199,7 +199,7 @@ class Flavor_Biodiversidad_Local_Dashboard_Tab {
         <div class="flavor-panel flavor-avistamientos-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-visibility"></span> <?php esc_html_e('Mis Avistamientos', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/mi-portal/biodiversidad/nuevo-avistamiento/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad_local', 'nuevo-avistamiento')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?>
                 </a>
@@ -209,7 +209,7 @@ class Flavor_Biodiversidad_Local_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-visibility"></span>
                     <p><?php esc_html_e('Aún no has registrado ningún avistamiento.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/biodiversidad/nuevo-avistamiento/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('biodiversidad_local', 'nuevo-avistamiento')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Registrar mi primer avistamiento', 'flavor-chat-ia'); ?>
                     </a>
                 </div>

@@ -205,7 +205,7 @@ $tipos_labels = [
 
                     <?php if (is_user_logged_in() && $parking_data['libres'] > 0): ?>
                         <footer class="parking-card__footer">
-                            <a href="<?php echo esc_url(add_query_arg('parking', $parking_id, home_url('/mi-portal/parkings/solicitar/'))); ?>" class="btn btn-primary btn-sm">
+                            <a href="<?php echo esc_url(add_query_arg('parking', $parking_id, Flavor_Chat_Helpers::get_action_url('parkings', 'solicitar'))); ?>" class="btn btn-primary btn-sm">
                                 <?php esc_html_e('Reservar plaza', 'flavor-chat-ia'); ?>
                             </a>
                         </footer>

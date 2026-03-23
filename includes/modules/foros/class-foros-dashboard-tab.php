@@ -1303,7 +1303,7 @@ class Flavor_Foros_Dashboard_Tab {
      * Obtiene la URL de un tema
      */
     private function get_url_tema($hilo_id) {
-        return add_query_arg('tema_id', absint($hilo_id), home_url('/mi-portal/foros/'));
+        return add_query_arg('tema_id', absint($hilo_id), Flavor_Chat_Helpers::get_action_url('foros', ''));
     }
 
     // =========================================================

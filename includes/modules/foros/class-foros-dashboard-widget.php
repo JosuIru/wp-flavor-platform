@@ -178,7 +178,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'valor' => $total_temas,
             'label' => __('Temas activos', 'flavor-chat-ia'),
             'color' => 'primary',
-            'url' => $es_admin ? admin_url('admin.php?page=foros') : home_url('/mi-portal/foros/'),
+            'url' => $es_admin ? admin_url('admin.php?page=foros') : Flavor_Chat_Helpers::get_action_url('foros', ''),
         ];
 
         // Stat 2: Respuestas nuevas
@@ -188,7 +188,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $respuestas_nuevas,
                 'label' => __('Nuevas respuestas', 'flavor-chat-ia'),
                 'color' => 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=foros&filter=suscritos') : home_url('/mi-portal/foros/suscritos/'),
+                'url' => $es_admin ? admin_url('admin.php?page=foros&filter=suscritos') : Flavor_Chat_Helpers::get_action_url('foros', 'suscritos'),
             ];
         }
 
@@ -200,7 +200,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $participaciones,
                 'label' => __('Participaciones', 'flavor-chat-ia'),
                 'color' => $participaciones > 0 ? 'success' : 'gray',
-                'url' => $es_admin ? admin_url('admin.php?page=foros&filter=mios') : home_url('/mi-portal/foros/mis-temas/'),
+                'url' => $es_admin ? admin_url('admin.php?page=foros&filter=mios') : Flavor_Chat_Helpers::get_action_url('foros', 'mis-temas'),
             ];
         }
 
@@ -211,7 +211,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => __('Nuevo', 'flavor-chat-ia'),
                 'label' => __('Crear tema', 'flavor-chat-ia'),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=foros&action=nuevo') : home_url('/mi-portal/foros/nuevo/'),
+                'url' => $es_admin ? admin_url('admin.php?page=foros&action=nuevo') : Flavor_Chat_Helpers::get_action_url('foros', 'nuevo'),
             ];
         }
 
@@ -225,7 +225,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver todos los temas', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=foros') : home_url('/mi-portal/foros/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=foros') : Flavor_Chat_Helpers::get_action_url('foros', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -271,7 +271,7 @@ class Flavor_Foros_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-format-chat',
                 'title' => wp_trim_words($tema->titulo, 6, '...'),
                 'meta' => $tema->nombre_autor ?: __('Anónimo', 'flavor-chat-ia'),
-                'url' => $es_admin ? admin_url('admin.php?page=foros&tema=' . $tema->id) : add_query_arg('tema_id', $tema->id, home_url('/mi-portal/foros/')),
+                'url' => $es_admin ? admin_url('admin.php?page=foros&tema=' . $tema->id) : add_query_arg('tema_id', $tema->id, Flavor_Chat_Helpers::get_action_url('foros', '')),
                 'badge' => $total_respuestas > 0 ? $total_respuestas : null,
             ];
         }

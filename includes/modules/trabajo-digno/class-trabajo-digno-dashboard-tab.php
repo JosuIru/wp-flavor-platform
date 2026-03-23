@@ -176,15 +176,15 @@ class Flavor_Trabajo_Digno_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/trabajo-digno/ofertas/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('trabajo_digno', 'ofertas')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Ver Ofertas', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/trabajo-digno/mi-perfil/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('trabajo_digno', 'mi-perfil')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-admin-users"></span>
                     <?php esc_html_e('Mi Perfil Laboral', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/trabajo-digno/cooperativas/')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('trabajo_digno', 'cooperativas')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-groups"></span>
                     <?php esc_html_e('Cooperativas', 'flavor-chat-ia'); ?>
                 </a>
@@ -266,7 +266,7 @@ class Flavor_Trabajo_Digno_Dashboard_Tab {
                                         date_i18n(get_option('date_format'), strtotime($oferta->fecha_limite))
                                     ); ?>
                                 </span>
-                                <a href="<?php echo esc_url(home_url('/mi-portal/trabajo-digno/oferta/' . $oferta->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
+                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('trabajo_digno', 'oferta') . '/' . $oferta->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-primary">
                                     <?php esc_html_e('Ver más', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>

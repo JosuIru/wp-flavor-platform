@@ -1,6 +1,6 @@
 <?php
 /**
- * Vista Huertanos - Huertos Urbanos
+ * Vista Hortelanos - Huertos Urbanos
  *
  * @package FlavorChatIA
  */
@@ -24,7 +24,7 @@ $offset = ($pagina_actual - 1) * $por_pagina;
 // Filtros
 $filtro_huerto = isset($_GET['huerto_id']) ? intval($_GET['huerto_id']) : 0;
 $filtro_busqueda = isset($_GET['busqueda']) ? sanitize_text_field($_GET['busqueda']) : '';
-$filtro_estado = isset($_GET['estado_huertano']) ? sanitize_text_field($_GET['estado_huertano']) : '';
+$filtro_estado = isset($_GET['estado_hortelano']) ? sanitize_text_field($_GET['estado_hortelano']) : '';
 
 // Construir consulta base
 $where_clauses = ["p.estado = 'ocupada'"];
@@ -47,14 +47,14 @@ $where_sql = implode(' AND ', $where_clauses);
 // Datos reales o demo
 if ($tabla_existe) {
     // Estadísticas
-    $total_huertanos = (int) $wpdb->get_var("
+    $total_hortelanos = (int) $wpdb->get_var("
         SELECT COUNT(DISTINCT u.ID)
         FROM {$wpdb->users} u
         INNER JOIN $tabla_parcelas p ON u.ID = p.usuario_id
         WHERE p.estado = 'ocupada'
     ");
 
-    $huertanos_nuevos_mes = (int) $wpdb->get_var("
+    $hortelanos_nuevos_mes = (int) $wpdb->get_var("
         SELECT COUNT(DISTINCT u.ID)
         FROM {$wpdb->users} u
         INNER JOIN $tabla_parcelas p ON u.ID = p.usuario_id
@@ -63,9 +63,9 @@ if ($tabla_existe) {
     ");
 
     $total_parcelas_ocupadas = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_parcelas WHERE estado = 'ocupada'");
-    $promedio_parcelas = $total_huertanos > 0 ? round($total_parcelas_ocupadas / $total_huertanos, 1) : 0;
+    $promedio_parcelas = $total_hortelanos > 0 ? round($total_parcelas_ocupadas / $total_hortelanos, 1) : 0;
 
-    $huertanos_veteranos = (int) $wpdb->get_var("
+    $hortelanos_veteranos = (int) $wpdb->get_var("
         SELECT COUNT(DISTINCT u.ID)
         FROM {$wpdb->users} u
         INNER JOIN $tabla_parcelas p ON u.ID = p.usuario_id
@@ -90,7 +90,7 @@ if ($tabla_existe) {
         $total_registros = (int) $wpdb->get_var($query_count);
     }
 
-    // Obtener huertanos con paginación
+    // Obtener hortelanos con paginación
     $query = "
         SELECT u.ID, u.display_name, u.user_email, u.user_registered,
                COUNT(p.id) as total_parcelas,
@@ -106,19 +106,19 @@ if ($tabla_existe) {
     ";
 
     $query_values = array_merge($where_values, [$por_pagina, $offset]);
-    $huertanos = $wpdb->get_results($wpdb->prepare($query, $query_values));
+    $hortelanos = $wpdb->get_results($wpdb->prepare($query, $query_values));
 
-    $usar_demo = empty($huertanos) && empty($filtro_busqueda) && $filtro_huerto === 0;
+    $usar_demo = empty($hortelanos) && empty($filtro_busqueda) && $filtro_huerto === 0;
 } else {
     $usar_demo = true;
 }
 
 // Demo data
 if ($usar_demo) {
-    $total_huertanos = 45;
-    $huertanos_nuevos_mes = 3;
+    $total_hortelanos = 45;
+    $hortelanos_nuevos_mes = 3;
     $promedio_parcelas = 1.2;
-    $huertanos_veteranos = 18;
+    $hortelanos_veteranos = 18;
     $total_registros = 12;
 
     $huertos_disponibles = [
@@ -127,7 +127,7 @@ if ($usar_demo) {
         (object) ['id' => 3, 'nombre' => 'Huerto del Parque'],
     ];
 
-    $huertanos = [
+    $hortelanos = [
         (object) ['ID' => 1, 'display_name' => 'María García López', 'user_email' => 'maria.garcia@ejemplo.com', 'user_registered' => '2023-03-15', 'total_parcelas' => 2, 'primera_parcela' => '2023-04-01', 'huertos' => 'Huerto Central'],
         (object) ['ID' => 2, 'display_name' => 'Carlos Rodríguez', 'user_email' => 'carlos.r@ejemplo.com', 'user_registered' => '2022-06-20', 'total_parcelas' => 1, 'primera_parcela' => '2022-07-15', 'huertos' => 'Huerto Norte'],
         (object) ['ID' => 3, 'display_name' => 'Ana Martínez Sánchez', 'user_email' => 'ana.ms@ejemplo.com', 'user_registered' => '2024-01-10', 'total_parcelas' => 1, 'primera_parcela' => '2024-02-01', 'huertos' => 'Huerto del Parque'],
@@ -145,24 +145,24 @@ $total_paginas = ceil($total_registros / $por_pagina);
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-groups" style="color: #28a745;"></span>
-        <?php echo esc_html__('Huertanos', 'flavor-chat-ia'); ?>
+        <?php echo esc_html__('Hortelanos', 'flavor-chat-ia'); ?>
     </h1>
 
     <?php if ($usar_demo): ?>
         <div class="notice notice-info" style="margin: 15px 0;">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración. Los datos reales aparecerán cuando haya huertanos registrados.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración. Los datos reales aparecerán cuando haya hortelanos registrados.', 'flavor-chat-ia'); ?></p>
         </div>
     <?php endif; ?>
 
     <hr class="wp-header-end">
 
     <!-- Estadísticas -->
-    <div class="huertanos-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+    <div class="hortelanos-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
         <div class="stat-card" style="background: #fff; padding: 20px; border-radius: 8px; border-left: 4px solid #28a745; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <div style="font-size: 28px; font-weight: bold; color: #28a745;"><?php echo number_format($total_huertanos); ?></div>
-                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Huertanos', 'flavor-chat-ia'); ?></div>
+                    <div style="font-size: 28px; font-weight: bold; color: #28a745;"><?php echo number_format($total_hortelanos); ?></div>
+                    <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Total Hortelanos', 'flavor-chat-ia'); ?></div>
                 </div>
                 <span class="dashicons dashicons-groups" style="font-size: 36px; color: #28a745; opacity: 0.3;"></span>
             </div>
@@ -171,7 +171,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
         <div class="stat-card" style="background: #fff; padding: 20px; border-radius: 8px; border-left: 4px solid #17a2b8; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <div style="font-size: 28px; font-weight: bold; color: #17a2b8;"><?php echo number_format($huertanos_nuevos_mes); ?></div>
+                    <div style="font-size: 28px; font-weight: bold; color: #17a2b8;"><?php echo number_format($hortelanos_nuevos_mes); ?></div>
                     <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Nuevos (30 días)', 'flavor-chat-ia'); ?></div>
                 </div>
                 <span class="dashicons dashicons-plus-alt" style="font-size: 36px; color: #17a2b8; opacity: 0.3;"></span>
@@ -191,7 +191,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
         <div class="stat-card" style="background: #fff; padding: 20px; border-radius: 8px; border-left: 4px solid #6f42c1; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <div style="font-size: 28px; font-weight: bold; color: #6f42c1;"><?php echo number_format($huertanos_veteranos); ?></div>
+                    <div style="font-size: 28px; font-weight: bold; color: #6f42c1;"><?php echo number_format($hortelanos_veteranos); ?></div>
                     <div style="color: #666; font-size: 13px;"><?php echo esc_html__('Veteranos (+1 año)', 'flavor-chat-ia'); ?></div>
                 </div>
                 <span class="dashicons dashicons-awards" style="font-size: 36px; color: #6f42c1; opacity: 0.3;"></span>
@@ -202,7 +202,7 @@ $total_paginas = ceil($total_registros / $por_pagina);
     <!-- Filtros -->
     <div class="tablenav top" style="background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
         <form method="get" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-            <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? 'huertos-urbanos-huertanos'); ?>">
+            <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page'] ?? 'huertos-urbanos-hortelanos'); ?>">
 
             <div>
                 <label style="font-weight: 500; margin-right: 5px;"><?php echo esc_html__('Huerto:', 'flavor-chat-ia'); ?></label>
@@ -225,14 +225,14 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <button type="submit" class="button"><?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?></button>
 
             <?php if ($filtro_huerto > 0 || !empty($filtro_busqueda)): ?>
-                <a href="<?php echo admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'huertos-urbanos-huertanos')); ?>" class="button">
+                <a href="<?php echo admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'huertos-urbanos-hortelanos')); ?>" class="button">
                     <?php echo esc_html__('Limpiar filtros', 'flavor-chat-ia'); ?>
                 </a>
             <?php endif; ?>
         </form>
     </div>
 
-    <!-- Tabla de huertanos -->
+    <!-- Tabla de hortelanos -->
     <div style="background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden;">
         <table class="wp-list-table widefat fixed striped">
             <thead>
@@ -248,16 +248,16 @@ $total_paginas = ceil($total_registros / $por_pagina);
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($huertanos)): ?>
+                <?php if (empty($hortelanos)): ?>
                     <tr>
                         <td colspan="8" style="text-align: center; padding: 40px;">
                             <span class="dashicons dashicons-groups" style="font-size: 48px; color: #ddd;"></span>
-                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No se encontraron huertanos con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
+                            <p style="color: #666; margin-top: 10px;"><?php echo esc_html__('No se encontraron hortelanos con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
                         </td>
                     </tr>
                 <?php else: ?>
-                    <?php foreach ($huertanos as $huertano):
-                        $fecha_primera = strtotime($huertano->primera_parcela);
+                    <?php foreach ($hortelanos as $hortelano):
+                        $fecha_primera = strtotime($hortelano->primera_parcela);
                         $dias_antiguedad = floor((time() - $fecha_primera) / 86400);
 
                         if ($dias_antiguedad > 365) {
@@ -272,38 +272,38 @@ $total_paginas = ceil($total_registros / $por_pagina);
                         }
                     ?>
                         <tr>
-                            <td><strong>#<?php echo esc_html($huertano->ID); ?></strong></td>
+                            <td><strong>#<?php echo esc_html($hortelano->ID); ?></strong></td>
                             <td>
-                                <strong><?php echo esc_html($huertano->display_name); ?></strong>
+                                <strong><?php echo esc_html($hortelano->display_name); ?></strong>
                                 <?php if ($dias_antiguedad > 365): ?>
                                     <span class="dashicons dashicons-star-filled" style="color: #ffc107; font-size: 14px;" title="<?php echo esc_attr__('Huertano veterano', 'flavor-chat-ia'); ?>"></span>
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="mailto:<?php echo esc_attr($huertano->user_email); ?>">
-                                    <?php echo esc_html($huertano->user_email); ?>
+                                <a href="mailto:<?php echo esc_attr($hortelano->user_email); ?>">
+                                    <?php echo esc_html($hortelano->user_email); ?>
                                 </a>
                             </td>
                             <td>
-                                <span style="color: #28a745;"><?php echo esc_html($huertano->huertos ?: '-'); ?></span>
+                                <span style="color: #28a745;"><?php echo esc_html($hortelano->huertos ?: '-'); ?></span>
                             </td>
                             <td style="text-align: center;">
-                                <span class="huertano-parcelas" style="background: #e7f5ea; color: #28a745; padding: 4px 10px; border-radius: 12px; font-weight: 600;">
-                                    <?php echo $huertano->total_parcelas; ?>
+                                <span class="hortelano-parcelas" style="background: #e7f5ea; color: #28a745; padding: 4px 10px; border-radius: 12px; font-weight: 600;">
+                                    <?php echo $hortelano->total_parcelas; ?>
                                 </span>
                             </td>
-                            <td><?php echo date_i18n('d/m/Y', strtotime($huertano->primera_parcela)); ?></td>
+                            <td><?php echo date_i18n('d/m/Y', strtotime($hortelano->primera_parcela)); ?></td>
                             <td>
                                 <span class="antiguedad-badge antiguedad-<?php echo $antiguedad_clase; ?>">
                                     <?php echo esc_html($antiguedad_texto); ?>
                                 </span>
                             </td>
                             <td>
-                                <a href="<?php echo admin_url('user-edit.php?user_id=' . $huertano->ID); ?>"
+                                <a href="<?php echo admin_url('user-edit.php?user_id=' . $hortelano->ID); ?>"
                                    class="button button-small" title="<?php echo esc_attr__('Ver perfil', 'flavor-chat-ia'); ?>">
                                     <span class="dashicons dashicons-admin-users" style="vertical-align: text-bottom;"></span>
                                 </a>
-                                <a href="mailto:<?php echo esc_attr($huertano->user_email); ?>"
+                                <a href="mailto:<?php echo esc_attr($hortelano->user_email); ?>"
                                    class="button button-small" title="<?php echo esc_attr__('Enviar email', 'flavor-chat-ia'); ?>">
                                     <span class="dashicons dashicons-email" style="vertical-align: text-bottom;"></span>
                                 </a>
@@ -321,13 +321,13 @@ $total_paginas = ceil($total_registros / $por_pagina);
             <div class="tablenav-pages">
                 <span class="displaying-num">
                     <?php printf(
-                        esc_html__('%s huertanos', 'flavor-chat-ia'),
+                        esc_html__('%s hortelanos', 'flavor-chat-ia'),
                         number_format($total_registros)
                     ); ?>
                 </span>
                 <span class="pagination-links">
                     <?php
-                    $url_base = admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'huertos-urbanos-huertanos'));
+                    $url_base = admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'huertos-urbanos-hortelanos'));
                     if ($filtro_huerto > 0) $url_base .= '&huerto_id=' . $filtro_huerto;
                     if (!empty($filtro_busqueda)) $url_base .= '&busqueda=' . urlencode($filtro_busqueda);
 

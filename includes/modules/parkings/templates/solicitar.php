@@ -75,7 +75,7 @@ $duraciones = [
     'custom' => __('Personalizado', 'flavor-chat-ia'),
 ];
 
-$parkings_url = home_url('/mi-portal/parkings/');
+$parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
 
 // Generar nonce para el formulario
 $nonce_reserva = wp_create_nonce('parkings_solicitar_plaza');

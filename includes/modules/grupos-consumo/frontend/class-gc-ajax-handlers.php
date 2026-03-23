@@ -674,7 +674,7 @@ class Flavor_GC_Ajax_Handlers {
                     'imagen' => get_the_post_thumbnail_url($producto_id, 'medium') ?: '',
                     'en_lista' => isset($lista_compra[$producto_id]),
                     'cantidad_en_lista' => $lista_compra[$producto_id] ?? 1,
-                    'enlace' => add_query_arg('product', intval($producto_id), home_url('/mi-portal/grupos-consumo/productos/')),
+                    'enlace' => add_query_arg('product', intval($producto_id), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')),
                 ];
             }
             wp_reset_postdata();

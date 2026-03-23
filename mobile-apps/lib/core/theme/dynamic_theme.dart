@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../config/dynamic_config.dart';
 import '../config/app_config.dart';
+import 'app_colors.dart';
 
 /// Constructor de temas dinámicos basados en la configuración del servidor
 class DynamicThemeBuilder {
@@ -10,7 +11,7 @@ class DynamicThemeBuilder {
 
     final primaryColor = config.isLoaded
         ? config.primaryColor
-        : Color(AppColors.primaryValue);
+        : Color(AppColors.primary.value);
 
     final colorScheme = config.isLoaded
         ? config.buildColorScheme(brightness: Brightness.light)
@@ -90,7 +91,7 @@ class DynamicThemeBuilder {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: config.isLoaded
             ? config.secondaryColor
-            : Color(AppColors.secondaryValue),
+            : AppColors.secondary,
         foregroundColor: Colors.white,
       ),
       navigationBarTheme: NavigationBarThemeData(
@@ -152,7 +153,7 @@ class DynamicThemeBuilder {
 
     final primaryColor = config.isLoaded
         ? config.primaryColor
-        : Color(AppColors.primaryValue);
+        : Color(AppColors.primary.value);
 
     final colorScheme = config.isLoaded
         ? config.buildColorScheme(brightness: Brightness.dark)
@@ -228,7 +229,7 @@ class DynamicThemeBuilder {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: config.isLoaded
             ? config.secondaryColor
-            : Color(AppColors.secondaryValue),
+            : AppColors.secondary,
         foregroundColor: Colors.white,
       ),
       navigationBarTheme: NavigationBarThemeData(
@@ -303,5 +304,5 @@ extension DynamicColorsExtension on BuildContext {
   /// Color de éxito dinámico
   Color get successColor => dynamicConfig.isLoaded
       ? dynamicConfig.successColor
-      : Color(AppColors.successValue);
+      : const Color(0xFF22C55E); // Green success color
 }

@@ -34,7 +34,7 @@ $tema_usuario = $preferencias['tema'] ?? 'auto';
 $clase_tema = $tema_usuario === 'dark' ? 'flavor-dark fl-dark' : ($tema_usuario === 'light' ? 'flavor-light fl-light' : '');
 
 // Obtener URL actual para breadcrumbs
-$url_actual = home_url($_SERVER['REQUEST_URI'] ?? '/mi-portal/');
+$url_actual = home_url($_SERVER['REQUEST_URI'] ?? Flavor_Chat_Helpers::get_action_url('', ''));
 $nombre_pagina = get_the_title() ?: __('Mi Portal', 'flavor-chat-ia');
 ?>
 

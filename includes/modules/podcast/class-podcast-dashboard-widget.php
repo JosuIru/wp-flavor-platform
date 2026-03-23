@@ -77,7 +77,7 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $total_episodios,
                 'label' => __('Episodios', 'flavor-chat-ia'),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=podcast') : home_url('/mi-portal/podcast/'),
+                'url' => $es_admin ? admin_url('admin.php?page=podcast') : Flavor_Chat_Helpers::get_action_url('podcast', ''),
             ],
         ];
 
@@ -87,7 +87,7 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => __('Nuevo', 'flavor-chat-ia'),
                 'label' => wp_trim_words($ultimo_episodio->titulo, 3, '...'),
                 'color' => 'success',
-                'url' => $es_admin ? admin_url('admin.php?page=podcast&id=' . $ultimo_episodio->id) : home_url('/mi-portal/podcast/episodio/' . $ultimo_episodio->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=podcast&id=' . $ultimo_episodio->id) : Flavor_Chat_Helpers::get_action_url('podcast', 'episodio') . '/' . $ultimo_episodio->id . '/',
             ];
         }
 
@@ -100,7 +100,7 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver todos', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=podcast') : home_url('/mi-portal/podcast/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=podcast') : Flavor_Chat_Helpers::get_action_url('podcast', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -137,7 +137,7 @@ class Flavor_Podcast_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-controls-play',
                 'title' => wp_trim_words($episodio->titulo, 5, '...'),
                 'meta' => $duracion ?: date_i18n('j M', strtotime($episodio->fecha_publicacion)),
-                'url' => $es_admin ? admin_url('admin.php?page=podcast&id=' . $episodio->id) : home_url('/mi-portal/podcast/episodio/' . $episodio->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=podcast&id=' . $episodio->id) : Flavor_Chat_Helpers::get_action_url('podcast', 'episodio') . '/' . $episodio->id . '/',
             ];
         }
 

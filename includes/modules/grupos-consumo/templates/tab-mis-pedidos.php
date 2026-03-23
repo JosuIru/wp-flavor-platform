@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="gc-pedidos-login">';
     echo '<p>' . esc_html__('Inicia sesión para ver tus pedidos.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/mis-pedidos/'))) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mis-pedidos'))) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Iniciar sesión', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -63,7 +63,7 @@ if ($payment_status === 'success') {
     <div class="gc-pedidos-empty">
         <span class="dashicons dashicons-clipboard"></span>
         <p><?php esc_html_e('Aún no tienes ningún pedido.', 'flavor-chat-ia'); ?></p>
-        <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
             <?php esc_html_e('Ver productos', 'flavor-chat-ia'); ?>
         </a>
     </div>
@@ -179,7 +179,7 @@ if ($payment_status === 'success') {
 
                 <div class="gc-pedido-actions">
                     <?php if ($entrega->estado_pago === 'pendiente') : ?>
-                    <a href="<?php echo esc_url(add_query_arg('entrega_id', $entrega->id, home_url('/mi-portal/grupos-consumo/checkout/'))); ?>"
+                    <a href="<?php echo esc_url(add_query_arg('entrega_id', $entrega->id, Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'checkout'))); ?>"
                        class="gc-btn gc-btn-primary gc-btn-sm">
                         <?php esc_html_e('Pagar ahora', 'flavor-chat-ia'); ?>
                     </a>

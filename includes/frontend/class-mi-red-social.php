@@ -461,14 +461,14 @@ class Flavor_Mi_Red_Social {
                 'id' => $usuario_id,
                 'nombre' => $usuario->display_name,
                 'avatar' => get_avatar_url($usuario_id, ['size' => 96]),
-                'perfil_url' => home_url('/mi-portal/mi-red/perfil/'),
+                'perfil_url' => Flavor_Chat_Helpers::get_action_url('mi_red', 'perfil'),
             ],
             'vista_actual' => $this->current_view,
             'vistas' => $this->views,
             'content_types' => $this->content_types,
             'notificaciones_no_leidas' => $this->get_unread_notifications_count($usuario_id),
             'mensajes_no_leidos' => $this->get_unread_messages_count($usuario_id),
-            'base_url' => home_url('/mi-portal/mi-red/'),
+            'base_url' => Flavor_Chat_Helpers::get_action_url('mi_red', ''),
         ];
     }
 
@@ -1493,7 +1493,7 @@ class Flavor_Mi_Red_Social {
                     'inscritos' => (int) ($evento->inscritos_count ?? 0),
                 ],
                 'fecha' => $evento->fecha_inicio,
-                'url' => home_url('/mi-portal/eventos/ver/' . $evento->id . '/'),
+                'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'ver') . '/' . $evento->id . '/',
             ]);
         }
 
@@ -1537,7 +1537,7 @@ class Flavor_Mi_Red_Social {
                         'estado' => $inscripcion->estado ?? 'confirmado',
                     ],
                     'fecha' => $inscripcion->fecha_inicio,
-                    'url' => home_url('/mi-portal/eventos/ver/' . $inscripcion->evento_id . '/'),
+                    'url' => Flavor_Chat_Helpers::get_action_url('eventos', 'ver') . '/' . $inscripcion->evento_id . '/',
                 ]);
             }
         }
@@ -1617,7 +1617,7 @@ class Flavor_Mi_Red_Social {
                     'pedidos' => $total_pedidos,
                 ],
                 'fecha' => $membresia->fecha_alta ?? $grupo->post_date,
-                'url' => add_query_arg('grupo_id', $grupo_id, home_url('/mi-portal/grupos-consumo/')),
+                'url' => add_query_arg('grupo_id', $grupo_id, Flavor_Chat_Helpers::get_action_url('grupos_consumo', '')),
             ]);
         }
 
@@ -1771,7 +1771,7 @@ class Flavor_Mi_Red_Social {
 
         foreach ($sugerencias as &$sug) {
             $sug['avatar'] = get_avatar_url($sug['ID'], ['size' => 48]);
-            $sug['url'] = home_url('/mi-portal/mi-red/perfil/?id=' . $sug['ID']);
+            $sug['url'] = Flavor_Chat_Helpers::get_action_url('mi_red', 'perfil') . '?id=' . $sug['ID'];
         }
 
         return $sugerencias;
@@ -2176,7 +2176,7 @@ class Flavor_Mi_Red_Social {
 
         foreach ($resultados['usuarios'] as &$usuario) {
             $usuario['avatar'] = get_avatar_url($usuario['ID'], ['size' => 48]);
-            $usuario['url'] = home_url('/mi-portal/mi-red/perfil/' . $usuario['ID'] . '/');
+            $usuario['url'] = Flavor_Chat_Helpers::get_action_url('mi_red', 'perfil') . '/' . $usuario['ID'] . '/';
         }
 
         // 2. Buscar publicaciones

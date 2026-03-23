@@ -26,6 +26,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
         $this->description = 'Integración con WooCommerce: carrito, productos, pedidos y más.'; // Translation loaded on init
 
         parent::__construct();
+        $this->cargar_frontend_controller();
     }
 
     /**
@@ -1349,6 +1350,7 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             'icon' => 'dashicons-cart',
             'capability' => 'manage_woocommerce',
             'categoria' => 'economia',
+            'admin_quick_links_auto' => true,
             'paginas' => [
                 [
                     'slug' => 'flavor-woocommerce-dashboard',
@@ -1627,4 +1629,16 @@ class Flavor_Chat_WooCommerce_Module extends Flavor_Chat_Module_Base {
             Flavor_Woocommerce_Dashboard_Tab::get_instance();
         }
     }
+
+    /**
+     * Cargar frontend controller
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-woocommerce-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Woocommerce_Frontend_Controller::get_instance();
+        }
+    }
+
 }

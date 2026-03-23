@@ -488,7 +488,8 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
             'display_role' => $this->get_display_ecosystem_role(),
             'display_role_label' => $this->get_display_ecosystem_role_label(),
             'depends_on' => array_values(array_unique(array_filter((array) $this->get_dependencies()))),
-            'supports_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_supports_modules))),
+            'ecosystem_supports_modules' => array_values(array_unique(array_filter((array) $this->get_ecosystem_supports_modules_dynamic()))),
+            'supports_modules' => array_values(array_unique(array_filter((array) $this->get_ecosystem_supports_modules_dynamic()))),
             'measures_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_measures_modules))),
             'governs_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_governs_modules))),
             'teaches_modules' => array_values(array_unique(array_filter((array) $this->ecosystem_teaches_modules))),
@@ -496,7 +497,88 @@ abstract class Flavor_Chat_Module_Base implements Flavor_Chat_Module_Interface {
             // Principios Gailu
             'gailu_principios' => array_values(array_unique(array_filter((array) $this->gailu_principios))),
             'gailu_contribuye_a' => array_values(array_unique(array_filter((array) $this->gailu_contribuye_a))),
+            // Metadata dashboard
+            'dashboard_parent_module' => $this->dashboard_parent_module,
+            'dashboard_satellite_priority' => $this->dashboard_satellite_priority,
+            'dashboard_client_contexts' => $this->dashboard_client_contexts,
+            'dashboard_admin_contexts' => $this->dashboard_admin_contexts,
         ];
+    }
+
+    /**
+     * Obtiene los módulos soportados dinámicamente (BD o código).
+     *
+     * Lee primero desde la base de datos (configuración dinámica),
+     * luego desde el contexto específico, y finalmente usa el fallback del código.
+     *
+     * @param string $context Contexto específico (ej: 'comunidad_123'). Por defecto 'global'.
+     * @return array IDs de módulos soportados
+     */
+    protected function get_ecosystem_supports_modules_dynamic($context = '') {
+        global $wpdb;
+
+        // Determinar contexto
+        if (empty($context)) {
+            $context = $this->get_current_context();
+        }
+
+        // Intentar obtener desde BD para contexto específico
+        if (!empty($context) && $context !== 'global') {
+            $table = $wpdb->prefix . 'flavor_module_relations';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$table'") === $table) {
+                $relaciones = $wpdb->get_col($wpdb->prepare(
+                    "SELECT child_module_id
+                     FROM $table
+                     WHERE parent_module_id = %s AND context = %s AND enabled = 1
+                     ORDER BY priority ASC",
+                    $this->id,
+                    $context
+                ));
+
+                if (!empty($relaciones)) {
+                    return $relaciones;
+                }
+            }
+        }
+
+        // Intentar obtener desde BD para contexto global
+        $table = $wpdb->prefix . 'flavor_module_relations';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table'") === $table) {
+            $relaciones = $wpdb->get_col($wpdb->prepare(
+                "SELECT child_module_id
+                 FROM $table
+                 WHERE parent_module_id = %s AND context = 'global' AND enabled = 1
+                 ORDER BY priority ASC",
+                $this->id
+            ));
+
+            if (!empty($relaciones)) {
+                return $relaciones;
+            }
+        }
+
+        // Fallback: devolver configuración hardcoded
+        return (array) $this->ecosystem_supports_modules;
+    }
+
+    /**
+     * Obtiene el contexto actual (global o específico de comunidad/entidad).
+     *
+     * @return string
+     */
+    protected function get_current_context() {
+        // Si hay un contexto específico en query params
+        if (!empty($_GET['context'])) {
+            return sanitize_text_field($_GET['context']);
+        }
+
+        // Si hay un contexto de comunidad activa en sesión
+        if (!empty($_SESSION['flavor_current_comunidad_id'])) {
+            return 'comunidad_' . intval($_SESSION['flavor_current_comunidad_id']);
+        }
+
+        // Por defecto, global
+        return 'global';
     }
 
     /**

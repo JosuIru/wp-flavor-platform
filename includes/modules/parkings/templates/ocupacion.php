@@ -57,7 +57,7 @@ $porcentaje_general = $total_plazas_general > 0
     ? round(($total_ocupadas_general / $total_plazas_general) * 100)
     : 0;
 
-$parkings_base_url = home_url('/mi-portal/parkings/');
+$parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
 
 /**
  * Determina el color según el porcentaje de ocupación

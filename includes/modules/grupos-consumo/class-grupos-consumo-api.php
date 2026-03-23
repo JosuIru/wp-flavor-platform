@@ -1367,7 +1367,7 @@ class Flavor_Grupos_Consumo_API {
                 ],
                 'imagen' => $imagen_url ?: null,
                 'cantidad_productos' => (int) $cantidad_productos,
-                'url' => add_query_arg('productor', intval($productor->ID), home_url('/mi-portal/grupos-consumo/productores-cercanos/')),
+                'url' => add_query_arg('productor', intval($productor->ID), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productores-cercanos')),
                 'entrega_disponible' => true, // Siempre true porque solo devolvemos los que pueden entregar
             ];
         }
@@ -1451,7 +1451,7 @@ class Flavor_Grupos_Consumo_API {
                     'email' => get_post_meta($post->ID, '_gc_contacto_email', true),
                 ],
                 'imagen' => get_the_post_thumbnail_url($post->ID, 'medium'),
-                'url' => add_query_arg('productor', intval($post->ID), home_url('/mi-portal/grupos-consumo/productores-cercanos/')),
+                'url' => add_query_arg('productor', intval($post->ID), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productores-cercanos')),
             ];
         }
 

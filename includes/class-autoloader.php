@@ -76,6 +76,7 @@ class Flavor_Autoloader {
         // Sistema de licencias
         'Flavor_License_Plans' => 'licensing/class-license-plans.php',
         'Flavor_License_Manager' => 'licensing/class-license-manager.php',
+        'Flavor_Plugin_Updater' => 'licensing/class-plugin-updater.php',
     ];
 
     /**

@@ -12,6 +12,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+$admin_page_chrome_file = dirname(dirname(__FILE__)) . '/admin/class-admin-page-chrome.php';
+if (!class_exists('Flavor_Admin_Page_Chrome') && file_exists($admin_page_chrome_file)) {
+    require_once $admin_page_chrome_file;
+}
+
 class Flavor_Deep_Link_Manager {
 
     /**
@@ -419,27 +424,35 @@ class Flavor_Deep_Link_Manager {
      * Encola assets del admin
      */
     public function enqueue_admin_assets($hook) {
-        if ('flavor-chat-ia_page_flavor-deep-links' !== $hook) {
+        $current_page = isset($_GET['page']) ? sanitize_key((string) $_GET['page']) : '';
+        $matches_page = ($current_page === 'flavor-deep-links');
+        $matches_hook = is_string($hook) && strpos($hook, 'page_flavor-deep-links') !== false;
+
+        if (!$matches_page && !$matches_hook) {
             return;
         }
 
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('wp-color-picker');
+        wp_enqueue_media();
 
-        $sufijo_asset = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
+        $style_path = FLAVOR_CHAT_IA_PATH . 'includes/app-integration/assets/deep-links-admin.css';
+        $script_path = FLAVOR_CHAT_IA_PATH . 'includes/app-integration/assets/deep-links-admin.js';
+        $style_version = file_exists($style_path) ? (string) filemtime($style_path) : FLAVOR_CHAT_IA_VERSION;
+        $script_version = file_exists($script_path) ? (string) filemtime($script_path) : FLAVOR_CHAT_IA_VERSION;
 
         wp_enqueue_style(
             'flavor-deep-links-admin',
-            plugins_url("assets/css/deep-links-admin{$sufijo_asset}.css", dirname(dirname(__FILE__))),
+            FLAVOR_CHAT_IA_URL . 'includes/app-integration/assets/deep-links-admin.css',
             [],
-            '1.0.0'
+            $style_version
         );
 
         wp_enqueue_script(
             'flavor-deep-links-admin',
-            plugins_url("assets/js/deep-links-admin{$sufijo_asset}.js", dirname(dirname(__FILE__))),
+            FLAVOR_CHAT_IA_URL . 'includes/app-integration/assets/deep-links-admin.js',
             ['jquery', 'wp-color-picker'],
-            '1.0.0',
+            $script_version,
             true
         );
 
@@ -447,6 +460,16 @@ class Flavor_Deep_Link_Manager {
             'apiUrl' => rest_url(self::API_NAMESPACE),
             'nonce' => wp_create_nonce('wp_rest'),
             'i18n' => [
+                'addCompany' => __('Nueva Empresa', 'flavor-chat-ia'),
+                'editCompany' => __('Editar Empresa', 'flavor-chat-ia'),
+                'save' => __('Guardar', 'flavor-chat-ia'),
+                'saving' => __('Guardando...', 'flavor-chat-ia'),
+                'cancel' => __('Cancelar', 'flavor-chat-ia'),
+                'saved' => __('Configuración guardada correctamente', 'flavor-chat-ia'),
+                'deleted' => __('Configuración eliminada correctamente', 'flavor-chat-ia'),
+                'generatedLinks' => __('Enlaces Generados', 'flavor-chat-ia'),
+                'selectLogo' => __('Seleccionar Logo', 'flavor-chat-ia'),
+                'useThisImage' => __('Usar esta imagen', 'flavor-chat-ia'),
                 'confirmDelete' => __('¿Estás seguro de eliminar esta configuración?', 'flavor-chat-ia'),
                 'copied' => __('¡Copiado!', 'flavor-chat-ia'),
                 'error' => __('Error', 'flavor-chat-ia'),

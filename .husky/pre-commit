@@ -1,0 +1,169 @@
+#!/bin/sh
+# =============================================================================
+# pre-commit hook para Flavor Platform
+#
+# Este hook se ejecuta antes de cada commit y realiza:
+# - Lint de archivos JavaScript
+# - Lint de archivos CSS
+# - Lint de archivos PHP
+# - Tests rapidos
+# - Verificacion de formato
+#
+# @package FlavorPlatform
+# @since 3.3.0
+# =============================================================================
+
+. "$(dirname "$0")/_/husky.sh"
+
+# Colores para mensajes
+COLOR_RESET='\033[0m'
+COLOR_VERDE='\033[0;32m'
+COLOR_AMARILLO='\033[0;33m'
+COLOR_ROJO='\033[0;31m'
+COLOR_CYAN='\033[0;36m'
+
+echo ""
+echo -e "${COLOR_CYAN}========================================${COLOR_RESET}"
+echo -e "${COLOR_CYAN}  Flavor Platform - Pre-commit Check${COLOR_RESET}"
+echo -e "${COLOR_CYAN}========================================${COLOR_RESET}"
+echo ""
+
+# Obtener lista de archivos staged
+ARCHIVOS_JS_STAGED=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(js)$' | grep -v '\.min\.js$' || true)
+ARCHIVOS_CSS_STAGED=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(css)$' | grep -v '\.min\.css$' || true)
+ARCHIVOS_PHP_STAGED=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(php)$' || true)
+
+ERRORES=0
+
+# =============================================================================
+# Lint JavaScript
+# =============================================================================
+if [ -n "${ARCHIVOS_JS_STAGED}" ]; then
+    echo -e "${COLOR_CYAN}[LINT]${COLOR_RESET} Verificando archivos JavaScript..."
+
+    # Ejecutar ESLint si esta disponible
+    if command -v npx &> /dev/null && [ -f "node_modules/.bin/eslint" ]; then
+        for ARCHIVO in ${ARCHIVOS_JS_STAGED}; do
+            if [ -f "${ARCHIVO}" ]; then
+                if ! npx eslint "${ARCHIVO}" --quiet 2>/dev/null; then
+                    echo -e "${COLOR_ROJO}[ERROR]${COLOR_RESET} ESLint fallo en: ${ARCHIVO}"
+                    ERRORES=$((ERRORES + 1))
+                fi
+            fi
+        done
+
+        if [ ${ERRORES} -eq 0 ]; then
+            echo -e "${COLOR_VERDE}[OK]${COLOR_RESET} JavaScript lint completado"
+        fi
+    else
+        echo -e "${COLOR_AMARILLO}[WARN]${COLOR_RESET} ESLint no disponible, omitiendo lint JS"
+    fi
+fi
+
+# =============================================================================
+# Lint CSS
+# =============================================================================
+if [ -n "${ARCHIVOS_CSS_STAGED}" ]; then
+    echo -e "${COLOR_CYAN}[LINT]${COLOR_RESET} Verificando archivos CSS..."
+
+    # Ejecutar Stylelint si esta disponible
+    if command -v npx &> /dev/null && [ -f "node_modules/.bin/stylelint" ]; then
+        for ARCHIVO in ${ARCHIVOS_CSS_STAGED}; do
+            if [ -f "${ARCHIVO}" ]; then
+                if ! npx stylelint "${ARCHIVO}" --quiet 2>/dev/null; then
+                    echo -e "${COLOR_ROJO}[ERROR]${COLOR_RESET} Stylelint fallo en: ${ARCHIVO}"
+                    ERRORES=$((ERRORES + 1))
+                fi
+            fi
+        done
+
+        if [ ${ERRORES} -eq 0 ]; then
+            echo -e "${COLOR_VERDE}[OK]${COLOR_RESET} CSS lint completado"
+        fi
+    else
+        echo -e "${COLOR_AMARILLO}[WARN]${COLOR_RESET} Stylelint no disponible, omitiendo lint CSS"
+    fi
+fi
+
+# =============================================================================
+# Lint PHP
+# =============================================================================
+if [ -n "${ARCHIVOS_PHP_STAGED}" ]; then
+    echo -e "${COLOR_CYAN}[LINT]${COLOR_RESET} Verificando archivos PHP..."
+
+    # Verificar sintaxis PHP
+    for ARCHIVO in ${ARCHIVOS_PHP_STAGED}; do
+        if [ -f "${ARCHIVO}" ]; then
+            if ! php -l "${ARCHIVO}" > /dev/null 2>&1; then
+                echo -e "${COLOR_ROJO}[ERROR]${COLOR_RESET} Error de sintaxis PHP en: ${ARCHIVO}"
+                ERRORES=$((ERRORES + 1))
+            fi
+        fi
+    done
+
+    # Ejecutar PHP_CodeSniffer si esta disponible
+    if command -v ./vendor/bin/phpcs &> /dev/null; then
+        for ARCHIVO in ${ARCHIVOS_PHP_STAGED}; do
+            if [ -f "${ARCHIVO}" ]; then
+                if ! ./vendor/bin/phpcs --standard=WordPress "${ARCHIVO}" -q 2>/dev/null; then
+                    echo -e "${COLOR_AMARILLO}[WARN]${COLOR_RESET} PHPCS advertencias en: ${ARCHIVO}"
+                fi
+            fi
+        done
+    fi
+
+    if [ ${ERRORES} -eq 0 ]; then
+        echo -e "${COLOR_VERDE}[OK]${COLOR_RESET} PHP lint completado"
+    fi
+fi
+
+# =============================================================================
+# Verificaciones adicionales
+# =============================================================================
+
+# Verificar que no se commitean archivos sensibles
+ARCHIVOS_SENSIBLES=$(git diff --cached --name-only | grep -E '\.(env|env\.local|config\.local\.php)$' || true)
+if [ -n "${ARCHIVOS_SENSIBLES}" ]; then
+    echo -e "${COLOR_ROJO}[ERROR]${COLOR_RESET} Intentando commitear archivos sensibles:"
+    echo "${ARCHIVOS_SENSIBLES}"
+    ERRORES=$((ERRORES + 1))
+fi
+
+# Verificar que no hay console.log en codigo de produccion
+for ARCHIVO in ${ARCHIVOS_JS_STAGED}; do
+    if [ -f "${ARCHIVO}" ]; then
+        if grep -n "console\.log" "${ARCHIVO}" | grep -v "// eslint-disable" > /dev/null 2>&1; then
+            echo -e "${COLOR_AMARILLO}[WARN]${COLOR_RESET} console.log encontrado en: ${ARCHIVO}"
+        fi
+    fi
+done
+
+# Verificar que no hay var_dump o print_r en PHP
+for ARCHIVO in ${ARCHIVOS_PHP_STAGED}; do
+    if [ -f "${ARCHIVO}" ]; then
+        if grep -nE "(var_dump|print_r|error_log)\s*\(" "${ARCHIVO}" | grep -v "// debug" > /dev/null 2>&1; then
+            echo -e "${COLOR_AMARILLO}[WARN]${COLOR_RESET} Funciones de debug encontradas en: ${ARCHIVO}"
+        fi
+    fi
+done
+
+# =============================================================================
+# Resumen
+# =============================================================================
+echo ""
+if [ ${ERRORES} -gt 0 ]; then
+    echo -e "${COLOR_ROJO}========================================${COLOR_RESET}"
+    echo -e "${COLOR_ROJO}  Pre-commit fallido con ${ERRORES} error(es)${COLOR_RESET}"
+    echo -e "${COLOR_ROJO}========================================${COLOR_RESET}"
+    echo ""
+    echo "Corrige los errores antes de hacer commit."
+    echo "Usa 'git commit --no-verify' para omitir (no recomendado)."
+    echo ""
+    exit 1
+else
+    echo -e "${COLOR_VERDE}========================================${COLOR_RESET}"
+    echo -e "${COLOR_VERDE}  Pre-commit completado exitosamente${COLOR_RESET}"
+    echo -e "${COLOR_VERDE}========================================${COLOR_RESET}"
+    echo ""
+    exit 0
+fi

@@ -227,7 +227,7 @@ class Flavor_Module_Menu_Manager {
             ],
             [
                 'title' => __('Mi Portal', 'flavor-chat-ia'),
-                'url' => home_url('/mi-portal/'),
+                'url' => Flavor_Chat_Helpers::get_action_url('', ''),
                 'order' => 2,
                 'icon' => '👤',
                 'require_login' => true,

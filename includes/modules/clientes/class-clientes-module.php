@@ -2412,6 +2412,29 @@ KNOWLEDGE;
 
 
     /**
+     * Crea las tablas del módulo si no existen
+     *
+     * @return void
+     */
+    public function maybe_create_tables() {
+        $db_version_key = 'flavor_clientes_db_version';
+        $db_version = get_option($db_version_key, '');
+
+        if ($db_version === '1.0.0') {
+            return; // Ya instaladas
+        }
+
+        $install_path = dirname(__FILE__) . '/install.php';
+        if (file_exists($install_path)) {
+            require_once $install_path;
+
+            if (function_exists('flavor_clientes_crear_tablas')) {
+                flavor_clientes_crear_tablas();
+            }
+        }
+    }
+
+    /**
      * Inicializa el dashboard tab del módulo
      */
     private function inicializar_dashboard_tab() {

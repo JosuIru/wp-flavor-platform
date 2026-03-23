@@ -543,7 +543,7 @@ class Flavor_Cursos_Dashboard_Tab {
                 </div>
 
                 <div class="flavor-panel-footer">
-                    <a href="<?php echo esc_url(home_url('/mi-portal/cursos/')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('cursos', '')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php esc_html_e('Ver todos mis cursos', 'flavor-chat-ia'); ?>
                     </a>
                 </div>

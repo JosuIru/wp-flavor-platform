@@ -57,7 +57,7 @@ $dones_recibidos = $wpdb->get_results($wpdb->prepare(
 
     <!-- Botón ofrecer -->
     <div style="text-align: center; margin-bottom: 2rem;">
-        <a href="<?php echo esc_url(home_url('/mi-portal/economia-don/ofrecer/')); ?>" class="ed-btn-publicar">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="ed-btn-publicar">
             <span class="dashicons dashicons-heart"></span>
             <?php esc_html_e('Ofrecer un nuevo don', 'flavor-chat-ia'); ?>
         </a>

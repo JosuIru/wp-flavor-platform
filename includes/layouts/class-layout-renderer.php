@@ -1013,7 +1013,7 @@ class Flavor_Layout_Renderer {
 
         // Mi Portal (siempre visible)
         $links[] = [
-            'url'   => home_url('/mi-portal/'),
+            'url'   => Flavor_Chat_Helpers::get_action_url('', ''),
             'label' => __('Mi Portal', 'flavor-chat-ia'),
             'icon'  => 'dashicons-dashboard',
         ];
@@ -1023,7 +1023,7 @@ class Flavor_Layout_Renderer {
         $tiene_social = !empty(array_intersect($modulos_sociales, $active_modules));
         if ($tiene_social) {
             $links[] = [
-                'url'   => home_url('/mi-portal/mi-red/'),
+                'url'   => Flavor_Chat_Helpers::get_action_url('mi_red', ''),
                 'label' => __('Mi Red Social', 'flavor-chat-ia'),
                 'icon'  => 'dashicons-share',
             ];
@@ -1033,7 +1033,7 @@ class Flavor_Layout_Renderer {
         if (in_array('chat_interno', $active_modules, true) || in_array('chat_grupos', $active_modules, true)) {
             $mensajes_no_leidos = $this->contar_mensajes_no_leidos($user->ID);
             $links[] = [
-                'url'   => home_url('/mi-portal/mensajes/'),
+                'url'   => Flavor_Chat_Helpers::get_action_url('mensajes', ''),
                 'label' => __('Mis Mensajes', 'flavor-chat-ia'),
                 'icon'  => 'dashicons-email',
                 'badge' => $mensajes_no_leidos > 0 ? $mensajes_no_leidos : null,
@@ -1043,7 +1043,7 @@ class Flavor_Layout_Renderer {
         // Notificaciones
         $notificaciones_no_leidas = $this->contar_notificaciones_no_leidas($user->ID);
         $links[] = [
-            'url'   => home_url('/mi-portal/notificaciones/'),
+            'url'   => Flavor_Chat_Helpers::get_action_url('notificaciones', ''),
             'label' => __('Notificaciones', 'flavor-chat-ia'),
             'icon'  => 'dashicons-bell',
             'badge' => $notificaciones_no_leidas > 0 ? $notificaciones_no_leidas : null,
@@ -1083,14 +1083,14 @@ class Flavor_Layout_Renderer {
 
         // Mi Perfil
         $links[] = [
-            'url'   => home_url('/mi-portal/perfil/'),
+            'url'   => Flavor_Chat_Helpers::get_action_url('perfil', ''),
             'label' => __('Mi Perfil', 'flavor-chat-ia'),
             'icon'  => 'dashicons-admin-users',
         ];
 
         // Configuración
         $links[] = [
-            'url'   => home_url('/mi-portal/configuracion/'),
+            'url'   => Flavor_Chat_Helpers::get_action_url('configuracion', ''),
             'label' => __('Configuración', 'flavor-chat-ia'),
             'icon'  => 'dashicons-admin-generic',
         ];

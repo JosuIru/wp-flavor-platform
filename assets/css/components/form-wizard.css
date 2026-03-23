@@ -1,0 +1,329 @@
+/**
+ * Form Wizard Component Styles
+ *
+ * Estilos para el componente de formularios multi-paso.
+ *
+ * @package FlavorChatIA
+ * @since 3.3.0
+ */
+
+/* Contenedor de progreso */
+.wizard-progress {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+/* Barra de progreso */
+.wizard-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.wizard-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2d5016, #4a7c23);
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+/* Texto de progreso */
+.wizard-progress-text {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.wizard-current-step {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d5016;
+}
+
+/* Pasos del wizard */
+.wizard-step {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Título de paso */
+.wizard-step h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 8px 0;
+}
+
+.wizard-step p.step-description {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 24px 0;
+}
+
+/* Grupos de campos dentro de pasos */
+.wizard-step .form-group {
+    margin-bottom: 20px;
+}
+
+.wizard-step .form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.wizard-step .form-group input,
+.wizard-step .form-group select,
+.wizard-step .form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.wizard-step .form-group input:focus,
+.wizard-step .form-group select:focus,
+.wizard-step .form-group textarea:focus {
+    outline: none;
+    border-color: #2d5016;
+    box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.1);
+}
+
+/* Inputs con error */
+.wizard-step .form-group input.error,
+.wizard-step .form-group select.error,
+.wizard-step .form-group textarea.error {
+    border-color: #dc3545;
+}
+
+/* Mensajes de error */
+.wizard-error {
+    display: block;
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 6px;
+    padding: 8px 12px;
+    background: #ffe6e6;
+    border-radius: 4px;
+    border-left: 3px solid #dc3545;
+}
+
+/* Navegación del wizard */
+.wizard-navigation {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.wizard-navigation .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wizard-navigation .button .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-top: -2px;
+}
+
+/* Botón Anterior */
+.wizard-btn-prev {
+    background: #fff;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.wizard-btn-prev:hover {
+    background: #f5f5f5;
+    color: #333;
+    border-color: #bbb;
+}
+
+/* Botón Siguiente */
+.wizard-btn-next {
+    background: #2d5016;
+    color: #fff;
+    border-color: #2d5016;
+    margin-left: auto;
+}
+
+.wizard-btn-next:hover {
+    background: #3d6b20;
+    border-color: #3d6b20;
+    color: #fff;
+}
+
+/* Botón Finalizar */
+.wizard-btn-submit {
+    background: #28a745;
+    color: #fff;
+    border-color: #28a745;
+    margin-left: auto;
+}
+
+.wizard-btn-submit:hover {
+    background: #218838;
+    border-color: #218838;
+    color: #fff;
+}
+
+/* Grid de dos columnas para campos */
+.wizard-step .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Grid de tres columnas para campos */
+.wizard-step .form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Helper text */
+.wizard-step .form-help {
+    font-size: 13px;
+    color: #666;
+    margin-top: 6px;
+}
+
+/* Sección de resumen en último paso */
+.wizard-summary {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.wizard-summary h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 12px 0;
+}
+
+.wizard-summary dl {
+    margin: 0;
+}
+
+.wizard-summary dt {
+    font-weight: 500;
+    color: #666;
+    margin-top: 8px;
+}
+
+.wizard-summary dd {
+    margin: 4px 0 0 0;
+    color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .wizard-step .form-grid-2,
+    .wizard-step .form-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .wizard-navigation {
+        flex-direction: column;
+    }
+
+    .wizard-navigation .button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .wizard-btn-next,
+    .wizard-btn-submit {
+        margin-left: 0;
+        order: -1; /* Poner siguiente/finalizar arriba en móvil */
+    }
+
+    .wizard-progress {
+        padding: 15px;
+    }
+}
+
+/* Estados de carga */
+.wizard-navigation .button.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.wizard-navigation .button.loading::after {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.6s linear infinite;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Checkboxes y radios dentro del wizard */
+.wizard-step .form-group-checkbox,
+.wizard-step .form-group-radio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wizard-step .form-group-checkbox input,
+.wizard-step .form-group-radio input {
+    width: auto;
+}
+
+/* Indicadores de paso completado */
+.wizard-step.completed::before {
+    content: "✓";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}

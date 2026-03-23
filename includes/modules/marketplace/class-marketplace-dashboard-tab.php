@@ -125,11 +125,11 @@ class Flavor_Marketplace_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/publicar/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Publicar Anuncio', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', '')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar', 'flavor-chat-ia'); ?>
                 </a>
@@ -160,7 +160,7 @@ class Flavor_Marketplace_Dashboard_Tab {
         <div class="flavor-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-megaphone"></span> <?php esc_html_e('Mis Anuncios', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/publicar/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?>
                 </a>
@@ -170,7 +170,7 @@ class Flavor_Marketplace_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-megaphone"></span>
                     <p><?php esc_html_e('No has publicado ningún anuncio.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/publicar/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'publicar')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Publicar mi primer anuncio', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -201,10 +201,10 @@ class Flavor_Marketplace_Dashboard_Tab {
                                 </p>
                             </div>
                             <div class="flavor-card-footer">
-                                <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/detalle/?anuncio_id=' . $anuncio->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $anuncio->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                                 </a>
-                                <a href="<?php echo esc_url(add_query_arg(['tab' => 'publicar', 'editar' => $anuncio->id], home_url('/mi-portal/marketplace/'))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
+                                <a href="<?php echo esc_url(add_query_arg(['tab' => 'publicar', 'editar' => $anuncio->id], Flavor_Chat_Helpers::get_action_url('marketplace', ''))); ?>" class="flavor-btn flavor-btn-sm flavor-btn-secondary">
                                     <?php esc_html_e('Editar', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
@@ -248,7 +248,7 @@ class Flavor_Marketplace_Dashboard_Tab {
                 <div class="flavor-empty-state">
                     <span class="dashicons dashicons-heart"></span>
                     <p><?php esc_html_e('No tienes anuncios favoritos.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', '')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar marketplace', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -268,7 +268,7 @@ class Flavor_Marketplace_Dashboard_Tab {
                                 <?php endif; ?>
                             </div>
                             <div class="flavor-card-footer">
-                                <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/detalle/?anuncio_id=' . $anuncio->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('marketplace', 'detalle') . '?anuncio_id=' . $anuncio->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>

@@ -132,7 +132,7 @@ $prioridades_config = [
 ];
 
 // URL base para los detalles
-$avisos_base_url = home_url('/mi-portal/avisos/');
+$avisos_base_url = Flavor_Chat_Helpers::get_action_url('avisos_municipales', '');
 $url_actual = strtok($_SERVER['REQUEST_URI'], '?');
 ?>
 

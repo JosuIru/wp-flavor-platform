@@ -303,7 +303,7 @@ class EventosCrudService extends CrudService<Evento> with EventosCrudMixin<Event
   @override
   Future<bool> inscribirse(String eventoId) async {
     try {
-      await _apiClient.post('/flavor-app/v2/eventos/$eventoId/inscribir');
+      await apiClient.post('/flavor-app/v2/eventos/$eventoId/inscribir');
 
       // Actualizar cache
       final evento = await getById(eventoId);
@@ -313,9 +313,9 @@ class EventosCrudService extends CrudService<Evento> with EventosCrudMixin<Event
           'esta_inscrito': true,
           'inscritos': evento.inscritos + 1,
         });
-        _cache[eventoId] = actualizado;
+        cache[eventoId] = actualizado;
 
-        _notifyListeners(CrudEvent(
+        notifyListeners(CrudEvent(
           type: CrudEventType.updated,
           item: actualizado,
         ));
@@ -332,7 +332,7 @@ class EventosCrudService extends CrudService<Evento> with EventosCrudMixin<Event
   @override
   Future<bool> cancelarInscripcion(String eventoId) async {
     try {
-      await _apiClient.delete('/flavor-app/v2/eventos/$eventoId/inscripcion');
+      await apiClient.delete('/flavor-app/v2/eventos/$eventoId/inscripcion');
 
       // Actualizar cache
       final evento = await getById(eventoId);
@@ -342,9 +342,9 @@ class EventosCrudService extends CrudService<Evento> with EventosCrudMixin<Event
           'esta_inscrito': false,
           'inscritos': evento.inscritos > 0 ? evento.inscritos - 1 : 0,
         });
-        _cache[eventoId] = actualizado;
+        cache[eventoId] = actualizado;
 
-        _notifyListeners(CrudEvent(
+        notifyListeners(CrudEvent(
           type: CrudEventType.updated,
           item: actualizado,
         ));
@@ -360,11 +360,11 @@ class EventosCrudService extends CrudService<Evento> with EventosCrudMixin<Event
   /// Obtener inscripciones de un evento (solo organizadores)
   Future<List<InscripcionEvento>> getInscripciones(String eventoId) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/eventos/$eventoId/inscripciones',
       );
 
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => InscripcionEvento.fromJson(json)).toList();
     } catch (e) {
       debugPrint('[EventosCrudService] Error obteniendo inscripciones: $e');
@@ -375,7 +375,7 @@ class EventosCrudService extends CrudService<Evento> with EventosCrudMixin<Event
   /// Marcar asistencia
   Future<bool> marcarAsistencia(String eventoId, String inscripcionId, bool asistio) async {
     try {
-      await _apiClient.patch(
+      await apiClient.patch(
         '/flavor-app/v2/eventos/$eventoId/inscripciones/$inscripcionId',
         data: {'asistio': asistio},
       );

@@ -188,61 +188,28 @@ class Flavor_Dashboard_Manager {
      * Renderizar página de dashboard
      */
     public function render_dashboard_page() {
+        $target_url = admin_url('admin.php?page=flavor-dashboard');
+
+        if (class_exists('Flavor_Chat_Helpers')) {
+            Flavor_Chat_Helpers::safe_redirect($target_url);
+            exit;
+        }
+
+        if (!headers_sent()) {
+            wp_safe_redirect($target_url);
+            exit;
+        }
+
         ?>
         <div class="wrap flavor-dashboard-wrap">
-            <header class="flavor-dashboard-header">
-                <div class="flavor-dashboard-header-content">
-                    <h1>
-                        <span class="dashicons dashicons-superhero"></span>
-                        Flavor Chat IA
-                    </h1>
-                    <p class="flavor-dashboard-subtitle">Panel de Control</p>
-                </div>
-                <div class="flavor-dashboard-header-actions">
-                    <button type="button" class="button" id="flavor-customize-dashboard">
-                        <span class="dashicons dashicons-admin-generic"></span>
-                        Personalizar
-                    </button>
-                    <a href="<?php echo admin_url('admin.php?page=flavor-chat-config'); ?>" class="button button-primary">
-                        <span class="dashicons dashicons-admin-settings"></span>
-                        Configuración
+            <h1><?php esc_html_e('Inicio', 'flavor-chat-ia'); ?></h1>
+            <div class="notice notice-info">
+                <p><?php esc_html_e('Esta pantalla legacy de dashboard ha sido absorbida por la portada principal del admin.', 'flavor-chat-ia'); ?></p>
+                <p>
+                    <a href="<?php echo esc_url($target_url); ?>" class="button button-primary">
+                        <?php esc_html_e('Ir a Inicio', 'flavor-chat-ia'); ?>
                     </a>
-                </div>
-            </header>
-
-            <div class="flavor-dashboard-grid" id="flavor-dashboard-grid">
-                <!-- Widgets se cargan dinámicamente -->
-                <div class="flavor-dashboard-loading">
-                    <span class="spinner is-active"></span>
-                    <p>Cargando dashboard...</p>
-                </div>
-            </div>
-
-            <!-- Modal de personalización -->
-            <div class="flavor-dashboard-modal" id="flavor-customize-modal" style="display: none;">
-                <div class="flavor-dashboard-modal-content">
-                    <div class="flavor-dashboard-modal-header">
-                        <h2>Personalizar Dashboard</h2>
-                        <button type="button" class="flavor-dashboard-modal-close">&times;</button>
-                    </div>
-                    <div class="flavor-dashboard-modal-body">
-                        <div class="flavor-widget-categories">
-                            <button class="active" data-category="all">Todos</button>
-                            <button data-category="analytics">Analíticas</button>
-                            <button data-category="activity">Actividad</button>
-                            <button data-category="content">Contenido</button>
-                            <button data-category="system">Sistema</button>
-                            <button data-category="tools">Herramientas</button>
-                        </div>
-                        <div class="flavor-available-widgets" id="flavor-available-widgets">
-                            <!-- Widgets disponibles -->
-                        </div>
-                    </div>
-                    <div class="flavor-dashboard-modal-footer">
-                        <button type="button" class="button" id="flavor-reset-layout">Restablecer</button>
-                        <button type="button" class="button button-primary" id="flavor-save-layout">Guardar</button>
-                    </div>
-                </div>
+                </p>
             </div>
         </div>
         <?php

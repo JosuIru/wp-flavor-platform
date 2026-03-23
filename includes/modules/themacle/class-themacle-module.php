@@ -26,6 +26,7 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
         $this->name = 'Themacle Web Components'; // Translation loaded on init
         $this->description = 'Componentes web universales reutilizables para construir cualquier tipo de web'; // Translation loaded on init
         parent::__construct();
+        $this->cargar_frontend_controller();
     }
 
     /**
@@ -327,62 +328,17 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
      * Renderiza el dashboard de Themacle
      */
     public function render_admin_dashboard() {
-        echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Themacle', 'flavor-chat-ia'), [
-            ['label' => __('Ver Documentación', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-secondary'],
-        ]);
-
-        $componentes_web = $this->get_web_components();
-        $categorias_agrupadas = [];
-        foreach ($componentes_web as $identificador_componente => $datos_componente) {
-            $categoria = $datos_componente['category'] ?? 'otros';
-            if (!isset($categorias_agrupadas[$categoria])) {
-                $categorias_agrupadas[$categoria] = [];
-            }
-            $categorias_agrupadas[$categoria][$identificador_componente] = $datos_componente;
+        // Renderizar el dashboard completo desde el archivo de vista
+        $dashboard_view_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($dashboard_view_path)) {
+            include $dashboard_view_path;
+        } else {
+            echo '<div class="wrap flavor-modulo-page">';
+            $this->render_page_header(__('Dashboard de Themacle', 'flavor-chat-ia'));
+            echo '<p>' . __('Panel de control del módulo de themacle.', 'flavor-chat-ia') . '</p>';
+            echo '</div>';
         }
-
-        // Estadísticas rápidas
-        echo '<div class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . count($componentes_web) . '</span><span class="stat-label">' . __('Total Componentes', 'flavor-chat-ia') . '</span></div>';
-        echo '<div class="flavor-stat-card"><span class="stat-number">' . count($categorias_agrupadas) . '</span><span class="stat-label">' . __('Categorías', 'flavor-chat-ia') . '</span></div>';
-        echo '</div>';
-
-        // Listado de componentes por categoría
-        echo '<h2>' . __('Componentes Web Disponibles', 'flavor-chat-ia') . '</h2>';
-
-        $nombres_categorias = [
-            'hero' => __('Heroes', 'flavor-chat-ia'),
-            'content' => __('Contenido', 'flavor-chat-ia'),
-            'listings' => __('Listados', 'flavor-chat-ia'),
-            'features' => __('Características', 'flavor-chat-ia'),
-            'cta' => __('CTA', 'flavor-chat-ia'),
-            'navigation' => __('Navegación', 'flavor-chat-ia'),
-            'otros' => __('Otros', 'flavor-chat-ia'),
-        ];
-
-        foreach ($categorias_agrupadas as $categoria_slug => $lista_componentes) {
-            $nombre_categoria = $nombres_categorias[$categoria_slug] ?? ucfirst($categoria_slug);
-            echo '<h3>' . esc_html($nombre_categoria) . ' (' . count($lista_componentes) . ')</h3>';
-            echo '<table class="wp-list-table widefat fixed striped">';
-            echo '<thead><tr><th>' . __('Componente', 'flavor-chat-ia') . '</th><th>' . __('Descripción', 'flavor-chat-ia') . '</th><th>' . __('Template', 'flavor-chat-ia') . '</th></tr></thead>';
-            echo '<tbody>';
-            foreach ($lista_componentes as $identificador => $datos_componente_item) {
-                echo '<tr>';
-                echo '<td><span class="dashicons ' . esc_attr($datos_componente_item['icon'] ?? 'dashicons-admin-generic') . '"></span> <strong>' . esc_html($datos_componente_item['label']) . '</strong></td>';
-                echo '<td>' . esc_html($datos_componente_item['description']) . '</td>';
-                echo '<td><code>' . esc_html($datos_componente_item['template'] ?? '-') . '</code></td>';
-                echo '</tr>';
-            }
-            echo '</tbody></table>';
-        }
-
-        echo '</div>';
     }
-
-    /**
-     * Renderiza la página de gestión de temas
-     */
     public function render_admin_temas() {
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(__('Gestión de Temas', 'flavor-chat-ia'));
@@ -1335,4 +1291,16 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
             ],
         ];
     }
+
+    /**
+     * Cargar frontend controller
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-themacle-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Themacle_Frontend_Controller::get_instance();
+        }
+    }
+
 }

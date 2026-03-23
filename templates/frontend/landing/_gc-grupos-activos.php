@@ -107,7 +107,7 @@ if (!function_exists('gc_contar_miembros')) {
             </div>
 
             <div class="flavor-section-footer">
-                <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/')); ?>" class="flavor-btn flavor-btn--outline">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', '')); ?>" class="flavor-btn flavor-btn--outline">
                     <?php _e('Ver todos los grupos', 'flavor-chat-ia'); ?>
                     <span class="dashicons dashicons-arrow-right-alt"></span>
                 </a>

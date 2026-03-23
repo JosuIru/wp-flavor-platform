@@ -176,11 +176,11 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/suficiencia/nuevo-compromiso/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'nuevo-compromiso')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-flag"></span>
                     <?php esc_html_e('Nuevo Compromiso', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/suficiencia/biblioteca/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'biblioteca')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-book"></span>
                     <?php esc_html_e('Biblioteca', 'flavor-chat-ia'); ?>
                 </a>
@@ -214,7 +214,7 @@ class Flavor_Economia_Suficiencia_Dashboard_Tab {
         <div class="flavor-panel flavor-recursos-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-portfolio"></span> <?php esc_html_e('Mis Recursos', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/mi-portal/suficiencia/nuevo-recurso/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_suficiencia', 'nuevo-recurso')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Añadir', 'flavor-chat-ia'); ?>
                 </a>

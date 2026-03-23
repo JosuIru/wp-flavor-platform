@@ -1,6 +1,7 @@
 <?php
 /**
- * Dashboard del módulo Agregador de Contenido
+ * Dashboard Admin MEJORADO - Agregador de Contenido
+ * Con widgets de datos en vivo de módulos relacionados
  *
  * @package Flavor_Chat_IA
  */
@@ -24,12 +25,361 @@ $fuentes = get_posts(
         'post_status'    => 'publish',
     )
 );
+
+// ==================== WIDGETS DE DATOS EN VIVO ====================
+$modulos_relacionados = [];
+$active_modules = get_option('flavor_active_modules', []);
+global $wpdb;
+
+// 1. Multimedia - Galería de medios
+if (in_array('multimedia', $active_modules)) {
+    $tabla_multimedia = $wpdb->prefix . 'flavor_multimedia_items';
+    $tabla_multimedia_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_multimedia'") === $tabla_multimedia;
+
+    if ($tabla_multimedia_existe) {
+        $multimedia_recientes = $wpdb->get_results(
+            "SELECT id, titulo, tipo, fecha_publicacion
+             FROM $tabla_multimedia
+             WHERE estado = 'publicado'
+             ORDER BY fecha_publicacion DESC
+             LIMIT 3"
+        );
+
+        if (!empty($multimedia_recientes)) {
+            ob_start();
+            ?>
+            <div class="dm-widget-card">
+                <div class="dm-widget-header">
+                    <span class="dm-widget-icon">🎬</span>
+                    <h4><?php esc_html_e('Multimedia', 'flavor-chat-ia'); ?></h4>
+                </div>
+                <div class="dm-widget-items">
+                    <?php foreach ($multimedia_recientes as $item): ?>
+                    <div class="dm-widget-item">
+                        <div class="dm-widget-item-title"><?php echo esc_html($item->titulo); ?></div>
+                        <div class="dm-widget-item-meta">
+                            <span class="dm-badge dm-badge--purple"><?php echo esc_html(ucfirst($item->tipo)); ?></span>
+                            <span><?php echo esc_html(date_i18n('d/m/Y', strtotime($item->fecha_publicacion))); ?></span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php
+            $modulos_relacionados['multimedia'] = ob_get_clean();
+        }
+    }
+}
+
+// 2. Podcast - Episodios de audio
+if (in_array('podcast', $active_modules)) {
+    $tabla_podcast = $wpdb->prefix . 'flavor_podcast_episodios';
+    $tabla_podcast_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_podcast'") === $tabla_podcast;
+
+    if ($tabla_podcast_existe) {
+        $episodios_recientes = $wpdb->get_results(
+            "SELECT id, titulo, numero, duracion, fecha_publicacion
+             FROM $tabla_podcast
+             WHERE estado = 'publicado'
+             ORDER BY fecha_publicacion DESC
+             LIMIT 3"
+        );
+
+        if (!empty($episodios_recientes)) {
+            ob_start();
+            ?>
+            <div class="dm-widget-card">
+                <div class="dm-widget-header">
+                    <span class="dm-widget-icon">🎙️</span>
+                    <h4><?php esc_html_e('Podcast', 'flavor-chat-ia'); ?></h4>
+                </div>
+                <div class="dm-widget-items">
+                    <?php foreach ($episodios_recientes as $item): ?>
+                    <div class="dm-widget-item">
+                        <div class="dm-widget-item-title"><?php echo esc_html($item->titulo); ?></div>
+                        <div class="dm-widget-item-meta">
+                            <span class="dm-badge dm-badge--info">Ep. <?php echo number_format_i18n($item->numero ?? 0); ?></span>
+                            <span><?php echo number_format_i18n($item->duracion ?? 0); ?> min</span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php
+            $modulos_relacionados['podcast'] = ob_get_clean();
+        }
+    }
+}
+
+// 3. Radio - Programas de radio
+if (in_array('radio', $active_modules)) {
+    $tabla_radio = $wpdb->prefix . 'flavor_radio_programas';
+    $tabla_radio_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_radio'") === $tabla_radio;
+
+    if ($tabla_radio_existe) {
+        $programas_recientes = $wpdb->get_results(
+            "SELECT id, nombre, categoria, horario, created_at
+             FROM $tabla_radio
+             WHERE estado = 'activo'
+             ORDER BY created_at DESC
+             LIMIT 3"
+        );
+
+        if (!empty($programas_recientes)) {
+            ob_start();
+            ?>
+            <div class="dm-widget-card">
+                <div class="dm-widget-header">
+                    <span class="dm-widget-icon">📻</span>
+                    <h4><?php esc_html_e('Radio', 'flavor-chat-ia'); ?></h4>
+                </div>
+                <div class="dm-widget-items">
+                    <?php foreach ($programas_recientes as $item): ?>
+                    <div class="dm-widget-item">
+                        <div class="dm-widget-item-title"><?php echo esc_html($item->nombre); ?></div>
+                        <div class="dm-widget-item-meta">
+                            <span class="dm-badge dm-badge--warning"><?php echo esc_html($item->categoria ?? 'Programa'); ?></span>
+                            <span><?php echo esc_html($item->horario ?? ''); ?></span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php
+            $modulos_relacionados['radio'] = ob_get_clean();
+        }
+    }
+}
+
+// 4. Eventos - Eventos comunitarios que generan noticias
+if (in_array('eventos', $active_modules)) {
+    $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+    $tabla_eventos_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_eventos'") === $tabla_eventos;
+
+    if ($tabla_eventos_existe) {
+        $eventos_proximos = $wpdb->get_results(
+            "SELECT id, titulo, categoria, fecha_inicio
+             FROM $tabla_eventos
+             WHERE estado = 'publicado'
+             AND fecha_inicio >= CURDATE()
+             ORDER BY fecha_inicio ASC
+             LIMIT 3"
+        );
+
+        if (!empty($eventos_proximos)) {
+            ob_start();
+            ?>
+            <div class="dm-widget-card">
+                <div class="dm-widget-header">
+                    <span class="dm-widget-icon">📅</span>
+                    <h4><?php esc_html_e('Eventos', 'flavor-chat-ia'); ?></h4>
+                </div>
+                <div class="dm-widget-items">
+                    <?php foreach ($eventos_proximos as $item): ?>
+                    <div class="dm-widget-item">
+                        <div class="dm-widget-item-title"><?php echo esc_html($item->titulo); ?></div>
+                        <div class="dm-widget-item-meta">
+                            <span class="dm-badge dm-badge--primary"><?php echo esc_html($item->categoria ?? 'Evento'); ?></span>
+                            <span><?php echo esc_html(date_i18n('d/m/Y', strtotime($item->fecha_inicio))); ?></span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php
+            $modulos_relacionados['eventos'] = ob_get_clean();
+        }
+    }
+}
+
+// 5. Comunidades - Grupos que generan contenido
+if (in_array('comunidades', $active_modules)) {
+    $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+    $tabla_comunidades_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_comunidades'") === $tabla_comunidades;
+
+    if ($tabla_comunidades_existe) {
+        $comunidades_activas = $wpdb->get_results(
+            "SELECT id, nombre, tipo, num_miembros, created_at
+             FROM $tabla_comunidades
+             WHERE estado = 'activa'
+             ORDER BY created_at DESC
+             LIMIT 3"
+        );
+
+        if (!empty($comunidades_activas)) {
+            ob_start();
+            ?>
+            <div class="dm-widget-card">
+                <div class="dm-widget-header">
+                    <span class="dm-widget-icon">🏘️</span>
+                    <h4><?php esc_html_e('Comunidades', 'flavor-chat-ia'); ?></h4>
+                </div>
+                <div class="dm-widget-items">
+                    <?php foreach ($comunidades_activas as $item): ?>
+                    <div class="dm-widget-item">
+                        <div class="dm-widget-item-title"><?php echo esc_html($item->nombre); ?></div>
+                        <div class="dm-widget-item-meta">
+                            <span class="dm-badge dm-badge--success"><?php echo esc_html(ucfirst($item->tipo ?? 'comunidad')); ?></span>
+                            <span>👥 <?php echo number_format_i18n($item->num_miembros ?? 0); ?></span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php
+            $modulos_relacionados['comunidades'] = ob_get_clean();
+        }
+    }
+}
+
+// 6. Foros - Debates sobre noticias
+if (in_array('foros', $active_modules)) {
+    $tabla_foros = $wpdb->prefix . 'flavor_foros_hilos';
+    $tabla_foros_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_foros'") === $tabla_foros;
+
+    if ($tabla_foros_existe) {
+        $hilos_recientes = $wpdb->get_results(
+            "SELECT id, titulo, num_respuestas, fecha_creacion
+             FROM $tabla_foros
+             WHERE estado = 'abierto'
+             ORDER BY fecha_creacion DESC
+             LIMIT 3"
+        );
+
+        if (!empty($hilos_recientes)) {
+            ob_start();
+            ?>
+            <div class="dm-widget-card">
+                <div class="dm-widget-header">
+                    <span class="dm-widget-icon">💬</span>
+                    <h4><?php esc_html_e('Foros', 'flavor-chat-ia'); ?></h4>
+                </div>
+                <div class="dm-widget-items">
+                    <?php foreach ($hilos_recientes as $item): ?>
+                    <div class="dm-widget-item">
+                        <div class="dm-widget-item-title"><?php echo esc_html($item->titulo); ?></div>
+                        <div class="dm-widget-item-meta">
+                            <span class="dm-badge dm-badge--info"><?php echo number_format_i18n($item->num_respuestas ?? 0); ?> resp.</span>
+                            <span><?php echo esc_html(human_time_diff(strtotime($item->fecha_creacion), current_time('timestamp'))); ?></span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php
+            $modulos_relacionados['foros'] = ob_get_clean();
+        }
+    }
+}
 ?>
+
+<style>
+.dm-widgets-relacionados {
+    margin: 0 0 32px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid #a78bfa;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+}
+.dm-widgets-relacionados h2 {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.dm-widgets-relacionados h2 span {
+    font-size: 24px;
+}
+.dm-widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+.dm-widget-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+.dm-widget-card:hover {
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.15);
+    transform: translateY(-2px);
+}
+.dm-widget-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f3f4f6;
+}
+.dm-widget-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+.dm-widget-header h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+.dm-widget-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.dm-widget-item {
+    padding: 8px 0;
+}
+.dm-widget-item:not(:last-child) {
+    border-bottom: 1px solid #f3f4f6;
+}
+.dm-widget-item-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.dm-widget-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #6b7280;
+}
+.dm-widget-item-meta .dm-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+}
+</style>
+
 <div class="wrap flavor-admin-page">
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-rss" style="margin-right: 10px;"></span>
         <?php esc_html_e( 'Agregador de Contenido Comunitario', 'flavor-chat-ia' ); ?>
     </h1>
+
+    <?php if (!empty($modulos_relacionados)): ?>
+    <!-- WIDGETS DE DATOS EN VIVO -->
+    <div class="dm-widgets-relacionados" style="margin-top: 20px;">
+        <h2><span>🔗</span> <?php esc_html_e('Actividad en Módulos Relacionados', 'flavor-chat-ia'); ?></h2>
+        <div class="dm-widgets-grid">
+            <?php foreach ($modulos_relacionados as $widget_html): ?>
+                <?php echo $widget_html; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <nav class="nav-tab-wrapper">
         <a href="?page=flavor-agregador&tab=overview"

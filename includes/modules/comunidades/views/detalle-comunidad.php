@@ -60,7 +60,7 @@ $es_admin = ($rol_usuario === 'admin' || $rol_usuario === 'fundador');
 
             <div class="flavor-com-detalle-acciones">
                 <?php if (!$identificador_usuario): ?>
-                    <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/comunidades/'))); ?>" class="flavor-com-boton flavor-com-boton-primario">
+                    <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('comunidades', ''))); ?>" class="flavor-com-boton flavor-com-boton-primario">
                         <?php esc_html_e('Inicia sesion para unirte', 'flavor-chat-ia'); ?>
                     </a>
                 <?php elseif ($es_miembro): ?>

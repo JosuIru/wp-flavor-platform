@@ -120,7 +120,7 @@ $prioridad_colores = [
     'baja' => '#10b981',
 ];
 
-$tramites_base_url = home_url('/mi-portal/tramites/');
+$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 $current_url = $tramites_base_url . 'pendientes/';
 ?>
 

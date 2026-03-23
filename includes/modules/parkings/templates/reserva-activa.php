@@ -80,7 +80,7 @@ if (!$reserva_activa) {
                 <span class="widget-titulo"><?php echo esc_html($proxima_reserva->parking_nombre); ?></span>
                 <span class="widget-fecha"><?php echo date_i18n('d M, H:i', strtotime($proxima_reserva->fecha_inicio)); ?></span>
             </div>
-            <a href="<?php echo esc_url(home_url('/mi-portal/parkings/mis-reservas/')); ?>" class="widget-btn">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('parkings', 'mis-reservas')); ?>" class="widget-btn">
                 <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
             </a>
         </div>
@@ -114,7 +114,7 @@ $iconos_tipo = [
     'grande' => '🚐',
 ];
 
-$parkings_url = home_url('/mi-portal/parkings/');
+$parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
 ?>
 
 <div class="reserva-activa-card reserva-activa-card--<?php echo esc_attr($urgencia_tiempo); ?>">

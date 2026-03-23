@@ -44,7 +44,7 @@ $parkings = $wpdb->get_results("
 ");
 
 // URL base para parkings
-$parkings_base_url = home_url('/mi-portal/parkings/');
+$parkings_base_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
 
 // Preparar datos para JS
 $parkings_json = [];

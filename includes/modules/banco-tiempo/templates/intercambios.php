@@ -232,7 +232,7 @@ $historial = $wpdb->get_results($wpdb->prepare(
         <div class="fl-empty-state">
             <span class="dashicons dashicons-randomize"></span>
             <p><?php esc_html_e('No tienes intercambios activos. ¡Explora los servicios disponibles!', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/')); ?>" class="fl-btn fl-btn-outline">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', '')); ?>" class="fl-btn fl-btn-outline">
                 <?php esc_html_e('Ver servicios', 'flavor-chat-ia'); ?>
             </a>
         </div>

@@ -116,7 +116,7 @@ foreach ($expedientes as $exp) {
 }
 
 // URL base
-$tramites_base_url = home_url('/mi-portal/tramites/');
+$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 ?>
 
 <div class="tramites-listado-wrapper">

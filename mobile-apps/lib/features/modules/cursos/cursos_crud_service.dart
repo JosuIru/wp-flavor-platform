@@ -296,7 +296,7 @@ class CursosCrudService extends CrudService<Curso> {
   /// Matricularse en un curso
   Future<bool> matricularse(String cursoId) async {
     try {
-      await _apiClient.post('/flavor-app/v2/cursos/$cursoId/matricular');
+      await apiClient.post('/flavor-app/v2/cursos/$cursoId/matricular');
 
       // Actualizar cache
       final curso = await getById(cursoId);
@@ -307,8 +307,8 @@ class CursosCrudService extends CrudService<Curso> {
           'matriculados': curso.matriculados + 1,
           'progreso': 0.0,
         });
-        _cache[cursoId] = actualizado;
-        _notifyListeners(CrudEvent(type: CrudEventType.updated, item: actualizado));
+        cache[cursoId] = actualizado;
+        notifyListeners(CrudEvent(type: CrudEventType.updated, item: actualizado));
       }
 
       return true;
@@ -321,11 +321,11 @@ class CursosCrudService extends CrudService<Curso> {
   /// Obtener contenido del curso (módulos y lecciones)
   Future<List<ModuloCurso>> getContenido(String cursoId) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/cursos/$cursoId/contenido',
       );
 
-      final List<dynamic> data = response.data['modulos'] ?? response.data;
+      final List<dynamic> data = response.data?['modulos'] ?? response.data;
       return data.map((json) => ModuloCurso.fromJson(json)).toList();
     } catch (e) {
       debugPrint('[CursosCrudService] Error obteniendo contenido: $e');
@@ -336,7 +336,7 @@ class CursosCrudService extends CrudService<Curso> {
   /// Obtener detalle de una lección
   Future<Map<String, dynamic>?> getLeccion(String cursoId, String leccionId) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/cursos/$cursoId/lecciones/$leccionId',
       );
       return response.data;
@@ -349,7 +349,7 @@ class CursosCrudService extends CrudService<Curso> {
   /// Marcar lección como completada
   Future<bool> completarLeccion(String cursoId, String leccionId) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/cursos/$cursoId/lecciones/$leccionId/completar',
       );
 
@@ -370,7 +370,7 @@ class CursosCrudService extends CrudService<Curso> {
     int segundosVistos,
   ) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/cursos/$cursoId/lecciones/$leccionId/progreso',
         data: {'segundos_vistos': segundosVistos},
       );
@@ -388,7 +388,7 @@ class CursosCrudService extends CrudService<Curso> {
     Map<String, dynamic> respuestas,
   ) async {
     try {
-      final response = await _apiClient.post(
+      final response = await apiClient.post(
         '/flavor-app/v2/cursos/$cursoId/lecciones/$leccionId/quiz',
         data: {'respuestas': respuestas},
       );
@@ -402,7 +402,7 @@ class CursosCrudService extends CrudService<Curso> {
   /// Valorar curso
   Future<bool> valorar(String cursoId, int valoracion, String? comentario) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/cursos/$cursoId/valorar',
         data: {
           'valoracion': valoracion,
@@ -419,10 +419,10 @@ class CursosCrudService extends CrudService<Curso> {
   /// Obtener certificado
   Future<String?> getCertificado(String cursoId) async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/cursos/$cursoId/certificado',
       );
-      return response.data['url'];
+      return response.data?['url'];
     } catch (e) {
       debugPrint('[CursosCrudService] Error obteniendo certificado: $e');
       return null;
@@ -432,8 +432,8 @@ class CursosCrudService extends CrudService<Curso> {
   /// Obtener categorías de cursos
   Future<List<Map<String, dynamic>>> getCategorias() async {
     try {
-      final response = await _apiClient.get('/flavor-app/v2/cursos/categorias');
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final response = await apiClient.get('/flavor-app/v2/cursos/categorias');
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => Map<String, dynamic>.from(json)).toList();
     } catch (e) {
       debugPrint('[CursosCrudService] Error obteniendo categorías: $e');

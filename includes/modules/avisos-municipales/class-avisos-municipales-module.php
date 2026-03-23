@@ -43,6 +43,8 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         ];
 
         parent::__construct();
+        $this->cargar_frontend_controller();
+
     }
 
     /**
@@ -1138,7 +1140,9 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
 
         $sql_where = implode(' AND ', $where);
 
-        $sql = "SELECT a.*, c.nombre as categoria_nombre, c.slug as categoria_slug, c.icono as categoria_icono, c.color as categoria_color, z.nombre as zona_nombre, z.slug as zona_slug
+        $sql = "SELECT a.id, a.titulo, a.prioridad, a.extracto, a.contenido, a.fecha_inicio, a.categoria_id, a.zona_id,
+                       c.nombre as categoria_nombre, c.slug as categoria_slug, c.icono as categoria_icono, c.color as categoria_color,
+                       z.nombre as zona_nombre, z.slug as zona_slug
                 FROM {$this->tablas['avisos']} a
                 LEFT JOIN {$this->tablas['categorias']} c ON a.categoria_id = c.id
                 LEFT JOIN {$this->tablas['zonas']} z ON a.zona_id = z.id
@@ -1197,7 +1201,8 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
 
         $sql_where = implode(' AND ', $where);
 
-        $sql = "SELECT * FROM {$this->tablas['avisos']}
+        $sql = "SELECT id, titulo, contenido, prioridad, fecha_inicio
+                FROM {$this->tablas['avisos']}
                 WHERE $sql_where
                 ORDER BY fecha_inicio DESC
                 LIMIT %d";
@@ -1214,7 +1219,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         return $wpdb->get_results(
-            "SELECT * FROM {$this->tablas['categorias']} WHERE activa = 1 ORDER BY orden ASC, nombre ASC"
+            "SELECT id, nombre FROM {$this->tablas['categorias']} WHERE activa = 1 ORDER BY orden ASC, nombre ASC"
         );
     }
 
@@ -1225,7 +1230,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         return $wpdb->get_results(
-            "SELECT * FROM {$this->tablas['zonas']} WHERE activa = 1 ORDER BY tipo ASC, nombre ASC"
+            "SELECT id, nombre FROM {$this->tablas['zonas']} WHERE activa = 1 ORDER BY tipo ASC, nombre ASC"
         );
     }
 
@@ -2219,7 +2224,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         return '<div class="flavor-contextual-tab flavor-contextual-chat">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
             . '<div><h2>' . esc_html__('Chat del aviso', 'flavor-chat-ia') . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
-            . '<a href="' . esc_url(home_url('/mi-portal/chat-grupos/mensajes/?aviso_id=' . absint($aviso['id']))) . '" class="button button-secondary">'
+            . '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('chat_grupos', 'mensajes') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-secondary">'
             . esc_html__('Abrir chat completo', 'flavor-chat-ia')
             . '</a></div>'
             . do_shortcode('[flavor_chat_grupo_integrado entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
@@ -2235,7 +2240,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         return '<div class="flavor-contextual-tab flavor-contextual-multimedia">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
             . '<div><h2>' . esc_html__('Archivos del aviso', 'flavor-chat-ia') . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
-            . '<a href="' . esc_url(home_url('/mi-portal/multimedia/subir/?aviso_id=' . absint($aviso['id']))) . '" class="button button-primary">'
+            . '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'subir') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-primary">'
             . esc_html__('Subir archivo', 'flavor-chat-ia')
             . '</a></div>'
             . do_shortcode('[flavor_multimedia_galeria entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
@@ -2255,7 +2260,7 @@ class Flavor_Chat_Avisos_Municipales_Module extends Flavor_Chat_Module_Base {
         return '<div class="flavor-contextual-tab flavor-contextual-red-social">'
             . '<div class="flavor-contextual-header" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">'
             . '<div><h2>' . esc_html__('Actividad social del aviso', 'flavor-chat-ia') . '</h2><p>' . esc_html($aviso['titulo']) . '</p></div>'
-            . '<a href="' . esc_url(home_url('/mi-portal/red-social/crear/?aviso_id=' . absint($aviso['id']))) . '" class="button button-primary">'
+            . '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('red_social', 'crear') . '?aviso_id=' . absint($aviso['id'])) . '" class="button button-primary">'
             . esc_html__('Publicar', 'flavor-chat-ia')
             . '</a></div>'
             . do_shortcode('[flavor_social_feed entidad="aviso_municipal" entidad_id="' . absint($aviso['id']) . '"]')
@@ -2409,6 +2414,7 @@ KNOWLEDGE;
             'icon' => 'dashicons-megaphone',
             'capability' => 'manage_options',
             'categoria' => 'comunicacion',
+            'admin_quick_links_auto' => true,
             'paginas' => [
                 [
                     'slug' => 'avisos-dashboard',
@@ -2494,80 +2500,17 @@ KNOWLEDGE;
      * Renderiza el dashboard de avisos municipales
      */
     public function render_admin_dashboard() {
-        global $wpdb;
-        $tabla_avisos = $this->tablas['avisos'];
-        $tabla_categorias = $this->tablas['categorias'];
-        $ahora = current_time('mysql');
-        $inicio_mes = gmdate('Y-m-01 00:00:00');
-        $proxima_semana = gmdate('Y-m-d H:i:s', strtotime('+7 days'));
-
-        // Verificar si las tablas existen
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_avisos)) {
-            echo '<div class="wrap"><div class="notice notice-warning"><p>' . esc_html__('Las tablas del módulo no están creadas. Active el módulo para crearlas.', 'flavor-chat-ia') . '</p></div></div>';
-            return;
-        }
-
-        // Estadísticas
-        $stats = [
-            'activos' => $this->contar_avisos_publicados(),
-            'urgentes' => (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM $tabla_avisos WHERE prioridad = 'urgente' AND estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s)",
-                $ahora
-            )),
-            'proximos_expirar' => (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM $tabla_avisos WHERE estado = 'publicado' AND fecha_expiracion IS NOT NULL AND fecha_expiracion > %s AND fecha_expiracion <= %s",
-                $ahora,
-                $proxima_semana
-            )),
-            'visualizaciones_mes' => (int) $wpdb->get_var("SELECT SUM(total_visualizaciones) FROM $tabla_avisos"),
-            'total' => (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_avisos"),
-            'este_mes' => (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM $tabla_avisos WHERE created_at >= %s",
-                $inicio_mes
-            )),
-            'confirmaciones' => (int) $wpdb->get_var("SELECT SUM(total_confirmaciones) FROM $tabla_avisos"),
-        ];
-
-        // Avisos recientes
-        $avisos_recientes = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_avisos WHERE estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s) ORDER BY created_at DESC LIMIT 5",
-            $ahora
-        ));
-
-        // Avisos urgentes
-        $avisos_urgentes = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_avisos WHERE prioridad = 'urgente' AND estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s) ORDER BY created_at DESC",
-            $ahora
-        ));
-
-        // Categorías con conteo
-        $categorias = [];
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_categorias)) {
-            $categorias = $wpdb->get_results(
-                "SELECT c.*, COUNT(a.id) as count
-                FROM $tabla_categorias c
-                LEFT JOIN $tabla_avisos a ON a.categoria = c.nombre AND a.estado = 'publicado'
-                GROUP BY c.id
-                ORDER BY c.orden ASC, c.nombre ASC
-                LIMIT 10"
-            );
-        }
-
-        // Cargar vista
-        $vista_path = dirname(__FILE__) . '/views/dashboard.php';
-        if (file_exists($vista_path)) {
-            include $vista_path;
+        // Renderizar el dashboard completo desde el archivo de vista
+        $dashboard_view_path = dirname(__FILE__) . '/views/dashboard.php';
+        if (file_exists($dashboard_view_path)) {
+            include $dashboard_view_path;
         } else {
-            // Fallback básico
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard de Avisos Municipales', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Avisos activos:', 'flavor-chat-ia') . ' ' . esc_html($stats['activos']) . '</p>';
+            echo '<div class="wrap flavor-modulo-page">';
+            $this->render_page_header(__('Dashboard de Avisos Municipales', 'flavor-chat-ia'));
+            echo '<p>' . __('Panel de control del módulo de avisos municipales.', 'flavor-chat-ia') . '</p>';
             echo '</div>';
         }
     }
-
-    /**
-     * Renderiza la página de avisos activos
-     */
     public function render_admin_activos() {
         echo '<div class="wrap flavor-modulo-page">';
         $this->render_page_header(__('Avisos Activos', 'flavor-chat-ia'), [
@@ -2577,7 +2520,8 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_avisos = $this->tablas['avisos'];
         $avisos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_avisos WHERE estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s) ORDER BY created_at DESC LIMIT 20",
+            "SELECT id, titulo, prioridad, categoria, created_at
+             FROM $tabla_avisos WHERE estado = 'publicado' AND (fecha_expiracion IS NULL OR fecha_expiracion > %s) ORDER BY created_at DESC LIMIT 20",
             current_time('mysql')
         ), ARRAY_A);
 
@@ -2657,13 +2601,15 @@ KNOWLEDGE;
 
         if ($aviso_id > 0) {
             $aviso = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM $tabla_avisos WHERE id = %d",
+                "SELECT id, titulo, contenido, prioridad, categoria, fecha_expiracion
+                 FROM $tabla_avisos WHERE id = %d",
                 $aviso_id
             ));
             $es_edicion = true;
         } elseif ($republicar_id > 0) {
             $aviso = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM $tabla_avisos WHERE id = %d",
+                "SELECT id, titulo, contenido, prioridad, categoria, fecha_expiracion
+                 FROM $tabla_avisos WHERE id = %d",
                 $republicar_id
             ));
             $es_republicar = true;
@@ -2720,7 +2666,7 @@ KNOWLEDGE;
         $tabla_categorias = $this->tablas['categorias'];
         $categorias_lista = [];
         if (Flavor_Chat_Helpers::tabla_existe($tabla_categorias)) {
-            $categorias_lista = $wpdb->get_results("SELECT * FROM $tabla_categorias ORDER BY orden ASC");
+            $categorias_lista = $wpdb->get_results("SELECT id, nombre FROM $tabla_categorias ORDER BY orden ASC");
         }
         if (!empty($categorias_lista)) {
             echo '<tr><th scope="row"><label for="categoria">' . __('Categoría', 'flavor-chat-ia') . '</label></th>';
@@ -2853,7 +2799,8 @@ KNOWLEDGE;
 
         // Avisos
         $avisos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_avisos WHERE $where ORDER BY created_at DESC LIMIT %d OFFSET %d",
+            "SELECT id, titulo, contenido, categoria, prioridad, fecha_publicacion, fecha_expiracion, total_visualizaciones, created_at
+             FROM $tabla_avisos WHERE $where ORDER BY created_at DESC LIMIT %d OFFSET %d",
             ...array_merge($params, [$por_pagina, $offset])
         ));
 
@@ -2878,7 +2825,7 @@ KNOWLEDGE;
         // Categorías para filtro
         $categorias = [];
         if (Flavor_Chat_Helpers::tabla_existe($tabla_categorias)) {
-            $categorias = $wpdb->get_results("SELECT * FROM $tabla_categorias ORDER BY orden ASC");
+            $categorias = $wpdb->get_results("SELECT id, nombre FROM $tabla_categorias ORDER BY orden ASC");
         }
 
         // Paginación
@@ -3078,4 +3025,16 @@ KNOWLEDGE;
             ],
         ];
     }
+
+    /**
+     * Cargar frontend controller
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-avisos-municipales-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Avisos_Municipales_Frontend_Controller::get_instance();
+        }
+    }
+
 }

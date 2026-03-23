@@ -185,7 +185,7 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $estado_texto,
                 'label' => $socio->tipo_nombre ?: __('Socio', 'flavor-chat-ia'),
                 'color' => $estado_color,
-                'url' => $es_admin ? admin_url('admin.php?page=socios') : home_url('/mi-portal/socios/mi-perfil/'),
+                'url' => $es_admin ? admin_url('admin.php?page=socios') : Flavor_Chat_Helpers::get_action_url('socios', 'mi-perfil'),
             ];
 
             // Stat 2: Número de socio
@@ -220,7 +220,7 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                     'valor' => number_format($importe_pendiente, 2, ',', '.') . ' €',
                     'label' => sprintf(_n('%d cuota', '%d cuotas', $cuotas_pendientes, 'flavor-chat-ia'), $cuotas_pendientes),
                     'color' => 'danger',
-                    'url' => $es_admin ? admin_url('admin.php?page=socios&tab=cuotas') : home_url('/mi-portal/socios/mis-cuotas/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=socios&tab=cuotas') : Flavor_Chat_Helpers::get_action_url('socios', 'mis-cuotas'),
                 ];
             } else {
                 $stats[] = [
@@ -270,7 +270,7 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => $socio ? __('Ver mi cuenta', 'flavor-chat-ia') : __('Hacerse socio', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=socios') : home_url('/mi-portal/socios/' . ($socio ? 'mi-perfil/' : 'unirse/')),
+                    'url' => $es_admin ? admin_url('admin.php?page=socios') : Flavor_Chat_Helpers::get_action_url('socios', $socio ? 'mi-perfil' : 'unirse'),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -320,7 +320,7 @@ class Flavor_Socios_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => $icono,
                 'title' => $cuota->concepto ?: $periodo,
                 'meta' => number_format($cuota->importe, 2, ',', '.') . ' €',
-                'url' => $es_admin ? admin_url('admin.php?page=socios&tab=cuotas&id=' . $cuota->id) : home_url('/mi-portal/socios/mis-cuotas/'),
+                'url' => $es_admin ? admin_url('admin.php?page=socios&tab=cuotas&id=' . $cuota->id) : Flavor_Chat_Helpers::get_action_url('socios', 'mis-cuotas'),
                 'badge' => ucfirst($cuota->estado),
             ];
         }

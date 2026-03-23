@@ -111,7 +111,7 @@ class OfflineService {
   final _statusController = StreamController<ConnectivityStatus>.broadcast();
 
   /// Suscripción a cambios de conectividad
-  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
   /// Listeners de sincronización
   final List<void Function(SyncResult)> _syncListeners = [];
@@ -143,12 +143,12 @@ class OfflineService {
 
     // Escuchar cambios de conectividad
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen(
-      _handleConnectivityChange,
+      (result) => _handleConnectivityChange([result]),
     );
 
     // Verificar estado inicial
-    final results = await Connectivity().checkConnectivity();
-    await _handleConnectivityChange(results);
+    final result = await Connectivity().checkConnectivity();
+    await _handleConnectivityChange([result]);
 
     debugPrint('[OfflineService] Initialized. Status: $_status');
   }
@@ -477,10 +477,10 @@ class OfflineService {
 
       switch (action.method.toUpperCase()) {
         case 'POST':
-          response = await _apiClient.postData(action.endpoint, action.data);
+          response = await _apiClient.postData(action.endpoint, data: action.data);
           break;
         case 'PUT':
-          response = await _apiClient.putData(action.endpoint, action.data);
+          response = await _apiClient.putData(action.endpoint, data: action.data);
           break;
         case 'DELETE':
           response = await _apiClient.deleteData(action.endpoint);
@@ -537,8 +537,8 @@ class OfflineService {
 
   /// Fuerza una verificación de conectividad
   Future<void> checkConnectivity() async {
-    final results = await Connectivity().checkConnectivity();
-    await _handleConnectivityChange(results);
+    final result = await Connectivity().checkConnectivity();
+    await _handleConnectivityChange([result]);
   }
 
   /// Limpia recursos

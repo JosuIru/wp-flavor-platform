@@ -640,7 +640,7 @@ class Flavor_Notification_Center {
             'nonce' => wp_create_nonce('flavor_notifications'),
             'userId' => get_current_user_id(),
             'preferencesUrl' => admin_url('admin.php?page=flavor-settings&tab=notifications'),
-            'allNotificationsUrl' => home_url('/mi-portal/#notifications'),
+            'allNotificationsUrl' => Flavor_Chat_Helpers::get_action_url('', '') . '#notifications',
             'enablePolling' => true,
             'soundEnabled' => get_user_meta(get_current_user_id(), 'flavor_notification_sound', true) !== 'off',
             'iconUrl' => FLAVOR_CHAT_IA_URL . 'assets/images/icon-notification.png',

@@ -14,8 +14,8 @@ if (!defined('ABSPATH')) {
 
 global $wpdb;
 
-$rs_url_explorar = home_url('/mi-portal/red-social/explorar/');
-$rs_url_perfil = home_url('/mi-portal/red-social/perfil/');
+$rs_url_explorar = Flavor_Chat_Helpers::get_action_url('red_social', 'explorar');
+$rs_url_perfil = Flavor_Chat_Helpers::get_action_url('red_social', 'perfil');
 
 $usuario_id = get_current_user_id();
 $tabla_publicaciones = $wpdb->prefix . 'flavor_social_publicaciones';
@@ -243,7 +243,7 @@ if ($usuario_id) {
             <?php else: ?>
                 <div class="rs-login-prompt">
                     <p><?php echo esc_html__('Inicia sesion para compartir con la comunidad.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/red-social/'))); ?>" class="rs-btn-primary">
+                    <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('red_social', ''))); ?>" class="rs-btn-primary">
                         <?php echo esc_html__('Iniciar sesion', 'flavor-chat-ia'); ?>
                     </a>
                 </div>

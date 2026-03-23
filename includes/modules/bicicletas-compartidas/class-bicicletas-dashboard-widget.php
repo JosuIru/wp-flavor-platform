@@ -82,7 +82,7 @@ class Flavor_Bicicletas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $bicicletas_disponibles,
                 'label' => __('Disponibles', 'flavor-chat-ia'),
                 'color' => $bicicletas_disponibles > 0 ? 'success' : 'warning',
-                'url' => $es_admin ? admin_url('admin.php?page=flavor-bicicletas-prestamos') : home_url('/mi-portal/bicicletas-compartidas/'),
+                'url' => $es_admin ? admin_url('admin.php?page=flavor-bicicletas-prestamos') : Flavor_Chat_Helpers::get_action_url('bicicletas_compartidas', ''),
             ],
         ];
 
@@ -93,7 +93,7 @@ class Flavor_Bicicletas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $tiempo,
                 'label' => $prestamo_activo->bicicleta_nombre ?: __('En uso', 'flavor-chat-ia'),
                 'color' => 'info',
-                'url' => $es_admin ? admin_url('admin.php?page=flavor-bicicletas-prestamos&id=' . $prestamo_activo->id) : home_url('/mi-portal/bicicletas-compartidas/devolver/'),
+                'url' => $es_admin ? admin_url('admin.php?page=flavor-bicicletas-prestamos&id=' . $prestamo_activo->id) : Flavor_Chat_Helpers::get_action_url('bicicletas_compartidas', 'devolver'),
             ];
         }
 
@@ -104,7 +104,7 @@ class Flavor_Bicicletas_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => $prestamo_activo ? __('Devolver', 'flavor-chat-ia') : __('Reservar', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=flavor-bicicletas-prestamos') : home_url('/mi-portal/bicicletas-compartidas/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=flavor-bicicletas-prestamos') : Flavor_Chat_Helpers::get_action_url('bicicletas_compartidas', ''),
                     'icon' => $prestamo_activo ? 'dashicons-undo' : 'dashicons-plus-alt2',
                 ],
             ],

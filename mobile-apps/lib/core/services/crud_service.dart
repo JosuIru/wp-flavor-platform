@@ -28,6 +28,22 @@ class CrudService<T> {
   /// Listeners para cambios
   final List<Function(CrudEvent<T>)> _listeners = [];
 
+  /// Getter protegido para acceso a apiClient desde subclases
+  @protected
+  ApiClient get apiClient => _apiClient;
+
+  /// Getter protegido para acceso a cache desde subclases
+  @protected
+  Map<String, T> get cache => _cache;
+
+  /// Notificar a listeners de cambios
+  @protected
+  void notifyListeners(CrudEvent<T> event) {
+    for (final listener in _listeners) {
+      listener(event);
+    }
+  }
+
   CrudService({
     required ApiClient apiClient,
     required String moduleName,
@@ -68,7 +84,8 @@ class CrudService<T> {
         queryParameters: queryParams,
       );
 
-      final List<dynamic> itemsJson = response.data['items'] ?? response.data;
+      final responseData = response.data as Map<String, dynamic>?;
+      final List<dynamic> itemsJson = responseData?['items'] ?? response.data ?? [];
       final items = itemsJson.map((json) => _fromJson(json)).toList();
 
       // Actualizar cache
@@ -81,10 +98,10 @@ class CrudService<T> {
 
       return PaginatedResult<T>(
         items: items,
-        total: response.data['total'] ?? items.length,
+        total: responseData?['total'] ?? items.length,
         page: page,
         perPage: perPage,
-        totalPages: response.data['total_pages'] ?? 1,
+        totalPages: responseData?['total_pages'] ?? 1,
       );
     } catch (e) {
       debugPrint('[CrudService] Error getting list: $e');
@@ -107,15 +124,17 @@ class CrudService<T> {
   }
 
   /// Obtener un item por ID
-  Future<T?> getById(String id) async {
-    // Primero buscar en cache
-    if (_cache.containsKey(id)) {
+  Future<T?> getById(String id, {bool forceRefresh = false}) async {
+    // Primero buscar en cache (si no forzamos refrescar)
+    if (!forceRefresh && _cache.containsKey(id)) {
       return _cache[id];
     }
 
     try {
       final response = await _apiClient.get('$_endpoint/$id');
-      final item = _fromJson(response.data);
+      final responseData = response.data as Map<String, dynamic>?;
+      if (responseData == null) return null;
+      final item = _fromJson(responseData);
       _cache[id] = item;
       return item;
     } catch (e) {
@@ -169,7 +188,9 @@ class CrudService<T> {
 
     try {
       final response = await _apiClient.post(_endpoint, data: json);
-      final createdItem = _fromJson(response.data);
+      final responseData = response.data as Map<String, dynamic>?;
+      if (responseData == null) return null;
+      final createdItem = _fromJson(responseData);
 
       final id = _getItemId(createdItem);
       if (id != null) {
@@ -221,7 +242,9 @@ class CrudService<T> {
 
     try {
       final response = await _apiClient.put('$_endpoint/$id', data: json);
-      final updatedItem = _fromJson(response.data);
+      final responseData = response.data as Map<String, dynamic>?;
+      if (responseData == null) return null;
+      final updatedItem = _fromJson(responseData);
       _cache[id] = updatedItem;
 
       _notifyListeners(CrudEvent(
@@ -240,7 +263,9 @@ class CrudService<T> {
   Future<T?> patch(String id, Map<String, dynamic> changes) async {
     try {
       final response = await _apiClient.patch('$_endpoint/$id', data: changes);
-      final updatedItem = _fromJson(response.data);
+      final responseData = response.data as Map<String, dynamic>?;
+      if (responseData == null) return null;
+      final updatedItem = _fromJson(responseData);
       _cache[id] = updatedItem;
 
       _notifyListeners(CrudEvent(
@@ -336,8 +361,17 @@ class CrudService<T> {
       try {
         switch (op.type) {
           case OperationType.create:
-            final response = await _apiClient.post(_endpoint, data: op.data);
-            final createdItem = _fromJson(response.data);
+            if (op.data == null) {
+              failed++;
+              continue;
+            }
+            final response = await _apiClient.post(_endpoint, data: op.data!);
+            final responseData = response.data as Map<String, dynamic>?;
+            if (responseData == null) {
+              failed++;
+              continue;
+            }
+            final createdItem = _fromJson(responseData);
             final newId = _getItemId(createdItem);
 
             // Actualizar cache con nuevo ID
@@ -353,8 +387,8 @@ class CrudService<T> {
             break;
 
           case OperationType.update:
-            if (op.id != null) {
-              await _apiClient.put('$_endpoint/${op.id}', data: op.data);
+            if (op.id != null && op.data != null) {
+              await _apiClient.put('$_endpoint/${op.id}', data: op.data!);
               synced++;
               toRemove.add(op);
             }

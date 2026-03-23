@@ -1,31 +1,140 @@
 <?php
 /**
- * Vista Dashboard - Marketplace
- *
- * Dashboard administrativo operativo para el módulo Marketplace.
+ * Dashboard Profesional - Marketplace Comunitario
  *
  * @package FlavorChatIA
  */
 
-if (!defined('ABSPATH')) {
-    exit;
-}
+if (!defined('ABSPATH')) exit;
+
+require_once dirname(__DIR__, 3) . '/dashboard/class-dashboard-components.php';
+$DC = 'Flavor_Dashboard_Components';
+
+wp_enqueue_style('flavor-dashboard-enhanced', plugins_url('assets/css/dashboard-components-enhanced.css', dirname(__DIR__, 3)), [], '3.3.0');
+wp_enqueue_script('flavor-dashboard-components', plugins_url('assets/js/dashboard-components.js', dirname(__DIR__, 3)), ['jquery'], '3.3.0', true);
 
 global $wpdb;
 
+// ============================================
+// FILTROS
+// ============================================
+$filtro_categoria = isset($_GET['filtro_categoria']) ? sanitize_text_field($_GET['filtro_categoria']) : '';
+$filtro_tipo = isset($_GET['filtro_tipo']) ? sanitize_text_field($_GET['filtro_tipo']) : '';
+$filtro_estado = isset($_GET['filtro_estado']) ? sanitize_text_field($_GET['filtro_estado']) : '';
+$filtro_precio_min = isset($_GET['filtro_precio_min']) ? absint($_GET['filtro_precio_min']) : 0;
+$filtro_precio_max = isset($_GET['filtro_precio_max']) ? absint($_GET['filtro_precio_max']) : 0;
+$filtro_fecha_desde = isset($_GET['filtro_fecha_desde']) ? sanitize_text_field($_GET['filtro_fecha_desde']) : '';
+$filtro_fecha_hasta = isset($_GET['filtro_fecha_hasta']) ? sanitize_text_field($_GET['filtro_fecha_hasta']) : '';
+
+// ============================================
+// DATOS PRINCIPALES
+// ============================================
 $post_counts = wp_count_posts('marketplace_item');
 $anuncios_publicados = isset($post_counts->publish) ? (int) $post_counts->publish : 0;
-$anuncios_borrador = isset($post_counts->draft) ? (int) $post_counts->draft : 0;
 $anuncios_pendientes = isset($post_counts->pending) ? (int) $post_counts->pending : 0;
-$anuncios_privados = isset($post_counts->private) ? (int) $post_counts->private : 0;
-$total_anuncios = $anuncios_publicados + $anuncios_borrador + $anuncios_pendientes + $anuncios_privados;
+$anuncios_borrador = isset($post_counts->draft) ? (int) $post_counts->draft : 0;
+$total_anuncios = $anuncios_publicados + $anuncios_pendientes + $anuncios_borrador;
 
+// Vistas totales (usando postmeta simulado)
+$vistas_totales = (int) $wpdb->get_var(
+    "SELECT COALESCE(SUM(CAST(meta_value AS UNSIGNED)), 0)
+     FROM {$wpdb->postmeta}
+     WHERE meta_key = '_marketplace_views'"
+);
+
+// Anuncios con precio (para análisis de mercado)
+$anuncios_con_precio = (int) $wpdb->get_var(
+    "SELECT COUNT(DISTINCT post_id)
+     FROM {$wpdb->postmeta}
+     WHERE meta_key = '_marketplace_precio'
+     AND meta_value > 0"
+);
+
+// Precio promedio de ventas
+$precio_promedio = (float) $wpdb->get_var(
+    "SELECT COALESCE(AVG(CAST(meta_value AS DECIMAL(10,2))), 0)
+     FROM {$wpdb->postmeta}
+     WHERE meta_key = '_marketplace_precio'
+     AND meta_value > 0"
+);
+
+// ============================================
+// ANUNCIOS DEL MES Y TENDENCIA
+// ============================================
+$inicio_mes = gmdate('Y-m-01');
+$anuncios_mes = (int) $wpdb->get_var($wpdb->prepare(
+    "SELECT COUNT(*) FROM {$wpdb->posts}
+     WHERE post_type = 'marketplace_item'
+     AND post_status = 'publish'
+     AND post_date >= %s",
+    $inicio_mes
+));
+
+// Mes anterior
+$mes_anterior = gmdate('Y-m-01', strtotime('-1 month'));
+$ultimo_dia_mes_anterior = gmdate('Y-m-t 23:59:59', strtotime('-1 month'));
+$anuncios_mes_anterior = (int) $wpdb->get_var($wpdb->prepare(
+    "SELECT COUNT(*) FROM {$wpdb->posts}
+     WHERE post_type = 'marketplace_item'
+     AND post_status = 'publish'
+     AND post_date BETWEEN %s AND %s",
+    $mes_anterior,
+    $ultimo_dia_mes_anterior
+));
+
+$trend_anuncios = null;
+$trend_value_anuncios = '';
+if ($anuncios_mes_anterior > 0) {
+    $diff = (($anuncios_mes - $anuncios_mes_anterior) / $anuncios_mes_anterior) * 100;
+    $trend_anuncios = $diff >= 0 ? 'up' : 'down';
+    $trend_value_anuncios = ($diff >= 0 ? '+' : '') . round($diff, 1) . '%';
+}
+
+// Vistas del mes
+$vistas_mes = (int) $wpdb->get_var($wpdb->prepare(
+    "SELECT COUNT(*)
+     FROM {$wpdb->postmeta} pm
+     INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+     WHERE pm.meta_key = '_marketplace_last_view'
+     AND pm.meta_value >= %s",
+    $inicio_mes
+));
+
+$vistas_mes_anterior = (int) $wpdb->get_var($wpdb->prepare(
+    "SELECT COUNT(*)
+     FROM {$wpdb->postmeta} pm
+     INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+     WHERE pm.meta_key = '_marketplace_last_view'
+     AND pm.meta_value BETWEEN %s AND %s",
+    $mes_anterior,
+    $ultimo_dia_mes_anterior
+));
+
+$trend_vistas = null;
+$trend_value_vistas = '';
+if ($vistas_mes_anterior > 0) {
+    $diff_vistas = (($vistas_mes - $vistas_mes_anterior) / $vistas_mes_anterior) * 100;
+    $trend_vistas = $diff_vistas >= 0 ? 'up' : 'down';
+    $trend_value_vistas = ($diff_vistas >= 0 ? '+' : '') . round($diff_vistas, 1) . '%';
+}
+
+// Tasa de conversión (anuncios con contactos vs total)
+$anuncios_con_contactos = (int) $wpdb->get_var(
+    "SELECT COUNT(DISTINCT post_id)
+     FROM {$wpdb->postmeta}
+     WHERE meta_key = '_marketplace_contacts'
+     AND CAST(meta_value AS UNSIGNED) > 0"
+);
+$tasa_conversion = $anuncios_publicados > 0 ? ($anuncios_con_contactos / $anuncios_publicados) * 100 : 0;
+
+// ============================================
+// CATEGORÍAS
+// ============================================
 $categorias = get_terms([
     'taxonomy' => 'marketplace_categoria',
     'hide_empty' => false,
 ]);
 $categorias_stats = [];
-
 if (!is_wp_error($categorias)) {
     foreach ($categorias as $cat) {
         $categorias_stats[] = [
@@ -35,506 +144,1328 @@ if (!is_wp_error($categorias)) {
         ];
     }
 }
+usort($categorias_stats, fn($a, $b) => $b['total'] <=> $a['total']);
+$categorias_activas = count(array_filter($categorias_stats, fn($cat) => $cat['total'] > 0));
 
-usort($categorias_stats, static function ($a, $b) {
-    return $b['total'] <=> $a['total'];
-});
-
-$categorias_activas = count(array_filter($categorias_stats, static function ($cat) {
-    return $cat['total'] > 0;
-}));
-
+// ============================================
+// TIPOS
+// ============================================
 $tipos = get_terms([
     'taxonomy' => 'marketplace_tipo',
     'hide_empty' => false,
 ]);
 $tipos_stats = [];
-
 if (!is_wp_error($tipos)) {
     foreach ($tipos as $tipo) {
         $tipos_stats[] = [
             'nombre' => $tipo->name,
             'total' => (int) $tipo->count,
+            'slug' => $tipo->slug,
         ];
     }
 }
+usort($tipos_stats, fn($a, $b) => $b['total'] <=> $a['total']);
 
-usort($tipos_stats, static function ($a, $b) {
-    return $b['total'] <=> $a['total'];
-});
+// ============================================
+// EVOLUCIÓN MENSUAL (12 MESES)
+// ============================================
+$labels_meses = [];
+$data_anuncios_mes = [];
+for ($i = 11; $i >= 0; $i--) {
+    $mes = gmdate('Y-m-01', strtotime("-{$i} months"));
+    $mes_fin = gmdate('Y-m-t 23:59:59', strtotime("-{$i} months"));
+    $labels_meses[] = date_i18n('M Y', strtotime($mes));
 
+    $count = (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM {$wpdb->posts}
+         WHERE post_type = 'marketplace_item'
+         AND post_status = 'publish'
+         AND post_date BETWEEN %s AND %s",
+        $mes,
+        $mes_fin
+    ));
+    $data_anuncios_mes[] = $count;
+}
+
+// ============================================
+// TOP 10 PRODUCTOS MÁS VISTOS
+// ============================================
+$top_productos_vistos = $wpdb->get_results(
+    "SELECT p.ID, p.post_title, COALESCE(CAST(pm.meta_value AS UNSIGNED), 0) as vistas
+     FROM {$wpdb->posts} p
+     LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_marketplace_views'
+     WHERE p.post_type = 'marketplace_item'
+     AND p.post_status = 'publish'
+     ORDER BY vistas DESC
+     LIMIT 10"
+);
+
+// ============================================
+// TOP 5 VENDEDORES
+// ============================================
+$top_vendedores = $wpdb->get_results(
+    "SELECT p.post_author, u.display_name, COUNT(*) as total_anuncios,
+            COALESCE(AVG(CAST(pm_rating.meta_value AS DECIMAL(3,2))), 0) as rating_promedio
+     FROM {$wpdb->posts} p
+     INNER JOIN {$wpdb->users} u ON p.post_author = u.ID
+     LEFT JOIN {$wpdb->postmeta} pm_rating ON p.ID = pm_rating.post_id AND pm_rating.meta_key = '_marketplace_seller_rating'
+     WHERE p.post_type = 'marketplace_item'
+     AND p.post_status = 'publish'
+     GROUP BY p.post_author
+     ORDER BY total_anuncios DESC, rating_promedio DESC
+     LIMIT 5"
+);
+
+// ============================================
+// ANÁLISIS DE PRECIOS POR CATEGORÍA
+// ============================================
+$precios_por_categoria = [];
+foreach ($categorias_stats as $cat) {
+    if ($cat['total'] > 0) {
+        $precio_cat = (float) $wpdb->get_var($wpdb->prepare(
+            "SELECT COALESCE(AVG(CAST(pm.meta_value AS DECIMAL(10,2))), 0)
+             FROM {$wpdb->postmeta} pm
+             INNER JOIN {$wpdb->term_relationships} tr ON pm.post_id = tr.object_id
+             INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+             INNER JOIN {$wpdb->terms} t ON tt.term_id = t.term_id
+             WHERE pm.meta_key = '_marketplace_precio'
+             AND t.slug = %s
+             AND pm.meta_value > 0",
+            $cat['slug']
+        ));
+        if ($precio_cat > 0) {
+            $precios_por_categoria[] = [
+                'categoria' => $cat['nombre'],
+                'precio_promedio' => $precio_cat,
+                'total' => $cat['total'],
+            ];
+        }
+    }
+}
+usort($precios_por_categoria, fn($a, $b) => $b['precio_promedio'] <=> $a['precio_promedio']);
+
+// ============================================
+// PRODUCTOS TRENDING (MÁS VISTOS ÚLTIMOS 7 DÍAS)
+// ============================================
+$trending_7_dias = $wpdb->get_results($wpdb->prepare(
+    "SELECT p.ID, p.post_title, COALESCE(CAST(pm.meta_value AS UNSIGNED), 0) as vistas_recientes
+     FROM {$wpdb->posts} p
+     INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+     WHERE p.post_type = 'marketplace_item'
+     AND p.post_status = 'publish'
+     AND pm.meta_key = '_marketplace_last_view'
+     AND pm.meta_value >= %s
+     ORDER BY vistas_recientes DESC
+     LIMIT 5",
+    gmdate('Y-m-d', strtotime('-7 days'))
+));
+
+// ============================================
+// ANUNCIOS RECIENTES
+// ============================================
 $anuncios_recientes = get_posts([
     'post_type' => 'marketplace_item',
-    'post_status' => ['publish', 'pending', 'draft'],
-    'posts_per_page' => 8,
+    'post_status' => ['publish', 'pending'],
+    'posts_per_page' => 10,
     'orderby' => 'date',
     'order' => 'DESC',
 ]);
 
-$anuncios_pendientes_lista = get_posts([
-    'post_type' => 'marketplace_item',
-    'post_status' => 'pending',
-    'posts_per_page' => 6,
-    'orderby' => 'date',
-    'order' => 'ASC',
-]);
-
-$anuncios_borrador_lista = get_posts([
-    'post_type' => 'marketplace_item',
-    'post_status' => 'draft',
-    'posts_per_page' => 6,
-    'orderby' => 'modified',
-    'order' => 'ASC',
-]);
-
-$usuarios_activos = $wpdb->get_results(
-    "SELECT post_author, COUNT(*) as total_anuncios
-     FROM {$wpdb->posts}
-     WHERE post_type = 'marketplace_item' AND post_status = 'publish'
-     GROUP BY post_author
-     ORDER BY total_anuncios DESC
-     LIMIT 6"
-);
-
-$anuncios_mensuales = $wpdb->get_results(
-    "SELECT DATE_FORMAT(post_date, '%Y-%m') as mes, COUNT(*) as total
-     FROM {$wpdb->posts}
-     WHERE post_type = 'marketplace_item'
-       AND post_status = 'publish'
-       AND post_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
-     GROUP BY mes
-     ORDER BY mes ASC"
-);
-
-$publicados_hoy = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$wpdb->posts}
-     WHERE post_type = 'marketplace_item'
-       AND post_status = 'publish'
-       AND post_date >= %s",
-    current_time('Y-m-d 00:00:00')
-));
-
-$pendientes_antiguos = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$wpdb->posts}
-     WHERE post_type = 'marketplace_item'
-       AND post_status = 'pending'
-       AND post_date < %s",
-    gmdate('Y-m-d H:i:s', strtotime('-3 days', current_time('timestamp', true)))
-));
-
-$borradores_antiguos = (int) $wpdb->get_var($wpdb->prepare(
-    "SELECT COUNT(*) FROM {$wpdb->posts}
-     WHERE post_type = 'marketplace_item'
-       AND post_status = 'draft'
-       AND post_modified < %s",
-    gmdate('Y-m-d H:i:s', strtotime('-14 days', current_time('timestamp', true)))
-));
-
-$tabla_reportes = $wpdb->prefix . 'flavor_marketplace_reportes';
-$tabla_reportes_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_reportes)) === $tabla_reportes;
-$total_reportes_pendientes = 0;
-$reportes_recientes = [];
-
-if ($tabla_reportes_existe) {
-    $total_reportes_pendientes = (int) $wpdb->get_var(
-        "SELECT COUNT(*) FROM {$tabla_reportes} WHERE estado = 'pendiente'"
-    );
-
-    $reportes_recientes = $wpdb->get_results(
-        "SELECT r.*, p.post_title as anuncio_titulo, u.display_name as reportador_nombre
-         FROM {$tabla_reportes} r
-         LEFT JOIN {$wpdb->posts} p ON p.ID = r.anuncio_id
-         LEFT JOIN {$wpdb->users} u ON u.ID = r.usuario_reportador_id
-         ORDER BY r.fecha_reporte DESC
-         LIMIT 5"
-    );
+// Actividad últimos 7 días
+$actividad_7_dias = [];
+for ($i = 6; $i >= 0; $i--) {
+    $dia = gmdate('Y-m-d', strtotime("-{$i} days"));
+    $count = (int) $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM {$wpdb->posts}
+         WHERE post_type = 'marketplace_item'
+         AND post_status = 'publish'
+         AND DATE(post_date) = %s",
+        $dia
+    ));
+    $actividad_7_dias[] = $count;
 }
 
-$max_mes = 0;
-foreach ($anuncios_mensuales as $mes) {
-    $max_mes = max($max_mes, (int) $mes->total);
-}
-
-$estado_badges = [
-    'publish' => 'dm-badge--success',
-    'pending' => 'dm-badge--warning',
-    'draft' => 'dm-badge--secondary',
-    'private' => 'dm-badge--info',
-];
-
-$estado_labels = [
-    'publish' => __('Publicado', 'flavor-chat-ia'),
-    'pending' => __('Pendiente', 'flavor-chat-ia'),
-    'draft' => __('Borrador', 'flavor-chat-ia'),
-    'private' => __('Privado', 'flavor-chat-ia'),
-];
 ?>
 
-<div class="wrap dm-dashboard">
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<div class="wrap flavor-dashboard-wrap marketplace-dashboard">
+
+    <div class="dm-dashboard-header">
+        <h1 class="dm-dashboard-title">
+            <span class="dashicons dashicons-megaphone"></span>
+            <?php _e('Marketplace Comunitario', 'flavor-chat-ia'); ?>
+        </h1>
+        <p class="dm-dashboard-subtitle">
+            <?php _e('Compra, vende, regala e intercambia en tu comunidad', 'flavor-chat-ia'); ?>
+        </p>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- PANEL DE FILTROS -->
+    <!-- ============================================ -->
+    <div class="dm-section dm-filters-panel">
+        <div class="dm-section__header">
+            <h3 class="dm-section__title">
+                <span class="dashicons dashicons-filter"></span>
+                <?php _e('Filtros Avanzados', 'flavor-chat-ia'); ?>
+            </h3>
+        </div>
+        <div class="dm-section__content">
+            <form method="GET" action="" class="dm-filters-form">
+                <input type="hidden" name="page" value="flavor-marketplace">
+
+                <div class="dm-filters-grid">
+                    <div class="dm-filter-group">
+                        <label><?php _e('Categoría', 'flavor-chat-ia'); ?></label>
+                        <select name="filtro_categoria">
+                            <option value=""><?php _e('Todas', 'flavor-chat-ia'); ?></option>
+                            <?php foreach ($categorias_stats as $cat): ?>
+                                <option value="<?php echo esc_attr($cat['slug']); ?>" <?php selected($filtro_categoria, $cat['slug']); ?>>
+                                    <?php echo esc_html($cat['nombre']) . ' (' . $cat['total'] . ')'; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="dm-filter-group">
+                        <label><?php _e('Tipo', 'flavor-chat-ia'); ?></label>
+                        <select name="filtro_tipo">
+                            <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
+                            <?php foreach ($tipos_stats as $tipo): ?>
+                                <option value="<?php echo esc_attr($tipo['slug']); ?>" <?php selected($filtro_tipo, $tipo['slug']); ?>>
+                                    <?php echo esc_html($tipo['nombre']) . ' (' . $tipo['total'] . ')'; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="dm-filter-group">
+                        <label><?php _e('Estado', 'flavor-chat-ia'); ?></label>
+                        <select name="filtro_estado">
+                            <option value=""><?php _e('Todos', 'flavor-chat-ia'); ?></option>
+                            <option value="publish" <?php selected($filtro_estado, 'publish'); ?>><?php _e('Publicado', 'flavor-chat-ia'); ?></option>
+                            <option value="pending" <?php selected($filtro_estado, 'pending'); ?>><?php _e('Pendiente', 'flavor-chat-ia'); ?></option>
+                            <option value="draft" <?php selected($filtro_estado, 'draft'); ?>><?php _e('Borrador', 'flavor-chat-ia'); ?></option>
+                        </select>
+                    </div>
+
+                    <div class="dm-filter-group">
+                        <label><?php _e('Precio Mínimo (€)', 'flavor-chat-ia'); ?></label>
+                        <input type="number" name="filtro_precio_min" value="<?php echo esc_attr($filtro_precio_min); ?>" min="0" step="1">
+                    </div>
+
+                    <div class="dm-filter-group">
+                        <label><?php _e('Precio Máximo (€)', 'flavor-chat-ia'); ?></label>
+                        <input type="number" name="filtro_precio_max" value="<?php echo esc_attr($filtro_precio_max); ?>" min="0" step="1">
+                    </div>
+
+                    <div class="dm-filter-group">
+                        <label><?php _e('Desde', 'flavor-chat-ia'); ?></label>
+                        <input type="date" name="filtro_fecha_desde" value="<?php echo esc_attr($filtro_fecha_desde); ?>">
+                    </div>
+
+                    <div class="dm-filter-group">
+                        <label><?php _e('Hasta', 'flavor-chat-ia'); ?></label>
+                        <input type="date" name="filtro_fecha_hasta" value="<?php echo esc_attr($filtro_fecha_hasta); ?>">
+                    </div>
+
+                    <div class="dm-filter-actions">
+                        <button type="submit" class="button button-primary">
+                            <span class="dashicons dashicons-search"></span>
+                            <?php _e('Filtrar', 'flavor-chat-ia'); ?>
+                        </button>
+                        <a href="<?php echo admin_url('admin.php?page=flavor-marketplace'); ?>" class="button button-secondary">
+                            <?php _e('Limpiar', 'flavor-chat-ia'); ?>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- BOTONES DE EXPORTACIÓN -->
+    <!-- ============================================ -->
+    <div class="dm-export-buttons">
+        <button class="button button-secondary" onclick="alert('Exportar CSV - En desarrollo')">
+            <span class="dashicons dashicons-media-spreadsheet"></span>
+            <?php _e('Exportar CSV', 'flavor-chat-ia'); ?>
+        </button>
+        <button class="button button-secondary" onclick="alert('Exportar PDF - En desarrollo')">
+            <span class="dashicons dashicons-pdf"></span>
+            <?php _e('Exportar PDF', 'flavor-chat-ia'); ?>
+        </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ESTADÍSTICAS PRINCIPALES (KPIs) -->
+    <!-- ============================================ -->
     <?php
-    if (function_exists('flavor_dashboard_help')) {
-        flavor_dashboard_help('marketplace');
-    }
+    echo $DC::stats_grid([
+        [
+            'value' => number_format_i18n($total_anuncios),
+            'label' => __('Total Anuncios', 'flavor-chat-ia'),
+            'icon' => 'dashicons-megaphone',
+            'color' => 'primary',
+            'meta' => __('Histórico completo', 'flavor-chat-ia'),
+        ],
+        [
+            'value' => number_format_i18n($anuncios_publicados),
+            'label' => __('Publicados', 'flavor-chat-ia'),
+            'icon' => 'dashicons-yes-alt',
+            'color' => 'success',
+            'meta' => __('Visibles actualmente', 'flavor-chat-ia'),
+            'highlight' => true,
+        ],
+        [
+            'value' => number_format_i18n($anuncios_mes),
+            'label' => __('Anuncios del Mes', 'flavor-chat-ia'),
+            'icon' => 'dashicons-chart-line',
+            'color' => 'eco',
+            'trend' => $trend_anuncios,
+            'trend_value' => $trend_value_anuncios,
+            'meta' => __('vs mes anterior', 'flavor-chat-ia'),
+        ],
+        [
+            'value' => number_format_i18n($vistas_totales),
+            'label' => __('Vistas Totales', 'flavor-chat-ia'),
+            'icon' => 'dashicons-visibility',
+            'color' => 'info',
+            'meta' => __('Acumulado histórico', 'flavor-chat-ia'),
+        ],
+        [
+            'value' => number_format_i18n($vistas_mes),
+            'label' => __('Vistas del Mes', 'flavor-chat-ia'),
+            'icon' => 'dashicons-visibility',
+            'color' => 'info',
+            'trend' => $trend_vistas,
+            'trend_value' => $trend_value_vistas,
+            'meta' => __('vs mes anterior', 'flavor-chat-ia'),
+        ],
+        [
+            'value' => round($tasa_conversion, 1) . '%',
+            'label' => __('Tasa de Conversión', 'flavor-chat-ia'),
+            'icon' => 'dashicons-thumbs-up',
+            'color' => 'success',
+            'meta' => __('Anuncios con contactos', 'flavor-chat-ia'),
+        ],
+        [
+            'value' => number_format_i18n($precio_promedio, 2) . ' €',
+            'label' => __('Precio Promedio', 'flavor-chat-ia'),
+            'icon' => 'dashicons-money-alt',
+            'color' => 'warning',
+            'meta' => __('De productos en venta', 'flavor-chat-ia'),
+        ],
+        [
+            'value' => number_format_i18n($categorias_activas),
+            'label' => __('Categorías Activas', 'flavor-chat-ia'),
+            'icon' => 'dashicons-category',
+            'color' => 'eco',
+            'meta' => sprintf(__('de %d totales', 'flavor-chat-ia'), count($categorias_stats)),
+        ],
+        [
+            'value' => number_format_i18n($anuncios_pendientes),
+            'label' => __('Pendientes Moderación', 'flavor-chat-ia'),
+            'icon' => 'dashicons-clock',
+            'color' => 'warning',
+            'meta' => __('Requieren revisión', 'flavor-chat-ia'),
+        ],
+    ], 3);
     ?>
 
-    <!-- Cabecera -->
-    <div class="dm-header">
-        <div class="dm-header__content">
-            <h1 class="dm-header__title">
-                <span class="dashicons dashicons-store"></span>
-                <?php esc_html_e('Dashboard Marketplace', 'flavor-chat-ia'); ?>
-            </h1>
-            <p class="dm-header__description">
-                <?php esc_html_e('Panel operativo para seguir el estado del catálogo, la moderación y la actividad reciente del marketplace.', 'flavor-chat-ia'); ?>
-            </p>
+    <!-- ============================================ -->
+    <!-- GRÁFICOS CHART.JS -->
+    <!-- ============================================ -->
+    <div class="dm-section">
+        <div class="dm-section__header">
+            <h3 class="dm-section__title">
+                <span class="dashicons dashicons-chart-area"></span>
+                <?php _e('Análisis Visual', 'flavor-chat-ia'); ?>
+            </h3>
         </div>
-        <div class="dm-header__actions">
-            <a href="<?php echo esc_url(admin_url('post-new.php?post_type=marketplace_item')); ?>" class="dm-btn dm-btn--primary">
-                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nuevo anuncio', 'flavor-chat-ia'); ?>
-            </a>
-        </div>
-    </div>
+        <div class="dm-section__content">
+            <div class="dm-charts-grid">
 
-    <!-- Accesos Rápidos -->
-    <div class="dm-card">
-        <h2 class="dm-card__title">
-            <span class="dashicons dashicons-admin-links"></span> <?php esc_html_e('Accesos Rápidos', 'flavor-chat-ia'); ?>
-        </h2>
-        <div class="dm-action-grid">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=marketplace-anuncios')); ?>" class="dm-action-card">
-                <span class="dashicons dashicons-megaphone dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Anuncios', 'flavor-chat-ia'); ?></span>
-            </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=marketplace-moderacion')); ?>" class="dm-action-card dm-action-card--warning">
-                <span class="dashicons dashicons-shield dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Moderación', 'flavor-chat-ia'); ?></span>
-                <?php if ($anuncios_pendientes + $total_reportes_pendientes > 0): ?>
-                    <span class="dm-badge dm-badge--error"><?php echo $anuncios_pendientes + $total_reportes_pendientes; ?></span>
-                <?php endif; ?>
-            </a>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=marketplace-categorias')); ?>" class="dm-action-card dm-action-card--success">
-                <span class="dashicons dashicons-category dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Categorías', 'flavor-chat-ia'); ?></span>
-            </a>
-            <a href="<?php echo esc_url(admin_url('edit-tags.php?taxonomy=marketplace_tipo&post_type=marketplace_item')); ?>" class="dm-action-card dm-action-card--purple">
-                <span class="dashicons dashicons-tag dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Tipos', 'flavor-chat-ia'); ?></span>
-            </a>
-            <a href="<?php echo esc_url(home_url('/mi-portal/marketplace/')); ?>" class="dm-action-card">
-                <span class="dashicons dashicons-external dm-action-card__icon"></span>
-                <span class="dm-action-card__label"><?php esc_html_e('Portal público', 'flavor-chat-ia'); ?></span>
-            </a>
-        </div>
-    </div>
+                <!-- Gráfico 1: Evolución Anuncios 12 Meses -->
+                <div class="dm-chart-container">
+                    <h4><?php _e('Evolución de Anuncios Publicados (12 meses)', 'flavor-chat-ia'); ?></h4>
+                    <div class="dm-chart-wrapper">
+                        <canvas id="chartAnunciosMes"></canvas>
+                    </div>
+                </div>
 
-    <!-- Tarjetas de estadísticas -->
-    <div class="dm-stats-grid">
-        <div class="dm-stat-card">
-            <div class="dm-stat-card__icon">
-                <span class="dashicons dashicons-visibility"></span>
-            </div>
-            <div class="dm-stat-card__content">
-                <div class="dm-stat-card__value"><?php echo number_format_i18n($anuncios_publicados); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Publicados', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php esc_html_e('anuncios visibles', 'flavor-chat-ia'); ?></small>
-            </div>
-        </div>
+                <!-- Gráfico 2: Distribución por Categoría -->
+                <div class="dm-chart-container">
+                    <h4><?php _e('Distribución por Categoría', 'flavor-chat-ia'); ?></h4>
+                    <div class="dm-chart-wrapper">
+                        <canvas id="chartCategorias"></canvas>
+                    </div>
+                </div>
 
-        <div class="dm-stat-card dm-stat-card--warning">
-            <div class="dm-stat-card__icon">
-                <span class="dashicons dashicons-clock"></span>
-            </div>
-            <div class="dm-stat-card__content">
-                <div class="dm-stat-card__value"><?php echo number_format_i18n($anuncios_pendientes); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('En revisión', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php esc_html_e('esperando moderación', 'flavor-chat-ia'); ?></small>
-            </div>
-        </div>
+                <!-- Gráfico 3: Tipos de Anuncio -->
+                <div class="dm-chart-container">
+                    <h4><?php _e('Tipos de Anuncio', 'flavor-chat-ia'); ?></h4>
+                    <div class="dm-chart-wrapper">
+                        <canvas id="chartTipos"></canvas>
+                    </div>
+                </div>
 
-        <div class="dm-stat-card dm-stat-card--success">
-            <div class="dm-stat-card__icon">
-                <span class="dashicons dashicons-yes-alt"></span>
-            </div>
-            <div class="dm-stat-card__content">
-                <div class="dm-stat-card__value"><?php echo number_format_i18n($publicados_hoy); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Publicados hoy', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php esc_html_e('nuevas altas del día', 'flavor-chat-ia'); ?></small>
-            </div>
-        </div>
-
-        <div class="dm-stat-card dm-stat-card--info">
-            <div class="dm-stat-card__icon">
-                <span class="dashicons dashicons-category"></span>
-            </div>
-            <div class="dm-stat-card__content">
-                <div class="dm-stat-card__value"><?php echo number_format_i18n($categorias_activas); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Categorías activas', 'flavor-chat-ia'); ?></div>
-                <small class="dm-text-muted"><?php esc_html_e('con contenido publicado', 'flavor-chat-ia'); ?></small>
             </div>
         </div>
     </div>
 
-    <!-- Alertas operativas -->
-    <?php if ($anuncios_pendientes > 0 || $total_reportes_pendientes > 0 || $pendientes_antiguos > 0): ?>
-    <div class="dm-alert dm-alert--warning">
-        <span class="dashicons dashicons-warning"></span>
+    <div class="dm-grid-2">
+
+        <!-- ============================================ -->
+        <!-- COLUMNA IZQUIERDA -->
+        <!-- ============================================ -->
         <div>
-            <strong><?php esc_html_e('Cola operativa', 'flavor-chat-ia'); ?></strong>
-            <ul style="margin: 8px 0 0; padding-left: 20px;">
-                <?php if ($anuncios_pendientes > 0): ?>
-                    <li><?php printf(esc_html__('%s pendientes de moderación', 'flavor-chat-ia'), number_format_i18n($anuncios_pendientes)); ?></li>
-                <?php endif; ?>
-                <?php if ($total_reportes_pendientes > 0): ?>
-                    <li><?php printf(esc_html__('%s reportes de abuso', 'flavor-chat-ia'), number_format_i18n($total_reportes_pendientes)); ?></li>
-                <?php endif; ?>
-                <?php if ($pendientes_antiguos > 0): ?>
-                    <li><?php printf(esc_html__('%s pendientes con más de 3 días', 'flavor-chat-ia'), number_format_i18n($pendientes_antiguos)); ?></li>
-                <?php endif; ?>
-                <?php if ($borradores_antiguos > 0): ?>
-                    <li><?php printf(esc_html__('%s borradores antiguos', 'flavor-chat-ia'), number_format_i18n($borradores_antiguos)); ?></li>
-                <?php endif; ?>
-            </ul>
+
+            <!-- Top 10 Productos Más Vistos -->
+            <?php if (!empty($top_productos_vistos)): ?>
+            <div class="dm-section">
+                <div class="dm-section__header">
+                    <h3 class="dm-section__title">
+                        <span class="dashicons dashicons-visibility"></span>
+                        <?php _e('Top 10 Productos Más Vistos', 'flavor-chat-ia'); ?>
+                    </h3>
+                </div>
+                <div class="dm-section__content">
+                    <div class="dm-ranking-list">
+                        <?php
+                        $posicion = 1;
+                        foreach ($top_productos_vistos as $producto):
+                            $medallas = ['🥇', '🥈', '🥉'];
+                            $medalla = isset($medallas[$posicion - 1]) ? $medallas[$posicion - 1] : '📍';
+                        ?>
+                        <div class="dm-ranking-item">
+                            <span class="dm-ranking-pos"><?php echo $medalla; ?></span>
+                            <div class="dm-ranking-info">
+                                <strong><?php echo esc_html($producto->post_title); ?></strong>
+                                <span class="dm-ranking-meta"><?php echo number_format_i18n($producto->vistas); ?> <?php _e('vistas', 'flavor-chat-ia'); ?></span>
+                            </div>
+                            <span class="dm-ranking-badge">#<?php echo $posicion; ?></span>
+                        </div>
+                        <?php
+                        $posicion++;
+                        endforeach;
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Anuncios Recientes -->
+            <?php
+            $anuncios_table = [];
+            foreach ($anuncios_recientes as $anuncio) {
+                $tipo_term = get_the_terms($anuncio->ID, 'marketplace_tipo');
+                $tipo = $tipo_term && !is_wp_error($tipo_term) ? $tipo_term[0]->name : '—';
+
+                $categoria_term = get_the_terms($anuncio->ID, 'marketplace_categoria');
+                $categoria = $categoria_term && !is_wp_error($categoria_term) ? $categoria_term[0]->name : '—';
+
+                $estado_colors = [
+                    'publish' => 'success',
+                    'pending' => 'warning',
+                    'draft' => 'secondary',
+                ];
+                $estado_labels = [
+                    'publish' => __('Publicado', 'flavor-chat-ia'),
+                    'pending' => __('Pendiente', 'flavor-chat-ia'),
+                    'draft' => __('Borrador', 'flavor-chat-ia'),
+                ];
+
+                $anuncios_table[] = [
+                    'titulo' => '<strong>' . esc_html($anuncio->post_title) . '</strong>',
+                    'tipo' => esc_html($tipo),
+                    'categoria' => esc_html($categoria),
+                    'fecha' => date_i18n('d/m/Y', strtotime($anuncio->post_date)),
+                    'estado' => $DC::badge(
+                        $estado_labels[$anuncio->post_status] ?? $anuncio->post_status,
+                        $estado_colors[$anuncio->post_status] ?? 'secondary'
+                    ),
+                ];
+            }
+
+            echo $DC::data_table([
+                'title' => __('Anuncios Recientes', 'flavor-chat-ia'),
+                'icon' => 'dashicons-list-view',
+                'columns' => [
+                    'titulo' => __('Título', 'flavor-chat-ia'),
+                    'tipo' => __('Tipo', 'flavor-chat-ia'),
+                    'categoria' => __('Categoría', 'flavor-chat-ia'),
+                    'fecha' => __('Fecha', 'flavor-chat-ia'),
+                    'estado' => __('Estado', 'flavor-chat-ia'),
+                ],
+                'data' => $anuncios_table,
+                'empty_message' => __('No hay anuncios aún', 'flavor-chat-ia'),
+                'striped' => true,
+                'hoverable' => true,
+            ]);
+            ?>
+
+            <!-- Análisis de Precios por Categoría -->
+            <?php if (!empty($precios_por_categoria)): ?>
+            <div class="dm-section">
+                <div class="dm-section__header">
+                    <h3 class="dm-section__title">
+                        <span class="dashicons dashicons-money-alt"></span>
+                        <?php _e('Análisis de Precios por Categoría', 'flavor-chat-ia'); ?>
+                    </h3>
+                </div>
+                <div class="dm-section__content">
+                    <div class="dm-precio-analisis">
+                        <?php foreach (array_slice($precios_por_categoria, 0, 8) as $cat_precio): ?>
+                        <div class="dm-precio-item">
+                            <div class="dm-precio-header">
+                                <strong><?php echo esc_html($cat_precio['categoria']); ?></strong>
+                                <span class="dm-precio-valor"><?php echo number_format_i18n($cat_precio['precio_promedio'], 2); ?> €</span>
+                            </div>
+                            <div class="dm-precio-meta">
+                                <?php echo number_format_i18n($cat_precio['total']); ?> <?php _e('anuncios', 'flavor-chat-ia'); ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+        </div>
+
+        <!-- ============================================ -->
+        <!-- COLUMNA DERECHA -->
+        <!-- ============================================ -->
+        <div>
+
+            <!-- Top 5 Vendedores -->
+            <?php if (!empty($top_vendedores)): ?>
+            <div class="dm-section">
+                <div class="dm-section__header">
+                    <h3 class="dm-section__title">
+                        <span class="dashicons dashicons-businessman"></span>
+                        <?php _e('Top 5 Vendedores', 'flavor-chat-ia'); ?>
+                    </h3>
+                </div>
+                <div class="dm-section__content">
+                    <div class="dm-vendedores-list">
+                        <?php
+                        $posicion = 1;
+                        foreach ($top_vendedores as $vendedor):
+                            $medallas = ['🥇', '🥈', '🥉'];
+                            $medalla = isset($medallas[$posicion - 1]) ? $medallas[$posicion - 1] : '⭐';
+                        ?>
+                        <div class="dm-vendedor-card">
+                            <span class="dm-vendedor-medalla"><?php echo $medalla; ?></span>
+                            <div class="dm-vendedor-info">
+                                <strong><?php echo esc_html($vendedor->display_name); ?></strong>
+                                <div class="dm-vendedor-stats">
+                                    <span><?php echo number_format_i18n($vendedor->total_anuncios); ?> <?php _e('anuncios', 'flavor-chat-ia'); ?></span>
+                                    <?php if ($vendedor->rating_promedio > 0): ?>
+                                    <span>⭐ <?php echo number_format_i18n($vendedor->rating_promedio, 1); ?>/5</span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                        $posicion++;
+                        endforeach;
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Productos Trending (7 días) -->
+            <?php if (!empty($trending_7_dias)): ?>
+            <div class="dm-section">
+                <div class="dm-section__header">
+                    <h3 class="dm-section__title">
+                        <span class="dashicons dashicons-thumbs-up"></span>
+                        <?php _e('Productos Trending (7 días)', 'flavor-chat-ia'); ?>
+                    </h3>
+                </div>
+                <div class="dm-section__content">
+                    <div class="dm-trending-list">
+                        <?php foreach ($trending_7_dias as $trending): ?>
+                        <div class="dm-trending-item">
+                            <span class="dm-trending-icon">🔥</span>
+                            <div class="dm-trending-info">
+                                <strong><?php echo esc_html($trending->post_title); ?></strong>
+                                <span class="dm-trending-meta"><?php echo number_format_i18n($trending->vistas_recientes); ?> <?php _e('vistas', 'flavor-chat-ia'); ?></span>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Actividad Reciente (Mini Chart) -->
+            <?php
+            $chart_html = '<div class="dm-mb-2">';
+            $chart_html .= '<p style="font-size: 13px; color: var(--dm-text-secondary); margin-bottom: 12px;">';
+            $chart_html .= __('Anuncios publicados en los últimos 7 días', 'flavor-chat-ia');
+            $chart_html .= '</p>';
+            $chart_html .= $DC::mini_chart($actividad_7_dias, 'primary');
+            $chart_html .= '</div>';
+
+            echo $DC::section(
+                __('Actividad Reciente', 'flavor-chat-ia'),
+                $chart_html,
+                [
+                    'icon' => 'dashicons-chart-line',
+                    'collapsible' => true,
+                ]
+            );
+            ?>
+
+            <!-- Distribución por Estado -->
+            <?php
+            $total_items = $anuncios_publicados + $anuncios_pendientes + $anuncios_borrador;
+            if ($total_items > 0) {
+                $dist_html = '<div style="display: grid; gap: 12px;">';
+                $dist_html .= $DC::progress_bar($anuncios_publicados, $total_items, __('Publicados', 'flavor-chat-ia'), 'success');
+                $dist_html .= $DC::progress_bar($anuncios_pendientes, $total_items, __('Pendientes', 'flavor-chat-ia'), 'warning');
+                $dist_html .= $DC::progress_bar($anuncios_borrador, $total_items, __('Borradores', 'flavor-chat-ia'), 'secondary');
+                $dist_html .= '</div>';
+
+                echo $DC::section(
+                    __('Distribución por Estado', 'flavor-chat-ia'),
+                    $dist_html,
+                    [
+                        'icon' => 'dashicons-chart-pie',
+                        'collapsible' => true,
+                    ]
+                );
+            }
+            ?>
+
+            <!-- Categorías Más Activas -->
+            <?php
+            if (!empty($categorias_stats)) {
+                $cat_html = '<div style="display: grid; gap: 12px;">';
+                foreach (array_slice($categorias_stats, 0, 8) as $cat) {
+                    if ($cat['total'] > 0) {
+                        $cat_html .= '<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--dm-bg-secondary); border-radius: 8px;">';
+                        $cat_html .= '<span style="font-weight: 500;">' . esc_html($cat['nombre']) . '</span>';
+                        $cat_html .= '<span style="color: var(--dm-primary); font-weight: 600;">' . number_format_i18n($cat['total']) . '</span>';
+                        $cat_html .= '</div>';
+                    }
+                }
+                $cat_html .= '</div>';
+
+                echo $DC::section(
+                    __('Categorías Más Activas', 'flavor-chat-ia'),
+                    $cat_html,
+                    [
+                        'icon' => 'dashicons-category',
+                        'collapsible' => true,
+                        'collapsed' => true,
+                    ]
+                );
+            }
+            ?>
+
+            <!-- Tipos de Anuncio -->
+            <?php
+            if (!empty($tipos_stats)) {
+                $tipos_html = '<div style="display: grid; gap: 8px;">';
+                foreach ($tipos_stats as $tipo) {
+                    if ($tipo['total'] > 0) {
+                        $tipo_colors = [
+                            'Venta' => 'success',
+                            'Regalo' => 'eco',
+                            'Intercambio' => 'info',
+                            'Alquiler' => 'warning',
+                        ];
+                        $color = $tipo_colors[$tipo['nombre']] ?? 'primary';
+                        $tipos_html .= '<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--dm-bg-secondary); border-radius: 6px;">';
+                        $tipos_html .= '<span>' . esc_html($tipo['nombre']) . '</span>';
+                        $tipos_html .= $DC::badge(number_format_i18n($tipo['total']), $color);
+                        $tipos_html .= '</div>';
+                    }
+                }
+                $tipos_html .= '</div>';
+
+                echo $DC::section(
+                    __('Tipos de Anuncio', 'flavor-chat-ia'),
+                    $tipos_html,
+                    [
+                        'icon' => 'dashicons-tag',
+                        'collapsible' => true,
+                        'collapsed' => true,
+                    ]
+                );
+            }
+            ?>
+
+            <!-- Acciones Rápidas -->
+            <?php
+            $actions_html = '
+            <div style="display: grid; gap: 8px;">
+                <a href="' . admin_url('edit.php?post_type=marketplace_item') . '" class="button button-primary">
+                    <span class="dashicons dashicons-list-view"></span>
+                    ' . __('Ver Todos los Anuncios', 'flavor-chat-ia') . '
+                </a>
+                <a href="' . admin_url('post-new.php?post_type=marketplace_item') . '" class="button button-secondary">
+                    <span class="dashicons dashicons-plus-alt"></span>
+                    ' . __('Crear Anuncio', 'flavor-chat-ia') . '
+                </a>
+                <a href="' . admin_url('edit-tags.php?taxonomy=marketplace_categoria&post_type=marketplace_item') . '" class="button button-secondary">
+                    <span class="dashicons dashicons-category"></span>
+                    ' . __('Gestionar Categorías', 'flavor-chat-ia') . '
+                </a>
+            </div>
+            ';
+
+            echo $DC::section(
+                __('Acciones Rápidas', 'flavor-chat-ia'),
+                $actions_html,
+                [
+                    'icon' => 'dashicons-admin-links',
+                    'collapsible' => true,
+                    'collapsed' => true,
+                ]
+            );
+            ?>
+
+        </div>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MÓDULOS RELACIONADOS -->
+    <!-- ============================================ -->
+    <?php
+    $active_modules = get_option('flavor_active_modules', []);
+    $modulos_relacionados = [];
+
+    // Grupos de Consumo
+    if (in_array('grupos-consumo', $active_modules)) {
+        $tabla_gc_productos = $wpdb->prefix . 'flavor_gc_productos';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_gc_productos'") === $tabla_gc_productos) {
+            $productos_gc = $wpdb->get_results(
+                "SELECT id, nombre, precio FROM $tabla_gc_productos
+                 WHERE activo = 1
+                 ORDER BY id DESC
+                 LIMIT 3"
+            );
+
+            if (!empty($productos_gc)) {
+                $datos_html = '<div class="dm-widget-data-list">';
+                foreach ($productos_gc as $prod) {
+                    $datos_html .= sprintf(
+                        '<div class="dm-widget-item">
+                            <strong>%s</strong>
+                            <span class="dm-widget-meta">%s €/ud</span>
+                        </div>',
+                        esc_html($prod->nombre),
+                        number_format_i18n($prod->precio, 2)
+                    );
+                }
+                $datos_html .= '</div>';
+
+                $modulos_relacionados['grupos-consumo'] = [
+                    'titulo' => sprintf(__('Productos en Grupos de Consumo (%d)', 'flavor-chat-ia'), count($productos_gc)),
+                    'descripcion' => __('Productos también disponibles en pedidos colectivos', 'flavor-chat-ia'),
+                    'icono' => 'dashicons-cart',
+                    'url' => admin_url('admin.php?page=flavor-grupos-consumo'),
+                    'datos' => $datos_html,
+                ];
+            }
+        }
+    }
+
+    // Eventos
+    if (in_array('eventos', $active_modules)) {
+        $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_eventos'") === $tabla_eventos) {
+            $eventos_comercio = $wpdb->get_results(
+                "SELECT id, titulo, fecha_inicio FROM $tabla_eventos
+                 WHERE (titulo LIKE '%feria%' OR titulo LIKE '%mercado%' OR categoria = 'comercio')
+                 AND fecha_inicio >= NOW()
+                 ORDER BY fecha_inicio ASC
+                 LIMIT 3"
+            );
+
+            if (!empty($eventos_comercio)) {
+                $datos_html = '<div class="dm-widget-data-list">';
+                foreach ($eventos_comercio as $evento) {
+                    $datos_html .= sprintf(
+                        '<div class="dm-widget-item">
+                            <strong>%s</strong>
+                            <span class="dm-widget-meta">📅 %s</span>
+                        </div>',
+                        esc_html($evento->titulo),
+                        date_i18n('d/m/Y', strtotime($evento->fecha_inicio))
+                    );
+                }
+                $datos_html .= '</div>';
+
+                $modulos_relacionados['eventos'] = [
+                    'titulo' => sprintf(__('Próximas Ferias y Mercados (%d)', 'flavor-chat-ia'), count($eventos_comercio)),
+                    'descripcion' => __('Eventos donde promocionar tus productos', 'flavor-chat-ia'),
+                    'icono' => 'dashicons-calendar',
+                    'url' => admin_url('admin.php?page=flavor-eventos'),
+                    'datos' => $datos_html,
+                ];
+            }
+        }
+    }
+
+    // Socios
+    if (in_array('socios', $active_modules)) {
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_socios'") === $tabla_socios) {
+            $vendedores_socios = $wpdb->get_results(
+                "SELECT DISTINCT u.display_name, COUNT(p.ID) as total_anuncios
+                 FROM {$wpdb->posts} p
+                 INNER JOIN $tabla_socios s ON p.post_author = s.usuario_id
+                 INNER JOIN {$wpdb->users} u ON s.usuario_id = u.ID
+                 WHERE p.post_type = 'marketplace_item'
+                 AND p.post_status = 'publish'
+                 AND s.estado = 'activo'
+                 GROUP BY s.usuario_id
+                 ORDER BY total_anuncios DESC
+                 LIMIT 3"
+            );
+
+            if (!empty($vendedores_socios)) {
+                $datos_html = '<div class="dm-widget-data-list">';
+                foreach ($vendedores_socios as $vendedor) {
+                    $datos_html .= sprintf(
+                        '<div class="dm-widget-item">
+                            <strong>%s</strong>
+                            <span class="dm-widget-meta">⭐ %d anuncios</span>
+                        </div>',
+                        esc_html($vendedor->display_name),
+                        (int)$vendedor->total_anuncios
+                    );
+                }
+                $datos_html .= '</div>';
+
+                $modulos_relacionados['socios'] = [
+                    'titulo' => sprintf(__('Vendedores Socios (%d)', 'flavor-chat-ia'), count($vendedores_socios)),
+                    'descripcion' => __('Top vendedores que son socios de la comunidad', 'flavor-chat-ia'),
+                    'icono' => 'dashicons-groups',
+                    'url' => admin_url('admin.php?page=flavor-socios'),
+                    'datos' => $datos_html,
+                ];
+            }
+        }
+    }
+
+    // Comunidades
+    if (in_array('comunidades', $active_modules)) {
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_comunidades'") === $tabla_comunidades) {
+            $comunidades_activas = (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM $tabla_comunidades WHERE activo = 1"
+            );
+
+            if ($comunidades_activas > 0) {
+                $datos_html = '<p style="font-size: 14px; color: var(--dm-text-secondary);">';
+                $datos_html .= sprintf(__('%d comunidades donde se publican anuncios', 'flavor-chat-ia'), $comunidades_activas);
+                $datos_html .= '</p>';
+
+                $modulos_relacionados['comunidades'] = [
+                    'titulo' => __('Anuncios en Comunidades', 'flavor-chat-ia'),
+                    'descripcion' => __('Alcance multi-comunidad del marketplace', 'flavor-chat-ia'),
+                    'icono' => 'dashicons-groups',
+                    'url' => admin_url('admin.php?page=flavor-comunidades'),
+                    'datos' => $datos_html,
+                ];
+            }
+        }
+    }
+
+    if (!empty($modulos_relacionados)):
+    ?>
+    <div class="dm-section" style="margin-top: 32px;">
+        <div class="dm-section__header">
+            <h3 class="dm-section__title">
+                <span class="dashicons dashicons-networking"></span>
+                <?php _e('Módulos Relacionados', 'flavor-chat-ia'); ?>
+            </h3>
+        </div>
+        <div class="dm-section__content">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+                <?php foreach ($modulos_relacionados as $modulo): ?>
+                <div class="dm-widget-relacionado">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <span class="dashicons <?php echo esc_attr($modulo['icono']); ?>" style="color: var(--dm-primary); font-size: 24px;"></span>
+                        <strong style="font-size: 15px;"><?php echo esc_html($modulo['titulo']); ?></strong>
+                    </div>
+                    <p style="color: var(--dm-text-secondary); font-size: 13px; margin: 0 0 12px 0;"><?php echo esc_html($modulo['descripcion']); ?></p>
+
+                    <?php if (isset($modulo['datos'])): ?>
+                        <div class="dm-widget-datos-vivo">
+                            <?php echo $modulo['datos']; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <a href="<?php echo esc_url($modulo['url']); ?>" class="button button-small" style="margin-top: 12px;">
+                        <?php _e('Ver todos', 'flavor-chat-ia'); ?> →
+                    </a>
+                </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
     <?php endif; ?>
 
-    <!-- Grid de paneles -->
-    <div class="dm-grid dm-grid--3">
-        <!-- Por estado -->
-        <div class="dm-card">
-            <h3 class="dm-card__title">
-                <span class="dashicons dashicons-tag"></span> <?php esc_html_e('Por estado', 'flavor-chat-ia'); ?>
-            </h3>
-            <div class="dm-badge-list">
-                <?php foreach ([
-                    'publish' => $anuncios_publicados,
-                    'pending' => $anuncios_pendientes,
-                    'draft' => $anuncios_borrador,
-                    'private' => $anuncios_privados,
-                ] as $estado => $total_estado): ?>
-                    <div class="dm-badge-item">
-                        <span class="dm-badge <?php echo esc_attr($estado_badges[$estado]); ?>">
-                            <?php echo esc_html($estado_labels[$estado]); ?>
-                        </span>
-                        <strong><?php echo number_format_i18n($total_estado); ?></strong>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-
-        <!-- Tipos de transacción -->
-        <div class="dm-card">
-            <h3 class="dm-card__title">
-                <span class="dashicons dashicons-randomize"></span> <?php esc_html_e('Tipos', 'flavor-chat-ia'); ?>
-            </h3>
-            <?php if (!empty($tipos_stats)): ?>
-                <ol class="dm-ranking">
-                    <?php foreach (array_slice($tipos_stats, 0, 5) as $tipo): ?>
-                        <li>
-                            <span><?php echo esc_html($tipo['nombre']); ?></span>
-                            <strong><?php echo number_format_i18n($tipo['total']); ?></strong>
-                        </li>
-                    <?php endforeach; ?>
-                </ol>
-            <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Sin tipos registrados.', 'flavor-chat-ia'); ?></p>
-            <?php endif; ?>
-        </div>
-
-        <!-- Tendencia -->
-        <div class="dm-card">
-            <h3 class="dm-card__title">
-                <span class="dashicons dashicons-chart-bar"></span> <?php esc_html_e('Ritmo mensual', 'flavor-chat-ia'); ?>
-            </h3>
-            <?php if (!empty($anuncios_mensuales)): ?>
-                <div class="dm-trend">
-                    <?php foreach ($anuncios_mensuales as $mes):
-                        $fecha = DateTime::createFromFormat('Y-m', $mes->mes);
-                        $altura = $max_mes > 0 ? max(20, (int) round(((int) $mes->total / $max_mes) * 100)) : 20;
-                    ?>
-                        <div class="dm-trend__item">
-                            <div class="dm-trend__bar" style="height: <?php echo esc_attr($altura); ?>px;"></div>
-                            <strong><?php echo number_format_i18n((int) $mes->total); ?></strong>
-                            <small><?php echo esc_html($fecha ? $fecha->format('M') : $mes->mes); ?></small>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Sin datos suficientes.', 'flavor-chat-ia'); ?></p>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Tablas -->
-    <div class="dm-grid dm-grid--2">
-        <!-- Pendientes prioritarios -->
-        <div class="dm-card">
-            <h3 class="dm-card__title">
-                <span class="dashicons dashicons-clock"></span> <?php esc_html_e('Pendientes prioritarios', 'flavor-chat-ia'); ?>
-            </h3>
-            <?php if (!empty($anuncios_pendientes_lista)): ?>
-                <table class="dm-table">
-                    <thead>
-                        <tr>
-                            <th><?php esc_html_e('Anuncio', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Espera', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Acción', 'flavor-chat-ia'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach (array_slice($anuncios_pendientes_lista, 0, 5) as $anuncio):
-                            $dias = max(0, floor((current_time('timestamp') - get_post_time('U', false, $anuncio)) / DAY_IN_SECONDS));
-                            $clase_dias = $dias >= 3 ? 'dm-badge--error' : ($dias >= 1 ? 'dm-badge--warning' : 'dm-badge--success');
-                        ?>
-                            <tr>
-                                <td>
-                                    <strong><?php echo esc_html(wp_trim_words(get_the_title($anuncio), 5)); ?></strong>
-                                    <div class="dm-table__subtitle"><?php echo esc_html(get_the_author_meta('display_name', (int) $anuncio->post_author)); ?></div>
-                                </td>
-                                <td>
-                                    <span class="dm-badge <?php echo $clase_dias; ?>">
-                                        <?php printf(esc_html__('%d días', 'flavor-chat-ia'), $dias); ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="<?php echo esc_url(get_edit_post_link($anuncio->ID)); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                                        <?php esc_html_e('Revisar', 'flavor-chat-ia'); ?>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <div class="dm-empty">
-                    <span class="dashicons dashicons-yes-alt dm-empty__icon"></span>
-                    <p><?php esc_html_e('No hay anuncios pendientes de revisión.', 'flavor-chat-ia'); ?></p>
-                </div>
-            <?php endif; ?>
-            <div class="dm-card__footer">
-                <a href="<?php echo esc_url(admin_url('admin.php?page=marketplace-moderacion')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Abrir moderación', 'flavor-chat-ia'); ?>
-                </a>
-            </div>
-        </div>
-
-        <!-- Actividad reciente -->
-        <div class="dm-card">
-            <h3 class="dm-card__title">
-                <span class="dashicons dashicons-update"></span> <?php esc_html_e('Actividad reciente', 'flavor-chat-ia'); ?>
-            </h3>
-            <?php if (!empty($anuncios_recientes)): ?>
-                <table class="dm-table">
-                    <thead>
-                        <tr>
-                            <th><?php esc_html_e('Anuncio', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach (array_slice($anuncios_recientes, 0, 5) as $anuncio): ?>
-                            <tr>
-                                <td>
-                                    <strong><?php echo esc_html(wp_trim_words(get_the_title($anuncio), 5)); ?></strong>
-                                    <div class="dm-table__subtitle"><?php echo esc_html(get_the_author_meta('display_name', (int) $anuncio->post_author)); ?></div>
-                                </td>
-                                <td>
-                                    <span class="dm-badge <?php echo esc_attr($estado_badges[$anuncio->post_status] ?? 'dm-badge--secondary'); ?>">
-                                        <?php echo esc_html($estado_labels[$anuncio->post_status] ?? $anuncio->post_status); ?>
-                                    </span>
-                                </td>
-                                <td class="dm-table__muted">
-                                    <?php echo esc_html(get_the_date('d M', $anuncio)); ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <div class="dm-empty">
-                    <span class="dashicons dashicons-store dm-empty__icon"></span>
-                    <p><?php esc_html_e('Sin actividad reciente.', 'flavor-chat-ia'); ?></p>
-                </div>
-            <?php endif; ?>
-            <div class="dm-card__footer">
-                <a href="<?php echo esc_url(admin_url('edit.php?post_type=marketplace_item')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
-                    <?php esc_html_e('Ver listado completo', 'flavor-chat-ia'); ?>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Rankings -->
-    <div class="dm-grid dm-grid--2">
-        <!-- Top vendedores -->
-        <div class="dm-card">
-            <h3 class="dm-card__title">
-                <span class="dashicons dashicons-businessman"></span> <?php esc_html_e('Top vendedores', 'flavor-chat-ia'); ?>
-            </h3>
-            <?php if (!empty($usuarios_activos)): ?>
-                <ol class="dm-ranking">
-                    <?php foreach ($usuarios_activos as $usuario):
-                        $user_data = get_userdata((int) $usuario->post_author);
-                        if (!$user_data) continue;
-                    ?>
-                        <li>
-                            <span><?php echo esc_html($user_data->display_name); ?></span>
-                            <strong><?php echo number_format_i18n((int) $usuario->total_anuncios); ?></strong>
-                        </li>
-                    <?php endforeach; ?>
-                </ol>
-            <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Sin vendedores activos.', 'flavor-chat-ia'); ?></p>
-            <?php endif; ?>
-        </div>
-
-        <!-- Top categorías -->
-        <div class="dm-card">
-            <h3 class="dm-card__title">
-                <span class="dashicons dashicons-category"></span> <?php esc_html_e('Top categorías', 'flavor-chat-ia'); ?>
-            </h3>
-            <?php if (!empty($categorias_stats)): ?>
-                <ol class="dm-ranking">
-                    <?php foreach (array_slice($categorias_stats, 0, 6) as $categoria): ?>
-                        <li>
-                            <span>
-                                <a href="<?php echo esc_url(admin_url('edit.php?post_type=marketplace_item&marketplace_categoria=' . rawurlencode($categoria['slug']))); ?>">
-                                    <?php echo esc_html($categoria['nombre']); ?>
-                                </a>
-                            </span>
-                            <strong><?php echo number_format_i18n($categoria['total']); ?></strong>
-                        </li>
-                    <?php endforeach; ?>
-                </ol>
-            <?php else: ?>
-                <p class="dm-text-muted"><?php esc_html_e('Sin categorías.', 'flavor-chat-ia'); ?></p>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Resumen -->
-    <div class="dm-card">
-        <h3 class="dm-card__title">
-            <span class="dashicons dashicons-lightbulb"></span> <?php esc_html_e('Foco recomendado', 'flavor-chat-ia'); ?>
-        </h3>
-        <div class="dm-focus-list">
-            <div class="dm-focus-item">
-                <span class="dm-focus-item__value"><?php echo number_format_i18n($total_anuncios); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('anuncios en total', 'flavor-chat-ia'); ?></span>
-            </div>
-            <div class="dm-focus-item">
-                <span class="dm-focus-item__value"><?php echo number_format_i18n($anuncios_pendientes + $total_reportes_pendientes); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('tareas de moderación', 'flavor-chat-ia'); ?></span>
-            </div>
-            <div class="dm-focus-item">
-                <span class="dm-focus-item__value"><?php echo number_format_i18n($borradores_antiguos); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('borradores para limpiar', 'flavor-chat-ia'); ?></span>
-            </div>
-            <div class="dm-focus-item">
-                <span class="dm-focus-item__value"><?php echo number_format_i18n(count($categorias_stats)); ?></span>
-                <span class="dm-focus-item__label"><?php esc_html_e('categorías configuradas', 'flavor-chat-ia'); ?></span>
-            </div>
-        </div>
-    </div>
 </div>
+
+<!-- ============================================ -->
+<!-- JAVASCRIPT CHART.JS -->
+<!-- ============================================ -->
+<script>
+jQuery(document).ready(function($) {
+
+    // Gráfico 1: Evolución Anuncios 12 Meses
+    const ctx1 = document.getElementById('chartAnunciosMes');
+    if (ctx1) {
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: <?php echo json_encode($labels_meses); ?>,
+                datasets: [{
+                    label: '<?php _e('Anuncios Publicados', 'flavor-chat-ia'); ?>',
+                    data: <?php echo json_encode($data_anuncios_mes); ?>,
+                    backgroundColor: '#f59e0b',
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 }
+                    }
+                }
+            }
+        });
+    }
+
+    // Gráfico 2: Distribución por Categoría
+    const ctx2 = document.getElementById('chartCategorias');
+    if (ctx2) {
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: <?php echo json_encode(array_column(array_slice($categorias_stats, 0, 8), 'nombre')); ?>,
+                datasets: [{
+                    data: <?php echo json_encode(array_column(array_slice($categorias_stats, 0, 8), 'total')); ?>,
+                    backgroundColor: [
+                        '#f59e0b', '#3b82f6', '#10b981', '#ef4444',
+                        '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { boxWidth: 12, padding: 10 }
+                    }
+                }
+            }
+        });
+    }
+
+    // Gráfico 3: Tipos de Anuncio
+    const ctx3 = document.getElementById('chartTipos');
+    if (ctx3) {
+        new Chart(ctx3, {
+            type: 'pie',
+            data: {
+                labels: <?php echo json_encode(array_column($tipos_stats, 'nombre')); ?>,
+                datasets: [{
+                    data: <?php echo json_encode(array_column($tipos_stats, 'total')); ?>,
+                    backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'],
+                    borderWidth: 2,
+                    borderColor: '#fff',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 12, padding: 10 }
+                    }
+                }
+            }
+        });
+    }
+
+});
+</script>
+
+<!-- ============================================ -->
+<!-- ESTILOS CSS -->
+<!-- ============================================ -->
+<style>
+.marketplace-dashboard {
+    max-width: 1400px;
+}
+
+.dm-dashboard-header {
+    margin-bottom: 24px;
+}
+
+.dm-dashboard-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    margin: 0 0 8px;
+}
+
+.dm-dashboard-title .dashicons {
+    color: #f59e0b;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+}
+
+.dm-dashboard-subtitle {
+    font-size: 15px;
+    color: var(--dm-text-secondary);
+    margin: 0;
+}
+
+/* Panel de Filtros */
+.dm-filters-panel {
+    margin-bottom: 20px;
+}
+
+.dm-filters-form {
+    padding: 0;
+}
+
+.dm-filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    align-items: end;
+}
+
+.dm-filter-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--dm-text);
+}
+
+.dm-filter-group select,
+.dm-filter-group input[type="number"],
+.dm-filter-group input[type="date"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.dm-filter-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Botones de Exportación */
+.dm-export-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    justify-content: flex-end;
+}
+
+.dm-export-buttons .button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Gráficos Chart.js */
+.dm-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 24px;
+}
+
+.dm-chart-container {
+    background: var(--dm-bg);
+    border: 1px solid var(--dm-border);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.dm-chart-container h4 {
+    margin: 0 0 16px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dm-text);
+}
+
+.dm-chart-wrapper {
+    position: relative;
+    height: 300px;
+}
+
+/* Rankings y Listas */
+.dm-ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dm-ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--dm-bg-secondary);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.dm-ranking-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dm-ranking-pos {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.dm-ranking-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dm-ranking-info strong {
+    font-size: 14px;
+    color: var(--dm-text);
+}
+
+.dm-ranking-meta {
+    font-size: 12px;
+    color: var(--dm-text-secondary);
+}
+
+.dm-ranking-badge {
+    background: var(--dm-primary);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Vendedores */
+.dm-vendedores-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dm-vendedor-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--dm-bg-secondary);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.dm-vendedor-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dm-vendedor-medalla {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.dm-vendedor-info {
+    flex: 1;
+}
+
+.dm-vendedor-info strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.dm-vendedor-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--dm-text-secondary);
+}
+
+/* Trending */
+.dm-trending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dm-trending-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--dm-bg-secondary);
+    border-radius: 8px;
+}
+
+.dm-trending-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.dm-trending-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dm-trending-info strong {
+    font-size: 13px;
+}
+
+.dm-trending-meta {
+    font-size: 12px;
+    color: var(--dm-text-secondary);
+}
+
+/* Análisis de Precios */
+.dm-precio-analisis {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dm-precio-item {
+    padding: 12px;
+    background: var(--dm-bg-secondary);
+    border-radius: 8px;
+}
+
+.dm-precio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.dm-precio-header strong {
+    font-size: 14px;
+    color: var(--dm-text);
+}
+
+.dm-precio-valor {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dm-success);
+}
+
+.dm-precio-meta {
+    font-size: 12px;
+    color: var(--dm-text-secondary);
+}
+
+/* Widgets Módulos Relacionados */
+.dm-widget-relacionado {
+    padding: 20px;
+    background: var(--dm-bg-secondary);
+    border-radius: 12px;
+    border-left: 4px solid var(--dm-primary);
+    transition: all 0.3s ease;
+}
+
+.dm-widget-relacionado:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.dm-widget-datos-vivo {
+    margin: 12px 0;
+    padding: 12px;
+    background: var(--dm-bg);
+    border-radius: 8px;
+}
+
+.dm-widget-data-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dm-widget-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: var(--dm-bg-secondary);
+    border-radius: 6px;
+    font-size: 13px;
+    transition: background 0.2s ease;
+}
+
+.dm-widget-item:hover {
+    background: var(--dm-bg-hover, rgba(0, 0, 0, 0.05));
+}
+
+.dm-widget-item strong {
+    flex: 1;
+    color: var(--dm-text);
+}
+
+.dm-widget-meta {
+    color: var(--dm-text-secondary);
+    font-size: 12px;
+    white-space: nowrap;
+    margin-left: 8px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .dm-charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 782px) {
+    .dm-filters-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dm-export-buttons {
+        justify-content: flex-start;
+    }
+}
+</style>

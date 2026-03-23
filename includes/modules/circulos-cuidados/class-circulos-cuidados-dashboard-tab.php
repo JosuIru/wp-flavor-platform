@@ -185,15 +185,15 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/cuidados/necesidades/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'necesidades')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Ver Necesidades', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/cuidados/solicitar/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'solicitar')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-megaphone"></span>
                     <?php esc_html_e('Solicitar Cuidado', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/cuidados/unirse/')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'unirse')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Unirse a Círculo', 'flavor-chat-ia'); ?>
                 </a>
@@ -232,7 +232,7 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
         <div class="flavor-panel flavor-mis-circulos-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-groups"></span> <?php esc_html_e('Mis Círculos', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/mi-portal/cuidados/crear-circulo/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'crear-circulo')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Crear Círculo', 'flavor-chat-ia'); ?>
                 </a>
@@ -244,10 +244,10 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
                     <p><?php esc_html_e('Aún no perteneces a ningún círculo de cuidados.', 'flavor-chat-ia'); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('Los círculos de cuidados son redes de apoyo mutuo entre vecinos.', 'flavor-chat-ia'); ?></p>
                     <div class="flavor-empty-actions">
-                        <a href="<?php echo esc_url(home_url('/mi-portal/cuidados/unirse/')); ?>" class="flavor-btn flavor-btn-primary">
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'unirse')); ?>" class="flavor-btn flavor-btn-primary">
                             <?php esc_html_e('Unirse a un círculo', 'flavor-chat-ia'); ?>
                         </a>
-                        <a href="<?php echo esc_url(home_url('/mi-portal/cuidados/crear-circulo/')); ?>" class="flavor-btn flavor-btn-outline">
+                        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'crear-circulo')); ?>" class="flavor-btn flavor-btn-outline">
                             <?php esc_html_e('Crear un círculo', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
@@ -280,7 +280,7 @@ class Flavor_Circulos_Cuidados_Dashboard_Tab {
                                         date_i18n(get_option('date_format'), strtotime($circulo->fecha_union))
                                     ); ?>
                                 </span>
-                                <a href="<?php echo esc_url(home_url('/mi-portal/cuidados/circulo/' . $circulo->id)); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
+                                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('circulos_cuidados', 'circulo') . '/' . $circulo->id); ?>" class="flavor-btn flavor-btn-sm flavor-btn-outline">
                                     <?php esc_html_e('Ver', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>

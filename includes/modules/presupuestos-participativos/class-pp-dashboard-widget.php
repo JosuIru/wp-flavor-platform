@@ -97,7 +97,7 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => number_format($presupuesto_activo->importe_total, 0, ',', '.') . ' €',
                 'label' => __('Presupuesto', 'flavor-chat-ia'),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos') : home_url('/mi-portal/presupuestos-participativos/'),
+                'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos') : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', ''),
             ];
 
             $fase_texto = [
@@ -120,7 +120,7 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                     'valor' => $proyectos_en_votacion,
                     'label' => __('Proyectos', 'flavor-chat-ia'),
                     'color' => 'success',
-                    'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos&tab=proyectos') : home_url('/mi-portal/presupuestos-participativos/proyectos/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos&tab=proyectos') : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', 'proyectos'),
                 ];
             }
         } else {
@@ -141,7 +141,7 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver presupuestos', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos') : home_url('/mi-portal/presupuestos-participativos/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos') : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -173,7 +173,7 @@ class Flavor_PP_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-lightbulb',
                 'title' => wp_trim_words($proyecto->titulo, 5, '...'),
                 'meta' => number_format($proyecto->coste_estimado, 0, ',', '.') . ' €',
-                'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos&proyecto=' . $proyecto->id) : home_url('/mi-portal/presupuestos-participativos/proyecto/' . $proyecto->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=presupuestos-participativos&proyecto=' . $proyecto->id) : Flavor_Chat_Helpers::get_action_url('presupuestos_participativos', 'proyecto') . '/' . $proyecto->id . '/',
                 'badge' => $proyecto->total_votos > 0 ? $proyecto->total_votos . ' votos' : null,
             ];
         }

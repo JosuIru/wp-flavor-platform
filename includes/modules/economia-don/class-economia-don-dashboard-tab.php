@@ -151,11 +151,11 @@ class Flavor_Economia_Don_Dashboard_Tab {
             </div>
 
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/mi-portal/economia-don/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-upload"></span>
                     <?php esc_html_e('Ofrecer un Don', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/economia-don/explorar/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'explorar')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Explorar Dones', 'flavor-chat-ia'); ?>
                 </a>
@@ -189,7 +189,7 @@ class Flavor_Economia_Don_Dashboard_Tab {
         <div class="flavor-panel flavor-mis-dones-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-heart"></span> <?php esc_html_e('Mis Dones', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/mi-portal/economia-don/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt"></span>
                     <?php esc_html_e('Ofrecer Don', 'flavor-chat-ia'); ?>
                 </a>
@@ -200,7 +200,7 @@ class Flavor_Economia_Don_Dashboard_Tab {
                     <span class="dashicons dashicons-heart"></span>
                     <p><?php esc_html_e('Aún no has ofrecido ningún don a la comunidad.', 'flavor-chat-ia'); ?></p>
                     <p class="flavor-text-muted"><?php esc_html_e('La economía del don se basa en dar libremente sin esperar algo a cambio.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/economia-don/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('economia_don', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Ofrecer mi primer don', 'flavor-chat-ia'); ?>
                     </a>
                 </div>

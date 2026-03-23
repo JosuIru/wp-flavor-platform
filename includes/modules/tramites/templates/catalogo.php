@@ -69,7 +69,7 @@ foreach ($tramites as $tramite) {
 }
 
 // URL base para los tramites
-$tramites_base_url = home_url('/mi-portal/tramites/');
+$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 ?>
 
 <div class="tramites-catalogo-wrapper">

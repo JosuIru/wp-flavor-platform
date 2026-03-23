@@ -290,7 +290,7 @@ class BancoTiempoCrudService extends CrudService<ServicioBancoTiempo>
   @override
   Future<bool> solicitarServicio(String servicioId, String mensaje) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/banco-tiempo/servicios/$servicioId/solicitar',
         data: {
           'mensaje': mensaje,
@@ -306,11 +306,11 @@ class BancoTiempoCrudService extends CrudService<ServicioBancoTiempo>
   /// Obtener solicitudes recibidas
   Future<List<SolicitudIntercambio>> getSolicitudesRecibidas() async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/banco-tiempo/solicitudes/recibidas',
       );
 
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => SolicitudIntercambio.fromJson(json)).toList();
     } catch (e) {
       debugPrint('[BancoTiempoCrudService] Error obteniendo solicitudes: $e');
@@ -321,11 +321,11 @@ class BancoTiempoCrudService extends CrudService<ServicioBancoTiempo>
   /// Obtener solicitudes enviadas
   Future<List<SolicitudIntercambio>> getSolicitudesEnviadas() async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/banco-tiempo/solicitudes/enviadas',
       );
 
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => SolicitudIntercambio.fromJson(json)).toList();
     } catch (e) {
       debugPrint('[BancoTiempoCrudService] Error obteniendo solicitudes: $e');
@@ -336,7 +336,7 @@ class BancoTiempoCrudService extends CrudService<ServicioBancoTiempo>
   /// Aceptar solicitud
   Future<bool> aceptarSolicitud(String solicitudId) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/banco-tiempo/solicitudes/$solicitudId/aceptar',
       );
       return true;
@@ -349,7 +349,7 @@ class BancoTiempoCrudService extends CrudService<ServicioBancoTiempo>
   /// Rechazar solicitud
   Future<bool> rechazarSolicitud(String solicitudId, {String? motivo}) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/banco-tiempo/solicitudes/$solicitudId/rechazar',
         data: {
           if (motivo != null) 'motivo': motivo,
@@ -365,7 +365,7 @@ class BancoTiempoCrudService extends CrudService<ServicioBancoTiempo>
   /// Completar intercambio
   Future<bool> completarIntercambio(String solicitudId, int horasReales) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/banco-tiempo/solicitudes/$solicitudId/completar',
         data: {
           'horas_reales': horasReales,
@@ -385,7 +385,7 @@ class BancoTiempoCrudService extends CrudService<ServicioBancoTiempo>
     String? comentario,
   ) async {
     try {
-      await _apiClient.post(
+      await apiClient.post(
         '/flavor-app/v2/banco-tiempo/solicitudes/$solicitudId/valorar',
         data: {
           'valoracion': valoracion,
@@ -402,10 +402,10 @@ class BancoTiempoCrudService extends CrudService<ServicioBancoTiempo>
   /// Obtener balance de horas
   Future<BalanceHoras?> getBalance() async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/banco-tiempo/balance',
       );
-      return BalanceHoras.fromJson(response.data);
+      return BalanceHoras.fromJson(response.data ?? {});
     } catch (e) {
       debugPrint('[BancoTiempoCrudService] Error obteniendo balance: $e');
       return null;
@@ -415,11 +415,11 @@ class BancoTiempoCrudService extends CrudService<ServicioBancoTiempo>
   /// Obtener categorías
   Future<List<Map<String, dynamic>>> getCategorias() async {
     try {
-      final response = await _apiClient.get(
+      final response = await apiClient.get(
         '/flavor-app/v2/banco-tiempo/categorias',
       );
 
-      final List<dynamic> data = response.data['items'] ?? response.data;
+      final List<dynamic> data = response.data?['items'] ?? response.data;
       return data.map((json) => Map<String, dynamic>.from(json)).toList();
     } catch (e) {
       debugPrint('[BancoTiempoCrudService] Error obteniendo categorías: $e');

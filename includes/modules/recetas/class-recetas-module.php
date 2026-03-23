@@ -34,6 +34,8 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
         $this->description = __('Gestiona recetas vinculables a productos. Incluye ingredientes, pasos y tiempos de preparacion.', 'flavor-chat-ia');
 
         parent::__construct();
+        $this->cargar_frontend_controller();
+
     }
 
     /**
@@ -1727,7 +1729,7 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
                     <h2><?php esc_html_e('Multimedia de la receta', 'flavor-chat-ia'); ?></h2>
                     <p><?php echo esc_html(get_the_title($receta)); ?></p>
                 </div>
-                <a href="<?php echo esc_url(home_url('/mi-portal/multimedia/subir/?receta_id=' . absint($receta->ID))); ?>" class="button button-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('multimedia', 'subir') . '?receta_id=' . absint($receta->ID)); ?>" class="button button-primary">
                     <?php esc_html_e('Subir archivo', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -1764,7 +1766,7 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
                     <h2><?php esc_html_e('Actividad social de la receta', 'flavor-chat-ia'); ?></h2>
                     <p><?php echo esc_html(get_the_title($receta)); ?></p>
                 </div>
-                <a href="<?php echo esc_url(home_url('/mi-portal/red-social/crear/?receta_id=' . absint($receta->ID))); ?>" class="button button-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('red_social', 'crear') . '?receta_id=' . absint($receta->ID)); ?>" class="button button-primary">
                     <?php esc_html_e('Publicar', 'flavor-chat-ia'); ?>
                 </a>
             </div>
@@ -2067,4 +2069,16 @@ class Flavor_Chat_Recetas_Module extends Flavor_Chat_Module_Base {
     public function render_tab_red_social(): string {
         return $this->action_red_social_receta([]);
     }
+
+    /**
+     * Cargar frontend controller
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-recetas-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Recetas_Frontend_Controller::get_instance();
+        }
+    }
+
 }

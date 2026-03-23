@@ -474,11 +474,11 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
 
             <!-- Acciones -->
             <div class="flavor-panel-actions" style="margin-top: 1.5rem;">
-                <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Ofrecer Servicio', 'flavor-chat-ia'); ?>
                 </a>
-                <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/servicios/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-search"></span>
                     <?php esc_html_e('Buscar Servicios', 'flavor-chat-ia'); ?>
                 </a>
@@ -524,7 +524,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
         <div class="flavor-panel flavor-bt-servicios-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-hammer"></span> <?php esc_html_e('Mis Servicios', 'flavor-chat-ia'); ?></h2>
-                <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
+                <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary flavor-btn-sm">
                     <span class="dashicons dashicons-plus-alt2"></span>
                     <?php esc_html_e('Nuevo', 'flavor-chat-ia'); ?>
                 </a>
@@ -535,7 +535,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                     <span class="dashicons dashicons-clock"></span>
                     <p><?php esc_html_e('Aun no has publicado ningun servicio.', 'flavor-chat-ia'); ?></p>
                     <p><?php esc_html_e('Comparte tus habilidades con la comunidad y gana horas.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/ofrecer/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'ofrecer')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Ofrecer mi primer servicio', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -578,7 +578,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                 </div>
 
                 <div class="flavor-panel-footer">
-                    <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/servicios/')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php esc_html_e('Ver mis servicios', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -633,7 +633,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                     <span class="dashicons dashicons-randomize"></span>
                     <p><?php esc_html_e('No tienes intercambios registrados.', 'flavor-chat-ia'); ?></p>
                     <p><?php esc_html_e('Busca servicios que necesites o publica los tuyos.', 'flavor-chat-ia'); ?></p>
-                    <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/servicios/')); ?>" class="flavor-btn flavor-btn-primary">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'servicios')); ?>" class="flavor-btn flavor-btn-primary">
                         <?php esc_html_e('Explorar servicios', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
@@ -699,7 +699,7 @@ class Flavor_Banco_Tiempo_Dashboard_Tab {
                 </div>
 
                 <div class="flavor-panel-footer">
-                    <a href="<?php echo esc_url(home_url('/mi-portal/banco-tiempo/intercambios/')); ?>" class="flavor-btn flavor-btn-outline">
+                    <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('banco_tiempo', 'intercambios')); ?>" class="flavor-btn flavor-btn-outline">
                         <?php esc_html_e('Ver historial completo', 'flavor-chat-ia'); ?>
                     </a>
                 </div>

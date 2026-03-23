@@ -28,7 +28,7 @@ $porcentaje_gestion = $args['porcentaje_gestion'] ?? 0;
 $gastos_gestion = $total_productos * ($porcentaje_gestion / 100);
 $total_final = $total_productos + $gastos_gestion;
 $notas_ciclo = $args['notas_ciclo'] ?? '';
-$url_catalogo = $args['url_catalogo'] ?? home_url('/mi-portal/grupos-consumo/productos/');
+$url_catalogo = $args['url_catalogo'] ?? Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos');
 ?>
 
 <div class="flavor-gc-carrito-completo" data-usuario="<?php echo esc_attr($usuario_id); ?>">
@@ -41,7 +41,7 @@ $url_catalogo = $args['url_catalogo'] ?? home_url('/mi-portal/grupos-consumo/pro
             </div>
             <h2><?php _e('Acceso restringido', 'flavor-chat-ia'); ?></h2>
             <p><?php _e('Necesitas iniciar sesion para ver y gestionar tu pedido.', 'flavor-chat-ia'); ?></p>
-            <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/mi-pedido/'))); ?>" class="flavor-gc-btn flavor-gc-btn-primary flavor-gc-btn-lg">
+            <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))); ?>" class="flavor-gc-btn flavor-gc-btn-primary flavor-gc-btn-lg">
                 <span class="dashicons dashicons-admin-users"></span>
                 <?php _e('Iniciar sesion', 'flavor-chat-ia'); ?>
             </a>
@@ -165,7 +165,7 @@ $url_catalogo = $args['url_catalogo'] ?? home_url('/mi-portal/grupos-consumo/pro
                                             <?php endif; ?>
                                         </div>
                                         <div class="flavor-gc-producto-texto">
-                                            <a href="<?php echo esc_url(add_query_arg('product', intval($item['producto_id']), home_url('/mi-portal/grupos-consumo/productos/'))); ?>" class="flavor-gc-producto-nombre">
+                                            <a href="<?php echo esc_url(add_query_arg('product', intval($item['producto_id']), Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos'))); ?>" class="flavor-gc-producto-nombre">
                                                 <?php echo esc_html($item['nombre']); ?>
                                             </a>
                                             <?php if (!empty($item['es_ecologico'])): ?>

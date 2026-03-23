@@ -92,7 +92,7 @@ if (!$tipo_tramite) {
     echo '<span class="dashicons dashicons-warning"></span>';
     echo '<h3>' . esc_html__('Tramite no encontrado', 'flavor-chat-ia') . '</h3>';
     echo '<p>' . esc_html__('El tipo de tramite seleccionado no existe o no esta disponible.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(home_url('/mi-portal/tramites/')) . '" class="btn btn-primary">' . esc_html__('Ver catalogo', 'flavor-chat-ia') . '</a>';
+    echo '<a href="' . esc_url(Flavor_Chat_Helpers::get_action_url('tramites', '')) . '" class="btn btn-primary">' . esc_html__('Ver catalogo', 'flavor-chat-ia') . '</a>';
     echo '</div>';
     return;
 }
@@ -108,7 +108,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_campos_formulario)) {
 
 // Datos del usuario actual
 $usuario_actual = wp_get_current_user();
-$tramites_base_url = home_url('/mi-portal/tramites/');
+$tramites_base_url = Flavor_Chat_Helpers::get_action_url('tramites', '');
 ?>
 
 <div class="tramites-iniciar-wrapper">

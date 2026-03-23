@@ -1,0 +1,278 @@
+openapi: 3.0.3
+info:
+  title: Flavor Platform - Site Builder & VBP API
+  version: 2.1.0
+  description: |
+    APIs para creación automatizada de sitios con Claude Code.
+
+    ## Autenticación
+    Header requerido: `X-VBP-Key: flavor-vbp-2024`
+
+    ## APIs Incluidas
+    - **Site Builder**: Configuración completa de sitios
+    - **VBP Claude**: Visual Builder Pro para páginas
+    - **App Config**: Configuración de apps móviles
+
+  contact:
+    name: Flavor Platform
+  license:
+    name: GPL-3.0
+
+servers:
+  - url: '{protocol}://{domain}/wp-json'
+    variables:
+      protocol:
+        default: https
+        enum: [http, https]
+      domain:
+        default: tu-sitio.com
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Site Builder
+    description: Configuración y creación de sitios
+  - name: VBP Pages
+    description: Visual Builder Pro - Páginas
+  - name: VBP Design
+    description: Visual Builder Pro - Diseño y bloques
+  - name: Modules
+    description: Gestión de módulos
+
+paths:
+  # SITE BUILDER
+  /flavor-site-builder/v1/system/health:
+    get:
+      tags: [Site Builder]
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /flavor-site-builder/v1/templates:
+    get:
+      tags: [Site Builder]
+      summary: Listar plantillas
+      responses:
+        '200':
+          description: Lista de plantillas
+
+  /flavor-site-builder/v1/modules:
+    get:
+      tags: [Modules]
+      summary: Listar módulos
+      responses:
+        '200':
+          description: Lista de módulos
+
+  /flavor-site-builder/v1/modules/activate:
+    post:
+      tags: [Modules]
+      summary: Activar módulos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                modules:
+                  type: array
+                  items:
+                    type: string
+                  example: ["socios", "eventos"]
+      responses:
+        '200':
+          description: Módulos activados
+
+  /flavor-site-builder/v1/site/create:
+    post:
+      tags: [Site Builder]
+      summary: Crear sitio completo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                template:
+                  type: string
+                name:
+                  type: string
+                modules:
+                  type: array
+                  items:
+                    type: string
+                include_demo_data:
+                  type: boolean
+      responses:
+        '201':
+          description: Sitio creado
+
+  /flavor-site-builder/v1/pages/create-for-modules:
+    post:
+      tags: [Site Builder]
+      summary: Crear páginas para módulos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                modules:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Páginas creadas
+
+  # VBP PAGES
+  /flavor-vbp/v1/claude/pages/styled:
+    post:
+      tags: [VBP Pages]
+      summary: Crear página con estilos
+      description: |
+        **IMPORTANTE**: `sections` es array de strings, NO objetos.
+        Los datos van en `context`.
+
+        ```json
+        {
+          "title": "Mi Página",
+          "preset": "modern",
+          "sections": ["hero", "features", "cta"],
+          "context": {"topic": "Mi Proyecto"},
+          "status": "publish"
+        }
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StyledPageRequest'
+            examples:
+              crowdfunding:
+                value:
+                  title: "Apoya Proyectos"
+                  preset: "fundraising"
+                  sections: ["hero", "module_crowdfunding", "como_funciona", "donacion"]
+                  context:
+                    topic: "Crowdfunding"
+                  status: "publish"
+      responses:
+        '201':
+          description: Página creada
+        '400':
+          description: Preset inválido
+
+  /flavor-vbp/v1/claude/pages:
+    get:
+      tags: [VBP Pages]
+      summary: Listar páginas VBP
+      responses:
+        '200':
+          description: Lista de páginas
+    post:
+      tags: [VBP Pages]
+      summary: Crear página con elementos custom
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                elements:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '201':
+          description: Página creada
+
+  /flavor-vbp/v1/claude/pages/{id}/publish:
+    post:
+      tags: [VBP Pages]
+      summary: Publicar página
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Página publicada
+
+  # VBP DESIGN
+  /flavor-vbp/v1/claude/section-types:
+    get:
+      tags: [VBP Design]
+      summary: Tipos de sección disponibles
+      responses:
+        '200':
+          description: Lista de tipos
+
+  /flavor-vbp/v1/claude/design-presets:
+    get:
+      tags: [VBP Design]
+      summary: Presets de diseño
+      responses:
+        '200':
+          description: Lista de presets
+
+  /flavor-vbp/v1/claude/capabilities:
+    get:
+      tags: [VBP Design]
+      summary: Capacidades del sistema
+      responses:
+        '200':
+          description: Capacidades
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-VBP-Key
+
+  schemas:
+    StyledPageRequest:
+      type: object
+      required: [title, preset, sections]
+      properties:
+        title:
+          type: string
+          example: "Mi Landing"
+        preset:
+          type: string
+          enum: [modern, corporate, minimal, dark, vibrant, elegant, tech, nature, community, cooperative, eco, fundraising]
+        sections:
+          type: array
+          description: "Array de STRINGS (tipos), NO objetos"
+          items:
+            type: string
+          example: ["hero", "features", "cta"]
+        context:
+          type: object
+          description: "Datos para personalizar secciones"
+          properties:
+            topic:
+              type: string
+            titulo:
+              type: string
+            subtitulo:
+              type: string
+        status:
+          type: string
+          enum: [draft, publish]
+          default: draft

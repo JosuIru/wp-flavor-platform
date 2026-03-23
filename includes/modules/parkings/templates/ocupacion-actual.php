@@ -72,7 +72,7 @@ if ($porcentaje_general >= 90) {
     $color_estado = '#f59e0b'; // Amarillo
 }
 
-$parkings_url = home_url('/mi-portal/parkings/');
+$parkings_url = Flavor_Chat_Helpers::get_action_url('parkings', '');
 ?>
 
 <div class="widget-ocupacion-actual">

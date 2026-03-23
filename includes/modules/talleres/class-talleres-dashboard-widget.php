@@ -70,7 +70,7 @@ class Flavor_Talleres_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'valor' => $talleres_proximos,
                 'label' => __('Talleres próximos', 'flavor-chat-ia'),
                 'color' => 'primary',
-                'url' => $es_admin ? admin_url('admin.php?page=talleres') : home_url('/mi-portal/talleres/'),
+                'url' => $es_admin ? admin_url('admin.php?page=talleres') : Flavor_Chat_Helpers::get_action_url('talleres', ''),
             ],
         ];
 
@@ -83,7 +83,7 @@ class Flavor_Talleres_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
             'footer' => [
                 [
                     'label' => __('Ver talleres', 'flavor-chat-ia'),
-                    'url' => $es_admin ? admin_url('admin.php?page=talleres') : home_url('/mi-portal/talleres/'),
+                    'url' => $es_admin ? admin_url('admin.php?page=talleres') : Flavor_Chat_Helpers::get_action_url('talleres', ''),
                     'icon' => 'dashicons-arrow-right-alt2',
                 ],
             ],
@@ -113,7 +113,7 @@ class Flavor_Talleres_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'icon' => 'dashicons-hammer',
                 'title' => wp_trim_words($taller->titulo, 5, '...'),
                 'meta' => date_i18n('j M, H:i', strtotime($taller->fecha)),
-                'url' => $es_admin ? admin_url('admin.php?page=talleres&id=' . $taller->id) : home_url('/mi-portal/talleres/ver/' . $taller->id . '/'),
+                'url' => $es_admin ? admin_url('admin.php?page=talleres&id=' . $taller->id) : Flavor_Chat_Helpers::get_action_url('talleres', 'ver') . '/' . $taller->id . '/',
             ];
         }
 

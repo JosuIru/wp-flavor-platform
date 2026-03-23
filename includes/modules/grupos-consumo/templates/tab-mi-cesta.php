@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 if (!is_user_logged_in()) {
     echo '<div class="gc-cesta-login">';
     echo '<p>' . esc_html__('Inicia sesión para ver tu pedido.', 'flavor-chat-ia') . '</p>';
-    echo '<a href="' . esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/mi-pedido/'))) . '" class="gc-btn gc-btn-primary">';
+    echo '<a href="' . esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'mi-pedido'))) . '" class="gc-btn gc-btn-primary">';
     echo esc_html__('Iniciar sesión', 'flavor-chat-ia');
     echo '</a></div>';
     return;
@@ -111,7 +111,7 @@ if ($query->have_posts()) {
     <div class="gc-cesta-empty">
         <span class="dashicons dashicons-products"></span>
         <p><?php esc_html_e('Tu pedido está vacío.', 'flavor-chat-ia'); ?></p>
-        <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-primary">
+        <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-primary">
             <?php esc_html_e('Ver productos', 'flavor-chat-ia'); ?>
         </a>
     </div>
@@ -182,7 +182,7 @@ if ($query->have_posts()) {
         </table>
 
         <div class="gc-cesta-actions">
-            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/productos/')); ?>" class="gc-btn gc-btn-secondary">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'productos')); ?>" class="gc-btn gc-btn-secondary">
                 <span class="dashicons dashicons-arrow-left-alt2"></span>
                 <?php esc_html_e('Seguir añadiendo productos', 'flavor-chat-ia'); ?>
             </a>
@@ -351,7 +351,7 @@ if ($query->have_posts()) {
             data: $form.serialize() + '&action=gc_confirm_cart',
             success: function(response) {
                 if (response.success && response.data.entrega_id) {
-                    window.location.href = '<?php echo esc_url(home_url('/mi-portal/grupos-consumo/checkout/')); ?>?entrega_id=' + response.data.entrega_id;
+                    window.location.href = '<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'checkout')); ?>?entrega_id=' + response.data.entrega_id;
                 } else {
                     gcAviso(response.data.error || '<?php echo esc_js(__('Error al confirmar el pedido.', 'flavor-chat-ia')); ?>');
                     $btn.prop('disabled', false).text('<?php echo esc_js(__('Confirmar pedido', 'flavor-chat-ia')); ?>');

@@ -198,7 +198,7 @@ $tipos_colors = [
                                 <?php esc_html_e('Completar', 'flavor-chat-ia'); ?>
                             </button>
                         <?php else: ?>
-                            <a href="<?php echo esc_url(wp_login_url(home_url('/mi-portal/grupos-consumo/'))); ?>" class="gc-btn gc-btn--outline">
+                            <a href="<?php echo esc_url(wp_login_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', ''))); ?>" class="gc-btn gc-btn--outline">
                                 <?php esc_html_e('Iniciar sesión', 'flavor-chat-ia'); ?>
                             </a>
                         <?php endif; ?>

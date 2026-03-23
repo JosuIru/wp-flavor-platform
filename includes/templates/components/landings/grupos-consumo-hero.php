@@ -19,7 +19,7 @@ $color = $color_primario ?? '#84cc16';
         <p class="text-xl md:text-2xl opacity-90 mb-8 max-w-2xl mx-auto"><?php echo esc_html($subtitulo ?? 'Consume local, apoya a productores cercanos'); ?></p>
 
         <?php if (!empty($mostrar_buscador)): ?>
-        <form action="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/buscar/')); ?>" method="get" class="max-w-xl mx-auto">
+        <form action="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', 'buscar')); ?>" method="get" class="max-w-xl mx-auto">
             <div class="flex gap-2">
                 <input type="text" name="q" placeholder="Buscar grupos de consumo..."
                        class="flex-1 px-6 py-4 rounded-xl text-gray-800 text-lg focus:outline-none focus:ring-4 focus:ring-white/30">
@@ -31,7 +31,7 @@ $color = $color_primario ?? '#84cc16';
         <?php endif; ?>
 
         <div class="flex flex-wrap justify-center gap-4 mt-8">
-            <a href="<?php echo esc_url(home_url('/mi-portal/grupos-consumo/')); ?>" class="bg-white text-green-700 px-8 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors">
+            <a href="<?php echo esc_url(Flavor_Chat_Helpers::get_action_url('grupos_consumo', '')); ?>" class="bg-white text-green-700 px-8 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors">
                 Ver Grupos
             </a>
             <a href="#como-funciona" class="bg-white/20 text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/30 transition-colors">

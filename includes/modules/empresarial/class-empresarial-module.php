@@ -33,6 +33,7 @@ class Flavor_Chat_Empresarial_Module extends Flavor_Chat_Module_Base {
         $this->description = $this->module_description;
 
         parent::__construct();
+        $this->cargar_frontend_controller();
     }
 
     /**
@@ -2599,4 +2600,16 @@ KNOWLEDGE;
             Flavor_Empresarial_Dashboard_Tab::get_instance();
         }
     }
+
+    /**
+     * Cargar frontend controller
+     */
+    private function cargar_frontend_controller() {
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-empresarial-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+            Flavor_Empresarial_Frontend_Controller::get_instance();
+        }
+    }
+
 }

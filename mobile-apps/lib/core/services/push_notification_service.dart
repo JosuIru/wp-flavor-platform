@@ -140,7 +140,7 @@ class PushNotificationService {
     }
 
     try {
-      final response = await _apiClient.postData('/push/register', {
+      final response = await _apiClient.postData('/push/register', data: {
         'token': _fcmToken,
         'device_id': deviceId ?? _generateDeviceId(),
         'platform': Platform.isAndroid ? 'android' : 'ios',
@@ -174,7 +174,7 @@ class PushNotificationService {
     if (_fcmToken == null) return true;
 
     try {
-      final response = await _apiClient.postData('/push/unregister', {
+      final response = await _apiClient.postData('/push/unregister', data: {
         'token': _fcmToken,
       });
 
@@ -201,7 +201,7 @@ class PushNotificationService {
     if (_fcmToken == null) return false;
 
     try {
-      final response = await _apiClient.postData('/push/topics/subscribe', {
+      final response = await _apiClient.postData('/push/topics/subscribe', data: {
         'token': _fcmToken,
         'topic': topic,
       });
@@ -224,7 +224,7 @@ class PushNotificationService {
     if (_fcmToken == null) return false;
 
     try {
-      final response = await _apiClient.postData('/push/topics/unsubscribe', {
+      final response = await _apiClient.postData('/push/topics/unsubscribe', data: {
         'token': _fcmToken,
         'topic': topic,
       });

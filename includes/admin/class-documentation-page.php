@@ -105,6 +105,11 @@ class Flavor_Documentation_Page {
      * Renderiza la página
      */
     public function render_page() {
+        if (class_exists('Flavor_Documentation_Admin')) {
+            Flavor_Documentation_Admin::get_instance()->render_page();
+            return;
+        }
+
         $current_doc = isset($_GET['doc']) ? sanitize_file_name($_GET['doc']) : 'indice';
         $docs = $this->get_available_docs();
         ?>
