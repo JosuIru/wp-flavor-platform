@@ -232,24 +232,34 @@ final class Flavor_Bootstrap_Dependencies {
      * @return void
      */
     private function load_api_system() {
-        // Rate Limiter para APIs
+        // Rate Limiter para APIs (v1 - compatibilidad)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-api-rate-limiter.php';
+
+        // Rate Limiter v2 (sliding window, headers, whitelist, ban)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-api-rate-limiter-v2.php';
+        // Se auto-inicializa
 
         // API de Configuración de Módulos para Apps Dinámicas
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-config-api.php';
+        new Flavor_Module_Config_API(); // NO usa singleton
 
         // API de Federación para Red Social
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-federation-api.php';
+        Flavor_Federation_API::get_instance();
 
         // API de Estado de Módulos
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-gap-status-api.php';
+        Flavor_Module_Gap_Status_API::get_instance();
 
         // API REST para apps móviles
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-mobile-api.php';
+        Chat_IA_Mobile_API::get_instance();
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-mobile-api-extensions.php';
+        Flavor_Mobile_API_Extensions::get_instance();
 
         // API de Contenido Nativo
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-native-content-api.php';
+        Flavor_Native_Content_API::get_instance();
 
         // API REST para Dashboard de Cliente
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-client-dashboard-api.php';
@@ -257,12 +267,71 @@ final class Flavor_Bootstrap_Dependencies {
 
         // API REST para cifrado E2E
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-e2e-rest-api.php';
+        new Flavor_E2E_REST_API(); // NO usa singleton (solo testing)
 
         // Documentación API
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-api-documentation.php';
+        Flavor_API_Documentation::get_instance();
 
         // REST API para acciones de módulos
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-actions-api.php';
+        Flavor_Module_Actions_API::get_instance();
+
+        // API REST para integración con Claude Code / VBP
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-vbp-claude-api.php';
+        Flavor_VBP_Claude_API::get_instance();
+
+        // API de Diagnóstico VBP (para verificar estado del sistema)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-vbp-diagnostics.php';
+        Flavor_VBP_Diagnostics::get_instance();
+
+        // API de Preview VBP (endpoints públicos para previsualizar landings)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-vbp-preview-api.php';
+        Flavor_VBP_Preview_API::get_instance();
+
+        // Site Builder API para creación completa de sitios
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-site-builder-api.php';
+        Flavor_Site_Builder_API::get_instance();
+
+        // API de Configuración de Sitio (layouts, menús, settings)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-site-config-api.php';
+        Flavor_Site_Config_API::get_instance();
+
+        // API de Media (imágenes, iconos, placeholders, fuentes, gradientes)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-media-api.php';
+        Flavor_Media_API::get_instance();
+
+        // API de Gestión de Módulos (activar/desactivar, configurar, demo data)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-manager-api.php';
+        Flavor_Module_Manager_API::get_instance();
+
+        // API de Configuración de Apps/APKs (branding, temas, permisos, build)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-app-config-api.php';
+        Flavor_App_Config_API::get_instance();
+
+        // API de Manifiesto de Apps v2 (endpoint unificado, versionado, sincronización bidireccional)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-app-manifest-api.php';
+        Flavor_App_Manifest_API::get_instance();
+
+        // API de Push Notifications (Firebase Cloud Messaging)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-push-notifications-api.php';
+        Flavor_Push_Notifications_API::get_instance();
+
+        // API de Analytics (tracking de eventos, estadísticas de uso)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-analytics-api.php';
+        Flavor_Analytics_API::get_instance();
+
+        // API de Crash Reporting (reportes de errores, estadísticas de crashes)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-crash-reporting-api.php';
+        Flavor_Crash_Reporting_API::get_instance();
+
+        // API de Lazy Loading (carga bajo demanda de módulos y recursos)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-lazy-loading-api.php';
+        Flavor_Lazy_Loading_API::get_instance();
+
+        // API de SEO (meta tags, Open Graph, Twitter Cards, Schema.org, sitemap)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-seo-api.php';
+        Flavor_SEO_API::get_instance();
     }
 
     /**
@@ -602,6 +671,19 @@ final class Flavor_Bootstrap_Dependencies {
         // Generador de Apps/Webs con IA
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-generator/class-app-generator.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-generator/class-app-generator-admin.php';
+
+        // Gestión de APKs y Apps Móviles
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-analytics-dashboard.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-apk-builder.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-releases.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-dashboard-widget.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-keystore-manager.php';
+
+        // Inicializar clases de gestión de apps
+        Flavor_App_Analytics_Dashboard::get_instance();
+        Flavor_APK_Builder::get_instance();
+        Flavor_App_Releases::get_instance();
+        // Widget y Keystore se auto-inicializan
 
         // Admin de Newsletter
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-newsletter-admin.php';
