@@ -305,6 +305,21 @@ class Flavor_VBP_Design_Presets {
         add_action( 'rest_api_init', array( $this, 'registrar_endpoints' ) );
         add_action( 'wp_head', array( $this, 'inyectar_variables_css' ), 5 );
         add_action( 'admin_head', array( $this, 'inyectar_variables_css_admin' ), 5 );
+        add_filter( 'body_class', array( $this, 'agregar_clase_tema_body' ) );
+    }
+
+    /**
+     * Agrega la clase del tema activo al body
+     *
+     * @param array $classes Clases actuales del body
+     * @return array Clases modificadas
+     */
+    public function agregar_clase_tema_body( $classes ) {
+        $preset_activo_id = get_option( self::OPTION_ACTIVE_PRESET, 'modern-blue' );
+        if ( $preset_activo_id ) {
+            $classes[] = 'vbp-theme-' . sanitize_html_class( $preset_activo_id );
+        }
+        return $classes;
     }
 
     /**

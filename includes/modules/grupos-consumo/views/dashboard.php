@@ -16,6 +16,7 @@ $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
 
 // Verificar si la tabla existe
 $tabla_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_pedidos)) === $tabla_pedidos;
+$tablas_disponibles = $tabla_existe;
 
 if ($tabla_existe) {
     $total_pedidos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_pedidos");
@@ -86,33 +87,6 @@ $args_ciclos = [
 $ciclo_actual = new WP_Query($args_ciclos);
 $hay_ciclo_abierto = $ciclo_actual->have_posts();
 
-// Datos de ejemplo si no hay datos reales
-$usar_datos_ejemplo = empty($productos_top) && empty($actividad_ciclos) && $total_pedidos === 0;
-
-if ($usar_datos_ejemplo) {
-    $total_pedidos = 165;
-    $pedidos_pendientes = 12;
-    $pedidos_completados = 148;
-    $ventas_mes = 2450.00;
-    $total_productos = $total_productos ?: 45;
-    $total_productores = $total_productores ?: 8;
-
-    $productos_top = [
-        (object) ['producto_id' => 0, 'total_cantidad' => 145, 'total_ventas' => 435.00, 'nombre' => 'Tomates Eco'],
-        (object) ['producto_id' => 0, 'total_cantidad' => 120, 'total_ventas' => 240.00, 'nombre' => 'Lechugas Frescas'],
-        (object) ['producto_id' => 0, 'total_cantidad' => 98, 'total_ventas' => 294.00, 'nombre' => 'Zanahorias Bio'],
-        (object) ['producto_id' => 0, 'total_cantidad' => 85, 'total_ventas' => 510.00, 'nombre' => 'Aceite Oliva Virgen'],
-        (object) ['producto_id' => 0, 'total_cantidad' => 72, 'total_ventas' => 180.00, 'nombre' => 'Huevos Camperos'],
-    ];
-
-    $actividad_ciclos = [
-        (object) ['ciclo' => 'Febrero 2026', 'total_pedidos' => 48, 'total_ventas' => 1250.00],
-        (object) ['ciclo' => 'Enero 2026', 'total_pedidos' => 52, 'total_ventas' => 1480.00],
-        (object) ['ciclo' => 'Diciembre 2025', 'total_pedidos' => 65, 'total_ventas' => 1890.00],
-        (object) ['ciclo' => 'Noviembre 2025', 'total_pedidos' => 43, 'total_ventas' => 1120.00],
-    ];
-}
-
 $estado_badges = [
     'pendiente' => 'dm-badge--warning',
     'confirmado' => 'dm-badge--info',
@@ -136,11 +110,11 @@ $estado_labels = [
     }
     ?>
 
-    <?php if ($usar_datos_ejemplo): ?>
+    <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Se muestran datos de ejemplo. Los datos reales aparecerán cuando se registren pedidos.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Falta la tabla del módulo Grupos de Consumo o aún no hay pedidos registrados.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 

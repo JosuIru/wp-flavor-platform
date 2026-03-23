@@ -6,10 +6,12 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/api/api_client.dart';
 import '../../core/config/server_config.dart';
 import '../../core/models/directory_models.dart';
 import '../../core/services/business_directory_service.dart';
 import '../../core/providers/providers.dart';
+import '../../core/providers/sync_provider.dart';
 
 class DirectoryScreen extends ConsumerStatefulWidget {
   final VoidCallback? onConnected;
@@ -45,6 +47,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
     if (uri == null) return;
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
+
   LatLng? _userLocation;
   bool _showMap = false;
   double _nearbyRadiusKm = 50;
@@ -80,7 +83,8 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
 
   Future<void> _toggleFavorite(DirectoryNode node) async {
     if (node.siteUrl.isEmpty) return;
-    await ServerConfig.toggleFavoriteNode(siteUrl: node.siteUrl, nodeId: node.id);
+    await ServerConfig.toggleFavoriteNode(
+        siteUrl: node.siteUrl, nodeId: node.id);
     await _loadFavorites();
   }
 
@@ -137,22 +141,38 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
         throw Exception('URL del negocio no disponible');
       }
 
+      final discoveryResponse = await ApiClient.discoverSiteAt(serverUrl);
+      if (!discoveryResponse.success || discoveryResponse.data == null) {
+        throw Exception(
+          discoveryResponse.error ?? 'No se pudo descubrir la API del sitio',
+        );
+      }
+      final apiNamespace = await ApiClient.detectPreferredApiNamespace(
+        serverUrl,
+        discoveryData: discoveryResponse.data,
+      );
+
       final saved = SavedBusiness(
         id: SavedBusiness.makeId(
           serverUrl,
-          ServerConfig.defaultApiNamespace,
+          apiNamespace,
           'client',
         ),
         name: business.nombre,
         serverUrl: serverUrl,
-        apiNamespace: ServerConfig.defaultApiNamespace,
+        apiNamespace: apiNamespace,
         type: 'client',
       );
 
       await ref.read(serverConfigProvider.notifier).setCurrentBusiness(saved);
       ref.read(apiClientProvider).updateBaseUrl(
-        '$serverUrl${ServerConfig.defaultApiNamespace}',
-      );
+            '$serverUrl$apiNamespace',
+          );
+      final syncResult =
+          await ref.read(syncProvider.notifier).syncWithSite(serverUrl);
+      if (!syncResult.success) {
+        throw Exception(syncResult.error ?? 'No se pudo sincronizar el sitio');
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -186,14 +206,17 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
 
     try {
       final permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
         final requested = await Geolocator.requestPermission();
-        if (requested == LocationPermission.denied || requested == LocationPermission.deniedForever) {
+        if (requested == LocationPermission.denied ||
+            requested == LocationPermission.deniedForever) {
           throw Exception('Permiso de ubicación denegado');
         }
       }
 
-      final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      final position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
       _userLocation = LatLng(position.latitude, position.longitude);
 
       final serverUrl = await ServerConfig.getServerUrl();
@@ -222,9 +245,8 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
     final i18n = AppLocalizations.of(context)!;
     final data = _data;
     final nodes = List<DirectoryNode>.from(data?.nodos ?? []);
-    final filteredNodes = _showFavoritesOnly
-        ? nodes.where(_isFavorite).toList()
-        : nodes;
+    final filteredNodes =
+        _showFavoritesOnly ? nodes.where(_isFavorite).toList() : nodes;
 
     if (_userLocation != null) {
       filteredNodes.sort((a, b) {
@@ -239,177 +261,201 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: i18n.buscar113f74,
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-              ),
-              onSubmitted: (_) => _loadDirectory(),
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              labelText: i18n.buscar113f74,
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(),
             ),
-            if (widget.embedded) ...[
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(_showMap ? Icons.list : Icons.map),
-                    onPressed: () => setState(() => _showMap = !_showMap),
-                  ),
-                  const SizedBox(width: 4),
-                  IconButton(
-                    icon: const Icon(Icons.refresh),
-                    onPressed: _isLoading ? null : _loadDirectory,
-                  ),
-                ],
-              ),
-            ],
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedTipo,
-                    decoration: InputDecoration(
-                      labelText: i18n.tipo4f427c,
-                      border: OutlineInputBorder(),
-                    ),
-                    items: [
-                      DropdownMenuItem(value: '', child: Text(i18n.todos32630c)),
-                      DropdownMenuItem(value: 'comunidad', child: Text(i18n.comunidad6b02af)),
-                      DropdownMenuItem(value: 'cooperativa', child: Text(i18n.cooperativa657922)),
-                      DropdownMenuItem(value: 'asociacion', child: Text(i18n.asociaciN59d9a3)),
-                      DropdownMenuItem(value: 'empresa', child: Text(i18n.empresa9bc720)),
-                      DropdownMenuItem(value: 'colectivo', child: Text(i18n.colectivo9c6f6f)),
-                      DropdownMenuItem(value: 'fundacion', child: Text(i18n.fundaciN0bcfd2)),
-                      DropdownMenuItem(value: 'particular', child: Text(i18n.particular1d75c6)),
-                      DropdownMenuItem(value: 'administracion', child: Text(i18n.administraciNPBlica86e1c4)),
-                      DropdownMenuItem(value: 'educacion', child: Text(i18n.centroEducativo96e832)),
-                      DropdownMenuItem(value: 'otro', child: Text(i18n.otroC22952)),
-                    ],
-                    onChanged: (value) {
-                      setState(() => _selectedTipo = value ?? '');
-                    },
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedNivel,
-                    decoration: InputDecoration(
-                      labelText: i18n.nivel48281f,
-                      border: OutlineInputBorder(),
-                    ),
-                    items: [
-                      DropdownMenuItem(value: '', child: Text(i18n.todos32630c)),
-                      DropdownMenuItem(value: 'basico', child: Text(i18n.bSico597ae7)),
-                      DropdownMenuItem(value: 'transicion', child: Text(i18n.enTransiciN3c5b08)),
-                      DropdownMenuItem(value: 'consciente', child: Text(i18n.conscienteDf134a)),
-                      DropdownMenuItem(value: 'referente', child: Text(i18n.referenteD876b0)),
-                    ],
-                    onChanged: (value) {
-                      setState(() => _selectedNivel = value ?? '');
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              decoration: InputDecoration(
-                labelText: i18n.sectorOpcional94b201,
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (value) => _selectedSector = value,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              decoration: InputDecoration(
-                labelText: i18n.ciudadOpcionalE747b0,
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (value) => _cityFilter = value,
-            ),
-            const SizedBox(height: 12),
-            FilledButton.icon(
-              onPressed: _isLoading ? null : _loadDirectory,
-              icon: const Icon(Icons.search),
-              label: Text(i18n.buscar113f74),
-            ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: _isLoading ? null : _loadNearby,
-              icon: const Icon(Icons.my_location),
-              label: Text(i18n.cercaDeMC17429),
-            ),
-            const SizedBox(height: 8),
-            SwitchListTile.adaptive(
-              value: _showFavoritesOnly,
-              onChanged: (value) => setState(() => _showFavoritesOnly = value),
-              title: Text(i18n.soloFavoritos66eeaf),
-              contentPadding: EdgeInsets.zero,
-            ),
-            const SizedBox(height: 4),
-            SwitchListTile.adaptive(
-              value: _compactList,
-              onChanged: (value) => setState(() => _compactList = value),
-              title: Text(i18n.vistaCompactaCe3da5),
-              contentPadding: EdgeInsets.zero,
-            ),
+            onSubmitted: (_) => _loadDirectory(),
+          ),
+          if (widget.embedded) ...[
             const SizedBox(height: 8),
             Row(
               children: [
-                Text(i18n.radioC210a7),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Slider(
-                    value: _nearbyRadiusKm,
-                    min: 5,
-                    max: 200,
-                    divisions: 39,
-                    label: '${_nearbyRadiusKm.toStringAsFixed(0)} km',
-                    onChanged: _isLoading
-                        ? null
-                        : (value) => setState(() => _nearbyRadiusKm = value),
-                  ),
+                IconButton(
+                  icon: Icon(_showMap ? Icons.list : Icons.map),
+                  onPressed: () => setState(() => _showMap = !_showMap),
+                ),
+                const SizedBox(width: 4),
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: _isLoading ? null : _loadDirectory,
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            if (_error != null)
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(8),
+          ],
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedTipo,
+                  decoration: InputDecoration(
+                    labelText: i18n.tipo4f427c,
+                    border: OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem(value: '', child: Text(i18n.todos32630c)),
+                    DropdownMenuItem(
+                        value: 'comunidad', child: Text(i18n.comunidad6b02af)),
+                    DropdownMenuItem(
+                        value: 'cooperativa',
+                        child: Text(i18n.cooperativa657922)),
+                    DropdownMenuItem(
+                        value: 'asociacion', child: Text(i18n.asociaciN59d9a3)),
+                    DropdownMenuItem(
+                        value: 'empresa', child: Text(i18n.empresa9bc720)),
+                    DropdownMenuItem(
+                        value: 'colectivo', child: Text(i18n.colectivo9c6f6f)),
+                    DropdownMenuItem(
+                        value: 'fundacion', child: Text(i18n.fundaciN0bcfd2)),
+                    DropdownMenuItem(
+                        value: 'particular',
+                        child: Text(i18n.particular1d75c6)),
+                    DropdownMenuItem(
+                        value: 'administracion',
+                        child: Text(i18n.administraciNPBlica86e1c4)),
+                    DropdownMenuItem(
+                        value: 'educacion',
+                        child: Text(i18n.centroEducativo96e832)),
+                    DropdownMenuItem(
+                        value: 'otro', child: Text(i18n.otroC22952)),
+                  ],
+                  onChanged: (value) {
+                    setState(() => _selectedTipo = value ?? '');
+                  },
                 ),
-                child: Text(_error!, style: TextStyle(color: Colors.red.shade700)),
               ),
-            if (_isLoading) ...[
-              const SizedBox(height: 24),
-              Center(child: CircularProgressIndicator()),
-            ] else if (_showMap) ...[
-              const SizedBox(height: 8),
-              _buildMap(),
-              if (_nearbyNodes.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                  'Cerca de mí',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              const SizedBox(width: 12),
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedNivel,
+                  decoration: InputDecoration(
+                    labelText: i18n.nivel48281f,
+                    border: OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem(value: '', child: Text(i18n.todos32630c)),
+                    DropdownMenuItem(
+                        value: 'basico', child: Text(i18n.bSico597ae7)),
+                    DropdownMenuItem(
+                        value: 'transicion',
+                        child: Text(i18n.enTransiciN3c5b08)),
+                    DropdownMenuItem(
+                        value: 'consciente',
+                        child: Text(i18n.conscienteDf134a)),
+                    DropdownMenuItem(
+                        value: 'referente', child: Text(i18n.referenteD876b0)),
+                  ],
+                  onChanged: (value) {
+                    setState(() => _selectedNivel = value ?? '');
+                  },
                 ),
-                const SizedBox(height: 8),
-                ..._nearbyNodes.map((n) => _buildBusinessCard(n)),
-              ],
-            ] else if (filteredNodes.isEmpty) ...[
-              const SizedBox(height: 24),
-              Center(child: Text(i18n.noHayNegociosEnElDirectorio7c8399)),
-            ] else ...[
-              const SizedBox(height: 8),
-              if (_compactList)
-                _buildCompactTable(filteredNodes)
-              else
-                ...filteredNodes.map((b) => _buildBusinessCard(b)),
+              ),
             ],
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            decoration: InputDecoration(
+              labelText: i18n.sectorOpcional94b201,
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) => _selectedSector = value,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            decoration: InputDecoration(
+              labelText: i18n.ciudadOpcionalE747b0,
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) => _cityFilter = value,
+          ),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: _isLoading ? null : _loadDirectory,
+            icon: const Icon(Icons.search),
+            label: Text(i18n.buscar113f74),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: _isLoading ? null : _loadNearby,
+            icon: const Icon(Icons.my_location),
+            label: Text(i18n.cercaDeMC17429),
+          ),
+          const SizedBox(height: 8),
+          SwitchListTile.adaptive(
+            value: _showFavoritesOnly,
+            onChanged: (value) => setState(() => _showFavoritesOnly = value),
+            title: Text(i18n.soloFavoritos66eeaf),
+            contentPadding: EdgeInsets.zero,
+          ),
+          const SizedBox(height: 4),
+          SwitchListTile.adaptive(
+            value: _compactList,
+            onChanged: (value) => setState(() => _compactList = value),
+            title: Text(i18n.vistaCompactaCe3da5),
+            contentPadding: EdgeInsets.zero,
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Text(i18n.radioC210a7),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Slider(
+                  value: _nearbyRadiusKm,
+                  min: 5,
+                  max: 200,
+                  divisions: 39,
+                  label: '${_nearbyRadiusKm.toStringAsFixed(0)} km',
+                  onChanged: _isLoading
+                      ? null
+                      : (value) => setState(() => _nearbyRadiusKm = value),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (_error != null)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child:
+                  Text(_error!, style: TextStyle(color: Colors.red.shade700)),
+            ),
+          if (_isLoading) ...[
+            const SizedBox(height: 24),
+            Center(child: CircularProgressIndicator()),
+          ] else if (_showMap) ...[
+            const SizedBox(height: 8),
+            _buildMap(),
+            if (_nearbyNodes.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                'Cerca de mí',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              ..._nearbyNodes.map((n) => _buildBusinessCard(n)),
+            ],
+          ] else if (filteredNodes.isEmpty) ...[
+            const SizedBox(height: 24),
+            Center(child: Text(i18n.noHayNegociosEnElDirectorio7c8399)),
+          ] else ...[
+            const SizedBox(height: 8),
+            if (_compactList)
+              _buildCompactTable(filteredNodes)
+            else
+              ...filteredNodes.map((b) => _buildBusinessCard(b)),
+          ],
         ],
       ),
     );
@@ -453,15 +499,18 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
             return InkWell(
               onTap: () => _showNodePreview(node),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 child: Row(
                   children: [
                     SizedBox(
                       width: 34,
                       height: 34,
                       child: node.logoUrl.isNotEmpty
-                          ? CircleAvatar(backgroundImage: NetworkImage(node.logoUrl))
-                          : const CircleAvatar(child: Icon(Icons.store, size: 18)),
+                          ? CircleAvatar(
+                              backgroundImage: NetworkImage(node.logoUrl))
+                          : const CircleAvatar(
+                              child: Icon(Icons.store, size: 18)),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -476,7 +525,9 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            node.tipoEntidad.isNotEmpty ? node.tipoEntidad : node.siteUrl,
+                            node.tipoEntidad.isNotEmpty
+                                ? node.tipoEntidad
+                                : node.siteUrl,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodySmall,
@@ -491,8 +542,10 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                       ),
                     const SizedBox(width: 8),
                     IconButton(
-                      icon: Icon(isFav ? Icons.star : Icons.star_border, size: 20),
-                      onPressed: _isLoading ? null : () => _toggleFavorite(node),
+                      icon: Icon(isFav ? Icons.star : Icons.star_border,
+                          size: 20),
+                      onPressed:
+                          _isLoading ? null : () => _toggleFavorite(node),
                     ),
                   ],
                 ),
@@ -507,10 +560,12 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
   Widget _buildBusinessCard(DirectoryNode business) {
     final badges = <Widget>[];
     if (business.tipoEntidad.isNotEmpty) {
-      badges.add(_buildBadge(business.tipoEntidad, color: _colorForType(business.tipoEntidad)));
+      badges.add(_buildBadge(business.tipoEntidad,
+          color: _colorForType(business.tipoEntidad)));
     }
     if (business.nivelConsciencia.isNotEmpty) {
-      badges.add(_buildBadge(business.nivelConsciencia, color: _colorForLevel(business.nivelConsciencia)));
+      badges.add(_buildBadge(business.nivelConsciencia,
+          color: _colorForLevel(business.nivelConsciencia)));
     }
     if (business.verificado) {
       badges.add(_buildBadge('verificado', isSuccess: true));
@@ -536,7 +591,9 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              business.descripcionCorta.isNotEmpty ? business.descripcionCorta : business.siteUrl,
+              business.descripcionCorta.isNotEmpty
+                  ? business.descripcionCorta
+                  : business.siteUrl,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -550,7 +607,8 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Icon(_isFavorite(business) ? Icons.star : Icons.star_border),
+              icon:
+                  Icon(_isFavorite(business) ? Icons.star : Icons.star_border),
               onPressed: _isLoading ? null : () => _toggleFavorite(business),
             ),
             TextButton(
@@ -567,8 +625,10 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
   }
 
   Widget _buildBadge(String text, {bool isSuccess = false, Color? color}) {
-    final bg = color ?? (isSuccess ? Colors.green.shade100 : Colors.blueGrey.shade100);
-    final textColor = isSuccess ? Colors.green.shade800 : Colors.blueGrey.shade800;
+    final bg =
+        color ?? (isSuccess ? Colors.green.shade100 : Colors.blueGrey.shade100);
+    final textColor =
+        isSuccess ? Colors.green.shade800 : Colors.blueGrey.shade800;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       margin: const EdgeInsets.only(right: 6),
@@ -589,13 +649,16 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
               height: 40,
               child: GestureDetector(
                 onTap: () => _showNodePreview(n),
-                child: Icon(Icons.location_on, color: n.verificado ? Colors.green : Colors.red, size: 36),
+                child: Icon(Icons.location_on,
+                    color: n.verificado ? Colors.green : Colors.red, size: 36),
               ),
             ))
         .toList();
 
     final center = _userLocation ??
-        (markers.isNotEmpty ? markers.first.point : const LatLng(40.4168, -3.7038));
+        (markers.isNotEmpty
+            ? markers.first.point
+            : const LatLng(40.4168, -3.7038));
 
     return SizedBox(
       height: 320,
@@ -617,7 +680,8 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                   point: _userLocation!,
                   width: 30,
                   height: 30,
-                  child: const Icon(Icons.my_location, color: Colors.blue, size: 24),
+                  child: const Icon(Icons.my_location,
+                      color: Colors.blue, size: 24),
                 ),
               ],
             ),
@@ -636,7 +700,8 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                   alignment: Alignment.center,
                   child: Text(
                     clusterMarkers.length.toString(),
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 );
               },
@@ -664,32 +729,43 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
               Row(
                 children: [
                   node.logoUrl.isNotEmpty
-                      ? CircleAvatar(backgroundImage: NetworkImage(node.logoUrl))
+                      ? CircleAvatar(
+                          backgroundImage: NetworkImage(node.logoUrl))
                       : const CircleAvatar(child: Icon(Icons.store)),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       node.nombre.isNotEmpty ? node.nombre : node.siteUrl,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(_isFavorite(node) ? Icons.star : Icons.star_border),
+                    icon: Icon(
+                        _isFavorite(node) ? Icons.star : Icons.star_border),
                     onPressed: () => _toggleFavorite(node),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
-              Text(node.descripcionCorta.isNotEmpty ? node.descripcionCorta : node.siteUrl),
+              Text(node.descripcionCorta.isNotEmpty
+                  ? node.descripcionCorta
+                  : node.siteUrl),
               const SizedBox(height: 12),
               Wrap(
                 children: [
                   if (node.tipoEntidad.isNotEmpty)
-                    _buildBadge(node.tipoEntidad, color: _colorForType(node.tipoEntidad)),
+                    _buildBadge(node.tipoEntidad,
+                        color: _colorForType(node.tipoEntidad)),
                   if (node.nivelConsciencia.isNotEmpty)
-                    _buildBadge(node.nivelConsciencia, color: _colorForLevel(node.nivelConsciencia)),
-                  if (node.verificado) _buildBadge('verificado', isSuccess: true),
-                  if (distancia != null) _buildBadge('${distancia.toStringAsFixed(1)} km'),
+                    _buildBadge(node.nivelConsciencia,
+                        color: _colorForLevel(node.nivelConsciencia)),
+                  if (node.verificado)
+                    _buildBadge('verificado', isSuccess: true),
+                  if (distancia != null)
+                    _buildBadge('${distancia.toStringAsFixed(1)} km'),
                 ],
               ),
               const SizedBox(height: 16),
@@ -722,12 +798,15 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
   double? _distanceKm(DirectoryNode node) {
     if (_userLocation == null) return null;
     if (node.latitud == null || node.longitud == null) return null;
-    return _distance.as(LengthUnit.Kilometer, _userLocation!, LatLng(node.latitud!, node.longitud!));
+    return _distance.as(LengthUnit.Kilometer, _userLocation!,
+        LatLng(node.latitud!, node.longitud!));
   }
 
   String? _buildProfileUrl(DirectoryNode node) {
     if (node.siteUrl.isEmpty || node.slug.isEmpty) return null;
-    final base = node.siteUrl.endsWith('/') ? node.siteUrl.substring(0, node.siteUrl.length - 1) : node.siteUrl;
+    final base = node.siteUrl.endsWith('/')
+        ? node.siteUrl.substring(0, node.siteUrl.length - 1)
+        : node.siteUrl;
     return '$base/?nodo=${node.slug}';
   }
 

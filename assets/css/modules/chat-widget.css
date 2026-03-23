@@ -20,6 +20,11 @@
     --chat-ia-radius-sm: 8px;
 }
 
+/* Utility class to hide elements */
+.chat-ia-hidden {
+    display: none !important;
+}
+
 /* Widget Container */
 .chat-ia-widget {
     display: flex;
@@ -40,47 +45,90 @@
     max-width: 100%;
 }
 
-/* Floating style */
+/* Floating style - wrapper invisible, solo contiene el trigger y el chat */
 .chat-ia-widget.chat-ia-floating {
+    /* El widget actúa como wrapper invisible */
     position: fixed;
-    /* bottom = offset del trigger + altura del trigger (60px) + margen (10px) */
+    bottom: var(--chat-ia-bottom-offset, 20px);
+    z-index: 9999998;
+    /* Sin estilos visuales - solo posiciona los hijos */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: auto;
+    height: auto;
+    display: block;
+    pointer-events: none;
+}
+
+/* Contenedor del chat (panel) - oculto por defecto */
+.chat-ia-floating .chat-ia-container {
+    position: fixed;
     bottom: calc(var(--chat-ia-bottom-offset, 20px) + 70px);
     width: var(--chat-ia-width, 380px);
     height: var(--chat-ia-height, 500px);
     max-height: calc(100vh - 120px);
-    z-index: 99999;
-    box-shadow: var(--chat-ia-shadow-lg);
+    display: none; /* Oculto por defecto */
+    background: var(--chat-ia-bg);
+    border: 1px solid var(--chat-ia-border);
     border-radius: var(--chat-ia-radius, 16px);
+    box-shadow: var(--chat-ia-shadow-lg);
+    overflow: hidden;
+    z-index: 9999999;
+    pointer-events: auto;
 }
 
-/* Position variants */
-.chat-ia-widget.chat-ia-position-bottom-right {
+/* Mostrar contenedor cuando el widget está abierto */
+.chat-ia-floating.chat-ia-open .chat-ia-container,
+.chat-ia-floating.chat-ia-open .chat-ia-container.chat-ia-hidden {
+    display: flex !important;
+    flex-direction: column;
+}
+
+/* Estilos base para .chat-ia-container (embebido y otros modos) */
+.chat-ia-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Position variants para el contenedor del chat */
+.chat-ia-widget.chat-ia-position-bottom-right .chat-ia-container {
     right: var(--chat-ia-side-offset, 20px);
 }
 
-.chat-ia-widget.chat-ia-position-bottom-left {
+.chat-ia-widget.chat-ia-position-bottom-left .chat-ia-container {
     left: var(--chat-ia-side-offset, 20px);
 }
 
-/* Floating trigger button */
+/* Floating trigger button - siempre visible */
 .chat-ia-trigger {
     position: fixed;
+    bottom: var(--chat-ia-bottom-offset, 20px);
+    right: var(--chat-ia-side-offset, 20px);
     width: 60px;
     height: 60px;
     border-radius: 50%;
     background: var(--chat-ia-primary);
     color: white;
+    pointer-events: auto; /* Clickeable aunque el padre tenga pointer-events: none */
     border: none;
     cursor: pointer;
     box-shadow: var(--chat-ia-shadow-lg);
-    z-index: 99998;
+    z-index: 9999998;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform 0.2s, background-color 0.2s;
 }
 
-/* Posiciones por defecto si no se especifica inline */
+/* Posición del trigger en bottom-left */
+.chat-ia-position-bottom-left .chat-ia-trigger {
+    right: auto;
+    left: var(--chat-ia-side-offset, 20px);
+}
+
+/* Posiciones heredadas (compatibilidad) */
 .chat-ia-trigger-bottom-right {
     right: var(--chat-ia-side-offset, 20px);
     bottom: var(--chat-ia-bottom-offset, 20px);
@@ -101,12 +149,22 @@
     height: 28px;
 }
 
-.chat-ia-trigger.active .chat-ia-icon-chat {
+/* Estado por defecto: mostrar icono de chat, ocultar cerrar */
+.chat-ia-trigger .chat-ia-icon-open {
+    display: block;
+}
+
+.chat-ia-trigger .chat-ia-icon-close {
+    display: none;
+}
+
+/* Estado activo: ocultar icono de chat, mostrar cerrar */
+.chat-ia-trigger.active .chat-ia-icon-open {
     display: none;
 }
 
 .chat-ia-trigger.active .chat-ia-icon-close {
-    display: block !important;
+    display: block;
 }
 
 /* Tamaños del trigger */
@@ -342,8 +400,9 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
-    background: var(--chat-ia-primary);
+    background: var(--chat-ia-header-bg, var(--chat-ia-primary));
     color: white;
+    flex-shrink: 0;
 }
 
 .chat-ia-header-info {
@@ -569,6 +628,7 @@
     padding: 8px 16px;
     color: var(--chat-ia-text-secondary);
     font-size: 13px;
+    flex-shrink: 0;
 }
 
 .chat-ia-typing-indicator {
@@ -737,10 +797,51 @@
 }
 
 /* Input form */
-.chat-ia-input-form {
+.chat-ia-input-form,
+.chat-ia-input-container {
     border-top: 1px solid var(--chat-ia-border);
     padding: 12px 16px;
     background: var(--chat-ia-bg, #ffffff);
+    flex-shrink: 0;
+}
+
+/* Footer */
+.chat-ia-footer {
+    padding: 8px 16px;
+    text-align: center;
+    border-top: 1px solid var(--chat-ia-border);
+    background: var(--chat-ia-bg, #ffffff);
+    flex-shrink: 0;
+}
+
+.chat-ia-footer small {
+    font-size: 11px;
+    color: var(--chat-ia-text-secondary);
+}
+
+.chat-ia-footer a {
+    color: var(--chat-ia-primary);
+    text-decoration: none;
+}
+
+.chat-ia-footer a:hover {
+    text-decoration: underline;
+}
+
+.chat-ia-form {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 24px;
+    padding: 6px 8px 6px 8px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.chat-ia-form:focus-within {
+    border-color: var(--chat-ia-primary, #2563eb);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
 .chat-ia-input-wrapper {
@@ -759,11 +860,14 @@
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
-/* Override WooCommerce textarea styles */
+/* Override WooCommerce and theme input styles */
+.chat-ia-widget .chat-ia-input,
 .chat-ia-widget textarea.chat-ia-input,
-.woocommerce .chat-ia-widget textarea.chat-ia-input,
-.woocommerce-page .chat-ia-widget textarea.chat-ia-input,
-#chat-ia-widget textarea#chat-ia-input,
+.chat-ia-widget input.chat-ia-input,
+.woocommerce .chat-ia-widget .chat-ia-input,
+.woocommerce-page .chat-ia-widget .chat-ia-input,
+#chat-ia-widget #chat-ia-input,
+input#chat-ia-input,
 textarea#chat-ia-input {
     flex: 1;
     width: auto !important;
@@ -778,7 +882,7 @@ textarea#chat-ia-input {
     outline: none !important;
     box-shadow: none !important;
     font-family: inherit;
-    padding: 0 !important;
+    padding: 4px 0 !important;
     margin: 0 !important;
     color: #333 !important;
     -webkit-appearance: none !important;
@@ -838,6 +942,15 @@ textarea#chat-ia-input::placeholder {
 .chat-ia-send svg {
     width: 18px;
     height: 18px;
+    display: block;
+}
+
+.chat-ia-send svg,
+.chat-ia-send svg path,
+.chat-ia-form .chat-ia-send svg,
+.chat-ia-form .chat-ia-send svg path {
+    fill: #ffffff !important;
+    color: #ffffff !important;
 }
 
 .chat-ia-input-footer {
@@ -1351,4 +1464,147 @@ body.chat-ia-maximized-mode {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 8px;
+}
+
+/* ==========================================
+   Funcionalidad de Voz (Speech API)
+   ========================================== */
+
+/* Botón de micrófono */
+.chat-ia-mic {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border: none;
+    background: var(--chat-ia-bg-secondary, #e5e7eb);
+    color: var(--chat-ia-gray, #6b7280);
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    order: -1; /* Asegurar que va primero */
+}
+
+.chat-ia-mic:hover {
+    background: var(--chat-ia-bg-secondary, #f3f4f6);
+    color: var(--chat-ia-primary, #0073aa);
+}
+
+.chat-ia-mic svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Ocultar icono de stop por defecto */
+.chat-ia-mic .chat-ia-mic-stop {
+    display: none;
+}
+
+/* Cuando está escuchando, mostrar stop y ocultar mic */
+.chat-ia-mic.listening .chat-ia-mic-icon {
+    display: none;
+}
+
+.chat-ia-mic.listening .chat-ia-mic-stop {
+    display: block;
+}
+
+/* Estado escuchando */
+.chat-ia-mic.listening {
+    background: #ef4444;
+    color: white;
+    animation: chat-ia-pulse-mic 1.5s ease-in-out infinite;
+}
+
+.chat-ia-mic.listening:hover {
+    background: #dc2626;
+    color: white;
+}
+
+@keyframes chat-ia-pulse-mic {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+    }
+}
+
+/* Contenedor de input con flex para alinear form y TTS */
+.chat-ia-input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* El form ocupa el espacio disponible */
+.chat-ia-input-container .chat-ia-form {
+    flex: 1;
+}
+
+/* Toggle TTS (Text-to-Speech) - al lado del form */
+.chat-ia-tts-toggle {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--chat-ia-bg-secondary, #f3f4f6);
+    color: var(--chat-ia-gray, #6b7280);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.chat-ia-tts-toggle:hover {
+    opacity: 1;
+    color: var(--chat-ia-primary, #0073aa);
+}
+
+.chat-ia-tts-toggle.active {
+    color: var(--chat-ia-primary, #0073aa);
+    opacity: 1;
+}
+
+.chat-ia-tts-toggle svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    display: block;
+}
+
+/* Por defecto mostrar icono ON (altavoz con ondas), ocultar OFF */
+.chat-ia-tts-toggle .chat-ia-tts-on {
+    display: block;
+}
+
+.chat-ia-tts-toggle .chat-ia-tts-off {
+    display: none;
+}
+
+/* Cuando está activo, mostrar OFF (altavoz tachado), ocultar ON */
+.chat-ia-tts-toggle.active .chat-ia-tts-on {
+    display: none;
+}
+
+.chat-ia-tts-toggle.active .chat-ia-tts-off {
+    display: block;
+}
+
+/* Indicador visual de que se está escuchando */
+.chat-ia-input.listening {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+/* Responsive: ocultar TTS en móvil si no hay espacio */
+@media (max-width: 380px) {
+    .chat-ia-tts-toggle {
+        display: none;
+    }
 }

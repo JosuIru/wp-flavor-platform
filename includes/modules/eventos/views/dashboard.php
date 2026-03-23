@@ -384,11 +384,12 @@ $estado_badges = [
                             $inscritos = (int) $evento->inscritos_count;
                             $ocupacion = $aforo_maximo > 0 ? min(100, round(($inscritos / max(1, $aforo_maximo)) * 100)) : 0;
                             $clase_ocupacion = $ocupacion >= 90 ? 'dm-badge--error' : ($ocupacion >= 70 ? 'dm-badge--warning' : 'dm-badge--success');
+                            $categoria_evento = isset($evento->categoria) && $evento->categoria !== '' ? (string) $evento->categoria : __('Sin categoría', 'flavor-chat-ia');
                         ?>
                             <tr>
                                 <td>
                                     <strong><?php echo esc_html(wp_trim_words($evento->titulo, 5)); ?></strong>
-                                    <div class="dm-table__subtitle"><?php echo esc_html($evento->categoria ?: __('Sin categoría', 'flavor-chat-ia')); ?></div>
+                                    <div class="dm-table__subtitle"><?php echo esc_html($categoria_evento); ?></div>
                                 </td>
                                 <td>
                                     <span class="dm-badge dm-badge--info">

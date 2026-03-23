@@ -26,7 +26,7 @@ $total_suscriptores = 0;
 $total_reproducciones = 0;
 $episodios_populares = [];
 $datos_crecimiento = [];
-$usando_demo = false;
+$tablas_disponibles = ($tabla_series_existe && $tabla_episodios_existe && $tabla_suscripciones_existe);
 
 if ($tabla_series_existe && $tabla_episodios_existe && $tabla_suscripciones_existe) {
     // Obtener estadisticas generales
@@ -55,48 +55,30 @@ if ($tabla_series_existe && $tabla_episodios_existe && $tabla_suscripciones_exis
     ");
 }
 
-// Datos de ejemplo si no hay datos reales
-if ($total_podcasts == 0 && $total_episodios == 0) {
-    $usando_demo = true;
-    $total_podcasts = 5;
-    $total_episodios = 48;
-    $total_suscriptores = 320;
-    $total_reproducciones = 8750;
-
-    $episodios_populares = [
-        (object) ['titulo' => 'Entrevista: El Futuro de la Comunidad', 'numero_episodio' => 12, 'podcast_titulo' => 'Voces del Barrio', 'reproducciones' => 1250, 'me_gusta' => 89, 'fecha_publicacion' => date('Y-m-d', strtotime('-3 days'))],
-        (object) ['titulo' => 'Historia Local: Los Orígenes', 'numero_episodio' => 8, 'podcast_titulo' => 'Memoria Colectiva', 'reproducciones' => 980, 'me_gusta' => 72, 'fecha_publicacion' => date('Y-m-d', strtotime('-1 week'))],
-        (object) ['titulo' => 'Debate: Sostenibilidad Urbana', 'numero_episodio' => 5, 'podcast_titulo' => 'Eco Charlas', 'reproducciones' => 756, 'me_gusta' => 54, 'fecha_publicacion' => date('Y-m-d', strtotime('-2 weeks'))],
-    ];
-
-    // Datos de crecimiento de ejemplo
-    for ($i = 29; $i >= 0; $i--) {
-        $datos_crecimiento[] = (object) [
-            'fecha' => date('Y-m-d', strtotime("-$i days")),
-            'total' => rand(3, 15)
-        ];
-    }
-}
-
-// Estadísticas por plataforma (simulado)
+// Estadísticas por plataforma (placeholder sin tracking por plataforma todavía)
 $stats_plataforma = [
-    'Spotify' => rand(30, 50),
-    'Apple Podcasts' => rand(20, 35),
-    'Google Podcasts' => rand(15, 25),
-    'RSS Directo' => rand(10, 20),
-    'Otros' => rand(5, 15)
+    'Spotify' => 0,
+    'Apple Podcasts' => 0,
+    'Google Podcasts' => 0,
+    'RSS Directo' => (int) $total_reproducciones,
+    'Otros' => 0,
 ];
 ?>
 
 <div class="dm-dashboard">
+    <?php if (!$tablas_disponibles): ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Podcast o aún no hay contenido publicado.', 'flavor-chat-ia'); ?>
+    </div>
+    <?php endif; ?>
+
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-microphone"></span>
             <?php esc_html_e('Dashboard de Podcasts', 'flavor-chat-ia'); ?>
         </h1>
-        <?php if ($usando_demo): ?>
-            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
-        <?php endif; ?>
     </div>
 
     <!-- Accesos Rápidos -->

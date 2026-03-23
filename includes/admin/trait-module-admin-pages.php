@@ -94,6 +94,8 @@ trait Flavor_Module_Admin_Pages_Trait {
         // Negocios
         'clientes' => 'clientes-dashboard',
         'facturas' => 'facturas-dashboard',
+        'contabilidad' => 'contabilidad-dashboard',
+        'empresas' => 'empresas-dashboard',
         'empresarial' => 'empresarial-dashboard',
         'woocommerce' => 'flavor-woocommerce-dashboard',
         'crowdfunding' => 'crowdfunding-dashboard',

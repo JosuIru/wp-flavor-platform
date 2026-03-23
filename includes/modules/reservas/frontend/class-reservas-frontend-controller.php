@@ -118,11 +118,21 @@ class Flavor_Reservas_Frontend_Controller {
      * Registrar shortcodes del módulo
      */
     public function registrar_shortcodes() {
-        add_shortcode('reservas_recursos', [$this, 'shortcode_recursos']);
-        add_shortcode('reservas_mis_reservas', [$this, 'shortcode_mis_reservas']);
-        add_shortcode('reservas_calendario', [$this, 'shortcode_calendario']);
-        add_shortcode('reservas_formulario', [$this, 'shortcode_formulario']);
-        add_shortcode('reservas_detalle_recurso', [$this, 'shortcode_detalle_recurso']);
+        if (!shortcode_exists('reservas_recursos')) {
+            add_shortcode('reservas_recursos', [$this, 'shortcode_recursos']);
+        }
+        if (!shortcode_exists('reservas_mis_reservas')) {
+            add_shortcode('reservas_mis_reservas', [$this, 'shortcode_mis_reservas']);
+        }
+        if (!shortcode_exists('reservas_calendario')) {
+            add_shortcode('reservas_calendario', [$this, 'shortcode_calendario']);
+        }
+        if (!shortcode_exists('reservas_formulario')) {
+            add_shortcode('reservas_formulario', [$this, 'shortcode_formulario']);
+        }
+        if (!shortcode_exists('reservas_detalle_recurso')) {
+            add_shortcode('reservas_detalle_recurso', [$this, 'shortcode_detalle_recurso']);
+        }
     }
 
     /**
@@ -151,7 +161,30 @@ class Flavor_Reservas_Frontend_Controller {
             'limite' => 12,
             'columnas' => 3,
             'mostrar_filtros' => 'true',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'nombre',
+            'order' => 'ASC',
         ], $atts);
+
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $atts['visual_class_string'] = implode(' ', $visual_classes);
 
         ob_start();
         $this->render_recursos($atts);
@@ -629,6 +662,16 @@ class Flavor_Reservas_Frontend_Controller {
         ]);
 
         if ($resultado) {
+            do_action('flavor_reserva_creada', (int) $wpdb->insert_id, [
+                'origen' => 'reservas_frontend',
+                'recurso_id' => (int) $recurso_id,
+                'usuario_id' => (int) $usuario_id,
+                'fecha_inicio' => $fecha_inicio_completa,
+                'fecha_fin' => $fecha_fin_completa,
+                'motivo' => $motivo,
+                'estado' => 'confirmada',
+                'importe' => isset($_POST['importe']) ? (float) $_POST['importe'] : 0.0,
+            ]);
             wp_send_json_success([
                 'mensaje' => __('Reserva creada correctamente', 'flavor-chat-ia'),
                 'reserva_id' => $wpdb->insert_id,
@@ -661,6 +704,11 @@ class Flavor_Reservas_Frontend_Controller {
         );
 
         if ($resultado !== false) {
+            do_action('flavor_reserva_cancelada', (int) $reserva_id, [
+                'origen' => 'reservas_frontend',
+                'usuario_id' => (int) $usuario_id,
+                'devolucion' => isset($_POST['devolucion']) ? (float) $_POST['devolucion'] : 0.0,
+            ]);
             wp_send_json_success(['mensaje' => __('Reserva cancelada', 'flavor-chat-ia')]);
         } else {
             wp_send_json_error(__('Error al cancelar', 'flavor-chat-ia'));

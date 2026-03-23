@@ -24,7 +24,8 @@ import 'features/admin/stats_screen.dart';
 import 'features/admin/calendar_view_screen.dart';
 import 'features/admin/customers_screen.dart';
 import 'features/admin/manual_customers_screen.dart';
-import 'features/admin/settings/language_screen.dart' show LanguageScreen, languageProvider;
+import 'features/admin/settings/language_screen.dart'
+    show LanguageScreen, languageProvider;
 import 'features/admin/settings/notifications_screen.dart';
 import 'features/modules/module_hub_screen.dart';
 import 'features/admin/modules_admin_screen_dynamic.dart';
@@ -49,7 +50,8 @@ void main() async {
   Logger.d('apiUrl final: $apiUrl', tag: 'AdminMain');
 
   final apiClient = ApiClient(baseUrl: apiUrl);
-  Logger.d('ApiClient creado con baseUrl: ${apiClient.currentBaseUrl}', tag: 'AdminMain');
+  Logger.d('ApiClient creado con baseUrl: ${apiClient.currentBaseUrl}',
+      tag: 'AdminMain');
 
   // Registrar todas las pantallas de módulos
   final registry = ModuleScreenRegistry();
@@ -136,9 +138,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
       if (hasToken) {
         // Timeout de 10 segundos para verificar token
         final response = await _api.verifyToken().timeout(
-          const Duration(seconds: 10),
-          onTimeout: () => ApiResponse<Map<String, dynamic>>.error('Timeout al verificar sesión'),
-        );
+              const Duration(seconds: 10),
+              onTimeout: () => ApiResponse<Map<String, dynamic>>.error(
+                  'Timeout al verificar sesión'),
+            );
         if (response.success) {
           state = state.copyWith(
             isAuthenticated: true,
@@ -405,8 +408,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             Text(
               i18n.loadingConnecting,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              ),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
+                  ),
             ),
           ],
         ),
@@ -467,7 +473,8 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
                   ),
                   child: SelectableText(
                     result,
-                    style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                    style:
+                        const TextStyle(fontFamily: 'monospace', fontSize: 12),
                   ),
                 ),
               ],
@@ -525,7 +532,9 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
 
         // Extraer URL
         serverUrl = (jsonData['url'] as String? ?? '').replaceAll(r'\/', '/');
-        Logger.d('URL extraída del JSON: $serverUrl, token presente: ${adminToken.isNotEmpty}', tag: 'AdminSetup');
+        Logger.d(
+            'URL extraída del JSON: $serverUrl, token presente: ${adminToken.isNotEmpty}',
+            tag: 'AdminSetup');
       } catch (e) {
         // Fallback: intentar extraer URL con regex
         Logger.e('Error parseando JSON: $e', tag: 'AdminSetup', error: e);
@@ -573,30 +582,48 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
     });
 
     try {
-      // Probar conexión
-      final fullUrl = '$serverUrl/wp-json/chat-ia-mobile/v1';
+      // Detectar API/namespace del sitio
+      final discoveryResponse = await ApiClient.discoverSiteAt(serverUrl);
+      if (!discoveryResponse.success || discoveryResponse.data == null) {
+        setState(() {
+          _error = i18n.adminSetupServerError(
+            discoveryResponse.error ?? i18n.commonInvalidResponse,
+            '$serverUrl/wp-json/app-discovery/v1/info',
+          );
+        });
+        return;
+      }
+
+      final apiNamespace = await ApiClient.detectPreferredApiNamespace(
+        serverUrl,
+        discoveryData: discoveryResponse.data,
+      );
+      final fullUrl = '$serverUrl$apiNamespace';
       Logger.d('Conectando a: $fullUrl', tag: 'AdminSetup');
 
       final testClient = ApiClient(baseUrl: fullUrl);
       final response = await testClient.getBusinessInfo().timeout(
-        const Duration(seconds: 15),
-        onTimeout: () => ApiResponse<Map<String, dynamic>>.error(
-          i18n.adminSetupTimeoutServer,
-        ),
-      );
+            const Duration(seconds: 15),
+            onTimeout: () => ApiResponse<Map<String, dynamic>>.error(
+              i18n.adminSetupTimeoutServer,
+            ),
+          );
 
-      Logger.d('Respuesta: success=${response.success}, error=${response.error}', tag: 'AdminSetup');
+      Logger.d(
+          'Respuesta: success=${response.success}, error=${response.error}',
+          tag: 'AdminSetup');
 
       if (response.success) {
         // Validar token de seguridad admin antes de guardar
         if (adminToken != null && adminToken.isNotEmpty) {
           Logger.d('Validando token de admin...', tag: 'AdminSetup');
-          final tokenResponse = await testClient.validateAdminSiteToken(adminToken).timeout(
-            const Duration(seconds: 10),
-            onTimeout: () => ApiResponse<Map<String, dynamic>>.error(
-              i18n.adminSetupTimeoutToken,
-            ),
-          );
+          final tokenResponse =
+              await testClient.validateAdminSiteToken(adminToken).timeout(
+                    const Duration(seconds: 10),
+                    onTimeout: () => ApiResponse<Map<String, dynamic>>.error(
+                      i18n.adminSetupTimeoutToken,
+                    ),
+                  );
 
           if (!tokenResponse.success) {
             setState(() {
@@ -610,15 +637,23 @@ class _AdminSetupScreenState extends ConsumerState<AdminSetupScreen> {
 
         // Guardar configuración
         await ServerConfig.setServerUrl(serverUrl);
-        await ServerConfig.setApiNamespace('/wp-json/chat-ia-mobile/v1');
+        await ServerConfig.setApiNamespace(apiNamespace);
 
         // IMPORTANTE: Actualizar la URL del apiClient existente
         ref.read(apiClientProvider).updateBaseUrl(fullUrl);
         Logger.d('ApiClient actualizado con URL: $fullUrl', tag: 'AdminSetup');
 
         // Sincronizar layouts y tema con el servidor
-        Logger.i('Sincronizando layouts y tema con servidor: $serverUrl', tag: 'AdminApp');
-        ref.read(syncProvider.notifier).syncWithSite(serverUrl);
+        Logger.i('Sincronizando layouts y tema con servidor: $serverUrl',
+            tag: 'AdminApp');
+        final syncResult =
+            await ref.read(syncProvider.notifier).syncWithSite(serverUrl);
+        if (!syncResult.success) {
+          Logger.w(
+            'Sincronizacion inicial incompleta: ${syncResult.error}',
+            tag: 'AdminApp',
+          );
+        }
 
         // Forzar recarga de providers
         ref.invalidate(serverConfiguredProvider);
@@ -934,7 +969,8 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
 
   Future<void> _saveCredentials() async {
     if (_rememberCredentials) {
-      await _storage.write(key: _usernameKey, value: _usernameController.text.trim());
+      await _storage.write(
+          key: _usernameKey, value: _usernameController.text.trim());
       await _storage.write(key: _passwordKey, value: _passwordController.text);
       await _storage.write(key: _rememberKey, value: 'true');
     } else {
@@ -972,7 +1008,8 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
     if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(ref.read(authStateProvider).error ?? i18n.adminLoginError),
+          content:
+              Text(ref.read(authStateProvider).error ?? i18n.adminLoginError),
           backgroundColor: Colors.red,
         ),
       );
@@ -1122,7 +1159,8 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                       final serverUrl = snapshot.data ?? '';
                       final isConfigured = serverUrl.isNotEmpty;
                       return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
                           color: isConfigured
                               ? Colors.green.withOpacity(0.1)
@@ -1139,7 +1177,8 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                             Icon(
                               isConfigured ? Icons.check_circle : Icons.warning,
                               size: 20,
-                              color: isConfigured ? Colors.green : Colors.orange,
+                              color:
+                                  isConfigured ? Colors.green : Colors.orange,
                             ),
                             const SizedBox(width: 12),
                             Expanded(
@@ -1153,7 +1192,9 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
-                                      color: isConfigured ? Colors.green : Colors.orange,
+                                      color: isConfigured
+                                          ? Colors.green
+                                          : Colors.orange,
                                     ),
                                   ),
                                   if (isConfigured)
@@ -1207,7 +1248,8 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                                     : Icons.visibility,
                               ),
                               onPressed: () {
-                                setState(() => _obscurePassword = !_obscurePassword);
+                                setState(
+                                    () => _obscurePassword = !_obscurePassword);
                               },
                             ),
                           ),
@@ -1235,7 +1277,8 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          setState(() => _rememberCredentials = !_rememberCredentials);
+                          setState(() =>
+                              _rememberCredentials = !_rememberCredentials);
                         },
                         child: Text(i18n.adminLoginRememberCredentials),
                       ),
@@ -1298,7 +1341,8 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
         ),
       ),
       error: (error, stack) {
-        Logger.e('Error al cargar módulos: $error', tag: 'AdminHome', error: error);
+        Logger.e('Error al cargar módulos: $error',
+            tag: 'AdminHome', error: error);
         return Scaffold(
           body: Center(
             child: Column(
@@ -1343,12 +1387,11 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
 
     // 2. Reservas (si está activo)
     final hasReservations = modules.any((m) =>
-      m == 'reservas' ||
-      m == 'reservations' ||
-      m == 'experiences' ||
-      m == 'eventos' ||
-      m == 'calendar'
-    );
+        m == 'reservas' ||
+        m == 'reservations' ||
+        m == 'experiences' ||
+        m == 'eventos' ||
+        m == 'calendar');
 
     if (hasReservations) {
       tabs.add(AdminTab(
@@ -1376,10 +1419,9 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
     // 4. Módulos (si hay módulos con pantallas implementadas)
     final loader = ModuleLazyLoader();
     final hasModulesWithScreens = modules.any((m) =>
-      loader.getScreenBuilder(m) != null ||
-      loader.getScreenBuilder(m.replaceAll('_', '-')) != null ||
-      loader.getScreenBuilder(m.replaceAll('-', '_')) != null
-    );
+        loader.getScreenBuilder(m) != null ||
+        loader.getScreenBuilder(m.replaceAll('_', '-')) != null ||
+        loader.getScreenBuilder(m.replaceAll('-', '_')) != null);
 
     if (hasModulesWithScreens) {
       tabs.add(AdminTab(
@@ -1447,36 +1489,10 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
             )
           : null,
       drawer: hasDrawer
-          ? Drawer(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  DrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                    ),
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        i18n.adminAppTitle,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-                  ),
-                  ...drawerItems.map((item) {
-                    return ListTile(
-                      leading: Icon(item.icon),
-                      title: Text(item.label),
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => item.screen),
-                        );
-                      },
-                    );
-                  }),
-                ],
-              ),
+          ? _AdminDrawer(
+              tabs: tabs,
+              currentIndex: _currentIndex,
+              onTabSelected: _navigateToTab,
             )
           : null,
       body: IndexedStack(
@@ -1499,6 +1515,243 @@ class _AdminHomeScreenState extends ConsumerState<AdminHomeScreen> {
                   .toList(),
             )
           : null,
+    );
+  }
+}
+
+/// Drawer del admin con secciones colapsables
+class _AdminDrawer extends ConsumerStatefulWidget {
+  final List<AdminTab> tabs;
+  final int currentIndex;
+  final void Function(int) onTabSelected;
+
+  const _AdminDrawer({
+    required this.tabs,
+    required this.currentIndex,
+    required this.onTabSelected,
+  });
+
+  @override
+  ConsumerState<_AdminDrawer> createState() => _AdminDrawerState();
+}
+
+class _AdminDrawerState extends ConsumerState<_AdminDrawer> {
+  // Estado de expansión de cada sección (guardado localmente)
+  final Map<String, bool> _expandedSections = {
+    'navigation': false,
+    'management': true,
+    'modules': false,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final syncState = ref.watch(syncProvider);
+    final siteName = syncState.siteName ?? i18n.adminAppTitle;
+
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          // Header con logo del sitio
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primaryContainer,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(
+                  Icons.admin_panel_settings,
+                  size: 48,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  siteName,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+
+          // === SECCIÓN: NAVEGACIÓN RÁPIDA (tabs actuales) ===
+          _buildSection(
+            context: context,
+            key: 'navigation',
+            icon: Icons.dashboard_outlined,
+            title: i18n.adminDrawerSectionNavigation,
+            initiallyExpanded: _expandedSections['navigation'] ?? false,
+            children: widget.tabs.asMap().entries.map((entry) {
+              final index = entry.key;
+              final tab = entry.value;
+              final isSelected = index == widget.currentIndex;
+              return ListTile(
+                leading: Icon(
+                  isSelected ? tab.selectedIcon : tab.icon,
+                  color: isSelected ? theme.colorScheme.primary : null,
+                ),
+                title: Text(
+                  tab.label,
+                  style: isSelected
+                      ? TextStyle(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        )
+                      : null,
+                ),
+                selected: isSelected,
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.onTabSelected(index);
+                },
+              );
+            }).toList(),
+          ),
+
+          const Divider(height: 1),
+
+          // === SECCIÓN: GESTIÓN ===
+          _buildSection(
+            context: context,
+            key: 'management',
+            icon: Icons.business_center_outlined,
+            title: i18n.adminDrawerSectionManagement,
+            initiallyExpanded: _expandedSections['management'] ?? true,
+            children: [
+              _buildDrawerTile(
+                context: context,
+                icon: Icons.query_stats_outlined,
+                title: i18n.dashboardStats,
+                screen: const StatsScreen(),
+              ),
+              _buildDrawerTile(
+                context: context,
+                icon: Icons.calendar_month_outlined,
+                title: i18n.dashboardCalendar,
+                screen: const CalendarViewScreen(),
+              ),
+              _buildDrawerTile(
+                context: context,
+                icon: Icons.people_outline,
+                title: i18n.dashboardCustomers,
+                screen: const CustomersScreen(),
+              ),
+              _buildDrawerTile(
+                context: context,
+                icon: Icons.person_add_alt_1_outlined,
+                title: i18n.adminDrawerManualCustomers,
+                screen: const ManualCustomersScreen(),
+              ),
+              _buildDrawerTile(
+                context: context,
+                icon: Icons.terrain_outlined,
+                title: i18n.dashboardCamps,
+                screen: const CampsManagementScreen(),
+              ),
+            ],
+          ),
+
+          const Divider(height: 1),
+
+          // === SECCIÓN: MÓDULOS ===
+          _buildSection(
+            context: context,
+            key: 'modules',
+            icon: Icons.extension_outlined,
+            title: i18n.adminSettingsModulesTitle,
+            initiallyExpanded: _expandedSections['modules'] ?? false,
+            children: [
+              _buildDrawerTile(
+                context: context,
+                icon: Icons.apps_outlined,
+                title: i18n.adminSettingsModulesSubtitle,
+                screen: const ModuleHubScreen(isAdmin: true),
+              ),
+              _buildDrawerTile(
+                context: context,
+                icon: Icons.dashboard_customize_outlined,
+                title: i18n.adminModulesDashboardTitle,
+                screen: const ModulesAdminScreenDynamic(),
+              ),
+            ],
+          ),
+
+          const Divider(height: 1),
+
+          // === AJUSTES (siempre visible, no colapsable) ===
+          ListTile(
+            leading: const Icon(Icons.settings_outlined),
+            title: Text(i18n.adminBottomNavSettings),
+            onTap: () {
+              Navigator.pop(context);
+              // Buscar el índice de settings en tabs
+              final settingsIndex =
+                  widget.tabs.indexWhere((t) => t.id == 'settings');
+              if (settingsIndex >= 0) {
+                widget.onTabSelected(settingsIndex);
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const AdminSettingsScreen()),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection({
+    required BuildContext context,
+    required String key,
+    required IconData icon,
+    required String title,
+    required bool initiallyExpanded,
+    required List<Widget> children,
+  }) {
+    return ExpansionTile(
+      leading: Icon(icon),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w500),
+      ),
+      initiallyExpanded: initiallyExpanded,
+      onExpansionChanged: (expanded) {
+        setState(() {
+          _expandedSections[key] = expanded;
+        });
+      },
+      children: children,
+    );
+  }
+
+  Widget _buildDrawerTile({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required Widget screen,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.only(left: 56, right: 16),
+      leading: Icon(icon, size: 22),
+      title: Text(title),
+      dense: true,
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => screen),
+        );
+      },
     );
   }
 }
@@ -1555,7 +1808,8 @@ class AdminSettingsScreen extends ConsumerWidget {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   child: Icon(
                     Icons.person,
                     size: 40,

@@ -21,6 +21,21 @@ $tabla_vehiculos = $wpdb->prefix . 'flavor_carpooling_vehiculos';
 
 // Verificar si las tablas existen
 $tabla_viajes_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_viajes)) === $tabla_viajes;
+$tabla_reservas_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_reservas)) === $tabla_reservas;
+
+$viajes_activos = 0;
+$viajes_completados_mes = 0;
+$reservas_pendientes = 0;
+$reservas_confirmadas_mes = 0;
+$conductores_activos = 0;
+$conductores_pendientes_verificacion = 0;
+$usuarios_participantes = 0;
+$plazas_compartidas = 0;
+$co2_ahorrado_kg = 0.0;
+$rutas_populares = [];
+$top_conductores = [];
+$datos_grafica_viajes = [];
+$tablas_disponibles = $tabla_viajes_existe;
 
 if ($tabla_viajes_existe) {
     $fecha_inicio_mes = date('Y-m-01 00:00:00');
@@ -33,7 +48,6 @@ if ($tabla_viajes_existe) {
         $fecha_actual
     ));
 
-    $tabla_reservas_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_reservas)) === $tabla_reservas;
     $reservas_pendientes = $tabla_reservas_existe ? (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'pendiente'") : 0;
     $reservas_confirmadas_mes = $tabla_reservas_existe ? (int) $wpdb->get_var($wpdb->prepare(
         "SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'confirmada' AND fecha_reserva >= %s",
@@ -88,45 +102,6 @@ if ($tabla_viajes_existe) {
         GROUP BY DATE(fecha_salida)
         ORDER BY fecha ASC"
     ) ?: [];
-
-    $usando_demo = ($viajes_activos + $viajes_completados_mes) === 0;
-} else {
-    $usando_demo = true;
-}
-
-if ($usando_demo) {
-    $viajes_activos = 12;
-    $viajes_completados_mes = 45;
-    $reservas_pendientes = 3;
-    $conductores_activos = 8;
-    $conductores_pendientes_verificacion = 2;
-    $co2_ahorrado_kg = 186.5;
-    $usuarios_participantes = 67;
-
-    $rutas_populares = [
-        (object) ['origen' => 'Centro Ciudad', 'destino' => 'Polígono Industrial', 'total_viajes' => 28, 'total_plazas' => 84],
-        (object) ['origen' => 'Barrio Norte', 'destino' => 'Universidad', 'total_viajes' => 22, 'total_plazas' => 66],
-        (object) ['origen' => 'Estación', 'destino' => 'Hospital', 'total_viajes' => 15, 'total_plazas' => 45],
-        (object) ['origen' => 'Parque Tecnológico', 'destino' => 'Centro', 'total_viajes' => 12, 'total_plazas' => 36],
-        (object) ['origen' => 'Zona Sur', 'destino' => 'Aeropuerto', 'total_viajes' => 8, 'total_plazas' => 24],
-    ];
-
-    $top_conductores = [
-        (object) ['id' => 1, 'display_name' => 'María García', 'total_viajes' => 35, 'viajes_completados' => 32],
-        (object) ['id' => 2, 'display_name' => 'Carlos López', 'total_viajes' => 28, 'viajes_completados' => 25],
-        (object) ['id' => 3, 'display_name' => 'Ana Martínez', 'total_viajes' => 22, 'viajes_completados' => 20],
-        (object) ['id' => 4, 'display_name' => 'Pedro Sánchez', 'total_viajes' => 18, 'viajes_completados' => 16],
-        (object) ['id' => 5, 'display_name' => 'Laura Fernández', 'total_viajes' => 15, 'viajes_completados' => 14],
-    ];
-
-    $datos_grafica_viajes = [];
-    for ($i = 29; $i >= 0; $i--) {
-        $datos_grafica_viajes[] = (object) [
-            'fecha' => date('Y-m-d', strtotime("-{$i} days")),
-            'total_viajes' => rand(1, 5),
-            'plazas_disponibles' => rand(2, 10),
-        ];
-    }
 }
 
 $fechas_grafica = [];
@@ -147,11 +122,11 @@ foreach ($datos_grafica_viajes as $dato) {
     }
     ?>
 
-    <?php if ($usando_demo): ?>
+    <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Se muestran datos de ejemplo. Los datos reales aparecerán cuando se registren viajes.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Carpooling o aún no hay viajes registrados.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 

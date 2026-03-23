@@ -186,6 +186,7 @@ class Flavor_Module_Dashboards_Registrar {
                 // Negocios
                 'clientes' => 'clientes-dashboard',
                 'facturas' => 'facturas-dashboard',
+                'contabilidad' => 'contabilidad-dashboard',
                 'empresarial' => 'empresarial-dashboard',
                 'woocommerce' => 'flavor-woocommerce-dashboard',
                 'crowdfunding' => 'crowdfunding-dashboard',
@@ -219,7 +220,7 @@ class Flavor_Module_Dashboards_Registrar {
      */
     private function get_module_title($module_id) {
         $titles = [
-            'socios' => __('Gestión de Socios', 'flavor-chat-ia'),
+            'socios' => __('Gestión de Miembros', 'flavor-chat-ia'),
             'eventos' => __('Eventos', 'flavor-chat-ia'),
             'reservas' => __('Reservas', 'flavor-chat-ia'),
             'tramites' => __('Trámites', 'flavor-chat-ia'),
@@ -326,6 +327,11 @@ class Flavor_Module_Dashboards_Registrar {
      */
     private function registrar_pagina_dashboard($config) {
         $slug = $config['slug'];
+        $hook_name = 'admin_page_' . $slug;
+
+        if (has_action($hook_name) || $this->is_page_slug_already_registered($slug)) {
+            return;
+        }
 
         // Guardar configuración para uso en callback
         $this->page_configs[$slug] = $config;
@@ -363,6 +369,10 @@ class Flavor_Module_Dashboards_Registrar {
 
             $subpage_slug = str_replace('_', '-', $config['module_id']) . '-' . $filename;
 
+            if ($this->is_page_slug_already_registered($subpage_slug)) {
+                continue;
+            }
+
             $this->page_configs[$subpage_slug] = [
                 'module_id' => $config['module_id'],
                 'dashboard_path' => $view_file,
@@ -374,6 +384,10 @@ class Flavor_Module_Dashboards_Registrar {
                 'parent_slug' => $config['slug'],
             ];
 
+            if (has_action('admin_page_' . $subpage_slug)) {
+                continue;
+            }
+
             add_submenu_page(
                 null,
                 $this->page_configs[$subpage_slug]['title'],
@@ -383,6 +397,51 @@ class Flavor_Module_Dashboards_Registrar {
                 [$this, 'render_dashboard_page']
             );
         }
+    }
+
+    /**
+     * Verifica si un slug ya fue registrado por otro sistema admin.
+     *
+     * @param string $slug
+     * @return bool
+     */
+    private function is_page_slug_already_registered($slug) {
+        if (empty($slug)) {
+            return false;
+        }
+
+        global $menu, $submenu, $_registered_pages;
+
+        if (is_array($menu)) {
+            foreach ($menu as $item) {
+                if (!empty($item[2]) && $item[2] === $slug) {
+                    return true;
+                }
+            }
+        }
+
+        if (is_array($submenu)) {
+            foreach ($submenu as $subitems) {
+                if (!is_array($subitems)) {
+                    continue;
+                }
+                foreach ($subitems as $entry) {
+                    if (!empty($entry[2]) && $entry[2] === $slug) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        if (is_array($_registered_pages)) {
+            foreach (array_keys($_registered_pages) as $hook_name) {
+                if ($hook_name === 'admin_page_' . $slug || str_ends_with($hook_name, '_page_' . $slug)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -413,6 +472,11 @@ class Flavor_Module_Dashboards_Registrar {
         ?>
         <div class="wrap flavor-module-dashboard" data-module="<?php echo esc_attr($module_id); ?>">
             <?php
+            if (empty($config['is_subpage'])) {
+                $this->render_related_module_dashboards_panel($module_id);
+            }
+            ?>
+            <?php
             // Incluir la vista
             include $config['dashboard_path'];
             ?>
@@ -427,9 +491,10 @@ class Flavor_Module_Dashboards_Registrar {
      */
     public function enqueue_dashboard_styles($hook) {
         $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        $legacy_pages_with_relationship_panel = ['grupos-consumo'];
 
         // Verificar si es una página de dashboard de módulo
-        if (!isset($this->page_configs[$current_page])) {
+        if (!isset($this->page_configs[$current_page]) && !in_array($current_page, $legacy_pages_with_relationship_panel, true)) {
             return;
         }
 
@@ -494,6 +559,277 @@ class Flavor_Module_Dashboards_Registrar {
         }
 
         return admin_url('admin.php?page=' . $this->modules_with_dashboards[$module_id]['slug']);
+    }
+
+    /**
+     * Renderiza un panel con accesos a dashboards de módulos vinculados.
+     *
+     * @param string $module_id
+     * @return void
+     */
+    private function render_related_module_dashboards_panel($module_id) {
+        $related_modules = $this->get_related_modules_with_dashboards($module_id);
+        $related_transversals = $this->get_related_transversal_modules_with_dashboards($module_id);
+
+        if (empty($related_modules) && empty($related_transversals)) {
+            return;
+        }
+        ?>
+        <section class="dm-card dm-relations-panel" aria-label="<?php esc_attr_e('Módulos relacionados', 'flavor-chat-ia'); ?>">
+            <?php if (!empty($related_modules)) : ?>
+                <div class="dm-relations-panel__section<?php echo !empty($related_transversals) ? ' dm-relations-panel__section--with-divider' : ''; ?>">
+                    <div class="dm-section__header dm-relations-panel__header">
+                        <h2 class="dm-section__title">
+                            <span class="dashicons dashicons-networking" aria-hidden="true"></span>
+                            <?php esc_html_e('Módulos vinculados', 'flavor-chat-ia'); ?>
+                        </h2>
+                    </div>
+                    <p class="dm-relations-panel__description">
+                        <?php esc_html_e('Accesos directos a dashboards que dependen de este módulo.', 'flavor-chat-ia'); ?>
+                    </p>
+                    <div class="dm-action-grid dm-relations-panel__grid">
+                    <?php foreach ($related_modules as $related_module) : ?>
+                        <a class="dm-action-card dm-relations-panel__link" href="<?php echo esc_url($related_module['url']); ?>">
+                            <span class="dashicons <?php echo esc_attr($related_module['icon']); ?> dm-action-card__icon" aria-hidden="true"></span>
+                            <span class="dm-action-card__label"><?php echo esc_html($related_module['title']); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($related_transversals)) : ?>
+                <div class="dm-relations-panel__section">
+                    <div class="dm-section__header dm-relations-panel__header">
+                        <h2 class="dm-section__title">
+                            <span class="dashicons dashicons-randomize" aria-hidden="true"></span>
+                            <?php esc_html_e('Capas transversales relacionadas', 'flavor-chat-ia'); ?>
+                        </h2>
+                    </div>
+                    <p class="dm-relations-panel__description">
+                        <?php esc_html_e('Dashboards transversales que miden, gobiernan, enseñan o dan soporte a este módulo.', 'flavor-chat-ia'); ?>
+                    </p>
+                    <div class="dm-action-grid dm-relations-panel__grid dm-relations-panel__grid--transversal">
+                    <?php foreach ($related_transversals as $transversal_module) : ?>
+                        <a class="dm-action-card dm-relations-panel__link dm-relations-panel__link--transversal" href="<?php echo esc_url($transversal_module['url']); ?>">
+                            <span class="dashicons <?php echo esc_attr($transversal_module['icon']); ?> dm-action-card__icon" aria-hidden="true"></span>
+                            <span class="dm-action-card__label"><?php echo esc_html($transversal_module['title']); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </section>
+        <?php
+    }
+
+    /**
+     * Punto de entrada público para renderizar el panel de relaciones
+     * desde dashboards que no usan este registrador como callback.
+     *
+     * @param string $module_id
+     * @return void
+     */
+    public function render_relationship_panel_for_module($module_id) {
+        $this->render_related_module_dashboards_panel($module_id);
+    }
+
+    /**
+     * Obtiene módulos relacionados (dependientes directos) con dashboard disponible.
+     *
+     * @param string $module_id
+     * @return array
+     */
+    private function get_related_modules_with_dashboards($module_id) {
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            return [];
+        }
+
+        $normalized_module_id = $this->normalize_module_id($module_id);
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $registered_modules = $loader->get_registered_modules();
+        $current_module_meta = $this->find_registered_module_meta($registered_modules, $normalized_module_id);
+
+        if (!is_array($current_module_meta)) {
+            return [];
+        }
+
+        $related_map = [];
+        $current_ecosystem = is_array($current_module_meta['ecosystem'] ?? null) ? $current_module_meta['ecosystem'] : [];
+
+        // 1) Módulos declarados explícitamente por el módulo actual.
+        foreach ((array) ($current_ecosystem['depends_on'] ?? []) as $related_module_id) {
+            $normalized_related_id = $this->normalize_module_id($related_module_id);
+            if ($normalized_related_id !== '' && $normalized_related_id !== $normalized_module_id) {
+                $related_map[$normalized_related_id] = true;
+            }
+        }
+        foreach ((array) ($current_ecosystem['supports_modules'] ?? []) as $related_module_id) {
+            $normalized_related_id = $this->normalize_module_id($related_module_id);
+            if ($normalized_related_id !== '' && $normalized_related_id !== $normalized_module_id) {
+                $related_map[$normalized_related_id] = true;
+            }
+        }
+
+        // 2) Hijos explícitos declarados por el módulo base.
+        foreach ((array) ($current_ecosystem['base_for_modules'] ?? []) as $child_module_id) {
+            $normalized_child_id = $this->normalize_module_id($child_module_id);
+            if ($normalized_child_id !== '' && $normalized_child_id !== $normalized_module_id) {
+                $related_map[$normalized_child_id] = true;
+            }
+        }
+
+        // 3) Hijos inferidos por dependencia directa.
+        foreach ($registered_modules as $candidate_module_id => $candidate_module_data) {
+            $normalized_candidate_id = $this->normalize_module_id($candidate_module_id);
+            if ($normalized_candidate_id === '' || $normalized_candidate_id === $normalized_module_id) {
+                continue;
+            }
+
+            $candidate_ecosystem = is_array($candidate_module_data['ecosystem'] ?? null) ? $candidate_module_data['ecosystem'] : [];
+            $depends_on = array_map([$this, 'normalize_module_id'], (array) ($candidate_ecosystem['depends_on'] ?? []));
+
+            if (in_array($normalized_module_id, $depends_on, true)) {
+                $related_map[$normalized_candidate_id] = true;
+            }
+        }
+
+        if (empty($related_map)) {
+            return [];
+        }
+
+        $related_modules = [];
+        foreach (array_keys($related_map) as $related_module_id) {
+            $dashboard = $this->find_dashboard_config_by_module_id($related_module_id);
+            if (!is_array($dashboard)) {
+                continue;
+            }
+
+            $related_modules[] = [
+                'id' => $related_module_id,
+                'title' => $dashboard['title'] ?? ucwords(str_replace('_', ' ', $related_module_id)),
+                'icon' => $dashboard['icon'] ?? 'dashicons-admin-plugins',
+                'url' => admin_url('admin.php?page=' . ($dashboard['slug'] ?? '')),
+            ];
+        }
+
+        usort($related_modules, static function($a, $b) {
+            return strcasecmp((string) ($a['title'] ?? ''), (string) ($b['title'] ?? ''));
+        });
+
+        return $related_modules;
+    }
+
+    /**
+     * Obtiene módulos transversales relacionados con dashboard disponible.
+     *
+     * @param string $module_id
+     * @return array
+     */
+    private function get_related_transversal_modules_with_dashboards($module_id) {
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            return [];
+        }
+
+        $normalized_module_id = $this->normalize_module_id($module_id);
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $registered_modules = $loader->get_registered_modules();
+
+        $related_map = [];
+        $relation_keys = ['supports_modules', 'measures_modules', 'governs_modules', 'teaches_modules'];
+
+        foreach ($registered_modules as $candidate_module_id => $candidate_module_data) {
+            $normalized_candidate_id = $this->normalize_module_id($candidate_module_id);
+            if ($normalized_candidate_id === '' || $normalized_candidate_id === $normalized_module_id) {
+                continue;
+            }
+
+            $candidate_ecosystem = is_array($candidate_module_data['ecosystem'] ?? null) ? $candidate_module_data['ecosystem'] : [];
+            $candidate_role = sanitize_key((string) ($candidate_ecosystem['module_role'] ?? 'vertical'));
+            if ($candidate_role !== 'transversal') {
+                continue;
+            }
+
+            foreach ($relation_keys as $relation_key) {
+                $related_ids = array_map([$this, 'normalize_module_id'], (array) ($candidate_ecosystem[$relation_key] ?? []));
+                if (in_array($normalized_module_id, $related_ids, true)) {
+                    $related_map[$normalized_candidate_id] = true;
+                    break;
+                }
+            }
+        }
+
+        if (empty($related_map)) {
+            return [];
+        }
+
+        $related_modules = [];
+        foreach (array_keys($related_map) as $related_module_id) {
+            $dashboard = $this->find_dashboard_config_by_module_id($related_module_id);
+            if (!is_array($dashboard)) {
+                continue;
+            }
+
+            $related_modules[] = [
+                'id' => $related_module_id,
+                'title' => $dashboard['title'] ?? ucwords(str_replace('_', ' ', $related_module_id)),
+                'icon' => $dashboard['icon'] ?? 'dashicons-admin-plugins',
+                'url' => admin_url('admin.php?page=' . ($dashboard['slug'] ?? '')),
+            ];
+        }
+
+        usort($related_modules, static function($a, $b) {
+            return strcasecmp((string) ($a['title'] ?? ''), (string) ($b['title'] ?? ''));
+        });
+
+        return $related_modules;
+    }
+
+    /**
+     * Normaliza un ID de módulo a formato `snake_case`.
+     *
+     * @param string $module_id
+     * @return string
+     */
+    private function normalize_module_id($module_id) {
+        return sanitize_key(str_replace('-', '_', (string) $module_id));
+    }
+
+    /**
+     * Busca metadatos de módulo en array registrado aceptando snake_case/kebab-case.
+     *
+     * @param array $registered_modules
+     * @param string $module_id
+     * @return array|null
+     */
+    private function find_registered_module_meta(array $registered_modules, $module_id) {
+        $normalized_target = $this->normalize_module_id($module_id);
+
+        foreach ($registered_modules as $candidate_id => $candidate_meta) {
+            if ($this->normalize_module_id($candidate_id) === $normalized_target) {
+                return is_array($candidate_meta) ? $candidate_meta : null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Busca configuración de dashboard aceptando snake_case/kebab-case.
+     *
+     * @param string $module_id
+     * @return array|null
+     */
+    private function find_dashboard_config_by_module_id($module_id) {
+        $normalized_target = $this->normalize_module_id($module_id);
+
+        foreach ($this->modules_with_dashboards as $candidate_id => $dashboard_config) {
+            if ($this->normalize_module_id($candidate_id) === $normalized_target) {
+                return is_array($dashboard_config) ? $dashboard_config : null;
+            }
+        }
+
+        return null;
     }
 }
 

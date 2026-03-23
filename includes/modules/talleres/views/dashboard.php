@@ -29,7 +29,7 @@ $ingresos_mes = 0;
 $talleres_populares = [];
 $proximos = [];
 $inscripciones_por_dia = [];
-$usando_datos_ejemplo = false;
+$tablas_disponibles = ($tabla_talleres_existe && $tabla_inscripciones_existe);
 
 if ($tabla_talleres_existe && $tabla_inscripciones_existe) {
     // Estadísticas
@@ -74,40 +74,6 @@ if ($tabla_talleres_existe && $tabla_inscripciones_existe) {
     );
 }
 
-// Datos de ejemplo si no hay datos reales
-if ($total_talleres === 0) {
-    $usando_datos_ejemplo = true;
-    $total_talleres = 18;
-    $talleres_activos = 6;
-    $proximos_talleres = 4;
-    $total_participantes = 95;
-    $inscripciones_mes = 28;
-    $ingresos_mes = 1650.00;
-
-    $talleres_populares = [
-        (object) ['id' => 1, 'titulo' => 'Cerámica para principiantes', 'organizador' => 'Ana García', 'inscritos_actuales' => 12, 'max_participantes' => 15, 'estado' => 'en_curso'],
-        (object) ['id' => 2, 'titulo' => 'Huerto urbano en casa', 'organizador' => 'Carlos López', 'inscritos_actuales' => 10, 'max_participantes' => 12, 'estado' => 'confirmado'],
-        (object) ['id' => 3, 'titulo' => 'Fotografía con móvil', 'organizador' => 'María Sánchez', 'inscritos_actuales' => 8, 'max_participantes' => 10, 'estado' => 'publicado'],
-        (object) ['id' => 4, 'titulo' => 'Cocina vegetariana', 'organizador' => 'Pedro Martínez', 'inscritos_actuales' => 6, 'max_participantes' => 8, 'estado' => 'confirmado'],
-        (object) ['id' => 5, 'titulo' => 'Costura básica', 'organizador' => 'Laura Fernández', 'inscritos_actuales' => 5, 'max_participantes' => 8, 'estado' => 'en_curso'],
-    ];
-
-    $proximos = [
-        (object) ['id' => 2, 'titulo' => 'Huerto urbano en casa', 'organizador' => 'Carlos López', 'fecha_hora' => date('Y-m-d H:i:s', strtotime('+3 days 10:00')), 'inscritos_actuales' => 10, 'max_participantes' => 12, 'estado' => 'confirmado'],
-        (object) ['id' => 4, 'titulo' => 'Cocina vegetariana', 'organizador' => 'Pedro Martínez', 'fecha_hora' => date('Y-m-d H:i:s', strtotime('+5 days 18:00')), 'inscritos_actuales' => 6, 'max_participantes' => 8, 'estado' => 'confirmado'],
-        (object) ['id' => 6, 'titulo' => 'Yoga para principiantes', 'organizador' => 'Elena Ruiz', 'fecha_hora' => date('Y-m-d H:i:s', strtotime('+7 days 09:00')), 'inscritos_actuales' => 4, 'max_participantes' => 15, 'estado' => 'confirmado'],
-    ];
-
-    // Generar datos de ejemplo para gráfico
-    $inscripciones_por_dia = [];
-    for ($i = 29; $i >= 0; $i--) {
-        $inscripciones_por_dia[] = (object) [
-            'fecha' => date('Y-m-d', strtotime("-$i days")),
-            'total' => rand(0, 5)
-        ];
-    }
-}
-
 // Mapeo de estados a badges
 $estado_badge_classes = [
     'en_curso' => 'dm-badge--success',
@@ -137,14 +103,18 @@ function get_capacity_class($current, $max) {
     }
     ?>
 
+    <?php if (!$tablas_disponibles): ?>
+        <div class="dm-alert dm-alert--info">
+            <span class="dashicons dashicons-info"></span>
+            <p><?php esc_html_e('Faltan tablas del módulo Talleres o aún no hay inscripciones registradas.', 'flavor-chat-ia'); ?></p>
+        </div>
+    <?php endif; ?>
+
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-hammer"></span>
             <h1><?php esc_html_e('Dashboard - Talleres Prácticos', 'flavor-chat-ia'); ?></h1>
         </div>
-        <?php if ($usando_datos_ejemplo): ?>
-            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
-        <?php endif; ?>
     </div>
 
     <!-- Accesos Rápidos -->

@@ -148,13 +148,21 @@ class Flavor_Comunidades_Frontend_Controller {
      * Registrar shortcodes
      */
     public function registrar_shortcodes() {
-        add_shortcode('comunidades_listado', [$this, 'shortcode_listado']);
-        add_shortcode('comunidades_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('comunidades_crear', [$this, 'shortcode_crear']);
-        add_shortcode('comunidades_mis_comunidades', [$this, 'shortcode_mis_comunidades']);
-        add_shortcode('comunidades_feed', [$this, 'shortcode_feed']);
-        add_shortcode('comunidades_miembros', [$this, 'shortcode_miembros']);
-        add_shortcode('comunidades_marketplace', [$this, 'shortcode_marketplace']);
+        $shortcodes = [
+            'comunidades_listado' => 'shortcode_listado',
+            'comunidades_detalle' => 'shortcode_detalle',
+            'comunidades_crear' => 'shortcode_crear',
+            'comunidades_mis_comunidades' => 'shortcode_mis_comunidades',
+            'comunidades_feed' => 'shortcode_feed',
+            'comunidades_miembros' => 'shortcode_miembros',
+            'comunidades_marketplace' => 'shortcode_marketplace',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -206,7 +214,30 @@ class Flavor_Comunidades_Frontend_Controller {
             'limite' => 12,
             'mostrar_crear' => 'false',
             'mostrar_filtros' => 'true',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'miembros',
+            'order' => 'DESC',
         ], $atts);
+
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $visual_class_string = implode(' ', $visual_classes);
 
         global $wpdb;
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
@@ -228,7 +259,19 @@ class Flavor_Comunidades_Frontend_Controller {
             $params[] = $atts['categoria'];
         }
 
-        $sql = "SELECT " . $this->get_comunidad_select_sql() . " FROM {$tabla_comunidades} WHERE {$where} ORDER BY miembros_count DESC, created_at DESC LIMIT %d";
+        // Mapeo de orderby para comunidades
+        $orderby_map = [
+            'miembros' => 'miembros_count DESC',
+            'fecha' => 'created_at',
+            'date' => 'created_at',
+            'nombre' => 'nombre',
+            'title' => 'nombre',
+            'actividad' => 'updated_at',
+        ];
+        $orderby_column = $orderby_map[$atts['orderby']] ?? 'miembros_count DESC';
+        $order = strtoupper($atts['order']) === 'ASC' ? 'ASC' : 'DESC';
+
+        $sql = "SELECT " . $this->get_comunidad_select_sql() . " FROM {$tabla_comunidades} WHERE {$where} ORDER BY {$orderby_column} {$order}, created_at DESC LIMIT %d";
         $params[] = intval($atts['limite']);
 
         $comunidades = $wpdb->get_results($wpdb->prepare($sql, ...$params));
@@ -238,7 +281,7 @@ class Flavor_Comunidades_Frontend_Controller {
 
         ob_start();
         ?>
-        <div class="flavor-comunidades-listado">
+        <div class="flavor-comunidades-listado <?php echo esc_attr($visual_class_string); ?>">
             <?php if ($atts['mostrar_crear'] === 'true' && is_user_logged_in()): ?>
                 <div class="comunidades-header">
                     <a href="<?php echo esc_url(home_url('/mi-portal/comunidades/crear/')); ?>" class="flavor-btn flavor-btn-primary">

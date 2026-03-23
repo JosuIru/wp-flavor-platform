@@ -2559,6 +2559,16 @@ class Flavor_Chat_Foros_Module extends Flavor_Chat_Module_Base {
                     'callback' => [$this, 'render_admin_moderacion'],
                     'badge' => [$this, 'contar_pendientes_moderacion'],
                 ],
+                [
+                    'slug' => 'foros-categorias',
+                    'titulo' => __('Categorías', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_categorias'],
+                ],
+                [
+                    'slug' => 'foros-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_configuracion'],
+                ],
             ],
             'dashboard_widget' => [$this, 'render_dashboard_widget'],
             'estadisticas' => [$this, 'get_estadisticas_admin'],
@@ -4237,6 +4247,13 @@ KNOWLEDGE;
      * Registrar páginas de administración (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Dashboard - página oculta (slug principal)
@@ -4457,6 +4474,26 @@ KNOWLEDGE;
             if (class_exists('Flavor_Foros_Dashboard_Tab')) {
                 Flavor_Foros_Dashboard_Tab::get_instance();
             }
+        }
+    }
+
+    /**
+     * Renderiza la página de categorías
+     */
+    public function render_admin_categorias() {
+        $template_path = dirname(__FILE__) . '/views/categorias.php';
+        if (file_exists($template_path)) {
+            include $template_path;
+        }
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_admin_configuracion() {
+        $template_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($template_path)) {
+            include $template_path;
         }
     }
 }

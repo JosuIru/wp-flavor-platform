@@ -24,6 +24,7 @@ function flavor_incidencias_crear_tablas() {
     $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
     $sql_incidencias = "CREATE TABLE IF NOT EXISTS $tabla_incidencias (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        empresa_id bigint(20) unsigned DEFAULT NULL,
         titulo varchar(255) NOT NULL,
         descripcion text NOT NULL,
         categoria varchar(100) NOT NULL DEFAULT 'general',
@@ -56,6 +57,7 @@ function flavor_incidencias_crear_tablas() {
         created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id),
+        KEY empresa_id (empresa_id),
         KEY categoria (categoria),
         KEY estado (estado),
         KEY prioridad (prioridad),
@@ -193,4 +195,24 @@ function flavor_incidencias_eliminar_tablas() {
     }
 
     delete_option('flavor_incidencias_db_version');
+}
+
+/**
+ * Migración: Añade columna empresa_id si no existe (soporte multi-empresa)
+ *
+ * @return void
+ */
+function flavor_incidencias_maybe_add_empresa_id() {
+    global $wpdb;
+    $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+
+    if (!Flavor_Chat_Helpers::tabla_existe($tabla_incidencias)) {
+        return;
+    }
+
+    $columnas = $wpdb->get_col("DESCRIBE {$tabla_incidencias}", 0);
+    if (!in_array('empresa_id', $columnas)) {
+        $wpdb->query("ALTER TABLE {$tabla_incidencias} ADD COLUMN empresa_id bigint(20) unsigned DEFAULT NULL AFTER id");
+        $wpdb->query("ALTER TABLE {$tabla_incidencias} ADD INDEX idx_empresa_id (empresa_id)");
+    }
 }

@@ -864,10 +864,11 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             'post_title' => $titulo,
             'post_content' => $descripcion,
             'post_author' => get_current_user_id(),
-        ]);
+        ], true);
 
-        if (is_wp_error($oferta_id)) {
-            wp_send_json_error(['message' => $oferta_id->get_error_message()]);
+        if (is_wp_error($oferta_id) || empty($oferta_id)) {
+            $error = is_wp_error($oferta_id) ? $oferta_id->get_error_message() : __('No se pudo crear la oferta.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         update_post_meta($oferta_id, '_td_tipo', $tipo);
@@ -977,11 +978,12 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             $perfil_data['ID'] = $perfil_existente[0]->ID;
             $perfil_id = wp_update_post($perfil_data);
         } else {
-            $perfil_id = wp_insert_post($perfil_data);
+            $perfil_id = wp_insert_post($perfil_data, true);
         }
 
-        if (is_wp_error($perfil_id)) {
-            wp_send_json_error(['message' => $perfil_id->get_error_message()]);
+        if (is_wp_error($perfil_id) || empty($perfil_id)) {
+            $error = is_wp_error($perfil_id) ? $perfil_id->get_error_message() : __('No se pudo guardar el perfil.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         update_post_meta($perfil_id, '_td_experiencia', $experiencia);
@@ -1028,10 +1030,11 @@ class Flavor_Chat_Trabajo_Digno_Module extends Flavor_Chat_Module_Base {
             'post_title' => $nombre,
             'post_content' => $descripcion,
             'post_author' => get_current_user_id(),
-        ]);
+        ], true);
 
-        if (is_wp_error($emprendimiento_id)) {
-            wp_send_json_error(['message' => $emprendimiento_id->get_error_message()]);
+        if (is_wp_error($emprendimiento_id) || empty($emprendimiento_id)) {
+            $error = is_wp_error($emprendimiento_id) ? $emprendimiento_id->get_error_message() : __('No se pudo crear el emprendimiento.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         update_post_meta($emprendimiento_id, '_td_tipo_organizacion', $tipo_organizacion);

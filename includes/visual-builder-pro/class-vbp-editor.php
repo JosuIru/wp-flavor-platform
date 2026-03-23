@@ -26,7 +26,7 @@ class Flavor_VBP_Editor {
      *
      * @var string
      */
-    const VERSION = '2.0.16';
+    const VERSION = '2.0.22';
 
     /**
      * Post types soportados
@@ -425,7 +425,19 @@ class Flavor_VBP_Editor {
         // Agregar type="module" al script de emoji-picker
         add_filter( 'script_loader_tag', array( $this, 'agregar_module_emoji_picker' ), 10, 2 );
 
+        // Usar versiones minificadas de CSS en producción
+        $usar_css_minificado = ! defined( 'SCRIPT_DEBUG' ) || ! SCRIPT_DEBUG;
+
         foreach ( $archivos_css as $handle => $archivo ) {
+            // En producción, intentar cargar la versión minificada
+            if ( $usar_css_minificado ) {
+                $archivo_min = str_replace( '.css', '.min.css', $archivo );
+                $ruta_min    = FLAVOR_CHAT_IA_PATH . 'assets/vbp/css/' . $archivo_min;
+                if ( file_exists( $ruta_min ) ) {
+                    $archivo = $archivo_min;
+                }
+            }
+
             $ruta_archivo = FLAVOR_CHAT_IA_PATH . 'assets/vbp/css/' . $archivo;
             if ( file_exists( $ruta_archivo ) ) {
                 wp_enqueue_style(
@@ -446,6 +458,7 @@ class Flavor_VBP_Editor {
         // 2. Alpine.js (depende de los anteriores para encontrar los componentes)
         // 3. Scripts que usan Alpine.store() se registran en el evento 'alpine:init'
         $archivos_js = array(
+            'theme'        => array( 'vbp-theme.js', array() ), // Gestión de tema claro/oscuro (primero para evitar flash)
             'performance'  => array( 'vbp-performance.js', array() ), // Utilidades de performance primero
             'store'        => array( 'vbp-store.js', array( 'vbp-performance' ) ),
             'app'          => array( 'vbp-app.js', array( 'vbp-performance' ) ),
@@ -465,11 +478,28 @@ class Flavor_VBP_Editor {
             'breadcrumbs'  => array( 'vbp-breadcrumbs.js', array() ), // Breadcrumbs y zoom
             'toast'        => array( 'vbp-toast.js', array() ), // Sistema de notificaciones
             'ai-assistant' => array( 'vbp-ai-assistant.js', array() ), // Asistente de IA
+            'comments'     => array( 'vbp-comments.js', array() ), // Sistema de comentarios colaborativos
+            'component-library' => array( 'vbp-component-library.js', array() ), // Biblioteca de componentes reutilizables
+            'module-preview' => array( 'vbp-module-preview.js', array() ), // Sistema de preview de módulos en canvas
+            'inline-editor' => array( 'vbp-inline-editor.js', array() ), // WYSIWYG inline editing en canvas
         );
+
+        // Usar versiones minificadas en producción
+        $usar_minificado = ! defined( 'SCRIPT_DEBUG' ) || ! SCRIPT_DEBUG;
 
         foreach ( $archivos_js as $handle => $config ) {
             $archivo      = $config[0];
             $dependencias = $config[1];
+
+            // En producción, intentar cargar la versión minificada
+            if ( $usar_minificado ) {
+                $archivo_min = str_replace( '.js', '.min.js', $archivo );
+                $ruta_min    = FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/' . $archivo_min;
+                if ( file_exists( $ruta_min ) ) {
+                    $archivo = $archivo_min;
+                }
+            }
+
             $ruta_archivo = FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/' . $archivo;
 
             if ( file_exists( $ruta_archivo ) ) {
@@ -514,6 +544,8 @@ class Flavor_VBP_Editor {
             'returnUrl'      => admin_url( 'edit.php?post_type=flavor_landing' ),
             'previewUrl'     => $post_id ? get_preview_post_link( $post_id ) : '',
             'viewUrl'        => $post_id ? get_permalink( $post_id ) : '',
+            'userId'         => get_current_user_id(),
+            'isAdmin'        => current_user_can( 'manage_options' ),
             'designSettings' => $design_settings,
             'blocks'         => $bloques_categorias,
             'templates'      => $templates_libreria,

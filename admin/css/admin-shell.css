@@ -242,6 +242,7 @@ body.fls-shell-active #wpbody {
 /* Section */
 .fls-shell__section {
     margin-bottom: 8px;
+    padding: 0 8px;
 }
 
 .fls-shell__section-title {
@@ -263,6 +264,14 @@ body.fls-shell-active #wpbody {
     margin: 0;
 }
 
+.fls-shell--collapsed .fls-shell__section-toggle {
+    display: none;
+}
+
+.fls-shell--collapsed .fls-shell__section .fls-shell__menu {
+    display: block !important;
+}
+
 /* Menu Items */
 .fls-shell__menu {
     list-style: none;
@@ -271,7 +280,7 @@ body.fls-shell-active #wpbody {
 }
 
 .fls-shell__menu-item {
-    margin: 2px 8px;
+    margin: 2px 0;
 }
 
 .fls-shell__menu-link {
@@ -1693,6 +1702,7 @@ body.fls-shell-active.fls-shell-collapsed.is-fullscreen-mode .interface-interfac
     display: flex;
     align-items: center;
     gap: 6px;
+    padding: 0;
 }
 
 .fls-shell__section-icon {
@@ -1911,4 +1921,39 @@ body.fls-shell-active.fls-shell-collapsed.is-fullscreen-mode .interface-interfac
 
 [x-cloak] {
     display: none !important;
+}
+
+/* ==========================================================================
+   Fix: Asegurar visibilidad del editor de posts con Shell activo
+   ========================================================================== */
+
+/* Asegurar que el submitbox y botón publish siempre sean visibles */
+body.fls-shell-active #submitdiv,
+body.fls-shell-active #submitpost,
+body.fls-shell-active #major-publishing-actions,
+body.fls-shell-active #publishing-action,
+body.fls-shell-active #publish,
+body.fls-shell-active .submitbox {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+body.fls-shell-active #publish {
+    display: inline-block !important;
+}
+
+/* Asegurar que el sidebar del editor sea visible */
+body.fls-shell-active #postbox-container-1,
+body.fls-shell-active #side-sortables {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Fix para el contenedor principal del editor */
+body.fls-shell-active .post-php #poststuff,
+body.fls-shell-active .post-php #post-body {
+    overflow: visible !important;
 }

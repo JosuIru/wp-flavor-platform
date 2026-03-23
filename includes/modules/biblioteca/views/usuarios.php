@@ -147,38 +147,10 @@ if ($tablas_existen) {
     ");
 
 } else {
-    // Datos de demostración
-    $total_usuarios = 28;
-    $total_libros_compartidos = 156;
-    $total_prestamos_activos = 23;
-    $promedio_libros_usuario = 5.6;
-    $total_registros = 28;
-    $total_paginas = 2;
-
-    $usuarios_demo = [
-        ['ID' => 1, 'display_name' => 'María García López', 'user_email' => 'maria.garcia@ejemplo.com', 'user_registered' => '2024-01-15', 'libros_compartidos' => 18, 'prestamos_activos' => 3, 'libros_prestados' => 45, 'libros_tomados' => 12, 'ultima_actividad' => date('Y-m-d', strtotime('-2 days'))],
-        ['ID' => 2, 'display_name' => 'Carlos Rodríguez', 'user_email' => 'carlos.r@ejemplo.com', 'user_registered' => '2024-02-20', 'libros_compartidos' => 15, 'prestamos_activos' => 2, 'libros_prestados' => 38, 'libros_tomados' => 8, 'ultima_actividad' => date('Y-m-d', strtotime('-1 week'))],
-        ['ID' => 3, 'display_name' => 'Ana Martínez', 'user_email' => 'ana.martinez@ejemplo.com', 'user_registered' => '2024-03-10', 'libros_compartidos' => 12, 'prestamos_activos' => 1, 'libros_prestados' => 28, 'libros_tomados' => 15, 'ultima_actividad' => date('Y-m-d')],
-        ['ID' => 4, 'display_name' => 'Pedro Sánchez Ruiz', 'user_email' => 'pedro.sanchez@ejemplo.com', 'user_registered' => '2024-04-05', 'libros_compartidos' => 10, 'prestamos_activos' => 4, 'libros_prestados' => 22, 'libros_tomados' => 5, 'ultima_actividad' => date('Y-m-d', strtotime('-3 days'))],
-        ['ID' => 5, 'display_name' => 'Laura Fernández', 'user_email' => 'laura.f@ejemplo.com', 'user_registered' => '2024-05-12', 'libros_compartidos' => 8, 'prestamos_activos' => 0, 'libros_prestados' => 15, 'libros_tomados' => 20, 'ultima_actividad' => date('Y-m-d', strtotime('-5 days'))],
-        ['ID' => 6, 'display_name' => 'Miguel Torres', 'user_email' => 'miguel.torres@ejemplo.com', 'user_registered' => '2024-06-01', 'libros_compartidos' => 7, 'prestamos_activos' => 2, 'libros_prestados' => 18, 'libros_tomados' => 3, 'ultima_actividad' => date('Y-m-d', strtotime('-1 day'))],
-        ['ID' => 7, 'display_name' => 'Isabel Gómez', 'user_email' => 'isabel.gomez@ejemplo.com', 'user_registered' => '2024-06-15', 'libros_compartidos' => 6, 'prestamos_activos' => 1, 'libros_prestados' => 12, 'libros_tomados' => 9, 'ultima_actividad' => date('Y-m-d', strtotime('-4 days'))],
-        ['ID' => 8, 'display_name' => 'David López', 'user_email' => 'david.lopez@ejemplo.com', 'user_registered' => '2024-07-20', 'libros_compartidos' => 5, 'prestamos_activos' => 0, 'libros_prestados' => 8, 'libros_tomados' => 14, 'ultima_actividad' => date('Y-m-d', strtotime('-2 weeks'))],
-        ['ID' => 9, 'display_name' => 'Carmen Ruiz', 'user_email' => 'carmen.ruiz@ejemplo.com', 'user_registered' => '2024-08-10', 'libros_compartidos' => 4, 'prestamos_activos' => 1, 'libros_prestados' => 6, 'libros_tomados' => 11, 'ultima_actividad' => date('Y-m-d', strtotime('-6 days'))],
-        ['ID' => 10, 'display_name' => 'Javier Moreno', 'user_email' => 'javier.moreno@ejemplo.com', 'user_registered' => '2024-09-01', 'libros_compartidos' => 3, 'prestamos_activos' => 0, 'libros_prestados' => 4, 'libros_tomados' => 7, 'ultima_actividad' => date('Y-m-d', strtotime('-3 weeks'))],
-    ];
-
-    $usuarios = array_map(function($item) {
-        return (object) $item;
-    }, $usuarios_demo);
-
-    $top_prestadores = [
-        (object) ['ID' => 1, 'display_name' => 'María García López', 'total_prestamos' => 45],
-        (object) ['ID' => 2, 'display_name' => 'Carlos Rodríguez', 'total_prestamos' => 38],
-        (object) ['ID' => 3, 'display_name' => 'Ana Martínez', 'total_prestamos' => 28],
-        (object) ['ID' => 4, 'display_name' => 'Pedro Sánchez Ruiz', 'total_prestamos' => 22],
-        (object) ['ID' => 6, 'display_name' => 'Miguel Torres', 'total_prestamos' => 18],
-    ];
+    $total_registros = 0;
+    $total_paginas = 0;
+    $usuarios = [];
+    $top_prestadores = [];
 }
 
 // Función para calcular nivel de actividad
@@ -188,6 +160,20 @@ function obtener_nivel_actividad_biblioteca($libros, $prestamos) {
     if ($score >= 15) return ['nivel' => 'Activo', 'clase' => 'activo'];
     if ($score >= 5) return ['nivel' => 'Moderado', 'clase' => 'moderado'];
     return ['nivel' => 'Nuevo', 'clase' => 'nuevo'];
+}
+
+$niveles_distribucion = [0, 0, 0, 0];
+foreach ($usuarios as $usuario_item) {
+    $score = ((int) ($usuario_item->libros_compartidos ?? 0) * 2) + (int) ($usuario_item->libros_prestados ?? 0);
+    if ($score >= 30) {
+        $niveles_distribucion[0]++;
+    } elseif ($score >= 15) {
+        $niveles_distribucion[1]++;
+    } elseif ($score >= 5) {
+        $niveles_distribucion[2]++;
+    } else {
+        $niveles_distribucion[3]++;
+    }
 }
 ?>
 
@@ -200,7 +186,7 @@ function obtener_nivel_actividad_biblioteca($libros, $prestamos) {
 
     <?php if (!$tablas_existen): ?>
     <div class="notice notice-info">
-        <p><span class="dashicons dashicons-info"></span> <?php _e('Mostrando datos de demostración. Los datos reales aparecerán cuando se registren usuarios en la biblioteca.', 'flavor-chat-ia'); ?></p>
+        <p><span class="dashicons dashicons-info"></span> <?php _e('No se han encontrado las tablas requeridas de biblioteca. Mostrando únicamente datos reales disponibles.', 'flavor-chat-ia'); ?></p>
     </div>
     <?php endif; ?>
 
@@ -638,10 +624,7 @@ jQuery(document).ready(function($) {
             data: {
                 labels: ['<?php _e('Muy Activo', 'flavor-chat-ia'); ?>', '<?php _e('Activo', 'flavor-chat-ia'); ?>', '<?php _e('Moderado', 'flavor-chat-ia'); ?>', '<?php _e('Nuevo', 'flavor-chat-ia'); ?>'],
                 datasets: [{
-                    data: [<?php
-                        // Calcular distribución (demo o real)
-                        echo $tablas_existen ? '5, 8, 10, 5' : '5, 8, 10, 5';
-                    ?>],
+                    data: [<?php echo esc_js(implode(', ', array_map('intval', $niveles_distribucion))); ?>],
                     backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#9ca3af']
                 }]
             },

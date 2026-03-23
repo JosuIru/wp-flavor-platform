@@ -58,15 +58,22 @@ class Flavor_Foros_Frontend_Controller {
      * Inicializa el controlador
      */
     public function init() {
-        // Shortcodes
-        add_shortcode('flavor_foros_listado', [$this, 'shortcode_listado']);
-        add_shortcode('flavor_foros_categoria', [$this, 'shortcode_categoria']);
-        add_shortcode('flavor_foros_tema', [$this, 'shortcode_tema']);
-        add_shortcode('flavor_foros_nuevo_tema', [$this, 'shortcode_nuevo_tema']);
-        add_shortcode('flavor_foros_mis_temas', [$this, 'shortcode_mis_temas']);
-        add_shortcode('flavor_foros_mis_respuestas', [$this, 'shortcode_mis_respuestas']);
-        add_shortcode('flavor_foros_buscar', [$this, 'shortcode_buscar']);
-        add_shortcode('flavor_foros_actividad_reciente', [$this, 'shortcode_actividad_reciente']);
+        // Shortcodes (registro idempotente para compatibilidad con legacy)
+        $shortcodes = [
+            'flavor_foros_listado' => 'shortcode_listado',
+            'flavor_foros_categoria' => 'shortcode_categoria',
+            'flavor_foros_tema' => 'shortcode_tema',
+            'flavor_foros_nuevo_tema' => 'shortcode_nuevo_tema',
+            'flavor_foros_mis_temas' => 'shortcode_mis_temas',
+            'flavor_foros_mis_respuestas' => 'shortcode_mis_respuestas',
+            'flavor_foros_buscar' => 'shortcode_buscar',
+            'flavor_foros_actividad_reciente' => 'shortcode_actividad_reciente',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_foros_crear_tema', [$this, 'ajax_crear_tema']);
@@ -197,9 +204,30 @@ class Flavor_Foros_Frontend_Controller {
         $atts = shortcode_atts([
             'mostrar_descripcion' => 'si',
             'mostrar_estadisticas' => 'si',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
         ], $atts);
 
         $this->enqueue_assets();
+
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $visual_class_string = implode(' ', $visual_classes);
 
         if (!Flavor_Chat_Helpers::tabla_existe($this->tabla_foros)) {
             return '<div class="flavor-alert flavor-alert-warning">' .
@@ -221,7 +249,7 @@ class Flavor_Foros_Frontend_Controller {
 
         ob_start();
         ?>
-        <div class="flavor-foros-listado">
+        <div class="flavor-foros-listado <?php echo esc_attr($visual_class_string); ?>">
             <div class="flavor-foros-header">
                 <h2><?php _e('Foros de Discusión', 'flavor-chat-ia'); ?></h2>
                 <?php if (is_user_logged_in()): ?>

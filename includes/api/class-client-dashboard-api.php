@@ -120,6 +120,14 @@ class Flavor_Client_Dashboard_API {
             ],
         ]);
 
+        // GET /wp-json/flavor/v1/client/statistics
+        // Estadisticas simplificadas para widgets del dashboard movil
+        register_rest_route(self::API_NAMESPACE, '/client/statistics', [
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => [$this, 'get_statistics_for_mobile'],
+            'permission_callback' => [$this, 'check_user_authenticated'],
+        ]);
+
         // GET /wp-json/flavor/v1/client/activity
         // Timeline de actividad reciente
         register_rest_route(self::API_NAMESPACE, '/client/activity', [
@@ -491,6 +499,266 @@ class Flavor_Client_Dashboard_API {
         $this->set_cached_data($clave_cache, $datos_estadisticas);
 
         return rest_ensure_response($datos_estadisticas);
+    }
+
+    // =========================================================================
+    // ENDPOINT: GET /client/statistics
+    // =========================================================================
+
+    /**
+     * Obtiene estadisticas simplificadas para los widgets del dashboard movil
+     * Formato optimizado para Flutter: array de objetos con id, title, value, icon, color
+     *
+     * @param WP_REST_Request $request Peticion REST.
+     * @return WP_REST_Response Respuesta con estadisticas.
+     */
+    public function get_statistics_for_mobile(WP_REST_Request $request) {
+        $user_id = get_current_user_id();
+        $statistics = [];
+
+        // Obtener modulos activos
+        $active_modules = [];
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $active_modules = \Flavor_Chat_Module_Loader::get_active_modules_cached();
+        }
+
+        global $wpdb;
+
+        // Eventos proximos
+        if (in_array('eventos', $active_modules)) {
+            $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_eventos'") === $tabla_eventos) {
+                $eventos_proximos = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_eventos WHERE fecha_inicio >= %s AND estado = 'publicado'",
+                    current_time('mysql')
+                ));
+                $statistics[] = [
+                    'id' => 'eventos_proximos',
+                    'title' => __('Eventos Próximos', 'flavor-chat-ia'),
+                    'value' => (string) intval($eventos_proximos),
+                    'numeric_value' => floatval($eventos_proximos),
+                    'icon_name' => 'event',
+                    'color_hex' => '#E91E63',
+                ];
+            }
+        }
+
+        // Grupos de Consumo - Pedidos activos del usuario
+        if (in_array('grupos_consumo', $active_modules) || in_array('grupos-consumo', $active_modules)) {
+            $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_pedidos'") === $tabla_pedidos) {
+                $pedidos_gc = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_pedidos WHERE usuario_id = %d AND estado IN ('abierto', 'pendiente')",
+                    $user_id
+                ));
+                $statistics[] = [
+                    'id' => 'gc_pedidos',
+                    'title' => __('Mis Pedidos GC', 'flavor-chat-ia'),
+                    'value' => (string) intval($pedidos_gc),
+                    'numeric_value' => floatval($pedidos_gc),
+                    'icon_name' => 'shopping_basket',
+                    'color_hex' => '#4CAF50',
+                ];
+            }
+        }
+
+        // Banco de Tiempo - Horas disponibles
+        if (in_array('banco_tiempo', $active_modules) || in_array('banco-tiempo', $active_modules)) {
+            $tabla_saldos = $wpdb->prefix . 'flavor_bt_saldos';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_saldos'") === $tabla_saldos) {
+                $saldo_horas = $wpdb->get_var($wpdb->prepare(
+                    "SELECT saldo FROM $tabla_saldos WHERE usuario_id = %d",
+                    $user_id
+                ));
+                $statistics[] = [
+                    'id' => 'bt_horas',
+                    'title' => __('Mis Horas', 'flavor-chat-ia'),
+                    'value' => number_format(floatval($saldo_horas), 1) . 'h',
+                    'numeric_value' => floatval($saldo_horas),
+                    'icon_name' => 'schedule',
+                    'color_hex' => '#009688',
+                ];
+            }
+
+            // Servicios disponibles
+            $tabla_servicios = $wpdb->prefix . 'flavor_bt_servicios';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_servicios'") === $tabla_servicios) {
+                $servicios = $wpdb->get_var(
+                    "SELECT COUNT(*) FROM $tabla_servicios WHERE estado = 'activo'"
+                );
+                $statistics[] = [
+                    'id' => 'bt_servicios',
+                    'title' => __('Servicios Disponibles', 'flavor-chat-ia'),
+                    'value' => (string) intval($servicios),
+                    'numeric_value' => floatval($servicios),
+                    'icon_name' => 'volunteer_activism',
+                    'color_hex' => '#00BCD4',
+                ];
+            }
+        }
+
+        // Marketplace - Anuncios activos
+        if (in_array('marketplace', $active_modules)) {
+            $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_anuncios'") === $tabla_anuncios) {
+                $mis_anuncios = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_anuncios WHERE usuario_id = %d AND estado = 'activo'",
+                    $user_id
+                ));
+                $statistics[] = [
+                    'id' => 'marketplace_mis_anuncios',
+                    'title' => __('Mis Anuncios', 'flavor-chat-ia'),
+                    'value' => (string) intval($mis_anuncios),
+                    'numeric_value' => floatval($mis_anuncios),
+                    'icon_name' => 'storefront',
+                    'color_hex' => '#FF9800',
+                ];
+            }
+        }
+
+        // Socios - Estado de membresia
+        if (in_array('socios', $active_modules)) {
+            $tabla_socios = $wpdb->prefix . 'flavor_socios';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_socios'") === $tabla_socios) {
+                $es_socio = $wpdb->get_var($wpdb->prepare(
+                    "SELECT estado FROM $tabla_socios WHERE usuario_id = %d",
+                    $user_id
+                ));
+                $statistics[] = [
+                    'id' => 'socios_estado',
+                    'title' => __('Membresía', 'flavor-chat-ia'),
+                    'value' => $es_socio === 'activo' ? __('Activa', 'flavor-chat-ia') : __('Inactiva', 'flavor-chat-ia'),
+                    'numeric_value' => $es_socio === 'activo' ? 1.0 : 0.0,
+                    'icon_name' => 'card_membership',
+                    'color_hex' => $es_socio === 'activo' ? '#4CAF50' : '#9E9E9E',
+                ];
+            }
+        }
+
+        // Incidencias - Mis reportes
+        if (in_array('incidencias', $active_modules)) {
+            $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_incidencias'") === $tabla_incidencias) {
+                $mis_incidencias = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_incidencias WHERE usuario_id = %d AND estado NOT IN ('cerrada', 'resuelta')",
+                    $user_id
+                ));
+                $statistics[] = [
+                    'id' => 'incidencias_abiertas',
+                    'title' => __('Incidencias Abiertas', 'flavor-chat-ia'),
+                    'value' => (string) intval($mis_incidencias),
+                    'numeric_value' => floatval($mis_incidencias),
+                    'icon_name' => 'report_problem',
+                    'color_hex' => '#F44336',
+                ];
+            }
+        }
+
+        // Tramites - Mis expedientes
+        if (in_array('tramites', $active_modules)) {
+            $tabla_tramites = $wpdb->prefix . 'flavor_tramites';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_tramites'") === $tabla_tramites) {
+                $mis_tramites = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_tramites WHERE usuario_id = %d AND estado NOT IN ('completado', 'cancelado')",
+                    $user_id
+                ));
+                $statistics[] = [
+                    'id' => 'tramites_pendientes',
+                    'title' => __('Trámites Pendientes', 'flavor-chat-ia'),
+                    'value' => (string) intval($mis_tramites),
+                    'numeric_value' => floatval($mis_tramites),
+                    'icon_name' => 'description',
+                    'color_hex' => '#3F51B5',
+                ];
+            }
+        }
+
+        // Red Social - Publicaciones
+        if (in_array('red_social', $active_modules) || in_array('red-social', $active_modules)) {
+            $tabla_posts = $wpdb->prefix . 'flavor_rs_posts';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_posts'") === $tabla_posts) {
+                $mis_posts = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_posts WHERE autor_id = %d",
+                    $user_id
+                ));
+                $statistics[] = [
+                    'id' => 'red_social_posts',
+                    'title' => __('Mis Publicaciones', 'flavor-chat-ia'),
+                    'value' => (string) intval($mis_posts),
+                    'numeric_value' => floatval($mis_posts),
+                    'icon_name' => 'dynamic_feed',
+                    'color_hex' => '#9C27B0',
+                ];
+            }
+        }
+
+        // Comunidades - Mis comunidades
+        if (in_array('comunidades', $active_modules)) {
+            $tabla_miembros = $wpdb->prefix . 'flavor_comunidad_miembros';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_miembros'") === $tabla_miembros) {
+                $mis_comunidades = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_miembros WHERE usuario_id = %d AND estado = 'activo'",
+                    $user_id
+                ));
+                $statistics[] = [
+                    'id' => 'comunidades_miembro',
+                    'title' => __('Mis Comunidades', 'flavor-chat-ia'),
+                    'value' => (string) intval($mis_comunidades),
+                    'numeric_value' => floatval($mis_comunidades),
+                    'icon_name' => 'groups',
+                    'color_hex' => '#607D8B',
+                ];
+            }
+        }
+
+        // Carpooling - Mis viajes
+        if (in_array('carpooling', $active_modules)) {
+            $tabla_viajes = $wpdb->prefix . 'flavor_carpooling_viajes';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_viajes'") === $tabla_viajes) {
+                $mis_viajes = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_viajes WHERE conductor_id = %d AND fecha_salida >= %s",
+                    $user_id,
+                    current_time('mysql')
+                ));
+                $statistics[] = [
+                    'id' => 'carpooling_viajes',
+                    'title' => __('Mis Viajes', 'flavor-chat-ia'),
+                    'value' => (string) intval($mis_viajes),
+                    'numeric_value' => floatval($mis_viajes),
+                    'icon_name' => 'directions_car',
+                    'color_hex' => '#795548',
+                ];
+            }
+        }
+
+        // Reservas - Proximas reservas
+        if (in_array('reservas', $active_modules)) {
+            $tabla_reservas = $wpdb->prefix . 'flavor_reservas';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_reservas'") === $tabla_reservas) {
+                $mis_reservas = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_reservas WHERE usuario_id = %d AND fecha_inicio >= %s AND estado = 'confirmada'",
+                    $user_id,
+                    current_time('mysql')
+                ));
+                $statistics[] = [
+                    'id' => 'reservas_proximas',
+                    'title' => __('Próximas Reservas', 'flavor-chat-ia'),
+                    'value' => (string) intval($mis_reservas),
+                    'numeric_value' => floatval($mis_reservas),
+                    'icon_name' => 'event_available',
+                    'color_hex' => '#2196F3',
+                ];
+            }
+        }
+
+        // Permitir que otros modulos agreguen estadisticas
+        $statistics = apply_filters('flavor_client_statistics_mobile', $statistics, $user_id);
+
+        return rest_ensure_response([
+            'statistics' => $statistics,
+            'total' => count($statistics),
+            'generated_at' => current_time('c'),
+        ]);
     }
 
     // =========================================================================

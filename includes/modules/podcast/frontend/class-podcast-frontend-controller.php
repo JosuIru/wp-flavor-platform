@@ -51,15 +51,22 @@ class Flavor_Podcast_Frontend_Controller {
      */
     private function init() {
         // Shortcodes
-        add_shortcode('flavor_podcast_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('flavor_podcast_series', [$this, 'shortcode_series']);
-        add_shortcode('flavor_podcast_serie', [$this, 'shortcode_serie']);
-        add_shortcode('flavor_podcast_episodio', [$this, 'shortcode_episodio']);
-        add_shortcode('flavor_podcast_player', [$this, 'shortcode_player']);
-        add_shortcode('flavor_podcast_mis_suscripciones', [$this, 'shortcode_mis_suscripciones']);
-        add_shortcode('flavor_podcast_crear_serie', [$this, 'shortcode_crear_serie']);
-        add_shortcode('flavor_podcast_subir_episodio', [$this, 'shortcode_subir_episodio']);
-        add_shortcode('flavor_podcast_estadisticas', [$this, 'shortcode_estadisticas']);
+        $shortcodes = [
+            'flavor_podcast_catalogo' => 'shortcode_catalogo',
+            'flavor_podcast_series' => 'shortcode_series',
+            'flavor_podcast_serie' => 'shortcode_serie',
+            'flavor_podcast_episodio' => 'shortcode_episodio',
+            'flavor_podcast_player' => 'shortcode_player',
+            'flavor_podcast_mis_suscripciones' => 'shortcode_mis_suscripciones',
+            'flavor_podcast_crear_serie' => 'shortcode_crear_serie',
+            'flavor_podcast_subir_episodio' => 'shortcode_subir_episodio',
+            'flavor_podcast_estadisticas' => 'shortcode_estadisticas',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_podcast_suscribir', [$this, 'ajax_suscribir']);

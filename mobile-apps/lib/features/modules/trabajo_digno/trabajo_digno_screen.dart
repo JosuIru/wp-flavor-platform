@@ -711,7 +711,7 @@ class _TrabajoDignoScreenState extends ConsumerState<TrabajoDignoScreen> {
     final api = ref.read(apiClientProvider);
 
     try {
-      final response = await api.get('/trabajo-digno/ofertas', queryParams: {
+      final response = await api.get('/trabajo-digno/ofertas', queryParameters: {
         if (ubicacion.isNotEmpty) 'ubicacion': ubicacion,
         if (tipoContrato != 'todos') 'tipo_contrato': tipoContrato,
         if (teletrabajo) 'teletrabajo': '1',

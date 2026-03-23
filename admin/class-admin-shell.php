@@ -58,6 +58,7 @@ class Flavor_Admin_Shell {
         // Economía
         'marketplace',
         'banco-tiempo',
+        'contabilidad',
         'economia-don',
         'suficiencia',
 
@@ -99,6 +100,7 @@ class Flavor_Admin_Shell {
         // Negocios
         'clientes',
         'facturas',
+        'empresas',
         'empresarial',
         'crowdfunding',
         'themacle',
@@ -274,11 +276,13 @@ class Flavor_Admin_Shell {
         }
 
         // CSS del shell
+        $shell_css_path = FLAVOR_CHAT_IA_PATH . 'admin/css/admin-shell.css';
+        $shell_css_ver = file_exists($shell_css_path) ? (string) filemtime($shell_css_path) : FLAVOR_CHAT_IA_VERSION;
         wp_enqueue_style(
             'flavor-admin-shell',
             FLAVOR_CHAT_IA_URL . 'admin/css/admin-shell.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            $shell_css_ver
         );
 
         // Alpine.js (si no está ya cargado)
@@ -300,15 +304,18 @@ class Flavor_Admin_Shell {
         }
 
         // JS del shell
+        $shell_js_path = FLAVOR_CHAT_IA_PATH . 'admin/js/admin-shell.js';
+        $shell_js_ver = file_exists($shell_js_path) ? (string) filemtime($shell_js_path) : FLAVOR_CHAT_IA_VERSION;
         wp_enqueue_script(
             'flavor-admin-shell',
             FLAVOR_CHAT_IA_URL . 'admin/js/admin-shell.js',
             ['alpine'],
-            FLAVOR_CHAT_IA_VERSION,
+            $shell_js_ver,
             true
         );
 
         // Localizar datos
+        $search_catalog = $this->build_search_catalog();
         wp_localize_script('flavor-admin-shell', 'flavorAdminShell', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('flavor_admin_shell'),
@@ -316,6 +323,7 @@ class Flavor_Admin_Shell {
             'currentPage' => isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '',
             'dashboardUrl' => admin_url('admin.php?page=flavor-dashboard'),
             'wpDashboardUrl' => admin_url(),
+            'searchCatalog' => $search_catalog,
             'i18n' => [
                 'collapse' => __('Colapsar menú', 'flavor-chat-ia'),
                 'expand' => __('Expandir menú', 'flavor-chat-ia'),
@@ -344,6 +352,57 @@ class Flavor_Admin_Shell {
         $is_dark_mode = $this->is_dark_mode();
 
         include FLAVOR_CHAT_IA_PATH . 'admin/views/shell-sidebar.php';
+    }
+
+    /**
+     * Construye un catálogo de búsqueda canónico para el buscador del Shell.
+     *
+     * @return array<int, array<string, string>>
+     */
+    private function build_search_catalog() {
+        $catalog = [];
+        $navigation = $this->get_navigation_structure();
+
+        foreach ($navigation as $section) {
+            $section_label = isset($section['label']) ? (string) $section['label'] : '';
+            $items = isset($section['items']) && is_array($section['items']) ? $section['items'] : [];
+
+            foreach ($items as $item) {
+                $slug = isset($item['slug']) ? (string) $item['slug'] : '';
+                if ($slug === '') {
+                    continue;
+                }
+
+                $catalog[] = [
+                    'slug' => $slug,
+                    'label' => isset($item['label']) ? (string) $item['label'] : $slug,
+                    'icon' => isset($item['icon']) ? (string) $item['icon'] : 'dashicons-admin-page',
+                    'section' => $section_label,
+                    'url' => !empty($item['url']) ? (string) $item['url'] : admin_url('admin.php?page=' . rawurlencode($slug)),
+                    'type' => 'page',
+                ];
+
+                if (!empty($item['subpages']) && is_array($item['subpages'])) {
+                    foreach ($item['subpages'] as $subpage) {
+                        $sub_slug = isset($subpage['slug']) ? (string) $subpage['slug'] : '';
+                        if ($sub_slug === '') {
+                            continue;
+                        }
+
+                        $catalog[] = [
+                            'slug' => $sub_slug,
+                            'label' => isset($subpage['label']) ? (string) $subpage['label'] : $sub_slug,
+                            'icon' => isset($subpage['icon']) ? (string) $subpage['icon'] : 'dashicons-arrow-right-alt2',
+                            'section' => isset($item['label']) ? (string) $item['label'] : $section_label,
+                            'url' => admin_url('admin.php?page=' . rawurlencode($sub_slug)),
+                            'type' => 'subpage',
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $catalog;
     }
 
     /**
@@ -393,7 +452,7 @@ class Flavor_Admin_Shell {
                 'label' => __('Comunidad', 'flavor-chat-ia'),
                 'icon' => 'dashicons-groups',
                 'items' => [
-                    ['slug' => 'socios-dashboard', 'label' => __('Socios', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
+                    ['slug' => 'socios-dashboard', 'label' => __('Miembros', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
                     ['slug' => 'flavor-colectivos-dashboard', 'label' => __('Colectivos', 'flavor-chat-ia'), 'icon' => 'dashicons-networking'],
                     ['slug' => 'comunidades-dashboard', 'label' => __('Comunidades', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-multisite'],
                     ['slug' => 'foros-dashboard', 'label' => __('Foros', 'flavor-chat-ia'), 'icon' => 'dashicons-format-chat'],
@@ -407,15 +466,28 @@ class Flavor_Admin_Shell {
                     ['slug' => 'gc-dashboard', 'label' => __('Grupos Consumo', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
                     ['slug' => 'marketplace-dashboard', 'label' => __('Marketplace', 'flavor-chat-ia'), 'icon' => 'dashicons-store'],
                     ['slug' => 'banco-tiempo-dashboard', 'label' => __('Banco Tiempo', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
+                    ['slug' => 'contabilidad-dashboard', 'label' => __('Contabilidad', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
                     ['slug' => 'economia-don-dashboard', 'label' => __('Economía Don', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
                 ],
             ],
-            'mod_negocios' => [
-                'label' => __('Negocios', 'flavor-chat-ia'),
+            'mod_empresarial' => [
+                'label' => __('Empresarial', 'flavor-chat-ia'),
                 'icon' => 'dashicons-building',
                 'items' => [
+                    [
+                        'slug' => 'empresas-dashboard',
+                        'label' => __('Empresas', 'flavor-chat-ia'),
+                        'icon' => 'dashicons-building',
+                        'subpages' => [
+                            ['slug' => 'empresas-listado', 'label' => __('Listado', 'flavor-chat-ia'), 'icon' => 'dashicons-list-view'],
+                            ['slug' => 'empresas-solicitudes', 'label' => __('Solicitudes', 'flavor-chat-ia'), 'icon' => 'dashicons-clipboard'],
+                            ['slug' => 'empresas-config', 'label' => __('Configuración', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-generic'],
+                        ],
+                    ],
                     ['slug' => 'clientes-dashboard', 'label' => __('Clientes', 'flavor-chat-ia'), 'icon' => 'dashicons-businessman'],
                     ['slug' => 'facturas-dashboard', 'label' => __('Facturas', 'flavor-chat-ia'), 'icon' => 'dashicons-media-text'],
+                    ['slug' => 'presupuestos-dashboard', 'label' => __('Presupuestos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
+                    ['slug' => 'fichaje-dashboard', 'label' => __('Fichaje', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
                     ['slug' => 'flavor-woocommerce-dashboard', 'label' => __('WooCommerce', 'flavor-chat-ia'), 'icon' => 'dashicons-cart'],
                     ['slug' => 'flavor-crowdfunding', 'label' => __('Crowdfunding', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
                     ['slug' => 'themacle-dashboard', 'label' => __('Themacle', 'flavor-chat-ia'), 'icon' => 'dashicons-art'],
@@ -441,7 +513,6 @@ class Flavor_Admin_Shell {
                     ['slug' => 'incidencias-dashboard', 'label' => __('Incidencias', 'flavor-chat-ia'), 'icon' => 'dashicons-warning'],
                     ['slug' => 'ayuda-dashboard', 'label' => __('Ayuda Vecinal', 'flavor-chat-ia'), 'icon' => 'dashicons-sos'],
                     ['slug' => 'participacion-dashboard', 'label' => __('Participación', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
-                    ['slug' => 'presupuestos-dashboard', 'label' => __('Presupuestos', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie'],
                     ['slug' => 'transparencia-dashboard', 'label' => __('Transparencia', 'flavor-chat-ia'), 'icon' => 'dashicons-visibility'],
                     ['slug' => 'avisos-dashboard', 'label' => __('Avisos', 'flavor-chat-ia'), 'icon' => 'dashicons-megaphone'],
                     ['slug' => 'denuncias-dashboard', 'label' => __('Denuncias', 'flavor-chat-ia'), 'icon' => 'dashicons-flag'],
@@ -456,7 +527,6 @@ class Flavor_Admin_Shell {
                     ['slug' => 'espacios-dashboard', 'label' => __('Espacios', 'flavor-chat-ia'), 'icon' => 'dashicons-building'],
                     ['slug' => 'biblioteca-dashboard', 'label' => __('Biblioteca', 'flavor-chat-ia'), 'icon' => 'dashicons-book-alt'],
                     ['slug' => 'carpooling-dashboard', 'label' => __('Carpooling', 'flavor-chat-ia'), 'icon' => 'dashicons-car'],
-                    ['slug' => 'fichaje-dashboard', 'label' => __('Fichaje', 'flavor-chat-ia'), 'icon' => 'dashicons-clock'],
                     ['slug' => 'parkings-dashboard', 'label' => __('Parkings', 'flavor-chat-ia'), 'icon' => 'dashicons-location'],
                     ['slug' => 'actores-dashboard', 'label' => __('Mapa Actores', 'flavor-chat-ia'), 'icon' => 'dashicons-location-alt'],
                     ['slug' => 'bares-dashboard', 'label' => __('Bares', 'flavor-chat-ia'), 'icon' => 'dashicons-store'],
@@ -531,12 +601,19 @@ class Flavor_Admin_Shell {
                 'label' => __('Herramientas', 'flavor-chat-ia'),
                 'icon' => 'dashicons-admin-tools',
                 'items' => [
+                    ['slug' => 'flavor-ai-tools', 'label' => __('Herramientas IA', 'flavor-chat-ia'), 'icon' => 'dashicons-lightbulb'],
                     ['slug' => 'flavor-export-import', 'label' => __('Export/Import', 'flavor-chat-ia'), 'icon' => 'dashicons-migrate'],
                     ['slug' => 'flavor-health-check', 'label' => __('Diagnóstico', 'flavor-chat-ia'), 'icon' => 'dashicons-heart'],
                     ['slug' => 'flavor-activity-log', 'label' => __('Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
                     ['slug' => 'flavor-analytics', 'label' => __('Analytics', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-area'],
                     ['slug' => 'flavor-api-docs', 'label' => __('API Docs', 'flavor-chat-ia'), 'icon' => 'dashicons-rest-api'],
                     ['slug' => 'flavor-systems-panel', 'label' => __('Sistemas V3', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-generic'],
+                    [
+                        'slug' => 'flavor-apps-config',
+                        'label' => __('Datos Demo', 'flavor-chat-ia'),
+                        'icon' => 'dashicons-database-import',
+                        'url' => 'admin.php?page=flavor-apps-config&tab=tools',
+                    ],
                 ],
             ],
             'administracion' => [

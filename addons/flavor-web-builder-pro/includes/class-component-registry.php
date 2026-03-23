@@ -3158,12 +3158,12 @@ class Flavor_Component_Registry {
             // SOCIOS / MEMBRESÍAS
             // ========================================
             'socios_hero' => [
-                'label' => __('Hero Socios', 'flavor-chat-ia'),
+                'label' => __('Hero Miembros', 'flavor-chat-ia'),
                 'description' => __('Sección hero para membresías', 'flavor-chat-ia'),
                 'category' => 'hero',
                 'icon' => 'dashicons-groups',
                 'fields' => [
-                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Hazte Socio', 'flavor-chat-ia')],
+                    'titulo' => ['type' => 'text', 'label' => __('Título', 'flavor-chat-ia'), 'default' => __('Hazte Miembro', 'flavor-chat-ia')],
                     'subtitulo' => ['type' => 'textarea', 'label' => __('Subtítulo', 'flavor-chat-ia'), 'default' => __('Únete a nuestra comunidad', 'flavor-chat-ia')],
                     'imagen_fondo' => ['type' => 'image', 'label' => __('Imagen de fondo', 'flavor-chat-ia'), 'default' => ''],
                     'color_primario' => ['type' => 'color', 'label' => __('Color primario', 'flavor-chat-ia'), 'default' => '#f43f5e'],
@@ -3171,7 +3171,7 @@ class Flavor_Component_Registry {
                 'template' => 'socios/hero',
             ],
             'socios_planes_grid' => [
-                'label' => __('Planes de Socios', 'flavor-chat-ia'),
+                'label' => __('Planes de Miembros', 'flavor-chat-ia'),
                 'description' => __('Grid de planes de membresía', 'flavor-chat-ia'),
                 'category' => 'listings',
                 'icon' => 'dashicons-money-alt',
@@ -3181,7 +3181,7 @@ class Flavor_Component_Registry {
                 'template' => 'socios/planes-grid',
             ],
             'socios_beneficios' => [
-                'label' => __('Beneficios de Socios', 'flavor-chat-ia'),
+                'label' => __('Beneficios de Miembros', 'flavor-chat-ia'),
                 'description' => __('Lista de beneficios de membresía', 'flavor-chat-ia'),
                 'category' => 'features',
                 'icon' => 'dashicons-star-filled',
@@ -3191,7 +3191,7 @@ class Flavor_Component_Registry {
                 'template' => 'socios/beneficios',
             ],
             'socios_cta' => [
-                'label' => __('CTA Socios', 'flavor-chat-ia'),
+                'label' => __('CTA Miembros', 'flavor-chat-ia'),
                 'description' => __('Llamada a la acción para unirse', 'flavor-chat-ia'),
                 'category' => 'cta',
                 'icon' => 'dashicons-plus-alt',

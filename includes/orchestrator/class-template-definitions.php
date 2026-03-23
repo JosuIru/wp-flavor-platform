@@ -175,6 +175,7 @@ class Flavor_Template_Definitions {
                     'sugeridos' => ['eventos', 'socios'],
                 ],
                 'paginas' => [
+                    // === PÁGINA PRINCIPAL ===
                     [
                         'titulo' => __('Inicio', 'flavor-chat-ia'),
                         'slug' => 'inicio',
@@ -183,29 +184,49 @@ class Flavor_Template_Definitions {
                         'es_home' => true,
                         'template' => 'flavor-fullwidth',
                     ],
+                    // === SECCIÓN: CATÁLOGO ===
+                    [
+                        'titulo' => __('Catálogo', 'flavor-chat-ia'),
+                        'slug' => 'catalogo',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestro Catálogo', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->',
+                        'parent' => 0,
+                    ],
                     [
                         'titulo' => __('Productos', 'flavor-chat-ia'),
                         'slug' => 'productos',
                         'contenido' => '[gc_catalogo]',
-                        'parent' => 0,
+                        'parent' => 'catalogo',
                     ],
                     [
                         'titulo' => __('Productores', 'flavor-chat-ia'),
                         'slug' => 'productores',
                         'contenido' => '[gc_productores]',
-                        'parent' => 0,
+                        'parent' => 'catalogo',
                     ],
                     [
                         'titulo' => __('Ciclo Actual', 'flavor-chat-ia'),
                         'slug' => 'ciclo-actual',
                         'contenido' => '[gc_ciclo_actual]',
-                        'parent' => 0,
+                        'parent' => 'catalogo',
                     ],
+                    // === SECCIÓN: MI CUENTA ===
                     [
                         'titulo' => __('Mi Cuenta', 'flavor-chat-ia'),
                         'slug' => 'mi-cuenta',
                         'contenido' => '[flavor_user_dashboard]',
                         'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Mis Pedidos', 'flavor-chat-ia'),
+                        'slug' => 'mis-pedidos',
+                        'contenido' => '[gc_mis_pedidos]',
+                        'parent' => 'mi-cuenta',
+                    ],
+                    [
+                        'titulo' => __('Mi Cesta', 'flavor-chat-ia'),
+                        'slug' => 'mi-cesta',
+                        'contenido' => '[gc_cesta]',
+                        'parent' => 'mi-cuenta',
                     ],
                 ],
                 'menu' => [
@@ -213,10 +234,25 @@ class Flavor_Template_Definitions {
                     'ubicacion' => 'primary',
                     'items' => [
                         ['titulo' => __('Inicio', 'flavor-chat-ia'), 'url' => '/', 'icono' => 'home'],
-                        ['titulo' => __('Productos', 'flavor-chat-ia'), 'url' => '/productos/', 'icono' => 'carrot'],
-                        ['titulo' => __('Productores', 'flavor-chat-ia'), 'url' => '/productores/', 'icono' => 'users'],
-                        ['titulo' => __('Ciclo Actual', 'flavor-chat-ia'), 'url' => '/ciclo-actual/', 'icono' => 'calendar'],
-                        ['titulo' => __('Mi Cuenta', 'flavor-chat-ia'), 'url' => '/mi-cuenta/', 'icono' => 'user'],
+                        [
+                            'titulo' => __('Catálogo', 'flavor-chat-ia'),
+                            'url' => '/catalogo/',
+                            'icono' => 'carrot',
+                            'hijos' => [
+                                ['titulo' => __('Productos', 'flavor-chat-ia'), 'url' => '/catalogo/productos/'],
+                                ['titulo' => __('Productores', 'flavor-chat-ia'), 'url' => '/catalogo/productores/'],
+                                ['titulo' => __('Ciclo Actual', 'flavor-chat-ia'), 'url' => '/catalogo/ciclo-actual/'],
+                            ],
+                        ],
+                        [
+                            'titulo' => __('Mi Cuenta', 'flavor-chat-ia'),
+                            'url' => '/mi-cuenta/',
+                            'icono' => 'user',
+                            'hijos' => [
+                                ['titulo' => __('Mis Pedidos', 'flavor-chat-ia'), 'url' => '/mi-cuenta/mis-pedidos/'],
+                                ['titulo' => __('Mi Cesta', 'flavor-chat-ia'), 'url' => '/mi-cuenta/mi-cesta/'],
+                            ],
+                        ],
                     ],
                 ],
                 'landing' => [
@@ -298,7 +334,7 @@ class Flavor_Template_Definitions {
             // =========================================================
             'comunidad' => [
                 'nombre' => __('Comunidad / Asociacion', 'flavor-chat-ia'),
-                'descripcion' => __('Gestion integral de una comunidad o asociacion: socios, eventos, foros y recursos compartidos.', 'flavor-chat-ia'),
+                'descripcion' => __('Gestion integral de una comunidad o asociacion: miembros, eventos, foros y recursos compartidos.', 'flavor-chat-ia'),
                 'icono' => 'dashicons-groups',
                 'color' => '#e91e63',
                 'modulos' => [
@@ -315,16 +351,16 @@ class Flavor_Template_Definitions {
                         'es_landing' => true,
                     ],
                     [
-                        'titulo' => __('Socios', 'flavor-chat-ia'),
+                        'titulo' => __('Miembros', 'flavor-chat-ia'),
                         'slug' => 'socios',
                         'contenido' => '<h1>Unete a Nuestra Comunidad</h1>
-<p>Descubre los beneficios de ser socio</p>
+<p>Descubre los beneficios de ser miembro</p>
 
-<a href="/comunidad/socios/unirme/" class="flavor-button flavor-button-primary">Hacerse Socio</a>',
+<a href="/comunidad/socios/unirme/" class="flavor-button flavor-button-primary">Hacerse Miembro</a>',
                         'parent' => 'comunidad',
                     ],
                     [
-                        'titulo' => __('Hacerse Socio', 'flavor-chat-ia'),
+                        'titulo' => __('Hacerse Miembro', 'flavor-chat-ia'),
                         'slug' => 'unirme',
                         'contenido' => '<h1>Unete como Socio</h1>
 
@@ -332,9 +368,9 @@ class Flavor_Template_Definitions {
                         'parent' => 'socios',
                     ],
                     [
-                        'titulo' => __('Mi Perfil de Socio', 'flavor-chat-ia'),
+                        'titulo' => __('Mi Perfil de Miembro', 'flavor-chat-ia'),
                         'slug' => 'mi-perfil',
-                        'contenido' => '<h1>Mi Perfil de Socio</h1>
+                        'contenido' => '<h1>Mi Perfil de Miembro</h1>
 
 [flavor_module_dashboard module="socios"]',
                         'parent' => 'socios',
@@ -393,7 +429,7 @@ class Flavor_Template_Definitions {
                             'variante' => '4-columnas',
                             'datos' => [
                                 'items' => [
-                                    ['numero' => '250+', 'etiqueta' => __('Socios', 'flavor-chat-ia')],
+                                    ['numero' => '250+', 'etiqueta' => __('Miembros', 'flavor-chat-ia')],
                                     ['numero' => '50+', 'etiqueta' => __('Eventos/ano', 'flavor-chat-ia')],
                                     ['numero' => '15', 'etiqueta' => __('Anos activos', 'flavor-chat-ia')],
                                     ['numero' => '100%', 'etiqueta' => __('Participativo', 'flavor-chat-ia')],
@@ -413,8 +449,8 @@ class Flavor_Template_Definitions {
                             'variante' => 'con-imagen',
                             'datos' => [
                                 'titulo' => __('Forma parte de nuestra comunidad', 'flavor-chat-ia'),
-                                'descripcion' => __('Hazte socio y disfruta de todos los beneficios', 'flavor-chat-ia'),
-                                'boton_texto' => __('Hacerse Socio', 'flavor-chat-ia'),
+                                'descripcion' => __('Hazte miembro y disfruta de todos los beneficios', 'flavor-chat-ia'),
+                                'boton_texto' => __('Hacerse Miembro', 'flavor-chat-ia'),
                                 'boton_url' => '/comunidad/socios/unirme/',
                             ],
                         ],
@@ -438,7 +474,7 @@ class Flavor_Template_Definitions {
                 ],
                 'demo' => [
                     'disponible' => true,
-                    'descripcion' => __('Incluye 6 eventos de ejemplo y configuracion de tipos de socios', 'flavor-chat-ia'),
+                    'descripcion' => __('Incluye 6 eventos de ejemplo y configuracion de tipos de miembros', 'flavor-chat-ia'),
                 ],
             ],
 
@@ -901,6 +937,795 @@ class Flavor_Template_Definitions {
                 'demo' => [
                     'disponible' => false,
                     'descripcion' => __('Requiere WooCommerce activo. Usa el importador de WooCommerce para datos de ejemplo.', 'flavor-chat-ia'),
+                ],
+            ],
+
+            // =========================================================
+            // EMPRESA LOCAL / PYME
+            // =========================================================
+            'empresa_local' => [
+                'nombre' => __('Empresa Local / PYME', 'flavor-chat-ia'),
+                'descripcion' => __('Herramientas para pequeños negocios y autónomos: gestión de clientes, facturación, presencia online y conexión con el tejido local.', 'flavor-chat-ia'),
+                'icono' => 'dashicons-store',
+                'color' => '#0ea5e9',
+                'modulos' => [
+                    'requeridos' => ['clientes', 'facturas'],
+                    'opcionales' => ['marketplace', 'bares', 'eventos', 'chat_interno', 'encuestas', 'campanias'],
+                    'sugeridos' => ['marketplace', 'bares'],
+                ],
+                'paginas' => [
+                    // === PÁGINA PRINCIPAL ===
+                    [
+                        'titulo' => __('Inicio', 'flavor-chat-ia'),
+                        'slug' => 'inicio',
+                        'contenido' => '[flavor_landing module="empresa"]',
+                        'parent' => 0,
+                        'es_home' => true,
+                        'template' => 'flavor-fullwidth',
+                    ],
+                    // === SECCIÓN: NEGOCIO ===
+                    [
+                        'titulo' => __('Negocio', 'flavor-chat-ia'),
+                        'slug' => 'negocio',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestro Negocio', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Conoce lo que ofrecemos.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Servicios', 'flavor-chat-ia'),
+                        'slug' => 'servicios',
+                        'contenido' => '[empresa_servicios]',
+                        'parent' => 'negocio',
+                    ],
+                    [
+                        'titulo' => __('Productos', 'flavor-chat-ia'),
+                        'slug' => 'productos',
+                        'contenido' => '[marketplace_listado usuario_actual="admin"]',
+                        'parent' => 'negocio',
+                    ],
+                    [
+                        'titulo' => __('Contacto', 'flavor-chat-ia'),
+                        'slug' => 'contacto',
+                        'contenido' => '[flavor_contacto]',
+                        'parent' => 'negocio',
+                    ],
+                    // === SECCIÓN: GESTIÓN ===
+                    [
+                        'titulo' => __('Mi Portal', 'flavor-chat-ia'),
+                        'slug' => 'mi-portal',
+                        'contenido' => '[flavor_portal_usuario]',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Mis Clientes', 'flavor-chat-ia'),
+                        'slug' => 'mis-clientes',
+                        'contenido' => '[clientes_listado]',
+                        'parent' => 'mi-portal',
+                    ],
+                    [
+                        'titulo' => __('Facturación', 'flavor-chat-ia'),
+                        'slug' => 'facturacion',
+                        'contenido' => '[facturas_listado]',
+                        'parent' => 'mi-portal',
+                    ],
+                    [
+                        'titulo' => __('Nuevo Cliente', 'flavor-chat-ia'),
+                        'slug' => 'nuevo-cliente',
+                        'contenido' => '[clientes_formulario_alta]',
+                        'parent' => 'mi-portal',
+                    ],
+                ],
+                'landing' => [
+                    'activa' => true,
+                    'secciones' => [
+                        [
+                            'tipo' => 'hero',
+                            'variante' => 'empresa',
+                            'datos' => [
+                                'titulo' => __('Tu Negocio, Más Cerca', 'flavor-chat-ia'),
+                                'subtitulo' => __('Conectamos tu empresa con clientes del territorio', 'flavor-chat-ia'),
+                                'cta_texto' => __('Conoce nuestros servicios', 'flavor-chat-ia'),
+                                'cta_url' => '/servicios',
+                            ],
+                        ],
+                        [
+                            'tipo' => 'servicios',
+                            'variante' => 'grid',
+                            'datos' => [
+                                'titulo' => __('Nuestros Servicios', 'flavor-chat-ia'),
+                            ],
+                        ],
+                        [
+                            'tipo' => 'contacto',
+                            'variante' => 'mapa',
+                            'datos' => [
+                                'titulo' => __('Visítanos', 'flavor-chat-ia'),
+                            ],
+                        ],
+                    ],
+                ],
+                'configuracion' => [
+                    'clientes' => [
+                        'campos_personalizados' => true,
+                        'historial_compras' => true,
+                        'notas_internas' => true,
+                    ],
+                    'facturas' => [
+                        'numeracion_automatica' => true,
+                        'plantilla_factura' => 'moderna',
+                        'incluir_logo' => true,
+                    ],
+                ],
+                'demo' => [
+                    'disponible' => true,
+                    'descripcion' => __('Incluye clientes de ejemplo, facturas modelo y configuración básica de negocio.', 'flavor-chat-ia'),
+                ],
+            ],
+
+            // =========================================================
+            // EMPRESA ÉTICA / COOPERATIVA
+            // =========================================================
+            'empresa_etica' => [
+                'nombre' => __('Empresa Ética / Cooperativa', 'flavor-chat-ia'),
+                'descripcion' => __('Para empresas con valores sociales: economía social, cooperativas, B Corps. Incluye transparencia, participación y medición de impacto.', 'flavor-chat-ia'),
+                'icono' => 'dashicons-heart',
+                'color' => '#10b981',
+                'modulos' => [
+                    'requeridos' => ['socios', 'transparencia', 'participacion'],
+                    'opcionales' => ['clientes', 'facturas', 'marketplace', 'eventos', 'foros', 'presupuestos_participativos', 'huella_ecologica'],
+                    'sugeridos' => ['clientes', 'eventos', 'foros'],
+                ],
+                'paginas' => [
+                    // === PÁGINA PRINCIPAL ===
+                    [
+                        'titulo' => __('Inicio', 'flavor-chat-ia'),
+                        'slug' => 'inicio',
+                        'contenido' => '[flavor_landing module="empresa-etica"]',
+                        'parent' => 0,
+                        'es_home' => true,
+                        'template' => 'flavor-fullwidth',
+                    ],
+                    // === SECCIÓN: SOBRE NOSOTROS ===
+                    [
+                        'titulo' => __('Conocenos', 'flavor-chat-ia'),
+                        'slug' => 'conocenos',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Conoce Nuestra Organización', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Somos una empresa comprometida con los valores sociales y ambientales.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Quiénes Somos', 'flavor-chat-ia'),
+                        'slug' => 'quienes-somos',
+                        'contenido' => '[empresa_etica_sobre_nosotros]',
+                        'parent' => 'conocenos',
+                    ],
+                    [
+                        'titulo' => __('Nuestro Impacto', 'flavor-chat-ia'),
+                        'slug' => 'impacto',
+                        'contenido' => '[empresa_etica_impacto]',
+                        'parent' => 'conocenos',
+                    ],
+                    [
+                        'titulo' => __('Transparencia', 'flavor-chat-ia'),
+                        'slug' => 'transparencia',
+                        'contenido' => '[transparencia_portal]',
+                        'parent' => 'conocenos',
+                    ],
+                    // === SECCIÓN: PARTICIPACIÓN ===
+                    [
+                        'titulo' => __('Participación', 'flavor-chat-ia'),
+                        'slug' => 'participacion',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Participa en la Cooperativa', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Tu voz importa. Involúcrate en las decisiones.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Propuestas', 'flavor-chat-ia'),
+                        'slug' => 'propuestas',
+                        'contenido' => '[participacion_propuestas]',
+                        'parent' => 'participacion',
+                    ],
+                    [
+                        'titulo' => __('Votaciones', 'flavor-chat-ia'),
+                        'slug' => 'votaciones',
+                        'contenido' => '[participacion_votaciones]',
+                        'parent' => 'participacion',
+                    ],
+                    [
+                        'titulo' => __('Hazte Miembro', 'flavor-chat-ia'),
+                        'slug' => 'hazte-socio',
+                        'contenido' => '[socios_formulario_alta]',
+                        'parent' => 'participacion',
+                    ],
+                    // === SECCIÓN: ÁREA MIEMBROS ===
+                    [
+                        'titulo' => __('Mi Portal', 'flavor-chat-ia'),
+                        'slug' => 'mi-portal',
+                        'contenido' => '[flavor_portal_usuario]',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Mi Perfil de Miembro', 'flavor-chat-ia'),
+                        'slug' => 'mi-perfil',
+                        'contenido' => '[socios_mi_perfil]',
+                        'parent' => 'mi-portal',
+                    ],
+                    [
+                        'titulo' => __('Mis Aportaciones', 'flavor-chat-ia'),
+                        'slug' => 'mis-aportaciones',
+                        'contenido' => '[socios_mis_aportaciones]',
+                        'parent' => 'mi-portal',
+                    ],
+                ],
+                'landing' => [
+                    'activa' => true,
+                    'secciones' => [
+                        [
+                            'tipo' => 'hero',
+                            'variante' => 'impacto',
+                            'datos' => [
+                                'titulo' => __('Empresa con Propósito', 'flavor-chat-ia'),
+                                'subtitulo' => __('Generamos valor económico, social y ambiental', 'flavor-chat-ia'),
+                                'cta_texto' => __('Conoce nuestro impacto', 'flavor-chat-ia'),
+                                'cta_url' => '/impacto',
+                            ],
+                        ],
+                        [
+                            'tipo' => 'metricas-impacto',
+                            'variante' => 'dashboard',
+                            'datos' => [
+                                'titulo' => __('Nuestro Impacto en Números', 'flavor-chat-ia'),
+                                'shortcode' => '[empresa_etica_metricas]',
+                            ],
+                        ],
+                        [
+                            'tipo' => 'valores',
+                            'variante' => 'iconos',
+                            'datos' => [
+                                'titulo' => __('Nuestros Valores', 'flavor-chat-ia'),
+                            ],
+                        ],
+                        [
+                            'tipo' => 'cta',
+                            'variante' => 'doble',
+                            'datos' => [
+                                'titulo' => __('Únete al cambio', 'flavor-chat-ia'),
+                                'cta1_texto' => __('Hazte miembro', 'flavor-chat-ia'),
+                                'cta1_url' => '/hazte-socio',
+                                'cta2_texto' => __('Colabora', 'flavor-chat-ia'),
+                                'cta2_url' => '/participa',
+                            ],
+                        ],
+                    ],
+                ],
+                'configuracion' => [
+                    'transparencia' => [
+                        'publicar_cuentas' => true,
+                        'publicar_actas' => true,
+                        'publicar_estatutos' => true,
+                    ],
+                    'participacion' => [
+                        'propuestas_abiertas' => true,
+                        'votaciones_socios' => true,
+                        'debates_publicos' => false,
+                    ],
+                    'socios' => [
+                        'tipos_socio' => ['trabajador', 'colaborador', 'consumidor'],
+                        'cuotas_diferenciadas' => true,
+                    ],
+                ],
+                'demo' => [
+                    'disponible' => true,
+                    'descripcion' => __('Datos de ejemplo para cooperativa: miembros, asambleas, métricas de impacto y documentos de transparencia.', 'flavor-chat-ia'),
+                ],
+            ],
+
+            // =========================================================
+            // HUB DE EMPRENDEDORES / COWORKING
+            // =========================================================
+            'hub_emprendedores' => [
+                'nombre' => __('Hub de Emprendedores', 'flavor-chat-ia'),
+                'descripcion' => __('Para espacios de coworking, incubadoras y comunidades de emprendedores. Networking, eventos, recursos compartidos y mentoría.', 'flavor-chat-ia'),
+                'icono' => 'dashicons-networking',
+                'color' => '#8b5cf6',
+                'modulos' => [
+                    'requeridos' => ['comunidades', 'eventos', 'red_social'],
+                    'opcionales' => ['reservas', 'marketplace', 'banco_tiempo', 'foros', 'biblioteca', 'cursos', 'chat_grupos', 'crowdfunding'],
+                    'sugeridos' => ['reservas', 'banco_tiempo', 'foros'],
+                ],
+                'paginas' => [
+                    // === PÁGINA PRINCIPAL ===
+                    [
+                        'titulo' => __('Inicio', 'flavor-chat-ia'),
+                        'slug' => 'inicio',
+                        'contenido' => '[flavor_landing module="hub-emprendedores"]',
+                        'parent' => 0,
+                        'es_home' => true,
+                        'template' => 'flavor-fullwidth',
+                    ],
+                    // === SECCIÓN: COMUNIDAD ===
+                    [
+                        'titulo' => __('Comunidad', 'flavor-chat-ia'),
+                        'slug' => 'comunidad',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestra Comunidad', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Conecta con otros emprendedores y haz crecer tu red.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Directorio', 'flavor-chat-ia'),
+                        'slug' => 'directorio',
+                        'contenido' => '[hub_directorio_emprendedores]',
+                        'parent' => 'comunidad',
+                    ],
+                    [
+                        'titulo' => __('Grupos', 'flavor-chat-ia'),
+                        'slug' => 'grupos',
+                        'contenido' => '[comunidades_directorio]',
+                        'parent' => 'comunidad',
+                    ],
+                    [
+                        'titulo' => __('Networking', 'flavor-chat-ia'),
+                        'slug' => 'networking',
+                        'contenido' => '[red_social_feed]',
+                        'parent' => 'comunidad',
+                    ],
+                    // === SECCIÓN: ACTIVIDADES ===
+                    [
+                        'titulo' => __('Actividades', 'flavor-chat-ia'),
+                        'slug' => 'actividades',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Eventos y Formación', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Workshops, pitchs, meetups y más.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Eventos', 'flavor-chat-ia'),
+                        'slug' => 'eventos',
+                        'contenido' => '[eventos_listado tipo="networking"]',
+                        'parent' => 'actividades',
+                    ],
+                    [
+                        'titulo' => __('Proyectos', 'flavor-chat-ia'),
+                        'slug' => 'proyectos',
+                        'contenido' => '[crowdfunding_proyectos]',
+                        'parent' => 'actividades',
+                    ],
+                    [
+                        'titulo' => __('Cursos', 'flavor-chat-ia'),
+                        'slug' => 'cursos',
+                        'contenido' => '[cursos_listado]',
+                        'parent' => 'actividades',
+                    ],
+                    // === SECCIÓN: RECURSOS ===
+                    [
+                        'titulo' => __('Recursos', 'flavor-chat-ia'),
+                        'slug' => 'recursos',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Recursos Compartidos', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Espacios, servicios e intercambio entre emprendedores.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Espacios', 'flavor-chat-ia'),
+                        'slug' => 'espacios',
+                        'contenido' => '[reservas_espacios]',
+                        'parent' => 'recursos',
+                    ],
+                    [
+                        'titulo' => __('Intercambio', 'flavor-chat-ia'),
+                        'slug' => 'intercambio',
+                        'contenido' => '[banco_tiempo_servicios]',
+                        'parent' => 'recursos',
+                    ],
+                    [
+                        'titulo' => __('Biblioteca', 'flavor-chat-ia'),
+                        'slug' => 'biblioteca',
+                        'contenido' => '[biblioteca_recursos]',
+                        'parent' => 'recursos',
+                    ],
+                    // === SECCIÓN: MI PORTAL ===
+                    [
+                        'titulo' => __('Mi Portal', 'flavor-chat-ia'),
+                        'slug' => 'mi-portal',
+                        'contenido' => '[flavor_portal_usuario]',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Mi Perfil', 'flavor-chat-ia'),
+                        'slug' => 'mi-perfil',
+                        'contenido' => '[hub_mi_perfil_emprendedor]',
+                        'parent' => 'mi-portal',
+                    ],
+                    [
+                        'titulo' => __('Mis Reservas', 'flavor-chat-ia'),
+                        'slug' => 'mis-reservas',
+                        'contenido' => '[reservas_mis_reservas]',
+                        'parent' => 'mi-portal',
+                    ],
+                    [
+                        'titulo' => __('Mis Servicios', 'flavor-chat-ia'),
+                        'slug' => 'mis-servicios',
+                        'contenido' => '[banco_tiempo_mis_servicios]',
+                        'parent' => 'mi-portal',
+                    ],
+                ],
+                'landing' => [
+                    'activa' => true,
+                    'secciones' => [
+                        [
+                            'tipo' => 'hero',
+                            'variante' => 'comunidad',
+                            'datos' => [
+                                'titulo' => __('Donde Nacen las Ideas', 'flavor-chat-ia'),
+                                'subtitulo' => __('Comunidad de emprendedores que colaboran, aprenden y crecen juntos', 'flavor-chat-ia'),
+                                'cta_texto' => __('Únete a la comunidad', 'flavor-chat-ia'),
+                                'cta_url' => '/comunidad',
+                            ],
+                        ],
+                        [
+                            'tipo' => 'estadisticas',
+                            'variante' => 'contador',
+                            'datos' => [
+                                'items' => [
+                                    ['numero' => '150+', 'label' => __('Emprendedores', 'flavor-chat-ia')],
+                                    ['numero' => '45', 'label' => __('Startups', 'flavor-chat-ia')],
+                                    ['numero' => '20+', 'label' => __('Eventos/mes', 'flavor-chat-ia')],
+                                    ['numero' => '€2M', 'label' => __('Inversión captada', 'flavor-chat-ia')],
+                                ],
+                            ],
+                        ],
+                        [
+                            'tipo' => 'servicios',
+                            'variante' => 'iconos',
+                            'datos' => [
+                                'titulo' => __('Qué Ofrecemos', 'flavor-chat-ia'),
+                                'items' => [
+                                    ['icono' => 'dashicons-groups', 'titulo' => __('Networking', 'flavor-chat-ia'), 'descripcion' => __('Conecta con otros emprendedores', 'flavor-chat-ia')],
+                                    ['icono' => 'dashicons-calendar', 'titulo' => __('Eventos', 'flavor-chat-ia'), 'descripcion' => __('Workshops, pitchs y meetups', 'flavor-chat-ia')],
+                                    ['icono' => 'dashicons-building', 'titulo' => __('Espacios', 'flavor-chat-ia'), 'descripcion' => __('Coworking y salas de reuniones', 'flavor-chat-ia')],
+                                    ['icono' => 'dashicons-lightbulb', 'titulo' => __('Mentoría', 'flavor-chat-ia'), 'descripcion' => __('Aprende de expertos', 'flavor-chat-ia')],
+                                ],
+                            ],
+                        ],
+                        [
+                            'tipo' => 'eventos',
+                            'variante' => 'proximos',
+                            'datos' => [
+                                'titulo' => __('Próximos Eventos', 'flavor-chat-ia'),
+                                'shortcode' => '[eventos_proximos limit="3"]',
+                            ],
+                        ],
+                        [
+                            'tipo' => 'miembros-destacados',
+                            'variante' => 'carrusel',
+                            'datos' => [
+                                'titulo' => __('Emprendedores Destacados', 'flavor-chat-ia'),
+                                'shortcode' => '[hub_emprendedores_destacados]',
+                            ],
+                        ],
+                        [
+                            'tipo' => 'cta',
+                            'variante' => 'simple',
+                            'datos' => [
+                                'titulo' => __('¿Tienes una idea?', 'flavor-chat-ia'),
+                                'descripcion' => __('Únete a nuestra comunidad y hazla realidad', 'flavor-chat-ia'),
+                                'cta_texto' => __('Empieza ahora', 'flavor-chat-ia'),
+                                'cta_url' => '/mi-portal',
+                            ],
+                        ],
+                    ],
+                ],
+                'configuracion' => [
+                    'comunidades' => [
+                        'tipos' => ['sector', 'interes', 'proyecto'],
+                        'crear_automaticamente' => ['tecnologia', 'sostenibilidad', 'impacto-social'],
+                    ],
+                    'eventos' => [
+                        'tipos_predefinidos' => ['pitch', 'workshop', 'networking', 'masterclass', 'demo-day'],
+                        'inscripcion_abierta' => true,
+                    ],
+                    'reservas' => [
+                        'recursos' => ['sala-reuniones', 'puesto-coworking', 'sala-eventos'],
+                        'anticipacion_maxima' => 30,
+                    ],
+                    'banco_tiempo' => [
+                        'habilitar' => true,
+                        'categorias' => ['diseño', 'desarrollo', 'marketing', 'legal', 'finanzas', 'mentoria'],
+                    ],
+                ],
+                'demo' => [
+                    'disponible' => true,
+                    'descripcion' => __('Comunidad de ejemplo con emprendedores, eventos de networking, espacios de coworking e intercambio de servicios.', 'flavor-chat-ia'),
+                ],
+            ],
+
+            // =========================================================
+            // COOPERATIVA DE EMPRESAS
+            // =========================================================
+            'cooperativa_empresas' => [
+                'nombre' => __('Cooperativa de Empresas', 'flavor-chat-ia'),
+                'descripcion' => __('Cluster de pequeños negocios locales que colaboran: directorio compartido, marketplace conjunto, facturación cruzada y banco de tiempo empresarial.', 'flavor-chat-ia'),
+                'icono' => 'dashicons-store',
+                'color' => '#0d9488',
+                'modulos' => [
+                    'requeridos' => ['socios', 'clientes', 'marketplace'],
+                    'opcionales' => ['facturas', 'banco_tiempo', 'bares', 'grupos_consumo', 'crowdfunding', 'eventos', 'chat_grupos', 'chat_interno', 'talleres', 'transparencia', 'participacion', 'trabajo_digno'],
+                    'sugeridos' => ['facturas', 'banco_tiempo', 'eventos', 'bares'],
+                ],
+                'paginas' => [
+                    // === PÁGINA PRINCIPAL ===
+                    [
+                        'titulo' => __('Ecosistema Empresarial', 'flavor-chat-ia'),
+                        'slug' => 'ecosistema',
+                        'contenido' => '[flavor_landing module="cooperativa-empresas"]',
+                        'parent' => 0,
+                        'es_home' => true,
+                        'template' => 'flavor-fullwidth',
+                    ],
+
+                    // === SECCIÓN: DIRECTORIO Y NEGOCIOS ===
+                    [
+                        'titulo' => __('Negocios', 'flavor-chat-ia'),
+                        'slug' => 'negocios',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Directorio de Negocios Locales', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Descubre todos los negocios de nuestra cooperativa.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Directorio', 'flavor-chat-ia'),
+                        'slug' => 'directorio',
+                        'contenido' => '[bares_mapa] [bares_listado]',
+                        'parent' => 'negocios',
+                    ],
+                    [
+                        'titulo' => __('Marketplace', 'flavor-chat-ia'),
+                        'slug' => 'marketplace',
+                        'contenido' => '[marketplace_listado categorias="productos,servicios"]',
+                        'parent' => 'negocios',
+                    ],
+                    [
+                        'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'),
+                        'slug' => 'banco-tiempo',
+                        'contenido' => '[banco_tiempo_servicios]',
+                        'parent' => 'negocios',
+                    ],
+                    [
+                        'titulo' => __('Grupos de Consumo', 'flavor-chat-ia'),
+                        'slug' => 'grupos-consumo',
+                        'contenido' => '[gc_catalogo]',
+                        'parent' => 'negocios',
+                    ],
+
+                    // === SECCIÓN: FORMACIÓN Y EVENTOS ===
+                    [
+                        'titulo' => __('Actividades', 'flavor-chat-ia'),
+                        'slug' => 'actividades',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Eventos y Formación', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Networking, talleres y eventos para emprendedores.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Eventos', 'flavor-chat-ia'),
+                        'slug' => 'eventos',
+                        'contenido' => '[eventos_calendario] [eventos_proximos]',
+                        'parent' => 'actividades',
+                    ],
+                    [
+                        'titulo' => __('Talleres', 'flavor-chat-ia'),
+                        'slug' => 'talleres',
+                        'contenido' => '[talleres_listado]',
+                        'parent' => 'actividades',
+                    ],
+                    [
+                        'titulo' => __('Crowdfunding', 'flavor-chat-ia'),
+                        'slug' => 'crowdfunding',
+                        'contenido' => '[crowdfunding_proyectos]',
+                        'parent' => 'actividades',
+                    ],
+
+                    // === SECCIÓN: ÁREA DE MIEMBRO ===
+                    [
+                        'titulo' => __('Mi Portal', 'flavor-chat-ia'),
+                        'slug' => 'mi-portal',
+                        'contenido' => '[flavor_user_dashboard]',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Mi Negocio', 'flavor-chat-ia'),
+                        'slug' => 'mi-negocio',
+                        'contenido' => '[perfil_negocio_editar]',
+                        'parent' => 'mi-portal',
+                    ],
+                    [
+                        'titulo' => __('Mis Clientes', 'flavor-chat-ia'),
+                        'slug' => 'mis-clientes',
+                        'contenido' => '[clientes_listado usuario_actual="true"]',
+                        'parent' => 'mi-portal',
+                    ],
+                    [
+                        'titulo' => __('Facturación', 'flavor-chat-ia'),
+                        'slug' => 'facturacion',
+                        'contenido' => '[facturas_listado usuario_actual="true"]',
+                        'parent' => 'mi-portal',
+                    ],
+                    [
+                        'titulo' => __('Mis Servicios', 'flavor-chat-ia'),
+                        'slug' => 'mis-servicios',
+                        'contenido' => '[marketplace_mis_anuncios] [banco_tiempo_mis_servicios]',
+                        'parent' => 'mi-portal',
+                    ],
+
+                    // === SECCIÓN: COMUNIDAD ===
+                    [
+                        'titulo' => __('Comunidad', 'flavor-chat-ia'),
+                        'slug' => 'comunidad',
+                        'contenido' => '<!-- wp:heading --><h2>' . __('Nuestra Comunidad Empresarial', 'flavor-chat-ia') . '</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>' . __('Espacio de colaboración entre negocios del territorio.', 'flavor-chat-ia') . '</p><!-- /wp:paragraph -->',
+                        'parent' => 0,
+                    ],
+                    [
+                        'titulo' => __('Grupos de Interés', 'flavor-chat-ia'),
+                        'slug' => 'grupos',
+                        'contenido' => '[comunidades_listado]',
+                        'parent' => 'comunidad',
+                    ],
+                    [
+                        'titulo' => __('Transparencia', 'flavor-chat-ia'),
+                        'slug' => 'transparencia',
+                        'contenido' => '[transparencia_portal]',
+                        'parent' => 'comunidad',
+                    ],
+                    [
+                        'titulo' => __('Noticias', 'flavor-chat-ia'),
+                        'slug' => 'noticias',
+                        'contenido' => '[avisos_listado categoria="noticias-empresas"]',
+                        'parent' => 'comunidad',
+                    ],
+                ],
+                'menu' => [
+                    'nombre' => __('Menu Cooperativa Empresas', 'flavor-chat-ia'),
+                    'ubicacion' => 'primary',
+                    'items' => [
+                        ['titulo' => __('Inicio', 'flavor-chat-ia'), 'url' => '/', 'icono' => 'home'],
+                        [
+                            'titulo' => __('Negocios', 'flavor-chat-ia'),
+                            'url' => '/negocios/',
+                            'icono' => 'store',
+                            'hijos' => [
+                                ['titulo' => __('Directorio', 'flavor-chat-ia'), 'url' => '/negocios/directorio/'],
+                                ['titulo' => __('Marketplace', 'flavor-chat-ia'), 'url' => '/negocios/marketplace/'],
+                                ['titulo' => __('Banco de Tiempo', 'flavor-chat-ia'), 'url' => '/negocios/banco-tiempo/'],
+                                ['titulo' => __('Grupos de Consumo', 'flavor-chat-ia'), 'url' => '/negocios/grupos-consumo/'],
+                            ],
+                        ],
+                        [
+                            'titulo' => __('Actividades', 'flavor-chat-ia'),
+                            'url' => '/actividades/',
+                            'icono' => 'calendar',
+                            'hijos' => [
+                                ['titulo' => __('Eventos', 'flavor-chat-ia'), 'url' => '/actividades/eventos/'],
+                                ['titulo' => __('Talleres', 'flavor-chat-ia'), 'url' => '/actividades/talleres/'],
+                                ['titulo' => __('Crowdfunding', 'flavor-chat-ia'), 'url' => '/actividades/crowdfunding/'],
+                            ],
+                        ],
+                        [
+                            'titulo' => __('Mi Portal', 'flavor-chat-ia'),
+                            'url' => '/mi-portal/',
+                            'icono' => 'user',
+                            'hijos' => [
+                                ['titulo' => __('Mi Negocio', 'flavor-chat-ia'), 'url' => '/mi-portal/mi-negocio/'],
+                                ['titulo' => __('Mis Clientes', 'flavor-chat-ia'), 'url' => '/mi-portal/mis-clientes/'],
+                                ['titulo' => __('Facturación', 'flavor-chat-ia'), 'url' => '/mi-portal/facturacion/'],
+                                ['titulo' => __('Mis Servicios', 'flavor-chat-ia'), 'url' => '/mi-portal/mis-servicios/'],
+                            ],
+                        ],
+                        [
+                            'titulo' => __('Comunidad', 'flavor-chat-ia'),
+                            'url' => '/comunidad/',
+                            'icono' => 'groups',
+                            'hijos' => [
+                                ['titulo' => __('Grupos', 'flavor-chat-ia'), 'url' => '/comunidad/grupos/'],
+                                ['titulo' => __('Transparencia', 'flavor-chat-ia'), 'url' => '/comunidad/transparencia/'],
+                                ['titulo' => __('Noticias', 'flavor-chat-ia'), 'url' => '/comunidad/noticias/'],
+                            ],
+                        ],
+                    ],
+                ],
+                'landing' => [
+                    'activa' => true,
+                    'slug' => 'ecosistema',
+                    'secciones' => [
+                        [
+                            'tipo' => 'hero',
+                            'variante' => 'imagen-fondo',
+                            'datos' => [
+                                'titulo' => __('Cooperativa de Empresas Locales', 'flavor-chat-ia'),
+                                'subtitulo' => __('Unidos para fortalecer la economía del territorio', 'flavor-chat-ia'),
+                                'cta_texto' => __('Ver Negocios', 'flavor-chat-ia'),
+                                'cta_url' => '/negocios/directorio/',
+                                'imagen' => '',
+                            ],
+                        ],
+                        [
+                            'tipo' => 'stats',
+                            'variante' => 'contador',
+                            'datos' => [
+                                'items' => [
+                                    ['numero' => '50+', 'label' => __('Negocios', 'flavor-chat-ia')],
+                                    ['numero' => '200+', 'label' => __('Productos', 'flavor-chat-ia')],
+                                    ['numero' => '1000+', 'label' => __('Clientes', 'flavor-chat-ia')],
+                                    ['numero' => '€100K', 'label' => __('Facturado', 'flavor-chat-ia')],
+                                ],
+                            ],
+                        ],
+                        [
+                            'tipo' => 'features',
+                            'variante' => 'iconos-4-columnas',
+                            'datos' => [
+                                'titulo' => __('Qué Ofrecemos', 'flavor-chat-ia'),
+                                'items' => [
+                                    ['icono' => 'store', 'titulo' => __('Directorio', 'flavor-chat-ia'), 'descripcion' => __('Todos los negocios locales en un mapa', 'flavor-chat-ia')],
+                                    ['icono' => 'cart', 'titulo' => __('Marketplace', 'flavor-chat-ia'), 'descripcion' => __('Compra productos y servicios locales', 'flavor-chat-ia')],
+                                    ['icono' => 'clock', 'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'), 'descripcion' => __('Intercambia servicios entre negocios', 'flavor-chat-ia')],
+                                    ['icono' => 'groups', 'titulo' => __('Comunidad', 'flavor-chat-ia'), 'descripcion' => __('Networking y colaboración empresarial', 'flavor-chat-ia')],
+                                ],
+                            ],
+                        ],
+                        [
+                            'tipo' => 'grid',
+                            'variante' => 'negocios-destacados',
+                            'datos' => [
+                                'titulo' => __('Negocios Destacados', 'flavor-chat-ia'),
+                                'shortcode' => '[bares_destacados limite="6"]',
+                            ],
+                        ],
+                        [
+                            'tipo' => 'listing',
+                            'variante' => 'productos',
+                            'datos' => [
+                                'titulo' => __('Últimos Productos', 'flavor-chat-ia'),
+                                'shortcode' => '[marketplace_ultimos limite="4"]',
+                            ],
+                        ],
+                        [
+                            'tipo' => 'eventos',
+                            'variante' => 'proximos',
+                            'datos' => [
+                                'titulo' => __('Próximos Eventos', 'flavor-chat-ia'),
+                                'shortcode' => '[eventos_proximos limit="3"]',
+                            ],
+                        ],
+                        [
+                            'tipo' => 'cta',
+                            'variante' => 'centrado',
+                            'datos' => [
+                                'titulo' => __('¿Tienes un negocio local?', 'flavor-chat-ia'),
+                                'descripcion' => __('Únete a nuestra cooperativa y forma parte de la economía del territorio', 'flavor-chat-ia'),
+                                'boton_texto' => __('Inscribir mi negocio', 'flavor-chat-ia'),
+                                'boton_url' => '/mi-portal/mi-negocio/',
+                            ],
+                        ],
+                    ],
+                ],
+                'configuracion' => [
+                    'socios' => [
+                        'tipo_principal' => 'empresa',
+                        'campos_extra' => ['cif', 'sector', 'web', 'horario'],
+                    ],
+                    'marketplace' => [
+                        'categorias' => ['productos', 'servicios', 'ofertas'],
+                        'moderacion' => false,
+                    ],
+                    'banco_tiempo' => [
+                        'habilitar' => true,
+                        'categorias' => ['diseño', 'marketing', 'legal', 'contabilidad', 'logistica', 'formacion'],
+                    ],
+                    'bares' => [
+                        'tipos' => ['comercio', 'hosteleria', 'servicios', 'artesania', 'alimentacion'],
+                        'mostrar_mapa' => true,
+                    ],
+                ],
+                'demo' => [
+                    'disponible' => true,
+                    'descripcion' => __('Incluye 10 negocios de ejemplo, productos en marketplace, servicios en banco de tiempo y eventos de networking.', 'flavor-chat-ia'),
                 ],
             ],
         ];

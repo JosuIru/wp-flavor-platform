@@ -57,11 +57,54 @@ window.fixPostEditorLayout = fixPostEditorLayout;
  */
 let searchIndex = [];
 
+function normalizeSearchText(value) {
+    return (value || '')
+        .toString()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
 /**
  * Construir índice de búsqueda desde el DOM
  */
 function buildSearchIndex() {
     searchIndex = [];
+    const seenSlugs = new Set();
+
+    const addSearchItem = (item) => {
+        if (!item || !item.slug || !item.label) {
+            return;
+        }
+
+        const slug = item.slug.toString().trim();
+        if (!slug || seenSlugs.has(slug)) {
+            return;
+        }
+        seenSlugs.add(slug);
+
+        const label = item.label.toString().trim();
+        const section = (item.section || '').toString().trim();
+        const icon = (item.icon || 'dashicons-admin-page').toString().trim();
+        const url = (item.url || `admin.php?page=${slug}`).toString();
+        const type = (item.type || 'page').toString();
+
+        searchIndex.push({
+            slug,
+            label,
+            icon,
+            section,
+            url,
+            type,
+            keywords: normalizeSearchText([slug, label, section].filter(Boolean).join(' '))
+        });
+    };
+
+    // Catálogo canónico enviado desde PHP (evita depender solo del DOM).
+    if (typeof flavorAdminShell !== 'undefined' && Array.isArray(flavorAdminShell.searchCatalog)) {
+        flavorAdminShell.searchCatalog.forEach(addSearchItem);
+    }
 
     // Obtener todos los items del menú
     document.querySelectorAll('.fls-shell__menu-link').forEach(link => {
@@ -70,17 +113,14 @@ function buildSearchIndex() {
         const icon = link.dataset.icon || 'dashicons-admin-page';
         const section = link.closest('.fls-shell__section')?.querySelector('.fls-shell__section-title')?.textContent?.trim();
 
-        if (slug && label) {
-            searchIndex.push({
-                slug,
-                label,
-                icon,
-                section,
-                url: link.href,
-                type: 'page',
-                keywords: [slug, label, section].filter(Boolean).join(' ').toLowerCase()
-            });
-        }
+        addSearchItem({
+            slug,
+            label,
+            icon,
+            section,
+            url: link.href,
+            type: 'page'
+        });
     });
 
     // Obtener submenús
@@ -90,17 +130,14 @@ function buildSearchIndex() {
         const icon = link.querySelector('.dashicons')?.className.match(/dashicons-[\w-]+/)?.[0] || 'dashicons-arrow-right-alt2';
         const parentSection = link.closest('.fls-shell__menu-item')?.querySelector('.fls-shell__menu-text')?.textContent?.trim();
 
-        if (slug && label) {
-            searchIndex.push({
-                slug,
-                label,
-                icon,
-                section: parentSection,
-                url: link.href,
-                type: 'subpage',
-                keywords: [slug, label, parentSection].filter(Boolean).join(' ').toLowerCase()
-            });
-        }
+        addSearchItem({
+            slug,
+            label,
+            icon,
+            section: parentSection,
+            url: link.href,
+            type: 'subpage'
+        });
     });
 
     // Obtener favoritos
@@ -109,17 +146,14 @@ function buildSearchIndex() {
         const label = link.querySelector('.fls-shell__quick-text')?.textContent?.trim();
         const icon = link.querySelector('.dashicons')?.className.match(/dashicons-[\w-]+/)?.[0] || 'dashicons-star-filled';
 
-        if (slug && label && !searchIndex.find(item => item.slug === slug)) {
-            searchIndex.push({
-                slug,
-                label,
-                icon,
-                section: 'Favoritos',
-                url: link.href,
-                type: 'favorite',
-                keywords: [slug, label, 'favorito'].join(' ').toLowerCase()
-            });
-        }
+        addSearchItem({
+            slug,
+            label,
+            icon,
+            section: 'Favoritos',
+            url: link.href,
+            type: 'favorite'
+        });
     });
 
     // Añadir acciones rápidas
@@ -129,10 +163,9 @@ function buildSearchIndex() {
     ];
 
     quickActions.forEach(action => {
-        searchIndex.push({
+        addSearchItem({
             ...action,
-            type: 'action',
-            keywords: [action.slug, action.label, 'acción'].join(' ').toLowerCase()
+            type: 'action'
         });
     });
 }
@@ -187,7 +220,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         search() {
-            const queryLower = this.query.toLowerCase().trim();
+            const queryLower = normalizeSearchText(this.query);
 
             if (!queryLower) {
                 this.results = [];
@@ -197,21 +230,36 @@ document.addEventListener('alpine:init', () => {
 
             // Filtrar resultados
             const filtered = searchIndex.filter(item => {
+                const normalizedLabel = normalizeSearchText(item.label);
+                const normalizedSlug = normalizeSearchText(item.slug);
                 return item.keywords.includes(queryLower) ||
-                       item.label.toLowerCase().includes(queryLower) ||
-                       item.slug.toLowerCase().includes(queryLower);
+                       normalizedLabel.includes(queryLower) ||
+                       normalizedSlug.includes(queryLower);
             });
 
             // Ordenar por relevancia
-            this.results = filtered.sort((a, b) => {
-                const aStartsWith = a.label.toLowerCase().startsWith(queryLower);
-                const bStartsWith = b.label.toLowerCase().startsWith(queryLower);
+            const ranked = filtered.sort((a, b) => {
+                const aLabel = normalizeSearchText(a.label);
+                const bLabel = normalizeSearchText(b.label);
+                const aStartsWith = aLabel.startsWith(queryLower);
+                const bStartsWith = bLabel.startsWith(queryLower);
 
                 if (aStartsWith && !bStartsWith) return -1;
                 if (!aStartsWith && bStartsWith) return 1;
 
                 return a.label.localeCompare(b.label);
-            }).slice(0, 10);
+            });
+
+            // Red de seguridad: eliminar duplicados por slug al final del pipeline.
+            const dedupedBySlug = new Map();
+            ranked.forEach(item => {
+                const key = normalizeSearchText(item.slug);
+                if (!dedupedBySlug.has(key)) {
+                    dedupedBySlug.set(key, item);
+                }
+            });
+
+            this.results = Array.from(dedupedBySlug.values()).slice(0, 10);
 
             this.activeIndex = 0;
             this.activeResult = this.results[0] || null;

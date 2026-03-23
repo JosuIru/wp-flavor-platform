@@ -2795,7 +2795,7 @@ KNOWLEDGE;
 
         // Total de libros disponibles
         $libros_disponibles = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$tabla_libros} WHERE estado = 'disponible'"
+            "SELECT COUNT(*) FROM {$tabla_libros} WHERE disponibilidad = 'disponible'"
         );
 
         $estadisticas['libros_disponibles'] = [
@@ -2964,8 +2964,8 @@ KNOWLEDGE;
 
             'stats' => [
                 ['label' => __('Libros', 'flavor-chat-ia'), 'icon' => '📚', 'color' => 'sky', 'count_where' => "1=1"],
-                ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => '🟢', 'color' => 'green', 'count_where' => "estado = 'disponible'"],
-                ['label' => __('Prestados', 'flavor-chat-ia'), 'icon' => '📖', 'color' => 'yellow', 'count_where' => "estado = 'prestado'"],
+                ['label' => __('Disponibles', 'flavor-chat-ia'), 'icon' => '🟢', 'color' => 'green', 'count_where' => "disponibilidad = 'disponible'"],
+                ['label' => __('Prestados', 'flavor-chat-ia'), 'icon' => '📖', 'color' => 'yellow', 'count_where' => "disponibilidad = 'prestado'"],
                 ['label' => __('Lectores', 'flavor-chat-ia'), 'icon' => '👥', 'color' => 'blue', 'query' => "SELECT COUNT(DISTINCT usuario_id) FROM {table}_prestamos"],
             ],
 
@@ -4132,6 +4132,13 @@ KNOWLEDGE;
      * Registra las páginas de administración del módulo
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         add_submenu_page(

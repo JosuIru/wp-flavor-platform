@@ -19,7 +19,7 @@
         </trust-anchors>
     </base-config>
 
-    <!-- Development: Allow HTTP for local testing ONLY -->
+    <!-- Development: Allow HTTP for local testing and development servers -->
     <domain-config cleartextTrafficPermitted="true">
         <!-- Android emulator localhost -->
         <domain includeSubdomains="false">10.0.2.2</domain>
@@ -29,6 +29,8 @@
         <!-- Local Sites (desarrollo) -->
         <domain includeSubdomains="true">local</domain>
         <domain includeSubdomains="true">localtest.me</domain>
+        <!-- Servidores de desarrollo externos -->
+        <domain includeSubdomains="true">gailu.it</domain>
     </domain-config>
 
     <!-- Debug builds: Allow user certificates for proxy testing -->

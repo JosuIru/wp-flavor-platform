@@ -41,3 +41,24 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Gradle cache and build files (DO NOT UPLOAD)
+.gradle/
+**/android/.gradle/
+**/android/build/
+**/android/app/build/
+**/android/local.properties
+*.apk
+*.aab
+
+# iOS build files
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/build/
+*.xcworkspace
+
+# Generated files
+.packages
+pubspec.lock

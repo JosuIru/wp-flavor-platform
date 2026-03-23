@@ -81,14 +81,21 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
      */
     public function init() {
         // Shortcodes
-        add_shortcode('flavor_biodiversidad_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('flavor_biodiversidad_especie', [$this, 'shortcode_especie']);
-        add_shortcode('flavor_biodiversidad_mapa', [$this, 'shortcode_mapa']);
-        add_shortcode('flavor_biodiversidad_reportar', [$this, 'shortcode_reportar']);
-        add_shortcode('flavor_biodiversidad_mis_avistamientos', [$this, 'shortcode_mis_avistamientos']);
-        add_shortcode('flavor_biodiversidad_proyectos', [$this, 'shortcode_proyectos']);
-        add_shortcode('flavor_biodiversidad_proyecto', [$this, 'shortcode_proyecto']);
-        add_shortcode('flavor_biodiversidad_estadisticas', [$this, 'shortcode_estadisticas']);
+        $shortcodes = [
+            'flavor_biodiversidad_catalogo' => 'shortcode_catalogo',
+            'flavor_biodiversidad_especie' => 'shortcode_especie',
+            'flavor_biodiversidad_mapa' => 'shortcode_mapa',
+            'flavor_biodiversidad_reportar' => 'shortcode_reportar',
+            'flavor_biodiversidad_mis_avistamientos' => 'shortcode_mis_avistamientos',
+            'flavor_biodiversidad_proyectos' => 'shortcode_proyectos',
+            'flavor_biodiversidad_proyecto' => 'shortcode_proyecto',
+            'flavor_biodiversidad_estadisticas' => 'shortcode_estadisticas',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_biodiversidad_reportar', [$this, 'ajax_reportar_avistamiento']);
@@ -135,9 +142,16 @@ class Flavor_Biodiversidad_Local_Frontend_Controller {
      */
     public function registrar_assets() {
         wp_register_style(
+            'flavor-biodiversidad-local',
+            FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+            [],
+            FLAVOR_CHAT_IA_VERSION
+        );
+
+        wp_register_style(
             'flavor-biodiversidad-frontend',
             FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-frontend.css',
-            [],
+            ['flavor-biodiversidad-local'],
             FLAVOR_CHAT_IA_VERSION
         );
 

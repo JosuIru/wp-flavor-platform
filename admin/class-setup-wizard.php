@@ -246,8 +246,8 @@ class Flavor_Setup_Wizard {
                 'categoria' => 'contenido',
             ],
             'socios' => [
-                'nombre' => __('Gestión de Socios', 'flavor-chat-ia'),
-                'descripcion' => __('Base de datos de socios con cuotas y carnets', 'flavor-chat-ia'),
+                'nombre' => __('Gestión de Miembros', 'flavor-chat-ia'),
+                'descripcion' => __('Base de datos de miembros con cuotas y carnets', 'flavor-chat-ia'),
                 'icono' => 'dashicons-groups',
                 'categoria' => 'comunidad',
             ],
@@ -454,7 +454,7 @@ class Flavor_Setup_Wizard {
 
         set_transient('flavor_setup_redirect', true, 60);
 
-        wp_safe_redirect(admin_url('admin.php?page=flavor-setup-wizard'));
+        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=flavor-setup-wizard'));
         exit;
     }
 
@@ -607,13 +607,10 @@ class Flavor_Setup_Wizard {
                         if ($datos_perfil && isset($datos_perfil['modulos_requeridos'])) {
                             $modulos_perfil = $datos_perfil['modulos_requeridos'];
 
-                            // Guardar en flavor_chat_ia_settings['active_modules']
+                            // Guardar solo en flavor_chat_ia_settings['active_modules']
                             $settings = get_option('flavor_chat_ia_settings', []);
                             $settings['active_modules'] = $modulos_perfil;
                             update_option('flavor_chat_ia_settings', $settings);
-
-                            // También guardar en flavor_active_modules (compatibilidad)
-                            update_option('flavor_active_modules', $modulos_perfil);
                         }
                     }
                 }
@@ -650,15 +647,12 @@ class Flavor_Setup_Wizard {
 
             case 'modulos':
                 if (!empty($datos['modulos_activos'])) {
-                    // Guardar en flavor_chat_ia_settings['active_modules']
+                    // Guardar solo en flavor_chat_ia_settings['active_modules']
                     $settings = get_option('flavor_chat_ia_settings', []);
                     $modulos_actuales = $settings['active_modules'] ?? [];
                     $modulos_finales = array_unique(array_merge($modulos_actuales, $datos['modulos_activos']));
                     $settings['active_modules'] = array_values($modulos_finales);
                     update_option('flavor_chat_ia_settings', $settings);
-
-                    // También guardar en flavor_active_modules (compatibilidad)
-                    update_option('flavor_active_modules', array_values($modulos_finales));
                 }
                 break;
 
@@ -1405,7 +1399,7 @@ class Flavor_Setup_Wizard {
             ],
             'comunidad' => [
                 'nombre' => __('Comunidad/Asociación', 'flavor-chat-ia'),
-                'descripcion' => __('Gestión de socios, eventos y recursos', 'flavor-chat-ia'),
+                'descripcion' => __('Gestión de miembros, eventos y recursos', 'flavor-chat-ia'),
                 'icono' => 'dashicons-groups',
                 'color' => '#e91e63',
             ],

@@ -130,28 +130,9 @@ if ($tablas_existen) {
     }
 
 } else {
-    // Datos de demostración
-    $total_prestamos = 156;
-    $prestamos_activos = 34;
-    $prestamos_retrasados = 5;
-    $devueltos_este_mes = 18;
-    $total_registros = 34;
-    $total_paginas = 3;
-
-    $prestamos_demo = [
-        ['id' => 1, 'libro_id' => 101, 'libro_titulo' => 'Cien años de soledad', 'libro_autor' => 'Gabriel García Márquez', 'prestamista' => 'María García', 'prestamista_email' => 'maria@ejemplo.com', 'prestamista_id' => 1, 'prestatario' => 'Carlos Rodríguez', 'prestatario_email' => 'carlos@ejemplo.com', 'prestatario_id' => 2, 'fecha_prestamo' => date('Y-m-d', strtotime('-10 days')), 'fecha_devolucion_prevista' => date('Y-m-d', strtotime('+4 days')), 'estado' => 'activo', 'dias_restantes' => 4, 'dias_prestado' => 10],
-        ['id' => 2, 'libro_id' => 102, 'libro_titulo' => 'Don Quijote de la Mancha', 'libro_autor' => 'Miguel de Cervantes', 'prestamista' => 'Ana Martínez', 'prestamista_email' => 'ana@ejemplo.com', 'prestamista_id' => 3, 'prestatario' => 'Pedro Sánchez', 'prestatario_email' => 'pedro@ejemplo.com', 'prestatario_id' => 4, 'fecha_prestamo' => date('Y-m-d', strtotime('-20 days')), 'fecha_devolucion_prevista' => date('Y-m-d', strtotime('-6 days')), 'estado' => 'activo', 'dias_restantes' => -6, 'dias_prestado' => 20],
-        ['id' => 3, 'libro_id' => 103, 'libro_titulo' => 'El Principito', 'libro_autor' => 'Antoine de Saint-Exupéry', 'prestamista' => 'Laura Fernández', 'prestamista_email' => 'laura@ejemplo.com', 'prestamista_id' => 5, 'prestatario' => 'Miguel Torres', 'prestatario_email' => 'miguel@ejemplo.com', 'prestatario_id' => 6, 'fecha_prestamo' => date('Y-m-d', strtotime('-5 days')), 'fecha_devolucion_prevista' => date('Y-m-d', strtotime('+9 days')), 'estado' => 'activo', 'dias_restantes' => 9, 'dias_prestado' => 5],
-        ['id' => 4, 'libro_id' => 104, 'libro_titulo' => '1984', 'libro_autor' => 'George Orwell', 'prestamista' => 'Isabel Gómez', 'prestamista_email' => 'isabel@ejemplo.com', 'prestamista_id' => 7, 'prestatario' => 'David López', 'prestatario_email' => 'david@ejemplo.com', 'prestatario_id' => 8, 'fecha_prestamo' => date('Y-m-d', strtotime('-3 days')), 'fecha_devolucion_prevista' => date('Y-m-d', strtotime('+11 days')), 'estado' => 'activo', 'dias_restantes' => 11, 'dias_prestado' => 3],
-        ['id' => 5, 'libro_id' => 105, 'libro_titulo' => 'Rayuela', 'libro_autor' => 'Julio Cortázar', 'prestamista' => 'Carmen Ruiz', 'prestamista_email' => 'carmen@ejemplo.com', 'prestamista_id' => 9, 'prestatario' => 'Javier Moreno', 'prestatario_email' => 'javier@ejemplo.com', 'prestatario_id' => 10, 'fecha_prestamo' => date('Y-m-d', strtotime('-15 days')), 'fecha_devolucion_prevista' => date('Y-m-d', strtotime('-1 day')), 'estado' => 'activo', 'dias_restantes' => -1, 'dias_prestado' => 15],
-        ['id' => 6, 'libro_id' => 106, 'libro_titulo' => 'La sombra del viento', 'libro_autor' => 'Carlos Ruiz Zafón', 'prestamista' => 'Roberto Díaz', 'prestamista_email' => 'roberto@ejemplo.com', 'prestamista_id' => 11, 'prestatario' => 'Elena Vega', 'prestatario_email' => 'elena@ejemplo.com', 'prestatario_id' => 12, 'fecha_prestamo' => date('Y-m-d', strtotime('-7 days')), 'fecha_devolucion_prevista' => date('Y-m-d', strtotime('+7 days')), 'estado' => 'activo', 'dias_restantes' => 7, 'dias_prestado' => 7],
-        ['id' => 7, 'libro_id' => 107, 'libro_titulo' => 'Ficciones', 'libro_autor' => 'Jorge Luis Borges', 'prestamista' => 'Sofía Hernández', 'prestamista_email' => 'sofia@ejemplo.com', 'prestamista_id' => 13, 'prestatario' => 'Alberto Castro', 'prestatario_email' => 'alberto@ejemplo.com', 'prestatario_id' => 14, 'fecha_prestamo' => date('Y-m-d', strtotime('-1 day')), 'fecha_devolucion_prevista' => date('Y-m-d', strtotime('+13 days')), 'estado' => 'activo', 'dias_restantes' => 13, 'dias_prestado' => 1],
-        ['id' => 8, 'libro_id' => 108, 'libro_titulo' => 'Pedro Páramo', 'libro_autor' => 'Juan Rulfo', 'prestamista' => 'Lucía Ramírez', 'prestamista_email' => 'lucia@ejemplo.com', 'prestamista_id' => 15, 'prestatario' => 'Diego Ortiz', 'prestatario_email' => 'diego@ejemplo.com', 'prestatario_id' => 16, 'fecha_prestamo' => date('Y-m-d', strtotime('-25 days')), 'fecha_devolucion_prevista' => date('Y-m-d', strtotime('-11 days')), 'estado' => 'activo', 'dias_restantes' => -11, 'dias_prestado' => 25],
-    ];
-
-    $prestamos = array_map(function($item) {
-        return (object) $item;
-    }, $prestamos_demo);
+    $total_registros = 0;
+    $total_paginas = 0;
+    $prestamos = [];
 }
 
 // Función para obtener estado visual del préstamo
@@ -174,7 +155,7 @@ function obtener_estado_prestamo($dias_restantes, $estado) {
 
     <?php if (!$tablas_existen): ?>
     <div class="notice notice-info">
-        <p><span class="dashicons dashicons-info"></span> <?php _e('Mostrando datos de demostración. Los datos reales aparecerán cuando existan préstamos en la biblioteca.', 'flavor-chat-ia'); ?></p>
+        <p><span class="dashicons dashicons-info"></span> <?php _e('No se han encontrado las tablas requeridas de biblioteca. Mostrando únicamente datos reales disponibles.', 'flavor-chat-ia'); ?></p>
     </div>
     <?php endif; ?>
 

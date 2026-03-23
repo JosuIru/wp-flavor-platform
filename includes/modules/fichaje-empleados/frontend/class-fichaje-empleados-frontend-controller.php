@@ -36,13 +36,20 @@ class Flavor_Fichaje_Empleados_Frontend_Controller {
      */
     public function init() {
         // Registrar shortcodes
-        add_shortcode('fichaje_panel', [$this, 'render_panel_fichaje']);
-        add_shortcode('fichaje_historial', [$this, 'render_historial']);
-        add_shortcode('fichaje_resumen', [$this, 'render_resumen']);
-        add_shortcode('fichaje_boton', [$this, 'render_boton_fichaje']);
-        add_shortcode('fichaje_estado', [$this, 'render_estado_actual']);
-        add_shortcode('fichaje_solicitar_cambio', [$this, 'render_formulario_cambio']);
-        add_shortcode('flavor_fichaje_empleados_acciones', [$this, 'render_acciones']);
+        $shortcodes = [
+            'fichaje_panel' => 'render_panel_fichaje',
+            'fichaje_historial' => 'render_historial',
+            'fichaje_resumen' => 'render_resumen',
+            'fichaje_boton' => 'render_boton_fichaje',
+            'fichaje_estado' => 'render_estado_actual',
+            'fichaje_solicitar_cambio' => 'render_formulario_cambio',
+            'flavor_fichaje_empleados_acciones' => 'render_acciones',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // Registrar AJAX handlers
         add_action('wp_ajax_fichaje_entrada', [$this, 'ajax_fichar_entrada']);

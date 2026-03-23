@@ -100,7 +100,7 @@ $metricas_red = [
     <section class="section-eventos">
         <div class="section-header">
             <h3><span class="dashicons dashicons-calendar-alt"></span> Próximos eventos</h3>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-eventos')); ?>" class="ver-mas">Ver todos →</a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-dashboard')); ?>" class="ver-mas">Ver todos →</a>
         </div>
 
         <?php if ($eventos_proximos): ?>
@@ -145,7 +145,7 @@ $metricas_red = [
             <div class="empty-state">
                 <span class="dashicons dashicons-calendar-alt"></span>
                 <p>No hay eventos próximos programados</p>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-eventos&action=nuevo')); ?>" class="button">Proponer un evento</a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-dashboard&action=nuevo')); ?>" class="button">Proponer un evento</a>
             </div>
         <?php endif; ?>
     </section>
@@ -154,7 +154,7 @@ $metricas_red = [
     <section class="section-crowdfunding">
         <div class="section-header">
             <h3><span class="dashicons dashicons-heart"></span> Proyectos que necesitan tu apoyo</h3>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-crowdfunding')); ?>" class="ver-mas">Ver todos →</a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=crowdfunding-dashboard')); ?>" class="ver-mas">Ver todos →</a>
         </div>
 
         <?php if ($crowdfundings_activos): ?>
@@ -209,7 +209,7 @@ $metricas_red = [
                                 <?php endif; ?>
                             </div>
 
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-crowdfunding&proyecto=' . $proyecto->id)); ?>" class="btn-apoyar">
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=crowdfunding-dashboard&proyecto=' . $proyecto->id)); ?>" class="btn-apoyar">
                                 Apoyar proyecto
                             </a>
                         </div>

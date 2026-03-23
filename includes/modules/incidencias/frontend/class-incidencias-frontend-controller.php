@@ -113,13 +113,27 @@ class Flavor_Incidencias_Frontend_Controller {
      * Registrar shortcodes del módulo
      */
     public function registrar_shortcodes() {
-        add_shortcode('incidencias_listado', [$this, 'shortcode_listado']);
-        add_shortcode('incidencias_mapa', [$this, 'shortcode_mapa']);
-        add_shortcode('incidencias_reportar', [$this, 'shortcode_reportar']);
-        add_shortcode('incidencias_mis_reportes', [$this, 'shortcode_mis_reportes']);
-        add_shortcode('incidencias_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('incidencias_estadisticas', [$this, 'shortcode_estadisticas']);
-        add_shortcode('incidencias_recientes', [$this, 'shortcode_recientes']);
+        if (!shortcode_exists('incidencias_listado')) {
+            add_shortcode('incidencias_listado', [$this, 'shortcode_listado']);
+        }
+        if (!shortcode_exists('incidencias_mapa')) {
+            add_shortcode('incidencias_mapa', [$this, 'shortcode_mapa']);
+        }
+        if (!shortcode_exists('incidencias_reportar')) {
+            add_shortcode('incidencias_reportar', [$this, 'shortcode_reportar']);
+        }
+        if (!shortcode_exists('incidencias_mis_reportes')) {
+            add_shortcode('incidencias_mis_reportes', [$this, 'shortcode_mis_reportes']);
+        }
+        if (!shortcode_exists('incidencias_detalle')) {
+            add_shortcode('incidencias_detalle', [$this, 'shortcode_detalle']);
+        }
+        if (!shortcode_exists('incidencias_estadisticas')) {
+            add_shortcode('incidencias_estadisticas', [$this, 'shortcode_estadisticas']);
+        }
+        if (!shortcode_exists('incidencias_recientes')) {
+            add_shortcode('incidencias_recientes', [$this, 'shortcode_recientes']);
+        }
     }
 
     /**
@@ -133,7 +147,30 @@ class Flavor_Incidencias_Frontend_Controller {
             'estado' => '',
             'limite' => 20,
             'mostrar_filtros' => 'true',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'fecha',
+            'order' => 'DESC',
         ], $atts);
+
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $atts['visual_class_string'] = implode(' ', $visual_classes);
 
         ob_start();
         $this->render_listado($atts);

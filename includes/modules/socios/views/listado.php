@@ -89,7 +89,7 @@ if ($tabla_existe) {
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=socios-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-id-alt" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Socios', 'flavor-chat-ia'); ?>
+            <?php _e('Miembros', 'flavor-chat-ia'); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
         <span style="color: #1d2327;"><?php _e('Listado', 'flavor-chat-ia'); ?></span>
@@ -97,10 +97,10 @@ if ($tabla_existe) {
 
     <h1 class="wp-heading-inline">
         <span class="dashicons dashicons-groups"></span>
-        <?php _e('Listado de Socios', 'flavor-chat-ia'); ?>
+        <?php _e('Listado de Miembros', 'flavor-chat-ia'); ?>
     </h1>
 
-    <a href="<?php echo admin_url('admin.php?page=socios-nuevo'); ?>" class="page-title-action"><?php _e('Añadir Socio', 'flavor-chat-ia'); ?></a>
+    <a href="<?php echo admin_url('admin.php?page=socios-nuevo'); ?>" class="page-title-action"><?php _e('Añadir Miembro', 'flavor-chat-ia'); ?></a>
 
     <hr class="wp-header-end">
 
@@ -145,7 +145,7 @@ if ($tabla_existe) {
             </div>
         </form>
         <div class="tablenav-pages">
-            <span class="displaying-num"><?php printf(_n('%s socio', '%s socios', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?></span>
+            <span class="displaying-num"><?php printf(_n('%s miembro', '%s miembros', $total_items, 'flavor-chat-ia'), number_format($total_items)); ?></span>
         </div>
     </div>
 
@@ -153,7 +153,7 @@ if ($tabla_existe) {
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th style="width: 80px;"><?php _e('Nº Socio', 'flavor-chat-ia'); ?></th>
+                <th style="width: 80px;"><?php _e('Nº Miembro', 'flavor-chat-ia'); ?></th>
                 <th><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
                 <th style="width: 100px;"><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
                 <th style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
@@ -165,7 +165,7 @@ if ($tabla_existe) {
             <?php if (empty($socios)): ?>
             <tr><td colspan="6" style="text-align: center; padding: 40px;">
                 <span class="dashicons dashicons-id-alt" style="font-size: 48px; color: #c3c4c7;"></span>
-                <p style="color: #646970;"><?php _e('No se encontraron socios.', 'flavor-chat-ia'); ?></p>
+                <p style="color: #646970;"><?php _e('No se encontraron miembros.', 'flavor-chat-ia'); ?></p>
             </td></tr>
             <?php else: ?>
                 <?php foreach ($socios as $s): ?>

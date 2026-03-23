@@ -12,6 +12,10 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+$colectivo_id = isset($colectivo_id) ? (int) $colectivo_id : 0;
+$es_miembro = !empty($es_miembro);
+$proyectos = is_array($proyectos ?? null) ? $proyectos : [];
 ?>
 
 <div class="flavor-col-proyectos" data-colectivo="<?php echo esc_attr($colectivo_id); ?>">

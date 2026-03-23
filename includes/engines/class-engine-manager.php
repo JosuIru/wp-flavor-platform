@@ -277,7 +277,75 @@ class Flavor_Engine_Manager {
     }
 
     /**
+     * Obtiene todos los engines configurados (con API key válida)
+     * Ordenados según la configuración de fallback del usuario
+     *
+     * @return array Lista de engines configurados ordenados por prioridad
+     */
+    public function get_configured_engines() {
+        $configured = [];
+        $settings = get_option('flavor_chat_ia_settings', []);
+
+        // Obtener engines que están configurados
+        foreach ($this->engines as $id => $engine) {
+            if ($engine->is_configured()) {
+                $configured[$id] = $engine;
+            }
+        }
+
+        // Si no hay engines configurados, retornar vacío
+        if (empty($configured)) {
+            return [];
+        }
+
+        // Obtener orden de fallback configurado por el usuario
+        $fallback_order = $settings['fallback_order'] ?? [];
+
+        // Si hay orden configurado, usarlo
+        if (!empty($fallback_order)) {
+            $ordered = [];
+
+            // Primero añadir los que están en el orden configurado
+            foreach ($fallback_order as $provider_id) {
+                if (isset($configured[$provider_id])) {
+                    $ordered[$provider_id] = $configured[$provider_id];
+                }
+            }
+
+            // Añadir cualquier engine configurado que no esté en el orden (por si se configuró después)
+            foreach ($configured as $id => $engine) {
+                if (!isset($ordered[$id])) {
+                    $ordered[$id] = $engine;
+                }
+            }
+
+            return $ordered;
+        }
+
+        // Fallback: ordenar con el activo primero
+        $active_provider = $settings['active_provider'] ?? 'claude';
+        if (isset($configured[$active_provider])) {
+            $active = [$active_provider => $configured[$active_provider]];
+            unset($configured[$active_provider]);
+            $configured = $active + $configured;
+        }
+
+        return $configured;
+    }
+
+    /**
+     * Obtiene el orden de fallback configurado
+     *
+     * @return array Lista de IDs de providers en orden de prioridad
+     */
+    public function get_fallback_order() {
+        $configured = $this->get_configured_engines();
+        return array_keys($configured);
+    }
+
+    /**
      * Envía un mensaje usando el motor del contexto especificado
+     * Con sistema de fallback automático si el motor principal falla
      *
      * @param array $messages
      * @param string $system_prompt
@@ -289,34 +357,103 @@ class Flavor_Engine_Manager {
         $engine = $this->get_active_engine($context);
         $config = $this->get_context_config($context);
 
-        if (!$engine) {
+        // Obtener todos los engines configurados para fallback
+        $configured_engines = $this->get_configured_engines();
+
+        if (empty($configured_engines)) {
             return [
                 'success' => false,
-                'error' => __('No hay motor de IA configurado', 'flavor-chat-ia'),
-                'error_code' => 'no_engine',
+                'error' => __('No hay ningún motor de IA configurado. Configura al menos una API key.', 'flavor-chat-ia'),
+                'error_code' => 'no_engine_configured',
             ];
         }
 
-        if (!$engine->is_configured()) {
-            return [
-                'success' => false,
-                'error' => sprintf('El proveedor %s no está configurado', $engine->get_name()),
-                'error_code' => 'not_configured',
-            ];
+        // Si el engine principal no está disponible, usar el primero configurado
+        if (!$engine || !$engine->is_configured()) {
+            $engine = reset($configured_engines);
+            $config['provider'] = $engine->get_id();
         }
 
-        // Si el motor no soporta tools, enviar sin ellas
-        if (!$engine->supports_tools()) {
-            $tools = [];
+        // Construir lista de engines a intentar (primero el activo, luego fallbacks)
+        $engines_to_try = [];
+        $engines_to_try[$engine->get_id()] = $engine;
+
+        // Añadir el resto como fallback
+        foreach ($configured_engines as $id => $fallback_engine) {
+            if (!isset($engines_to_try[$id])) {
+                $engines_to_try[$id] = $fallback_engine;
+            }
         }
 
-        // Pasar el modelo específico si está configurado
-        $options = [];
-        if (!empty($config['model'])) {
-            $options['model'] = $config['model'];
+        $last_error = null;
+        $attempts = [];
+
+        // Intentar con cada engine
+        foreach ($engines_to_try as $engine_id => $current_engine) {
+            // Preparar tools (quitar si el motor no las soporta)
+            $current_tools = $current_engine->supports_tools() ? $tools : [];
+
+            // Pasar el modelo específico si está configurado
+            $options = [];
+            if ($engine_id === $config['provider'] && !empty($config['model'])) {
+                $options['model'] = $config['model'];
+            }
+
+            try {
+                $response = $current_engine->send_message($messages, $system_prompt, $current_tools, $options);
+
+                if ($response['success']) {
+                    // Añadir info del engine usado
+                    $response['engine_used'] = $engine_id;
+                    $response['engine_name'] = $current_engine->get_name();
+
+                    // Si hubo fallback, indicarlo
+                    if ($engine_id !== $config['provider']) {
+                        $response['fallback_used'] = true;
+                        $response['original_engine'] = $config['provider'];
+                        if (defined('WP_DEBUG') && WP_DEBUG) {
+                            error_log(sprintf('[Flavor IA Fallback] %s falló, se usó %s', $config['provider'], $engine_id));
+                        }
+                    }
+
+                    return $response;
+                }
+
+                // Guardar el error para posible uso posterior
+                $last_error = $response['error'] ?? __('Error desconocido', 'flavor-chat-ia');
+                $attempts[] = [
+                    'engine' => $engine_id,
+                    'error' => $last_error,
+                ];
+
+                // Log del fallo (solo en modo debug)
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log(sprintf('[Flavor IA] Engine %s falló: %s', $current_engine->get_name(), $last_error));
+                }
+
+            } catch (Exception $e) {
+                $last_error = $e->getMessage();
+                $attempts[] = [
+                    'engine' => $engine_id,
+                    'error' => $last_error,
+                ];
+
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log(sprintf('[Flavor IA] Engine %s excepción: %s', $current_engine->get_name(), $last_error));
+                }
+            }
         }
 
-        return $engine->send_message($messages, $system_prompt, $tools, $options);
+        // Todos los engines fallaron
+        return [
+            'success' => false,
+            'error' => sprintf(
+                __('Todos los motores de IA fallaron. Último error: %s', 'flavor-chat-ia'),
+                $last_error
+            ),
+            'error_code' => 'all_engines_failed',
+            'attempts' => $attempts,
+        ];
     }
 
     /**

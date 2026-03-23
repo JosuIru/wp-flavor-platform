@@ -363,6 +363,9 @@ class Flavor_Layout_Extras {
      * AJAX: Descartar announcement
      */
     public function ajax_dismiss_announcement() {
+        if (!check_ajax_referer('flavor_extras_nonce', 'nonce', false)) {
+            wp_send_json_error(['message' => __('Solicitud inválida.', 'flavor-chat-ia')], 403);
+        }
         setcookie('flavor_announcement_dismissed', '1', time() + DAY_IN_SECONDS * 7, '/');
         wp_send_json_success();
     }
@@ -552,6 +555,9 @@ class Flavor_Layout_Extras {
      * AJAX: Aceptar cookies
      */
     public function ajax_accept_cookies() {
+        if (!check_ajax_referer('flavor_extras_nonce', 'nonce', false)) {
+            wp_send_json_error(['message' => __('Solicitud inválida.', 'flavor-chat-ia')], 403);
+        }
         $accept = isset($_POST['accept']) ? (bool) $_POST['accept'] : true;
         $value = $accept ? 'all' : 'essential';
         setcookie('flavor_cookies_accepted', $value, time() + YEAR_IN_SECONDS, '/');

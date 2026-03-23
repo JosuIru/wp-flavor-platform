@@ -290,10 +290,18 @@ class Flavor_Chat_Carpooling_Module extends Flavor_Chat_Module_Base {
      * Registrar shortcodes
      */
     public function register_shortcodes() {
-        add_shortcode('carpooling_buscar_viaje', [$this, 'shortcode_buscar_viaje']);
-        add_shortcode('carpooling_publicar_viaje', [$this, 'shortcode_publicar_viaje']);
-        add_shortcode('carpooling_mis_viajes', [$this, 'shortcode_mis_viajes']);
-        add_shortcode('carpooling_mis_reservas', [$this, 'shortcode_mis_reservas']);
+        $shortcodes = [
+            'carpooling_buscar_viaje' => 'shortcode_buscar_viaje',
+            'carpooling_publicar_viaje' => 'shortcode_publicar_viaje',
+            'carpooling_mis_viajes' => 'shortcode_mis_viajes',
+            'carpooling_mis_reservas' => 'shortcode_mis_reservas',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -3033,6 +3041,13 @@ KNOWLEDGE;
      * Registra las páginas de administración del módulo
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         add_submenu_page(

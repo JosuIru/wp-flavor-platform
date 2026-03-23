@@ -89,7 +89,7 @@ $tabla_talleres_existe = $wpdb->get_var(
     )
 );
 
-$usar_datos_demo = !$tabla_inscripciones_existe || !$tabla_talleres_existe;
+$tablas_talleres_disponibles = $tabla_inscripciones_existe && $tabla_talleres_existe;
 
 // =============================================================================
 // PARÁMETROS DE PAGINACIÓN Y FILTROS
@@ -111,164 +111,7 @@ $filtro_orden_dir = isset($_GET['order']) ? sanitize_text_field($_GET['order']) 
 // DATOS DEMO O REALES
 // =============================================================================
 
-if ($usar_datos_demo) {
-    // Datos de demostración
-    $talleres_disponibles = [
-        (object)['id' => 1, 'titulo' => 'Taller de Cocina Saludable'],
-        (object)['id' => 2, 'titulo' => 'Introducción a la Fotografía'],
-        (object)['id' => 3, 'titulo' => 'Huertos Urbanos'],
-        (object)['id' => 4, 'titulo' => 'Yoga para Principiantes'],
-        (object)['id' => 5, 'titulo' => 'Manualidades Recicladas'],
-    ];
-
-    $inscripciones_demo = [
-        (object)[
-            'id' => 1,
-            'taller_id' => 1,
-            'taller_titulo' => 'Taller de Cocina Saludable',
-            'participante_id' => 2,
-            'participante_nombre' => 'María García',
-            'participante_email' => 'maria.garcia@example.com',
-            'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-2 days')),
-            'precio_pagado' => 25.00,
-            'estado_pago' => 'pagado',
-            'estado' => 'confirmada',
-        ],
-        (object)[
-            'id' => 2,
-            'taller_id' => 1,
-            'taller_titulo' => 'Taller de Cocina Saludable',
-            'participante_id' => 3,
-            'participante_nombre' => 'Carlos López',
-            'participante_email' => 'carlos.lopez@example.com',
-            'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-1 day')),
-            'precio_pagado' => 25.00,
-            'estado_pago' => 'pendiente',
-            'estado' => 'pendiente',
-        ],
-        (object)[
-            'id' => 3,
-            'taller_id' => 2,
-            'taller_titulo' => 'Introducción a la Fotografía',
-            'participante_id' => 4,
-            'participante_nombre' => 'Ana Martínez',
-            'participante_email' => 'ana.martinez@example.com',
-            'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-3 days')),
-            'precio_pagado' => 0,
-            'estado_pago' => 'gratis',
-            'estado' => 'confirmada',
-        ],
-        (object)[
-            'id' => 4,
-            'taller_id' => 3,
-            'taller_titulo' => 'Huertos Urbanos',
-            'participante_id' => 5,
-            'participante_nombre' => 'Pedro Sánchez',
-            'participante_email' => 'pedro.sanchez@example.com',
-            'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-5 days')),
-            'precio_pagado' => 15.00,
-            'estado_pago' => 'pagado',
-            'estado' => 'asistio',
-        ],
-        (object)[
-            'id' => 5,
-            'taller_id' => 4,
-            'taller_titulo' => 'Yoga para Principiantes',
-            'participante_id' => 6,
-            'participante_nombre' => 'Laura Ruiz',
-            'participante_email' => 'laura.ruiz@example.com',
-            'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-4 days')),
-            'precio_pagado' => 20.00,
-            'estado_pago' => 'pagado',
-            'estado' => 'lista_espera',
-        ],
-        (object)[
-            'id' => 6,
-            'taller_id' => 2,
-            'taller_titulo' => 'Introducción a la Fotografía',
-            'participante_id' => 7,
-            'participante_nombre' => 'Jorge Fernández',
-            'participante_email' => 'jorge.fernandez@example.com',
-            'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-6 days')),
-            'precio_pagado' => 0,
-            'estado_pago' => 'gratis',
-            'estado' => 'cancelada',
-        ],
-        (object)[
-            'id' => 7,
-            'taller_id' => 5,
-            'taller_titulo' => 'Manualidades Recicladas',
-            'participante_id' => 8,
-            'participante_nombre' => 'Elena Torres',
-            'participante_email' => 'elena.torres@example.com',
-            'fecha_inscripcion' => date('Y-m-d H:i:s'),
-            'precio_pagado' => 10.00,
-            'estado_pago' => 'pendiente',
-            'estado' => 'pendiente',
-        ],
-    ];
-
-    // Estadísticas demo
-    $total_inscripciones = count($inscripciones_demo);
-    $inscripciones_confirmadas = 2;
-    $inscripciones_pendientes = 2;
-    $ingresos_totales = 95.00;
-    $ingresos_pendientes = 35.00;
-    $tasa_asistencia = 50;
-    $inscripciones_mes = 3;
-
-    // Aplicar filtros a datos demo
-    $inscripciones_filtradas = $inscripciones_demo;
-
-    if (!empty($filtro_busqueda)) {
-        $inscripciones_filtradas = array_filter($inscripciones_filtradas, function($i) use ($filtro_busqueda) {
-            return stripos($i->participante_nombre, $filtro_busqueda) !== false
-                || stripos($i->participante_email, $filtro_busqueda) !== false
-                || stripos($i->taller_titulo, $filtro_busqueda) !== false;
-        });
-    }
-
-    if ($filtro_taller > 0) {
-        $inscripciones_filtradas = array_filter($inscripciones_filtradas, function($i) use ($filtro_taller) {
-            return $i->taller_id == $filtro_taller;
-        });
-    }
-
-    if (!empty($filtro_estado)) {
-        $inscripciones_filtradas = array_filter($inscripciones_filtradas, function($i) use ($filtro_estado) {
-            return $i->estado === $filtro_estado;
-        });
-    }
-
-    if (!empty($filtro_pago)) {
-        $inscripciones_filtradas = array_filter($inscripciones_filtradas, function($i) use ($filtro_pago) {
-            return $i->estado_pago === $filtro_pago;
-        });
-    }
-
-    $total_filtrado = count($inscripciones_filtradas);
-    $total_paginas = ceil($total_filtrado / $elementos_por_pagina);
-    $inscripciones = array_slice(array_values($inscripciones_filtradas), $offset, $elementos_por_pagina);
-
-    // Top talleres demo
-    $top_talleres = [
-        (object)['titulo' => 'Taller de Cocina Saludable', 'total_inscripciones' => 12],
-        (object)['titulo' => 'Introducción a la Fotografía', 'total_inscripciones' => 10],
-        (object)['titulo' => 'Yoga para Principiantes', 'total_inscripciones' => 8],
-        (object)['titulo' => 'Huertos Urbanos', 'total_inscripciones' => 6],
-        (object)['titulo' => 'Manualidades Recicladas', 'total_inscripciones' => 4],
-    ];
-
-    // Distribución por estado demo
-    $distribucion_estados = [
-        'confirmada' => 12,
-        'pendiente' => 8,
-        'lista_espera' => 5,
-        'asistio' => 10,
-        'cancelada' => 3,
-    ];
-
-} else {
+if ($tablas_talleres_disponibles) {
     // Datos reales de la base de datos
 
     // Estadísticas generales
@@ -395,6 +238,20 @@ if ($usar_datos_demo) {
     foreach ($distribucion_raw as $estado => $row) {
         $distribucion_estados[$estado] = $row->total;
     }
+} else {
+    $total_inscripciones = 0;
+    $inscripciones_confirmadas = 0;
+    $inscripciones_pendientes = 0;
+    $ingresos_totales = 0;
+    $ingresos_pendientes = 0;
+    $tasa_asistencia = 0;
+    $inscripciones_mes = 0;
+    $talleres_disponibles = [];
+    $total_filtrado = 0;
+    $total_paginas = 0;
+    $inscripciones = [];
+    $top_talleres = [];
+    $distribucion_estados = [];
 }
 ?>
 
@@ -812,10 +669,10 @@ if ($usar_datos_demo) {
     <hr class="wp-header-end">
 
     <div class="flavor-inscripciones-wrapper">
-        <?php if ($usar_datos_demo): ?>
+        <?php if (!$tablas_talleres_disponibles): ?>
             <div class="flavor-inscripciones-demo-notice">
                 <span class="dashicons dashicons-info"></span>
-                <span><?php echo esc_html__('Mostrando datos de demostración. Las tablas de talleres no están configuradas.', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Talleres.', 'flavor-chat-ia'); ?></span>
             </div>
         <?php endif; ?>
 

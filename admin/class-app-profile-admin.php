@@ -271,8 +271,8 @@ class Flavor_App_Profile_Admin {
         <div class="wrap flavor-composer-wrapper"
              x-data="window.flavorComposerState ? flavorComposerState() : { pasoActual: 'plantillas', modoMultiSeleccion: false, perfilesSeleccionados: [] }"
              x-init="pasoActual = pasoActual || 'plantillas'">
-            <h1><?php _e('Compositor de App Móvil', 'flavor-chat-ia'); ?></h1>
-            <p class="description"><?php _e('Elige una plantilla predefinida o personaliza los modulos visibles en tu aplicacion móvil.', 'flavor-chat-ia'); ?></p>
+            <h1><?php _e('Compositor de Aplicación', 'flavor-chat-ia'); ?></h1>
+            <p class="description"><?php _e('Elige una plantilla predefinida o personaliza los módulos activos en tu plataforma (web y móvil).', 'flavor-chat-ia'); ?></p>
 
             <?php if ($mensaje === 'perfil_cambiado'): ?>
                 <div class="notice notice-success is-dismissible"><p><?php _e('Plantilla cambiada correctamente.', 'flavor-chat-ia'); ?></p></div>
@@ -530,13 +530,41 @@ class Flavor_App_Profile_Admin {
                                 <?php endif; ?>
                             <?php endif; ?>
 
-                            <div class="flavor-template-btn">
-                                <button
-                                    type="button"
-                                    class="button button-small"
-                                    :class="{ 'button-primary': !esPerfilActivo('<?php echo esc_js($id_perfil); ?>') }"
-                                    x-text="esPerfilActivo('<?php echo esc_js($id_perfil); ?>') ? '<?php echo esc_js(__('Activo', 'flavor-chat-ia')); ?>' : '<?php echo esc_js(__('Ver preview', 'flavor-chat-ia')); ?>'">
-                                </button>
+                            <div class="flavor-template-btn" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <?php if ($id_perfil !== 'personalizado'): ?>
+                                    <template x-if="!perfilEstaActivoEnSistema('<?php echo esc_js($id_perfil); ?>')">
+                                        <button
+                                            type="button"
+                                            class="button button-small"
+                                            @click.stop="abrirPreviewPlantilla('<?php echo esc_js($id_perfil); ?>')">
+                                            <?php _e('Ver preview', 'flavor-chat-ia'); ?>
+                                        </button>
+                                    </template>
+                                    <template x-if="!perfilEstaActivoEnSistema('<?php echo esc_js($id_perfil); ?>')">
+                                        <button
+                                            type="button"
+                                            class="button button-small button-primary"
+                                            @click.stop="activarPlantillaDirecto('<?php echo esc_js($id_perfil); ?>')"
+                                            :disabled="cargando">
+                                            <span x-show="!cargando"><?php _e('Activar', 'flavor-chat-ia'); ?></span>
+                                            <span x-show="cargando" class="spinner is-active" style="margin: 0;"></span>
+                                        </button>
+                                    </template>
+                                    <template x-if="perfilEstaActivoEnSistema('<?php echo esc_js($id_perfil); ?>')">
+                                        <span class="flavor-template-active-badge" style="background: #00a32a; color: #fff; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 500;">
+                                            <span class="dashicons dashicons-yes" style="font-size: 14px; width: 14px; height: 14px; margin-right: 4px;"></span>
+                                            <?php _e('Activo', 'flavor-chat-ia'); ?>
+                                        </span>
+                                    </template>
+                                <?php else: ?>
+                                    <button
+                                        type="button"
+                                        class="button button-small"
+                                        :class="{ 'button-primary': perfilSeleccionado !== 'personalizado' }"
+                                        @click.stop="cambiarPerfil('personalizado')">
+                                        <?php _e('Usar personalizado', 'flavor-chat-ia'); ?>
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -769,7 +797,7 @@ class Flavor_App_Profile_Admin {
             'mi_panel' => __('Mi panel', 'flavor-chat-ia'),
             'cuenta' => __('Cuenta', 'flavor-chat-ia'),
             'comunidad' => __('Comunidad', 'flavor-chat-ia'),
-            'socios' => __('Socios', 'flavor-chat-ia'),
+            'socios' => __('Miembros', 'flavor-chat-ia'),
             'membresia' => __('Membresia', 'flavor-chat-ia'),
             'colectivos' => __('Colectivos', 'flavor-chat-ia'),
             'asociacion' => __('Asociacion', 'flavor-chat-ia'),
@@ -1083,12 +1111,12 @@ class Flavor_App_Profile_Admin {
                     'modulos_activos' => $modulos_activos,
                     'menu_sync' => $menu_sync,
                 ]);
-                wp_safe_redirect(add_query_arg(
+                Flavor_Chat_Helpers::safe_redirect(add_query_arg(
                     ['page' => 'flavor-module-dashboards', 'mensaje' => 'perfiles_cambiados'],
                     admin_url('admin.php')
                 ));
             } else {
-                wp_safe_redirect(add_query_arg(
+                Flavor_Chat_Helpers::safe_redirect(add_query_arg(
                     ['page' => 'flavor-module-dashboards', 'error' => 'perfiles_invalidos'],
                     admin_url('admin.php')
                 ));
@@ -1108,12 +1136,12 @@ class Flavor_App_Profile_Admin {
                     'modulos_activos' => $modulos_activos,
                     'menu_sync' => $menu_sync,
                 ]);
-                wp_safe_redirect(add_query_arg(
+                Flavor_Chat_Helpers::safe_redirect(add_query_arg(
                     ['page' => 'flavor-module-dashboards', 'mensaje' => 'perfil_cambiado'],
                     admin_url('admin.php')
                 ));
             } else {
-                wp_safe_redirect(add_query_arg(
+                Flavor_Chat_Helpers::safe_redirect(add_query_arg(
                     ['page' => 'flavor-module-dashboards', 'error' => 'perfil_invalido'],
                     admin_url('admin.php')
                 ));
@@ -1141,7 +1169,10 @@ class Flavor_App_Profile_Admin {
             $this->gestor_perfiles->desactivar_modulo_opcional($modulo_id);
         }
 
-        wp_safe_redirect(add_query_arg(
+        // Sincronizar con configuración de apps móviles
+        $this->sincronizar_modulo_movil($modulo_id, $activar);
+
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
             ['page' => 'flavor-module-dashboards', 'mensaje' => 'modulo_actualizado'],
             admin_url('admin.php')
         ));
@@ -1249,6 +1280,9 @@ class Flavor_App_Profile_Admin {
                 return;
             }
 
+            // Sincronizar con configuración de apps móviles
+            $this->sincronizar_modulo_movil($modulo_id, $activar);
+
             wp_send_json_success([
                 'message' => $activar
                     ? __('Módulo activado correctamente.', 'flavor-chat-ia')
@@ -1306,7 +1340,7 @@ class Flavor_App_Profile_Admin {
             Flavor_Frontend_Loader::schedule_flush_rewrite();
         }
 
-        wp_safe_redirect(add_query_arg(
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
             ['page' => 'flavor-module-dashboards', 'mensaje' => 'modulo_frontend_actualizado'],
             admin_url('admin.php')
         ));
@@ -1325,7 +1359,7 @@ class Flavor_App_Profile_Admin {
 
         $modulo_slug = sanitize_title($_POST['modulo_slug'] ?? '');
         if (empty($modulo_slug)) {
-            wp_safe_redirect(add_query_arg(
+            Flavor_Chat_Helpers::safe_redirect(add_query_arg(
                 ['page' => 'flavor-module-dashboards', 'mensaje' => 'landing_error'],
                 admin_url('admin.php')
             ));
@@ -1365,7 +1399,7 @@ class Flavor_App_Profile_Admin {
             update_post_meta($post_id, '_flavor_auto_page_modules', str_replace('-', '_', $modulo_slug));
         }
 
-        wp_safe_redirect(add_query_arg(
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
             ['page' => 'flavor-module-dashboards', 'mensaje' => 'landing_creada'],
             admin_url('admin.php')
         ));
@@ -1405,7 +1439,7 @@ class Flavor_App_Profile_Admin {
             }
         }
 
-        wp_safe_redirect(add_query_arg(
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
             ['page' => 'flavor-module-dashboards', 'mensaje' => 'landings_creadas'],
             admin_url('admin.php')
         ));
@@ -1874,7 +1908,7 @@ class Flavor_App_Profile_Admin {
                 'color' => '#0891b2',
             ],
             'socios' => [
-                'nombre' => __('Socios', 'flavor-chat-ia'),
+                'nombre' => __('Miembros', 'flavor-chat-ia'),
                 'icono' => 'dashicons-groups',
                 'color' => '#7c3aed',
             ],
@@ -2174,12 +2208,12 @@ class Flavor_App_Profile_Admin {
         $resultado = $this->activar_plantilla_completa($plantilla_id, $opciones);
 
         if ($resultado['success']) {
-            wp_safe_redirect(add_query_arg(
+            Flavor_Chat_Helpers::safe_redirect(add_query_arg(
                 ['page' => 'flavor-module-dashboards', 'mensaje' => 'plantilla_activada'],
                 admin_url('admin.php')
             ));
         } else {
-            wp_safe_redirect(add_query_arg(
+            Flavor_Chat_Helpers::safe_redirect(add_query_arg(
                 ['page' => 'flavor-module-dashboards', 'mensaje' => 'plantilla_error', 'error' => urlencode($resultado['mensaje'] ?? '')],
                 admin_url('admin.php')
             ));
@@ -3159,7 +3193,7 @@ class Flavor_App_Profile_Admin {
                     'contenido' => '[flavor_eventos]',
                 ],
                 'socios' => [
-                    'titulo' => __('Socios', 'flavor-chat-ia'),
+                    'titulo' => __('Miembros', 'flavor-chat-ia'),
                     'slug' => 'socios',
                     'icono' => 'dashicons-id-alt',
                     'contenido' => '[flavor_socios]',
@@ -3276,5 +3310,44 @@ class Flavor_App_Profile_Admin {
         ];
 
         return $landings_por_plantilla[$plantilla_id] ?? [];
+    }
+
+    /**
+     * Sincroniza el estado de un módulo con la configuración de apps móviles
+     *
+     * Cuando un módulo se activa/desactiva en el App Composer web,
+     * automáticamente se refleja en la configuración de apps móviles.
+     *
+     * @param string $modulo_id ID del módulo
+     * @param bool $activar True para activar, false para desactivar
+     * @return bool True si la sincronización fue exitosa
+     */
+    private function sincronizar_modulo_movil($modulo_id, $activar) {
+        $apps_config = get_option('flavor_apps_config', []);
+
+        if (!isset($apps_config['modules']) || !is_array($apps_config['modules'])) {
+            $apps_config['modules'] = [];
+        }
+
+        // Normalizar ID del módulo (guiones a guiones bajos)
+        $modulo_id_normalizado = str_replace('-', '_', $modulo_id);
+
+        // Actualizar estado del módulo
+        if (!isset($apps_config['modules'][$modulo_id_normalizado])) {
+            $apps_config['modules'][$modulo_id_normalizado] = [];
+        }
+        $apps_config['modules'][$modulo_id_normalizado]['enabled'] = $activar ? 1 : 0;
+
+        // Guardar configuración
+        $resultado = update_option('flavor_apps_config', $apps_config);
+
+        if ($resultado) {
+            flavor_log_debug(
+                sprintf('Módulo %s sincronizado con móvil: %s', $modulo_id_normalizado, $activar ? 'activado' : 'desactivado'),
+                'AppProfile'
+            );
+        }
+
+        return $resultado;
     }
 }

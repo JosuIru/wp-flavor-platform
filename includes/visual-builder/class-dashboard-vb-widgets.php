@@ -968,8 +968,8 @@ class Flavor_Dashboard_VB_Widgets {
                 'render'      => 'renderizar_widget_colectivos',
             ],
             'socios' => [
-                'label'       => __('Estado de Socio', 'flavor-chat-ia'),
-                'description' => __('Mi membresía como socio', 'flavor-chat-ia'),
+                'label'       => __('Estado de Miembro', 'flavor-chat-ia'),
+                'description' => __('Mi membresía como miembro', 'flavor-chat-ia'),
                 'icon'        => 'dashicons-id-alt',
                 'categoria'   => 'participacion',
                 'modulo'      => 'socios',
@@ -2982,7 +2982,7 @@ class Flavor_Dashboard_VB_Widgets {
 
         $this->render_widget_wrapper($widget_id, $config, function() use ($socio) {
             if (!$socio) {
-                $this->render_empty_state(__('No eres socio', 'flavor-chat-ia'), home_url('/socios/alta/'), __('Hacerse socio', 'flavor-chat-ia'));
+                $this->render_empty_state(__('No eres miembro', 'flavor-chat-ia'), home_url('/socios/alta/'), __('Hacerse miembro', 'flavor-chat-ia'));
                 return;
             }
             ?>
@@ -2993,7 +2993,7 @@ class Flavor_Dashboard_VB_Widgets {
                 </div>
                 <div class="fvb-socio-card__info">
                     <div class="fvb-socio-stat">
-                        <span class="fvb-socio-stat__label"><?php esc_html_e('Nº Socio', 'flavor-chat-ia'); ?></span>
+                        <span class="fvb-socio-stat__label"><?php esc_html_e('Nº Miembro', 'flavor-chat-ia'); ?></span>
                         <span class="fvb-socio-stat__value"><?php echo esc_html($socio->numero_socio); ?></span>
                     </div>
                     <div class="fvb-socio-stat">

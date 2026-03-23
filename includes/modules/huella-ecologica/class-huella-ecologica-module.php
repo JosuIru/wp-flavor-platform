@@ -543,10 +543,11 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
             'post_status' => 'publish',
             'post_author' => $user_id,
             'post_title' => sprintf('%s - %s', self::CATEGORIAS_HUELLA[$categoria]['nombre'], $fecha),
-        ]);
+        ], true);
 
-        if (is_wp_error($registro_id)) {
-            wp_send_json_error(['message' => $registro_id->get_error_message()]);
+        if (is_wp_error($registro_id) || empty($registro_id)) {
+            $error = is_wp_error($registro_id) ? $registro_id->get_error_message() : __('No se pudo registrar la huella.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         update_post_meta($registro_id, '_he_fecha', $fecha);
@@ -591,10 +592,11 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
             'post_status' => 'publish',
             'post_author' => $user_id,
             'post_title' => $accion_data['nombre'],
-        ]);
+        ], true);
 
-        if (is_wp_error($accion_id)) {
-            wp_send_json_error(['message' => $accion_id->get_error_message()]);
+        if (is_wp_error($accion_id) || empty($accion_id)) {
+            $error = is_wp_error($accion_id) ? $accion_id->get_error_message() : __('No se pudo registrar la acción.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         update_post_meta($accion_id, '_he_tipo', $tipo);
@@ -643,10 +645,11 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
             'post_author' => $user_id,
             'post_title' => $titulo,
             'post_content' => $descripcion,
-        ]);
+        ], true);
 
-        if (is_wp_error($proyecto_id)) {
-            wp_send_json_error(['message' => $proyecto_id->get_error_message()]);
+        if (is_wp_error($proyecto_id) || empty($proyecto_id)) {
+            $error = is_wp_error($proyecto_id) ? $proyecto_id->get_error_message() : __('No se pudo crear el proyecto.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         update_post_meta($proyecto_id, '_he_estado', 'propuesto');

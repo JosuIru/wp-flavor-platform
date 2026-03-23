@@ -16,7 +16,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$mostrar_origen = $atributos['mostrar_origen'] === 'true';
+$atributos = is_array($atributos ?? null) ? $atributos : [];
+$comunidades_usuario = is_array($comunidades_usuario ?? null) ? $comunidades_usuario : [];
+$feed_combinado = is_array($feed_combinado ?? null) ? $feed_combinado : [];
+$mostrar_origen = (($atributos['mostrar_origen'] ?? 'false') === 'true');
 $get_comunidad_id = static function ($comunidad) {
     if (is_array($comunidad)) {
         return $comunidad['id'] ?? '';

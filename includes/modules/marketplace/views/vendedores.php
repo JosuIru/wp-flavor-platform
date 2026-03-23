@@ -28,6 +28,8 @@ $total_ventas = 0;
 $promedio_anuncios = 0;
 $vendedores = [];
 $top_vendedores = [];
+$total_registros = 0;
+$total_paginas = 0;
 
 if ($cpt_existe) {
     // Estadísticas globales
@@ -46,15 +48,17 @@ if ($cpt_existe) {
         $promedio_anuncios = $total_vendedores > 0 ? round($total_anuncios / $total_vendedores, 1) : 0;
     }
 
-    // Intentar obtener ventas si existe la tabla
-    $tabla_ventas = $wpdb->prefix . 'flavor_marketplace_ventas';
+    // Intentar obtener ventas si existe la tabla de transacciones
+    $tabla_ventas = $wpdb->prefix . 'flavor_marketplace_transacciones';
     $tabla_ventas_existe = $wpdb->get_var($wpdb->prepare(
         "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
         DB_NAME, $tabla_ventas
     )) > 0;
 
     if ($tabla_ventas_existe) {
-        $total_ventas = intval($wpdb->get_var("SELECT COUNT(*) FROM $tabla_ventas WHERE estado = 'completada'"));
+        $total_ventas = intval($wpdb->get_var(
+            "SELECT COUNT(*) FROM $tabla_ventas WHERE estado IN ('completada', 'completado')"
+        ));
     }
 
     // Construir WHERE para filtros
@@ -143,39 +147,6 @@ if ($cpt_existe) {
         LIMIT 5
     ");
 
-} else {
-    // Datos de demostración
-    $total_vendedores = 42;
-    $total_anuncios = 187;
-    $total_ventas = 89;
-    $promedio_anuncios = 4.5;
-    $total_registros = 42;
-    $total_paginas = 3;
-
-    $vendedores_demo = [
-        ['ID' => 1, 'display_name' => 'María García López', 'user_email' => 'maria.garcia@ejemplo.com', 'user_registered' => '2024-01-15', 'total_anuncios' => 24, 'ultimo_anuncio' => date('Y-m-d H:i:s', strtotime('-1 day')), 'valoracion_promedio' => 4.8, 'categorias_distintas' => 5],
-        ['ID' => 2, 'display_name' => 'Carlos Rodríguez', 'user_email' => 'carlos.r@ejemplo.com', 'user_registered' => '2024-02-20', 'total_anuncios' => 18, 'ultimo_anuncio' => date('Y-m-d H:i:s', strtotime('-3 days')), 'valoracion_promedio' => 4.6, 'categorias_distintas' => 3],
-        ['ID' => 3, 'display_name' => 'Ana Martínez', 'user_email' => 'ana.martinez@ejemplo.com', 'user_registered' => '2024-03-10', 'total_anuncios' => 15, 'ultimo_anuncio' => date('Y-m-d H:i:s'), 'valoracion_promedio' => 4.9, 'categorias_distintas' => 4],
-        ['ID' => 4, 'display_name' => 'Pedro Sánchez Ruiz', 'user_email' => 'pedro.sanchez@ejemplo.com', 'user_registered' => '2024-04-05', 'total_anuncios' => 12, 'ultimo_anuncio' => date('Y-m-d H:i:s', strtotime('-1 week')), 'valoracion_promedio' => 4.2, 'categorias_distintas' => 2],
-        ['ID' => 5, 'display_name' => 'Laura Fernández', 'user_email' => 'laura.f@ejemplo.com', 'user_registered' => '2024-05-12', 'total_anuncios' => 10, 'ultimo_anuncio' => date('Y-m-d H:i:s', strtotime('-2 days')), 'valoracion_promedio' => 5.0, 'categorias_distintas' => 3],
-        ['ID' => 6, 'display_name' => 'Miguel Torres', 'user_email' => 'miguel.torres@ejemplo.com', 'user_registered' => '2024-06-01', 'total_anuncios' => 8, 'ultimo_anuncio' => date('Y-m-d H:i:s', strtotime('-5 days')), 'valoracion_promedio' => 4.4, 'categorias_distintas' => 2],
-        ['ID' => 7, 'display_name' => 'Isabel Gómez', 'user_email' => 'isabel.gomez@ejemplo.com', 'user_registered' => '2024-06-15', 'total_anuncios' => 6, 'ultimo_anuncio' => date('Y-m-d H:i:s', strtotime('-4 days')), 'valoracion_promedio' => 4.7, 'categorias_distintas' => 2],
-        ['ID' => 8, 'display_name' => 'David López', 'user_email' => 'david.lopez@ejemplo.com', 'user_registered' => '2024-07-20', 'total_anuncios' => 5, 'ultimo_anuncio' => date('Y-m-d H:i:s', strtotime('-2 weeks')), 'valoracion_promedio' => 4.0, 'categorias_distintas' => 1],
-        ['ID' => 9, 'display_name' => 'Carmen Ruiz', 'user_email' => 'carmen.ruiz@ejemplo.com', 'user_registered' => '2024-08-10', 'total_anuncios' => 4, 'ultimo_anuncio' => date('Y-m-d H:i:s', strtotime('-6 days')), 'valoracion_promedio' => 4.5, 'categorias_distintas' => 2],
-        ['ID' => 10, 'display_name' => 'Javier Moreno', 'user_email' => 'javier.moreno@ejemplo.com', 'user_registered' => '2024-09-01', 'total_anuncios' => 3, 'ultimo_anuncio' => date('Y-m-d H:i:s', strtotime('-3 weeks')), 'valoracion_promedio' => 3.8, 'categorias_distintas' => 1],
-    ];
-
-    $vendedores = array_map(function($item) {
-        return (object) $item;
-    }, $vendedores_demo);
-
-    $top_vendedores = [
-        (object) ['ID' => 1, 'display_name' => 'María García López', 'total_anuncios' => 24],
-        (object) ['ID' => 2, 'display_name' => 'Carlos Rodríguez', 'total_anuncios' => 18],
-        (object) ['ID' => 3, 'display_name' => 'Ana Martínez', 'total_anuncios' => 15],
-        (object) ['ID' => 4, 'display_name' => 'Pedro Sánchez Ruiz', 'total_anuncios' => 12],
-        (object) ['ID' => 5, 'display_name' => 'Laura Fernández', 'total_anuncios' => 10],
-    ];
 }
 
 // Función para obtener nivel de vendedor
@@ -212,7 +183,7 @@ function renderizar_estrellas_vendedor($valoracion) {
 
     <?php if (!$cpt_existe): ?>
     <div class="notice notice-info">
-        <p><span class="dashicons dashicons-info"></span> <?php _e('Mostrando datos de demostración. Los datos reales aparecerán cuando existan anuncios en el marketplace.', 'flavor-chat-ia'); ?></p>
+        <p><span class="dashicons dashicons-info"></span> <?php _e('No hay datos disponibles: falta registrar el tipo de contenido marketplace_item.', 'flavor-chat-ia'); ?></p>
     </div>
     <?php endif; ?>
 

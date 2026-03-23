@@ -95,6 +95,15 @@ final class Flavor_Bootstrap_Dependencies {
         // Core del Chat
         require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-chat-session.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-chat-knowledge-base.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-admin-knowledge-base.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-module-setup-assistant.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-ai-content-generator.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-demo-data-generator.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-auto-reply-suggester.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-content-translator.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-weekly-report-generator.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-data-analyzer.php';
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-module-chatbot.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-chat-faq-cache.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-chat-escalation.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/core/class-chat-antispam.php';
@@ -159,9 +168,8 @@ final class Flavor_Bootstrap_Dependencies {
             return;
         }
 
-        // En frontend solo cargar el engine activo (lazy load)
+        // En frontend cargar los engines necesarios según configuración
         $settings = get_option('flavor_chat_ia_settings', []);
-        $active_provider = $settings['active_provider'] ?? 'claude';
 
         $engine_map = [
             'claude'   => 'class-engine-claude.php',
@@ -170,10 +178,37 @@ final class Flavor_Bootstrap_Dependencies {
             'mistral'  => 'class-engine-mistral.php',
         ];
 
-        if (isset($engine_map[$active_provider])) {
-            require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/' . $engine_map[$active_provider];
-        } else {
-            // Fallback a Claude si el provider no es válido
+        // Recopilar todos los providers que necesitamos cargar
+        $providers_to_load = [];
+
+        // Provider por defecto
+        $active_provider = $settings['active_provider'] ?? 'claude';
+        $providers_to_load[] = $active_provider;
+
+        // Provider para frontend (si está configurado y no es 'default')
+        $frontend_provider = $settings['ia_provider_frontend'] ?? 'default';
+        if ($frontend_provider !== 'default' && isset($engine_map[$frontend_provider])) {
+            $providers_to_load[] = $frontend_provider;
+        }
+
+        // Provider para backend (si está configurado y no es 'default')
+        $backend_provider = $settings['ia_provider_backend'] ?? 'default';
+        if ($backend_provider !== 'default' && isset($engine_map[$backend_provider])) {
+            $providers_to_load[] = $backend_provider;
+        }
+
+        // Eliminar duplicados
+        $providers_to_load = array_unique($providers_to_load);
+
+        // Cargar cada engine necesario
+        foreach ($providers_to_load as $provider) {
+            if (isset($engine_map[$provider])) {
+                require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/' . $engine_map[$provider];
+            }
+        }
+
+        // Fallback a Claude si no se cargó ningún engine
+        if (empty($providers_to_load) || !isset($engine_map[$active_provider])) {
             require_once FLAVOR_CHAT_IA_PATH . 'includes/engines/class-engine-claude.php';
         }
     }
@@ -232,34 +267,24 @@ final class Flavor_Bootstrap_Dependencies {
      * @return void
      */
     private function load_api_system() {
-        // Rate Limiter para APIs (v1 - compatibilidad)
+        // Rate Limiter para APIs
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-api-rate-limiter.php';
-
-        // Rate Limiter v2 (sliding window, headers, whitelist, ban)
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-api-rate-limiter-v2.php';
-        // Se auto-inicializa
 
         // API de Configuración de Módulos para Apps Dinámicas
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-config-api.php';
-        new Flavor_Module_Config_API(); // NO usa singleton
 
         // API de Federación para Red Social
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-federation-api.php';
-        Flavor_Federation_API::get_instance();
 
         // API de Estado de Módulos
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-gap-status-api.php';
-        Flavor_Module_Gap_Status_API::get_instance();
 
         // API REST para apps móviles
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-mobile-api.php';
-        Chat_IA_Mobile_API::get_instance();
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-mobile-api-extensions.php';
-        Flavor_Mobile_API_Extensions::get_instance();
 
         // API de Contenido Nativo
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-native-content-api.php';
-        Flavor_Native_Content_API::get_instance();
 
         // API REST para Dashboard de Cliente
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-client-dashboard-api.php';
@@ -267,31 +292,24 @@ final class Flavor_Bootstrap_Dependencies {
 
         // API REST para cifrado E2E
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-e2e-rest-api.php';
-        new Flavor_E2E_REST_API(); // NO usa singleton (solo testing)
 
         // Documentación API
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-api-documentation.php';
-        Flavor_API_Documentation::get_instance();
 
         // REST API para acciones de módulos
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-actions-api.php';
-        Flavor_Module_Actions_API::get_instance();
 
         // API REST para integración con Claude Code / VBP
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-vbp-claude-api.php';
-        Flavor_VBP_Claude_API::get_instance();
 
         // API de Diagnóstico VBP (para verificar estado del sistema)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-vbp-diagnostics.php';
-        Flavor_VBP_Diagnostics::get_instance();
 
         // API de Preview VBP (endpoints públicos para previsualizar landings)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-vbp-preview-api.php';
-        Flavor_VBP_Preview_API::get_instance();
 
         // Site Builder API para creación completa de sitios
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-site-builder-api.php';
-        Flavor_Site_Builder_API::get_instance();
 
         // API de Configuración de Sitio (layouts, menús, settings)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-site-config-api.php';
@@ -308,26 +326,6 @@ final class Flavor_Bootstrap_Dependencies {
         // API de Configuración de Apps/APKs (branding, temas, permisos, build)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-app-config-api.php';
         Flavor_App_Config_API::get_instance();
-
-        // API de Manifiesto de Apps v2 (endpoint unificado, versionado, sincronización bidireccional)
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-app-manifest-api.php';
-        Flavor_App_Manifest_API::get_instance();
-
-        // API de Push Notifications (Firebase Cloud Messaging)
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-push-notifications-api.php';
-        Flavor_Push_Notifications_API::get_instance();
-
-        // API de Analytics (tracking de eventos, estadísticas de uso)
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-analytics-api.php';
-        Flavor_Analytics_API::get_instance();
-
-        // API de Crash Reporting (reportes de errores, estadísticas de crashes)
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-crash-reporting-api.php';
-        Flavor_Crash_Reporting_API::get_instance();
-
-        // API de Lazy Loading (carga bajo demanda de módulos y recursos)
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-lazy-loading-api.php';
-        Flavor_Lazy_Loading_API::get_instance();
 
         // API de SEO (meta tags, Open Graph, Twitter Cards, Schema.org, sitemap)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-seo-api.php';
@@ -493,7 +491,15 @@ final class Flavor_Bootstrap_Dependencies {
         // Dashboard VB Widgets necesario en frontend para shortcodes
         require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-dashboard-vb-widgets.php';
 
-        // En frontend solo cargar lo mínimo necesario
+        // Visual Builder SIEMPRE necesario para registrar el post type flavor_landing
+        // Sin esto, las URLs de landing no funcionan en frontend ni en REST API
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-visual-builder.php';
+
+        // VBP Loader también siempre necesario para que las landings se rendericen
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/class-vbp-loader.php';
+        Flavor_VBP_Loader::get_instance();
+
+        // En frontend solo cargar lo mínimo adicional
         if (!is_admin()) {
             // Animaciones solo si están habilitadas
             $settings = get_option('flavor_chat_ia_settings', []);
@@ -506,12 +512,8 @@ final class Flavor_Bootstrap_Dependencies {
         // En admin cargar todo el sistema de edición
         require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-editor-history.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/editor/class-color-picker.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-visual-builder.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder/class-vb-all-components.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'includes/visual-builder-pro/class-vbp-loader.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/animations/class-animation-manager.php';
-
-        Flavor_VBP_Loader::get_instance();
     }
 
     /**
@@ -650,6 +652,9 @@ final class Flavor_Bootstrap_Dependencies {
 
         // Clases principales de admin
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-chat-settings.php';
+        // Inicializar para registrar hooks AJAX de configuración
+        Flavor_Chat_Settings::get_instance();
+
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-chat-analytics.php';
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-profile-admin.php';
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-module-dashboards-page.php';
@@ -662,6 +667,10 @@ final class Flavor_Bootstrap_Dependencies {
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-activity-log-page.php';
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-health-check.php';
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-export-import.php';
+
+        // Inicializar para registrar hooks AJAX de exportación/importación
+        Flavor_Export_Import::get_instance();
+
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-addon-admin.php';
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-dashboard.php';
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-setup-wizard.php';
@@ -671,19 +680,6 @@ final class Flavor_Bootstrap_Dependencies {
         // Generador de Apps/Webs con IA
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-generator/class-app-generator.php';
         require_once FLAVOR_CHAT_IA_PATH . 'includes/app-generator/class-app-generator-admin.php';
-
-        // Gestión de APKs y Apps Móviles
-        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-analytics-dashboard.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-apk-builder.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-releases.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-app-dashboard-widget.php';
-        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-keystore-manager.php';
-
-        // Inicializar clases de gestión de apps
-        Flavor_App_Analytics_Dashboard::get_instance();
-        Flavor_APK_Builder::get_instance();
-        Flavor_App_Releases::get_instance();
-        // Widget y Keystore se auto-inicializan
 
         // Admin de Newsletter
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-newsletter-admin.php';
@@ -713,6 +709,16 @@ final class Flavor_Bootstrap_Dependencies {
 
         // Admin Shell
         require_once FLAVOR_CHAT_IA_PATH . 'admin/class-admin-shell.php';
+
+        // Admin Breadcrumbs (navegación en páginas de edición)
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-admin-breadcrumbs.php';
+        Flavor_Admin_Breadcrumbs::get_instance();
+
+        // Herramientas IA Admin
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-ai-tools-admin.php';
+
+        // Modal de desactivación del plugin
+        require_once FLAVOR_CHAT_IA_PATH . 'admin/class-deactivation-modal.php';
 
         // Registrador automático de páginas de dashboard de módulos
         require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-module-dashboards-registrar.php';
@@ -761,5 +767,8 @@ final class Flavor_Bootstrap_Dependencies {
 
         // Comandos de migrations
         require_once FLAVOR_CHAT_IA_PATH . 'includes/cli/class-migration-command.php';
+
+        // Comandos de Visual Builder Pro (para integración con Claude Code)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/cli/class-vbp-cli.php';
     }
 }

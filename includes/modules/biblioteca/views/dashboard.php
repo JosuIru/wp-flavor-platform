@@ -18,6 +18,7 @@ $tabla_reservas = $wpdb->prefix . 'flavor_biblioteca_reservas';
 $tabla_libros_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_libros'");
 $tabla_prestamos_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_prestamos'");
 $tabla_reservas_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_reservas'");
+$tablas_disponibles = ($tabla_libros_existe || $tabla_prestamos_existe || $tabla_reservas_existe);
 
 // Inicializar estadísticas
 $total_libros = 0;
@@ -89,18 +90,6 @@ if ($tabla_reservas_existe) {
     $reservas_pendientes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_reservas WHERE estado = 'pendiente'");
 }
 
-// Datos de ejemplo
-$usar_datos_ejemplo = ($total_libros == 0);
-
-if ($usar_datos_ejemplo) {
-    $total_libros = 245;
-    $libros_disponibles = 198;
-    $libros_prestados = 47;
-    $total_lectores = 85;
-    $prestamos_retrasados = 3;
-    $reservas_pendientes = 8;
-}
-
 // Mapeo de estados
 $estado_badge_classes = [
     'activo' => 'dm-badge--success',
@@ -115,6 +104,13 @@ $estado_badge_classes = [
         flavor_dashboard_help('biblioteca');
     }
     ?>
+
+    <?php if (!$tablas_disponibles): ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <p><?php esc_html_e('Faltan tablas del módulo Biblioteca o aún no hay actividad registrada.', 'flavor-chat-ia'); ?></p>
+    </div>
+    <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
@@ -269,21 +265,6 @@ $estado_badge_classes = [
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            <?php elseif ($usar_datos_ejemplo) : ?>
-                <table class="dm-table">
-                    <thead>
-                        <tr>
-                            <th><?php esc_html_e('Libro', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 80px;"><?php esc_html_e('Préstamos', 'flavor-chat-ia'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>Cien años de soledad</strong></td><td>García Márquez</td><td><span class="dm-badge dm-badge--primary">45</span></td></tr>
-                        <tr><td><strong>El principito</strong></td><td>Saint-Exupéry</td><td><span class="dm-badge dm-badge--primary">38</span></td></tr>
-                        <tr><td><strong>1984</strong></td><td>George Orwell</td><td><span class="dm-badge dm-badge--primary">32</span></td></tr>
-                    </tbody>
-                </table>
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-book"></span>
@@ -329,33 +310,6 @@ $estado_badge_classes = [
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            <?php elseif ($usar_datos_ejemplo) : ?>
-                <table class="dm-table">
-                    <thead>
-                        <tr>
-                            <th><?php esc_html_e('Libro', 'flavor-chat-ia'); ?></th>
-                            <th><?php esc_html_e('Prestatario', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 90px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Don Quijote</strong><span class="dm-table__subtitle">05/03/2026</span></td>
-                            <td>María López</td>
-                            <td><span class="dm-badge dm-badge--success">Activo</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>La sombra del viento</strong><span class="dm-table__subtitle">03/03/2026</span></td>
-                            <td>Pedro García</td>
-                            <td><span class="dm-badge dm-badge--success">Activo</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>El alquimista</strong><span class="dm-table__subtitle">28/02/2026</span></td>
-                            <td>Ana Martín</td>
-                            <td><span class="dm-badge dm-badge--error">Retrasado</span></td>
-                        </tr>
-                    </tbody>
-                </table>
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-book-alt"></span>
@@ -372,23 +326,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctxPrestamos = document.getElementById('chartPrestamos');
     const ctxGeneros = document.getElementById('chartGeneros');
 
-    const dataPrestamos = <?php echo json_encode(!empty($prestamos_por_dia) ? $prestamos_por_dia : [
-        ['fecha' => date('Y-m-d', strtotime('-6 days')), 'total' => 5],
-        ['fecha' => date('Y-m-d', strtotime('-5 days')), 'total' => 8],
-        ['fecha' => date('Y-m-d', strtotime('-4 days')), 'total' => 3],
-        ['fecha' => date('Y-m-d', strtotime('-3 days')), 'total' => 12],
-        ['fecha' => date('Y-m-d', strtotime('-2 days')), 'total' => 7],
-        ['fecha' => date('Y-m-d', strtotime('-1 days')), 'total' => 9],
-        ['fecha' => date('Y-m-d'), 'total' => 4],
-    ]); ?>;
+    const dataPrestamos = <?php echo json_encode($prestamos_por_dia); ?>;
 
-    const dataGeneros = <?php echo json_encode(!empty($generos_populares) ? $generos_populares : [
-        ['genero' => 'Novela', 'num_prestamos' => 45],
-        ['genero' => 'Infantil', 'num_prestamos' => 32],
-        ['genero' => 'Historia', 'num_prestamos' => 18],
-        ['genero' => 'Ciencia', 'num_prestamos' => 15],
-        ['genero' => 'Poesía', 'num_prestamos' => 8],
-    ]); ?>;
+    const dataGeneros = <?php echo json_encode($generos_populares); ?>;
 
     if (ctxPrestamos) {
         new Chart(ctxPrestamos, {

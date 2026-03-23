@@ -35,7 +35,8 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
      * Verifica si el modulo puede activarse
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe('flavor_campanias');
+        global $wpdb;
+        return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias');
     }
 
     /**
@@ -62,6 +63,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
         $this->cargar_dashboard_tab();
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
 
     /**
@@ -79,7 +81,8 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_campanias')) {
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias')) {
             $this->create_tables();
         }
     }
@@ -247,6 +250,38 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Renderiza una vista del modulo de forma segura.
+     *
+     * @param string $view_file Nombre del archivo dentro de views/
+     * @return string
+     */
+    private function render_view($view_file) {
+        $path = FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/' . ltrim((string) $view_file, '/');
+        if (!file_exists($path)) {
+            $fallbacks = [
+                FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/dashboard.php',
+                FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/listado.php',
+            ];
+
+            foreach ($fallbacks as $fallback_path) {
+                if (file_exists($fallback_path)) {
+                    flavor_chat_ia_log('Vista no encontrada en campanias, usando fallback: ' . $path, 'warning');
+                    ob_start();
+                    include $fallback_path;
+                    return (string) ob_get_clean();
+                }
+            }
+
+            flavor_chat_ia_log('Vista no encontrada en campanias sin fallback: ' . $path, 'warning');
+            return '<p class="flavor-info">' . esc_html__('No se pudo cargar la vista solicitada.', 'flavor-chat-ia') . '</p>';
+        }
+
+        ob_start();
+        include $path;
+        return (string) ob_get_clean();
+    }
+
+    /**
      * Shortcode para listar campanias
      */
     public function shortcode_listar($atts) {
@@ -259,9 +294,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
             'colectivo' => '',
         ], $atts);
 
-        ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/listado.php';
-        return ob_get_clean();
+        return $this->render_view('listado.php');
     }
 
     /**
@@ -283,9 +316,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
             return '<p class="flavor-error">Campania no encontrada.</p>';
         }
 
-        ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/detalle.php';
-        return ob_get_clean();
+        return $this->render_view('detalle.php');
     }
 
     /**
@@ -296,9 +327,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
             return '<p class="flavor-info">Debes iniciar sesion para crear una campania.</p>';
         }
 
-        ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/crear.php';
-        return ob_get_clean();
+        return $this->render_view('crear.php');
     }
 
     /**
@@ -309,9 +338,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
             return '<p class="flavor-info">Debes iniciar sesion para ver tus campanias.</p>';
         }
 
-        ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/mis-campanias.php';
-        return ob_get_clean();
+        return $this->render_view('mis-campanias.php');
     }
 
     /**
@@ -324,27 +351,21 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
 
         $campania_id = $atts['id'] ?: (isset($_GET['campania_id']) ? intval($_GET['campania_id']) : 0);
 
-        ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/firmar.php';
-        return ob_get_clean();
+        return $this->render_view('firmar.php');
     }
 
     /**
      * Shortcode para mapa de acciones
      */
     public function shortcode_mapa($atts) {
-        ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/mapa.php';
-        return ob_get_clean();
+        return $this->render_view('mapa.php');
     }
 
     /**
      * Shortcode para calendario de acciones
      */
     public function shortcode_calendario($atts) {
-        ob_start();
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/calendario.php';
-        return ob_get_clean();
+        return $this->render_view('calendario.php');
     }
 
     /**
@@ -790,6 +811,30 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Carga assets en admin del modulo.
+     *
+     * @param string $hook Hook actual de admin.
+     * @return void
+     */
+    public function enqueue_admin_assets($hook) {
+        if (!is_admin()) {
+            return;
+        }
+
+        $page = isset($_GET['page']) ? sanitize_key((string) $_GET['page']) : '';
+        if ($page === '' || strpos($page, 'campanias-') !== 0) {
+            return;
+        }
+
+        wp_enqueue_style(
+            'flavor-campanias-admin',
+            FLAVOR_CHAT_IA_URL . 'includes/modules/campanias/assets/css/campanias.css',
+            [],
+            FLAVOR_CHAT_IA_VERSION
+        );
+    }
+
+    /**
      * Determina si cargar assets
      */
     private function should_load_assets() {
@@ -1035,19 +1080,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
      * Renderiza el widget del dashboard
      */
     public function render_dashboard_widget() {
-        global $wpdb;
-        $tabla = $wpdb->prefix . 'flavor_campanias';
-
-        $estadisticas = [
-            'activas' => $wpdb->get_var("SELECT COUNT(*) FROM $tabla WHERE estado = 'activa'"),
-            'total_firmas' => $wpdb->get_var("SELECT SUM(firmas_actuales) FROM $tabla"),
-            'proximas_acciones' => $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$wpdb->prefix}flavor_campanias_acciones WHERE fecha > %s AND estado = 'programada'",
-                current_time('mysql')
-            )),
-        ];
-
-        include FLAVOR_CHAT_IA_PATH . 'includes/modules/campanias/views/dashboard.php';
+        $this->render_admin_widget();
     }
 
     /**
@@ -1289,6 +1322,11 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                     'callback' => [$this, 'render_admin_firmas'],
                 ],
                 [
+                    'slug' => 'campanias-estadisticas',
+                    'titulo' => __('Estadísticas', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_estadisticas'],
+                ],
+                [
                     'slug' => 'campanias-config',
                     'titulo' => __('Configuracion', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_admin_config'],
@@ -1497,41 +1535,41 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                 ]); ?>
             <?php endif; ?>
             <!-- Tarjetas de estadisticas -->
-            <div id="campanias-stats" class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #2271b1; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <div class="stat-icon" style="font-size: 32px; color: #2271b1;">
+            <div id="campanias-stats" class="flavor-stats-grid campanias-admin-dashboard__stats">
+                <div class="flavor-stat-card campanias-admin-dashboard__stat-card campanias-admin-dashboard__stat-card--blue">
+                    <div class="stat-icon campanias-admin-dashboard__stat-icon">
                         <span class="dashicons dashicons-megaphone"></span>
                     </div>
-                    <div class="stat-value" style="font-size: 36px; font-weight: 600; color: #1d2327;"><?php echo $total_campanias; ?></div>
-                    <div class="stat-label" style="color: #646970;"><?php _e('Total Campanias', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-value campanias-admin-dashboard__stat-value"><?php echo $total_campanias; ?></div>
+                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Total Campanias', 'flavor-chat-ia'); ?></div>
                 </div>
 
-                <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #00a32a; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <div class="stat-icon" style="font-size: 32px; color: #00a32a;">
+                <div class="flavor-stat-card campanias-admin-dashboard__stat-card campanias-admin-dashboard__stat-card--green">
+                    <div class="stat-icon campanias-admin-dashboard__stat-icon">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
-                    <div class="stat-value" style="font-size: 36px; font-weight: 600; color: #1d2327;"><?php echo $campanias_activas; ?></div>
-                    <div class="stat-label" style="color: #646970;"><?php _e('Campanias Activas', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-value campanias-admin-dashboard__stat-value"><?php echo $campanias_activas; ?></div>
+                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Campanias Activas', 'flavor-chat-ia'); ?></div>
                 </div>
 
-                <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #8c6ef8; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <div class="stat-icon" style="font-size: 32px; color: #8c6ef8;">
+                <div class="flavor-stat-card campanias-admin-dashboard__stat-card campanias-admin-dashboard__stat-card--purple">
+                    <div class="stat-icon campanias-admin-dashboard__stat-icon">
                         <span class="dashicons dashicons-edit"></span>
                     </div>
-                    <div class="stat-value" style="font-size: 36px; font-weight: 600; color: #1d2327;"><?php echo $total_firmas; ?></div>
-                    <div class="stat-label" style="color: #646970;"><?php _e('Total Firmas', 'flavor-chat-ia'); ?></div>
-                    <div class="stat-extra" style="font-size: 12px; color: #646970; margin-top: 5px;">
+                    <div class="stat-value campanias-admin-dashboard__stat-value"><?php echo $total_firmas; ?></div>
+                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Total Firmas', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-extra campanias-admin-dashboard__stat-extra">
                         +<?php echo $firmas_hoy; ?> <?php _e('hoy', 'flavor-chat-ia'); ?> /
                         +<?php echo $firmas_semana; ?> <?php _e('esta semana', 'flavor-chat-ia'); ?>
                     </div>
                 </div>
 
-                <div class="flavor-stat-card" style="background: #fff; border-left: 4px solid #dba617; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <div class="stat-icon" style="font-size: 32px; color: #dba617;">
+                <div class="flavor-stat-card campanias-admin-dashboard__stat-card campanias-admin-dashboard__stat-card--gold">
+                    <div class="stat-icon campanias-admin-dashboard__stat-icon">
                         <span class="dashicons dashicons-awards"></span>
                     </div>
-                    <div class="stat-value" style="font-size: 36px; font-weight: 600; color: #1d2327;"><?php echo $campanias_exitosas; ?></div>
-                    <div class="stat-label" style="color: #646970;"><?php _e('Campanias Exitosas', 'flavor-chat-ia'); ?></div>
+                    <div class="stat-value campanias-admin-dashboard__stat-value"><?php echo $campanias_exitosas; ?></div>
+                    <div class="stat-label campanias-admin-dashboard__stat-label"><?php _e('Campanias Exitosas', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
 
@@ -1542,19 +1580,19 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                 return;
             endif; ?>
 
-            <div class="flavor-dashboard-columns" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+            <div class="flavor-dashboard-columns campanias-admin-dashboard__columns">
                 <!-- Columna principal -->
                 <div class="flavor-main-column">
                     <!-- Top campanias por firmas -->
-                    <div class="flavor-card" style="background: #fff; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <div class="flavor-card campanias-admin-dashboard__card campanias-admin-dashboard__card--mb">
+                        <h3 class="campanias-admin-dashboard__card-title">
                             <span class="dashicons dashicons-chart-bar"></span>
                             <?php _e('Campanias con mas firmas', 'flavor-chat-ia'); ?>
                         </h3>
                         <?php if (empty($top_campanias)): ?>
                             <p class="flavor-empty"><?php _e('No hay campanias con objetivo de firmas.', 'flavor-chat-ia'); ?></p>
                         <?php else: ?>
-                            <table class="widefat striped" style="border: none;">
+                            <table class="widefat striped campanias-admin-dashboard__table-clean">
                                 <thead>
                                     <tr>
                                         <th><?php _e('Campania', 'flavor-chat-ia'); ?></th>
@@ -1576,16 +1614,16 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                                                     <?php echo esc_html($campania->titulo); ?>
                                                 </a>
                                             </td>
-                                            <td style="width: 40%;">
-                                                <div style="background: #f0f0f1; border-radius: 4px; height: 20px; position: relative;">
+                                            <td class="campanias-admin-dashboard__progress-col">
+                                                <div class="campanias-admin-dashboard__progress">
                                                     <div style="background: <?php echo $color_barra; ?>; width: <?php echo $porcentaje; ?>%; height: 100%; border-radius: 4px;"></div>
-                                                    <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 11px; font-weight: 500;">
+                                                    <span class="campanias-admin-dashboard__progress-label">
                                                         <?php echo intval($campania->firmas_actuales); ?>/<?php echo intval($campania->objetivo_firmas); ?> (<?php echo $porcentaje; ?>%)
                                                     </span>
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="flavor-badge flavor-estado-<?php echo esc_attr($campania->estado); ?>" style="padding: 3px 8px; border-radius: 3px; font-size: 11px; background: <?php
+                                                <span class="flavor-badge flavor-estado-<?php echo esc_attr($campania->estado); ?> campanias-admin-dashboard__badge" style="background: <?php
                                                     echo $campania->estado === 'activa' ? '#00a32a' : ($campania->estado === 'completada' ? '#2271b1' : '#646970');
                                                 ?>; color: #fff;">
                                                     <?php echo esc_html(ucfirst($campania->estado)); ?>
@@ -1599,24 +1637,24 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                     </div>
 
                     <!-- Tendencia de firmas -->
-                    <div class="flavor-card" style="background: #fff; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <div class="flavor-card campanias-admin-dashboard__card campanias-admin-dashboard__card--mb">
+                        <h3 class="campanias-admin-dashboard__card-title">
                             <span class="dashicons dashicons-chart-line"></span>
                             <?php _e('Tendencia de firmas (ultimos 7 dias)', 'flavor-chat-ia'); ?>
                         </h3>
                         <?php if (empty($tendencia_firmas)): ?>
                             <p class="flavor-empty"><?php _e('No hay datos de firmas en los ultimos 7 dias.', 'flavor-chat-ia'); ?></p>
                         <?php else: ?>
-                            <div class="flavor-chart-simple" style="display: flex; align-items: flex-end; height: 150px; gap: 10px; padding: 10px 0;">
+                            <div class="flavor-chart-simple campanias-admin-dashboard__chart">
                                 <?php
                                 $max_firmas = max(array_column($tendencia_firmas, 'total'));
                                 foreach ($tendencia_firmas as $dia):
                                     $altura = $max_firmas > 0 ? ($dia->total / $max_firmas) * 100 : 0;
                                 ?>
-                                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
-                                        <span style="font-size: 11px; margin-bottom: 5px;"><?php echo intval($dia->total); ?></span>
+                                    <div class="campanias-admin-dashboard__chart-col">
+                                        <span class="campanias-admin-dashboard__chart-value"><?php echo intval($dia->total); ?></span>
                                         <div style="background: #2271b1; width: 100%; height: <?php echo max(5, $altura); ?>%; border-radius: 4px 4px 0 0;"></div>
-                                        <span style="font-size: 10px; margin-top: 5px; color: #646970;">
+                                        <span class="campanias-admin-dashboard__chart-day">
                                             <?php echo date_i18n('D', strtotime($dia->fecha)); ?>
                                         </span>
                                     </div>
@@ -1626,28 +1664,28 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                     </div>
 
                     <!-- Proximas acciones -->
-                    <div class="flavor-card" style="background: #fff; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <div class="flavor-card campanias-admin-dashboard__card">
+                        <h3 class="campanias-admin-dashboard__card-title">
                             <span class="dashicons dashicons-calendar-alt"></span>
                             <?php _e('Proximas acciones programadas', 'flavor-chat-ia'); ?>
                         </h3>
                         <?php if (empty($proximas_acciones)): ?>
                             <p class="flavor-empty"><?php _e('No hay acciones programadas.', 'flavor-chat-ia'); ?></p>
                         <?php else: ?>
-                            <ul class="flavor-timeline" style="list-style: none; padding: 0; margin: 0;">
+                            <ul class="flavor-timeline campanias-admin-dashboard__timeline">
                                 <?php foreach ($proximas_acciones as $accion): ?>
-                                    <li style="padding: 10px 0; border-bottom: 1px solid #f0f0f1; display: flex; gap: 15px;">
-                                        <div class="timeline-date" style="min-width: 80px; text-align: center; background: #f6f7f7; padding: 5px; border-radius: 4px;">
-                                            <div style="font-size: 20px; font-weight: 600; color: #2271b1;">
+                                    <li class="campanias-admin-dashboard__timeline-item">
+                                        <div class="timeline-date campanias-admin-dashboard__timeline-date">
+                                            <div class="campanias-admin-dashboard__timeline-day">
                                                 <?php echo date_i18n('d', strtotime($accion->fecha)); ?>
                                             </div>
-                                            <div style="font-size: 11px; color: #646970;">
+                                            <div class="campanias-admin-dashboard__timeline-month">
                                                 <?php echo date_i18n('M Y', strtotime($accion->fecha)); ?>
                                             </div>
                                         </div>
                                         <div class="timeline-content">
                                             <strong><?php echo esc_html($accion->titulo); ?></strong>
-                                            <div style="font-size: 12px; color: #646970;">
+                                            <div class="campanias-admin-dashboard__timeline-meta">
                                                 <?php echo esc_html($accion->campania_titulo); ?>
                                                 <?php if ($accion->ubicacion): ?>
                                                     &middot; <?php echo esc_html($accion->ubicacion); ?>
@@ -1664,51 +1702,51 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                 <!-- Columna lateral -->
                 <div class="flavor-sidebar-column">
                     <!-- Resumen de estados -->
-                    <div class="flavor-card" style="background: #fff; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <div class="flavor-card campanias-admin-dashboard__card campanias-admin-dashboard__card--mb">
+                        <h3 class="campanias-admin-dashboard__card-title">
                             <span class="dashicons dashicons-chart-pie"></span>
                             <?php _e('Por estado', 'flavor-chat-ia'); ?>
                         </h3>
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-                                <span><span class="dashicons dashicons-clock" style="color: #646970;"></span> <?php _e('Planificadas', 'flavor-chat-ia'); ?></span>
+                        <ul class="campanias-admin-dashboard__status-list">
+                            <li class="campanias-admin-dashboard__status-item">
+                                <span><span class="dashicons dashicons-clock campanias-admin-dashboard__icon-muted"></span> <?php _e('Planificadas', 'flavor-chat-ia'); ?></span>
                                 <strong><?php echo $campanias_planificadas; ?></strong>
                             </li>
-                            <li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f1;">
-                                <span><span class="dashicons dashicons-yes" style="color: #00a32a;"></span> <?php _e('Activas', 'flavor-chat-ia'); ?></span>
+                            <li class="campanias-admin-dashboard__status-item">
+                                <span><span class="dashicons dashicons-yes campanias-admin-dashboard__icon-green"></span> <?php _e('Activas', 'flavor-chat-ia'); ?></span>
                                 <strong><?php echo $campanias_activas; ?></strong>
                             </li>
-                            <li style="display: flex; justify-content: space-between; padding: 8px 0;">
-                                <span><span class="dashicons dashicons-flag" style="color: #2271b1;"></span> <?php _e('Completadas', 'flavor-chat-ia'); ?></span>
+                            <li class="campanias-admin-dashboard__status-item campanias-admin-dashboard__status-item--last">
+                                <span><span class="dashicons dashicons-flag campanias-admin-dashboard__icon-blue"></span> <?php _e('Completadas', 'flavor-chat-ia'); ?></span>
                                 <strong><?php echo $campanias_completadas; ?></strong>
                             </li>
                         </ul>
                     </div>
 
                     <!-- Firmas recientes -->
-                    <div class="flavor-card" style="background: #fff; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <h3 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <div class="flavor-card campanias-admin-dashboard__card">
+                        <h3 class="campanias-admin-dashboard__card-title">
                             <span class="dashicons dashicons-edit"></span>
                             <?php _e('Firmas recientes', 'flavor-chat-ia'); ?>
                         </h3>
                         <?php if (empty($firmas_recientes)): ?>
                             <p class="flavor-empty"><?php _e('No hay firmas registradas.', 'flavor-chat-ia'); ?></p>
                         <?php else: ?>
-                            <ul style="list-style: none; padding: 0; margin: 0; max-height: 300px; overflow-y: auto;">
+                            <ul class="campanias-admin-dashboard__signatures-list">
                                 <?php foreach ($firmas_recientes as $firma): ?>
-                                    <li style="padding: 8px 0; border-bottom: 1px solid #f0f0f1; font-size: 13px;">
+                                    <li class="campanias-admin-dashboard__signatures-item">
                                         <strong><?php echo esc_html($firma->nombre); ?></strong>
-                                        <div style="color: #646970; font-size: 11px;">
+                                        <div class="campanias-admin-dashboard__signatures-campaign">
                                             <?php echo esc_html($firma->campania_titulo); ?>
                                         </div>
-                                        <div style="color: #a0a0a0; font-size: 10px;">
+                                        <div class="campanias-admin-dashboard__signatures-time">
                                             <?php echo human_time_diff(strtotime($firma->created_at), current_time('timestamp')); ?> <?php _e('ago', 'flavor-chat-ia'); ?>
                                         </div>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
                         <?php endif; ?>
-                        <p style="margin-bottom: 0; margin-top: 15px;">
+                        <p class="campanias-admin-dashboard__signatures-link">
                             <a href="<?php echo esc_url(admin_url('admin.php?page=campanias-firmas')); ?>" class="button">
                                 <?php _e('Ver todas las firmas', 'flavor-chat-ia'); ?>
                             </a>
@@ -1724,12 +1762,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
      * Renderizar página dashboard con vista completa
      */
     public function render_pagina_dashboard() {
-        $views_path = dirname(__FILE__) . '/views/dashboard.php';
-        if (file_exists($views_path)) {
-            include $views_path;
-        } else {
-            $this->render_admin_dashboard();
-        }
+        $this->render_admin_dashboard();
     }
 
     /**
@@ -1956,7 +1989,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="wrap">
             <!-- Filtros -->
-            <form method="get" class="flavor-filters" style="background: #fff; padding: 15px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <form method="get" class="flavor-filters campanias-admin-list__filters">
                 <input type="hidden" name="page" value="campanias-listado">
 
                 <select name="estado">
@@ -1997,13 +2030,13 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th style="width: 30%;"><?php _e('Titulo', 'flavor-chat-ia'); ?></th>
+                            <th class="campanias-admin-list__col-title"><?php _e('Titulo', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Firmas', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Fecha inicio', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Creador', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 15%;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th class="campanias-admin-list__col-actions"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -2017,12 +2050,12 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                                         </a>
                                     </strong>
                                     <?php if ($campania->destacada): ?>
-                                        <span class="dashicons dashicons-star-filled" style="color: #dba617; font-size: 14px;" title="<?php _e('Destacada', 'flavor-chat-ia'); ?>"></span>
+                                        <span class="dashicons dashicons-star-filled campanias-admin-list__icon-star" title="<?php _e('Destacada', 'flavor-chat-ia'); ?>"></span>
                                     <?php endif; ?>
                                 </td>
                                 <td><?php echo esc_html($this->get_tipos_campania()[$campania->tipo] ?? $campania->tipo); ?></td>
                                 <td>
-                                    <span class="flavor-badge" style="padding: 3px 8px; border-radius: 3px; font-size: 11px; background: <?php
+                                    <span class="flavor-badge campanias-admin-list__status-badge" style="background: <?php
                                         switch ($campania->estado) {
                                             case 'activa': echo '#00a32a'; break;
                                             case 'completada': echo '#2271b1'; break;
@@ -2038,7 +2071,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                                 <td>
                                     <?php if ($campania->objetivo_firmas > 0): ?>
                                         <?php echo intval($campania->firmas_actuales); ?>/<?php echo intval($campania->objetivo_firmas); ?>
-                                        <div style="background: #f0f0f1; height: 4px; border-radius: 2px; margin-top: 3px;">
+                                        <div class="campanias-admin-list__progress-track">
                                             <div style="background: #2271b1; width: <?php echo min(100, ($campania->firmas_actuales / $campania->objetivo_firmas) * 100); ?>%; height: 100%; border-radius: 2px;"></div>
                                         </div>
                                     <?php else: ?>
@@ -2200,23 +2233,23 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
         ?>
         <div class="wrap">
             <!-- Estadisticas rapidas -->
-            <div class="flavor-stats-inline" style="display: flex; gap: 20px; margin-bottom: 20px; background: #fff; padding: 15px;">
+            <div class="flavor-stats-inline campanias-admin-firmas__stats-inline">
                 <div>
                     <strong><?php echo $total_items; ?></strong>
-                    <span style="color: #646970;"><?php _e('Total firmas', 'flavor-chat-ia'); ?></span>
+                    <span class="campanias-admin-firmas__stats-label"><?php _e('Total firmas', 'flavor-chat-ia'); ?></span>
                 </div>
                 <div>
                     <strong><?php echo (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_firmas WHERE verificada = 1"); ?></strong>
-                    <span style="color: #646970;"><?php _e('Verificadas', 'flavor-chat-ia'); ?></span>
+                    <span class="campanias-admin-firmas__stats-label"><?php _e('Verificadas', 'flavor-chat-ia'); ?></span>
                 </div>
                 <div>
                     <strong><?php echo (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $tabla_firmas WHERE DATE(created_at) = %s", current_time('Y-m-d'))); ?></strong>
-                    <span style="color: #646970;"><?php _e('Hoy', 'flavor-chat-ia'); ?></span>
+                    <span class="campanias-admin-firmas__stats-label"><?php _e('Hoy', 'flavor-chat-ia'); ?></span>
                 </div>
             </div>
 
             <!-- Filtros -->
-            <form method="get" class="flavor-filters" style="background: #fff; padding: 15px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <form method="get" class="flavor-filters campanias-admin-firmas__filters">
                 <input type="hidden" name="page" value="campanias-firmas">
 
                 <select name="campania_id">
@@ -2260,7 +2293,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                             <th><?php _e('Campania', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 15%;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th class="campanias-admin-firmas__col-actions"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -2269,7 +2302,7 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                                 <td>
                                     <strong><?php echo esc_html($firma->nombre); ?></strong>
                                     <?php if ($firma->user_id): ?>
-                                        <span class="dashicons dashicons-admin-users" style="font-size: 14px; color: #2271b1;" title="<?php _e('Usuario registrado', 'flavor-chat-ia'); ?>"></span>
+                                        <span class="dashicons dashicons-admin-users campanias-admin-firmas__icon-user" title="<?php _e('Usuario registrado', 'flavor-chat-ia'); ?>"></span>
                                     <?php endif; ?>
                                 </td>
                                 <td><?php echo esc_html($firma->email); ?></td>
@@ -2281,10 +2314,10 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                                 </td>
                                 <td>
                                     <?php if ($firma->verificada): ?>
-                                        <span class="dashicons dashicons-yes-alt" style="color: #00a32a;"></span>
+                                        <span class="dashicons dashicons-yes-alt campanias-admin-firmas__icon-verified"></span>
                                         <?php _e('Verificada', 'flavor-chat-ia'); ?>
                                     <?php else: ?>
-                                        <span class="dashicons dashicons-marker" style="color: #dba617;"></span>
+                                        <span class="dashicons dashicons-marker campanias-admin-firmas__icon-pending"></span>
                                         <?php _e('Pendiente', 'flavor-chat-ia'); ?>
                                     <?php endif; ?>
                                 </td>
@@ -2295,14 +2328,14 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
                                     <?php if (!$firma->verificada): ?>
                                         <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=campanias-firmas&accion=verificar&id=' . $firma->id), 'verificar_firma_' . $firma->id)); ?>"
                                            class="button button-small" title="<?php _e('Verificar', 'flavor-chat-ia'); ?>">
-                                            <span class="dashicons dashicons-yes" style="vertical-align: middle;"></span>
+                                            <span class="dashicons dashicons-yes campanias-admin-firmas__icon-action"></span>
                                         </a>
                                     <?php endif; ?>
                                     <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=campanias-firmas&accion=eliminar&id=' . $firma->id), 'eliminar_firma_' . $firma->id)); ?>"
                                        class="button button-small button-link-delete"
                                        onclick="return confirm('<?php _e('Seguro que quieres eliminar esta firma?', 'flavor-chat-ia'); ?>');"
                                        title="<?php _e('Eliminar', 'flavor-chat-ia'); ?>">
-                                        <span class="dashicons dashicons-trash" style="vertical-align: middle;"></span>
+                                        <span class="dashicons dashicons-trash campanias-admin-firmas__icon-action"></span>
                                     </a>
                                 </td>
                             </tr>
@@ -2518,6 +2551,16 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
             if (class_exists('Flavor_Campanias_Dashboard_Tab')) {
                 Flavor_Campanias_Dashboard_Tab::get_instance();
             }
+        }
+    }
+
+    /**
+     * Renderiza la página de estadísticas
+     */
+    public function render_admin_estadisticas() {
+        $template_path = dirname(__FILE__) . '/views/estadisticas.php';
+        if (file_exists($template_path)) {
+            include $template_path;
         }
     }
 }

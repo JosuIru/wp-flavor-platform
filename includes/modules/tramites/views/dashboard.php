@@ -38,7 +38,7 @@ $solicitudes_prioritarias = [];
 $tipos_mas_solicitados = [];
 $por_estado = [];
 $tipos_con_cita = [];
-$usando_datos_ejemplo = false;
+$tablas_disponibles = $tabla_solicitudes_existe;
 
 if ($tabla_solicitudes_existe) {
     $total_solicitudes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_solicitudes}");
@@ -116,62 +116,6 @@ if ($tabla_solicitudes_existe) {
     }
 }
 
-// Datos de ejemplo si no hay datos reales
-if ($total_solicitudes === 0) {
-    $usando_datos_ejemplo = true;
-    $total_solicitudes = 156;
-    $solicitudes_pendientes = 23;
-    $solicitudes_urgentes = 5;
-    $solicitudes_documentacion = 8;
-    $solicitudes_aprobadas_mes = 42;
-    $solicitudes_rechazadas_mes = 3;
-    $solicitudes_hoy = 7;
-    $tiempo_promedio = 4.5;
-    $total_procesadas = 133;
-    $total_aprobadas = 118;
-    $tasa_aprobacion = 88.7;
-    $pendientes_antiguos = 4;
-    $sin_asignar = 6;
-
-    $por_estado = [
-        (object) ['estado' => 'pendiente', 'total' => 12],
-        (object) ['estado' => 'en_revision', 'total' => 8],
-        (object) ['estado' => 'en_proceso', 'total' => 3],
-        (object) ['estado' => 'requiere_documentacion', 'total' => 8],
-        (object) ['estado' => 'aprobada', 'total' => 118],
-        (object) ['estado' => 'rechazada', 'total' => 7],
-    ];
-
-    $tipos_mas_solicitados = [
-        (object) ['tipo_tramite' => 'Certificado de empadronamiento', 'total' => 45],
-        (object) ['tipo_tramite' => 'Licencia de obras menores', 'total' => 28],
-        (object) ['tipo_tramite' => 'Solicitud de ayuda social', 'total' => 22],
-        (object) ['tipo_tramite' => 'Tarjeta de aparcamiento', 'total' => 18],
-        (object) ['tipo_tramite' => 'Inscripción actividades', 'total' => 15],
-        (object) ['tipo_tramite' => 'Licencia de ocupación', 'total' => 12],
-    ];
-
-    $solicitudes_prioritarias = [
-        (object) ['id' => 101, 'numero_solicitud' => 'TR-2026-0101', 'tipo_tramite' => 'Solicitud de ayuda social', 'estado' => 'pendiente', 'prioridad' => 'alta', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-2 days'))],
-        (object) ['id' => 102, 'numero_solicitud' => 'TR-2026-0102', 'tipo_tramite' => 'Certificado de empadronamiento', 'estado' => 'en_revision', 'prioridad' => 'alta', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-3 days'))],
-        (object) ['id' => 103, 'numero_solicitud' => 'TR-2026-0103', 'tipo_tramite' => 'Licencia de obras menores', 'estado' => 'requiere_documentacion', 'prioridad' => 'media', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-1 day'))],
-        (object) ['id' => 104, 'numero_solicitud' => 'TR-2026-0104', 'tipo_tramite' => 'Tarjeta de aparcamiento', 'estado' => 'pendiente', 'prioridad' => 'media', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-4 hours'))],
-    ];
-
-    $solicitudes_recientes = [
-        (object) ['id' => 156, 'numero_solicitud' => 'TR-2026-0156', 'tipo_tramite' => 'Certificado de empadronamiento', 'nombre_solicitante' => 'María García López', 'estado' => 'pendiente', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-1 hour'))],
-        (object) ['id' => 155, 'numero_solicitud' => 'TR-2026-0155', 'tipo_tramite' => 'Licencia de obras menores', 'nombre_solicitante' => 'Carlos Martínez Ruiz', 'estado' => 'en_revision', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-3 hours'))],
-        (object) ['id' => 154, 'numero_solicitud' => 'TR-2026-0154', 'tipo_tramite' => 'Solicitud de ayuda social', 'nombre_solicitante' => 'Ana Fernández Pérez', 'estado' => 'aprobada', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-1 day'))],
-        (object) ['id' => 153, 'numero_solicitud' => 'TR-2026-0153', 'tipo_tramite' => 'Inscripción actividades', 'nombre_solicitante' => 'Pedro Sánchez Gil', 'estado' => 'pendiente', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-1 day'))],
-    ];
-
-    $tipos_con_cita = [
-        (object) ['nombre' => 'Solicitud de ayuda social', 'categoria' => 'Servicios Sociales', 'plazo_resolucion_dias' => 15],
-        (object) ['nombre' => 'Licencia de obras mayores', 'categoria' => 'Urbanismo', 'plazo_resolucion_dias' => 30],
-        (object) ['nombre' => 'Certificado de convivencia', 'categoria' => 'Padrón', 'plazo_resolucion_dias' => 5],
-    ];
-}
-
 // Mapeos de estado y prioridad a clases dm-badge
 $estado_labels = [
     'pendiente' => __('Pendiente', 'flavor-chat-ia'),
@@ -207,14 +151,18 @@ $prioridad_badge_classes = [
     }
     ?>
 
+    <?php if (!$tablas_disponibles): ?>
+        <div class="dm-alert dm-alert--info">
+            <span class="dashicons dashicons-info"></span>
+            <p><?php esc_html_e('Faltan tablas del módulo Trámites o aún no hay solicitudes registradas.', 'flavor-chat-ia'); ?></p>
+        </div>
+    <?php endif; ?>
+
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-text-page"></span>
             <h1><?php esc_html_e('Dashboard de Trámites', 'flavor-chat-ia'); ?></h1>
         </div>
-        <?php if ($usando_datos_ejemplo): ?>
-            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
-        <?php endif; ?>
     </div>
 
     <!-- Accesos Rápidos -->

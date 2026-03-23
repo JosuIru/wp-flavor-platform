@@ -232,6 +232,11 @@ class Flavor_Chat_Huertos_Urbanos_Module extends Flavor_Chat_Module_Base {
                     'badge' => [$this, 'contar_lista_espera'],
                 ],
                 [
+                    'slug' => 'huertos-recursos',
+                    'titulo' => __('Recursos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_recursos'],
+                ],
+                [
                     'slug' => 'huertos-config',
                     'titulo' => __('Configuración', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_admin_config'],
@@ -3197,6 +3202,13 @@ KNOWLEDGE;
      * Registrar páginas de administración
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Páginas ocultas (sin menú visible en el sidebar)
@@ -3352,6 +3364,19 @@ KNOWLEDGE;
                 ],
             ],
         ];
+    }
+
+    /**
+     * Renderiza la página de recursos del módulo
+     */
+    public function render_admin_recursos() {
+        $views_path = dirname(__FILE__) . '/views/recursos.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Recursos del Huerto', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Gestión de herramientas, semillas y otros recursos compartidos.', 'flavor-chat-ia') . '</p></div>';
+        }
     }
 
     public function render_tab_foro(): string {

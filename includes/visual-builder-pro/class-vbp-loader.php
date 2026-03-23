@@ -96,6 +96,7 @@ class Flavor_VBP_Loader {
             'class-vbp-single-templates.php',
             'class-vbp-component-library.php',
             'class-vbp-design-presets.php',
+            'class-vbp-comments.php',
             'ai/class-vbp-ai-content.php',
         );
 
@@ -190,6 +191,11 @@ class Flavor_VBP_Loader {
         // Presets de diseño (colores, tipografía, espaciado)
         if ( class_exists( 'Flavor_VBP_Design_Presets' ) ) {
             Flavor_VBP_Design_Presets::get_instance();
+        }
+
+        // Sistema de comentarios colaborativos
+        if ( class_exists( 'Flavor_VBP_Comments' ) ) {
+            Flavor_VBP_Comments::get_instance();
         }
 
         // Registrar CPT de templates

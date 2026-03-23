@@ -7,13 +7,14 @@ import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart' show apiClientProvider;
 import '../../core/widgets/common_widgets.dart';
 import '../../core/utils/haptics.dart';
+import 'setup_directory_tab.dart';
 import 'dart:convert';
 
-/// Pantalla de configuración inicial del servidor
+/// Pantalla de configuracion inicial del servidor
 /// Se muestra la primera vez que se abre la app o cuando no hay servidor configurado
 class SetupScreen extends ConsumerStatefulWidget {
   final VoidCallback onSetupComplete;
-  final bool isFromSettings; // Si viene de ajustes, mostrar botón cancelar
+  final bool isFromSettings; // Si viene de ajustes, mostrar boton cancelar
   final bool isAdminApp; // Si es la app de admin, requiere token de seguridad
 
   const SetupScreen({
@@ -27,20 +28,28 @@ class SetupScreen extends ConsumerStatefulWidget {
   ConsumerState<SetupScreen> createState() => _SetupScreenState();
 }
 
-class _SetupScreenState extends ConsumerState<SetupScreen> {
+class _SetupScreenState extends ConsumerState<SetupScreen>
+    with SingleTickerProviderStateMixin {
+  TabController? _tabController;
   final _urlController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  bool _showScanner = false;
+  bool _showManualUrl = false;
   String? _error;
   String? _successMessage;
   bool _hasUnsavedChanges = false;
   String _initialUrl = '';
   AppLocalizations get i18n => AppLocalizations.of(context)!;
 
+  /// Si hay URL preconfigurada, mostramos tabs (Directorio + QR)
+  bool get _showDirectoryTab => ServerConfig.bootstrapServerUrl.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
+    if (_showDirectoryTab) {
+      _tabController = TabController(length: 2, vsync: this);
+    }
     _urlController.addListener(_onUrlChanged);
   }
 
@@ -55,6 +64,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
   @override
   void dispose() {
+    _tabController?.dispose();
     _urlController.removeListener(_onUrlChanged);
     _urlController.dispose();
     super.dispose();
@@ -70,7 +80,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
     String url = _urlController.text.trim();
 
-    // Añadir https:// si no tiene protocolo
+    // Anadir https:// si no tiene protocolo
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = 'https://$url';
     }
@@ -81,19 +91,36 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
     }
 
     try {
-      // Verificar que el servidor responde
-      final apiClient = ApiClient(baseUrl: '$url${ServerConfig.defaultApiNamespace}');
+      // Descubrir sistema/API del sitio antes de fijar namespace
+      final discoveryResponse = await ApiClient.discoverSiteAt(url);
+      if (!discoveryResponse.success || discoveryResponse.data == null) {
+        Haptics.error();
+        if (!mounted) return;
+        setState(() {
+          _isLoading = false;
+          _error = discoveryResponse.error ?? i18n.setupConnectionFailed;
+        });
+        return;
+      }
+
+      final apiNamespace = await ApiClient.detectPreferredApiNamespace(
+        url,
+        discoveryData: discoveryResponse.data,
+      );
+      final apiClient = ApiClient(baseUrl: '$url$apiNamespace');
       final response = await apiClient.getSiteInfo();
 
       if (response.success) {
-        // Guardar configuración
+        // Guardar configuracion
         await ServerConfig.setServerUrl(url);
+        await ServerConfig.setApiNamespace(apiNamespace);
 
         // IMPORTANTE: Actualizar la URL del apiClient existente
-        final fullApiUrl = '$url${ServerConfig.defaultApiNamespace}';
+        final fullApiUrl = '$url$apiNamespace';
         ref.read(apiClientProvider).updateBaseUrl(fullApiUrl);
         debugPrint('ApiClient actualizado con URL: $fullApiUrl');
 
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
           _successMessage = i18n.setupConnectedSuccess;
@@ -105,9 +132,11 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         // Esperar un momento para mostrar el mensaje
         await Future.delayed(const Duration(milliseconds: 800));
 
+        if (!mounted) return;
         widget.onSetupComplete();
       } else {
         Haptics.error();
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
           _error = i18n.setupConnectionFailed;
@@ -115,6 +144,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       }
     } catch (e) {
       Haptics.error();
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
         _error = i18n.setupConnectionError(e.toString());
@@ -125,26 +155,22 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   void _onQRScanned(String? code) async {
     if (code == null) return;
 
-    setState(() {
-      _showScanner = false;
-    });
-
     debugPrint('QR escaneado: $code');
 
     try {
-      // Intentar parsear como JSON (formato completo de configuración)
+      // Intentar parsear como JSON (formato completo de configuracion)
       final Map<String, dynamic> config = json.decode(code);
 
       if (config.containsKey('url')) {
         // Desescapar caracteres JSON (\/ -> /)
         String url = config['url'].toString().replaceAll(r'\/', '/');
-        debugPrint('URL extraída del QR: $url');
+        debugPrint('URL extraida del QR: $url');
 
         final qrType = config['type'] as String? ?? 'client';
         final token = config['token'] as String?;
         final siteName = config['name'] ?? i18n.setupConfiguredSiteNameDefault;
 
-        // Validación para app Admin
+        // Validacion para app Admin
         if (widget.isAdminApp) {
           if (qrType != 'admin') {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -177,7 +203,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           final apiClient = ApiClient(baseUrl: apiUrl);
 
           try {
-            final validateResponse = await apiClient.validateAdminSiteToken(token);
+            final validateResponse =
+                await apiClient.validateAdminSiteToken(token);
 
             if (!validateResponse.success) {
               setState(() {
@@ -203,7 +230,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
         _urlController.text = url;
 
-        // Mostrar información adicional si existe
+        // Mostrar informacion adicional si existe
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(i18n.setupConfigDetected(siteName)),
@@ -211,7 +238,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           ),
         );
 
-        // Auto-validar si el QR tiene formato completo
+        // Mostrar URL manual y auto-validar
+        setState(() => _showManualUrl = true);
         _validateAndSave();
       }
     } catch (e) {
@@ -236,6 +264,10 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
             backgroundColor: Colors.green,
           ),
         );
+
+        // Mostrar URL manual y auto-validar
+        setState(() => _showManualUrl = true);
+        _validateAndSave();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -249,10 +281,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_showScanner) {
-      return _buildScanner(context);
-    }
-
     return PopScope(
       canPop: !_hasUnsavedChanges,
       onPopInvokedWithResult: (didPop, result) async {
@@ -263,189 +291,144 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         }
       },
       child: Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 40),
-
-                  // Logo/Icono
-                  Icon(
-                    Icons.settings_applications,
-                    size: 80,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Titulo
-                  Text(
-                    i18n.setupTitle,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          title: Text(i18n.setupTitle),
+          leading: widget.isFromSettings
+              ? IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : null,
+          bottom: _showDirectoryTab
+              ? TabBar(
+                  controller: _tabController,
+                  tabs: const [
+                    Tab(
+                      icon: Icon(Icons.explore),
+                      text: 'Directorio',
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Subtitulo
-                  Text(
-                    i18n.setupSubtitle,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 40),
-
-                  // Campo de URL
-                  TextFormField(
-                    controller: _urlController,
-                    decoration: InputDecoration(
-                      labelText: i18n.siteUrlLabel,
-                      hintText: i18n.siteUrlExampleHint,
-                      prefixIcon: const Icon(Icons.language),
-                      prefixText: _urlController.text.isEmpty ? 'https://' : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    keyboardType: TextInputType.url,
-                    textInputAction: TextInputAction.done,
-                    autocorrect: false,
-                    onFieldSubmitted: (_) => _validateAndSave(),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return i18n.setupUrlRequired;
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Mensaje de error
-                  if (_error != null)
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.errorContainer,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.error_outline,
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              _error!,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  // Mensaje de exito
-                  if (_successMessage != null)
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.check_circle, color: Colors.green),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              _successMessage!,
-                              style: const TextStyle(color: Colors.green),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  const SizedBox(height: 24),
-
-                  // Boton conectar
-                  FilledButton.icon(
-                    onPressed: _isLoading ? null : _validateAndSave,
-                    icon: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.check),
-                    label: Text(_isLoading ? i18n.setupConnecting : i18n.setupConnect),
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Boton escanear QR
-                  OutlinedButton.icon(
-                    onPressed: _isLoading ? null : () {
-                      setState(() => _showScanner = true);
-                    },
-                    icon: const Icon(Icons.qr_code_scanner),
-                    label: Text(i18n.setupScanQr),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                  ),
-
-                  // Boton cancelar (solo si viene de ajustes)
-                  if (widget.isFromSettings) ...[
-                    const SizedBox(height: 12),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text(i18n.commonCancel),
+                    Tab(
+                      icon: Icon(Icons.qr_code_scanner),
+                      text: 'Escanear QR',
                     ),
                   ],
+                )
+              : null,
+        ),
+        body: _showDirectoryTab ? _buildWithTabs() : _buildWithoutTabs(),
+      ),
+    );
+  }
 
-                  const SizedBox(height: 40),
+  /// Layout con tabs (cuando hay URL preconfigurada)
+  Widget _buildWithTabs() {
+    return Column(
+      children: [
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              // Tab 0: Directorio
+              SetupDirectoryTab(
+                onSetupComplete: widget.onSetupComplete,
+              ),
+              // Tab 1: Scanner QR
+              _buildQrScannerTab(),
+            ],
+          ),
+        ),
+        // Enlace inferior para URL manual
+        if (!_showManualUrl)
+          SafeArea(
+            child: TextButton(
+              onPressed: () => setState(() => _showManualUrl = true),
+              child: Text(
+                '¿Tienes la URL? Toca aqui',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
+          ),
+        // Formulario URL manual (colapsado por defecto)
+        if (_showManualUrl) _buildManualUrlSection(),
+      ],
+    );
+  }
 
-                  // Ayuda
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.help_outline,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                i18n.setupHowToGetQr,
-                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            i18n.setupQrSteps,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
+  /// Layout sin tabs (app generica sin URL preconfigurada)
+  Widget _buildWithoutTabs() {
+    return Column(
+      children: [
+        Expanded(child: _buildQrScannerTab()),
+        // Enlace inferior para URL manual
+        if (!_showManualUrl)
+          SafeArea(
+            child: TextButton(
+              onPressed: () => setState(() => _showManualUrl = true),
+              child: Text(
+                '¿Tienes la URL? Toca aqui',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
+          ),
+        // Formulario URL manual (colapsado por defecto)
+        if (_showManualUrl) _buildManualUrlSection(),
+      ],
+    );
+  }
+
+  Widget _buildQrScannerTab() {
+    return Stack(
+      children: [
+        MobileScanner(
+          onDetect: (capture) {
+            final List<Barcode> barcodes = capture.barcodes;
+            for (final barcode in barcodes) {
+              if (barcode.rawValue != null) {
+                _onQRScanned(barcode.rawValue);
+                break;
+              }
+            }
+          },
+        ),
+        // Overlay con instrucciones
+        Positioned(
+          bottom: 100,
+          left: 20,
+          right: 20,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                i18n.setupQrScanHint,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ),
+        ),
+        // Card de ayuda en la parte superior
+        Positioned(
+          top: 20,
+          left: 20,
+          right: 20,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.help_outline,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      i18n.setupHowToGetQr,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                 ],
@@ -453,55 +436,141 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 
-  Widget _buildScanner(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(i18n.setupQrScanTitle),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => setState(() => _showScanner = false),
-        ),
-      ),
-      body: Stack(
-        children: [
-          MobileScanner(
-            onDetect: (capture) {
-              final List<Barcode> barcodes = capture.barcodes;
-              for (final barcode in barcodes) {
-                if (barcode.rawValue != null) {
-                  _onQRScanned(barcode.rawValue);
-                  break;
-                }
-              }
-            },
-          ),
-          // Overlay con instrucciones
-          Positioned(
-            bottom: 100,
-            left: 20,
-            right: 20,
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  i18n.setupQrScanHint,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
+  Widget _buildManualUrlSection() {
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
             ),
+          ],
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Introducir URL manualmente',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => setState(() => _showManualUrl = false),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _urlController,
+                decoration: InputDecoration(
+                  labelText: i18n.siteUrlLabel,
+                  hintText: i18n.siteUrlExampleHint,
+                  prefixIcon: const Icon(Icons.language),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                keyboardType: TextInputType.url,
+                textInputAction: TextInputAction.done,
+                autocorrect: false,
+                onFieldSubmitted: (_) => _validateAndSave(),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return i18n.setupUrlRequired;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Mensaje de error
+              if (_error != null)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.errorContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _error!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              // Mensaje de exito
+              if (_successMessage != null)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.check_circle, color: Colors.green),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _successMessage!,
+                          style: const TextStyle(color: Colors.green),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              // Boton conectar
+              FilledButton.icon(
+                onPressed: _isLoading ? null : _validateAndSave,
+                icon: _isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.check),
+                label:
+                    Text(_isLoading ? i18n.setupConnecting : i18n.setupConnect),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-/// Widget para verificar si hay configuración guardada
+/// Widget para verificar si hay configuracion guardada
 class SetupChecker extends ConsumerWidget {
   final Widget child;
   final Widget Function(VoidCallback onComplete) setupBuilder;
@@ -540,10 +609,11 @@ class SetupChecker extends ConsumerWidget {
   Future<bool> _checkIfConfigured() async {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
-      // Si tiene la URL por defecto, consideramos que no está configurado
+      // Si tiene la URL por defecto, consideramos que no esta configurado
       // para otros usuarios que no sean Basabere
       return serverUrl != ServerConfig.defaultServerUrl ||
-             serverUrl == 'https://basabere.com'; // Para Basabere sí está configurado
+          serverUrl ==
+              'https://basabere.com'; // Para Basabere si esta configurado
     } catch (e) {
       return false;
     }

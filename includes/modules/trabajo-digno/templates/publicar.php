@@ -9,6 +9,39 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Fallback: asegurar assets frontend del módulo cuando se renderiza fuera de su flujo principal.
+if (!wp_style_is('flavor-trabajo-digno', 'registered')) {
+    wp_register_style(
+        'flavor-trabajo-digno',
+        FLAVOR_CHAT_IA_URL . 'includes/modules/trabajo-digno/assets/css/trabajo-digno.css',
+        [],
+        FLAVOR_CHAT_IA_VERSION
+    );
+}
+if (!wp_style_is('flavor-trabajo-digno', 'enqueued')) {
+    wp_enqueue_style('flavor-trabajo-digno');
+}
+if (!wp_script_is('flavor-trabajo-digno', 'registered')) {
+    wp_register_script(
+        'flavor-trabajo-digno',
+        FLAVOR_CHAT_IA_URL . 'includes/modules/trabajo-digno/assets/js/trabajo-digno.js',
+        ['jquery'],
+        FLAVOR_CHAT_IA_VERSION,
+        true
+    );
+}
+if (!wp_script_is('flavor-trabajo-digno', 'enqueued')) {
+    wp_enqueue_script('flavor-trabajo-digno');
+}
+wp_localize_script('flavor-trabajo-digno', 'flavorTrabajoDigno', [
+    'ajaxurl' => admin_url('admin-ajax.php'),
+    'nonce' => wp_create_nonce('trabajo_digno_nonce'),
+    'i18n' => [
+        'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+        'confirm_postular' => __('¿Confirmas tu postulación?', 'flavor-chat-ia'),
+    ],
+]);
+
 if (!is_user_logged_in()) {
     echo '<div class="td-empty-state"><p>' . esc_html__('Debes iniciar sesión para publicar ofertas.', 'flavor-chat-ia') . '</p></div>';
     return;
@@ -26,7 +59,8 @@ $criterios = Flavor_Chat_Trabajo_Digno_Module::CRITERIOS_DIGNIDAD;
         <p><?php esc_html_e('Comparte oportunidades laborales con criterios de trabajo digno', 'flavor-chat-ia'); ?></p>
     </header>
 
-    <form class="td-form td-form-oferta">
+    <form class="td-form td-form-oferta" method="post">
+        <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('trabajo_digno_nonce')); ?>">
         <div class="td-form-grupo">
             <label for="td-titulo"><?php esc_html_e('Título del puesto', 'flavor-chat-ia'); ?> *</label>
             <input type="text" name="titulo" id="td-titulo" required

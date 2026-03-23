@@ -92,26 +92,26 @@ class Flavor_Page_Creator {
 
             // SOCIOS - 5 páginas
             [
-                'title' => 'Socios',
+                'title' => 'Miembros',
                 'slug' => 'socios',
                 'content' => '<h1>Únete a Nuestra Comunidad</h1>
-<p>Descubre los beneficios de ser socio</p>
+<p>Descubre los beneficios de ser miembro</p>
 
-<a href="/socios/unirme/" class="flavor-button flavor-button-primary">Hacerse Socio</a>',
+<a href="/socios/unirme/" class="flavor-button flavor-button-primary">Hacerse Miembro</a>',
                 'parent' => 0,
             ],
             [
-                'title' => 'Hacerse Socio',
+                'title' => 'Hacerse Miembro',
                 'slug' => 'unirme',
-                'content' => '<h1>Únete como Socio</h1>
+                'content' => '<h1>Únete como Miembro</h1>
 
 [flavor_module_form module="socios" action="dar_alta_socio"]',
                 'parent' => 'socios',
             ],
             [
-                'title' => 'Mi Perfil de Socio',
+                'title' => 'Mi Perfil de Miembro',
                 'slug' => 'mi-perfil',
-                'content' => '<h1>Mi Perfil de Socio</h1>
+                'content' => '<h1>Mi Perfil de Miembro</h1>
 
 [flavor_module_dashboard module="socios"]',
                 'parent' => 'socios',

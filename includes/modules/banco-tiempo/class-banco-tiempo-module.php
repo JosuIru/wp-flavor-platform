@@ -1949,6 +1949,13 @@ KNOWLEDGE;
      * Las páginas son accesibles vía URL directa: admin.php?page=banco-tiempo
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Página principal (oculta)

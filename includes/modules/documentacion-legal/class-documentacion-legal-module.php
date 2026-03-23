@@ -41,7 +41,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
      * Verifica si el modulo puede activarse
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe('flavor_documentacion_legal');
+        global $wpdb;
+        return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_documentacion_legal');
     }
 
     /**
@@ -71,7 +72,8 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_documentacion_legal')) {
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_documentacion_legal')) {
             $this->create_tables();
         }
     }
@@ -2210,6 +2212,13 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
      * Registra las paginas de administracion del modulo
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         add_submenu_page(

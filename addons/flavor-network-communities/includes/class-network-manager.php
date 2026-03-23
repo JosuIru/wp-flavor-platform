@@ -56,16 +56,36 @@ class Flavor_Network_Manager {
         add_action('admin_init', [$this, 'check_db_version']);
 
         // Shortcodes públicos
-        add_shortcode('flavor_network_directory', [$this, 'shortcode_directory']);
-        add_shortcode('flavor_network_map', [$this, 'shortcode_map']);
-        add_shortcode('flavor_network_board', [$this, 'shortcode_board']);
-        add_shortcode('flavor_network_events', [$this, 'shortcode_events']);
-        add_shortcode('flavor_network_alerts', [$this, 'shortcode_alerts']);
-        add_shortcode('flavor_network_catalog', [$this, 'shortcode_catalog']);
-        add_shortcode('flavor_network_collaborations', [$this, 'shortcode_collaborations']);
-        add_shortcode('flavor_network_time_offers', [$this, 'shortcode_time_offers']);
-        add_shortcode('flavor_network_node_profile', [$this, 'shortcode_node_profile']);
-        add_shortcode('flavor_network_questions', [$this, 'shortcode_network_questions']);
+        if (!shortcode_exists('flavor_network_directory')) {
+            add_shortcode('flavor_network_directory', [$this, 'shortcode_directory']);
+        }
+        if (!shortcode_exists('flavor_network_map')) {
+            add_shortcode('flavor_network_map', [$this, 'shortcode_map']);
+        }
+        if (!shortcode_exists('flavor_network_board')) {
+            add_shortcode('flavor_network_board', [$this, 'shortcode_board']);
+        }
+        if (!shortcode_exists('flavor_network_events')) {
+            add_shortcode('flavor_network_events', [$this, 'shortcode_events']);
+        }
+        if (!shortcode_exists('flavor_network_alerts')) {
+            add_shortcode('flavor_network_alerts', [$this, 'shortcode_alerts']);
+        }
+        if (!shortcode_exists('flavor_network_catalog')) {
+            add_shortcode('flavor_network_catalog', [$this, 'shortcode_catalog']);
+        }
+        if (!shortcode_exists('flavor_network_collaborations')) {
+            add_shortcode('flavor_network_collaborations', [$this, 'shortcode_collaborations']);
+        }
+        if (!shortcode_exists('flavor_network_time_offers')) {
+            add_shortcode('flavor_network_time_offers', [$this, 'shortcode_time_offers']);
+        }
+        if (!shortcode_exists('flavor_network_node_profile')) {
+            add_shortcode('flavor_network_node_profile', [$this, 'shortcode_node_profile']);
+        }
+        if (!shortcode_exists('flavor_network_questions')) {
+            add_shortcode('flavor_network_questions', [$this, 'shortcode_network_questions']);
+        }
 
         // Assets frontend
         add_action('wp_enqueue_scripts', [$this, 'maybe_enqueue_frontend_assets']);

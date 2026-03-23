@@ -127,7 +127,7 @@ $tipos_iconos = [
             <h1><?php esc_html_e('Gestión de Clientes', 'flavor-chat-ia'); ?></h1>
         </div>
         <div class="dm-dashboard__actions">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=clientes-nuevo')); ?>" class="button button-primary">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=clientes-listado&action=nuevo')); ?>" class="button button-primary">
                 <span class="dashicons dashicons-plus-alt2"></span>
                 <?php esc_html_e('Nuevo Cliente', 'flavor-chat-ia'); ?>
             </a>

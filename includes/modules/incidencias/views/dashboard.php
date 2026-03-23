@@ -28,7 +28,7 @@ $stats_categoria = [];
 $stats_prioridad = [];
 $incidencias_votadas = [];
 $resueltas_semana = [];
-$usando_datos_ejemplo = false;
+$tablas_disponibles = $tabla_existe;
 
 if ($tabla_existe) {
     $total_incidencias = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_incidencias");
@@ -42,55 +42,6 @@ if ($tabla_existe) {
     $stats_prioridad = $wpdb->get_results("SELECT prioridad, COUNT(*) as total FROM $tabla_incidencias WHERE estado IN ('pendiente', 'en_proceso') GROUP BY prioridad");
     $incidencias_votadas = $wpdb->get_results("SELECT id, numero_incidencia, titulo, categoria, votos_ciudadanos FROM $tabla_incidencias WHERE estado IN ('pendiente', 'en_proceso') ORDER BY votos_ciudadanos DESC LIMIT 5");
     $resueltas_semana = $wpdb->get_results("SELECT DATE(fecha_resolucion) as fecha, COUNT(*) as total FROM $tabla_incidencias WHERE fecha_resolucion >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) GROUP BY DATE(fecha_resolucion) ORDER BY fecha ASC");
-}
-
-// Datos de ejemplo si no hay datos reales
-if ($total_incidencias === 0) {
-    $usando_datos_ejemplo = true;
-    $total_incidencias = 156;
-    $incidencias_abiertas = 34;
-    $incidencias_resueltas_mes = 28;
-    $incidencias_sin_asignar = 8;
-    $tiempo_promedio_resolucion = 72;
-
-    $stats_estado = [
-        (object) ['estado' => 'pendiente', 'total' => 18],
-        (object) ['estado' => 'en_proceso', 'total' => 16],
-        (object) ['estado' => 'resuelta', 'total' => 98],
-        (object) ['estado' => 'cerrada', 'total' => 20],
-        (object) ['estado' => 'rechazada', 'total' => 4],
-    ];
-
-    $stats_categoria = [
-        (object) ['categoria' => 'alumbrado', 'total' => 12],
-        (object) ['categoria' => 'limpieza', 'total' => 9],
-        (object) ['categoria' => 'vías públicas', 'total' => 7],
-        (object) ['categoria' => 'parques y jardines', 'total' => 5],
-        (object) ['categoria' => 'mobiliario urbano', 'total' => 4],
-    ];
-
-    $stats_prioridad = [
-        (object) ['prioridad' => 'baja', 'total' => 12],
-        (object) ['prioridad' => 'media', 'total' => 15],
-        (object) ['prioridad' => 'alta', 'total' => 5],
-        (object) ['prioridad' => 'urgente', 'total' => 2],
-    ];
-
-    $incidencias_votadas = [
-        (object) ['id' => 1, 'numero_incidencia' => 'INC-2026-0045', 'titulo' => 'Farola sin luz en Calle Mayor', 'categoria' => 'alumbrado', 'votos_ciudadanos' => 24],
-        (object) ['id' => 2, 'numero_incidencia' => 'INC-2026-0038', 'titulo' => 'Bache peligroso en Plaza España', 'categoria' => 'vías públicas', 'votos_ciudadanos' => 18],
-        (object) ['id' => 3, 'numero_incidencia' => 'INC-2026-0052', 'titulo' => 'Contenedor desbordado', 'categoria' => 'limpieza', 'votos_ciudadanos' => 15],
-        (object) ['id' => 4, 'numero_incidencia' => 'INC-2026-0049', 'titulo' => 'Banco roto en parque infantil', 'categoria' => 'mobiliario urbano', 'votos_ciudadanos' => 12],
-        (object) ['id' => 5, 'numero_incidencia' => 'INC-2026-0055', 'titulo' => 'Árbol caído en acera', 'categoria' => 'parques y jardines', 'votos_ciudadanos' => 10],
-    ];
-
-    $resueltas_semana = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $resueltas_semana[] = (object) [
-            'fecha' => date('Y-m-d', strtotime("-$i days")),
-            'total' => rand(2, 8)
-        ];
-    }
 }
 
 // Mapeo de estados a badges
@@ -118,14 +69,18 @@ $estado_labels = [
     }
     ?>
 
+    <?php if (!$tablas_disponibles): ?>
+        <div class="dm-alert dm-alert--info">
+            <span class="dashicons dashicons-info"></span>
+            <p><?php esc_html_e('Falta la tabla del módulo Incidencias o aún no hay reportes registrados.', 'flavor-chat-ia'); ?></p>
+        </div>
+    <?php endif; ?>
+
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-warning"></span>
             <h1><?php esc_html_e('Dashboard de Incidencias Urbanas', 'flavor-chat-ia'); ?></h1>
         </div>
-        <?php if ($usando_datos_ejemplo): ?>
-            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
-        <?php endif; ?>
     </div>
 
     <!-- Accesos Rápidos -->

@@ -55,7 +55,7 @@ $esta_logueado = is_user_logged_in();
                 <?php
                 printf(
                     /* translators: %s: nombre de usuario */
-                    esc_html__('Hola %s, este contenido esta reservado para socios y miembros activos de nuestra comunidad. Si crees que deberias tener acceso, contacta con nosotros.', 'flavor-chat-ia'),
+                    esc_html__('Hola %s, este contenido esta reservado para miembros activos de nuestra comunidad. Si crees que deberias tener acceso, contacta con nosotros.', 'flavor-chat-ia'),
                     esc_html($usuario_actual->display_name)
                 );
                 ?>
@@ -63,7 +63,7 @@ $esta_logueado = is_user_logged_in();
                 <?php
                 printf(
                     /* translators: %s: nombre de la organizacion */
-                    esc_html__('Este contenido esta disponible exclusivamente para los socios y miembros de %s. Unete a nuestra comunidad para disfrutar de todos los beneficios.', 'flavor-chat-ia'),
+                    esc_html__('Este contenido esta disponible exclusivamente para los miembros de %s. Unete a nuestra comunidad para disfrutar de todos los beneficios.', 'flavor-chat-ia'),
                     esc_html($nombre_organizacion)
                 );
                 ?>
@@ -102,7 +102,7 @@ $esta_logueado = is_user_logged_in();
                 </a>
                 <a href="<?php echo esc_url($url_membresia); ?>" class="flavor-btn flavor-btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
-                    <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
+                    <?php esc_html_e('Hacerme miembro', 'flavor-chat-ia'); ?>
                 </a>
             <?php else : ?>
                 <a href="<?php echo esc_url($url_membresia); ?>" class="flavor-btn flavor-btn-primary">

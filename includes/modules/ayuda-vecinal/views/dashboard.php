@@ -22,9 +22,9 @@ $tabla_voluntarios = $wpdb->prefix . 'flavor_ayuda_voluntarios';
 // Verificar si las tablas existen
 $tabla_solicitudes_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_solicitudes)) === $tabla_solicitudes;
 $tabla_voluntarios_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_voluntarios)) === $tabla_voluntarios;
+$tablas_disponibles = ($tabla_solicitudes_existe && $tabla_voluntarios_existe);
 
 $fecha_inicio_mes = date('Y-m-01 00:00:00');
-$usando_demo = false;
 
 // Valores por defecto
 $solicitudes_activas = 0;
@@ -35,6 +35,8 @@ $solicitudes_urgentes = [];
 $voluntarios_destacados = [];
 $actividad_reciente = [];
 $categorias_data = [];
+$tendencia_labels = [];
+$tendencia_values = [];
 
 if ($tabla_solicitudes_existe && $tabla_voluntarios_existe) {
     $solicitudes_activas = (int) $wpdb->get_var(
@@ -83,58 +85,29 @@ if ($tabla_solicitudes_existe && $tabla_voluntarios_existe) {
          GROUP BY categoria
          ORDER BY total DESC"
     );
-}
 
-// Usar datos demo si no hay datos reales
-if ($solicitudes_activas == 0 && $voluntarios_activos == 0) {
-    $usando_demo = true;
-    $solicitudes_activas = 12;
-    $voluntarios_activos = 34;
-    $ayudas_completadas = 87;
-    $horas_voluntariado = 245;
-
-    $solicitudes_urgentes = [
-        (object) ['id' => 1, 'titulo' => 'Compra de medicamentos urgente', 'categoria' => 'Compras', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-2 hours'))],
-        (object) ['id' => 2, 'titulo' => 'Acompañamiento a cita médica', 'categoria' => 'Acompañamiento', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-5 hours'))],
-        (object) ['id' => 3, 'titulo' => 'Ayuda para pasear mascotas', 'categoria' => 'Mascotas', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-1 day'))],
-    ];
-
-    $voluntarios_destacados = [
-        (object) ['id' => 1, 'display_name' => 'María García', 'ayudas_completadas' => 28, 'valoracion_promedio' => 4.9],
-        (object) ['id' => 2, 'display_name' => 'Carlos López', 'ayudas_completadas' => 22, 'valoracion_promedio' => 4.8],
-        (object) ['id' => 3, 'display_name' => 'Ana Martínez', 'ayudas_completadas' => 18, 'valoracion_promedio' => 4.9],
-        (object) ['id' => 4, 'display_name' => 'Pedro Sánchez', 'ayudas_completadas' => 15, 'valoracion_promedio' => 4.7],
-        (object) ['id' => 5, 'display_name' => 'Laura Fernández', 'ayudas_completadas' => 12, 'valoracion_promedio' => 5.0],
-    ];
-
-    $categorias_data = [
-        (object) ['categoria' => 'Compras', 'total' => 35],
-        (object) ['categoria' => 'Acompañamiento', 'total' => 28],
-        (object) ['categoria' => 'Gestiones', 'total' => 22],
-        (object) ['categoria' => 'Tecnología', 'total' => 18],
-        (object) ['categoria' => 'Mascotas', 'total' => 12],
-        (object) ['categoria' => 'Otros', 'total' => 8],
-    ];
-
-    $actividad_reciente = [
-        (object) ['tipo' => 'completada', 'titulo' => 'Ayuda completada', 'descripcion' => 'María ayudó a Juan con la compra', 'tiempo' => __('hace 1 hora', 'flavor-chat-ia')],
-        (object) ['tipo' => 'asignada', 'titulo' => 'Voluntario asignado', 'descripcion' => 'Carlos se ofreció para acompañar a Ana', 'tiempo' => __('hace 2 horas', 'flavor-chat-ia')],
-        (object) ['tipo' => 'nueva', 'titulo' => 'Nueva solicitud', 'descripcion' => 'Pedro necesita ayuda con tecnología', 'tiempo' => __('hace 3 horas', 'flavor-chat-ia')],
-        (object) ['tipo' => 'completada', 'titulo' => 'Ayuda completada', 'descripcion' => 'Laura completó una gestión bancaria', 'tiempo' => __('hace 5 horas', 'flavor-chat-ia')],
-    ];
+    // Tendencia de solicitudes de los últimos 7 días
+    $tendencia_sql = $wpdb->get_results(
+        "SELECT DATE(fecha_creacion) as fecha, COUNT(*) as total
+         FROM {$tabla_solicitudes}
+         WHERE fecha_creacion >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+         GROUP BY DATE(fecha_creacion)
+         ORDER BY fecha ASC"
+    );
+    $tendencia_map = [];
+    foreach ($tendencia_sql as $row) {
+        $tendencia_map[$row->fecha] = (int) $row->total;
+    }
+    for ($i = 6; $i >= 0; $i--) {
+        $fecha = date('Y-m-d', strtotime("-{$i} days"));
+        $tendencia_labels[] = date_i18n('D', strtotime($fecha));
+        $tendencia_values[] = $tendencia_map[$fecha] ?? 0;
+    }
 }
 
 // Preparar datos para gráficos
 $categorias_labels = array_map(function($c) { return $c->categoria; }, $categorias_data);
 $categorias_values = array_map(function($c) { return (int) $c->total; }, $categorias_data);
-
-// Tendencia demo (últimos 7 días)
-$tendencia_labels = [];
-$tendencia_values = [];
-for ($i = 6; $i >= 0; $i--) {
-    $tendencia_labels[] = date_i18n('D', strtotime("-{$i} days"));
-    $tendencia_values[] = $usando_demo ? rand(5, 15) : 0;
-}
 ?>
 
 <div class="dm-dashboard">
@@ -161,10 +134,10 @@ for ($i = 6; $i >= 0; $i--) {
         </div>
     </div>
 
-    <?php if ($usando_demo) : ?>
+    <?php if (!$tablas_disponibles) : ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <?php esc_html_e('Mostrando datos de demostración. Los datos reales aparecerán cuando se registren solicitudes y voluntarios.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Faltan tablas del módulo Ayuda Vecinal o aún no hay actividad registrada.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 
@@ -309,16 +282,10 @@ for ($i = 6; $i >= 0; $i--) {
             <?php if (!empty($voluntarios_destacados)) : ?>
             <ol class="dm-ranking">
                 <?php foreach ($voluntarios_destacados as $voluntario) :
-                    if ($usando_demo) {
-                        $nombre = $voluntario->display_name;
-                        $ayudas = $voluntario->ayudas_completadas;
-                        $valoracion = $voluntario->valoracion_promedio;
-                    } else {
-                        $usuario = get_userdata($voluntario->usuario_id);
-                        $nombre = $usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia');
-                        $ayudas = $voluntario->ayudas_completadas;
-                        $valoracion = $voluntario->valoracion_promedio ?? 0;
-                    }
+                    $usuario = get_userdata($voluntario->usuario_id);
+                    $nombre = $usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia');
+                    $ayudas = $voluntario->ayudas_completadas;
+                    $valoracion = $voluntario->valoracion_promedio ?? 0;
                 ?>
                 <li>
                     <span><?php echo esc_html($nombre); ?></span>

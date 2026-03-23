@@ -125,57 +125,6 @@ if ($tabla_automatizaciones_existe) {
     ");
 }
 
-// Datos de demostración si no hay datos reales
-$usar_datos_demo = ($total_suscriptores == 0);
-
-if ($usar_datos_demo) {
-    $total_suscriptores = 2456;
-    $suscriptores_activos = 2234;
-    $nuevos_suscriptores = 187;
-    $bajas_mes = 23;
-    $total_campanias = 48;
-    $campanias_enviadas = 42;
-    $total_emails_enviados = 156789;
-    $emails_mes = 12450;
-    $tasa_apertura = 24.5;
-    $tasa_clicks = 3.8;
-    $total_automatizaciones = 8;
-    $automatizaciones_activas = 5;
-
-    $crecimiento_diario = [];
-    for ($i = 13; $i >= 0; $i--) {
-        $fecha = date('Y-m-d', strtotime("-$i days"));
-        $crecimiento_diario[] = (object) [
-            'fecha' => $fecha,
-            'nuevos' => rand(5, 25)
-        ];
-    }
-
-    $ultimas_campanias = [
-        (object) ['id' => 1, 'nombre' => 'Newsletter Marzo 2024', 'estado' => 'enviada', 'total_enviados' => 2145, 'total_abiertos' => 567, 'total_clicks' => 89, 'creado_en' => date('Y-m-d H:i:s', strtotime('-2 days'))],
-        (object) ['id' => 2, 'nombre' => 'Promoción Primavera', 'estado' => 'enviada', 'total_enviados' => 1890, 'total_abiertos' => 523, 'total_clicks' => 156, 'creado_en' => date('Y-m-d H:i:s', strtotime('-5 days'))],
-        (object) ['id' => 3, 'nombre' => 'Eventos Abril', 'estado' => 'borrador', 'total_enviados' => 0, 'total_abiertos' => 0, 'total_clicks' => 0, 'creado_en' => date('Y-m-d H:i:s', strtotime('-1 day'))],
-        (object) ['id' => 4, 'nombre' => 'Actualización Servicios', 'estado' => 'enviada', 'total_enviados' => 2234, 'total_abiertos' => 612, 'total_clicks' => 78, 'creado_en' => date('Y-m-d H:i:s', strtotime('-10 days'))],
-        (object) ['id' => 5, 'nombre' => 'Encuesta Satisfacción', 'estado' => 'programada', 'total_enviados' => 0, 'total_abiertos' => 0, 'total_clicks' => 0, 'creado_en' => date('Y-m-d H:i:s', strtotime('-3 days'))],
-    ];
-
-    $automatizaciones_lista = [
-        (object) ['id' => 1, 'nombre' => 'Bienvenida Nuevos', 'trigger_tipo' => 'suscripcion', 'estado' => 'activa', 'total_inscritos' => 456, 'total_completados' => 423],
-        (object) ['id' => 2, 'nombre' => 'Recordatorio Inactivos', 'trigger_tipo' => 'inactividad', 'estado' => 'activa', 'total_inscritos' => 234, 'total_completados' => 189],
-        (object) ['id' => 3, 'nombre' => 'Cumpleaños', 'trigger_tipo' => 'fecha', 'estado' => 'activa', 'total_inscritos' => 89, 'total_completados' => 89],
-        (object) ['id' => 4, 'nombre' => 'Post-Compra', 'trigger_tipo' => 'evento', 'estado' => 'activa', 'total_inscritos' => 167, 'total_completados' => 145],
-        (object) ['id' => 5, 'nombre' => 'Reactivación', 'trigger_tipo' => 'inactividad', 'estado' => 'activa', 'total_inscritos' => 78, 'total_completados' => 34],
-    ];
-
-    $rendimiento_campanias = [
-        (object) ['nombre' => 'Newsletter Marzo', 'total_enviados' => 2145, 'total_abiertos' => 567, 'total_clicks' => 89, 'porcentaje_apertura' => 26.4],
-        (object) ['nombre' => 'Promoción Primavera', 'total_enviados' => 1890, 'total_abiertos' => 523, 'total_clicks' => 156, 'porcentaje_apertura' => 27.7],
-        (object) ['nombre' => 'Actualización Servicios', 'total_enviados' => 2234, 'total_abiertos' => 612, 'total_clicks' => 78, 'porcentaje_apertura' => 27.4],
-        (object) ['nombre' => 'Newsletter Febrero', 'total_enviados' => 2089, 'total_abiertos' => 456, 'total_clicks' => 67, 'porcentaje_apertura' => 21.8],
-        (object) ['nombre' => 'Ofertas Especiales', 'total_enviados' => 1567, 'total_abiertos' => 389, 'total_clicks' => 123, 'porcentaje_apertura' => 24.8],
-    ];
-}
-
 // Preparar datos para gráficos
 $crecimiento_labels = array_map(function($c) {
     return date_i18n('d M', strtotime($c->fecha));
@@ -199,9 +148,9 @@ $tasa_retencion = $total_suscriptores > 0 ? round(($suscriptores_activos / $tota
 
     <hr class="wp-header-end">
 
-    <?php if ($usar_datos_demo): ?>
+    <?php if (!$tabla_listas_existe): ?>
         <div class="notice notice-info">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración. Los datos reales aparecerán cuando haya campañas y suscriptores.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Email Marketing.', 'flavor-chat-ia'); ?></p>
         </div>
     <?php endif; ?>
 

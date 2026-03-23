@@ -15,14 +15,35 @@ if (!defined('ABSPATH')) {
 global $wpdb;
 
 $prefijo_tabla = $wpdb->prefix . 'flavor_transparencia_';
-$tabla_presupuestos = $prefijo_tabla . 'presupuestos';
-$tabla_documentos = $prefijo_tabla . 'documentos_publicos';
+$tabla_presupuestos = '';
+$tablas_presupuestos_candidatas = [
+    $prefijo_tabla . 'presupuestos',
+    $prefijo_tabla . 'presupuesto',
+];
+foreach ($tablas_presupuestos_candidatas as $tabla_candidata) {
+    if (Flavor_Chat_Helpers::tabla_existe($tabla_candidata)) {
+        $tabla_presupuestos = $tabla_candidata;
+        break;
+    }
+}
+
+$tabla_documentos = '';
+$tablas_documentos_candidatas = [
+    $prefijo_tabla . 'documentos_publicos',
+    $prefijo_tabla . 'documentos',
+];
+foreach ($tablas_documentos_candidatas as $tabla_candidata) {
+    if (Flavor_Chat_Helpers::tabla_existe($tabla_candidata)) {
+        $tabla_documentos = $tabla_candidata;
+        break;
+    }
+}
 
 // Verificar que la tabla existe
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_presupuestos)) {
+if ($tabla_presupuestos === '') {
     echo '<div class="transparencia-aviso transparencia-aviso--info">';
     echo '<span class="dashicons dashicons-info"></span>';
-    echo '<p>' . esc_html__('El sistema de presupuestos no esta disponible en este momento.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Todavía no hay presupuestos cargados en esta instalación.', 'flavor-chat-ia') . '</p>';
     echo '</div>';
     return;
 }
@@ -45,7 +66,7 @@ $ejercicios = $wpdb->get_results(
 
 // Obtener documentos de presupuestos (para descargas)
 $documentos_presupuestos = [];
-if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+if ($tabla_documentos !== '') {
     $docs = $wpdb->get_results(
         "SELECT id, titulo, periodo, archivo_url, fecha_publicacion
          FROM $tabla_documentos
@@ -188,7 +209,7 @@ $ejercicio_actual = date('Y');
                 </div>
 
                 <footer class="transparencia-ejercicio-card__footer">
-                    <a href="<?php echo esc_url(add_query_arg('ejercicio', $ejercicio_data->ejercicio, home_url('/transparencia/presupuesto/'))); ?>" class="transparencia-btn transparencia-btn--outline transparencia-btn--sm">
+                    <a href="<?php echo esc_url(add_query_arg('ejercicio', $ejercicio_data->ejercicio, home_url('/mi-portal/transparencia/presupuesto/'))); ?>" class="transparencia-btn transparencia-btn--outline transparencia-btn--sm">
                         <span class="dashicons dashicons-visibility"></span>
                         <?php esc_html_e('Ver detalle', 'flavor-chat-ia'); ?>
                     </a>

@@ -192,6 +192,12 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        if (!$this->is_experimental_enabled()) {
+            // Aviso de módulo experimental deshabilitado (comentado para no mostrar)
+            // add_action('admin_notices', [$this, 'render_experimental_disabled_notice']);
+            return;
+        }
+
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'maybe_create_tables']);
         $this->cargar_clases_auxiliares();
@@ -250,6 +256,42 @@ class Flavor_Chat_Trading_IA_Module extends Flavor_Chat_Module_Base {
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
         $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Permite activar módulos experimentales por módulo o de forma global.
+     *
+     * @return bool
+     */
+    private function is_experimental_enabled() {
+        $settings = get_option('flavor_chat_ia_settings', []);
+        $global_enabled = !empty($settings['enable_experimental_modules']);
+        $module_enabled = !empty($settings['experimental_modules'])
+            && is_array($settings['experimental_modules'])
+            && in_array($this->id, $settings['experimental_modules'], true);
+
+        return $global_enabled || $module_enabled;
+    }
+
+    /**
+     * Aviso de módulo experimental deshabilitado.
+     *
+     * @return void
+     */
+    public function render_experimental_disabled_notice() {
+        if (!is_admin() || !current_user_can('manage_options')) {
+            return;
+        }
+
+        static $shown = false;
+        if ($shown) {
+            return;
+        }
+        $shown = true;
+
+        echo '<div class="notice notice-warning"><p>';
+        echo esc_html__('Trading IA está deshabilitado por defecto por ser un módulo experimental. Actívalo en ajustes avanzados si quieres usarlo.', 'flavor-chat-ia');
+        echo '</p></div>';
     }
 
     /**

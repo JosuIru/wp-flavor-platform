@@ -735,7 +735,54 @@ class Flavor_Layout_Registry {
             'footerSettings' => $this->get_footer_settings($active_layout['footer']),
         ]);
 
+        // Inyectar CSS dinámico con colores personalizados
+        $this->inject_dynamic_css();
+
         // Note: flavorLayouts is localized by Flavor_Layout_Forms with AJAX data
+    }
+
+    /**
+     * Inyecta CSS dinámico con colores personalizados desde la configuración
+     */
+    private function inject_dynamic_css() {
+        $settings = get_option('flavor_layout_settings', []);
+
+        $header_bg = $settings['header_bg_color'] ?? '#1e40af';
+        $header_text = $settings['header_text_color'] ?? '#ffffff';
+        $footer_bg = $settings['footer_bg_color'] ?? '#0f172a';
+        $footer_text = $settings['footer_text_color'] ?? '#94a3b8';
+
+        $dynamic_css = "
+            :root {
+                --flavor-header-bg: {$header_bg};
+                --flavor-header-text: {$header_text};
+                --flavor-footer-bg: {$footer_bg};
+                --flavor-footer-text: {$footer_text};
+            }
+            .flavor-header,
+            .flavor-menu {
+                background-color: {$header_bg} !important;
+                color: {$header_text} !important;
+            }
+            .flavor-menu a,
+            .flavor-menu__nav a,
+            .flavor-menu__link,
+            .flavor-menu__toggle-bar {
+                color: {$header_text} !important;
+            }
+            .flavor-menu__toggle-bar {
+                background-color: {$header_text} !important;
+            }
+            .flavor-footer {
+                background-color: {$footer_bg} !important;
+                color: {$footer_text} !important;
+            }
+            .flavor-footer a {
+                color: {$footer_text} !important;
+            }
+        ";
+
+        wp_add_inline_style('flavor-layouts', $dynamic_css);
     }
 
     /**

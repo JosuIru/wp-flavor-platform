@@ -95,6 +95,8 @@ class Flavor_Addon_Updater {
      * @return void
      */
     public function register_addon($slug, $archivo_principal, $version_actual, $config = []) {
+        $archivo_principal = is_string($archivo_principal) ? trim($archivo_principal) : '';
+
         $defaults = [
             'slug' => $slug,
             'file' => $archivo_principal,
@@ -104,7 +106,10 @@ class Flavor_Addon_Updater {
             'beta' => false, // Si acepta versiones beta
         ];
 
-        $this->addons_actualizables[$slug] = wp_parse_args($config, $defaults);
+        $addon_config = wp_parse_args($config, $defaults);
+        $addon_config['file'] = is_string($addon_config['file']) ? trim($addon_config['file']) : '';
+
+        $this->addons_actualizables[$slug] = $addon_config;
     }
 
     /**
@@ -131,7 +136,16 @@ class Flavor_Addon_Updater {
 
                 // Verificar si hay nueva versión
                 if (version_compare($addon['version'], $update['version'], '<')) {
-                    $plugin_file = plugin_basename($addon['file']);
+                    $addon_file = isset($addon['file']) && is_string($addon['file']) ? trim($addon['file']) : '';
+                    if ($addon_file === '') {
+                        flavor_chat_ia_log(
+                            sprintf('Addon updater omitido para "%s": file inválido o vacío', $slug),
+                            'warning'
+                        );
+                        continue;
+                    }
+
+                    $plugin_file = plugin_basename($addon_file);
 
                     $transient->response[$plugin_file] = (object) [
                         'slug' => $slug,

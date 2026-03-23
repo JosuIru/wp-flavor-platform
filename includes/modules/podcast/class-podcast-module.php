@@ -2710,6 +2710,11 @@ KNOWLEDGE;
                     'titulo'   => __('Programas', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_admin_programas'],
                 ],
+                [
+                    'slug'     => 'podcast-config',
+                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_configuracion'],
+                ],
             ],
         ];
     }
@@ -3772,6 +3777,13 @@ KNOWLEDGE;
      * Registra las páginas de administración del módulo
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Páginas ocultas (sin menú visible en el sidebar)
@@ -3808,6 +3820,16 @@ KNOWLEDGE;
             if (class_exists('Flavor_Podcast_Dashboard_Tab')) {
                 Flavor_Podcast_Dashboard_Tab::get_instance();
             }
+        }
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_admin_configuracion() {
+        $views_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($views_path)) {
+            include $views_path;
         }
     }
 }

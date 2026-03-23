@@ -90,8 +90,12 @@ class Flavor_GC_Membership {
         add_action('init', [$this, 'crear_tabla_solicitudes'], 5);
 
         // Registrar shortcodes
-        add_shortcode('gc_formulario_union', [$this, 'shortcode_formulario_union']);
-        add_shortcode('gc_grupos_lista', [$this, 'shortcode_grupos_lista']);
+        if (!shortcode_exists('gc_formulario_union')) {
+            add_shortcode('gc_formulario_union', [$this, 'shortcode_formulario_union']);
+        }
+        if (!shortcode_exists('gc_grupos_lista')) {
+            add_shortcode('gc_grupos_lista', [$this, 'shortcode_grupos_lista']);
+        }
 
         // AJAX handlers (publico y privado)
         add_action('wp_ajax_gc_solicitar_union', [$this, 'ajax_solicitar_union']);

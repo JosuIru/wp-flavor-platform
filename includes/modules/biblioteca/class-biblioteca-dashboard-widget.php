@@ -62,10 +62,10 @@ class Flavor_Biblioteca_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
 
         if ($this->table_exists($tabla_libros)) {
             $total_libros = (int) $wpdb->get_var(
-                "SELECT COUNT(*) FROM {$tabla_libros} WHERE estado != 'eliminado'"
+                "SELECT COUNT(*) FROM {$tabla_libros} WHERE disponibilidad != 'no_disponible'"
             );
             $libros_disponibles = (int) $wpdb->get_var(
-                "SELECT COUNT(*) FROM {$tabla_libros} WHERE estado = 'disponible'"
+                "SELECT COUNT(*) FROM {$tabla_libros} WHERE disponibilidad = 'disponible'"
             );
         }
 
@@ -130,10 +130,10 @@ class Flavor_Biblioteca_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
         }
 
         $libros = $wpdb->get_results($wpdb->prepare(
-            "SELECT id, titulo, autor, estado
+            "SELECT id, titulo, autor, disponibilidad
              FROM {$tabla_libros}
-             WHERE estado != 'eliminado'
-             ORDER BY fecha_creacion DESC LIMIT %d",
+             WHERE disponibilidad != 'no_disponible'
+             ORDER BY fecha_agregado DESC LIMIT %d",
             $limite
         ));
 
@@ -146,7 +146,7 @@ class Flavor_Biblioteca_Dashboard_Widget extends Flavor_Dashboard_Widget_Base {
                 'title' => wp_trim_words($libro->titulo, 4, '...'),
                 'meta' => $libro->autor ?: '',
                 'url' => $es_admin ? admin_url('admin.php?page=biblioteca&libro=' . $libro->id) : home_url('/mi-portal/biblioteca/libro/' . $libro->id . '/'),
-                'badge' => $libro->estado === 'disponible' ? __('Disponible', 'flavor-chat-ia') : null,
+                'badge' => $libro->disponibilidad === 'disponible' ? __('Disponible', 'flavor-chat-ia') : null,
             ];
         }
 

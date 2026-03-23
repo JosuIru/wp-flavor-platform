@@ -623,7 +623,7 @@ class _PropuestaDetalleScreenState
     try {
       final idPropuesta = widget.datosPropuesta['id'];
       final clienteApi = ref.read(apiClientProvider);
-      final respuesta = await clienteApi.post('/presupuestos/propuestas/$idPropuesta/apoyar');
+      final respuesta = await clienteApi.post('/presupuestos/propuestas/$idPropuesta/apoyar', data: {});
 
       if (!mounted) return;
 

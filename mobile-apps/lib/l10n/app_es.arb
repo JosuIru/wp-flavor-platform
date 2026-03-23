@@ -1661,5 +1661,69 @@
   "huertosBenefits1": "Cultiva tus propios alimentos orgánicos",
   "huertosBenefits2": "Conecta con la comunidad",
   "huertosBenefits3": "Aprende técnicas de agricultura sostenible",
-  "reciclajeCO2Saved": "CO₂ Ahorrado"
+  "reciclajeCO2Saved": "CO₂ Ahorrado",
+  "adminDrawerSectionNavigation": "Navegación",
+  "adminDrawerSectionManagement": "Gestión",
+  "adminDrawerManualCustomers": "Clientes manuales",
+  "networkExploreTitle": "Explorar Red",
+  "networkExploreSubtitle": "Descubrir comunidades cercanas",
+  "networkAddCommunityTitle": "Añadir Comunidad",
+  "networkDirectoryTab": "Directorio",
+  "networkNearbyTab": "Cercanas",
+  "networkSavedTab": "Guardadas",
+  "networkSearchHint": "Buscar comunidades...",
+  "networkNoResults": "No se encontraron comunidades",
+  "networkNearbyEmpty": "No hay comunidades cercanas",
+  "networkNearbyRequiresLocation": "Activa la ubicación para ver comunidades cercanas",
+  "networkSavedEmpty": "No tienes comunidades guardadas",
+  "networkAddToSaved": "Añadir a guardadas",
+  "networkRemoveFromSaved": "Eliminar de guardadas",
+  "networkConnect": "Conectar",
+  "networkDistance": "{km} km",
+  "@networkDistance": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "networkMembers": "{count} miembros",
+  "@networkMembers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkConnectionVerified": "Conexión verificada",
+  "networkConnectionError": "Error de conexión: verificar URL",
+  "networkCommunityAdded": "Comunidad añadida correctamente",
+  "networkVerifyConnection": "Verificar conexión",
+
+  "commonLogin": "Iniciar sesión",
+  "commonLoading": "Cargando...",
+  "commonOk": "Aceptar",
+  "loginSubtitle": "Inicia sesión para acceder a todas las funcionalidades",
+  "loginUsernameLabel": "Usuario o email",
+  "loginUsernameHint": "tu@email.com",
+  "loginUsernameRequired": "El usuario es requerido",
+  "loginPasswordLabel": "Contraseña",
+  "loginPasswordRequired": "La contraseña es requerida",
+  "loginNeedHelp": "¿Necesitas ayuda para acceder?",
+  "loginInfoText": "Usa las mismas credenciales que usas para acceder al sitio web de la comunidad.",
+  "loginHelpTitle": "Ayuda para iniciar sesión",
+  "loginHelpContent": "Si no tienes cuenta, puedes registrarte en el sitio web de la comunidad. Si olvidaste tu contraseña, usa la opción 'Olvidé mi contraseña' en el sitio web.",
+  "loginSuccess": "Sesión iniciada correctamente",
+  "loginLogout": "Cerrar sesión",
+  "loginLogoutConfirm": "¿Estás seguro de que quieres cerrar sesión?",
+  "loginLogoutSuccess": "Sesión cerrada",
+  "loginRequired": "Debes iniciar sesión para acceder a esta función",
+  "loginWelcome": "Bienvenido, {name}",
+  "@loginWelcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

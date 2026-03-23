@@ -9,6 +9,40 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Encolar estilos del módulo
+wp_enqueue_style(
+    'flavor-biodiversidad-local',
+    FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+    [],
+    FLAVOR_CHAT_IA_VERSION
+);
+
+// Fallback: asegurar JS del módulo cuando este template se renderiza fuera del shortcode principal.
+if (!wp_script_is('flavor-biodiversidad', 'registered')) {
+    wp_register_script(
+        'flavor-biodiversidad',
+        FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/js/biodiversidad-local.js',
+        ['jquery'],
+        FLAVOR_CHAT_IA_VERSION,
+        true
+    );
+}
+if (!wp_script_is('flavor-biodiversidad', 'enqueued')) {
+    wp_enqueue_script('flavor-biodiversidad');
+}
+wp_localize_script('flavor-biodiversidad', 'flavorBiodiversidad', [
+    'ajaxurl' => admin_url('admin-ajax.php'),
+    'nonce' => wp_create_nonce('biodiversidad_nonce'),
+    'categorias' => Flavor_Chat_Biodiversidad_Local_Module::CATEGORIAS_ESPECIES,
+    'estados' => Flavor_Chat_Biodiversidad_Local_Module::ESTADOS_CONSERVACION,
+    'habitats' => Flavor_Chat_Biodiversidad_Local_Module::TIPOS_HABITAT,
+    'i18n' => [
+        'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+        'success' => __('Operación completada', 'flavor-chat-ia'),
+        'confirm_avistamiento' => __('¿Registrar este avistamiento?', 'flavor-chat-ia'),
+    ],
+]);
+
 $tipos_proyecto = Flavor_Chat_Biodiversidad_Local_Module::TIPOS_PROYECTO;
 $user_id = get_current_user_id();
 
@@ -125,7 +159,8 @@ $proyectos = get_posts([
     <!-- Tab: Crear Proyecto -->
     <?php if (is_user_logged_in()) : ?>
     <div id="tab-crear" class="bl-tab-contenido" style="display: none;">
-        <form class="bl-form bl-form-proyecto">
+        <form class="bl-form bl-form-proyecto" method="post">
+            <input type="hidden" name="bl_nonce" value="<?php echo esc_attr(wp_create_nonce('biodiversidad_nonce')); ?>">
             <div class="bl-form-grupo">
                 <label for="bl-proyecto-titulo"><?php esc_html_e('Nombre del proyecto', 'flavor-chat-ia'); ?> *</label>
                 <input type="text" name="titulo" id="bl-proyecto-titulo" required

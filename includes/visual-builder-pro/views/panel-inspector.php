@@ -1434,6 +1434,34 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <!-- ========== ACCORDION ========== -->
                 <template x-if="selectedElement.type === 'accordion'">
                     <div class="vbp-inspector-section">
+                        <!-- Campos de cabecera de sección -->
+                        <div class="vbp-section-header-fields">
+                            <h4 class="vbp-section-title"><?php esc_html_e( '📋 Cabecera de Sección', 'flavor-chat-ia' ); ?></h4>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Título de sección', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.titulo" @input="updateElementData('titulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Título opcional', 'flavor-chat-ia' ); ?>">
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.subtitulo" @input="updateElementData('subtitulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Subtítulo opcional', 'flavor-chat-ia' ); ?>">
+                            </div>
+                            <div class="vbp-field-row">
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Color título', 'flavor-chat-ia' ); ?></label>
+                                    <input type="color" :value="normalizeColorForInput(selectedElement.data.titulo_color, '#ffffff')" @input="updateElementData('titulo_color', $event.target.value)" class="vbp-field-color">
+                                </div>
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Color subtítulo', 'flavor-chat-ia' ); ?></label>
+                                    <input type="color" :value="normalizeColorForInput(selectedElement.data.subtitulo_color, '#9CA3AF')" @input="updateElementData('subtitulo_color', $event.target.value)" class="vbp-field-color">
+                                </div>
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Color de fondo', 'flavor-chat-ia' ); ?></label>
+                                <input type="color" :value="normalizeColorForInput(selectedElement.data.color_fondo, '#0f0f0f')" @input="updateElementData('color_fondo', $event.target.value)" class="vbp-field-color">
+                            </div>
+                        </div>
+
+                        <h4 class="vbp-section-title"><?php esc_html_e( '⚙️ Configuración', 'flavor-chat-ia' ); ?></h4>
                         <div class="vbp-field-group">
                             <label class="vbp-checkbox-label">
                                 <input type="checkbox" x-model="selectedElement.data.multiples_abiertos" @change="updateElementData('multiples_abiertos', selectedElement.data.multiples_abiertos)">
@@ -1483,6 +1511,34 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <!-- ========== TABS ========== -->
                 <template x-if="selectedElement.type === 'tabs'">
                     <div class="vbp-inspector-section">
+                        <!-- Campos de cabecera de sección -->
+                        <div class="vbp-section-header-fields">
+                            <h4 class="vbp-section-title"><?php esc_html_e( '📋 Cabecera de Sección', 'flavor-chat-ia' ); ?></h4>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Título de sección', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.titulo" @input="updateElementData('titulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Título opcional', 'flavor-chat-ia' ); ?>">
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.subtitulo" @input="updateElementData('subtitulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Subtítulo opcional', 'flavor-chat-ia' ); ?>">
+                            </div>
+                            <div class="vbp-field-row">
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Color título', 'flavor-chat-ia' ); ?></label>
+                                    <input type="color" :value="normalizeColorForInput(selectedElement.data.titulo_color, '#ffffff')" @input="updateElementData('titulo_color', $event.target.value)" class="vbp-field-color">
+                                </div>
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Color subtítulo', 'flavor-chat-ia' ); ?></label>
+                                    <input type="color" :value="normalizeColorForInput(selectedElement.data.subtitulo_color, '#9CA3AF')" @input="updateElementData('subtitulo_color', $event.target.value)" class="vbp-field-color">
+                                </div>
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Color de fondo', 'flavor-chat-ia' ); ?></label>
+                                <input type="color" :value="normalizeColorForInput(selectedElement.data.color_fondo, '#0f0f0f')" @input="updateElementData('color_fondo', $event.target.value)" class="vbp-field-color">
+                            </div>
+                        </div>
+
+                        <h4 class="vbp-section-title"><?php esc_html_e( '⚙️ Configuración', 'flavor-chat-ia' ); ?></h4>
                         <div class="vbp-field-group">
                             <label class="vbp-field-label"><?php esc_html_e( 'Estilo', 'flavor-chat-ia' ); ?></label>
                             <select x-model="selectedElement.data.estilo" @change="updateElementData('estilo', $event.target.value)" class="vbp-field-select">
@@ -1515,6 +1571,223 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <div class="vbp-field-group">
                                             <label class="vbp-field-label"><?php esc_html_e( 'Contenido', 'flavor-chat-ia' ); ?></label>
                                             <textarea x-model="item.contenido" @input="updateItem(index, 'contenido', $event.target.value)" class="vbp-field-textarea" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- ========== TIMELINE ========== -->
+                <template x-if="selectedElement.type === 'timeline'">
+                    <div class="vbp-inspector-section">
+                        <!-- Campos de cabecera de sección -->
+                        <div class="vbp-section-header-fields">
+                            <h4 class="vbp-section-title"><?php esc_html_e( '📋 Cabecera de Sección', 'flavor-chat-ia' ); ?></h4>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Título de sección', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.titulo" @input="updateElementData('titulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Ej: Nuestra Historia', 'flavor-chat-ia' ); ?>">
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.subtitulo" @input="updateElementData('subtitulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Descripción breve', 'flavor-chat-ia' ); ?>">
+                            </div>
+                            <div class="vbp-field-row">
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Color título', 'flavor-chat-ia' ); ?></label>
+                                    <input type="color" :value="normalizeColorForInput(selectedElement.data.titulo_color, '#ffffff')" @input="updateElementData('titulo_color', $event.target.value)" class="vbp-field-color">
+                                </div>
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Color subtítulo', 'flavor-chat-ia' ); ?></label>
+                                    <input type="color" :value="normalizeColorForInput(selectedElement.data.subtitulo_color, '#9CA3AF')" @input="updateElementData('subtitulo_color', $event.target.value)" class="vbp-field-color">
+                                </div>
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Color de fondo', 'flavor-chat-ia' ); ?></label>
+                                <input type="color" :value="normalizeColorForInput(selectedElement.data.color_fondo, '#1f2937')" @input="updateElementData('color_fondo', $event.target.value)" class="vbp-field-color">
+                            </div>
+                        </div>
+
+                        <h4 class="vbp-section-title"><?php esc_html_e( '🎨 Estilo de Línea', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Color línea', 'flavor-chat-ia' ); ?></label>
+                                <input type="color" :value="normalizeColorForInput(selectedElement.data.color_linea, '#dc2626')" @input="updateElementData('color_linea', $event.target.value)" class="vbp-field-color">
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Color marcador', 'flavor-chat-ia' ); ?></label>
+                                <input type="color" :value="normalizeColorForInput(selectedElement.data.color_marcador, '#dc2626')" @input="updateElementData('color_marcador', $event.target.value)" class="vbp-field-color">
+                            </div>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" x-model="selectedElement.data.animacion_scroll" @change="updateElementData('animacion_scroll', selectedElement.data.animacion_scroll)">
+                                <?php esc_html_e( 'Animar al hacer scroll', 'flavor-chat-ia' ); ?>
+                            </label>
+                        </div>
+
+                        <div class="vbp-items-header">
+                            <h4 class="vbp-section-title"><?php esc_html_e( '📅 Eventos', 'flavor-chat-ia' ); ?></h4>
+                            <button type="button" @click="addItem('timeline')" class="vbp-btn-add">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                            </button>
+                        </div>
+                        <div class="vbp-items-list">
+                            <template x-for="(item, index) in selectedElement.data.eventos" :key="index">
+                                <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
+                                    <div class="vbp-item-header" @click="toggleItemEdit(index)">
+                                        <span class="vbp-item-icon">📍</span>
+                                        <span class="vbp-item-title vbp-item-title-truncate">
+                                            <strong x-text="item.fecha || '<?php esc_attr_e( 'Fecha', 'flavor-chat-ia' ); ?>'"></strong>
+                                            <span x-text="' - ' + (item.titulo || '<?php esc_attr_e( 'Evento', 'flavor-chat-ia' ); ?>')"></span>
+                                        </span>
+                                        <div class="vbp-item-actions">
+                                            <button type="button" @click.stop="moveItem(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
+                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === selectedElement.data.eventos.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="removeItem(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
+                                        </div>
+                                    </div>
+                                    <div class="vbp-item-content" x-show="editingItemIndex === index" x-collapse>
+                                        <div class="vbp-field-group">
+                                            <label class="vbp-field-label"><?php esc_html_e( 'Fecha/Año', 'flavor-chat-ia' ); ?></label>
+                                            <input type="text" x-model="item.fecha" @input="updateItem(index, 'fecha', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Ej: 2019', 'flavor-chat-ia' ); ?>">
+                                        </div>
+                                        <div class="vbp-field-group">
+                                            <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                                            <input type="text" x-model="item.titulo" @input="updateItem(index, 'titulo', $event.target.value)" class="vbp-field-input">
+                                        </div>
+                                        <div class="vbp-field-group">
+                                            <label class="vbp-field-label"><?php esc_html_e( 'Descripción', 'flavor-chat-ia' ); ?></label>
+                                            <textarea x-model="item.descripcion" @input="updateItem(index, 'descripcion', $event.target.value)" class="vbp-field-textarea" rows="3"></textarea>
+                                        </div>
+                                        <div class="vbp-field-group">
+                                            <label class="vbp-field-label"><?php esc_html_e( 'Icono', 'flavor-chat-ia' ); ?></label>
+                                            <input type="text" x-model="item.icono" @input="updateItem(index, 'icono', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Nombre del icono', 'flavor-chat-ia' ); ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- ========== CAROUSEL ========== -->
+                <template x-if="selectedElement.type === 'carousel'">
+                    <div class="vbp-inspector-section">
+                        <!-- Campos de cabecera de sección -->
+                        <div class="vbp-section-header-fields">
+                            <h4 class="vbp-section-title"><?php esc_html_e( '📋 Cabecera de Sección', 'flavor-chat-ia' ); ?></h4>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Título de sección', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.titulo" @input="updateElementData('titulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Título opcional', 'flavor-chat-ia' ); ?>">
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.subtitulo" @input="updateElementData('subtitulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Subtítulo opcional', 'flavor-chat-ia' ); ?>">
+                            </div>
+                            <div class="vbp-field-row">
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Color título', 'flavor-chat-ia' ); ?></label>
+                                    <input type="color" :value="normalizeColorForInput(selectedElement.data.titulo_color, '#ffffff')" @input="updateElementData('titulo_color', $event.target.value)" class="vbp-field-color">
+                                </div>
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Color subtítulo', 'flavor-chat-ia' ); ?></label>
+                                    <input type="color" :value="normalizeColorForInput(selectedElement.data.subtitulo_color, '#9CA3AF')" @input="updateElementData('subtitulo_color', $event.target.value)" class="vbp-field-color">
+                                </div>
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Color de fondo', 'flavor-chat-ia' ); ?></label>
+                                <input type="color" :value="normalizeColorForInput(selectedElement.data.color_fondo, '#0f0f0f')" @input="updateElementData('color_fondo', $event.target.value)" class="vbp-field-color">
+                            </div>
+                        </div>
+
+                        <h4 class="vbp-section-title"><?php esc_html_e( '⚙️ Configuración', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-group">
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" x-model="selectedElement.data.autoplay" @change="updateElementData('autoplay', selectedElement.data.autoplay)">
+                                <?php esc_html_e( 'Autoplay', 'flavor-chat-ia' ); ?>
+                            </label>
+                        </div>
+                        <div class="vbp-field-group" x-show="selectedElement.data.autoplay">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Intervalo (segundos)', 'flavor-chat-ia' ); ?></label>
+                            <input type="number" x-model="selectedElement.data.intervalo" @input="updateElementData('intervalo', parseInt($event.target.value) || 5)" class="vbp-field-input" min="1" max="30">
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-checkbox-label">
+                                    <input type="checkbox" x-model="selectedElement.data.mostrar_flechas" @change="updateElementData('mostrar_flechas', selectedElement.data.mostrar_flechas)">
+                                    <?php esc_html_e( 'Flechas', 'flavor-chat-ia' ); ?>
+                                </label>
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-checkbox-label">
+                                    <input type="checkbox" x-model="selectedElement.data.mostrar_dots" @change="updateElementData('mostrar_dots', selectedElement.data.mostrar_dots)">
+                                    <?php esc_html_e( 'Indicadores', 'flavor-chat-ia' ); ?>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-checkbox-label">
+                                    <input type="checkbox" x-model="selectedElement.data.loop" @change="updateElementData('loop', selectedElement.data.loop)">
+                                    <?php esc_html_e( 'Loop infinito', 'flavor-chat-ia' ); ?>
+                                </label>
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Slides visibles', 'flavor-chat-ia' ); ?></label>
+                                <input type="number" x-model="selectedElement.data.slides_visibles" @input="updateElementData('slides_visibles', parseInt($event.target.value) || 1)" class="vbp-field-input" min="1" max="6">
+                            </div>
+                        </div>
+
+                        <div class="vbp-items-header">
+                            <h4 class="vbp-section-title"><?php esc_html_e( '🖼️ Slides', 'flavor-chat-ia' ); ?></h4>
+                            <button type="button" @click="addItem('carousel')" class="vbp-btn-add">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                            </button>
+                        </div>
+                        <div class="vbp-items-list">
+                            <template x-for="(item, index) in selectedElement.data.items" :key="index">
+                                <div class="vbp-item-card" :class="{ 'active': editingItemIndex === index }">
+                                    <div class="vbp-item-header" @click="toggleItemEdit(index)">
+                                        <span class="vbp-item-icon">🖼️</span>
+                                        <span class="vbp-item-title vbp-item-title-truncate" x-text="item.titulo || '<?php esc_attr_e( 'Slide', 'flavor-chat-ia' ); ?> ' + (index + 1)"></span>
+                                        <div class="vbp-item-actions">
+                                            <button type="button" @click.stop="moveItem(index, -1)" :disabled="index === 0" class="vbp-btn-icon-xs">↑</button>
+                                            <button type="button" @click.stop="moveItem(index, 1)" :disabled="index === selectedElement.data.items.length - 1" class="vbp-btn-icon-xs">↓</button>
+                                            <button type="button" @click.stop="removeItem(index)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
+                                        </div>
+                                    </div>
+                                    <div class="vbp-item-content" x-show="editingItemIndex === index" x-collapse>
+                                        <div class="vbp-field-group">
+                                            <label class="vbp-field-label"><?php esc_html_e( 'Imagen', 'flavor-chat-ia' ); ?></label>
+                                            <div class="vbp-image-field">
+                                                <template x-if="item.imagen">
+                                                    <div class="vbp-image-preview">
+                                                        <img :src="item.imagen" alt="">
+                                                        <button type="button" @click="updateItem(index, 'imagen', '')" class="vbp-btn-remove-image">×</button>
+                                                    </div>
+                                                </template>
+                                                <button type="button" @click="openMediaLibraryForItem(index, 'imagen')" class="vbp-btn-secondary vbp-btn-sm">
+                                                    <?php esc_html_e( 'Seleccionar imagen', 'flavor-chat-ia' ); ?>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="vbp-field-group">
+                                            <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                                            <input type="text" x-model="item.titulo" @input="updateItem(index, 'titulo', $event.target.value)" class="vbp-field-input">
+                                        </div>
+                                        <div class="vbp-field-group">
+                                            <label class="vbp-field-label"><?php esc_html_e( 'Descripción', 'flavor-chat-ia' ); ?></label>
+                                            <textarea x-model="item.descripcion" @input="updateItem(index, 'descripcion', $event.target.value)" class="vbp-field-textarea" rows="3"></textarea>
+                                        </div>
+                                        <div class="vbp-field-group">
+                                            <label class="vbp-field-label"><?php esc_html_e( 'URL del enlace', 'flavor-chat-ia' ); ?></label>
+                                            <input type="text" x-model="item.enlace_url" @input="updateItem(index, 'enlace_url', $event.target.value)" class="vbp-field-input" placeholder="https://...">
+                                        </div>
+                                        <div class="vbp-field-group">
+                                            <label class="vbp-field-label"><?php esc_html_e( 'Texto del enlace', 'flavor-chat-ia' ); ?></label>
+                                            <input type="text" x-model="item.enlace_texto" @input="updateItem(index, 'enlace_texto', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Ver más', 'flavor-chat-ia' ); ?>">
                                         </div>
                                     </div>
                                 </div>
@@ -1723,11 +1996,48 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <!-- ========== COLUMNS/ROW ========== -->
                 <template x-if="selectedElement.type === 'columns' || selectedElement.type === 'row'">
                     <div class="vbp-inspector-section">
+                        <!-- Presets rápidos -->
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Presets de layout', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-layout-presets">
+                                <!-- 2 columnas -->
+                                <button type="button" @click="applyColumnPreset([50, 50])" class="vbp-layout-preset" title="50% / 50%">
+                                    <div class="vbp-preset-preview"><span style="flex: 1"></span><span style="flex: 1"></span></div>
+                                </button>
+                                <button type="button" @click="applyColumnPreset([33, 67])" class="vbp-layout-preset" title="33% / 67%">
+                                    <div class="vbp-preset-preview"><span style="flex: 1"></span><span style="flex: 2"></span></div>
+                                </button>
+                                <button type="button" @click="applyColumnPreset([67, 33])" class="vbp-layout-preset" title="67% / 33%">
+                                    <div class="vbp-preset-preview"><span style="flex: 2"></span><span style="flex: 1"></span></div>
+                                </button>
+                                <button type="button" @click="applyColumnPreset([25, 75])" class="vbp-layout-preset" title="25% / 75%">
+                                    <div class="vbp-preset-preview"><span style="flex: 1"></span><span style="flex: 3"></span></div>
+                                </button>
+                                <button type="button" @click="applyColumnPreset([75, 25])" class="vbp-layout-preset" title="75% / 25%">
+                                    <div class="vbp-preset-preview"><span style="flex: 3"></span><span style="flex: 1"></span></div>
+                                </button>
+                                <!-- 3 columnas -->
+                                <button type="button" @click="applyColumnPreset([33, 33, 34])" class="vbp-layout-preset" title="33% / 33% / 33%">
+                                    <div class="vbp-preset-preview"><span style="flex: 1"></span><span style="flex: 1"></span><span style="flex: 1"></span></div>
+                                </button>
+                                <button type="button" @click="applyColumnPreset([25, 50, 25])" class="vbp-layout-preset" title="25% / 50% / 25%">
+                                    <div class="vbp-preset-preview"><span style="flex: 1"></span><span style="flex: 2"></span><span style="flex: 1"></span></div>
+                                </button>
+                                <button type="button" @click="applyColumnPreset([20, 60, 20])" class="vbp-layout-preset" title="20% / 60% / 20%">
+                                    <div class="vbp-preset-preview"><span style="flex: 1"></span><span style="flex: 3"></span><span style="flex: 1"></span></div>
+                                </button>
+                                <!-- 4 columnas -->
+                                <button type="button" @click="applyColumnPreset([25, 25, 25, 25])" class="vbp-layout-preset" title="4 columnas iguales">
+                                    <div class="vbp-preset-preview"><span style="flex: 1"></span><span style="flex: 1"></span><span style="flex: 1"></span><span style="flex: 1"></span></div>
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="vbp-field-group">
                             <label class="vbp-field-label"><?php esc_html_e( 'Número de columnas', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-btn-group vbp-btn-group-full">
                                 <template x-for="n in [2, 3, 4, 5, 6]">
-                                    <button type="button" @click="updateColumnsCount(n)" :class="{ 'active': selectedElement.data.columns === n }" class="vbp-btn-toggle" x-text="n"></button>
+                                    <button type="button" @click="updateColumnsCount(n)" :class="{ 'active': (selectedElement.data.columnas || selectedElement.data.columns || 2) == n }" class="vbp-btn-toggle" x-text="n"></button>
                                 </template>
                             </div>
                         </div>
@@ -1742,10 +2052,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <input type="range"
                                                min="10"
                                                max="80"
-                                               :value="parseFloat(width) || (100 / selectedElement.data.columns)"
+                                               :value="parseFloat(width) || (100 / (selectedElement.data.columnas || selectedElement.data.columns || 2))"
                                                @input="updateColumnWidth(index, $event.target.value)"
                                                class="vbp-field-range vbp-field-range-sm">
-                                        <span class="vbp-column-width-value" x-text="Math.round(parseFloat(width) || (100 / selectedElement.data.columns)) + '%'"></span>
+                                        <span class="vbp-column-width-value" x-text="Math.round(parseFloat(width) || (100 / (selectedElement.data.columnas || selectedElement.data.columns || 2))) + '%'"></span>
                                     </div>
                                 </template>
                             </div>
@@ -1791,6 +2101,89 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <?php esc_html_e( 'Apilar en móvil', 'flavor-chat-ia' ); ?>
                             </label>
                         </div>
+
+                        <!-- Acciones de columnas -->
+                        <div class="vbp-columns-actions">
+                            <button type="button" @click="reverseColumns()" class="vbp-btn vbp-btn-secondary vbp-btn-sm" title="<?php esc_attr_e( 'Invertir orden de columnas', 'flavor-chat-ia' ); ?>">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"/></svg>
+                                <?php esc_html_e( 'Invertir', 'flavor-chat-ia' ); ?>
+                            </button>
+                            <button type="button" @click="resetColumnWidths()" class="vbp-btn vbp-btn-secondary vbp-btn-sm" title="<?php esc_attr_e( 'Igualar anchos de columnas', 'flavor-chat-ia' ); ?>">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12H3m18 0l-4-4m4 4l-4 4M3 12l4-4m-4 4l4 4"/></svg>
+                                <?php esc_html_e( 'Igualar', 'flavor-chat-ia' ); ?>
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- ========== CONTAINER ========== -->
+                <template x-if="selectedElement.type === 'container'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Ancho máximo', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.data.max_width" @change="updateElementData('max_width', $event.target.value)" class="vbp-field-select">
+                                <option value="full"><?php esc_html_e( 'Completo (100%)', 'flavor-chat-ia' ); ?></option>
+                                <option value="1400px">1400px</option>
+                                <option value="1200px">1200px</option>
+                                <option value="960px">960px</option>
+                                <option value="720px">720px</option>
+                                <option value="540px">540px</option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Alineación', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-btn-group">
+                                <button type="button" @click="updateElementData('align', 'left')" :class="{ 'active': selectedElement.data.align === 'left' }" class="vbp-btn-icon" title="<?php esc_attr_e( 'Izquierda', 'flavor-chat-ia' ); ?>">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="12" height="18" rx="2"/></svg>
+                                </button>
+                                <button type="button" @click="updateElementData('align', 'center')" :class="{ 'active': selectedElement.data.align === 'center' || !selectedElement.data.align }" class="vbp-btn-icon" title="<?php esc_attr_e( 'Centro', 'flavor-chat-ia' ); ?>">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/></svg>
+                                </button>
+                                <button type="button" @click="updateElementData('align', 'right')" :class="{ 'active': selectedElement.data.align === 'right' }" class="vbp-btn-icon" title="<?php esc_attr_e( 'Derecha', 'flavor-chat-ia' ); ?>">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="12" height="18" rx="2"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" x-model="selectedElement.data.full_height" @change="updateElementData('full_height', selectedElement.data.full_height)">
+                                <?php esc_html_e( 'Altura completa (100vh)', 'flavor-chat-ia' ); ?>
+                            </label>
+                        </div>
+                        <small class="vbp-field-hint"><?php esc_html_e( 'Arrastra elementos dentro de este contenedor', 'flavor-chat-ia' ); ?></small>
+                    </div>
+                </template>
+
+                <!-- ========== GRID ========== -->
+                <template x-if="selectedElement.type === 'grid'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Columnas', 'flavor-chat-ia' ); ?></label>
+                                <input type="number" min="1" max="12" x-model="selectedElement.data.columnas" @input="updateElementData('columnas', parseInt($event.target.value))" class="vbp-field-input" placeholder="3">
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Filas', 'flavor-chat-ia' ); ?></label>
+                                <input type="number" min="1" max="12" x-model="selectedElement.data.filas" @input="updateElementData('filas', parseInt($event.target.value))" class="vbp-field-input" placeholder="auto">
+                            </div>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Gap (espacio)', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.data.gap" @input="updateElementData('gap', $event.target.value)" class="vbp-field-input" placeholder="16px">
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Tamaño automático de columnas', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.data.auto_fit" @change="updateElementData('auto_fit', $event.target.value)" class="vbp-field-select">
+                                <option value=""><?php esc_html_e( 'Columnas fijas', 'flavor-chat-ia' ); ?></option>
+                                <option value="auto-fit"><?php esc_html_e( 'Auto-fit (llena el espacio)', 'flavor-chat-ia' ); ?></option>
+                                <option value="auto-fill"><?php esc_html_e( 'Auto-fill (rellena con vacíos)', 'flavor-chat-ia' ); ?></option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-group" x-show="selectedElement.data.auto_fit">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Ancho mínimo de celda', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.data.min_col_width" @input="updateElementData('min_col_width', $event.target.value)" class="vbp-field-input" placeholder="200px">
+                        </div>
+                        <small class="vbp-field-hint"><?php esc_html_e( 'Arrastra elementos dentro de este grid', 'flavor-chat-ia' ); ?></small>
                     </div>
                 </template>
 
@@ -2267,12 +2660,546 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </template>
 
+                <!-- ========== MÓDULOS / WIDGETS (shortcode-based) ========== -->
+                <template x-if="selectedElement.data && (selectedElement.data.shortcode || selectedElement.shortcode)">
+                    <div class="vbp-inspector-section vbp-module-settings">
+                        <div class="vbp-module-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 12px; background: var(--vbp-accent-color-10); border-radius: 8px;">
+                            <span style="font-size: 24px;">⚡</span>
+                            <div>
+                                <div style="font-weight: 600; color: var(--vbp-text-primary);" x-text="selectedElement.name || selectedElement.data.shortcode || '<?php esc_attr_e( 'Módulo', 'flavor-chat-ia' ); ?>'"></div>
+                                <code style="font-size: 11px; color: var(--vbp-text-secondary);" x-text="'[' + (selectedElement.data.shortcode || selectedElement.shortcode) + ']'"></code>
+                            </div>
+                        </div>
+
+                        <!-- Configuración de Layout -->
+                        <h4 class="vbp-section-title">📐 <?php esc_html_e( 'Disposición', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Columnas', 'flavor-chat-ia' ); ?></label>
+                                <select x-model="selectedElement.data.columnas" @change="updateElementData('columnas', $event.target.value)" class="vbp-field-select">
+                                    <option value="1">1 <?php esc_html_e( 'columna', 'flavor-chat-ia' ); ?></option>
+                                    <option value="2">2 <?php esc_html_e( 'columnas', 'flavor-chat-ia' ); ?></option>
+                                    <option value="3">3 <?php esc_html_e( 'columnas', 'flavor-chat-ia' ); ?></option>
+                                    <option value="4">4 <?php esc_html_e( 'columnas', 'flavor-chat-ia' ); ?></option>
+                                    <option value="auto"><?php esc_html_e( 'Automático', 'flavor-chat-ia' ); ?></option>
+                                </select>
+                            </div>
+                            <div class="vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Límite items', 'flavor-chat-ia' ); ?></label>
+                                <select x-model="selectedElement.data.limite" @change="updateElementData('limite', $event.target.value)" class="vbp-field-select">
+                                    <option value="6">6</option>
+                                    <option value="9">9</option>
+                                    <option value="12">12</option>
+                                    <option value="15">15</option>
+                                    <option value="24">24</option>
+                                    <option value="-1"><?php esc_html_e( 'Todos', 'flavor-chat-ia' ); ?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Tipo', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.data.tipo" @input="updateElementData('tipo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Dejar vacío para todos', 'flavor-chat-ia' ); ?>">
+                            <small class="vbp-field-hint"><?php esc_html_e( 'Filtrar por tipo específico del módulo', 'flavor-chat-ia' ); ?></small>
+                        </div>
+
+                        <!-- Estilo Visual -->
+                        <h4 class="vbp-section-title">🎨 <?php esc_html_e( 'Estilo Visual', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Esquema de color', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.data.esquema_color" @change="updateElementData('esquema_color', $event.target.value)" class="vbp-field-select">
+                                <option value="default"><?php esc_html_e( 'Por defecto', 'flavor-chat-ia' ); ?></option>
+                                <option value="primary"><?php esc_html_e( 'Primario (azul)', 'flavor-chat-ia' ); ?></option>
+                                <option value="success"><?php esc_html_e( 'Éxito (verde)', 'flavor-chat-ia' ); ?></option>
+                                <option value="warning"><?php esc_html_e( 'Advertencia (amarillo)', 'flavor-chat-ia' ); ?></option>
+                                <option value="danger"><?php esc_html_e( 'Peligro (rojo)', 'flavor-chat-ia' ); ?></option>
+                                <option value="purple"><?php esc_html_e( 'Púrpura', 'flavor-chat-ia' ); ?></option>
+                                <option value="dark"><?php esc_html_e( 'Oscuro', 'flavor-chat-ia' ); ?></option>
+                            </select>
+                        </div>
+
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Estilo tarjetas', 'flavor-chat-ia' ); ?></label>
+                                <select x-model="selectedElement.data.estilo_tarjeta" @change="updateElementData('estilo_tarjeta', $event.target.value)" class="vbp-field-select">
+                                    <option value="elevated"><?php esc_html_e( 'Elevada', 'flavor-chat-ia' ); ?></option>
+                                    <option value="outlined"><?php esc_html_e( 'Con borde', 'flavor-chat-ia' ); ?></option>
+                                    <option value="filled"><?php esc_html_e( 'Rellena', 'flavor-chat-ia' ); ?></option>
+                                    <option value="glass"><?php esc_html_e( 'Cristal', 'flavor-chat-ia' ); ?></option>
+                                    <option value="minimal"><?php esc_html_e( 'Minimalista', 'flavor-chat-ia' ); ?></option>
+                                </select>
+                            </div>
+                            <div class="vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Bordes', 'flavor-chat-ia' ); ?></label>
+                                <select x-model="selectedElement.data.radio_bordes" @change="updateElementData('radio_bordes', $event.target.value)" class="vbp-field-select">
+                                    <option value="none"><?php esc_html_e( 'Sin redondear', 'flavor-chat-ia' ); ?></option>
+                                    <option value="sm"><?php esc_html_e( 'Pequeño', 'flavor-chat-ia' ); ?></option>
+                                    <option value="md"><?php esc_html_e( 'Mediano', 'flavor-chat-ia' ); ?></option>
+                                    <option value="lg"><?php esc_html_e( 'Grande', 'flavor-chat-ia' ); ?></option>
+                                    <option value="xl"><?php esc_html_e( 'Extra grande', 'flavor-chat-ia' ); ?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Animación de entrada', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.data.animacion_entrada" @change="updateElementData('animacion_entrada', $event.target.value)" class="vbp-field-select">
+                                <option value="none"><?php esc_html_e( 'Sin animación', 'flavor-chat-ia' ); ?></option>
+                                <option value="fade"><?php esc_html_e( 'Aparecer', 'flavor-chat-ia' ); ?></option>
+                                <option value="slide-up"><?php esc_html_e( 'Deslizar arriba', 'flavor-chat-ia' ); ?></option>
+                                <option value="slide-down"><?php esc_html_e( 'Deslizar abajo', 'flavor-chat-ia' ); ?></option>
+                                <option value="zoom"><?php esc_html_e( 'Zoom', 'flavor-chat-ia' ); ?></option>
+                            </select>
+                        </div>
+
+                        <!-- Opciones de Visualización -->
+                        <h4 class="vbp-section-title">👁️ <?php esc_html_e( 'Visualización', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-group">
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" :checked="selectedElement.data.mostrar_titulo !== false" @change="updateElementData('mostrar_titulo', $event.target.checked)">
+                                <?php esc_html_e( 'Mostrar título', 'flavor-chat-ia' ); ?>
+                            </label>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" :checked="selectedElement.data.mostrar_descripcion === true" @change="updateElementData('mostrar_descripcion', $event.target.checked)">
+                                <?php esc_html_e( 'Mostrar descripción', 'flavor-chat-ia' ); ?>
+                            </label>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" :checked="selectedElement.data.mostrar_filtros === 'si' || selectedElement.data.mostrar_filtros === 'true' || selectedElement.data.mostrar_filtros === true" @change="updateElementData('mostrar_filtros', $event.target.checked ? 'si' : 'no')">
+                                <?php esc_html_e( 'Mostrar filtros', 'flavor-chat-ia' ); ?>
+                            </label>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" :checked="selectedElement.data.mostrar_busqueda !== false" @change="updateElementData('mostrar_busqueda', $event.target.checked)">
+                                <?php esc_html_e( 'Mostrar buscador', 'flavor-chat-ia' ); ?>
+                            </label>
+                        </div>
+
+                        <!-- Título personalizado (si está activado) -->
+                        <template x-if="selectedElement.data.mostrar_titulo !== false">
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Título personalizado', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.titulo_personalizado" @input="updateElementData('titulo_personalizado', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Dejar vacío para usar título por defecto', 'flavor-chat-ia' ); ?>">
+                            </div>
+                        </template>
+
+                        <!-- Descripción (si está activada) -->
+                        <template x-if="selectedElement.data.mostrar_descripcion === true">
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Descripción', 'flavor-chat-ia' ); ?></label>
+                                <textarea x-model="selectedElement.data.descripcion" @input="updateElementData('descripcion', $event.target.value)" class="vbp-field-textarea" rows="2"></textarea>
+                            </div>
+                        </template>
+
+                        <!-- Filtros avanzados (según tipo de módulo) -->
+                        <h4 class="vbp-section-title">🔧 <?php esc_html_e( 'Filtros del Módulo', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Categoría', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.data.categoria" @input="updateElementData('categoria', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Slug de categoría o vacío para todas', 'flavor-chat-ia' ); ?>">
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Ordenar por', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.data.orderby" @change="updateElementData('orderby', $event.target.value)" class="vbp-field-select">
+                                <option value="date"><?php esc_html_e( 'Fecha', 'flavor-chat-ia' ); ?></option>
+                                <option value="title"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></option>
+                                <option value="modified"><?php esc_html_e( 'Última modificación', 'flavor-chat-ia' ); ?></option>
+                                <option value="rand"><?php esc_html_e( 'Aleatorio', 'flavor-chat-ia' ); ?></option>
+                                <option value="menu_order"><?php esc_html_e( 'Orden del menú', 'flavor-chat-ia' ); ?></option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Dirección', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-btn-group">
+                                <button type="button" @click="updateElementData('order', 'DESC')" :class="{ 'active': selectedElement.data.order === 'DESC' || !selectedElement.data.order }" class="vbp-btn-toggle"><?php esc_html_e( 'Descendente', 'flavor-chat-ia' ); ?></button>
+                                <button type="button" @click="updateElementData('order', 'ASC')" :class="{ 'active': selectedElement.data.order === 'ASC' }" class="vbp-btn-toggle"><?php esc_html_e( 'Ascendente', 'flavor-chat-ia' ); ?></button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- ========== CONTACT SECTION (antes two_columns) ========== -->
+                <template x-if="selectedElement.type === 'two_columns' || selectedElement.type === 'contact_section'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Gap entre columnas', 'flavor-chat-ia' ); ?></label>
+                            <input type="number" x-model="selectedElement.data.gap" @input="updateElementData('gap', parseInt($event.target.value) || 24)" class="vbp-field-input" min="0" max="100" placeholder="24">
+                        </div>
+
+                        <!-- COLUMNA IZQUIERDA -->
+                        <div class="vbp-subsection">
+                            <h4 class="vbp-section-title" style="display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%;"></span>
+                                <?php esc_html_e( 'Columna Izquierda', 'flavor-chat-ia' ); ?>
+                            </h4>
+
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Tipo de contenido', 'flavor-chat-ia' ); ?></label>
+                                <select x-model="selectedElement.data.columna_izquierda.type" @change="initColumnContent('columna_izquierda', $event.target.value)" class="vbp-field-select">
+                                    <option value="contact_info"><?php esc_html_e( 'Información de contacto', 'flavor-chat-ia' ); ?></option>
+                                    <option value="contact_form"><?php esc_html_e( 'Formulario de contacto', 'flavor-chat-ia' ); ?></option>
+                                    <option value="text"><?php esc_html_e( 'Texto libre', 'flavor-chat-ia' ); ?></option>
+                                    <option value="image"><?php esc_html_e( 'Imagen', 'flavor-chat-ia' ); ?></option>
+                                </select>
+                            </div>
+
+                            <!-- Editor contact_info izquierda -->
+                            <template x-if="selectedElement.data.columna_izquierda && selectedElement.data.columna_izquierda.type === 'contact_info'">
+                                <div class="vbp-column-editor">
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                                        <input type="text" x-model="selectedElement.data.columna_izquierda.data.titulo" @input="updateColumnData('columna_izquierda', 'titulo', $event.target.value)" class="vbp-field-input">
+                                    </div>
+                                    <div class="vbp-items-header">
+                                        <span class="vbp-field-label"><?php esc_html_e( 'Items de información', 'flavor-chat-ia' ); ?></span>
+                                        <button type="button" @click="addColumnItem('columna_izquierda', 'contact_info')" class="vbp-btn-add" title="<?php esc_attr_e( 'Añadir item', 'flavor-chat-ia' ); ?>">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                        </button>
+                                    </div>
+                                    <div class="vbp-items-list">
+                                        <template x-for="(item, idx) in (selectedElement.data.columna_izquierda.data.items || [])" :key="idx">
+                                            <div class="vbp-item-card vbp-item-card-compact">
+                                                <div class="vbp-item-row">
+                                                    <input type="text" x-model="item.icono" @input="updateColumnItem('columna_izquierda', idx, 'icono', $event.target.value)" class="vbp-field-input vbp-field-icon" placeholder="📧" style="width: 50px; text-align: center;">
+                                                    <input type="text" x-model="item.titulo" @input="updateColumnItem('columna_izquierda', idx, 'titulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Título', 'flavor-chat-ia' ); ?>" style="flex: 1;">
+                                                    <button type="button" @click="removeColumnItem('columna_izquierda', idx)" class="vbp-btn-icon-xs vbp-btn-danger" title="<?php esc_attr_e( 'Eliminar', 'flavor-chat-ia' ); ?>">×</button>
+                                                </div>
+                                                <input type="text" x-model="item.valor" @input="updateColumnItem('columna_izquierda', idx, 'valor', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Valor (email, teléfono, etc.)', 'flavor-chat-ia' ); ?>">
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Editor contact_form izquierda -->
+                            <template x-if="selectedElement.data.columna_izquierda && selectedElement.data.columna_izquierda.type === 'contact_form'">
+                                <div class="vbp-column-editor">
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                                        <input type="text" x-model="selectedElement.data.columna_izquierda.data.titulo" @input="updateColumnData('columna_izquierda', 'titulo', $event.target.value)" class="vbp-field-input">
+                                    </div>
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Texto del botón', 'flavor-chat-ia' ); ?></label>
+                                        <input type="text" x-model="selectedElement.data.columna_izquierda.data.boton_texto" @input="updateColumnData('columna_izquierda', 'boton_texto', $event.target.value)" class="vbp-field-input" placeholder="Enviar">
+                                    </div>
+                                    <div class="vbp-items-header">
+                                        <span class="vbp-field-label"><?php esc_html_e( 'Campos del formulario', 'flavor-chat-ia' ); ?></span>
+                                        <button type="button" @click="addColumnItem('columna_izquierda', 'contact_form')" class="vbp-btn-add" title="<?php esc_attr_e( 'Añadir campo', 'flavor-chat-ia' ); ?>">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                        </button>
+                                    </div>
+                                    <div class="vbp-items-list">
+                                        <template x-for="(campo, idx) in (selectedElement.data.columna_izquierda.data.campos || [])" :key="idx">
+                                            <div class="vbp-item-card vbp-item-card-compact">
+                                                <div class="vbp-item-row">
+                                                    <input type="text" x-model="campo.label" @input="updateColumnItem('columna_izquierda', idx, 'label', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Label', 'flavor-chat-ia' ); ?>" style="flex: 1;">
+                                                    <select x-model="campo.tipo" @change="updateColumnItem('columna_izquierda', idx, 'tipo', $event.target.value)" class="vbp-field-select" style="width: 100px;">
+                                                        <option value="text">Texto</option>
+                                                        <option value="email">Email</option>
+                                                        <option value="tel">Teléfono</option>
+                                                        <option value="textarea">Área texto</option>
+                                                        <option value="select">Selector</option>
+                                                    </select>
+                                                    <label style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: #666;">
+                                                        <input type="checkbox" :checked="campo.requerido" @change="updateColumnItem('columna_izquierda', idx, 'requerido', $event.target.checked)"> *
+                                                    </label>
+                                                    <button type="button" @click="removeColumnItem('columna_izquierda', idx)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
+                                                </div>
+                                                <template x-if="campo.tipo === 'select'">
+                                                    <input type="text" x-model="campo.opciones_text" @input="updateColumnItemOptions('columna_izquierda', idx, $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Opciones separadas por coma', 'flavor-chat-ia' ); ?>">
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Editor texto izquierda -->
+                            <template x-if="selectedElement.data.columna_izquierda && selectedElement.data.columna_izquierda.type === 'text'">
+                                <div class="vbp-column-editor">
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Contenido', 'flavor-chat-ia' ); ?></label>
+                                        <textarea x-model="selectedElement.data.columna_izquierda.data.contenido" @input="updateColumnData('columna_izquierda', 'contenido', $event.target.value)" class="vbp-field-textarea" rows="5"></textarea>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Editor imagen izquierda -->
+                            <template x-if="selectedElement.data.columna_izquierda && selectedElement.data.columna_izquierda.type === 'image'">
+                                <div class="vbp-column-editor">
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'URL de imagen', 'flavor-chat-ia' ); ?></label>
+                                        <input type="url" x-model="selectedElement.data.columna_izquierda.data.src" @input="updateColumnData('columna_izquierda', 'src', $event.target.value)" class="vbp-field-input">
+                                    </div>
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Texto alternativo', 'flavor-chat-ia' ); ?></label>
+                                        <input type="text" x-model="selectedElement.data.columna_izquierda.data.alt" @input="updateColumnData('columna_izquierda', 'alt', $event.target.value)" class="vbp-field-input">
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- COLUMNA DERECHA -->
+                        <div class="vbp-subsection">
+                            <h4 class="vbp-section-title" style="display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 8px; height: 8px; background: #8b5cf6; border-radius: 50%;"></span>
+                                <?php esc_html_e( 'Columna Derecha', 'flavor-chat-ia' ); ?>
+                            </h4>
+
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Tipo de contenido', 'flavor-chat-ia' ); ?></label>
+                                <select x-model="selectedElement.data.columna_derecha.type" @change="initColumnContent('columna_derecha', $event.target.value)" class="vbp-field-select">
+                                    <option value="contact_info"><?php esc_html_e( 'Información de contacto', 'flavor-chat-ia' ); ?></option>
+                                    <option value="contact_form"><?php esc_html_e( 'Formulario de contacto', 'flavor-chat-ia' ); ?></option>
+                                    <option value="text"><?php esc_html_e( 'Texto libre', 'flavor-chat-ia' ); ?></option>
+                                    <option value="image"><?php esc_html_e( 'Imagen', 'flavor-chat-ia' ); ?></option>
+                                </select>
+                            </div>
+
+                            <!-- Editor contact_info derecha -->
+                            <template x-if="selectedElement.data.columna_derecha && selectedElement.data.columna_derecha.type === 'contact_info'">
+                                <div class="vbp-column-editor">
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                                        <input type="text" x-model="selectedElement.data.columna_derecha.data.titulo" @input="updateColumnData('columna_derecha', 'titulo', $event.target.value)" class="vbp-field-input">
+                                    </div>
+                                    <div class="vbp-items-header">
+                                        <span class="vbp-field-label"><?php esc_html_e( 'Items de información', 'flavor-chat-ia' ); ?></span>
+                                        <button type="button" @click="addColumnItem('columna_derecha', 'contact_info')" class="vbp-btn-add" title="<?php esc_attr_e( 'Añadir item', 'flavor-chat-ia' ); ?>">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                        </button>
+                                    </div>
+                                    <div class="vbp-items-list">
+                                        <template x-for="(item, idx) in (selectedElement.data.columna_derecha.data.items || [])" :key="idx">
+                                            <div class="vbp-item-card vbp-item-card-compact">
+                                                <div class="vbp-item-row">
+                                                    <input type="text" x-model="item.icono" @input="updateColumnItem('columna_derecha', idx, 'icono', $event.target.value)" class="vbp-field-input vbp-field-icon" placeholder="📧" style="width: 50px; text-align: center;">
+                                                    <input type="text" x-model="item.titulo" @input="updateColumnItem('columna_derecha', idx, 'titulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Título', 'flavor-chat-ia' ); ?>" style="flex: 1;">
+                                                    <button type="button" @click="removeColumnItem('columna_derecha', idx)" class="vbp-btn-icon-xs vbp-btn-danger" title="<?php esc_attr_e( 'Eliminar', 'flavor-chat-ia' ); ?>">×</button>
+                                                </div>
+                                                <input type="text" x-model="item.valor" @input="updateColumnItem('columna_derecha', idx, 'valor', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Valor (email, teléfono, etc.)', 'flavor-chat-ia' ); ?>">
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Editor contact_form derecha -->
+                            <template x-if="selectedElement.data.columna_derecha && selectedElement.data.columna_derecha.type === 'contact_form'">
+                                <div class="vbp-column-editor">
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
+                                        <input type="text" x-model="selectedElement.data.columna_derecha.data.titulo" @input="updateColumnData('columna_derecha', 'titulo', $event.target.value)" class="vbp-field-input">
+                                    </div>
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Texto del botón', 'flavor-chat-ia' ); ?></label>
+                                        <input type="text" x-model="selectedElement.data.columna_derecha.data.boton_texto" @input="updateColumnData('columna_derecha', 'boton_texto', $event.target.value)" class="vbp-field-input" placeholder="Enviar">
+                                    </div>
+                                    <div class="vbp-items-header">
+                                        <span class="vbp-field-label"><?php esc_html_e( 'Campos del formulario', 'flavor-chat-ia' ); ?></span>
+                                        <button type="button" @click="addColumnItem('columna_derecha', 'contact_form')" class="vbp-btn-add" title="<?php esc_attr_e( 'Añadir campo', 'flavor-chat-ia' ); ?>">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                        </button>
+                                    </div>
+                                    <div class="vbp-items-list">
+                                        <template x-for="(campo, idx) in (selectedElement.data.columna_derecha.data.campos || [])" :key="idx">
+                                            <div class="vbp-item-card vbp-item-card-compact">
+                                                <div class="vbp-item-row">
+                                                    <input type="text" x-model="campo.label" @input="updateColumnItem('columna_derecha', idx, 'label', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Label', 'flavor-chat-ia' ); ?>" style="flex: 1;">
+                                                    <select x-model="campo.tipo" @change="updateColumnItem('columna_derecha', idx, 'tipo', $event.target.value)" class="vbp-field-select" style="width: 100px;">
+                                                        <option value="text">Texto</option>
+                                                        <option value="email">Email</option>
+                                                        <option value="tel">Teléfono</option>
+                                                        <option value="textarea">Área texto</option>
+                                                        <option value="select">Selector</option>
+                                                    </select>
+                                                    <label style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: #666;">
+                                                        <input type="checkbox" :checked="campo.requerido" @change="updateColumnItem('columna_derecha', idx, 'requerido', $event.target.checked)"> *
+                                                    </label>
+                                                    <button type="button" @click="removeColumnItem('columna_derecha', idx)" class="vbp-btn-icon-xs vbp-btn-danger">×</button>
+                                                </div>
+                                                <template x-if="campo.tipo === 'select'">
+                                                    <input type="text" x-model="campo.opciones_text" @input="updateColumnItemOptions('columna_derecha', idx, $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Opciones separadas por coma', 'flavor-chat-ia' ); ?>">
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Editor texto derecha -->
+                            <template x-if="selectedElement.data.columna_derecha && selectedElement.data.columna_derecha.type === 'text'">
+                                <div class="vbp-column-editor">
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Contenido', 'flavor-chat-ia' ); ?></label>
+                                        <textarea x-model="selectedElement.data.columna_derecha.data.contenido" @input="updateColumnData('columna_derecha', 'contenido', $event.target.value)" class="vbp-field-textarea" rows="5"></textarea>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Editor imagen derecha -->
+                            <template x-if="selectedElement.data.columna_derecha && selectedElement.data.columna_derecha.type === 'image'">
+                                <div class="vbp-column-editor">
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'URL de imagen', 'flavor-chat-ia' ); ?></label>
+                                        <input type="url" x-model="selectedElement.data.columna_derecha.data.src" @input="updateColumnData('columna_derecha', 'src', $event.target.value)" class="vbp-field-input">
+                                    </div>
+                                    <div class="vbp-field-group">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Texto alternativo', 'flavor-chat-ia' ); ?></label>
+                                        <input type="text" x-model="selectedElement.data.columna_derecha.data.alt" @input="updateColumnData('columna_derecha', 'alt', $event.target.value)" class="vbp-field-input">
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- ========== AUDIO ========== -->
+                <template x-if="selectedElement.type === 'audio'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'URL del audio', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-field-with-button">
+                                <input type="url" x-model="selectedElement.data.src" @input="updateElementData('src', $event.target.value)" class="vbp-field-input" placeholder="https://ejemplo.com/audio.mp3">
+                                <button type="button" @click="openMediaLibrary('audio')" class="vbp-btn vbp-btn-secondary vbp-btn-sm" title="<?php esc_attr_e( 'Seleccionar de biblioteca', 'flavor-chat-ia' ); ?>">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                </button>
+                            </div>
+                            <small class="vbp-field-hint"><?php esc_html_e( 'Formatos: MP3, WAV, OGG', 'flavor-chat-ia' ); ?></small>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Título (opcional)', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.data.titulo" @input="updateElementData('titulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Nombre del audio', 'flavor-chat-ia' ); ?>">
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-checkbox-label">
+                                    <input type="checkbox" :checked="selectedElement.data.autoplay" @change="updateElementData('autoplay', $event.target.checked)">
+                                    <?php esc_html_e( 'Autoplay', 'flavor-chat-ia' ); ?>
+                                </label>
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-checkbox-label">
+                                    <input type="checkbox" :checked="selectedElement.data.loop" @change="updateElementData('loop', $event.target.checked)">
+                                    <?php esc_html_e( 'Repetir', 'flavor-chat-ia' ); ?>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-checkbox-label">
+                                    <input type="checkbox" :checked="selectedElement.data.controls !== false" @change="updateElementData('controls', $event.target.checked)">
+                                    <?php esc_html_e( 'Controles', 'flavor-chat-ia' ); ?>
+                                </label>
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-checkbox-label">
+                                    <input type="checkbox" :checked="selectedElement.data.muted" @change="updateElementData('muted', $event.target.checked)">
+                                    <?php esc_html_e( 'Silenciado', 'flavor-chat-ia' ); ?>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Preload', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.data.preload" @change="updateElementData('preload', $event.target.value)" class="vbp-field-select">
+                                <option value="auto"><?php esc_html_e( 'Auto - Cargar completo', 'flavor-chat-ia' ); ?></option>
+                                <option value="metadata"><?php esc_html_e( 'Metadata - Solo información', 'flavor-chat-ia' ); ?></option>
+                                <option value="none"><?php esc_html_e( 'Ninguno - No precargar', 'flavor-chat-ia' ); ?></option>
+                            </select>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- ========== EMBED ========== -->
+                <template x-if="selectedElement.type === 'embed'">
+                    <div class="vbp-inspector-section">
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Código embed', 'flavor-chat-ia' ); ?></label>
+                            <textarea x-model="selectedElement.data.code" @input="updateElementData('code', $event.target.value)" class="vbp-field-textarea vbp-code-textarea" rows="6" placeholder="<iframe src=&quot;...&quot;></iframe>"></textarea>
+                            <small class="vbp-field-hint"><?php esc_html_e( 'Pega el código iframe de YouTube, Vimeo, Spotify, etc.', 'flavor-chat-ia' ); ?></small>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'O URL directa', 'flavor-chat-ia' ); ?></label>
+                            <input type="url" x-model="selectedElement.data.url" @input="updateElementData('url', $event.target.value)" class="vbp-field-input" placeholder="https://youtube.com/watch?v=...">
+                            <small class="vbp-field-hint"><?php esc_html_e( 'YouTube, Vimeo, Twitter, etc. se convertirán automáticamente', 'flavor-chat-ia' ); ?></small>
+                        </div>
+                        <div class="vbp-field-row">
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Ancho', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.width" @input="updateElementData('width', $event.target.value)" class="vbp-field-input" placeholder="100%">
+                            </div>
+                            <div class="vbp-field-group vbp-field-half">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Alto', 'flavor-chat-ia' ); ?></label>
+                                <input type="text" x-model="selectedElement.data.height" @input="updateElementData('height', $event.target.value)" class="vbp-field-input" placeholder="400px">
+                            </div>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Proporción de aspecto', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.data.aspect_ratio" @change="updateElementData('aspect_ratio', $event.target.value)" class="vbp-field-select">
+                                <option value=""><?php esc_html_e( 'Ninguna (usar ancho/alto)', 'flavor-chat-ia' ); ?></option>
+                                <option value="16/9">16:9 (Vídeo estándar)</option>
+                                <option value="4/3">4:3 (Vídeo clásico)</option>
+                                <option value="1/1">1:1 (Cuadrado)</option>
+                                <option value="9/16">9:16 (Vertical)</option>
+                                <option value="21/9">21:9 (Ultrawide)</option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-group">
+                            <label class="vbp-checkbox-label">
+                                <input type="checkbox" :checked="selectedElement.data.lazy_load !== false" @change="updateElementData('lazy_load', $event.target.checked)">
+                                <?php esc_html_e( 'Carga perezosa (lazy load)', 'flavor-chat-ia' ); ?>
+                            </label>
+                        </div>
+                    </div>
+                </template>
+
             </div>
 
             <!-- ============================================ -->
             <!-- Tab: Estilos -->
             <!-- ============================================ -->
             <div x-show="activeTab === 'styles' && hasCompleteStyles()" class="vbp-inspector-panel">
+
+                <!-- Presets Rápidos de Estilos -->
+                <div class="vbp-inspector-section vbp-style-presets">
+                    <h4 class="vbp-section-title">
+                        <?php esc_html_e( 'Presets Rápidos', 'flavor-chat-ia' ); ?>
+                        <span class="vbp-section-badge"><?php esc_html_e( 'Un clic', 'flavor-chat-ia' ); ?></span>
+                    </h4>
+                    <div class="vbp-presets-grid">
+                        <button type="button" @click="applyStylePreset('modern')" class="vbp-preset-btn" data-tooltip="<?php esc_attr_e( 'Estilo moderno con sombras suaves', 'flavor-chat-ia' ); ?>">
+                            <span class="vbp-preset-preview vbp-preset-modern"></span>
+                            <span class="vbp-preset-name"><?php esc_html_e( 'Moderno', 'flavor-chat-ia' ); ?></span>
+                        </button>
+                        <button type="button" @click="applyStylePreset('minimal')" class="vbp-preset-btn" data-tooltip="<?php esc_attr_e( 'Diseño limpio y minimalista', 'flavor-chat-ia' ); ?>">
+                            <span class="vbp-preset-preview vbp-preset-minimal"></span>
+                            <span class="vbp-preset-name"><?php esc_html_e( 'Minimal', 'flavor-chat-ia' ); ?></span>
+                        </button>
+                        <button type="button" @click="applyStylePreset('bold')" class="vbp-preset-btn" data-tooltip="<?php esc_attr_e( 'Estilo llamativo con contraste alto', 'flavor-chat-ia' ); ?>">
+                            <span class="vbp-preset-preview vbp-preset-bold"></span>
+                            <span class="vbp-preset-name"><?php esc_html_e( 'Bold', 'flavor-chat-ia' ); ?></span>
+                        </button>
+                        <button type="button" @click="applyStylePreset('outlined')" class="vbp-preset-btn" data-tooltip="<?php esc_attr_e( 'Bordes definidos sin relleno', 'flavor-chat-ia' ); ?>">
+                            <span class="vbp-preset-preview vbp-preset-outlined"></span>
+                            <span class="vbp-preset-name"><?php esc_html_e( 'Outlined', 'flavor-chat-ia' ); ?></span>
+                        </button>
+                        <button type="button" @click="applyStylePreset('gradient')" class="vbp-preset-btn" data-tooltip="<?php esc_attr_e( 'Fondo con degradado atractivo', 'flavor-chat-ia' ); ?>">
+                            <span class="vbp-preset-preview vbp-preset-gradient"></span>
+                            <span class="vbp-preset-name"><?php esc_html_e( 'Gradient', 'flavor-chat-ia' ); ?></span>
+                        </button>
+                        <button type="button" @click="applyStylePreset('glassmorphism')" class="vbp-preset-btn" data-tooltip="<?php esc_attr_e( 'Efecto cristal translúcido', 'flavor-chat-ia' ); ?>">
+                            <span class="vbp-preset-preview vbp-preset-glass"></span>
+                            <span class="vbp-preset-name"><?php esc_html_e( 'Glass', 'flavor-chat-ia' ); ?></span>
+                        </button>
+                    </div>
+                    <button type="button" @click="resetStyles()" class="vbp-btn vbp-btn-link vbp-btn-sm">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                        <?php esc_html_e( 'Resetear estilos', 'flavor-chat-ia' ); ?>
+                    </button>
+                </div>
 
                 <!-- Selector de Breakpoints -->
                 <div class="vbp-breakpoint-selector">
@@ -2424,6 +3351,119 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </div>
 
+                <!-- Background Avanzado -->
+                <div class="vbp-inspector-section">
+                    <h4 class="vbp-section-title"><?php esc_html_e( 'Fondo avanzado', 'flavor-chat-ia' ); ?></h4>
+
+                    <div class="vbp-field-group">
+                        <label class="vbp-field-label"><?php esc_html_e( 'Tipo de fondo', 'flavor-chat-ia' ); ?></label>
+                        <select x-model="selectedElement.styles.background.type" @change="updateStyle('background.type', $event.target.value)" class="vbp-field-select">
+                            <option value=""><?php esc_html_e( 'Color sólido (usar arriba)', 'flavor-chat-ia' ); ?></option>
+                            <option value="gradient"><?php esc_html_e( 'Gradiente', 'flavor-chat-ia' ); ?></option>
+                            <option value="image"><?php esc_html_e( 'Imagen', 'flavor-chat-ia' ); ?></option>
+                        </select>
+                    </div>
+
+                    <!-- Gradiente -->
+                    <template x-if="selectedElement.styles.background && selectedElement.styles.background.type === 'gradient'">
+                        <div class="vbp-gradient-editor">
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Dirección', 'flavor-chat-ia' ); ?></label>
+                                <select x-model="selectedElement.styles.background.gradientDirection" @change="updateStyle('background.gradientDirection', $event.target.value)" class="vbp-field-select">
+                                    <option value="to bottom"><?php esc_html_e( 'Arriba → Abajo', 'flavor-chat-ia' ); ?></option>
+                                    <option value="to top"><?php esc_html_e( 'Abajo → Arriba', 'flavor-chat-ia' ); ?></option>
+                                    <option value="to right"><?php esc_html_e( 'Izquierda → Derecha', 'flavor-chat-ia' ); ?></option>
+                                    <option value="to left"><?php esc_html_e( 'Derecha → Izquierda', 'flavor-chat-ia' ); ?></option>
+                                    <option value="to bottom right"><?php esc_html_e( 'Diagonal ↘', 'flavor-chat-ia' ); ?></option>
+                                    <option value="to bottom left"><?php esc_html_e( 'Diagonal ↙', 'flavor-chat-ia' ); ?></option>
+                                    <option value="to top right"><?php esc_html_e( 'Diagonal ↗', 'flavor-chat-ia' ); ?></option>
+                                    <option value="to top left"><?php esc_html_e( 'Diagonal ↖', 'flavor-chat-ia' ); ?></option>
+                                </select>
+                            </div>
+                            <div class="vbp-field-row">
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Color inicio', 'flavor-chat-ia' ); ?></label>
+                                    <div class="vbp-color-input-wrapper">
+                                        <input type="color" :value="selectedElement.styles.background.gradientStart || '#3b82f6'" @input="updateStyle('background.gradientStart', $event.target.value)" class="vbp-color-input">
+                                        <input type="text" x-model="selectedElement.styles.background.gradientStart" @input="updateStyle('background.gradientStart', $event.target.value)" class="vbp-field-input" placeholder="#3b82f6">
+                                    </div>
+                                </div>
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Color fin', 'flavor-chat-ia' ); ?></label>
+                                    <div class="vbp-color-input-wrapper">
+                                        <input type="color" :value="selectedElement.styles.background.gradientEnd || '#8b5cf6'" @input="updateStyle('background.gradientEnd', $event.target.value)" class="vbp-color-input">
+                                        <input type="text" x-model="selectedElement.styles.background.gradientEnd" @input="updateStyle('background.gradientEnd', $event.target.value)" class="vbp-field-input" placeholder="#8b5cf6">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vbp-gradient-preview" :style="'height: 40px; border-radius: 6px; background: linear-gradient(' + (selectedElement.styles.background.gradientDirection || 'to bottom') + ', ' + (selectedElement.styles.background.gradientStart || '#3b82f6') + ', ' + (selectedElement.styles.background.gradientEnd || '#8b5cf6') + ')'"></div>
+                        </div>
+                    </template>
+
+                    <!-- Imagen de fondo -->
+                    <template x-if="selectedElement.styles.background && selectedElement.styles.background.type === 'image'">
+                        <div class="vbp-background-image-editor">
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Imagen', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-image-selector">
+                                    <template x-if="selectedElement.styles.background.image">
+                                        <div class="vbp-image-preview" style="height: 80px; border-radius: 6px; background-size: cover; background-position: center;" :style="'background-image: url(' + selectedElement.styles.background.image + ')'">
+                                            <button type="button" @click="updateStyle('background.image', '')" class="vbp-btn-remove" title="<?php esc_attr_e( 'Eliminar imagen', 'flavor-chat-ia' ); ?>">×</button>
+                                        </div>
+                                    </template>
+                                    <button type="button" @click="openMediaLibrary('background.image')" class="vbp-btn vbp-btn-secondary vbp-btn-block">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+                                        <?php esc_html_e( 'Seleccionar imagen', 'flavor-chat-ia' ); ?>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="vbp-field-row">
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Tamaño', 'flavor-chat-ia' ); ?></label>
+                                    <select x-model="selectedElement.styles.background.size" @change="updateStyle('background.size', $event.target.value)" class="vbp-field-select">
+                                        <option value="cover"><?php esc_html_e( 'Cubrir', 'flavor-chat-ia' ); ?></option>
+                                        <option value="contain"><?php esc_html_e( 'Contener', 'flavor-chat-ia' ); ?></option>
+                                        <option value="auto"><?php esc_html_e( 'Auto', 'flavor-chat-ia' ); ?></option>
+                                        <option value="100% 100%"><?php esc_html_e( 'Estirar', 'flavor-chat-ia' ); ?></option>
+                                    </select>
+                                </div>
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Posición', 'flavor-chat-ia' ); ?></label>
+                                    <select x-model="selectedElement.styles.background.position" @change="updateStyle('background.position', $event.target.value)" class="vbp-field-select">
+                                        <option value="center"><?php esc_html_e( 'Centro', 'flavor-chat-ia' ); ?></option>
+                                        <option value="top"><?php esc_html_e( 'Arriba', 'flavor-chat-ia' ); ?></option>
+                                        <option value="bottom"><?php esc_html_e( 'Abajo', 'flavor-chat-ia' ); ?></option>
+                                        <option value="left"><?php esc_html_e( 'Izquierda', 'flavor-chat-ia' ); ?></option>
+                                        <option value="right"><?php esc_html_e( 'Derecha', 'flavor-chat-ia' ); ?></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Repetir', 'flavor-chat-ia' ); ?></label>
+                                <select x-model="selectedElement.styles.background.repeat" @change="updateStyle('background.repeat', $event.target.value)" class="vbp-field-select">
+                                    <option value="no-repeat"><?php esc_html_e( 'No repetir', 'flavor-chat-ia' ); ?></option>
+                                    <option value="repeat"><?php esc_html_e( 'Repetir', 'flavor-chat-ia' ); ?></option>
+                                    <option value="repeat-x"><?php esc_html_e( 'Repetir horizontal', 'flavor-chat-ia' ); ?></option>
+                                    <option value="repeat-y"><?php esc_html_e( 'Repetir vertical', 'flavor-chat-ia' ); ?></option>
+                                </select>
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-checkbox-label">
+                                    <input type="checkbox" x-model="selectedElement.styles.background.fixed" @change="updateStyle('background.fixed', selectedElement.styles.background.fixed)">
+                                    <?php esc_html_e( 'Fondo fijo (parallax)', 'flavor-chat-ia' ); ?>
+                                </label>
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Overlay (capa oscura)', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-range-input">
+                                    <input type="range" min="0" max="0.9" step="0.1" x-model="selectedElement.styles.background.overlayOpacity" @input="updateStyle('background.overlayOpacity', $event.target.value)" class="vbp-field-range">
+                                    <span class="vbp-range-value" x-text="Math.round((selectedElement.styles.background.overlayOpacity || 0) * 100) + '%'"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
                 <!-- Typography -->
                 <div class="vbp-inspector-section">
                     <h4 class="vbp-section-title"><?php esc_html_e( 'Tipografía', 'flavor-chat-ia' ); ?></h4>
@@ -2445,6 +3485,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
                     </div>
                     <div class="vbp-field-group">
+                        <label class="vbp-field-label"><?php esc_html_e( 'Interlineado', 'flavor-chat-ia' ); ?></label>
+                        <input type="text" x-model="selectedElement.styles.typography.lineHeight" @input="updateStyle('typography.lineHeight', $event.target.value)" class="vbp-field-input" placeholder="1.5">
+                    </div>
+                    <div class="vbp-field-group">
                         <label class="vbp-field-label"><?php esc_html_e( 'Alineación', 'flavor-chat-ia' ); ?></label>
                         <div class="vbp-btn-group">
                             <button type="button" @click="updateStyle('typography.textAlign', 'left')" :class="{ 'active': selectedElement.styles.typography.textAlign === 'left' }" class="vbp-btn-icon">
@@ -2460,6 +3504,60 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                             </button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Layout (para contenedores) -->
+                <div class="vbp-inspector-section" x-show="['container', 'columns', 'row', 'grid'].indexOf(selectedElement.type) !== -1">
+                    <h4 class="vbp-section-title"><?php esc_html_e( 'Layout', 'flavor-chat-ia' ); ?></h4>
+                    <div class="vbp-field-row">
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Display', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.styles.layout.display" @change="updateStyle('layout.display', $event.target.value)" class="vbp-field-select">
+                                <option value=""><?php esc_html_e( 'Auto', 'flavor-chat-ia' ); ?></option>
+                                <option value="flex">Flex</option>
+                                <option value="grid">Grid</option>
+                                <option value="block">Block</option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Gap', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.styles.layout.gap" @input="updateStyle('layout.gap', $event.target.value)" class="vbp-field-input" placeholder="16px">
+                        </div>
+                    </div>
+                    <div class="vbp-field-row" x-show="selectedElement.styles.layout.display === 'flex'">
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Dirección', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.styles.layout.flexDirection" @change="updateStyle('layout.flexDirection', $event.target.value)" class="vbp-field-select">
+                                <option value=""><?php esc_html_e( 'Fila', 'flavor-chat-ia' ); ?></option>
+                                <option value="row">Row</option>
+                                <option value="column">Column</option>
+                                <option value="row-reverse">Row Reverse</option>
+                                <option value="column-reverse">Column Reverse</option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Alineación', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.styles.layout.alignItems" @change="updateStyle('layout.alignItems', $event.target.value)" class="vbp-field-select">
+                                <option value=""><?php esc_html_e( 'Auto', 'flavor-chat-ia' ); ?></option>
+                                <option value="flex-start">Inicio</option>
+                                <option value="center">Centro</option>
+                                <option value="flex-end">Fin</option>
+                                <option value="stretch">Estirar</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="vbp-field-group" x-show="selectedElement.styles.layout.display === 'flex'">
+                        <label class="vbp-field-label"><?php esc_html_e( 'Justificar', 'flavor-chat-ia' ); ?></label>
+                        <select x-model="selectedElement.styles.layout.justifyContent" @change="updateStyle('layout.justifyContent', $event.target.value)" class="vbp-field-select">
+                            <option value=""><?php esc_html_e( 'Auto', 'flavor-chat-ia' ); ?></option>
+                            <option value="flex-start">Inicio</option>
+                            <option value="center">Centro</option>
+                            <option value="flex-end">Fin</option>
+                            <option value="space-between">Space Between</option>
+                            <option value="space-around">Space Around</option>
+                            <option value="space-evenly">Space Evenly</option>
+                        </select>
                     </div>
                 </div>
 
@@ -2519,6 +3617,138 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <div class="vbp-field-group">
                         <label class="vbp-field-label"><?php esc_html_e( 'Personalizado', 'flavor-chat-ia' ); ?></label>
                         <input type="text" x-model="selectedElement.styles.shadows.boxShadow" @input="updateStyle('shadows.boxShadow', $event.target.value)" class="vbp-field-input" placeholder="0 4px 6px rgba(0,0,0,0.1)">
+                    </div>
+                </div>
+
+                <!-- Dimensions -->
+                <div class="vbp-inspector-section">
+                    <h4 class="vbp-section-title"><?php esc_html_e( 'Dimensiones', 'flavor-chat-ia' ); ?></h4>
+                    <div class="vbp-field-row">
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Ancho', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.styles.dimensions.width" @input="updateStyle('dimensions.width', $event.target.value)" class="vbp-field-input" placeholder="auto">
+                        </div>
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Alto', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.styles.dimensions.height" @input="updateStyle('dimensions.height', $event.target.value)" class="vbp-field-input" placeholder="auto">
+                        </div>
+                    </div>
+                    <div class="vbp-field-row">
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Alto mínimo', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.styles.dimensions.minHeight" @input="updateStyle('dimensions.minHeight', $event.target.value)" class="vbp-field-input" placeholder="0">
+                        </div>
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Ancho máximo', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.styles.dimensions.maxWidth" @input="updateStyle('dimensions.maxWidth', $event.target.value)" class="vbp-field-input" placeholder="none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overflow y Opacity -->
+                <div class="vbp-inspector-section">
+                    <h4 class="vbp-section-title"><?php esc_html_e( 'Efectos visuales', 'flavor-chat-ia' ); ?></h4>
+                    <div class="vbp-field-row">
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Overflow', 'flavor-chat-ia' ); ?></label>
+                            <select x-model="selectedElement.styles.overflow" @change="updateStyle('overflow', $event.target.value)" class="vbp-field-select">
+                                <option value=""><?php esc_html_e( 'Visible', 'flavor-chat-ia' ); ?></option>
+                                <option value="hidden"><?php esc_html_e( 'Oculto', 'flavor-chat-ia' ); ?></option>
+                                <option value="scroll"><?php esc_html_e( 'Scroll', 'flavor-chat-ia' ); ?></option>
+                                <option value="auto"><?php esc_html_e( 'Auto', 'flavor-chat-ia' ); ?></option>
+                            </select>
+                        </div>
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Opacidad', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-range-input">
+                                <input type="range" min="0" max="1" step="0.1" x-model="selectedElement.styles.opacity" @input="updateStyle('opacity', $event.target.value)" class="vbp-field-range">
+                                <span class="vbp-range-value" x-text="(selectedElement.styles.opacity || 1)"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Position -->
+                <div class="vbp-inspector-section">
+                    <h4 class="vbp-section-title"><?php esc_html_e( 'Posición', 'flavor-chat-ia' ); ?></h4>
+                    <div class="vbp-field-group">
+                        <label class="vbp-field-label"><?php esc_html_e( 'Tipo', 'flavor-chat-ia' ); ?></label>
+                        <select x-model="selectedElement.styles.position.position" @change="updateStyle('position.position', $event.target.value)" class="vbp-field-select">
+                            <option value=""><?php esc_html_e( 'Estático (normal)', 'flavor-chat-ia' ); ?></option>
+                            <option value="relative"><?php esc_html_e( 'Relativo', 'flavor-chat-ia' ); ?></option>
+                            <option value="absolute"><?php esc_html_e( 'Absoluto', 'flavor-chat-ia' ); ?></option>
+                            <option value="fixed"><?php esc_html_e( 'Fijo', 'flavor-chat-ia' ); ?></option>
+                            <option value="sticky"><?php esc_html_e( 'Sticky', 'flavor-chat-ia' ); ?></option>
+                        </select>
+                    </div>
+                    <template x-if="selectedElement.styles.position && selectedElement.styles.position.position && selectedElement.styles.position.position !== ''">
+                        <div class="vbp-position-controls">
+                            <div class="vbp-field-row">
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Arriba', 'flavor-chat-ia' ); ?></label>
+                                    <input type="text" x-model="selectedElement.styles.position.top" @input="updateStyle('position.top', $event.target.value)" class="vbp-field-input" placeholder="auto">
+                                </div>
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Derecha', 'flavor-chat-ia' ); ?></label>
+                                    <input type="text" x-model="selectedElement.styles.position.right" @input="updateStyle('position.right', $event.target.value)" class="vbp-field-input" placeholder="auto">
+                                </div>
+                            </div>
+                            <div class="vbp-field-row">
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Abajo', 'flavor-chat-ia' ); ?></label>
+                                    <input type="text" x-model="selectedElement.styles.position.bottom" @input="updateStyle('position.bottom', $event.target.value)" class="vbp-field-input" placeholder="auto">
+                                </div>
+                                <div class="vbp-field-group vbp-field-half">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Izquierda', 'flavor-chat-ia' ); ?></label>
+                                    <input type="text" x-model="selectedElement.styles.position.left" @input="updateStyle('position.left', $event.target.value)" class="vbp-field-input" placeholder="auto">
+                                </div>
+                            </div>
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Z-Index', 'flavor-chat-ia' ); ?></label>
+                                <input type="number" x-model="selectedElement.styles.position.zIndex" @input="updateStyle('position.zIndex', $event.target.value)" class="vbp-field-input" placeholder="auto">
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Transform -->
+                <div class="vbp-inspector-section">
+                    <h4 class="vbp-section-title"><?php esc_html_e( 'Transformaciones', 'flavor-chat-ia' ); ?></h4>
+                    <div class="vbp-field-row">
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Rotación', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-range-input">
+                                <input type="range" min="-180" max="180" step="5" x-model="selectedElement.styles.transform.rotate" @input="updateStyle('transform.rotate', $event.target.value)" class="vbp-field-range">
+                                <span class="vbp-range-value" x-text="(selectedElement.styles.transform.rotate || 0) + '°'"></span>
+                            </div>
+                        </div>
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Escala', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-range-input">
+                                <input type="range" min="0.5" max="2" step="0.1" x-model="selectedElement.styles.transform.scale" @input="updateStyle('transform.scale', $event.target.value)" class="vbp-field-range">
+                                <span class="vbp-range-value" x-text="(selectedElement.styles.transform.scale || 1) + 'x'"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vbp-field-row">
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Mover X', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.styles.transform.translateX" @input="updateStyle('transform.translateX', $event.target.value)" class="vbp-field-input" placeholder="0px">
+                        </div>
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Mover Y', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.styles.transform.translateY" @input="updateStyle('transform.translateY', $event.target.value)" class="vbp-field-input" placeholder="0px">
+                        </div>
+                    </div>
+                    <div class="vbp-field-row">
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Sesgar X', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.styles.transform.skewX" @input="updateStyle('transform.skewX', $event.target.value)" class="vbp-field-input" placeholder="0deg">
+                        </div>
+                        <div class="vbp-field-group vbp-field-half">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Sesgar Y', 'flavor-chat-ia' ); ?></label>
+                            <input type="text" x-model="selectedElement.styles.transform.skewY" @input="updateStyle('transform.skewY', $event.target.value)" class="vbp-field-input" placeholder="0deg">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2716,4 +3946,49 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
         </div>
     </template>
+
+    <!-- Mini Color Picker Popup -->
+    <div x-show="colorPickerOpen"
+         x-transition:enter="transition ease-out duration-150"
+         x-transition:enter-start="opacity-0 transform scale-95"
+         x-transition:enter-end="opacity-100 transform scale-100"
+         x-transition:leave="transition ease-in duration-100"
+         x-transition:leave-start="opacity-100 transform scale-100"
+         x-transition:leave-end="opacity-0 transform scale-95"
+         class="vbp-mini-color-picker"
+         :style="{ top: colorPickerPosition.top + 'px', left: colorPickerPosition.left + 'px' }"
+         @click.stop>
+        <div class="vbp-mini-color-picker__header">
+            <div class="vbp-mini-color-picker__preview"
+                 :style="{ backgroundColor: colorPickerCurrentColor }"
+                 @click="copyColorToClipboard(colorPickerCurrentColor)">
+                <span class="vbp-mini-color-picker__hex"
+                      :style="{ color: getContrastColor(colorPickerCurrentColor) }"
+                      x-text="colorPickerCurrentColor"></span>
+            </div>
+            <input type="color"
+                   class="vbp-mini-color-picker__input"
+                   :value="colorPickerCurrentColor"
+                   @input="updateColorFromInput($event)">
+        </div>
+        <div class="vbp-mini-color-picker__presets">
+            <template x-for="color in colorPresets" :key="color">
+                <button type="button"
+                        class="vbp-mini-color-picker__swatch"
+                        :class="{ 'vbp-mini-color-picker__swatch--active': color === colorPickerCurrentColor }"
+                        :style="{ backgroundColor: color }"
+                        :title="color"
+                        @click="selectColor(color)">
+                </button>
+            </template>
+        </div>
+        <div class="vbp-mini-color-picker__actions">
+            <button type="button" class="vbp-mini-color-picker__btn" @click="selectColor('transparent')">
+                <?php esc_html_e( 'Transparente', 'flavor-chat-ia' ); ?>
+            </button>
+            <button type="button" class="vbp-mini-color-picker__btn vbp-mini-color-picker__btn--close" @click="closeColorPicker()">
+                <?php esc_html_e( 'Cerrar', 'flavor-chat-ia' ); ?>
+            </button>
+        </div>
+    </div>
 </div>

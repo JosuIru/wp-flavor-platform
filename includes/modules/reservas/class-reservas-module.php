@@ -479,12 +479,20 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
      * Registra todos los shortcodes del módulo de reservas
      */
     public function registrar_shortcodes() {
-        add_shortcode('reservas_recursos', [$this, 'shortcode_recursos']);
-        add_shortcode('reservas_calendario', [$this, 'shortcode_calendario']);
-        add_shortcode('reservas_formulario', [$this, 'shortcode_formulario']);
-        add_shortcode('reservas_mis_reservas', [$this, 'shortcode_mis_reservas']);
-        add_shortcode('reservas_cancelar', [$this, 'shortcode_cancelar']);
-        add_shortcode('reservas_disponibilidad', [$this, 'shortcode_disponibilidad']);
+        $shortcodes = [
+            'reservas_recursos' => 'shortcode_recursos',
+            'reservas_calendario' => 'shortcode_calendario',
+            'reservas_formulario' => 'shortcode_formulario',
+            'reservas_mis_reservas' => 'shortcode_mis_reservas',
+            'reservas_cancelar' => 'shortcode_cancelar',
+            'reservas_disponibilidad' => 'shortcode_disponibilidad',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -2310,6 +2318,20 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         }
 
         $identificador_reserva = $wpdb->insert_id;
+        do_action('flavor_reserva_creada', $identificador_reserva, [
+            'origen' => 'reservas_module',
+            'tipo_servicio' => $tipo_servicio,
+            'fecha_reserva' => $fecha_reserva,
+            'hora_inicio' => $hora_inicio,
+            'hora_fin' => $hora_fin,
+            'num_personas' => $numero_personas,
+            'estado' => 'pendiente',
+            'nombre_cliente' => $nombre_cliente,
+            'email_cliente' => $email_sanitizado,
+            'telefono_cliente' => $telefono_cliente,
+            'user_id' => $identificador_usuario,
+            'importe' => isset($params['importe']) ? (float) $params['importe'] : 0.0,
+        ]);
 
         return [
             'success' => true,
@@ -2369,6 +2391,19 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         if ($resultado_actualizacion === false) {
             return ['success' => false, 'error' => __('Error al cancelar la reserva.', 'flavor-chat-ia')];
         }
+
+        do_action('flavor_reserva_cancelada', $identificador_reserva, [
+            'origen' => 'reservas_module',
+            'estado_anterior' => (string) $reserva_encontrada->estado,
+            'fecha_reserva' => (string) $reserva_encontrada->fecha_reserva,
+            'hora_inicio' => (string) $reserva_encontrada->hora_inicio,
+            'hora_fin' => (string) $reserva_encontrada->hora_fin,
+            'num_personas' => (int) $reserva_encontrada->num_personas,
+            'tipo_servicio' => (string) $reserva_encontrada->tipo_servicio,
+            'user_id' => (int) ($reserva_encontrada->user_id ?? 0),
+            'importe' => isset($params['importe']) ? (float) $params['importe'] : 0.0,
+            'devolucion' => isset($params['devolucion']) ? (float) $params['devolucion'] : 0.0,
+        ]);
 
         return ['success' => true, 'mensaje' => sprintf(__('Reserva #%d cancelada correctamente.', 'flavor-chat-ia'), $identificador_reserva)];
     }
@@ -2791,6 +2826,13 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
      * Registrar páginas de administración (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Dashboard - con sufijo para Admin Shell

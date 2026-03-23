@@ -623,7 +623,7 @@ class Flavor_Role_Manager {
                 ],
                 'socios_tesorero' => [
                     'label' => __('Tesorero', 'flavor-chat-ia'),
-                    'description' => __('Puede gestionar cuotas y ver todos los socios', 'flavor-chat-ia'),
+                    'description' => __('Puede gestionar cuotas y ver todos los miembros', 'flavor-chat-ia'),
                     'capabilities' => [
                         'socios_ver_propios',
                         'socios_editar_propios',
@@ -635,8 +635,8 @@ class Flavor_Role_Manager {
                     ],
                 ],
                 'socios_admin' => [
-                    'label' => __('Admin. Socios', 'flavor-chat-ia'),
-                    'description' => __('Acceso completo al modulo de socios', 'flavor-chat-ia'),
+                    'label' => __('Admin. Miembros', 'flavor-chat-ia'),
+                    'description' => __('Acceso completo al modulo de miembros', 'flavor-chat-ia'),
                     'capabilities' => 'socios_*',
                 ],
             ],
@@ -1399,7 +1399,7 @@ class Flavor_Role_Manager {
         $labels = [
             'grupos_consumo' => __('Grupos de Consumo', 'flavor-chat-ia'),
             'eventos' => __('Eventos', 'flavor-chat-ia'),
-            'socios' => __('Socios', 'flavor-chat-ia'),
+            'socios' => __('Miembros', 'flavor-chat-ia'),
             'reservas' => __('Reservas', 'flavor-chat-ia'),
             'banco_tiempo' => __('Banco de Tiempo', 'flavor-chat-ia'),
             'incidencias' => __('Incidencias', 'flavor-chat-ia'),

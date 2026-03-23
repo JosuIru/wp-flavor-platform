@@ -302,7 +302,7 @@ class _RedSocialScreenState extends ConsumerState<RedSocialScreen> {
           ? '/red-social/publicaciones/$publicacionId/like'
           : '/red-social/publicaciones/$publicacionId/unlike';
 
-      final response = await apiClient.post(endpoint);
+      final response = await apiClient.post(endpoint, data: {});
 
       if (response.success) {
         setState(() {

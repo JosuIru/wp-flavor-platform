@@ -15,6 +15,8 @@
      */
     class FlavorEncuestas {
         constructor() {
+            this.contextSearchTimer = null;
+            this.contextSearchXhr = null;
             this.bindEvents();
             this.initStars();
         }
@@ -29,11 +31,12 @@
             // Formulario de creación
             $(document).on('submit', '#flavor-encuesta-crear-form', this.handleCreateSurvey.bind(this));
 
-            // Agregar opción en creación
-            $(document).on('click', '#agregar-opcion', this.handleAddOption.bind(this));
-
-            // Eliminar opción en creación
-            $(document).on('click', '.flavor-encuesta-crear__remove-opcion', this.handleRemoveOption.bind(this));
+            // Constructor de preguntas (creación)
+            $(document).on('click', '#agregar-pregunta', this.handleAddQuestion.bind(this));
+            $(document).on('click', '.flavor-encuesta-crear__pregunta-remove', this.handleRemoveQuestion.bind(this));
+            $(document).on('change', '.flavor-encuesta-crear__pregunta-tipo', this.handleQuestionTypeChange.bind(this));
+            $(document).on('click', '.flavor-encuesta-crear__pregunta-add-opcion', this.handleAddQuestionOption.bind(this));
+            $(document).on('click', '.flavor-encuesta-crear__pregunta-remove-opcion', this.handleRemoveQuestionOption.bind(this));
 
             // Votación rápida en versión mini
             $(document).on('click', '.flavor-encuesta-mini__opcion', this.handleQuickVote.bind(this));
@@ -42,6 +45,14 @@
             $(document).on('click', '.flavor-encuesta__star', this.handleStarClick.bind(this));
             $(document).on('mouseover', '.flavor-encuesta__star', this.handleStarHover.bind(this));
             $(document).on('mouseout', '.flavor-encuesta__stars', this.handleStarsMouseout.bind(this));
+
+            // Vinculación de contexto
+            $(document).on('change', '#encuesta-contexto-tipo', this.handleContextTypeChange.bind(this));
+            $(document).on('input', '#encuesta-contexto-buscar', this.handleContextSearchInput.bind(this));
+            $(document).on('click', '.flavor-encuesta-crear__context-result', this.handleContextResultClick.bind(this));
+            $(document).on('click', '#encuesta-contexto-seleccion-clear', this.handleContextSelectionClear.bind(this));
+            $(document).on('input', '#encuesta-contexto-id', this.handleManualContextIdInput.bind(this));
+
         }
 
         /**
@@ -57,6 +68,267 @@
                     FlavorEncuestas.updateStarsDisplay($container, valor);
                 }
             });
+
+            this.initializeQuestionBuilder();
+            this.handleContextTypeChange();
+        }
+
+        /**
+         * Ajusta visibilidad/validación del contexto destino.
+         */
+        handleContextTypeChange() {
+            const $tipo = $('#encuesta-contexto-tipo');
+            const $idWrap = $('#encuesta-contexto-id-wrap');
+            const $searchWrap = $('#encuesta-contexto-search-wrap');
+            const $input = $('#encuesta-contexto-id');
+            const $search = $('#encuesta-contexto-buscar');
+            const $results = $('#encuesta-contexto-resultados');
+            const $selection = $('#encuesta-contexto-seleccion');
+            if (!$tipo.length || !$idWrap.length || !$input.length) return;
+
+            const tipo = $tipo.val() || 'general';
+            const necesitaId = tipo !== 'general';
+
+            $idWrap.toggle(necesitaId);
+            $searchWrap.toggle(necesitaId);
+            $input.prop('required', necesitaId);
+            if (!necesitaId) {
+                $input.val('0');
+                $search.val('');
+                $results.hide().empty();
+                $selection.hide();
+            } else if ($input.val() && $input.val() !== '0') {
+                this.showContextSelection(`ID #${$input.val()}`);
+            }
+        }
+
+        handleContextSearchInput(evento) {
+            const $input = $(evento.currentTarget);
+            const query = ($input.val() || '').trim();
+            const $contextId = $('#encuesta-contexto-id');
+
+            if (query === '') {
+                $('#encuesta-contexto-resultados').hide().empty();
+                return;
+            }
+
+            if (query.length < 2) {
+                return;
+            }
+
+            // Si empieza una nueva búsqueda manual, invalidamos selección previa.
+            if ($contextId.val() && $('#encuesta-contexto-seleccion').is(':visible')) {
+                $contextId.val('0');
+                $('#encuesta-contexto-seleccion').hide();
+            }
+
+            if (this.contextSearchTimer) {
+                clearTimeout(this.contextSearchTimer);
+            }
+
+            this.contextSearchTimer = setTimeout(() => {
+                this.searchContextTargets(query);
+            }, 260);
+        }
+
+        searchContextTargets(query) {
+            const contextoTipo = ($('#encuesta-contexto-tipo').val() || 'general');
+            const $results = $('#encuesta-contexto-resultados');
+            if (contextoTipo === 'general') {
+                $results.hide().empty();
+                return;
+            }
+
+            if (this.contextSearchXhr && this.contextSearchXhr.readyState !== 4) {
+                this.contextSearchXhr.abort();
+            }
+
+            $results
+                .show()
+                .html(`<div class="flavor-encuesta-crear__context-status">${config.strings.buscando || 'Buscando...'}</div>`);
+
+            this.contextSearchXhr = $.ajax({
+                url: config.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'encuestas_buscar_contexto',
+                    nonce: config.nonce,
+                    contexto_tipo: contextoTipo,
+                    q: query,
+                    limit: 8
+                },
+                success: (response) => {
+                    const items = response && response.success && response.data && Array.isArray(response.data.items)
+                        ? response.data.items
+                        : [];
+                    this.renderContextResults(items);
+                },
+                error: () => {
+                    $results
+                        .show()
+                        .html(`<div class="flavor-encuesta-crear__context-status">${config.strings.error || 'Error'}</div>`);
+                }
+            });
+        }
+
+        renderContextResults(items) {
+            const $results = $('#encuesta-contexto-resultados');
+            if (!items.length) {
+                $results
+                    .show()
+                    .html(`<div class="flavor-encuesta-crear__context-status">${config.strings.sinResultados || 'Sin resultados'}</div>`);
+                return;
+            }
+
+            let html = '';
+            items.forEach((item) => {
+                const typeLabel = this.escapeHtml(item.type_label || '');
+                const statusLabel = this.escapeHtml(item.status_label || '');
+                const badges = [typeLabel, statusLabel].filter(Boolean).map((txt) =>
+                    `<span class="flavor-encuesta-crear__context-badge">${txt}</span>`
+                ).join('');
+
+                html += `
+                    <button type="button"
+                            class="flavor-encuesta-crear__context-result"
+                            data-id="${parseInt(item.id, 10) || 0}">
+                        <strong>${this.escapeHtml(item.label || '')}</strong>
+                        ${badges ? `<div class="flavor-encuesta-crear__context-badges">${badges}</div>` : ''}
+                        <small>${this.escapeHtml(item.subtitle || '')}</small>
+                    </button>
+                `;
+            });
+            $results.show().html(html);
+        }
+
+        handleContextResultClick(evento) {
+            evento.preventDefault();
+
+            const $btn = $(evento.currentTarget);
+            const id = parseInt($btn.data('id'), 10) || 0;
+            const label = ($btn.find('strong').first().text() || '').trim();
+            if (!id) return;
+
+            $('#encuesta-contexto-id').val(id);
+            $('#encuesta-contexto-buscar').val(label);
+            $('#encuesta-contexto-resultados').hide().empty();
+            this.showContextSelection(`${label} (ID ${id})`);
+        }
+
+        handleContextSelectionClear(evento) {
+            evento.preventDefault();
+            $('#encuesta-contexto-id').val('0');
+            $('#encuesta-contexto-buscar').val('').focus();
+            $('#encuesta-contexto-resultados').hide().empty();
+            $('#encuesta-contexto-seleccion').hide();
+        }
+
+        handleManualContextIdInput() {
+            const value = parseInt($('#encuesta-contexto-id').val(), 10) || 0;
+            if (value > 0) {
+                this.showContextSelection(`ID #${value}`);
+            } else {
+                $('#encuesta-contexto-seleccion').hide();
+            }
+        }
+
+        showContextSelection(texto) {
+            $('#encuesta-contexto-seleccion-label').text(texto);
+            $('#encuesta-contexto-seleccion').show();
+        }
+
+        /**
+         * Inicializa constructor de preguntas
+         */
+        initializeQuestionBuilder() {
+            const $container = $('#encuesta-preguntas');
+            if (!$container.length) return;
+            this.refreshQuestionUi();
+        }
+
+        refreshQuestionUi() {
+            const $questions = $('#encuesta-preguntas .flavor-encuesta-crear__pregunta');
+            $questions.each((idx, el) => {
+                const $q = $(el);
+                $q.attr('data-index', idx);
+                $q.find('.flavor-encuesta-crear__pregunta-head strong').text(`Pregunta ${idx + 1}`);
+                $q.find('[name^="campo_opciones_"]').attr('name', `campo_opciones_${idx}[]`);
+
+                const $removeBtn = $q.find('.flavor-encuesta-crear__pregunta-remove');
+                $removeBtn.toggle($questions.length > 1);
+
+                this.updateQuestionTypeUi($q);
+            });
+        }
+
+        updateQuestionTypeUi($question) {
+            const tipo = $question.find('.flavor-encuesta-crear__pregunta-tipo').val();
+            const showOptions = ['seleccion_unica', 'seleccion_multiple'].includes(tipo);
+            const showRange = tipo === 'rango';
+
+            const $optionsBox = $question.find('.flavor-encuesta-crear__pregunta-opciones');
+            const $optionsInputs = $optionsBox.find('input[name^="campo_opciones_"]');
+            $optionsBox.toggle(showOptions);
+            $optionsInputs.prop('required', showOptions);
+            $optionsInputs.prop('disabled', !showOptions);
+
+            const $rangeBox = $question.find('.flavor-encuesta-crear__pregunta-range');
+            const $rangeInputs = $rangeBox.find('input');
+            $rangeBox.toggle(showRange);
+            $rangeInputs.prop('disabled', !showRange);
+        }
+
+        createQuestionHtml(index) {
+            return `
+                <div class="flavor-encuesta-crear__pregunta" data-index="${index}">
+                    <div class="flavor-encuesta-crear__pregunta-head">
+                        <strong>Pregunta ${index + 1}</strong>
+                        <button type="button" class="flavor-encuesta-crear__pregunta-remove" aria-label="Eliminar pregunta">×</button>
+                    </div>
+
+                    <input type="text" name="campo_etiqueta[]" class="flavor-encuesta-crear__input" placeholder="Escribe la pregunta" required>
+
+                    <select name="campo_tipo[]" class="flavor-encuesta-crear__input flavor-encuesta-crear__pregunta-tipo">
+                        <option value="seleccion_unica">Selección única</option>
+                        <option value="seleccion_multiple">Selección múltiple</option>
+                        <option value="texto">Texto corto</option>
+                        <option value="textarea">Texto largo</option>
+                        <option value="email">Email</option>
+                        <option value="telefono">Teléfono</option>
+                        <option value="url">URL</option>
+                        <option value="numero">Número</option>
+                        <option value="rango">Rango (slider)</option>
+                        <option value="escala">Escala (1-10)</option>
+                        <option value="nps">NPS (0-10)</option>
+                        <option value="estrellas">Estrellas (1-5)</option>
+                        <option value="si_no">Sí/No</option>
+                        <option value="fecha">Fecha</option>
+                        <option value="fecha_hora">Fecha y hora</option>
+                    </select>
+
+                    <div class="flavor-encuesta-crear__pregunta-opciones">
+                        <div class="flavor-encuesta-crear__opciones">
+                            <div class="flavor-encuesta-crear__opcion">
+                                <input type="text" class="flavor-encuesta-crear__input" name="campo_opciones_${index}[]" placeholder="Opción 1" required>
+                                <button type="button" class="flavor-encuesta-crear__pregunta-remove-opcion" aria-label="Eliminar">×</button>
+                            </div>
+                            <div class="flavor-encuesta-crear__opcion">
+                                <input type="text" class="flavor-encuesta-crear__input" name="campo_opciones_${index}[]" placeholder="Opción 2" required>
+                                <button type="button" class="flavor-encuesta-crear__pregunta-remove-opcion" aria-label="Eliminar">×</button>
+                            </div>
+                        </div>
+                        <button type="button" class="flavor-encuesta-crear__add-opcion flavor-encuesta-crear__pregunta-add-opcion">+ Añadir opción</button>
+                    </div>
+
+                    <div class="flavor-encuesta-crear__pregunta-range" style="display:none;">
+                        <div class="flavor-encuesta-crear__range-config">
+                            <input type="number" name="campo_config_min[]" class="flavor-encuesta-crear__input" placeholder="Mínimo" value="1" disabled>
+                            <input type="number" name="campo_config_max[]" class="flavor-encuesta-crear__input" placeholder="Máximo" value="10" disabled>
+                            <input type="number" step="0.1" name="campo_config_step[]" class="flavor-encuesta-crear__input" placeholder="Paso" value="1" disabled>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         /**
@@ -353,28 +625,65 @@
             const esAnonima = $form.find('[name="es_anonima"]').is(':checked');
             const fechaCierre = $form.find('[name="fecha_cierre"]').val();
 
-            // Recopilar opciones
-            const opciones = [];
-            $form.find('[name="opciones[]"]').each(function() {
-                const valor = $(this).val().trim();
-                if (valor) {
-                    opciones.push(valor);
+            // Recopilar preguntas/campos
+            const campos = [];
+            let preguntasValidas = true;
+
+            $form.find('.flavor-encuesta-crear__pregunta').each((index, el) => {
+                const $q = $(el);
+                const etiqueta = ($q.find('[name="campo_etiqueta[]"]').val() || '').trim();
+                const tipo = $q.find('[name="campo_tipo[]"]').val() || 'seleccion_unica';
+
+                if (!etiqueta) {
+                    preguntasValidas = false;
+                    return;
                 }
+
+                const campo = {
+                    tipo: tipo,
+                    etiqueta: etiqueta,
+                    es_requerido: true,
+                    orden: index
+                };
+
+                if (['seleccion_unica', 'seleccion_multiple'].includes(tipo)) {
+                    const opciones = [];
+                    $q.find('[name^="campo_opciones_"]').each(function() {
+                        const valor = ($(this).val() || '').trim();
+                        if (valor) opciones.push(valor);
+                    });
+
+                    if (opciones.length < 2) {
+                        preguntasValidas = false;
+                        return;
+                    }
+                    campo.opciones = opciones;
+                }
+
+                if (tipo === 'rango') {
+                    const min = parseFloat($q.find('[name="campo_config_min[]"]').val() || '1');
+                    const max = parseFloat($q.find('[name="campo_config_max[]"]').val() || '10');
+                    const step = parseFloat($q.find('[name="campo_config_step[]"]').val() || '1');
+                    campo.configuracion = {
+                        min: isNaN(min) ? 1 : min,
+                        max: isNaN(max) ? 10 : max,
+                        step: isNaN(step) ? 1 : step,
+                        default: isNaN(min) ? 1 : min
+                    };
+                }
+
+                campos.push(campo);
             });
 
-            if (opciones.length < 2) {
-                alert('Debes añadir al menos 2 opciones');
+            if (!preguntasValidas || campos.length === 0) {
+                alert('Revisa las preguntas: título obligatorio y al menos 2 opciones en preguntas de selección');
                 return;
             }
 
-            // Preparar campo
-            const campos = [{
-                tipo: permiteMultiples ? 'seleccion_multiple' : 'seleccion_unica',
-                etiqueta: titulo,
-                opciones: opciones,
-                es_requerido: true,
-                orden: 0
-            }];
+            if (contextoTipo !== 'general' && (!contextoId || parseInt(contextoId, 10) <= 0)) {
+                alert(config.strings.contextoObligatorio || 'Debes seleccionar un destino para el contexto elegido');
+                return;
+            }
 
             // Estado de carga
             $submitBtn.prop('disabled', true).text(config.strings.enviando);
@@ -421,43 +730,75 @@
         }
 
         /**
-         * Agrega opción en formulario de creación
+         * Añade una pregunta al constructor
          */
-        handleAddOption(evento) {
+        handleAddQuestion(evento) {
             evento.preventDefault();
-
-            const $container = $('#encuesta-opciones');
-            const numOpciones = $container.find('.flavor-encuesta-crear__opcion').length;
-
-            if (numOpciones >= 10) {
-                alert('Máximo 10 opciones permitidas');
-                return;
-            }
-
-            $container.append(`
-                <div class="flavor-encuesta-crear__opcion">
-                    <input type="text"
-                           name="opciones[]"
-                           class="flavor-encuesta-crear__input"
-                           placeholder="Opción ${numOpciones + 1}">
-                    <button type="button" class="flavor-encuesta-crear__remove-opcion" aria-label="Eliminar">×</button>
-                </div>
-            `);
-
-            // Enfocar nuevo campo
-            $container.find('.flavor-encuesta-crear__opcion:last input').focus();
+            const $container = $('#encuesta-preguntas');
+            const index = $container.find('.flavor-encuesta-crear__pregunta').length;
+            $container.append(this.createQuestionHtml(index));
+            this.refreshQuestionUi();
+            $container.find('.flavor-encuesta-crear__pregunta:last [name="campo_etiqueta[]"]').focus();
         }
 
         /**
-         * Elimina opción en formulario de creación
+         * Elimina una pregunta del constructor
          */
-        handleRemoveOption(evento) {
+        handleRemoveQuestion(evento) {
             evento.preventDefault();
+            const $container = $('#encuesta-preguntas');
+            const $questions = $container.find('.flavor-encuesta-crear__pregunta');
+            if ($questions.length <= 1) {
+                alert('Debe existir al menos una pregunta');
+                return;
+            }
 
-            const $container = $('#encuesta-opciones');
-            const numOpciones = $container.find('.flavor-encuesta-crear__opcion').length;
+            $(evento.currentTarget).closest('.flavor-encuesta-crear__pregunta').remove();
+            this.refreshQuestionUi();
+        }
 
-            if (numOpciones <= 2) {
+        /**
+         * Cambio de tipo en una pregunta
+         */
+        handleQuestionTypeChange(evento) {
+            const $question = $(evento.currentTarget).closest('.flavor-encuesta-crear__pregunta');
+            this.updateQuestionTypeUi($question);
+        }
+
+        /**
+         * Añade opción dentro de una pregunta
+         */
+        handleAddQuestionOption(evento) {
+            evento.preventDefault();
+            const $question = $(evento.currentTarget).closest('.flavor-encuesta-crear__pregunta');
+            const index = parseInt($question.attr('data-index'), 10) || 0;
+            const $options = $question.find('.flavor-encuesta-crear__opciones');
+            const count = $options.find('.flavor-encuesta-crear__opcion').length;
+
+            if (count >= 10) {
+                alert('Máximo 10 opciones por pregunta');
+                return;
+            }
+
+            $options.append(`
+                <div class="flavor-encuesta-crear__opcion">
+                    <input type="text" class="flavor-encuesta-crear__input" name="campo_opciones_${index}[]" placeholder="Opción ${count + 1}" required>
+                    <button type="button" class="flavor-encuesta-crear__pregunta-remove-opcion" aria-label="Eliminar">×</button>
+                </div>
+            `);
+            $options.find('.flavor-encuesta-crear__opcion:last input').focus();
+        }
+
+        /**
+         * Elimina opción dentro de una pregunta
+         */
+        handleRemoveQuestionOption(evento) {
+            evento.preventDefault();
+            const $question = $(evento.currentTarget).closest('.flavor-encuesta-crear__pregunta');
+            const $options = $question.find('.flavor-encuesta-crear__opciones');
+            const count = $options.find('.flavor-encuesta-crear__opcion').length;
+
+            if (count <= 2) {
                 alert('Debes tener al menos 2 opciones');
                 return;
             }

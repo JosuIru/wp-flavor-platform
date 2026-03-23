@@ -657,6 +657,12 @@
         },
 
         aplicarPreset: function(nombrePreset) {
+            // Caso especial: preset "recomendado" carga config del servidor
+            if (nombrePreset === 'recomendado') {
+                this.cargarPresetRecomendado();
+                return;
+            }
+
             var preset = this.presets[nombrePreset];
             if (!preset) return;
 
@@ -707,6 +713,81 @@
             }
 
             alert(flavorAppsConfig.strings.presetApplied || 'Preset aplicado correctamente');
+        },
+
+        cargarPresetRecomendado: function() {
+            var self = this;
+            var $btn = $('.flavor-preset-btn[data-preset="recomendado"]');
+            $btn.prop('disabled', true).css('opacity', '0.7');
+
+            $.ajax({
+                url: flavorAppsConfig.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'flavor_get_recommended_config',
+                    nonce: flavorAppsConfig.nonce
+                },
+                success: function(response) {
+                    if (response.success && response.data) {
+                        var preset = {
+                            tabs: response.data.tabs || [],
+                            modules: response.data.modules || [],
+                            moduleDescriptions: response.data.module_descriptions || {},
+                            primaryColor: response.data.primary_color || '#4CAF50'
+                        };
+
+                        // Aplicar tabs
+                        if (preset.tabs.length > 0) {
+                            // Primero desactivar todas las tabs
+                            $('#flavor-tabs-sortable .flavor-tab-item').each(function() {
+                                $(this).find('.flavor-tab-toggle').prop('checked', false);
+                                $(this).addClass('disabled');
+                            });
+
+                            // Activar las tabs recomendadas
+                            preset.tabs.forEach(function(tabConfig) {
+                                var $tabItem = $('#flavor-tabs-sortable .flavor-tab-item[data-tab-id="' + tabConfig.id + '"]');
+                                if ($tabItem.length) {
+                                    $tabItem.find('.flavor-tab-toggle').prop('checked', tabConfig.enabled);
+                                    $tabItem.find('.flavor-tab-label-input').val(tabConfig.label);
+                                    $tabItem.find('.flavor-tab-icon-value').val(tabConfig.icon);
+                                    $tabItem.find('.flavor-tab-icon-btn .material-icons').text(tabConfig.icon);
+                                    if (tabConfig.enabled) {
+                                        $tabItem.removeClass('disabled');
+                                    }
+                                }
+                            });
+
+                            moduloEditorTabs.actualizarMockupTabs();
+                        }
+
+                        // Construir mensaje con descripciones de módulos
+                        var enabledTabs = preset.tabs.filter(function(t) { return t.enabled; });
+                        var tabsInfo = enabledTabs.map(function(t) {
+                            var desc = t.description || preset.moduleDescriptions[t.id] || '';
+                            return '• ' + t.label + (desc ? ': ' + desc : '');
+                        }).join('\n');
+
+                        var extraModulesCount = preset.tabs.filter(function(t) { return !t.enabled; }).length;
+                        var extraInfo = extraModulesCount > 0
+                            ? '\n\n(+' + extraModulesCount + ' módulos disponibles en menú hamburguesa)'
+                            : '';
+
+                        alert('✅ Configuración recomendada aplicada\n\nTabs activos (' + enabledTabs.length + '/5):\n' + tabsInfo + extraInfo);
+
+                        // Quitar el badge después de aplicar
+                        $btn.find('.flavor-preset-badge').fadeOut();
+                    } else {
+                        alert('Error al cargar configuración recomendada');
+                    }
+                },
+                error: function() {
+                    alert('Error de conexión');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).css('opacity', '1');
+                }
+            });
         }
     };
 
@@ -1457,6 +1538,77 @@
     };
 
     // ========================================
+    // MÓDULO: Copiar al Portapapeles
+    // ========================================
+    var moduloCopiarPortapapeles = {
+        init: function() {
+            this.bindCopyButtons();
+        },
+
+        bindCopyButtons: function() {
+            $(document).on('click', '.flavor-copy-btn', function(e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var targetId = $btn.data('copy-target');
+                var $target = $('#' + targetId);
+
+                if ($target.length) {
+                    moduloCopiarPortapapeles.copyToClipboard($target.val(), $btn);
+                }
+            });
+        },
+
+        copyToClipboard: function(text, $btn) {
+            var self = this;
+
+            // Usar Clipboard API si está disponible
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    self.showCopiedFeedback($btn);
+                }).catch(function() {
+                    self.fallbackCopy(text, $btn);
+                });
+            } else {
+                self.fallbackCopy(text, $btn);
+            }
+        },
+
+        fallbackCopy: function(text, $btn) {
+            var self = this;
+            var $temp = $('<textarea>');
+            $temp.val(text).css({
+                position: 'fixed',
+                left: '-9999px'
+            }).appendTo('body').select();
+
+            try {
+                document.execCommand('copy');
+                self.showCopiedFeedback($btn);
+            } catch (err) {
+                console.error('Error al copiar:', err);
+            }
+
+            $temp.remove();
+        },
+
+        showCopiedFeedback: function($btn) {
+            var $text = $btn.find('.flavor-copy-text');
+            var originalText = $text.text();
+            var $icon = $btn.find('.dashicons');
+
+            $btn.addClass('copied');
+            $icon.removeClass('dashicons-clipboard').addClass('dashicons-yes');
+            $text.text(flavorAppsConfig.strings.copied || '¡Copiado!');
+
+            setTimeout(function() {
+                $btn.removeClass('copied');
+                $icon.removeClass('dashicons-yes').addClass('dashicons-clipboard');
+                $text.text(originalText);
+            }, 2000);
+        }
+    };
+
+    // ========================================
     // INICIALIZACIÓN
     // ========================================
     $(document).ready(function() {
@@ -1467,7 +1619,8 @@
         moduloPresets.init();
         moduloSelectorModulos.init();
         moduloActivacionModulos.init();
-        moduloEditorDrawer.init(); // Incluye initSortable para el drawer
+        moduloEditorDrawer.init();
+        moduloCopiarPortapapeles.init();
     });
 
 })(jQuery);

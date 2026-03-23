@@ -117,6 +117,62 @@ Nuestro enfoque combina:
 
 ---
 
+### 9. Contabilidad y Gestión Económica
+
+- **Libro contable** integrado con todos los módulos
+- **Desglose fiscal** automático
+- **Comparativas** mensuales y anuales
+- **Integración nativa** con facturación, cuotas de socios, marketplace
+
+> *Gestión económica transparente sin herramientas externas*
+
+---
+
+## Impacto Social y Sostenibilidad
+
+### Sello de Conciencia - Medición de Impacto
+
+Flavor Platform incluye un **sistema de evaluación automática** que mide el impacto social y ético de cada implementación según las **5 premisas de una economía consciente**:
+
+| Premisa | Descripción | Indicadores |
+|---------|-------------|-------------|
+| **La conciencia es fundamental** | Reconocer la dignidad de todas las personas | Participación activa, autonomía, bienestar |
+| **La abundancia es organizable** | Distribución equitativa de recursos | Acceso a recursos, economía colaborativa |
+| **La interdependencia es radical** | Cooperación como valor central | Redes de apoyo, acción colectiva |
+| **La madurez es cíclica** | Respetar límites y ciclos naturales | Sostenibilidad, suficiencia, largo plazo |
+| **El valor es intrínseco** | Las cosas valen por lo que son | Intercambios no monetarios, reconocimiento |
+
+### Niveles de Certificación
+
+- **Básico** (1-25 puntos): Cumple requisitos mínimos
+- **En Transición** (26-50): Integración progresiva
+- **Consciente** (51-75): Aplicación ética activa
+- **Referente** (76-100): Ejemplo de economía consciente
+
+### Alineación con Estándares RSC/ESG
+
+El Sello de Conciencia está diseñado para alinearse con marcos internacionales:
+
+| Estándar | Alineación con Flavor |
+|----------|----------------------|
+| **ODS (Agenda 2030)** | Contribución directa a ODS 8, 10, 11, 12, 13, 17 |
+| **ESG** (Environmental, Social, Governance) | Evaluación automática de las 3 dimensiones |
+| **RSC** (Responsabilidad Social Corporativa) | Métricas de impacto social integradas |
+| **Economía del Bien Común** | Puntuación alineada con la Matriz del Bien Común |
+| **B Corp** | Indicadores comparables para certificación |
+
+### Informes de Impacto
+
+La plataforma genera automáticamente:
+- **Dashboard de impacto** con métricas en tiempo real
+- **Informes periódicos** de contribución social
+- **Certificado digital** del nivel de conciencia
+- **Datos exportables** para memorias de sostenibilidad
+
+> *Ideal para organizaciones que necesitan reportar impacto ante financiadores, socios o administraciones públicas.*
+
+---
+
 ## Arquitectura Técnica
 
 ```
@@ -268,11 +324,11 @@ Este proyecto encaja en las líneas de financiación EDLP:
 
 ## Contacto
 
-**[Tu nombre / Empresa]**
+**Josu Irurtzun - Gailu Microcoop**
 
-📧 [email]
-📱 [teléfono]
-🌐 [web]
+📧 info@gailu.net
+📱 690 390 018
+🌐 www.gailu.net
 
 ---
 

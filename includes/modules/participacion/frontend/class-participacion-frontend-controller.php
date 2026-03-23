@@ -101,14 +101,21 @@ class Flavor_Participacion_Frontend_Controller {
      * Registrar shortcodes
      */
     public function registrar_shortcodes() {
-        add_shortcode('participacion_encuestas', [$this, 'shortcode_encuestas']);
-        add_shortcode('participacion_encuesta', [$this, 'shortcode_encuesta']);
-        add_shortcode('participacion_peticiones', [$this, 'shortcode_peticiones']);
-        add_shortcode('participacion_peticion', [$this, 'shortcode_peticion']);
-        add_shortcode('participacion_crear_peticion', [$this, 'shortcode_crear_peticion']);
-        add_shortcode('participacion_debates', [$this, 'shortcode_debates']);
-        add_shortcode('participacion_debate', [$this, 'shortcode_debate']);
-        add_shortcode('participacion_resumen', [$this, 'shortcode_resumen']);
+        $shortcodes = [
+            'participacion_encuestas' => 'shortcode_encuestas',
+            'participacion_encuesta' => 'shortcode_encuesta',
+            'participacion_peticiones' => 'shortcode_peticiones',
+            'participacion_peticion' => 'shortcode_peticion',
+            'participacion_crear_peticion' => 'shortcode_crear_peticion',
+            'participacion_debates' => 'shortcode_debates',
+            'participacion_debate' => 'shortcode_debate',
+            'participacion_resumen' => 'shortcode_resumen',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -163,7 +170,28 @@ class Flavor_Participacion_Frontend_Controller {
             'estado' => 'activa',
             'limite' => 10,
             'mostrar_resultados' => 'false',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
         ], $atts);
+
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $visual_class_string = implode(' ', $visual_classes);
 
         global $wpdb;
         $tabla_encuestas = $wpdb->prefix . 'flavor_participacion_encuestas';
@@ -188,7 +216,7 @@ class Flavor_Participacion_Frontend_Controller {
 
         ob_start();
         ?>
-        <div class="flavor-participacion-encuestas">
+        <div class="flavor-participacion-encuestas <?php echo esc_attr($visual_class_string); ?>">
             <h2><?php esc_html_e('Encuestas', 'flavor-chat-ia'); ?></h2>
 
             <?php if (empty($encuestas)): ?>

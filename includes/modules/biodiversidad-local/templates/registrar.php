@@ -9,6 +9,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Encolar estilos del módulo
+wp_enqueue_style(
+    'flavor-biodiversidad-local',
+    FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+    [],
+    FLAVOR_CHAT_IA_VERSION
+);
+
 $categorias = Flavor_Chat_Biodiversidad_Local_Module::CATEGORIAS_ESPECIES;
 $estados = Flavor_Chat_Biodiversidad_Local_Module::ESTADOS_CONSERVACION;
 $habitats = Flavor_Chat_Biodiversidad_Local_Module::TIPOS_HABITAT;

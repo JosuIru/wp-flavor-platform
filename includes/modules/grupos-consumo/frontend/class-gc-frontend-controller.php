@@ -43,13 +43,21 @@ class Flavor_GC_Frontend_Controller {
         // Registrar assets
         add_action('wp_enqueue_scripts', [$this, 'registrar_assets']);
 
-        // Registrar shortcodes avanzados
-        add_shortcode('gc_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('gc_carrito', [$this, 'shortcode_carrito']);
-        add_shortcode('gc_calendario', [$this, 'shortcode_calendario']);
-        add_shortcode('gc_historial', [$this, 'shortcode_historial']);
-        add_shortcode('gc_suscripciones', [$this, 'shortcode_suscripciones']);
-        add_shortcode('gc_mi_cesta', [$this, 'shortcode_mi_cesta']);
+        // Registrar shortcodes avanzados sin reemplazar implementaciones existentes.
+        $shortcodes = [
+            'gc_catalogo' => 'shortcode_catalogo',
+            'gc_carrito' => 'shortcode_carrito',
+            'gc_calendario' => 'shortcode_calendario',
+            'gc_historial' => 'shortcode_historial',
+            'gc_suscripciones' => 'shortcode_suscripciones',
+            'gc_mi_cesta' => 'shortcode_mi_cesta',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers (legacy, nuevos en class-gc-ajax-handlers.php)
         add_action('wp_ajax_gc_agregar_lista', [$this, 'ajax_agregar_lista']);
@@ -191,6 +199,13 @@ class Flavor_GC_Frontend_Controller {
             'productor' => '',
             'categoria' => '',
             'limite' => -1,
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'title',
+            'order' => 'ASC',
         ], $atts);
 
         // Preparar datos para el template
@@ -332,14 +347,49 @@ class Flavor_GC_Frontend_Controller {
      * Renderizar catálogo
      */
     private function render_catalogo($atts) {
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $visual_class_string = implode(' ', $visual_classes);
+
+        // Mapeo de orderby para productos GC
+        $orderby_map = [
+            'title' => 'title',
+            'date' => 'date',
+            'precio' => ['meta_key' => '_gc_precio', 'orderby' => 'meta_value_num'],
+            'productor' => ['meta_key' => '_gc_productor_id', 'orderby' => 'meta_value'],
+        ];
+        $orderby_config = $orderby_map[$atts['orderby']] ?? ['orderby' => 'title'];
+        $order = strtoupper($atts['order']) === 'DESC' ? 'DESC' : 'ASC';
+
         // Obtener productos
         $args = [
             'post_type' => 'gc_producto',
             'post_status' => 'publish',
             'posts_per_page' => $atts['limite'],
-            'orderby' => 'title',
-            'order' => 'ASC',
+            'order' => $order,
         ];
+
+        // Aplicar orderby config
+        if (is_array($orderby_config)) {
+            if (isset($orderby_config['meta_key'])) {
+                $args['meta_key'] = $orderby_config['meta_key'];
+            }
+            $args['orderby'] = $orderby_config['orderby'] ?? 'title';
+        } else {
+            $args['orderby'] = $orderby_config;
+        }
 
         if ($atts['productor']) {
             $args['meta_query'][] = [
@@ -371,7 +421,7 @@ class Flavor_GC_Frontend_Controller {
             }
         }
         ?>
-        <div class="gc-catalogo" data-columnas="<?php echo esc_attr($atts['columnas']); ?>">
+        <div class="gc-catalogo <?php echo esc_attr($visual_class_string); ?>" data-columnas="<?php echo esc_attr($atts['columnas']); ?>">
             <?php if ($atts['mostrar_filtros'] === 'si'): ?>
                 <div class="gc-catalogo-filtros">
                     <div class="gc-filtro-buscar">

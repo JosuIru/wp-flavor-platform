@@ -76,13 +76,20 @@ class Flavor_Mapa_Actores_Frontend_Controller {
         add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_tabs']);
 
         // Shortcodes
-        add_shortcode('flavor_mapa_actores', [$this, 'shortcode_mapa']);
-        add_shortcode('flavor_mapa_actores_directorio', [$this, 'shortcode_directorio']);
-        add_shortcode('flavor_mapa_actores_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('flavor_mapa_actores_buscador', [$this, 'shortcode_buscador']);
-        add_shortcode('flavor_mapa_actores_grafo', [$this, 'shortcode_grafo']);
-        add_shortcode('flavor_mapa_actores_proponer', [$this, 'shortcode_proponer']);
-        add_shortcode('flavor_mapa_actores_dashboard', [$this, 'shortcode_dashboard']);
+        $shortcodes = [
+            'flavor_mapa_actores' => 'shortcode_mapa',
+            'flavor_mapa_actores_directorio' => 'shortcode_directorio',
+            'flavor_mapa_actores_detalle' => 'shortcode_detalle',
+            'flavor_mapa_actores_buscador' => 'shortcode_buscador',
+            'flavor_mapa_actores_grafo' => 'shortcode_grafo',
+            'flavor_mapa_actores_proponer' => 'shortcode_proponer',
+            'flavor_mapa_actores_dashboard' => 'shortcode_dashboard',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_mapa_actores_buscar', [$this, 'ajax_buscar']);

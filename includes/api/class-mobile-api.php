@@ -511,6 +511,20 @@ class Chat_IA_Mobile_API {
             'permission_callback' => [$this, 'public_permission_check'],
         ]);
 
+        // Estadisticas del dashboard cliente (delegado a Client_Dashboard_API)
+        register_rest_route(self::API_NAMESPACE, '/client/statistics', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_client_statistics'],
+            'permission_callback' => [$this, 'check_user_permission'],
+        ]);
+
+        // Actividad reciente del cliente
+        register_rest_route(self::API_NAMESPACE, '/client/activity', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_client_activity'],
+            'permission_callback' => [$this, 'check_user_permission'],
+        ]);
+
         // ==========================================
         // ADMIN: DASHBOARD
         // ==========================================
@@ -675,6 +689,42 @@ class Chat_IA_Mobile_API {
             'methods' => 'POST',
             'callback' => [$this, 'validate_admin_site_token'],
             'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        // ==========================================
+        // SUBIDA DE MEDIOS (USUARIOS AUTENTICADOS)
+        // ==========================================
+        register_rest_route(self::API_NAMESPACE, '/media/upload', [
+            'methods' => 'POST',
+            'callback' => [$this, 'upload_media'],
+            'permission_callback' => [$this, 'check_user_permission'],
+        ]);
+
+        // ==========================================
+        // MARKETPLACE (PROXY A flavor-chat-ia/v1)
+        // ==========================================
+        register_rest_route(self::API_NAMESPACE, '/marketplace/anuncio', [
+            'methods' => 'POST',
+            'callback' => [$this, 'proxy_marketplace_crear'],
+            'permission_callback' => [$this, 'check_user_permission'],
+        ]);
+
+        register_rest_route(self::API_NAMESPACE, '/marketplace/anuncio/(?P<id>\d+)', [
+            'methods' => 'PUT',
+            'callback' => [$this, 'proxy_marketplace_actualizar'],
+            'permission_callback' => [$this, 'check_user_permission'],
+        ]);
+
+        register_rest_route(self::API_NAMESPACE, '/marketplace/anuncios', [
+            'methods' => 'GET',
+            'callback' => [$this, 'proxy_marketplace_listar'],
+            'permission_callback' => [$this, 'public_permission_check'],
+        ]);
+
+        register_rest_route(self::API_NAMESPACE, '/marketplace/mis-anuncios', [
+            'methods' => 'GET',
+            'callback' => [$this, 'proxy_marketplace_mis_anuncios'],
+            'permission_callback' => [$this, 'check_user_permission'],
         ]);
     }
 
@@ -1844,6 +1894,30 @@ class Chat_IA_Mobile_API {
         }
 
         flavor_log_debug( 'check_admin_permission - OK', 'MobileAPI' );
+        return true;
+    }
+
+    /**
+     * Verifica permisos de usuario autenticado (no necesita ser admin)
+     */
+    public function check_user_permission($request) {
+        if (!$this->check_auth_token($request)) {
+            return new WP_Error(
+                'rest_unauthorized',
+                'Token de autenticación inválido o expirado',
+                ['status' => 401]
+            );
+        }
+
+        $user = wp_get_current_user();
+        if (!$user->exists()) {
+            return new WP_Error(
+                'rest_forbidden',
+                'Usuario no encontrado',
+                ['status' => 403]
+            );
+        }
+
         return true;
     }
 
@@ -4296,6 +4370,197 @@ class Chat_IA_Mobile_API {
     }
 
     // ==========================================
+    // ESTADISTICAS Y ACTIVIDAD DEL CLIENTE
+    // ==========================================
+
+    /**
+     * Obtiene estadísticas del dashboard para el cliente
+     * Delega a Client_Dashboard_API si está disponible
+     */
+    public function get_client_statistics($request) {
+        // Si Client_Dashboard_API está disponible, usar su método
+        if (class_exists('Flavor_Client_Dashboard_API')) {
+            $dashboard_api = new \Flavor_Client_Dashboard_API();
+            return $dashboard_api->get_statistics_for_mobile($request);
+        }
+
+        // Fallback: construir estadísticas básicas
+        $user_id = get_current_user_id();
+        $statistics = [];
+
+        // Obtener módulos activos
+        $active_modules = [];
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $active_modules = \Flavor_Chat_Module_Loader::get_active_modules_cached();
+        }
+
+        global $wpdb;
+
+        // Eventos próximos
+        if (in_array('eventos', $active_modules)) {
+            $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_eventos'") === $tabla_eventos) {
+                $eventos_proximos = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_eventos WHERE fecha_inicio >= %s AND estado = 'publicado'",
+                    current_time('mysql')
+                ));
+                $statistics[] = [
+                    'id' => 'eventos_proximos',
+                    'title' => __('Eventos Próximos', 'flavor-chat-ia'),
+                    'value' => (string) intval($eventos_proximos),
+                    'numeric_value' => floatval($eventos_proximos),
+                    'icon_name' => 'event',
+                    'color_hex' => '#E91E63',
+                ];
+            }
+        }
+
+        // Grupos de Consumo
+        if (in_array('grupos_consumo', $active_modules) || in_array('grupos-consumo', $active_modules)) {
+            $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_pedidos'") === $tabla_pedidos) {
+                $pedidos = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_pedidos WHERE usuario_id = %d AND estado IN ('abierto', 'pendiente')",
+                    $user_id
+                ));
+                $statistics[] = [
+                    'id' => 'gc_pedidos',
+                    'title' => __('Mis Pedidos GC', 'flavor-chat-ia'),
+                    'value' => (string) intval($pedidos),
+                    'numeric_value' => floatval($pedidos),
+                    'icon_name' => 'shopping_basket',
+                    'color_hex' => '#4CAF50',
+                ];
+            }
+        }
+
+        // Banco de Tiempo
+        if (in_array('banco_tiempo', $active_modules) || in_array('banco-tiempo', $active_modules)) {
+            $tabla_servicios = $wpdb->prefix . 'flavor_bt_servicios';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_servicios'") === $tabla_servicios) {
+                $servicios = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_servicios WHERE estado = 'activo'");
+                $statistics[] = [
+                    'id' => 'bt_servicios',
+                    'title' => __('Servicios Disponibles', 'flavor-chat-ia'),
+                    'value' => (string) intval($servicios),
+                    'numeric_value' => floatval($servicios),
+                    'icon_name' => 'volunteer_activism',
+                    'color_hex' => '#009688',
+                ];
+            }
+        }
+
+        // Marketplace
+        if (in_array('marketplace', $active_modules)) {
+            $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_anuncios'") === $tabla_anuncios) {
+                $anuncios = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM $tabla_anuncios WHERE usuario_id = %d AND estado = 'activo'",
+                    $user_id
+                ));
+                $statistics[] = [
+                    'id' => 'marketplace_mis_anuncios',
+                    'title' => __('Mis Anuncios', 'flavor-chat-ia'),
+                    'value' => (string) intval($anuncios),
+                    'numeric_value' => floatval($anuncios),
+                    'icon_name' => 'storefront',
+                    'color_hex' => '#FF9800',
+                ];
+            }
+        }
+
+        // Permitir que otros módulos añadan estadísticas
+        $statistics = apply_filters('flavor_client_statistics_mobile', $statistics, $user_id);
+
+        return rest_ensure_response([
+            'statistics' => $statistics,
+            'total' => count($statistics),
+            'generated_at' => current_time('c'),
+        ]);
+    }
+
+    /**
+     * Obtiene la actividad reciente del cliente
+     */
+    public function get_client_activity($request) {
+        $user_id = get_current_user_id();
+        $limit = min(50, max(1, intval($request->get_param('limit') ?: 10)));
+        $activity = [];
+
+        global $wpdb;
+
+        // Obtener módulos activos para filtrar actividad relevante
+        $active_modules = [];
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $active_modules = \Flavor_Chat_Module_Loader::get_active_modules_cached();
+        }
+
+        // Eventos recientes a los que se inscribió
+        if (in_array('eventos', $active_modules)) {
+            $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_inscripciones'") === $tabla_inscripciones) {
+                $inscripciones = $wpdb->get_results($wpdb->prepare(
+                    "SELECT ei.*, e.titulo as evento_titulo, e.fecha_inicio
+                     FROM $tabla_inscripciones ei
+                     LEFT JOIN {$wpdb->prefix}flavor_eventos e ON ei.evento_id = e.id
+                     WHERE ei.usuario_id = %d
+                     ORDER BY ei.fecha_inscripcion DESC
+                     LIMIT %d",
+                    $user_id,
+                    $limit
+                ));
+                foreach ($inscripciones as $inscripcion) {
+                    $activity[] = [
+                        'id' => 'evento_' . $inscripcion->id,
+                        'type' => 'event_registration',
+                        'title' => sprintf(__('Te inscribiste en %s', 'flavor-chat-ia'), $inscripcion->evento_titulo),
+                        'description' => '',
+                        'timestamp' => $inscripcion->fecha_inscripcion,
+                        'icon_name' => 'event',
+                        'action_route' => 'eventos',
+                    ];
+                }
+            }
+        }
+
+        // Pedidos en Grupos de Consumo
+        if (in_array('grupos_consumo', $active_modules) || in_array('grupos-consumo', $active_modules)) {
+            $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+            if ($wpdb->get_var("SHOW TABLES LIKE '$tabla_pedidos'") === $tabla_pedidos) {
+                $pedidos = $wpdb->get_results($wpdb->prepare(
+                    "SELECT * FROM $tabla_pedidos WHERE usuario_id = %d ORDER BY fecha_creacion DESC LIMIT %d",
+                    $user_id,
+                    $limit
+                ));
+                foreach ($pedidos as $pedido) {
+                    $activity[] = [
+                        'id' => 'gc_pedido_' . $pedido->id,
+                        'type' => 'gc_order',
+                        'title' => sprintf(__('Pedido #%d en Grupos de Consumo', 'flavor-chat-ia'), $pedido->id),
+                        'description' => ucfirst($pedido->estado),
+                        'timestamp' => $pedido->fecha_creacion,
+                        'icon_name' => 'shopping_basket',
+                        'action_route' => 'grupos_consumo',
+                    ];
+                }
+            }
+        }
+
+        // Ordenar por fecha más reciente
+        usort($activity, function($a, $b) {
+            return strtotime($b['timestamp']) - strtotime($a['timestamp']);
+        });
+
+        // Limitar resultados
+        $activity = array_slice($activity, 0, $limit);
+
+        return rest_ensure_response([
+            'activity' => $activity,
+            'total' => count($activity),
+        ]);
+    }
+
+    // ==========================================
     // BILLETERA DE TICKETS
     // ==========================================
 
@@ -4475,9 +4740,27 @@ class Chat_IA_Mobile_API {
         // Obtener configuración de navegación desde flavor_apps_config (panel de admin)
         $app_config = get_option('flavor_apps_config', []);
 
-        // Tipo de navegación (hybrid, tabs_only, drawer_only)
-        $navigation_type = $app_config['navigation_type'] ?? 'hybrid';
-        $show_appbar = !empty($app_config['show_appbar']);
+        // Tipo de navegación (hybrid, tabs_only, drawer_only).
+        // Compatibilidad: el panel nuevo guarda `navigation_style` + `hybrid_show_appbar`.
+        $navigation_type = 'hybrid';
+        if (!empty($app_config['navigation_type'])) {
+            $navigation_type = sanitize_key($app_config['navigation_type']);
+        } elseif (!empty($app_config['navigation_style'])) {
+            $style_to_type = [
+                'auto' => 'hybrid',
+                'hybrid' => 'hybrid',
+                'bottom' => 'tabs_only',
+                'hamburger' => 'drawer_only',
+            ];
+            $navigation_type = $style_to_type[sanitize_key($app_config['navigation_style'])] ?? 'hybrid';
+        }
+        if (!in_array($navigation_type, ['hybrid', 'tabs_only', 'drawer_only'], true)) {
+            $navigation_type = 'hybrid';
+        }
+
+        $show_appbar = array_key_exists('hybrid_show_appbar', $app_config)
+            ? !empty($app_config['hybrid_show_appbar'])
+            : (!empty($app_config['show_appbar']) || $navigation_type !== 'tabs_only');
 
         // Usar tabs configurados en el panel de navegación
         $configured_tabs = isset($app_config['tabs']) && is_array($app_config['tabs'])
@@ -4535,7 +4818,7 @@ class Chat_IA_Mobile_API {
                 $tabs[] = ['id' => 'my_tickets', 'label' => 'Mis Tickets', 'icon' => 'confirmation_number', 'enabled' => true, 'order' => $order++, 'content_type' => 'native'];
             }
 
-            // Módulos dinámicos
+            // Módulos dinámicos - metadata completa
             $module_metadata = [
                 'grupos_consumo' => ['label' => 'Grupos Consumo', 'icon' => 'groups'],
                 'grupos-consumo' => ['label' => 'Grupos Consumo', 'icon' => 'groups'],
@@ -4543,6 +4826,42 @@ class Chat_IA_Mobile_API {
                 'banco-tiempo' => ['label' => 'Banco de Tiempo', 'icon' => 'handyman'],
                 'marketplace' => ['label' => 'Marketplace', 'icon' => 'store'],
                 'eventos' => ['label' => 'Eventos', 'icon' => 'event'],
+                'socios' => ['label' => 'Miembros', 'icon' => 'card_membership'],
+                'comunidades' => ['label' => 'Comunidades', 'icon' => 'people'],
+                'colectivos' => ['label' => 'Colectivos', 'icon' => 'groups_2'],
+                'foros' => ['label' => 'Foros', 'icon' => 'forum'],
+                'cursos' => ['label' => 'Cursos', 'icon' => 'school'],
+                'talleres' => ['label' => 'Talleres', 'icon' => 'build'],
+                'biblioteca' => ['label' => 'Biblioteca', 'icon' => 'local_library'],
+                'tramites' => ['label' => 'Trámites', 'icon' => 'description'],
+                'incidencias' => ['label' => 'Incidencias', 'icon' => 'report_problem'],
+                'avisos_municipales' => ['label' => 'Avisos', 'icon' => 'campaign'],
+                'avisos-municipales' => ['label' => 'Avisos', 'icon' => 'campaign'],
+                'participacion' => ['label' => 'Participación', 'icon' => 'how_to_vote'],
+                'transparencia' => ['label' => 'Transparencia', 'icon' => 'visibility'],
+                'presupuestos_participativos' => ['label' => 'Presupuestos', 'icon' => 'account_balance'],
+                'presupuestos-participativos' => ['label' => 'Presupuestos', 'icon' => 'account_balance'],
+                'red_social' => ['label' => 'Red Social', 'icon' => 'share'],
+                'red-social' => ['label' => 'Red Social', 'icon' => 'share'],
+                'chat_grupos' => ['label' => 'Chat Grupos', 'icon' => 'chat'],
+                'chat-grupos' => ['label' => 'Chat Grupos', 'icon' => 'chat'],
+                'chat_interno' => ['label' => 'Mensajes', 'icon' => 'message'],
+                'chat-interno' => ['label' => 'Mensajes', 'icon' => 'message'],
+                'radio' => ['label' => 'Radio', 'icon' => 'radio'],
+                'podcast' => ['label' => 'Podcast', 'icon' => 'podcasts'],
+                'reservas' => ['label' => 'Reservas', 'icon' => 'event_available'],
+                'espacios_comunes' => ['label' => 'Espacios', 'icon' => 'meeting_room'],
+                'espacios-comunes' => ['label' => 'Espacios', 'icon' => 'meeting_room'],
+                'huertos_urbanos' => ['label' => 'Huertos', 'icon' => 'grass'],
+                'huertos-urbanos' => ['label' => 'Huertos', 'icon' => 'grass'],
+                'compostaje' => ['label' => 'Compostaje', 'icon' => 'eco'],
+                'reciclaje' => ['label' => 'Reciclaje', 'icon' => 'recycling'],
+                'carpooling' => ['label' => 'Carpooling', 'icon' => 'directions_car'],
+                'bicicletas_compartidas' => ['label' => 'Bicis', 'icon' => 'pedal_bike'],
+                'bicicletas-compartidas' => ['label' => 'Bicis', 'icon' => 'pedal_bike'],
+                'crowdfunding' => ['label' => 'Crowdfunding', 'icon' => 'volunteer_activism'],
+                'economia_don' => ['label' => 'Economía del Don', 'icon' => 'favorite'],
+                'economia-don' => ['label' => 'Economía del Don', 'icon' => 'favorite'],
             ];
 
             foreach ($enabled_modules as $module_id) {
@@ -4600,6 +4919,15 @@ class Chat_IA_Mobile_API {
 
         // Colores extendidos desde configuración
         $saved_colors = $mobile_config['colors'] ?? [];
+        $admin_colors = [
+            'primary' => $app_config['primary_color'] ?? null,
+            'secondary' => $app_config['secondary_color'] ?? null,
+            'accent' => $app_config['accent_color'] ?? null,
+            'background' => $app_config['background_color'] ?? null,
+            'surface' => $app_config['surface_color'] ?? null,
+            'text_primary' => $app_config['text_primary_color'] ?? null,
+            'text_secondary' => $app_config['text_secondary_color'] ?? null,
+        ];
         $default_colors = [
             'primary' => '#2196F3',
             'secondary' => '#FF9800',
@@ -4611,20 +4939,26 @@ class Chat_IA_Mobile_API {
             'error' => '#F44336',
             'success' => '#4CAF50',
         ];
-        $colors = array_merge($default_colors, $saved_colors);
+        $colors = array_merge($default_colors, $saved_colors, array_filter($admin_colors));
 
         // Branding extendido
         $saved_branding = $mobile_config['branding'] ?? [];
-        $logo_url = $this->get_mobile_logo_url($saved_branding['logo_id'] ?? 0);
+        $logo_url = $this->get_mobile_logo_url($app_config['app_logo'] ?? 0);
+        if (empty($logo_url)) {
+            $logo_url = $this->get_mobile_logo_url($saved_branding['logo_id'] ?? 0);
+        }
         $logo_dark_url = $this->get_mobile_logo_url($saved_branding['logo_dark_id'] ?? 0);
 
+        $configured_app_name = trim((string) ($app_config['app_name'] ?? ''));
+        $configured_app_description = trim((string) ($app_config['app_description'] ?? ''));
+
         $branding = [
-            'primary_color' => $mobile_config['primary_color'] ?? $colors['primary'],
+            'primary_color' => $colors['primary'],
             'logo_url' => $logo_url ?: $this->get_client_logo_url(),
             'logo_dark_url' => $logo_dark_url,
-            'business_name' => $mobile_config['business_name'] ?? get_bloginfo('name'),
-            'app_name' => $saved_branding['app_name'] ?: ($mobile_config['business_name'] ?? get_bloginfo('name')),
-            'welcome_message' => $client_config['welcome_message'] ?? '¡Bienvenido! ¿En qué podemos ayudarte?',
+            'business_name' => $configured_app_name ?: ($mobile_config['business_name'] ?? get_bloginfo('name')),
+            'app_name' => $configured_app_name ?: ($saved_branding['app_name'] ?? ($mobile_config['business_name'] ?? get_bloginfo('name'))),
+            'welcome_message' => $configured_app_description ?: ($client_config['welcome_message'] ?? '¡Bienvenido! ¿En qué podemos ayudarte?'),
         ];
 
         // Secciones de Info desde flavor_apps_config
@@ -4682,6 +5016,130 @@ class Chat_IA_Mobile_API {
             $tab_order[] = $tab['id'];
         }
 
+        // Detectar módulos activos del sistema para widgets adaptativos
+        $active_modules = [];
+        $available_quick_actions = [];
+        $quick_actions_map = [
+            'eventos' => ['action' => 'view_events', 'label' => 'Próximos eventos', 'icon' => 'event'],
+            'marketplace' => ['action' => 'browse_marketplace', 'label' => 'Explorar anuncios', 'icon' => 'store'],
+            'grupos_consumo' => ['action' => 'view_orders', 'label' => 'Mis pedidos', 'icon' => 'shopping_basket'],
+            'banco_tiempo' => ['action' => 'view_services', 'label' => 'Servicios disponibles', 'icon' => 'handyman'],
+            'socios' => ['action' => 'my_membership', 'label' => 'Mi membresía', 'icon' => 'card_membership'],
+            'reservas' => ['action' => 'make_reservation', 'label' => 'Nueva reserva', 'icon' => 'event_available'],
+            'comunidades' => ['action' => 'my_communities', 'label' => 'Mis comunidades', 'icon' => 'people'],
+            'foros' => ['action' => 'browse_forums', 'label' => 'Ver foros', 'icon' => 'forum'],
+            'incidencias' => ['action' => 'report_issue', 'label' => 'Reportar incidencia', 'icon' => 'report_problem'],
+            'tramites' => ['action' => 'my_procedures', 'label' => 'Mis trámites', 'icon' => 'description'],
+        ];
+        $quick_action_sources = [];
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $system_modules = Flavor_Chat_Module_Loader::get_active_modules_cached();
+            foreach ($system_modules as $mod_id) {
+                $normalized_id = str_replace('-', '_', $mod_id);
+                $active_modules[] = $normalized_id;
+                $quick_action_sources[] = $normalized_id;
+            }
+        }
+
+        // Incluir módulos habilitados explícitamente en flavor_apps_config.
+        if (!empty($app_config['modules']) && is_array($app_config['modules'])) {
+            foreach ($app_config['modules'] as $module_id => $module_settings) {
+                if (!empty($module_settings['enabled'])) {
+                    $quick_action_sources[] = str_replace('-', '_', sanitize_key($module_id));
+                }
+            }
+        }
+
+        // Incluir módulos referenciados en tabs/drawer configurados.
+        foreach ($tabs as $tab) {
+            if (($tab['content_type'] ?? '') === 'module' && !empty($tab['content_ref'])) {
+                $quick_action_sources[] = str_replace('-', '_', sanitize_key($tab['content_ref']));
+            }
+        }
+        foreach ($processed_drawer as $item) {
+            if (($item['content_type'] ?? '') === 'module' && !empty($item['content_ref'])) {
+                $quick_action_sources[] = str_replace('-', '_', sanitize_key($item['content_ref']));
+            }
+        }
+
+        $quick_action_sources = array_values(array_unique(array_filter($quick_action_sources)));
+        foreach ($quick_action_sources as $module_id) {
+            if (isset($quick_actions_map[$module_id])) {
+                $available_quick_actions[] = array_merge(
+                    $quick_actions_map[$module_id],
+                    ['module_id' => $module_id]
+                );
+            }
+        }
+
+        // Widgets adaptativos para pantalla de inicio (backend-driven).
+        $home_widgets = [];
+        $widget_map = [
+            'eventos' => [
+                'id' => 'widget_eventos_proximos',
+                'title' => 'Próximos eventos',
+                'icon' => 'event',
+                'module_id' => 'eventos',
+                'type' => 'list',
+                'endpoint' => rest_url('native-content/v1/module/eventos'),
+            ],
+            'marketplace' => [
+                'id' => 'widget_marketplace_destacados',
+                'title' => 'Destacados del marketplace',
+                'icon' => 'store',
+                'module_id' => 'marketplace',
+                'type' => 'list',
+                'endpoint' => rest_url('native-content/v1/module/marketplace'),
+            ],
+            'reservas' => [
+                'id' => 'widget_reservas',
+                'title' => 'Mis reservas',
+                'icon' => 'event_available',
+                'module_id' => 'reservas',
+                'type' => 'summary',
+                'endpoint' => rest_url('native-content/v1/module/reservas'),
+            ],
+            'incidencias' => [
+                'id' => 'widget_incidencias',
+                'title' => 'Incidencias recientes',
+                'icon' => 'report_problem',
+                'module_id' => 'incidencias',
+                'type' => 'list',
+                'endpoint' => rest_url('native-content/v1/module/incidencias'),
+            ],
+            'tramites' => [
+                'id' => 'widget_tramites',
+                'title' => 'Mis trámites',
+                'icon' => 'description',
+                'module_id' => 'tramites',
+                'type' => 'summary',
+                'endpoint' => rest_url('native-content/v1/module/tramites'),
+            ],
+            'grupos_consumo' => [
+                'id' => 'widget_grupos_consumo',
+                'title' => 'Grupos de consumo',
+                'icon' => 'shopping_basket',
+                'module_id' => 'grupos_consumo',
+                'type' => 'summary',
+                'endpoint' => rest_url('native-content/v1/module/grupos-consumo'),
+            ],
+            'banco_tiempo' => [
+                'id' => 'widget_banco_tiempo',
+                'title' => 'Banco de tiempo',
+                'icon' => 'handyman',
+                'module_id' => 'banco_tiempo',
+                'type' => 'summary',
+                'endpoint' => rest_url('native-content/v1/module/banco-tiempo'),
+            ],
+        ];
+
+        foreach ($quick_action_sources as $module_id) {
+            if (isset($widget_map[$module_id])) {
+                $home_widgets[] = $widget_map[$module_id];
+            }
+        }
+        $home_widgets = array_values(array_slice($home_widgets, 0, 6));
+
         return rest_ensure_response([
             'success' => true,
             'config' => [
@@ -4697,7 +5155,10 @@ class Chat_IA_Mobile_API {
                 'texts' => $texts,
                 'tab_order' => $tab_order,
                 'tabs_enabled' => $tabs_enabled,
-                'version' => '2.1.0',
+                'active_modules' => $active_modules,
+                'quick_actions' => $available_quick_actions,
+                'home_widgets' => $home_widgets,
+                'version' => '2.2.0',
                 'cache_duration' => 3600,
             ],
         ]);
@@ -5567,6 +6028,218 @@ PROMPT;
             __('No se pudo verificar tu identidad. Por favor, verifica tu email.', 'flavor-chat-ia'),
             ['status' => 403]
         );
+    }
+
+    /**
+     * Sube archivos multimedia desde la app móvil
+     *
+     * Acepta múltiples archivos en formato multipart/form-data
+     * y los sube a la biblioteca de medios de WordPress.
+     *
+     * @param WP_REST_Request $request Petición REST con archivos
+     * @return WP_REST_Response URLs de los archivos subidos
+     */
+    public function upload_media($request) {
+        // Verificar que se enviaron archivos
+        $files = $request->get_file_params();
+
+        if (empty($files)) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => __('No se recibieron archivos para subir.', 'flavor-chat-ia'),
+            ], 400);
+        }
+
+        // Contexto opcional (marketplace, profile, etc.)
+        $context = sanitize_text_field($request->get_param('context') ?? 'general');
+
+        // Requerir funciones de manejo de media
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        require_once(ABSPATH . 'wp-admin/includes/media.php');
+
+        $uploaded_urls = [];
+        $errors = [];
+
+        // Procesar cada archivo
+        foreach ($files as $file_key => $file_data) {
+            // Manejar arrays de archivos (images[0], images[1], etc.)
+            if (is_array($file_data['name'])) {
+                for ($i = 0; $i < count($file_data['name']); $i++) {
+                    $single_file = [
+                        'name' => $file_data['name'][$i],
+                        'type' => $file_data['type'][$i],
+                        'tmp_name' => $file_data['tmp_name'][$i],
+                        'error' => $file_data['error'][$i],
+                        'size' => $file_data['size'][$i],
+                    ];
+
+                    $result = $this->process_single_upload($single_file, $context);
+                    if (is_wp_error($result)) {
+                        $errors[] = $result->get_error_message();
+                    } else {
+                        $uploaded_urls[] = $result;
+                    }
+                }
+            } else {
+                // Archivo individual
+                $result = $this->process_single_upload($file_data, $context);
+                if (is_wp_error($result)) {
+                    $errors[] = $result->get_error_message();
+                } else {
+                    $uploaded_urls[] = $result;
+                }
+            }
+        }
+
+        // Respuesta
+        if (empty($uploaded_urls)) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => __('No se pudo subir ningún archivo.', 'flavor-chat-ia'),
+                'details' => $errors,
+            ], 500);
+        }
+
+        return new WP_REST_Response([
+            'success' => true,
+            'urls' => $uploaded_urls,
+            'count' => count($uploaded_urls),
+            'errors' => $errors,
+        ], 200);
+    }
+
+    /**
+     * Procesa la subida de un archivo individual
+     *
+     * @param array $file_data Datos del archivo
+     * @param string $context Contexto de la subida
+     * @return array|WP_Error Datos del archivo o error
+     */
+    private function process_single_upload($file_data, $context) {
+        // Verificar errores de upload
+        if ($file_data['error'] !== UPLOAD_ERR_OK) {
+            return new WP_Error('upload_error', __('Error al recibir el archivo.', 'flavor-chat-ia'));
+        }
+
+        // Validar tipo de archivo (solo imágenes por ahora)
+        $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+
+        if (!in_array($file_data['type'], $allowed_types)) {
+            return new WP_Error('invalid_type', __('Tipo de archivo no permitido. Solo se aceptan imágenes.', 'flavor-chat-ia'));
+        }
+
+        // Limitar tamaño (5MB por defecto)
+        $max_size = apply_filters('flavor_mobile_upload_max_size', 5 * 1024 * 1024);
+        if ($file_data['size'] > $max_size) {
+            return new WP_Error('file_too_large', sprintf(
+                __('El archivo es demasiado grande. Máximo permitido: %s MB', 'flavor-chat-ia'),
+                round($max_size / 1024 / 1024, 1)
+            ));
+        }
+
+        // Preparar para WordPress
+        $_FILES['upload'] = $file_data;
+
+        // Subir a la biblioteca de medios
+        $attachment_id = media_handle_upload('upload', 0, [
+            'post_title' => sanitize_file_name(pathinfo($file_data['name'], PATHINFO_FILENAME)),
+        ]);
+
+        if (is_wp_error($attachment_id)) {
+            return $attachment_id;
+        }
+
+        // Guardar metadata adicional
+        update_post_meta($attachment_id, '_uploaded_from', 'mobile_app');
+        update_post_meta($attachment_id, '_upload_context', $context);
+        update_post_meta($attachment_id, '_uploaded_by', get_current_user_id());
+
+        // Devolver URL completa
+        $url = wp_get_attachment_url($attachment_id);
+
+        return [
+            'id' => $attachment_id,
+            'url' => $url,
+            'thumbnail' => wp_get_attachment_image_url($attachment_id, 'thumbnail'),
+            'medium' => wp_get_attachment_image_url($attachment_id, 'medium'),
+        ];
+    }
+
+    // ==========================================
+    // PROXY MARKETPLACE
+    // ==========================================
+
+    /**
+     * Proxy para crear anuncio en Marketplace
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     */
+    public function proxy_marketplace_crear($request) {
+        if (!class_exists('Flavor_Marketplace_API')) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => 'Módulo Marketplace no disponible',
+            ], 503);
+        }
+
+        $api = Flavor_Marketplace_API::get_instance();
+        return $api->crear_anuncio($request);
+    }
+
+    /**
+     * Proxy para actualizar anuncio en Marketplace
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     */
+    public function proxy_marketplace_actualizar($request) {
+        if (!class_exists('Flavor_Marketplace_API')) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => 'Módulo Marketplace no disponible',
+            ], 503);
+        }
+
+        $api = Flavor_Marketplace_API::get_instance();
+        return $api->actualizar_anuncio($request);
+    }
+
+    /**
+     * Proxy para listar anuncios en Marketplace
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     */
+    public function proxy_marketplace_listar($request) {
+        if (!class_exists('Flavor_Marketplace_API')) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => 'Módulo Marketplace no disponible',
+            ], 503);
+        }
+
+        $api = Flavor_Marketplace_API::get_instance();
+        return $api->get_anuncios($request);
+    }
+
+    /**
+     * Proxy para obtener mis anuncios en Marketplace
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response
+     */
+    public function proxy_marketplace_mis_anuncios($request) {
+        if (!class_exists('Flavor_Marketplace_API')) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => 'Módulo Marketplace no disponible',
+            ], 503);
+        }
+
+        $api = Flavor_Marketplace_API::get_instance();
+        return $api->get_mis_anuncios($request);
     }
 
 }

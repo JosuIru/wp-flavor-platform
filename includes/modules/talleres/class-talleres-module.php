@@ -3546,6 +3546,13 @@ KNOWLEDGE;
      * Registrar páginas de administración (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Páginas ocultas del sidebar (primer parámetro null)

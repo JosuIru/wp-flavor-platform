@@ -2431,6 +2431,16 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
                     'callback' => [$this, 'render_pagina_emisiones'],
                     'badge' => [$this, 'contar_emisiones_pendientes'],
                 ],
+                [
+                    'slug' => 'radio-locutores',
+                    'titulo' => __('Locutores', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_locutores'],
+                ],
+                [
+                    'slug' => 'radio-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_configuracion'],
+                ],
             ],
         ];
     }
@@ -2462,6 +2472,32 @@ class Flavor_Chat_Radio_Module extends Flavor_Chat_Module_Base {
         $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/emisiones.php';
         if (file_exists($template_path)) {
             include $template_path;
+        }
+    }
+
+    /**
+     * Renderiza la página de locutores del panel unificado
+     */
+    public function render_pagina_locutores() {
+        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/locutores.php';
+        if (file_exists($template_path)) {
+            include $template_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Locutores', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Gestión del equipo de locutores de la radio.', 'flavor-chat-ia') . '</p></div>';
+        }
+    }
+
+    /**
+     * Renderiza la página de configuración del panel unificado
+     */
+    public function render_pagina_configuracion() {
+        $template_path = FLAVOR_CHAT_IA_PATH . 'includes/modules/radio/views/config.php';
+        if (file_exists($template_path)) {
+            include $template_path;
+        } else {
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración de Radio', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Ajustes generales del módulo de radio comunitaria.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 
@@ -3058,26 +3094,23 @@ KNOWLEDGE;
 
     /**
      * Registra las páginas de administración del módulo
+     * Las páginas se registran como ocultas (null parent) y se acceden desde el Panel Unificado
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
         $capability_locutor = 'edit_posts';
 
-        // Menú principal Radio (si se quiere menú separado, de lo contrario usar el panel unificado)
-        add_menu_page(
-            __('Radio Comunitaria', 'flavor-chat-ia'),
-            __('Radio', 'flavor-chat-ia'),
-            $capability,
-            'flavor-radio',
-            [$this, 'render_pagina_dashboard'],
-            'dashicons-microphone',
-            30
-        );
-
-        // Submenús visibles
+        // Páginas ocultas (accesibles desde Panel Unificado)
         add_submenu_page(
-            'flavor-radio',
-            __('Dashboard', 'flavor-chat-ia'),
+            null, // Oculto en el menú
+            __('Radio - Dashboard', 'flavor-chat-ia'),
             __('Dashboard', 'flavor-chat-ia'),
             $capability,
             'flavor-radio',
@@ -3085,7 +3118,7 @@ KNOWLEDGE;
         );
 
         add_submenu_page(
-            'flavor-radio',
+            null,
             __('Gestor de Medios', 'flavor-chat-ia'),
             __('Biblioteca de Audio', 'flavor-chat-ia'),
             $capability,
@@ -3094,7 +3127,7 @@ KNOWLEDGE;
         );
 
         add_submenu_page(
-            'flavor-radio',
+            null,
             __('Panel del Locutor', 'flavor-chat-ia'),
             __('Mi Panel de Locutor', 'flavor-chat-ia'),
             $capability_locutor,
@@ -3103,7 +3136,7 @@ KNOWLEDGE;
         );
 
         add_submenu_page(
-            'flavor-radio',
+            null,
             __('Programas', 'flavor-chat-ia'),
             __('Programas', 'flavor-chat-ia'),
             $capability,
@@ -3112,7 +3145,7 @@ KNOWLEDGE;
         );
 
         add_submenu_page(
-            'flavor-radio',
+            null,
             __('Emisiones', 'flavor-chat-ia'),
             __('Emisiones', 'flavor-chat-ia'),
             $capability,
@@ -3121,7 +3154,7 @@ KNOWLEDGE;
         );
 
         add_submenu_page(
-            'flavor-radio',
+            null,
             __('Configuración', 'flavor-chat-ia'),
             __('Configuración', 'flavor-chat-ia'),
             $capability,
@@ -4403,4 +4436,5 @@ KNOWLEDGE;
             'top_programas' => $top_programas,
         ], 200);
     }
+
 }

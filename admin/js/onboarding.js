@@ -176,6 +176,31 @@
 
             var step = this.currentTour.pasos[stepIndex];
             var totalSteps = this.currentTour.pasos.length;
+            var self = this;
+
+            // Si el paso tiene una URL de página definida, verificar si estamos en ella
+            if (step.pagina_url) {
+                var currentUrl = window.location.href;
+                var targetPage = step.pagina_url;
+
+                // Verificar si la URL actual contiene el target (comparación flexible)
+                if (currentUrl.indexOf(targetPage) === -1 && targetPage.indexOf('page=') !== -1) {
+                    // Necesitamos navegar a otra página
+                    // Guardar el paso actual en sessionStorage para continuar
+                    sessionStorage.setItem('flavor_tour_step_' + this.currentTour.id, stepIndex);
+                    sessionStorage.setItem('flavor_tour_id', this.currentTour.id);
+
+                    // Construir URL completa si es necesario
+                    var navigateUrl = targetPage;
+                    if (targetPage.indexOf('http') !== 0) {
+                        navigateUrl = FlavorOnboardingData.adminUrl + targetPage;
+                    }
+
+                    // Navegar a la página
+                    window.location.href = navigateUrl;
+                    return;
+                }
+            }
 
             // Actualizar contenido del popover
             this.popover.find('.flavor-tour-popover-title').text(step.titulo);
@@ -231,11 +256,23 @@
                 return;
             }
 
+            // Verificar si el elemento es demasiado grande (más del 40% de la pantalla)
+            var rect = targetElement[0].getBoundingClientRect();
+            var windowWidth = $(window).width();
+            var windowHeight = $(window).height();
+            var elementArea = rect.width * rect.height;
+            var screenArea = windowWidth * windowHeight;
+
+            if (elementArea > screenArea * 0.4 || rect.height > windowHeight * 0.6) {
+                // Elemento muy grande, mostrar centrado sin highlight
+                this.showCentered(step);
+                return;
+            }
+
             // Hacer scroll al elemento
             this.scrollToElement(targetElement);
 
             // Posicionar highlight
-            var rect = targetElement[0].getBoundingClientRect();
             var padding = step.destacar ? 12 : 8;
 
             this.highlightBox.css({
@@ -768,12 +805,240 @@
                 $('.flavor-help-menu').removeClass('active');
             });
 
+            // Abrir Chat IA desde menú de ayuda
+            $(document).on('click', '#flavor-help-chat-trigger', function(e) {
+                e.preventDefault();
+                self.openChatIA();
+                $('.flavor-help-menu').removeClass('active');
+            });
+
             // Cerrar tooltip al hacer clic fuera
             $(document).on('click', function(e) {
                 if (!$(e.target).closest('.flavor-tooltip, .flavor-help-icon').length) {
                     FlavorContextualHelp.hide();
                 }
             });
+        },
+
+        /**
+         * Abre el Chat IA
+         * Intenta activar el chat flotante si existe, o abre un modal
+         */
+        openChatIA: function() {
+            // Intentar activar chat flotante existente
+            var $chatTrigger = $('#chat-ia-trigger');
+            if ($chatTrigger.length > 0) {
+                $chatTrigger.trigger('click');
+                return;
+            }
+
+            // Intentar abrir el admin assistant sidebar si existe
+            var $assistantToggle = $('#flavor-assistant-toggle, .flavor-assistant-trigger');
+            if ($assistantToggle.length > 0) {
+                $assistantToggle.trigger('click');
+                return;
+            }
+
+            // Si hay shortcut de teclado para abrir chat, dispararlo
+            if (typeof window.FlavorShortcuts !== 'undefined' && typeof window.FlavorShortcuts.openChat === 'function') {
+                window.FlavorShortcuts.openChat();
+                return;
+            }
+
+            // Fallback: abrir el chat modal incrustado
+            this.openChatModal();
+        },
+
+        /**
+         * Abre el modal de chat IA incrustado
+         */
+        openChatModal: function() {
+            var self = this;
+
+            // Verificar si ya existe el modal
+            var $modal = $('#flavor-chat-ia-modal');
+            if ($modal.length > 0) {
+                $modal.addClass('active');
+                return;
+            }
+
+            // Crear modal de chat
+            $modal = $('<div id="flavor-chat-ia-modal" class="flavor-chat-modal">' +
+                '<div class="flavor-chat-modal-overlay"></div>' +
+                '<div class="flavor-chat-modal-container">' +
+                    '<div class="flavor-chat-modal-header">' +
+                        '<h3><span class="dashicons dashicons-format-chat"></span> ' + (FlavorOnboardingData.strings.chatIA || 'Asistente IA') + '</h3>' +
+                        '<button class="flavor-chat-modal-close" title="' + FlavorOnboardingData.strings.close + '">' +
+                            '<span class="dashicons dashicons-no-alt"></span>' +
+                        '</button>' +
+                    '</div>' +
+                    '<div class="flavor-chat-modal-body">' +
+                        '<div class="flavor-chat-messages" id="flavor-chat-messages"></div>' +
+                        '<form class="flavor-chat-form" id="flavor-chat-form">' +
+                            '<textarea id="flavor-chat-input" placeholder="' + (FlavorOnboardingData.strings.askAnything || 'Escribe tu pregunta...') + '" rows="1"></textarea>' +
+                            '<button type="submit" class="flavor-chat-send">' +
+                                '<span class="dashicons dashicons-arrow-right-alt2"></span>' +
+                            '</button>' +
+                        '</form>' +
+                    '</div>' +
+                '</div>' +
+            '</div>');
+
+            $('body').append($modal);
+
+            // Eventos del modal
+            $modal.find('.flavor-chat-modal-close, .flavor-chat-modal-overlay').on('click', function() {
+                $modal.removeClass('active');
+            });
+
+            // Cerrar con Escape
+            $(document).on('keydown.flavorChat', function(e) {
+                if (e.keyCode === 27 && $modal.hasClass('active')) {
+                    $modal.removeClass('active');
+                }
+            });
+
+            // Manejar envío de mensaje
+            $modal.find('#flavor-chat-form').on('submit', function(e) {
+                e.preventDefault();
+                self.sendChatMessage();
+            });
+
+            // Auto-resize textarea
+            $modal.find('#flavor-chat-input').on('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+            });
+
+            // Enter para enviar, Shift+Enter para nueva línea
+            $modal.find('#flavor-chat-input').on('keydown', function(e) {
+                if (e.keyCode === 13 && !e.shiftKey) {
+                    e.preventDefault();
+                    self.sendChatMessage();
+                }
+            });
+
+            // Mostrar modal
+            setTimeout(function() {
+                $modal.addClass('active');
+                $modal.find('#flavor-chat-input').focus();
+            }, 10);
+        },
+
+        /**
+         * Envía mensaje al Chat IA
+         */
+        sendChatMessage: function() {
+            var $input = $('#flavor-chat-input');
+            var $messages = $('#flavor-chat-messages');
+            var message = $input.val().trim();
+
+            if (!message) return;
+
+            // Añadir mensaje del usuario
+            $messages.append('<div class="flavor-chat-message user"><div class="message-content">' + this.escapeHtml(message) + '</div></div>');
+            $input.val('').css('height', 'auto');
+
+            // Scroll al final
+            $messages.scrollTop($messages[0].scrollHeight);
+
+            // Mostrar indicador de escritura
+            var $typing = $('<div class="flavor-chat-message assistant typing"><div class="message-content"><span class="typing-dots"><span></span><span></span><span></span></span></div></div>');
+            $messages.append($typing);
+            $messages.scrollTop($messages[0].scrollHeight);
+
+            var self = this;
+
+            // Obtener página actual del admin
+            var currentPage = '';
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('page')) {
+                currentPage = urlParams.get('page');
+            }
+
+            // Enviar al servidor
+            $.ajax({
+                url: FlavorOnboardingData.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'chat_ia_send_message',
+                    nonce: FlavorOnboardingData.chatNonce,
+                    message: message,
+                    session_id: 'admin_help_' + Date.now(),
+                    current_page: currentPage,
+                    language: 'es'
+                },
+                success: function(response) {
+                    $typing.remove();
+                    if (response.success && response.data && response.data.reply) {
+                        var formattedReply = self.formatMarkdown(response.data.reply);
+                        $messages.append('<div class="flavor-chat-message assistant"><div class="message-content">' + formattedReply + '</div></div>');
+                    } else {
+                        var errorMsg = response.data && response.data.error ? response.data.error : (FlavorOnboardingData.strings.chatError || 'Error al procesar el mensaje');
+                        $messages.append('<div class="flavor-chat-message assistant error"><div class="message-content">' + errorMsg + '</div></div>');
+                    }
+                    $messages.scrollTop($messages[0].scrollHeight);
+                },
+                error: function() {
+                    $typing.remove();
+                    $messages.append('<div class="flavor-chat-message assistant error"><div class="message-content">' + (FlavorOnboardingData.strings.connectionError || 'Error de conexión') + '</div></div>');
+                    $messages.scrollTop($messages[0].scrollHeight);
+                }
+            });
+        },
+
+        /**
+         * Formatea markdown básico a HTML
+         */
+        formatMarkdown: function(text) {
+            if (!text) return '';
+
+            // Escapar HTML primero
+            text = this.escapeHtml(text);
+
+            // Bloques de código
+            text = text.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+            // Código inline
+            text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Negritas
+            text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+            // Cursivas
+            text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+            // Listas con guiones
+            text = text.replace(/^- (.+)$/gm, '<li>$1</li>');
+            text = text.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+
+            // Listas numeradas
+            text = text.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+
+            // Encabezados
+            text = text.replace(/^### (.+)$/gm, '<h4>$1</h4>');
+            text = text.replace(/^## (.+)$/gm, '<h3>$1</h3>');
+            text = text.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+
+            // Saltos de línea
+            text = text.replace(/\n\n/g, '</p><p>');
+            text = text.replace(/\n/g, '<br>');
+
+            // Envolver en párrafo si no tiene estructura
+            if (!text.startsWith('<')) {
+                text = '<p>' + text + '</p>';
+            }
+
+            return text;
+        },
+
+        /**
+         * Escapa HTML para prevenir XSS
+         */
+        escapeHtml: function(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         },
 
         /**
@@ -829,8 +1094,9 @@
          * Inicia un tour específico
          *
          * @param {string} tourId ID del tour
+         * @param {number} startStep Paso inicial (opcional, para continuar después de navegación)
          */
-        startTour: function(tourId) {
+        startTour: function(tourId, startStep) {
             var tourConfig = FlavorOnboardingData.tours[tourId] ||
                              FlavorOnboardingData.allTours[tourId];
 
@@ -839,29 +1105,30 @@
                 return;
             }
 
-            // Filtrar pasos cuyos elementos existen
-            var validSteps = [];
-            tourConfig.pasos.forEach(function(paso) {
-                var selectors = paso.elemento.split(',').map(function(s) { return s.trim(); });
-                var hasValidElement = selectors.some(function(selector) {
-                    return $(selector).filter(':visible').length > 0;
-                });
-
-                if (hasValidElement) {
-                    validSteps.push(paso);
-                }
-            });
-
-            if (validSteps.length === 0) {
-                this.showNotification('No hay elementos visibles para este tour en esta página.', 'warning');
-                return;
+            // Verificar si hay un paso guardado en sessionStorage (para continuar después de navegación)
+            var savedStep = sessionStorage.getItem('flavor_tour_step_' + tourId);
+            if (savedStep !== null && typeof startStep === 'undefined') {
+                startStep = parseInt(savedStep, 10);
+                sessionStorage.removeItem('flavor_tour_step_' + tourId);
             }
 
-            var tourWithValidSteps = $.extend({}, tourConfig, { pasos: validSteps });
+            // NO filtramos pasos - mostraremos todos aunque el elemento no exista
+            // El sistema showCentered() maneja los casos sin elemento visible
+            var tourWithAllSteps = $.extend({}, tourConfig, { pasos: tourConfig.pasos });
 
             FlavorTour.destroy();
-            FlavorTour.init(tourWithValidSteps);
-            FlavorTour.start();
+            FlavorTour.init(tourWithAllSteps);
+
+            // Si hay un paso inicial especificado, ir a él
+            if (typeof startStep === 'number' && startStep > 0 && startStep < tourConfig.pasos.length) {
+                FlavorTour.isRunning = true;
+                $('body').addClass('flavor-tour-active');
+                FlavorTour.overlay.addClass('active');
+                FlavorTour.popover.addClass('active');
+                FlavorTour.showStep(startStep);
+            } else {
+                FlavorTour.start();
+            }
         },
 
         /**
@@ -1046,6 +1313,32 @@
     $(document).ready(function() {
         if (typeof FlavorOnboardingData !== 'undefined') {
             FlavorOnboarding.init();
+
+            // Detectar si hay que iniciar un tour desde URL (?start_tour=tour_id)
+            var urlParams = new URLSearchParams(window.location.search);
+            var startTourId = urlParams.get('start_tour');
+            if (startTourId) {
+                // Dar tiempo a que la página cargue completamente
+                setTimeout(function() {
+                    FlavorOnboarding.startTour(startTourId);
+                    // Limpiar el parámetro de la URL para evitar reinicio al recargar
+                    if (window.history && window.history.replaceState) {
+                        urlParams.delete('start_tour');
+                        var newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+                        window.history.replaceState({}, '', newUrl);
+                    }
+                }, 800);
+            } else {
+                // Verificar si hay un tour pendiente de continuar después de navegación
+                var savedTourId = sessionStorage.getItem('flavor_tour_id');
+                if (savedTourId) {
+                    sessionStorage.removeItem('flavor_tour_id');
+                    // Dar tiempo a que la página cargue completamente
+                    setTimeout(function() {
+                        FlavorOnboarding.startTour(savedTourId);
+                    }, 800);
+                }
+            }
         }
     });
 

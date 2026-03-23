@@ -119,6 +119,71 @@ const flavorComposerFactory = () => ({
         },
 
         /**
+         * Activa una plantilla directamente sin abrir el modal de preview.
+         * Usa el Template Orchestrator para instalar con todos los módulos por defecto.
+         */
+        activarPlantillaDirecto(idPerfil) {
+            if (this.cargando) return;
+
+            const mensaje = flavorComposerData.i18n?.confirmarCambioPerfil || '¿Deseas activar esta plantilla? Se instalarán los módulos correspondientes.';
+            if (!confirm(mensaje)) {
+                return;
+            }
+
+            this.cargando = true;
+
+            // Obtener módulos opcionales del perfil para incluirlos todos
+            const perfil = this.perfiles[idPerfil];
+            const modulosOpcionales = perfil?.modulos_opcionales || [];
+
+            // Usar el Template Orchestrator para activar
+            if (typeof this.activarPlantilla === 'function') {
+                // Configurar opciones antes de activar
+                this.plantillaSeleccionadaId = idPerfil;
+                this.modulosSeleccionados = [...modulosOpcionales];
+                this.cargarDatosDemo = false;
+                this.activarPlantilla(idPerfil);
+            } else if (typeof window.activarPlantilla === 'function') {
+                // Fallback a la función global
+                window.activarPlantilla(idPerfil, {
+                    modulos_opcionales: modulosOpcionales,
+                    cargar_demo: false
+                });
+            } else {
+                // Fallback final: usar el método tradicional
+                this.cambiarPerfilSinConfirmar(idPerfil);
+            }
+        },
+
+        /**
+         * Cambia el perfil sin pedir confirmación (usado internamente)
+         */
+        cambiarPerfilSinConfirmar(idPerfil) {
+            const formulario = document.createElement('form');
+            formulario.method = 'POST';
+            formulario.action = this.adminPostUrl;
+
+            const campos = {
+                'action': 'flavor_chat_ia_cambiar_perfil',
+                'perfil_id': idPerfil,
+                '_wpnonce': this.nonces.cambiarPerfil,
+                'regenerar_paginas': '1',
+                'menu_sync': 'replace'
+            };
+
+            Object.entries(campos).forEach(([nombre, valor]) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = nombre;
+                input.value = valor;
+                formulario.appendChild(input);
+            });
+
+            document.body.appendChild(formulario);
+            formulario.submit();
+        },
+
+        /**
          * Comprueba si un módulo está activo
          */
         esModuloActivo(idModulo) {

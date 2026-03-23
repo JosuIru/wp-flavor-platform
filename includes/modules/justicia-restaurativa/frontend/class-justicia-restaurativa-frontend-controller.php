@@ -31,13 +31,20 @@ class Flavor_Justicia_Restaurativa_Frontend_Controller {
 
     private function init_hooks() {
         // Shortcodes
-        add_shortcode('flavor_justicia_inicio', [$this, 'shortcode_inicio']);
-        add_shortcode('flavor_justicia_solicitar', [$this, 'shortcode_solicitar']);
-        add_shortcode('flavor_justicia_mis_casos', [$this, 'shortcode_mis_casos']);
-        add_shortcode('flavor_justicia_caso', [$this, 'shortcode_caso']);
-        add_shortcode('flavor_justicia_mediadores', [$this, 'shortcode_mediadores']);
-        add_shortcode('flavor_justicia_recursos', [$this, 'shortcode_recursos']);
-        add_shortcode('flavor_justicia_estadisticas', [$this, 'shortcode_estadisticas']);
+        $shortcodes = [
+            'flavor_justicia_inicio' => 'shortcode_inicio',
+            'flavor_justicia_solicitar' => 'shortcode_solicitar',
+            'flavor_justicia_mis_casos' => 'shortcode_mis_casos',
+            'flavor_justicia_caso' => 'shortcode_caso',
+            'flavor_justicia_mediadores' => 'shortcode_mediadores',
+            'flavor_justicia_recursos' => 'shortcode_recursos',
+            'flavor_justicia_estadisticas' => 'shortcode_estadisticas',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_justicia_solicitar', [$this, 'ajax_solicitar_mediacion']);

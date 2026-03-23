@@ -78,7 +78,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
         $columna = $wpdb->get_var("SHOW COLUMNS FROM {$tabla_eventos} LIKE 'comunidad_id'");
         if (!$columna) {
-            $wpdb->query("ALTER TABLE {$tabla_eventos} ADD COLUMN comunidad_id bigint(20) unsigned DEFAULT NULL AFTER organizador_id");
+            $wpdb->query("ALTER TABLE {$tabla_eventos} ADD COLUMN comunidad_id bigint(20) unsigned DEFAULT NULL");
             $wpdb->query("ALTER TABLE {$tabla_eventos} ADD KEY comunidad_id (comunidad_id)");
         }
     }
@@ -268,7 +268,7 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
                 'cta_text' => __('Crear Evento', 'flavor-chat-ia'),
                 'cta_url'  => add_query_arg(
                     array_filter([
-                        'comunidad_id' => ($comunidad_id = $this->resolve_contextual_comunidad_id()) > 0 ? $comunidad_id : null,
+                        'comunidad_id' => ($comunidad_id = self::resolve_contextual_comunidad_id_static()) > 0 ? $comunidad_id : null,
                     ]),
                     home_url('/mi-portal/eventos/crear-evento/')
                 ),
@@ -948,6 +948,23 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
      * Obtiene una comunidad contextual desde query args o ruta del portal.
      */
     private function resolve_contextual_comunidad_id(): int {
+        $comunidad_id = absint($_GET['comunidad_id'] ?? $_GET['comunidad'] ?? $_GET['id'] ?? 0);
+        if ($comunidad_id > 0) {
+            return $comunidad_id;
+        }
+
+        $request_path = (string) wp_parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+        if (preg_match('#/mi-portal/comunidades/(\d+)(?:/|$)#', $request_path, $matches)) {
+            return absint($matches[1]);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Variante estática para usar desde configuraciones estáticas del renderer.
+     */
+    private static function resolve_contextual_comunidad_id_static(): int {
         $comunidad_id = absint($_GET['comunidad_id'] ?? $_GET['comunidad'] ?? $_GET['id'] ?? 0);
         if ($comunidad_id > 0) {
             return $comunidad_id;
@@ -2562,6 +2579,11 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
      * AJAX: Obtener datos del dashboard de eventos
      */
     public function ajax_get_dashboard_data() {
+        $has_valid_nonce = check_ajax_referer('eventos_nonce', 'nonce', false);
+        if (!$has_valid_nonce && !current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Solicitud inválida'], 403);
+        }
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => 'Sin permisos']);
         }
@@ -2643,9 +2665,19 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
      * Registra las páginas de administración del módulo (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
-        // Páginas ocultas del sidebar (primer parámetro null)
+        // Página principal - alias con sufijo -dashboard para Admin Shell
+        add_submenu_page(null, __('Dashboard Eventos', 'flavor-chat-ia'), __('Dashboard', 'flavor-chat-ia'), $capability, 'eventos-dashboard', [$this, 'render_pagina_dashboard']);
+
+        // Página principal (oculta) - mantener por compatibilidad
         add_submenu_page(null, __('Eventos - Dashboard', 'flavor-chat-ia'), __('Dashboard', 'flavor-chat-ia'), $capability, 'eventos', [$this, 'render_pagina_dashboard']);
         add_submenu_page(null, __('Todos los Eventos', 'flavor-chat-ia'), __('Eventos', 'flavor-chat-ia'), $capability, 'eventos-listado', [$this, 'render_pagina_eventos']);
         add_submenu_page(null, __('Calendario', 'flavor-chat-ia'), __('Calendario', 'flavor-chat-ia'), $capability, 'eventos-calendario', [$this, 'render_pagina_calendario']);

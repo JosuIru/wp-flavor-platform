@@ -60,7 +60,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Kulturaka requiere los módulos Eventos, Espacios Comunes y Socios activos.', 'flavor-chat-ia');
+            return __('Kulturaka requiere los módulos Eventos, Espacios Comunes y Miembros activos.', 'flavor-chat-ia');
         }
         return '';
     }
@@ -366,7 +366,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_crowdfunding_proyectos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_crowdfunding_proyectos')) {
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_crowdfunding_proyectos')) {
             return [];
         }
 
@@ -446,7 +446,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_crowdfunding_proyectos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_crowdfunding_proyectos')) {
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_crowdfunding_proyectos')) {
             return [];
         }
 
@@ -470,7 +470,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_kulturaka_agradecimientos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_kulturaka_agradecimientos')) {
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_agradecimientos')) {
             return [];
         }
 
@@ -498,7 +498,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_kulturaka_nodos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_kulturaka_nodos')) {
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_nodos')) {
             // Devolver nodos por defecto
             return $this->get_setting('nodos_default', []);
         }
@@ -730,7 +730,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_kulturaka_agradecimientos';
 
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_kulturaka_agradecimientos')) {
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_kulturaka_agradecimientos')) {
             return new WP_Error('tabla_no_existe', __('El sistema de agradecimientos no está configurado.', 'flavor-chat-ia'));
         }
 
@@ -860,7 +860,7 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_artistas_seguidores';
 
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_artistas_seguidores')) {
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_artistas_seguidores')) {
             return [];
         }
 
@@ -926,6 +926,13 @@ class Flavor_Chat_Kulturaka_Module extends Flavor_Chat_Module_Base {
      * Registra páginas de administración
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         add_menu_page(
             __('Kulturaka', 'flavor-chat-ia'),
             __('Kulturaka', 'flavor-chat-ia'),

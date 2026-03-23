@@ -291,13 +291,13 @@ class Flavor_Chat_Ayuda_Vecinal_Module extends Flavor_Chat_Module_Base {
             disponibilidad text DEFAULT NULL COMMENT 'JSON dias y horarios',
             radio_km int(11) DEFAULT 5,
             tiene_vehiculo tinyint(1) DEFAULT 0,
-            activa tinyint(1) DEFAULT 1,
+            estado varchar(20) DEFAULT 'activa',
             fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
             fecha_actualizacion datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY usuario_id (usuario_id),
             KEY categoria (categoria),
-            KEY activa (activa)
+            KEY estado (estado)
         ) $charset_collate;";
 
         $sql_respuestas = "CREATE TABLE IF NOT EXISTS $tabla_respuestas (
@@ -790,7 +790,7 @@ KNOWLEDGE;
         // Total de voluntarios activos
         if (Flavor_Chat_Helpers::tabla_existe($tabla_ofertas)) {
             $total_voluntarios = (int) $wpdb->get_var(
-                "SELECT COUNT(DISTINCT usuario_id) FROM $tabla_ofertas WHERE activa = 1"
+                "SELECT COUNT(DISTINCT usuario_id) FROM $tabla_ofertas WHERE estado = 'activa'"
             );
             $estadisticas[] = [
                 'icon' => 'dashicons-groups',
@@ -838,7 +838,7 @@ KNOWLEDGE;
             : 0;
 
         $total_voluntarios = Flavor_Chat_Helpers::tabla_existe($tabla_ofertas)
-            ? (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_ofertas WHERE activa = 1")
+            ? (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_ofertas WHERE estado = 'activa'")
             : 0;
 
         $solicitudes_urgentes = Flavor_Chat_Helpers::tabla_existe($tabla_solicitudes)
@@ -1008,7 +1008,7 @@ KNOWLEDGE;
         $voluntarios = $wpdb->get_results(
             "SELECT usuario_id, COUNT(*) as total_ofertas, MAX(fecha_creacion) as ultima_oferta
              FROM $tabla_ofertas
-             WHERE activa = 1
+             WHERE estado = 'activa'
              GROUP BY usuario_id
              ORDER BY total_ofertas DESC
              LIMIT 50",
@@ -1881,10 +1881,10 @@ KNOWLEDGE;
 
         $oferta_id = absint($request->get_param('id'));
         $usuario_id = get_current_user_id();
-        $activa = $request->get_param('activa') ? 1 : 0;
+        $estado_nuevo = $request->get_param('activa') ? 'activa' : 'inactiva';
 
         $oferta = $wpdb->get_row($wpdb->prepare(
-            "SELECT id, usuario_id, activa FROM {$tabla_ofertas} WHERE id = %d",
+            "SELECT id, usuario_id, estado FROM {$tabla_ofertas} WHERE id = %d",
             $oferta_id
         ));
 
@@ -1907,11 +1907,11 @@ KNOWLEDGE;
         $actualizado = $wpdb->update(
             $tabla_ofertas,
             [
-                'activa' => $activa,
+                'estado' => $estado_nuevo,
                 'fecha_actualizacion' => current_time('mysql'),
             ],
             ['id' => $oferta_id],
-            ['%d', '%s'],
+            ['%s', '%s'],
             ['%d']
         );
 
@@ -1925,10 +1925,10 @@ KNOWLEDGE;
 
         return new \WP_REST_Response([
             'success' => true,
-            'message' => $activa
+            'message' => $estado_nuevo === 'activa'
                 ? __('Tu oferta ha sido reactivada.', 'flavor-chat-ia')
                 : __('Tu oferta ha sido desactivada.', 'flavor-chat-ia'),
-            'activa' => (bool) $activa,
+            'activa' => ($estado_nuevo === 'activa'),
         ], 200);
     }
 
@@ -2309,6 +2309,13 @@ KNOWLEDGE;
      * Se acceden desde el Dashboard Unificado
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Páginas ocultas (null como parent = no aparecen en menú)
@@ -2372,7 +2379,7 @@ KNOWLEDGE;
 
         // KPIs
         $solicitudes_activas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_solicitudes WHERE estado IN ('pendiente', 'en_proceso')") ?: 0;
-        $voluntarios_activos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_ofertas WHERE activa = 1") ?: 0;
+        $voluntarios_activos = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_ofertas WHERE estado = 'activa'") ?: 0;
         $ayudas_completadas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_respuestas WHERE estado = 'aceptada'") ?: 0;
         $horas_voluntariado = $wpdb->get_var("SELECT COALESCE(SUM(duracion_horas), 0) FROM $tabla_solicitudes WHERE estado = 'completada'") ?: 0;
 
@@ -2456,7 +2463,7 @@ KNOWLEDGE;
                     (SELECT COUNT(*) FROM $tabla_respuestas WHERE ayudante_id = o.usuario_id AND estado = 'aceptada') as ayudas
              FROM $tabla_ofertas o
              LEFT JOIN {$wpdb->users} u ON o.usuario_id = u.ID
-             WHERE o.activa = 1
+             WHERE o.estado = 'activa'
              ORDER BY ayudas DESC
              LIMIT 5"
         ) ?: [];
@@ -2540,9 +2547,9 @@ KNOWLEDGE;
 
         // Estado basado en disponibilidad
         if ($disponibilidad === 'disponible') {
-            $where[] = "o.activa = 1";
+            $where[] = "o.estado = 'activa'";
         } elseif ($disponibilidad === 'inactivo') {
-            $where[] = "o.activa = 0";
+            $where[] = "o.estado = 'inactiva'";
         }
 
         $sql = "SELECT o.*, u.display_name as nombre, u.user_email as email,
@@ -2570,7 +2577,7 @@ KNOWLEDGE;
                 $iniciales .= mb_substr($palabra, 0, 1);
             }
 
-            $estado = $vol->activa ? 'disponible' : 'inactivo';
+            $estado = ($vol->estado === 'activa') ? 'disponible' : 'inactivo';
 
             $resultado[] = [
                 'id' => $vol->id,
@@ -2652,7 +2659,7 @@ KNOWLEDGE;
             'descripcion' => $habilidades,
             'habilidades' => $habilidades,
             'disponibilidad' => $disponibilidad,
-            'activa' => $estado === 'disponible' ? 1 : 0,
+            'estado' => $estado === 'disponible' ? 'activa' : 'inactiva',
         ];
 
         if ($id > 0) {
@@ -3220,7 +3227,7 @@ KNOWLEDGE;
         global $wpdb;
         $tabla_ofertas = $wpdb->prefix . 'flavor_ayuda_ofertas';
         $oferta_existente = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$tabla_ofertas} WHERE usuario_id = %d AND activa = 1",
+            "SELECT * FROM {$tabla_ofertas} WHERE usuario_id = %d AND estado = 'activa'",
             get_current_user_id()
         ));
 
@@ -4073,7 +4080,7 @@ KNOWLEDGE;
             'disponibilidad' => wp_json_encode($disponibilidad_dias),
             'radio_km' => absint($_POST['radio_km'] ?? 5),
             'tiene_vehiculo' => isset($_POST['tiene_vehiculo']) ? 1 : 0,
-            'activa' => 1,
+            'estado' => 'activa',
         ];
 
         // Validaciones

@@ -16,11 +16,18 @@ if (!current_user_can('manage_options') && !current_user_can('flavor_ver_dashboa
 
 global $wpdb;
 $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas_bicicletas';
+$tabla_bicicletas_alt = $wpdb->prefix . 'flavor_bicicletas';
 $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 $tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
 
 // Verificar si las tablas existen
 $tabla_bicicletas_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_bicicletas)) === $tabla_bicicletas;
+$tabla_bicicletas_alt_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_bicicletas_alt)) === $tabla_bicicletas_alt;
+
+if (!$tabla_bicicletas_existe && $tabla_bicicletas_alt_existe) {
+    $tabla_bicicletas = $tabla_bicicletas_alt;
+    $tabla_bicicletas_existe = true;
+}
 
 if ($tabla_bicicletas_existe) {
     $fecha_inicio_mes = date('Y-m-01 00:00:00');
@@ -67,40 +74,20 @@ if ($tabla_bicicletas_existe) {
         GROUP BY DATE(fecha_inicio) ORDER BY fecha ASC"
     ) : [];
 
-    $usando_demo = $total_bicicletas === 0;
 } else {
-    $usando_demo = true;
-}
-
-if ($usando_demo) {
-    $total_bicicletas = 45;
-    $bicicletas_disponibles = 32;
-    $bicicletas_en_uso = 10;
-    $bicicletas_mantenimiento = 3;
-    $total_estaciones = 8;
-    $estaciones_activas = 7;
-    $usos_mes = 287;
-    $usos_activos = 10;
-    $duracion_promedio = 23;
-    $distancia_total_mes = 1256;
-    $co2_ahorrado_kg = $distancia_total_mes * 0.12;
-
-    $top_estaciones = [
-        (object) ['id' => 1, 'nombre' => 'Plaza Mayor', 'direccion' => 'C/ Mayor, 1', 'total_usos' => 89, 'bicicletas_actuales' => 8],
-        (object) ['id' => 2, 'nombre' => 'Estación de Tren', 'direccion' => 'Av. Estación, s/n', 'total_usos' => 72, 'bicicletas_actuales' => 6],
-        (object) ['id' => 3, 'nombre' => 'Universidad', 'direccion' => 'Campus Universitario', 'total_usos' => 65, 'bicicletas_actuales' => 7],
-        (object) ['id' => 4, 'nombre' => 'Parque Central', 'direccion' => 'Paseo del Parque', 'total_usos' => 45, 'bicicletas_actuales' => 5],
-        (object) ['id' => 5, 'nombre' => 'Centro Comercial', 'direccion' => 'C/ Comercio, 25', 'total_usos' => 38, 'bicicletas_actuales' => 6],
-    ];
-
+    $total_bicicletas = 0;
+    $bicicletas_disponibles = 0;
+    $bicicletas_en_uso = 0;
+    $bicicletas_mantenimiento = 0;
+    $total_estaciones = 0;
+    $estaciones_activas = 0;
+    $usos_mes = 0;
+    $usos_activos = 0;
+    $duracion_promedio = 0;
+    $distancia_total_mes = 0;
+    $co2_ahorrado_kg = 0;
+    $top_estaciones = [];
     $datos_grafica = [];
-    for ($i = 29; $i >= 0; $i--) {
-        $datos_grafica[] = (object) [
-            'fecha' => date('Y-m-d', strtotime("-{$i} days")),
-            'usos' => rand(5, 15),
-            'distancia' => rand(20, 80),
-        ];
-    }
 }
 
 $fechas_grafica = [];
@@ -123,11 +110,11 @@ $porcentaje_disponibles = $total_bicicletas > 0 ? round(($bicicletas_disponibles
     }
     ?>
 
-    <?php if ($usando_demo): ?>
+    <?php if (!$tabla_bicicletas_existe): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Se muestran datos de ejemplo. Los datos reales aparecerán cuando se registren bicicletas.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('No hay tablas de bicicletas disponibles todavía.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 

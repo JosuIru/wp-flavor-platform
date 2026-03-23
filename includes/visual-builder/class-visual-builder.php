@@ -89,6 +89,9 @@ class Flavor_Visual_Builder {
         // CPT y taxonomías
         add_action('init', [$this, 'register_post_type']);
 
+        // Verificar y arreglar permalinks si es necesario
+        add_action('init', [$this, 'ensure_permalinks'], 999);
+
         // Meta boxes
         add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
         add_action('save_post', [$this, 'save_builder_data'], 10, 2);
@@ -149,6 +152,93 @@ class Flavor_Visual_Builder {
             'capability_type' => 'page',
             'show_in_rest' => false,
         ]);
+    }
+
+    /**
+     * Verifica y regenera permalinks si es necesario
+     *
+     * Comprueba que las rewrite rules para flavor_landing existen.
+     * Si no existen, fuerza un flush para regenerarlas.
+     */
+    public function ensure_permalinks() {
+        // Solo verificar una vez por request y no en AJAX
+        static $checked = false;
+        if ($checked || (defined('DOING_AJAX') && DOING_AJAX)) {
+            return;
+        }
+        $checked = true;
+
+        // Verificar si ya hay reglas para flavor_landing
+        $rules = get_option('rewrite_rules', []);
+        $has_landing_rules = false;
+
+        if (is_array($rules)) {
+            foreach ($rules as $pattern => $rewrite) {
+                if (strpos($rewrite, 'flavor_landing') !== false) {
+                    $has_landing_rules = true;
+                    break;
+                }
+            }
+        }
+
+        // Si no hay reglas, regenerar
+        if (!$has_landing_rules && post_type_exists('flavor_landing')) {
+            // Usar transient para no hacer flush en cada request
+            $flush_key = 'flavor_vb_needs_flush';
+            if (get_transient($flush_key) !== 'done') {
+                flush_rewrite_rules(false);
+                set_transient($flush_key, 'done', HOUR_IN_SECONDS);
+
+                if (defined('FLAVOR_CHAT_IA_DEBUG') && FLAVOR_CHAT_IA_DEBUG) {
+                    error_log('[Flavor VB] Rewrite rules regeneradas para flavor_landing');
+                }
+            }
+        }
+    }
+
+    /**
+     * Fuerza regeneración de permalinks (para uso externo/API)
+     *
+     * @return bool True si se regeneraron correctamente
+     */
+    public static function flush_permalinks() {
+        // Eliminar transient para forzar regeneración
+        delete_transient('flavor_vb_needs_flush');
+
+        // Flush forzado
+        flush_rewrite_rules(true);
+
+        // Verificar que se aplicó
+        $rules = get_option('rewrite_rules', []);
+        $has_landing_rules = false;
+
+        if (is_array($rules)) {
+            foreach ($rules as $pattern => $rewrite) {
+                if (strpos($rewrite, 'flavor_landing') !== false) {
+                    $has_landing_rules = true;
+                    break;
+                }
+            }
+        }
+
+        return $has_landing_rules;
+    }
+
+    /**
+     * Callback para activación del plugin
+     *
+     * Registra el post type y hace flush de rewrite rules
+     */
+    public static function on_plugin_activation() {
+        // Registrar el post type temporalmente
+        register_post_type('flavor_landing', [
+            'public' => true,
+            'publicly_queryable' => true,
+            'rewrite' => ['slug' => 'landing', 'with_front' => false],
+        ]);
+
+        // Flush rewrite rules
+        flush_rewrite_rules(true);
     }
 
     /**

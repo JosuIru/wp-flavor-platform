@@ -100,13 +100,27 @@ class Flavor_Socios_Frontend_Controller {
      * Registrar shortcodes
      */
     public function registrar_shortcodes() {
-        add_shortcode('socios_formulario_alta', [$this, 'shortcode_formulario_alta']);
-        add_shortcode('socios_mi_perfil', [$this, 'shortcode_mi_perfil']);
-        add_shortcode('socios_mi_carnet', [$this, 'shortcode_mi_carnet']);
-        add_shortcode('socios_mis_cuotas', [$this, 'shortcode_mis_cuotas']);
-        add_shortcode('socios_directorio', [$this, 'shortcode_directorio']);
-        add_shortcode('socios_ventajas', [$this, 'shortcode_ventajas']);
-        add_shortcode('socios_estadisticas', [$this, 'shortcode_estadisticas']);
+        if (!shortcode_exists('socios_formulario_alta')) {
+            add_shortcode('socios_formulario_alta', [$this, 'shortcode_formulario_alta']);
+        }
+        if (!shortcode_exists('socios_mi_perfil')) {
+            add_shortcode('socios_mi_perfil', [$this, 'shortcode_mi_perfil']);
+        }
+        if (!shortcode_exists('socios_mi_carnet')) {
+            add_shortcode('socios_mi_carnet', [$this, 'shortcode_mi_carnet']);
+        }
+        if (!shortcode_exists('socios_mis_cuotas')) {
+            add_shortcode('socios_mis_cuotas', [$this, 'shortcode_mis_cuotas']);
+        }
+        if (!shortcode_exists('socios_directorio')) {
+            add_shortcode('socios_directorio', [$this, 'shortcode_directorio']);
+        }
+        if (!shortcode_exists('socios_ventajas')) {
+            add_shortcode('socios_ventajas', [$this, 'shortcode_ventajas']);
+        }
+        if (!shortcode_exists('socios_estadisticas')) {
+            add_shortcode('socios_estadisticas', [$this, 'shortcode_estadisticas']);
+        }
     }
 
     /**
@@ -148,7 +162,7 @@ class Flavor_Socios_Frontend_Controller {
 
                 if ($es_socio) {
                     return '<div class="flavor-notice flavor-notice-info"><p>' .
-                        __('Ya eres socio/a. Puedes ver tu perfil en el área de socios.', 'flavor-chat-ia') .
+                        __('Ya eres miembro. Puedes ver tu perfil en el área de miembros.', 'flavor-chat-ia') .
                         '</p><a href="' . esc_url(home_url('/mi-portal/socios/')) . '" class="flavor-btn flavor-btn-primary">' .
                         __('Ir a mi perfil', 'flavor-chat-ia') . '</a></div>';
                 }
@@ -667,6 +681,14 @@ class Flavor_Socios_Frontend_Controller {
         $atts = shortcode_atts([
             'mostrar_contacto' => 'false',
             'limite' => 50,
+            'columnas' => 3,
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'apellidos',
+            'order' => 'ASC',
         ], $atts);
 
         global $wpdb;
@@ -676,24 +698,45 @@ class Flavor_Socios_Frontend_Controller {
             return '';
         }
 
+        // Clases CSS para estilos visuales
+        $visual_classes = ['flavor-socios-directorio'];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta'])) {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes'])) {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $visual_class_str = implode(' ', $visual_classes);
+
+        // Ordenamiento dinámico
+        $orderby_map = ['apellidos' => 'apellidos', 'nombre' => 'nombre', 'date' => 'fecha_alta', 'fecha_alta' => 'fecha_alta'];
+        $order_column = isset($orderby_map[$atts['orderby']]) ? $orderby_map[$atts['orderby']] : 'apellidos';
+        $order_dir = strtoupper($atts['order']) === 'DESC' ? 'DESC' : 'ASC';
+
         $socios = $wpdb->get_results($wpdb->prepare(
             "SELECT id, usuario_id, nombre, apellidos, ciudad, fecha_alta, mostrar_en_directorio
              FROM {$tabla_socios}
              WHERE estado = 'activo' AND mostrar_en_directorio = 1
-             ORDER BY apellidos, nombre
+             ORDER BY {$order_column} {$order_dir}
              LIMIT %d",
             intval($atts['limite'])
         ));
 
         if (empty($socios)) {
-            return '<p>' . __('No hay socios en el directorio público.', 'flavor-chat-ia') . '</p>';
+            return '<p>' . __('No hay miembros en el directorio público.', 'flavor-chat-ia') . '</p>';
         }
 
         ob_start();
         ?>
         <div class="flavor-socios-directorio">
             <div class="directorio-stats">
-                <p><?php printf(esc_html__('%d socios/as activos/as', 'flavor-chat-ia'), count($socios)); ?></p>
+                <p><?php printf(esc_html__('%d miembros activos', 'flavor-chat-ia'), count($socios)); ?></p>
             </div>
 
             <div class="directorio-grid">
@@ -805,7 +848,7 @@ class Flavor_Socios_Frontend_Controller {
         <div class="flavor-socios-stats-public">
             <div class="stat-big">
                 <span class="stat-numero"><?php echo number_format_i18n($total_socios); ?></span>
-                <span class="stat-texto"><?php esc_html_e('Socios/as activos/as', 'flavor-chat-ia'); ?></span>
+                <span class="stat-texto"><?php esc_html_e('Miembros activos', 'flavor-chat-ia'); ?></span>
             </div>
             <?php if ($nuevos_mes > 0): ?>
                 <div class="stat-secundario">

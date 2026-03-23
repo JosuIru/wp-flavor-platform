@@ -43,18 +43,24 @@ class Flavor_Carpooling_Frontend_Controller {
         // Registrar assets
         add_action('wp_enqueue_scripts', [$this, 'registrar_assets']);
 
-        // Registrar shortcodes avanzados
-        add_shortcode('carpooling_viajes', [$this, 'shortcode_viajes']);
-        add_shortcode('carpooling_mis_viajes', [$this, 'shortcode_mis_viajes']);
-        add_shortcode('carpooling_mis_reservas', [$this, 'shortcode_mis_reservas']);
-        add_shortcode('carpooling_publicar', [$this, 'shortcode_publicar']);
-        add_shortcode('carpooling_buscar', [$this, 'shortcode_buscar']);
-        add_shortcode('carpooling_proximo_viaje', [$this, 'shortcode_proximo_viaje']);
-        add_shortcode('carpooling_busqueda_rapida', [$this, 'shortcode_busqueda_rapida']);
+        // Registrar shortcodes avanzados sin pisar implementaciones previas.
+        $shortcodes = [
+            'carpooling_viajes' => 'shortcode_viajes',
+            'carpooling_mis_viajes' => 'shortcode_mis_viajes',
+            'carpooling_mis_reservas' => 'shortcode_mis_reservas',
+            'carpooling_publicar' => 'shortcode_publicar',
+            'carpooling_buscar' => 'shortcode_buscar',
+            'carpooling_proximo_viaje' => 'shortcode_proximo_viaje',
+            'carpooling_busqueda_rapida' => 'shortcode_busqueda_rapida',
+            'carpooling_buscar_viaje' => 'shortcode_buscar',
+            'carpooling_publicar_viaje' => 'shortcode_publicar',
+        ];
 
-        // Aliases
-        add_shortcode('carpooling_buscar_viaje', [$this, 'shortcode_buscar']);
-        add_shortcode('carpooling_publicar_viaje', [$this, 'shortcode_publicar']);
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_carpooling_reservar_plaza', [$this, 'ajax_reservar_plaza']);
@@ -219,7 +225,30 @@ class Flavor_Carpooling_Frontend_Controller {
             'mostrar_filtros' => 'si',
             'origen' => '',
             'destino' => '',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'fecha',
+            'order' => 'ASC',
         ], $atts);
+
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atributos['esquema_color']) && $atributos['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atributos['esquema_color']);
+        }
+        if (!empty($atributos['estilo_tarjeta']) && $atributos['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atributos['estilo_tarjeta']);
+        }
+        if (!empty($atributos['radio_bordes']) && $atributos['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atributos['radio_bordes']);
+        }
+        if (!empty($atributos['animacion_entrada']) && $atributos['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atributos['animacion_entrada']);
+        }
+        $atributos['visual_class_string'] = implode(' ', $visual_classes);
 
         ob_start();
         $this->render_viajes($atributos);
@@ -271,8 +300,9 @@ class Flavor_Carpooling_Frontend_Controller {
         }
 
         $viajes = get_posts($args);
+        $visual_class_string = isset($atts['visual_class_string']) ? $atts['visual_class_string'] : '';
         ?>
-        <div class="carpooling-viajes">
+        <div class="carpooling-viajes <?php echo esc_attr($visual_class_string); ?>">
             <?php if ($atts['mostrar_filtros'] === 'si'): ?>
                 <div class="carpooling-filtros">
                     <div class="filtro-origen">

@@ -12,6 +12,7 @@ if (!current_user_can('manage_options')) wp_die(__('No tienes permisos suficient
 
 global $wpdb;
 $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas_bicicletas';
+$tabla_bicicletas_alt = $wpdb->prefix . 'flavor_bicicletas';
 $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 $tabla_prestamos = $wpdb->prefix . 'flavor_bicicletas_prestamos';
 
@@ -81,140 +82,34 @@ $tabla_bicicletas_existe = $wpdb->get_var($wpdb->prepare(
     $tabla_bicicletas
 )) > 0;
 
+$tabla_bicicletas_alt_existe = $wpdb->get_var($wpdb->prepare(
+    "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
+    DB_NAME,
+    $tabla_bicicletas_alt
+)) > 0;
+
+if (!$tabla_bicicletas_existe && $tabla_bicicletas_alt_existe) {
+    $tabla_bicicletas = $tabla_bicicletas_alt;
+    $tabla_bicicletas_existe = true;
+}
+
 $tabla_estaciones_existe = $wpdb->get_var($wpdb->prepare(
     "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
     DB_NAME,
     $tabla_estaciones
 )) > 0;
 
-$usar_datos_demo = !$tabla_bicicletas_existe;
+$tablas_bicicletas_disponibles = $tabla_bicicletas_existe;
+$col_km = 'kilometros_totales';
+$col_revision = 'fecha_ultimo_mantenimiento';
 
-// =====================================================
-// DATOS DEMO
-// =====================================================
-
-if ($usar_datos_demo) {
-    $bicicletas_demo = [
-        (object)[
-            'id' => 1,
-            'codigo' => 'BIC-001',
-            'modelo' => 'Urban Commuter Pro',
-            'tipo' => 'urbana',
-            'estado' => 'disponible',
-            'estacion_actual_id' => 1,
-            'nombre_estacion' => 'Plaza Central',
-            'kilometros_totales' => 234.5,
-            'fecha_ultimo_mantenimiento' => date('Y-m-d', strtotime('-15 days')),
-            'fecha_alta' => date('Y-m-d', strtotime('-6 months')),
-            'total_prestamos' => 45,
-            'bateria' => null
-        ],
-        (object)[
-            'id' => 2,
-            'codigo' => 'BIC-002',
-            'modelo' => 'E-Bike City 500',
-            'tipo' => 'electrica',
-            'estado' => 'en_uso',
-            'estacion_actual_id' => null,
-            'nombre_estacion' => null,
-            'kilometros_totales' => 567.2,
-            'fecha_ultimo_mantenimiento' => date('Y-m-d', strtotime('-45 days')),
-            'fecha_alta' => date('Y-m-d', strtotime('-8 months')),
-            'total_prestamos' => 78,
-            'bateria' => 75
-        ],
-        (object)[
-            'id' => 3,
-            'codigo' => 'BIC-003',
-            'modelo' => 'Mountain Explorer',
-            'tipo' => 'montana',
-            'estado' => 'mantenimiento',
-            'estacion_actual_id' => 2,
-            'nombre_estacion' => 'Parque Norte',
-            'kilometros_totales' => 892.1,
-            'fecha_ultimo_mantenimiento' => date('Y-m-d', strtotime('-5 days')),
-            'fecha_alta' => date('Y-m-d', strtotime('-12 months')),
-            'total_prestamos' => 112,
-            'bateria' => null
-        ],
-        (object)[
-            'id' => 4,
-            'codigo' => 'BIC-004',
-            'modelo' => 'Urban Commuter',
-            'tipo' => 'urbana',
-            'estado' => 'disponible',
-            'estacion_actual_id' => 3,
-            'nombre_estacion' => 'Estación Metro Sur',
-            'kilometros_totales' => 156.8,
-            'fecha_ultimo_mantenimiento' => date('Y-m-d', strtotime('-20 days')),
-            'fecha_alta' => date('Y-m-d', strtotime('-3 months')),
-            'total_prestamos' => 28,
-            'bateria' => null
-        ],
-        (object)[
-            'id' => 5,
-            'codigo' => 'BIC-005',
-            'modelo' => 'E-Bike Pro 750',
-            'tipo' => 'electrica',
-            'estado' => 'disponible',
-            'estacion_actual_id' => 1,
-            'nombre_estacion' => 'Plaza Central',
-            'kilometros_totales' => 423.6,
-            'fecha_ultimo_mantenimiento' => date('Y-m-d', strtotime('-10 days')),
-            'fecha_alta' => date('Y-m-d', strtotime('-5 months')),
-            'total_prestamos' => 67,
-            'bateria' => 92
-        ],
-        (object)[
-            'id' => 6,
-            'codigo' => 'BIC-006',
-            'modelo' => 'Fold & Go',
-            'tipo' => 'plegable',
-            'estado' => 'fuera_servicio',
-            'estacion_actual_id' => 4,
-            'nombre_estacion' => 'Centro Comercial',
-            'kilometros_totales' => 1245.3,
-            'fecha_ultimo_mantenimiento' => date('Y-m-d', strtotime('-95 days')),
-            'fecha_alta' => date('Y-m-d', strtotime('-18 months')),
-            'total_prestamos' => 156,
-            'bateria' => null
-        ],
-        (object)[
-            'id' => 7,
-            'codigo' => 'BIC-007',
-            'modelo' => 'Urban Commuter',
-            'tipo' => 'urbana',
-            'estado' => 'en_uso',
-            'estacion_actual_id' => null,
-            'nombre_estacion' => null,
-            'kilometros_totales' => 345.2,
-            'fecha_ultimo_mantenimiento' => date('Y-m-d', strtotime('-25 days')),
-            'fecha_alta' => date('Y-m-d', strtotime('-4 months')),
-            'total_prestamos' => 52,
-            'bateria' => null
-        ],
-        (object)[
-            'id' => 8,
-            'codigo' => 'BIC-008',
-            'modelo' => 'E-Bike City 500',
-            'tipo' => 'electrica',
-            'estado' => 'reservada',
-            'estacion_actual_id' => 2,
-            'nombre_estacion' => 'Parque Norte',
-            'kilometros_totales' => 289.4,
-            'fecha_ultimo_mantenimiento' => date('Y-m-d', strtotime('-12 days')),
-            'fecha_alta' => date('Y-m-d', strtotime('-2 months')),
-            'total_prestamos' => 34,
-            'bateria' => 58
-        ],
-    ];
-
-    $estaciones_demo = [
-        (object)['id' => 1, 'nombre' => 'Plaza Central'],
-        (object)['id' => 2, 'nombre' => 'Parque Norte'],
-        (object)['id' => 3, 'nombre' => 'Estación Metro Sur'],
-        (object)['id' => 4, 'nombre' => 'Centro Comercial'],
-    ];
+if ($tablas_bicicletas_disponibles) {
+    $col_km = (int) $wpdb->get_var("SHOW COLUMNS FROM $tabla_bicicletas LIKE 'kilometros_totales'")
+        ? 'kilometros_totales'
+        : 'kilometros_acumulados';
+    $col_revision = (int) $wpdb->get_var("SHOW COLUMNS FROM $tabla_bicicletas LIKE 'fecha_ultimo_mantenimiento'")
+        ? 'fecha_ultimo_mantenimiento'
+        : 'ultima_revision';
 }
 
 // =====================================================
@@ -235,75 +130,7 @@ $offset = ($pagina_actual - 1) * $items_por_pagina;
 // OBTENER DATOS
 // =====================================================
 
-if ($usar_datos_demo) {
-    $bicicletas_filtradas = $bicicletas_demo;
-
-    // Aplicar filtros a datos demo
-    if (!empty($busqueda)) {
-        $bicicletas_filtradas = array_filter($bicicletas_filtradas, function($b) use ($busqueda) {
-            return stripos($b->codigo, $busqueda) !== false ||
-                   stripos($b->modelo, $busqueda) !== false;
-        });
-    }
-
-    if (!empty($filtro_estado)) {
-        $bicicletas_filtradas = array_filter($bicicletas_filtradas, function($b) use ($filtro_estado) {
-            return $b->estado === $filtro_estado;
-        });
-    }
-
-    if (!empty($filtro_tipo)) {
-        $bicicletas_filtradas = array_filter($bicicletas_filtradas, function($b) use ($filtro_tipo) {
-            return $b->tipo === $filtro_tipo;
-        });
-    }
-
-    if ($filtro_estacion > 0) {
-        $bicicletas_filtradas = array_filter($bicicletas_filtradas, function($b) use ($filtro_estacion) {
-            return $b->estacion_actual_id == $filtro_estacion;
-        });
-    }
-
-    if (!empty($filtro_mantenimiento)) {
-        $bicicletas_filtradas = array_filter($bicicletas_filtradas, function($b) use ($filtro_mantenimiento) {
-            $estado_mant = calcular_estado_mantenimiento($b->fecha_ultimo_mantenimiento, $b->kilometros_totales);
-            return $estado_mant['nivel'] === $filtro_mantenimiento;
-        });
-    }
-
-    // Ordenar
-    usort($bicicletas_filtradas, function($a, $b) use ($orden) {
-        switch ($orden) {
-            case 'codigo_desc': return strcasecmp($b->codigo, $a->codigo);
-            case 'km_desc': return $b->kilometros_totales - $a->kilometros_totales;
-            case 'km_asc': return $a->kilometros_totales - $b->kilometros_totales;
-            case 'prestamos_desc': return $b->total_prestamos - $a->total_prestamos;
-            case 'modelo_asc': return strcasecmp($a->modelo, $b->modelo);
-            default: return strcasecmp($a->codigo, $b->codigo);
-        }
-    });
-
-    $total_bicicletas_filtradas = count($bicicletas_filtradas);
-    $bicicletas = array_slice(array_values($bicicletas_filtradas), $offset, $items_por_pagina);
-
-    // Estadísticas demo
-    $total_bicicletas = count($bicicletas_demo);
-    $disponibles = count(array_filter($bicicletas_demo, fn($b) => $b->estado === 'disponible'));
-    $en_uso = count(array_filter($bicicletas_demo, fn($b) => $b->estado === 'en_uso'));
-    $mantenimiento_count = count(array_filter($bicicletas_demo, fn($b) => $b->estado === 'mantenimiento' || $b->estado === 'fuera_servicio'));
-    $km_totales_flota = array_sum(array_column($bicicletas_demo, 'kilometros_totales'));
-
-    // Conteo por tipo
-    $por_tipo = [
-        'urbana' => count(array_filter($bicicletas_demo, fn($b) => $b->tipo === 'urbana')),
-        'electrica' => count(array_filter($bicicletas_demo, fn($b) => $b->tipo === 'electrica')),
-        'montana' => count(array_filter($bicicletas_demo, fn($b) => $b->tipo === 'montana')),
-        'plegable' => count(array_filter($bicicletas_demo, fn($b) => $b->tipo === 'plegable'))
-    ];
-
-    $estaciones = $estaciones_demo;
-
-} else {
+if ($tablas_bicicletas_disponibles) {
     // Construir consulta real
     $where_conditions = ["1=1"];
     $params = [];
@@ -343,6 +170,8 @@ if ($usar_datos_demo) {
     // Query base
     $query_base = "
         SELECT b.*,
+               COALESCE(b.{$col_km}, 0) as kilometros_totales,
+               b.{$col_revision} as fecha_ultimo_mantenimiento,
                e.nombre as nombre_estacion,
                (SELECT COUNT(*) FROM $tabla_prestamos WHERE bicicleta_id = b.id) as total_prestamos
         FROM $tabla_bicicletas b
@@ -370,7 +199,7 @@ if ($usar_datos_demo) {
             SUM(CASE WHEN estado = 'disponible' THEN 1 ELSE 0 END) as disponibles,
             SUM(CASE WHEN estado = 'en_uso' THEN 1 ELSE 0 END) as en_uso,
             SUM(CASE WHEN estado IN ('mantenimiento', 'fuera_servicio') THEN 1 ELSE 0 END) as mantenimiento,
-            SUM(kilometros_totales) as km_totales
+            SUM(COALESCE({$col_km}, 0)) as km_totales
         FROM $tabla_bicicletas
     ");
 
@@ -393,24 +222,37 @@ if ($usar_datos_demo) {
     }
 
     // Estaciones para filtro
-    $estaciones = $wpdb->get_results("SELECT id, nombre FROM $tabla_estaciones ORDER BY nombre ASC");
+    $estaciones = $tabla_estaciones_existe
+        ? $wpdb->get_results("SELECT id, nombre FROM $tabla_estaciones ORDER BY nombre ASC")
+        : [];
+} else {
+    $total_bicicletas_filtradas = 0;
+    $bicicletas = [];
+    $total_bicicletas = 0;
+    $disponibles = 0;
+    $en_uso = 0;
+    $mantenimiento_count = 0;
+    $km_totales_flota = 0;
+    $por_tipo = ['urbana' => 0, 'electrica' => 0, 'montana' => 0, 'plegable' => 0];
+    $estaciones = [];
 }
 
 $total_paginas = ceil($total_bicicletas_filtradas / $items_por_pagina);
 
 // Top bicicletas por uso (para sidebar)
-if ($usar_datos_demo) {
-    $top_bicicletas = array_slice($bicicletas_demo, 0, 5);
-    usort($top_bicicletas, fn($a, $b) => $b->total_prestamos - $a->total_prestamos);
-} else {
+if ($tablas_bicicletas_disponibles) {
     $top_bicicletas = $wpdb->get_results("
         SELECT b.*, e.nombre as nombre_estacion,
+               COALESCE(b.{$col_km}, 0) as kilometros_totales,
+               b.{$col_revision} as fecha_ultimo_mantenimiento,
                (SELECT COUNT(*) FROM $tabla_prestamos WHERE bicicleta_id = b.id) as total_prestamos
         FROM $tabla_bicicletas b
         LEFT JOIN $tabla_estaciones e ON b.estacion_actual_id = e.id
         ORDER BY total_prestamos DESC
         LIMIT 5
     ");
+} else {
+    $top_bicicletas = [];
 }
 ?>
 
@@ -435,12 +277,12 @@ if ($usar_datos_demo) {
         </div>
     </div>
 
-    <?php if ($usar_datos_demo): ?>
+    <?php if (!$tablas_bicicletas_disponibles): ?>
     <div class="notice notice-info" style="margin: 20px 0;">
         <p>
             <span class="dashicons dashicons-info" style="color: #2271b1;"></span>
-            <strong><?php echo esc_html__('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-            <?php echo esc_html__('Las tablas de bicicletas no existen. Se muestran datos de ejemplo.', 'flavor-chat-ia'); ?>
+            <strong><?php echo esc_html__('Sin datos:', 'flavor-chat-ia'); ?></strong>
+            <?php echo esc_html__('No hay tablas de bicicletas disponibles todavía.', 'flavor-chat-ia'); ?>
         </p>
     </div>
     <?php endif; ?>

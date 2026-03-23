@@ -226,13 +226,31 @@ document.addEventListener('alpine:init', function() {
         var store = Alpine.store('vbp');
         if (store) {
             // Marcar como sin guardar cuando hay cambios
-            var originalMarkDirty = store.markDirty;
-            if (originalMarkDirty) {
-                store.markDirty = function() {
-                    originalMarkDirty.call(store);
+            var originalMarkAsDirty = store.markAsDirty;
+            if (originalMarkAsDirty) {
+                store.markAsDirty = function() {
+                    originalMarkAsDirty.call(store);
                     Alpine.store('vbpSaveStatus').setStatus('unsaved');
                 };
             }
         }
+    });
+
+    // Escuchar eventos de guardado
+    document.addEventListener('vbp:beforeSave', function() {
+        Alpine.store('vbpSaveStatus').setStatus('saving');
+    });
+
+    document.addEventListener('vbp:afterSave', function() {
+        Alpine.store('vbpSaveStatus').setStatus('saved');
+    });
+
+    document.addEventListener('vbp:saveError', function(e) {
+        var message = e.detail && e.detail.message ? e.detail.message : 'Error al guardar';
+        Alpine.store('vbpSaveStatus').setStatus('error', message);
+    });
+
+    document.addEventListener('vbp:contentChanged', function() {
+        Alpine.store('vbpSaveStatus').setStatus('unsaved');
     });
 });

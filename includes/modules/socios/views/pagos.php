@@ -90,7 +90,7 @@ if ($tabla_existe) {
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=socios-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-id-alt" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Socios', 'flavor-chat-ia'); ?>
+            <?php _e('Miembros', 'flavor-chat-ia'); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
         <span style="color: #1d2327;"><?php _e('Pagos', 'flavor-chat-ia'); ?></span>
@@ -157,7 +157,7 @@ if ($tabla_existe) {
         <thead>
             <tr>
                 <th style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
-                <th><?php _e('Socio', 'flavor-chat-ia'); ?></th>
+                <th><?php _e('Miembro', 'flavor-chat-ia'); ?></th>
                 <th style="width: 100px;"><?php _e('Importe', 'flavor-chat-ia'); ?></th>
                 <th style="width: 120px;"><?php _e('Método', 'flavor-chat-ia'); ?></th>
                 <th style="width: 100px;"><?php _e('Estado', 'flavor-chat-ia'); ?></th>
@@ -175,7 +175,7 @@ if ($tabla_existe) {
                 <tr>
                     <td><code><?php echo esc_html($p->id); ?></code></td>
                     <td>
-                        <strong><?php echo esc_html($p->display_name ?: __('Socio', 'flavor-chat-ia')); ?></strong>
+                        <strong><?php echo esc_html($p->display_name ?: __('Miembro', 'flavor-chat-ia')); ?></strong>
                         <?php if ($p->numero_socio): ?>
                         <br><small style="color: #646970;">#<?php echo esc_html($p->numero_socio); ?></small>
                         <?php endif; ?>

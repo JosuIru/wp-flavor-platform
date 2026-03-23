@@ -103,7 +103,17 @@ $tipo_colores = [
                     </div>
 
                     <div class="flavor-evento-accion">
-                        <a href="#inscribirse" class="flavor-inscribirse-btn">
+                        <?php
+                        $evento_url = '#inscribirse';
+                        if (!empty($evento['url'])) {
+                            $evento_url = $evento['url'];
+                        } elseif (!empty($evento['id'])) {
+                            $evento_url = get_permalink($evento['id']);
+                        } elseif (!empty($evento['slug'])) {
+                            $evento_url = home_url('/eventos/' . $evento['slug'] . '/');
+                        }
+                        ?>
+                        <a href="<?php echo esc_url($evento_url); ?>" class="flavor-inscribirse-btn">
                             <?php esc_html_e('Inscribirse', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
@@ -116,7 +126,7 @@ $tipo_colores = [
                 <h3><?php esc_html_e('¿Quieres organizar un evento?', 'flavor-chat-ia'); ?></h3>
                 <p><?php esc_html_e('Los miembros pueden proponer actividades para la comunidad', 'flavor-chat-ia'); ?></p>
             </div>
-            <a href="#proponer" class="flavor-button flavor-button--outline">
+            <a href="<?php echo esc_url($proponer_evento_url ?? home_url('/eventos/proponer/')); ?>" class="flavor-button flavor-button--outline">
                 <?php esc_html_e('Proponer evento', 'flavor-chat-ia'); ?>
             </a>
         </div>

@@ -20,6 +20,7 @@ $tabla_votos = $wpdb->prefix . 'flavor_votos';
 $tabla_propuestas_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_propuestas'");
 $tabla_votaciones_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_votaciones'");
 $tabla_votos_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_votos'");
+$tablas_disponibles = ($tabla_propuestas_existe || $tabla_votaciones_existe || $tabla_votos_existe);
 
 // Estadísticas generales
 $total_propuestas = 0;
@@ -97,17 +98,6 @@ if ($tabla_votos_existe) {
     ");
 }
 
-// Datos de ejemplo si no hay datos reales
-$usar_datos_ejemplo = ($total_propuestas == 0 && $total_votaciones == 0);
-
-if ($usar_datos_ejemplo) {
-    $propuestas_activas = 12;
-    $total_propuestas = 45;
-    $votaciones_activas = 3;
-    $total_votos = 1254;
-    $votantes_unicos = 287;
-    $tasa_participacion = 34.2;
-}
 ?>
 
 <div class="dm-dashboard">
@@ -116,6 +106,13 @@ if ($usar_datos_ejemplo) {
         flavor_dashboard_help('participacion');
     }
     ?>
+
+    <?php if (!$tablas_disponibles): ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <p><?php esc_html_e('Faltan tablas del módulo Participación o aún no hay actividad registrada.', 'flavor-chat-ia'); ?></p>
+    </div>
+    <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
@@ -253,39 +250,6 @@ if ($usar_datos_ejemplo) {
                         </div>
                     <?php endforeach; ?>
                 </div>
-            <?php elseif ($usar_datos_ejemplo) : ?>
-                <div class="dm-item-list">
-                    <div class="dm-item-list__item">
-                        <div class="dm-item-list__content">
-                            <strong>Renovación del parque central</strong>
-                            <span class="dm-item-list__muted">Finaliza: 15/03/2026</span>
-                        </div>
-                        <div class="dm-item-list__meta">
-                            <span class="dm-text-primary dm-text-lg">187</span>
-                            <span class="dm-item-list__muted">votos</span>
-                        </div>
-                    </div>
-                    <div class="dm-item-list__item">
-                        <div class="dm-item-list__content">
-                            <strong>Mejora del transporte público</strong>
-                            <span class="dm-item-list__muted">Finaliza: 20/03/2026</span>
-                        </div>
-                        <div class="dm-item-list__meta">
-                            <span class="dm-text-primary dm-text-lg">142</span>
-                            <span class="dm-item-list__muted">votos</span>
-                        </div>
-                    </div>
-                    <div class="dm-item-list__item">
-                        <div class="dm-item-list__content">
-                            <strong>Nuevo centro cultural</strong>
-                            <span class="dm-item-list__muted">Finaliza: 01/04/2026</span>
-                        </div>
-                        <div class="dm-item-list__meta">
-                            <span class="dm-text-primary dm-text-lg">98</span>
-                            <span class="dm-item-list__muted">votos</span>
-                        </div>
-                    </div>
-                </div>
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-megaphone"></span>
@@ -315,39 +279,6 @@ if ($usar_datos_ejemplo) {
                             </div>
                         </div>
                     <?php endforeach; ?>
-                </div>
-            <?php elseif ($usar_datos_ejemplo) : ?>
-                <div class="dm-item-list">
-                    <div class="dm-item-list__item">
-                        <div class="dm-item-list__content">
-                            <strong>Carril bici en avenida principal</strong>
-                            <span class="dm-item-list__muted">Movilidad</span>
-                        </div>
-                        <div class="dm-item-list__meta dm-text-success">
-                            <span class="dashicons dashicons-thumbs-up"></span>
-                            <span>234</span>
-                        </div>
-                    </div>
-                    <div class="dm-item-list__item">
-                        <div class="dm-item-list__content">
-                            <strong>Huertos urbanos comunitarios</strong>
-                            <span class="dm-item-list__muted">Medio ambiente</span>
-                        </div>
-                        <div class="dm-item-list__meta dm-text-success">
-                            <span class="dashicons dashicons-thumbs-up"></span>
-                            <span>198</span>
-                        </div>
-                    </div>
-                    <div class="dm-item-list__item">
-                        <div class="dm-item-list__content">
-                            <strong>Zona peatonal en el casco antiguo</strong>
-                            <span class="dm-item-list__muted">Urbanismo</span>
-                        </div>
-                        <div class="dm-item-list__meta dm-text-success">
-                            <span class="dashicons dashicons-thumbs-up"></span>
-                            <span>156</span>
-                        </div>
-                    </div>
                 </div>
             <?php else : ?>
                 <div class="dm-empty">

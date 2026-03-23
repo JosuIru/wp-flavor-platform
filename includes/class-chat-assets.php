@@ -148,7 +148,7 @@ class Chat_IA_Assets {
         // CSS
         wp_enqueue_style(
             'chat-ia-widget',
-            CHAT_IA_ADDON_URL . "assets/css/chat-widget{$sufijo_asset}.css",
+            CHAT_IA_ADDON_URL . "assets/css/modules/chat-widget{$sufijo_asset}.css",
             [],
             CHAT_IA_ADDON_VERSION
         );
@@ -325,6 +325,11 @@ class Chat_IA_Assets {
             'location' => __('Cómo llegar', 'chat-ia-addon'),
             'contact' => __('Contactar', 'chat-ia-addon'),
             'checkAvailability' => __('Ver disponibilidad', 'chat-ia-addon'),
+            // Funcionalidad de voz
+            'listening' => __('Escuchando...', 'chat-ia-addon'),
+            'micPermissionDenied' => __('Permiso de micrófono denegado. Actívalo en la configuración del navegador.', 'chat-ia-addon'),
+            'speechNotSupported' => __('Tu navegador no soporta reconocimiento de voz. Prueba con Chrome o Edge.', 'chat-ia-addon'),
+            'ttsNotSupported' => __('Tu navegador no soporta síntesis de voz.', 'chat-ia-addon'),
         ];
     }
 

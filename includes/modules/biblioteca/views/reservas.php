@@ -127,28 +127,9 @@ if ($tablas_existen) {
     }
 
 } else {
-    // Datos de demostración
-    $total_reservas = 48;
-    $reservas_pendientes = 12;
-    $reservas_confirmadas = 28;
-    $reservas_expiradas = 3;
-    $total_registros = 48;
-    $total_paginas = 4;
-
-    $reservas_demo = [
-        ['id' => 1, 'libro_id' => 101, 'libro_titulo' => 'Cien años de soledad', 'libro_autor' => 'Gabriel García Márquez', 'libro_imagen' => '', 'usuario_id' => 1, 'usuario_nombre' => 'María García', 'usuario_email' => 'maria@ejemplo.com', 'fecha_solicitud' => date('Y-m-d H:i:s'), 'fecha_expiracion' => date('Y-m-d', strtotime('+5 days')), 'estado' => 'pendiente', 'dias_restantes' => 5],
-        ['id' => 2, 'libro_id' => 102, 'libro_titulo' => 'Don Quijote de la Mancha', 'libro_autor' => 'Miguel de Cervantes', 'libro_imagen' => '', 'usuario_id' => 2, 'usuario_nombre' => 'Carlos Rodríguez', 'usuario_email' => 'carlos@ejemplo.com', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-2 days')), 'fecha_expiracion' => date('Y-m-d', strtotime('+3 days')), 'estado' => 'confirmada', 'dias_restantes' => 3],
-        ['id' => 3, 'libro_id' => 103, 'libro_titulo' => 'El Principito', 'libro_autor' => 'Antoine de Saint-Exupéry', 'libro_imagen' => '', 'usuario_id' => 3, 'usuario_nombre' => 'Ana Martínez', 'usuario_email' => 'ana@ejemplo.com', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-5 days')), 'fecha_expiracion' => date('Y-m-d', strtotime('-1 day')), 'estado' => 'pendiente', 'dias_restantes' => -1],
-        ['id' => 4, 'libro_id' => 104, 'libro_titulo' => '1984', 'libro_autor' => 'George Orwell', 'libro_imagen' => '', 'usuario_id' => 4, 'usuario_nombre' => 'Pedro Sánchez', 'usuario_email' => 'pedro@ejemplo.com', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-1 day')), 'fecha_expiracion' => date('Y-m-d', strtotime('+7 days')), 'estado' => 'confirmada', 'dias_restantes' => 7],
-        ['id' => 5, 'libro_id' => 105, 'libro_titulo' => 'Rayuela', 'libro_autor' => 'Julio Cortázar', 'libro_imagen' => '', 'usuario_id' => 5, 'usuario_nombre' => 'Laura Fernández', 'usuario_email' => 'laura@ejemplo.com', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-3 days')), 'fecha_expiracion' => date('Y-m-d', strtotime('+2 days')), 'estado' => 'pendiente', 'dias_restantes' => 2],
-        ['id' => 6, 'libro_id' => 106, 'libro_titulo' => 'La sombra del viento', 'libro_autor' => 'Carlos Ruiz Zafón', 'libro_imagen' => '', 'usuario_id' => 6, 'usuario_nombre' => 'Miguel Torres', 'usuario_email' => 'miguel@ejemplo.com', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-4 days')), 'fecha_expiracion' => date('Y-m-d', strtotime('+1 day')), 'estado' => 'confirmada', 'dias_restantes' => 1],
-        ['id' => 7, 'libro_id' => 107, 'libro_titulo' => 'El amor en los tiempos del cólera', 'libro_autor' => 'Gabriel García Márquez', 'libro_imagen' => '', 'usuario_id' => 7, 'usuario_nombre' => 'Isabel Gómez', 'usuario_email' => 'isabel@ejemplo.com', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-6 days')), 'fecha_expiracion' => date('Y-m-d', strtotime('-2 days')), 'estado' => 'confirmada', 'dias_restantes' => -2],
-        ['id' => 8, 'libro_id' => 108, 'libro_titulo' => 'Pedro Páramo', 'libro_autor' => 'Juan Rulfo', 'libro_imagen' => '', 'usuario_id' => 8, 'usuario_nombre' => 'David López', 'usuario_email' => 'david@ejemplo.com', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-1 day')), 'fecha_expiracion' => date('Y-m-d', strtotime('+6 days')), 'estado' => 'pendiente', 'dias_restantes' => 6],
-    ];
-
-    $reservas = array_map(function($item) {
-        return (object) $item;
-    }, $reservas_demo);
+    $total_registros = 0;
+    $total_paginas = 0;
+    $reservas = [];
 }
 
 // Función para obtener clase de urgencia
@@ -169,7 +150,7 @@ function obtener_urgencia_reserva($dias_restantes, $estado) {
 
     <?php if (!$tablas_existen): ?>
     <div class="notice notice-info">
-        <p><span class="dashicons dashicons-info"></span> <?php _e('Mostrando datos de demostración. Los datos reales aparecerán cuando existan reservas en la biblioteca.', 'flavor-chat-ia'); ?></p>
+        <p><span class="dashicons dashicons-info"></span> <?php _e('No se han encontrado las tablas requeridas de biblioteca. Mostrando únicamente datos reales disponibles.', 'flavor-chat-ia'); ?></p>
     </div>
     <?php endif; ?>
 

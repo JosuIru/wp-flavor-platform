@@ -92,14 +92,21 @@ class Flavor_Parkings_Frontend_Controller {
      * Registra shortcodes
      */
     public function registrar_shortcodes() {
-        add_shortcode('flavor_parkings_mapa', [$this, 'shortcode_mapa']);
-        add_shortcode('flavor_parkings_listado', [$this, 'shortcode_listado']);
-        add_shortcode('flavor_parkings_disponibles', [$this, 'shortcode_disponibles']);
-        add_shortcode('flavor_parkings_reservar', [$this, 'shortcode_reservar']);
-        add_shortcode('flavor_parkings_mis_reservas', [$this, 'shortcode_mis_reservas']);
-        add_shortcode('flavor_parkings_mi_plaza', [$this, 'shortcode_mi_plaza']);
-        add_shortcode('flavor_parkings_lista_espera', [$this, 'shortcode_lista_espera']);
-        add_shortcode('flavor_parkings_dashboard', [$this, 'shortcode_dashboard']);
+        $shortcodes = [
+            'flavor_parkings_mapa' => 'shortcode_mapa',
+            'flavor_parkings_listado' => 'shortcode_listado',
+            'flavor_parkings_disponibles' => 'shortcode_disponibles',
+            'flavor_parkings_reservar' => 'shortcode_reservar',
+            'flavor_parkings_mis_reservas' => 'shortcode_mis_reservas',
+            'flavor_parkings_mi_plaza' => 'shortcode_mi_plaza',
+            'flavor_parkings_lista_espera' => 'shortcode_lista_espera',
+            'flavor_parkings_dashboard' => 'shortcode_dashboard',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**

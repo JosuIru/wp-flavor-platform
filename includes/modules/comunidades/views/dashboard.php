@@ -35,7 +35,7 @@ $por_categoria = [];
 $comunidades_activas = [];
 $actividad_reciente = [];
 $crecimiento_miembros = [];
-$usando_demo = false;
+$tablas_disponibles = $tabla_existe;
 
 if ($tabla_existe) {
     $total_comunidades = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_comunidades}");
@@ -103,50 +103,6 @@ if ($tabla_existe) {
     }
 }
 
-// Datos de demostración si no hay datos reales
-if ($total_comunidades == 0) {
-    $usando_demo = true;
-    $total_comunidades = 18;
-    $activas = 15;
-    $miembros_activos = 342;
-    $nuevos_miembros_semana = 23;
-    $publicaciones_hoy = 45;
-    $total_publicaciones = 1250;
-    $eventos_programados = 12;
-    $sin_actividad = 3;
-
-    $por_categoria = [
-        ['categoria' => 'vecinal', 'total' => 6],
-        ['categoria' => 'deportiva', 'total' => 4],
-        ['categoria' => 'cultural', 'total' => 3],
-        ['categoria' => 'educativa', 'total' => 3],
-        ['categoria' => 'social', 'total' => 2],
-    ];
-
-    $comunidades_activas = [
-        ['id' => 1, 'nombre' => 'Comunidad Barrio Centro', 'categoria' => 'vecinal', 'privacidad' => 'publica', 'num_miembros' => 89],
-        ['id' => 2, 'nombre' => 'Runners Ciudad', 'categoria' => 'deportiva', 'privacidad' => 'publica', 'num_miembros' => 67],
-        ['id' => 3, 'nombre' => 'Club de Lectura Municipal', 'categoria' => 'cultural', 'privacidad' => 'privada', 'num_miembros' => 45],
-        ['id' => 4, 'nombre' => 'Padres y Madres IES Norte', 'categoria' => 'educativa', 'privacidad' => 'privada', 'num_miembros' => 38],
-        ['id' => 5, 'nombre' => 'Voluntariado Social', 'categoria' => 'social', 'privacidad' => 'publica', 'num_miembros' => 32],
-    ];
-
-    $actividad_reciente = [
-        ['id' => 1, 'contenido' => 'Nueva convocatoria para la limpieza del parque este sábado...', 'created_at' => date('Y-m-d H:i:s', strtotime('-30 minutes')), 'comunidad_nombre' => 'Comunidad Barrio Centro', 'autor_nombre' => 'María García'],
-        ['id' => 2, 'contenido' => 'Próxima quedada running: domingo 8:00 en el parque grande', 'created_at' => date('Y-m-d H:i:s', strtotime('-2 hours')), 'comunidad_nombre' => 'Runners Ciudad', 'autor_nombre' => 'Carlos López'],
-        ['id' => 3, 'contenido' => 'El libro de este mes es "Cien años de soledad"...', 'created_at' => date('Y-m-d H:i:s', strtotime('-5 hours')), 'comunidad_nombre' => 'Club de Lectura Municipal', 'autor_nombre' => 'Ana Martínez'],
-    ];
-
-    $crecimiento_miembros = [
-        ['mes' => date('Y-m', strtotime('-5 months')), 'nuevos' => 28],
-        ['mes' => date('Y-m', strtotime('-4 months')), 'nuevos' => 35],
-        ['mes' => date('Y-m', strtotime('-3 months')), 'nuevos' => 42],
-        ['mes' => date('Y-m', strtotime('-2 months')), 'nuevos' => 38],
-        ['mes' => date('Y-m', strtotime('-1 month')), 'nuevos' => 51],
-        ['mes' => date('Y-m'), 'nuevos' => 23],
-    ];
-}
-
 // Labels y mapeos
 $categorias_labels = [
     'vecinal' => 'Vecinal', 'deportiva' => 'Deportiva', 'cultural' => 'Cultural',
@@ -168,14 +124,19 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
     }
     ?>
 
+    <?php if (!$tablas_disponibles): ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Comunidades o aún no hay actividad registrada.', 'flavor-chat-ia'); ?>
+    </div>
+    <?php endif; ?>
+
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-admin-multisite"></span>
             <?php esc_html_e('Dashboard de Comunidades', 'flavor-chat-ia'); ?>
         </h1>
-        <?php if ($usando_demo): ?>
-            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
-        <?php endif; ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=comunidades-nueva')); ?>" class="dm-btn dm-btn--primary">
             <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Nueva Comunidad', 'flavor-chat-ia'); ?>
         </a>
@@ -309,13 +270,9 @@ $privacidad_labels = ['publica' => 'Pública', 'privada' => 'Privada', 'secreta'
                         <?php $badge_class = $categoria_badge_classes[$comunidad['categoria']] ?? 'dm-badge--secondary'; ?>
                         <tr>
                             <td>
-                                <?php if (!$usando_demo): ?>
                                 <a href="<?php echo esc_url(admin_url('admin.php?page=comunidades-editar&id=' . $comunidad['id'])); ?>">
                                     <strong><?php echo esc_html($comunidad['nombre']); ?></strong>
                                 </a>
-                                <?php else: ?>
-                                <strong><?php echo esc_html($comunidad['nombre']); ?></strong>
-                                <?php endif; ?>
                                 <div class="dm-table__subtitle">
                                     <?php echo esc_html($privacidad_labels[$comunidad['privacidad']] ?? $comunidad['privacidad']); ?>
                                 </div>

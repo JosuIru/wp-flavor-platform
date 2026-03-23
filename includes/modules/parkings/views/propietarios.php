@@ -81,7 +81,7 @@ $tabla_plazas_existe = $wpdb->get_var(
     )
 );
 
-$usar_datos_demo = !$tabla_propietarios_existe || !$tabla_plazas_existe;
+$tablas_parkings_disponibles = $tabla_propietarios_existe && $tabla_plazas_existe;
 
 // =============================================================================
 // PARÁMETROS DE PAGINACIÓN Y FILTROS
@@ -102,132 +102,7 @@ $filtro_orden_dir = isset($_GET['order']) ? sanitize_text_field($_GET['order']) 
 // DATOS DEMO O REALES
 // =============================================================================
 
-if ($usar_datos_demo) {
-    // Datos de demostración
-    $propietarios_demo = [
-        (object)[
-            'id' => 1,
-            'usuario_id' => 2,
-            'display_name' => 'María García López',
-            'user_email' => 'maria.garcia@example.com',
-            'telefono' => '612 345 678',
-            'estado' => 'activo',
-            'fecha_registro' => date('Y-m-d H:i:s', strtotime('-3 months')),
-            'total_plazas' => 5,
-            'plazas_ocupadas' => 3,
-            'plazas_disponibles' => 2,
-        ],
-        (object)[
-            'id' => 2,
-            'usuario_id' => 3,
-            'display_name' => 'Carlos Rodríguez',
-            'user_email' => 'carlos.rodriguez@example.com',
-            'telefono' => '623 456 789',
-            'estado' => 'activo',
-            'fecha_registro' => date('Y-m-d H:i:s', strtotime('-2 months')),
-            'total_plazas' => 3,
-            'plazas_ocupadas' => 2,
-            'plazas_disponibles' => 1,
-        ],
-        (object)[
-            'id' => 3,
-            'usuario_id' => 4,
-            'display_name' => 'Ana Martínez Ruiz',
-            'user_email' => 'ana.martinez@example.com',
-            'telefono' => '634 567 890',
-            'estado' => 'activo',
-            'fecha_registro' => date('Y-m-d H:i:s', strtotime('-1 month')),
-            'total_plazas' => 8,
-            'plazas_ocupadas' => 6,
-            'plazas_disponibles' => 2,
-        ],
-        (object)[
-            'id' => 4,
-            'usuario_id' => 5,
-            'display_name' => 'Pedro Sánchez Navarro',
-            'user_email' => 'pedro.sanchez@example.com',
-            'telefono' => '645 678 901',
-            'estado' => 'inactivo',
-            'fecha_registro' => date('Y-m-d H:i:s', strtotime('-6 months')),
-            'total_plazas' => 2,
-            'plazas_ocupadas' => 0,
-            'plazas_disponibles' => 2,
-        ],
-        (object)[
-            'id' => 5,
-            'usuario_id' => 6,
-            'display_name' => 'Laura Torres Jiménez',
-            'user_email' => 'laura.torres@example.com',
-            'telefono' => '656 789 012',
-            'estado' => 'pendiente',
-            'fecha_registro' => date('Y-m-d H:i:s', strtotime('-1 week')),
-            'total_plazas' => 1,
-            'plazas_ocupadas' => 0,
-            'plazas_disponibles' => 1,
-        ],
-        (object)[
-            'id' => 6,
-            'usuario_id' => 7,
-            'display_name' => 'Jorge Fernández Gil',
-            'user_email' => 'jorge.fernandez@example.com',
-            'telefono' => '667 890 123',
-            'estado' => 'activo',
-            'fecha_registro' => date('Y-m-d H:i:s', strtotime('-4 months')),
-            'total_plazas' => 12,
-            'plazas_ocupadas' => 10,
-            'plazas_disponibles' => 2,
-        ],
-    ];
-
-    // Estadísticas demo
-    $total_propietarios = count($propietarios_demo);
-    $propietarios_activos = 4;
-    $total_plazas_sistema = 31;
-    $plazas_ocupadas_sistema = 21;
-    $tasa_ocupacion = round(($plazas_ocupadas_sistema / $total_plazas_sistema) * 100);
-    $nuevos_este_mes = 1;
-
-    // Aplicar filtros a datos demo
-    $propietarios_filtrados = $propietarios_demo;
-
-    if (!empty($filtro_busqueda)) {
-        $propietarios_filtrados = array_filter($propietarios_filtrados, function($p) use ($filtro_busqueda) {
-            return stripos($p->display_name, $filtro_busqueda) !== false
-                || stripos($p->user_email, $filtro_busqueda) !== false
-                || stripos($p->telefono ?? '', $filtro_busqueda) !== false;
-        });
-    }
-
-    if (!empty($filtro_estado)) {
-        $propietarios_filtrados = array_filter($propietarios_filtrados, function($p) use ($filtro_estado) {
-            return $p->estado === $filtro_estado;
-        });
-    }
-
-    if ($filtro_plazas_min !== '') {
-        $propietarios_filtrados = array_filter($propietarios_filtrados, function($p) use ($filtro_plazas_min) {
-            return $p->total_plazas >= $filtro_plazas_min;
-        });
-    }
-
-    $total_filtrado = count($propietarios_filtrados);
-    $total_paginas = ceil($total_filtrado / $elementos_por_pagina);
-    $propietarios = array_slice(array_values($propietarios_filtrados), $offset, $elementos_por_pagina);
-
-    // Top propietarios demo
-    $top_propietarios = array_slice($propietarios_demo, 0, 5);
-    usort($top_propietarios, function($a, $b) {
-        return $b->total_plazas - $a->total_plazas;
-    });
-
-    // Distribución por estado demo
-    $distribucion_estados = [
-        'activo' => 4,
-        'inactivo' => 1,
-        'pendiente' => 1,
-    ];
-
-} else {
+if ($tablas_parkings_disponibles) {
     // Datos reales de la base de datos
 
     // Estadísticas generales
@@ -351,6 +226,18 @@ if ($usar_datos_demo) {
     foreach ($distribucion_raw as $estado => $row) {
         $distribucion_estados[$estado] = $row->total;
     }
+} else {
+    $total_propietarios = 0;
+    $propietarios_activos = 0;
+    $total_plazas_sistema = 0;
+    $plazas_ocupadas_sistema = 0;
+    $tasa_ocupacion = 0;
+    $nuevos_este_mes = 0;
+    $total_filtrado = 0;
+    $total_paginas = 0;
+    $propietarios = [];
+    $top_propietarios = [];
+    $distribucion_estados = [];
 }
 ?>
 
@@ -837,10 +724,10 @@ if ($usar_datos_demo) {
     <hr class="wp-header-end">
 
     <div class="flavor-propietarios-wrapper">
-        <?php if ($usar_datos_demo): ?>
+        <?php if (!$tablas_parkings_disponibles): ?>
             <div class="flavor-propietarios-demo-notice">
                 <span class="dashicons dashicons-info"></span>
-                <span><?php echo esc_html__('Mostrando datos de demostración. Las tablas de parkings no están configuradas.', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Parkings.', 'flavor-chat-ia'); ?></span>
             </div>
         <?php endif; ?>
 

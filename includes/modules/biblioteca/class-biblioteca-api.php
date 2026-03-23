@@ -117,15 +117,15 @@ class Flavor_Biblioteca_API {
         ));
 
         // Total libros
-        $total_libros = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_libros WHERE estado = 'disponible' OR estado = 'prestado'");
+        $total_libros = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_libros WHERE disponibilidad = 'disponible' OR disponibilidad = 'prestado'");
 
         // Libros disponibles
-        $libros_disponibles = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_libros WHERE estado = 'disponible'");
+        $libros_disponibles = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_libros WHERE disponibilidad = 'disponible'");
 
         // Novedades (últimos 10 libros agregados)
         $novedades = $wpdb->get_results(
             "SELECT * FROM $tabla_libros
-            WHERE estado IN ('disponible', 'prestado')
+            WHERE disponibilidad IN ('disponible', 'prestado')
             ORDER BY fecha_agregado DESC
             LIMIT 10",
             ARRAY_A
@@ -176,7 +176,7 @@ class Flavor_Biblioteca_API {
         $disponible = $request->get_param('disponible');
         $limite = $request->get_param('limite') ?: 50;
 
-        $where = ["estado IN ('disponible', 'prestado')"];
+        $where = ["disponibilidad IN ('disponible', 'prestado')"];
         $params = [];
 
         if ($categoria) {
@@ -193,7 +193,7 @@ class Flavor_Biblioteca_API {
         }
 
         if ($disponible === 'true' || $disponible === '1') {
-            $where[] = "estado = 'disponible'";
+            $where[] = "disponibilidad = 'disponible'";
         }
 
         $where_sql = implode(' AND ', $where);

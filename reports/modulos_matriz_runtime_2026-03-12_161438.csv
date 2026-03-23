@@ -1,0 +1,64 @@
+modulo,estado,evidencia,can_activate,is_loaded,views,forms,fallbacks,table_guards,dir
+advertising,implementado_con_fallbacks,"Modo estático. Vistas=3, formularios=4, fallbacks=1, guardas_tabla=2",,,3,4,1,2,includes/modules/advertising
+avisos_municipales,implementado_con_fallbacks,"Modo estático. Vistas=6, formularios=9, fallbacks=1, guardas_tabla=19",,,6,9,1,19,includes/modules/avisos-municipales
+ayuda_vecinal,implementado_estatico,"Modo estático. Vistas=5, formularios=7, guardas_tabla=18",,,5,7,0,18,includes/modules/ayuda-vecinal
+banco_tiempo,implementado_con_fallbacks,"Modo estático. Vistas=14, formularios=15, fallbacks=2, guardas_tabla=25",,,14,15,2,25,includes/modules/banco-tiempo
+bares,sospecha_sin_vistas,"Modo estático. Sin vistas/templates detectadas. formularios=2, guardas_tabla=16",,,0,2,0,16,includes/modules/bares
+biblioteca,implementado_estatico,"Modo estático. Vistas=10, formularios=11, guardas_tabla=37",,,10,11,0,37,includes/modules/biblioteca
+bicicletas_compartidas,implementado_estatico,"Modo estático. Vistas=6, formularios=7, guardas_tabla=27",,,6,7,0,27,includes/modules/bicicletas-compartidas
+biodiversidad_local,implementado_con_fallbacks,"Modo estático. Vistas=5, formularios=5, fallbacks=1, guardas_tabla=5",,,5,5,1,5,includes/modules/biodiversidad-local
+campanias,implementado_con_fallbacks,"Modo estático. Vistas=8, formularios=9, fallbacks=7, guardas_tabla=12",,,8,9,7,12,includes/modules/campanias
+carpooling,implementado_con_fallbacks,"Modo estático. Vistas=12, formularios=14, fallbacks=1, guardas_tabla=15",,,12,14,1,15,includes/modules/carpooling
+chat_estados,implementado_con_fallbacks,"Modo estático. Vistas=1, formularios=0, fallbacks=1, guardas_tabla=1",,,1,0,1,1,includes/modules/chat-estados
+chat_grupos,implementado_con_fallbacks,"Modo estático. Vistas=4, formularios=4, fallbacks=1, guardas_tabla=17",,,4,4,1,17,includes/modules/chat-grupos
+chat_interno,implementado_con_fallbacks,"Modo estático. Vistas=1, formularios=1, fallbacks=1, guardas_tabla=23",,,1,1,1,23,includes/modules/chat-interno
+circulos_cuidados,implementado_estatico,"Modo estático. Vistas=3, formularios=5, guardas_tabla=6",,,3,5,0,6,includes/modules/circulos-cuidados
+clientes,implementado_estatico,"Modo estático. Vistas=1, formularios=6, guardas_tabla=6",,,1,6,0,6,includes/modules/clientes
+colectivos,implementado_con_fallbacks,"Modo estático. Vistas=9, formularios=8, fallbacks=1, guardas_tabla=16",,,9,8,1,16,includes/modules/colectivos
+compostaje,implementado_con_fallbacks,"Modo estático. Vistas=10, formularios=7, fallbacks=2, guardas_tabla=16",,,10,7,2,16,includes/modules/compostaje
+comunidades,implementado_con_fallbacks,"Modo estático. Vistas=19, formularios=18, fallbacks=7, guardas_tabla=45",,,19,18,7,45,includes/modules/comunidades
+contabilidad,sospecha_sin_vistas,"Modo estático. Sin vistas/templates detectadas. formularios=4, guardas_tabla=9",,,0,4,0,9,includes/modules/contabilidad
+crowdfunding,implementado_estatico,"Modo estático. Vistas=2, formularios=1, guardas_tabla=3",,,2,1,0,3,includes/modules/crowdfunding
+cursos,implementado_con_fallbacks,"Modo estático. Vistas=11, formularios=6, fallbacks=1, guardas_tabla=34",,,11,6,1,34,includes/modules/cursos
+dex_solana,implementado_con_fallbacks,"Modo estático. Vistas=0, formularios=1, fallbacks=4, guardas_tabla=5",,,0,1,4,5,includes/modules/dex-solana
+documentacion_legal,implementado_estatico,"Modo estático. Vistas=7, formularios=6, guardas_tabla=9",,,7,6,0,9,includes/modules/documentacion-legal
+economia_don,implementado_con_fallbacks,"Modo estático. Vistas=5, formularios=3, fallbacks=3, guardas_tabla=6",,,5,3,3,6,includes/modules/economia-don
+economia_suficiencia,implementado_estatico,"Modo estático. Vistas=5, formularios=11, guardas_tabla=3",,,5,11,0,3,includes/modules/economia-suficiencia
+email_marketing,implementado_con_fallbacks,"Modo estático. Vistas=11, formularios=17, fallbacks=11, guardas_tabla=12",,,11,17,11,12,includes/modules/email-marketing
+empresarial,implementado_estatico,"Modo estático. Vistas=8, formularios=8, guardas_tabla=3",,,8,8,0,3,includes/modules/empresarial
+encuestas,implementado_estatico,"Modo estático. Vistas=3, formularios=7, guardas_tabla=8",,,3,7,0,8,includes/modules/encuestas
+energia_comunitaria,implementado_estatico,"Modo estático. Vistas=6, formularios=9, guardas_tabla=46",,,6,9,0,46,includes/modules/energia-comunitaria
+espacios_comunes,implementado_con_fallbacks,"Modo estático. Vistas=16, formularios=9, fallbacks=3, guardas_tabla=16",,,16,9,3,16,includes/modules/espacios-comunes
+eventos,implementado_estatico,"Modo estático. Vistas=13, formularios=6, guardas_tabla=27",,,13,6,0,27,includes/modules/eventos
+facturas,implementado_con_fallbacks,"Modo estático. Vistas=0, formularios=8, fallbacks=1, guardas_tabla=6",,,0,8,1,6,includes/modules/facturas
+fichaje_empleados,implementado_estatico,"Modo estático. Vistas=3, formularios=6, guardas_tabla=4",,,3,6,0,4,includes/modules/fichaje-empleados
+foros,implementado_con_fallbacks,"Modo estático. Vistas=4, formularios=8, fallbacks=2, guardas_tabla=45",,,4,8,2,45,includes/modules/foros
+grupos_consumo,implementado_con_fallbacks,"Modo estático. Vistas=33, formularios=25, fallbacks=6, guardas_tabla=45",,,33,25,6,45,includes/modules/grupos-consumo
+huella_ecologica,implementado_estatico,"Modo estático. Vistas=5, formularios=4, guardas_tabla=3",,,5,4,0,3,includes/modules/huella-ecologica
+huertos_urbanos,implementado_estatico,"Modo estático. Vistas=5, formularios=10, guardas_tabla=41",,,5,10,0,41,includes/modules/huertos-urbanos
+incidencias,implementado_con_fallbacks,"Modo estático. Vistas=16, formularios=10, fallbacks=2, guardas_tabla=15",,,16,10,2,15,includes/modules/incidencias
+justicia_restaurativa,implementado_estatico,"Modo estático. Vistas=4, formularios=4, guardas_tabla=6",,,4,4,0,6,includes/modules/justicia-restaurativa
+kulturaka,implementado_estatico,"Modo estático. Vistas=5, formularios=2, guardas_tabla=12",,,5,2,0,12,includes/modules/kulturaka
+mapa_actores,implementado_estatico,"Modo estático. Vistas=7, formularios=8, guardas_tabla=5",,,7,8,0,5,includes/modules/mapa-actores
+marketplace,implementado_con_fallbacks,"Modo estático. Vistas=6, formularios=9, fallbacks=4, guardas_tabla=14",,,6,9,4,14,includes/modules/marketplace
+multimedia,implementado_estatico,"Modo estático. Vistas=7, formularios=10, guardas_tabla=20",,,7,10,0,20,includes/modules/multimedia
+parkings,implementado_con_fallbacks,"Modo estático. Vistas=12, formularios=9, fallbacks=1, guardas_tabla=16",,,12,9,1,16,includes/modules/parkings
+participacion,implementado_con_fallbacks,"Modo estático. Vistas=6, formularios=11, fallbacks=1, guardas_tabla=30",,,6,11,1,30,includes/modules/participacion
+podcast,implementado_con_fallbacks,"Modo estático. Vistas=12, formularios=10, fallbacks=2, guardas_tabla=15",,,12,10,2,15,includes/modules/podcast
+presupuestos_participativos,implementado_estatico,"Modo estático. Vistas=9, formularios=9, guardas_tabla=14",,,9,9,0,14,includes/modules/presupuestos-participativos
+radio,implementado_estatico,"Modo estático. Vistas=7, formularios=13, guardas_tabla=60",,,7,13,0,60,includes/modules/radio
+recetas,implementado_con_fallbacks,"Modo estático. Vistas=1, formularios=2, fallbacks=2, guardas_tabla=7",,,1,2,2,7,includes/modules/recetas
+reciclaje,implementado_estatico,"Modo estático. Vistas=14, formularios=9, guardas_tabla=26",,,14,9,0,26,includes/modules/reciclaje
+red_social,implementado_con_fallbacks,"Modo estático. Vistas=10, formularios=11, fallbacks=11, guardas_tabla=25",,,10,11,11,25,includes/modules/red-social
+reservas,implementado_estatico,"Modo estático. Vistas=5, formularios=12, guardas_tabla=26",,,5,12,0,26,includes/modules/reservas
+saberes_ancestrales,implementado_estatico,"Modo estático. Vistas=3, formularios=4, guardas_tabla=7",,,3,4,0,7,includes/modules/saberes-ancestrales
+seguimiento_denuncias,implementado_estatico,"Modo estático. Vistas=7, formularios=7, guardas_tabla=3",,,7,7,0,3,includes/modules/seguimiento-denuncias
+sello_conciencia,implementado_estatico,"Modo estático. Vistas=2, formularios=2, guardas_tabla=0",,,2,2,0,0,includes/modules/sello-conciencia
+socios,implementado_estatico,"Modo estático. Vistas=8, formularios=14, guardas_tabla=28",,,8,14,0,28,includes/modules/socios
+talleres,implementado_con_fallbacks,"Modo estático. Vistas=11, formularios=11, fallbacks=1, guardas_tabla=19",,,11,11,1,19,includes/modules/talleres
+themacle,sospecha_sin_vistas,"Modo estático. Sin vistas/templates detectadas. formularios=1, guardas_tabla=0",,,0,1,0,0,includes/modules/themacle
+trabajo_digno,implementado_con_fallbacks,"Modo estático. Vistas=5, formularios=5, fallbacks=1, guardas_tabla=8",,,5,5,1,8,includes/modules/trabajo-digno
+trading_ia,sospecha_sin_vistas,"Modo estático. Sin vistas/templates detectadas. formularios=3, guardas_tabla=5",,,0,3,0,5,includes/modules/trading-ia
+tramites,implementado_con_fallbacks,"Modo estático. Vistas=12, formularios=16, fallbacks=2, guardas_tabla=38",,,12,16,2,38,includes/modules/tramites
+transparencia,implementado_con_fallbacks,"Modo estático. Vistas=10, formularios=9, fallbacks=1, guardas_tabla=38",,,10,9,1,38,includes/modules/transparencia
+woocommerce,implementado_con_fallbacks,"Modo estático. Vistas=3, formularios=2, fallbacks=1, guardas_tabla=0",,,3,2,1,0,includes/modules/woocommerce

@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
         </div>
     <?php else: ?>
         <?php
-        $alumno = get_userdata($certificado->alumno_id);
+        $alumno = get_userdata($certificado->usuario_id);
         ?>
         <div class="certificado-valido" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow: hidden;">
             <div class="certificado-header" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 2rem; text-align: center; color: #fff;">

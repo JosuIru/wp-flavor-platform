@@ -437,7 +437,7 @@ class Flavor_Pages_Admin_V2 {
 
         $result = Flavor_Page_Creator_V2::create_or_update_pages();
 
-        wp_redirect(add_query_arg([
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg([
             'page' => 'flavor-create-pages',
             'created_v2' => count($result['created']),
             'updated_v2' => count($result['updated']),
@@ -457,7 +457,7 @@ class Flavor_Pages_Admin_V2 {
 
         $result = Flavor_Page_Migrator::migrate_all_pages();
 
-        wp_redirect(add_query_arg([
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg([
             'page' => 'flavor-create-pages',
             'migrated' => count($result['migrated']),
             'skipped' => count($result['skipped']),

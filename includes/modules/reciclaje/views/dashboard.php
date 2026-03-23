@@ -110,48 +110,6 @@ if ($tabla_puntos_existe && $tabla_contenedores_existe) {
     ");
 }
 
-// Datos demo si no hay datos reales
-$usando_demo = $total_puntos_reciclaje == 0 && $total_depositos_mes == 0;
-
-if ($usando_demo) {
-    $total_puntos_reciclaje = 8;
-    $total_depositos_mes = 234;
-    $total_kg_mes = 1850.5;
-    $contenedores_llenos = 3;
-
-    $stats_materiales = [
-        (object) ['tipo_material' => 'plastico', 'total_depositos' => 89, 'total_kg' => 520.5],
-        (object) ['tipo_material' => 'papel', 'total_depositos' => 67, 'total_kg' => 480.2],
-        (object) ['tipo_material' => 'vidrio', 'total_depositos' => 45, 'total_kg' => 380.0],
-        (object) ['tipo_material' => 'organico', 'total_depositos' => 33, 'total_kg' => 320.8],
-        (object) ['tipo_material' => 'electronico', 'total_depositos' => 15, 'total_kg' => 89.0],
-        (object) ['tipo_material' => 'pilas', 'total_depositos' => 8, 'total_kg' => 12.5],
-    ];
-
-    $usuarios_activos = [
-        (object) ['ID' => 1, 'display_name' => 'María García', 'total_depositos' => 28, 'total_kg' => 145.2, 'total_puntos' => 1450],
-        (object) ['ID' => 2, 'display_name' => 'Carlos López', 'total_depositos' => 22, 'total_kg' => 118.7, 'total_puntos' => 1187],
-        (object) ['ID' => 3, 'display_name' => 'Ana Martínez', 'total_depositos' => 19, 'total_kg' => 98.4, 'total_puntos' => 984],
-        (object) ['ID' => 4, 'display_name' => 'Pedro Sánchez', 'total_depositos' => 15, 'total_kg' => 87.2, 'total_puntos' => 872],
-        (object) ['ID' => 5, 'display_name' => 'Laura Fernández', 'total_depositos' => 12, 'total_kg' => 72.5, 'total_puntos' => 725],
-    ];
-
-    $evolucion_mensual = [
-        (object) ['mes' => date('Y-m', strtotime('-5 months')), 'total_kg' => 1420.5, 'total_depositos' => 178],
-        (object) ['mes' => date('Y-m', strtotime('-4 months')), 'total_kg' => 1580.2, 'total_depositos' => 195],
-        (object) ['mes' => date('Y-m', strtotime('-3 months')), 'total_kg' => 1690.8, 'total_depositos' => 208],
-        (object) ['mes' => date('Y-m', strtotime('-2 months')), 'total_kg' => 1780.4, 'total_depositos' => 218],
-        (object) ['mes' => date('Y-m', strtotime('-1 month')), 'total_kg' => 1820.6, 'total_depositos' => 225],
-        (object) ['mes' => date('Y-m'), 'total_kg' => $total_kg_mes, 'total_depositos' => $total_depositos_mes],
-    ];
-
-    $puntos_atencion = [
-        (object) ['id' => 1, 'nombre' => 'Punto Plaza Central', 'estado' => 'lleno', 'contenedores_problema' => 2],
-        (object) ['id' => 2, 'nombre' => 'Punto Calle Mayor', 'estado' => 'mantenimiento', 'contenedores_problema' => 0],
-        (object) ['id' => 3, 'nombre' => 'Punto Parque Norte', 'estado' => 'activo', 'contenedores_problema' => 1],
-    ];
-}
-
 // Calcular impacto ambiental
 $co2_evitado = $total_kg_mes * 0.75;
 $arboles_equivalentes = $total_kg_mes / 17;
@@ -186,11 +144,11 @@ $materiales_colores = [
         </p>
     </div>
 
-    <?php if ($usando_demo): ?>
+    <?php if (!$tabla_puntos_existe && !$tabla_depositos_existe && !$tabla_contenedores_existe): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Se muestran datos de ejemplo. Registra puntos de reciclaje para ver datos reales.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Reciclaje o todavía no hay actividad registrada.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 

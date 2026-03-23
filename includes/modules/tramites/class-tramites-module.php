@@ -3302,7 +3302,24 @@ KNOWLEDGE;
      * Registra las páginas de administración ocultas del módulo
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
+
+        // Página principal - alias con sufijo -dashboard para Admin Shell
+        add_submenu_page(
+            null,
+            __('Dashboard Trámites', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'tramites-dashboard',
+            [$this, 'render_pagina_dashboard']
+        );
 
         // Pendientes
         add_submenu_page(

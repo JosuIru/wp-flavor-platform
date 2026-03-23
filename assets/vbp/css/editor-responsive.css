@@ -655,6 +655,169 @@
 }
 
 /* ============================================
+   Split Screen Mode
+   ============================================ */
+
+/* Botón de split-screen en toolbar */
+.vbp-split-screen-btn {
+    margin-left: 8px;
+    border-left: 1px solid var(--vbp-border-color, #e5e7eb);
+    padding-left: 16px !important;
+}
+
+.vbp-split-screen-btn.active {
+    color: var(--vbp-accent-color, #6366f1);
+    background: var(--vbp-accent-bg, rgba(99, 102, 241, 0.1));
+}
+
+/* Contenedor del modo split-screen */
+.vbp-canvas-area.vbp-split-screen-active {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+}
+
+.vbp-canvas-area.vbp-split-screen-active .vbp-canvas-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+/* Panel izquierdo (Desktop) */
+.vbp-canvas-area.vbp-split-screen-active .vbp-split-panel:first-child {
+    max-width: 60%;
+}
+
+/* Panel derecho (Mobile) */
+.vbp-canvas-area.vbp-split-screen-active .vbp-split-panel:last-child {
+    max-width: 40%;
+}
+
+/* Canvas en modo split */
+.vbp-split-panel {
+    position: relative;
+    background: var(--vbp-bg-secondary, #f9fafb);
+    border-radius: 12px;
+    overflow: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.vbp-split-panel::before {
+    content: attr(data-device);
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    padding: 8px 16px;
+    background: var(--vbp-bg-primary, #fff);
+    border-bottom: 1px solid var(--vbp-border-color, #e5e7eb);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--vbp-text-secondary, #6b7280);
+    z-index: 10;
+}
+
+/* Estilos del canvas dentro del split panel */
+.vbp-split-panel .vbp-canvas {
+    margin: 16px auto;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Dispositivo desktop en split */
+.vbp-split-panel[data-device="desktop"] .vbp-canvas {
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* Dispositivo mobile en split */
+.vbp-split-panel[data-device="mobile"] .vbp-canvas {
+    width: 375px;
+    max-width: 100%;
+}
+
+/* Sincronización visual de scroll */
+.vbp-split-panel.sync-scrolling {
+    outline: 2px solid var(--vbp-accent-color, #6366f1);
+    outline-offset: -2px;
+}
+
+/* Controles del split screen */
+.vbp-split-controls {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 20;
+}
+
+.vbp-split-control-btn {
+    padding: 8px 16px;
+    background: var(--vbp-bg-primary, #fff);
+    border: 1px solid var(--vbp-border-color, #e5e7eb);
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.vbp-split-control-btn:hover {
+    background: var(--vbp-accent-color, #6366f1);
+    color: white;
+    border-color: var(--vbp-accent-color, #6366f1);
+}
+
+/* Indicador de sincronización de scroll */
+.vbp-split-sync-indicator {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    padding: 8px 16px;
+    background: var(--vbp-bg-primary, #fff);
+    border: 1px solid var(--vbp-border-color, #e5e7eb);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--vbp-text-secondary, #6b7280);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vbp-split-sync-indicator.active {
+    color: var(--vbp-accent-color, #6366f1);
+}
+
+.vbp-split-sync-indicator svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Ocultar split-screen en pantallas pequeñas */
+@media (max-width: 1024px) {
+    .vbp-split-screen-btn {
+        display: none;
+    }
+
+    .vbp-canvas-area.vbp-split-screen-active {
+        display: block;
+    }
+}
+
+/* ============================================
    Reduced Motion
    ============================================ */
 @media (prefers-reduced-motion: reduce) {

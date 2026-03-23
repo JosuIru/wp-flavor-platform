@@ -1,0 +1,16 @@
+{
+  "name": "flavor-vbp-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server para Visual Builder Pro - Integración con Claude Code",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0"
+  },
+  "author": "Flavor Platform",
+  "license": "GPL-2.0-or-later"
+}

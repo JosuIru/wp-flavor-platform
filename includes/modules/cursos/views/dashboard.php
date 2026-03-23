@@ -29,20 +29,20 @@ $ingresos_mes = 0;
 $cursos_populares = [];
 $inscripciones_recientes = [];
 $inscripciones_por_dia = [];
-$usando_datos_ejemplo = false;
+$tablas_disponibles = ($tabla_cursos_existe && $tabla_inscripciones_existe);
 
 if ($tabla_cursos_existe && $tabla_inscripciones_existe) {
     // Obtener estadísticas
     $total_cursos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_cursos WHERE estado != 'borrador'");
     $cursos_activos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_cursos WHERE estado = 'en_curso'");
-    $total_alumnos = (int) $wpdb->get_var("SELECT COUNT(DISTINCT alumno_id) FROM $tabla_inscripciones");
-    $total_inscripciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE estado = 'activa'");
+    $total_alumnos = (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM $tabla_inscripciones");
+    $total_inscripciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE estado = 'activo'");
 
     if ($tabla_certificados_existe) {
         $certificados_emitidos = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_certificados WHERE MONTH(fecha_emision) = MONTH(CURRENT_DATE())");
     }
 
-    $ingresos_mes = (float) $wpdb->get_var("SELECT COALESCE(SUM(precio_pagado), 0) FROM $tabla_inscripciones WHERE MONTH(fecha_inscripcion) = MONTH(CURRENT_DATE())");
+    $ingresos_mes = (float) $wpdb->get_var("SELECT COALESCE(SUM(precio_pagado), 0) FROM $tabla_inscripciones WHERE MONTH(created_at) = MONTH(CURRENT_DATE())");
 
     // Cursos más populares
     $cursos_populares = $wpdb->get_results(
@@ -55,58 +55,22 @@ if ($tabla_cursos_existe && $tabla_inscripciones_existe) {
 
     // Inscripciones recientes
     $inscripciones_recientes = $wpdb->get_results(
-        "SELECT i.id, i.fecha_inscripcion, c.titulo as curso, u.display_name as alumno
+        "SELECT i.id, i.created_at as fecha_inscripcion, c.titulo as curso, u.display_name as alumno
          FROM $tabla_inscripciones i
          INNER JOIN $tabla_cursos c ON i.curso_id = c.id
-         INNER JOIN {$wpdb->users} u ON i.alumno_id = u.ID
-         ORDER BY i.fecha_inscripcion DESC
+         INNER JOIN {$wpdb->users} u ON i.usuario_id = u.ID
+         ORDER BY i.created_at DESC
          LIMIT 10"
     );
 
     // Datos para gráficos (últimos 30 días)
     $inscripciones_por_dia = $wpdb->get_results(
-        "SELECT DATE(fecha_inscripcion) as fecha, COUNT(*) as total
+        "SELECT DATE(created_at) as fecha, COUNT(*) as total
          FROM $tabla_inscripciones
-         WHERE fecha_inscripcion >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-         GROUP BY DATE(fecha_inscripcion)
+         WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+         GROUP BY DATE(created_at)
          ORDER BY fecha ASC"
     );
-}
-
-// Datos de ejemplo si no hay datos reales
-if ($total_cursos === 0) {
-    $usando_datos_ejemplo = true;
-    $total_cursos = 24;
-    $cursos_activos = 8;
-    $total_alumnos = 156;
-    $total_inscripciones = 312;
-    $certificados_emitidos = 18;
-    $ingresos_mes = 2450.00;
-
-    $cursos_populares = [
-        (object) ['id' => 1, 'titulo' => 'Introducción a la Programación', 'alumnos_inscritos' => 45, 'valoracion_media' => 4.8, 'estado' => 'en_curso'],
-        (object) ['id' => 2, 'titulo' => 'Marketing Digital Básico', 'alumnos_inscritos' => 38, 'valoracion_media' => 4.6, 'estado' => 'publicado'],
-        (object) ['id' => 3, 'titulo' => 'Fotografía para Principiantes', 'alumnos_inscritos' => 32, 'valoracion_media' => 4.9, 'estado' => 'en_curso'],
-        (object) ['id' => 4, 'titulo' => 'Gestión del Tiempo', 'alumnos_inscritos' => 28, 'valoracion_media' => 4.5, 'estado' => 'publicado'],
-        (object) ['id' => 5, 'titulo' => 'Excel Avanzado', 'alumnos_inscritos' => 25, 'valoracion_media' => 4.7, 'estado' => 'en_curso'],
-    ];
-
-    $inscripciones_recientes = [
-        (object) ['id' => 101, 'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-1 hour')), 'alumno' => 'María García', 'curso' => 'Introducción a la Programación'],
-        (object) ['id' => 100, 'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-3 hours')), 'alumno' => 'Carlos López', 'curso' => 'Marketing Digital Básico'],
-        (object) ['id' => 99, 'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-5 hours')), 'alumno' => 'Ana Martínez', 'curso' => 'Fotografía para Principiantes'],
-        (object) ['id' => 98, 'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-1 day')), 'alumno' => 'Pedro Sánchez', 'curso' => 'Gestión del Tiempo'],
-        (object) ['id' => 97, 'fecha_inscripcion' => date('Y-m-d H:i:s', strtotime('-1 day -2 hours')), 'alumno' => 'Laura Fernández', 'curso' => 'Excel Avanzado'],
-    ];
-
-    // Generar datos de ejemplo para gráfico
-    $inscripciones_por_dia = [];
-    for ($i = 29; $i >= 0; $i--) {
-        $inscripciones_por_dia[] = (object) [
-            'fecha' => date('Y-m-d', strtotime("-$i days")),
-            'total' => rand(2, 12)
-        ];
-    }
 }
 
 // Mapeo de estados a badges
@@ -125,14 +89,18 @@ $estado_badge_classes = [
     }
     ?>
 
+    <?php if (!$tablas_disponibles): ?>
+        <div class="dm-alert dm-alert--info">
+            <span class="dashicons dashicons-info"></span>
+            <p><?php esc_html_e('Faltan tablas del módulo Cursos o aún no hay inscripciones registradas.', 'flavor-chat-ia'); ?></p>
+        </div>
+    <?php endif; ?>
+
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-welcome-learn-more"></span>
             <h1><?php esc_html_e('Dashboard - Cursos y Formación', 'flavor-chat-ia'); ?></h1>
         </div>
-        <?php if ($usando_datos_ejemplo): ?>
-            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
-        <?php endif; ?>
     </div>
 
     <!-- Accesos Rápidos -->

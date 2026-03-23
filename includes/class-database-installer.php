@@ -5499,7 +5499,7 @@ class Flavor_Database_Installer {
             'slug' => sanitize_title($site_name),
             'descripcion' => get_bloginfo('description'),
             'site_url' => $site_url,
-            'api_url' => rest_url('flavor-integration/v1/'),
+            'api_url' => self::build_flavor_integration_api_url(),
             'logo_url' => get_site_icon_url(),
             'es_nodo_local' => 1,
             'activo' => 1
@@ -5862,17 +5862,8 @@ class Flavor_Database_Installer {
             return;
         }
 
-        // Crear nodo local - ahora es seguro usar rest_url() porque estamos en 'init' o después
         $site_name = get_bloginfo('name') ?: 'Mi Comunidad';
-
-        // Construir API URL de forma segura
-        if (function_exists('rest_url')) {
-            $api_url = rest_url('flavor-integration/v1/');
-        } else {
-            // Fallback manual si rest_url no está disponible
-            $rest_prefix = defined('REST_API_VERSION') ? rest_get_url_prefix() : 'wp-json';
-            $api_url = trailingslashit(home_url()) . trailingslashit($rest_prefix) . 'flavor-integration/v1/';
-        }
+        $api_url = self::build_flavor_integration_api_url();
 
         $wpdb->insert("{$prefix}network_nodes", [
             'nombre' => $site_name,
@@ -5884,6 +5875,28 @@ class Flavor_Database_Installer {
             'es_nodo_local' => 1,
             'activo' => 1
         ]);
+    }
+
+    /**
+     * Construye la URL del endpoint de integración evitando fatales cuando
+     * WordPress aún no ha inicializado completamente rewrite/rest.
+     *
+     * @return string
+     */
+    private static function build_flavor_integration_api_url() {
+        $route = 'flavor-integration/v1/';
+
+        // rest_url puede fallar en contexto temprano (plugins_loaded) si $wp_rewrite es null.
+        if (function_exists('rest_url')) {
+            global $wp_rewrite;
+            if (did_action('init') || ($wp_rewrite instanceof WP_Rewrite)) {
+                return rest_url($route);
+            }
+        }
+
+        // Fallback manual seguro.
+        $rest_prefix = function_exists('rest_get_url_prefix') ? rest_get_url_prefix() : 'wp-json';
+        return trailingslashit(home_url()) . trailingslashit($rest_prefix) . $route;
     }
 
     /**

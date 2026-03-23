@@ -182,6 +182,45 @@ class Flavor_VBP_AI_Content {
                 'permission_callback' => array( $this, 'check_permission' ),
             )
         );
+
+        // Generar página completa con IA
+        register_rest_route(
+            $namespace,
+            '/ai/generate-page',
+            array(
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => array( $this, 'generate_full_page' ),
+                'permission_callback' => array( $this, 'check_permission' ),
+                'args'                => array(
+                    'page_type' => array(
+                        'required'          => true,
+                        'type'              => 'string',
+                        'sanitize_callback' => 'sanitize_text_field',
+                    ),
+                    'sections'  => array(
+                        'required'          => false,
+                        'type'              => 'array',
+                        'default'           => array(),
+                    ),
+                    'context'   => array(
+                        'required'          => false,
+                        'type'              => 'object',
+                        'default'           => array(),
+                    ),
+                ),
+            )
+        );
+
+        // Obtener tipos de página disponibles
+        register_rest_route(
+            $namespace,
+            '/ai/page-types',
+            array(
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => array( $this, 'get_page_types' ),
+                'permission_callback' => array( $this, 'check_permission' ),
+            )
+        );
     }
 
     /**
@@ -525,6 +564,108 @@ class Flavor_VBP_AI_Content {
         }
 
         return $status;
+    }
+
+    /**
+     * Genera una página completa con IA
+     *
+     * @param WP_REST_Request $request Petición REST.
+     * @return WP_REST_Response|WP_Error
+     */
+    public function generate_full_page( $request ) {
+        $page_type = $request->get_param( 'page_type' );
+        $sections = $request->get_param( 'sections' ) ?: array();
+        $context = $request->get_param( 'context' ) ?: array();
+
+        // Validar tipo de página
+        $valid_page_types = array_keys( $this->prompts->get_page_types() );
+        if ( ! in_array( $page_type, $valid_page_types, true ) ) {
+            return new WP_Error(
+                'invalid_page_type',
+                __( 'Tipo de página no válido', 'flavor-chat-ia' ),
+                array( 'status' => 400 )
+            );
+        }
+
+        // Si no se especifican secciones, usar las predeterminadas del tipo
+        if ( empty( $sections ) ) {
+            $sections = $this->prompts->get_default_sections_for_page_type( $page_type );
+        }
+
+        // Obtener prompt para página completa
+        $prompt = $this->prompts->get_full_page_prompt( $page_type, $sections, $context );
+
+        // Enviar a la IA
+        $response = $this->send_to_ai( $prompt );
+
+        if ( is_wp_error( $response ) ) {
+            return $response;
+        }
+
+        // Procesar respuesta como estructura de bloques VBP
+        $page_structure = $this->process_page_response( $response );
+
+        if ( is_wp_error( $page_structure ) ) {
+            return $page_structure;
+        }
+
+        return new WP_REST_Response(
+            array(
+                'success'   => true,
+                'page_type' => $page_type,
+                'sections'  => $sections,
+                'content'   => $page_structure,
+            ),
+            200
+        );
+    }
+
+    /**
+     * Procesa la respuesta de IA para páginas completas
+     *
+     * @param string $response Respuesta de la IA.
+     * @return array|WP_Error
+     */
+    private function process_page_response( $response ) {
+        $response = trim( $response );
+
+        // Intentar extraer JSON de la respuesta
+        $json_match = array();
+        if ( preg_match( '/\{[\s\S]*\}/', $response, $json_match ) ) {
+            $decoded = json_decode( $json_match[0], true );
+            if ( json_last_error() === JSON_ERROR_NONE ) {
+                return $decoded;
+            }
+        }
+
+        // Si no hay JSON válido, intentar parsear como array
+        if ( preg_match( '/\[[\s\S]*\]/', $response, $json_match ) ) {
+            $decoded = json_decode( $json_match[0], true );
+            if ( json_last_error() === JSON_ERROR_NONE ) {
+                return array( 'blocks' => $decoded );
+            }
+        }
+
+        return new WP_Error(
+            'parse_error',
+            __( 'Error al procesar la respuesta de IA', 'flavor-chat-ia' ),
+            array( 'status' => 500 )
+        );
+    }
+
+    /**
+     * Obtiene los tipos de página disponibles
+     *
+     * @return WP_REST_Response
+     */
+    public function get_page_types() {
+        return new WP_REST_Response(
+            array(
+                'page_types'    => $this->prompts->get_page_types(),
+                'section_types' => $this->prompts->get_section_types(),
+            ),
+            200
+        );
     }
 }
 

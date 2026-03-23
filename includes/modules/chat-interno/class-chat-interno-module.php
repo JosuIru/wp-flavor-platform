@@ -101,6 +101,7 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
     public function init() {
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'register_shortcodes']);
+        $this->cargar_frontend_controller();
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
         // AJAX handlers
@@ -143,6 +144,27 @@ class Flavor_Chat_Chat_Interno_Module extends Flavor_Chat_Module_Base {
         $this->registrar_en_panel_unificado();
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
+    }
+
+    /**
+     * Carga el frontend controller para exponer shortcodes canónicos.
+     *
+     * @return void
+     */
+    private function cargar_frontend_controller() {
+        if (class_exists('Flavor_Chat_Interno_Frontend_Controller')) {
+            Flavor_Chat_Interno_Frontend_Controller::get_instance();
+            return;
+        }
+
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-chat-interno-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+
+            if (class_exists('Flavor_Chat_Interno_Frontend_Controller')) {
+                Flavor_Chat_Interno_Frontend_Controller::get_instance();
+            }
+        }
     }
 
     /**

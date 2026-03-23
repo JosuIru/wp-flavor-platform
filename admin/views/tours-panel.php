@@ -31,6 +31,11 @@ $tours_categorias = [
         'descripcion' => __('Configura la apariencia y comportamiento', 'flavor-chat-ia'),
         'tours' => ['tour_diseno', 'tour_landing'],
     ],
+    'emprendimiento' => [
+        'titulo' => __('Emprendimiento y Tejido Empresarial', 'flavor-chat-ia'),
+        'descripcion' => __('Herramientas para crear y gestionar el ecosistema empresarial local', 'flavor-chat-ia'),
+        'tours' => ['tour_tejido_empresarial'],
+    ],
     'avanzados' => [
         'titulo' => __('Funciones Avanzadas', 'flavor-chat-ia'),
         'descripcion' => __('Características avanzadas y red distribuida', 'flavor-chat-ia'),

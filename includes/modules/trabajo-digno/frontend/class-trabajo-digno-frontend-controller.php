@@ -31,14 +31,21 @@ class Flavor_Trabajo_Digno_Frontend_Controller {
 
     private function init_hooks() {
         // Shortcodes
-        add_shortcode('flavor_trabajo_ofertas', [$this, 'shortcode_ofertas']);
-        add_shortcode('flavor_trabajo_oferta', [$this, 'shortcode_oferta']);
-        add_shortcode('flavor_trabajo_publicar', [$this, 'shortcode_publicar']);
-        add_shortcode('flavor_trabajo_mis_ofertas', [$this, 'shortcode_mis_ofertas']);
-        add_shortcode('flavor_trabajo_mis_candidaturas', [$this, 'shortcode_mis_candidaturas']);
-        add_shortcode('flavor_trabajo_cooperativas', [$this, 'shortcode_cooperativas']);
-        add_shortcode('flavor_trabajo_formacion', [$this, 'shortcode_formacion']);
-        add_shortcode('flavor_trabajo_estadisticas', [$this, 'shortcode_estadisticas']);
+        $shortcodes = [
+            'flavor_trabajo_ofertas' => 'shortcode_ofertas',
+            'flavor_trabajo_oferta' => 'shortcode_oferta',
+            'flavor_trabajo_publicar' => 'shortcode_publicar',
+            'flavor_trabajo_mis_ofertas' => 'shortcode_mis_ofertas',
+            'flavor_trabajo_mis_candidaturas' => 'shortcode_mis_candidaturas',
+            'flavor_trabajo_cooperativas' => 'shortcode_cooperativas',
+            'flavor_trabajo_formacion' => 'shortcode_formacion',
+            'flavor_trabajo_estadisticas' => 'shortcode_estadisticas',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_trabajo_publicar', [$this, 'ajax_publicar_oferta']);

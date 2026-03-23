@@ -329,12 +329,12 @@ class Flavor_Marketplace_API {
             'post_author' => $usuario_id,
         ];
 
-        $post_id = wp_insert_post($post_data);
+        $post_id = wp_insert_post($post_data, true);
 
-        if (is_wp_error($post_id)) {
+        if (is_wp_error($post_id) || empty($post_id)) {
             return new WP_Error(
                 'error_crear',
-                'Error al crear el anuncio',
+                is_wp_error($post_id) ? $post_id->get_error_message() : 'Error al crear el anuncio',
                 ['status' => 500]
             );
         }
@@ -707,6 +707,15 @@ class Flavor_Marketplace_API {
 
         update_post_meta($post_id, '_marketplace_vendido', true);
         update_post_meta($post_id, '_marketplace_fecha_venta', current_time('mysql'));
+
+        $precio_venta = (float) get_post_meta($post_id, '_marketplace_precio', true);
+        do_action('flavor_marketplace_anuncio_vendido', $post_id, [
+            'origen' => 'marketplace_api',
+            'vendedor_id' => (int) $usuario_id,
+            'precio' => $precio_venta,
+            'titulo' => (string) $post->post_title,
+            'fecha_venta' => current_time('mysql'),
+        ]);
 
         return new WP_REST_Response([
             'success' => true,

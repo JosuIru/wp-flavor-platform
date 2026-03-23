@@ -43,15 +43,24 @@ class Flavor_Cursos_Frontend_Controller {
         // Registrar assets
         add_action('wp_enqueue_scripts', [$this, 'registrar_assets']);
 
-        // Registrar shortcodes avanzados
-        add_shortcode('cursos_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('cursos_mis_inscripciones', [$this, 'shortcode_mis_inscripciones']);
-        add_shortcode('cursos_mis_cursos', [$this, 'shortcode_mis_inscripciones']); // Alias para compatibilidad
-        add_shortcode('cursos_calendario', [$this, 'shortcode_calendario']);
-        add_shortcode('cursos_destacados', [$this, 'shortcode_destacados']);
-        add_shortcode('cursos_busqueda', [$this, 'shortcode_busqueda']);
-        add_shortcode('cursos_aula', [$this, 'shortcode_aula']);
-        add_shortcode('cursos_mi_progreso', [$this, 'shortcode_mi_progreso']);
+        // Registrar shortcodes avanzados sin sobrescribir otros handlers.
+        $shortcodes = [
+            'cursos_catalogo' => 'shortcode_catalogo',
+            'cursos_mis_inscripciones' => 'shortcode_mis_inscripciones',
+            'cursos_mis_cursos' => 'shortcode_mis_inscripciones', // Alias para compatibilidad
+            'cursos_calendario' => 'shortcode_calendario',
+            'cursos_destacados' => 'shortcode_destacados',
+            'cursos_busqueda' => 'shortcode_busqueda',
+            'cursos_aula' => 'shortcode_aula',
+            'cursos_mi_progreso' => 'shortcode_mi_progreso',
+            'cursos_proximos' => 'shortcode_proximos',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_cursos_inscribirse', [$this, 'ajax_inscribirse']);
@@ -156,7 +165,7 @@ class Flavor_Cursos_Frontend_Controller {
         }
 
         return (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$tabla} WHERE alumno_id = %d AND estado IN ('confirmada', 'en_curso')",
+            "SELECT COUNT(*) FROM {$tabla} WHERE usuario_id = %d AND estado IN ('confirmada', 'en_curso')",
             get_current_user_id()
         ));
     }
@@ -181,6 +190,13 @@ class Flavor_Cursos_Frontend_Controller {
             'columnas' => 3,
             'limite' => 12,
             'mostrar_filtros' => 'si',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'fecha_inicio',
+            'order' => 'ASC',
         ], $atts);
 
         ob_start();
@@ -192,14 +208,38 @@ class Flavor_Cursos_Frontend_Controller {
      * Renderizar catálogo
      */
     private function render_catalogo($atts) {
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $visual_class_string = implode(' ', $visual_classes);
+
+        // Mapeo de orderby para cursos
+        $orderby_map = [
+            'fecha_inicio' => ['meta_key' => '_curso_fecha_inicio', 'orderby' => 'meta_value', 'type' => 'DATE'],
+            'title' => ['orderby' => 'title'],
+            'date' => ['orderby' => 'date'],
+            'precio' => ['meta_key' => '_curso_precio', 'orderby' => 'meta_value_num'],
+        ];
+        $orderby_config = $orderby_map[$atts['orderby']] ?? $orderby_map['fecha_inicio'];
+        $order = strtoupper($atts['order']) === 'DESC' ? 'DESC' : 'ASC';
+
         // Obtener cursos
         $args = [
             'post_type' => 'curso',
             'post_status' => 'publish',
             'posts_per_page' => intval($atts['limite']),
-            'meta_key' => '_curso_fecha_inicio',
-            'orderby' => 'meta_value',
-            'order' => 'ASC',
+            'order' => $order,
             'meta_query' => [
                 [
                     'key' => '_curso_fecha_inicio',
@@ -209,6 +249,12 @@ class Flavor_Cursos_Frontend_Controller {
                 ],
             ],
         ];
+
+        // Aplicar orderby config
+        if (isset($orderby_config['meta_key'])) {
+            $args['meta_key'] = $orderby_config['meta_key'];
+        }
+        $args['orderby'] = $orderby_config['orderby'] ?? 'date';
 
         if (!empty($atts['categoria'])) {
             $args['tax_query'] = [[
@@ -239,7 +285,7 @@ class Flavor_Cursos_Frontend_Controller {
             'hibrido' => __('Híbrido', 'flavor-chat-ia'),
         ];
         ?>
-        <div class="cursos-catalogo" data-columnas="<?php echo esc_attr($atts['columnas']); ?>">
+        <div class="cursos-catalogo <?php echo esc_attr($visual_class_string); ?>" data-columnas="<?php echo esc_attr($atts['columnas']); ?>">
             <?php if ($atts['mostrar_filtros'] === 'si'): ?>
                 <div class="cursos-filtros">
                     <div class="filtro-buscar">
@@ -467,6 +513,156 @@ class Flavor_Cursos_Frontend_Controller {
     }
 
     /**
+     * Shortcode: Próximos cursos
+     * Uso: [cursos_proximos limit="3" columnas="3" mostrar_fechas="si"]
+     */
+    public function shortcode_proximos($atts) {
+        $this->encolar_assets();
+
+        $atributos = shortcode_atts([
+            'limit' => 6,
+            'columnas' => 3,
+            'mostrar_fechas' => 'si',
+            'categoria' => '',
+            'modalidad' => '',
+        ], $atts);
+
+        global $wpdb;
+        $tabla_cursos = $wpdb->prefix . 'flavor_cursos';
+        $fecha_actual = current_time('Y-m-d');
+
+        // Construir query
+        $where_clauses = ["estado = 'activo'", "fecha_inicio >= %s"];
+        $parametros_query = [$fecha_actual];
+
+        if (!empty($atributos['categoria'])) {
+            $where_clauses[] = "categoria = %s";
+            $parametros_query[] = sanitize_text_field($atributos['categoria']);
+        }
+
+        if (!empty($atributos['modalidad'])) {
+            $where_clauses[] = "modalidad = %s";
+            $parametros_query[] = sanitize_text_field($atributos['modalidad']);
+        }
+
+        $where_sql = implode(' AND ', $where_clauses);
+        $limite_cursos = intval($atributos['limit']);
+
+        $cursos_proximos = [];
+        if ($this->tabla_existe($tabla_cursos)) {
+            $cursos_proximos = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM {$tabla_cursos}
+                 WHERE {$where_sql}
+                 ORDER BY fecha_inicio ASC
+                 LIMIT %d",
+                array_merge($parametros_query, [$limite_cursos])
+            ));
+        }
+
+        ob_start();
+        ?>
+        <div class="cursos-proximos" data-columnas="<?php echo esc_attr($atributos['columnas']); ?>">
+            <?php if (empty($cursos_proximos)): ?>
+                <div class="cursos-vacio">
+                    <span class="dashicons dashicons-calendar-alt"></span>
+                    <p><?php _e('No hay cursos próximos programados.', 'flavor-chat-ia'); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="cursos-proximos-grid" style="display: grid; grid-template-columns: repeat(<?php echo intval($atributos['columnas']); ?>, 1fr); gap: 1.5rem;">
+                    <?php foreach ($cursos_proximos as $curso):
+                        $dias_restantes = (strtotime($curso->fecha_inicio) - strtotime($fecha_actual)) / 86400;
+                        $modalidades_label = [
+                            'presencial' => __('Presencial', 'flavor-chat-ia'),
+                            'online' => __('Online', 'flavor-chat-ia'),
+                            'hibrido' => __('Híbrido', 'flavor-chat-ia'),
+                        ];
+                    ?>
+                        <div class="curso-proximo-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                            <?php if ($curso->imagen_url): ?>
+                                <div class="curso-proximo-imagen" style="height: 140px; overflow: hidden;">
+                                    <img src="<?php echo esc_url($curso->imagen_url); ?>" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="curso-proximo-contenido" style="padding: 1rem;">
+                                <?php if ($atributos['mostrar_fechas'] === 'si'): ?>
+                                    <div class="curso-proximo-fecha" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #6366f1; font-size: 0.875rem; font-weight: 500;">
+                                        <span class="dashicons dashicons-calendar-alt" style="font-size: 16px; width: 16px; height: 16px;"></span>
+                                        <?php echo date_i18n('j M Y', strtotime($curso->fecha_inicio)); ?>
+                                        <?php if ($dias_restantes <= 7 && $dias_restantes >= 0): ?>
+                                            <span style="background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem;">
+                                                <?php
+                                                if ($dias_restantes < 1) {
+                                                    _e('¡Hoy!', 'flavor-chat-ia');
+                                                } elseif ($dias_restantes < 2) {
+                                                    _e('¡Mañana!', 'flavor-chat-ia');
+                                                } else {
+                                                    printf(__('En %d días', 'flavor-chat-ia'), ceil($dias_restantes));
+                                                }
+                                                ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <h4 class="curso-proximo-titulo" style="margin: 0 0 0.5rem; font-size: 1rem; font-weight: 600; color: #1f2937;">
+                                    <a href="<?php echo esc_url(home_url('/mi-portal/cursos/?curso_id=' . $curso->id)); ?>" style="color: inherit; text-decoration: none;">
+                                        <?php echo esc_html($curso->titulo); ?>
+                                    </a>
+                                </h4>
+
+                                <?php if ($curso->instructor): ?>
+                                    <p class="curso-proximo-instructor" style="margin: 0 0 0.75rem; font-size: 0.875rem; color: #6b7280;">
+                                        <?php printf(__('Por %s', 'flavor-chat-ia'), esc_html($curso->instructor)); ?>
+                                    </p>
+                                <?php endif; ?>
+
+                                <div class="curso-proximo-meta" style="display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem;">
+                                    <?php if ($curso->modalidad): ?>
+                                        <span style="background: #e0e7ff; color: #4338ca; padding: 2px 8px; border-radius: 9999px;">
+                                            <?php echo esc_html($modalidades_label[$curso->modalidad] ?? $curso->modalidad); ?>
+                                        </span>
+                                    <?php endif; ?>
+
+                                    <?php if ($curso->duracion_horas): ?>
+                                        <span style="background: #f3f4f6; color: #4b5563; padding: 2px 8px; border-radius: 9999px;">
+                                            <?php printf(__('%dh', 'flavor-chat-ia'), $curso->duracion_horas); ?>
+                                        </span>
+                                    <?php endif; ?>
+
+                                    <?php if ($curso->max_alumnos > 0):
+                                        $plazas_disponibles = $curso->max_alumnos - ($curso->alumnos_inscritos ?? 0);
+                                    ?>
+                                        <span style="background: <?php echo $plazas_disponibles <= 5 ? '#fef2f2' : '#f0fdf4'; ?>; color: <?php echo $plazas_disponibles <= 5 ? '#dc2626' : '#16a34a'; ?>; padding: 2px 8px; border-radius: 9999px;">
+                                            <?php printf(__('%d plazas', 'flavor-chat-ia'), $plazas_disponibles); ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <div class="curso-proximo-footer" style="padding: 0.75rem 1rem; border-top: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center;">
+                                <span class="curso-proximo-precio" style="font-weight: 600; color: #1f2937;">
+                                    <?php if ($curso->es_gratuito || floatval($curso->precio ?? 0) == 0): ?>
+                                        <span style="color: #16a34a;"><?php _e('Gratis', 'flavor-chat-ia'); ?></span>
+                                    <?php else: ?>
+                                        <?php echo number_format($curso->precio, 2, ',', '.'); ?>€
+                                    <?php endif; ?>
+                                </span>
+                                <a href="<?php echo esc_url(home_url('/mi-portal/cursos/?curso_id=' . $curso->id)); ?>"
+                                   style="background: #6366f1; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.875rem; text-decoration: none;">
+                                    <?php _e('Ver curso', 'flavor-chat-ia'); ?>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
      * Shortcode: Cursos destacados
      */
     public function shortcode_destacados($atts) {
@@ -679,8 +875,8 @@ class Flavor_Cursos_Frontend_Controller {
                 "SELECT i.*, c.post_title as curso_titulo
                  FROM {$tabla} i
                  LEFT JOIN {$wpdb->posts} c ON i.curso_id = c.ID
-                 WHERE i.alumno_id = %d
-                 ORDER BY i.fecha_inscripcion DESC",
+                 WHERE i.usuario_id = %d
+                 ORDER BY i.created_at DESC",
                 $usuario_id
             ));
         }
@@ -803,7 +999,7 @@ class Flavor_Cursos_Frontend_Controller {
 
         // Verificar si ya está inscrito
         $existente = $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM {$tabla} WHERE alumno_id = %d AND curso_id = %d AND estado != 'cancelada'",
+            "SELECT id FROM {$tabla} WHERE usuario_id = %d AND curso_id = %d AND estado != 'cancelada'",
             get_current_user_id(),
             $curso_id
         ));
@@ -814,9 +1010,9 @@ class Flavor_Cursos_Frontend_Controller {
 
         // Crear inscripción
         $resultado = $wpdb->insert($tabla, [
-            'alumno_id' => get_current_user_id(),
+            'usuario_id' => get_current_user_id(),
             'curso_id' => $curso_id,
-            'fecha_inscripcion' => current_time('mysql'),
+            'created_at' => current_time('mysql'),
             'estado' => 'confirmada',
         ]);
 
@@ -847,7 +1043,7 @@ class Flavor_Cursos_Frontend_Controller {
 
         // Obtener inscripción
         $inscripcion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$tabla} WHERE id = %d AND alumno_id = %d",
+            "SELECT * FROM {$tabla} WHERE id = %d AND usuario_id = %d",
             $inscripcion_id,
             get_current_user_id()
         ));
@@ -961,7 +1157,7 @@ class Flavor_Cursos_Frontend_Controller {
 
         // Verificar que la inscripcion pertenece al usuario
         $inscripcion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$tabla_inscripciones} WHERE id = %d AND alumno_id = %d",
+            "SELECT * FROM {$tabla_inscripciones} WHERE id = %d AND usuario_id = %d",
             $inscripcion_id,
             $usuario_id
         ));
@@ -1078,7 +1274,7 @@ class Flavor_Cursos_Frontend_Controller {
         $inscripcion = null;
         if ($this->tabla_existe($tabla_inscripciones)) {
             $inscripcion = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM {$tabla_inscripciones} WHERE curso_id = %d AND alumno_id = %d AND estado IN ('activa', 'completada', 'confirmada', 'en_curso')",
+                "SELECT * FROM {$tabla_inscripciones} WHERE curso_id = %d AND usuario_id = %d AND estado IN ('activo', 'completado', 'confirmada', 'en_curso')",
                 $curso_id,
                 $usuario_id
             ));
@@ -1164,7 +1360,7 @@ class Flavor_Cursos_Frontend_Controller {
                 "SELECT c.*, i.progreso_porcentaje, i.estado as estado_inscripcion
                  FROM {$tabla_inscripciones} i
                  INNER JOIN {$tabla_cursos} c ON i.curso_id = c.id
-                 WHERE i.alumno_id = %d AND i.estado IN ('activa', 'confirmada', 'en_curso')
+                 WHERE i.usuario_id = %d AND i.estado IN ('activo', 'confirmada', 'en_curso')
                  ORDER BY i.fecha_ultima_actividad DESC",
                 $usuario_id
             ));
@@ -1439,9 +1635,9 @@ class Flavor_Cursos_Frontend_Controller {
              JOIN {$tabla_cursos} c ON i.curso_id = c.id
              LEFT JOIN {$tabla_lecciones} l ON c.id = l.curso_id
              LEFT JOIN {$tabla_progreso} p ON l.id = p.leccion_id AND p.inscripcion_id = i.id
-             WHERE i.alumno_id = %d AND i.estado IN ('activa', 'en_curso', 'completada')
+             WHERE i.usuario_id = %d AND i.estado IN ('activo', 'en_curso', 'completado')
              GROUP BY c.id
-             ORDER BY i.fecha_inscripcion DESC",
+             ORDER BY i.created_at DESC",
             $usuario_id
         ));
 

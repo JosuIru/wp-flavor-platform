@@ -37,7 +37,7 @@ $testimonios_socios = $testimonios ?? [
         <!-- Titulo -->
         <div class="text-center mb-14">
             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                <?php echo esc_html($titulo ?? 'Lo Que Dicen Nuestros Socios'); ?>
+                <?php echo esc_html($titulo ?? 'Lo Que Dicen Nuestros Miembros'); ?>
             </h2>
             <p class="text-lg text-gray-600 max-w-2xl mx-auto">
                 <?php echo esc_html($subtitulo ?? 'Descubre por que miles de personas ya forman parte de nuestra comunidad.'); ?>
@@ -107,7 +107,7 @@ $testimonios_socios = $testimonios ?? [
                 <?php endfor; ?>
             </div>
             <p class="text-rose-700 font-medium">
-                <?php echo esc_html($texto_satisfaccion ?? 'El 96% de nuestros socios recomiendan la membresia'); ?>
+                <?php echo esc_html($texto_satisfaccion ?? 'El 96% de nuestros miembros recomiendan la membresia'); ?>
             </p>
         </div>
     </div>

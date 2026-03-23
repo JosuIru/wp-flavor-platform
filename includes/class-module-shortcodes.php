@@ -211,11 +211,7 @@ class Flavor_Module_Shortcodes {
      */
     private function render_universal_calendar($module_slug, $atts) {
         // Obtener configuración del módulo
-        $module_class = $this->get_module_class($module_slug);
-        $config = [];
-        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
-            $config = $module_class::get_renderer_config();
-        }
+        $config = $this->get_module_renderer_config($module_slug);
 
         $color = $atts['color'] ?: ($config['color'] ?? 'primary');
         $gradient = function_exists('flavor_get_gradient_classes')
@@ -263,11 +259,7 @@ class Flavor_Module_Shortcodes {
      * Mapa universal para cualquier módulo
      */
     private function render_universal_map($module_slug, $atts) {
-        $module_class = $this->get_module_class($module_slug);
-        $config = [];
-        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
-            $config = $module_class::get_renderer_config();
-        }
+        $config = $this->get_module_renderer_config($module_slug);
 
         $color = $atts['color'] ?: ($config['color'] ?? 'primary');
         $gradient = function_exists('flavor_get_gradient_classes')
@@ -323,12 +315,8 @@ class Flavor_Module_Shortcodes {
      */
     private function render_universal_stats($module_slug, $atts) {
         $module_class = $this->get_module_class($module_slug);
-        $config = [];
+        $config = $this->get_module_renderer_config($module_slug);
         $stats = [];
-
-        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
-            $config = $module_class::get_renderer_config();
-        }
         if ($module_class && method_exists($module_class, 'get_stats')) {
             $stats = $module_class::get_stats();
         }
@@ -379,6 +367,46 @@ class Flavor_Module_Shortcodes {
             return $class_name;
         }
         return null;
+    }
+
+    /**
+     * Obtiene la configuración renderer de un módulo de forma segura.
+     *
+     * Soporta implementaciones estáticas y no estáticas de get_renderer_config().
+     */
+    private function get_module_renderer_config($module_slug) {
+        $module_class = $this->get_module_class($module_slug);
+        if (!$module_class || !method_exists($module_class, 'get_renderer_config')) {
+            return [];
+        }
+
+        try {
+            // Intentar primero por instancia (más seguro para implementaciones mixtas).
+            if (class_exists('Flavor_Chat_Module_Loader')) {
+                $loader = Flavor_Chat_Module_Loader::get_instance();
+                $instance = $loader->get_module(str_replace('-', '_', $module_slug));
+                if (is_object($instance) && method_exists($instance, 'get_renderer_config')) {
+                    try {
+                        $config = $instance->get_renderer_config();
+                        if (is_array($config)) {
+                            return $config;
+                        }
+                    } catch (Throwable $e) {
+                        // Continuar con fallback estático.
+                    }
+                }
+            }
+
+            $method = new ReflectionMethod($module_class, 'get_renderer_config');
+            if ($method->isStatic()) {
+                $config = $module_class::get_renderer_config();
+                return is_array($config) ? $config : [];
+            }
+        } catch (Throwable $e) {
+            return [];
+        }
+
+        return [];
     }
 
     /**
@@ -2300,6 +2328,83 @@ class Flavor_Module_Shortcodes {
 
             // Registrar shortcodes de vistas comunes
             $this->register_common_view_shortcodes($id, $id_normalizado, $instance);
+
+            // Registrar aliases declarados en renderer_config()['tabs'].
+            $this->register_renderer_tab_shortcodes($id, $id_normalizado, $instance);
+        }
+    }
+
+    /**
+     * Registra shortcodes declarados en tabs del renderer de cada modulo.
+     *
+     * Permite resolver configuraciones tipo "content => shortcode:xxx" aunque
+     * el tag "xxx" no exista como shortcode explicito en el modulo.
+     */
+    private function register_renderer_tab_shortcodes($id, $id_normalizado, $instance) {
+        if (!is_object($instance)) {
+            return;
+        }
+
+        $config = [];
+        if (method_exists($instance, 'get_renderer_config')) {
+            try {
+                $config = $instance->get_renderer_config();
+            } catch (Throwable $e) {
+                $config = [];
+            }
+        }
+
+        if (empty($config) || !is_array($config)) {
+            $config = $this->get_module_renderer_config($id_normalizado);
+        }
+
+        if (empty($config['tabs']) || !is_array($config['tabs'])) {
+            return;
+        }
+
+        foreach ($config['tabs'] as $tab_id => $tab_config) {
+            $content = $tab_config['content'] ?? '';
+            if (!is_string($content) || strpos($content, 'shortcode:') !== 0) {
+                continue;
+            }
+
+            $declared_shortcode = trim(substr($content, strlen('shortcode:')));
+            if ($declared_shortcode === '') {
+                continue;
+            }
+
+            $base_candidates = [
+                $declared_shortcode,
+                str_replace('-', '_', $declared_shortcode),
+                str_replace('_', '-', $declared_shortcode),
+            ];
+
+            $shortcode_candidates = [];
+            foreach ($base_candidates as $candidate) {
+                if (!is_string($candidate) || $candidate === '') {
+                    continue;
+                }
+                $shortcode_candidates[] = $candidate;
+                if (strpos($candidate, 'flavor_') !== 0) {
+                    $shortcode_candidates[] = 'flavor_' . $candidate;
+                }
+            }
+
+            foreach (array_unique($shortcode_candidates) as $shortcode_tag) {
+                if (shortcode_exists($shortcode_tag)) {
+                    continue;
+                }
+
+                add_shortcode($shortcode_tag, function($atts) use ($id, $instance, $tab_id) {
+                    $atts = shortcode_atts([
+                        'limit' => '12',
+                        'columnas' => '3',
+                    ], $atts);
+
+                    $vista = str_replace('-', '_', (string) $tab_id);
+                    return $this->render_module_view($id, $instance, $vista, $atts);
+                });
+            }
         }
     }
 
@@ -3364,11 +3469,7 @@ class Flavor_Module_Shortcodes {
         }
 
         // Obtener configuración del módulo
-        $module_class = $this->get_module_class($module_slug);
-        $config = [];
-        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
-            $config = $module_class::get_renderer_config();
-        }
+        $config = $this->get_module_renderer_config($module_slug);
 
         $color = $atts['color'] ?: ($config['color'] ?? 'primary');
         $title = $atts['title'] ?: sprintf(__('Últimos %s', 'flavor-chat-ia'), $config['title'] ?? ucfirst($module_slug));
@@ -3427,11 +3528,7 @@ class Flavor_Module_Shortcodes {
         }
 
         // Obtener configuración del módulo
-        $module_class = $this->get_module_class($module_slug);
-        $config = [];
-        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
-            $config = $module_class::get_renderer_config();
-        }
+        $config = $this->get_module_renderer_config($module_slug);
 
         $color = $atts['color'] ?: ($config['color'] ?? 'primary');
         $title = $atts['title'] ?: sprintf(__('%s destacados', 'flavor-chat-ia'), $config['title'] ?? ucfirst($module_slug));
@@ -3484,11 +3581,7 @@ class Flavor_Module_Shortcodes {
         }
 
         // Obtener configuración del módulo
-        $module_class = $this->get_module_class($module_slug);
-        $config = [];
-        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
-            $config = $module_class::get_renderer_config();
-        }
+        $config = $this->get_module_renderer_config($module_slug);
 
         $color = $atts['color'] ?: ($config['color'] ?? 'primary');
         $title = $atts['title'] ?: sprintf(__('Próximo %s', 'flavor-chat-ia'), $config['title_singular'] ?? $config['title'] ?? ucfirst($module_slug));
@@ -3555,11 +3648,7 @@ class Flavor_Module_Shortcodes {
         }
 
         // Obtener configuración del módulo
-        $module_class = $this->get_module_class($module_slug);
-        $config = [];
-        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
-            $config = $module_class::get_renderer_config();
-        }
+        $config = $this->get_module_renderer_config($module_slug);
 
         $color = $atts['color'] ?: ($config['color'] ?? 'primary');
         $title = $atts['title'] ?: sprintf(__('Mi %s', 'flavor-chat-ia'), $config['title'] ?? ucfirst($module_slug));

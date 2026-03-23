@@ -194,9 +194,16 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
     public function maybe_create_tables() {
         global $wpdb;
         $tabla_puntos_reciclaje = $wpdb->prefix . 'flavor_reciclaje_puntos';
+        $tabla_campanas = $wpdb->prefix . 'flavor_reciclaje_campanas';
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_puntos_reciclaje)) {
             $this->create_tables();
+            return;
+        }
+
+        // Migración segura: sitios ya activos antes de añadir campañas.
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_campanas)) {
+            $this->maybe_create_campaigns_table();
         }
     }
 
@@ -291,6 +298,7 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
         $tabla_depositos = $wpdb->prefix . 'flavor_reciclaje_depositos';
         $tabla_recogidas = $wpdb->prefix . 'flavor_reciclaje_recogidas';
         $tabla_contenedores = $wpdb->prefix . 'flavor_reciclaje_contenedores';
+        $tabla_campanas = $wpdb->prefix . 'flavor_reciclaje_campanas';
 
         $sql_puntos = "CREATE TABLE IF NOT EXISTS $tabla_puntos_reciclaje (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -364,11 +372,72 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
             KEY necesita_vaciado (necesita_vaciado)
         ) $charset_collate;";
 
+        $sql_campanas = "CREATE TABLE IF NOT EXISTS $tabla_campanas (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            fecha_inicio datetime DEFAULT NULL,
+            fecha_fin datetime DEFAULT NULL,
+            objetivo_kg decimal(10,2) DEFAULT 0,
+            objetivo_participantes int(11) DEFAULT 0,
+            puntos_bonus int(11) DEFAULT 0,
+            estado enum('borrador','programada','activa','finalizada','cancelada') DEFAULT 'borrador',
+            ambito enum('comunidad','barrio','municipio','escolar','empresa') DEFAULT 'comunidad',
+            materiales text DEFAULT NULL COMMENT 'JSON array',
+            ubicacion varchar(255) DEFAULT NULL,
+            created_by bigint(20) unsigned DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY estado (estado),
+            KEY fecha_inicio (fecha_inicio),
+            KEY fecha_fin (fecha_fin)
+        ) $charset_collate;";
+
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta($sql_puntos);
         dbDelta($sql_depositos);
         dbDelta($sql_recogidas);
         dbDelta($sql_contenedores);
+        dbDelta($sql_campanas);
+    }
+
+    /**
+     * Crea la tabla de campañas si no existe (migración incremental).
+     */
+    private function maybe_create_campaigns_table() {
+        global $wpdb;
+
+        $tabla_campanas = $wpdb->prefix . 'flavor_reciclaje_campanas';
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_campanas)) {
+            return;
+        }
+
+        $charset_collate = $wpdb->get_charset_collate();
+        $sql_campanas = "CREATE TABLE IF NOT EXISTS $tabla_campanas (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            titulo varchar(255) NOT NULL,
+            descripcion text DEFAULT NULL,
+            fecha_inicio datetime DEFAULT NULL,
+            fecha_fin datetime DEFAULT NULL,
+            objetivo_kg decimal(10,2) DEFAULT 0,
+            objetivo_participantes int(11) DEFAULT 0,
+            puntos_bonus int(11) DEFAULT 0,
+            estado enum('borrador','programada','activa','finalizada','cancelada') DEFAULT 'borrador',
+            ambito enum('comunidad','barrio','municipio','escolar','empresa') DEFAULT 'comunidad',
+            materiales text DEFAULT NULL COMMENT 'JSON array',
+            ubicacion varchar(255) DEFAULT NULL,
+            created_by bigint(20) unsigned DEFAULT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY estado (estado),
+            KEY fecha_inicio (fecha_inicio),
+            KEY fecha_fin (fecha_fin)
+        ) $charset_collate;";
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta($sql_campanas);
     }
 
     /**
@@ -756,13 +825,17 @@ class Flavor_Chat_Reciclaje_Module extends Flavor_Chat_Module_Base {
      * Renderiza la página de campañas
      */
     public function render_admin_campanas() {
-        echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Campañas de Reciclaje', 'flavor-chat-ia'), [
-            ['label' => __('Nueva Campaña', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=reciclaje-campanas&action=nueva'), 'class' => 'button-primary'],
-        ]);
+        $this->maybe_create_campaigns_table();
 
-        echo '<p>' . __('Gestiona campañas de concienciación y eventos de reciclaje especiales.', 'flavor-chat-ia') . '</p>';
-        echo '<div class="notice notice-info"><p>' . __('Próximamente: Funcionalidad de campañas de reciclaje.', 'flavor-chat-ia') . '</p></div>';
+        $views_path = dirname(__FILE__) . '/views/campanas.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+            return;
+        }
+
+        echo '<div class="wrap flavor-modulo-page">';
+        $this->render_page_header(__('Campañas de Reciclaje', 'flavor-chat-ia'));
+        echo '<div class="notice notice-error"><p>' . __('No se encontró la vista de campañas.', 'flavor-chat-ia') . '</p></div>';
         echo '</div>';
     }
 
@@ -2090,6 +2163,13 @@ KNOWLEDGE;
      * Registrar páginas de administración (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         add_submenu_page(

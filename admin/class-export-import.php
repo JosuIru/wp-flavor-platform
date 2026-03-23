@@ -82,13 +82,29 @@ class Flavor_Export_Import {
         $this->definir_presets();
         add_action('admin_enqueue_scripts', array($this, 'cargar_assets_admin'));
 
-        // AJAX handlers
+        // AJAX handlers - Exportar/Importar
         add_action('wp_ajax_flavor_export_config', array($this, 'ajax_exportar_configuracion'));
         add_action('wp_ajax_flavor_import_config', array($this, 'ajax_importar_configuracion'));
         add_action('wp_ajax_flavor_preview_import', array($this, 'ajax_previsualizar_importacion'));
         add_action('wp_ajax_flavor_download_export', array($this, 'ajax_descargar_exportacion'));
         add_action('wp_ajax_flavor_apply_preset', array($this, 'ajax_aplicar_preset'));
         add_action('wp_ajax_flavor_get_presets', array($this, 'ajax_obtener_presets'));
+
+        // AJAX handlers - Migración
+        add_action('wp_ajax_flavor_export_full_site', array($this, 'ajax_exportar_sitio_completo'));
+        add_action('wp_ajax_flavor_import_full_site', array($this, 'ajax_importar_sitio_completo'));
+        add_action('wp_ajax_flavor_preview_search_replace', array($this, 'ajax_preview_search_replace'));
+        add_action('wp_ajax_flavor_apply_search_replace', array($this, 'ajax_apply_search_replace'));
+
+        // AJAX handlers - Backups
+        add_action('wp_ajax_flavor_create_backup', array($this, 'ajax_crear_backup'));
+        add_action('wp_ajax_flavor_restore_backup', array($this, 'ajax_restaurar_backup'));
+        add_action('wp_ajax_flavor_delete_backup', array($this, 'ajax_eliminar_backup'));
+        add_action('wp_ajax_flavor_download_backup', array($this, 'ajax_descargar_backup'));
+        add_action('wp_ajax_flavor_save_backup_schedule', array($this, 'ajax_guardar_config_backup'));
+
+        // Cron para backups programados
+        add_action('flavor_scheduled_backup', array($this, 'ejecutar_backup_programado'));
 
         // Registrar comandos WP-CLI
         if (defined('WP_CLI') && WP_CLI) {
@@ -298,6 +314,7 @@ class Flavor_Export_Import {
             'nonce' => wp_create_nonce('flavor_export_import_nonce'),
             'presets' => $this->presets_disponibles,
             'strings' => array(
+                // Export/Import
                 'exportando' => __('Exportando configuración...', 'flavor-chat-ia'),
                 'exportCompletada' => __('Exportación completada', 'flavor-chat-ia'),
                 'importando' => __('Importando configuración...', 'flavor-chat-ia'),
@@ -319,8 +336,621 @@ class Flavor_Export_Import {
                 'modoSobrescribir' => __('Sobrescribir todo', 'flavor-chat-ia'),
                 'modoMerge' => __('Combinar (merge)', 'flavor-chat-ia'),
                 'modoSoloFaltantes' => __('Solo lo que falta', 'flavor-chat-ia'),
+                // Migración
+                'generandoPaquete' => __('Generando paquete de migración...', 'flavor-chat-ia'),
+                'paqueteListo' => __('¡Paquete listo!', 'flavor-chat-ia'),
+                'subiendoArchivo' => __('Subiendo archivo...', 'flavor-chat-ia'),
+                'migracionImportada' => __('Migración importada correctamente', 'flavor-chat-ia'),
+                'errorMigracion' => __('Error en la migración', 'flavor-chat-ia'),
+                'analizandoDB' => __('Analizando base de datos...', 'flavor-chat-ia'),
+                'aplicandoCambios' => __('Aplicando cambios...', 'flavor-chat-ia'),
+                'coincidenciasEncontradas' => __('Se encontraron %d coincidencias', 'flavor-chat-ia'),
+                'reemplazosAplicados' => __('Se realizaron %d reemplazos', 'flavor-chat-ia'),
+                'confirmarReemplazo' => __('¿Estás seguro? Esta acción modificará la base de datos. Se creará un backup automático antes de continuar.', 'flavor-chat-ia'),
+                // Backups
+                'creandoBackup' => __('Creando backup...', 'flavor-chat-ia'),
+                'backupCreado' => __('Backup creado correctamente', 'flavor-chat-ia'),
+                'restaurandoBackup' => __('Restaurando backup...', 'flavor-chat-ia'),
+                'backupRestaurado' => __('Backup restaurado correctamente', 'flavor-chat-ia'),
+                'eliminandoBackup' => __('Eliminando backup...', 'flavor-chat-ia'),
+                'backupEliminado' => __('Backup eliminado correctamente', 'flavor-chat-ia'),
+                'confirmarRestaurar' => __('¿Estás seguro de restaurar este backup? Los datos actuales serán reemplazados.', 'flavor-chat-ia'),
+                'confirmarEliminar' => __('¿Estás seguro de eliminar este backup? Esta acción no se puede deshacer.', 'flavor-chat-ia'),
+                'configGuardada' => __('Configuración de backups guardada', 'flavor-chat-ia'),
             ),
         ));
+    }
+
+    /**
+     * Renderiza la página de administración
+     */
+    public function renderizar_pagina() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('No tienes permisos para acceder a esta página.', 'flavor-chat-ia'));
+        }
+
+        $tabs = array(
+            'export'    => __('Exportar', 'flavor-chat-ia'),
+            'import'    => __('Importar', 'flavor-chat-ia'),
+            'migration' => __('Migración', 'flavor-chat-ia'),
+            'backup'    => __('Backups', 'flavor-chat-ia'),
+            'presets'   => __('Presets', 'flavor-chat-ia'),
+        );
+
+        $current_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'export';
+        if (!isset($tabs[$current_tab])) {
+            $current_tab = 'export';
+        }
+        ?>
+        <div class="wrap flavor-export-import-wrap">
+            <h1><?php esc_html_e('Exportar / Importar y Migración', 'flavor-chat-ia'); ?></h1>
+
+            <div id="flavor-export-import-notices"></div>
+
+            <nav class="nav-tab-wrapper flavor-export-import-tabs">
+                <?php foreach ($tabs as $tab_slug => $tab_label) : ?>
+                    <a href="<?php echo esc_url(add_query_arg('tab', $tab_slug)); ?>"
+                       class="nav-tab <?php echo $current_tab === $tab_slug ? 'nav-tab-active' : ''; ?>"
+                       data-tab="<?php echo esc_attr($tab_slug); ?>">
+                        <?php echo esc_html($tab_label); ?>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+
+            <div class="flavor-tab-panels">
+                <!-- TAB: EXPORTAR -->
+                <div id="tab-export" class="flavor-tab-content <?php echo $current_tab === 'export' ? 'active' : ''; ?>">
+                    <?php $this->renderizar_tab_exportar(); ?>
+                </div>
+
+                <!-- TAB: IMPORTAR -->
+                <div id="tab-import" class="flavor-tab-content <?php echo $current_tab === 'import' ? 'active' : ''; ?>">
+                    <?php $this->renderizar_tab_importar(); ?>
+                </div>
+
+                <!-- TAB: MIGRACIÓN -->
+                <div id="tab-migration" class="flavor-tab-content <?php echo $current_tab === 'migration' ? 'active' : ''; ?>">
+                    <?php $this->renderizar_tab_migracion(); ?>
+                </div>
+
+                <!-- TAB: BACKUPS -->
+                <div id="tab-backup" class="flavor-tab-content <?php echo $current_tab === 'backup' ? 'active' : ''; ?>">
+                    <?php $this->renderizar_tab_backups(); ?>
+                </div>
+
+                <!-- TAB: PRESETS -->
+                <div id="tab-presets" class="flavor-tab-content <?php echo $current_tab === 'presets' ? 'active' : ''; ?>">
+                    <?php $this->renderizar_tab_presets(); ?>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pestaña de exportar
+     */
+    private function renderizar_tab_exportar() {
+        ?>
+        <div class="flavor-export-section">
+            <h2><?php esc_html_e('Exportar Configuración', 'flavor-chat-ia'); ?></h2>
+            <p class="description"><?php esc_html_e('Exporta la configuración del plugin para transferirla a otro sitio o como backup.', 'flavor-chat-ia'); ?></p>
+
+            <form id="flavor-export-form" class="flavor-export-form">
+                <div class="flavor-export-options">
+                    <h3><?php esc_html_e('¿Qué deseas exportar?', 'flavor-chat-ia'); ?></h3>
+
+                    <div class="flavor-checkbox-grid">
+                        <label>
+                            <input type="checkbox" name="export_sections[]" value="config" checked>
+                            <span class="dashicons dashicons-admin-settings"></span>
+                            <?php esc_html_e('Configuración General', 'flavor-chat-ia'); ?>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="export_sections[]" value="modules" checked>
+                            <span class="dashicons dashicons-grid-view"></span>
+                            <?php esc_html_e('Módulos Activos', 'flavor-chat-ia'); ?>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="export_sections[]" value="design" checked>
+                            <span class="dashicons dashicons-art"></span>
+                            <?php esc_html_e('Diseño y Estilos', 'flavor-chat-ia'); ?>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="export_sections[]" value="pages">
+                            <span class="dashicons dashicons-admin-page"></span>
+                            <?php esc_html_e('Páginas del Builder', 'flavor-chat-ia'); ?>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="export_sections[]" value="landings">
+                            <span class="dashicons dashicons-welcome-widgets-menus"></span>
+                            <?php esc_html_e('Landing Pages', 'flavor-chat-ia'); ?>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="export_sections[]" value="roles">
+                            <span class="dashicons dashicons-groups"></span>
+                            <?php esc_html_e('Roles y Permisos', 'flavor-chat-ia'); ?>
+                        </label>
+                    </div>
+
+                    <div class="flavor-export-actions">
+                        <button type="button" id="flavor-select-all-export" class="button"><?php esc_html_e('Seleccionar Todo', 'flavor-chat-ia'); ?></button>
+                        <button type="button" id="flavor-deselect-all-export" class="button"><?php esc_html_e('Deseleccionar Todo', 'flavor-chat-ia'); ?></button>
+                    </div>
+                </div>
+
+                <div class="flavor-export-submit">
+                    <button type="submit" id="flavor-export-btn" class="button button-primary button-hero">
+                        <span class="dashicons dashicons-download"></span>
+                        <?php esc_html_e('Generar y Descargar JSON', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+            </form>
+
+            <div id="flavor-export-result" class="flavor-export-result hidden">
+                <h3><?php esc_html_e('Exportación Generada', 'flavor-chat-ia'); ?></h3>
+                <textarea id="flavor-export-json" readonly rows="10"></textarea>
+                <div class="flavor-export-result-actions">
+                    <button type="button" id="flavor-copy-export" class="button">
+                        <span class="dashicons dashicons-clipboard"></span>
+                        <?php esc_html_e('Copiar al Portapapeles', 'flavor-chat-ia'); ?>
+                    </button>
+                    <button type="button" id="flavor-download-export" class="button button-primary">
+                        <span class="dashicons dashicons-download"></span>
+                        <?php esc_html_e('Descargar Archivo', 'flavor-chat-ia'); ?>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pestaña de importar
+     */
+    private function renderizar_tab_importar() {
+        ?>
+        <div class="flavor-import-section">
+            <h2><?php esc_html_e('Importar Configuración', 'flavor-chat-ia'); ?></h2>
+            <p class="description"><?php esc_html_e('Importa una configuración previamente exportada desde otro sitio.', 'flavor-chat-ia'); ?></p>
+
+            <!-- Paso 1: Seleccionar archivo -->
+            <div id="flavor-import-step-1" class="flavor-import-step active">
+                <h3><?php esc_html_e('Paso 1: Seleccionar Archivo', 'flavor-chat-ia'); ?></h3>
+
+                <div id="flavor-import-dropzone" class="flavor-dropzone">
+                    <div class="flavor-dropzone-content">
+                        <span class="dashicons dashicons-upload"></span>
+                        <p><?php esc_html_e('Arrastra un archivo JSON aquí', 'flavor-chat-ia'); ?></p>
+                        <p class="small"><?php esc_html_e('o haz clic para seleccionar', 'flavor-chat-ia'); ?></p>
+                        <input type="file" id="flavor-import-file" accept=".json">
+                    </div>
+                    <div class="flavor-dropzone-file hidden">
+                        <span class="dashicons dashicons-media-default"></span>
+                        <span class="flavor-filename"></span>
+                        <button type="button" class="flavor-remove-file">&times;</button>
+                    </div>
+                </div>
+
+                <div class="flavor-import-or">
+                    <span><?php esc_html_e('— o pegar JSON directamente —', 'flavor-chat-ia'); ?></span>
+                </div>
+
+                <textarea id="flavor-import-json-paste" placeholder="<?php esc_attr_e('Pega aquí el contenido JSON...', 'flavor-chat-ia'); ?>" rows="6"></textarea>
+
+                <button type="button" id="flavor-preview-import-btn" class="button button-primary" disabled>
+                    <span class="dashicons dashicons-visibility"></span>
+                    <?php esc_html_e('Analizar y Previsualizar', 'flavor-chat-ia'); ?>
+                </button>
+            </div>
+
+            <!-- Paso 2: Previsualización -->
+            <div id="flavor-import-step-2" class="flavor-import-step">
+                <h3><?php esc_html_e('Paso 2: Previsualización', 'flavor-chat-ia'); ?></h3>
+
+                <div id="flavor-import-metadata" class="flavor-import-metadata"></div>
+                <div id="flavor-import-warnings" class="flavor-import-warnings hidden"></div>
+                <div id="flavor-import-sections-preview" class="flavor-import-sections-preview"></div>
+
+                <div class="flavor-import-nav">
+                    <button type="button" id="flavor-back-step-1" class="button"><?php esc_html_e('← Volver', 'flavor-chat-ia'); ?></button>
+                    <button type="button" id="flavor-continue-step-3" class="button button-primary"><?php esc_html_e('Continuar →', 'flavor-chat-ia'); ?></button>
+                </div>
+            </div>
+
+            <!-- Paso 3: Opciones e importar -->
+            <div id="flavor-import-step-3" class="flavor-import-step">
+                <h3><?php esc_html_e('Paso 3: Opciones de Importación', 'flavor-chat-ia'); ?></h3>
+
+                <form id="flavor-import-form">
+                    <div class="flavor-import-mode">
+                        <label>
+                            <input type="radio" name="import_mode" value="overwrite" checked>
+                            <strong><?php esc_html_e('Sobrescribir todo', 'flavor-chat-ia'); ?></strong>
+                            <span class="description"><?php esc_html_e('Reemplaza la configuración actual con la importada', 'flavor-chat-ia'); ?></span>
+                        </label>
+                        <label>
+                            <input type="radio" name="import_mode" value="merge">
+                            <strong><?php esc_html_e('Combinar (merge)', 'flavor-chat-ia'); ?></strong>
+                            <span class="description"><?php esc_html_e('Fusiona con la configuración existente', 'flavor-chat-ia'); ?></span>
+                        </label>
+                        <label>
+                            <input type="radio" name="import_mode" value="missing_only">
+                            <strong><?php esc_html_e('Solo lo que falta', 'flavor-chat-ia'); ?></strong>
+                            <span class="description"><?php esc_html_e('Importa solo los elementos que no existen', 'flavor-chat-ia'); ?></span>
+                        </label>
+                    </div>
+
+                    <h4><?php esc_html_e('Secciones a importar:', 'flavor-chat-ia'); ?></h4>
+                    <div id="flavor-import-sections-checkboxes" class="flavor-checkbox-grid"></div>
+
+                    <div class="flavor-import-nav">
+                        <button type="button" id="flavor-back-step-2" class="button"><?php esc_html_e('← Volver', 'flavor-chat-ia'); ?></button>
+                        <button type="submit" id="flavor-apply-import-btn" class="button button-primary button-hero">
+                            <span class="dashicons dashicons-upload"></span>
+                            <?php esc_html_e('Aplicar Importación', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                </form>
+
+                <div id="flavor-import-progress" class="flavor-import-progress hidden">
+                    <span class="spinner is-active"></span>
+                    <p><?php esc_html_e('Importando configuración...', 'flavor-chat-ia'); ?></p>
+                </div>
+
+                <div id="flavor-import-result" class="flavor-import-result hidden"></div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pestaña de migración completa
+     */
+    private function renderizar_tab_migracion() {
+        $upload_dir = wp_upload_dir();
+        $site_url = get_site_url();
+        ?>
+        <div class="flavor-migration-section">
+            <h2><?php esc_html_e('Migración Completa del Sitio', 'flavor-chat-ia'); ?></h2>
+            <p class="description"><?php esc_html_e('Herramientas para migrar tu sitio completo entre servidores, incluyendo base de datos, archivos y configuraciones.', 'flavor-chat-ia'); ?></p>
+
+            <div class="flavor-migration-info-card">
+                <h3><span class="dashicons dashicons-info"></span> <?php esc_html_e('Información del Sitio Actual', 'flavor-chat-ia'); ?></h3>
+                <table class="widefat striped">
+                    <tr>
+                        <td><strong><?php esc_html_e('URL del Sitio', 'flavor-chat-ia'); ?></strong></td>
+                        <td><code><?php echo esc_html($site_url); ?></code></td>
+                    </tr>
+                    <tr>
+                        <td><strong><?php esc_html_e('Directorio de Uploads', 'flavor-chat-ia'); ?></strong></td>
+                        <td><code><?php echo esc_html($upload_dir['basedir']); ?></code></td>
+                    </tr>
+                    <tr>
+                        <td><strong><?php esc_html_e('Versión de WordPress', 'flavor-chat-ia'); ?></strong></td>
+                        <td><?php echo esc_html(get_bloginfo('version')); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong><?php esc_html_e('Versión de PHP', 'flavor-chat-ia'); ?></strong></td>
+                        <td><?php echo esc_html(PHP_VERSION); ?></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="flavor-migration-cards">
+                <!-- Exportar Sitio Completo -->
+                <div class="flavor-migration-card">
+                    <div class="flavor-migration-card-header">
+                        <span class="dashicons dashicons-download"></span>
+                        <h3><?php esc_html_e('Exportar Sitio Completo', 'flavor-chat-ia'); ?></h3>
+                    </div>
+                    <p><?php esc_html_e('Genera un paquete completo con base de datos, archivos de medios y configuraciones para migrar a otro servidor.', 'flavor-chat-ia'); ?></p>
+
+                    <form id="flavor-full-export-form">
+                        <div class="flavor-checkbox-list">
+                            <label><input type="checkbox" name="export_full[]" value="database" checked> <?php esc_html_e('Base de datos completa', 'flavor-chat-ia'); ?></label>
+                            <label><input type="checkbox" name="export_full[]" value="uploads" checked> <?php esc_html_e('Archivos de medios (uploads)', 'flavor-chat-ia'); ?></label>
+                            <label><input type="checkbox" name="export_full[]" value="plugins" checked> <?php esc_html_e('Configuración de plugins', 'flavor-chat-ia'); ?></label>
+                            <label><input type="checkbox" name="export_full[]" value="themes"> <?php esc_html_e('Tema activo', 'flavor-chat-ia'); ?></label>
+                            <label><input type="checkbox" name="export_full[]" value="flavor_data" checked> <?php esc_html_e('Datos de Flavor Platform', 'flavor-chat-ia'); ?></label>
+                        </div>
+                        <button type="submit" class="button button-primary">
+                            <span class="dashicons dashicons-migrate"></span>
+                            <?php esc_html_e('Generar Paquete de Migración', 'flavor-chat-ia'); ?>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Importar Sitio -->
+                <div class="flavor-migration-card">
+                    <div class="flavor-migration-card-header">
+                        <span class="dashicons dashicons-upload"></span>
+                        <h3><?php esc_html_e('Importar Sitio', 'flavor-chat-ia'); ?></h3>
+                    </div>
+                    <p><?php esc_html_e('Restaura un sitio desde un paquete de migración. Útil para migrar desde Local by Flywheel u otro servidor.', 'flavor-chat-ia'); ?></p>
+
+                    <div class="flavor-dropzone" id="flavor-migration-dropzone">
+                        <div class="flavor-dropzone-content">
+                            <span class="dashicons dashicons-upload"></span>
+                            <p><?php esc_html_e('Arrastra el paquete de migración (.zip) aquí', 'flavor-chat-ia'); ?></p>
+                            <input type="file" id="flavor-migration-file" accept=".zip">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Búsqueda y Reemplazo de URLs -->
+                <div class="flavor-migration-card">
+                    <div class="flavor-migration-card-header">
+                        <span class="dashicons dashicons-admin-links"></span>
+                        <h3><?php esc_html_e('Búsqueda y Reemplazo de URLs', 'flavor-chat-ia'); ?></h3>
+                    </div>
+                    <p><?php esc_html_e('Actualiza todas las URLs en la base de datos después de migrar. Soporta datos serializados.', 'flavor-chat-ia'); ?></p>
+
+                    <form id="flavor-search-replace-form">
+                        <table class="form-table">
+                            <tr>
+                                <th><label for="old_url"><?php esc_html_e('URL Anterior', 'flavor-chat-ia'); ?></label></th>
+                                <td>
+                                    <input type="url" id="old_url" name="old_url" class="regular-text" placeholder="https://old-site.local">
+                                    <p class="description"><?php esc_html_e('La URL del sitio original (ej: Local by Flywheel)', 'flavor-chat-ia'); ?></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><label for="new_url"><?php esc_html_e('URL Nueva', 'flavor-chat-ia'); ?></label></th>
+                                <td>
+                                    <input type="url" id="new_url" name="new_url" class="regular-text" value="<?php echo esc_attr($site_url); ?>">
+                                    <p class="description"><?php esc_html_e('La URL del nuevo servidor', 'flavor-chat-ia'); ?></p>
+                                </td>
+                            </tr>
+                        </table>
+                        <p class="flavor-warning">
+                            <span class="dashicons dashicons-warning"></span>
+                            <?php esc_html_e('¡Cuidado! Esta operación modifica la base de datos. Haz un backup antes de continuar.', 'flavor-chat-ia'); ?>
+                        </p>
+                        <button type="button" id="flavor-preview-replace" class="button"><?php esc_html_e('Previsualizar Cambios', 'flavor-chat-ia'); ?></button>
+                        <button type="submit" class="button button-primary" disabled id="flavor-apply-replace"><?php esc_html_e('Aplicar Reemplazo', 'flavor-chat-ia'); ?></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pestaña de backups
+     */
+    private function renderizar_tab_backups() {
+        $backups = $this->obtener_backups_disponibles();
+        ?>
+        <div class="flavor-backup-section">
+            <h2><?php esc_html_e('Sistema de Backups', 'flavor-chat-ia'); ?></h2>
+            <p class="description"><?php esc_html_e('Gestiona copias de seguridad automáticas y manuales de tu sitio.', 'flavor-chat-ia'); ?></p>
+
+            <div class="flavor-backup-cards">
+                <!-- Crear Backup -->
+                <div class="flavor-backup-card flavor-backup-create">
+                    <div class="flavor-backup-card-header">
+                        <span class="dashicons dashicons-backup"></span>
+                        <h3><?php esc_html_e('Crear Backup', 'flavor-chat-ia'); ?></h3>
+                    </div>
+
+                    <form id="flavor-create-backup-form">
+                        <div class="flavor-backup-options">
+                            <label>
+                                <input type="checkbox" name="backup_type[]" value="database" checked>
+                                <span class="dashicons dashicons-database"></span>
+                                <?php esc_html_e('Base de Datos', 'flavor-chat-ia'); ?>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="backup_type[]" value="uploads" checked>
+                                <span class="dashicons dashicons-images-alt2"></span>
+                                <?php esc_html_e('Archivos (Uploads)', 'flavor-chat-ia'); ?>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="backup_type[]" value="flavor_config" checked>
+                                <span class="dashicons dashicons-admin-settings"></span>
+                                <?php esc_html_e('Configuración Flavor', 'flavor-chat-ia'); ?>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="backup_type[]" value="plugins">
+                                <span class="dashicons dashicons-plugins-checked"></span>
+                                <?php esc_html_e('Plugins', 'flavor-chat-ia'); ?>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="backup_type[]" value="themes">
+                                <span class="dashicons dashicons-admin-appearance"></span>
+                                <?php esc_html_e('Temas', 'flavor-chat-ia'); ?>
+                            </label>
+                        </div>
+
+                        <div class="flavor-backup-name">
+                            <label for="backup_name"><?php esc_html_e('Nombre del backup (opcional):', 'flavor-chat-ia'); ?></label>
+                            <input type="text" id="backup_name" name="backup_name" placeholder="<?php echo esc_attr(date('Y-m-d_H-i')); ?>">
+                        </div>
+
+                        <button type="submit" class="button button-primary button-hero">
+                            <span class="dashicons dashicons-backup"></span>
+                            <?php esc_html_e('Crear Backup Ahora', 'flavor-chat-ia'); ?>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Backups Programados -->
+                <div class="flavor-backup-card">
+                    <div class="flavor-backup-card-header">
+                        <span class="dashicons dashicons-calendar-alt"></span>
+                        <h3><?php esc_html_e('Backups Programados', 'flavor-chat-ia'); ?></h3>
+                    </div>
+
+                    <form id="flavor-schedule-backup-form">
+                        <table class="form-table">
+                            <tr>
+                                <th><?php esc_html_e('Frecuencia', 'flavor-chat-ia'); ?></th>
+                                <td>
+                                    <select name="backup_frequency">
+                                        <option value="disabled"><?php esc_html_e('Desactivado', 'flavor-chat-ia'); ?></option>
+                                        <option value="daily"><?php esc_html_e('Diario', 'flavor-chat-ia'); ?></option>
+                                        <option value="weekly"><?php esc_html_e('Semanal', 'flavor-chat-ia'); ?></option>
+                                        <option value="monthly"><?php esc_html_e('Mensual', 'flavor-chat-ia'); ?></option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><?php esc_html_e('Retención', 'flavor-chat-ia'); ?></th>
+                                <td>
+                                    <input type="number" name="backup_retention" value="5" min="1" max="30">
+                                    <span class="description"><?php esc_html_e('Número de backups a conservar', 'flavor-chat-ia'); ?></span>
+                                </td>
+                            </tr>
+                        </table>
+                        <button type="submit" class="button"><?php esc_html_e('Guardar Configuración', 'flavor-chat-ia'); ?></button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lista de Backups -->
+            <div class="flavor-backups-list">
+                <h3><?php esc_html_e('Backups Disponibles', 'flavor-chat-ia'); ?></h3>
+                <?php if (empty($backups)) : ?>
+                    <p class="flavor-no-backups"><?php esc_html_e('No hay backups disponibles. Crea tu primer backup arriba.', 'flavor-chat-ia'); ?></p>
+                <?php else : ?>
+                    <table id="flavor-backups-table" class="wp-list-table widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e('Nombre', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Tamaño', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Contenido', 'flavor-chat-ia'); ?></th>
+                                <th><?php esc_html_e('Acciones', 'flavor-chat-ia'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($backups as $backup) : ?>
+                                <tr>
+                                    <td><?php echo esc_html($backup['name']); ?></td>
+                                    <td><?php echo esc_html($backup['date']); ?></td>
+                                    <td class="backup-size"><?php echo esc_html($backup['size']); ?></td>
+                                    <td><?php echo esc_html($backup['contents']); ?></td>
+                                    <td class="backup-actions">
+                                        <button class="button button-small flavor-backup-restore" data-backup-id="<?php echo esc_attr($backup['id']); ?>">
+                                            <?php esc_html_e('Restaurar', 'flavor-chat-ia'); ?>
+                                        </button>
+                                        <button class="button button-small flavor-backup-download" data-backup-id="<?php echo esc_attr($backup['id']); ?>">
+                                            <?php esc_html_e('Descargar', 'flavor-chat-ia'); ?>
+                                        </button>
+                                        <button class="button button-small button-link-delete flavor-backup-delete" data-backup-id="<?php echo esc_attr($backup['id']); ?>">
+                                            <?php esc_html_e('Eliminar', 'flavor-chat-ia'); ?>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Renderiza la pestaña de presets
+     */
+    private function renderizar_tab_presets() {
+        ?>
+        <div class="flavor-presets-section">
+            <h2><?php esc_html_e('Configuraciones Predefinidas (Presets)', 'flavor-chat-ia'); ?></h2>
+            <p class="description"><?php esc_html_e('Aplica configuraciones optimizadas según el tipo de proyecto.', 'flavor-chat-ia'); ?></p>
+
+            <div id="flavor-presets-grid" class="flavor-presets-grid">
+                <?php foreach ($this->presets_disponibles as $preset_id => $preset) : ?>
+                    <div class="flavor-preset-card" data-preset-id="<?php echo esc_attr($preset_id); ?>">
+                        <div class="flavor-preset-card-header">
+                            <span class="dashicons <?php echo esc_attr($preset['icono'] ?? 'dashicons-admin-generic'); ?>"></span>
+                            <h3><?php echo esc_html($preset['nombre']); ?></h3>
+                        </div>
+                        <p><?php echo esc_html($preset['descripcion']); ?></p>
+                        <?php if (!empty($preset['config']['active_modules'])) : ?>
+                            <div class="flavor-preset-card-meta">
+                                <?php foreach ($preset['config']['active_modules'] as $module) : ?>
+                                    <span class="tag"><?php echo esc_html($module); ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                        <button type="button" class="button button-primary">
+                            <span class="dashicons dashicons-yes"></span>
+                            <?php esc_html_e('Aplicar Preset', 'flavor-chat-ia'); ?>
+                        </button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtiene los backups disponibles
+     *
+     * @return array
+     */
+    private function obtener_backups_disponibles() {
+        $upload_dir = wp_upload_dir();
+        $backup_dir = $upload_dir['basedir'] . '/flavor-backups/';
+        $backups = array();
+
+        if (!is_dir($backup_dir)) {
+            return $backups;
+        }
+
+        $files = glob($backup_dir . '*.zip');
+        if (empty($files)) {
+            return $backups;
+        }
+
+        foreach ($files as $file) {
+            $filename = basename($file);
+            $backup_id = pathinfo($filename, PATHINFO_FILENAME);
+
+            // Intentar leer manifest para más información
+            $contenido = __('Configuración', 'flavor-chat-ia');
+            $zip = new ZipArchive();
+            if ($zip->open($file) === true) {
+                $manifest_content = $zip->getFromName('manifest.json');
+                if ($manifest_content) {
+                    $manifest = json_decode($manifest_content, true);
+                    $partes = array();
+                    if (!empty($manifest['contenido']['database'])) {
+                        $partes[] = __('BD', 'flavor-chat-ia');
+                    }
+                    if (!empty($manifest['contenido']['uploads'])) {
+                        $partes[] = __('Archivos', 'flavor-chat-ia');
+                    }
+                    if (!empty($manifest['contenido']['config'])) {
+                        $partes[] = __('Config', 'flavor-chat-ia');
+                    }
+                    if (!empty($partes)) {
+                        $contenido = implode(' + ', $partes);
+                    }
+                }
+                $zip->close();
+            }
+
+            $backups[] = array(
+                'id'           => $backup_id,
+                'name'         => $backup_id,
+                'file'         => $filename,
+                'date'         => date('Y-m-d H:i:s', filemtime($file)),
+                'size'         => size_format(filesize($file)),
+                'contents'     => $contenido,
+                'download_url' => str_replace($upload_dir['basedir'], $upload_dir['baseurl'], $file),
+            );
+        }
+
+        // Ordenar por fecha descendente
+        usort($backups, function($a, $b) {
+            return strtotime($b['date']) - strtotime($a['date']);
+        });
+
+        return $backups;
     }
 
     // =========================================================================
@@ -1922,18 +2552,975 @@ class Flavor_Export_Import {
     }
 
     // =========================================================================
-    // RENDERIZADO DE LA PÁGINA
+    // AJAX HANDLERS - MIGRACIÓN COMPLETA DEL SITIO
     // =========================================================================
 
     /**
-     * Renderiza la página de exportar/importar
+     * Exporta el sitio completo (base de datos + archivos)
      */
-    public function renderizar_pagina() {
+    public function ajax_exportar_sitio_completo() {
+        check_ajax_referer('flavor_export_import_nonce', 'nonce');
+
         if (!current_user_can('manage_options')) {
-            wp_die(__('No tienes permisos para acceder a esta página.', 'flavor-chat-ia'));
+            wp_send_json_error(array('message' => __('No tienes permisos suficientes.', 'flavor-chat-ia')));
         }
 
-        // Cargar la vista
-        include FLAVOR_CHAT_IA_PATH . 'admin/views/export-import.php';
+        $incluir_db = isset($_POST['include_database']) && $_POST['include_database'] === 'true';
+        $incluir_uploads = isset($_POST['include_uploads']) && $_POST['include_uploads'] === 'true';
+        $incluir_plugins = isset($_POST['include_plugins']) && $_POST['include_plugins'] === 'true';
+        $incluir_themes = isset($_POST['include_themes']) && $_POST['include_themes'] === 'true';
+
+        try {
+            $backup_dir = $this->obtener_directorio_backups();
+            $timestamp = current_time('Y-m-d_H-i-s');
+            $nombre_archivo = 'flavor-migration-' . $timestamp;
+            $ruta_zip = $backup_dir . $nombre_archivo . '.zip';
+
+            // Crear archivo ZIP
+            $zip = new ZipArchive();
+            if ($zip->open($ruta_zip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                throw new Exception(__('No se pudo crear el archivo de migración.', 'flavor-chat-ia'));
+            }
+
+            // Exportar base de datos
+            if ($incluir_db) {
+                $sql_content = $this->exportar_base_datos();
+                $zip->addFromString('database.sql', $sql_content);
+            }
+
+            // Exportar configuración del plugin
+            $config = $this->export_full_config();
+            $zip->addFromString('flavor-config.json', wp_json_encode($config, JSON_PRETTY_PRINT));
+
+            // Exportar uploads
+            if ($incluir_uploads) {
+                $uploads_dir = wp_upload_dir();
+                $this->agregar_directorio_a_zip($zip, $uploads_dir['basedir'], 'wp-content/uploads');
+            }
+
+            // Exportar plugins activos
+            if ($incluir_plugins) {
+                $plugins_activos = get_option('active_plugins', array());
+                $plugins_dir = WP_PLUGIN_DIR;
+                $plugins_exportados = array();
+
+                foreach ($plugins_activos as $plugin_path) {
+                    // Obtener el directorio del plugin (ej: "flavor-chat-ia/flavor-chat-ia.php" -> "flavor-chat-ia")
+                    $partes = explode('/', $plugin_path);
+                    if (count($partes) > 1) {
+                        $carpeta_plugin = $partes[0];
+                        $ruta_completa = $plugins_dir . '/' . $carpeta_plugin;
+
+                        // Evitar duplicados y verificar que existe
+                        if (!in_array($carpeta_plugin, $plugins_exportados) && is_dir($ruta_completa)) {
+                            $this->agregar_directorio_a_zip($zip, $ruta_completa, 'wp-content/plugins/' . $carpeta_plugin);
+                            $plugins_exportados[] = $carpeta_plugin;
+                        }
+                    } else {
+                        // Plugin de archivo único (ej: "hello.php")
+                        $archivo_plugin = $plugins_dir . '/' . $plugin_path;
+                        if (file_exists($archivo_plugin)) {
+                            $zip->addFile($archivo_plugin, 'wp-content/plugins/' . $plugin_path);
+                        }
+                    }
+                }
+            }
+
+            // Exportar tema activo (tema hijo y tema padre si aplica)
+            if ($incluir_themes) {
+                // Tema activo (puede ser hijo)
+                $tema_activo = get_stylesheet_directory();
+                $nombre_tema = basename($tema_activo);
+                $this->agregar_directorio_a_zip($zip, $tema_activo, 'wp-content/themes/' . $nombre_tema);
+
+                // Si es tema hijo, también exportar el tema padre
+                $tema_padre = get_template_directory();
+                if ($tema_padre !== $tema_activo) {
+                    $nombre_tema_padre = basename($tema_padre);
+                    $this->agregar_directorio_a_zip($zip, $tema_padre, 'wp-content/themes/' . $nombre_tema_padre);
+                }
+            }
+
+            // Añadir manifest
+            $manifest = array(
+                'version' => self::EXPORT_FORMAT_VERSION,
+                'fecha' => current_time('mysql'),
+                'sitio_origen' => home_url(),
+                'contenido' => array(
+                    'database' => $incluir_db,
+                    'uploads' => $incluir_uploads,
+                    'plugins' => $incluir_plugins,
+                    'themes' => $incluir_themes,
+                ),
+            );
+            $zip->addFromString('manifest.json', wp_json_encode($manifest, JSON_PRETTY_PRINT));
+
+            $zip->close();
+
+            // Generar URL de descarga
+            $upload_dir = wp_upload_dir();
+            $url_descarga = str_replace($upload_dir['basedir'], $upload_dir['baseurl'], $ruta_zip);
+
+            wp_send_json_success(array(
+                'message' => __('Migración exportada correctamente.', 'flavor-chat-ia'),
+                'download_url' => $url_descarga,
+                'filename' => $nombre_archivo . '.zip',
+                'size' => size_format(filesize($ruta_zip)),
+            ));
+
+        } catch (Exception $e) {
+            wp_send_json_error(array('message' => $e->getMessage()));
+        }
+    }
+
+    /**
+     * Importa un paquete de migración completo
+     */
+    public function ajax_importar_sitio_completo() {
+        check_ajax_referer('flavor_export_import_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('No tienes permisos suficientes.', 'flavor-chat-ia')));
+        }
+
+        if (!isset($_FILES['migration_file']) || $_FILES['migration_file']['error'] !== UPLOAD_ERR_OK) {
+            wp_send_json_error(array('message' => __('No se recibió el archivo correctamente.', 'flavor-chat-ia')));
+        }
+
+        try {
+            $archivo = $_FILES['migration_file'];
+            $backup_dir = $this->obtener_directorio_backups();
+            $ruta_zip = $backup_dir . 'import-' . time() . '.zip';
+
+            // Mover archivo subido
+            if (!move_uploaded_file($archivo['tmp_name'], $ruta_zip)) {
+                throw new Exception(__('Error al procesar el archivo subido.', 'flavor-chat-ia'));
+            }
+
+            // Abrir ZIP
+            $zip = new ZipArchive();
+            if ($zip->open($ruta_zip) !== true) {
+                throw new Exception(__('El archivo no es un ZIP válido.', 'flavor-chat-ia'));
+            }
+
+            // Leer manifest
+            $manifest_content = $zip->getFromName('manifest.json');
+            if (!$manifest_content) {
+                throw new Exception(__('El archivo no contiene un manifest válido.', 'flavor-chat-ia'));
+            }
+            $manifest = json_decode($manifest_content, true);
+
+            $resultados = array();
+
+            // Importar configuración del plugin
+            $config_content = $zip->getFromName('flavor-config.json');
+            if ($config_content) {
+                $config = json_decode($config_content, true);
+                $this->import_config($config);
+                $resultados[] = __('Configuración del plugin importada.', 'flavor-chat-ia');
+            }
+
+            // Importar base de datos (con precaución)
+            if (!empty($manifest['contenido']['database'])) {
+                $sql_content = $zip->getFromName('database.sql');
+                if ($sql_content) {
+                    // Solo importamos si el usuario lo confirma explícitamente
+                    if (isset($_POST['confirm_database']) && $_POST['confirm_database'] === 'true') {
+                        $this->importar_base_datos($sql_content);
+                        $resultados[] = __('Base de datos importada.', 'flavor-chat-ia');
+                    } else {
+                        $resultados[] = __('Base de datos detectada (requiere confirmación adicional).', 'flavor-chat-ia');
+                    }
+                }
+            }
+
+            // Extraer archivos
+            $extraer_tipos = array();
+            if (!empty($manifest['contenido']['uploads']) && isset($_POST['import_uploads']) && $_POST['import_uploads'] === 'true') {
+                $extraer_tipos[] = 'wp-content/uploads';
+            }
+            if (!empty($manifest['contenido']['plugins']) && isset($_POST['import_plugins']) && $_POST['import_plugins'] === 'true') {
+                $extraer_tipos[] = 'wp-content/plugins';
+            }
+            if (!empty($manifest['contenido']['themes']) && isset($_POST['import_themes']) && $_POST['import_themes'] === 'true') {
+                $extraer_tipos[] = 'wp-content/themes';
+            }
+
+            foreach ($extraer_tipos as $tipo) {
+                $this->extraer_archivos_zip($zip, $tipo, ABSPATH);
+                $resultados[] = sprintf(__('%s extraídos.', 'flavor-chat-ia'), ucfirst(basename($tipo)));
+            }
+
+            $zip->close();
+
+            // Limpiar archivo temporal
+            @unlink($ruta_zip);
+
+            wp_send_json_success(array(
+                'message' => __('Migración importada correctamente.', 'flavor-chat-ia'),
+                'details' => $resultados,
+            ));
+
+        } catch (Exception $e) {
+            wp_send_json_error(array('message' => $e->getMessage()));
+        }
+    }
+
+    /**
+     * Previsualiza los cambios de buscar/reemplazar
+     */
+    public function ajax_preview_search_replace() {
+        check_ajax_referer('flavor_export_import_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('No tienes permisos suficientes.', 'flavor-chat-ia')));
+        }
+
+        $buscar = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+        $reemplazar = isset($_POST['replace']) ? sanitize_text_field($_POST['replace']) : '';
+
+        if (empty($buscar)) {
+            wp_send_json_error(array('message' => __('Debes especificar un texto a buscar.', 'flavor-chat-ia')));
+        }
+
+        global $wpdb;
+
+        $preview = array();
+        $total_encontrados = 0;
+
+        // Tablas a buscar
+        $tablas = array(
+            $wpdb->posts => array('post_content', 'post_excerpt', 'guid'),
+            $wpdb->postmeta => array('meta_value'),
+            $wpdb->options => array('option_value'),
+            $wpdb->comments => array('comment_content', 'comment_author_url'),
+            $wpdb->usermeta => array('meta_value'),
+        );
+
+        foreach ($tablas as $tabla => $columnas) {
+            foreach ($columnas as $columna) {
+                $count = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$tabla} WHERE {$columna} LIKE %s",
+                    '%' . $wpdb->esc_like($buscar) . '%'
+                ));
+
+                if ($count > 0) {
+                    $total_encontrados += $count;
+                    $preview[] = array(
+                        'tabla' => str_replace($wpdb->prefix, '', $tabla),
+                        'columna' => $columna,
+                        'coincidencias' => (int) $count,
+                    );
+                }
+            }
+        }
+
+        wp_send_json_success(array(
+            'total' => $total_encontrados,
+            'preview' => $preview,
+            'buscar' => $buscar,
+            'reemplazar' => $reemplazar,
+        ));
+    }
+
+    /**
+     * Aplica buscar/reemplazar en la base de datos
+     */
+    public function ajax_apply_search_replace() {
+        check_ajax_referer('flavor_export_import_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('No tienes permisos suficientes.', 'flavor-chat-ia')));
+        }
+
+        $buscar = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+        $reemplazar = isset($_POST['replace']) ? sanitize_text_field($_POST['replace']) : '';
+
+        if (empty($buscar)) {
+            wp_send_json_error(array('message' => __('Debes especificar un texto a buscar.', 'flavor-chat-ia')));
+        }
+
+        global $wpdb;
+
+        // Crear backup antes de aplicar cambios
+        $this->crear_backup_automatico('pre-search-replace');
+
+        $total_reemplazos = 0;
+        $resultados = array();
+
+        // Tablas y columnas a procesar
+        $tablas = array(
+            $wpdb->posts => array('post_content', 'post_excerpt', 'guid'),
+            $wpdb->postmeta => array('meta_value'),
+            $wpdb->options => array('option_value'),
+            $wpdb->comments => array('comment_content', 'comment_author_url'),
+            $wpdb->usermeta => array('meta_value'),
+        );
+
+        foreach ($tablas as $tabla => $columnas) {
+            foreach ($columnas as $columna) {
+                // Para postmeta, options y usermeta necesitamos manejar datos serializados
+                if (in_array($tabla, array($wpdb->postmeta, $wpdb->options, $wpdb->usermeta))) {
+                    $filas = $wpdb->get_results(
+                        $wpdb->prepare(
+                            "SELECT * FROM {$tabla} WHERE {$columna} LIKE %s",
+                            '%' . $wpdb->esc_like($buscar) . '%'
+                        ),
+                        ARRAY_A
+                    );
+
+                    foreach ($filas as $fila) {
+                        $valor_original = $fila[$columna];
+                        $valor_nuevo = $this->buscar_reemplazar_serializado($valor_original, $buscar, $reemplazar);
+
+                        if ($valor_nuevo !== $valor_original) {
+                            $pk = $tabla === $wpdb->options ? 'option_id' : ($tabla === $wpdb->usermeta ? 'umeta_id' : 'meta_id');
+                            $wpdb->update(
+                                $tabla,
+                                array($columna => $valor_nuevo),
+                                array($pk => $fila[$pk])
+                            );
+                            $total_reemplazos++;
+                        }
+                    }
+                } else {
+                    // Reemplazo directo para posts y comments
+                    $count = $wpdb->query($wpdb->prepare(
+                        "UPDATE {$tabla} SET {$columna} = REPLACE({$columna}, %s, %s) WHERE {$columna} LIKE %s",
+                        $buscar,
+                        $reemplazar,
+                        '%' . $wpdb->esc_like($buscar) . '%'
+                    ));
+                    $total_reemplazos += $count;
+                }
+
+                if ($count > 0) {
+                    $resultados[] = array(
+                        'tabla' => str_replace($wpdb->prefix, '', $tabla),
+                        'columna' => $columna,
+                        'reemplazos' => $count,
+                    );
+                }
+            }
+        }
+
+        // Limpiar cache
+        wp_cache_flush();
+
+        wp_send_json_success(array(
+            'message' => sprintf(__('Se realizaron %d reemplazos.', 'flavor-chat-ia'), $total_reemplazos),
+            'total' => $total_reemplazos,
+            'detalles' => $resultados,
+        ));
+    }
+
+    /**
+     * Buscar y reemplazar en datos serializados
+     *
+     * @param string $data Datos originales
+     * @param string $buscar Texto a buscar
+     * @param string $reemplazar Texto de reemplazo
+     * @return string Datos con reemplazos
+     */
+    private function buscar_reemplazar_serializado($data, $buscar, $reemplazar) {
+        // Intentar deserializar
+        $unserialized = @unserialize($data);
+
+        if ($unserialized !== false || $data === 'b:0;') {
+            // Es dato serializado
+            $unserialized = $this->buscar_reemplazar_recursivo($unserialized, $buscar, $reemplazar);
+            return serialize($unserialized);
+        }
+
+        // No es serializado, reemplazar directamente
+        return str_replace($buscar, $reemplazar, $data);
+    }
+
+    /**
+     * Buscar y reemplazar recursivamente en arrays/objetos
+     *
+     * @param mixed $data Datos
+     * @param string $buscar Texto a buscar
+     * @param string $reemplazar Texto de reemplazo
+     * @return mixed Datos modificados
+     */
+    private function buscar_reemplazar_recursivo($data, $buscar, $reemplazar) {
+        if (is_string($data)) {
+            return str_replace($buscar, $reemplazar, $data);
+        }
+
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                $data[$key] = $this->buscar_reemplazar_recursivo($value, $buscar, $reemplazar);
+            }
+            return $data;
+        }
+
+        if (is_object($data)) {
+            foreach ($data as $key => $value) {
+                $data->$key = $this->buscar_reemplazar_recursivo($value, $buscar, $reemplazar);
+            }
+            return $data;
+        }
+
+        return $data;
+    }
+
+    // =========================================================================
+    // AJAX HANDLERS - SISTEMA DE BACKUPS
+    // =========================================================================
+
+    /**
+     * Crea un backup manual
+     */
+    public function ajax_crear_backup() {
+        check_ajax_referer('flavor_export_import_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('No tienes permisos suficientes.', 'flavor-chat-ia')));
+        }
+
+        $nombre = isset($_POST['backup_name']) ? sanitize_file_name($_POST['backup_name']) : '';
+        $incluir_db = isset($_POST['include_database']) && $_POST['include_database'] === 'true';
+        $incluir_uploads = isset($_POST['include_uploads']) && $_POST['include_uploads'] === 'true';
+        $incluir_plugins = isset($_POST['include_plugins']) && $_POST['include_plugins'] === 'true';
+        $incluir_themes = isset($_POST['include_themes']) && $_POST['include_themes'] === 'true';
+
+        try {
+            $resultado = $this->crear_backup($nombre, $incluir_db, $incluir_uploads, $incluir_plugins, $incluir_themes);
+
+            wp_send_json_success(array(
+                'message' => __('Backup creado correctamente.', 'flavor-chat-ia'),
+                'backup' => $resultado,
+            ));
+
+        } catch (Exception $e) {
+            wp_send_json_error(array('message' => $e->getMessage()));
+        }
+    }
+
+    /**
+     * Restaura un backup existente
+     */
+    public function ajax_restaurar_backup() {
+        check_ajax_referer('flavor_export_import_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('No tienes permisos suficientes.', 'flavor-chat-ia')));
+        }
+
+        $backup_id = isset($_POST['backup_id']) ? sanitize_text_field($_POST['backup_id']) : '';
+
+        if (empty($backup_id)) {
+            wp_send_json_error(array('message' => __('ID de backup no proporcionado.', 'flavor-chat-ia')));
+        }
+
+        try {
+            $backup_dir = $this->obtener_directorio_backups();
+            $ruta_zip = $backup_dir . $backup_id . '.zip';
+
+            if (!file_exists($ruta_zip)) {
+                throw new Exception(__('El backup no existe.', 'flavor-chat-ia'));
+            }
+
+            // Crear backup de seguridad antes de restaurar
+            $this->crear_backup_automatico('pre-restore');
+
+            $zip = new ZipArchive();
+            if ($zip->open($ruta_zip) !== true) {
+                throw new Exception(__('No se pudo abrir el backup.', 'flavor-chat-ia'));
+            }
+
+            $resultados = array();
+
+            // Restaurar configuración
+            $config_content = $zip->getFromName('flavor-config.json');
+            if ($config_content) {
+                $config = json_decode($config_content, true);
+                $this->import_config($config);
+                $resultados[] = __('Configuración restaurada.', 'flavor-chat-ia');
+            }
+
+            // Restaurar base de datos si existe
+            $sql_content = $zip->getFromName('database.sql');
+            if ($sql_content && isset($_POST['restore_database']) && $_POST['restore_database'] === 'true') {
+                $this->importar_base_datos($sql_content);
+                $resultados[] = __('Base de datos restaurada.', 'flavor-chat-ia');
+            }
+
+            // Restaurar uploads si existe
+            if (isset($_POST['restore_uploads']) && $_POST['restore_uploads'] === 'true') {
+                $this->extraer_archivos_zip($zip, 'wp-content/uploads', ABSPATH);
+                $resultados[] = __('Archivos de uploads restaurados.', 'flavor-chat-ia');
+            }
+
+            $zip->close();
+
+            wp_cache_flush();
+
+            wp_send_json_success(array(
+                'message' => __('Backup restaurado correctamente.', 'flavor-chat-ia'),
+                'details' => $resultados,
+            ));
+
+        } catch (Exception $e) {
+            wp_send_json_error(array('message' => $e->getMessage()));
+        }
+    }
+
+    /**
+     * Elimina un backup
+     */
+    public function ajax_eliminar_backup() {
+        check_ajax_referer('flavor_export_import_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('No tienes permisos suficientes.', 'flavor-chat-ia')));
+        }
+
+        $backup_id = isset($_POST['backup_id']) ? sanitize_text_field($_POST['backup_id']) : '';
+
+        if (empty($backup_id)) {
+            wp_send_json_error(array('message' => __('ID de backup no proporcionado.', 'flavor-chat-ia')));
+        }
+
+        $backup_dir = $this->obtener_directorio_backups();
+        $ruta_zip = $backup_dir . $backup_id . '.zip';
+
+        if (!file_exists($ruta_zip)) {
+            wp_send_json_error(array('message' => __('El backup no existe.', 'flavor-chat-ia')));
+        }
+
+        if (!@unlink($ruta_zip)) {
+            wp_send_json_error(array('message' => __('No se pudo eliminar el backup.', 'flavor-chat-ia')));
+        }
+
+        wp_send_json_success(array(
+            'message' => __('Backup eliminado correctamente.', 'flavor-chat-ia'),
+        ));
+    }
+
+    /**
+     * Descarga un backup
+     */
+    public function ajax_descargar_backup() {
+        check_ajax_referer('flavor_export_import_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('No tienes permisos suficientes.', 'flavor-chat-ia')));
+        }
+
+        $backup_id = isset($_POST['backup_id']) ? sanitize_text_field($_POST['backup_id']) : '';
+
+        if (empty($backup_id)) {
+            wp_send_json_error(array('message' => __('ID de backup no proporcionado.', 'flavor-chat-ia')));
+        }
+
+        $backup_dir = $this->obtener_directorio_backups();
+        $ruta_zip = $backup_dir . $backup_id . '.zip';
+
+        if (!file_exists($ruta_zip)) {
+            wp_send_json_error(array('message' => __('El backup no existe.', 'flavor-chat-ia')));
+        }
+
+        // Generar URL temporal de descarga
+        $upload_dir = wp_upload_dir();
+        $url_descarga = str_replace($upload_dir['basedir'], $upload_dir['baseurl'], $ruta_zip);
+
+        wp_send_json_success(array(
+            'download_url' => $url_descarga,
+            'filename' => $backup_id . '.zip',
+        ));
+    }
+
+    /**
+     * Guarda la configuración de backups programados
+     */
+    public function ajax_guardar_config_backup() {
+        check_ajax_referer('flavor_export_import_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('No tienes permisos suficientes.', 'flavor-chat-ia')));
+        }
+
+        $config = array(
+            'enabled' => isset($_POST['backup_enabled']) && $_POST['backup_enabled'] === 'true',
+            'frequency' => isset($_POST['backup_frequency']) ? sanitize_text_field($_POST['backup_frequency']) : 'weekly',
+            'retain_count' => isset($_POST['backup_retain']) ? absint($_POST['backup_retain']) : 5,
+            'include_database' => isset($_POST['backup_database']) && $_POST['backup_database'] === 'true',
+            'include_uploads' => isset($_POST['backup_uploads']) && $_POST['backup_uploads'] === 'true',
+            'email_notify' => isset($_POST['backup_email']) ? sanitize_email($_POST['backup_email']) : '',
+        );
+
+        update_option('flavor_backup_schedule_config', $config);
+
+        // Programar o desprogramar cron
+        $timestamp = wp_next_scheduled('flavor_scheduled_backup');
+        if ($timestamp) {
+            wp_unschedule_event($timestamp, 'flavor_scheduled_backup');
+        }
+
+        if ($config['enabled']) {
+            $recurrencia = $config['frequency'] === 'daily' ? 'daily' : 'weekly';
+            wp_schedule_event(time() + 3600, $recurrencia, 'flavor_scheduled_backup');
+        }
+
+        wp_send_json_success(array(
+            'message' => __('Configuración de backups guardada.', 'flavor-chat-ia'),
+            'config' => $config,
+        ));
+    }
+
+    /**
+     * Ejecuta backup programado (llamado por cron)
+     */
+    public function ejecutar_backup_programado() {
+        $config = get_option('flavor_backup_schedule_config', array());
+
+        if (empty($config['enabled'])) {
+            return;
+        }
+
+        try {
+            $incluir_db = !empty($config['include_database']);
+            $incluir_uploads = !empty($config['include_uploads']);
+
+            $resultado = $this->crear_backup('scheduled-' . current_time('Y-m-d'), $incluir_db, $incluir_uploads);
+
+            // Limpiar backups antiguos
+            $this->limpiar_backups_antiguos($config['retain_count'] ?? 5);
+
+            // Notificar por email si está configurado
+            if (!empty($config['email_notify'])) {
+                $this->notificar_backup_completado($resultado, $config['email_notify']);
+            }
+
+        } catch (Exception $e) {
+            error_log('Flavor Backup Scheduled Error: ' . $e->getMessage());
+
+            if (!empty($config['email_notify'])) {
+                wp_mail(
+                    $config['email_notify'],
+                    __('[Flavor Platform] Error en backup programado', 'flavor-chat-ia'),
+                    sprintf(__('Se produjo un error durante el backup programado: %s', 'flavor-chat-ia'), $e->getMessage())
+                );
+            }
+        }
+    }
+
+    // =========================================================================
+    // MÉTODOS AUXILIARES - BACKUPS Y MIGRACIÓN
+    // =========================================================================
+
+    /**
+     * Obtiene el directorio de backups
+     *
+     * @return string Ruta al directorio
+     */
+    private function obtener_directorio_backups() {
+        $upload_dir = wp_upload_dir();
+        $backup_dir = $upload_dir['basedir'] . '/flavor-backups/';
+
+        if (!file_exists($backup_dir)) {
+            wp_mkdir_p($backup_dir);
+            // Proteger directorio
+            file_put_contents($backup_dir . '.htaccess', 'deny from all');
+            file_put_contents($backup_dir . 'index.php', '<?php // Silence is golden');
+        }
+
+        return $backup_dir;
+    }
+
+    /**
+     * Crea un backup
+     *
+     * @param string $nombre Nombre del backup
+     * @param bool $incluir_db Incluir base de datos
+     * @param bool $incluir_uploads Incluir uploads
+     * @param bool $incluir_plugins Incluir plugins activos
+     * @param bool $incluir_themes Incluir tema activo
+     * @return array Información del backup
+     */
+    private function crear_backup($nombre = '', $incluir_db = true, $incluir_uploads = false, $incluir_plugins = false, $incluir_themes = false) {
+        $backup_dir = $this->obtener_directorio_backups();
+        $timestamp = current_time('Y-m-d_H-i-s');
+        $nombre_archivo = 'flavor-backup-' . ($nombre ? sanitize_file_name($nombre) . '-' : '') . $timestamp;
+        $ruta_zip = $backup_dir . $nombre_archivo . '.zip';
+
+        $zip = new ZipArchive();
+        if ($zip->open($ruta_zip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            throw new Exception(__('No se pudo crear el archivo de backup.', 'flavor-chat-ia'));
+        }
+
+        // Exportar configuración del plugin
+        $config = $this->export_full_config();
+        $zip->addFromString('flavor-config.json', wp_json_encode($config, JSON_PRETTY_PRINT));
+
+        // Exportar base de datos
+        if ($incluir_db) {
+            $sql_content = $this->exportar_base_datos();
+            $zip->addFromString('database.sql', $sql_content);
+        }
+
+        // Exportar uploads
+        if ($incluir_uploads) {
+            $uploads_dir = wp_upload_dir();
+            $this->agregar_directorio_a_zip($zip, $uploads_dir['basedir'], 'wp-content/uploads');
+        }
+
+        // Exportar plugins activos
+        if ($incluir_plugins) {
+            $plugins_activos = get_option('active_plugins', array());
+            $plugins_dir = WP_PLUGIN_DIR;
+            $plugins_exportados = array();
+
+            foreach ($plugins_activos as $plugin_path) {
+                $partes = explode('/', $plugin_path);
+                if (count($partes) > 1) {
+                    $carpeta_plugin = $partes[0];
+                    $ruta_completa = $plugins_dir . '/' . $carpeta_plugin;
+
+                    if (!in_array($carpeta_plugin, $plugins_exportados) && is_dir($ruta_completa)) {
+                        $this->agregar_directorio_a_zip($zip, $ruta_completa, 'wp-content/plugins/' . $carpeta_plugin);
+                        $plugins_exportados[] = $carpeta_plugin;
+                    }
+                } else {
+                    $archivo_plugin = $plugins_dir . '/' . $plugin_path;
+                    if (file_exists($archivo_plugin)) {
+                        $zip->addFile($archivo_plugin, 'wp-content/plugins/' . $plugin_path);
+                    }
+                }
+            }
+        }
+
+        // Exportar tema activo
+        if ($incluir_themes) {
+            $tema_activo = get_stylesheet_directory();
+            $nombre_tema = basename($tema_activo);
+            $this->agregar_directorio_a_zip($zip, $tema_activo, 'wp-content/themes/' . $nombre_tema);
+
+            // Tema padre si existe
+            $tema_padre = get_template_directory();
+            if ($tema_padre !== $tema_activo) {
+                $nombre_tema_padre = basename($tema_padre);
+                $this->agregar_directorio_a_zip($zip, $tema_padre, 'wp-content/themes/' . $nombre_tema_padre);
+            }
+        }
+
+        // Añadir manifest
+        $manifest = array(
+            'version' => self::EXPORT_FORMAT_VERSION,
+            'fecha' => current_time('mysql'),
+            'sitio' => home_url(),
+            'tipo' => 'backup',
+            'contenido' => array(
+                'config' => true,
+                'database' => $incluir_db,
+                'uploads' => $incluir_uploads,
+                'plugins' => $incluir_plugins,
+                'themes' => $incluir_themes,
+            ),
+        );
+        $zip->addFromString('manifest.json', wp_json_encode($manifest, JSON_PRETTY_PRINT));
+
+        $zip->close();
+
+        return array(
+            'id' => $nombre_archivo,
+            'fecha' => current_time('mysql'),
+            'size' => size_format(filesize($ruta_zip)),
+            'contenido' => $manifest['contenido'],
+        );
+    }
+
+    /**
+     * Crea un backup automático antes de operaciones críticas
+     *
+     * @param string $prefijo Prefijo para el nombre
+     * @return array|false Información del backup o false si falla
+     */
+    private function crear_backup_automatico($prefijo = 'auto') {
+        try {
+            return $this->crear_backup($prefijo, true, false);
+        } catch (Exception $e) {
+            error_log('Flavor Auto-Backup Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Exporta la base de datos a SQL
+     *
+     * @return string Contenido SQL
+     */
+    private function exportar_base_datos() {
+        global $wpdb;
+
+        $sql = "-- Flavor Platform Database Export\n";
+        $sql .= "-- Generado: " . current_time('mysql') . "\n";
+        $sql .= "-- Sitio: " . home_url() . "\n\n";
+
+        // Obtener tablas
+        $tablas = $wpdb->get_col("SHOW TABLES LIKE '{$wpdb->prefix}%'");
+
+        foreach ($tablas as $tabla) {
+            // Estructura de la tabla
+            $create = $wpdb->get_row("SHOW CREATE TABLE `{$tabla}`", ARRAY_N);
+            $sql .= "\n-- Tabla: {$tabla}\n";
+            $sql .= "DROP TABLE IF EXISTS `{$tabla}`;\n";
+            $sql .= $create[1] . ";\n\n";
+
+            // Datos de la tabla
+            $filas = $wpdb->get_results("SELECT * FROM `{$tabla}`", ARRAY_A);
+            foreach ($filas as $fila) {
+                $valores = array_map(function($v) use ($wpdb) {
+                    if (is_null($v)) {
+                        return 'NULL';
+                    }
+                    return "'" . $wpdb->_real_escape($v) . "'";
+                }, array_values($fila));
+
+                $sql .= "INSERT INTO `{$tabla}` VALUES(" . implode(',', $valores) . ");\n";
+            }
+        }
+
+        return $sql;
+    }
+
+    /**
+     * Importa base de datos desde SQL
+     *
+     * @param string $sql_content Contenido SQL
+     */
+    private function importar_base_datos($sql_content) {
+        global $wpdb;
+
+        // Dividir en sentencias
+        $sentencias = preg_split('/;\s*\n/', $sql_content);
+
+        foreach ($sentencias as $sentencia) {
+            $sentencia = trim($sentencia);
+            if (empty($sentencia) || strpos($sentencia, '--') === 0) {
+                continue;
+            }
+            $wpdb->query($sentencia);
+        }
+    }
+
+    /**
+     * Agrega un directorio al ZIP
+     *
+     * @param ZipArchive $zip Objeto ZIP
+     * @param string $directorio Directorio origen
+     * @param string $ruta_zip Ruta dentro del ZIP
+     */
+    private function agregar_directorio_a_zip($zip, $directorio, $ruta_zip) {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directorio, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ($iterator as $archivo) {
+            if ($archivo->isFile()) {
+                $ruta_real = $archivo->getRealPath();
+                $ruta_relativa = $ruta_zip . '/' . substr($ruta_real, strlen($directorio) + 1);
+                $zip->addFile($ruta_real, $ruta_relativa);
+            }
+        }
+    }
+
+    /**
+     * Extrae archivos del ZIP
+     *
+     * @param ZipArchive $zip Objeto ZIP
+     * @param string $prefijo Prefijo de archivos a extraer
+     * @param string $destino Directorio destino
+     */
+    private function extraer_archivos_zip($zip, $prefijo, $destino) {
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $nombre = $zip->getNameIndex($i);
+            if (strpos($nombre, $prefijo) === 0) {
+                $zip->extractTo($destino, $nombre);
+            }
+        }
+    }
+
+    /**
+     * Lista los backups disponibles
+     *
+     * @return array Lista de backups
+     */
+    public function listar_backups() {
+        $backup_dir = $this->obtener_directorio_backups();
+        $backups = array();
+
+        foreach (glob($backup_dir . 'flavor-backup-*.zip') as $archivo) {
+            $nombre = basename($archivo, '.zip');
+            $manifest_content = null;
+
+            // Intentar leer el manifest
+            $zip = new ZipArchive();
+            if ($zip->open($archivo) === true) {
+                $manifest_content = $zip->getFromName('manifest.json');
+                $zip->close();
+            }
+
+            $manifest = $manifest_content ? json_decode($manifest_content, true) : array();
+
+            $backups[] = array(
+                'id' => $nombre,
+                'fecha' => isset($manifest['fecha']) ? $manifest['fecha'] : date('Y-m-d H:i:s', filemtime($archivo)),
+                'size' => size_format(filesize($archivo)),
+                'contenido' => isset($manifest['contenido']) ? $manifest['contenido'] : array(),
+            );
+        }
+
+        // Ordenar por fecha descendente
+        usort($backups, function($a, $b) {
+            return strtotime($b['fecha']) - strtotime($a['fecha']);
+        });
+
+        return $backups;
+    }
+
+    /**
+     * Limpia backups antiguos
+     *
+     * @param int $retener Cantidad a retener
+     */
+    private function limpiar_backups_antiguos($retener = 5) {
+        $backups = $this->listar_backups();
+
+        // Solo eliminar backups programados
+        $backups_programados = array_filter($backups, function($b) {
+            return strpos($b['id'], 'scheduled') !== false;
+        });
+
+        if (count($backups_programados) > $retener) {
+            $a_eliminar = array_slice($backups_programados, $retener);
+            $backup_dir = $this->obtener_directorio_backups();
+
+            foreach ($a_eliminar as $backup) {
+                @unlink($backup_dir . $backup['id'] . '.zip');
+            }
+        }
+    }
+
+    /**
+     * Notifica backup completado por email
+     *
+     * @param array $backup Info del backup
+     * @param string $email Email destino
+     */
+    private function notificar_backup_completado($backup, $email) {
+        $asunto = sprintf(__('[Flavor Platform] Backup completado - %s', 'flavor-chat-ia'), $backup['fecha']);
+        $mensaje = sprintf(
+            __("Se ha completado el backup programado.\n\nFecha: %s\nTamaño: %s\nSitio: %s", 'flavor-chat-ia'),
+            $backup['fecha'],
+            $backup['size'],
+            home_url()
+        );
+
+        wp_mail($email, $asunto, $mensaje);
     }
 }

@@ -4,7 +4,7 @@
 
 Este catalogo sustituye al catalogo heredado generado automaticamente que mezclaba estados antiguos, pantallas teoricas y etiquetas de "completo" que ya no eran fiables.
 
-Su matriz sigue el inventario operativo de `60` IDs del loader, no una afirmacion de que existan `60` modulos con clase principal auditada. Para esa cifra, prevalece `docs/ESTADO-REAL-PLUGIN.md` y la auditoria vigente.
+Su matriz sigue el inventario operativo de `65` IDs del loader, no una afirmacion de que existan `65` modulos con clase principal auditada. Para esa cifra, prevalece `docs/ESTADO-REAL-PLUGIN.md` y la auditoria vigente.
 
 Desde ahora debe leerse junto con:
 
@@ -15,7 +15,7 @@ Desde ahora debe leerse junto con:
 ## Navegacion rapida
 
 - [Resumen actual](#resumen-actual)
-- [Matriz actual de los 60 modulos](#matriz-actual-de-los-60-modulos)
+- [Matriz actual de los 65 modulos](#matriz-actual-de-los-65-modulos)
 - [Modulos que hoy requieren mas cautela](#modulos-que-hoy-requieren-mas-cautela)
 - [Modulos mejor posicionados en la fase actual](#modulos-mejor-posicionados-en-la-fase-actual)
 - [Uso recomendado del catalogo](#uso-recomendado-del-catalogo)
@@ -38,8 +38,8 @@ Modulo fuera del foco principal de la fase reciente.
 
 | Estado | Cantidad |
 |---|---|
-| `Repasado intensivo` | 43 |
-| `Parcial` | 16 |
+| `Repasado intensivo` | 46 |
+| `Parcial` | 18 |
 | `Pendiente / no prioritario` | 1 |
 
 ## Criterio de fiabilidad
@@ -56,12 +56,13 @@ No intenta deducir automaticamente:
 - que todas las rutas han sido probadas en runtime hoy
 - que una pantalla existente equivale a madurez alta
 
-## Matriz actual de los 60 modulos
+## Matriz actual de los 65 modulos
 
-Estas `60` entradas representan el catalogo operativo actual del loader. No sustituyen la cifra auditada de `59` modulos con clase principal ni deben leerse como garantia de madurez equivalente.
+Estas `65` entradas representan el catalogo operativo actual del loader. No sustituyen la cifra auditada de modulos con clase principal ni deben leerse como garantia de madurez equivalente.
 
 | Modulo | Estado actual | Nota breve |
 |---|---|---|
+| `contabilidad` | `Repasado intensivo` | Libro contable integrado con facturacion, socios, marketplace. Desglose fiscal y comparativas. |
 | `woocommerce` | `Parcial` | Ajustes de contrato y fallbacks; no fue foco de integracion incremental. |
 | `banco_tiempo` | `Repasado intensivo` | Mucho trabajo en portal, tabs, UX, acciones, contexto y enlace con comunidades. |
 | `marketplace` | `Repasado intensivo` | Bastante trabajo en acciones, rutas y patron padre/satelite por anuncio. |
@@ -106,7 +107,7 @@ Estas `60` entradas representan el catalogo operativo actual del loader. No sust
 | `themacle` | `Parcial` | Mejoras de shortcodes y acciones, pero sin profundidad comparable al resto. |
 | `reservas` | `Repasado intensivo` | Corregido conflicto de handlers, calendario y runtime frontend. |
 | `email_marketing` | `Parcial` | Mejoras de contrato, dashboard y fallbacks, sin pasada profunda total. |
-| `sello_conciencia` | `Parcial` | Dashboard saneado; no fue foco de arquitectura incremental. |
+| `sello_conciencia` | `Repasado intensivo` | Modulo de medicion de impacto RSC/ESG con 5 premisas de economia consciente. Dashboard, API REST y shortcodes. |
 | `circulos_cuidados` | `Repasado intensivo` | Integrado como padre incremental y saneado en cron y dashboard. |
 | `economia_don` | `Repasado intensivo` | Integrado como padre incremental por entidad `economia_don`. |
 | `justicia_restaurativa` | `Repasado intensivo` | Ajustes previos relevantes; buen encaje contextual aunque falta mas runtime. |
@@ -133,7 +134,6 @@ Si el objetivo es desplegar o validar funcionalidad real cuanto antes, conviene 
 - `bares`
 - `email_marketing`
 - `fichaje_empleados`
-- `sello_conciencia`
 - `woocommerce`
 - `themacle`
 - `bicicletas_compartidas`
@@ -173,6 +173,8 @@ El bloque con mas trabajo reciente y mejor trazabilidad de cambios incluye:
 - `economia_suficiencia`
 - `energia_comunitaria`
 - `recetas`
+- `contabilidad`
+- `sello_conciencia`
 
 ## Uso recomendado del catalogo
 

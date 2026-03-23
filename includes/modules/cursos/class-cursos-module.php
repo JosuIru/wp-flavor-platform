@@ -206,6 +206,11 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
                     'callback' => [$this, 'render_admin_inscripciones'],
                     'badge' => [$this, 'contar_inscripciones_pendientes'],
                 ],
+                [
+                    'slug' => 'cursos-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_configuracion'],
+                ],
             ],
             'estadisticas' => [$this, 'get_estadisticas_dashboard'],
         ];
@@ -282,16 +287,16 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         if (Flavor_Chat_Helpers::tabla_existe($tabla_inscripciones)) {
             $estadisticas['total_alumnos'] = (int) $wpdb->get_var(
-                "SELECT COUNT(DISTINCT alumno_id) FROM $tabla_inscripciones WHERE estado IN ('activa', 'completada')"
+                "SELECT COUNT(DISTINCT usuario_id) FROM $tabla_inscripciones WHERE estado IN ('activo', 'completado')"
             );
 
             $estadisticas['inscripciones_mes'] = (int) $wpdb->get_var(
                 "SELECT COUNT(*) FROM $tabla_inscripciones
-                 WHERE fecha_inscripcion >= DATE_SUB(NOW(), INTERVAL 30 DAY)"
+                 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)"
             );
 
             $estadisticas['cursos_completados'] = (int) $wpdb->get_var(
-                "SELECT COUNT(*) FROM $tabla_inscripciones WHERE estado = 'completada'"
+                "SELECT COUNT(*) FROM $tabla_inscripciones WHERE estado = 'completado'"
             );
         }
 
@@ -303,7 +308,21 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_dashboard() {
         $estadisticas = $this->get_estadisticas_dashboard();
-        include $this->get_module_path() . 'templates/admin/dashboard.php';
+        $legacy_view = $this->get_module_path() . 'templates/admin/dashboard.php';
+        $canonical_view = dirname(__FILE__) . '/views/dashboard.php';
+
+        if (file_exists($legacy_view)) {
+            include $legacy_view;
+            return;
+        }
+
+        if (file_exists($canonical_view)) {
+            include $canonical_view;
+            return;
+        }
+
+        echo '<div class="wrap"><h1>' . esc_html__('Dashboard de Cursos', 'flavor-chat-ia') . '</h1>';
+        echo '<p>' . esc_html__('No se encontró la vista de dashboard.', 'flavor-chat-ia') . '</p></div>';
     }
 
     /**
@@ -337,8 +356,8 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
                 "SELECT i.*, c.titulo as curso_titulo, u.display_name as alumno_nombre, u.user_email as alumno_email
                  FROM $tabla_inscripciones i
                  INNER JOIN $tabla_cursos c ON i.curso_id = c.id
-                 INNER JOIN {$wpdb->users} u ON i.alumno_id = u.ID
-                 ORDER BY i.fecha_inscripcion DESC
+                 INNER JOIN {$wpdb->users} u ON i.usuario_id = u.ID
+                 ORDER BY i.created_at DESC
                  LIMIT 100"
             );
         }
@@ -571,7 +590,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $sql_inscripciones = "CREATE TABLE IF NOT EXISTS $tabla_inscripciones (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             curso_id bigint(20) unsigned NOT NULL,
-            alumno_id bigint(20) unsigned NOT NULL,
+            usuario_id bigint(20) unsigned NOT NULL,
             precio_pagado decimal(10,2) DEFAULT 0,
             metodo_pago varchar(50) DEFAULT NULL,
             transaccion_id varchar(100) DEFAULT NULL,
@@ -584,13 +603,13 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
             certificado_emitido tinyint(1) DEFAULT 0,
             valoracion int(11) DEFAULT NULL,
             comentario_valoracion text DEFAULT NULL,
-            fecha_inscripcion datetime DEFAULT CURRENT_TIMESTAMP,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
             fecha_completado datetime DEFAULT NULL,
             PRIMARY KEY (id),
-            UNIQUE KEY curso_alumno (curso_id, alumno_id),
-            KEY alumno_id (alumno_id),
+            UNIQUE KEY curso_alumno (curso_id, usuario_id),
+            KEY usuario_id (usuario_id),
             KEY estado (estado),
-            KEY fecha_inscripcion (fecha_inscripcion)
+            KEY created_at (created_at)
         ) $charset_collate;";
 
         $sql_progreso = "CREATE TABLE IF NOT EXISTS $tabla_progreso (
@@ -614,7 +633,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             inscripcion_id bigint(20) unsigned NOT NULL,
             curso_id bigint(20) unsigned NOT NULL,
-            alumno_id bigint(20) unsigned NOT NULL,
+            usuario_id bigint(20) unsigned NOT NULL,
             codigo_verificacion varchar(100) NOT NULL,
             nota_final decimal(5,2) DEFAULT NULL,
             horas_completadas int(11) DEFAULT NULL,
@@ -624,7 +643,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
             PRIMARY KEY (id),
             UNIQUE KEY inscripcion_id (inscripcion_id),
             UNIQUE KEY codigo_verificacion (codigo_verificacion),
-            KEY alumno_id (alumno_id),
+            KEY usuario_id (usuario_id),
             KEY curso_id (curso_id)
         ) $charset_collate;";
 
@@ -895,7 +914,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         if (is_user_logged_in()) {
             $tabla_inscripciones = $wpdb->prefix . 'flavor_cursos_inscripciones';
             $inscripcion = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM $tabla_inscripciones WHERE curso_id = %d AND alumno_id = %d",
+                "SELECT * FROM $tabla_inscripciones WHERE curso_id = %d AND usuario_id = %d",
                 $curso->id,
                 get_current_user_id()
             ));
@@ -949,7 +968,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
             'inscripcion' => $inscripcion ? [
                 'estado' => $inscripcion->estado,
                 'progreso' => floatval($inscripcion->progreso_porcentaje),
-                'fecha' => $inscripcion->fecha_inscripcion,
+                'fecha' => $inscripcion->created_at,
                 'certificado' => (bool)$inscripcion->certificado_emitido,
             ] : null,
         ];
@@ -990,7 +1009,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Verificar que no esté ya inscrito
         $ya_inscrito = $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM $tabla_inscripciones WHERE curso_id = %d AND alumno_id = %d",
+            "SELECT id FROM $tabla_inscripciones WHERE curso_id = %d AND usuario_id = %d",
             $curso_id,
             $usuario_id
         ));
@@ -1010,10 +1029,10 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         // Crear inscripción
         $resultado = $wpdb->insert($tabla_inscripciones, [
             'curso_id' => $curso_id,
-            'alumno_id' => $usuario_id,
+            'usuario_id' => $usuario_id,
             'precio_pagado' => $curso->es_gratuito ? 0 : $curso->precio,
             'estado' => $estado_inscripcion,
-            'fecha_inscripcion' => current_time('mysql'),
+            'created_at' => current_time('mysql'),
         ]);
 
         if (!$resultado) {
@@ -1059,11 +1078,11 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         $cursos = $wpdb->get_results($wpdb->prepare(
             "SELECT c.*, i.estado as estado_inscripcion, i.progreso_porcentaje,
-                    i.lecciones_completadas, i.fecha_inscripcion, i.certificado_emitido
+                    i.lecciones_completadas, i.created_at, i.certificado_emitido
              FROM $tabla_inscripciones i
              INNER JOIN $tabla_cursos c ON i.curso_id = c.id
-             WHERE i.alumno_id = %d $where_estado
-             ORDER BY i.fecha_ultima_actividad DESC, i.fecha_inscripcion DESC",
+             WHERE i.usuario_id = %d $where_estado
+             ORDER BY i.fecha_ultima_actividad DESC, i.created_at DESC",
             $usuario_id
         ));
 
@@ -1081,7 +1100,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
                     'estado_inscripcion' => $c->estado_inscripcion,
                     'progreso' => floatval($c->progreso_porcentaje),
                     'lecciones_completadas' => $c->lecciones_completadas,
-                    'fecha_inscripcion' => $c->fecha_inscripcion,
+                    'created_at' => $c->created_at,
                     'certificado' => (bool)$c->certificado_emitido,
                 ];
             }, $cursos),
@@ -1120,7 +1139,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         // Verificar inscripción (a menos que sea gratuita)
         $inscripcion = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_inscripciones
-             WHERE curso_id = %d AND alumno_id = %d AND estado = 'activa'",
+             WHERE curso_id = %d AND usuario_id = %d AND estado = 'activo'",
             $leccion->curso_id,
             $usuario_id
         ));
@@ -1204,7 +1223,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         // Verificar inscripción
         $inscripcion = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_inscripciones
-             WHERE curso_id = %d AND alumno_id = %d AND estado = 'activa'",
+             WHERE curso_id = %d AND usuario_id = %d AND estado = 'activo'",
             $leccion->curso_id,
             $usuario_id
         ));
@@ -1334,7 +1353,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         // Verificar inscripción completada
         $inscripcion = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_inscripciones
-             WHERE curso_id = %d AND alumno_id = %d AND estado = 'completada'",
+             WHERE curso_id = %d AND usuario_id = %d AND estado = 'completado'",
             $curso_id,
             $usuario_id
         ));
@@ -1397,7 +1416,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         // Verificar inscripción completada
         $inscripcion = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_inscripciones
-             WHERE curso_id = %d AND alumno_id = %d AND estado = 'completada'",
+             WHERE curso_id = %d AND usuario_id = %d AND estado = 'completado'",
             $curso_id,
             $usuario_id
         ));
@@ -1429,7 +1448,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $wpdb->insert($tabla_certificados, [
             'inscripcion_id' => $inscripcion->id,
             'curso_id' => $curso_id,
-            'alumno_id' => $usuario_id,
+            'usuario_id' => $usuario_id,
             'codigo_verificacion' => $codigo,
             'nota_final' => $inscripcion->puntos_obtenidos,
             'horas_completadas' => ceil($inscripcion->tiempo_total_minutos / 60),
@@ -1518,8 +1537,8 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $stats = $wpdb->get_row($wpdb->prepare(
             "SELECT
                 COUNT(*) as total_inscritos,
-                SUM(CASE WHEN estado = 'activa' THEN 1 ELSE 0 END) as activos,
-                SUM(CASE WHEN estado = 'completada' THEN 1 ELSE 0 END) as completados,
+                SUM(CASE WHEN estado = 'activo' THEN 1 ELSE 0 END) as activos,
+                SUM(CASE WHEN estado = 'completado' THEN 1 ELSE 0 END) as completados,
                 SUM(CASE WHEN estado = 'abandonada' THEN 1 ELSE 0 END) as abandonados,
                 AVG(progreso_porcentaje) as progreso_medio,
                 AVG(tiempo_total_minutos) as tiempo_medio
@@ -1617,7 +1636,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         // Verificar inscripción
         $inscripcion = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_inscripciones
-             WHERE curso_id = %d AND alumno_id = %d AND estado IN ('activa', 'completada')",
+             WHERE curso_id = %d AND usuario_id = %d AND estado IN ('activo', 'completado')",
             $curso_id,
             $usuario_id
         ));
@@ -1931,9 +1950,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $inscritos = $wpdb->get_results($wpdb->prepare(
             "SELECT i.*, u.user_email, u.display_name
              FROM $tabla_inscripciones i
-             INNER JOIN {$wpdb->users} u ON i.alumno_id = u.ID
+             INNER JOIN {$wpdb->users} u ON i.usuario_id = u.ID
              WHERE i.curso_id = %d
-             ORDER BY i.fecha_inscripcion DESC",
+             ORDER BY i.created_at DESC",
             $curso_id
         ));
 
@@ -1945,7 +1964,7 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
                 $inscrito->user_email,
                 $inscrito->estado,
                 $inscrito->progreso_porcentaje,
-                $inscrito->fecha_inscripcion
+                $inscrito->created_at
             );
         }
 
@@ -2182,8 +2201,8 @@ Puedes acceder al contenido del curso desde tu panel de usuario.
             "SELECT i.*, c.titulo, u.user_email, u.display_name
              FROM $tabla_inscripciones i
              INNER JOIN $tabla_cursos c ON i.curso_id = c.id
-             INNER JOIN {$wpdb->users} u ON i.alumno_id = u.ID
-             WHERE i.estado = 'activa'
+             INNER JOIN {$wpdb->users} u ON i.usuario_id = u.ID
+             WHERE i.estado = 'activo'
              AND i.progreso_porcentaje < 100
              AND (i.fecha_ultima_actividad IS NULL OR i.fecha_ultima_actividad < DATE_SUB(NOW(), INTERVAL 7 DAY))
              LIMIT 50"
@@ -2555,6 +2574,13 @@ KNOWLEDGE;
      * Registrar páginas de administración (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Páginas ocultas del sidebar (primer parámetro null)
@@ -2845,5 +2871,15 @@ KNOWLEDGE;
         }
 
         return $sincronizados;
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_admin_configuracion() {
+        $views_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($views_path)) {
+            include $views_path;
+        }
     }
 }

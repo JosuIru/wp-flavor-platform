@@ -349,7 +349,7 @@ class Flavor_Socios_API {
         $tabla_cursos_inscripciones = $wpdb->prefix . 'flavor_cursos_inscripciones';
         if (Flavor_Chat_Helpers::tabla_existe($tabla_cursos_inscripciones)) {
             $cursos = $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM $tabla_cursos_inscripciones WHERE alumno_id = %d AND estado = 'completada'",
+                "SELECT COUNT(*) FROM $tabla_cursos_inscripciones WHERE usuario_id = %d AND estado IN ('completado', 'activo')",
                 $usuario_id
             ));
             $actividades['cursos_completados'] = (int) $cursos;

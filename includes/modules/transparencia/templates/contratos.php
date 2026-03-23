@@ -15,13 +15,23 @@ if (!defined('ABSPATH')) {
 global $wpdb;
 
 $prefijo_tabla = $wpdb->prefix . 'flavor_transparencia_';
-$tabla_documentos = $prefijo_tabla . 'documentos_publicos';
+$tabla_documentos = '';
+$tablas_documentos_candidatas = [
+    $prefijo_tabla . 'documentos_publicos',
+    $prefijo_tabla . 'documentos',
+];
+foreach ($tablas_documentos_candidatas as $tabla_candidata) {
+    if (Flavor_Chat_Helpers::tabla_existe($tabla_candidata)) {
+        $tabla_documentos = $tabla_candidata;
+        break;
+    }
+}
 
 // Verificar que la tabla existe
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
+if ($tabla_documentos === '') {
     echo '<div class="transparencia-aviso transparencia-aviso--info">';
     echo '<span class="dashicons dashicons-info"></span>';
-    echo '<p>' . esc_html__('El sistema de contratos no esta disponible en este momento.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Todavía no hay contratos publicados en esta instalación.', 'flavor-chat-ia') . '</p>';
     echo '</div>';
     return;
 }

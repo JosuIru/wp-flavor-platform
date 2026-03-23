@@ -86,7 +86,7 @@ class Flavor_Widget_Registry {
                 'label'       => __('Personas', 'flavor-chat-ia'),
                 'icon'        => 'dashicons-admin-users',
                 'order'       => 10,
-                'description' => __('Gestion de usuarios, empleados y socios', 'flavor-chat-ia'),
+                'description' => __('Gestion de usuarios, empleados y miembros', 'flavor-chat-ia'),
                 'color'       => '#ec4899', // Rosa
             ],
 

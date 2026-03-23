@@ -25,6 +25,7 @@ $tabla_instalaciones_existe = Flavor_Chat_Helpers::tabla_existe($tabla_instalaci
 $tabla_lecturas_existe = Flavor_Chat_Helpers::tabla_existe($tabla_lecturas);
 $tabla_participantes_existe = Flavor_Chat_Helpers::tabla_existe($tabla_participantes);
 $tabla_incidencias_existe = Flavor_Chat_Helpers::tabla_existe($tabla_incidencias);
+$tablas_disponibles = $tabla_comunidades_existe;
 
 // Inicializar estadísticas
 $stats = [
@@ -81,54 +82,6 @@ if ($tabla_comunidades_existe && $tabla_instalaciones_existe && $tabla_participa
     );
 }
 
-// Datos demo si no hay datos reales
-$usando_demo = $stats['comunidades'] == 0;
-
-if ($usando_demo) {
-    $stats = [
-        'comunidades' => 3,
-        'instalaciones' => 12,
-        'participantes' => 156,
-        'kwh_mes' => 4520,
-        'ahorro_mes' => 813.60,
-        'co2_evitado' => 1039.60,
-        'incidencias_abiertas' => 2,
-        'potencia_total' => 85.5,
-    ];
-
-    $comunidades = [
-        (object) [
-            'id' => 1,
-            'nombre' => 'Comunidad Solar Barrio Norte',
-            'modelo_reparto' => 'proporcional',
-            'estado' => 'activa',
-            'descripcion' => 'Comunidad energética con paneles solares en azoteas del barrio norte.',
-            'num_instalaciones' => 5,
-            'num_participantes' => 67,
-            'potencia_total' => 42.5,
-        ],
-        (object) [
-            'id' => 2,
-            'nombre' => 'Energía Compartida Centro',
-            'modelo_reparto' => 'fijo',
-            'estado' => 'activa',
-            'descripcion' => 'Red de autoconsumo compartido en el centro histórico.',
-            'num_instalaciones' => 4,
-            'num_participantes' => 52,
-            'potencia_total' => 28.0,
-        ],
-        (object) [
-            'id' => 3,
-            'nombre' => 'Vecinos Sostenibles Sur',
-            'modelo_reparto' => 'proporcional',
-            'estado' => 'activa',
-            'descripcion' => 'Proyecto piloto de energía renovable comunitaria.',
-            'num_instalaciones' => 3,
-            'num_participantes' => 37,
-            'potencia_total' => 15.0,
-        ],
-    ];
-}
 ?>
 
 <div class="dm-dashboard" x-data="energiaDashboard()">
@@ -142,11 +95,11 @@ if ($usando_demo) {
         </p>
     </div>
 
-    <?php if ($usando_demo): ?>
+    <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Se muestran datos de ejemplo. Crea una comunidad energética para ver datos reales.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Energía Comunitaria o aún no hay actividad registrada.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 

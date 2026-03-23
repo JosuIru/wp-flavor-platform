@@ -122,7 +122,7 @@ $mostrar_enlace = isset($atts['enlace']) ? filter_var($atts['enlace'], FILTER_VA
 
     <?php if ($mostrar_enlace) : ?>
     <footer class="transparencia-presupuesto-resumen__footer">
-        <a href="<?php echo esc_url(home_url('/transparencia/presupuestos/')); ?>" class="transparencia-presupuesto-resumen__enlace">
+        <a href="<?php echo esc_url(home_url('/mi-portal/transparencia/presupuestos/')); ?>" class="transparencia-presupuesto-resumen__enlace">
             <?php esc_html_e('Ver presupuesto completo', 'flavor-chat-ia'); ?>
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </a>

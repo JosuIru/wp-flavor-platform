@@ -345,10 +345,11 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
             'post_author' => get_current_user_id(),
             'post_title' => $titulo,
             'post_content' => $descripcion,
-        ]);
+        ], true);
 
-        if (is_wp_error($saber_id)) {
-            return new \WP_REST_Response(['success' => false, 'error' => $saber_id->get_error_message()], 500);
+        if (is_wp_error($saber_id) || empty($saber_id)) {
+            $error = is_wp_error($saber_id) ? $saber_id->get_error_message() : __('No se pudo crear el saber.', 'flavor-chat-ia');
+            return new \WP_REST_Response(['success' => false, 'error' => $error], 500);
         }
 
         if ($categoria && isset(self::CATEGORIAS_SABER[$categoria])) {
@@ -928,10 +929,11 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
             'post_author' => $user_id,
             'post_title' => $titulo,
             'post_content' => $descripcion,
-        ]);
+        ], true);
 
-        if (is_wp_error($saber_id)) {
-            wp_send_json_error(['message' => $saber_id->get_error_message()]);
+        if (is_wp_error($saber_id) || empty($saber_id)) {
+            $error = is_wp_error($saber_id) ? $saber_id->get_error_message() : __('No se pudo crear el saber.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         // Asignar categoría
@@ -992,7 +994,12 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
             'post_status' => 'publish',
             'post_author' => $user_id,
             'post_title' => sprintf(__('Solicitud: %s', 'flavor-chat-ia'), $saber->post_title),
-        ]);
+        ], true);
+
+        if (is_wp_error($solicitud_id) || empty($solicitud_id)) {
+            $error = is_wp_error($solicitud_id) ? $solicitud_id->get_error_message() : __('No se pudo crear la solicitud.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
+        }
 
         update_post_meta($solicitud_id, '_sa_saber_id', $saber_id);
         update_post_meta($solicitud_id, '_sa_mensaje', $mensaje);

@@ -131,7 +131,7 @@ $tasa_resolucion_periodo = $stats_generales->total_reportes > 0 ?
                     <button type="submit" class="button button-primary">
                         <span class="dashicons dashicons-filter"></span> <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
                     </button>
-                    <a href="?page=flavor-incidencias-estadisticas" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
+                    <a href="?page=incidencias-estadisticas" class="button"><?php echo esc_html__('Limpiar', 'flavor-chat-ia'); ?></a>
                 </div>
             </form>
         </div>

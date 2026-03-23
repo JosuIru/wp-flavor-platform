@@ -566,6 +566,49 @@
 }
 
 /* ==========================================================================
+   RELATIONS PANEL - Módulos vinculados/transversales
+   ========================================================================== */
+
+.dm-relations-panel {
+    margin-bottom: 20px;
+}
+
+.dm-relations-panel__section--with-divider {
+    border-bottom: 1px solid var(--dm-border);
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+}
+
+.dm-relations-panel__header {
+    margin-bottom: 8px;
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.dm-relations-panel__description {
+    margin: 0 0 12px;
+    color: var(--dm-text-secondary);
+    font-size: 13px;
+}
+
+.dm-relations-panel__grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.dm-relations-panel__link {
+    border: 1px solid var(--dm-border);
+    box-shadow: none;
+}
+
+.dm-relations-panel__link:hover {
+    border-color: var(--dm-primary);
+}
+
+.dm-relations-panel__grid--transversal .dm-relations-panel__link--transversal {
+    background: var(--dm-primary-light);
+}
+
+/* ==========================================================================
    TABLES - Tablas estilizadas
    ========================================================================== */
 
@@ -2842,4 +2885,288 @@
     --dm-text: var(--flavor-text-dark, #f1f5f9);
     --dm-text-secondary: var(--flavor-text-dark-secondary, #94a3b8);
     --dm-border: var(--flavor-border-dark, #334155);
+}
+
+/* ==========================================================================
+   CHART BARS - Gráfico de barras simple
+   ========================================================================== */
+
+.dm-chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 120px;
+    padding: 10px 0;
+}
+
+.dm-chart-bars__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.dm-chart-bars__value {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dm-text);
+}
+
+.dm-chart-bars__bar {
+    width: 100%;
+    max-width: 32px;
+    background: linear-gradient(180deg, var(--dm-primary) 0%, var(--dm-primary-hover) 100%);
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+    transition: height var(--dm-transition);
+}
+
+.dm-chart-bars__bar--primary {
+    background: linear-gradient(180deg, var(--dm-primary) 0%, var(--dm-primary-hover) 100%);
+}
+
+.dm-chart-bars__bar--success {
+    background: linear-gradient(180deg, var(--dm-success) 0%, #16a34a 100%);
+}
+
+.dm-chart-bars__bar--warning {
+    background: linear-gradient(180deg, var(--dm-warning) 0%, #d97706 100%);
+}
+
+.dm-chart-bars__bar--purple {
+    background: linear-gradient(180deg, #8b5cf6 0%, #6366f1 100%);
+}
+
+.dm-chart-bars__bar--pink {
+    background: linear-gradient(180deg, #ec4899 0%, #db2777 100%);
+}
+
+.dm-chart-bars__label {
+    font-size: 10px;
+    color: var(--dm-text-secondary);
+}
+
+/* ==========================================================================
+   DATA LIST - Lista de datos clave-valor
+   ========================================================================== */
+
+.dm-data-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dm-data-list__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--dm-border);
+}
+
+.dm-data-list__item:last-child {
+    border-bottom: none;
+}
+
+.dm-data-list__item--highlight {
+    background: var(--dm-bg-secondary);
+    padding: 12px;
+    margin: 0 -12px;
+    border-radius: var(--dm-radius-sm);
+    border-bottom: none;
+}
+
+.dm-data-list__label {
+    font-size: 13px;
+    color: var(--dm-text-secondary);
+}
+
+.dm-data-list__value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dm-text);
+}
+
+/* ==========================================================================
+   RANKING EXTENDED - Extensiones para rankings
+   ========================================================================== */
+
+.dm-ranking__position {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--dm-bg-secondary);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--dm-text-secondary);
+    flex-shrink: 0;
+}
+
+.dm-ranking__avatar {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--dm-primary);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.dm-ranking__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dm-text);
+}
+
+.dm-ranking__meta {
+    font-size: 11px;
+    color: var(--dm-text-secondary);
+    display: block;
+}
+
+/* ==========================================================================
+   CARD EXTENDED - Extensiones de tarjeta
+   ========================================================================== */
+
+.dm-card__body {
+    padding: 16px 20px 20px;
+}
+
+.dm-card__subtitle {
+    font-size: 12px;
+    color: var(--dm-text-muted);
+    font-weight: 400;
+}
+
+/* ==========================================================================
+   QUICK ACTIONS - Acciones rápidas
+   ========================================================================== */
+
+.dm-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--dm-bg);
+    border-radius: var(--dm-radius);
+    box-shadow: var(--dm-shadow-sm);
+}
+
+.dm-quick-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--dm-primary);
+    color: #fff !important;
+    border-radius: var(--dm-radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all var(--dm-transition);
+}
+
+.dm-quick-action:hover {
+    background: var(--dm-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--dm-shadow);
+}
+
+.dm-quick-action .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Variante outline */
+.dm-quick-action--outline {
+    background: transparent;
+    color: var(--dm-primary) !important;
+    border: 1px solid var(--dm-primary);
+}
+
+.dm-quick-action--outline:hover {
+    background: var(--dm-primary);
+    color: #fff !important;
+}
+
+/* ==========================================================================
+   LINK GRID - Grid de enlaces
+   ========================================================================== */
+
+.dm-link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.dm-link-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--dm-bg-secondary);
+    border: 1px solid var(--dm-border);
+    border-radius: var(--dm-radius);
+    text-decoration: none;
+    transition: all var(--dm-transition);
+}
+
+.dm-link-card:hover {
+    background: var(--dm-primary-light);
+    border-color: var(--dm-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--dm-shadow);
+}
+
+.dm-link-card .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: var(--dm-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.dm-link-card strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dm-text);
+    margin-bottom: 2px;
+}
+
+.dm-link-card span {
+    display: block;
+    font-size: 11px;
+    color: var(--dm-text-secondary);
+    line-height: 1.4;
+}
+
+.dm-link-card:hover strong {
+    color: var(--dm-primary);
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .dm-quick-actions {
+        flex-direction: column;
+    }
+    
+    .dm-quick-action {
+        justify-content: center;
+    }
+    
+    .dm-link-grid {
+        grid-template-columns: 1fr;
+    }
 }

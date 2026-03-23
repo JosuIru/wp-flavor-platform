@@ -657,7 +657,9 @@ class _NuevaReservaScreenState extends ConsumerState<NuevaReservaScreen> {
       if (fechaStr != null) {
         try {
           _fechaSeleccionada = DateTime.parse(fechaStr);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('Error parseando fecha de reserva: $e');
+        }
       }
 
       // Parsear horas

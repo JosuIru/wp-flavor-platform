@@ -1661,5 +1661,69 @@
   "huertosBenefits1": "Grow your own organic food",
   "huertosBenefits2": "Connect with the community",
   "huertosBenefits3": "Learn sustainable farming techniques",
-  "reciclajeCO2Saved": "CO₂ Saved"
+  "reciclajeCO2Saved": "CO₂ Saved",
+  "adminDrawerSectionNavigation": "Navigation",
+  "adminDrawerSectionManagement": "Management",
+  "adminDrawerManualCustomers": "Manual customers",
+  "networkExploreTitle": "Explore Network",
+  "networkExploreSubtitle": "Discover nearby communities",
+  "networkAddCommunityTitle": "Add Community",
+  "networkDirectoryTab": "Directory",
+  "networkNearbyTab": "Nearby",
+  "networkSavedTab": "Saved",
+  "networkSearchHint": "Search communities...",
+  "networkNoResults": "No communities found",
+  "networkNearbyEmpty": "No nearby communities",
+  "networkNearbyRequiresLocation": "Enable location to see nearby communities",
+  "networkSavedEmpty": "You have no saved communities",
+  "networkAddToSaved": "Add to saved",
+  "networkRemoveFromSaved": "Remove from saved",
+  "networkConnect": "Connect",
+  "networkDistance": "{km} km",
+  "@networkDistance": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "networkMembers": "{count} members",
+  "@networkMembers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkConnectionVerified": "Connection verified",
+  "networkConnectionError": "Connection error: check URL",
+  "networkCommunityAdded": "Community added successfully",
+  "networkVerifyConnection": "Verify connection",
+
+  "commonLogin": "Login",
+  "commonLoading": "Loading...",
+  "commonOk": "OK",
+  "loginSubtitle": "Sign in to access all features",
+  "loginUsernameLabel": "Username or email",
+  "loginUsernameHint": "your@email.com",
+  "loginUsernameRequired": "Username is required",
+  "loginPasswordLabel": "Password",
+  "loginPasswordRequired": "Password is required",
+  "loginNeedHelp": "Need help signing in?",
+  "loginInfoText": "Use the same credentials you use to access the community website.",
+  "loginHelpTitle": "Login Help",
+  "loginHelpContent": "If you don't have an account, you can register on the community website. If you forgot your password, use the 'Forgot Password' option on the website.",
+  "loginSuccess": "Successfully logged in",
+  "loginLogout": "Logout",
+  "loginLogoutConfirm": "Are you sure you want to logout?",
+  "loginLogoutSuccess": "Logged out",
+  "loginRequired": "You must login to access this feature",
+  "loginWelcome": "Welcome, {name}",
+  "@loginWelcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

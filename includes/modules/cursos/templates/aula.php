@@ -18,7 +18,7 @@ $inscripcion = $wpdb->get_row($wpdb->prepare(
     "SELECT i.*, c.titulo as curso_titulo
      FROM $tabla_inscripciones i
      INNER JOIN $tabla_cursos c ON i.curso_id = c.id
-     WHERE i.curso_id = %d AND i.alumno_id = %d AND i.estado IN ('activa', 'completada')",
+     WHERE i.curso_id = %d AND i.usuario_id = %d AND i.estado IN ('activo', 'completado')",
     $curso_id,
     $usuario_id
 ));

@@ -3136,6 +3136,13 @@ KNOWLEDGE;
      * Registra las páginas de administración del módulo
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         add_submenu_page(

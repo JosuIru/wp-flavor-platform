@@ -194,6 +194,10 @@ class Flavor_Module_Dashboards_Page {
                             <p style="margin:0;color:#1d2327;">
                                 <?php echo esc_html($row['development_note']); ?>
                             </p>
+                            <p style="margin:0;color:#50575e;font-size:12px;">
+                                <strong><?php esc_html_e('Motivo:', 'flavor-chat-ia'); ?></strong>
+                                <?php echo esc_html($row['status_reason']); ?>
+                            </p>
 
                             <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;">
                                 <a class="button button-primary" href="<?php echo esc_url($row['url']); ?>">
@@ -232,6 +236,11 @@ class Flavor_Module_Dashboards_Page {
         $rows = [];
 
         foreach ($modules as $module_id => $module_data) {
+            // Solo mostrar módulos activos
+            if (!Flavor_Chat_Module_Loader::is_module_active($module_id)) {
+                continue;
+            }
+
             $main_file = $this->get_module_main_file($module_id);
             if ($main_file === '') {
                 continue;
@@ -275,6 +284,7 @@ class Flavor_Module_Dashboards_Page {
                 'status_label' => $status['label'],
                 'status_color' => $status['color'],
                 'development_note' => $status['note'],
+                'status_reason' => $status['reason'],
                 'has_view' => file_exists(dirname($main_file) . '/views/dashboard.php'),
                 'has_tab' => !empty(glob(dirname($main_file) . '/*dashboard-tab.php')),
                 'has_widget' => !empty(glob(dirname($main_file) . '/*dashboard-widget.php')),
@@ -406,13 +416,19 @@ class Flavor_Module_Dashboards_Page {
             }
         }
 
-        if (
-            strpos($source, "function render_admin_dashboard") !== false
-            || strpos($source, "function render_pagina_dashboard") !== false
-        ) {
+        // Revisar solamente el cuerpo de renderizadores de dashboard (evita falsos positivos
+        // por checks de permisos en acciones auxiliares/AJAX del módulo).
+        $dashboard_methods = ['render_admin_dashboard', 'render_pagina_dashboard'];
+        foreach ($dashboard_methods as $method_name) {
+            $pattern = '/function\\s+' . preg_quote($method_name, '/') . '\\s*\\([^)]*\\)\\s*\\{([\\s\\S]{0,1800})\\}/';
+            if (!preg_match($pattern, $source, $matches)) {
+                continue;
+            }
+
+            $method_body = $matches[1] ?? '';
             if (
-                strpos($source, "current_user_can('manage_options')") !== false
-                && strpos($source, "current_user_can('flavor_ver_dashboard')") === false
+                strpos($method_body, "current_user_can('manage_options')") !== false
+                && strpos($method_body, "current_user_can('flavor_ver_dashboard')") === false
             ) {
                 return true;
             }
@@ -500,7 +516,10 @@ class Flavor_Module_Dashboards_Page {
      */
     private function infer_status($module_id, $source, $dashboard_slug) {
         $has_admin_config = strpos($source, 'get_admin_config(') !== false;
-        $has_render_admin = strpos($source, 'render_admin_dashboard(') !== false;
+        $has_render_admin = strpos($source, 'render_admin_dashboard(') !== false
+            || strpos($source, 'render_pagina_dashboard(') !== false
+            || strpos($source, 'render_admin_page(') !== false
+            || strpos($source, "'render_callback'") !== false;
         $has_view = file_exists(FLAVOR_CHAT_IA_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/views/dashboard.php');
         $has_tab = !empty(glob(FLAVOR_CHAT_IA_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/*dashboard-tab.php'));
         $has_widget = !empty(glob(FLAVOR_CHAT_IA_PATH . 'includes/modules/' . str_replace('_', '-', $module_id) . '/*dashboard-widget.php'));
@@ -512,15 +531,31 @@ class Flavor_Module_Dashboards_Page {
                 'label' => __('Alta madurez', 'flavor-chat-ia'),
                 'color' => '#00a32a',
                 'note' => __('Tiene dashboard canónico, contrato admin declarado y renderer específico.', 'flavor-chat-ia'),
+                'reason' => __('Mapping canónico + get_admin_config + render de dashboard detectado.', 'flavor-chat-ia'),
             ];
         }
 
         if ($dashboard_slug !== '' && ($has_admin_config || $has_render_admin || $has_view || $has_tab || $has_widget)) {
+            $missing_parts = [];
+            if (!$is_mapped) {
+                $missing_parts[] = __('sin mapping canónico', 'flavor-chat-ia');
+            }
+            if (!$has_admin_config) {
+                $missing_parts[] = __('sin get_admin_config', 'flavor-chat-ia');
+            }
+            if (!$has_render_admin) {
+                $missing_parts[] = __('sin render de dashboard declarado', 'flavor-chat-ia');
+            }
+            if (empty($missing_parts)) {
+                $missing_parts[] = __('requiere canonización del contrato admin', 'flavor-chat-ia');
+            }
+
             return [
                 'status' => 'medio',
                 'label' => __('Madurez media', 'flavor-chat-ia'),
                 'color' => '#dba617',
                 'note' => __('Existe dashboard o infraestructura asociada, pero el contrato admin no está del todo canonizado.', 'flavor-chat-ia'),
+                'reason' => implode(' · ', $missing_parts),
             ];
         }
 
@@ -529,6 +564,7 @@ class Flavor_Module_Dashboards_Page {
             'label' => __('Parcial', 'flavor-chat-ia'),
             'color' => '#d63638',
             'note' => __('La presencia del dashboard es parcial o depende de piezas auxiliares sin cierre estructural.', 'flavor-chat-ia'),
+            'reason' => __('No se detecta combinación mínima de mapping/config/render para considerarlo dashboard consolidado.', 'flavor-chat-ia'),
         ];
     }
 
@@ -541,11 +577,28 @@ class Flavor_Module_Dashboards_Page {
      * @return string
      */
     private function infer_string_value($source, $key, $default = '') {
-        if (preg_match("/'" . preg_quote($key, '/') . "'\\s*=>\\s*'([^']+)'/", $source, $matches) && !empty($matches[1])) {
+        $search_scope = $this->extract_admin_config_scope($source);
+        if (preg_match("/'" . preg_quote($key, '/') . "'\\s*=>\\s*'([^']+)'/", $search_scope, $matches) && !empty($matches[1])) {
             return $matches[1];
         }
 
         return $default;
+    }
+
+    /**
+     * Extrae un bloque acotado de get_admin_config para evitar falsos positivos
+     * por apariciones de claves en get_renderer_config u otras estructuras.
+     *
+     * @param string $source
+     * @return string
+     */
+    private function extract_admin_config_scope($source) {
+        $position = strpos($source, 'function get_admin_config');
+        if ($position === false) {
+            return $source;
+        }
+
+        return substr($source, $position, 9000);
     }
 
     /**

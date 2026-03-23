@@ -12,6 +12,70 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div class="vbp-layers-container" x-data="vbpLayersComponent()" role="region" aria-label="<?php esc_attr_e( 'Gestión de capas', 'flavor-chat-ia' ); ?>">
+    <!-- Búsqueda y filtros -->
+    <div class="vbp-layers-search">
+        <div class="vbp-layers-search-input-wrapper">
+            <svg class="vbp-layers-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <input
+                type="text"
+                x-model="searchQuery"
+                class="vbp-layers-search-input"
+                placeholder="<?php esc_attr_e( 'Buscar capas...', 'flavor-chat-ia' ); ?>"
+                aria-label="<?php esc_attr_e( 'Buscar capas', 'flavor-chat-ia' ); ?>"
+            >
+            <button
+                type="button"
+                x-show="searchQuery"
+                @click="searchQuery = ''"
+                class="vbp-layers-search-clear"
+                title="<?php esc_attr_e( 'Limpiar búsqueda', 'flavor-chat-ia' ); ?>"
+            >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <button
+            type="button"
+            @click="toggleFilters()"
+            class="vbp-btn-icon vbp-layers-filter-btn"
+            :class="{ 'active': showFilters || filterType }"
+            title="<?php esc_attr_e( 'Filtros', 'flavor-chat-ia' ); ?>"
+        >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Panel de filtros colapsable -->
+    <div x-show="showFilters" x-collapse class="vbp-layers-filters">
+        <label class="vbp-layers-filter-label"><?php esc_html_e( 'Tipo', 'flavor-chat-ia' ); ?></label>
+        <select x-model="filterType" class="vbp-layers-filter-select">
+            <option value=""><?php esc_html_e( 'Todos', 'flavor-chat-ia' ); ?></option>
+            <template x-for="tipo in availableTypes" :key="tipo">
+                <option :value="tipo" x-text="tipo"></option>
+            </template>
+        </select>
+        <button
+            type="button"
+            x-show="hasActiveFilters"
+            @click="clearFilters()"
+            class="vbp-btn vbp-btn-sm vbp-btn-secondary"
+        >
+            <?php esc_html_e( 'Limpiar', 'flavor-chat-ia' ); ?>
+        </button>
+    </div>
+
+    <!-- Contador de resultados -->
+    <div x-show="hasActiveFilters" class="vbp-layers-filter-count">
+        <span x-text="filterCount"></span> <?php esc_html_e( 'de', 'flavor-chat-ia' ); ?> <span x-text="elements.length"></span>
+    </div>
+
     <!-- Toolbar de capas -->
     <div class="vbp-layers-toolbar" role="toolbar" aria-label="<?php esc_attr_e( 'Acciones de capas', 'flavor-chat-ia' ); ?>">
         <button type="button" @click="selectAll()" class="vbp-btn-icon" title="<?php esc_attr_e( 'Seleccionar todo', 'flavor-chat-ia' ); ?>" aria-label="<?php esc_attr_e( 'Seleccionar todas las capas', 'flavor-chat-ia' ); ?>">
@@ -36,7 +100,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     <!-- Lista de capas -->
     <div class="vbp-layers-list" x-ref="layersList" role="listbox" aria-label="<?php esc_attr_e( 'Lista de capas', 'flavor-chat-ia' ); ?>" aria-multiselectable="true">
-        <template x-for="(element, index) in elements" :key="element.id">
+        <template x-for="(element, index) in filteredElements" :key="element.id">
             <div
                 class="vbp-layer-item"
                 :class="{
@@ -65,7 +129,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                 <!-- Nombre (editable) -->
                 <template x-if="editingId !== element.id">
-                    <span class="vbp-layer-name" x-text="element.name || element.type"></span>
+                    <span class="vbp-layer-name" x-html="highlightMatch(element.name || element.type)"></span>
                 </template>
                 <template x-if="editingId === element.id">
                     <input
@@ -127,7 +191,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
         </template>
 
-        <!-- Empty state -->
+        <!-- Empty state - sin elementos -->
         <template x-if="elements.length === 0">
             <div class="vbp-layers-empty">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
@@ -136,6 +200,22 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <polyline points="2,12 12,17 22,12"/>
                 </svg>
                 <p><?php esc_html_e( 'Sin elementos', 'flavor-chat-ia' ); ?></p>
+            </div>
+        </template>
+
+        <!-- Empty state - sin resultados de búsqueda -->
+        <template x-if="elements.length > 0 && filteredElements.length === 0">
+            <div class="vbp-layers-empty vbp-layers-no-results">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="M21 21l-4.35-4.35"/>
+                    <line x1="8" y1="8" x2="14" y2="14"/>
+                    <line x1="14" y1="8" x2="8" y2="14"/>
+                </svg>
+                <p><?php esc_html_e( 'Sin resultados', 'flavor-chat-ia' ); ?></p>
+                <button type="button" @click="clearFilters()" class="vbp-btn vbp-btn-sm vbp-btn-secondary">
+                    <?php esc_html_e( 'Limpiar filtros', 'flavor-chat-ia' ); ?>
+                </button>
             </div>
         </template>
     </div>

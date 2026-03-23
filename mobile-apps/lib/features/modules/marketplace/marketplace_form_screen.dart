@@ -132,7 +132,7 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
     try {
       final api = ref.read(apiClientProvider);
 
-      final data = {
+      final data = <String, dynamic>{
         'titulo': _tituloController.text,
         'descripcion': _descripcionController.text,
         'categoria': _categoria,
@@ -140,11 +140,29 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
         'estado': _estado,
       };
 
-      // TODO: Subir imágenes primero y obtener URLs
-      // Por ahora se guardan solo los datos sin imágenes
+      // Subir imágenes si hay alguna seleccionada
       if (_imagenes.isNotEmpty) {
-        // En una implementación real, subirías las imágenes aquí
-        // data['imagenes'] = await _subirImagenes(_imagenes);
+        final uploadResponse = await api.uploadImages(
+          _imagenes,
+          context: 'marketplace',
+        );
+
+        if (uploadResponse.success && uploadResponse.data != null) {
+          final urls = uploadResponse.data!['urls'] as List?;
+          if (urls != null && urls.isNotEmpty) {
+            data['imagenes'] = urls.map((u) => u['url'] ?? u).toList();
+          }
+        } else {
+          // Mostrar error pero permitir continuar sin imágenes
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Advertencia: ${uploadResponse.error ?? 'No se pudieron subir las imágenes'}'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+        }
       }
 
       ApiResponse response;

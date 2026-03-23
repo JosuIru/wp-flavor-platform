@@ -307,7 +307,48 @@ class Flavor_Dashboard_Help {
     public function enqueue_assets($hook = '') {
         // Solo cargar en páginas de admin relevantes o frontend con dashboards
         if (is_admin()) {
-            if (strpos($hook, 'flavor') === false && strpos($hook, 'page=') === false) {
+            // Lista de prefijos de páginas donde cargar los estilos de ayuda
+            $allowed_prefixes = [
+                'flavor',
+                'admin_page_',
+                'toplevel_page_',
+                // Módulos específicos
+                'gc-', 'grupos-consumo',
+                'eventos', 'cursos', 'talleres',
+                'marketplace', 'banco-tiempo',
+                'socios', 'reservas', 'biblioteca',
+                'incidencias', 'participacion',
+                'comunidades', 'colectivos',
+                'red-social', 'chat-',
+                'huertos', 'bicicletas',
+                'carpooling', 'avisos',
+                'tramites', 'transparencia',
+                'compostaje', 'reciclaje',
+                'economia-don', 'ayuda-vecinal',
+                'espacios', 'multimedia', 'radio',
+                'foros', 'biodiversidad',
+            ];
+
+            $is_allowed = false;
+            foreach ($allowed_prefixes as $prefix) {
+                if (strpos($hook, $prefix) !== false) {
+                    $is_allowed = true;
+                    break;
+                }
+            }
+
+            // También verificar el parámetro page de la URL
+            if (!$is_allowed && isset($_GET['page'])) {
+                $current_page = sanitize_text_field($_GET['page']);
+                foreach ($allowed_prefixes as $prefix) {
+                    if (strpos($current_page, $prefix) !== false) {
+                        $is_allowed = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$is_allowed) {
                 return;
             }
         }
@@ -481,20 +522,20 @@ class Flavor_Dashboard_Help {
 
         // Socios
         $this->register_help('socios', [
-            'title'       => __('Cómo usar Gestión de Socios', 'flavor-chat-ia'),
+            'title'       => __('Cómo usar Gestión de Miembros', 'flavor-chat-ia'),
             'description' => __('Administra la membresía: altas, bajas, cuotas y carnets.', 'flavor-chat-ia'),
             'tips'        => [
-                __('Configura <strong>tipos de socio</strong> con diferentes cuotas.', 'flavor-chat-ia'),
+                __('Configura <strong>tipos de miembro</strong> con diferentes cuotas.', 'flavor-chat-ia'),
                 __('Las <strong>cuotas</strong> se pueden generar automáticamente.', 'flavor-chat-ia'),
-                __('Exporta el <strong>listado de socios</strong> en Excel o CSV.', 'flavor-chat-ia'),
+                __('Exporta el <strong>listado de miembros</strong> en Excel o CSV.', 'flavor-chat-ia'),
             ],
             'steps'       => [
                 __('Define los tipos de membresía disponibles.', 'flavor-chat-ia'),
                 __('Configura las cuotas y periodicidad de pago.', 'flavor-chat-ia'),
-                __('Los nuevos socios se dan de alta desde el formulario.', 'flavor-chat-ia'),
+                __('Los nuevos miembros se dan de alta desde el formulario.', 'flavor-chat-ia'),
             ],
             'links'       => [
-                ['text' => __('Configurar tipos de socio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-tipos'), 'icon' => 'dashicons-admin-settings'],
+                ['text' => __('Configurar tipos de miembro', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-tipos'), 'icon' => 'dashicons-admin-settings'],
             ],
         ]);
 

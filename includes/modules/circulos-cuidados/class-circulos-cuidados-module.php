@@ -446,15 +446,22 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
      * Registra shortcodes del módulo
      */
     public function register_shortcodes() {
-        // Shortcodes originales
-        add_shortcode('circulos_cuidados', [$this, 'shortcode_listado']);
-        add_shortcode('mis_cuidados', [$this, 'shortcode_mis_cuidados']);
-        add_shortcode('necesidades_cuidados', [$this, 'shortcode_necesidades']);
+        $shortcodes = [
+            // Shortcodes originales
+            'circulos_cuidados' => 'shortcode_listado',
+            'mis_cuidados' => 'shortcode_mis_cuidados',
+            'necesidades_cuidados' => 'shortcode_necesidades',
+            // Aliases con prefijo flavor_
+            'flavor_circulos_listado' => 'shortcode_listado',
+            'flavor_circulos_mis_cuidados' => 'shortcode_mis_cuidados',
+            'flavor_circulos_necesidades' => 'shortcode_necesidades',
+        ];
 
-        // Aliases con prefijo flavor_
-        add_shortcode('flavor_circulos_listado', [$this, 'shortcode_listado']);
-        add_shortcode('flavor_circulos_mis_cuidados', [$this, 'shortcode_mis_cuidados']);
-        add_shortcode('flavor_circulos_necesidades', [$this, 'shortcode_necesidades']);
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -474,6 +481,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
             'has_archive' => true,
             'supports' => ['title', 'editor', 'thumbnail'],
             'menu_icon' => 'dashicons-heart',
+            'show_in_menu' => false,
             'show_in_rest' => true,
             'rewrite' => ['slug' => 'circulos-cuidados'],
         ]);
@@ -489,6 +497,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
             'has_archive' => true,
             'supports' => ['title', 'editor'],
             'menu_icon' => 'dashicons-sos',
+            'show_in_menu' => false,
             'show_in_rest' => true,
             'rewrite' => ['slug' => 'necesidades-cuidado'],
         ]);
@@ -501,6 +510,7 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
             ],
             'public' => false,
             'show_ui' => true,
+            'show_in_menu' => false,
             'supports' => ['title'],
             'menu_icon' => 'dashicons-clock',
         ]);
@@ -893,18 +903,23 @@ class Flavor_Chat_Circulos_Cuidados_Module extends Flavor_Chat_Module_Base {
             ),
             'post_status' => 'publish',
             'post_author' => $user_id,
-        ]);
+        ], true);
 
-        if ($registro_id) {
-            update_post_meta($registro_id, '_cc_necesidad_id', $necesidad_id);
-            update_post_meta($registro_id, '_cc_horas', $horas);
-            update_post_meta($registro_id, '_cc_descripcion', $descripcion);
-            update_post_meta($registro_id, '_cc_fecha', current_time('mysql'));
-
-            // Actualizar total de horas del usuario
-            $horas_totales = floatval(get_user_meta($user_id, '_cc_horas_totales', true));
-            update_user_meta($user_id, '_cc_horas_totales', $horas_totales + $horas);
+        if (is_wp_error($registro_id) || empty($registro_id)) {
+            $error = is_wp_error($registro_id)
+                ? $registro_id->get_error_message()
+                : __('No se pudo registrar las horas.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
+
+        update_post_meta($registro_id, '_cc_necesidad_id', $necesidad_id);
+        update_post_meta($registro_id, '_cc_horas', $horas);
+        update_post_meta($registro_id, '_cc_descripcion', $descripcion);
+        update_post_meta($registro_id, '_cc_fecha', current_time('mysql'));
+
+        // Actualizar total de horas del usuario
+        $horas_totales = floatval(get_user_meta($user_id, '_cc_horas_totales', true));
+        update_user_meta($user_id, '_cc_horas_totales', $horas_totales + $horas);
 
         wp_send_json_success([
             'message' => __('Horas registradas correctamente', 'flavor-chat-ia'),

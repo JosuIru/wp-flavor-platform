@@ -445,6 +445,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
             ],
             'public' => false,
             'show_ui' => true,
+            'show_in_menu' => false,
             'supports' => ['title'],
             'menu_icon' => 'dashicons-shield',
             'capability_type' => 'post',
@@ -462,7 +463,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
             ],
             'public' => false,
             'show_ui' => true,
-            'show_in_menu' => 'edit.php?post_type=jr_proceso',
+            'show_in_menu' => false,
             'supports' => ['title', 'editor'],
         ]);
 
@@ -474,7 +475,7 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
             ],
             'public' => false,
             'show_ui' => true,
-            'show_in_menu' => 'edit.php?post_type=jr_proceso',
+            'show_in_menu' => false,
             'supports' => ['title', 'editor'],
         ]);
     }
@@ -682,9 +683,9 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
             ),
             'post_status' => 'private',
             'post_author' => $user_id,
-        ]);
+        ], true);
 
-        if ($proceso_id) {
+        if (!is_wp_error($proceso_id) && !empty($proceso_id)) {
             update_post_meta($proceso_id, '_jr_tipo', $tipo);
             update_post_meta($proceso_id, '_jr_estado', 'solicitado');
             update_post_meta($proceso_id, '_jr_descripcion', $descripcion);
@@ -706,7 +707,10 @@ class Flavor_Chat_Justicia_Restaurativa_Module extends Flavor_Chat_Module_Base {
             ]);
         }
 
-        wp_send_json_error(['message' => __('Error al crear la solicitud', 'flavor-chat-ia')]);
+        $error_message = is_wp_error($proceso_id)
+            ? $proceso_id->get_error_message()
+            : __('Error al crear la solicitud', 'flavor-chat-ia');
+        wp_send_json_error(['message' => $error_message]);
     }
 
     /**

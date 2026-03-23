@@ -126,3 +126,289 @@
 .flavor-interaccion-positivo { --resultado-color: #10b981; }
 .flavor-interaccion-neutro { --resultado-color: #6b7280; }
 .flavor-interaccion-negativo { --resultado-color: #ef4444; }
+
+/* Vistas completas (listado, detalle, crear, mapa, grafo, buscar) */
+.flavor-actores-listado,
+.flavor-actor-detalle,
+.flavor-actores-crear,
+.flavor-actores-mapa,
+.flavor-actores-grafo,
+.flavor-actores-buscar {
+    background: var(--flavor-surface, #fff);
+    border: 1px solid var(--flavor-border, #e5e7eb);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.flavor-actores-listado h2,
+.flavor-actor-detalle h2,
+.flavor-actores-crear h2,
+.flavor-actores-mapa h2,
+.flavor-actores-grafo h2,
+.flavor-actores-buscar h2 {
+    margin-top: 0;
+    color: var(--flavor-text, #1f2937);
+}
+
+.flavor-actores-listado form p,
+.flavor-actores-crear form p,
+.flavor-actores-buscar form p {
+    margin: 0 0 0.85rem;
+}
+
+.flavor-actores-listado input,
+.flavor-actores-buscar input,
+.flavor-actores-crear input,
+.flavor-actores-crear textarea {
+    border: 1px solid var(--flavor-border, #d1d5db);
+    border-radius: 8px;
+    padding: 0.65rem 0.75rem;
+    background: #fff;
+}
+
+.flavor-actores-listado input:focus,
+.flavor-actores-buscar input:focus,
+.flavor-actores-crear input:focus,
+.flavor-actores-crear textarea:focus {
+    outline: none;
+    border-color: var(--flavor-primary, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.flavor-actor-detalle article,
+.flavor-actor-detalle aside {
+    background: #fafafa;
+    border: 1px solid #ececec;
+    border-radius: 10px;
+    padding: 0.9rem;
+}
+
+.flavor-actores-grafo .widefat,
+.flavor-actores-listado .widefat,
+.flavor-actores-mapa .widefat {
+    border: 1px solid var(--flavor-border, #e5e7eb);
+}
+
+@media (max-width: 900px) {
+    .flavor-actor-detalle > div {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Admin dashboard (mapa actores) */
+.mapa-actores-admin-dashboard__kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.mapa-actores-admin-dashboard__kpi-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mapa-actores-admin-dashboard__kpi-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.mapa-actores-admin-dashboard__kpi-icon--blue { color: #2271b1; }
+.mapa-actores-admin-dashboard__kpi-icon--green { color: #00a32a; }
+.mapa-actores-admin-dashboard__kpi-icon--red { color: #d63638; }
+.mapa-actores-admin-dashboard__kpi-icon--purple { color: #8b5cf6; }
+
+.mapa-actores-admin-dashboard__kpi-value {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.mapa-actores-admin-dashboard__kpi-label,
+.mapa-actores-admin-dashboard__muted {
+    color: #646970;
+}
+
+.mapa-actores-admin-dashboard__muted--mb0 {
+    margin-bottom: 0;
+}
+
+.mapa-actores-admin-dashboard__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.mapa-actores-admin-dashboard__card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mapa-actores-admin-dashboard__card--mb {
+    margin-bottom: 20px;
+}
+
+.mapa-actores-admin-dashboard__card-title {
+    margin-top: 0;
+}
+
+.mapa-actores-admin-dashboard__table-clean {
+    border: none;
+}
+
+.mapa-actores-admin-dashboard__td-right-strong {
+    text-align: right;
+    font-weight: 600;
+}
+
+.mapa-actores-admin-dashboard__position {
+    font-weight: 500;
+}
+
+.mapa-actores-admin-dashboard__card-footer {
+    margin-bottom: 0;
+    margin-top: 15px;
+}
+
+.mapa-actores-admin-dashboard__actors-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mapa-actores-admin-dashboard__actors-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.mapa-actores-admin-dashboard__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mapa-actores-admin-dashboard__action-btn {
+    text-align: center;
+}
+
+.mapa-actores-admin-dashboard__pending-box {
+    margin-top: 15px;
+    padding: 10px;
+    background: #fff3cd;
+    border-radius: 4px;
+    border-left: 4px solid #ffc107;
+}
+
+/* Admin listados/relaciones */
+.mapa-actores-admin-list__filters,
+.mapa-actores-admin-relaciones__filters {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.mapa-actores-admin-list__search {
+    min-width: 200px;
+}
+
+.mapa-actores-admin-list__col-name {
+    width: 30%;
+}
+
+.mapa-actores-admin-list__col-actions {
+    width: 120px;
+}
+
+.mapa-actores-admin-list__icon-action {
+    vertical-align: middle;
+}
+
+.mapa-actores-admin-list__tablenav-bottom {
+    margin-top: 20px;
+}
+
+.mapa-actores-admin-list__position {
+    font-weight: 500;
+}
+
+.mapa-actores-admin-list__notice-top {
+    margin-top: 20px;
+}
+
+.mapa-actores-admin-relaciones__actor-select {
+    min-width: 250px;
+}
+
+.mapa-actores-admin-relaciones__col-origin,
+.mapa-actores-admin-relaciones__col-target {
+    width: 25%;
+}
+
+.mapa-actores-admin-relaciones__col-type {
+    width: 15%;
+}
+
+.mapa-actores-admin-relaciones__col-actions {
+    width: 100px;
+}
+
+.mapa-actores-admin-relaciones__status-ok {
+    color: #00a32a;
+}
+
+.mapa-actores-admin-relaciones__status-pending {
+    color: #dba617;
+}
+
+.mapa-actores-admin-relaciones__graph-card {
+    margin-top: 30px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mapa-actores-admin-relaciones__graph-title {
+    margin-top: 0;
+}
+
+.mapa-actores-admin-relaciones__graph-placeholder {
+    height: 400px;
+    background: #f6f7f7;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #646970;
+}
+
+/* Admin config */
+.mapa-actores-admin-config__card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.mapa-actores-admin-config__title {
+    margin-top: 0;
+}
+
+.mapa-actores-admin-config__ambito-label {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+/* Position helpers */
+.mapa-actores-pos-aliado { color: #00a32a; }
+.mapa-actores-pos-neutro { color: #646970; }
+.mapa-actores-pos-opositor { color: #d63638; }
+.mapa-actores-pos-desconocido { color: #9ca3af; }

@@ -279,25 +279,46 @@ class Flavor_App_Integration {
         }
 
         $modules = [];
+        $known_modules = $this->get_known_app_modules_catalog();
 
-        // Módulos de Flavor Chat IA (backend)
+        // Módulos de Flavor Chat IA - usar get_active_modules_cached() para obtener TODOS los activos
         if ($this->plugin_detector->is_flavor_chat_active()) {
             if (class_exists('Flavor_Chat_Module_Loader')) {
+                // Obtener todos los módulos activos (no solo los cargados)
+                $active_module_ids = Flavor_Chat_Module_Loader::get_active_modules_cached();
                 $loader = Flavor_Chat_Module_Loader::get_instance();
-                $flavor_modules = $loader->get_loaded_modules();
+                $loaded_modules = $loader->get_loaded_modules();
 
-                foreach ($flavor_modules as $module_id => $module) {
-                    $modules[] = [
-                        'id' => $module_id,
-                        'name' => $module->get_name(),
-                        'description' => $module->get_description(),
-                        'system' => 'flavor-chat-ia',
-                        'api_namespace' => 'flavor-chat-ia/v1',
-                        'icon' => $this->get_module_icon($module_id),
-                        'color' => $this->get_module_color($module_id),
-                        'show_in_navigation' => true,
-                        'config' => $this->get_module_config($module_id),
-                    ];
+                foreach ($active_module_ids as $module_id) {
+                    // Si el módulo está cargado, usar sus metadatos
+                    if (isset($loaded_modules[$module_id])) {
+                        $module = $loaded_modules[$module_id];
+                        $modules[] = [
+                            'id' => $module_id,
+                            'name' => $module->get_name(),
+                            'description' => $module->get_description(),
+                            'system' => 'flavor-chat-ia',
+                            'api_namespace' => 'flavor-chat-ia/v1',
+                            'icon' => $this->get_module_icon($module_id),
+                            'color' => $this->get_module_color($module_id),
+                            'show_in_navigation' => true,
+                            'config' => $this->get_module_config($module_id),
+                        ];
+                    } else {
+                        // Módulo activo pero no cargado: usar catálogo
+                        $meta = $known_modules[$module_id] ?? [];
+                        $modules[] = [
+                            'id' => $module_id,
+                            'name' => $meta['name'] ?? ucwords(str_replace(['_', '-'], ' ', $module_id)),
+                            'description' => $meta['description'] ?? '',
+                            'system' => 'flavor-chat-ia',
+                            'api_namespace' => 'flavor-chat-ia/v1',
+                            'icon' => $meta['icon'] ?? $this->get_module_icon($module_id),
+                            'color' => $meta['color'] ?? $this->get_module_color($module_id),
+                            'show_in_navigation' => true,
+                            'config' => $this->get_module_config($module_id),
+                        ];
+                    }
                 }
             }
         }
@@ -321,6 +342,21 @@ class Flavor_App_Integration {
             ];
         }
 
+        // Funcionalidades de basabere-campamentos
+        if ($this->plugin_detector->is_basabere_active()) {
+            $modules[] = [
+                'id' => 'campamentos',
+                'name' => __('Campamentos', 'flavor-chat-ia'),
+                'description' => __('Gestión de campamentos e inscripciones', 'flavor-chat-ia'),
+                'system' => 'basabere-campamentos',
+                'api_namespace' => 'camps/v1',
+                'icon' => 'terrain',
+                'color' => '#4CAF50',
+                'show_in_navigation' => true,
+                'config' => [],
+            ];
+        }
+
         // Incluir módulos habilitados en flavor_apps_config (aunque no estén cargados)
         $app_config = get_option('flavor_apps_config', []);
         $enabled_modules = isset($app_config['modules']) && is_array($app_config['modules'])
@@ -328,7 +364,6 @@ class Flavor_App_Integration {
             : [];
 
         if (!empty($enabled_modules)) {
-            $known_modules = $this->get_known_app_modules_catalog();
             $existing_ids = array_column($modules, 'id');
 
             foreach ($enabled_modules as $module_id => $module_settings) {
@@ -353,30 +388,8 @@ class Flavor_App_Integration {
             }
         }
 
-        // Incluir módulos activos del plugin (fallback si no hay config de apps)
-        $plugin_settings = get_option('flavor_chat_ia_settings', []);
-        $active_modules = $plugin_settings['active_modules'] ?? [];
-        if (!empty($active_modules)) {
-            $known_modules = isset($known_modules) ? $known_modules : $this->get_known_app_modules_catalog();
-            $existing_ids = array_column($modules, 'id');
-            foreach ($active_modules as $module_id) {
-                if (in_array($module_id, $existing_ids, true)) {
-                    continue;
-                }
-                $meta = $known_modules[$module_id] ?? [];
-                $modules[] = [
-                    'id' => $module_id,
-                    'name' => $meta['name'] ?? ucwords(str_replace(['_', '-'], ' ', $module_id)),
-                    'description' => $meta['description'] ?? '',
-                    'system' => 'flavor-chat-ia',
-                    'api_namespace' => $meta['api_namespace'] ?? 'flavor-chat-ia/v1',
-                    'icon' => $meta['icon'] ?? $this->get_module_icon($module_id),
-                    'color' => $meta['color'] ?? $this->get_module_color($module_id),
-                    'show_in_navigation' => true,
-                    'config' => $this->get_module_config($module_id),
-                ];
-            }
-        }
+        // Nota: Los módulos activos ya se obtienen arriba con get_active_modules_cached()
+        // No es necesario el fallback a flavor_chat_ia_settings['active_modules']
 
         $response_data = [
             'success' => true,
@@ -440,8 +453,8 @@ class Flavor_App_Integration {
                 'color' => '#E91E63',
             ],
             'socios' => [
-                'name' => __('Gestión de Socios', 'flavor-chat-ia'),
-                'description' => __('Control de socios y cuotas', 'flavor-chat-ia'),
+                'name' => __('Gestión de Miembros', 'flavor-chat-ia'),
+                'description' => __('Control de miembros y cuotas', 'flavor-chat-ia'),
                 'icon' => 'people',
                 'color' => '#3F51B5',
             ],
@@ -624,6 +637,13 @@ class Flavor_App_Integration {
                 'description' => __('Directorio de bares', 'flavor-chat-ia'),
                 'icon' => 'restaurant',
                 'color' => '#F57C00',
+            ],
+            'campamentos' => [
+                'name' => __('Campamentos', 'flavor-chat-ia'),
+                'description' => __('Campamentos, inscripciones y gestión administrativa', 'flavor-chat-ia'),
+                'icon' => 'terrain',
+                'color' => '#4CAF50',
+                'api_namespace' => 'camps/v1',
             ],
         ];
     }

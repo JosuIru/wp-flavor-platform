@@ -43,12 +43,9 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function can_activate() {
-        // MÓDULO EN DESARROLLO - Próximamente
-        return false;
-
-        // global $wpdb;
-        // $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
-        // return Flavor_Chat_Helpers::tabla_existe($tabla_swaps);
+        global $wpdb;
+        $tabla_swaps = $wpdb->prefix . 'flavor_dex_swaps';
+        return Flavor_Chat_Helpers::tabla_existe($tabla_swaps);
     }
 
     /**
@@ -56,7 +53,7 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas del DEX Solana no estan creadas. Se crearan automaticamente al activar el plugin.', 'flavor-chat-ia');
+            return __('Las tablas del DEX Solana no estan creadas.', 'flavor-chat-ia');
         }
         
     return '';
@@ -94,6 +91,12 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function init() {
+        if (!$this->is_experimental_enabled()) {
+            // Aviso de módulo experimental deshabilitado (comentado para no mostrar)
+            // add_action('admin_notices', [$this, 'render_experimental_disabled_notice']);
+            return;
+        }
+
         add_action('init', [$this, 'maybe_create_pages']);
         $this->cargar_clases_auxiliares();
         $this->inicializar_componentes();
@@ -106,6 +109,61 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
 
         // Registrar endpoints REST API
         add_action('rest_api_init', [$this, 'register_rest_routes']);
+    }
+
+    /**
+     * Crea tablas base del módulo si no existen.
+     *
+     * @return void
+     */
+    public function maybe_create_tables() {
+        if ($this->can_activate()) {
+            return;
+        }
+
+        $install_file = __DIR__ . '/install.php';
+        if (file_exists($install_file)) {
+            require_once $install_file;
+            if (function_exists('flavor_dex_solana_install')) {
+                flavor_dex_solana_install();
+            }
+        }
+    }
+
+    /**
+     * Permite activar módulos experimentales por módulo o de forma global.
+     *
+     * @return bool
+     */
+    private function is_experimental_enabled() {
+        $settings = get_option('flavor_chat_ia_settings', []);
+        $global_enabled = !empty($settings['enable_experimental_modules']);
+        $module_enabled = !empty($settings['experimental_modules'])
+            && is_array($settings['experimental_modules'])
+            && in_array($this->id, $settings['experimental_modules'], true);
+
+        return $global_enabled || $module_enabled;
+    }
+
+    /**
+     * Aviso de módulo experimental deshabilitado.
+     *
+     * @return void
+     */
+    public function render_experimental_disabled_notice() {
+        if (!is_admin() || !current_user_can('manage_options')) {
+            return;
+        }
+
+        static $shown = false;
+        if ($shown) {
+            return;
+        }
+        $shown = true;
+
+        echo '<div class="notice notice-warning"><p>';
+        echo esc_html__('DEX Solana está deshabilitado por defecto por ser un módulo experimental. Actívalo en ajustes avanzados si quieres usarlo.', 'flavor-chat-ia');
+        echo '</p></div>';
     }
 
     /**
@@ -628,7 +686,7 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
         // Mis swaps hoy
         $hoy = date('Y-m-d');
         $mis_swaps_hoy = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $tabla_swaps WHERE user_id = %d AND DATE(fecha) = %s",
+            "SELECT COUNT(*) FROM $tabla_swaps WHERE usuario_id = %d AND DATE(timestamp) = %s",
             $user_id,
             $hoy
         ));
@@ -639,30 +697,48 @@ class Flavor_Chat_Dex_Solana_Module extends Flavor_Chat_Module_Base {
             'color' => $mis_swaps_hoy > 0 ? 'blue' : 'gray'
         ];
 
-        // Tokens en portfolio
+        // Tokens en portfolio (contamos desde tokens_json)
         if (Flavor_Chat_Helpers::tabla_existe($tabla_portfolio)) {
-            $tokens_portfolio = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(DISTINCT token_mint) FROM $tabla_portfolio WHERE user_id = %d AND cantidad > 0",
+            $portfolio_row = $wpdb->get_row($wpdb->prepare(
+                "SELECT tokens_json, balance_usdc FROM $tabla_portfolio WHERE usuario_id = %d",
                 $user_id
             ));
+            $tokens_portfolio = 0;
+            if ($portfolio_row && !empty($portfolio_row->tokens_json)) {
+                $tokens_data = json_decode($portfolio_row->tokens_json, true);
+                if (is_array($tokens_data)) {
+                    $tokens_portfolio = count(array_filter($tokens_data, function($token) {
+                        return isset($token['cantidad']) && $token['cantidad'] > 0;
+                    }));
+                }
+            }
             $estadisticas[] = [
                 'icon'  => 'dashicons-portfolio',
                 'valor' => $tokens_portfolio,
                 'label' => __('Tokens en cartera', 'flavor-chat-ia'),
                 'color' => $tokens_portfolio > 0 ? 'green' : 'gray'
             ];
-        }
 
-        // Valor total del portfolio (si hay datos)
-        if (Flavor_Chat_Helpers::tabla_existe($tabla_portfolio)) {
-            $valor_total = $wpdb->get_var($wpdb->prepare(
-                "SELECT COALESCE(SUM(cantidad * precio_usd), 0) FROM $tabla_portfolio WHERE user_id = %d",
-                $user_id
-            ));
+            // Valor total del portfolio
+            $valor_total = 0;
+            if ($portfolio_row) {
+                $valor_total = (float) $portfolio_row->balance_usdc;
+                // Sumar valor de tokens si existen
+                if (!empty($portfolio_row->tokens_json)) {
+                    $tokens_data = json_decode($portfolio_row->tokens_json, true);
+                    if (is_array($tokens_data)) {
+                        foreach ($tokens_data as $token) {
+                            if (isset($token['cantidad'], $token['precio_usd'])) {
+                                $valor_total += (float) $token['cantidad'] * (float) $token['precio_usd'];
+                            }
+                        }
+                    }
+                }
+            }
             if ($valor_total > 0) {
                 $estadisticas[] = [
                     'icon'  => 'dashicons-chart-line',
-                    'valor' => '$' . number_format((float)$valor_total, 2),
+                    'valor' => '$' . number_format($valor_total, 2),
                     'label' => __('Valor portfolio', 'flavor-chat-ia'),
                     'color' => 'green'
                 ];

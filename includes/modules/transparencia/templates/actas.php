@@ -15,13 +15,23 @@ if (!defined('ABSPATH')) {
 global $wpdb;
 
 $prefijo_tabla = $wpdb->prefix . 'flavor_transparencia_';
-$tabla_actas = $prefijo_tabla . 'actas';
+$tabla_actas = '';
+$tablas_actas_candidatas = [
+    $prefijo_tabla . 'actas',
+    $prefijo_tabla . 'actas_reuniones',
+];
+foreach ($tablas_actas_candidatas as $tabla_candidata) {
+    if (Flavor_Chat_Helpers::tabla_existe($tabla_candidata)) {
+        $tabla_actas = $tabla_candidata;
+        break;
+    }
+}
 
 // Verificar que la tabla existe
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_actas)) {
+if ($tabla_actas === '') {
     echo '<div class="transparencia-aviso transparencia-aviso--info">';
     echo '<span class="dashicons dashicons-info"></span>';
-    echo '<p>' . esc_html__('El sistema de actas no esta disponible en este momento.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Todavía no hay actas publicadas en esta instalación.', 'flavor-chat-ia') . '</p>';
     echo '</div>';
     return;
 }

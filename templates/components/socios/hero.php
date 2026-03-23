@@ -64,7 +64,7 @@ $imagen_hero_url = !empty($imagen_fondo) ? wp_get_attachment_image_url($imagen_f
                     <div class="text-4xl font-bold text-white mb-1">
                         <?php echo esc_html($estadistica_socios ?? '2.340'); ?>
                     </div>
-                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Socios activos', 'flavor-chat-ia'); ?></div>
+                    <div class="text-white text-opacity-80 text-sm"><?php echo esc_html__('Miembros activos', 'flavor-chat-ia'); ?></div>
                 </div>
                 <div class="bg-white bg-opacity-15 backdrop-blur-sm rounded-xl p-6 text-center">
                     <div class="text-4xl font-bold text-white mb-1">

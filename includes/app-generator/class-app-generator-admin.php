@@ -130,12 +130,15 @@ class Flavor_App_Generator_Admin {
                             <textarea
                                 id="proyecto-descripcion"
                                 rows="8"
-                                placeholder="<?php esc_attr_e( 'Ejemplo: Somos una asociación vecinal del barrio de San Juan. Necesitamos gestionar nuestros 250 socios, organizar eventos culturales mensuales, tener un tablón de anuncios para compraventa entre vecinos, y permitir reservas de las salas del local social. También queremos que los vecinos puedan reportar incidencias del barrio y participar en votaciones sobre mejoras.', 'flavor-chat-ia' ); ?>"
+                                placeholder="<?php esc_attr_e( 'Ejemplo: Somos una asociación vecinal del barrio de San Juan. Necesitamos gestionar nuestros 250 miembros, organizar eventos culturales mensuales, tener un tablón de anuncios para compraventa entre vecinos, y permitir reservas de las salas del local social. También queremos que los vecinos puedan reportar incidencias del barrio y participar en votaciones sobre mejoras.', 'flavor-chat-ia' ); ?>"
                             ></textarea>
                         </div>
 
                         <div class="quick-templates">
                             <h4><?php esc_html_e( 'O elige un tipo de comunidad:', 'flavor-chat-ia' ); ?></h4>
+
+                            <!-- Comunitario -->
+                            <h5 style="margin: 15px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Comunitario', 'flavor-chat-ia' ); ?></h5>
                             <div class="template-buttons">
                                 <button type="button" class="template-btn" data-template="vecinal">
                                     <span class="dashicons dashicons-admin-home"></span>
@@ -149,21 +152,68 @@ class Flavor_App_Generator_Admin {
                                     <span class="dashicons dashicons-art"></span>
                                     <?php esc_html_e( 'Asociación Cultural', 'flavor-chat-ia' ); ?>
                                 </button>
-                                <button type="button" class="template-btn" data-template="coworking">
-                                    <span class="dashicons dashicons-building"></span>
-                                    <?php esc_html_e( 'Espacio Coworking', 'flavor-chat-ia' ); ?>
-                                </button>
-                                <button type="button" class="template-btn" data-template="educativa">
-                                    <span class="dashicons dashicons-welcome-learn-more"></span>
-                                    <?php esc_html_e( 'Centro Educativo', 'flavor-chat-ia' ); ?>
+                                <button type="button" class="template-btn" data-template="colectivo-social">
+                                    <span class="dashicons dashicons-groups"></span>
+                                    <?php esc_html_e( 'Colectivo Social', 'flavor-chat-ia' ); ?>
                                 </button>
                                 <button type="button" class="template-btn" data-template="ecologica">
                                     <span class="dashicons dashicons-palmtree"></span>
                                     <?php esc_html_e( 'Iniciativa Ecológica', 'flavor-chat-ia' ); ?>
                                 </button>
-                                <button type="button" class="template-btn" data-template="colectivo-social">
-                                    <span class="dashicons dashicons-groups"></span>
-                                    <?php esc_html_e( 'Colectivo Social', 'flavor-chat-ia' ); ?>
+                                <button type="button" class="template-btn" data-template="cuidados">
+                                    <span class="dashicons dashicons-heart"></span>
+                                    <?php esc_html_e( 'Red de Cuidados', 'flavor-chat-ia' ); ?>
+                                </button>
+                            </div>
+
+                            <!-- Empresarial -->
+                            <h5 style="margin: 20px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Empresarial', 'flavor-chat-ia' ); ?></h5>
+                            <div class="template-buttons">
+                                <button type="button" class="template-btn" data-template="empresarial">
+                                    <span class="dashicons dashicons-building"></span>
+                                    <?php esc_html_e( 'Empresa / PYME', 'flavor-chat-ia' ); ?>
+                                </button>
+                                <button type="button" class="template-btn" data-template="startup">
+                                    <span class="dashicons dashicons-lightbulb"></span>
+                                    <?php esc_html_e( 'Startup', 'flavor-chat-ia' ); ?>
+                                </button>
+                                <button type="button" class="template-btn" data-template="coworking">
+                                    <span class="dashicons dashicons-networking"></span>
+                                    <?php esc_html_e( 'Espacio Coworking', 'flavor-chat-ia' ); ?>
+                                </button>
+                                <button type="button" class="template-btn" data-template="consultoria">
+                                    <span class="dashicons dashicons-chart-line"></span>
+                                    <?php esc_html_e( 'Consultoría', 'flavor-chat-ia' ); ?>
+                                </button>
+                                <button type="button" class="template-btn" data-template="finanzas">
+                                    <span class="dashicons dashicons-money-alt"></span>
+                                    <?php esc_html_e( 'Finanzas / Banca', 'flavor-chat-ia' ); ?>
+                                </button>
+                            </div>
+
+                            <!-- Educación y Cultura -->
+                            <h5 style="margin: 20px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Educación y Cultura', 'flavor-chat-ia' ); ?></h5>
+                            <div class="template-buttons">
+                                <button type="button" class="template-btn" data-template="educativa">
+                                    <span class="dashicons dashicons-welcome-learn-more"></span>
+                                    <?php esc_html_e( 'Centro Educativo', 'flavor-chat-ia' ); ?>
+                                </button>
+                                <button type="button" class="template-btn" data-template="medios">
+                                    <span class="dashicons dashicons-video-alt3"></span>
+                                    <?php esc_html_e( 'Medios / Podcast', 'flavor-chat-ia' ); ?>
+                                </button>
+                            </div>
+
+                            <!-- Consumo y Economía -->
+                            <h5 style="margin: 20px 0 8px; color: #666; font-size: 12px; text-transform: uppercase;"><?php esc_html_e( 'Consumo y Economía', 'flavor-chat-ia' ); ?></h5>
+                            <div class="template-buttons">
+                                <button type="button" class="template-btn" data-template="consumo">
+                                    <span class="dashicons dashicons-carrot"></span>
+                                    <?php esc_html_e( 'Grupo de Consumo', 'flavor-chat-ia' ); ?>
+                                </button>
+                                <button type="button" class="template-btn" data-template="gastronomia">
+                                    <span class="dashicons dashicons-food"></span>
+                                    <?php esc_html_e( 'Gastronomía', 'flavor-chat-ia' ); ?>
                                 </button>
                             </div>
                         </div>
@@ -303,6 +353,102 @@ Somos un colectivo social / ONG / movimiento ciudadano. Necesitamos:
 - Repositorio de recursos y documentos compartidos
 - Perfiles de miembros con sus habilidades
 - Sistema de propuestas y participación
+        </script>
+
+        <script type="text/template" id="template-empresarial">
+Somos una empresa / PYME con 30 empleados. Necesitamos:
+- Control de fichaje y asistencia de empleados
+- Gestión de clientes y CRM básico
+- Sistema de facturación y presupuestos
+- Reserva de salas de reuniones
+- Portal del empleado con nóminas y documentos
+- Directorio de empleados
+- Comunicación interna y anuncios
+- Gestión de proyectos y tareas
+        </script>
+
+        <script type="text/template" id="template-startup">
+Somos una startup tecnológica. Necesitamos:
+- Portal para inversores con métricas
+- Gestión de equipo y OKRs
+- Blog y comunicación externa
+- Sistema de tickets y soporte
+- Documentación y wiki interna
+- Reserva de salas y recursos
+- Eventos y demos para clientes
+- Tablón de ofertas de trabajo
+        </script>
+
+        <script type="text/template" id="template-consultoria">
+Somos una consultora de servicios profesionales. Necesitamos:
+- Gestión de clientes y proyectos
+- Sistema de facturación y horas
+- Portal de cliente con acceso a documentos
+- Calendario de reuniones y citas
+- Base de conocimiento interna
+- Comunicación con clientes
+- Propuestas y presupuestos
+- Fichaje y control horario
+        </script>
+
+        <script type="text/template" id="template-finanzas">
+Somos una entidad financiera / cooperativa de crédito. Necesitamos:
+- Gestión de socios y cuentas
+- Portal de banca online para socios
+- Sistema de préstamos y créditos
+- Transparencia financiera y memorias
+- Participación en asambleas
+- Comunicación con socios
+- Eventos y formación financiera
+- Documentación legal y contratos
+        </script>
+
+        <script type="text/template" id="template-cuidados">
+Somos una red de cuidados y apoyo mutuo. Necesitamos:
+- Banco de tiempo para intercambiar servicios
+- Círculos de cuidados por zonas
+- Coordinación de voluntariado
+- Calendario de turnos de cuidado
+- Comunicación entre cuidadores
+- Recursos y guías de cuidados
+- Solicitudes de ayuda
+- Red de contactos de emergencia
+        </script>
+
+        <script type="text/template" id="template-consumo">
+Somos un grupo de consumo responsable. Necesitamos:
+- Gestión de socios del grupo
+- Catálogo de productos de productores locales
+- Sistema de pedidos colectivos
+- Calendario de entregas y recogidas
+- Comunicación con productores
+- Foro de discusión del grupo
+- Transparencia de cuentas
+- Turnos de voluntariado en el local
+        </script>
+
+        <script type="text/template" id="template-gastronomia">
+Somos un restaurante / bar cooperativo. Necesitamos:
+- Sistema de reservas de mesas
+- Carta digital y pedidos
+- Gestión de eventos y catering
+- Comunicación con clientes
+- Programa de fidelización
+- Venta de productos locales
+- Integración con TPV
+- Fichaje de empleados
+        </script>
+
+        <script type="text/template" id="template-medios">
+Somos un medio de comunicación / podcast. Necesitamos:
+- Plataforma de radio/podcast
+- Sistema de programación
+- Gestión de colaboradores
+- Archivo de programas
+- Interacción con la audiencia
+- Eventos en directo
+- Crowdfunding y suscripciones
+- Blog y artículos
         </script>
         <?php
     }

@@ -16,6 +16,19 @@ $tabla_aportaciones = $wpdb->prefix . 'flavor_crowdfunding_aportaciones';
 
 // Verificar si las tablas existen
 $tabla_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_proyectos)) === $tabla_proyectos;
+$tabla_aportaciones_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_aportaciones)) === $tabla_aportaciones;
+
+$total_proyectos = 0;
+$activos = 0;
+$exitosos = 0;
+$total_recaudado_eur = 0.0;
+$total_recaudado_semilla = 0.0;
+$total_aportantes = 0;
+$total_aportaciones = 0;
+$proyectos_activos = [];
+$por_tipo = [];
+$ultimas_aportaciones = [];
+$tasa_exito = 0;
 
 if ($tabla_existe) {
     $total_proyectos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_proyectos}");
@@ -25,8 +38,8 @@ if ($tabla_existe) {
     $total_recaudado_eur = (float) $wpdb->get_var("SELECT COALESCE(SUM(recaudado_eur), 0) FROM {$tabla_proyectos}");
     $total_recaudado_semilla = (float) $wpdb->get_var("SELECT COALESCE(SUM(recaudado_semilla), 0) FROM {$tabla_proyectos}");
 
-    $total_aportantes = (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM {$tabla_aportaciones} WHERE estado = 'completada' AND usuario_id IS NOT NULL");
-    $total_aportaciones = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_aportaciones} WHERE estado = 'completada'");
+    $total_aportantes = $tabla_aportaciones_existe ? (int) $wpdb->get_var("SELECT COUNT(DISTINCT usuario_id) FROM {$tabla_aportaciones} WHERE estado = 'completada' AND usuario_id IS NOT NULL") : 0;
+    $total_aportaciones = $tabla_aportaciones_existe ? (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_aportaciones} WHERE estado = 'completada'") : 0;
 
     // Proyectos activos destacados
     $proyectos_activos = $wpdb->get_results("
@@ -47,55 +60,19 @@ if ($tabla_existe) {
     ", ARRAY_A) ?: [];
 
     // Últimas aportaciones
-    $ultimas_aportaciones = $wpdb->get_results("
+    $ultimas_aportaciones = $tabla_aportaciones_existe ? $wpdb->get_results("
         SELECT a.*, p.titulo as proyecto_titulo
         FROM {$tabla_aportaciones} a
         LEFT JOIN {$tabla_proyectos} p ON a.proyecto_id = p.id
         WHERE a.estado = 'completada'
         ORDER BY a.fecha_pago DESC
         LIMIT 5
-    ", ARRAY_A) ?: [];
+    ", ARRAY_A) : [];
+    $ultimas_aportaciones = $ultimas_aportaciones ?: [];
 
     // Tasa de éxito
     $finalizados = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_proyectos} WHERE estado IN ('exitoso', 'fallido')");
     $tasa_exito = $finalizados > 0 ? round(($exitosos / $finalizados) * 100, 1) : 0;
-
-    $usando_demo = $total_proyectos === 0;
-} else {
-    $usando_demo = true;
-}
-
-// Datos de demostración
-if ($usando_demo) {
-    $total_proyectos = 24;
-    $activos = 8;
-    $exitosos = 14;
-    $total_recaudado_eur = 45320.00;
-    $total_recaudado_semilla = 12500.00;
-    $total_aportantes = 342;
-    $total_aportaciones = 567;
-    $tasa_exito = 87.5;
-
-    $proyectos_activos = [
-        ['id' => 1, 'titulo' => 'Álbum "Zurezko Zuhaitz" - Leire Etxabe', 'tipo' => 'album', 'estado' => 'activo', 'objetivo_eur' => 5000, 'recaudado_eur' => 3750, 'aportantes_count' => 89, 'fecha_fin' => date('Y-m-d', strtotime('+15 days')), 'porcentaje' => 75],
-        ['id' => 2, 'titulo' => 'Rehabilitación Gaztetxe Rochapea', 'tipo' => 'espacio', 'estado' => 'activo', 'objetivo_eur' => 12000, 'recaudado_eur' => 8400, 'aportantes_count' => 156, 'fecha_fin' => date('Y-m-d', strtotime('+25 days')), 'porcentaje' => 70],
-        ['id' => 3, 'titulo' => 'Gira Txirrista 2025', 'tipo' => 'tour', 'estado' => 'activo', 'objetivo_eur' => 3000, 'recaudado_eur' => 1200, 'aportantes_count' => 34, 'fecha_fin' => date('Y-m-d', strtotime('+10 days')), 'porcentaje' => 40],
-        ['id' => 4, 'titulo' => 'Festival Alternativo Barrio', 'tipo' => 'evento', 'estado' => 'activo', 'objetivo_eur' => 8000, 'recaudado_eur' => 2800, 'aportantes_count' => 67, 'fecha_fin' => date('Y-m-d', strtotime('+30 days')), 'porcentaje' => 35],
-    ];
-
-    $por_tipo = [
-        ['tipo' => 'album', 'total' => 8, 'recaudado' => 18500],
-        ['tipo' => 'evento', 'total' => 6, 'recaudado' => 12000],
-        ['tipo' => 'espacio', 'total' => 4, 'recaudado' => 9500],
-        ['tipo' => 'social', 'total' => 3, 'recaudado' => 3200],
-        ['tipo' => 'tour', 'total' => 3, 'recaudado' => 2120],
-    ];
-
-    $ultimas_aportaciones = [
-        ['nombre' => 'Ane M.', 'importe' => 50, 'moneda' => 'eur', 'proyecto_titulo' => 'Álbum "Zurezko Zuhaitz"', 'fecha_pago' => date('Y-m-d H:i:s', strtotime('-2 hours')), 'anonimo' => 0],
-        ['nombre' => '', 'importe' => 100, 'moneda' => 'eur', 'proyecto_titulo' => 'Rehabilitación Gaztetxe', 'fecha_pago' => date('Y-m-d H:i:s', strtotime('-5 hours')), 'anonimo' => 1],
-        ['nombre' => 'Koldo G.', 'importe' => 250, 'moneda' => 'semilla', 'proyecto_titulo' => 'Gira Txirrista 2025', 'fecha_pago' => date('Y-m-d H:i:s', strtotime('-8 hours')), 'anonimo' => 0],
-    ];
 }
 
 // Labels para tipos
@@ -125,11 +102,11 @@ $tipo_colores = [
 ?>
 
 <div class="dm-dashboard">
-    <?php if ($usando_demo): ?>
+    <?php if (!$tabla_existe): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Se muestran datos de ejemplo. Los datos reales aparecerán cuando se creen proyectos.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Crowdfunding o aún no hay proyectos creados.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 

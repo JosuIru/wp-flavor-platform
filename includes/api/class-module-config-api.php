@@ -1514,10 +1514,19 @@ class Flavor_Module_Config_API {
      * @return WP_REST_Response
      */
     public function get_module_docs($request) {
-        $module_id = $request->get_param('module_id');
+        $module_id = sanitize_key((string) $request->get_param('module_id'));
         $docs = $this->get_modules_documentation();
+        $resolved_module_id = $this->resolve_docs_module_id($module_id, $docs);
 
-        if (!isset($docs[$module_id])) {
+        if ($resolved_module_id === null) {
+            $dynamic_docs = $this->build_dynamic_module_docs($module_id);
+            if ($dynamic_docs !== null) {
+                return new WP_REST_Response(array(
+                    'success' => true,
+                    'data'    => $dynamic_docs,
+                ), 200);
+            }
+
             return new WP_REST_Response(array(
                 'success' => false,
                 'error'   => 'Documentación no encontrada para este módulo',
@@ -1526,8 +1535,127 @@ class Flavor_Module_Config_API {
 
         return new WP_REST_Response(array(
             'success' => true,
-            'data'    => $docs[$module_id],
+            'data'    => $docs[$resolved_module_id],
         ), 200);
+    }
+
+    /**
+     * Resuelve un ID de módulo contra la documentación estática.
+     *
+     * @param string $module_id
+     * @param array  $docs
+     * @return string|null
+     */
+    private function resolve_docs_module_id(string $module_id, array $docs): ?string {
+        if (isset($docs[$module_id])) {
+            return $module_id;
+        }
+
+        $normalized = $module_id;
+        if (substr($normalized, -10) === '-dashboard') {
+            $normalized = substr($normalized, 0, -10);
+        }
+        if (strpos($normalized, 'flavor-') === 0) {
+            $normalized = substr($normalized, 7);
+        }
+
+        $candidates = array_unique(array_filter(array(
+            str_replace('-', '_', $module_id),
+            str_replace('_', '-', $module_id),
+            sanitize_key(str_replace('-', '_', $module_id)),
+            sanitize_key(str_replace('_', '-', $module_id)),
+            $normalized,
+            str_replace('-', '_', $normalized),
+            str_replace('_', '-', $normalized),
+            sanitize_key(str_replace('-', '_', $normalized)),
+            sanitize_key(str_replace('_', '-', $normalized)),
+        )));
+
+        foreach ($candidates as $candidate) {
+            if (isset($docs[$candidate])) {
+                return $candidate;
+            }
+        }
+
+        $aliases = array(
+            'espacios' => 'espacios_comunes',
+            'espacios-comunes' => 'espacios_comunes',
+        );
+
+        if (isset($aliases[$module_id]) && isset($docs[$aliases[$module_id]])) {
+            return $aliases[$module_id];
+        }
+
+        return null;
+    }
+
+    /**
+     * Genera documentación dinámica para módulos sin ficha estática.
+     *
+     * @param string $module_id
+     * @return array|null
+     */
+    private function build_dynamic_module_docs(string $module_id): ?array {
+        if (!class_exists('Flavor_Chat_Module_Loader')) {
+            return null;
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $registered_modules = $loader->get_registered_modules();
+        $resolved_id = $module_id;
+
+        if (!isset($registered_modules[$resolved_id])) {
+            $variants = array_unique(array_filter(array(
+                str_replace('-', '_', $module_id),
+                str_replace('_', '-', $module_id),
+            )));
+            foreach ($variants as $variant) {
+                if (isset($registered_modules[$variant])) {
+                    $resolved_id = $variant;
+                    break;
+                }
+            }
+        }
+
+        if (!isset($registered_modules[$resolved_id])) {
+            return null;
+        }
+
+        $module_data = $registered_modules[$resolved_id];
+        $module_name = $module_data['name'] ?? ucwords(str_replace(array('_', '-'), ' ', $resolved_id));
+        $module_description = trim((string) ($module_data['description'] ?? ''));
+        $ecosystem = is_array($module_data['ecosystem'] ?? null) ? $module_data['ecosystem'] : array();
+        $requisitos = array_values(array_filter((array) ($ecosystem['dependencies'] ?? array())));
+        $relacionados = array_values(array_filter((array) ($ecosystem['integrates_with'] ?? array())));
+
+        $tablas = array();
+        $module_instance = $loader->get_module($resolved_id);
+        if ($module_instance && method_exists($module_instance, 'get_db_tables')) {
+            $db_tables = $module_instance->get_db_tables();
+            if (is_array($db_tables)) {
+                $tablas = array_values(array_filter(array_map('strval', $db_tables)));
+            }
+        }
+
+        return array(
+            'id' => $resolved_id,
+            'titulo' => $module_name,
+            'version' => defined('FLAVOR_CHAT_IA_VERSION') ? FLAVOR_CHAT_IA_VERSION : '1.0.0',
+            'descripcion' => $module_description !== ''
+                ? $module_description
+                : 'Documentación generada automáticamente para este módulo.',
+            'caracteristicas' => array(
+                'Módulo registrado en el sistema de administración unificada',
+                'Configurable desde Gestión de módulos',
+                'Compatible con activación/desactivación dinámica',
+            ),
+            'casos_uso' => array(),
+            'modulos_relacionados' => $relacionados,
+            'requisitos' => $requisitos,
+            'tabla_principal' => $tablas[0] ?? '',
+            'tablas' => $tablas,
+            'generated' => true,
+        );
     }
 
     /**
@@ -1579,6 +1707,32 @@ class Flavor_Module_Config_API {
                 'requisitos' => array(),
                 'tabla_principal' => 'wp_flavor_eventos',
                 'tablas' => array('wp_flavor_eventos', 'wp_flavor_eventos_inscripciones', 'wp_flavor_eventos_categorias'),
+            ),
+
+            'contabilidad' => array(
+                'id'          => 'contabilidad',
+                'titulo'      => 'Contabilidad',
+                'version'     => '1.0.0',
+                'descripcion' => 'Libro contable transversal para consolidar ingresos y gastos de todos los modulos. Incluye desglose por mes, trimestre y ano, IVA repercutido/soportado, comparativas de periodos y trazabilidad por modulo origen.',
+                'caracteristicas' => array(
+                    'Registro de movimientos manuales y automaticos',
+                    'Integracion por hook transversal (flavor_contabilidad_registrar_movimiento)',
+                    'Integracion nativa con Facturas y Socios',
+                    'Desglose fiscal: IVA repercutido y soportado',
+                    'Comparativa frente al periodo anterior',
+                    'Desglose por modulo origen',
+                    'Idempotencia por clave_unica para evitar duplicados',
+                ),
+                'casos_uso' => array(
+                    'Control de ingresos por facturacion y cuotas',
+                    'Registro de gastos operativos y de servicios',
+                    'Analisis mensual/trimestral/anual de resultados',
+                    'Consolidacion economica de modulos verticales',
+                ),
+                'modulos_relacionados' => array('facturas', 'socios', 'reservas', 'marketplace', 'empresarial'),
+                'requisitos' => array(),
+                'tabla_principal' => 'wp_flavor_contabilidad_movimientos',
+                'tablas' => array('wp_flavor_contabilidad_movimientos'),
             ),
 
             'espacios_comunes' => array(

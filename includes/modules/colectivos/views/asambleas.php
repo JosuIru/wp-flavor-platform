@@ -13,6 +13,10 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+$colectivo_id = isset($colectivo_id) ? (int) $colectivo_id : 0;
+$puede_convocar = !empty($puede_convocar);
+$asambleas = is_array($asambleas ?? null) ? $asambleas : [];
 ?>
 
 <div class="flavor-col-asambleas" data-colectivo="<?php echo esc_attr($colectivo_id); ?>">

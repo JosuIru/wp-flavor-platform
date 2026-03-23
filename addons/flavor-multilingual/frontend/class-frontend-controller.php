@@ -250,17 +250,35 @@ class Flavor_Multilingual_Frontend {
      * @return string
      */
     public function maybe_add_switcher_to_menu($items, $args) {
+        // Evitar duplicados con flag estática
+        static $rendered_locations = array();
+
         $menu_locations = Flavor_Multilingual::get_option('switcher_menu_locations', array());
 
         if (!in_array($args->theme_location, $menu_locations)) {
             return $items;
         }
 
+        // Evitar renderizar más de una vez por ubicación
+        if (isset($rendered_locations[$args->theme_location])) {
+            return $items;
+        }
+        $rendered_locations[$args->theme_location] = true;
+
+        // Leer opciones de configuración
+        $switcher_style = Flavor_Multilingual::get_option('switcher_style', 'dropdown');
+        $show_flags = Flavor_Multilingual::get_option('switcher_show_flags', true);
+        $show_names = Flavor_Multilingual::get_option('switcher_show_names', true);
+        $show_native = Flavor_Multilingual::get_option('switcher_show_native', false);
+        $hide_current = Flavor_Multilingual::get_option('switcher_hide_current', false);
+
         $switcher = Flavor_Language_Switcher::get_instance();
         $switcher_html = $switcher->render(array(
-            'style'      => 'dropdown',
-            'show_flags' => true,
-            'show_names' => true,
+            'style'        => $switcher_style,
+            'show_flags'   => $show_flags,
+            'show_names'   => $show_names,
+            'show_native'  => $show_native,
+            'hide_current' => $hide_current,
         ));
 
         $items .= '<li class="menu-item flavor-ml-menu-switcher">' . $switcher_html . '</li>';

@@ -59,10 +59,12 @@ import '../../features/modules/email_marketing/email_marketing_screen.dart';
 import '../../features/modules/bares/bares_screen.dart';
 import '../../features/modules/reservas/reservas_screen.dart';
 import '../../features/modules/module_placeholder_screen.dart';
+import '../../features/client/camps/camps_screen.dart';
 
 /// Registro centralizado de pantallas de módulos
 class ModuleScreenRegistry {
-  static final ModuleScreenRegistry _instance = ModuleScreenRegistry._internal();
+  static final ModuleScreenRegistry _instance =
+      ModuleScreenRegistry._internal();
   factory ModuleScreenRegistry() => _instance;
   ModuleScreenRegistry._internal();
 
@@ -71,86 +73,143 @@ class ModuleScreenRegistry {
     final loader = ModuleLazyLoader();
 
     // TODOS los módulos con pantallas implementadas
-    loader.registerScreenBuilder('grupos-consumo', (_) => const GruposConsumoScreen());
-    loader.registerScreenBuilder('banco-tiempo', (_) => const BancoTiempoScreen());
-    loader.registerScreenBuilder('marketplace', (_) => const MarketplaceScreen());
+    loader.registerScreenBuilder(
+        'grupos-consumo', (_) => const GruposConsumoScreen());
+    loader.registerScreenBuilder(
+        'banco-tiempo', (_) => const BancoTiempoScreen());
+    loader.registerScreenBuilder(
+        'marketplace', (_) => const MarketplaceScreen());
     loader.registerScreenBuilder('eventos', (_) => const EventosScreen());
     loader.registerScreenBuilder('socios', (_) => const SociosScreen());
     loader.registerScreenBuilder('facturas', (_) => const FacturasScreen());
-    loader.registerScreenBuilder('chat-grupos', (_) => const ChatGruposScreen());
-    loader.registerScreenBuilder('chat-interno', (_) => const ChatInternoScreen());
-    loader.registerScreenBuilder('incidencias', (_) => const IncidenciasScreen());
+    loader.registerScreenBuilder(
+        'chat-grupos', (_) => const ChatGruposScreen());
+    loader.registerScreenBuilder(
+        'chat-interno', (_) => const ChatInternoScreen());
+    loader.registerScreenBuilder(
+        'incidencias', (_) => const IncidenciasScreen());
     loader.registerScreenBuilder('cursos', (_) => const CursosScreen());
     loader.registerScreenBuilder('biblioteca', (_) => const BibliotecaScreen());
-    loader.registerScreenBuilder('espacios-comunes', (_) => const EspaciosComunesScreen());
+    loader.registerScreenBuilder(
+        'espacios-comunes', (_) => const EspaciosComunesScreen());
     loader.registerScreenBuilder('talleres', (_) => const TalleresScreen());
     loader.registerScreenBuilder('tramites', (_) => const TramitesScreen());
-    loader.registerScreenBuilder('huertos-urbanos', (_) => const HuertosUrbanosScreen());
+    loader.registerScreenBuilder(
+        'huertos-urbanos', (_) => const HuertosUrbanosScreen());
     loader.registerScreenBuilder('reciclaje', (_) => const ReciclajeScreen());
-    loader.registerScreenBuilder('bicicletas-compartidas', (_) => const BicicletasCompartidasScreen());
+    loader.registerScreenBuilder(
+        'bicicletas-compartidas', (_) => const BicicletasCompartidasScreen());
     loader.registerScreenBuilder('parkings', (_) => const ParkingsScreen());
-    loader.registerScreenBuilder('avisos-municipales', (_) => const AvisosMunicipalesScreen());
-    loader.registerScreenBuilder('ayuda-vecinal', (_) => const AyudaVecinalScreen());
-    loader.registerScreenBuilder('biodiversidad-local', (_) => const BiodiversidadLocalScreen());
-    loader.registerScreenBuilder('circulos-cuidados', (_) => const CirculosCuidadosScreen());
-    loader.registerScreenBuilder('economia-don', (_) => const EconomiaDonScreen());
-    loader.registerScreenBuilder('economia-suficiencia', (_) => const EconomiaSuficienciaScreen());
-    loader.registerScreenBuilder('energia-comunitaria', (_) => const EnergiaComunitariaScreen());
-    loader.registerScreenBuilder('huella-ecologica', (_) => const HuellaEcologicaScreen());
-    loader.registerScreenBuilder('justicia-restaurativa', (_) => const JusticiaRestaurativaScreen());
-    loader.registerScreenBuilder('saberes-ancestrales', (_) => const SaberesAncestralesScreen());
-    loader.registerScreenBuilder('sello-conciencia', (_) => const SelloConcienciaScreen());
-    loader.registerScreenBuilder('trabajo-digno', (_) => const TrabajoDignoScreen());
-    loader.registerScreenBuilder('woocommerce', (_) => const WooCommerceScreen());
-    loader.registerScreenBuilder('fichaje-empleados', (_) => const FichajeEmpleadosScreen());
-    loader.registerScreenBuilder('participacion', (_) => const ParticipacionScreen());
-    loader.registerScreenBuilder('presupuestos-participativos', (_) => const PresupuestosParticipativosScreen());
-    loader.registerScreenBuilder('advertising', (_) => const AdvertisingScreen());
+    loader.registerScreenBuilder(
+        'avisos-municipales', (_) => const AvisosMunicipalesScreen());
+    loader.registerScreenBuilder(
+        'ayuda-vecinal', (_) => const AyudaVecinalScreen());
+    loader.registerScreenBuilder(
+        'biodiversidad-local', (_) => const BiodiversidadLocalScreen());
+    loader.registerScreenBuilder(
+        'circulos-cuidados', (_) => const CirculosCuidadosScreen());
+    loader.registerScreenBuilder(
+        'economia-don', (_) => const EconomiaDonScreen());
+    loader.registerScreenBuilder(
+        'economia-suficiencia', (_) => const EconomiaSuficienciaScreen());
+    loader.registerScreenBuilder(
+        'energia-comunitaria', (_) => const EnergiaComunitariaScreen());
+    loader.registerScreenBuilder(
+        'huella-ecologica', (_) => const HuellaEcologicaScreen());
+    loader.registerScreenBuilder(
+        'justicia-restaurativa', (_) => const JusticiaRestaurativaScreen());
+    loader.registerScreenBuilder(
+        'saberes-ancestrales', (_) => const SaberesAncestralesScreen());
+    loader.registerScreenBuilder(
+        'sello-conciencia', (_) => const SelloConcienciaScreen());
+    loader.registerScreenBuilder(
+        'trabajo-digno', (_) => const TrabajoDignoScreen());
+    loader.registerScreenBuilder(
+        'woocommerce', (_) => const WooCommerceScreen());
+    loader.registerScreenBuilder(
+        'fichaje-empleados', (_) => const FichajeEmpleadosScreen());
+    loader.registerScreenBuilder(
+        'participacion', (_) => const ParticipacionScreen());
+    loader.registerScreenBuilder('presupuestos-participativos',
+        (_) => const PresupuestosParticipativosScreen());
+    loader.registerScreenBuilder(
+        'advertising', (_) => const AdvertisingScreen());
     loader.registerScreenBuilder('carpooling', (_) => const CarpoolingScreen());
     loader.registerScreenBuilder('compostaje', (_) => const CompostajeScreen());
-    loader.registerScreenBuilder('empresarial', (_) => const EmpresarialScreen());
+    loader.registerScreenBuilder(
+        'empresarial', (_) => const EmpresarialScreen());
     loader.registerScreenBuilder('multimedia', (_) => const MultimediaScreen());
     loader.registerScreenBuilder('podcast', (_) => const PodcastScreen());
     loader.registerScreenBuilder('radio', (_) => const RadioScreen());
     loader.registerScreenBuilder('red-social', (_) => const RedSocialScreen());
-    loader.registerScreenBuilder('transparencia', (_) => const TransparenciaScreen());
+    loader.registerScreenBuilder(
+        'transparencia', (_) => const TransparenciaScreen());
     loader.registerScreenBuilder('colectivos', (_) => const ColectivosScreen());
     loader.registerScreenBuilder('foros', (_) => const ForosScreen());
     loader.registerScreenBuilder('clientes', (_) => const ClientesScreen());
-    loader.registerScreenBuilder('comunidades', (_) => const ComunidadesScreen());
+    loader.registerScreenBuilder(
+        'comunidades', (_) => const ComunidadesScreen());
     loader.registerScreenBuilder('trading-ia', (_) => const TradingIaScreen());
     loader.registerScreenBuilder('dex-solana', (_) => const DexSolanaScreen());
     loader.registerScreenBuilder('themacle', (_) => const ThemacleScreen());
-    loader.registerScreenBuilder('email-marketing', (_) => const EmailMarketingScreen());
+    loader.registerScreenBuilder(
+        'email-marketing', (_) => const EmailMarketingScreen());
     loader.registerScreenBuilder('bares', (_) => const BaresScreen());
     loader.registerScreenBuilder('reservas', (_) => const ReservasScreen());
+    loader.registerScreenBuilder('campamentos', (_) => const CampsScreen());
+    loader.registerScreenBuilder(
+      'basabere-campamentos',
+      (_) => const CampsScreen(),
+    );
 
     // Variantes con guion bajo (compatibilidad)
-    loader.registerScreenBuilder('grupos_consumo', (_) => const GruposConsumoScreen());
-    loader.registerScreenBuilder('banco_tiempo', (_) => const BancoTiempoScreen());
-    loader.registerScreenBuilder('chat_grupos', (_) => const ChatGruposScreen());
-    loader.registerScreenBuilder('chat_interno', (_) => const ChatInternoScreen());
-    loader.registerScreenBuilder('espacios_comunes', (_) => const EspaciosComunesScreen());
-    loader.registerScreenBuilder('huertos_urbanos', (_) => const HuertosUrbanosScreen());
-    loader.registerScreenBuilder('bicicletas_compartidas', (_) => const BicicletasCompartidasScreen());
-    loader.registerScreenBuilder('avisos_municipales', (_) => const AvisosMunicipalesScreen());
-    loader.registerScreenBuilder('ayuda_vecinal', (_) => const AyudaVecinalScreen());
-    loader.registerScreenBuilder('biodiversidad_local', (_) => const BiodiversidadLocalScreen());
-    loader.registerScreenBuilder('circulos_cuidados', (_) => const CirculosCuidadosScreen());
-    loader.registerScreenBuilder('economia_don', (_) => const EconomiaDonScreen());
-    loader.registerScreenBuilder('economia_suficiencia', (_) => const EconomiaSuficienciaScreen());
-    loader.registerScreenBuilder('energia_comunitaria', (_) => const EnergiaComunitariaScreen());
-    loader.registerScreenBuilder('huella_ecologica', (_) => const HuellaEcologicaScreen());
-    loader.registerScreenBuilder('justicia_restaurativa', (_) => const JusticiaRestaurativaScreen());
-    loader.registerScreenBuilder('saberes_ancestrales', (_) => const SaberesAncestralesScreen());
-    loader.registerScreenBuilder('sello_conciencia', (_) => const SelloConcienciaScreen());
-    loader.registerScreenBuilder('trabajo_digno', (_) => const TrabajoDignoScreen());
-    loader.registerScreenBuilder('fichaje_empleados', (_) => const FichajeEmpleadosScreen());
-    loader.registerScreenBuilder('presupuestos_participativos', (_) => const PresupuestosParticipativosScreen());
+    loader.registerScreenBuilder(
+        'grupos_consumo', (_) => const GruposConsumoScreen());
+    loader.registerScreenBuilder(
+        'banco_tiempo', (_) => const BancoTiempoScreen());
+    loader.registerScreenBuilder(
+        'chat_grupos', (_) => const ChatGruposScreen());
+    loader.registerScreenBuilder(
+        'chat_interno', (_) => const ChatInternoScreen());
+    loader.registerScreenBuilder(
+        'espacios_comunes', (_) => const EspaciosComunesScreen());
+    loader.registerScreenBuilder(
+        'huertos_urbanos', (_) => const HuertosUrbanosScreen());
+    loader.registerScreenBuilder(
+        'bicicletas_compartidas', (_) => const BicicletasCompartidasScreen());
+    loader.registerScreenBuilder(
+        'avisos_municipales', (_) => const AvisosMunicipalesScreen());
+    loader.registerScreenBuilder(
+        'ayuda_vecinal', (_) => const AyudaVecinalScreen());
+    loader.registerScreenBuilder(
+        'biodiversidad_local', (_) => const BiodiversidadLocalScreen());
+    loader.registerScreenBuilder(
+        'circulos_cuidados', (_) => const CirculosCuidadosScreen());
+    loader.registerScreenBuilder(
+        'economia_don', (_) => const EconomiaDonScreen());
+    loader.registerScreenBuilder(
+        'economia_suficiencia', (_) => const EconomiaSuficienciaScreen());
+    loader.registerScreenBuilder(
+        'energia_comunitaria', (_) => const EnergiaComunitariaScreen());
+    loader.registerScreenBuilder(
+        'huella_ecologica', (_) => const HuellaEcologicaScreen());
+    loader.registerScreenBuilder(
+        'justicia_restaurativa', (_) => const JusticiaRestaurativaScreen());
+    loader.registerScreenBuilder(
+        'saberes_ancestrales', (_) => const SaberesAncestralesScreen());
+    loader.registerScreenBuilder(
+        'sello_conciencia', (_) => const SelloConcienciaScreen());
+    loader.registerScreenBuilder(
+        'trabajo_digno', (_) => const TrabajoDignoScreen());
+    loader.registerScreenBuilder(
+        'fichaje_empleados', (_) => const FichajeEmpleadosScreen());
+    loader.registerScreenBuilder('presupuestos_participativos',
+        (_) => const PresupuestosParticipativosScreen());
     loader.registerScreenBuilder('red_social', (_) => const RedSocialScreen());
     loader.registerScreenBuilder('trading_ia', (_) => const TradingIaScreen());
     loader.registerScreenBuilder('dex_solana', (_) => const DexSolanaScreen());
-    loader.registerScreenBuilder('email_marketing', (_) => const EmailMarketingScreen());
+    loader.registerScreenBuilder(
+        'email_marketing', (_) => const EmailMarketingScreen());
 
     debugPrint('✅ Registradas ${loader.loadedCount} pantallas de módulos');
   }

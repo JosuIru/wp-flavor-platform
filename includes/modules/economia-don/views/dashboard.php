@@ -20,7 +20,7 @@ global $wpdb;
 
 // Verificar si el CPT existe
 $cpt_exists = post_type_exists('ed_don');
-$usando_demo = false;
+$tablas_disponibles = $cpt_exists;
 
 // Valores por defecto
 $donesDisponibles = 0;
@@ -112,51 +112,6 @@ if ($cpt_exists) {
     );
 }
 
-// Usar datos demo si no hay datos reales
-if ($totalDones == 0) {
-    $usando_demo = true;
-    $donesDisponibles = 18;
-    $donesEntregados = 45;
-    $totalDones = 63;
-    $solicitudesPendientes = 5;
-    $totalSolicitudes = 12;
-    $totalGratitudes = 38;
-
-    // Categorías demo
-    $donesPorCategoria = [
-        'objetos' => ['cantidad' => 24, 'info' => ['nombre' => 'Objetos', 'icono' => 'dashicons-archive', 'color' => '#3498db']],
-        'tiempo' => ['cantidad' => 15, 'info' => ['nombre' => 'Tiempo', 'icono' => 'dashicons-clock', 'color' => '#27ae60']],
-        'conocimiento' => ['cantidad' => 12, 'info' => ['nombre' => 'Conocimiento', 'icono' => 'dashicons-lightbulb', 'color' => '#f39c12']],
-        'servicios' => ['cantidad' => 8, 'info' => ['nombre' => 'Servicios', 'icono' => 'dashicons-admin-tools', 'color' => '#9b59b6']],
-        'espacios' => ['cantidad' => 4, 'info' => ['nombre' => 'Espacios', 'icono' => 'dashicons-admin-home', 'color' => '#e74c3c']],
-    ];
-
-    // Dones recientes demo
-    $donesRecientes = [
-        (object) ['ID' => 1, 'post_title' => 'Bicicleta infantil', 'post_author' => 0, 'post_date' => date('Y-m-d H:i:s', strtotime('-1 day')), 'estado' => 'disponible'],
-        (object) ['ID' => 2, 'post_title' => 'Clases de guitarra', 'post_author' => 0, 'post_date' => date('Y-m-d H:i:s', strtotime('-2 days')), 'estado' => 'disponible'],
-        (object) ['ID' => 3, 'post_title' => 'Libros de cocina', 'post_author' => 0, 'post_date' => date('Y-m-d H:i:s', strtotime('-3 days')), 'estado' => 'entregado'],
-        (object) ['ID' => 4, 'post_title' => 'Reparación ordenadores', 'post_author' => 0, 'post_date' => date('Y-m-d H:i:s', strtotime('-4 days')), 'estado' => 'disponible'],
-        (object) ['ID' => 5, 'post_title' => 'Mueble estantería', 'post_author' => 0, 'post_date' => date('Y-m-d H:i:s', strtotime('-5 days')), 'estado' => 'entregado'],
-    ];
-
-    // Gratitudes demo
-    $gratitudesRecientes = [
-        (object) ['post_content' => 'Gracias por la bicicleta, mi hijo está encantado.', 'post_author' => 0, 'display_name' => 'Ana García'],
-        (object) ['post_content' => 'Las clases de guitarra son geniales, muy buen profesor.', 'post_author' => 0, 'display_name' => 'Carlos López'],
-        (object) ['post_content' => 'Qué comunidad tan generosa, gracias a todos.', 'post_author' => 0, 'display_name' => 'María Fernández'],
-    ];
-
-    // Donantes demo
-    $donantesMasActivos = [
-        (object) ['post_author' => 0, 'total_dones' => 12, 'display_name' => 'Pedro Sánchez'],
-        (object) ['post_author' => 0, 'total_dones' => 8, 'display_name' => 'Laura Martínez'],
-        (object) ['post_author' => 0, 'total_dones' => 6, 'display_name' => 'Antonio Ruiz'],
-        (object) ['post_author' => 0, 'total_dones' => 5, 'display_name' => 'Carmen Díaz'],
-        (object) ['post_author' => 0, 'total_dones' => 4, 'display_name' => 'Javier Gómez'],
-    ];
-}
-
 // Definir estados para badges
 $estados_don = [
     'disponible' => ['nombre' => __('Disponible', 'flavor-chat-ia'), 'color' => 'success'],
@@ -183,10 +138,10 @@ $estados_don = [
         </div>
     </div>
 
-    <?php if ($usando_demo) : ?>
+    <?php if (!$tablas_disponibles) : ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <?php esc_html_e('Mostrando datos de demostración. Los datos reales aparecerán cuando se publiquen dones.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('El módulo Economía del Don no está disponible porque falta el tipo de contenido requerido.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 
@@ -316,25 +271,16 @@ $estados_don = [
                     </thead>
                     <tbody>
                         <?php foreach ($donesRecientes as $don) :
-                            if ($usando_demo) {
-                                $estado = $don->estado ?? 'disponible';
-                                $donante_nombre = __('Usuario Demo', 'flavor-chat-ia');
-                            } else {
-                                $estado = get_post_meta($don->ID, '_ed_estado', true) ?: 'disponible';
-                                $donante = get_userdata($don->post_author);
-                                $donante_nombre = $donante ? $donante->display_name : __('Anónimo', 'flavor-chat-ia');
-                            }
+                            $estado = get_post_meta($don->ID, '_ed_estado', true) ?: 'disponible';
+                            $donante = get_userdata($don->post_author);
+                            $donante_nombre = $donante ? $donante->display_name : __('Anónimo', 'flavor-chat-ia');
                             $estado_info = $estados_don[$estado] ?? ['nombre' => $estado, 'color' => 'secondary'];
                         ?>
                         <tr>
                             <td>
-                                <?php if (!$usando_demo) : ?>
                                 <a href="<?php echo esc_url(get_edit_post_link($don->ID)); ?>" class="dm-link">
                                     <?php echo esc_html($don->post_title); ?>
                                 </a>
-                                <?php else : ?>
-                                <strong><?php echo esc_html($don->post_title); ?></strong>
-                                <?php endif; ?>
                             </td>
                             <td><?php echo esc_html($donante_nombre); ?></td>
                             <td>
@@ -371,13 +317,8 @@ $estados_don = [
                 <?php if (!empty($gratitudesRecientes)) : ?>
                 <div class="dm-gratitude-list">
                     <?php foreach ($gratitudesRecientes as $gratitud) :
-                        if ($usando_demo) {
-                            $autor_nombre = $gratitud->display_name ?? __('Usuario', 'flavor-chat-ia');
-                            $contenido = $gratitud->post_content;
-                        } else {
-                            $autor_nombre = get_the_author_meta('display_name', $gratitud->post_author);
-                            $contenido = $gratitud->post_content;
-                        }
+                        $autor_nombre = get_the_author_meta('display_name', $gratitud->post_author);
+                        $contenido = $gratitud->post_content;
                     ?>
                     <div class="dm-gratitude-item">
                         <p class="dm-gratitude-item__text">"<?php echo esc_html(wp_trim_words($contenido, 15)); ?>"</p>
@@ -404,14 +345,9 @@ $estados_don = [
                 <?php if (!empty($donantesMasActivos)) : ?>
                 <ol class="dm-ranking">
                     <?php foreach ($donantesMasActivos as $donante) :
-                        if ($usando_demo) {
-                            $nombre = $donante->display_name ?? __('Usuario', 'flavor-chat-ia');
-                            $total = $donante->total_dones;
-                        } else {
-                            $usuario = get_userdata($donante->post_author);
-                            $nombre = $usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia');
-                            $total = $donante->total_dones;
-                        }
+                        $usuario = get_userdata($donante->post_author);
+                        $nombre = $usuario ? $usuario->display_name : __('Usuario', 'flavor-chat-ia');
+                        $total = $donante->total_dones;
                     ?>
                     <li>
                         <span><?php echo esc_html($nombre); ?></span>

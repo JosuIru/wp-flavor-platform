@@ -152,6 +152,48 @@ class Flavor_VBP_Block_Library {
     }
 
     /**
+     * Campos de cabecera de sección (título, subtítulo, colores de fondo)
+     * Para bloques que necesitan un wrapper de sección con encabezado.
+     *
+     * @return array
+     */
+    private function get_campos_header_seccion() {
+        return array(
+            '_separator_seccion' => array(
+                'type'  => 'separator',
+                'label' => __( '📋 Cabecera de Sección', 'flavor-chat-ia' ),
+            ),
+            'titulo' => array(
+                'type'    => 'text',
+                'label'   => __( 'Título de sección', 'flavor-chat-ia' ),
+                'default' => '',
+                'ai'      => true,
+            ),
+            'subtitulo' => array(
+                'type'    => 'text',
+                'label'   => __( 'Subtítulo', 'flavor-chat-ia' ),
+                'default' => '',
+                'ai'      => true,
+            ),
+            'titulo_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Color del título', 'flavor-chat-ia' ),
+                'default' => '#ffffff',
+            ),
+            'subtitulo_color' => array(
+                'type'    => 'color',
+                'label'   => __( 'Color del subtítulo', 'flavor-chat-ia' ),
+                'default' => '#9CA3AF',
+            ),
+            'color_fondo' => array(
+                'type'    => 'color',
+                'label'   => __( 'Color de fondo', 'flavor-chat-ia' ),
+                'default' => 'transparent',
+            ),
+        );
+    }
+
+    /**
      * Campos de colores para secciones (Hero, CTA, Features, etc.)
      *
      * @return array
@@ -1260,42 +1302,45 @@ class Flavor_VBP_Block_Library {
                 'underlined' => __( 'Subrayado', 'flavor-chat-ia' ),
                 'boxed'      => __( 'Con caja', 'flavor-chat-ia' ),
             ),
-            'fields'   => array(
-                'tabs' => array(
-                    'type'   => 'repeater',
-                    'label'  => __( 'Pestañas', 'flavor-chat-ia' ),
-                    'fields' => array(
-                        'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                        'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
-                        'contenido' => array( 'type' => 'editor', 'label' => __( 'Contenido', 'flavor-chat-ia' ) ),
+            'fields'   => array_merge(
+                $this->get_campos_header_seccion(),
+                array(
+                    'tabs' => array(
+                        'type'   => 'repeater',
+                        'label'  => __( 'Pestañas', 'flavor-chat-ia' ),
+                        'fields' => array(
+                            'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
+                            'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
+                            'contenido' => array( 'type' => 'editor', 'label' => __( 'Contenido', 'flavor-chat-ia' ) ),
+                        ),
                     ),
-                ),
-                '_separator_estilo' => array(
-                    'type'  => 'separator',
-                    'label' => __( '🎨 Estilo', 'flavor-chat-ia' ),
-                ),
-                'tab_activa_defecto' => array(
-                    'type'    => 'number',
-                    'label'   => __( 'Tab activa por defecto', 'flavor-chat-ia' ),
-                    'default' => 0,
-                    'min'     => 0,
-                ),
-                'alineacion_tabs' => array(
-                    'type'    => 'select',
-                    'label'   => __( 'Alineación tabs', 'flavor-chat-ia' ),
-                    'options' => array(
-                        'left'   => __( 'Izquierda', 'flavor-chat-ia' ),
-                        'center' => __( 'Centro', 'flavor-chat-ia' ),
-                        'right'  => __( 'Derecha', 'flavor-chat-ia' ),
-                        'full'   => __( 'Ancho completo', 'flavor-chat-ia' ),
+                    '_separator_estilo' => array(
+                        'type'  => 'separator',
+                        'label' => __( '🎨 Estilo', 'flavor-chat-ia' ),
                     ),
-                    'default' => 'left',
-                ),
-                'animacion' => array(
-                    'type'    => 'toggle',
-                    'label'   => __( 'Animación al cambiar', 'flavor-chat-ia' ),
-                    'default' => true,
-                ),
+                    'tab_activa_defecto' => array(
+                        'type'    => 'number',
+                        'label'   => __( 'Tab activa por defecto', 'flavor-chat-ia' ),
+                        'default' => 0,
+                        'min'     => 0,
+                    ),
+                    'alineacion_tabs' => array(
+                        'type'    => 'select',
+                        'label'   => __( 'Alineación tabs', 'flavor-chat-ia' ),
+                        'options' => array(
+                            'left'   => __( 'Izquierda', 'flavor-chat-ia' ),
+                            'center' => __( 'Centro', 'flavor-chat-ia' ),
+                            'right'  => __( 'Derecha', 'flavor-chat-ia' ),
+                            'full'   => __( 'Ancho completo', 'flavor-chat-ia' ),
+                        ),
+                        'default' => 'left',
+                    ),
+                    'animacion' => array(
+                        'type'    => 'toggle',
+                        'label'   => __( 'Animación al cambiar', 'flavor-chat-ia' ),
+                        'default' => true,
+                    ),
+                )
             ),
         ) );
 
@@ -1312,41 +1357,44 @@ class Flavor_VBP_Block_Library {
                 'minimal'  => __( 'Minimalista', 'flavor-chat-ia' ),
                 'faq'      => __( 'FAQ', 'flavor-chat-ia' ),
             ),
-            'fields'   => array(
-                'items' => array(
-                    'type'   => 'repeater',
-                    'label'  => __( 'Items', 'flavor-chat-ia' ),
-                    'fields' => array(
-                        'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                        'contenido' => array( 'type' => 'editor', 'label' => __( 'Contenido', 'flavor-chat-ia' ) ),
-                        'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
-                        'abierto'   => array( 'type' => 'toggle', 'label' => __( 'Abierto por defecto', 'flavor-chat-ia' ), 'default' => false ),
+            'fields'   => array_merge(
+                $this->get_campos_header_seccion(),
+                array(
+                    'items' => array(
+                        'type'   => 'repeater',
+                        'label'  => __( 'Items', 'flavor-chat-ia' ),
+                        'fields' => array(
+                            'titulo'    => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
+                            'contenido' => array( 'type' => 'editor', 'label' => __( 'Contenido', 'flavor-chat-ia' ) ),
+                            'icono'     => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
+                            'abierto'   => array( 'type' => 'toggle', 'label' => __( 'Abierto por defecto', 'flavor-chat-ia' ), 'default' => false ),
+                        ),
                     ),
-                ),
-                '_separator_config' => array(
-                    'type'  => 'separator',
-                    'label' => __( '⚙️ Configuración', 'flavor-chat-ia' ),
-                ),
-                'multiple_abiertos' => array(
-                    'type'    => 'toggle',
-                    'label'   => __( 'Permitir múltiples abiertos', 'flavor-chat-ia' ),
-                    'default' => false,
-                ),
-                'icono_expandir' => array(
-                    'type'    => 'select',
-                    'label'   => __( 'Icono expandir', 'flavor-chat-ia' ),
-                    'options' => array(
-                        'chevron' => __( 'Chevron', 'flavor-chat-ia' ),
-                        'plus'    => __( 'Plus/Minus', 'flavor-chat-ia' ),
-                        'arrow'   => __( 'Flecha', 'flavor-chat-ia' ),
+                    '_separator_config' => array(
+                        'type'  => 'separator',
+                        'label' => __( '⚙️ Configuración', 'flavor-chat-ia' ),
                     ),
-                    'default' => 'chevron',
-                ),
-                'animacion' => array(
-                    'type'    => 'toggle',
-                    'label'   => __( 'Animación suave', 'flavor-chat-ia' ),
-                    'default' => true,
-                ),
+                    'multiple_abiertos' => array(
+                        'type'    => 'toggle',
+                        'label'   => __( 'Permitir múltiples abiertos', 'flavor-chat-ia' ),
+                        'default' => false,
+                    ),
+                    'icono_expandir' => array(
+                        'type'    => 'select',
+                        'label'   => __( 'Icono expandir', 'flavor-chat-ia' ),
+                        'options' => array(
+                            'chevron' => __( 'Chevron', 'flavor-chat-ia' ),
+                            'plus'    => __( 'Plus/Minus', 'flavor-chat-ia' ),
+                            'arrow'   => __( 'Flecha', 'flavor-chat-ia' ),
+                        ),
+                        'default' => 'chevron',
+                    ),
+                    'animacion' => array(
+                        'type'    => 'toggle',
+                        'label'   => __( 'Animación suave', 'flavor-chat-ia' ),
+                        'default' => true,
+                    ),
+                )
             ),
         ) );
 
@@ -1363,26 +1411,181 @@ class Flavor_VBP_Block_Library {
                 'compact'     => __( 'Compacto', 'flavor-chat-ia' ),
                 'roadmap'     => __( 'Roadmap', 'flavor-chat-ia' ),
             ),
-            'fields'   => array(
-                'eventos' => array(
-                    'type'   => 'repeater',
-                    'label'  => __( 'Eventos', 'flavor-chat-ia' ),
-                    'fields' => array(
-                        'fecha'       => array( 'type' => 'text', 'label' => __( 'Fecha', 'flavor-chat-ia' ) ),
-                        'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
-                        'descripcion' => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
-                        'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
-                        'imagen'      => array( 'type' => 'image', 'label' => __( 'Imagen', 'flavor-chat-ia' ) ),
-                        'color'       => array( 'type' => 'color', 'label' => __( 'Color del marcador', 'flavor-chat-ia' ) ),
-                        'estado'      => array(
-                            'type'    => 'select',
-                            'label'   => __( 'Estado', 'flavor-chat-ia' ),
-                            'options' => array(
-                                'completed' => __( 'Completado', 'flavor-chat-ia' ),
-                                'current'   => __( 'Actual', 'flavor-chat-ia' ),
-                                'upcoming'  => __( 'Próximo', 'flavor-chat-ia' ),
+            'fields'   => array_merge(
+                $this->get_campos_header_seccion(),
+                array(
+                    'eventos' => array(
+                        'type'   => 'repeater',
+                        'label'  => __( 'Eventos', 'flavor-chat-ia' ),
+                        'fields' => array(
+                            'fecha'       => array( 'type' => 'text', 'label' => __( 'Fecha', 'flavor-chat-ia' ) ),
+                            'titulo'      => array( 'type' => 'text', 'label' => __( 'Título', 'flavor-chat-ia' ) ),
+                            'descripcion' => array( 'type' => 'textarea', 'label' => __( 'Descripción', 'flavor-chat-ia' ) ),
+                            'icono'       => array( 'type' => 'icon', 'label' => __( 'Icono', 'flavor-chat-ia' ) ),
+                            'imagen'      => array( 'type' => 'image', 'label' => __( 'Imagen', 'flavor-chat-ia' ) ),
+                            'color'       => array( 'type' => 'color', 'label' => __( 'Color del marcador', 'flavor-chat-ia' ) ),
+                            'estado'      => array(
+                                'type'    => 'select',
+                                'label'   => __( 'Estado', 'flavor-chat-ia' ),
+                                'options' => array(
+                                    'completed' => __( 'Completado', 'flavor-chat-ia' ),
+                                    'current'   => __( 'Actual', 'flavor-chat-ia' ),
+                                    'upcoming'  => __( 'Próximo', 'flavor-chat-ia' ),
+                                ),
+                                'default' => 'completed',
                             ),
-                            'default' => 'completed',
+                        ),
+                    ),
+                    '_separator_estilo' => array(
+                        'type'  => 'separator',
+                        'label' => __( '🎨 Estilo', 'flavor-chat-ia' ),
+                    ),
+                    'color_linea' => array(
+                        'type'    => 'color',
+                        'label'   => __( 'Color de la línea', 'flavor-chat-ia' ),
+                        'default' => '#3b82f6',
+                    ),
+                    'color_marcador' => array(
+                        'type'    => 'color',
+                        'label'   => __( 'Color de marcadores', 'flavor-chat-ia' ),
+                        'default' => '#3b82f6',
+                    ),
+                    'animacion_scroll' => array(
+                        'type'    => 'toggle',
+                        'label'   => __( 'Animar al hacer scroll', 'flavor-chat-ia' ),
+                        'default' => true,
+                    ),
+                    'mostrar_conectores' => array(
+                        'type'    => 'toggle',
+                        'label'   => __( 'Mostrar líneas conectoras', 'flavor-chat-ia' ),
+                        'default' => true,
+                    ),
+                )
+            ),
+        ) );
+
+        // ====================================
+        // CARRUSEL AVANZADO
+        // ====================================
+        $this->registrar_bloque( array(
+            'id'       => 'carousel',
+            'name'     => __( 'Carrusel', 'flavor-chat-ia' ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h4v4H6z"/><circle cx="18" cy="12" r="1"/><circle cx="15" cy="12" r="1"/></svg>',
+            'variants' => array(
+                'simple'       => __( 'Simple', 'flavor-chat-ia' ),
+                'cards'        => __( 'Tarjetas', 'flavor-chat-ia' ),
+                'fullwidth'    => __( 'Ancho completo', 'flavor-chat-ia' ),
+                'testimonials' => __( 'Testimonios', 'flavor-chat-ia' ),
+            ),
+            'fields'   => array(
+                'slides' => array(
+                    'type'   => 'repeater',
+                    'label'  => __( 'Slides', 'flavor-chat-ia' ),
+                    'fields' => array(
+                        'imagen' => array(
+                            'type'  => 'image',
+                            'label' => __( 'Imagen', 'flavor-chat-ia' ),
+                        ),
+                        'titulo' => array(
+                            'type'  => 'text',
+                            'label' => __( 'Título', 'flavor-chat-ia' ),
+                        ),
+                        'descripcion' => array(
+                            'type'  => 'textarea',
+                            'label' => __( 'Descripción', 'flavor-chat-ia' ),
+                        ),
+                        'enlace' => array(
+                            'type'  => 'url',
+                            'label' => __( 'Enlace', 'flavor-chat-ia' ),
+                        ),
+                        'texto_boton' => array(
+                            'type'  => 'text',
+                            'label' => __( 'Texto del botón', 'flavor-chat-ia' ),
+                        ),
+                    ),
+                ),
+                '_separator_config' => array(
+                    'type'  => 'separator',
+                    'label' => __( '⚙️ Configuración', 'flavor-chat-ia' ),
+                ),
+                'autoplay' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Autoplay', 'flavor-chat-ia' ),
+                    'default' => true,
+                ),
+                'intervalo' => array(
+                    'type'    => 'number',
+                    'label'   => __( 'Intervalo (segundos)', 'flavor-chat-ia' ),
+                    'default' => 5,
+                    'min'     => 1,
+                    'max'     => 30,
+                ),
+                'mostrar_flechas' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Mostrar flechas', 'flavor-chat-ia' ),
+                    'default' => true,
+                ),
+                'mostrar_dots' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Mostrar indicadores', 'flavor-chat-ia' ),
+                    'default' => true,
+                ),
+                'loop' => array(
+                    'type'    => 'toggle',
+                    'label'   => __( 'Loop infinito', 'flavor-chat-ia' ),
+                    'default' => true,
+                ),
+                'slides_visibles' => array(
+                    'type'    => 'number',
+                    'label'   => __( 'Slides visibles', 'flavor-chat-ia' ),
+                    'default' => 1,
+                    'min'     => 1,
+                    'max'     => 6,
+                ),
+                'efecto' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Efecto de transición', 'flavor-chat-ia' ),
+                    'options' => array(
+                        'slide' => __( 'Deslizar', 'flavor-chat-ia' ),
+                        'fade'  => __( 'Fade', 'flavor-chat-ia' ),
+                        'zoom'  => __( 'Zoom', 'flavor-chat-ia' ),
+                    ),
+                    'default' => 'slide',
+                ),
+            ),
+        ) );
+
+        // ====================================
+        // TABS / PESTAÑAS
+        // ====================================
+        $this->registrar_bloque( array(
+            'id'       => 'tabs',
+            'name'     => __( 'Pestañas', 'flavor-chat-ia' ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 3v6"/></svg>',
+            'variants' => array(
+                'horizontal' => __( 'Horizontal', 'flavor-chat-ia' ),
+                'vertical'   => __( 'Vertical', 'flavor-chat-ia' ),
+                'pills'      => __( 'Pills', 'flavor-chat-ia' ),
+                'underlined' => __( 'Subrayado', 'flavor-chat-ia' ),
+            ),
+            'fields'   => array(
+                'tabs' => array(
+                    'type'   => 'repeater',
+                    'label'  => __( 'Pestañas', 'flavor-chat-ia' ),
+                    'fields' => array(
+                        'titulo' => array(
+                            'type'  => 'text',
+                            'label' => __( 'Título', 'flavor-chat-ia' ),
+                        ),
+                        'icono' => array(
+                            'type'  => 'icon',
+                            'label' => __( 'Icono', 'flavor-chat-ia' ),
+                        ),
+                        'contenido' => array(
+                            'type'  => 'richtext',
+                            'label' => __( 'Contenido', 'flavor-chat-ia' ),
                         ),
                     ),
                 ),
@@ -1390,25 +1593,94 @@ class Flavor_VBP_Block_Library {
                     'type'  => 'separator',
                     'label' => __( '🎨 Estilo', 'flavor-chat-ia' ),
                 ),
-                'color_linea' => array(
+                'color_activo' => array(
                     'type'    => 'color',
-                    'label'   => __( 'Color de la línea', 'flavor-chat-ia' ),
-                    'default' => '#3b82f6',
+                    'label'   => __( 'Color activo', 'flavor-chat-ia' ),
+                    'default' => '#6366f1',
                 ),
-                'color_marcador' => array(
+                'color_fondo_activo' => array(
                     'type'    => 'color',
-                    'label'   => __( 'Color de marcadores', 'flavor-chat-ia' ),
-                    'default' => '#3b82f6',
+                    'label'   => __( 'Fondo activo', 'flavor-chat-ia' ),
+                    'default' => '#eef2ff',
                 ),
-                'animacion_scroll' => array(
+                'animacion' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Animar al hacer scroll', 'flavor-chat-ia' ),
+                    'label'   => __( 'Animar cambio', 'flavor-chat-ia' ),
                     'default' => true,
                 ),
-                'mostrar_conectores' => array(
+            ),
+        ) );
+
+        // ====================================
+        // ACORDEÓN
+        // ====================================
+        $this->registrar_bloque( array(
+            'id'       => 'accordion',
+            'name'     => __( 'Acordeón', 'flavor-chat-ia' ),
+            'category' => 'sections',
+            'icon'     => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>',
+            'variants' => array(
+                'simple'   => __( 'Simple', 'flavor-chat-ia' ),
+                'bordered' => __( 'Con bordes', 'flavor-chat-ia' ),
+                'cards'    => __( 'Tarjetas', 'flavor-chat-ia' ),
+                'minimal'  => __( 'Minimalista', 'flavor-chat-ia' ),
+            ),
+            'fields'   => array(
+                'items' => array(
+                    'type'   => 'repeater',
+                    'label'  => __( 'Items', 'flavor-chat-ia' ),
+                    'fields' => array(
+                        'titulo' => array(
+                            'type'  => 'text',
+                            'label' => __( 'Título', 'flavor-chat-ia' ),
+                        ),
+                        'contenido' => array(
+                            'type'  => 'richtext',
+                            'label' => __( 'Contenido', 'flavor-chat-ia' ),
+                        ),
+                        'icono' => array(
+                            'type'  => 'icon',
+                            'label' => __( 'Icono', 'flavor-chat-ia' ),
+                        ),
+                        'abierto' => array(
+                            'type'    => 'toggle',
+                            'label'   => __( 'Abierto por defecto', 'flavor-chat-ia' ),
+                            'default' => false,
+                        ),
+                    ),
+                ),
+                '_separator_config' => array(
+                    'type'  => 'separator',
+                    'label' => __( '⚙️ Configuración', 'flavor-chat-ia' ),
+                ),
+                'multiple_abiertos' => array(
                     'type'    => 'toggle',
-                    'label'   => __( 'Mostrar líneas conectoras', 'flavor-chat-ia' ),
-                    'default' => true,
+                    'label'   => __( 'Permitir múltiples abiertos', 'flavor-chat-ia' ),
+                    'default' => false,
+                ),
+                'icono_abrir' => array(
+                    'type'    => 'select',
+                    'label'   => __( 'Icono expandir', 'flavor-chat-ia' ),
+                    'options' => array(
+                        'chevron' => __( 'Chevron', 'flavor-chat-ia' ),
+                        'plus'    => __( 'Plus/Minus', 'flavor-chat-ia' ),
+                        'arrow'   => __( 'Flecha', 'flavor-chat-ia' ),
+                    ),
+                    'default' => 'chevron',
+                ),
+                '_separator_estilo' => array(
+                    'type'  => 'separator',
+                    'label' => __( '🎨 Estilo', 'flavor-chat-ia' ),
+                ),
+                'color_header' => array(
+                    'type'    => 'color',
+                    'label'   => __( 'Color cabecera', 'flavor-chat-ia' ),
+                    'default' => '#f8fafc',
+                ),
+                'color_borde' => array(
+                    'type'    => 'color',
+                    'label'   => __( 'Color borde', 'flavor-chat-ia' ),
+                    'default' => '#e2e8f0',
                 ),
             ),
         ) );
@@ -2293,60 +2565,86 @@ class Flavor_VBP_Block_Library {
                 'id'        => 'eventos-listado',
                 'name'      => __( 'Listado de Eventos', 'flavor-chat-ia' ),
                 'category'  => 'community',
-                'shortcode' => 'eventos_listado',
                 'module'    => 'eventos',
                 'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
-                'fields'    => array(
-                    'categoria' => array(
-                        'type'    => 'select',
-                        'label'   => __( 'Categoría', 'flavor-chat-ia' ),
-                        'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
-                        'default' => '',
-                    ),
-                    'limite' => array(
-                        'type'    => 'number',
-                        'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
-                        'default' => 6,
-                        'min'     => 1,
-                        'max'     => 24,
-                    ),
-                    'vista' => array(
-                        'type'    => 'select',
-                        'label'   => __( 'Vista', 'flavor-chat-ia' ),
-                        'options' => array( 'grid' => __( 'Cuadrícula', 'flavor-chat-ia' ), 'list' => __( 'Lista', 'flavor-chat-ia' ) ),
-                        'default' => 'grid',
-                    ),
-                    'mostrar_fecha' => array(
-                        'type'    => 'toggle',
-                        'label'   => __( 'Mostrar fecha', 'flavor-chat-ia' ),
-                        'default' => true,
-                    ),
-                    'solo_proximos' => array(
-                        'type'    => 'toggle',
-                        'label'   => __( 'Solo próximos', 'flavor-chat-ia' ),
-                        'default' => true,
-                    ),
+                'fields'    => array_merge(
+                    $this->get_campos_header_seccion(),
+                    array(
+                        'categoria' => array(
+                            'type'    => 'select',
+                            'label'   => __( 'Categoría', 'flavor-chat-ia' ),
+                            'options' => array( '' => __( 'Todas', 'flavor-chat-ia' ) ),
+                            'default' => '',
+                        ),
+                        'limite' => array(
+                            'type'    => 'number',
+                            'label'   => __( 'Cantidad', 'flavor-chat-ia' ),
+                            'default' => 6,
+                            'min'     => 1,
+                            'max'     => 24,
+                        ),
+                        'columnas' => array(
+                            'type'    => 'number',
+                            'label'   => __( 'Columnas', 'flavor-chat-ia' ),
+                            'default' => 3,
+                            'min'     => 1,
+                            'max'     => 4,
+                        ),
+                        'vista' => array(
+                            'type'    => 'select',
+                            'label'   => __( 'Vista', 'flavor-chat-ia' ),
+                            'options' => array( 'grid' => __( 'Cuadrícula', 'flavor-chat-ia' ), 'list' => __( 'Lista', 'flavor-chat-ia' ) ),
+                            'default' => 'grid',
+                        ),
+                        'mostrar_fecha' => array(
+                            'type'    => 'toggle',
+                            'label'   => __( 'Mostrar fecha', 'flavor-chat-ia' ),
+                            'default' => true,
+                        ),
+                        'mostrar_ubicacion' => array(
+                            'type'    => 'toggle',
+                            'label'   => __( 'Mostrar ubicación', 'flavor-chat-ia' ),
+                            'default' => true,
+                        ),
+                        'mostrar_inscripcion' => array(
+                            'type'    => 'toggle',
+                            'label'   => __( 'Mostrar inscripción', 'flavor-chat-ia' ),
+                            'default' => true,
+                        ),
+                        'solo_proximos' => array(
+                            'type'    => 'toggle',
+                            'label'   => __( 'Solo próximos', 'flavor-chat-ia' ),
+                            'default' => true,
+                        ),
+                        'mostrar_filtros' => array(
+                            'type'    => 'toggle',
+                            'label'   => __( 'Mostrar filtros', 'flavor-chat-ia' ),
+                            'default' => false,
+                        ),
+                    )
                 ),
             ) );
             $this->registrar_bloque( array(
                 'id'        => 'eventos-calendario',
                 'name'      => __( 'Calendario de Eventos', 'flavor-chat-ia' ),
                 'category'  => 'community',
-                'shortcode' => 'eventos_calendario',
                 'module'    => 'eventos',
                 'icon'      => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><rect x="7" y="14" width="3" height="3"/></svg>',
-                'fields'    => array(
-                    'vista_inicial' => array(
-                        'type'    => 'select',
-                        'label'   => __( 'Vista inicial', 'flavor-chat-ia' ),
-                        'options' => array( 'month' => __( 'Mes', 'flavor-chat-ia' ), 'week' => __( 'Semana', 'flavor-chat-ia' ), 'day' => __( 'Día', 'flavor-chat-ia' ) ),
-                        'default' => 'month',
-                    ),
-                    'mostrar_controles' => array(
-                        'type'    => 'toggle',
-                        'label'   => __( 'Mostrar controles', 'flavor-chat-ia' ),
-                        'default' => true,
-                    ),
+                'fields'    => array_merge(
+                    $this->get_campos_header_seccion(),
+                    array(
+                        'vista_inicial' => array(
+                            'type'    => 'select',
+                            'label'   => __( 'Vista inicial', 'flavor-chat-ia' ),
+                            'options' => array( 'month' => __( 'Mes', 'flavor-chat-ia' ), 'week' => __( 'Semana', 'flavor-chat-ia' ), 'day' => __( 'Día', 'flavor-chat-ia' ) ),
+                            'default' => 'month',
+                        ),
+                        'mostrar_controles' => array(
+                            'type'    => 'toggle',
+                            'label'   => __( 'Mostrar controles', 'flavor-chat-ia' ),
+                            'default' => true,
+                        ),
+                    )
                 ),
             ) );
         }

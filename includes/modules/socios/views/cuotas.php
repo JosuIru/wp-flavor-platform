@@ -181,7 +181,7 @@ $periodos_disponibles = $wpdb->get_col("SELECT DISTINCT periodo FROM $tabla_cuot
                     <input type="month" name="periodo" id="periodo" value="<?php echo esc_attr(date('Y-m')); ?>" style="width: 100%;">
                 </p>
                 <p class="description">
-                    <?php echo esc_html__('Se crearán cuotas para todos los socios activos que no tengan cuota en este periodo.', 'flavor-chat-ia'); ?>
+                    <?php echo esc_html__('Se crearán cuotas para todos los miembros activos que no tengan cuota en este periodo.', 'flavor-chat-ia'); ?>
                 </p>
                 <p style="display: flex; gap: 10px; margin-top: 20px;">
                     <button type="button" class="button" onclick="document.getElementById('modal-generar-cuotas').style.display='none'">

@@ -418,6 +418,7 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
         add_action('init', [$this, 'maybe_create_tables']);
         add_action('init', [$this, 'maybe_migrate_tables']);
         add_action('init', [$this, 'register_shortcodes']);
+        $this->cargar_frontend_controller();
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_action('wp_ajax_flavor_chat_grupos_send', [$this, 'ajax_enviar_mensaje']);
         add_action('wp_ajax_flavor_chat_grupos_messages', [$this, 'ajax_obtener_mensajes']);
@@ -455,6 +456,27 @@ class Flavor_Chat_Chat_Grupos_Module extends Flavor_Chat_Module_Base {
 
         // Integrar funcionalidades de encuestas centralizadas
         $this->init_encuestas_features('chat_grupo');
+    }
+
+    /**
+     * Carga el frontend controller para exponer shortcodes canónicos.
+     *
+     * @return void
+     */
+    private function cargar_frontend_controller() {
+        if (class_exists('Flavor_Chat_Grupos_Frontend_Controller')) {
+            Flavor_Chat_Grupos_Frontend_Controller::get_instance();
+            return;
+        }
+
+        $archivo_controller = dirname(__FILE__) . '/frontend/class-chat-grupos-frontend-controller.php';
+        if (file_exists($archivo_controller)) {
+            require_once $archivo_controller;
+
+            if (class_exists('Flavor_Chat_Grupos_Frontend_Controller')) {
+                Flavor_Chat_Grupos_Frontend_Controller::get_instance();
+            }
+        }
     }
 
     /**

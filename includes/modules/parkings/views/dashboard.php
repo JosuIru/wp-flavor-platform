@@ -43,7 +43,7 @@ $tasa_ocupacion = 0;
 $plazas_por_zona = [];
 $top_propietarios = [];
 $datos_grafica = [];
-$usando_demo = false;
+$tablas_disponibles = ($tabla_plazas_existe && $tabla_reservas_existe && $tabla_propietarios_existe);
 
 if ($tabla_plazas_existe && $tabla_reservas_existe && $tabla_propietarios_existe) {
     // Plazas
@@ -116,45 +116,6 @@ if ($tabla_plazas_existe && $tabla_reservas_existe && $tabla_propietarios_existe
     );
 }
 
-// Usar datos demo si no hay datos reales
-if ($total_plazas == 0) {
-    $usando_demo = true;
-    $total_plazas = 48;
-    $plazas_disponibles = 18;
-    $plazas_ocupadas = 26;
-    $plazas_mantenimiento = 4;
-    $reservas_activas = 23;
-    $reservas_mes = 87;
-    $ingresos_mes = 2340.50;
-    $propietarios_activos = 12;
-    $tasa_ocupacion = 54.2;
-
-    $plazas_por_zona = [
-        (object) ['zona' => 'Zona A - Centro', 'total_plazas' => 16, 'disponibles' => 4, 'ocupadas' => 10],
-        (object) ['zona' => 'Zona B - Norte', 'total_plazas' => 12, 'disponibles' => 5, 'ocupadas' => 6],
-        (object) ['zona' => 'Zona C - Sur', 'total_plazas' => 10, 'disponibles' => 4, 'ocupadas' => 5],
-        (object) ['zona' => 'Zona D - Este', 'total_plazas' => 10, 'disponibles' => 5, 'ocupadas' => 5],
-    ];
-
-    $top_propietarios = [
-        (object) ['id' => 1, 'display_name' => 'María García', 'total_plazas' => 8, 'plazas_ocupadas' => 6, 'total_reservas' => 24, 'ingresos_totales' => 720.00],
-        (object) ['id' => 2, 'display_name' => 'Carlos López', 'total_plazas' => 6, 'plazas_ocupadas' => 4, 'total_reservas' => 18, 'ingresos_totales' => 540.00],
-        (object) ['id' => 3, 'display_name' => 'Ana Martínez', 'total_plazas' => 5, 'plazas_ocupadas' => 4, 'total_reservas' => 15, 'ingresos_totales' => 450.00],
-        (object) ['id' => 4, 'display_name' => 'Pedro Sánchez', 'total_plazas' => 4, 'plazas_ocupadas' => 3, 'total_reservas' => 12, 'ingresos_totales' => 360.00],
-        (object) ['id' => 5, 'display_name' => 'Laura Fernández', 'total_plazas' => 3, 'plazas_ocupadas' => 2, 'total_reservas' => 9, 'ingresos_totales' => 270.00],
-    ];
-
-    // Demo: datos de últimos 14 días
-    $datos_grafica = [];
-    for ($i = 13; $i >= 0; $i--) {
-        $datos_grafica[] = (object) [
-            'fecha' => date('Y-m-d', strtotime("-{$i} days")),
-            'reservas' => rand(4, 12),
-            'ingresos' => rand(80, 200)
-        ];
-    }
-}
-
 $fechas_grafica = [];
 $reservas_grafica = [];
 $ingresos_grafica = [];
@@ -184,10 +145,10 @@ foreach ($datos_grafica as $dato) {
         </div>
     </div>
 
-    <?php if ($usando_demo) : ?>
+    <?php if (!$tablas_disponibles) : ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <?php esc_html_e('Mostrando datos de demostración. Los datos reales aparecerán cuando se registren plazas y reservas.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Faltan tablas del módulo Parkings o aún no hay datos registrados.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 
@@ -389,13 +350,9 @@ foreach ($datos_grafica as $dato) {
                         <td><?php echo esc_html(number_format_i18n($propietario->total_reservas)); ?></td>
                         <td class="dm-text-success"><strong>€<?php echo esc_html(number_format_i18n($propietario->ingresos_totales, 2)); ?></strong></td>
                         <td>
-                            <?php if (!$usando_demo) : ?>
                             <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-parkings-propietarios&propietario_id=' . $propietario->id)); ?>" class="dm-btn dm-btn--ghost dm-btn--sm">
                                 <?php esc_html_e('Ver Perfil', 'flavor-chat-ia'); ?>
                             </a>
-                            <?php else : ?>
-                            <span class="dm-text-muted"><?php esc_html_e('Demo', 'flavor-chat-ia'); ?></span>
-                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

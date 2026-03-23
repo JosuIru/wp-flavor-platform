@@ -1061,10 +1061,11 @@ class Flavor_Chat_Advertising_Module extends Flavor_Chat_Module_Base {
             'post_title' => $titulo,
             'post_status' => 'pending',
             'post_author' => $usuario_id,
-        ]);
+        ], true);
 
-        if (is_wp_error($post_id)) {
-            return ['success' => false, 'error' => $post_id->get_error_message()];
+        if (is_wp_error($post_id) || empty($post_id)) {
+            $error = is_wp_error($post_id) ? $post_id->get_error_message() : __('No se pudo crear el anuncio.', 'flavor-chat-ia');
+            return ['success' => false, 'error' => $error];
         }
 
         update_post_meta($post_id, '_ad_tipo', $tipo);

@@ -144,10 +144,16 @@
     display: flex;
     padding: 8px 12px;
     border-radius: 0;
+    color: #333 !important; /* Texto oscuro sobre fondo blanco */
 }
 
 .flavor-ml-dropdown-menu .flavor-ml-lang-link:hover {
     background-color: #f5f5f5;
+    color: #111 !important;
+}
+
+.flavor-ml-dropdown-menu .flavor-ml-lang-name {
+    color: #333 !important;
 }
 
 /* Flags Only Style */
@@ -210,12 +216,29 @@
 .flavor-ml-menu-switcher .flavor-ml-dropdown-toggle {
     background: transparent;
     border: none;
-    padding: 0;
+    padding: 8px 12px;
+    color: inherit; /* Hereda color del menú (blanco en tema oscuro) */
+}
+
+.flavor-ml-menu-switcher .flavor-ml-dropdown-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .flavor-ml-menu-switcher .flavor-ml-dropdown-menu {
     right: 0;
     left: auto;
+    background: #fff;
+    color: #333;
+}
+
+/* Asegurar texto oscuro en dropdown sobre cualquier tema */
+.flavor-ml-dropdown-menu {
+    background: #fff !important;
+}
+
+.flavor-ml-dropdown-menu .flavor-ml-lang-item a,
+.flavor-ml-dropdown-menu .flavor-ml-lang-item span {
+    color: #333 !important;
 }
 
 /* Accessibility */

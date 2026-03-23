@@ -16,11 +16,38 @@
     const state = {
         sessionId: null,
         language: config.language || 'es',
+        context: config.context || detectPageContext(),
         isOpen: false,
         isLoading: false,
         draft: null,
         messagesCount: 0
     };
+
+    /**
+     * Detecta el contexto de la página actual
+     * Retorna 'landing' si estamos en la landing de Flavor Platform
+     */
+    function detectPageContext() {
+        // Detectar por clase en body (la landing usa 'flavor-landing')
+        if (document.body && (
+            document.body.classList.contains('flavor-landing') ||
+            document.body.classList.contains('flavor-landing-page')
+        )) {
+            return 'landing';
+        }
+        // Detectar por URL
+        if (window.location.pathname.includes('/flavor-landing') ||
+            window.location.pathname.includes('/plataforma')) {
+            return 'landing';
+        }
+        // Detectar por elemento de la landing
+        if (document.querySelector('.fl-hero') ||
+            document.querySelector('.fl-landing-container') ||
+            document.querySelector('#fl-hero')) {
+            return 'landing';
+        }
+        return '';
+    }
 
     // Elementos DOM
     let $widget, $trigger, $messages, $input, $form, $typing, $draft, $escalation;
@@ -30,6 +57,13 @@
      */
     function init() {
         console.log('[Chat IA] Inicializando widget...');
+
+        // Detectar contexto ahora que el DOM está listo
+        if (!state.context) {
+            state.context = detectPageContext();
+            console.log('[Chat IA] Contexto detectado:', state.context);
+        }
+
         cacheElements();
         console.log('[Chat IA] Elementos cacheados:', {
             widget: $widget.length,
@@ -261,6 +295,7 @@
         console.log('[Chat IA] Toggle widget, isOpen:', state.isOpen);
 
         const isSidebar = $widget.data('display-mode') === 'sidebar';
+        const isFloating = $widget.hasClass('chat-ia-floating');
 
         if (state.isOpen) {
             if (isSidebar) {
@@ -268,6 +303,9 @@
                 $widget.removeClass('chat-ia-sidebar-closing');
                 $widget.css('display', 'flex');
                 $widget.addClass('chat-ia-sidebar-open');
+            } else if (isFloating) {
+                // Modo floating: usar clase para mostrar contenedor
+                $widget.addClass('chat-ia-open');
             } else {
                 $widget.show();
             }
@@ -292,6 +330,9 @@
                     $widget.removeClass('chat-ia-sidebar-closing');
                     $widget.css('display', 'none');
                 }, 250);
+            } else if (isFloating) {
+                // Modo floating: usar clase para ocultar contenedor
+                $widget.removeClass('chat-ia-open');
             } else {
                 $widget.hide();
             }
@@ -349,6 +390,7 @@
             session_id: state.sessionId || '',
             message: message,
             language: state.language,
+            context: state.context || '',
             website_url: honeypotValue
         });
 
@@ -481,6 +523,11 @@
                 state.messagesCount++;
                 scrollToBottom();
 
+                // Leer respuesta en voz alta si TTS está activado
+                if (window.flavorChatTTS && window.flavorChatTTS.isEnabled()) {
+                    window.flavorChatTTS.speak(responseText);
+                }
+
                 // Generar sugerencias contextuales client-side
                 const smartSuggestions = generateSmartSuggestions(responseText);
                 if (smartSuggestions.length > 0) {
@@ -509,6 +556,7 @@
                 session_id: state.sessionId,
                 message: message,
                 language: state.language,
+                context: state.context, // Contexto: landing, general, etc.
                 website_url: honeypotValue // Campo honeypot
             },
             success: function(response) {
@@ -525,6 +573,11 @@
 
                     // Añadir respuesta
                     addMessage('assistant', response.data.response);
+
+                    // Leer respuesta en voz alta si TTS está activado
+                    if (window.flavorChatTTS && window.flavorChatTTS.isEnabled()) {
+                        window.flavorChatTTS.speak(response.data.response);
+                    }
 
                     // OPTIMIZACIÓN 4: Mostrar sugerencias inteligentes
                     if (response.data.suggestions && response.data.suggestions.length > 0) {
@@ -1232,6 +1285,231 @@
 
     // Registrar evento para sugerencias (delegación)
     $(document).on('click', '.chat-ia-suggestion-btn', handleSuggestionClick);
+
+    // =========================================
+    // FUNCIONALIDAD DE VOZ (Web Speech API)
+    // =========================================
+
+    let recognition = null;
+    let isListening = false;
+    let ttsEnabled = false;
+    let currentUtterance = null;
+
+    /**
+     * Inicializa el reconocimiento de voz (Speech-to-Text)
+     */
+    function initSpeechRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+            console.log('[Chat IA] Speech Recognition no disponible en este navegador');
+            $('#chat-ia-mic').hide();
+            return false;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = state.language === 'es' ? 'es-ES' :
+                          state.language === 'eu' ? 'eu-ES' :
+                          state.language === 'en' ? 'en-US' :
+                          state.language === 'fr' ? 'fr-FR' : 'es-ES';
+
+        recognition.onstart = function() {
+            isListening = true;
+            $('#chat-ia-mic').addClass('listening');
+            $('.chat-ia-mic-icon').hide();
+            $('.chat-ia-mic-stop').show();
+            $input.attr('placeholder', strings.listening || 'Escuchando...');
+            console.log('[Chat IA] Escuchando...');
+        };
+
+        recognition.onresult = function(event) {
+            let finalTranscript = '';
+            let interimTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+
+            // Mostrar transcripción en tiempo real
+            if (interimTranscript) {
+                $input.val(interimTranscript);
+            }
+            if (finalTranscript) {
+                $input.val(finalTranscript);
+            }
+        };
+
+        recognition.onend = function() {
+            isListening = false;
+            $('#chat-ia-mic').removeClass('listening');
+            $('.chat-ia-mic-icon').show();
+            $('.chat-ia-mic-stop').hide();
+            $input.attr('placeholder', config.placeholder || 'Escribe tu mensaje...');
+            console.log('[Chat IA] Fin de escucha');
+
+            // Si hay texto, enviarlo automáticamente
+            const text = $input.val().trim();
+            if (text) {
+                $form.trigger('submit');
+            }
+        };
+
+        recognition.onerror = function(event) {
+            console.log('[Chat IA] Error de reconocimiento:', event.error);
+            isListening = false;
+            $('#chat-ia-mic').removeClass('listening');
+            $('.chat-ia-mic-icon').show();
+            $('.chat-ia-mic-stop').hide();
+            $input.attr('placeholder', config.placeholder || 'Escribe tu mensaje...');
+
+            if (event.error === 'not-allowed') {
+                alert(strings.micPermissionDenied || 'Permiso de micrófono denegado. Actívalo en la configuración del navegador.');
+            }
+        };
+
+        console.log('[Chat IA] Speech Recognition inicializado');
+        return true;
+    }
+
+    /**
+     * Toggle del micrófono
+     */
+    function toggleMicrophone() {
+        if (!recognition) {
+            if (!initSpeechRecognition()) {
+                alert(strings.speechNotSupported || 'Tu navegador no soporta reconocimiento de voz. Prueba con Chrome o Edge.');
+                return;
+            }
+        }
+
+        if (isListening) {
+            recognition.stop();
+        } else {
+            // Detener TTS si está hablando
+            if (window.speechSynthesis && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+            try {
+                recognition.start();
+            } catch (e) {
+                console.log('[Chat IA] Error al iniciar reconocimiento:', e);
+            }
+        }
+    }
+
+    /**
+     * Lee un texto en voz alta (Text-to-Speech)
+     */
+    function speakText(text) {
+        if (!ttsEnabled || !window.speechSynthesis) return;
+
+        // Cancelar cualquier lectura anterior
+        window.speechSynthesis.cancel();
+
+        // Limpiar el texto de markdown y HTML
+        const cleanText = text
+            .replace(/\*\*(.*?)\*\*/g, '$1')  // Bold
+            .replace(/\*(.*?)\*/g, '$1')       // Italic
+            .replace(/```[\s\S]*?```/g, '')    // Code blocks
+            .replace(/`(.*?)`/g, '$1')         // Inline code
+            .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Links
+            .replace(/<[^>]*>/g, '')           // HTML tags
+            .replace(/#{1,6}\s/g, '')          // Headers
+            .replace(/\n+/g, '. ')             // Newlines
+            .trim();
+
+        if (!cleanText) return;
+
+        currentUtterance = new SpeechSynthesisUtterance(cleanText);
+        currentUtterance.lang = state.language === 'es' ? 'es-ES' :
+                               state.language === 'eu' ? 'eu-ES' :
+                               state.language === 'en' ? 'en-US' :
+                               state.language === 'fr' ? 'fr-FR' : 'es-ES';
+        currentUtterance.rate = 1.0;
+        currentUtterance.pitch = 1.0;
+
+        // Intentar usar una voz natural si está disponible
+        const voices = window.speechSynthesis.getVoices();
+        const preferredVoice = voices.find(v =>
+            v.lang.startsWith(currentUtterance.lang.split('-')[0]) &&
+            (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Neural'))
+        ) || voices.find(v => v.lang.startsWith(currentUtterance.lang.split('-')[0]));
+
+        if (preferredVoice) {
+            currentUtterance.voice = preferredVoice;
+        }
+
+        currentUtterance.onend = function() {
+            currentUtterance = null;
+        };
+
+        window.speechSynthesis.speak(currentUtterance);
+        console.log('[Chat IA] TTS: Leyendo respuesta');
+    }
+
+    /**
+     * Toggle de Text-to-Speech
+     */
+    function toggleTTS() {
+        if (!window.speechSynthesis) {
+            alert(strings.ttsNotSupported || 'Tu navegador no soporta síntesis de voz.');
+            return;
+        }
+
+        ttsEnabled = !ttsEnabled;
+        const $btn = $('#chat-ia-tts-toggle');
+
+        if (ttsEnabled) {
+            $btn.addClass('active');
+            $('.chat-ia-tts-on').show();
+            $('.chat-ia-tts-off').hide();
+            console.log('[Chat IA] TTS activado');
+        } else {
+            $btn.removeClass('active');
+            $('.chat-ia-tts-on').hide();
+            $('.chat-ia-tts-off').show();
+            // Detener si está hablando
+            window.speechSynthesis.cancel();
+            console.log('[Chat IA] TTS desactivado');
+        }
+    }
+
+    /**
+     * Extiende bindEvents para incluir eventos de voz
+     */
+    function bindVoiceEvents() {
+        $('#chat-ia-mic').on('click', toggleMicrophone);
+        $('#chat-ia-tts-toggle').on('click', toggleTTS);
+
+        // Pre-cargar voces (necesario en algunos navegadores)
+        if (window.speechSynthesis) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
+    }
+
+    /**
+     * Hook para leer respuestas del asistente
+     * Se llama cuando se recibe una respuesta completa
+     */
+    window.flavorChatTTS = {
+        speak: speakText,
+        isEnabled: function() { return ttsEnabled; }
+    };
+
+    // Inicializar eventos de voz cuando el DOM esté listo
+    $(document).ready(function() {
+        setTimeout(bindVoiceEvents, 100);
+    });
 
     // Inicializar cuando el DOM esté listo
     $(document).ready(init);

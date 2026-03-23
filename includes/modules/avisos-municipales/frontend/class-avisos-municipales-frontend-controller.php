@@ -104,14 +104,22 @@ class Flavor_Avisos_Municipales_Frontend_Controller {
      * Registra shortcodes del frontend
      */
     public function registrar_shortcodes() {
-        add_shortcode('flavor_avisos_listado', [$this, 'shortcode_listado']);
-        add_shortcode('flavor_avisos_urgentes', [$this, 'shortcode_urgentes']);
-        add_shortcode('flavor_avisos_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('flavor_avisos_suscripciones', [$this, 'shortcode_suscripciones']);
-        add_shortcode('flavor_avisos_buscador', [$this, 'shortcode_buscador']);
-        add_shortcode('flavor_avisos_categorias', [$this, 'shortcode_categorias']);
-        add_shortcode('flavor_avisos_banner', [$this, 'shortcode_banner']);
-        add_shortcode('flavor_avisos_dashboard', [$this, 'shortcode_dashboard']);
+        $shortcodes = [
+            'flavor_avisos_listado' => 'shortcode_listado',
+            'flavor_avisos_urgentes' => 'shortcode_urgentes',
+            'flavor_avisos_detalle' => 'shortcode_detalle',
+            'flavor_avisos_suscripciones' => 'shortcode_suscripciones',
+            'flavor_avisos_buscador' => 'shortcode_buscador',
+            'flavor_avisos_categorias' => 'shortcode_categorias',
+            'flavor_avisos_banner' => 'shortcode_banner',
+            'flavor_avisos_dashboard' => 'shortcode_dashboard',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**

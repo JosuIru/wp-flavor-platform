@@ -69,6 +69,14 @@ class Flavor_VBP_Canvas {
             '6.4.0'
         );
 
+        // Cargar Material Icons para iconos de componentes
+        wp_enqueue_style(
+            'material-icons',
+            'https://fonts.googleapis.com/icon?family=Material+Icons',
+            array(),
+            null
+        );
+
         $css_url = FLAVOR_CHAT_IA_URL . 'assets/vbp/css/frontend-components.css';
         $css_path = FLAVOR_CHAT_IA_PATH . 'assets/vbp/css/frontend-components.css';
 
@@ -1402,20 +1410,34 @@ class Flavor_VBP_Canvas {
         $descripcion   = $data['descripcion'] ?? $data['description'] ?? '';
         $boton_texto   = $data['boton_texto'] ?? $data['buttonText'] ?? $data['cta_text'] ?? '';
         $boton_url     = $data['boton_url'] ?? $data['buttonUrl'] ?? $data['cta_url'] ?? '#';
+        $boton_2_texto = $data['boton_2_texto'] ?? $data['button2Text'] ?? '';
+        $boton_2_url   = $data['boton_2_url'] ?? $data['button2Url'] ?? '#';
         $imagen        = $data['imagen_fondo'] ?? $data['backgroundImage'] ?? $data['background_image'] ?? $data['image'] ?? '';
         $overlay_color = $data['overlay_color'] ?? $data['overlayColor'] ?? $data['background_overlay_color'] ?? '';
         $altura        = $data['altura'] ?? $data['height'] ?? '';
-        $boton_color   = $data['boton_color'] ?? $data['buttonColor'] ?? '';
-        $boton_bg      = $data['boton_bg'] ?? $data['buttonBg'] ?? '';
+        $color_fondo   = $data['color_fondo'] ?? $data['backgroundColor'] ?? '';
+
+        // Colores específicos de elementos
+        $titulo_color      = $data['titulo_color'] ?? $data['titleColor'] ?? '';
+        $subtitulo_color   = $data['subtitulo_color'] ?? $data['subtitleColor'] ?? '';
+        $descripcion_color = $data['descripcion_color'] ?? $data['descriptionColor'] ?? '';
+        $boton_color_fondo = $data['boton_color_fondo'] ?? $data['buttonBg'] ?? $data['boton_bg'] ?? '';
+        $boton_color_texto = $data['boton_color_texto'] ?? $data['buttonColor'] ?? $data['boton_color'] ?? '';
+        $boton_2_color_fondo = $data['boton_2_color_fondo'] ?? '';
+        $boton_2_color_texto = $data['boton_2_color_texto'] ?? '';
+        $boton_2_color_borde = $data['boton_2_color_borde'] ?? '';
 
         $clase_variante = 'vbp-hero--' . esc_attr( $variante );
 
-        // Estilos del contenedor principal (imagen de fondo)
+        // Estilos del contenedor principal
         $estilos_hero = array();
         if ( $imagen ) {
             $estilos_hero[] = 'background-image: url(' . esc_url( $imagen ) . ')';
             $estilos_hero[] = 'background-size: cover';
             $estilos_hero[] = 'background-position: center';
+        }
+        if ( $color_fondo && ! $imagen ) {
+            $estilos_hero[] = 'background-color: ' . esc_attr( $color_fondo );
         }
         if ( $altura ) {
             $estilos_hero[] = 'min-height: ' . esc_attr( $altura );
@@ -1424,45 +1446,72 @@ class Flavor_VBP_Canvas {
         $estilos_css = $this->generar_estilos_elemento( $estilos );
         $estilos_hero_str = implode( '; ', $estilos_hero );
 
-        // Combinar estilos evitando punto y coma inicial
         $estilos_combinados = array_filter( array( $estilos_css, $estilos_hero_str ) );
         $estilo_final = implode( '; ', $estilos_combinados );
 
         $html = '<section class="vbp-hero ' . $clase_variante . '" style="' . esc_attr( $estilo_final ) . '">';
 
-        // Estilos del contenedor de contenido (overlay como fondo del contenido)
-        $estilos_content = array();
+        // Overlay
         if ( $overlay_color ) {
-            $estilos_content[] = 'background: ' . esc_attr( $overlay_color );
-            $estilos_content[] = 'border-radius: 16px';
-            $estilos_content[] = 'padding: 40px 60px';
+            $html .= '<div class="vbp-hero__overlay" style="background: ' . esc_attr( $overlay_color ) . ';"></div>';
         }
-        $estilos_content_str = implode( '; ', $estilos_content );
 
-        $html .= '<div class="vbp-hero__content" style="' . esc_attr( $estilos_content_str ) . '">';
+        $html .= '<div class="vbp-hero__content">';
 
+        // Título con color
         if ( $titulo ) {
-            $html .= '<h1 class="vbp-hero__title">' . wp_kses_post( $titulo ) . '</h1>';
+            $estilo_titulo = $titulo_color ? ' style="color: ' . esc_attr( $titulo_color ) . ';"' : '';
+            $html .= '<h1 class="vbp-hero__title"' . $estilo_titulo . '>' . wp_kses_post( $titulo ) . '</h1>';
         }
 
+        // Subtítulo con color
         if ( $subtitulo ) {
-            $html .= '<p class="vbp-hero__subtitle">' . wp_kses_post( $subtitulo ) . '</p>';
+            $estilo_subtitulo = $subtitulo_color ? ' style="color: ' . esc_attr( $subtitulo_color ) . ';"' : '';
+            $html .= '<p class="vbp-hero__subtitle"' . $estilo_subtitulo . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
+        // Descripción con color
         if ( $descripcion ) {
-            $html .= '<p class="vbp-hero__description">' . wp_kses_post( $descripcion ) . '</p>';
+            $estilo_descripcion = $descripcion_color ? ' style="color: ' . esc_attr( $descripcion_color ) . ';"' : '';
+            $html .= '<p class="vbp-hero__description"' . $estilo_descripcion . '>' . wp_kses_post( $descripcion ) . '</p>';
         }
 
-        if ( $boton_texto ) {
-            $estilos_boton = array();
-            if ( $boton_color ) {
-                $estilos_boton[] = 'color: ' . esc_attr( $this->map_color_to_variable( $boton_color ) );
+        // Contenedor de botones
+        if ( $boton_texto || $boton_2_texto ) {
+            $html .= '<div class="vbp-hero__buttons">';
+
+            // Botón principal
+            if ( $boton_texto ) {
+                $estilos_boton = array();
+                if ( $boton_color_texto ) {
+                    $estilos_boton[] = 'color: ' . esc_attr( $boton_color_texto );
+                }
+                if ( $boton_color_fondo ) {
+                    $estilos_boton[] = 'background-color: ' . esc_attr( $boton_color_fondo );
+                }
+                $estilo_boton = ! empty( $estilos_boton ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton ) ) . '"' : '';
+                $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-hero__button vbp-hero__button--primary"' . $estilo_boton . '>' . esc_html( $boton_texto ) . '</a>';
             }
-            if ( $boton_bg ) {
-                $estilos_boton[] = 'background-color: ' . esc_attr( $this->map_color_to_variable( $boton_bg ) );
+
+            // Botón secundario
+            if ( $boton_2_texto ) {
+                $estilos_boton_2 = array();
+                if ( $boton_2_color_texto ) {
+                    $estilos_boton_2[] = 'color: ' . esc_attr( $boton_2_color_texto );
+                }
+                if ( $boton_2_color_fondo && $boton_2_color_fondo !== 'transparent' ) {
+                    $estilos_boton_2[] = 'background-color: ' . esc_attr( $boton_2_color_fondo );
+                } else {
+                    $estilos_boton_2[] = 'background-color: transparent';
+                }
+                if ( $boton_2_color_borde ) {
+                    $estilos_boton_2[] = 'border: 2px solid ' . esc_attr( $boton_2_color_borde );
+                }
+                $estilo_boton_2 = ! empty( $estilos_boton_2 ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton_2 ) ) . '"' : '';
+                $html .= '<a href="' . esc_url( $boton_2_url ) . '" class="vbp-hero__button vbp-hero__button--secondary"' . $estilo_boton_2 . '>' . esc_html( $boton_2_texto ) . '</a>';
             }
-            $estilo_boton = ! empty( $estilos_boton ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton ) ) . '"' : '';
-            $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-hero__button"' . $estilo_boton . '>' . esc_html( $boton_texto ) . '</a>';
+
+            $html .= '</div>';
         }
 
         $html .= '</div>';
@@ -1479,25 +1528,59 @@ class Flavor_VBP_Canvas {
         $estilos  = $elemento['styles'] ?? array();
         $variante = $elemento['variant'] ?? 'grid';
 
-        $titulo = $data['titulo'] ?? '';
-        $items  = $data['items'] ?? array();
+        $titulo          = $data['titulo'] ?? '';
+        $subtitulo       = $data['subtitulo'] ?? '';
+        $titulo_color    = $data['titulo_color'] ?? '';
+        $subtitulo_color = $data['subtitulo_color'] ?? '';
+        $color_fondo     = $data['color_fondo'] ?? '';
+        $columnas        = $data['columnas'] ?? 3;
+        $items           = $data['items'] ?? array();
 
         $clase_variante = 'vbp-features--' . esc_attr( $variante );
         $estilos_css    = $this->generar_estilos_elemento( $estilos );
 
-        $html = '<section class="vbp-features ' . $clase_variante . '" style="' . esc_attr( $estilos_css ) . '">';
+        // Estilos del contenedor
+        $estilos_section = array();
+        if ( $color_fondo ) {
+            $estilos_section[] = 'background-color: ' . esc_attr( $color_fondo );
+        }
+        $estilos_section_str = implode( '; ', $estilos_section );
+        $estilos_combinados = array_filter( array( $estilos_css, $estilos_section_str ) );
+        $estilo_final = implode( '; ', $estilos_combinados );
 
+        $html = '<section class="vbp-features ' . $clase_variante . '" style="' . esc_attr( $estilo_final ) . '">';
+        $html .= '<div class="vbp-container">';
+
+        // Título con color
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-features__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $estilo_titulo = $titulo_color ? ' style="color: ' . esc_attr( $titulo_color ) . ';"' : '';
+            $html .= '<h2 class="vbp-features__title"' . $estilo_titulo . '>' . wp_kses_post( $titulo ) . '</h2>';
+        }
+
+        // Subtítulo con color
+        if ( $subtitulo ) {
+            $estilo_subtitulo = $subtitulo_color ? ' style="color: ' . esc_attr( $subtitulo_color ) . ';"' : '';
+            $html .= '<p class="vbp-features__subtitle"' . $estilo_subtitulo . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
         if ( ! empty( $items ) ) {
-            $html .= '<div class="vbp-features__grid">';
+            $estilo_grid = '--features-columns: ' . intval( $columnas ) . ';';
+            $html .= '<div class="vbp-features__grid" style="' . esc_attr( $estilo_grid ) . '">';
 
             foreach ( $items as $item ) {
+                $icono_color = $item['icono_color'] ?? '';
                 $html .= '<div class="vbp-feature-card">';
                 if ( ! empty( $item['icono'] ) ) {
-                    $html .= '<div class="vbp-feature-card__icon"><i class="fas fa-' . esc_attr( $item['icono'] ) . '"></i></div>';
+                    $estilo_icono = $icono_color ? ' style="color: ' . esc_attr( $icono_color ) . ';"' : '';
+                    $html .= '<div class="vbp-feature-card__icon"' . $estilo_icono . '>';
+                    // Soportar Material Icons y Font Awesome
+                    $icono = $item['icono'];
+                    if ( strpos( $icono, 'fa-' ) === 0 ) {
+                        $html .= '<i class="fas ' . esc_attr( $icono ) . '"></i>';
+                    } else {
+                        $html .= '<span class="material-icons">' . esc_html( $icono ) . '</span>';
+                    }
+                    $html .= '</div>';
                 }
                 $html .= '<h3 class="vbp-feature-card__title">' . esc_html( $item['titulo'] ?? $item['title'] ?? '' ) . '</h3>';
                 $html .= '<p class="vbp-feature-card__description">' . esc_html( $item['descripcion'] ?? $item['description'] ?? '' ) . '</p>';
@@ -1507,6 +1590,7 @@ class Flavor_VBP_Canvas {
             $html .= '</div>';
         }
 
+        $html .= '</div>';
         $html .= '</section>';
 
         return $html;
@@ -1622,57 +1706,90 @@ class Flavor_VBP_Canvas {
     private function render_cta( $elemento ) {
         $data        = $elemento['data'] ?? array();
         $estilos     = $elemento['styles'] ?? array();
+        $variante    = $elemento['variant'] ?? 'centered';
         $estilos_css = $this->generar_estilos_elemento( $estilos );
 
         $titulo       = $data['titulo'] ?? '';
         $subtitulo    = $data['subtitulo'] ?? '';
         $boton_texto  = $data['boton_texto'] ?? '';
         $boton_url    = $data['boton_url'] ?? '#';
-        $fondo        = $data['fondo'] ?? $data['background'] ?? '';
-        $boton_color  = $data['boton_color'] ?? $data['buttonColor'] ?? '';
-        $boton_bg     = $data['boton_bg'] ?? $data['buttonBg'] ?? '';
-        $texto_color  = $data['texto_color'] ?? $data['textColor'] ?? '';
+        $boton_2_texto = $data['boton_2_texto'] ?? '';
+        $boton_2_url   = $data['boton_2_url'] ?? '#';
+
+        // Colores
+        $color_fondo     = $data['color_fondo'] ?? $data['fondo'] ?? $data['background'] ?? '';
+        $titulo_color    = $data['titulo_color'] ?? '';
+        $subtitulo_color = $data['subtitulo_color'] ?? '';
+        $boton_color_fondo = $data['boton_color_fondo'] ?? $data['boton_bg'] ?? '';
+        $boton_color_texto = $data['boton_color_texto'] ?? $data['boton_color'] ?? '';
+        $boton_2_color_fondo = $data['boton_2_color_fondo'] ?? '';
+        $boton_2_color_texto = $data['boton_2_color_texto'] ?? '';
+        $boton_2_color_borde = $data['boton_2_color_borde'] ?? '';
 
         // Construir estilos del contenedor
         $estilos_cta = array();
-        if ( $fondo ) {
-            // Soportar gradientes y colores sólidos
-            if ( strpos( $fondo, 'gradient' ) !== false || strpos( $fondo, 'linear' ) !== false || strpos( $fondo, 'radial' ) !== false ) {
-                $estilos_cta[] = 'background: ' . esc_attr( $fondo );
+        if ( $color_fondo ) {
+            if ( strpos( $color_fondo, 'gradient' ) !== false ) {
+                $estilos_cta[] = 'background: ' . esc_attr( $color_fondo );
             } else {
-                $estilos_cta[] = 'background-color: ' . esc_attr( $this->map_color_to_variable( $fondo ) );
+                $estilos_cta[] = 'background-color: ' . esc_attr( $color_fondo );
             }
-        }
-        if ( $texto_color ) {
-            $estilos_cta[] = 'color: ' . esc_attr( $this->map_color_to_variable( $texto_color ) );
         }
         $estilos_cta_str = implode( '; ', $estilos_cta );
 
-        // Combinar estilos evitando punto y coma inicial
         $estilos_combinados = array_filter( array( $estilos_css, $estilos_cta_str ) );
         $estilo_final = implode( '; ', $estilos_combinados );
 
-        $html = '<section class="vbp-cta" style="' . esc_attr( $estilo_final ) . '">';
+        $clase_variante = 'vbp-cta--' . esc_attr( $variante );
+        $html = '<section class="vbp-cta ' . $clase_variante . '" style="' . esc_attr( $estilo_final ) . '">';
         $html .= '<div class="vbp-cta__content">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-cta__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $estilo_titulo = $titulo_color ? ' style="color: ' . esc_attr( $titulo_color ) . ';"' : '';
+            $html .= '<h2 class="vbp-cta__title"' . $estilo_titulo . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( $subtitulo ) {
-            $html .= '<p class="vbp-cta__subtitle">' . wp_kses_post( $subtitulo ) . '</p>';
+            $estilo_subtitulo = $subtitulo_color ? ' style="color: ' . esc_attr( $subtitulo_color ) . ';"' : '';
+            $html .= '<p class="vbp-cta__subtitle"' . $estilo_subtitulo . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
-        if ( $boton_texto ) {
-            $estilos_boton = array();
-            if ( $boton_color ) {
-                $estilos_boton[] = 'color: ' . esc_attr( $this->map_color_to_variable( $boton_color ) );
+        // Contenedor de botones
+        if ( $boton_texto || $boton_2_texto ) {
+            $html .= '<div class="vbp-cta__buttons">';
+
+            // Botón principal
+            if ( $boton_texto ) {
+                $estilos_boton = array();
+                if ( $boton_color_texto ) {
+                    $estilos_boton[] = 'color: ' . esc_attr( $boton_color_texto );
+                }
+                if ( $boton_color_fondo ) {
+                    $estilos_boton[] = 'background-color: ' . esc_attr( $boton_color_fondo );
+                }
+                $estilo_boton = ! empty( $estilos_boton ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton ) ) . '"' : '';
+                $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-cta__button vbp-cta__button--primary"' . $estilo_boton . '>' . esc_html( $boton_texto ) . '</a>';
             }
-            if ( $boton_bg ) {
-                $estilos_boton[] = 'background-color: ' . esc_attr( $this->map_color_to_variable( $boton_bg ) );
+
+            // Botón secundario
+            if ( $boton_2_texto ) {
+                $estilos_boton_2 = array();
+                if ( $boton_2_color_texto ) {
+                    $estilos_boton_2[] = 'color: ' . esc_attr( $boton_2_color_texto );
+                }
+                if ( $boton_2_color_fondo && $boton_2_color_fondo !== 'transparent' ) {
+                    $estilos_boton_2[] = 'background-color: ' . esc_attr( $boton_2_color_fondo );
+                } else {
+                    $estilos_boton_2[] = 'background-color: transparent';
+                }
+                if ( $boton_2_color_borde ) {
+                    $estilos_boton_2[] = 'border: 2px solid ' . esc_attr( $boton_2_color_borde );
+                }
+                $estilo_boton_2 = ! empty( $estilos_boton_2 ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton_2 ) ) . '"' : '';
+                $html .= '<a href="' . esc_url( $boton_2_url ) . '" class="vbp-cta__button vbp-cta__button--secondary"' . $estilo_boton_2 . '>' . esc_html( $boton_2_texto ) . '</a>';
             }
-            $estilo_boton = ! empty( $estilos_boton ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton ) ) . '"' : '';
-            $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-cta__button"' . $estilo_boton . '>' . esc_html( $boton_texto ) . '</a>';
+
+            $html .= '</div>';
         }
 
         $html .= '</div>';
@@ -2697,55 +2814,6 @@ class Flavor_VBP_Canvas {
     }
 
     /**
-     * Renderiza un timeline/proceso
-     *
-     * @param array $elemento Datos del elemento.
-     * @return string
-     */
-    private function render_timeline( $elemento ) {
-        $data    = $elemento['data'] ?? array();
-        $estilos = $elemento['styles'] ?? array();
-        $titulo  = $data['titulo'] ?? '';
-        $items   = $data['items'] ?? array();
-
-        $estilos_css = $this->generar_estilos_elemento( $estilos );
-
-        $html = '<div class="vbp-timeline" style="' . esc_attr( $estilos_css ) . '">';
-
-        if ( $titulo ) {
-            $html .= '<h3 class="vbp-timeline__title">' . esc_html( $titulo ) . '</h3>';
-        }
-
-        $html .= '<div class="vbp-timeline__items">';
-        foreach ( $items as $item ) {
-            $paso   = $item['paso'] ?? '';
-            $titulo_item = $item['titulo'] ?? '';
-            $desc   = $item['descripcion'] ?? '';
-            $icono  = $item['icono'] ?? '';
-
-            $html .= '<div class="vbp-timeline__item">';
-            $html .= '<div class="vbp-timeline__marker">';
-            if ( $icono ) {
-                $html .= '<span class="vbp-timeline__icon">' . esc_html( $icono ) . '</span>';
-            } else {
-                $html .= '<span class="vbp-timeline__number">' . esc_html( $paso ) . '</span>';
-            }
-            $html .= '</div>';
-            $html .= '<div class="vbp-timeline__content">';
-            $html .= '<h4 class="vbp-timeline__item-title">' . esc_html( $titulo_item ) . '</h4>';
-            if ( $desc ) {
-                $html .= '<p class="vbp-timeline__item-desc">' . esc_html( $desc ) . '</p>';
-            }
-            $html .= '</div>';
-            $html .= '</div>';
-        }
-        $html .= '</div>';
-        $html .= '</div>';
-
-        return $html;
-    }
-
-    /**
      * Renderiza un grid de productos
      *
      * @param array $elemento Datos del elemento.
@@ -3694,18 +3762,42 @@ class Flavor_VBP_Canvas {
         $alineacion      = $datos['alineacion_tabs'] ?? 'left';
         $animacion       = isset( $datos['animacion'] ) ? $datos['animacion'] : true;
 
+        // Datos de sección.
+        $titulo          = $datos['titulo'] ?? '';
+        $titulo_color    = $datos['titulo_color'] ?? '#ffffff';
+        $subtitulo       = $datos['subtitulo'] ?? '';
+        $subtitulo_color = $datos['subtitulo_color'] ?? '#9CA3AF';
+        $color_fondo     = $datos['color_fondo'] ?? 'transparent';
+
         $estilos_css     = $this->generar_estilos_elemento( $estilos );
-        $clases_base     = 'vbp-tabs vbp-tabs--' . esc_attr( $variante );
-        $clases_base    .= ' vbp-tabs--align-' . esc_attr( $alineacion );
+        $clases_tabs     = 'vbp-tabs vbp-tabs--' . esc_attr( $variante );
+        $clases_tabs    .= ' vbp-tabs--align-' . esc_attr( $alineacion );
         if ( $animacion ) {
-            $clases_base .= ' vbp-tabs--animated';
+            $clases_tabs .= ' vbp-tabs--animated';
         }
 
         $id_unico = 'vbp-tabs-' . wp_rand( 1000, 9999 );
 
-        $html = '<div class="' . esc_attr( $clases_base ) . '" style="' . esc_attr( $estilos_css ) . '" id="' . esc_attr( $id_unico ) . '">';
+        // Wrapper de sección.
+        $html = '<section class="vbp-section vbp-section--tabs" style="background-color: ' . esc_attr( $color_fondo ) . '; ' . esc_attr( $estilos_css ) . '">';
+        $html .= '<div class="vbp-container">';
 
-        // Navegación de tabs
+        // Encabezado de la sección.
+        if ( ! empty( $titulo ) || ! empty( $subtitulo ) ) {
+            $html .= '<div class="vbp-section__header">';
+            if ( ! empty( $titulo ) ) {
+                $html .= '<h2 class="vbp-section__title" style="color: ' . esc_attr( $titulo_color ) . ';">' . esc_html( $titulo ) . '</h2>';
+            }
+            if ( ! empty( $subtitulo ) ) {
+                $html .= '<p class="vbp-section__subtitle" style="color: ' . esc_attr( $subtitulo_color ) . ';">' . esc_html( $subtitulo ) . '</p>';
+            }
+            $html .= '</div>';
+        }
+
+        // Tabs content.
+        $html .= '<div class="' . esc_attr( $clases_tabs ) . '" id="' . esc_attr( $id_unico ) . '">';
+
+        // Navegación de tabs.
         $html .= '<div class="vbp-tabs__nav" role="tablist">';
         foreach ( $tabs as $indice => $tab ) {
             $activa = $indice === $tab_activa ? ' vbp-tabs__button--active' : '';
@@ -3714,14 +3806,14 @@ class Flavor_VBP_Canvas {
             $html .= ' aria-controls="' . esc_attr( $id_unico . '-panel-' . $indice ) . '"';
             $html .= ' data-index="' . esc_attr( $indice ) . '">';
             if ( ! empty( $tab['icono'] ) ) {
-                $html .= '<span class="vbp-tabs__icon">' . wp_kses_post( $tab['icono'] ) . '</span>';
+                $html .= '<span class="vbp-tabs__icon material-icons">' . esc_html( $tab['icono'] ) . '</span>';
             }
             $html .= '<span class="vbp-tabs__label">' . esc_html( $tab['titulo'] ?? __( 'Tab', 'flavor-chat-ia' ) ) . '</span>';
             $html .= '</button>';
         }
         $html .= '</div>';
 
-        // Contenido de tabs
+        // Contenido de tabs.
         $html .= '<div class="vbp-tabs__content">';
         foreach ( $tabs as $indice => $tab ) {
             $activa = $indice === $tab_activa ? ' vbp-tabs__panel--active' : '';
@@ -3733,7 +3825,9 @@ class Flavor_VBP_Canvas {
         }
         $html .= '</div>';
 
-        $html .= '</div>';
+        $html .= '</div>'; // .vbp-tabs
+        $html .= '</div>'; // .vbp-container
+        $html .= '</section>';
 
         return $html;
     }
@@ -3753,15 +3847,39 @@ class Flavor_VBP_Canvas {
         $icono_tipo        = $datos['icono_expandir'] ?? 'chevron';
         $animacion         = isset( $datos['animacion'] ) ? $datos['animacion'] : true;
 
-        $estilos_css     = $this->generar_estilos_elemento( $estilos );
-        $clases_base     = 'vbp-accordion vbp-accordion--' . esc_attr( $variante );
+        // Datos de sección.
+        $titulo          = $datos['titulo'] ?? '';
+        $titulo_color    = $datos['titulo_color'] ?? '#ffffff';
+        $subtitulo       = $datos['subtitulo'] ?? '';
+        $subtitulo_color = $datos['subtitulo_color'] ?? '#9CA3AF';
+        $color_fondo     = $datos['color_fondo'] ?? 'transparent';
+
+        $estilos_css        = $this->generar_estilos_elemento( $estilos );
+        $clases_accordion   = 'vbp-accordion vbp-accordion--' . esc_attr( $variante );
         if ( $animacion ) {
-            $clases_base .= ' vbp-accordion--animated';
+            $clases_accordion .= ' vbp-accordion--animated';
         }
 
         $icono_svg = $this->get_accordion_icon( $icono_tipo );
 
-        $html = '<div class="' . esc_attr( $clases_base ) . '" style="' . esc_attr( $estilos_css ) . '"';
+        // Wrapper de sección.
+        $html = '<section class="vbp-section vbp-section--accordion" style="background-color: ' . esc_attr( $color_fondo ) . '; ' . esc_attr( $estilos_css ) . '">';
+        $html .= '<div class="vbp-container">';
+
+        // Encabezado de la sección.
+        if ( ! empty( $titulo ) || ! empty( $subtitulo ) ) {
+            $html .= '<div class="vbp-section__header">';
+            if ( ! empty( $titulo ) ) {
+                $html .= '<h2 class="vbp-section__title" style="color: ' . esc_attr( $titulo_color ) . ';">' . esc_html( $titulo ) . '</h2>';
+            }
+            if ( ! empty( $subtitulo ) ) {
+                $html .= '<p class="vbp-section__subtitle" style="color: ' . esc_attr( $subtitulo_color ) . ';">' . esc_html( $subtitulo ) . '</p>';
+            }
+            $html .= '</div>';
+        }
+
+        // Accordion content.
+        $html .= '<div class="' . esc_attr( $clases_accordion ) . '"';
         $html .= ' data-allow-multiple="' . ( $multiple_abiertos ? 'true' : 'false' ) . '">';
 
         foreach ( $items as $indice => $item ) {
@@ -3785,7 +3903,9 @@ class Flavor_VBP_Canvas {
             $html .= '</div>';
         }
 
-        $html .= '</div>';
+        $html .= '</div>'; // .vbp-accordion
+        $html .= '</div>'; // .vbp-container
+        $html .= '</section>';
 
         return $html;
     }
@@ -3824,17 +3944,40 @@ class Flavor_VBP_Canvas {
         $animacion_scroll   = isset( $datos['animacion_scroll'] ) ? $datos['animacion_scroll'] : true;
         $mostrar_conectores = isset( $datos['mostrar_conectores'] ) ? $datos['mostrar_conectores'] : true;
 
+        // Datos de sección.
+        $titulo          = $datos['titulo'] ?? '';
+        $titulo_color    = $datos['titulo_color'] ?? '#ffffff';
+        $subtitulo       = $datos['subtitulo'] ?? '';
+        $subtitulo_color = $datos['subtitulo_color'] ?? '#9CA3AF';
+        $color_fondo     = $datos['color_fondo'] ?? 'transparent';
+
         $estilos_css     = $this->generar_estilos_elemento( $estilos );
-        $clases_base     = 'vbp-timeline vbp-timeline--' . esc_attr( $variante );
+        $clases_timeline = 'vbp-timeline vbp-timeline--' . esc_attr( $variante );
         if ( $animacion_scroll ) {
-            $clases_base .= ' vbp-timeline--animated';
+            $clases_timeline .= ' vbp-timeline--animated';
         }
 
-        $estilos_inline = $estilos_css;
-        $estilos_inline .= '--timeline-line-color: ' . $this->map_color_to_variable( $color_linea ) . ';';
-        $estilos_inline .= '--timeline-marker-color: ' . $this->map_color_to_variable( $color_marcador ) . ';';
+        $estilos_timeline = '--timeline-line-color: ' . $this->map_color_to_variable( $color_linea ) . ';';
+        $estilos_timeline .= '--timeline-marker-color: ' . $this->map_color_to_variable( $color_marcador ) . ';';
 
-        $html = '<div class="' . esc_attr( $clases_base ) . '" style="' . esc_attr( $estilos_inline ) . '">';
+        // Wrapper de sección.
+        $html = '<section class="vbp-section vbp-section--timeline" style="background-color: ' . esc_attr( $color_fondo ) . '; ' . esc_attr( $estilos_css ) . '">';
+        $html .= '<div class="vbp-container">';
+
+        // Encabezado de la sección.
+        if ( ! empty( $titulo ) || ! empty( $subtitulo ) ) {
+            $html .= '<div class="vbp-section__header">';
+            if ( ! empty( $titulo ) ) {
+                $html .= '<h2 class="vbp-section__title" style="color: ' . esc_attr( $titulo_color ) . ';">' . esc_html( $titulo ) . '</h2>';
+            }
+            if ( ! empty( $subtitulo ) ) {
+                $html .= '<p class="vbp-section__subtitle" style="color: ' . esc_attr( $subtitulo_color ) . ';">' . esc_html( $subtitulo ) . '</p>';
+            }
+            $html .= '</div>';
+        }
+
+        // Timeline content.
+        $html .= '<div class="' . esc_attr( $clases_timeline ) . '" style="' . esc_attr( $estilos_timeline ) . '">';
 
         if ( $mostrar_conectores && 'horizontal' !== $variante ) {
             $html .= '<div class="vbp-timeline__line"></div>';
@@ -3847,14 +3990,21 @@ class Flavor_VBP_Canvas {
 
             $html .= '<div class="' . esc_attr( $clases_item ) . '"' . ( $animacion_scroll ? ' data-animation="fade-up"' : '' ) . '>';
 
-            // Marcador
+            // Marcador.
             $html .= '<div class="vbp-timeline__marker" style="background-color: ' . esc_attr( $this->map_color_to_variable( $color_evento ) ) . ';">';
             if ( ! empty( $evento['icono'] ) ) {
-                $html .= '<span class="vbp-timeline__marker-icon">' . wp_kses_post( $evento['icono'] ) . '</span>';
+                $icono = $evento['icono'];
+                if ( strpos( $icono, 'fa-' ) === 0 ) {
+                    // Font Awesome icon
+                    $html .= '<span class="vbp-timeline__marker-icon"><i class="fas ' . esc_attr( $icono ) . '"></i></span>';
+                } else {
+                    // Material Icons
+                    $html .= '<span class="vbp-timeline__marker-icon"><span class="material-icons">' . esc_html( $icono ) . '</span></span>';
+                }
             }
             $html .= '</div>';
 
-            // Contenido
+            // Contenido.
             $html .= '<div class="vbp-timeline__content">';
             if ( ! empty( $evento['fecha'] ) ) {
                 $html .= '<span class="vbp-timeline__date">' . esc_html( $evento['fecha'] ) . '</span>';
@@ -3873,7 +4023,131 @@ class Flavor_VBP_Canvas {
             $html .= '</div>';
         }
 
+        $html .= '</div>'; // .vbp-timeline
+        $html .= '</div>'; // .vbp-container
+        $html .= '</section>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un componente de listado de eventos
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string HTML del listado de eventos.
+     */
+    private function render_eventos_listado( $elemento ) {
+        $datos            = $elemento['data'] ?? array();
+        $estilos          = $elemento['styles'] ?? array();
+        $titulo           = $datos['titulo'] ?? '';
+        $titulo_color     = $datos['titulo_color'] ?? '#ffffff';
+        $subtitulo        = $datos['subtitulo'] ?? '';
+        $subtitulo_color  = $datos['subtitulo_color'] ?? '#9CA3AF';
+        $color_fondo      = $datos['color_fondo'] ?? '#0f0f0f';
+        $limite           = isset( $datos['limite'] ) ? intval( $datos['limite'] ) : 6;
+        $vista            = $datos['vista'] ?? 'grid';
+        $mostrar_filtros  = isset( $datos['mostrar_filtros'] ) ? $datos['mostrar_filtros'] : false;
+        $solo_proximos    = isset( $datos['solo_proximos'] ) ? $datos['solo_proximos'] : true;
+        $columnas         = isset( $datos['columnas'] ) ? intval( $datos['columnas'] ) : 3;
+
+        $estilos_css      = $this->generar_estilos_elemento( $estilos );
+        $clases_base      = 'vbp-eventos-listado vbp-section';
+
+        // Construir atributos del shortcode.
+        $shortcode_atts = array(
+            'limite'          => $limite,
+            'columnas'        => $columnas,
+            'mostrar_filtros' => $mostrar_filtros ? 'true' : 'false',
+        );
+
+        if ( $solo_proximos ) {
+            $shortcode_atts['solo_proximos'] = 'true';
+        }
+
+        $atts_string = '';
+        foreach ( $shortcode_atts as $key => $value ) {
+            $atts_string .= ' ' . $key . '="' . esc_attr( $value ) . '"';
+        }
+
+        $html = '<section class="' . esc_attr( $clases_base ) . '" style="background-color: ' . esc_attr( $color_fondo ) . '; ' . esc_attr( $estilos_css ) . '">';
+        $html .= '<div class="vbp-container">';
+
+        // Encabezado de la sección.
+        if ( ! empty( $titulo ) || ! empty( $subtitulo ) ) {
+            $html .= '<div class="vbp-section__header">';
+            if ( ! empty( $titulo ) ) {
+                $html .= '<h2 class="vbp-section__title" style="color: ' . esc_attr( $titulo_color ) . ';">' . esc_html( $titulo ) . '</h2>';
+            }
+            if ( ! empty( $subtitulo ) ) {
+                $html .= '<p class="vbp-section__subtitle" style="color: ' . esc_attr( $subtitulo_color ) . ';">' . esc_html( $subtitulo ) . '</p>';
+            }
+            $html .= '</div>';
+        }
+
+        // Contenido del shortcode.
+        $html .= '<div class="vbp-eventos-listado__content">';
+        $html .= do_shortcode( '[eventos_listado' . $atts_string . ']' );
         $html .= '</div>';
+
+        $html .= '</div>';
+        $html .= '</section>';
+
+        return $html;
+    }
+
+    /**
+     * Renderiza un componente de calendario de eventos
+     *
+     * @param array $elemento Datos del elemento.
+     * @return string HTML del calendario de eventos.
+     */
+    private function render_eventos_calendario( $elemento ) {
+        $datos              = $elemento['data'] ?? array();
+        $estilos            = $elemento['styles'] ?? array();
+        $titulo             = $datos['titulo'] ?? '';
+        $titulo_color       = $datos['titulo_color'] ?? '#ffffff';
+        $subtitulo          = $datos['subtitulo'] ?? '';
+        $subtitulo_color    = $datos['subtitulo_color'] ?? '#9CA3AF';
+        $color_fondo        = $datos['color_fondo'] ?? '#111827';
+        $vista_inicial      = $datos['vista_inicial'] ?? 'month';
+        $mostrar_controles  = isset( $datos['mostrar_controles'] ) ? $datos['mostrar_controles'] : true;
+
+        $estilos_css        = $this->generar_estilos_elemento( $estilos );
+        $clases_base        = 'vbp-eventos-calendario vbp-section';
+
+        // Construir atributos del shortcode.
+        $shortcode_atts = array(
+            'vista'             => $vista_inicial,
+            'mostrar_controles' => $mostrar_controles ? 'true' : 'false',
+        );
+
+        $atts_string = '';
+        foreach ( $shortcode_atts as $key => $value ) {
+            $atts_string .= ' ' . $key . '="' . esc_attr( $value ) . '"';
+        }
+
+        $html = '<section class="' . esc_attr( $clases_base ) . '" style="background-color: ' . esc_attr( $color_fondo ) . '; ' . esc_attr( $estilos_css ) . '">';
+        $html .= '<div class="vbp-container">';
+
+        // Encabezado de la sección.
+        if ( ! empty( $titulo ) || ! empty( $subtitulo ) ) {
+            $html .= '<div class="vbp-section__header">';
+            if ( ! empty( $titulo ) ) {
+                $html .= '<h2 class="vbp-section__title" style="color: ' . esc_attr( $titulo_color ) . ';">' . esc_html( $titulo ) . '</h2>';
+            }
+            if ( ! empty( $subtitulo ) ) {
+                $html .= '<p class="vbp-section__subtitle" style="color: ' . esc_attr( $subtitulo_color ) . ';">' . esc_html( $subtitulo ) . '</p>';
+            }
+            $html .= '</div>';
+        }
+
+        // Contenido del shortcode.
+        $html .= '<div class="vbp-eventos-calendario__content">';
+        $html .= do_shortcode( '[eventos_calendario' . $atts_string . ']' );
+        $html .= '</div>';
+
+        $html .= '</div>';
+        $html .= '</section>';
 
         return $html;
     }

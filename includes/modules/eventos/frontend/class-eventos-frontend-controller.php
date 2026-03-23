@@ -151,20 +151,25 @@ class Flavor_Eventos_Frontend_Controller {
      * Registrar shortcodes del módulo
      */
     public function registrar_shortcodes() {
-        add_shortcode('eventos_listado', [$this, 'shortcode_listado']);
-        add_shortcode('eventos_calendario', [$this, 'shortcode_calendario']);
-        add_shortcode('eventos_mis_inscripciones', [$this, 'shortcode_mis_inscripciones']);
-        add_shortcode('eventos_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('eventos_proximos', [$this, 'shortcode_proximos']);
-        add_shortcode('eventos_destacados', [$this, 'shortcode_destacados']);
-        add_shortcode('flavor_eventos_acciones', [$this, 'shortcode_acciones']);
-
-        // Nuevos shortcodes
-        add_shortcode('eventos_inscribirse', [$this, 'shortcode_inscribirse']);
-        add_shortcode('eventos_mapa', [$this, 'shortcode_mapa']);
-
-        // Alias singular
-        add_shortcode('eventos_proximo', [$this, 'shortcode_proximo']);
+        $shortcodes = [
+            'eventos_listado' => 'shortcode_listado',
+            'eventos_calendario' => 'shortcode_calendario',
+            'eventos_mis_inscripciones' => 'shortcode_mis_inscripciones',
+            'eventos_detalle' => 'shortcode_detalle',
+            'eventos_proximos' => 'shortcode_proximos',
+            'eventos_destacados' => 'shortcode_destacados',
+            'flavor_eventos_acciones' => 'shortcode_acciones',
+            // Nuevos shortcodes
+            'eventos_inscribirse' => 'shortcode_inscribirse',
+            'eventos_mapa' => 'shortcode_mapa',
+            // Alias singular
+            'eventos_proximo' => 'shortcode_proximo',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -203,6 +208,13 @@ class Flavor_Eventos_Frontend_Controller {
             'mostrar_filtros' => 'true',
             'comunidad_id' => 0,
             'comunidad_ids' => '',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'fecha_inicio',
+            'order' => 'ASC',
         ], $atts);
 
         ob_start();
@@ -315,6 +327,22 @@ class Flavor_Eventos_Frontend_Controller {
             return;
         }
 
+        // Clases CSS para estilos visuales
+        $visual_classes = ['flavor-eventos-listado'];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta'])) {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes'])) {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $visual_class_str = implode(' ', $visual_classes);
+
         $where = ["estado = 'publicado'", "fecha_inicio >= NOW()"];
         $params = [];
 
@@ -340,7 +368,18 @@ class Flavor_Eventos_Frontend_Controller {
             }
         }
 
-        $sql = "SELECT * FROM $tabla_eventos WHERE " . implode(' AND ', $where) . " ORDER BY fecha_inicio ASC LIMIT %d";
+        // Ordenamiento dinámico
+        $orderby_map = [
+            'fecha_inicio' => 'fecha_inicio',
+            'date' => 'fecha_inicio',
+            'title' => 'titulo',
+            'titulo' => 'titulo',
+            'modified' => 'updated_at',
+        ];
+        $order_column = isset($orderby_map[$atts['orderby']]) ? $orderby_map[$atts['orderby']] : 'fecha_inicio';
+        $order_dir = strtoupper($atts['order']) === 'DESC' ? 'DESC' : 'ASC';
+
+        $sql = "SELECT * FROM $tabla_eventos WHERE " . implode(' AND ', $where) . " ORDER BY {$order_column} {$order_dir} LIMIT %d";
         $params[] = intval($atts['limite']);
 
         $eventos = $wpdb->get_results($wpdb->prepare($sql, ...$params));
@@ -349,7 +388,7 @@ class Flavor_Eventos_Frontend_Controller {
         if (file_exists($template)) {
             include $template;
         } else {
-            echo '<div class="flavor-eventos-grid grid-' . esc_attr($atts['columnas']) . '">';
+            echo '<div class="flavor-eventos-grid ' . esc_attr($visual_class_str) . ' grid-' . esc_attr($atts['columnas']) . '">';
             foreach ($eventos as $evento) {
                 $this->render_evento_card($evento);
             }

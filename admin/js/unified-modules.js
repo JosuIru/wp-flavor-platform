@@ -265,16 +265,16 @@ window.unifiedModulesState = function() {
                     });
 
                     if (!response.ok) {
-                        if (response.status === 404) {
-                            this.docsError = fumData.i18n.docsNotFound;
-                        } else {
-                            this.docsError = fumData.i18n.docsError;
-                        }
+                        this.docsError = response.status === 404 ? fumData.i18n.docsNotFound : fumData.i18n.docsError;
                         return;
                     }
 
                     const data = await response.json();
-                    // La API devuelve {success: true, data: {...}}
+                    if (data && data.success === false) {
+                        this.docsError = data.error || fumData.i18n.docsNotFound;
+                        return;
+                    }
+
                     this.docsData = data.data || data;
                 } catch (error) {
                     console.error('Error loading docs:', error);

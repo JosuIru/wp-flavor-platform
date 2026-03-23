@@ -641,6 +641,7 @@ class _CampanaDetalleScreenState extends ConsumerState<CampanaDetalleScreen> {
       final clienteApi = ref.read(apiClientProvider);
       final respuesta = await clienteApi.post(
         '/email-marketing/campanas/${widget.campanaId}/enviar',
+        data: {},
       );
 
       if (mounted) {

@@ -9,6 +9,40 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Fallback: asegurar assets frontend del módulo cuando se renderiza fuera de su flujo principal.
+if (!wp_style_is('flavor-economia-don', 'registered')) {
+    wp_register_style(
+        'flavor-economia-don',
+        FLAVOR_CHAT_IA_URL . 'includes/modules/economia-don/assets/css/economia-don-frontend.css',
+        [],
+        FLAVOR_CHAT_IA_VERSION
+    );
+}
+if (!wp_style_is('flavor-economia-don', 'enqueued')) {
+    wp_enqueue_style('flavor-economia-don');
+}
+if (!wp_script_is('flavor-economia-don', 'registered')) {
+    wp_register_script(
+        'flavor-economia-don',
+        FLAVOR_CHAT_IA_URL . 'includes/modules/economia-don/assets/js/economia-don.js',
+        ['jquery'],
+        FLAVOR_CHAT_IA_VERSION,
+        true
+    );
+}
+if (!wp_script_is('flavor-economia-don', 'enqueued')) {
+    wp_enqueue_script('flavor-economia-don');
+}
+wp_localize_script('flavor-economia-don', 'edData', [
+    'ajaxUrl' => admin_url('admin-ajax.php'),
+    'nonce' => wp_create_nonce('ed_nonce'),
+    'i18n' => [
+        'confirmSolicitar' => __('¿Deseas solicitar este don?', 'flavor-chat-ia'),
+        'confirmEntrega' => __('¿Confirmas que has entregado este don?', 'flavor-chat-ia'),
+        'gracias' => __('¡Gracias por tu generosidad!', 'flavor-chat-ia'),
+    ],
+]);
+
 $categorias = Flavor_Chat_Economia_Don_Module::CATEGORIAS_DON;
 ?>
 
@@ -18,7 +52,8 @@ $categorias = Flavor_Chat_Economia_Don_Module::CATEGORIAS_DON;
         <p><?php esc_html_e('Comparte lo que te sobra o puedes ofrecer sin esperar nada a cambio', 'flavor-chat-ia'); ?></p>
     </header>
 
-    <form class="ed-form-ofrecer">
+    <form class="ed-form-ofrecer" method="post">
+        <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('ed_nonce')); ?>">
         <div class="ed-form-grupo">
             <label for="ed-titulo"><?php esc_html_e('¿Qué ofreces?', 'flavor-chat-ia'); ?> *</label>
             <input type="text" name="titulo" id="ed-titulo" required

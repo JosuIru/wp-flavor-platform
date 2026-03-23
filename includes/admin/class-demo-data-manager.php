@@ -74,9 +74,22 @@ class Flavor_Demo_Data_Manager {
 
         $exitos = array_filter($resultados, function($r) { return $r['success']; });
         $mensaje = count($exitos) > 0 ? 'demo_data_populated' : 'demo_data_error';
+        $this->register_demo_run('populate', $modulo_id, $modulos_activos, $resultados);
+        $redirect_page = $this->get_requested_redirect_page();
+        $redirect_tab = $this->get_requested_redirect_tab();
 
-        wp_safe_redirect(add_query_arg(
-            ['page' => 'flavor-module-dashboards', 'mensaje' => $mensaje, 'count' => count($exitos)],
+        $redirect_args = [
+            'page' => $redirect_page,
+            'mensaje' => $mensaje,
+            'count' => count($exitos),
+        ];
+
+        if (!empty($redirect_tab)) {
+            $redirect_args['tab'] = $redirect_tab;
+        }
+
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+            $redirect_args,
             admin_url('admin.php')
         ));
         exit;
@@ -106,12 +119,99 @@ class Flavor_Demo_Data_Manager {
 
         $exitos = array_filter($resultados, function($r) { return $r['success']; });
         $mensaje = count($exitos) > 0 ? 'demo_data_cleared' : 'demo_data_clear_error';
+        $this->register_demo_run('clear', $modulo_id, $modulos_activos, $resultados);
+        $redirect_page = $this->get_requested_redirect_page();
+        $redirect_tab = $this->get_requested_redirect_tab();
 
-        wp_safe_redirect(add_query_arg(
-            ['page' => 'flavor-module-dashboards', 'mensaje' => $mensaje, 'count' => count($exitos)],
+        $redirect_args = [
+            'page' => $redirect_page,
+            'mensaje' => $mensaje,
+            'count' => count($exitos),
+        ];
+
+        if (!empty($redirect_tab)) {
+            $redirect_args['tab'] = $redirect_tab;
+        }
+
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
+            $redirect_args,
             admin_url('admin.php')
         ));
         exit;
+    }
+
+    /**
+     * Página de retorno solicitada tras acciones de datos demo.
+     *
+     * @return string
+     */
+    private function get_requested_redirect_page() {
+        $default = 'flavor-module-dashboards';
+        $page = isset($_POST['redirect_page']) ? sanitize_key(wp_unslash($_POST['redirect_page'])) : $default;
+
+        return !empty($page) ? $page : $default;
+    }
+
+    /**
+     * Tab de retorno solicitada tras acciones de datos demo.
+     *
+     * @return string
+     */
+    private function get_requested_redirect_tab() {
+        if (!isset($_POST['redirect_tab'])) {
+            return '';
+        }
+
+        return sanitize_key(wp_unslash($_POST['redirect_tab']));
+    }
+
+    /**
+     * Guarda un histórico resumido de ejecuciones de datos demo.
+     *
+     * @param string $action
+     * @param string $modulo_id
+     * @param array|null $modulos_filtrados
+     * @param array $resultados
+     */
+    private function register_demo_run($action, $modulo_id, $modulos_filtrados, array $resultados) {
+        $historial = get_option('flavor_demo_data_last_runs', []);
+        if (!is_array($historial)) {
+            $historial = [];
+        }
+
+        $modulos_objetivo = [];
+        if ($modulo_id === 'all') {
+            $modulos_objetivo = is_array($modulos_filtrados) ? array_values(array_filter(array_map('sanitize_key', $modulos_filtrados))) : [];
+        } else {
+            $modulos_objetivo = [sanitize_key($modulo_id)];
+        }
+
+        $scope = 'all';
+        if ($modulo_id !== 'all') {
+            $scope = 'single';
+        } elseif (!empty($modulos_objetivo)) {
+            $scope = 'active';
+        }
+
+        $intentos = count($resultados);
+        $exitos = 0;
+        foreach ($resultados as $resultado) {
+            if (!empty($resultado['success'])) {
+                $exitos++;
+            }
+        }
+
+        array_unshift($historial, [
+            'timestamp' => current_time('mysql'),
+            'action' => sanitize_key($action),
+            'scope' => $scope,
+            'target_modules' => $modulos_objetivo,
+            'attempted' => $intentos,
+            'success' => $exitos,
+        ]);
+
+        $historial = array_slice($historial, 0, 10);
+        update_option('flavor_demo_data_last_runs', $historial, false);
     }
 
     /**
@@ -263,13 +363,41 @@ class Flavor_Demo_Data_Manager {
     }
 
     /**
-     * Obtiene un usuario administrador para asignar datos
+     * Obtiene un usuario preferentemente demo para asignar datos
      *
      * @return int
      */
     private function get_demo_user_id() {
-        $usuarios_admin = get_users(['role' => 'administrator', 'number' => 1]);
-        return !empty($usuarios_admin) ? $usuarios_admin[0]->ID : 1;
+        $usuarios_demo = $this->get_or_create_demo_users();
+        if (!empty($usuarios_demo)) {
+            return (int) $usuarios_demo[0];
+        }
+
+        $usuarios_admin = get_users(['role' => 'administrator', 'number' => 1, 'fields' => 'ID']);
+        if (!empty($usuarios_admin)) {
+            return (int) $usuarios_admin[0];
+        }
+
+        return 1;
+    }
+
+    /**
+     * Selecciona un usuario demo de forma pseudo-aleatoria.
+     *
+     * @param array $usuarios_pool
+     * @return int
+     */
+    private function pick_demo_user_id(array $usuarios_pool = []) {
+        if (empty($usuarios_pool)) {
+            $usuarios_pool = $this->get_or_create_demo_users();
+        }
+
+        if (!empty($usuarios_pool)) {
+            $indice = array_rand($usuarios_pool);
+            return (int) $usuarios_pool[$indice];
+        }
+
+        return $this->get_demo_user_id();
     }
 
     /**
@@ -461,7 +589,7 @@ class Flavor_Demo_Data_Manager {
             return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
         }
 
-        $usuario_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados = [];
 
         $servicios_demo = [
@@ -516,6 +644,7 @@ class Flavor_Demo_Data_Manager {
         ];
 
         foreach ($servicios_demo as $servicio) {
+            $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
             $resultado = $wpdb->insert(
                 $tabla_servicios,
                 [
@@ -588,7 +717,7 @@ class Flavor_Demo_Data_Manager {
             return ['success' => false, 'error' => __('categoria', 'flavor-chat-ia')];
         }
 
-        $usuario_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados = [];
 
         $eventos_demo = [
@@ -650,16 +779,23 @@ class Flavor_Demo_Data_Manager {
         ];
 
         foreach ($eventos_demo as $evento) {
+            $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
+            $tipo_evento = sanitize_text_field($evento['tipo'] ?? ($evento['categoria'] ?? 'evento'));
+            if ($tipo_evento === '') {
+                $tipo_evento = 'evento';
+            }
+            $aforo_maximo = isset($evento['aforo_maximo']) ? absint($evento['aforo_maximo']) : (isset($evento['maximo_asistentes']) ? absint($evento['maximo_asistentes']) : 0);
+
             $resultado = $wpdb->insert(
                 $tabla_eventos,
                 [
                     'titulo' => $evento['titulo'],
                     'descripcion' => $evento['descripcion'],
-                    'tipo' => $evento['tipo'],
+                    'tipo' => $tipo_evento,
                     'fecha_inicio' => $evento['fecha_inicio'],
                     'fecha_fin' => $evento['fecha_fin'],
                     'ubicacion' => $evento['ubicacion'],
-                    'aforo_maximo' => $evento['aforo_maximo'],
+                    'aforo_maximo' => $aforo_maximo,
                     'organizador_id' => $usuario_id,
                     'estado' => 'publicado',
                     'fecha_creacion' => current_time('mysql'),
@@ -725,7 +861,7 @@ class Flavor_Demo_Data_Manager {
      * Pobla datos demo de Marketplace
      */
     private function populate_marketplace() {
-        $usuario_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados = [];
 
         $anuncios_demo = [
@@ -804,6 +940,7 @@ class Flavor_Demo_Data_Manager {
         ];
 
         foreach ($anuncios_demo as $anuncio) {
+            $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
             // Crear el post
             $post_data = [
                 'post_title' => $anuncio['titulo'],
@@ -878,7 +1015,7 @@ class Flavor_Demo_Data_Manager {
      * Usa Custom Post Types: gc_productor, gc_producto, gc_ciclo
      */
     private function populate_grupos_consumo() {
-        $usuario_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados = [
             'productores' => [],
             'productos' => [],
@@ -918,6 +1055,7 @@ class Flavor_Demo_Data_Manager {
 
         // Crear productores como CPT
         foreach ($productores_demo as $productor_data) {
+            $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
             $productor_id = wp_insert_post([
                 'post_title'   => $productor_data['nombre'],
                 'post_content' => $productor_data['descripcion'],
@@ -940,12 +1078,13 @@ class Flavor_Demo_Data_Manager {
                 // Crear productos para este productor
                 $productos = $this->get_productos_demo_para_productor($productor_data['nombre']);
                 foreach ($productos as $producto_data) {
+                    $autor_producto_id = $this->pick_demo_user_id($usuarios_compartidos);
                     $producto_id = wp_insert_post([
                         'post_title'   => $producto_data['nombre'],
                         'post_content' => $producto_data['descripcion'],
                         'post_status'  => 'publish',
                         'post_type'    => 'gc_producto',
-                        'post_author'  => $usuario_id,
+                        'post_author'  => $autor_producto_id,
                     ]);
 
                     if ($producto_id && !is_wp_error($producto_id)) {
@@ -964,6 +1103,7 @@ class Flavor_Demo_Data_Manager {
         }
 
         // Crear un ciclo de pedido abierto
+        $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
         $ciclo_id = wp_insert_post([
             'post_title'  => 'Pedido Semana ' . date('W') . ' - ' . date('F Y'),
             'post_status' => 'gc_abierto', // Estado personalizado
@@ -986,7 +1126,6 @@ class Flavor_Demo_Data_Manager {
         }
 
         // Usar usuarios demo compartidos - solo marcar como consumidores con meta
-        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados['usuarios'] = $usuarios_compartidos;
         $ids_insertados['consumidores'] = [];
         $ids_insertados['pedidos'] = [];
@@ -1559,7 +1698,6 @@ class Flavor_Demo_Data_Manager {
     private function populate_socios() {
         // Usar usuarios demo compartidos
         $usuarios_compartidos = $this->get_or_create_demo_users();
-        $admin_id = $this->get_demo_user_id();
         $ids_insertados = [];
 
         $tipos_socios = ['familiar', 'individual', 'familiar', 'juvenil', 'individual', 'familiar', 'individual', 'senior'];
@@ -1576,7 +1714,7 @@ class Flavor_Demo_Data_Manager {
                 'post_content' => 'Socio de ejemplo vinculado a usuario real.',
                 'post_status'  => 'publish',
                 'post_type'    => 'socio',
-                'post_author'  => $admin_id,
+                'post_author'  => $usuario_id,
             ]);
 
             if ($socio_id && !is_wp_error($socio_id)) {
@@ -1787,7 +1925,7 @@ class Flavor_Demo_Data_Manager {
      * Pobla datos demo de Facturas
      */
     private function populate_facturas() {
-        $usuario_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados = [];
 
         $facturas_demo = [
@@ -1799,6 +1937,7 @@ class Flavor_Demo_Data_Manager {
         ];
 
         foreach ($facturas_demo as $factura) {
+            $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
             $factura_id = wp_insert_post([
                 'post_title'   => 'Factura ' . $factura['numero'] . ' - ' . $factura['cliente'],
                 'post_content' => 'Factura de ejemplo creada automáticamente.',
@@ -1864,7 +2003,7 @@ class Flavor_Demo_Data_Manager {
      * Pobla datos demo de Incidencias
      */
     private function populate_incidencias() {
-        $usuario_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados = [];
 
         $incidencias_demo = [
@@ -1879,6 +2018,7 @@ class Flavor_Demo_Data_Manager {
         ];
 
         foreach ($incidencias_demo as $incidencia) {
+            $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
             $incidencia_id = wp_insert_post([
                 'post_title'   => $incidencia['titulo'],
                 'post_content' => 'Incidencia reportada por vecino. Requiere revisión del servicio correspondiente.',
@@ -1940,7 +2080,7 @@ class Flavor_Demo_Data_Manager {
      * Pobla datos demo de Talleres
      */
     private function populate_talleres() {
-        $usuario_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados = [];
 
         $talleres_demo = [
@@ -1953,6 +2093,7 @@ class Flavor_Demo_Data_Manager {
         ];
 
         foreach ($talleres_demo as $taller) {
+            $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
             $taller_id = wp_insert_post([
                 'post_title'   => $taller['titulo'],
                 'post_content' => 'Taller impartido por profesionales. Incluye material didáctico y certificado de asistencia.',
@@ -2017,7 +2158,7 @@ class Flavor_Demo_Data_Manager {
      * Pobla datos demo de Trámites
      */
     private function populate_tramites() {
-        $usuario_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados = [];
 
         $tramites_demo = [
@@ -2030,6 +2171,7 @@ class Flavor_Demo_Data_Manager {
         ];
 
         foreach ($tramites_demo as $tramite) {
+            $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
             $tramite_id = wp_insert_post([
                 'post_title'   => $tramite['titulo'],
                 'post_content' => 'Documentación necesaria: DNI, justificante de domicilio. Se puede realizar presencialmente o por sede electrónica.',
@@ -2089,7 +2231,7 @@ class Flavor_Demo_Data_Manager {
      * Pobla datos demo de Avisos Municipales
      */
     private function populate_avisos_municipales() {
-        $usuario_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados = [];
 
         $avisos_demo = [
@@ -2101,6 +2243,7 @@ class Flavor_Demo_Data_Manager {
         ];
 
         foreach ($avisos_demo as $aviso) {
+            $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
             $aviso_id = wp_insert_post([
                 'post_title'   => $aviso['titulo'],
                 'post_content' => 'Información importante para todos los vecinos. Consultar en la web municipal o llamar al teléfono de información.',
@@ -2680,7 +2823,7 @@ class Flavor_Demo_Data_Manager {
             return ['success' => false, 'error' => __('Módulo no soportado', 'flavor-chat-ia')];
         }
 
-        $admin_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
         $ids_insertados = [
             'nodos' => [],
             'conexiones' => [],
@@ -2907,6 +3050,8 @@ class Flavor_Demo_Data_Manager {
             }
 
             foreach ($nodos_a_conectar as $nodo_destino_id) {
+                $solicitado_por = $this->pick_demo_user_id($usuarios_compartidos);
+                $aprobado_por = $this->pick_demo_user_id($usuarios_compartidos);
                 $wpdb->insert(
                     $tabla_conexiones,
                     [
@@ -2916,8 +3061,8 @@ class Flavor_Demo_Data_Manager {
                         'nivel' => 'visible',
                         'estado' => 'aceptada',
                         'mensaje_solicitud' => '¡Hola! Nos gustaría conectar con vuestra comunidad para compartir experiencias y recursos.',
-                        'solicitado_por' => $admin_id,
-                        'aprobado_por' => $admin_id,
+                        'solicitado_por' => $solicitado_por,
+                        'aprobado_por' => $aprobado_por,
                         'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-' . rand(10, 60) . ' days')),
                         'fecha_aprobacion' => date('Y-m-d H:i:s', strtotime('-' . rand(5, 50) . ' days')),
                     ],
@@ -2943,8 +3088,8 @@ class Flavor_Demo_Data_Manager {
                             'tipo_conexion' => 'visible',
                             'nivel' => 'visible',
                             'estado' => 'aceptada',
-                            'solicitado_por' => $admin_id,
-                            'aprobado_por' => $admin_id,
+                            'solicitado_por' => $this->pick_demo_user_id($usuarios_compartidos),
+                            'aprobado_por' => $this->pick_demo_user_id($usuarios_compartidos),
                             'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-' . rand(20, 100) . ' days')),
                             'fecha_aprobacion' => date('Y-m-d H:i:s', strtotime('-' . rand(10, 90) . ' days')),
                         ],
@@ -3295,7 +3440,7 @@ class Flavor_Demo_Data_Manager {
 
         $mensaje = $resultado['success'] ? 'demo_pages_created' : 'demo_pages_error';
 
-        wp_safe_redirect(add_query_arg(
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
             [
                 'page' => 'flavor-module-dashboards',
                 'mensaje' => $mensaje,
@@ -3321,7 +3466,7 @@ class Flavor_Demo_Data_Manager {
 
         $mensaje = $resultado['success'] ? 'demo_pages_deleted' : 'demo_pages_delete_error';
 
-        wp_safe_redirect(add_query_arg(
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg(
             ['page' => 'flavor-module-dashboards', 'mensaje' => $mensaje, 'count' => $resultado['count'] ?? 0],
             admin_url('admin.php')
         ));
@@ -3508,7 +3653,7 @@ class Flavor_Demo_Data_Manager {
     public function create_demo_pages($only_active = false) {
         $paginas = $this->get_demo_pages_definition_filtered($only_active);
         $paginas_creadas = [];
-        $usuario_id = $this->get_demo_user_id();
+        $usuarios_compartidos = $this->get_or_create_demo_users();
 
         foreach ($paginas as $id => $pagina) {
             // Verificar si ya existe una página con ese slug
@@ -3528,6 +3673,7 @@ class Flavor_Demo_Data_Manager {
                 ]);
             } else {
                 // Crear nueva página
+                $usuario_id = $this->pick_demo_user_id($usuarios_compartidos);
                 $post_id = wp_insert_post([
                     'post_title' => $pagina['title'],
                     'post_name' => $pagina['slug'],
@@ -4610,7 +4756,6 @@ private function clear_transparencia() {
 // =========================================================
 
 private function populate_presupuestos_participativos() {
-    $admin_id = $this->get_demo_user_id();
     $usuarios_compartidos = $this->get_or_create_demo_users();
     $ids_insertados = [];
 
@@ -4976,7 +5121,7 @@ private function clear_foros() {
 // =========================================================
 
 private function populate_colectivos() {
-    $admin_id = $this->get_demo_user_id();
+    $usuarios_compartidos = $this->get_or_create_demo_users();
     $ids_insertados = [];
 
     $colectivos_demo = [
@@ -4992,7 +5137,7 @@ private function populate_colectivos() {
             'post_content' => 'Colectivo activo en el municipio.',
             'post_status' => 'publish',
             'post_type' => 'colectivo',
-            'post_author' => $admin_id,
+            'post_author' => $this->pick_demo_user_id($usuarios_compartidos),
         ]);
 
         if ($post_id && !is_wp_error($post_id)) {

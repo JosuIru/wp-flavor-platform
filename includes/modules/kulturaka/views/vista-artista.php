@@ -147,7 +147,7 @@ $ingresos = [
         </div>
 
         <div class="artista-actions">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-socios&action=editar-artista&id=' . $artista->id)); ?>" class="button">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=socios-dashboard&action=editar-artista&id=' . $artista->id)); ?>" class="button">
                 <span class="dashicons dashicons-edit"></span> Editar perfil
             </a>
             <button type="button" class="button button-primary" onclick="abrirModalPropuesta()">
@@ -391,7 +391,7 @@ $ingresos = [
                 <?php else: ?>
                     <p class="no-data">No tienes crowdfundings activos</p>
                 <?php endif; ?>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-crowdfunding&action=nuevo')); ?>" class="btn-nuevo-cf">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=crowdfunding-dashboard&action=nuevo')); ?>" class="btn-nuevo-cf">
                     <span class="dashicons dashicons-plus-alt"></span> Crear campaña
                 </a>
             </div>

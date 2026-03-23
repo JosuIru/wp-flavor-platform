@@ -2552,6 +2552,132 @@
    PRINT STYLES
    ============================================================================ */
 
+/* ============================================================================
+   TAREAS PENDIENTES - PRIORIDADES
+   ============================================================================ */
+
+.flavor-tareas-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.flavor-tarea-item {
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.flavor-tarea-item a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid var(--flavor-border-light, #e5e5e5);
+}
+
+.flavor-tarea-item a:hover {
+    background: var(--flavor-bg-hover, #f6f7f7);
+}
+
+.flavor-tarea-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+    color: var(--flavor-text-secondary, #646970);
+}
+
+.flavor-tarea-texto {
+    flex: 1;
+    font-size: 13px;
+    color: var(--flavor-text-primary, #1d2327);
+}
+
+.flavor-tarea-badge {
+    flex-shrink: 0;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+    background: var(--flavor-bg-muted, #e5e5e5);
+    color: var(--flavor-text-secondary, #646970);
+}
+
+/* Prioridad CRÍTICA - Rojo intenso con animación */
+.flavor-tarea-critica {
+    border-left-color: #dc3545;
+    background: linear-gradient(90deg, rgba(220,53,69,0.08) 0%, transparent 100%);
+    animation: pulse-critical 2s infinite;
+}
+
+.flavor-tarea-critica .flavor-tarea-icon {
+    color: #dc3545;
+}
+
+.flavor-tarea-critica .flavor-tarea-texto {
+    font-weight: 600;
+    color: #dc3545;
+}
+
+.flavor-tarea-critica .flavor-tarea-badge {
+    background: #dc3545;
+    color: white;
+}
+
+@keyframes pulse-critical {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+}
+
+/* Prioridad ALTA - Naranja */
+.flavor-tarea-alta {
+    border-left-color: #fd7e14;
+    background: linear-gradient(90deg, rgba(253,126,20,0.06) 0%, transparent 100%);
+}
+
+.flavor-tarea-alta .flavor-tarea-icon {
+    color: #fd7e14;
+}
+
+.flavor-tarea-alta .flavor-tarea-badge {
+    background: #fd7e14;
+    color: white;
+}
+
+/* Prioridad MEDIA - Azul */
+.flavor-tarea-media {
+    border-left-color: #0d6efd;
+}
+
+.flavor-tarea-media .flavor-tarea-icon {
+    color: #0d6efd;
+}
+
+.flavor-tarea-media .flavor-tarea-badge {
+    background: #e7f1ff;
+    color: #0d6efd;
+}
+
+/* Prioridad BAJA - Gris */
+.flavor-tarea-baja {
+    border-left-color: #6c757d;
+}
+
+.flavor-tarea-baja .flavor-tarea-icon {
+    color: #6c757d;
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+
 @media print {
     .flavor-dashboard-header-actions,
     .flavor-widget-handle,

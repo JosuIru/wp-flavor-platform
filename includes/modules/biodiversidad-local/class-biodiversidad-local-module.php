@@ -200,6 +200,65 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
 
         // Dashboard tabs para usuarios (frontend)
         $this->init_dashboard_tabs();
+
+        // Encolar assets del frontend
+        add_action('wp_enqueue_scripts', [$this, 'registrar_assets_frontend']);
+    }
+
+    /**
+     * Registra y encola assets del frontend
+     */
+    public function registrar_assets_frontend() {
+        // Registrar CSS
+        wp_register_style(
+            'flavor-biodiversidad-local',
+            FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+            [],
+            FLAVOR_CHAT_IA_VERSION
+        );
+
+        wp_register_style(
+            'flavor-biodiversidad-frontend',
+            FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-frontend.css',
+            ['flavor-biodiversidad-local'],
+            FLAVOR_CHAT_IA_VERSION
+        );
+
+        // Encolar en páginas del módulo
+        if ($this->is_module_page()) {
+            wp_enqueue_style('flavor-biodiversidad-frontend');
+        }
+    }
+
+    /**
+     * Verifica si estamos en una página del módulo
+     *
+     * @return bool
+     */
+    private function is_module_page() {
+        global $post;
+
+        // Verificar por shortcode en el contenido
+        if ($post && is_a($post, 'WP_Post')) {
+            $shortcodes = ['flavor_biodiversidad', 'flavor_biodiversidad_catalogo', 'flavor_biodiversidad_proyectos'];
+            foreach ($shortcodes as $shortcode) {
+                if (has_shortcode($post->post_content, $shortcode)) {
+                    return true;
+                }
+            }
+        }
+
+        // Verificar por parámetro de módulo en la URL
+        if (isset($_GET['flavor_module']) && $_GET['flavor_module'] === 'biodiversidad-local') {
+            return true;
+        }
+
+        // Verificar por acción del módulo
+        if (isset($_GET['action']) && isset($_GET['module']) && $_GET['module'] === 'biodiversidad-local') {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -639,6 +698,11 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
             'supports' => ['title', 'editor', 'thumbnail', 'author'],
             'has_archive' => true,
             'rewrite' => ['slug' => 'biodiversidad/proyectos'],
+            // Permite propuestas frontend de usuarios autenticados (quedan en pending).
+            'map_meta_cap' => true,
+            'capabilities' => [
+                'create_posts' => 'read',
+            ],
         ]);
     }
 
@@ -907,10 +971,13 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
             'post_title' => $titulo,
             'post_content' => $descripcion,
             'post_author' => get_current_user_id(),
-        ]);
+        ], true);
 
-        if (is_wp_error($proyecto_id)) {
-            wp_send_json_error(['message' => $proyecto_id->get_error_message()]);
+        if (is_wp_error($proyecto_id) || empty($proyecto_id)) {
+            $error_message = is_wp_error($proyecto_id)
+                ? $proyecto_id->get_error_message()
+                : __('No se pudo crear el proyecto.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error_message]);
         }
 
         update_post_meta($proyecto_id, '_bl_tipo', $tipo);

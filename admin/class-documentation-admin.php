@@ -217,7 +217,7 @@ class Flavor_Documentation_Admin {
                 'separador' => true,
             ],
             'mod-socios' => [
-                'titulo' => __('Socios', 'flavor-chat-ia'),
+                'titulo' => __('Miembros', 'flavor-chat-ia'),
                 'icono' => 'dashicons-groups',
             ],
             'mod-eventos' => [
@@ -528,7 +528,7 @@ class Flavor_Documentation_Admin {
             <h3><?php _e('¿Qué es una Plantilla?', 'flavor-chat-ia'); ?></h3>
             <p><?php _e('Una plantilla es un conjunto preconfigurado que incluye:', 'flavor-chat-ia'); ?></p>
             <ul>
-                <li><strong><?php _e('Módulos', 'flavor-chat-ia'); ?></strong> - <?php _e('Funcionalidades específicas (eventos, marketplace, socios...)', 'flavor-chat-ia'); ?></li>
+                <li><strong><?php _e('Módulos', 'flavor-chat-ia'); ?></strong> - <?php _e('Funcionalidades específicas (eventos, marketplace, miembros...)', 'flavor-chat-ia'); ?></li>
                 <li><strong><?php _e('Páginas', 'flavor-chat-ia'); ?></strong> - <?php _e('Páginas de WordPress con shortcodes preconfigurados', 'flavor-chat-ia'); ?></li>
                 <li><strong><?php _e('Landing Page', 'flavor-chat-ia'); ?></strong> - <?php _e('Secciones visuales (hero, features, CTA...)', 'flavor-chat-ia'); ?></li>
                 <li><strong><?php _e('Configuración', 'flavor-chat-ia'); ?></strong> - <?php _e('Ajustes óptimos para el caso de uso', 'flavor-chat-ia'); ?></li>
@@ -560,7 +560,7 @@ class Flavor_Documentation_Admin {
                         <tr>
                             <td><strong><?php _e('Comunidad', 'flavor-chat-ia'); ?></strong></td>
                             <td><?php _e('Asociaciones, clubs, entidades sin ánimo de lucro', 'flavor-chat-ia'); ?></td>
-                            <td><?php _e('Socios, Eventos, Cuotas, Comunicación', 'flavor-chat-ia'); ?></td>
+                            <td><?php _e('Miembros, Eventos, Cuotas, Comunicación', 'flavor-chat-ia'); ?></td>
                         </tr>
                         <tr>
                             <td><strong><?php _e('Barrio', 'flavor-chat-ia'); ?></strong></td>
@@ -612,7 +612,7 @@ class Flavor_Documentation_Admin {
             <div class="flavor-docs-modules-grid">
                 <div class="flavor-docs-module-card">
                     <span class="dashicons dashicons-groups" style="color: #f43f5e;"></span>
-                    <h4><?php _e('Socios', 'flavor-chat-ia'); ?></h4>
+                    <h4><?php _e('Miembros', 'flavor-chat-ia'); ?></h4>
                     <p><?php _e('Gestión de membresías, cuotas periódicas y carnets digitales.', 'flavor-chat-ia'); ?></p>
                 </div>
                 <div class="flavor-docs-module-card">
@@ -1591,7 +1591,7 @@ add_action('flavor_chat_escalated', function($conversation_id, $reason) {
                     </div>
                     <ul>
                         <li><span class="badge nuevo">Nuevo</span> <?php _e('Template Orchestrator - Activación automatizada de plantillas', 'flavor-chat-ia'); ?></li>
-                        <li><span class="badge nuevo">Nuevo</span> <?php _e('Sistema de suscripciones y cuotas para socios', 'flavor-chat-ia'); ?></li>
+                        <li><span class="badge nuevo">Nuevo</span> <?php _e('Sistema de suscripciones y cuotas para miembros', 'flavor-chat-ia'); ?></li>
                         <li><span class="badge nuevo">Nuevo</span> <?php _e('Dashboard de usuario frontend (Mi Cuenta)', 'flavor-chat-ia'); ?></li>
                         <li><span class="badge nuevo">Nuevo</span> <?php _e('Push Notifications via Firebase', 'flavor-chat-ia'); ?></li>
                         <li><span class="badge nuevo">Nuevo</span> <?php _e('Gestor de Newsletter con campañas', 'flavor-chat-ia'); ?></li>
@@ -2014,16 +2014,16 @@ Flavor_Activity_Logger::log('mi_accion', [
     private function renderizar_seccion_mod_socios() {
         ?>
         <div class="flavor-docs-section">
-            <h2><?php _e('Módulo: Socios', 'flavor-chat-ia'); ?></h2>
+            <h2><?php _e('Módulo: Miembros', 'flavor-chat-ia'); ?></h2>
             <div class="flavor-docs-status-badge completo"><?php _e('Estado: Completo', 'flavor-chat-ia'); ?></div>
-            <p class="flavor-docs-intro"><?php _e('Gestión integral de membresías, cuotas y directorio de socios.', 'flavor-chat-ia'); ?></p>
+            <p class="flavor-docs-intro"><?php _e('Gestión integral de membresías, cuotas y directorio de miembros.', 'flavor-chat-ia'); ?></p>
 
             <h3><?php _e('Características', 'flavor-chat-ia'); ?></h3>
             <ul>
-                <li><?php _e('Registro y alta de socios con validación', 'flavor-chat-ia'); ?></li>
-                <li><?php _e('Tipos de socio personalizables', 'flavor-chat-ia'); ?></li>
+                <li><?php _e('Registro y alta de miembros con validación', 'flavor-chat-ia'); ?></li>
+                <li><?php _e('Tipos de miembro personalizables', 'flavor-chat-ia'); ?></li>
                 <li><?php _e('Sistema de cuotas con renovación automática', 'flavor-chat-ia'); ?></li>
-                <li><?php _e('Directorio público/privado de socios', 'flavor-chat-ia'); ?></li>
+                <li><?php _e('Directorio público/privado de miembros', 'flavor-chat-ia'); ?></li>
                 <li><?php _e('Carnets digitales', 'flavor-chat-ia'); ?></li>
                 <li><?php _e('Historial de pagos', 'flavor-chat-ia'); ?></li>
                 <li><?php _e('Integración con pasarelas de pago', 'flavor-chat-ia'); ?></li>
@@ -2038,8 +2038,8 @@ Flavor_Activity_Logger::log('mi_accion', [
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>wp_flavor_socios</td><td><?php _e('Datos de socios vinculados a usuarios', 'flavor-chat-ia'); ?></td></tr>
-                    <tr><td>wp_flavor_socios_cuotas</td><td><?php _e('Cuotas y pagos de socios', 'flavor-chat-ia'); ?></td></tr>
+                    <tr><td>wp_flavor_socios</td><td><?php _e('Datos de miembros vinculados a usuarios', 'flavor-chat-ia'); ?></td></tr>
+                    <tr><td>wp_flavor_socios_cuotas</td><td><?php _e('Cuotas y pagos de miembros', 'flavor-chat-ia'); ?></td></tr>
                     <tr><td>wp_flavor_socios_tipos</td><td><?php _e('Tipos de membresía disponibles', 'flavor-chat-ia'); ?></td></tr>
                 </tbody>
             </table>
@@ -2047,10 +2047,10 @@ Flavor_Activity_Logger::log('mi_accion', [
             <h3><?php _e('Shortcodes', 'flavor-chat-ia'); ?></h3>
             <div class="flavor-docs-code-block">
                 <button class="flavor-docs-code-copy"><?php _e('Copiar', 'flavor-chat-ia'); ?></button>
-                <pre><code>[flavor_socios_directorio] - Directorio de socios
-[flavor_socios_perfil] - Perfil del socio actual
+                <pre><code>[flavor_socios_directorio] - Directorio de miembros
+[flavor_socios_perfil] - Perfil del miembro actual
 [flavor_socios_alta] - Formulario de registro
-[flavor_socios_carnet] - Carnet digital del socio</code></pre>
+[flavor_socios_carnet] - Carnet digital del miembro</code></pre>
             </div>
 
             <h3><?php _e('API REST', 'flavor-chat-ia'); ?></h3>

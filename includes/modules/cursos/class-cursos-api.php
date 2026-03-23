@@ -101,12 +101,12 @@ class Flavor_Cursos_API {
 
         // Mis inscripciones
         $mis_cursos = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $tabla_inscripciones WHERE alumno_id = %d AND estado = 'activa'",
+            "SELECT COUNT(*) FROM $tabla_inscripciones WHERE usuario_id = %d AND estado = 'activo'",
             $usuario_id
         ));
 
         $cursos_completados = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $tabla_inscripciones WHERE alumno_id = %d AND estado = 'completada'",
+            "SELECT COUNT(*) FROM $tabla_inscripciones WHERE usuario_id = %d AND estado = 'completado'",
             $usuario_id
         ));
 
@@ -118,7 +118,7 @@ class Flavor_Cursos_API {
         // Próximos cursos
         $proximos = $wpdb->get_results(
             "SELECT c.*,
-                (SELECT COUNT(*) FROM $tabla_inscripciones i WHERE i.curso_id = c.id AND i.estado = 'activa') as inscritos
+                (SELECT COUNT(*) FROM $tabla_inscripciones i WHERE i.curso_id = c.id AND i.estado = 'activo') as inscritos
             FROM $tabla_cursos c
             WHERE c.estado IN ('publicado', 'inscripciones_abiertas')
             AND (c.fecha_inicio IS NULL OR c.fecha_inicio >= CURDATE())
@@ -129,11 +129,11 @@ class Flavor_Cursos_API {
 
         // Mis cursos en progreso
         $en_progreso = $wpdb->get_results($wpdb->prepare(
-            "SELECT c.*, i.progreso_porcentaje, i.fecha_inscripcion
+            "SELECT c.*, i.progreso_porcentaje, i.created_at as fecha_inscripcion
             FROM $tabla_cursos c
             INNER JOIN $tabla_inscripciones i ON c.id = i.curso_id
-            WHERE i.alumno_id = %d AND i.estado = 'activa'
-            ORDER BY i.fecha_inscripcion DESC
+            WHERE i.usuario_id = %d AND i.estado = 'activo'
+            ORDER BY i.created_at DESC
             LIMIT 5",
             $usuario_id
         ), ARRAY_A);
@@ -184,7 +184,7 @@ class Flavor_Cursos_API {
         }
 
         $query = "SELECT c.*,
-                    (SELECT COUNT(*) FROM $tabla_inscripciones i WHERE i.curso_id = c.id AND i.estado = 'activa') as inscritos
+                    (SELECT COUNT(*) FROM $tabla_inscripciones i WHERE i.curso_id = c.id AND i.estado = 'activo') as inscritos
                 FROM $tabla_cursos c
                 $where
                 ORDER BY c.fecha_inicio ASC, c.titulo ASC
@@ -209,11 +209,11 @@ class Flavor_Cursos_API {
         $estado = $request->get_param('estado') ?: 'activa';
 
         $cursos = $wpdb->get_results($wpdb->prepare(
-            "SELECT c.*, i.progreso_porcentaje, i.fecha_inscripcion, i.estado as estado_inscripcion
+            "SELECT c.*, i.progreso_porcentaje, i.created_at, i.estado as estado_inscripcion
             FROM $tabla_cursos c
             INNER JOIN $tabla_inscripciones i ON c.id = i.curso_id
-            WHERE i.alumno_id = %d AND i.estado = %s
-            ORDER BY i.fecha_inscripcion DESC",
+            WHERE i.usuario_id = %d AND i.estado = %s
+            ORDER BY i.created_at DESC",
             $usuario_id,
             $estado
         ), ARRAY_A);
@@ -250,14 +250,14 @@ class Flavor_Cursos_API {
 
         // Verificar inscripción del usuario
         $inscripcion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_inscripciones WHERE curso_id = %d AND alumno_id = %d",
+            "SELECT * FROM $tabla_inscripciones WHERE curso_id = %d AND usuario_id = %d",
             $curso_id,
             $usuario_id
         ), ARRAY_A);
 
         // Contar inscritos
         $inscritos = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $tabla_inscripciones WHERE curso_id = %d AND estado = 'activa'",
+            "SELECT COUNT(*) FROM $tabla_inscripciones WHERE curso_id = %d AND estado = 'activo'",
             $curso_id
         ));
 
@@ -310,7 +310,7 @@ class Flavor_Cursos_API {
 
         // Verificar si ya está inscrito
         $inscripcion_existente = $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM $tabla_inscripciones WHERE curso_id = %d AND alumno_id = %d",
+            "SELECT id FROM $tabla_inscripciones WHERE curso_id = %d AND usuario_id = %d",
             $curso_id,
             $usuario_id
         ));
@@ -325,7 +325,7 @@ class Flavor_Cursos_API {
         // Verificar plazas disponibles
         if ($curso->plazas_maximas > 0) {
             $inscritos = $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM $tabla_inscripciones WHERE curso_id = %d AND estado = 'activa'",
+                "SELECT COUNT(*) FROM $tabla_inscripciones WHERE curso_id = %d AND estado = 'activo'",
                 $curso_id
             ));
 
@@ -340,10 +340,10 @@ class Flavor_Cursos_API {
         // Crear inscripción
         $wpdb->insert($tabla_inscripciones, [
             'curso_id' => $curso_id,
-            'alumno_id' => $usuario_id,
+            'usuario_id' => $usuario_id,
             'estado' => 'activa',
             'progreso_porcentaje' => 0,
-            'fecha_inscripcion' => current_time('mysql'),
+            'created_at' => current_time('mysql'),
         ]);
 
         return new WP_REST_Response([
@@ -364,7 +364,7 @@ class Flavor_Cursos_API {
             ['estado' => 'cancelada'],
             [
                 'curso_id' => $curso_id,
-                'alumno_id' => $usuario_id,
+                'usuario_id' => $usuario_id,
                 'estado' => 'activa',
             ]
         );
@@ -393,7 +393,7 @@ class Flavor_Cursos_API {
         $lecciones = $wpdb->get_results($wpdb->prepare(
             "SELECT l.*,
                 (SELECT completada FROM $tabla_progreso p
-                 WHERE p.leccion_id = l.id AND p.alumno_id = %d) as completada
+                 WHERE p.leccion_id = l.id AND p.usuario_id = %d) as completada
             FROM $tabla_lecciones l
             WHERE l.curso_id = %d
             ORDER BY l.orden ASC",
@@ -442,7 +442,7 @@ class Flavor_Cursos_API {
         // Marcar lección como completada
         $wpdb->replace($tabla_progreso, [
             'leccion_id' => $leccion_id,
-            'alumno_id' => $usuario_id,
+            'usuario_id' => $usuario_id,
             'curso_id' => $leccion->curso_id,
             'completada' => 1,
             'fecha_completado' => current_time('mysql'),
@@ -455,7 +455,7 @@ class Flavor_Cursos_API {
         ));
 
         $lecciones_completadas = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $tabla_progreso WHERE curso_id = %d AND alumno_id = %d AND completada = 1",
+            "SELECT COUNT(*) FROM $tabla_progreso WHERE curso_id = %d AND usuario_id = %d AND completada = 1",
             $leccion->curso_id,
             $usuario_id
         ));
@@ -467,7 +467,7 @@ class Flavor_Cursos_API {
             ['progreso_porcentaje' => $progreso],
             [
                 'curso_id' => $leccion->curso_id,
-                'alumno_id' => $usuario_id,
+                'usuario_id' => $usuario_id,
             ]
         );
 
@@ -484,7 +484,7 @@ class Flavor_Cursos_API {
                 ],
                 [
                     'curso_id' => $leccion->curso_id,
-                    'alumno_id' => $usuario_id,
+                    'usuario_id' => $usuario_id,
                 ]
             );
 

@@ -684,7 +684,7 @@ class Flavor_Chat_Sello_Conciencia_Module extends Flavor_Chat_Module_Base {
         ],
 
         'socios' => [
-            'nombre' => 'Gestión de Socios',
+            'nombre' => 'Gestión de Miembros',
             'puntuacion' => 50,
             'premisas' => [
                 'interdependencia_radical' => 0.40,

@@ -9,6 +9,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Encolar estilos del módulo
+wp_enqueue_style(
+    'flavor-biodiversidad-local',
+    FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+    [],
+    FLAVOR_CHAT_IA_VERSION
+);
+
 if (!is_user_logged_in()) {
     echo '<div class="bl-empty-state"><p>' . esc_html__('Debes iniciar sesión para ver tus avistamientos.', 'flavor-chat-ia') . '</p></div>';
     return;

@@ -98,10 +98,10 @@ $datos_json = wp_json_encode( $datos );
             </div>
 
             <div class="vbp-history-buttons" role="group" aria-label="<?php esc_attr_e( 'Historial de cambios', 'flavor-chat-ia' ); ?>">
-                <button type="button" @click="$store.vbp.undo()" :disabled="!$store.vbp.canUndo" class="vbp-btn-icon" title="<?php esc_attr_e( 'Deshacer (Ctrl+Z)', 'flavor-chat-ia' ); ?>" aria-label="<?php esc_attr_e( 'Deshacer', 'flavor-chat-ia' ); ?>" :aria-disabled="!$store.vbp.canUndo">
+                <button type="button" @click="$store.vbp.undo()" :disabled="!$store.vbp.canUndo" class="vbp-btn-icon" data-tooltip="<?php esc_attr_e( 'Deshacer', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+Z" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Deshacer', 'flavor-chat-ia' ); ?>" :aria-disabled="!$store.vbp.canUndo">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
                 </button>
-                <button type="button" @click="$store.vbp.redo()" :disabled="!$store.vbp.canRedo" class="vbp-btn-icon" title="<?php esc_attr_e( 'Rehacer (Ctrl+Shift+Z)', 'flavor-chat-ia' ); ?>" aria-label="<?php esc_attr_e( 'Rehacer', 'flavor-chat-ia' ); ?>" :aria-disabled="!$store.vbp.canRedo">
+                <button type="button" @click="$store.vbp.redo()" :disabled="!$store.vbp.canRedo" class="vbp-btn-icon" data-tooltip="<?php esc_attr_e( 'Rehacer', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+Shift+Z" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Rehacer', 'flavor-chat-ia' ); ?>" :aria-disabled="!$store.vbp.canRedo">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"/></svg>
                 </button>
             </div>
@@ -109,52 +109,214 @@ $datos_json = wp_json_encode( $datos );
 
         <div class="vbp-toolbar-center">
             <div class="vbp-device-selector" role="group" aria-label="<?php esc_attr_e( 'Vista previa de dispositivo', 'flavor-chat-ia' ); ?>">
-                <button type="button" @click="setDevicePreview('desktop')" :class="{ 'active': devicePreview === 'desktop' }" class="vbp-btn-icon" title="<?php esc_attr_e( 'Desktop', 'flavor-chat-ia' ); ?>" aria-label="<?php esc_attr_e( 'Vista desktop', 'flavor-chat-ia' ); ?>" :aria-pressed="devicePreview === 'desktop'">
+                <button type="button" @click="setDevicePreview('desktop')" :class="{ 'active': devicePreview === 'desktop' }" class="vbp-btn-icon" data-tooltip="<?php esc_attr_e( 'Desktop', 'flavor-chat-ia' ); ?>" data-shortcut="D" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Vista desktop', 'flavor-chat-ia' ); ?>" :aria-pressed="devicePreview === 'desktop'">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
                 </button>
-                <button type="button" @click="setDevicePreview('tablet')" :class="{ 'active': devicePreview === 'tablet' }" class="vbp-btn-icon" title="<?php esc_attr_e( 'Tablet', 'flavor-chat-ia' ); ?>" aria-label="<?php esc_attr_e( 'Vista tablet', 'flavor-chat-ia' ); ?>" :aria-pressed="devicePreview === 'tablet'">
+                <button type="button" @click="setDevicePreview('tablet')" :class="{ 'active': devicePreview === 'tablet' }" class="vbp-btn-icon" data-tooltip="<?php esc_attr_e( 'Tablet', 'flavor-chat-ia' ); ?>" data-shortcut="T" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Vista tablet', 'flavor-chat-ia' ); ?>" :aria-pressed="devicePreview === 'tablet'">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M12 18h.01"/></svg>
                 </button>
-                <button type="button" @click="setDevicePreview('mobile')" :class="{ 'active': devicePreview === 'mobile' }" class="vbp-btn-icon" title="<?php esc_attr_e( 'Mobile', 'flavor-chat-ia' ); ?>" aria-label="<?php esc_attr_e( 'Vista móvil', 'flavor-chat-ia' ); ?>" :aria-pressed="devicePreview === 'mobile'">
+                <button type="button" @click="setDevicePreview('mobile')" :class="{ 'active': devicePreview === 'mobile' }" class="vbp-btn-icon" data-tooltip="<?php esc_attr_e( 'Mobile', 'flavor-chat-ia' ); ?>" data-shortcut="M" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Vista móvil', 'flavor-chat-ia' ); ?>" :aria-pressed="devicePreview === 'mobile'">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
                 </button>
             </div>
 
-            <div class="vbp-zoom-controls" role="group" aria-label="<?php esc_attr_e( 'Control de zoom', 'flavor-chat-ia' ); ?>">
-                <button type="button" @click="zoomOut()" class="vbp-btn-icon" title="<?php esc_attr_e( 'Alejar', 'flavor-chat-ia' ); ?>" aria-label="<?php esc_attr_e( 'Alejar zoom', 'flavor-chat-ia' ); ?>">
+            <!-- Split Screen Toggle -->
+            <button type="button" @click="toggleSplitScreen()" :class="{ 'active': splitScreenMode }" class="vbp-btn-icon vbp-split-screen-btn" data-tooltip="<?php esc_attr_e( 'Vista dividida', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+\\" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Activar/desactivar vista dividida', 'flavor-chat-ia' ); ?>" :aria-pressed="splitScreenMode">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <rect x="2" y="3" width="20" height="18" rx="2"/>
+                    <path d="M12 3v18"/>
+                </svg>
+            </button>
+
+            <div class="vbp-zoom-controls" role="group" aria-label="<?php esc_attr_e( 'Control de zoom', 'flavor-chat-ia' ); ?>" x-data="{ showSlider: false }">
+                <button type="button" @click="zoomOut()" class="vbp-btn-icon" data-tooltip="<?php esc_attr_e( 'Alejar', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+-" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Alejar zoom', 'flavor-chat-ia' ); ?>">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M8 11h6"/></svg>
                 </button>
-                <span class="vbp-zoom-value" x-text="zoom + '%'" aria-live="polite" aria-atomic="true">100%</span>
-                <button type="button" @click="zoomIn()" class="vbp-btn-icon" title="<?php esc_attr_e( 'Acercar', 'flavor-chat-ia' ); ?>" aria-label="<?php esc_attr_e( 'Acercar zoom', 'flavor-chat-ia' ); ?>">
+                <span class="vbp-zoom-value" @click="showSlider = !showSlider" x-text="zoom + '%'" aria-live="polite" aria-atomic="true" data-tooltip="<?php esc_attr_e( 'Clic para ajustar zoom', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+0" data-tooltip-position="bottom">100%</span>
+                <button type="button" @click="zoomIn()" class="vbp-btn-icon" data-tooltip="<?php esc_attr_e( 'Acercar', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl++" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Acercar zoom', 'flavor-chat-ia' ); ?>">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>
                 </button>
+
+                <!-- Zoom progress bar -->
+                <div class="vbp-zoom-bar" aria-hidden="true">
+                    <div class="vbp-zoom-bar-fill" :style="{ width: ((zoom - 25) / 175 * 100) + '%' }"></div>
+                </div>
+
+                <!-- Zoom slider popup -->
+                <div class="vbp-zoom-slider-popup" :class="{ 'visible': showSlider }" @click.away="showSlider = false">
+                    <div class="vbp-zoom-slider-container">
+                        <div class="vbp-zoom-slider-header">
+                            <span class="vbp-zoom-slider-label"><?php esc_html_e( 'Nivel de Zoom', 'flavor-chat-ia' ); ?></span>
+                            <span class="vbp-zoom-slider-value" x-text="zoom + '%'"></span>
+                        </div>
+                        <input
+                            type="range"
+                            class="vbp-zoom-slider"
+                            min="25"
+                            max="200"
+                            step="5"
+                            x-model="zoom"
+                            aria-label="<?php esc_attr_e( 'Ajustar zoom', 'flavor-chat-ia' ); ?>"
+                        >
+                        <div class="vbp-zoom-presets">
+                            <button type="button" class="vbp-zoom-preset" :class="{ 'active': zoom == 50 }" @click="zoom = 50">50%</button>
+                            <button type="button" class="vbp-zoom-preset" :class="{ 'active': zoom == 75 }" @click="zoom = 75">75%</button>
+                            <button type="button" class="vbp-zoom-preset" :class="{ 'active': zoom == 100 }" @click="zoom = 100">100%</button>
+                            <button type="button" class="vbp-zoom-preset" :class="{ 'active': zoom == 150 }" @click="zoom = 150">150%</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="vbp-toolbar-right">
-            <div class="vbp-save-status" x-show="saveStatus">
-                <span x-text="saveStatus" :class="saveStatusClass"></span>
+            <!-- Indicador de Autosave Mejorado -->
+            <div class="vbp-autosave-indicator" x-data="{ store: $store.vbp }">
+                <!-- Guardado -->
+                <template x-if="store.saveStatus === 'saved'">
+                    <div class="vbp-autosave vbp-autosave--saved" :title="store.getSaveStatusText()">
+                        <svg class="vbp-autosave__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        <span class="vbp-autosave__text"><?php esc_html_e( 'Guardado', 'flavor-chat-ia' ); ?></span>
+                    </div>
+                </template>
+                <!-- Guardando -->
+                <template x-if="store.saveStatus === 'saving'">
+                    <div class="vbp-autosave vbp-autosave--saving">
+                        <svg class="vbp-autosave__spinner" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                        </svg>
+                        <span class="vbp-autosave__text"><?php esc_html_e( 'Guardando...', 'flavor-chat-ia' ); ?></span>
+                    </div>
+                </template>
+                <!-- Error -->
+                <template x-if="store.saveStatus === 'error'">
+                    <div class="vbp-autosave vbp-autosave--error" @click="store.autoSave()">
+                        <svg class="vbp-autosave__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                        <span class="vbp-autosave__text"><?php esc_html_e( 'Error - Reintentar', 'flavor-chat-ia' ); ?></span>
+                    </div>
+                </template>
+                <!-- Sin guardar (dirty) -->
+                <template x-if="store.saveStatus === 'dirty'">
+                    <div class="vbp-autosave vbp-autosave--dirty">
+                        <span class="vbp-autosave__dot"></span>
+                        <span class="vbp-autosave__text"><?php esc_html_e( 'Sin guardar', 'flavor-chat-ia' ); ?></span>
+                    </div>
+                </template>
             </div>
 
-            <button type="button" @click="openRevisionsModal()" class="vbp-btn vbp-btn-secondary" title="<?php esc_attr_e( 'Historial de revisiones', 'flavor-chat-ia' ); ?>">
+            <!-- Theme Toggle -->
+            <div class="vbp-theme-toggle" x-data="{ showMenu: false }">
+                <button
+                    type="button"
+                    @click="showMenu = !showMenu"
+                    @click.away="showMenu = false"
+                    class="vbp-btn vbp-btn-icon"
+                    :title="'<?php esc_attr_e( 'Tema:', 'flavor-chat-ia' ); ?> ' + $store.vbpTheme.getLabel()"
+                    aria-haspopup="true"
+                    :aria-expanded="showMenu"
+                >
+                    <template x-if="$store.vbpTheme.isDark()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </template>
+                    <template x-if="$store.vbpTheme.isLight()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                    </template>
+                </button>
+                <div
+                    x-show="showMenu"
+                    x-transition:enter="vbp-dropdown-enter"
+                    x-transition:leave="vbp-dropdown-leave"
+                    class="vbp-theme-menu"
+                    role="menu"
+                >
+                    <button
+                        type="button"
+                        @click="$store.vbpTheme.setTheme('light'); showMenu = false"
+                        class="vbp-theme-option"
+                        :class="{ 'active': $store.vbpTheme.current === 'light' }"
+                        role="menuitemradio"
+                        :aria-checked="$store.vbpTheme.current === 'light'"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        <span><?php esc_html_e( 'Claro', 'flavor-chat-ia' ); ?></span>
+                    </button>
+                    <button
+                        type="button"
+                        @click="$store.vbpTheme.setTheme('dark'); showMenu = false"
+                        class="vbp-theme-option"
+                        :class="{ 'active': $store.vbpTheme.current === 'dark' }"
+                        role="menuitemradio"
+                        :aria-checked="$store.vbpTheme.current === 'dark'"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                        <span><?php esc_html_e( 'Oscuro', 'flavor-chat-ia' ); ?></span>
+                    </button>
+                    <button
+                        type="button"
+                        @click="$store.vbpTheme.setTheme('system'); showMenu = false"
+                        class="vbp-theme-option"
+                        :class="{ 'active': $store.vbpTheme.current === 'system' }"
+                        role="menuitemradio"
+                        :aria-checked="$store.vbpTheme.current === 'system'"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                            <path d="M8 21h8M12 17v4"/>
+                        </svg>
+                        <span><?php esc_html_e( 'Sistema', 'flavor-chat-ia' ); ?></span>
+                    </button>
+                </div>
+            </div>
+
+            <button type="button" @click="openRevisionsModal()" class="vbp-btn vbp-btn-secondary" data-tooltip="<?php esc_attr_e( 'Historial de revisiones', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+H" data-tooltip-position="bottom">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
             </button>
 
-            <button type="button" @click="openPageSettings()" class="vbp-btn vbp-btn-secondary" title="<?php esc_attr_e( 'Configuración de página', 'flavor-chat-ia' ); ?>">
+            <button type="button" @click="openPageSettings()" class="vbp-btn vbp-btn-secondary" data-tooltip="<?php esc_attr_e( 'Configuración de página', 'flavor-chat-ia' ); ?>" data-tooltip-position="bottom">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
             </button>
 
-            <a href="<?php echo esc_url( get_preview_post_link( $post_id ) ); ?>" target="_blank" class="vbp-btn vbp-btn-secondary">
+            <a href="<?php echo esc_url( get_preview_post_link( $post_id ) ); ?>" target="_blank" class="vbp-btn vbp-btn-secondary" data-tooltip="<?php esc_attr_e( 'Ver preview en nueva pestaña', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+P" data-tooltip-position="bottom">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 <span><?php esc_html_e( 'Preview', 'flavor-chat-ia' ); ?></span>
             </a>
 
-            <button type="button" @click="saveDocument()" class="vbp-btn vbp-btn-primary" :disabled="isSaving">
+            <button type="button" @click="saveDocument()" class="vbp-btn vbp-btn-primary" :disabled="isSaving" data-tooltip="<?php esc_attr_e( 'Guardar cambios', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+S" data-tooltip-position="bottom">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
                 <span x-text="isSaving ? '<?php esc_attr_e( 'Guardando...', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Guardar', 'flavor-chat-ia' ); ?>'"></span>
             </button>
 
-            <button type="button" @click="publishDocument()" class="vbp-btn vbp-btn-success">
+            <button type="button" @click="publishDocument()" class="vbp-btn vbp-btn-success" data-tooltip="<?php esc_attr_e( 'Publicar página', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+Shift+P" data-tooltip-position="bottom">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
                 <span><?php esc_html_e( 'Publicar', 'flavor-chat-ia' ); ?></span>
             </button>
@@ -185,6 +347,10 @@ $datos_json = wp_json_encode( $datos );
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12,2 2,7 12,12 22,7"/><polyline points="2,17 12,22 22,17"/><polyline points="2,12 12,17 22,12"/></svg>
                     <?php esc_html_e( 'Capas', 'flavor-chat-ia' ); ?>
                 </button>
+                <button type="button" @click="activeLeftTab = 'components'" :class="{ 'active': activeLeftTab === 'components' }" class="vbp-tab-btn" role="tab" :aria-selected="activeLeftTab === 'components'" aria-controls="vbp-panel-components" id="vbp-tab-components">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                    <?php esc_html_e( 'Biblioteca', 'flavor-chat-ia' ); ?>
+                </button>
             </div>
 
             <div x-show="activeLeftTab === 'blocks'" class="vbp-panel vbp-blocks-panel" role="tabpanel" id="vbp-panel-blocks" aria-labelledby="vbp-tab-blocks">
@@ -193,6 +359,10 @@ $datos_json = wp_json_encode( $datos );
 
             <div x-show="activeLeftTab === 'layers'" class="vbp-panel vbp-layers-panel" role="tabpanel" id="vbp-panel-layers" aria-labelledby="vbp-tab-layers">
                 <?php include __DIR__ . '/panel-layers.php'; ?>
+            </div>
+
+            <div x-show="activeLeftTab === 'components'" class="vbp-panel vbp-components-panel" role="tabpanel" id="vbp-panel-components" aria-labelledby="vbp-tab-components">
+                <?php include __DIR__ . '/panel-components.php'; ?>
             </div>
         </aside>
 
@@ -204,6 +374,33 @@ $datos_json = wp_json_encode( $datos );
             <div class="vbp-ruler vbp-ruler-vertical" x-show="showRulers" aria-hidden="true">
                 <canvas id="vbp-ruler-v" width="20" height="2000"></canvas>
             </div>
+
+            <!-- Breadcrumbs de navegación -->
+            <nav class="vbp-breadcrumbs" aria-label="<?php esc_attr_e( 'Navegación de elementos', 'flavor-chat-ia' ); ?>" x-show="breadcrumbs.length > 0">
+                <ol class="vbp-breadcrumbs-list">
+                    <template x-for="(crumb, index) in breadcrumbs" :key="crumb.id">
+                        <li class="vbp-breadcrumb-item" :class="{ 'vbp-breadcrumb-item--active': index === breadcrumbs.length - 1 }">
+                            <button
+                                type="button"
+                                class="vbp-breadcrumb-link"
+                                @click="navigateToBreadcrumb(crumb)"
+                                :title="crumb.name"
+                                :aria-current="index === breadcrumbs.length - 1 ? 'location' : false"
+                            >
+                                <span class="vbp-breadcrumb-icon" x-html="getBreadcrumbIcon(crumb.type)" aria-hidden="true"></span>
+                                <span class="vbp-breadcrumb-text" x-text="crumb.name"></span>
+                            </button>
+                            <template x-if="index < breadcrumbs.length - 1">
+                                <span class="vbp-breadcrumb-separator" aria-hidden="true">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9 18 15 12 9 6"/>
+                                    </svg>
+                                </span>
+                            </template>
+                        </li>
+                    </template>
+                </ol>
+            </nav>
 
             <div class="vbp-canvas-wrapper" :style="{ transform: 'scale(' + (zoom/100) + ')' }" @click.self="clearSelection()">
                 <div class="vbp-canvas" :class="'vbp-canvas--' + devicePreview" :style="canvasStyles" x-ref="canvas" @dragover.prevent="handleDragOver($event)" @drop.prevent="handleDrop($event)" role="region" aria-label="<?php esc_attr_e( 'Canvas del diseño', 'flavor-chat-ia' ); ?>" aria-live="polite">
@@ -340,6 +537,11 @@ $datos_json = wp_json_encode( $datos );
         <template x-for="notification in notifications" :key="notification.id">
             <div class="vbp-notification" :class="'vbp-notification--' + notification.type" x-show="notification.visible" x-transition :role="notification.type === 'error' ? 'alert' : 'status'">
                 <span x-text="notification.message"></span>
+                <template x-if="notification.actionLabel">
+                    <button type="button" @click="executeNotificationAction(notification)" class="vbp-notification-action">
+                        <span x-text="notification.actionLabel"></span>
+                    </button>
+                </template>
                 <button type="button" @click="dismissNotification(notification.id)" class="vbp-notification-close" aria-label="<?php esc_attr_e( 'Cerrar notificación', 'flavor-chat-ia' ); ?>">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>
@@ -897,9 +1099,18 @@ $datos_json = wp_json_encode( $datos );
                     <div class="vbp-form-group">
                         <label><?php esc_html_e( 'Ancho de página', 'flavor-chat-ia' ); ?></label>
                         <div class="vbp-input-with-unit">
-                            <input type="number" x-model="$store.vbp.settings.pageWidth" min="320" max="1920" step="10" class="vbp-input">
-                            <span class="vbp-input-unit">px</span>
+                            <input
+                                type="text"
+                                x-model="$store.vbp.settings.pageWidth"
+                                class="vbp-input"
+                                placeholder="1200px o 100%"
+                            >
+                            <select x-model="$store.vbp.settings.pageWidthUnit" class="vbp-select-unit" @change="updatePageWidthUnit()">
+                                <option value="px">px</option>
+                                <option value="%">%</option>
+                            </select>
                         </div>
+                        <small class="vbp-field-hint"><?php esc_html_e( 'Usa px para ancho fijo o % para ancho relativo', 'flavor-chat-ia' ); ?></small>
                     </div>
                     <div class="vbp-form-group">
                         <label><?php esc_html_e( 'Color de fondo', 'flavor-chat-ia' ); ?></label>
@@ -1075,6 +1286,7 @@ $datos_json = wp_json_encode( $datos );
     <?php include __DIR__ . '/modals/modal-emoji.php'; ?>
     <?php include __DIR__ . '/modals/modal-command-palette.php'; ?>
     <?php include __DIR__ . '/modals/modal-ai-assistant.php'; ?>
+    <?php include __DIR__ . '/modals/modal-comments.php'; ?>
 
     <!-- Contenedor de notificaciones Toast -->
     <div class="vbp-toast-container" x-data="vbpToastContainer()" aria-live="polite" aria-label="<?php esc_attr_e( 'Notificaciones', 'flavor-chat-ia' ); ?>">

@@ -19,6 +19,7 @@ $tabla_visitas = $wpdb->prefix . 'flavor_multimedia_visitas';
 $tabla_multimedia_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_multimedia'") === $tabla_multimedia;
 $tabla_albumes_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_albumes'") === $tabla_albumes;
 $tabla_visitas_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_visitas'") === $tabla_visitas;
+$tablas_disponibles = ($tabla_multimedia_existe || $tabla_albumes_existe || $tabla_visitas_existe);
 
 // Inicializar estadísticas
 $total_multimedia = 0;
@@ -97,55 +98,6 @@ if ($tabla_visitas_existe) {
     ));
 }
 
-// Datos de demostración si no hay datos reales
-$usar_datos_demo = ($total_multimedia == 0);
-
-if ($usar_datos_demo) {
-    $total_multimedia = 248;
-    $total_fotos = 189;
-    $total_videos = 42;
-    $total_audios = 17;
-    $total_albumes = 24;
-    $pendientes_moderacion = 5;
-    $total_visitas = 3456;
-    $visitas_hoy = 127;
-    $descargas_totales = 892;
-    $almacenamiento_mb = 1456.8;
-
-    $por_categoria = [
-        (object) ['categoria' => 'Eventos', 'total' => 78],
-        (object) ['categoria' => 'Comunidad', 'total' => 56],
-        (object) ['categoria' => 'Naturaleza', 'total' => 45],
-        (object) ['categoria' => 'Cultura', 'total' => 38],
-        (object) ['categoria' => 'Deportes', 'total' => 21],
-        (object) ['categoria' => 'Otros', 'total' => 10],
-    ];
-
-    $actividad_diaria = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $fecha = date('Y-m-d', strtotime("-$i days"));
-        $actividad_diaria[] = (object) [
-            'fecha' => $fecha,
-            'total' => rand(5, 25)
-        ];
-    }
-
-    $multimedia_reciente = [
-        (object) ['id' => 1, 'titulo' => 'Festival de Primavera 2024', 'tipo' => 'foto', 'categoria' => 'Eventos', 'autor_nombre' => 'María García', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-2 hours')), 'visitas' => 156, 'url' => ''],
-        (object) ['id' => 2, 'titulo' => 'Documental Barrio Histórico', 'tipo' => 'video', 'categoria' => 'Cultura', 'autor_nombre' => 'Carlos López', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-5 hours')), 'visitas' => 89, 'url' => ''],
-        (object) ['id' => 3, 'titulo' => 'Jornada de Limpieza', 'tipo' => 'foto', 'categoria' => 'Comunidad', 'autor_nombre' => 'Ana Martínez', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-1 day')), 'visitas' => 234, 'url' => ''],
-        (object) ['id' => 4, 'titulo' => 'Podcast Vecinal #23', 'tipo' => 'audio', 'categoria' => 'Comunidad', 'autor_nombre' => 'Pedro Sánchez', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-2 days')), 'visitas' => 67, 'url' => ''],
-    ];
-
-    $multimedia_popular = [
-        (object) ['id' => 10, 'titulo' => 'Inauguración Centro Cívico', 'tipo' => 'video', 'autor_nombre' => 'Admin', 'visitas' => 1245, 'descargas' => 89],
-        (object) ['id' => 11, 'titulo' => 'Fiestas Patronales 2023', 'tipo' => 'foto', 'autor_nombre' => 'María García', 'visitas' => 987, 'descargas' => 156],
-        (object) ['id' => 12, 'titulo' => 'Torneo Deportivo Anual', 'tipo' => 'foto', 'autor_nombre' => 'Carlos López', 'visitas' => 756, 'descargas' => 45],
-        (object) ['id' => 13, 'titulo' => 'Concierto Banda Municipal', 'tipo' => 'audio', 'autor_nombre' => 'Pedro Sánchez', 'visitas' => 543, 'descargas' => 234],
-        (object) ['id' => 14, 'titulo' => 'Taller de Artesanía', 'tipo' => 'foto', 'autor_nombre' => 'Ana Martínez', 'visitas' => 432, 'descargas' => 28],
-    ];
-}
-
 // Preparar datos para gráficos
 $categorias_labels = array_map(function($c) { return $c->categoria ?: 'Sin categoría'; }, $por_categoria);
 $categorias_data = array_map(function($c) { return (int) $c->total; }, $por_categoria);
@@ -174,9 +126,9 @@ $porcentaje_almacenamiento = min(100, round(($almacenamiento_mb / $limite_almace
 
     <hr class="wp-header-end">
 
-    <?php if ($usar_datos_demo): ?>
+    <?php if (!$tablas_disponibles): ?>
         <div class="notice notice-info">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración. Los datos reales aparecerán cuando haya contenido multimedia.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Faltan tablas del módulo Multimedia o aún no hay contenido publicado.', 'flavor-chat-ia'); ?></p>
         </div>
     <?php endif; ?>
 

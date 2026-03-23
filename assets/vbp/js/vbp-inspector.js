@@ -118,7 +118,9 @@ function vbpInspector() {
                 'tabs': 'Pestañas',
                 'progress-bar': 'Barra de Progreso',
                 'alert': 'Alerta',
-                'before-after': 'Antes/Después'
+                'before-after': 'Antes/Después',
+                'timeline': 'Línea de Tiempo',
+                'carousel': 'Carrusel'
             };
             return nombres[type] || type;
         },
@@ -169,6 +171,229 @@ function vbpInspector() {
         setVariant: function(variantId) {
             if (!this.selectedElement) return;
             Alpine.store('vbp').updateElement(this.selectedElement.id, { variant: variantId });
+        },
+
+        /**
+         * Aplicar preset de estilos rápido
+         * @param {string} presetName - Nombre del preset
+         */
+        applyStylePreset: function(presetName) {
+            if (!this.selectedElement) return;
+
+            var presets = {
+                modern: {
+                    colors: { background: '#ffffff', text: '#1f2937' },
+                    border: { radius: '12', width: '0', color: 'transparent', style: 'none' },
+                    shadow: { enabled: true, x: '0', y: '4', blur: '20', spread: '0', color: 'rgba(0,0,0,0.1)' },
+                    spacing: { padding: { top: '24', right: '24', bottom: '24', left: '24' } }
+                },
+                minimal: {
+                    colors: { background: 'transparent', text: '#374151' },
+                    border: { radius: '0', width: '0', color: 'transparent', style: 'none' },
+                    shadow: { enabled: false },
+                    spacing: { padding: { top: '16', right: '16', bottom: '16', left: '16' } }
+                },
+                bold: {
+                    colors: { background: '#1f2937', text: '#ffffff' },
+                    border: { radius: '8', width: '0', color: 'transparent', style: 'none' },
+                    shadow: { enabled: true, x: '0', y: '8', blur: '32', spread: '0', color: 'rgba(0,0,0,0.3)' },
+                    spacing: { padding: { top: '32', right: '32', bottom: '32', left: '32' } }
+                },
+                outlined: {
+                    colors: { background: 'transparent', text: '#374151' },
+                    border: { radius: '8', width: '2', color: '#d1d5db', style: 'solid' },
+                    shadow: { enabled: false },
+                    spacing: { padding: { top: '20', right: '20', bottom: '20', left: '20' } }
+                },
+                gradient: {
+                    colors: { text: '#ffffff' },
+                    background: { type: 'gradient', gradientDirection: 'to right', gradientStart: '#6366f1', gradientEnd: '#8b5cf6' },
+                    border: { radius: '16', width: '0', color: 'transparent', style: 'none' },
+                    shadow: { enabled: true, x: '0', y: '10', blur: '40', spread: '0', color: 'rgba(99,102,241,0.3)' },
+                    spacing: { padding: { top: '28', right: '28', bottom: '28', left: '28' } }
+                },
+                glassmorphism: {
+                    colors: { background: 'rgba(255,255,255,0.15)', text: '#1f2937' },
+                    border: { radius: '16', width: '1', color: 'rgba(255,255,255,0.3)', style: 'solid' },
+                    shadow: { enabled: true, x: '0', y: '8', blur: '32', spread: '0', color: 'rgba(31,38,135,0.15)' },
+                    spacing: { padding: { top: '24', right: '24', bottom: '24', left: '24' } },
+                    backdrop: { blur: '10px' }
+                }
+            };
+
+            var preset = presets[presetName];
+            if (!preset) return;
+
+            var store = Alpine.store('vbp');
+            var currentStyles = JSON.parse(JSON.stringify(this.selectedElement.styles || {}));
+
+            // Merge preset con estilos actuales
+            var newStyles = this.deepMerge(currentStyles, preset);
+            store.updateElement(this.selectedElement.id, { styles: newStyles });
+
+            // Mostrar notificación
+            if (window.vbpApp && window.vbpApp.showNotification) {
+                window.vbpApp.showNotification('Preset "' + presetName + '" aplicado', 'success');
+            }
+        },
+
+        /**
+         * Resetear estilos a valores por defecto
+         */
+        resetStyles: function() {
+            if (!this.selectedElement) return;
+
+            var defaultStyles = Alpine.store('vbp').getDefaultStyles();
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { styles: defaultStyles });
+
+            if (window.vbpApp && window.vbpApp.showNotification) {
+                window.vbpApp.showNotification('Estilos reseteados', 'info');
+            }
+        },
+
+        /**
+         * Deep merge de objetos
+         */
+        deepMerge: function(target, source) {
+            var result = JSON.parse(JSON.stringify(target));
+            for (var key in source) {
+                if (source.hasOwnProperty(key)) {
+                    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                        result[key] = this.deepMerge(result[key] || {}, source[key]);
+                    } else {
+                        result[key] = source[key];
+                    }
+                }
+            }
+            return result;
+        },
+
+        // ============================================
+        // MINI COLOR PICKER
+        // ============================================
+
+        /**
+         * Estado del mini color picker
+         */
+        colorPickerOpen: false,
+        colorPickerTarget: null,
+        colorPickerPosition: { top: 0, left: 0 },
+        colorPickerCurrentColor: '#000000',
+
+        /**
+         * Presets de colores para el picker
+         */
+        colorPresets: [
+            // Grises
+            '#000000', '#1f2937', '#4b5563', '#9ca3af', '#e5e7eb', '#ffffff',
+            // Primarios
+            '#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6',
+            // Tonos suaves
+            '#fecaca', '#fed7aa', '#fef08a', '#bbf7d0', '#bfdbfe', '#ddd6fe',
+            // Marca
+            '#6366f1', '#4f46e5', '#4338ca', '#3730a3', '#312e81', '#1e1b4b'
+        ],
+
+        /**
+         * Abrir mini color picker
+         */
+        openColorPicker: function(event, targetPath, currentValue) {
+            var self = this;
+            var trigger = event.currentTarget || event.target;
+            var rect = trigger.getBoundingClientRect();
+
+            this.colorPickerTarget = targetPath;
+            this.colorPickerCurrentColor = this.normalizeColorForInput(currentValue, '#000000');
+            this.colorPickerPosition = {
+                top: rect.bottom + 8,
+                left: rect.left
+            };
+
+            // Asegurar que no se sale de la pantalla
+            var pickerWidth = 200;
+            if (this.colorPickerPosition.left + pickerWidth > window.innerWidth) {
+                this.colorPickerPosition.left = window.innerWidth - pickerWidth - 16;
+            }
+
+            this.colorPickerOpen = true;
+
+            // Cerrar al hacer clic fuera
+            setTimeout(function() {
+                document.addEventListener('click', self.handleColorPickerOutsideClick.bind(self), { once: true });
+            }, 10);
+        },
+
+        /**
+         * Cerrar color picker al clic fuera
+         */
+        handleColorPickerOutsideClick: function(event) {
+            var picker = document.querySelector('.vbp-mini-color-picker');
+            if (picker && !picker.contains(event.target)) {
+                this.closeColorPicker();
+            } else if (this.colorPickerOpen) {
+                // Re-añadir listener si sigue abierto
+                var self = this;
+                setTimeout(function() {
+                    document.addEventListener('click', self.handleColorPickerOutsideClick.bind(self), { once: true });
+                }, 10);
+            }
+        },
+
+        /**
+         * Cerrar color picker
+         */
+        closeColorPicker: function() {
+            this.colorPickerOpen = false;
+            this.colorPickerTarget = null;
+        },
+
+        /**
+         * Seleccionar color del picker
+         */
+        selectColor: function(color) {
+            if (!this.colorPickerTarget) return;
+
+            this.colorPickerCurrentColor = color;
+            this.updateStyle(this.colorPickerTarget, color);
+            this.closeColorPicker();
+        },
+
+        /**
+         * Actualizar color desde input
+         */
+        updateColorFromInput: function(event) {
+            var color = event.target.value;
+            if (!this.colorPickerTarget) return;
+
+            this.colorPickerCurrentColor = color;
+            this.updateStyle(this.colorPickerTarget, color);
+        },
+
+        /**
+         * Copiar color al portapapeles
+         */
+        copyColorToClipboard: function(color) {
+            navigator.clipboard.writeText(color).then(function() {
+                if (window.vbpApp && window.vbpApp.showNotification) {
+                    window.vbpApp.showNotification('Color copiado: ' + color, 'success');
+                }
+            });
+        },
+
+        /**
+         * Obtener color de contraste para el texto
+         */
+        getContrastColor: function(hexColor) {
+            if (!hexColor) return '#000000';
+            var hex = hexColor.replace('#', '');
+            if (hex.length === 3) {
+                hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+            }
+            var r = parseInt(hex.substr(0, 2), 16);
+            var g = parseInt(hex.substr(2, 2), 16);
+            var b = parseInt(hex.substr(4, 2), 16);
+            var luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            return luminance > 0.5 ? '#000000' : '#ffffff';
         },
 
         /**
@@ -334,6 +559,12 @@ function vbpInspector() {
                 data.campos.push(nuevoItem);
                 Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
                 this.editingItemIndex = data.campos.length - 1;
+            } else if (type === 'timeline') {
+                // Timeline usa 'eventos' en lugar de 'items'
+                if (!data.eventos) data.eventos = [];
+                data.eventos.push(nuevoItem);
+                Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
+                this.editingItemIndex = data.eventos.length - 1;
             } else {
                 if (!data.items) data.items = [];
                 data.items.push(nuevoItem);
@@ -359,20 +590,35 @@ function vbpInspector() {
                 'accordion': { titulo: 'Nuevo elemento', contenido: 'Contenido del elemento', abierto: false },
                 'tabs': { titulo: 'Nueva pestaña', contenido: 'Contenido de la pestaña' },
                 'progress-bar': { label: 'Skill', porcentaje: 50 },
-                'form': { tipo: 'text', label: 'Nuevo campo', placeholder: '', requerido: false }
+                'form': { tipo: 'text', label: 'Nuevo campo', placeholder: '', requerido: false },
+                'timeline': { fecha: '2024', titulo: 'Nuevo evento', descripcion: 'Descripción del evento', icono: '' },
+                'carousel': { imagen: '', titulo: 'Nuevo slide', descripcion: '', enlace_url: '', enlace_texto: 'Ver más' }
             };
             return defaults[type] || {};
+        },
+
+        /**
+         * Obtener la propiedad de items según el tipo de elemento
+         */
+        getItemsProperty: function() {
+            if (!this.selectedElement) return 'items';
+            var type = this.selectedElement.type;
+            if (type === 'timeline') return 'eventos';
+            if (type === 'social-icons') return 'redes';
+            if (type === 'form') return 'campos';
+            return 'items';
         },
 
         /**
          * Actualizar campo de un item
          */
         updateItem: function(index, field, value) {
-            if (!this.selectedElement || !this.selectedElement.data.items) return;
+            var itemsProp = this.getItemsProperty();
+            if (!this.selectedElement || !this.selectedElement.data[itemsProp]) return;
 
             var data = JSON.parse(JSON.stringify(this.selectedElement.data));
-            if (data.items[index]) {
-                data.items[index][field] = value;
+            if (data[itemsProp][index]) {
+                data[itemsProp][index][field] = value;
                 Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
             }
         },
@@ -381,17 +627,18 @@ function vbpInspector() {
          * Mover item arriba o abajo
          */
         moveItem: function(index, direction) {
-            if (!this.selectedElement || !this.selectedElement.data.items) return;
+            var itemsProp = this.getItemsProperty();
+            if (!this.selectedElement || !this.selectedElement.data[itemsProp]) return;
 
             var nuevoIndex = index + direction;
-            var items = this.selectedElement.data.items;
+            var items = this.selectedElement.data[itemsProp];
 
             if (nuevoIndex < 0 || nuevoIndex >= items.length) return;
 
             var data = JSON.parse(JSON.stringify(this.selectedElement.data));
-            var temp = data.items[index];
-            data.items[index] = data.items[nuevoIndex];
-            data.items[nuevoIndex] = temp;
+            var temp = data[itemsProp][index];
+            data[itemsProp][index] = data[itemsProp][nuevoIndex];
+            data[itemsProp][nuevoIndex] = temp;
 
             Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
 
@@ -407,10 +654,11 @@ function vbpInspector() {
          * Eliminar item
          */
         removeItem: function(index) {
-            if (!this.selectedElement || !this.selectedElement.data.items) return;
+            var itemsProp = this.getItemsProperty();
+            if (!this.selectedElement || !this.selectedElement.data[itemsProp]) return;
 
             var data = JSON.parse(JSON.stringify(this.selectedElement.data));
-            data.items.splice(index, 1);
+            data[itemsProp].splice(index, 1);
 
             Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
 
@@ -421,6 +669,156 @@ function vbpInspector() {
                 this.editingItemIndex--;
             }
         },
+
+        // ============ MÉTODOS PARA TWO_COLUMNS ============
+
+        /**
+         * Inicializa el contenido de una columna cuando se cambia el tipo
+         */
+        initColumnContent: function(columna, tipo) {
+            if (!this.selectedElement) return;
+
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+
+            // Inicializar estructura de columna si no existe
+            if (!data[columna]) {
+                data[columna] = { type: tipo, data: {} };
+            }
+
+            // Cambiar tipo y resetear datos
+            data[columna].type = tipo;
+
+            // Inicializar datos por defecto según tipo
+            if (tipo === 'contact_info') {
+                data[columna].data = {
+                    titulo: 'Información',
+                    items: [
+                        { icono: '📧', titulo: 'Email', valor: 'contacto@ejemplo.com' },
+                        { icono: '📱', titulo: 'Teléfono', valor: '+34 123 456 789' }
+                    ]
+                };
+            } else if (tipo === 'contact_form') {
+                data[columna].data = {
+                    titulo: 'Contacto',
+                    boton_texto: 'Enviar',
+                    campos: [
+                        { nombre: 'nombre', label: 'Nombre', tipo: 'text', requerido: true },
+                        { nombre: 'email', label: 'Email', tipo: 'email', requerido: true },
+                        { nombre: 'mensaje', label: 'Mensaje', tipo: 'textarea', requerido: true }
+                    ]
+                };
+            } else if (tipo === 'text') {
+                data[columna].data = { contenido: 'Tu texto aquí...' };
+            } else if (tipo === 'image') {
+                data[columna].data = { src: '', alt: '' };
+            }
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
+        },
+
+        /**
+         * Actualiza un campo de datos de una columna
+         */
+        updateColumnData: function(columna, campo, valor) {
+            if (!this.selectedElement) return;
+
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+
+            if (!data[columna]) data[columna] = { type: 'text', data: {} };
+            if (!data[columna].data) data[columna].data = {};
+
+            data[columna].data[campo] = valor;
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
+        },
+
+        /**
+         * Añade un item a una columna (contact_info o contact_form)
+         */
+        addColumnItem: function(columna, tipo) {
+            if (!this.selectedElement) return;
+
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+
+            if (!data[columna]) data[columna] = { type: tipo, data: {} };
+            if (!data[columna].data) data[columna].data = {};
+
+            if (tipo === 'contact_info') {
+                if (!data[columna].data.items) data[columna].data.items = [];
+                data[columna].data.items.push({ icono: '📌', titulo: 'Nuevo', valor: '' });
+            } else if (tipo === 'contact_form') {
+                if (!data[columna].data.campos) data[columna].data.campos = [];
+                data[columna].data.campos.push({ nombre: 'campo_' + Date.now(), label: 'Nuevo campo', tipo: 'text', requerido: false });
+            }
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
+        },
+
+        /**
+         * Actualiza un campo de un item en una columna
+         */
+        updateColumnItem: function(columna, index, campo, valor) {
+            if (!this.selectedElement) return;
+
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+
+            if (!data[columna] || !data[columna].data) return;
+
+            var colData = data[columna].data;
+            var colType = data[columna].type;
+
+            if (colType === 'contact_info' && colData.items && colData.items[index]) {
+                colData.items[index][campo] = valor;
+            } else if (colType === 'contact_form' && colData.campos && colData.campos[index]) {
+                colData.campos[index][campo] = valor;
+            }
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
+        },
+
+        /**
+         * Actualiza las opciones de un campo select (texto a array)
+         */
+        updateColumnItemOptions: function(columna, index, textValue) {
+            if (!this.selectedElement) return;
+
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+
+            if (!data[columna] || !data[columna].data || !data[columna].data.campos) return;
+
+            if (data[columna].data.campos[index]) {
+                // Guardar texto original para el input
+                data[columna].data.campos[index].opciones_text = textValue;
+                // Convertir a array para el renderizado
+                data[columna].data.campos[index].opciones = textValue.split(',').map(function(o) { return o.trim(); }).filter(function(o) { return o; });
+            }
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
+        },
+
+        /**
+         * Elimina un item de una columna
+         */
+        removeColumnItem: function(columna, index) {
+            if (!this.selectedElement) return;
+
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+
+            if (!data[columna] || !data[columna].data) return;
+
+            var colData = data[columna].data;
+            var colType = data[columna].type;
+
+            if (colType === 'contact_info' && colData.items) {
+                colData.items.splice(index, 1);
+            } else if (colType === 'contact_form' && colData.campos) {
+                colData.campos.splice(index, 1);
+            }
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
+        },
+
+        // ============ FIN MÉTODOS TWO_COLUMNS ============
 
         /**
          * Actualizar características de pricing (texto a array)
@@ -1071,8 +1469,9 @@ function vbpInspector() {
         getColumnWidths: function() {
             if (!this.selectedElement || !this.selectedElement.data) return [];
 
-            var numColumns = this.selectedElement.data.columns || 2;
-            var widths = this.selectedElement.data.columnWidths || [];
+            var data = this.selectedElement.data;
+            var numColumns = parseInt(data.columnas) || parseInt(data.columns) || 2;
+            var widths = data.columnWidths || [];
 
             // Si no hay anchos definidos, crear array con distribución equitativa
             if (widths.length === 0 || widths.length !== numColumns) {
@@ -1094,7 +1493,8 @@ function vbpInspector() {
         updateColumnWidth: function(index, value) {
             if (!this.selectedElement) return;
 
-            var numColumns = this.selectedElement.data.columns || 2;
+            var data = this.selectedElement.data || {};
+            var numColumns = parseInt(data.columnas) || parseInt(data.columns) || 2;
             var widths = this.getColumnWidths().slice(); // Copia
 
             // Convertir valor a porcentaje
@@ -1138,7 +1538,12 @@ function vbpInspector() {
                 }
             }
 
-            this.updateElementData('columnWidths', widths);
+            // Actualizar datos con columnWidths y gridTemplateColumns
+            var newData = JSON.parse(JSON.stringify(data));
+            newData.columnWidths = widths;
+            newData.gridTemplateColumns = widths.join(' ');
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: newData });
         },
 
         /**
@@ -1147,7 +1552,8 @@ function vbpInspector() {
         resetColumnWidths: function() {
             if (!this.selectedElement) return;
 
-            var numColumns = this.selectedElement.data.columns || 2;
+            var data = this.selectedElement.data || {};
+            var numColumns = parseInt(data.columnas) || parseInt(data.columns) || 2;
             var equalWidth = 100 / numColumns;
             var widths = [];
 
@@ -1155,7 +1561,15 @@ function vbpInspector() {
                 widths.push(equalWidth.toFixed(1) + '%');
             }
 
-            this.updateElementData('columnWidths', widths);
+            var newData = JSON.parse(JSON.stringify(data));
+            newData.columnWidths = widths;
+            newData.gridTemplateColumns = widths.join(' ');
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: newData });
+
+            if (typeof Alpine.store('vbp').addNotification === 'function') {
+                Alpine.store('vbp').addNotification('Columnas igualadas', 'info');
+            }
         },
 
         /**
@@ -1165,8 +1579,10 @@ function vbpInspector() {
         updateColumnsCount: function(count) {
             if (!this.selectedElement) return;
 
-            var oldCount = this.selectedElement.data.columns || 2;
-            var oldWidths = this.selectedElement.data.columnWidths || [];
+            var currentData = this.selectedElement.data || {};
+            var oldCount = parseInt(currentData.columnas) || parseInt(currentData.columns) || 2;
+            var oldWidths = currentData.columnWidths || [];
+            var children = JSON.parse(JSON.stringify(this.selectedElement.children || []));
 
             // Crear nuevos anchos
             var equalWidth = 100 / count;
@@ -1182,12 +1598,97 @@ function vbpInspector() {
                 }
             }
 
+            // Ajustar índices de hijos huérfanos
+            if (children.length > 0) {
+                children.forEach(function(child) {
+                    if (typeof child._columnIndex === 'number' && child._columnIndex >= count) {
+                        child._columnIndex = count - 1;
+                    }
+                });
+            }
+
             // Actualizar ambos valores
+            var data = JSON.parse(JSON.stringify(currentData));
+            data.columnas = count;
+            data.columns = count; // Alias
+            data.columnWidths = newWidths;
+            data.gridTemplateColumns = newWidths.join(' ');
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data, children: children });
+        },
+
+        /**
+         * Aplicar un preset de columnas
+         * @param {Array} widths - Array de porcentajes [50, 50] o [33, 67] etc.
+         */
+        applyColumnPreset: function(widths) {
+            if (!this.selectedElement) return;
+
+            var count = widths.length;
+            var newWidths = widths.map(function(w) {
+                return w + '%';
+            });
+
+            // Actualizar datos del elemento
             var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
-            data.columns = count;
+            data.columnas = count;
+            data.columns = count; // Alias para compatibilidad
             data.columnWidths = newWidths;
 
-            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data });
+            // Actualizar gridTemplateColumns para el layout
+            data.gridTemplateColumns = widths.map(function(w) {
+                return w + '%';
+            }).join(' ');
+
+            // Ajustar hijos para las nuevas columnas
+            var children = this.selectedElement.children || [];
+            // Si hay más columnas que antes, los hijos mantienen su columna
+            // Si hay menos, mover los huérfanos a la última columna válida
+            if (children.length > 0) {
+                children.forEach(function(child) {
+                    if (typeof child._columnIndex === 'number' && child._columnIndex >= count) {
+                        child._columnIndex = count - 1;
+                    }
+                });
+            }
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data, children: children });
+
+            // Notificación visual
+            if (typeof Alpine.store('vbp').addNotification === 'function') {
+                Alpine.store('vbp').addNotification('Layout aplicado: ' + widths.join('% / ') + '%', 'success');
+            }
+        },
+
+        /**
+         * Invertir orden de las columnas
+         */
+        reverseColumns: function() {
+            if (!this.selectedElement) return;
+
+            var data = JSON.parse(JSON.stringify(this.selectedElement.data || {}));
+            var children = JSON.parse(JSON.stringify(this.selectedElement.children || []));
+
+            if (data.columnWidths && data.columnWidths.length > 1) {
+                data.columnWidths = data.columnWidths.reverse();
+                data.gridTemplateColumns = data.columnWidths.join(' ');
+            }
+
+            // Invertir índice de columnas de los hijos
+            var cols = parseInt(data.columnas) || parseInt(data.columns) || 2;
+            if (children.length > 0) {
+                children.forEach(function(child) {
+                    if (typeof child._columnIndex === 'number') {
+                        child._columnIndex = (cols - 1) - child._columnIndex;
+                    }
+                });
+            }
+
+            Alpine.store('vbp').updateElement(this.selectedElement.id, { data: data, children: children });
+
+            if (typeof Alpine.store('vbp').addNotification === 'function') {
+                Alpine.store('vbp').addNotification('Columnas invertidas', 'info');
+            }
         },
 
         // ============================================
@@ -1200,6 +1701,9 @@ function vbpInspector() {
         init: function() {
             var self = this;
 
+            // Cargar estado de secciones colapsadas desde localStorage
+            this.loadCollapsedSections();
+
             // Observar cambios en el elemento seleccionado
             this.$watch('selectedElement', function(el) {
                 if (el && el.type === 'spacer' && el.data && el.data.height) {
@@ -1211,6 +1715,135 @@ function vbpInspector() {
                 // Cerrar edición de items al cambiar de elemento
                 self.editingItemIndex = null;
             });
+        },
+
+        // ============================================
+        // SECCIONES COLAPSABLES
+        // ============================================
+
+        /**
+         * Estado de secciones colapsadas
+         */
+        collapsedSections: {},
+
+        /**
+         * Cargar estado de secciones desde localStorage
+         */
+        loadCollapsedSections: function() {
+            try {
+                var savedState = localStorage.getItem('vbp_inspector_collapsed');
+                if (savedState) {
+                    this.collapsedSections = JSON.parse(savedState);
+                }
+            } catch (e) {
+                this.collapsedSections = {};
+            }
+        },
+
+        /**
+         * Guardar estado de secciones en localStorage
+         */
+        saveCollapsedSections: function() {
+            try {
+                localStorage.setItem('vbp_inspector_collapsed', JSON.stringify(this.collapsedSections));
+            } catch (e) {
+                // localStorage no disponible o lleno
+            }
+        },
+
+        /**
+         * Toggle estado de una sección
+         * @param {string} sectionId - ID de la sección
+         */
+        toggleSection: function(sectionId) {
+            if (this.collapsedSections[sectionId]) {
+                delete this.collapsedSections[sectionId];
+            } else {
+                this.collapsedSections[sectionId] = true;
+            }
+            this.saveCollapsedSections();
+        },
+
+        /**
+         * Verificar si una sección está colapsada
+         * @param {string} sectionId - ID de la sección
+         * @returns {boolean}
+         */
+        isSectionCollapsed: function(sectionId) {
+            return !!this.collapsedSections[sectionId];
+        },
+
+        /**
+         * Expandir todas las secciones
+         */
+        expandAllSections: function() {
+            this.collapsedSections = {};
+            this.saveCollapsedSections();
+        },
+
+        /**
+         * Colapsar todas las secciones
+         */
+        collapseAllSections: function() {
+            var sections = ['content', 'typography', 'spacing', 'colors', 'background', 'border', 'shadow', 'advanced'];
+            var self = this;
+            sections.forEach(function(section) {
+                self.collapsedSections[section] = true;
+            });
+            this.saveCollapsedSections();
+        },
+
+        // ============================================
+        // DEBOUNCE PARA INPUTS DE TEXTO
+        // ============================================
+
+        /**
+         * Timer para debounce
+         */
+        debounceTimers: {},
+
+        /**
+         * Actualizar campo con debounce para mejor rendimiento
+         * @param {string} field - Campo a actualizar
+         * @param {*} value - Nuevo valor
+         * @param {number} delay - Delay en ms (default: 300)
+         */
+        updateElementDataDebounced: function(field, value, delay) {
+            var self = this;
+            delay = delay || 300;
+
+            // Cancelar timer anterior
+            if (this.debounceTimers[field]) {
+                clearTimeout(this.debounceTimers[field]);
+            }
+
+            // Crear nuevo timer
+            this.debounceTimers[field] = setTimeout(function() {
+                self.updateElementData(field, value);
+                delete self.debounceTimers[field];
+            }, delay);
+        },
+
+        /**
+         * Actualizar estilo con debounce
+         * @param {string} path - Path del estilo
+         * @param {*} value - Nuevo valor
+         * @param {number} delay - Delay en ms (default: 150)
+         */
+        updateStyleDebounced: function(path, value, delay) {
+            var self = this;
+            delay = delay || 150;
+
+            // Cancelar timer anterior
+            if (this.debounceTimers['style_' + path]) {
+                clearTimeout(this.debounceTimers['style_' + path]);
+            }
+
+            // Crear nuevo timer
+            this.debounceTimers['style_' + path] = setTimeout(function() {
+                self.updateStyle(path, value);
+                delete self.debounceTimers['style_' + path];
+            }, delay);
         }
     };
 }

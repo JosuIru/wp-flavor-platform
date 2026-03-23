@@ -28,7 +28,7 @@ $programas_populares = [];
 $emisiones_recientes = [];
 $audiencia_por_dia = [];
 $emision_actual = null;
-$usando_demo = false;
+$tablas_disponibles = ($tabla_programas_existe && $tabla_emisiones_existe && $tabla_locutores_existe);
 
 if ($tabla_programas_existe && $tabla_emisiones_existe && $tabla_locutores_existe) {
     // Obtener estadísticas generales
@@ -77,39 +77,6 @@ if ($tabla_programas_existe && $tabla_emisiones_existe && $tabla_locutores_exist
     ");
 }
 
-// Datos de ejemplo si no hay datos reales
-if ($total_programas == 0 && $total_emisiones == 0) {
-    $usando_demo = true;
-    $total_programas = 8;
-    $total_emisiones = 156;
-    $total_locutores = 12;
-    $total_oyentes = 4520;
-
-    $programas_populares = [
-        (object) ['nombre' => 'Buenos Días Comunidad', 'total_oyentes' => 1250],
-        (object) ['nombre' => 'Noticias Locales', 'total_oyentes' => 980],
-        (object) ['nombre' => 'Música Sin Fronteras', 'total_oyentes' => 870],
-        (object) ['nombre' => 'Debate Ciudadano', 'total_oyentes' => 650],
-        (object) ['nombre' => 'Cultura Viva', 'total_oyentes' => 420],
-    ];
-
-    $audiencia_por_dia = [
-        (object) ['dia' => 'Lunes', 'promedio_oyentes' => 320],
-        (object) ['dia' => 'Martes', 'promedio_oyentes' => 285],
-        (object) ['dia' => 'Miércoles', 'promedio_oyentes' => 340],
-        (object) ['dia' => 'Jueves', 'promedio_oyentes' => 310],
-        (object) ['dia' => 'Viernes', 'promedio_oyentes' => 450],
-        (object) ['dia' => 'Sábado', 'promedio_oyentes' => 520],
-        (object) ['dia' => 'Domingo', 'promedio_oyentes' => 380],
-    ];
-
-    $emisiones_recientes = [
-        (object) ['id' => 1, 'programa_nombre' => 'Buenos Días Comunidad', 'duracion_minutos' => 120, 'oyentes_pico' => 245, 'estado' => 'finalizada', 'fecha_emision' => date('Y-m-d H:i:s', strtotime('-2 hours'))],
-        (object) ['id' => 2, 'programa_nombre' => 'Noticias Locales', 'duracion_minutos' => 60, 'oyentes_pico' => 180, 'estado' => 'finalizada', 'fecha_emision' => date('Y-m-d H:i:s', strtotime('-1 day'))],
-        (object) ['id' => 3, 'programa_nombre' => 'Música Sin Fronteras', 'duracion_minutos' => 180, 'oyentes_pico' => 312, 'estado' => 'programada', 'fecha_emision' => date('Y-m-d H:i:s', strtotime('+3 hours'))],
-    ];
-}
-
 // Mapeo de estados a clases de badge
 $estado_badge_classes = [
     'en_vivo' => 'dm-badge--success',
@@ -126,14 +93,18 @@ $estado_badge_classes = [
     }
     ?>
 
+    <?php if (!$tablas_disponibles): ?>
+        <div class="dm-alert dm-alert--info">
+            <span class="dashicons dashicons-info"></span>
+            <p><?php esc_html_e('Faltan tablas del módulo Radio o aún no hay emisiones registradas.', 'flavor-chat-ia'); ?></p>
+        </div>
+    <?php endif; ?>
+
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-controls-volumeon"></span>
             <?php esc_html_e('Dashboard de Radio', 'flavor-chat-ia'); ?>
         </h1>
-        <?php if ($usando_demo): ?>
-            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
-        <?php endif; ?>
     </div>
 
     <!-- Accesos Rápidos -->
@@ -312,13 +283,9 @@ $estado_badge_classes = [
                             </td>
                             <td><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($emision->fecha_emision))); ?></td>
                             <td>
-                                <?php if (!$usando_demo): ?>
                                 <button class="dm-btn dm-btn--ghost dm-btn--sm" onclick="verEmision(<?php echo esc_attr($emision->id); ?>)">
                                     <span class="dashicons dashicons-visibility"></span>
                                 </button>
-                                <?php else: ?>
-                                <span class="dm-text-muted">—</span>
-                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -325,6 +325,10 @@ class Flavor_Unified_Modules_View {
                             return;
                         }
                         var data = await response.json();
+                        if (data && data.success === false) {
+                            this.docsError = data.error || fumData.i18n.docsNotFound;
+                            return;
+                        }
                         this.docsData = data.data || data;
                     } catch (error) {
                         this.docsError = fumData.i18n.docsError;

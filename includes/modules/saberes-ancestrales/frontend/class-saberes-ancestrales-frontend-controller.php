@@ -31,14 +31,21 @@ class Flavor_Saberes_Ancestrales_Frontend_Controller {
 
     private function init_hooks() {
         // Shortcodes
-        add_shortcode('flavor_saberes_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('flavor_saberes_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('flavor_saberes_maestros', [$this, 'shortcode_maestros']);
-        add_shortcode('flavor_saberes_aprendizaje', [$this, 'shortcode_aprendizaje']);
-        add_shortcode('flavor_saberes_documentar', [$this, 'shortcode_documentar']);
-        add_shortcode('flavor_saberes_mis_aprendizajes', [$this, 'shortcode_mis_aprendizajes']);
-        add_shortcode('flavor_saberes_mapa', [$this, 'shortcode_mapa']);
-        add_shortcode('flavor_saberes_estadisticas', [$this, 'shortcode_estadisticas']);
+        $shortcodes = [
+            'flavor_saberes_catalogo' => 'shortcode_catalogo',
+            'flavor_saberes_detalle' => 'shortcode_detalle',
+            'flavor_saberes_maestros' => 'shortcode_maestros',
+            'flavor_saberes_aprendizaje' => 'shortcode_aprendizaje',
+            'flavor_saberes_documentar' => 'shortcode_documentar',
+            'flavor_saberes_mis_aprendizajes' => 'shortcode_mis_aprendizajes',
+            'flavor_saberes_mapa' => 'shortcode_mapa',
+            'flavor_saberes_estadisticas' => 'shortcode_estadisticas',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_saberes_documentar', [$this, 'ajax_documentar_saber']);

@@ -35,7 +35,8 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
      * Verifica si el modulo puede activarse
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe('flavor_seguimiento_denuncias');
+        global $wpdb;
+        return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_seguimiento_denuncias');
     }
 
     /**
@@ -61,6 +62,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
         $this->registrar_en_panel_unificado();
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
 
         // Cron para verificar plazos
         add_action('flavor_verificar_plazos_denuncias', [$this, 'verificar_plazos']);
@@ -73,7 +75,8 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_seguimiento_denuncias')) {
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_seguimiento_denuncias')) {
             $this->create_tables();
         }
     }
@@ -700,6 +703,30 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Carga assets en admin del modulo.
+     *
+     * @param string $hook Hook actual de admin.
+     * @return void
+     */
+    public function enqueue_admin_assets($hook) {
+        if (!is_admin()) {
+            return;
+        }
+
+        $page = isset($_GET['page']) ? sanitize_key((string) $_GET['page']) : '';
+        if ($page === '' || strpos($page, 'denuncias-') !== 0) {
+            return;
+        }
+
+        wp_enqueue_style(
+            'flavor-seguimiento-denuncias-admin',
+            FLAVOR_CHAT_IA_URL . 'includes/modules/seguimiento-denuncias/assets/css/seguimiento-denuncias.css',
+            [],
+            FLAVOR_CHAT_IA_VERSION
+        );
+    }
+
+    /**
      * Determina si cargar assets
      */
     private function should_load_assets() {
@@ -1076,44 +1103,44 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
             <?php endif; ?>
 
             <!-- KPIs -->
-            <div id="denuncias-stats" class="flavor-kpi-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 20px 0;">
-                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #3b82f6;">
-                    <div class="kpi-icon" style="font-size: 32px; color: #3b82f6;">
+            <div id="denuncias-stats" class="flavor-kpi-grid denuncias-admin-dashboard__kpi-grid">
+                <div class="flavor-kpi-card denuncias-admin-dashboard__kpi-card denuncias-admin-dashboard__kpi-card--blue">
+                    <div class="kpi-icon denuncias-admin-dashboard__kpi-icon">
                         <span class="dashicons dashicons-clipboard"></span>
                     </div>
-                    <div class="kpi-value" style="font-size: 32px; font-weight: bold; color: #1d2327;"><?php echo esc_html($total_abiertas); ?></div>
-                    <div class="kpi-label" style="color: #646970;"><?php _e('Denuncias abiertas', 'flavor-chat-ia'); ?></div>
+                    <div class="kpi-value denuncias-admin-dashboard__kpi-value"><?php echo esc_html($total_abiertas); ?></div>
+                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Denuncias abiertas', 'flavor-chat-ia'); ?></div>
                 </div>
 
-                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #f59e0b;">
-                    <div class="kpi-icon" style="font-size: 32px; color: #f59e0b;">
+                <div class="flavor-kpi-card denuncias-admin-dashboard__kpi-card denuncias-admin-dashboard__kpi-card--amber">
+                    <div class="kpi-icon denuncias-admin-dashboard__kpi-icon">
                         <span class="dashicons dashicons-clock"></span>
                     </div>
-                    <div class="kpi-value" style="font-size: 32px; font-weight: bold; color: #1d2327;"><?php echo esc_html($pendientes_asignacion); ?></div>
-                    <div class="kpi-label" style="color: #646970;"><?php _e('Pendientes asignacion', 'flavor-chat-ia'); ?></div>
+                    <div class="kpi-value denuncias-admin-dashboard__kpi-value"><?php echo esc_html($pendientes_asignacion); ?></div>
+                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Pendientes asignacion', 'flavor-chat-ia'); ?></div>
                 </div>
 
-                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #10b981;">
-                    <div class="kpi-icon" style="font-size: 32px; color: #10b981;">
+                <div class="flavor-kpi-card denuncias-admin-dashboard__kpi-card denuncias-admin-dashboard__kpi-card--green">
+                    <div class="kpi-icon denuncias-admin-dashboard__kpi-icon">
                         <span class="dashicons dashicons-yes-alt"></span>
                     </div>
-                    <div class="kpi-value" style="font-size: 32px; font-weight: bold; color: #1d2327;"><?php echo esc_html($resueltas_mes); ?></div>
-                    <div class="kpi-label" style="color: #646970;"><?php _e('Resueltas este mes', 'flavor-chat-ia'); ?></div>
+                    <div class="kpi-value denuncias-admin-dashboard__kpi-value"><?php echo esc_html($resueltas_mes); ?></div>
+                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Resueltas este mes', 'flavor-chat-ia'); ?></div>
                 </div>
 
-                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #8b5cf6;">
-                    <div class="kpi-icon" style="font-size: 32px; color: #8b5cf6;">
+                <div class="flavor-kpi-card denuncias-admin-dashboard__kpi-card denuncias-admin-dashboard__kpi-card--purple">
+                    <div class="kpi-icon denuncias-admin-dashboard__kpi-icon">
                         <span class="dashicons dashicons-calendar-alt"></span>
                     </div>
-                    <div class="kpi-value" style="font-size: 32px; font-weight: bold; color: #1d2327;"><?php echo esc_html($tiempo_medio_resolucion); ?> <small style="font-size: 14px;"><?php _e('dias', 'flavor-chat-ia'); ?></small></div>
-                    <div class="kpi-label" style="color: #646970;"><?php _e('Tiempo medio resolucion', 'flavor-chat-ia'); ?></div>
+                    <div class="kpi-value denuncias-admin-dashboard__kpi-value"><?php echo esc_html($tiempo_medio_resolucion); ?> <small class="denuncias-admin-dashboard__kpi-unit"><?php _e('dias', 'flavor-chat-ia'); ?></small></div>
+                    <div class="kpi-label denuncias-admin-dashboard__kpi-label"><?php _e('Tiempo medio resolucion', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
 
-            <div class="flavor-admin-columns" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+            <div class="flavor-admin-columns denuncias-admin-dashboard__columns">
                 <!-- Denuncias recientes -->
-                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h2 style="margin-top: 0;">
+                <div class="flavor-admin-card denuncias-admin-dashboard__card">
+                    <h2 class="denuncias-admin-dashboard__card-title">
                         <span class="dashicons dashicons-list-view"></span>
                         <?php _e('Denuncias recientes', 'flavor-chat-ia'); ?>
                     </h2>
@@ -1131,6 +1158,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                         <tbody>
                             <?php if ($denuncias_recientes): ?>
                                 <?php foreach ($denuncias_recientes as $denuncia): ?>
+                                    <?php $estado_class = 'denuncias-estado-' . sanitize_html_class((string) $denuncia->estado); ?>
                                     <tr>
                                         <td>#<?php echo esc_html($denuncia->id); ?></td>
                                         <td>
@@ -1138,7 +1166,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                                             <br><small><?php echo esc_html($denuncia->denunciante_nombre_usuario ?: $denuncia->denunciante_nombre); ?></small>
                                         </td>
                                         <td>
-                                            <span class="flavor-badge" style="background: <?php echo esc_attr($estados[$denuncia->estado]['color'] ?? '#ccc'); ?>; color: #fff; padding: 3px 8px; border-radius: 3px; font-size: 11px;">
+                                            <span class="flavor-badge denuncias-admin-dashboard__badge <?php echo esc_attr($estado_class); ?>">
                                                 <?php echo esc_html($estados[$denuncia->estado]['label'] ?? $denuncia->estado); ?>
                                             </span>
                                         </td>
@@ -1156,34 +1184,34 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                             <?php endif; ?>
                         </tbody>
                     </table>
-                    <p style="margin-bottom: 0; text-align: right;">
+                    <p class="denuncias-admin-dashboard__card-footer-link">
                         <a href="<?php echo esc_url(admin_url('admin.php?page=denuncias-listado')); ?>"><?php _e('Ver todas', 'flavor-chat-ia'); ?> &rarr;</a>
                     </p>
                 </div>
 
                 <!-- Proximos vencimientos -->
-                <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h2 style="margin-top: 0;">
+                <div class="flavor-admin-card denuncias-admin-dashboard__card">
+                    <h2 class="denuncias-admin-dashboard__card-title">
                         <span class="dashicons dashicons-warning"></span>
                         <?php _e('Proximos vencimientos', 'flavor-chat-ia'); ?>
                     </h2>
                     <?php if ($proximos_vencimientos): ?>
-                        <ul class="flavor-timeline" style="list-style: none; padding: 0; margin: 0;">
+                        <ul class="flavor-timeline denuncias-admin-dashboard__timeline">
                             <?php foreach ($proximos_vencimientos as $denuncia):
                                 $dias_restantes = floor((strtotime($denuncia->fecha_limite_respuesta) - time()) / 86400);
                                 $urgente = $dias_restantes <= 5;
                             ?>
-                                <li style="padding: 10px 0; border-bottom: 1px solid #eee; <?php echo $urgente ? 'background: #fff5f5;' : ''; ?>">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <li class="denuncias-admin-dashboard__timeline-item<?php echo $urgente ? ' denuncias-admin-dashboard__timeline-item--urgent' : ''; ?>">
+                                    <div class="denuncias-admin-dashboard__timeline-head">
                                         <div>
                                             <strong>#<?php echo esc_html($denuncia->id); ?></strong>
                                             <span><?php echo esc_html(wp_trim_words($denuncia->titulo, 5)); ?></span>
                                         </div>
-                                        <span class="flavor-badge" style="background: <?php echo $urgente ? '#ef4444' : '#f59e0b'; ?>; color: #fff; padding: 3px 8px; border-radius: 3px; font-size: 11px;">
+                                        <span class="flavor-badge denuncias-admin-dashboard__badge <?php echo $urgente ? 'denuncias-vencimiento-urgente' : 'denuncias-vencimiento-proximo'; ?>">
                                             <?php echo sprintf(_n('%d dia', '%d dias', $dias_restantes, 'flavor-chat-ia'), $dias_restantes); ?>
                                         </span>
                                     </div>
-                                    <small style="color: #646970;">
+                                    <small class="denuncias-admin-dashboard__timeline-meta">
                                         <?php echo esc_html($denuncia->organismo_destino); ?> -
                                         <?php _e('Vence:', 'flavor-chat-ia'); ?> <?php echo esc_html(date_i18n('d/m/Y', strtotime($denuncia->fecha_limite_respuesta))); ?>
                                     </small>
@@ -1191,8 +1219,8 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                             <?php endforeach; ?>
                         </ul>
                     <?php else: ?>
-                        <p style="color: #646970; text-align: center; padding: 20px;">
-                            <span class="dashicons dashicons-yes-alt" style="font-size: 32px; color: #10b981;"></span><br>
+                        <p class="denuncias-admin-dashboard__empty">
+                            <span class="dashicons dashicons-yes-alt denuncias-admin-dashboard__empty-icon"></span><br>
                             <?php _e('No hay vencimientos proximos', 'flavor-chat-ia'); ?>
                         </p>
                     <?php endif; ?>
@@ -1206,12 +1234,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
      * Renderizar página dashboard con vista completa
      */
     public function render_pagina_dashboard() {
-        $views_path = dirname(__FILE__) . '/views/dashboard.php';
-        if (file_exists($views_path)) {
-            include $views_path;
-        } else {
-            $this->render_admin_dashboard();
-        }
+        $this->render_admin_dashboard();
     }
 
     /**
@@ -1286,7 +1309,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
 
             <!-- Filtros -->
             <div class="tablenav top">
-                <form method="get" style="display: flex; gap: 10px; align-items: center;">
+                <form method="get" class="denuncias-admin-list__filters">
                     <input type="hidden" name="page" value="denuncias-listado">
 
                     <select name="estado">
@@ -1319,7 +1342,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th style="width: 50px;"><?php _e('ID', 'flavor-chat-ia'); ?></th>
+                        <th class="denuncias-admin-list__col-id"><?php _e('ID', 'flavor-chat-ia'); ?></th>
                         <th><?php _e('Titulo', 'flavor-chat-ia'); ?></th>
                         <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
                         <th><?php _e('Prioridad', 'flavor-chat-ia'); ?></th>
@@ -1327,19 +1350,16 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                         <th><?php _e('Denunciante', 'flavor-chat-ia'); ?></th>
                         <th><?php _e('Fecha', 'flavor-chat-ia'); ?></th>
                         <th><?php _e('Vencimiento', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                        <th class="denuncias-admin-list__col-actions"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if ($denuncias): ?>
-                        <?php foreach ($denuncias as $denuncia):
-                            $prioridad_colores = [
-                                'urgente' => '#ef4444',
-                                'alta' => '#f59e0b',
-                                'media' => '#3b82f6',
-                                'baja' => '#9ca3af',
-                            ];
-                        ?>
+                        <?php foreach ($denuncias as $denuncia): ?>
+                            <?php
+                            $estado_class = 'denuncias-estado-' . sanitize_html_class((string) $denuncia->estado);
+                            $prioridad_class = 'denuncias-prioridad-' . sanitize_html_class((string) $denuncia->prioridad);
+                            ?>
                             <tr>
                                 <td>#<?php echo esc_html($denuncia->id); ?></td>
                                 <td>
@@ -1350,12 +1370,12 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                                     </strong>
                                 </td>
                                 <td>
-                                    <span class="flavor-badge" style="background: <?php echo esc_attr($estados[$denuncia->estado]['color'] ?? '#ccc'); ?>; color: #fff; padding: 3px 8px; border-radius: 3px; font-size: 11px;">
+                                    <span class="flavor-badge denuncias-admin-list__badge <?php echo esc_attr($estado_class); ?>">
                                         <?php echo esc_html($estados[$denuncia->estado]['label'] ?? $denuncia->estado); ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <span style="color: <?php echo esc_attr($prioridad_colores[$denuncia->prioridad] ?? '#666'); ?>; font-weight: 600;">
+                                    <span class="denuncias-admin-list__priority <?php echo esc_attr($prioridad_class); ?>">
                                         <?php echo esc_html(ucfirst($denuncia->prioridad)); ?>
                                     </span>
                                 </td>
@@ -1381,7 +1401,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9" style="text-align: center; padding: 20px;">
+                            <td colspan="9" class="denuncias-admin-list__empty-cell">
                                 <?php _e('No se encontraron denuncias', 'flavor-chat-ia'); ?>
                             </td>
                         </tr>
@@ -1441,34 +1461,35 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
             <?php $this->render_page_header(__('Asignar Denuncias', 'flavor-chat-ia')); ?>
 
             <?php if ($denuncias_pendientes): ?>
-                <div class="flavor-asignar-grid" style="display: grid; gap: 15px;">
+                <div class="flavor-asignar-grid denuncias-admin-asignar__grid">
                     <?php foreach ($denuncias_pendientes as $denuncia): ?>
-                        <div class="flavor-asignar-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: center;">
+                        <?php $estado_class = 'denuncias-estado-' . sanitize_html_class((string) $denuncia->estado); ?>
+                        <div class="flavor-asignar-card denuncias-admin-asignar__card">
                             <div class="denuncia-info">
-                                <h3 style="margin: 0 0 10px 0;">
+                                <h3 class="denuncias-admin-asignar__title">
                                     #<?php echo esc_html($denuncia->id); ?> - <?php echo esc_html($denuncia->titulo); ?>
-                                    <span class="flavor-badge" style="background: <?php echo esc_attr($estados[$denuncia->estado]['color'] ?? '#ccc'); ?>; color: #fff; padding: 3px 8px; border-radius: 3px; font-size: 11px; margin-left: 10px;">
+                                    <span class="flavor-badge denuncias-admin-asignar__badge <?php echo esc_attr($estado_class); ?>">
                                         <?php echo esc_html($estados[$denuncia->estado]['label'] ?? $denuncia->estado); ?>
                                     </span>
                                 </h3>
-                                <p style="margin: 0; color: #646970;">
+                                <p class="denuncias-admin-asignar__meta">
                                     <strong><?php _e('Organismo:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($denuncia->organismo_destino); ?><br>
                                     <strong><?php _e('Denunciante:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html($denuncia->denunciante_nombre_usuario ?: $denuncia->denunciante_nombre); ?><br>
                                     <strong><?php _e('Fecha:', 'flavor-chat-ia'); ?></strong> <?php echo esc_html(date_i18n('d/m/Y', strtotime($denuncia->fecha_presentacion))); ?>
                                     <?php if ($denuncia->prioridad === 'urgente' || $denuncia->prioridad === 'alta'): ?>
-                                        <span style="color: #ef4444; font-weight: bold; margin-left: 10px;">
+                                        <span class="denuncias-admin-asignar__priority">
                                             <?php _e('Prioridad:', 'flavor-chat-ia'); ?> <?php echo esc_html(ucfirst($denuncia->prioridad)); ?>
                                         </span>
                                     <?php endif; ?>
                                 </p>
                             </div>
                             <div class="denuncia-asignacion">
-                                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display: flex; gap: 10px;">
+                                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="denuncias-admin-asignar__form">
                                     <input type="hidden" name="action" value="denuncias_asignar">
                                     <input type="hidden" name="denuncia_id" value="<?php echo esc_attr($denuncia->id); ?>">
                                     <?php wp_nonce_field('denuncias_asignar_' . $denuncia->id); ?>
 
-                                    <select name="responsable_id" required style="flex: 1;">
+                                    <select name="responsable_id" required class="denuncias-admin-asignar__select">
                                         <option value=""><?php _e('Seleccionar responsable...', 'flavor-chat-ia'); ?></option>
                                         <?php foreach ($responsables as $usuario): ?>
                                             <option value="<?php echo esc_attr($usuario->ID); ?>">
@@ -1486,7 +1507,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
             <?php else: ?>
                 <div class="notice notice-success">
                     <p>
-                        <span class="dashicons dashicons-yes-alt" style="color: #10b981;"></span>
+                        <span class="dashicons dashicons-yes-alt denuncias-admin-asignar__icon-ok"></span>
                         <?php _e('No hay denuncias pendientes de asignacion.', 'flavor-chat-ia'); ?>
                     </p>
                 </div>
@@ -1550,24 +1571,25 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                 ['label' => __('Exportar PDF', 'flavor-chat-ia'), 'url' => '#', 'class' => ''],
             ]); ?>
 
-            <div class="flavor-stats-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">
+            <div class="flavor-stats-grid denuncias-admin-estadisticas__grid">
 
                 <!-- Por estado -->
-                <div class="flavor-stats-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin-top: 0;">
+                <div class="flavor-stats-card denuncias-admin-estadisticas__card">
+                    <h3 class="denuncias-admin-estadisticas__title">
                         <span class="dashicons dashicons-chart-pie"></span>
                         <?php _e('Por estado', 'flavor-chat-ia'); ?>
                     </h3>
                     <table class="widefat">
                         <tbody>
                             <?php foreach ($por_estado as $item): ?>
+                                <?php $estado_class = 'denuncias-estado-' . sanitize_html_class((string) $item->estado); ?>
                                 <tr>
                                     <td>
-                                        <span class="flavor-badge" style="background: <?php echo esc_attr($estados[$item->estado]['color'] ?? '#ccc'); ?>; color: #fff; padding: 3px 8px; border-radius: 3px;">
+                                        <span class="flavor-badge denuncias-admin-estadisticas__badge <?php echo esc_attr($estado_class); ?>">
                                             <?php echo esc_html($estados[$item->estado]['label'] ?? $item->estado); ?>
                                         </span>
                                     </td>
-                                    <td style="text-align: right; font-weight: bold;"><?php echo esc_html($item->total); ?></td>
+                                    <td class="denuncias-admin-estadisticas__td-right-strong"><?php echo esc_html($item->total); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -1575,8 +1597,8 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <!-- Por tipo -->
-                <div class="flavor-stats-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin-top: 0;">
+                <div class="flavor-stats-card denuncias-admin-estadisticas__card">
+                    <h3 class="denuncias-admin-estadisticas__title">
                         <span class="dashicons dashicons-category"></span>
                         <?php _e('Por tipo', 'flavor-chat-ia'); ?>
                     </h3>
@@ -1585,7 +1607,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                             <?php foreach ($por_tipo as $item): ?>
                                 <tr>
                                     <td><?php echo esc_html(ucfirst($item->tipo)); ?></td>
-                                    <td style="text-align: right; font-weight: bold;"><?php echo esc_html($item->total); ?></td>
+                                    <td class="denuncias-admin-estadisticas__td-right-strong"><?php echo esc_html($item->total); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -1593,12 +1615,12 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <!-- Evolucion mensual -->
-                <div class="flavor-stats-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); grid-column: span 2;">
-                    <h3 style="margin-top: 0;">
+                <div class="flavor-stats-card denuncias-admin-estadisticas__card denuncias-admin-estadisticas__card--span2">
+                    <h3 class="denuncias-admin-estadisticas__title">
                         <span class="dashicons dashicons-chart-line"></span>
                         <?php _e('Evolucion mensual (ultimos 12 meses)', 'flavor-chat-ia'); ?>
                     </h3>
-                    <div class="flavor-chart-container" style="height: 250px; display: flex; align-items: flex-end; gap: 10px; padding: 20px 0;">
+                    <div class="flavor-chart-container denuncias-admin-estadisticas__chart">
                         <?php
                         $max_valor = 1;
                         foreach ($evolucion_mensual as $mes) {
@@ -1608,25 +1630,25 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                             $altura_total = ($mes->total / $max_valor) * 200;
                             $altura_resueltas = ($mes->resueltas / $max_valor) * 200;
                         ?>
-                            <div style="flex: 1; text-align: center;">
-                                <div style="height: 200px; display: flex; flex-direction: column; justify-content: flex-end;">
-                                    <div style="background: #3b82f6; height: <?php echo esc_attr($altura_total); ?>px; border-radius: 4px 4px 0 0; position: relative;">
-                                        <div style="background: #10b981; height: <?php echo esc_attr($altura_resueltas); ?>px; position: absolute; bottom: 0; left: 0; right: 0; border-radius: 0 0 4px 4px;"></div>
+                            <div class="denuncias-admin-estadisticas__chart-col">
+                                <div class="denuncias-admin-estadisticas__chart-col-inner">
+                                    <div class="denuncias-admin-estadisticas__bar-total" style="height: <?php echo esc_attr($altura_total); ?>px;">
+                                        <div class="denuncias-admin-estadisticas__bar-resueltas" style="height: <?php echo esc_attr($altura_resueltas); ?>px;"></div>
                                     </div>
                                 </div>
-                                <small style="color: #646970;"><?php echo esc_html(date_i18n('M', strtotime($mes->mes . '-01'))); ?></small>
+                                <small class="denuncias-admin-estadisticas__chart-month"><?php echo esc_html(date_i18n('M', strtotime($mes->mes . '-01'))); ?></small>
                             </div>
                         <?php endforeach; ?>
                     </div>
-                    <div style="display: flex; gap: 20px; justify-content: center; font-size: 12px;">
-                        <span><span style="display: inline-block; width: 12px; height: 12px; background: #3b82f6; border-radius: 2px; margin-right: 5px;"></span><?php _e('Total', 'flavor-chat-ia'); ?></span>
-                        <span><span style="display: inline-block; width: 12px; height: 12px; background: #10b981; border-radius: 2px; margin-right: 5px;"></span><?php _e('Resueltas', 'flavor-chat-ia'); ?></span>
+                    <div class="denuncias-admin-estadisticas__legend">
+                        <span><span class="denuncias-admin-estadisticas__legend-swatch denuncias-admin-estadisticas__legend-swatch--blue"></span><?php _e('Total', 'flavor-chat-ia'); ?></span>
+                        <span><span class="denuncias-admin-estadisticas__legend-swatch denuncias-admin-estadisticas__legend-swatch--green"></span><?php _e('Resueltas', 'flavor-chat-ia'); ?></span>
                     </div>
                 </div>
 
                 <!-- Tiempos por organismo -->
-                <div class="flavor-stats-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); grid-column: span 2;">
-                    <h3 style="margin-top: 0;">
+                <div class="flavor-stats-card denuncias-admin-estadisticas__card denuncias-admin-estadisticas__card--span2">
+                    <h3 class="denuncias-admin-estadisticas__title">
                         <span class="dashicons dashicons-clock"></span>
                         <?php _e('Tiempos medios de resolucion por organismo', 'flavor-chat-ia'); ?>
                     </h3>
@@ -1653,7 +1675,7 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p style="color: #646970; text-align: center;"><?php _e('No hay suficientes datos para mostrar', 'flavor-chat-ia'); ?></p>
+                        <p class="denuncias-admin-estadisticas__empty"><?php _e('No hay suficientes datos para mostrar', 'flavor-chat-ia'); ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -1693,11 +1715,11 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
             <form method="post">
                 <?php wp_nonce_field('denuncias_config_nonce'); ?>
 
-                <div class="flavor-config-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">
+                <div class="flavor-config-grid denuncias-admin-config__grid">
 
                     <!-- Configuracion general -->
-                    <div class="flavor-config-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <h3 style="margin-top: 0;">
+                    <div class="flavor-config-card denuncias-admin-config__card">
+                        <h3 class="denuncias-admin-config__title">
                             <span class="dashicons dashicons-admin-settings"></span>
                             <?php _e('Configuracion general', 'flavor-chat-ia'); ?>
                         </h3>
@@ -1748,17 +1770,17 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                     </div>
 
                     <!-- Categorias -->
-                    <div class="flavor-config-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <h3 style="margin-top: 0;">
+                    <div class="flavor-config-card denuncias-admin-config__card">
+                        <h3 class="denuncias-admin-config__title">
                             <span class="dashicons dashicons-category"></span>
                             <?php _e('Categorias de denuncias', 'flavor-chat-ia'); ?>
                         </h3>
 
                         <div id="categorias-list">
                             <?php foreach ($categorias as $slug => $nombre): ?>
-                                <div class="categoria-item" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                                    <input type="text" name="categorias_slug[]" value="<?php echo esc_attr($slug); ?>" placeholder="<?php _e('Slug', 'flavor-chat-ia'); ?>" style="width: 120px;">
-                                    <input type="text" name="categorias_nombre[]" value="<?php echo esc_attr($nombre); ?>" placeholder="<?php _e('Nombre', 'flavor-chat-ia'); ?>" style="flex: 1;">
+                                <div class="categoria-item denuncias-admin-config__categoria-item">
+                                    <input type="text" name="categorias_slug[]" value="<?php echo esc_attr($slug); ?>" placeholder="<?php _e('Slug', 'flavor-chat-ia'); ?>" class="denuncias-admin-config__categoria-slug">
+                                    <input type="text" name="categorias_nombre[]" value="<?php echo esc_attr($nombre); ?>" placeholder="<?php _e('Nombre', 'flavor-chat-ia'); ?>" class="denuncias-admin-config__categoria-nombre">
                                     <button type="button" class="button eliminar-categoria" title="<?php _e('Eliminar', 'flavor-chat-ia'); ?>">
                                         <span class="dashicons dashicons-trash"></span>
                                     </button>
@@ -1772,32 +1794,32 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                     </div>
 
                     <!-- Flujo de estados -->
-                    <div class="flavor-config-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); grid-column: span 2;">
-                        <h3 style="margin-top: 0;">
+                    <div class="flavor-config-card denuncias-admin-config__card denuncias-admin-config__card--span2">
+                        <h3 class="denuncias-admin-config__title">
                             <span class="dashicons dashicons-randomize"></span>
                             <?php _e('Flujo de estados', 'flavor-chat-ia'); ?>
                         </h3>
 
                         <p><?php _e('Los estados disponibles y sus transiciones:', 'flavor-chat-ia'); ?></p>
 
-                        <div class="flujo-estados" style="display: flex; flex-wrap: wrap; gap: 15px; padding: 20px; background: #f9f9f9; border-radius: 4px;">
+                        <div class="flujo-estados denuncias-admin-config__flujo-estados">
                             <?php
                             $estados = $this->get_estados();
                             foreach ($estados as $estado_key => $estado_data): ?>
-                                <div class="estado-chip" style="background: <?php echo esc_attr($estado_data['color']); ?>; color: #fff; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 500;">
+                                <div class="estado-chip denuncias-admin-config__estado-chip denuncias-estado-<?php echo esc_attr(sanitize_html_class((string) $estado_key)); ?>">
                                     <?php echo esc_html($estado_data['label']); ?>
                                 </div>
                             <?php endforeach; ?>
                         </div>
 
-                        <p style="color: #646970; font-size: 12px; margin-top: 10px;">
+                        <p class="denuncias-admin-config__help">
                             <?php _e('El flujo de estados esta predefinido: Presentada -> En tramite -> (Requerimiento) -> Resuelta/Silencio -> Archivada. Las denuncias pueden ser recurridas en cualquier momento.', 'flavor-chat-ia'); ?>
                         </p>
                     </div>
 
                     <!-- Notificaciones -->
-                    <div class="flavor-config-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); grid-column: span 2;">
-                        <h3 style="margin-top: 0;">
+                    <div class="flavor-config-card denuncias-admin-config__card denuncias-admin-config__card--span2">
+                        <h3 class="denuncias-admin-config__title">
                             <span class="dashicons dashicons-email"></span>
                             <?php _e('Configuracion de notificaciones', 'flavor-chat-ia'); ?>
                         </h3>
@@ -1806,19 +1828,19 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
                             <tr>
                                 <th><?php _e('Notificar al denunciante cuando:', 'flavor-chat-ia'); ?></th>
                                 <td>
-                                    <label style="display: block; margin-bottom: 5px;">
+                                    <label class="denuncias-admin-config__label-checkbox">
                                         <input type="checkbox" name="notif_cambio_estado" value="1" checked>
                                         <?php _e('Cambia el estado de su denuncia', 'flavor-chat-ia'); ?>
                                     </label>
-                                    <label style="display: block; margin-bottom: 5px;">
+                                    <label class="denuncias-admin-config__label-checkbox">
                                         <input type="checkbox" name="notif_nuevo_evento" value="1" checked>
                                         <?php _e('Se agrega un nuevo evento al timeline', 'flavor-chat-ia'); ?>
                                     </label>
-                                    <label style="display: block; margin-bottom: 5px;">
+                                    <label class="denuncias-admin-config__label-checkbox">
                                         <input type="checkbox" name="notif_plazo_proximo" value="1" checked>
                                         <?php _e('El plazo de respuesta esta proximo a vencer', 'flavor-chat-ia'); ?>
                                     </label>
-                                    <label style="display: block; margin-bottom: 5px;">
+                                    <label class="denuncias-admin-config__label-checkbox">
                                         <input type="checkbox" name="notif_silencio" value="1" checked>
                                         <?php _e('Se detecta silencio administrativo', 'flavor-chat-ia'); ?>
                                     </label>
@@ -1845,9 +1867,9 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
             jQuery(document).ready(function($) {
                 // Agregar categoria
                 $('#agregar-categoria').on('click', function() {
-                    var html = '<div class="categoria-item" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">' +
-                        '<input type="text" name="categorias_slug[]" placeholder="<?php _e('Slug', 'flavor-chat-ia'); ?>" style="width: 120px;">' +
-                        '<input type="text" name="categorias_nombre[]" placeholder="<?php _e('Nombre', 'flavor-chat-ia'); ?>" style="flex: 1;">' +
+                    var html = '<div class="categoria-item denuncias-admin-config__categoria-item">' +
+                        '<input type="text" name="categorias_slug[]" placeholder="<?php _e('Slug', 'flavor-chat-ia'); ?>" class="denuncias-admin-config__categoria-slug">' +
+                        '<input type="text" name="categorias_nombre[]" placeholder="<?php _e('Nombre', 'flavor-chat-ia'); ?>" class="denuncias-admin-config__categoria-nombre">' +
                         '<button type="button" class="button eliminar-categoria" title="<?php _e('Eliminar', 'flavor-chat-ia'); ?>">' +
                         '<span class="dashicons dashicons-trash"></span></button></div>';
                     $('#categorias-list').append(html);

@@ -93,7 +93,7 @@ class Flavor_Menu_Organizer {
                 'icon' => 'dashicons-groups',
                 'position' => 25,
                 'patterns' => ['fichaje', 'socios', 'clientes'],
-                'description' => __('Gestión de personas: empleados, socios y clientes', 'flavor-chat-ia')
+                'description' => __('Gestión de personas: empleados, miembros y clientes', 'flavor-chat-ia')
             ],
             'economia' => [
                 'title' => __('Economía', 'flavor-chat-ia'),

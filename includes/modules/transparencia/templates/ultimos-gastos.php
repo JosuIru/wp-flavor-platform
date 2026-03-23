@@ -15,13 +15,23 @@ if (!defined('ABSPATH')) {
 global $wpdb;
 
 $prefijo_tabla = $wpdb->prefix . 'flavor_transparencia_';
-$tabla_gastos = $prefijo_tabla . 'gastos';
+$tabla_gastos = '';
+$tablas_gastos_candidatas = [
+    $prefijo_tabla . 'gastos',
+    $prefijo_tabla . 'movimientos',
+];
+foreach ($tablas_gastos_candidatas as $tabla_candidata) {
+    if (Flavor_Chat_Helpers::tabla_existe($tabla_candidata)) {
+        $tabla_gastos = $tabla_candidata;
+        break;
+    }
+}
 
 // Verificar que la tabla existe
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_gastos)) {
+if ($tabla_gastos === '') {
     echo '<div class="transparencia-aviso transparencia-aviso--info">';
     echo '<span class="dashicons dashicons-info"></span>';
-    echo '<p>' . esc_html__('El sistema de gastos no esta disponible en este momento.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Todavía no hay gastos publicados en esta instalación.', 'flavor-chat-ia') . '</p>';
     echo '</div>';
     return;
 }

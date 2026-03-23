@@ -104,14 +104,21 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
      * Registrar shortcodes
      */
     public function registrar_shortcodes() {
-        add_shortcode('pp_proceso_activo', [$this, 'shortcode_proceso_activo']);
-        add_shortcode('pp_listado_procesos', [$this, 'shortcode_listado_procesos']);
-        add_shortcode('pp_propuestas', [$this, 'shortcode_propuestas']);
-        add_shortcode('pp_detalle_propuesta', [$this, 'shortcode_detalle_propuesta']);
-        add_shortcode('pp_crear_propuesta', [$this, 'shortcode_crear_propuesta']);
-        add_shortcode('pp_mis_propuestas', [$this, 'shortcode_mis_propuestas']);
-        add_shortcode('pp_resultados', [$this, 'shortcode_resultados']);
-        add_shortcode('pp_votacion', [$this, 'shortcode_votacion']);
+        $shortcodes = [
+            'pp_proceso_activo' => 'shortcode_proceso_activo',
+            'pp_listado_procesos' => 'shortcode_listado_procesos',
+            'pp_propuestas' => 'shortcode_propuestas',
+            'pp_detalle_propuesta' => 'shortcode_detalle_propuesta',
+            'pp_crear_propuesta' => 'shortcode_crear_propuesta',
+            'pp_mis_propuestas' => 'shortcode_mis_propuestas',
+            'pp_resultados' => 'shortcode_resultados',
+            'pp_votacion' => 'shortcode_votacion',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -257,7 +264,28 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
         $atts = shortcode_atts([
             'estado' => '',
             'limite' => 10,
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
         ], $atts);
+
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $visual_class_string = implode(' ', $visual_classes);
 
         global $wpdb;
         $tabla_procesos = $wpdb->prefix . 'flavor_pp_procesos';
@@ -285,7 +313,7 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
 
         ob_start();
         ?>
-        <div class="flavor-pp-listado-procesos">
+        <div class="flavor-pp-listado-procesos <?php echo esc_attr($visual_class_string); ?>">
             <?php if (empty($procesos)): ?>
                 <div class="flavor-empty-state">
                     <p><?php esc_html_e('No hay procesos disponibles.', 'flavor-chat-ia'); ?></p>
@@ -334,7 +362,28 @@ class Flavor_Presupuestos_Participativos_Frontend_Controller {
             'limite' => 20,
             'orden' => 'recientes',
             'mostrar_filtros' => 'true',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
         ], $atts);
+
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $atts['visual_class_string'] = implode(' ', $visual_classes);
 
         global $wpdb;
         $tabla_procesos = $wpdb->prefix . 'flavor_pp_procesos';

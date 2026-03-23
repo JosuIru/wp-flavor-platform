@@ -21,6 +21,7 @@ $tabla_actas = $prefijo_tabla . 'actas';
 $tabla_solicitudes = $prefijo_tabla . 'solicitudes_info';
 $tabla_gastos = $prefijo_tabla . 'gastos';
 $tabla_contratos = $prefijo_tabla . 'contratos';
+$base_portal_url = trailingslashit(home_url('/mi-portal/transparencia'));
 
 // Obtener estadisticas generales
 $total_documentos = 0;
@@ -57,42 +58,42 @@ $categorias = [
         'icono' => 'dashicons-chart-pie',
         'color' => '#3b82f6',
         'descripcion' => __('Presupuestos anuales, ejecucion y modificaciones', 'flavor-chat-ia'),
-        'url' => home_url('/transparencia/presupuestos/')
+        'url' => $base_portal_url . 'presupuestos/'
     ],
     'gastos' => [
         'nombre' => __('Gastos', 'flavor-chat-ia'),
         'icono' => 'dashicons-money-alt',
         'color' => '#10b981',
         'descripcion' => __('Detalle de gastos y facturas', 'flavor-chat-ia'),
-        'url' => home_url('/transparencia/gastos/')
+        'url' => $base_portal_url . 'gastos/'
     ],
     'contratos' => [
         'nombre' => __('Contratos', 'flavor-chat-ia'),
         'icono' => 'dashicons-media-document',
         'color' => '#8b5cf6',
         'descripcion' => __('Contratos publicos y licitaciones', 'flavor-chat-ia'),
-        'url' => home_url('/transparencia/contratos/')
+        'url' => $base_portal_url . 'contratos/'
     ],
     'actas' => [
         'nombre' => __('Actas', 'flavor-chat-ia'),
         'icono' => 'dashicons-text-page',
         'color' => '#6366f1',
         'descripcion' => __('Actas de reuniones y sesiones', 'flavor-chat-ia'),
-        'url' => home_url('/transparencia/actas/')
+        'url' => $base_portal_url . 'actas/'
     ],
     'indicadores' => [
         'nombre' => __('Indicadores', 'flavor-chat-ia'),
         'icono' => 'dashicons-chart-bar',
         'color' => '#14b8a6',
         'descripcion' => __('Indicadores de gestion y rendimiento', 'flavor-chat-ia'),
-        'url' => home_url('/transparencia/indicadores/')
+        'url' => $base_portal_url . 'indicadores/'
     ],
     'normativa' => [
         'nombre' => __('Normativa', 'flavor-chat-ia'),
         'icono' => 'dashicons-clipboard',
         'color' => '#f59e0b',
         'descripcion' => __('Reglamentos y ordenanzas', 'flavor-chat-ia'),
-        'url' => home_url('/transparencia/normativa/')
+        'url' => $base_portal_url . 'normativa/'
     ],
 ];
 
@@ -174,7 +175,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
     <section class="transparencia-portal__recientes">
         <div class="transparencia-seccion-header">
             <h2><?php esc_html_e('Documentos recientes', 'flavor-chat-ia'); ?></h2>
-            <a href="<?php echo esc_url(home_url('/transparencia/documentos/')); ?>" class="transparencia-ver-todos">
+            <a href="<?php echo esc_url($base_portal_url . 'documentos/'); ?>" class="transparencia-ver-todos">
                 <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
                 <span class="dashicons dashicons-arrow-right-alt2"></span>
             </a>
@@ -210,7 +211,7 @@ if (Flavor_Chat_Helpers::tabla_existe($tabla_documentos)) {
                 <h3><?php esc_html_e('Derecho de acceso a la informacion', 'flavor-chat-ia'); ?></h3>
                 <p><?php esc_html_e('Puedes solicitar informacion publica que no este disponible en este portal.', 'flavor-chat-ia'); ?></p>
             </div>
-            <a href="<?php echo esc_url(home_url('/transparencia/solicitar/')); ?>" class="transparencia-btn transparencia-btn--primary">
+            <a href="<?php echo esc_url($base_portal_url . 'solicitar/'); ?>" class="transparencia-btn transparencia-btn--primary">
                 <?php esc_html_e('Solicitar informacion', 'flavor-chat-ia'); ?>
             </a>
         </div>

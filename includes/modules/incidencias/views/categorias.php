@@ -176,7 +176,7 @@ foreach ($stats_categorias as $stat) {
 
                     <!-- Acciones -->
                     <div style="padding-top: 15px; border-top: 1px solid #dcdcde;">
-                        <a href="<?php echo admin_url('admin.php?page=flavor-incidencias-tickets&categoria=' . $slug_categoria); ?>" class="button button-primary" style="width: 100%; text-align: center;">
+                        <a href="<?php echo admin_url('admin.php?page=incidencias-todas&categoria=' . $slug_categoria); ?>" class="button button-primary" style="width: 100%; text-align: center;">
                             <span class="dashicons dashicons-visibility"></span>
                             <?php echo esc_html__('Ver Incidencias', 'flavor-chat-ia'); ?>
                         </a>

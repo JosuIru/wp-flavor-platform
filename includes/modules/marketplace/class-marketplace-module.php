@@ -105,6 +105,9 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
             require_once $archivo_install;
         }
 
+        // Asegurar esquema de tablas del módulo en runtime.
+        add_action('init', [$this, 'maybe_create_tables'], 5);
+
         add_action('init', [$this, 'maybe_create_pages']);
         // Registrar en el panel de administración unificado
         $this->registrar_en_panel_unificado();
@@ -138,6 +141,25 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
 
         // Cargar Dashboard Tab
         $this->inicializar_dashboard_tab();
+    }
+
+    /**
+     * Crea tablas del módulo si faltan.
+     *
+     * @return void
+     */
+    public function maybe_create_tables(): void {
+        global $wpdb;
+
+        $tabla_anuncios = $wpdb->prefix . 'flavor_marketplace_anuncios';
+        $tabla_transacciones = $wpdb->prefix . 'flavor_marketplace_transacciones';
+
+        $faltan_tablas = !Flavor_Chat_Helpers::tabla_existe($tabla_anuncios)
+            || !Flavor_Chat_Helpers::tabla_existe($tabla_transacciones);
+
+        if ($faltan_tablas && function_exists('flavor_marketplace_crear_tablas')) {
+            flavor_marketplace_crear_tablas();
+        }
     }
 
     /**
@@ -197,8 +219,31 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
      * Aquí solo se registra marketplace_formulario con implementación local.
      */
     public function register_shortcodes() {
-        // marketplace_listado se registra en el Frontend Controller
-        add_shortcode('marketplace_formulario', [$this, 'shortcode_formulario']);
+        // marketplace_listado se registra en el Frontend Controller.
+        // Este shortcode se deja como proxy para mantener compatibilidad
+        // y delegar en la implementación frontend cuando esté disponible.
+        if (!shortcode_exists('marketplace_formulario')) {
+            add_shortcode('marketplace_formulario', [$this, 'shortcode_formulario_proxy']);
+        }
+    }
+
+    /**
+     * Proxy del shortcode marketplace_formulario.
+     *
+     * Prioriza la implementación del Frontend Controller y deja fallback local
+     * para no romper en contextos donde el controlador no pueda cargarse.
+     *
+     * @param array $atts Atributos del shortcode.
+     * @return string
+     */
+    public function shortcode_formulario_proxy($atts) {
+        self::asegurar_frontend_controller();
+
+        if (class_exists('Flavor_Marketplace_Frontend_Controller')) {
+            return Flavor_Marketplace_Frontend_Controller::get_instance()->shortcode_formulario($atts);
+        }
+
+        return $this->shortcode_formulario($atts);
     }
 
     /**
@@ -335,6 +380,11 @@ class Flavor_Chat_Marketplace_Module extends Flavor_Chat_Module_Base {
                     'slug' => 'marketplace-categorias',
                     'titulo' => __('Categorías', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_pagina_categorias'],
+                ],
+                [
+                    'slug' => 'marketplace-config',
+                    'titulo' => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
             'dashboard_widget' => [$this, 'render_dashboard_widget'],
@@ -1441,6 +1491,13 @@ KNOWLEDGE;
      * Registrar páginas de administración (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Dashboard - página oculta (slug canónico)
@@ -2434,5 +2491,15 @@ KNOWLEDGE;
         }
 
         return $sincronizados;
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_admin_configuracion() {
+        $template_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($template_path)) {
+            include $template_path;
+        }
     }
 }

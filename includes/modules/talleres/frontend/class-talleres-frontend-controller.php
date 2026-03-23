@@ -111,12 +111,21 @@ class Flavor_Talleres_Frontend_Controller {
      * Registrar shortcodes del módulo
      */
     public function registrar_shortcodes() {
-        add_shortcode('talleres_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('talleres_mis_inscripciones', [$this, 'shortcode_mis_inscripciones']);
-        add_shortcode('talleres_calendario', [$this, 'shortcode_calendario']);
-        add_shortcode('talleres_proponer', [$this, 'shortcode_proponer']);
-        add_shortcode('talleres_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('talleres_organizador', [$this, 'shortcode_organizador']);
+        $shortcodes = [
+            'talleres_catalogo' => 'shortcode_catalogo',
+            'talleres_mis_inscripciones' => 'shortcode_mis_inscripciones',
+            'talleres_calendario' => 'shortcode_calendario',
+            'talleres_proponer' => 'shortcode_proponer',
+            'talleres_detalle' => 'shortcode_detalle',
+            'talleres_organizador' => 'shortcode_organizador',
+            'talleres_proximo' => 'shortcode_proximo',
+            'talleres_materiales' => 'shortcode_materiales',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -130,6 +139,13 @@ class Flavor_Talleres_Frontend_Controller {
             'limite' => 12,
             'columnas' => 3,
             'mostrar_filtros' => 'true',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'fecha_inicio',
+            'order' => 'ASC',
         ], $atts);
 
         ob_start();
@@ -225,11 +241,222 @@ class Flavor_Talleres_Frontend_Controller {
     }
 
     /**
+     * Shortcode: Próximo taller (widget compacto para dashboard)
+     */
+    public function shortcode_proximo($atts) {
+        global $wpdb;
+        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+
+        $atts = shortcode_atts([
+            'limite' => 1,
+        ], $atts);
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
+            return '<p class="fmd-widget-empty">' . __('Módulo no configurado.', 'flavor-chat-ia') . '</p>';
+        }
+
+        $proximo = $wpdb->get_row(
+            "SELECT * FROM $tabla_talleres
+             WHERE estado = 'publicado' AND fecha_inicio >= NOW()
+             ORDER BY fecha_inicio ASC
+             LIMIT 1"
+        );
+
+        if (!$proximo) {
+            return '<div class="fmd-widget-empty-state">
+                <span class="dashicons dashicons-calendar-alt"></span>
+                <p>' . __('No hay talleres próximos programados.', 'flavor-chat-ia') . '</p>
+            </div>';
+        }
+
+        $fecha = date_i18n('j M Y', strtotime($proximo->fecha_inicio));
+        $hora = date_i18n('H:i', strtotime($proximo->fecha_inicio));
+        $plazas_disponibles = max(0, ($proximo->plazas_maximas ?? 0) - ($proximo->inscritos ?? 0));
+        $porcentaje_ocupacion = ($proximo->plazas_maximas > 0)
+            ? round((($proximo->inscritos ?? 0) / $proximo->plazas_maximas) * 100)
+            : 0;
+
+        ob_start();
+        ?>
+        <div class="fmd-proximo-item">
+            <div class="fmd-proximo-fecha">
+                <span class="fmd-proximo-dia"><?php echo date_i18n('j', strtotime($proximo->fecha_inicio)); ?></span>
+                <span class="fmd-proximo-mes"><?php echo date_i18n('M', strtotime($proximo->fecha_inicio)); ?></span>
+            </div>
+            <div class="fmd-proximo-info">
+                <h5 class="fmd-proximo-titulo"><?php echo esc_html($proximo->titulo); ?></h5>
+                <div class="fmd-proximo-meta">
+                    <span><span class="dashicons dashicons-clock"></span> <?php echo esc_html($hora); ?></span>
+                    <?php if (!empty($proximo->ubicacion)): ?>
+                        <span><span class="dashicons dashicons-location"></span> <?php echo esc_html($proximo->ubicacion); ?></span>
+                    <?php endif; ?>
+                </div>
+                <div class="fmd-proximo-plazas">
+                    <div class="fmd-progress-bar">
+                        <div class="fmd-progress-fill" style="width: <?php echo $porcentaje_ocupacion; ?>%"></div>
+                    </div>
+                    <span class="fmd-plazas-texto"><?php echo sprintf(__('%d plazas disponibles', 'flavor-chat-ia'), $plazas_disponibles); ?></span>
+                </div>
+            </div>
+        </div>
+        <style>
+        .fmd-proximo-item { display: flex; gap: 1rem; align-items: flex-start; }
+        .fmd-proximo-fecha { background: var(--flavor-primary, #6366f1); color: #fff; border-radius: 8px; padding: 0.5rem 0.75rem; text-align: center; min-width: 50px; }
+        .fmd-proximo-dia { display: block; font-size: 1.25rem; font-weight: 700; line-height: 1; }
+        .fmd-proximo-mes { display: block; font-size: 0.7rem; text-transform: uppercase; opacity: 0.9; }
+        .fmd-proximo-info { flex: 1; }
+        .fmd-proximo-titulo { margin: 0 0 0.25rem; font-size: 0.95rem; font-weight: 600; color: #1f2937; }
+        .fmd-proximo-meta { display: flex; gap: 0.75rem; font-size: 0.8rem; color: #6b7280; margin-bottom: 0.5rem; }
+        .fmd-proximo-meta .dashicons { font-size: 14px; width: 14px; height: 14px; vertical-align: middle; }
+        .fmd-proximo-plazas { font-size: 0.75rem; color: #9ca3af; }
+        .fmd-progress-bar { height: 4px; background: #e5e7eb; border-radius: 2px; margin-bottom: 0.25rem; }
+        .fmd-progress-fill { height: 100%; background: var(--flavor-primary, #6366f1); border-radius: 2px; transition: width 0.3s; }
+        .fmd-widget-empty-state { text-align: center; padding: 1.5rem; color: #9ca3af; }
+        .fmd-widget-empty-state .dashicons { font-size: 32px; width: 32px; height: 32px; margin-bottom: 0.5rem; opacity: 0.5; }
+        </style>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Materiales de talleres (archivos descargables)
+     */
+    public function shortcode_materiales($atts) {
+        if (!is_user_logged_in()) {
+            return '<p class="flavor-login-required">' . __('Inicia sesión para ver los materiales.', 'flavor-chat-ia') . '</p>';
+        }
+
+        global $wpdb;
+        $tabla_materiales = $wpdb->prefix . 'flavor_talleres_materiales';
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_talleres_inscripciones';
+        $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+        $usuario_id = get_current_user_id();
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_materiales)) {
+            return '<p class="flavor-error">' . __('El módulo no está configurado.', 'flavor-chat-ia') . '</p>';
+        }
+
+        // Obtener materiales de talleres en los que está inscrito el usuario
+        $materiales = $wpdb->get_results($wpdb->prepare(
+            "SELECT m.*, t.titulo as taller_titulo, t.id as taller_id
+             FROM $tabla_materiales m
+             INNER JOIN $tabla_talleres t ON m.taller_id = t.id
+             INNER JOIN $tabla_inscripciones i ON t.id = i.taller_id AND i.usuario_id = %d
+             WHERE (m.solo_inscritos = 0 OR i.estado = 'confirmada')
+             ORDER BY m.fecha_subida DESC",
+            $usuario_id
+        ));
+
+        ob_start();
+        ?>
+        <div class="talleres-materiales-lista">
+            <?php if (empty($materiales)): ?>
+                <div class="fmd-empty-state">
+                    <span class="dashicons dashicons-media-document"></span>
+                    <p><?php _e('No hay materiales disponibles.', 'flavor-chat-ia'); ?></p>
+                    <small><?php _e('Los materiales aparecerán aquí cuando te inscribas en talleres que los incluyan.', 'flavor-chat-ia'); ?></small>
+                </div>
+            <?php else: ?>
+                <?php
+                $materiales_por_taller = [];
+                foreach ($materiales as $material) {
+                    $materiales_por_taller[$material->taller_id]['titulo'] = $material->taller_titulo;
+                    $materiales_por_taller[$material->taller_id]['items'][] = $material;
+                }
+                ?>
+                <?php foreach ($materiales_por_taller as $taller_id => $grupo): ?>
+                    <div class="talleres-materiales-grupo">
+                        <h4 class="talleres-materiales-taller"><?php echo esc_html($grupo['titulo']); ?></h4>
+                        <ul class="talleres-materiales-items">
+                            <?php foreach ($grupo['items'] as $mat): ?>
+                                <li class="talleres-material-item">
+                                    <span class="dashicons <?php echo $this->get_material_icon($mat->tipo_archivo ?? 'file'); ?>"></span>
+                                    <div class="talleres-material-info">
+                                        <span class="talleres-material-titulo"><?php echo esc_html($mat->titulo); ?></span>
+                                        <?php if (!empty($mat->descripcion)): ?>
+                                            <small class="talleres-material-desc"><?php echo esc_html($mat->descripcion); ?></small>
+                                        <?php endif; ?>
+                                    </div>
+                                    <a href="<?php echo esc_url($mat->archivo_url); ?>"
+                                       class="talleres-material-download"
+                                       target="_blank"
+                                       download>
+                                        <span class="dashicons dashicons-download"></span>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+        <style>
+        .talleres-materiales-lista { }
+        .talleres-materiales-grupo { margin-bottom: 1.5rem; }
+        .talleres-materiales-taller { font-size: 1rem; font-weight: 600; color: var(--module-color, #6366f1); margin: 0 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e5e7eb; }
+        .talleres-materiales-items { list-style: none; margin: 0; padding: 0; }
+        .talleres-material-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #f9fafb; border-radius: 8px; margin-bottom: 0.5rem; }
+        .talleres-material-item > .dashicons { color: #6b7280; font-size: 20px; width: 20px; height: 20px; }
+        .talleres-material-info { flex: 1; }
+        .talleres-material-titulo { display: block; font-weight: 500; color: #1f2937; }
+        .talleres-material-desc { display: block; color: #6b7280; font-size: 0.8rem; }
+        .talleres-material-download { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--module-color, #6366f1); color: white !important; border-radius: 8px; transition: all 0.2s; }
+        .talleres-material-download:hover { filter: brightness(1.1); transform: scale(1.05); }
+        .fmd-empty-state { text-align: center; padding: 2rem; color: #6b7280; }
+        .fmd-empty-state .dashicons { font-size: 48px; width: 48px; height: 48px; opacity: 0.3; margin-bottom: 1rem; }
+        .fmd-empty-state p { margin: 0 0 0.5rem; font-weight: 500; }
+        .fmd-empty-state small { opacity: 0.7; }
+        </style>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Obtener icono según tipo de archivo
+     */
+    private function get_material_icon($tipo) {
+        $iconos = [
+            'pdf' => 'dashicons-pdf',
+            'doc' => 'dashicons-media-document',
+            'docx' => 'dashicons-media-document',
+            'xls' => 'dashicons-media-spreadsheet',
+            'xlsx' => 'dashicons-media-spreadsheet',
+            'ppt' => 'dashicons-media-interactive',
+            'pptx' => 'dashicons-media-interactive',
+            'zip' => 'dashicons-media-archive',
+            'rar' => 'dashicons-media-archive',
+            'mp4' => 'dashicons-media-video',
+            'mp3' => 'dashicons-media-audio',
+            'jpg' => 'dashicons-format-image',
+            'jpeg' => 'dashicons-format-image',
+            'png' => 'dashicons-format-image',
+            'gif' => 'dashicons-format-image',
+        ];
+        return $iconos[$tipo] ?? 'dashicons-media-default';
+    }
+
+    /**
      * Renderizar catálogo de talleres
      */
     private function render_catalogo($atts) {
         global $wpdb;
         $tabla_talleres = $wpdb->prefix . 'flavor_talleres';
+
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $atts['visual_class_string'] = implode(' ', $visual_classes);
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_talleres)) {
             echo '<p class="flavor-error">' . __('El módulo de talleres no está configurado.', 'flavor-chat-ia') . '</p>';
@@ -244,7 +471,18 @@ class Flavor_Talleres_Frontend_Controller {
             $params[] = $atts['categoria'];
         }
 
-        $sql = "SELECT * FROM $tabla_talleres WHERE " . implode(' AND ', $where) . " ORDER BY fecha_inicio ASC LIMIT %d";
+        // Mapeo de orderby para talleres
+        $orderby_map = [
+            'fecha_inicio' => 'fecha_inicio',
+            'titulo' => 'titulo',
+            'title' => 'titulo',
+            'date' => 'created_at',
+            'plazas' => 'plazas_maximas',
+        ];
+        $orderby_column = $orderby_map[$atts['orderby']] ?? 'fecha_inicio';
+        $order = strtoupper($atts['order']) === 'DESC' ? 'DESC' : 'ASC';
+
+        $sql = "SELECT * FROM $tabla_talleres WHERE " . implode(' AND ', $where) . " ORDER BY {$orderby_column} {$order} LIMIT %d";
         $params[] = intval($atts['limite']);
 
         $talleres = $wpdb->get_results($wpdb->prepare($sql, ...$params));

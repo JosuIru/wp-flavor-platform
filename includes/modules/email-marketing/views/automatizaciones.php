@@ -27,8 +27,8 @@ $triggers_disponibles = [
         'icono' => 'admin-users',
     ],
     'nuevo_socio' => [
-        'nombre' => __('Nuevo socio', 'flavor-chat-ia'),
-        'descripcion' => __('Cuando se registra un nuevo socio', 'flavor-chat-ia'),
+        'nombre' => __('Nuevo miembro', 'flavor-chat-ia'),
+        'descripcion' => __('Cuando se registra un nuevo miembro', 'flavor-chat-ia'),
         'icono' => 'id-alt',
     ],
     'compra_completada' => [

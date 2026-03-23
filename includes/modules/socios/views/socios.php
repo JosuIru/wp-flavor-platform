@@ -25,7 +25,7 @@ if (!empty($_GET['socio_action']) && !empty($_GET['socio_id']) && isset($_GET['_
             $datos_actualizacion['fecha_baja'] = date('Y-m-d');
         }
         $wpdb->update($tabla_socios, $datos_actualizacion, ['id' => $identificador_socio]);
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Estado del socio actualizado.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Estado del miembro actualizado.', 'flavor-chat-ia') . '</p></div>';
     }
 }
 
@@ -97,7 +97,7 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Socios', 'flavor-chat-ia'); ?></h1>
+    <h1 class="wp-heading-inline"><?php echo esc_html__('Gestión de Miembros', 'flavor-chat-ia'); ?></h1>
     <a href="<?php echo admin_url('admin.php?page=socios-altas-bajas'); ?>" class="page-title-action">
         <?php echo esc_html__('Nuevo Socio', 'flavor-chat-ia'); ?>
     </a>
@@ -162,7 +162,7 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
     <!-- Resultados -->
     <p class="socios-resultados-info" style="color: #646970; margin-bottom: 10px;">
         <?php printf(
-            esc_html__('Mostrando %d de %d socios', 'flavor-chat-ia'),
+            esc_html__('Mostrando %d de %d miembros', 'flavor-chat-ia'),
             count($lista_socios),
             $total_registros
         ); ?>
@@ -170,7 +170,7 @@ $bajas_mes = $wpdb->get_var($wpdb->prepare(
 
     <?php if (empty($lista_socios)): ?>
         <div class="notice notice-info">
-            <p><?php echo esc_html__('No se encontraron socios con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
+            <p><?php echo esc_html__('No se encontraron miembros con los filtros aplicados.', 'flavor-chat-ia'); ?></p>
         </div>
     <?php else: ?>
         <table class="widefat striped">

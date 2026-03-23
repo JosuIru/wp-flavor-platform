@@ -71,6 +71,16 @@ minificar_javascript() {
         minificar_archivo_js "${ARCHIVO}"
     done
 
+    # assets/vbp/js/ (Visual Builder Pro)
+    for ARCHIVO in "${DIRECTORIO_PLUGIN}"/assets/vbp/js/*.js; do
+        minificar_archivo_js "${ARCHIVO}"
+    done
+
+    # assets/vbp/js/modules/ (VBP submodulos)
+    for ARCHIVO in "${DIRECTORIO_PLUGIN}"/assets/vbp/js/modules/*.js; do
+        minificar_archivo_js "${ARCHIVO}"
+    done
+
     # admin/js/ (si existe)
     for ARCHIVO in "${DIRECTORIO_PLUGIN}"/admin/js/*.js; do
         minificar_archivo_js "${ARCHIVO}"
@@ -96,6 +106,11 @@ minificar_css() {
         minificar_archivo_css "${ARCHIVO}"
     done
 
+    # assets/vbp/css/ (Visual Builder Pro)
+    for ARCHIVO in "${DIRECTORIO_PLUGIN}"/assets/vbp/css/*.css; do
+        minificar_archivo_css "${ARCHIVO}"
+    done
+
     # admin/css/
     for ARCHIVO in "${DIRECTORIO_PLUGIN}"/admin/css/*.css; do
         minificar_archivo_css "${ARCHIVO}"
@@ -110,6 +125,38 @@ minificar_css() {
     echo "  Total CSS minificados: ${CONTADOR_CSS}"
 }
 
+# --- Minificar solo VBP JS ---
+minificar_vbp_js() {
+    echo ""
+    echo "===== Minificando VBP JavaScript ====="
+    echo ""
+
+    for ARCHIVO in "${DIRECTORIO_PLUGIN}"/assets/vbp/js/*.js; do
+        minificar_archivo_js "${ARCHIVO}"
+    done
+
+    for ARCHIVO in "${DIRECTORIO_PLUGIN}"/assets/vbp/js/modules/*.js; do
+        minificar_archivo_js "${ARCHIVO}"
+    done
+
+    echo ""
+    echo "  Total VBP JS minificados: ${CONTADOR_JS}"
+}
+
+# --- Minificar solo VBP CSS ---
+minificar_vbp_css() {
+    echo ""
+    echo "===== Minificando VBP CSS ====="
+    echo ""
+
+    for ARCHIVO in "${DIRECTORIO_PLUGIN}"/assets/vbp/css/*.css; do
+        minificar_archivo_css "${ARCHIVO}"
+    done
+
+    echo ""
+    echo "  Total VBP CSS minificados: ${CONTADOR_CSS}"
+}
+
 # --- Ejecutar segun parametro ---
 echo "========================================"
 echo "  Build de assets - flavor-chat-ia"
@@ -121,6 +168,16 @@ case "${TIPO_ASSET}" in
         ;;
     css)
         minificar_css
+        ;;
+    vbp)
+        minificar_vbp_js
+        minificar_vbp_css
+        ;;
+    vbp-js)
+        minificar_vbp_js
+        ;;
+    vbp-css)
+        minificar_vbp_css
         ;;
     all|*)
         minificar_javascript

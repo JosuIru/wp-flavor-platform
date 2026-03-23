@@ -100,13 +100,21 @@ class Flavor_Huertos_Urbanos_Frontend_Controller {
      * Registrar shortcodes
      */
     public function registrar_shortcodes() {
-        add_shortcode('huertos_listado', [$this, 'shortcode_listado']);
-        add_shortcode('huertos_mapa', [$this, 'shortcode_mapa']);
-        add_shortcode('huertos_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('huertos_solicitar', [$this, 'shortcode_solicitar']);
-        add_shortcode('huertos_mi_parcela', [$this, 'shortcode_mi_parcela']);
-        add_shortcode('huertos_diario', [$this, 'shortcode_diario']);
-        add_shortcode('huertos_cultivos', [$this, 'shortcode_cultivos']);
+        $shortcodes = [
+            'huertos_listado' => 'shortcode_listado',
+            'huertos_mapa' => 'shortcode_mapa',
+            'huertos_detalle' => 'shortcode_detalle',
+            'huertos_solicitar' => 'shortcode_solicitar',
+            'huertos_mi_parcela' => 'shortcode_mi_parcela',
+            'huertos_diario' => 'shortcode_diario',
+            'huertos_cultivos' => 'shortcode_cultivos',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**

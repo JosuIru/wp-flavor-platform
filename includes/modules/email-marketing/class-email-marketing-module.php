@@ -129,12 +129,14 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
      * Inicialización del módulo
      */
     public function init() {
+        // Garantizar tablas y compatibilidad de esquema en runtime.
+        add_action('init', [$this, 'maybe_create_tables'], 5);
+
         // Cargar dependencias
         $this->load_dependencies();
 
         // Hooks de WordPress
         add_action('admin_menu', [$this, 'add_admin_menu'], 20);
-        add_action('admin_menu', [$this, 'registrar_paginas_admin']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
 
@@ -250,6 +252,32 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Registrar en panel unificado de administración
         $this->registrar_en_panel_unificado();
+    }
+
+    /**
+     * Asegura que existan tablas base y columnas requeridas por las vistas actuales.
+     *
+     * @return void
+     */
+    public function maybe_create_tables() {
+        global $wpdb;
+
+        $tabla_listas = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
+
+        $tabla_listas_existe = (int) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
+                DB_NAME,
+                $tabla_listas
+            )
+        ) > 0;
+
+        if (!$tabla_listas_existe) {
+            $this->crear_tablas_db();
+            $this->crear_lista_por_defecto();
+        }
+
+        $this->ensure_schema_compatibility();
     }
 
     /**
@@ -856,6 +884,97 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Añade columnas de compatibilidad para panel/listados legacy si faltan.
+     *
+     * @return void
+     */
+    private function ensure_schema_compatibility() {
+        global $wpdb;
+
+        $tabla_listas = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
+        $tabla_suscriptores = $wpdb->prefix . self::TABLE_PREFIX . 'suscriptores';
+        $tabla_campanias = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
+        $tabla_envios = $wpdb->prefix . self::TABLE_PREFIX . 'envios';
+
+        if (!(int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
+            DB_NAME,
+            $tabla_listas
+        ))) {
+            return;
+        }
+
+        $columnas_listas = [
+            'tipo' => "ALTER TABLE {$tabla_listas} ADD COLUMN tipo varchar(50) NOT NULL DEFAULT 'newsletter'",
+            'estado' => "ALTER TABLE {$tabla_listas} ADD COLUMN estado varchar(20) NOT NULL DEFAULT 'activa'",
+            'suscriptores_activos' => "ALTER TABLE {$tabla_listas} ADD COLUMN suscriptores_activos int(11) NOT NULL DEFAULT 0",
+            'suscriptores_mes' => "ALTER TABLE {$tabla_listas} ADD COLUMN suscriptores_mes int(11) NOT NULL DEFAULT 0",
+            'tasa_apertura' => "ALTER TABLE {$tabla_listas} ADD COLUMN tasa_apertura decimal(5,2) NOT NULL DEFAULT 0",
+            'tasa_clics' => "ALTER TABLE {$tabla_listas} ADD COLUMN tasa_clics decimal(5,2) NOT NULL DEFAULT 0",
+            'campanas_enviadas' => "ALTER TABLE {$tabla_listas} ADD COLUMN campanas_enviadas int(11) NOT NULL DEFAULT 0",
+            'fecha_creacion' => "ALTER TABLE {$tabla_listas} ADD COLUMN fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP",
+            'ultima_campana' => "ALTER TABLE {$tabla_listas} ADD COLUMN ultima_campana datetime DEFAULT NULL",
+        ];
+
+        $columnas_actuales_listas = array_map('strtolower', (array) $wpdb->get_col("SHOW COLUMNS FROM {$tabla_listas}", 0));
+        foreach ($columnas_listas as $columna => $sql) {
+            if (!in_array(strtolower($columna), $columnas_actuales_listas, true)) {
+                $wpdb->query($sql);
+                $columnas_actuales_listas[] = strtolower($columna);
+            }
+        }
+
+        $tiene_activa = in_array('activa', $columnas_actuales_listas, true);
+        $tiene_estado = in_array('estado', $columnas_actuales_listas, true);
+        if ($tiene_activa && $tiene_estado) {
+            $wpdb->query("UPDATE {$tabla_listas} SET estado = CASE WHEN activa = 1 THEN 'activa' ELSE 'archivada' END WHERE estado = '' OR estado IS NULL");
+        }
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_suscriptores}'") === $tabla_suscriptores) {
+            $columnas_suscriptores = array_map('strtolower', (array) $wpdb->get_col("SHOW COLUMNS FROM {$tabla_suscriptores}", 0));
+            if (!in_array('fecha_alta', $columnas_suscriptores, true)) {
+                $wpdb->query("ALTER TABLE {$tabla_suscriptores} ADD COLUMN fecha_alta datetime DEFAULT CURRENT_TIMESTAMP");
+                if (in_array('fecha_registro', $columnas_suscriptores, true)) {
+                    $wpdb->query("UPDATE {$tabla_suscriptores} SET fecha_alta = fecha_registro WHERE fecha_alta IS NULL");
+                }
+            }
+        }
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_campanias}'") === $tabla_campanias) {
+            $columnas_campanias = array_map('strtolower', (array) $wpdb->get_col("SHOW COLUMNS FROM {$tabla_campanias}", 0));
+            if (!in_array('creado_en', $columnas_campanias, true)) {
+                $wpdb->query("ALTER TABLE {$tabla_campanias} ADD COLUMN creado_en datetime DEFAULT CURRENT_TIMESTAMP");
+                if (in_array('fecha_creacion', $columnas_campanias, true)) {
+                    $wpdb->query("UPDATE {$tabla_campanias} SET creado_en = fecha_creacion WHERE creado_en IS NULL");
+                }
+            }
+            if (!in_array('enviado_en', $columnas_campanias, true)) {
+                $wpdb->query("ALTER TABLE {$tabla_campanias} ADD COLUMN enviado_en datetime DEFAULT NULL");
+                if (in_array('fecha_fin_envio', $columnas_campanias, true)) {
+                    $wpdb->query("UPDATE {$tabla_campanias} SET enviado_en = fecha_fin_envio WHERE enviado_en IS NULL");
+                }
+            }
+        }
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$tabla_envios}'") !== $tabla_envios) {
+            $charset_collate = $wpdb->get_charset_collate();
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+            dbDelta("CREATE TABLE IF NOT EXISTS {$tabla_envios} (
+                id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                campania_id bigint(20) UNSIGNED DEFAULT NULL,
+                suscriptor_id bigint(20) UNSIGNED DEFAULT NULL,
+                email varchar(255) NOT NULL,
+                estado varchar(20) NOT NULL DEFAULT 'pendiente',
+                fecha_envio datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY campania_id (campania_id),
+                KEY suscriptor_id (suscriptor_id),
+                KEY fecha_envio (fecha_envio)
+            ) {$charset_collate};");
+        }
+    }
+
+    /**
      * Crear páginas por defecto
      */
     private function crear_paginas_por_defecto() {
@@ -971,21 +1090,13 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
     /**
      * Añadir menú de administración
+     * Las páginas se registran como ocultas (null parent) y se acceden desde el Panel Unificado
      */
     public function add_admin_menu() {
-        add_menu_page(
-            __('Email Marketing', 'flavor-chat-ia'),
-            __('Email Marketing', 'flavor-chat-ia'),
-            'manage_options',
-            'flavor-email-marketing',
-            [$this, 'render_admin_dashboard'],
-            'dashicons-email-alt',
-            31
-        );
-
+        // Páginas ocultas (accesibles desde Panel Unificado)
         add_submenu_page(
-            'flavor-email-marketing',
-            __('Dashboard', 'flavor-chat-ia'),
+            null, // Oculto en el menú
+            __('Email Marketing - Dashboard', 'flavor-chat-ia'),
             __('Dashboard', 'flavor-chat-ia'),
             'manage_options',
             'flavor-email-marketing',
@@ -993,7 +1104,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         );
 
         add_submenu_page(
-            'flavor-email-marketing',
+            null,
             __('Campañas', 'flavor-chat-ia'),
             __('Campañas', 'flavor-chat-ia'),
             'manage_options',
@@ -1002,7 +1113,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         );
 
         add_submenu_page(
-            'flavor-email-marketing',
+            null,
             __('Automatizaciones', 'flavor-chat-ia'),
             __('Automatizaciones', 'flavor-chat-ia'),
             'manage_options',
@@ -1011,7 +1122,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         );
 
         add_submenu_page(
-            'flavor-email-marketing',
+            null,
             __('Suscriptores', 'flavor-chat-ia'),
             __('Suscriptores', 'flavor-chat-ia'),
             'manage_options',
@@ -1020,7 +1131,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         );
 
         add_submenu_page(
-            'flavor-email-marketing',
+            null,
             __('Listas', 'flavor-chat-ia'),
             __('Listas', 'flavor-chat-ia'),
             'manage_options',
@@ -1029,7 +1140,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         );
 
         add_submenu_page(
-            'flavor-email-marketing',
+            null,
             __('Plantillas', 'flavor-chat-ia'),
             __('Plantillas', 'flavor-chat-ia'),
             'manage_options',
@@ -1038,7 +1149,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         );
 
         add_submenu_page(
-            'flavor-email-marketing',
+            null,
             __('Estadísticas', 'flavor-chat-ia'),
             __('Estadísticas', 'flavor-chat-ia'),
             'manage_options',
@@ -1047,7 +1158,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         );
 
         add_submenu_page(
-            'flavor-email-marketing',
+            null,
             __('Configuración', 'flavor-chat-ia'),
             __('Configuración', 'flavor-chat-ia'),
             'manage_options',
@@ -7275,6 +7386,13 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
      * Registra las paginas de administracion del modulo
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         add_submenu_page(

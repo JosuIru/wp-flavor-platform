@@ -83,7 +83,8 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * Registrar assets CSS y JS
      */
     public function registrar_assets() {
-        $base_url = plugins_url('', dirname(dirname(__FILE__)));
+        // Usar constante global del plugin para ruta confiable
+        $base_url = FLAVOR_CHAT_IA_URL . 'includes/modules/banco-tiempo';
         $version = FLAVOR_CHAT_IA_VERSION ?? '1.0.0';
 
         // CSS
@@ -182,16 +183,24 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
      * Registrar shortcodes del módulo
      */
     public function registrar_shortcodes() {
-        add_shortcode('banco_tiempo_servicios', [$this, 'shortcode_servicios']);
-        add_shortcode('banco_tiempo_mi_saldo', [$this, 'shortcode_mi_saldo']);
-        add_shortcode('banco_tiempo_mis_servicios', [$this, 'shortcode_mis_servicios']);
-        add_shortcode('banco_tiempo_mis_intercambios', [$this, 'shortcode_mis_intercambios']);
-        add_shortcode('banco_tiempo_widget_saldo', [$this, 'shortcode_widget_saldo']);
-        add_shortcode('banco_tiempo_widget_intercambios', [$this, 'shortcode_widget_intercambios']);
-        add_shortcode('banco_tiempo_ofrecer', [$this, 'shortcode_ofrecer']);
-        add_shortcode('banco_tiempo_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('banco_tiempo_ranking', [$this, 'shortcode_ranking']);
-        add_shortcode('banco_tiempo_ultimos_intercambios', [$this, 'shortcode_ultimos_intercambios']);
+        $shortcodes = [
+            'banco_tiempo_servicios' => 'shortcode_servicios',
+            'banco_tiempo_mi_saldo' => 'shortcode_mi_saldo',
+            'banco_tiempo_mis_servicios' => 'shortcode_mis_servicios',
+            'banco_tiempo_mis_intercambios' => 'shortcode_mis_intercambios',
+            'banco_tiempo_widget_saldo' => 'shortcode_widget_saldo',
+            'banco_tiempo_widget_intercambios' => 'shortcode_widget_intercambios',
+            'banco_tiempo_ofrecer' => 'shortcode_ofrecer',
+            'banco_tiempo_detalle' => 'shortcode_detalle',
+            'banco_tiempo_ranking' => 'shortcode_ranking',
+            'banco_tiempo_ultimos_intercambios' => 'shortcode_ultimos_intercambios',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -418,7 +427,30 @@ class Flavor_Banco_Tiempo_Frontend_Controller {
             'mostrar_filtros' => 'true',
             'mostrar_propios' => 'false',
             'comunidad_id' => 0,
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'fecha',
+            'order' => 'DESC',
         ], $atts);
+
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $atts['visual_class_string'] = implode(' ', $visual_classes);
 
         $atts['modo'] = 'catalogo';
 

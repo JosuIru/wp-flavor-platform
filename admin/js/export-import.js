@@ -668,12 +668,516 @@
             const elementoDiv = document.createElement('div');
             elementoDiv.textContent = textoSinEscapar;
             return elementoDiv.innerHTML;
+        },
+
+        // =====================================================================
+        // MIGRACIÓN COMPLETA DEL SITIO
+        // =====================================================================
+
+        /**
+         * Inicializa eventos de migración
+         */
+        initMigration: function() {
+            // Exportar sitio completo
+            $('#flavor-full-export-form').on('submit', this.handleFullExport.bind(this));
+
+            // Dropzone de migración
+            this.initMigrationDropzone();
+
+            // Buscar/Reemplazar
+            $('#flavor-preview-replace').on('click', this.handlePreviewSearchReplace.bind(this));
+            $('#flavor-search-replace-form').on('submit', this.handleApplySearchReplace.bind(this));
+        },
+
+        /**
+         * Exporta el sitio completo
+         */
+        handleFullExport: function(evento) {
+            evento.preventDefault();
+
+            const $formulario = $(evento.currentTarget);
+            const $botonSubmit = $formulario.find('button[type="submit"]');
+            const textoBtnOriginal = $botonSubmit.html();
+
+            const checkboxes = $formulario.find('input[name="export_full[]"]:checked');
+            const opciones = checkboxes.map((indice, elemento) => $(elemento).val()).get();
+
+            $botonSubmit.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Generando paquete...');
+
+            $.ajax({
+                url: flavorExportImport.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'flavor_export_full_site',
+                    nonce: flavorExportImport.nonce,
+                    include_database: opciones.includes('database') ? 'true' : 'false',
+                    include_uploads: opciones.includes('uploads') ? 'true' : 'false',
+                    include_plugins: opciones.includes('plugins') ? 'true' : 'false',
+                    include_themes: opciones.includes('themes') ? 'true' : 'false'
+                },
+                success: (respuesta) => {
+                    if (respuesta.success) {
+                        this.showNotice('success', respuesta.data.message);
+                        // Mostrar enlace de descarga
+                        const $enlaceDescarga = $(`
+                            <div class="flavor-download-ready">
+                                <p><strong>¡Paquete listo!</strong></p>
+                                <a href="${respuesta.data.download_url}" class="button button-primary" download>
+                                    <span class="dashicons dashicons-download"></span>
+                                    Descargar (${respuesta.data.size})
+                                </a>
+                            </div>
+                        `);
+                        $formulario.after($enlaceDescarga);
+                    } else {
+                        this.showNotice('error', respuesta.data.message);
+                    }
+                },
+                error: () => {
+                    this.showNotice('error', 'Error de conexión al generar el paquete.');
+                },
+                complete: () => {
+                    $botonSubmit.prop('disabled', false).html(textoBtnOriginal);
+                }
+            });
+        },
+
+        /**
+         * Inicializa el dropzone de migración
+         */
+        initMigrationDropzone: function() {
+            const $dropzone = $('#flavor-migration-dropzone');
+            const $inputArchivo = $('#flavor-migration-file');
+
+            if (!$dropzone.length) return;
+
+            $dropzone.on('click', () => $inputArchivo.trigger('click'));
+
+            $dropzone.on('dragover dragenter', (evento) => {
+                evento.preventDefault();
+                evento.stopPropagation();
+                $dropzone.addClass('dragover');
+            });
+
+            $dropzone.on('dragleave dragend drop', (evento) => {
+                evento.preventDefault();
+                evento.stopPropagation();
+                $dropzone.removeClass('dragover');
+            });
+
+            $dropzone.on('drop', (evento) => {
+                const archivos = evento.originalEvent.dataTransfer.files;
+                if (archivos.length) {
+                    this.processMigrationFile(archivos[0]);
+                }
+            });
+
+            $inputArchivo.on('change', (evento) => {
+                if (evento.target.files.length) {
+                    this.processMigrationFile(evento.target.files[0]);
+                }
+            });
+        },
+
+        /**
+         * Procesa archivo de migración
+         */
+        processMigrationFile: function(archivo) {
+            if (!archivo.name.endsWith('.zip')) {
+                this.showNotice('error', 'Por favor, selecciona un archivo ZIP válido.');
+                return;
+            }
+
+            const $dropzone = $('#flavor-migration-dropzone');
+            $dropzone.html(`
+                <div class="flavor-dropzone-uploading">
+                    <span class="dashicons dashicons-update spin"></span>
+                    <p>Subiendo ${archivo.name}...</p>
+                    <progress value="0" max="100"></progress>
+                </div>
+            `);
+
+            const formData = new FormData();
+            formData.append('action', 'flavor_import_full_site');
+            formData.append('nonce', flavorExportImport.nonce);
+            formData.append('migration_file', archivo);
+
+            $.ajax({
+                url: flavorExportImport.ajaxUrl,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhr: () => {
+                    const xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', (evento) => {
+                        if (evento.lengthComputable) {
+                            const porcentaje = Math.round((evento.loaded / evento.total) * 100);
+                            $dropzone.find('progress').val(porcentaje);
+                        }
+                    });
+                    return xhr;
+                },
+                success: (respuesta) => {
+                    if (respuesta.success) {
+                        this.showNotice('success', respuesta.data.message);
+                        $dropzone.html(`
+                            <div class="flavor-dropzone-success">
+                                <span class="dashicons dashicons-yes-alt"></span>
+                                <p>Migración importada correctamente</p>
+                                <ul>${respuesta.data.details.map(detalle => `<li>${detalle}</li>`).join('')}</ul>
+                            </div>
+                        `);
+                    } else {
+                        this.showNotice('error', respuesta.data.message);
+                        this.resetMigrationDropzone();
+                    }
+                },
+                error: () => {
+                    this.showNotice('error', 'Error al subir el archivo.');
+                    this.resetMigrationDropzone();
+                }
+            });
+        },
+
+        /**
+         * Resetea el dropzone de migración
+         */
+        resetMigrationDropzone: function() {
+            $('#flavor-migration-dropzone').html(`
+                <div class="flavor-dropzone-content">
+                    <span class="dashicons dashicons-upload"></span>
+                    <p>Arrastra el paquete de migración (.zip) aquí</p>
+                    <input type="file" id="flavor-migration-file" accept=".zip">
+                </div>
+            `);
+            this.initMigrationDropzone();
+        },
+
+        /**
+         * Previsualiza buscar/reemplazar
+         */
+        handlePreviewSearchReplace: function(evento) {
+            evento.preventDefault();
+
+            const urlAnterior = $('#old_url').val().trim();
+            const urlNueva = $('#new_url').val().trim();
+
+            if (!urlAnterior) {
+                this.showNotice('error', 'Ingresa la URL anterior.');
+                return;
+            }
+
+            const $boton = $(evento.currentTarget);
+            const textoOriginal = $boton.text();
+            $boton.prop('disabled', true).text('Analizando...');
+
+            $.ajax({
+                url: flavorExportImport.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'flavor_preview_search_replace',
+                    nonce: flavorExportImport.nonce,
+                    search: urlAnterior,
+                    replace: urlNueva
+                },
+                success: (respuesta) => {
+                    if (respuesta.success) {
+                        const datos = respuesta.data;
+                        let htmlPreview = `<div class="flavor-search-replace-preview">
+                            <h4>Se encontraron ${datos.total} coincidencias:</h4>
+                            <table class="widefat striped">
+                                <thead><tr><th>Tabla</th><th>Columna</th><th>Coincidencias</th></tr></thead>
+                                <tbody>
+                                    ${datos.preview.map(fila => `<tr><td>${fila.tabla}</td><td>${fila.columna}</td><td>${fila.coincidencias}</td></tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>`;
+
+                        $boton.after(htmlPreview);
+                        $('#flavor-apply-replace').prop('disabled', datos.total === 0);
+                    } else {
+                        this.showNotice('error', respuesta.data.message);
+                    }
+                },
+                error: () => {
+                    this.showNotice('error', 'Error al analizar la base de datos.');
+                },
+                complete: () => {
+                    $boton.prop('disabled', false).text(textoOriginal);
+                }
+            });
+        },
+
+        /**
+         * Aplica buscar/reemplazar
+         */
+        handleApplySearchReplace: function(evento) {
+            evento.preventDefault();
+
+            if (!confirm('¿Estás seguro? Esta acción modificará la base de datos. Se creará un backup automático antes de continuar.')) {
+                return;
+            }
+
+            const urlAnterior = $('#old_url').val().trim();
+            const urlNueva = $('#new_url').val().trim();
+
+            const $botonSubmit = $('#flavor-apply-replace');
+            const textoOriginal = $botonSubmit.text();
+            $botonSubmit.prop('disabled', true).text('Aplicando cambios...');
+
+            $.ajax({
+                url: flavorExportImport.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'flavor_apply_search_replace',
+                    nonce: flavorExportImport.nonce,
+                    search: urlAnterior,
+                    replace: urlNueva
+                },
+                success: (respuesta) => {
+                    if (respuesta.success) {
+                        this.showNotice('success', respuesta.data.message);
+                        $('.flavor-search-replace-preview').remove();
+                    } else {
+                        this.showNotice('error', respuesta.data.message);
+                    }
+                },
+                error: () => {
+                    this.showNotice('error', 'Error al aplicar los cambios.');
+                },
+                complete: () => {
+                    $botonSubmit.prop('disabled', true).text(textoOriginal);
+                }
+            });
+        },
+
+        // =====================================================================
+        // SISTEMA DE BACKUPS
+        // =====================================================================
+
+        /**
+         * Inicializa eventos de backups
+         */
+        initBackups: function() {
+            // Crear backup
+            $('#flavor-create-backup-form').on('submit', this.handleCreateBackup.bind(this));
+
+            // Configuración de backups programados
+            $('#flavor-schedule-backup-form').on('submit', this.handleSaveBackupSchedule.bind(this));
+
+            // Acciones en lista de backups
+            $(document).on('click', '.flavor-backup-restore', this.handleRestoreBackup.bind(this));
+            $(document).on('click', '.flavor-backup-download', this.handleDownloadBackup.bind(this));
+            $(document).on('click', '.flavor-backup-delete', this.handleDeleteBackup.bind(this));
+        },
+
+        /**
+         * Crea un backup manual
+         */
+        handleCreateBackup: function(evento) {
+            evento.preventDefault();
+
+            const $formulario = $(evento.currentTarget);
+            const $botonSubmit = $formulario.find('button[type="submit"]');
+            const textoOriginal = $botonSubmit.html();
+
+            const checkboxes = $formulario.find('input[name="backup_type[]"]:checked');
+            const opciones = checkboxes.map((indice, elemento) => $(elemento).val()).get();
+            const nombreBackup = $formulario.find('#backup_name').val();
+
+            $botonSubmit.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Creando backup...');
+
+            $.ajax({
+                url: flavorExportImport.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'flavor_create_backup',
+                    nonce: flavorExportImport.nonce,
+                    backup_name: nombreBackup,
+                    include_database: opciones.includes('database') ? 'true' : 'false',
+                    include_uploads: opciones.includes('uploads') ? 'true' : 'false',
+                    include_plugins: opciones.includes('plugins') ? 'true' : 'false',
+                    include_themes: opciones.includes('themes') ? 'true' : 'false'
+                },
+                success: (respuesta) => {
+                    if (respuesta.success) {
+                        this.showNotice('success', respuesta.data.message);
+                        // Recargar lista de backups
+                        this.refreshBackupList();
+                    } else {
+                        this.showNotice('error', respuesta.data.message);
+                    }
+                },
+                error: () => {
+                    this.showNotice('error', 'Error al crear el backup.');
+                },
+                complete: () => {
+                    $botonSubmit.prop('disabled', false).html(textoOriginal);
+                }
+            });
+        },
+
+        /**
+         * Guarda configuración de backups programados
+         */
+        handleSaveBackupSchedule: function(evento) {
+            evento.preventDefault();
+
+            const $formulario = $(evento.currentTarget);
+            const datos = {
+                action: 'flavor_save_backup_schedule',
+                nonce: flavorExportImport.nonce,
+                backup_enabled: $formulario.find('[name="backup_frequency"]').val() !== 'disabled',
+                backup_frequency: $formulario.find('[name="backup_frequency"]').val(),
+                backup_retain: $formulario.find('[name="backup_retention"]').val(),
+                backup_database: $formulario.find('[name="backup_database"]').is(':checked'),
+                backup_uploads: $formulario.find('[name="backup_uploads"]').is(':checked'),
+                backup_email: $formulario.find('[name="backup_email"]').val()
+            };
+
+            $.ajax({
+                url: flavorExportImport.ajaxUrl,
+                type: 'POST',
+                data: datos,
+                success: (respuesta) => {
+                    if (respuesta.success) {
+                        this.showNotice('success', respuesta.data.message);
+                    } else {
+                        this.showNotice('error', respuesta.data.message);
+                    }
+                },
+                error: () => {
+                    this.showNotice('error', 'Error al guardar la configuración.');
+                }
+            });
+        },
+
+        /**
+         * Restaura un backup
+         */
+        handleRestoreBackup: function(evento) {
+            evento.preventDefault();
+
+            if (!confirm('¿Estás seguro de restaurar este backup? Los datos actuales serán reemplazados.')) {
+                return;
+            }
+
+            const backupId = $(evento.currentTarget).data('backup-id');
+            const $fila = $(evento.currentTarget).closest('tr');
+
+            $fila.addClass('restoring');
+
+            $.ajax({
+                url: flavorExportImport.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'flavor_restore_backup',
+                    nonce: flavorExportImport.nonce,
+                    backup_id: backupId,
+                    restore_database: true,
+                    restore_uploads: true
+                },
+                success: (respuesta) => {
+                    if (respuesta.success) {
+                        this.showNotice('success', respuesta.data.message);
+                        // Recargar página para reflejar cambios
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        this.showNotice('error', respuesta.data.message);
+                    }
+                },
+                error: () => {
+                    this.showNotice('error', 'Error al restaurar el backup.');
+                },
+                complete: () => {
+                    $fila.removeClass('restoring');
+                }
+            });
+        },
+
+        /**
+         * Descarga un backup
+         */
+        handleDownloadBackup: function(evento) {
+            evento.preventDefault();
+
+            const backupId = $(evento.currentTarget).data('backup-id');
+
+            $.ajax({
+                url: flavorExportImport.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'flavor_download_backup',
+                    nonce: flavorExportImport.nonce,
+                    backup_id: backupId
+                },
+                success: (respuesta) => {
+                    if (respuesta.success) {
+                        // Abrir enlace de descarga
+                        window.location.href = respuesta.data.download_url;
+                    } else {
+                        this.showNotice('error', respuesta.data.message);
+                    }
+                },
+                error: () => {
+                    this.showNotice('error', 'Error al obtener el backup.');
+                }
+            });
+        },
+
+        /**
+         * Elimina un backup
+         */
+        handleDeleteBackup: function(evento) {
+            evento.preventDefault();
+
+            if (!confirm('¿Estás seguro de eliminar este backup? Esta acción no se puede deshacer.')) {
+                return;
+            }
+
+            const backupId = $(evento.currentTarget).data('backup-id');
+            const $fila = $(evento.currentTarget).closest('tr');
+
+            $.ajax({
+                url: flavorExportImport.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'flavor_delete_backup',
+                    nonce: flavorExportImport.nonce,
+                    backup_id: backupId
+                },
+                success: (respuesta) => {
+                    if (respuesta.success) {
+                        $fila.fadeOut(300, function() { $(this).remove(); });
+                        this.showNotice('success', respuesta.data.message);
+                    } else {
+                        this.showNotice('error', respuesta.data.message);
+                    }
+                },
+                error: () => {
+                    this.showNotice('error', 'Error al eliminar el backup.');
+                }
+            });
+        },
+
+        /**
+         * Refresca la lista de backups
+         */
+        refreshBackupList: function() {
+            // Recargar sección de backups
+            const $tablaBackups = $('#flavor-backups-table tbody');
+            if ($tablaBackups.length) {
+                location.reload();
+            }
         }
     };
 
     // Inicializar cuando el DOM esté listo
     $(document).ready(function() {
         FlavorExportImport.init();
+        FlavorExportImport.initMigration();
+        FlavorExportImport.initBackups();
     });
 
     // Estilos para el spinner de carga

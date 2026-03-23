@@ -135,7 +135,7 @@ if ($nodo_gestionado) {
                 if ($es_artista) {
                     include dirname(__FILE__) . '/vista-artista.php';
                 } else {
-                    echo '<div class="notice notice-warning"><p>No tienes perfil de artista. <a href="?page=flavor-socios&action=crear-artista">Crea tu perfil de artista</a></p></div>';
+                    echo '<div class="notice notice-warning"><p>No tienes perfil de artista. <a href="?page=socios-dashboard&action=crear-artista">Crea tu perfil de artista</a></p></div>';
                 }
                 break;
 

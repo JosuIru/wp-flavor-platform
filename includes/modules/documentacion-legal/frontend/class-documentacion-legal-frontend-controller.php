@@ -121,8 +121,10 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
         // Dashboard tabs
         add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_dashboard_tab']);
 
-        // Shortcodes adicionales
-        add_shortcode('flavor_documentacion_legal_dashboard', [$this, 'shortcode_dashboard']);
+        // Shortcode adicional sin sobrescribir uno ya registrado.
+        if (!shortcode_exists('flavor_documentacion_legal_dashboard')) {
+            add_shortcode('flavor_documentacion_legal_dashboard', [$this, 'shortcode_dashboard']);
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_documentacion_legal_dashboard_data', [$this, 'ajax_dashboard_data']);
@@ -182,7 +184,8 @@ class Flavor_Documentacion_Legal_Frontend_Controller {
             return $tabs;
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_documentacion_legal')) {
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_documentacion_legal')) {
             return $tabs;
         }
 

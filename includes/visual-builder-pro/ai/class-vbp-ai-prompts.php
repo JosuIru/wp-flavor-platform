@@ -483,4 +483,385 @@ Responde SOLO con la descripción, sin explicaciones.";
             'empatico'     => __( 'Empático / Humano', 'flavor-chat-ia' ),
         );
     }
+
+    /**
+     * Obtiene los tipos de página disponibles para generación completa
+     *
+     * @return array
+     */
+    public function get_page_types() {
+        return array(
+            'landing'       => array(
+                'id'               => 'landing',
+                'name'             => __( 'Landing Page', 'flavor-chat-ia' ),
+                'description'      => __( 'Página de aterrizaje para captar conversiones', 'flavor-chat-ia' ),
+                'default_sections' => array( 'hero', 'features', 'benefits', 'testimonials', 'cta' ),
+            ),
+            'about'         => array(
+                'id'               => 'about',
+                'name'             => __( 'Sobre Nosotros', 'flavor-chat-ia' ),
+                'description'      => __( 'Página para contar la historia de tu empresa', 'flavor-chat-ia' ),
+                'default_sections' => array( 'hero', 'story', 'values', 'team', 'cta' ),
+            ),
+            'services'      => array(
+                'id'               => 'services',
+                'name'             => __( 'Servicios', 'flavor-chat-ia' ),
+                'description'      => __( 'Muestra tus servicios de forma atractiva', 'flavor-chat-ia' ),
+                'default_sections' => array( 'hero', 'services_grid', 'process', 'pricing', 'cta' ),
+            ),
+            'contact'       => array(
+                'id'               => 'contact',
+                'name'             => __( 'Contacto', 'flavor-chat-ia' ),
+                'description'      => __( 'Página de contacto con formulario', 'flavor-chat-ia' ),
+                'default_sections' => array( 'hero', 'contact_info', 'form', 'map', 'faq' ),
+            ),
+            'portfolio'     => array(
+                'id'               => 'portfolio',
+                'name'             => __( 'Portfolio', 'flavor-chat-ia' ),
+                'description'      => __( 'Muestra tus mejores trabajos', 'flavor-chat-ia' ),
+                'default_sections' => array( 'hero', 'work_grid', 'clients', 'testimonials', 'cta' ),
+            ),
+            'product'       => array(
+                'id'               => 'product',
+                'name'             => __( 'Producto', 'flavor-chat-ia' ),
+                'description'      => __( 'Landing para un producto específico', 'flavor-chat-ia' ),
+                'default_sections' => array( 'hero', 'features', 'demo', 'pricing', 'faq', 'cta' ),
+            ),
+            'event'         => array(
+                'id'               => 'event',
+                'name'             => __( 'Evento', 'flavor-chat-ia' ),
+                'description'      => __( 'Página para promocionar un evento', 'flavor-chat-ia' ),
+                'default_sections' => array( 'hero', 'details', 'speakers', 'schedule', 'registration', 'sponsors' ),
+            ),
+            'cooperative'   => array(
+                'id'               => 'cooperative',
+                'name'             => __( 'Cooperativa', 'flavor-chat-ia' ),
+                'description'      => __( 'Página para cooperativas y grupos de consumo', 'flavor-chat-ia' ),
+                'default_sections' => array( 'hero', 'values', 'how_it_works', 'benefits', 'join', 'faq' ),
+            ),
+            'crowdfunding'  => array(
+                'id'               => 'crowdfunding',
+                'name'             => __( 'Crowdfunding', 'flavor-chat-ia' ),
+                'description'      => __( 'Página para campañas de financiación', 'flavor-chat-ia' ),
+                'default_sections' => array( 'hero', 'project', 'rewards', 'team', 'updates', 'faq' ),
+            ),
+            'association'   => array(
+                'id'               => 'association',
+                'name'             => __( 'Asociación / ONG', 'flavor-chat-ia' ),
+                'description'      => __( 'Página para asociaciones y ONGs', 'flavor-chat-ia' ),
+                'default_sections' => array( 'hero', 'mission', 'impact', 'projects', 'team', 'donate', 'cta' ),
+            ),
+        );
+    }
+
+    /**
+     * Obtiene los tipos de sección disponibles
+     *
+     * @return array
+     */
+    public function get_section_types() {
+        return array(
+            'hero'         => array(
+                'id'          => 'hero',
+                'name'        => __( 'Hero / Cabecera', 'flavor-chat-ia' ),
+                'description' => __( 'Sección principal con título, subtítulo y CTA', 'flavor-chat-ia' ),
+            ),
+            'features'     => array(
+                'id'          => 'features',
+                'name'        => __( 'Características', 'flavor-chat-ia' ),
+                'description' => __( 'Grid de características con iconos', 'flavor-chat-ia' ),
+            ),
+            'benefits'     => array(
+                'id'          => 'benefits',
+                'name'        => __( 'Beneficios', 'flavor-chat-ia' ),
+                'description' => __( 'Lista de beneficios con iconos', 'flavor-chat-ia' ),
+            ),
+            'testimonials' => array(
+                'id'          => 'testimonials',
+                'name'        => __( 'Testimonios', 'flavor-chat-ia' ),
+                'description' => __( 'Testimonios de clientes', 'flavor-chat-ia' ),
+            ),
+            'cta'          => array(
+                'id'          => 'cta',
+                'name'        => __( 'Call to Action', 'flavor-chat-ia' ),
+                'description' => __( 'Sección de llamada a la acción', 'flavor-chat-ia' ),
+            ),
+            'story'        => array(
+                'id'          => 'story',
+                'name'        => __( 'Historia', 'flavor-chat-ia' ),
+                'description' => __( 'Cuenta la historia de tu empresa', 'flavor-chat-ia' ),
+            ),
+            'values'       => array(
+                'id'          => 'values',
+                'name'        => __( 'Valores', 'flavor-chat-ia' ),
+                'description' => __( 'Valores y principios', 'flavor-chat-ia' ),
+            ),
+            'team'         => array(
+                'id'          => 'team',
+                'name'        => __( 'Equipo', 'flavor-chat-ia' ),
+                'description' => __( 'Presenta a tu equipo', 'flavor-chat-ia' ),
+            ),
+            'services_grid'=> array(
+                'id'          => 'services_grid',
+                'name'        => __( 'Grid de Servicios', 'flavor-chat-ia' ),
+                'description' => __( 'Muestra tus servicios en grid', 'flavor-chat-ia' ),
+            ),
+            'process'      => array(
+                'id'          => 'process',
+                'name'        => __( 'Proceso', 'flavor-chat-ia' ),
+                'description' => __( 'Pasos de tu proceso de trabajo', 'flavor-chat-ia' ),
+            ),
+            'pricing'      => array(
+                'id'          => 'pricing',
+                'name'        => __( 'Precios', 'flavor-chat-ia' ),
+                'description' => __( 'Tabla de precios', 'flavor-chat-ia' ),
+            ),
+            'faq'          => array(
+                'id'          => 'faq',
+                'name'        => __( 'FAQ', 'flavor-chat-ia' ),
+                'description' => __( 'Preguntas frecuentes', 'flavor-chat-ia' ),
+            ),
+            'contact_info' => array(
+                'id'          => 'contact_info',
+                'name'        => __( 'Información de Contacto', 'flavor-chat-ia' ),
+                'description' => __( 'Datos de contacto', 'flavor-chat-ia' ),
+            ),
+            'form'         => array(
+                'id'          => 'form',
+                'name'        => __( 'Formulario', 'flavor-chat-ia' ),
+                'description' => __( 'Formulario de contacto', 'flavor-chat-ia' ),
+            ),
+            'map'          => array(
+                'id'          => 'map',
+                'name'        => __( 'Mapa', 'flavor-chat-ia' ),
+                'description' => __( 'Mapa de ubicación', 'flavor-chat-ia' ),
+            ),
+            'work_grid'    => array(
+                'id'          => 'work_grid',
+                'name'        => __( 'Portfolio Grid', 'flavor-chat-ia' ),
+                'description' => __( 'Grid de trabajos realizados', 'flavor-chat-ia' ),
+            ),
+            'clients'      => array(
+                'id'          => 'clients',
+                'name'        => __( 'Clientes', 'flavor-chat-ia' ),
+                'description' => __( 'Logos de clientes', 'flavor-chat-ia' ),
+            ),
+            'stats'        => array(
+                'id'          => 'stats',
+                'name'        => __( 'Estadísticas', 'flavor-chat-ia' ),
+                'description' => __( 'Métricas destacadas', 'flavor-chat-ia' ),
+            ),
+            'demo'         => array(
+                'id'          => 'demo',
+                'name'        => __( 'Demo / Video', 'flavor-chat-ia' ),
+                'description' => __( 'Demostración del producto', 'flavor-chat-ia' ),
+            ),
+            'how_it_works' => array(
+                'id'          => 'how_it_works',
+                'name'        => __( 'Cómo Funciona', 'flavor-chat-ia' ),
+                'description' => __( 'Explica el proceso paso a paso', 'flavor-chat-ia' ),
+            ),
+            'join'         => array(
+                'id'          => 'join',
+                'name'        => __( 'Únete', 'flavor-chat-ia' ),
+                'description' => __( 'Formulario de unión', 'flavor-chat-ia' ),
+            ),
+            'mission'      => array(
+                'id'          => 'mission',
+                'name'        => __( 'Misión', 'flavor-chat-ia' ),
+                'description' => __( 'Declaración de misión', 'flavor-chat-ia' ),
+            ),
+            'impact'       => array(
+                'id'          => 'impact',
+                'name'        => __( 'Impacto', 'flavor-chat-ia' ),
+                'description' => __( 'Impacto y resultados', 'flavor-chat-ia' ),
+            ),
+            'projects'     => array(
+                'id'          => 'projects',
+                'name'        => __( 'Proyectos', 'flavor-chat-ia' ),
+                'description' => __( 'Proyectos destacados', 'flavor-chat-ia' ),
+            ),
+            'donate'       => array(
+                'id'          => 'donate',
+                'name'        => __( 'Donar', 'flavor-chat-ia' ),
+                'description' => __( 'Sección de donaciones', 'flavor-chat-ia' ),
+            ),
+            'schedule'     => array(
+                'id'          => 'schedule',
+                'name'        => __( 'Agenda', 'flavor-chat-ia' ),
+                'description' => __( 'Programa del evento', 'flavor-chat-ia' ),
+            ),
+            'speakers'     => array(
+                'id'          => 'speakers',
+                'name'        => __( 'Ponentes', 'flavor-chat-ia' ),
+                'description' => __( 'Presentadores y ponentes', 'flavor-chat-ia' ),
+            ),
+            'registration' => array(
+                'id'          => 'registration',
+                'name'        => __( 'Registro', 'flavor-chat-ia' ),
+                'description' => __( 'Formulario de registro', 'flavor-chat-ia' ),
+            ),
+            'sponsors'     => array(
+                'id'          => 'sponsors',
+                'name'        => __( 'Patrocinadores', 'flavor-chat-ia' ),
+                'description' => __( 'Logos de patrocinadores', 'flavor-chat-ia' ),
+            ),
+            'rewards'      => array(
+                'id'          => 'rewards',
+                'name'        => __( 'Recompensas', 'flavor-chat-ia' ),
+                'description' => __( 'Niveles de recompensa para crowdfunding', 'flavor-chat-ia' ),
+            ),
+            'updates'      => array(
+                'id'          => 'updates',
+                'name'        => __( 'Actualizaciones', 'flavor-chat-ia' ),
+                'description' => __( 'Noticias y actualizaciones', 'flavor-chat-ia' ),
+            ),
+        );
+    }
+
+    /**
+     * Obtiene las secciones predeterminadas para un tipo de página
+     *
+     * @param string $page_type Tipo de página.
+     * @return array
+     */
+    public function get_default_sections_for_page_type( $page_type ) {
+        $page_types = $this->get_page_types();
+        if ( isset( $page_types[ $page_type ]['default_sections'] ) ) {
+            return $page_types[ $page_type ]['default_sections'];
+        }
+        return array( 'hero', 'features', 'cta' );
+    }
+
+    /**
+     * Obtiene el prompt para generar una página completa
+     *
+     * @param string $page_type Tipo de página.
+     * @param array  $sections Secciones a incluir.
+     * @param array  $context Contexto.
+     * @return string
+     */
+    public function get_full_page_prompt( $page_type, $sections, $context = array() ) {
+        $industry = $context['industry'] ?? 'general';
+        $tone = $context['tone'] ?? 'profesional';
+        $company_name = $context['company_name'] ?? 'Mi Empresa';
+        $description = $context['description'] ?? '';
+        $target_audience = $context['target_audience'] ?? '';
+
+        $page_types = $this->get_page_types();
+        $page_type_name = $page_types[ $page_type ]['name'] ?? $page_type;
+
+        $sections_list = implode( ', ', $sections );
+        $sections_descriptions = $this->get_sections_structure_description( $sections );
+
+        $prompt = "Genera el contenido completo para una página web tipo \"{$page_type_name}\".
+
+CONTEXTO:
+- Empresa/Proyecto: {$company_name}
+- Industria/Sector: {$industry}
+- Tono de comunicación: {$tone}";
+
+        if ( ! empty( $description ) ) {
+            $prompt .= "\n- Descripción: {$description}";
+        }
+
+        if ( ! empty( $target_audience ) ) {
+            $prompt .= "\n- Público objetivo: {$target_audience}";
+        }
+
+        $prompt .= "
+
+SECCIONES A GENERAR: {$sections_list}
+
+{$sections_descriptions}
+
+FORMATO DE RESPUESTA:
+Responde con un JSON válido siguiendo esta estructura exacta:
+
+{
+  \"title\": \"Título de la página\",
+  \"meta_description\": \"Meta descripción SEO (max 160 caracteres)\",
+  \"blocks\": [
+    {
+      \"type\": \"section\",
+      \"props\": {
+        \"className\": \"vbp-hero-section\",
+        \"id\": \"hero\"
+      },
+      \"children\": [
+        {
+          \"type\": \"container\",
+          \"children\": [
+            {\"type\": \"heading\", \"props\": {\"level\": 1, \"text\": \"Título aquí\", \"align\": \"center\"}},
+            {\"type\": \"text\", \"props\": {\"content\": \"Subtítulo aquí\", \"align\": \"center\"}},
+            {\"type\": \"button\", \"props\": {\"text\": \"CTA aquí\", \"url\": \"#\", \"style\": \"primary\"}}
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+REGLAS:
+1. Cada sección solicitada debe ser un bloque \"section\" con su ID correspondiente
+2. Usa bloques tipo: heading (nivel 1-6), text, button, image, columns, feature-card, testimonial-card, stat-card, accordion, icon
+3. El contenido debe ser persuasivo, específico y relevante para el sector
+4. No uses texto genérico como \"Lorem ipsum\"
+5. Los textos deben estar en español
+6. Genera contenido realista pero ficticio si no tienes información específica
+7. RESPONDE SOLO CON EL JSON, sin explicaciones adicionales";
+
+        return $prompt;
+    }
+
+    /**
+     * Genera descripción de la estructura de secciones
+     *
+     * @param array $sections Lista de secciones.
+     * @return string
+     */
+    private function get_sections_structure_description( $sections ) {
+        $section_specs = array(
+            'hero'         => 'Hero: Título principal H1, subtítulo, 1-2 botones CTA',
+            'features'     => 'Features: Título H2, grid de 3-4 características con icono, título y descripción corta',
+            'benefits'     => 'Benefits: Título H2, lista de 4-6 beneficios con iconos',
+            'testimonials' => 'Testimonials: Título H2, 2-3 testimonios con cita, autor y cargo',
+            'cta'          => 'CTA: Título, texto breve, botón de acción',
+            'story'        => 'Story: Título H2, 2-3 párrafos contando la historia',
+            'values'       => 'Values: Título H2, grid de 3-4 valores con icono y descripción',
+            'team'         => 'Team: Título H2, grid de 3-4 miembros con nombre, cargo y bio corta',
+            'services_grid'=> 'Services: Título H2, grid de 3-6 servicios con icono, título y descripción',
+            'process'      => 'Process: Título H2, 3-5 pasos numerados con título y descripción',
+            'pricing'      => 'Pricing: Título H2, 2-3 planes con nombre, precio, features y botón',
+            'faq'          => 'FAQ: Título H2, 4-6 preguntas con respuestas (acordeón)',
+            'contact_info' => 'Contact Info: Dirección, teléfono, email, horarios',
+            'form'         => 'Form: Indicador de formulario de contacto',
+            'map'          => 'Map: Indicador de mapa de ubicación',
+            'stats'        => 'Stats: 3-4 estadísticas con número grande y etiqueta',
+            'clients'      => 'Clients: Título H2, indicador de logos de clientes',
+            'work_grid'    => 'Portfolio: Título H2, grid de 4-6 proyectos con imagen y título',
+            'demo'         => 'Demo: Título H2, texto y área para video/demo',
+            'how_it_works' => 'How It Works: Título H2, 3-4 pasos con icono y descripción',
+            'join'         => 'Join: Título H2, beneficios de unirse, formulario',
+            'mission'      => 'Mission: Declaración de misión clara y potente',
+            'impact'       => 'Impact: Título H2, métricas de impacto con estadísticas',
+            'projects'     => 'Projects: Título H2, grid de 3-4 proyectos con descripción',
+            'donate'       => 'Donate: Título, mensaje emotivo, opciones de donación, botón',
+            'schedule'     => 'Schedule: Título H2, agenda del evento con horarios',
+            'speakers'     => 'Speakers: Título H2, grid de ponentes con foto, nombre y bio',
+            'registration' => 'Registration: Título H2, beneficios, formulario de registro',
+            'sponsors'     => 'Sponsors: Título H2, indicador de logos de patrocinadores',
+            'rewards'      => 'Rewards: Título H2, 3-4 niveles de recompensa con precio y descripción',
+            'updates'      => 'Updates: Título H2, lista de últimas actualizaciones',
+        );
+
+        $descriptions = array();
+        foreach ( $sections as $section ) {
+            if ( isset( $section_specs[ $section ] ) ) {
+                $descriptions[] = "- {$section_specs[ $section ]}";
+            }
+        }
+
+        return "ESTRUCTURA DE CADA SECCIÓN:\n" . implode( "\n", $descriptions );
+    }
 }

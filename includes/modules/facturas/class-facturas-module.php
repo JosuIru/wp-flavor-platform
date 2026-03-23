@@ -197,8 +197,12 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['facturas'])) {
             return 0;
         }
+
+        $empresa_id = $this->get_empresa_usuario();
+        $filtro_empresa = $empresa_id ? $wpdb->prepare(" AND empresa_id = %d", $empresa_id) : "";
+
         return (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$this->tablas['facturas']} WHERE estado = 'pendiente'"
+            "SELECT COUNT(*) FROM {$this->tablas['facturas']} WHERE estado = 'pendiente'" . $filtro_empresa
         );
     }
 
@@ -215,9 +219,12 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
             return $stats;
         }
 
+        $empresa_id = $this->get_empresa_usuario();
+        $filtro_empresa = $empresa_id ? $wpdb->prepare(" AND empresa_id = %d", $empresa_id) : "";
+
         // Facturas pendientes
         $pendientes = (int) $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$this->tablas['facturas']} WHERE estado = 'pendiente'"
+            "SELECT COUNT(*) FROM {$this->tablas['facturas']} WHERE estado = 'pendiente'" . $filtro_empresa
         );
         $stats[] = [
             'icon' => 'dashicons-media-text',
@@ -231,7 +238,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         $mes_actual = date('Y-m');
         $total_mes = $wpdb->get_var($wpdb->prepare(
             "SELECT COALESCE(SUM(total), 0) FROM {$this->tablas['facturas']}
-             WHERE DATE_FORMAT(fecha_emision, '%%Y-%%m') = %s AND estado != 'cancelada'",
+             WHERE DATE_FORMAT(fecha_emision, '%%Y-%%m') = %s AND estado != 'cancelada'" . $filtro_empresa,
             $mes_actual
         ));
         $stats[] = [
@@ -318,6 +325,9 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
             echo '<p>' . __('Formulario para crear nueva factura.', 'flavor-chat-ia') . '</p>';
         }
 
+        // Selector CRM opcional para vincular directamente con modulo Clientes.
+        $this->render_selector_cliente_crm($datos_cliente);
+
         echo '<form method="post">';
         wp_nonce_field('facturas_crear', 'facturas_crear_nonce');
 
@@ -357,6 +367,101 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Renderiza selector de cliente CRM (tabla wp_flavor_clientes) para vincular factura.
+     *
+     * @param array $datos_cliente Referencia del cliente actual para preseleccion visual.
+     * @return void
+     */
+    private function render_selector_cliente_crm($datos_cliente) {
+        global $wpdb;
+
+        $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+            return;
+        }
+
+        $clientes = $wpdb->get_results("SELECT id, nombre, email, direccion FROM {$tabla_clientes} ORDER BY nombre ASC LIMIT 300");
+        if (empty($clientes)) {
+            return;
+        }
+
+        echo '<div class="notice notice-info" style="padding:12px 14px; margin-top: 10px;">';
+        echo '<p><strong>' . esc_html__('Cliente CRM', 'flavor-chat-ia') . ':</strong> ';
+        echo '<select id="facturas-cliente-crm-select" style="min-width: 320px;">';
+        echo '<option value="">' . esc_html__('Seleccionar cliente del CRM (opcional)', 'flavor-chat-ia') . '</option>';
+
+        foreach ($clientes as $cliente) {
+            $selected = ((string) ($datos_cliente['tipo'] ?? '') === 'crm_cliente' && (int) ($datos_cliente['id'] ?? 0) === (int) $cliente->id);
+            echo '<option value="' . esc_attr((string) $cliente->id) . '"'
+                . ($selected ? ' selected="selected"' : '')
+                . ' data-nombre="' . esc_attr((string) $cliente->nombre) . '"'
+                . ' data-email="' . esc_attr((string) $cliente->email) . '"'
+                . ' data-direccion="' . esc_attr((string) $cliente->direccion) . '"'
+                . '>' . esc_html((string) $cliente->nombre) . (!empty($cliente->email) ? ' (' . esc_html((string) $cliente->email) . ')' : '') . '</option>';
+        }
+
+        echo '</select></p>';
+        echo '</div>';
+
+        ?>
+        <script>
+        (function() {
+            function byName(name) {
+                return document.querySelector('[name="' + name + '"]');
+            }
+
+            function ensureHidden(name) {
+                var input = byName(name);
+                if (!input) {
+                    input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = name;
+                    var form = document.querySelector('form');
+                    if (form) {
+                        form.appendChild(input);
+                    }
+                }
+                return input;
+            }
+
+            function applyCliente(option) {
+                var nombre = byName('cliente_nombre');
+                var email = byName('cliente_email');
+                var direccion = byName('cliente_direccion');
+                var refId = ensureHidden('cliente_ref_id');
+                var refTipo = ensureHidden('cliente_ref_tipo');
+
+                if (!option || !option.value) {
+                    refId.value = '';
+                    refTipo.value = '';
+                    return;
+                }
+
+                if (nombre) nombre.value = option.dataset.nombre || '';
+                if (email) email.value = option.dataset.email || '';
+                if (direccion) direccion.value = option.dataset.direccion || '';
+                refId.value = option.value;
+                refTipo.value = 'crm_cliente';
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var select = document.getElementById('facturas-cliente-crm-select');
+                if (!select) return;
+
+                select.addEventListener('change', function() {
+                    applyCliente(select.options[select.selectedIndex]);
+                });
+
+                if (select.value) {
+                    applyCliente(select.options[select.selectedIndex]);
+                }
+            });
+        })();
+        </script>
+        <?php
+    }
+
+    /**
      * Obtiene datos del cliente desde parámetros GET
      *
      * Soporta clientes desde: productores (gc_productor), consumidores (usuario WP),
@@ -392,6 +497,14 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         // Obtener datos adicionales según el tipo de cliente
         if ($cliente_id && $cliente_tipo) {
             switch ($cliente_tipo) {
+                case 'crm_cliente':
+                    $crm = $this->obtener_datos_cliente_crm($cliente_id);
+                    if (!empty($crm)) {
+                        $datos = array_merge($datos, $crm);
+                        $datos['tipo'] = 'crm_cliente';
+                    }
+                    break;
+
                 case 'productor':
                     // Productor de Grupos de Consumo (CPT gc_productor)
                     $productor = get_post($cliente_id);
@@ -430,7 +543,14 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
                     break;
 
                 case 'cliente':
-                    // Cliente del módulo Clientes (CPT flavor_cliente)
+                    // Backward compatibility: primero CRM real, luego CPT legacy flavor_cliente.
+                    $crm = $this->obtener_datos_cliente_crm($cliente_id);
+                    if (!empty($crm)) {
+                        $datos = array_merge($datos, $crm);
+                        $datos['tipo'] = 'crm_cliente';
+                        break;
+                    }
+
                     $cliente = get_post($cliente_id);
                     if ($cliente && $cliente->post_type === 'flavor_cliente') {
                         if (empty($datos['nombre'])) {
@@ -447,6 +567,38 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         }
 
         return $datos;
+    }
+
+    /**
+     * Obtiene datos de cliente desde modulo CRM (tabla wp_flavor_clientes).
+     *
+     * @param int $cliente_id ID del cliente CRM.
+     * @return array
+     */
+    private function obtener_datos_cliente_crm($cliente_id) {
+        global $wpdb;
+        $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
+
+        if (!Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
+            return [];
+        }
+
+        $cliente = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, nombre, email, direccion FROM {$tabla_clientes} WHERE id = %d",
+            absint($cliente_id)
+        ));
+
+        if (!$cliente) {
+            return [];
+        }
+
+        return [
+            'id' => (int) $cliente->id,
+            'nombre' => (string) $cliente->nombre,
+            'email' => (string) $cliente->email,
+            'direccion' => (string) $cliente->direccion,
+            'nif' => '',
+        ];
     }
 
     /**
@@ -495,9 +647,13 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
 
     private function render_facturas_resumen() {
         global $wpdb;
+
+        $empresa_id = $this->get_empresa_usuario();
+        $filtro_empresa = $empresa_id ? $wpdb->prepare(" WHERE empresa_id = %d", $empresa_id) : "";
+
         $facturas = $wpdb->get_results(
             "SELECT id, numero_factura, cliente_nombre, total, estado, fecha_emision
-             FROM {$this->tablas['facturas']}
+             FROM {$this->tablas['facturas']}" . $filtro_empresa . "
              ORDER BY fecha_emision DESC
              LIMIT 10"
         );
@@ -586,6 +742,14 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
 
         $where = [];
         $params = [];
+
+        // Filtrar por empresa del usuario actual
+        $empresa_id = $this->get_empresa_usuario();
+        if ($empresa_id) {
+            $where[] = 'empresa_id = %d';
+            $params[] = $empresa_id;
+        }
+
         if ($filtro_cliente) {
             $where[] = 'cliente_id = %d';
             $params[] = $filtro_cliente;
@@ -889,6 +1053,50 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         if (empty($columna_existe)) {
             $wpdb->query("ALTER TABLE {$this->tablas['facturas']} ADD COLUMN cliente_tipo varchar(50) DEFAULT NULL AFTER cliente_id");
         }
+
+        // Migración: añadir columna empresa_id si no existe
+        $this->maybe_add_empresa_id_columns();
+    }
+
+    /**
+     * Añade columna empresa_id a tablas existentes (migración multi-empresa)
+     */
+    private function maybe_add_empresa_id_columns() {
+        global $wpdb;
+
+        // Tabla facturas
+        $columnas_facturas = $wpdb->get_col("DESCRIBE {$this->tablas['facturas']}", 0);
+        if (!in_array('empresa_id', $columnas_facturas)) {
+            $wpdb->query("ALTER TABLE {$this->tablas['facturas']} ADD COLUMN empresa_id bigint(20) unsigned DEFAULT NULL AFTER id");
+            $wpdb->query("ALTER TABLE {$this->tablas['facturas']} ADD INDEX idx_empresa_id (empresa_id)");
+        }
+
+        // Tabla series
+        $columnas_series = $wpdb->get_col("DESCRIBE {$this->tablas['series']}", 0);
+        if (!in_array('empresa_id', $columnas_series)) {
+            $wpdb->query("ALTER TABLE {$this->tablas['series']} ADD COLUMN empresa_id bigint(20) unsigned DEFAULT NULL AFTER id");
+            $wpdb->query("ALTER TABLE {$this->tablas['series']} ADD INDEX idx_empresa_id (empresa_id)");
+        }
+    }
+
+    /**
+     * Obtiene el ID de empresa del usuario actual
+     *
+     * @param int|null $user_id ID del usuario (opcional)
+     * @return int|null ID de empresa o null
+     */
+    public function get_empresa_usuario($user_id = null) {
+        $user_id = $user_id ?: get_current_user_id();
+
+        if (class_exists('Flavor_Chat_Empresas_Module')) {
+            $empresas_module = Flavor_Chat_Module_Loader::get_instance()->get_module('empresas');
+            if ($empresas_module && method_exists($empresas_module, 'get_empresa_actual_usuario')) {
+                return $empresas_module->get_empresa_actual_usuario($user_id);
+            }
+        }
+
+        $empresa_id = get_user_meta($user_id, '_flavor_empresa_actual', true);
+        return $empresa_id ? absint($empresa_id) : null;
     }
 
     /**
@@ -900,6 +1108,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
 
         $sql_facturas = "CREATE TABLE IF NOT EXISTS {$this->tablas['facturas']} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            empresa_id bigint(20) unsigned DEFAULT NULL,
             numero_factura varchar(50) NOT NULL,
             serie varchar(10) DEFAULT 'F',
             numero_serie int(11) NOT NULL,
@@ -931,6 +1140,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
             pdf_ruta varchar(500) DEFAULT NULL,
             PRIMARY KEY (id),
             UNIQUE KEY numero_factura (numero_factura),
+            KEY empresa_id (empresa_id),
             KEY cliente_id (cliente_id),
             KEY estado (estado),
             KEY fecha_emision (fecha_emision),
@@ -981,6 +1191,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
 
         $sql_series = "CREATE TABLE IF NOT EXISTS {$this->tablas['series']} (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            empresa_id bigint(20) unsigned DEFAULT NULL,
             codigo varchar(10) NOT NULL,
             nombre varchar(100) NOT NULL,
             descripcion text DEFAULT NULL,
@@ -990,7 +1201,8 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
             activa tinyint(1) DEFAULT 1,
             predeterminada tinyint(1) DEFAULT 0,
             PRIMARY KEY (id),
-            UNIQUE KEY codigo (codigo)
+            UNIQUE KEY codigo_empresa (codigo, empresa_id),
+            KEY empresa_id (empresa_id)
         ) $charset_collate;";
 
         $sql_config = "CREATE TABLE IF NOT EXISTS {$this->tablas['config']} (
@@ -1176,6 +1388,7 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         $defaults = [
             'estado' => '',
             'cliente_id' => 0,
+            'empresa_id' => null,
             'desde' => '',
             'hasta' => '',
             'busqueda' => '',
@@ -1184,12 +1397,22 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
             'por_pagina' => 20,
             'orderby' => 'fecha_emision',
             'order' => 'DESC',
+            'filtrar_por_empresa' => true,
         ];
 
         $argumentos = wp_parse_args($argumentos, $defaults);
 
         $where = ['1=1'];
         $valores_preparados = [];
+
+        // Filtrar por empresa del usuario actual si no se especifica
+        if ($argumentos['filtrar_por_empresa']) {
+            $empresa_id = $argumentos['empresa_id'] ?? $this->get_empresa_usuario();
+            if ($empresa_id) {
+                $where[] = 'empresa_id = %d';
+                $valores_preparados[] = $empresa_id;
+            }
+        }
 
         if (!empty($argumentos['estado'])) {
             $where[] = 'estado = %s';
@@ -1279,8 +1502,12 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
         // Calcular totales
         $totales = $this->calcular_totales_factura($datos['lineas']);
 
+        // Obtener empresa del usuario actual
+        $empresa_id = $this->get_empresa_usuario();
+
         // Preparar datos de factura
         $datos_factura = [
+            'empresa_id' => $empresa_id,
             'numero_factura' => $numero_factura['numero_completo'],
             'serie' => $serie,
             'numero_serie' => $numero_factura['numero'],
@@ -2559,7 +2786,140 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
      * Shortcode: Pagar factura
      */
     public function shortcode_pagar_factura($atts) {
-        return '<div class="facturas-mensaje facturas-mensaje-info">Sistema de pago online proximamente disponible.</div>';
+        $atts = shortcode_atts([
+            'factura_id' => 0,
+        ], $atts);
+
+        if (!is_user_logged_in()) {
+            return '<div class="facturas-mensaje facturas-mensaje-error">' . esc_html__('Debes iniciar sesión para pagar una factura.', 'flavor-chat-ia') . '</div>';
+        }
+
+        $factura_id = absint($atts['factura_id'] ?: ($_GET['factura_id'] ?? 0));
+        if (!$factura_id) {
+            return '<div class="facturas-mensaje facturas-mensaje-error">' . esc_html__('No se ha indicado ninguna factura.', 'flavor-chat-ia') . '</div>';
+        }
+
+        $factura = $this->obtener_factura($factura_id);
+        if (!$factura) {
+            return '<div class="facturas-mensaje facturas-mensaje-error">' . esc_html__('Factura no encontrada.', 'flavor-chat-ia') . '</div>';
+        }
+
+        $usuario_id = get_current_user_id();
+        if (!current_user_can('manage_options') && (int) $factura->cliente_id !== (int) $usuario_id) {
+            return '<div class="facturas-mensaje facturas-mensaje-error">' . esc_html__('No tienes permisos para pagar esta factura.', 'flavor-chat-ia') . '</div>';
+        }
+
+        $mensaje = '';
+        $tipo_mensaje = 'info';
+        $pendiente = max(0, (float) $factura->total - (float) $factura->total_pagado);
+
+        if (
+            isset($_POST['flavor_facturas_pay_action'])
+            && sanitize_text_field(wp_unslash((string) $_POST['flavor_facturas_pay_action'])) === 'registrar_pago'
+        ) {
+            $nonce = sanitize_text_field(wp_unslash((string) ($_POST['flavor_facturas_pay_nonce'] ?? '')));
+
+            if (!wp_verify_nonce($nonce, 'flavor_facturas_pay_' . $factura_id)) {
+                $mensaje = __('No se pudo validar el pago. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia');
+                $tipo_mensaje = 'error';
+            } else {
+                $datos_pago = [
+                    'factura_id' => $factura_id,
+                    'importe' => (float) ($_POST['importe'] ?? 0),
+                    'fecha_pago' => sanitize_text_field($_POST['fecha_pago'] ?? current_time('Y-m-d')),
+                    'metodo_pago' => sanitize_text_field($_POST['metodo_pago'] ?? 'transferencia'),
+                    'referencia' => sanitize_text_field($_POST['referencia'] ?? ''),
+                    'notas' => sanitize_textarea_field($_POST['notas'] ?? ''),
+                ];
+
+                $resultado_pago = $this->registrar_pago($datos_pago);
+                if (is_wp_error($resultado_pago)) {
+                    $mensaje = $resultado_pago->get_error_message();
+                    $tipo_mensaje = 'error';
+                } else {
+                    $mensaje = __('Pago registrado correctamente.', 'flavor-chat-ia');
+                    $tipo_mensaje = 'success';
+                    $factura = $this->obtener_factura($factura_id);
+                    $pendiente = max(0, (float) $factura->total - (float) $factura->total_pagado);
+                }
+            }
+        }
+
+        $moneda = $this->get_setting('simbolo_moneda');
+
+        ob_start();
+        ?>
+        <div class="facturas-container">
+            <div class="facturas-header">
+                <h3 class="facturas-title"><?php esc_html_e('Pago de factura', 'flavor-chat-ia'); ?></h3>
+            </div>
+
+            <?php if ($mensaje) : ?>
+                <div class="facturas-mensaje facturas-mensaje-<?php echo esc_attr($tipo_mensaje); ?>">
+                    <?php echo esc_html($mensaje); ?>
+                </div>
+            <?php endif; ?>
+
+            <div class="facturas-card">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+                    <div><strong><?php esc_html_e('Factura', 'flavor-chat-ia'); ?>:</strong><br><?php echo esc_html($factura->numero_factura); ?></div>
+                    <div><strong><?php esc_html_e('Cliente', 'flavor-chat-ia'); ?>:</strong><br><?php echo esc_html($factura->cliente_nombre); ?></div>
+                    <div><strong><?php esc_html_e('Estado', 'flavor-chat-ia'); ?>:</strong><br><?php echo esc_html(ucfirst((string) $factura->estado)); ?></div>
+                    <div><strong><?php esc_html_e('Total', 'flavor-chat-ia'); ?>:</strong><br><?php echo esc_html(number_format((float) $factura->total, 2, ',', '.')); ?> <?php echo esc_html($moneda); ?></div>
+                    <div><strong><?php esc_html_e('Pagado', 'flavor-chat-ia'); ?>:</strong><br><?php echo esc_html(number_format((float) $factura->total_pagado, 2, ',', '.')); ?> <?php echo esc_html($moneda); ?></div>
+                    <div><strong><?php esc_html_e('Pendiente', 'flavor-chat-ia'); ?>:</strong><br><?php echo esc_html(number_format((float) $pendiente, 2, ',', '.')); ?> <?php echo esc_html($moneda); ?></div>
+                </div>
+            </div>
+
+            <?php if ($pendiente > 0 && !in_array((string) $factura->estado, ['cancelada'], true)) : ?>
+                <form method="post" class="facturas-form" style="margin-top:16px;">
+                    <input type="hidden" name="flavor_facturas_pay_action" value="registrar_pago">
+                    <input type="hidden" name="flavor_facturas_pay_nonce" value="<?php echo esc_attr(wp_create_nonce('flavor_facturas_pay_' . $factura_id)); ?>">
+
+                    <div class="facturas-form-grid">
+                        <div class="facturas-form-group">
+                            <label for="facturas-pay-importe"><?php esc_html_e('Importe', 'flavor-chat-ia'); ?></label>
+                            <input id="facturas-pay-importe" type="number" min="0.01" step="0.01" max="<?php echo esc_attr(number_format((float) $pendiente, 2, '.', '')); ?>" name="importe" class="facturas-form-input" required value="<?php echo esc_attr(number_format((float) $pendiente, 2, '.', '')); ?>">
+                        </div>
+                        <div class="facturas-form-group">
+                            <label for="facturas-pay-fecha"><?php esc_html_e('Fecha de pago', 'flavor-chat-ia'); ?></label>
+                            <input id="facturas-pay-fecha" type="date" name="fecha_pago" class="facturas-form-input" value="<?php echo esc_attr(current_time('Y-m-d')); ?>" required>
+                        </div>
+                        <div class="facturas-form-group">
+                            <label for="facturas-pay-metodo"><?php esc_html_e('Método de pago', 'flavor-chat-ia'); ?></label>
+                            <select id="facturas-pay-metodo" name="metodo_pago" class="facturas-form-input" required>
+                                <option value="transferencia"><?php esc_html_e('Transferencia', 'flavor-chat-ia'); ?></option>
+                                <option value="tarjeta"><?php esc_html_e('Tarjeta', 'flavor-chat-ia'); ?></option>
+                                <option value="efectivo"><?php esc_html_e('Efectivo', 'flavor-chat-ia'); ?></option>
+                                <option value="bizum"><?php esc_html_e('Bizum', 'flavor-chat-ia'); ?></option>
+                                <option value="otro"><?php esc_html_e('Otro', 'flavor-chat-ia'); ?></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="facturas-form-group" style="margin-top:12px;">
+                        <label for="facturas-pay-referencia"><?php esc_html_e('Referencia (opcional)', 'flavor-chat-ia'); ?></label>
+                        <input id="facturas-pay-referencia" type="text" name="referencia" class="facturas-form-input" maxlength="190">
+                    </div>
+
+                    <div class="facturas-form-group" style="margin-top:12px;">
+                        <label for="facturas-pay-notas"><?php esc_html_e('Notas (opcional)', 'flavor-chat-ia'); ?></label>
+                        <textarea id="facturas-pay-notas" name="notas" rows="3" class="facturas-form-input"></textarea>
+                    </div>
+
+                    <div class="facturas-form-actions" style="margin-top:14px;">
+                        <button type="submit" class="facturas-btn facturas-btn-success"><?php esc_html_e('Registrar pago', 'flavor-chat-ia'); ?></button>
+                    </div>
+                </form>
+            <?php else : ?>
+                <div class="facturas-mensaje facturas-mensaje-info" style="margin-top:16px;">
+                    <?php esc_html_e('Esta factura no tiene importe pendiente.', 'flavor-chat-ia'); ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+
+        return ob_get_clean();
     }
 
     /**

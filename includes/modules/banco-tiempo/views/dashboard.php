@@ -18,6 +18,7 @@ $tabla_transacciones = $wpdb->prefix . 'flavor_banco_tiempo_transacciones';
 // Verificar tablas
 $tabla_servicios_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_servicios'");
 $tabla_transacciones_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_transacciones'");
+$tablas_disponibles = ($tabla_servicios_existe || $tabla_transacciones_existe);
 
 // Estadísticas generales
 $total_servicios_activos = 0;
@@ -102,16 +103,6 @@ if ($tabla_transacciones_existe) {
     );
 }
 
-// Datos de ejemplo
-$usar_datos_ejemplo = ($total_servicios_activos == 0 && $total_intercambios_completados == 0);
-
-if ($usar_datos_ejemplo) {
-    $total_servicios_activos = 45;
-    $total_intercambios_completados = 128;
-    $total_intercambios_pendientes = 12;
-    $total_horas_intercambiadas = 342.5;
-}
-
 // Mapeo de estados a clases CSS
 $estado_badge_classes = [
     'completado' => 'dm-badge--success',
@@ -134,6 +125,13 @@ $estado_labels = [
         flavor_dashboard_help('banco_tiempo');
     }
     ?>
+
+    <?php if (!$tablas_disponibles): ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <p><?php esc_html_e('Faltan tablas del módulo Banco de Tiempo o aún no hay intercambios registrados.', 'flavor-chat-ia'); ?></p>
+    </div>
+    <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
@@ -283,21 +281,6 @@ $estado_labels = [
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            <?php elseif ($usar_datos_ejemplo) : ?>
-                <table class="dm-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">#</th>
-                            <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                            <th style="text-align: right;"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>1</strong></td><td>María García</td><td style="text-align: right;"><strong class="dm-text-success">45.5 h</strong></td></tr>
-                        <tr><td><strong>2</strong></td><td>Carlos López</td><td style="text-align: right;"><strong class="dm-text-success">38.0 h</strong></td></tr>
-                        <tr><td><strong>3</strong></td><td>Ana Martínez</td><td style="text-align: right;"><strong class="dm-text-success">32.5 h</strong></td></tr>
-                    </tbody>
-                </table>
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-star-empty"></span>
@@ -343,21 +326,6 @@ $estado_labels = [
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            <?php elseif ($usar_datos_ejemplo) : ?>
-                <table class="dm-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">#</th>
-                            <th><?php esc_html_e('Usuario', 'flavor-chat-ia'); ?></th>
-                            <th style="text-align: right;"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>1</strong></td><td>Pedro Sánchez</td><td style="text-align: right;"><strong class="dm-text-warning">28.5 h</strong></td></tr>
-                        <tr><td><strong>2</strong></td><td>Laura Gómez</td><td style="text-align: right;"><strong class="dm-text-warning">24.0 h</strong></td></tr>
-                        <tr><td><strong>3</strong></td><td>Roberto Díaz</td><td style="text-align: right;"><strong class="dm-text-warning">19.5 h</strong></td></tr>
-                    </tbody>
-                </table>
             <?php else : ?>
                 <div class="dm-empty">
                     <span class="dashicons dashicons-money-alt"></span>
@@ -374,7 +342,7 @@ $estado_labels = [
                 <span class="dashicons dashicons-update"></span>
                 <?php esc_html_e('Intercambios Recientes', 'flavor-chat-ia'); ?>
             </h2>
-            <?php if (!empty($intercambios_recientes) || $usar_datos_ejemplo) : ?>
+            <?php if (!empty($intercambios_recientes)) : ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=bt-intercambios')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
                     <?php esc_html_e('Ver todos', 'flavor-chat-ia'); ?>
                 </a>
@@ -416,49 +384,6 @@ $estado_labels = [
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        <?php elseif ($usar_datos_ejemplo) : ?>
-            <table class="dm-table">
-                <thead>
-                    <tr>
-                        <th style="width: 50px;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Servicio', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Solicitante', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Proveedor', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php esc_html_e('Horas', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 120px;"><?php esc_html_e('Fecha', 'flavor-chat-ia'); ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>#128</strong></td>
-                        <td>Clases de idiomas</td>
-                        <td>Laura Gómez</td>
-                        <td>María García</td>
-                        <td><strong>2.0 h</strong></td>
-                        <td><span class="dm-badge dm-badge--success">Completado</span></td>
-                        <td>05/03/2026 15:30</td>
-                    </tr>
-                    <tr>
-                        <td><strong>#127</strong></td>
-                        <td>Reparación de bicicleta</td>
-                        <td>Pedro Sánchez</td>
-                        <td>Carlos López</td>
-                        <td><strong>1.5 h</strong></td>
-                        <td><span class="dm-badge dm-badge--info">Aceptado</span></td>
-                        <td>05/03/2026 10:00</td>
-                    </tr>
-                    <tr>
-                        <td><strong>#126</strong></td>
-                        <td>Cuidado de mascotas</td>
-                        <td>Ana Martínez</td>
-                        <td>Roberto Díaz</td>
-                        <td><strong>3.0 h</strong></td>
-                        <td><span class="dm-badge dm-badge--warning">Pendiente</span></td>
-                        <td>04/03/2026 18:45</td>
-                    </tr>
-                </tbody>
-            </table>
         <?php else : ?>
             <div class="dm-empty">
                 <span class="dashicons dashicons-randomize"></span>
@@ -478,9 +403,9 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctxCategorias, {
             type: 'doughnut',
             data: {
-                labels: <?php echo json_encode(!empty($servicios_por_categoria) ? array_map(function($c) { return ucfirst($c->categoria); }, $servicios_por_categoria) : ['Educación', 'Hogar', 'Tecnología', 'Cuidados', 'Otros']); ?>,
+                labels: <?php echo json_encode(array_map(function($c) { return ucfirst($c->categoria); }, $servicios_por_categoria)); ?>,
                 datasets: [{
-                    data: <?php echo json_encode(!empty($servicios_por_categoria) ? array_column($servicios_por_categoria, 'total') : [15, 12, 10, 8, 5]); ?>,
+                    data: <?php echo json_encode(array_column($servicios_por_categoria, 'total')); ?>,
                     backgroundColor: [
                         'var(--dm-primary, #3b82f6)',
                         'var(--dm-success, #22c55e)',
@@ -516,14 +441,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 ?>,
                 datasets: [{
                     label: '<?php esc_attr_e('Intercambios', 'flavor-chat-ia'); ?>',
-                    data: <?php echo json_encode(!empty($actividad_mensual) ? array_column($actividad_mensual, 'total_intercambios') : [18, 22, 15, 28, 35, 32]); ?>,
+                    data: <?php echo json_encode(array_column($actividad_mensual, 'total_intercambios')); ?>,
                     borderColor: 'var(--dm-primary, #3b82f6)',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
                     tension: 0.4,
                     fill: true
                 }, {
                     label: '<?php esc_attr_e('Horas', 'flavor-chat-ia'); ?>',
-                    data: <?php echo json_encode(!empty($actividad_mensual) ? array_column($actividad_mensual, 'total_horas') : [42, 58, 35, 72, 95, 85]); ?>,
+                    data: <?php echo json_encode(array_column($actividad_mensual, 'total_horas')); ?>,
                     borderColor: 'var(--dm-success, #22c55e)',
                     backgroundColor: 'rgba(34, 197, 94, 0.1)',
                     tension: 0.4,

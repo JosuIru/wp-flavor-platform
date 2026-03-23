@@ -22,7 +22,7 @@ $tabla_cuotas_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tab
 $tabla_pagos_existe = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla_pagos)) === $tabla_pagos;
 
 if (!$tabla_socios_existe) {
-    echo '<div class="dm-alert dm-alert--warning">' . esc_html__('La tabla principal de socios no está disponible en esta instalación.', 'flavor-chat-ia') . '</div>';
+    echo '<div class="dm-alert dm-alert--warning">' . esc_html__('La tabla principal de miembros no está disponible en esta instalación.', 'flavor-chat-ia') . '</div>';
     return;
 }
 
@@ -165,7 +165,7 @@ $cuota_badge_classes = [
     <div class="dm-header">
         <div class="dm-header__title">
             <span class="dashicons dashicons-groups"></span>
-            <h1><?php esc_html_e('Dashboard de Socios', 'flavor-chat-ia'); ?></h1>
+            <h1><?php esc_html_e('Dashboard de Miembros', 'flavor-chat-ia'); ?></h1>
         </div>
         <p class="dm-header__description">
             <?php esc_html_e('Panel operativo para controlar la salud de la membresía, las cuotas pendientes y las altas o bajas del mes.', 'flavor-chat-ia'); ?>
@@ -196,7 +196,7 @@ $cuota_badge_classes = [
         </a>
         <a href="<?php echo esc_url(home_url('/mi-portal/socios/')); ?>" class="dm-quick-links__item">
             <span class="dashicons dashicons-external"></span>
-            <span><?php esc_html_e('Portal de socios', 'flavor-chat-ia'); ?></span>
+            <span><?php esc_html_e('Portal de miembros', 'flavor-chat-ia'); ?></span>
         </a>
     </div>
 
@@ -208,7 +208,7 @@ $cuota_badge_classes = [
             </div>
             <div class="dm-stat-card__content">
                 <div class="dm-stat-card__value"><?php echo number_format_i18n($socios_activos); ?></div>
-                <div class="dm-stat-card__label"><?php esc_html_e('Socios activos', 'flavor-chat-ia'); ?></div>
+                <div class="dm-stat-card__label"><?php esc_html_e('Miembros activos', 'flavor-chat-ia'); ?></div>
                 <div class="dm-stat-card__meta"><?php printf(esc_html__('%s%% activación', 'flavor-chat-ia'), number_format_i18n($tasa_activacion, 1)); ?></div>
             </div>
         </div>
@@ -258,7 +258,7 @@ $cuota_badge_classes = [
                 <a href="<?php echo esc_url(admin_url('admin.php?page=socios-listado&estado=activo')); ?>" class="dm-action-card dm-action-card--primary">
                     <span class="dashicons dashicons-groups"></span>
                     <div class="dm-action-card__content">
-                        <strong><?php esc_html_e('Socios activos', 'flavor-chat-ia'); ?></strong>
+                        <strong><?php esc_html_e('Miembros activos', 'flavor-chat-ia'); ?></strong>
                         <span><?php esc_html_e('Abrir base activa de membresía', 'flavor-chat-ia'); ?></span>
                     </div>
                     <?php if ($socios_activos > 0) : ?>
@@ -556,7 +556,7 @@ $cuota_badge_classes = [
                 </div>
                 <div class="dm-focus-list__item dm-focus-list__item--info">
                     <span class="dm-focus-list__label">
-                        <?php printf(esc_html__('%s socios están fuera de estado activo y pueden requerir decisión operativa.', 'flavor-chat-ia'), number_format_i18n($socios_pendientes + $socios_suspendidos + $socios_baja_mes)); ?>
+                        <?php printf(esc_html__('%s miembros están fuera de estado activo y pueden requerir decisión operativa.', 'flavor-chat-ia'), number_format_i18n($socios_pendientes + $socios_suspendidos + $socios_baja_mes)); ?>
                     </span>
                 </div>
             </div>

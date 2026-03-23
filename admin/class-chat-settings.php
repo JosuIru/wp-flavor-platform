@@ -39,12 +39,53 @@ class Flavor_Chat_Settings {
     private function __construct() {
         // Menú registrado centralmente por Flavor_Admin_Menu_Manager
         add_action('admin_init', [$this, 'register_settings']);
+        add_action('admin_init', [$this, 'handle_form_submission']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
 
         // AJAX handlers
         add_action('wp_ajax_flavor_chat_autoconfig', [$this, 'ajax_autoconfig']);
         add_action('wp_ajax_flavor_chat_get_analytics', [$this, 'ajax_get_analytics']);
         add_action('wp_ajax_flavor_test_push_notification', [$this, 'ajax_test_push_notification']);
+        add_action('wp_ajax_flavor_test_ia_connection', [$this, 'ajax_test_ia_connection']);
+    }
+
+    /**
+     * Maneja el envío del formulario de settings
+     */
+    public function handle_form_submission() {
+        if (empty($_POST['flavor_chat_ia_action']) || $_POST['flavor_chat_ia_action'] !== 'save_settings') {
+            return;
+        }
+
+        if (!wp_verify_nonce($_POST['flavor_chat_ia_nonce'] ?? '', 'flavor_chat_ia_settings_save')) {
+            wp_die(__('Nonce inválido', 'flavor-chat-ia'));
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Sin permisos', 'flavor-chat-ia'));
+        }
+
+        // Sanitizar y guardar
+        $input = $_POST['flavor_chat_ia_settings'] ?? [];
+        if (empty($input['_tab']) && !empty($_POST['current_tab'])) {
+            $input['_tab'] = sanitize_text_field($_POST['current_tab']);
+        }
+        $sanitized = $this->sanitize_settings($input);
+        update_option('flavor_chat_ia_settings', $sanitized);
+
+        // Redirigir de vuelta
+        $tab = sanitize_text_field($_POST['current_tab'] ?? 'general');
+        $redirect_url = admin_url('admin.php?page=flavor-chat-config&tab=' . $tab . '&settings-updated=true');
+
+        if (!headers_sent()) {
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
+
+        // Fallback defensivo si algún warning externo ya envió salida.
+        echo '<meta http-equiv="refresh" content="0;url=' . esc_url($redirect_url) . '">';
+        echo '<script>window.location.href=' . wp_json_encode($redirect_url) . ';</script>';
+        exit;
     }
 
     /**
@@ -87,6 +128,40 @@ class Flavor_Chat_Settings {
         register_setting('flavor_chat_ia_settings', 'flavor_chat_ia_settings', [
             'sanitize_callback' => [$this, 'sanitize_settings'],
         ]);
+    }
+
+    /**
+     * Guarda la configuración y verifica persistencia real.
+     * Si falla por caché/filtros externos, fuerza actualización en wp_options.
+     *
+     * @param array $sanitized
+     * @return void
+     */
+    private function save_settings_reliably($sanitized) {
+        update_option('flavor_chat_ia_settings', $sanitized);
+
+        // Limpiar caché de opciones antes de verificar
+        wp_cache_delete('flavor_chat_ia_settings', 'options');
+        wp_cache_delete('alloptions', 'options');
+
+        $stored = get_option('flavor_chat_ia_settings', []);
+        if ($stored === $sanitized) {
+            return;
+        }
+
+        // Fallback robusto: escritura directa en BD
+        global $wpdb;
+        $serialized = maybe_serialize($sanitized);
+        $wpdb->update(
+            $wpdb->options,
+            ['option_value' => $serialized],
+            ['option_name' => 'flavor_chat_ia_settings'],
+            ['%s'],
+            ['%s']
+        );
+
+        wp_cache_delete('flavor_chat_ia_settings', 'options');
+        wp_cache_delete('alloptions', 'options');
     }
 
     /**
@@ -138,16 +213,26 @@ class Flavor_Chat_Settings {
             ];
 
             foreach ($api_key_fields as $field => $value) {
-                $sanitized_value = sanitize_text_field($value);
+                $raw_value = is_string($value) ? wp_unslash($value) : '';
+                $sanitized_value = trim(str_replace(["\r", "\n", "\t"], '', $raw_value));
 
                 // Si el valor está vacío y ya existía uno encriptado, mantener el existente
                 if (empty($sanitized_value) && !empty($existing[$field])) {
                     $sanitized[$field] = $existing[$field];
+                } else if (!empty($sanitized_value) && strpos($sanitized_value, 'enc:v1:') === 0) {
+                    // Nunca re-encriptar un valor ya cifrado (evita doble cifrado accidental).
+                    $sanitized[$field] = $sanitized_value;
                 } else if (!empty($sanitized_value)) {
-                    // Encriptar si hay clase de encriptación disponible
-                    $sanitized[$field] = $encryption
-                        ? $encryption->encrypt($sanitized_value)
-                        : $sanitized_value;
+                    if ($encryption) {
+                        $encrypted_value = $encryption->encrypt($sanitized_value);
+                        $decrypted_check = $encryption->decrypt($encrypted_value);
+                        // Fallback: si no se puede recuperar exactamente, guardar en claro para no romper uso.
+                        $sanitized[$field] = ($decrypted_check === $sanitized_value)
+                            ? $encrypted_value
+                            : $sanitized_value;
+                    } else {
+                        $sanitized[$field] = $sanitized_value;
+                    }
                 } else {
                     $sanitized[$field] = '';
                 }
@@ -166,9 +251,15 @@ class Flavor_Chat_Settings {
             if (empty($sanitized_figma) && !empty($existing['figma_personal_token'])) {
                 $sanitized['figma_personal_token'] = $existing['figma_personal_token'];
             } else if (!empty($sanitized_figma)) {
-                $sanitized['figma_personal_token'] = $encryption
-                    ? $encryption->encrypt($sanitized_figma)
-                    : $sanitized_figma;
+                if ($encryption) {
+                    $encrypted_figma = $encryption->encrypt($sanitized_figma);
+                    $decrypted_figma = $encryption->decrypt($encrypted_figma);
+                    $sanitized['figma_personal_token'] = ($decrypted_figma === $sanitized_figma)
+                        ? $encrypted_figma
+                        : $sanitized_figma;
+                } else {
+                    $sanitized['figma_personal_token'] = $sanitized_figma;
+                }
             } else {
                 $sanitized['figma_personal_token'] = '';
             }
@@ -187,6 +278,16 @@ class Flavor_Chat_Settings {
                 ? $input['ia_provider_backend']
                 : 'default';
             $sanitized['ia_model_backend'] = sanitize_text_field($input['ia_model_backend'] ?? '');
+
+            // Orden de fallback
+            $fallback_order_raw = $input['fallback_order'] ?? '';
+            if (!empty($fallback_order_raw)) {
+                $fallback_order = array_map('sanitize_key', explode(',', $fallback_order_raw));
+                $fallback_order = array_filter($fallback_order, function($p) use ($valid_providers) {
+                    return in_array($p, $valid_providers);
+                });
+                $sanitized['fallback_order'] = array_values($fallback_order);
+            }
         }
 
         // Pestaña Apariencia
@@ -309,7 +410,7 @@ class Flavor_Chat_Settings {
             $sanitized['active_modules'] = isset($input['active_modules']) && is_array($input['active_modules'])
                 ? array_values(array_intersect($input['active_modules'], $valid_modules))
                 : [];
-            update_option('flavor_active_modules', $sanitized['active_modules']);
+            // No escribir a 'flavor_active_modules' - usar solo 'flavor_chat_ia_settings'
 
             // Auto-asignar rol admin del modulo al usuario que activa
             $prev_modules = isset($existing['active_modules']) && is_array($existing['active_modules'])
@@ -506,12 +607,14 @@ class Flavor_Chat_Settings {
      * Encola assets de admin
      */
     public function enqueue_admin_assets($hook) {
-        if (strpos($hook, 'flavor-chat-ia') === false) {
+        // Cargar en páginas de configuración del chat
+        if (strpos($hook, 'flavor-chat-ia') === false && strpos($hook, 'flavor-chat-config') === false) {
             return;
         }
 
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('wp-color-picker');
+        wp_enqueue_script('jquery-ui-sortable');
         wp_enqueue_media();
 
         $sufijo_asset = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
@@ -600,8 +703,10 @@ class Flavor_Chat_Settings {
                 </a>
             </nav>
 
-            <form method="post" action="options.php" id="flavor-chat-settings-form">
-                <?php settings_fields('flavor_chat_ia_settings'); ?>
+            <form method="post" action="" id="flavor-chat-settings-form">
+                <?php wp_nonce_field('flavor_chat_ia_settings_save', 'flavor_chat_ia_nonce'); ?>
+                <input type="hidden" name="flavor_chat_ia_action" value="save_settings">
+                <input type="hidden" name="current_tab" value="<?php echo esc_attr($active_tab); ?>">
 
                 <?php
                 switch ($active_tab) {
@@ -753,6 +858,31 @@ class Flavor_Chat_Settings {
      * Pestaña Proveedores IA
      */
     private function render_providers_tab($settings) {
+        $encryption = class_exists('Flavor_API_Key_Encryption')
+            ? Flavor_API_Key_Encryption::get_instance()
+            : null;
+
+        $provider_key_status = [
+            'claude' => $settings['claude_api_key'] ?? $settings['api_key'] ?? '',
+            'openai' => $settings['openai_api_key'] ?? '',
+            'deepseek' => $settings['deepseek_api_key'] ?? '',
+            'mistral' => $settings['mistral_api_key'] ?? '',
+        ];
+
+        $mask_or_empty = function ($value) use ($encryption) {
+            if (empty($value)) {
+                return '';
+            }
+            if ($encryption) {
+                return $encryption->mask_for_display($value);
+            }
+            $len = strlen((string) $value);
+            if ($len <= 8) {
+                return str_repeat('*', $len);
+            }
+            return substr($value, 0, 4) . str_repeat('*', max(0, $len - 8)) . substr($value, -4);
+        };
+
         ?>
         <input type="hidden" name="flavor_chat_ia_settings[_tab]" value="providers">
 
@@ -769,6 +899,11 @@ class Flavor_Chat_Settings {
                         <option value="deepseek" <?php selected($settings['active_provider'] ?? '', 'deepseek'); ?>>DeepSeek (Gratuito)</option>
                         <option value="mistral" <?php selected($settings['active_provider'] ?? '', 'mistral'); ?>>Mistral AI (Gratuito)</option>
                     </select>
+                    <button type="button" id="flavor-test-connection" class="button" style="margin-left: 10px;">
+                        <span class="dashicons dashicons-yes-alt" style="vertical-align: middle;"></span>
+                        <?php esc_html_e('Verificar Conexión', 'flavor-chat-ia'); ?>
+                    </button>
+                    <span id="flavor-connection-status" style="margin-left: 10px;"></span>
                 </td>
             </tr>
         </table>
@@ -781,8 +916,15 @@ class Flavor_Chat_Settings {
                     <th><?php esc_html_e('API Key', 'flavor-chat-ia'); ?></th>
                     <td>
                         <input type="password" name="flavor_chat_ia_settings[claude_api_key]"
-                               value="<?php echo esc_attr($settings['claude_api_key'] ?? $settings['api_key'] ?? ''); ?>" class="regular-text">
-                        <p class="description"><a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a></p>
+                               value="" autocomplete="new-password" class="regular-text">
+                        <p class="description">
+                            <a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a>
+                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', 'flavor-chat-ia'); ?>
+                            <?php if (!empty($provider_key_status['claude'])) : ?>
+                                <br><strong><?php esc_html_e('Clave guardada:', 'flavor-chat-ia'); ?></strong>
+                                <code><?php echo esc_html($mask_or_empty($provider_key_status['claude'])); ?></code>
+                            <?php endif; ?>
+                        </p>
                     </td>
                 </tr>
                 <tr>
@@ -806,8 +948,15 @@ class Flavor_Chat_Settings {
                     <th><?php esc_html_e('API Key', 'flavor-chat-ia'); ?></th>
                     <td>
                         <input type="password" name="flavor_chat_ia_settings[openai_api_key]"
-                               value="<?php echo esc_attr($settings['openai_api_key'] ?? ''); ?>" class="regular-text">
-                        <p class="description"><a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></p>
+                               value="" autocomplete="new-password" class="regular-text">
+                        <p class="description">
+                            <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
+                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', 'flavor-chat-ia'); ?>
+                            <?php if (!empty($provider_key_status['openai'])) : ?>
+                                <br><strong><?php esc_html_e('Clave guardada:', 'flavor-chat-ia'); ?></strong>
+                                <code><?php echo esc_html($mask_or_empty($provider_key_status['openai'])); ?></code>
+                            <?php endif; ?>
+                        </p>
                     </td>
                 </tr>
                 <tr>
@@ -832,8 +981,15 @@ class Flavor_Chat_Settings {
                     <th><?php esc_html_e('API Key', 'flavor-chat-ia'); ?></th>
                     <td>
                         <input type="password" name="flavor_chat_ia_settings[deepseek_api_key]"
-                               value="<?php echo esc_attr($settings['deepseek_api_key'] ?? ''); ?>" class="regular-text">
-                        <p class="description"><a href="https://platform.deepseek.com/" target="_blank">platform.deepseek.com</a></p>
+                               value="" autocomplete="new-password" class="regular-text">
+                        <p class="description">
+                            <a href="https://platform.deepseek.com/" target="_blank">platform.deepseek.com</a>
+                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', 'flavor-chat-ia'); ?>
+                            <?php if (!empty($provider_key_status['deepseek'])) : ?>
+                                <br><strong><?php esc_html_e('Clave guardada:', 'flavor-chat-ia'); ?></strong>
+                                <code><?php echo esc_html($mask_or_empty($provider_key_status['deepseek'])); ?></code>
+                            <?php endif; ?>
+                        </p>
                     </td>
                 </tr>
                 <tr>
@@ -857,8 +1013,15 @@ class Flavor_Chat_Settings {
                     <th><?php esc_html_e('API Key', 'flavor-chat-ia'); ?></th>
                     <td>
                         <input type="password" name="flavor_chat_ia_settings[mistral_api_key]"
-                               value="<?php echo esc_attr($settings['mistral_api_key'] ?? ''); ?>" class="regular-text">
-                        <p class="description"><a href="https://console.mistral.ai/" target="_blank">console.mistral.ai</a></p>
+                               value="" autocomplete="new-password" class="regular-text">
+                        <p class="description">
+                            <a href="https://console.mistral.ai/" target="_blank">console.mistral.ai</a>
+                            · <?php esc_html_e('Deja vacío para mantener la clave actual.', 'flavor-chat-ia'); ?>
+                            <?php if (!empty($provider_key_status['mistral'])) : ?>
+                                <br><strong><?php esc_html_e('Clave guardada:', 'flavor-chat-ia'); ?></strong>
+                                <code><?php echo esc_html($mask_or_empty($provider_key_status['mistral'])); ?></code>
+                            <?php endif; ?>
+                        </p>
                     </td>
                 </tr>
                 <tr>
@@ -985,8 +1148,115 @@ class Flavor_Chat_Settings {
         </div>
         <?php endforeach; ?>
 
+        <!-- Orden de Fallback -->
+        <hr style="margin: 30px 0;">
+        <h2><?php esc_html_e('Orden de Fallback', 'flavor-chat-ia'); ?></h2>
+        <p class="description"><?php esc_html_e('Si el proveedor principal falla (error de red, límite de API, etc.), se usará automáticamente el siguiente proveedor configurado. Arrastra para cambiar el orden de prioridad.', 'flavor-chat-ia'); ?></p>
+
+        <?php
+        // Obtener engines configurados
+        $configured_providers = [];
+        $all_providers = ['claude', 'openai', 'deepseek', 'mistral'];
+        $provider_names = [
+            'claude' => '🟣 Claude',
+            'openai' => '🟢 OpenAI',
+            'deepseek' => '🔵 DeepSeek',
+            'mistral' => '🟠 Mistral',
+        ];
+
+        foreach ($all_providers as $provider_id) {
+            $key_field = ($provider_id === 'claude') ? 'claude_api_key' : $provider_id . '_api_key';
+            $has_key = !empty($settings[$key_field]) || ($provider_id === 'claude' && !empty($settings['api_key']));
+            $configured_providers[$provider_id] = $has_key;
+        }
+
+        // Orden guardado
+        $saved_order = $settings['fallback_order'] ?? [];
+        if (empty($saved_order)) {
+            $saved_order = array_keys(array_filter($configured_providers));
+        }
+
+        // Asegurar que todos los configurados estén en el orden
+        foreach ($configured_providers as $provider_id => $is_configured) {
+            if ($is_configured && !in_array($provider_id, $saved_order)) {
+                $saved_order[] = $provider_id;
+            }
+        }
+        ?>
+
+        <div style="border: 1px solid #c3c4c7; padding: 20px; margin: 15px 0; border-radius: 6px; background: #fff;">
+            <div id="fallback-order-list" style="display: flex; flex-direction: column; gap: 8px;">
+                <?php
+                $position = 1;
+                foreach ($saved_order as $provider_id):
+                    if (!isset($configured_providers[$provider_id])) continue;
+                    $is_configured = $configured_providers[$provider_id];
+                ?>
+                <div class="fallback-item <?php echo $is_configured ? 'configured' : 'not-configured'; ?>"
+                     data-provider="<?php echo esc_attr($provider_id); ?>"
+                     style="display: flex; align-items: center; padding: 12px 15px; background: <?php echo $is_configured ? '#f0fdf4' : '#fef2f2'; ?>; border: 1px solid <?php echo $is_configured ? '#86efac' : '#fecaca'; ?>; border-radius: 6px; cursor: <?php echo $is_configured ? 'grab' : 'not-allowed'; ?>;">
+                    <span class="dashicons dashicons-menu" style="margin-right: 10px; color: #9ca3af;"></span>
+                    <span class="position-number" style="background: <?php echo $is_configured ? '#22c55e' : '#ef4444'; ?>; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; margin-right: 12px;">
+                        <?php echo $is_configured ? $position++ : '—'; ?>
+                    </span>
+                    <span style="font-weight: 500; flex: 1;"><?php echo esc_html($provider_names[$provider_id]); ?></span>
+                    <?php if ($is_configured): ?>
+                        <span style="color: #16a34a; font-size: 13px;">✓ Configurado</span>
+                    <?php else: ?>
+                        <span style="color: #dc2626; font-size: 13px;">✗ Sin API key</span>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+
+                <?php
+                // Añadir los no configurados que no están en el orden
+                foreach ($configured_providers as $provider_id => $is_configured):
+                    if (in_array($provider_id, $saved_order)) continue;
+                ?>
+                <div class="fallback-item not-configured"
+                     data-provider="<?php echo esc_attr($provider_id); ?>"
+                     style="display: flex; align-items: center; padding: 12px 15px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; cursor: not-allowed;">
+                    <span class="dashicons dashicons-menu" style="margin-right: 10px; color: #9ca3af;"></span>
+                    <span class="position-number" style="background: #ef4444; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; margin-right: 12px;">—</span>
+                    <span style="font-weight: 500; flex: 1;"><?php echo esc_html($provider_names[$provider_id]); ?></span>
+                    <span style="color: #dc2626; font-size: 13px;">✗ Sin API key</span>
+                </div>
+                <?php endforeach; ?>
+            </div>
+
+            <input type="hidden" name="flavor_chat_ia_settings[fallback_order]" id="fallback-order-input"
+                   value="<?php echo esc_attr(implode(',', $saved_order)); ?>">
+
+            <p style="margin-top: 15px; margin-bottom: 0; color: #6b7280; font-size: 13px;">
+                <span class="dashicons dashicons-info" style="font-size: 16px; vertical-align: middle;"></span>
+                <?php esc_html_e('Solo los proveedores con API key configurada pueden usarse como fallback.', 'flavor-chat-ia'); ?>
+            </p>
+        </div>
+
         <script>
         jQuery(function($) {
+            // Sortable para el orden de fallback
+            if (typeof $.fn.sortable !== 'undefined') {
+                $('#fallback-order-list').sortable({
+                    items: '.fallback-item.configured',
+                    handle: '.dashicons-menu',
+                    axis: 'y',
+                    cursor: 'grabbing',
+                    update: function(event, ui) {
+                        var order = [];
+                        var position = 1;
+                        $('#fallback-order-list .fallback-item').each(function() {
+                            var provider = $(this).data('provider');
+                            if ($(this).hasClass('configured')) {
+                                $(this).find('.position-number').text(position++);
+                                order.push(provider);
+                            }
+                        });
+                        $('#fallback-order-input').val(order.join(','));
+                    }
+                });
+            }
+
             // Highlight proveedor activo
             function highlightProvider() {
                 var active = $('#active_provider').val();
@@ -1086,6 +1356,48 @@ class Flavor_Chat_Settings {
                 }).fail(function() {
                     $btn.prop('disabled', false);
                     $status.html('<span style="color:#dc2626;">❌ <?php echo esc_js(__('Error de red', 'flavor-chat-ia')); ?></span>');
+                });
+            });
+
+            // Verificar conexión IA
+            $('#flavor-test-connection').on('click', function() {
+                var $btn = $(this);
+                var $status = $('#flavor-connection-status');
+                var provider = $('#active_provider').val() || '';
+                var providerApiInputs = {
+                    claude: $('input[name="flavor_chat_ia_settings[claude_api_key]"]').val() || '',
+                    openai: $('input[name="flavor_chat_ia_settings[openai_api_key]"]').val() || '',
+                    deepseek: $('input[name="flavor_chat_ia_settings[deepseek_api_key]"]').val() || '',
+                    mistral: $('input[name="flavor_chat_ia_settings[mistral_api_key]"]').val() || ''
+                };
+                var providerModelInputs = {
+                    claude: $('select[name="flavor_chat_ia_settings[claude_model]"]').val() || '',
+                    openai: $('select[name="flavor_chat_ia_settings[openai_model]"]').val() || '',
+                    deepseek: $('select[name="flavor_chat_ia_settings[deepseek_model]"]').val() || '',
+                    mistral: $('select[name="flavor_chat_ia_settings[mistral_model]"]').val() || ''
+                };
+                var inputApiKey = providerApiInputs[provider] || '';
+                var inputModel = providerModelInputs[provider] || '';
+
+                $btn.prop('disabled', true);
+                $status.html('<span style="color:#666;"><span class="spinner is-active" style="float:none;margin:0 5px 0 0;"></span><?php echo esc_js(__('Verificando...', 'flavor-chat-ia')); ?></span>');
+
+                $.post(ajaxurl, {
+                    action: 'flavor_test_ia_connection',
+                    nonce: flavorChatAdmin.nonce,
+                    provider: provider,
+                    api_key: inputApiKey,
+                    model: inputModel
+                }, function(response) {
+                    $btn.prop('disabled', false);
+                    if (response.success) {
+                        $status.html('<span style="color:#16a34a;font-weight:500;">' + response.data.message + '</span>');
+                    } else {
+                        $status.html('<span style="color:#dc2626;">' + response.data.message + '</span>');
+                    }
+                }).fail(function() {
+                    $btn.prop('disabled', false);
+                    $status.html('<span style="color:#dc2626;">❌ <?php echo esc_js(__('Error de conexión', 'flavor-chat-ia')); ?></span>');
                 });
             });
         });
@@ -1682,8 +1994,8 @@ class Flavor_Chat_Settings {
                 'requires' => null,
             ],
             'socios' => [
-                'name' => __('Gestión de Socios', 'flavor-chat-ia'),
-                'description' => __('Gestión de socios, cuotas y membresías desde la app móvil.', 'flavor-chat-ia'),
+                'name' => __('Gestión de Miembros', 'flavor-chat-ia'),
+                'description' => __('Gestión de miembros, cuotas y membresías desde la app móvil.', 'flavor-chat-ia'),
                 'requires' => null,
             ],
             'incidencias' => [
@@ -3613,6 +3925,116 @@ Usa colores profesionales que combinen con el tipo de negocio.",
         } else {
             $error_msg = $resultado['error'] ?? __('Error desconocido al enviar push.', 'flavor-chat-ia');
             wp_send_json_error(['message' => $error_msg]);
+        }
+    }
+
+    /**
+     * Verifica la conexión con el proveedor de IA activo
+     */
+    public function ajax_test_ia_connection() {
+        try {
+            check_ajax_referer('flavor_chat_admin_nonce', 'nonce');
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(['message' => __('Sin permisos', 'flavor-chat-ia')]);
+            }
+
+            // Verificar que el Engine Manager esté disponible
+            if (!class_exists('Flavor_Engine_Manager')) {
+                wp_send_json_error([
+                    'message' => __('❌ Flavor_Engine_Manager no existe. Verifica que el plugin esté correctamente instalado.', 'flavor-chat-ia'),
+                ]);
+            }
+
+            $engine_manager = Flavor_Engine_Manager::get_instance();
+            $settings = get_option('flavor_chat_ia_settings', []);
+            $active_provider = $settings['active_provider'] ?? 'claude';
+            $requested_provider = sanitize_key($_POST['provider'] ?? $active_provider);
+            $valid_providers = ['claude', 'openai', 'deepseek', 'mistral'];
+            if (!in_array($requested_provider, $valid_providers, true)) {
+                $requested_provider = $active_provider;
+            }
+
+            $engine = $engine_manager->get_engine($requested_provider);
+
+            if (!$engine) {
+                $engines_disponibles = array_keys($engine_manager->get_engines());
+                wp_send_json_error([
+                    'message' => sprintf(
+                        __('❌ No hay motor disponible para el proveedor %1$s. Proveedor activo guardado: %2$s. Motores disponibles: %3$s', 'flavor-chat-ia'),
+                        $requested_provider,
+                        $active_provider,
+                        implode(', ', $engines_disponibles) ?: 'ninguno'
+                    ),
+                ]);
+            }
+
+            $input_api_key = trim((string) wp_unslash($_POST['api_key'] ?? ''));
+            if ($input_api_key !== '') {
+                $verification = $engine->verify_api_key($input_api_key);
+                if (!empty($verification['valid'])) {
+                    wp_send_json_success([
+                        'message' => sprintf(
+                            __('✅ Conexión exitosa con %s', 'flavor-chat-ia'),
+                            $engine->get_name()
+                        ),
+                        'provider' => $engine->get_id(),
+                        'mode' => 'direct',
+                    ]);
+                }
+
+                wp_send_json_error([
+                    'message' => sprintf(
+                        __('❌ Error de conexión con %1$s: %2$s', 'flavor-chat-ia'),
+                        $engine->get_name(),
+                        $verification['error'] ?? __('API key inválida o sin saldo.', 'flavor-chat-ia')
+                    ),
+                ]);
+            }
+
+            // Verificar si está configurado
+            if (!$engine->is_configured()) {
+                wp_send_json_error([
+                    'message' => sprintf(
+                        __('❌ %1$s no tiene API key guardada. Guarda la configuración o pega una clave temporal para verificar.', 'flavor-chat-ia'),
+                        $engine->get_name()
+                    ),
+                ]);
+            }
+
+            // Hacer un mensaje de prueba
+            $test_messages = [
+                ['role' => 'user', 'content' => 'Responde solo con: OK']
+            ];
+
+            $response = $engine->send_message($test_messages, 'Eres un asistente de prueba. Responde brevemente.', []);
+
+        if ($response['success']) {
+            wp_send_json_success([
+                'message' => sprintf(
+                    __('✅ Conexión exitosa con %s', 'flavor-chat-ia'),
+                    $engine->get_name()
+                ),
+                'provider' => $engine->get_id(),
+                'response_preview' => mb_substr($response['response'], 0, 100),
+            ]);
+        } else {
+            wp_send_json_error([
+                'message' => sprintf(
+                    __('❌ Error de conexión con %s: %s', 'flavor-chat-ia'),
+                    $engine->get_name(),
+                    $response['error'] ?? 'Error desconocido'
+                ),
+            ]);
+        }
+        } catch (Exception $e) {
+            wp_send_json_error([
+                'message' => '❌ Error: ' . $e->getMessage(),
+            ]);
+        } catch (Error $e) {
+            wp_send_json_error([
+                'message' => '❌ Error fatal: ' . $e->getMessage(),
+            ]);
         }
     }
 

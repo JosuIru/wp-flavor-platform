@@ -105,27 +105,68 @@ class Flavor_Network_Admin {
         $nodo_local = Flavor_Network_Node::get_local_node();
         $tab_activa = sanitize_text_field($_GET['tab'] ?? 'dashboard');
 
-        $tabs = [
-            'dashboard'       => __('Dashboard', 'flavor-chat-ia'),
-            'mi-nodo'         => __('Mi Nodo', 'flavor-chat-ia'),
-            'directorio'      => __('Directorio', 'flavor-chat-ia'),
-            'mapa'            => __('Mapa', 'flavor-chat-ia'),
-            'conexiones'      => __('Conexiones', 'flavor-chat-ia'),
-            'contenido'       => __('Contenido', 'flavor-chat-ia'),
-            'matching'        => __('Matching', 'flavor-chat-ia'),
-            'eventos'         => __('Eventos', 'flavor-chat-ia'),
-            'colaboraciones'  => __('Colaboraciones', 'flavor-chat-ia'),
-            'banco-tiempo'    => __('Banco Tiempo', 'flavor-chat-ia'),
-            'tablon'          => __('Tablón', 'flavor-chat-ia'),
-            'mensajes'        => __('Mensajes', 'flavor-chat-ia'),
-            'alertas'         => __('Alertas', 'flavor-chat-ia'),
-            'favoritos'       => __('Favoritos', 'flavor-chat-ia'),
-            'recomendaciones' => __('Recomendaciones', 'flavor-chat-ia'),
-            'preguntas'       => __('Preguntas', 'flavor-chat-ia'),
-            'sellos'          => __('Sellos', 'flavor-chat-ia'),
-            'newsletter'      => __('Newsletter', 'flavor-chat-ia'),
-            'modulos'         => __('Módulos', 'flavor-chat-ia'),
+        // Tabs agrupadas por categoría para mejor navegación
+        $tab_groups = [
+            'main' => [
+                'dashboard' => ['label' => __('Dashboard', 'flavor-chat-ia'), 'icon' => 'dashboard'],
+                'mi-nodo'   => ['label' => __('Mi Nodo', 'flavor-chat-ia'), 'icon' => 'admin-home'],
+            ],
+            'red' => [
+                'group_label' => __('Red', 'flavor-chat-ia'),
+                'group_icon'  => 'networking',
+                'items' => [
+                    'directorio' => __('Directorio', 'flavor-chat-ia'),
+                    'mapa'       => __('Mapa', 'flavor-chat-ia'),
+                    'conexiones' => __('Conexiones', 'flavor-chat-ia'),
+                    'matching'   => __('Matching', 'flavor-chat-ia'),
+                ],
+            ],
+            'actividad' => [
+                'group_label' => __('Actividad', 'flavor-chat-ia'),
+                'group_icon'  => 'portfolio',
+                'items' => [
+                    'contenido'      => __('Contenido', 'flavor-chat-ia'),
+                    'eventos'        => __('Eventos', 'flavor-chat-ia'),
+                    'colaboraciones' => __('Colaboraciones', 'flavor-chat-ia'),
+                    'banco-tiempo'   => __('Banco Tiempo', 'flavor-chat-ia'),
+                    'tablon'         => __('Tablón', 'flavor-chat-ia'),
+                ],
+            ],
+            'comunicacion' => [
+                'group_label' => __('Comunicación', 'flavor-chat-ia'),
+                'group_icon'  => 'email',
+                'items' => [
+                    'mensajes'   => __('Mensajes', 'flavor-chat-ia'),
+                    'alertas'    => __('Alertas', 'flavor-chat-ia'),
+                    'newsletter' => __('Newsletter', 'flavor-chat-ia'),
+                ],
+            ],
+            'extras' => [
+                'group_label' => __('Más', 'flavor-chat-ia'),
+                'group_icon'  => 'ellipsis',
+                'items' => [
+                    'favoritos'       => __('Favoritos', 'flavor-chat-ia'),
+                    'recomendaciones' => __('Recomendaciones', 'flavor-chat-ia'),
+                    'preguntas'       => __('Preguntas', 'flavor-chat-ia'),
+                    'sellos'          => __('Sellos', 'flavor-chat-ia'),
+                    'modulos'         => __('Módulos', 'flavor-chat-ia'),
+                ],
+            ],
         ];
+
+        // Para compatibilidad, mantener array plano de tabs
+        $tabs = [];
+        foreach ($tab_groups as $group_key => $group) {
+            if ($group_key === 'main') {
+                foreach ($group as $tab_slug => $tab_data) {
+                    $tabs[$tab_slug] = $tab_data['label'];
+                }
+            } elseif (isset($group['items'])) {
+                foreach ($group['items'] as $tab_slug => $tab_label) {
+                    $tabs[$tab_slug] = $tab_label;
+                }
+            }
+        }
         ?>
         <div class="wrap flavor-network-admin">
             <h1>
@@ -145,12 +186,36 @@ class Flavor_Network_Admin {
                 </div>
             <?php endif; ?>
 
-            <nav class="nav-tab-wrapper flavor-network-tabs">
-                <?php foreach ($tabs as $tab_slug => $tab_label): ?>
-                    <a href="<?php echo admin_url('admin.php?page=flavor-network&tab=' . $tab_slug); ?>"
-                       class="nav-tab <?php echo $tab_activa === $tab_slug ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html($tab_label); ?>
-                    </a>
+            <nav class="nav-tab-wrapper flavor-network-tabs flavor-grouped-tabs">
+                <?php foreach ($tab_groups as $group_key => $group): ?>
+                    <?php if ($group_key === 'main'): ?>
+                        <?php foreach ($group as $tab_slug => $tab_data): ?>
+                            <a href="<?php echo admin_url('admin.php?page=flavor-network&tab=' . $tab_slug); ?>"
+                               class="nav-tab <?php echo $tab_activa === $tab_slug ? 'nav-tab-active' : ''; ?>">
+                                <span class="dashicons dashicons-<?php echo esc_attr($tab_data['icon']); ?>"></span>
+                                <?php echo esc_html($tab_data['label']); ?>
+                            </a>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <?php
+                        $group_active = isset($group['items']) && array_key_exists($tab_activa, $group['items']);
+                        ?>
+                        <div class="nav-tab-dropdown <?php echo $group_active ? 'has-active' : ''; ?>">
+                            <button type="button" class="nav-tab nav-tab-dropdown-toggle <?php echo $group_active ? 'nav-tab-active' : ''; ?>">
+                                <span class="dashicons dashicons-<?php echo esc_attr($group['group_icon']); ?>"></span>
+                                <?php echo esc_html($group['group_label']); ?>
+                                <span class="dashicons dashicons-arrow-down-alt2"></span>
+                            </button>
+                            <div class="nav-tab-dropdown-menu">
+                                <?php foreach ($group['items'] as $tab_slug => $tab_label): ?>
+                                    <a href="<?php echo admin_url('admin.php?page=flavor-network&tab=' . $tab_slug); ?>"
+                                       class="nav-tab-dropdown-item <?php echo $tab_activa === $tab_slug ? 'is-active' : ''; ?>">
+                                        <?php echo esc_html($tab_label); ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </nav>
 

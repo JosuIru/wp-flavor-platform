@@ -2200,17 +2200,17 @@ a.flavor-btn--outline {
 }
 
 /* Links */
-.flavor-portal a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]),
-.flavor-dashboard a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]),
-[class*="flavor-"] a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]) {
+.flavor-portal a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):not(.fmd-widget-btn):not(.fmd-primary-btn),
+.flavor-dashboard a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):not(.fmd-widget-btn):not(.fmd-primary-btn),
+[class*="flavor-"] a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):not(.fmd-widget-btn):not(.fmd-primary-btn) {
     color: var(--portal-primary);
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
-.flavor-portal a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):hover,
-.flavor-dashboard a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):hover,
-[class*="flavor-"] a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):hover {
+.flavor-portal a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):not(.fmd-widget-btn):not(.fmd-primary-btn):hover,
+.flavor-dashboard a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):not(.fmd-widget-btn):not(.fmd-primary-btn):hover,
+[class*="flavor-"] a:not(.flavor-button):not(.flavor-btn):not(.fup-btn):not([class*="fup-btn--"]):not(.fmd-widget-btn):not(.fmd-primary-btn):hover {
     color: var(--portal-primary-dark);
     text-decoration: underline;
 }

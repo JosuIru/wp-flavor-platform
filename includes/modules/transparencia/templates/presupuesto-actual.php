@@ -15,13 +15,23 @@ if (!defined('ABSPATH')) {
 global $wpdb;
 
 $prefijo_tabla = $wpdb->prefix . 'flavor_transparencia_';
-$tabla_presupuestos = $prefijo_tabla . 'presupuestos';
+$tabla_presupuestos = '';
+$tablas_presupuestos_candidatas = [
+    $prefijo_tabla . 'presupuestos',
+    $prefijo_tabla . 'presupuesto',
+];
+foreach ($tablas_presupuestos_candidatas as $tabla_candidata) {
+    if (Flavor_Chat_Helpers::tabla_existe($tabla_candidata)) {
+        $tabla_presupuestos = $tabla_candidata;
+        break;
+    }
+}
 
 // Verificar que la tabla existe
-if (!Flavor_Chat_Helpers::tabla_existe($tabla_presupuestos)) {
+if ($tabla_presupuestos === '') {
     echo '<div class="transparencia-aviso transparencia-aviso--info">';
     echo '<span class="dashicons dashicons-info"></span>';
-    echo '<p>' . esc_html__('El sistema de presupuestos no esta disponible en este momento.', 'flavor-chat-ia') . '</p>';
+    echo '<p>' . esc_html__('Todavía no hay presupuesto publicado en esta instalación.', 'flavor-chat-ia') . '</p>';
     echo '</div>';
     return;
 }

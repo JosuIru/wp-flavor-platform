@@ -293,7 +293,7 @@ class Flavor_Widget_Renderer {
             'saberes' => __('Saberes', 'flavor-chat-ia'),
             'agenda' => __('Agenda', 'flavor-chat-ia'),
             'eventos' => __('Encuentros', 'flavor-chat-ia'),
-            'socios' => __('Socios', 'flavor-chat-ia'),
+            'socios' => __('Miembros', 'flavor-chat-ia'),
             'membresia' => __('Membresía', 'flavor-chat-ia'),
             'cuenta' => __('Cuenta', 'flavor-chat-ia'),
             'colectivos' => __('Colectivos', 'flavor-chat-ia'),

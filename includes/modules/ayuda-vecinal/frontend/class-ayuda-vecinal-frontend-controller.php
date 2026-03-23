@@ -115,14 +115,22 @@ class Flavor_Ayuda_Vecinal_Frontend_Controller {
      * Registrar shortcodes del módulo
      */
     public function registrar_shortcodes() {
-        add_shortcode('ayuda_vecinal_solicitudes', [$this, 'shortcode_solicitudes']);
-        add_shortcode('ayuda_vecinal_voluntarios', [$this, 'shortcode_voluntarios']);
-        add_shortcode('ayuda_vecinal_solicitar', [$this, 'shortcode_solicitar']);
-        add_shortcode('ayuda_vecinal_ofrecer', [$this, 'shortcode_ofrecer']);
-        add_shortcode('ayuda_vecinal_mis_solicitudes', [$this, 'shortcode_mis_solicitudes']);
-        add_shortcode('ayuda_vecinal_mis_ayudas', [$this, 'shortcode_mis_ayudas']);
-        add_shortcode('ayuda_vecinal_estadisticas', [$this, 'shortcode_estadisticas']);
-        add_shortcode('ayuda_vecinal_cercana', [$this, 'shortcode_cercana']);
+        $shortcodes = [
+            'ayuda_vecinal_solicitudes' => 'shortcode_solicitudes',
+            'ayuda_vecinal_voluntarios' => 'shortcode_voluntarios',
+            'ayuda_vecinal_solicitar' => 'shortcode_solicitar',
+            'ayuda_vecinal_ofrecer' => 'shortcode_ofrecer',
+            'ayuda_vecinal_mis_solicitudes' => 'shortcode_mis_solicitudes',
+            'ayuda_vecinal_mis_ayudas' => 'shortcode_mis_ayudas',
+            'ayuda_vecinal_estadisticas' => 'shortcode_estadisticas',
+            'ayuda_vecinal_cercana' => 'shortcode_cercana',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**

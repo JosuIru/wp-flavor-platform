@@ -100,52 +100,139 @@ class Flavor_Guided_Tours {
      * @return void
      */
     private function registrar_tours() {
+        // Tour: Primeros Pasos (para usuarios nuevos)
+        $this->tours['tour_primeros_pasos'] = [
+            'id' => 'tour_primeros_pasos',
+            'titulo' => __('Primeros Pasos', 'flavor-chat-ia'),
+            'descripcion' => __('Introducción rápida para empezar a usar Flavor Platform', 'flavor-chat-ia'),
+            'icono' => 'dashicons-welcome-learn-more',
+            'duracion' => '3 min',
+            'paginas' => ['toplevel_page_flavor-dashboard', 'flavor-platform_page_flavor-dashboard', 'toplevel_page_flavor-chat-ia'],
+            'video_url' => '',
+            'destacado' => true, // Marcar como tour prioritario para nuevos usuarios
+            'pasos' => [
+                [
+                    'elemento' => '.flavor-dashboard-wrapper, .wrap',
+                    'titulo' => __('¡Bienvenido a Flavor Platform!', 'flavor-chat-ia'),
+                    'contenido' => __('Flavor es una plataforma completa para gestionar comunidades, asociaciones, ayuntamientos y organizaciones. En 3 minutos aprenderás lo básico para empezar.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '#adminmenu .toplevel_page_flavor-dashboard, #adminmenu [href*="flavor"]',
+                    'titulo' => __('Tu Menú de Control', 'flavor-chat-ia'),
+                    'contenido' => __('Todo lo que necesitas está en este menú lateral. Dashboard para ver el estado general, Módulos para activar funciones, y Configuración para personalizar.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '.flavor-dashboard-hero, .app-profile-card, .flavor-active-app, .dashboard-hero',
+                    'titulo' => __('Tu Tipo de Organización', 'flavor-chat-ia'),
+                    'contenido' => __('Flavor se adapta a ti. Ya seas una asociación vecinal, un ayuntamiento, una cooperativa o una empresa, hay un perfil con las herramientas que necesitas.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '#adminmenu [href*="module"], .modules-link, #adminmenu [href*="modulos"]',
+                    'titulo' => __('Activa los Módulos que Necesites', 'flavor-chat-ia'),
+                    'contenido' => __('Los módulos son las funcionalidades: Eventos, Cursos, Reservas, Miembros, Chat IA... Activa solo los que uses. Siempre puedes añadir más después.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '#adminmenu [href*="design"], #adminmenu [href*="diseno"]',
+                    'titulo' => __('Personaliza los Colores', 'flavor-chat-ia'),
+                    'contenido' => __('Adapta la apariencia a tu marca: colores, logo, tipografías. Tu plataforma, tu estilo.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '#flavor-help-launcher, .flavor-help-btn',
+                    'titulo' => __('Ayuda Siempre Disponible', 'flavor-chat-ia'),
+                    'contenido' => __('¿Tienes dudas? Este botón flotante te da acceso a más tours guiados y documentación. Estamos aquí para ayudarte.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-dashboard-wrapper, .wrap',
+                    'titulo' => __('¡Listo para Empezar!', 'flavor-chat-ia'),
+                    'contenido' => __('Ya conoces lo básico. Te recomendamos hacer el "Tour del Dashboard" para profundizar, o simplemente explora y descubre. ¡Bienvenido a la comunidad Flavor!', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+            ],
+        ];
+
         // Tour del Dashboard
         $this->tours['tour_dashboard'] = [
             'id' => 'tour_dashboard',
             'titulo' => __('Tour del Dashboard', 'flavor-chat-ia'),
-            'descripcion' => __('Conoce el panel principal y sus funcionalidades', 'flavor-chat-ia'),
+            'descripcion' => __('Conoce el panel principal y todas sus funcionalidades', 'flavor-chat-ia'),
             'icono' => 'dashicons-dashboard',
-            'duracion' => '2 min',
+            'duracion' => '4 min',
             'paginas' => ['toplevel_page_flavor-dashboard', 'flavor-platform_page_flavor-dashboard'],
             'video_url' => '',
             'pasos' => [
                 [
                     'elemento' => '.flavor-dashboard-header, .flavor-dashboard-wrapper > h1',
-                    'titulo' => __('Bienvenido al Dashboard', 'flavor-chat-ia'),
-                    'contenido' => __('Este es tu centro de control. Desde aquí puedes ver estadísticas, acceder a configuraciones y gestionar toda la plataforma.', 'flavor-chat-ia'),
+                    'titulo' => __('Bienvenido a Flavor Platform', 'flavor-chat-ia'),
+                    'contenido' => __('Este es tu centro de control principal. Aquí tienes una visión completa del estado de tu plataforma, métricas clave y accesos rápidos a las funciones más importantes.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                     'destacar' => true,
                 ],
                 [
                     'elemento' => '.flavor-dashboard-hero, .dashboard-hero, .app-profile-card, .flavor-active-app',
-                    'titulo' => __('Tu App Activa', 'flavor-chat-ia'),
-                    'contenido' => __('Aquí ves el perfil de app activo actualmente, con información sobre módulos activos, addons y usuarios.', 'flavor-chat-ia'),
+                    'titulo' => __('Perfil de Aplicación Activo', 'flavor-chat-ia'),
+                    'contenido' => __('Muestra qué tipo de aplicación tienes configurada (Asociación, Ayuntamiento, Cooperativa...). Cada perfil activa módulos y funciones específicas para tu caso de uso.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                 ],
                 [
                     'elemento' => '.flavor-metrics-grid, .flavor-widget-metrics',
-                    'titulo' => __('Métricas en Tiempo Real', 'flavor-chat-ia'),
-                    'contenido' => __('Métricas importantes de tu plataforma: usuarios activos, módulos, conversaciones IA y más.', 'flavor-chat-ia'),
+                    'titulo' => __('Panel de Métricas', 'flavor-chat-ia'),
+                    'contenido' => __('Estadísticas en tiempo real: usuarios registrados, módulos activos, conversaciones del chat IA, eventos próximos y actividad de la comunidad.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                 ],
                 [
-                    'elemento' => '.flavor-widget-system, .flavor-health-semaphore',
-                    'titulo' => __('Estado del Sistema', 'flavor-chat-ia'),
-                    'contenido' => __('Monitorea la salud de tu sistema, versiones y estado de la API.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-widget-system, .flavor-health-semaphore, .system-health',
+                    'titulo' => __('Semáforo de Salud del Sistema', 'flavor-chat-ia'),
+                    'contenido' => __('Indicador visual del estado técnico: verde = todo funciona correctamente, amarillo = hay aspectos que revisar, rojo = problemas que necesitan atención inmediata.', 'flavor-chat-ia'),
                     'posicion' => 'left',
                 ],
                 [
-                    'elemento' => '.flavor-widget-alerts, .flavor-alerts-list',
-                    'titulo' => __('Alertas y Notificaciones', 'flavor-chat-ia'),
-                    'contenido' => __('Aquí aparecen las alertas pendientes que requieren tu atención.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-widget-alerts, .flavor-alerts-list, .dashboard-alerts',
+                    'titulo' => __('Centro de Alertas', 'flavor-chat-ia'),
+                    'contenido' => __('Notificaciones importantes que requieren tu atención: nuevos usuarios pendientes de aprobar, módulos sin configurar, actualizaciones disponibles...', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-widget-activity, .activity-feed, .recent-activity',
+                    'titulo' => __('Actividad Reciente', 'flavor-chat-ia'),
+                    'contenido' => __('Registro de las últimas acciones en la plataforma: inscripciones, publicaciones, reservas, comentarios... Ideal para saber qué está pasando.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.flavor-quick-actions, .dashboard-shortcuts, .quick-links',
+                    'titulo' => __('Acciones Rápidas', 'flavor-chat-ia'),
+                    'contenido' => __('Atajos directos a las tareas más frecuentes: crear evento, añadir curso, publicar noticia, gestionar miembros... Un clic y estás ahí.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.flavor-widget-modules, .modules-overview, .active-modules',
+                    'titulo' => __('Resumen de Módulos', 'flavor-chat-ia'),
+                    'contenido' => __('Vista rápida de los módulos activos y su estado. Desde aquí puedes acceder directamente al dashboard de cada módulo.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-widget-calendar, .upcoming-events, .calendar-widget',
+                    'titulo' => __('Próximos Eventos', 'flavor-chat-ia'),
+                    'contenido' => __('Calendario con los eventos, talleres y actividades programadas. Te ayuda a planificar y no perderte nada importante.', 'flavor-chat-ia'),
                     'posicion' => 'left',
                 ],
                 [
                     'elemento' => '#adminmenu .toplevel_page_flavor-dashboard, #adminmenu [href*="flavor-dashboard"]',
-                    'titulo' => __('Menú de Navegación', 'flavor-chat-ia'),
-                    'contenido' => __('Desde el menú lateral puedes acceder a todas las secciones de Flavor Platform.', 'flavor-chat-ia'),
+                    'titulo' => __('Navegación Principal', 'flavor-chat-ia'),
+                    'contenido' => __('El menú lateral te da acceso a todas las secciones: Dashboard, Módulos, Configuración, Diseño, Usuarios y más. Los submenús se expanden al pasar el ratón.', 'flavor-chat-ia'),
                     'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '#flavor-help-launcher, .flavor-help-btn',
+                    'titulo' => __('Ayuda Siempre Disponible', 'flavor-chat-ia'),
+                    'contenido' => __('El botón de ayuda flotante te ofrece tours guiados, documentación y recursos en cualquier momento. ¡No dudes en usarlo cuando tengas dudas!', 'flavor-chat-ia'),
+                    'posicion' => 'left',
                 ],
             ],
         ];
@@ -156,19 +243,19 @@ class Flavor_Guided_Tours {
             'titulo' => __('Tour de Módulos', 'flavor-chat-ia'),
             'descripcion' => __('Aprende a activar y configurar módulos especializados', 'flavor-chat-ia'),
             'icono' => 'dashicons-admin-plugins',
-            'duracion' => '3 min',
-            'paginas' => ['flavor-platform_page_flavor-module-dashboards', 'toplevel_page_flavor-module-dashboards'],
+            'duracion' => '5 min',
+            'paginas' => ['flavor-platform_page_flavor-module-dashboards', 'toplevel_page_flavor-module-dashboards', 'flavor-platform_page_flavor-modules'],
             'video_url' => '',
             'pasos' => [
                 [
                     'elemento' => '.flavor-modules-header, .wrap > h1',
                     'titulo' => __('Gestión de Módulos', 'flavor-chat-ia'),
-                    'contenido' => __('Los módulos extienden las capacidades de tu chat IA. Cada módulo añade funcionalidades específicas como reservas, productos, citas, etc.', 'flavor-chat-ia'),
+                    'contenido' => __('Los módulos extienden las capacidades de tu plataforma. Cada módulo añade funcionalidades específicas: eventos, cursos, reservas, miembros y mucho más.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                     'destacar' => true,
                 ],
                 [
-                    'elemento' => '.flavor-module-card:first-child, .flavor-addon-card:first-child',
+                    'elemento' => '.flavor-module-card:first-child, .flavor-addon-card:first-child, .module-card',
                     'titulo' => __('Tarjetas de Módulo', 'flavor-chat-ia'),
                     'contenido' => __('Cada módulo tiene su propia tarjeta con información sobre su estado, descripción y opciones de configuración.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
@@ -176,20 +263,44 @@ class Flavor_Guided_Tours {
                 [
                     'elemento' => '.flavor-module-toggle, .flavor-addon-toggle, .module-status-toggle',
                     'titulo' => __('Activar/Desactivar', 'flavor-chat-ia'),
-                    'contenido' => __('Usa este interruptor para activar o desactivar módulos. Los requisitos se verifican automáticamente.', 'flavor-chat-ia'),
+                    'contenido' => __('Usa este interruptor para activar o desactivar módulos. Los requisitos se verifican automáticamente antes de activar.', 'flavor-chat-ia'),
                     'posicion' => 'left',
                 ],
                 [
                     'elemento' => '.flavor-module-config, .flavor-addon-settings, .module-settings-btn',
-                    'titulo' => __('Configuración', 'flavor-chat-ia'),
-                    'contenido' => __('Accede a la configuración específica de cada módulo para personalizarlo según tus necesidades.', 'flavor-chat-ia'),
+                    'titulo' => __('Configuración del Módulo', 'flavor-chat-ia'),
+                    'contenido' => __('Accede a la configuración específica de cada módulo para personalizarlo según las necesidades de tu organización.', 'flavor-chat-ia'),
                     'posicion' => 'top',
                 ],
                 [
                     'elemento' => '.flavor-module-dependencies, .module-requirements',
                     'titulo' => __('Dependencias', 'flavor-chat-ia'),
-                    'contenido' => __('Algunos módulos requieren otros módulos o plugins para funcionar. Aquí se muestran los requisitos.', 'flavor-chat-ia'),
+                    'contenido' => __('Algunos módulos requieren otros módulos o plugins para funcionar. El sistema te avisa de los requisitos antes de activar.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.module-category-filter, .flavor-modules-filter, .tablenav',
+                    'titulo' => __('Filtrar por Categoría', 'flavor-chat-ia'),
+                    'contenido' => __('Filtra módulos por categoría: comunicación, gestión, economía, comunidad... Encuentra rápidamente lo que necesitas.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.module-search, .search-box, .wrap > h1',
+                    'titulo' => __('Buscar Módulos', 'flavor-chat-ia'),
+                    'contenido' => __('Usa el buscador para encontrar módulos por nombre o funcionalidad. Ideal cuando sabes lo que necesitas.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.module-status-active, .active-modules-section, .wrap > h1',
+                    'titulo' => __('Módulos Activos', 'flavor-chat-ia'),
+                    'contenido' => __('Vista rápida de los módulos que tienes activados. Desde aquí puedes acceder a su dashboard o configuración.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.module-dashboard-link, .ver-dashboard, .wrap > h1',
+                    'titulo' => __('Dashboard del Módulo', 'flavor-chat-ia'),
+                    'contenido' => __('Cada módulo activo tiene su propio dashboard con estadísticas, listados y acciones específicas. Un clic y estás ahí.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
                 ],
             ],
         ];
@@ -297,42 +408,84 @@ class Flavor_Guided_Tours {
         // Tour de Red de Nodos
         $this->tours['tour_red_nodos'] = [
             'id' => 'tour_red_nodos',
-            'titulo' => __('Tour de la Red de Nodos', 'flavor-chat-ia'),
-            'descripcion' => __('Conecta tu sitio a la red distribuida de Flavor', 'flavor-chat-ia'),
+            'titulo' => __('Red de Nodos Federada', 'flavor-chat-ia'),
+            'descripcion' => __('Conecta tu instalación a la red distribuida de Flavor y comparte recursos con otras organizaciones', 'flavor-chat-ia'),
             'icono' => 'dashicons-networking',
-            'duracion' => '3 min',
-            'paginas' => ['flavor-platform_page_flavor-network', 'toplevel_page_flavor-network'],
+            'duracion' => '5 min',
+            'paginas' => ['flavor-platform_page_flavor-network', 'toplevel_page_flavor-network', 'admin_page_flavor-network'],
             'video_url' => '',
             'pasos' => [
                 [
-                    'elemento' => '.flavor-network-header, .wrap > h1',
-                    'titulo' => __('Red de Nodos', 'flavor-chat-ia'),
-                    'contenido' => __('La red de nodos te permite conectar múltiples instalaciones de Flavor Platform, compartir recursos y sincronizar datos.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-network-header, .wrap > h1, .network-dashboard-header',
+                    'titulo' => __('Bienvenido a la Red Federada', 'flavor-chat-ia'),
+                    'contenido' => __('La Red de Nodos es una infraestructura distribuida que conecta instalaciones de Flavor Platform en todo el mundo. Permite compartir recursos, sincronizar datos y colaborar entre organizaciones manteniendo la soberanía de cada nodo.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                     'destacar' => true,
                 ],
                 [
-                    'elemento' => '.flavor-node-status, .network-status-indicator',
-                    'titulo' => __('Estado de Conexión', 'flavor-chat-ia'),
-                    'contenido' => __('Aquí puedes ver si tu nodo está conectado a la red y el estado de la sincronización.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-node-status, .network-status-indicator, .node-connection-status',
+                    'titulo' => __('Estado de tu Nodo', 'flavor-chat-ia'),
+                    'contenido' => __('Indicador en tiempo real del estado de conexión. Verde = conectado y sincronizado, Amarillo = sincronizando, Rojo = desconectado. El sistema intenta reconectar automáticamente.', 'flavor-chat-ia'),
                     'posicion' => 'right',
                 ],
                 [
-                    'elemento' => '.flavor-join-network, .network-join-btn',
-                    'titulo' => __('Unirse a la Red', 'flavor-chat-ia'),
-                    'contenido' => __('Conecta tu instalación a la red principal para beneficiarte de recursos compartidos y actualizaciones.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-network-map, .nodes-map, .network-visualization',
+                    'titulo' => __('Mapa de la Red', 'flavor-chat-ia'),
+                    'contenido' => __('Visualización geográfica de todos los nodos conectados. Puedes ver organizaciones cercanas, explorar sus recursos públicos y solicitar colaboraciones.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                 ],
                 [
-                    'elemento' => '.flavor-node-key, .api-key-section',
-                    'titulo' => __('Clave de Nodo', 'flavor-chat-ia'),
-                    'contenido' => __('Tu clave única de nodo. Mantéela segura ya que identifica tu instalación en la red.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-join-network, .network-join-btn, .connect-to-network',
+                    'titulo' => __('Conectar a la Red', 'flavor-chat-ia'),
+                    'contenido' => __('Si aún no estás conectado, este botón inicia el proceso. Se genera una clave única para tu nodo y se establece conexión con el servidor central de coordinación.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.flavor-node-key, .api-key-section, .node-credentials',
+                    'titulo' => __('Credenciales del Nodo', 'flavor-chat-ia'),
+                    'contenido' => __('Tu clave única de nodo (Node Key) identifica tu instalación en la red. Guárdala de forma segura. Si la pierdes, puedes regenerarla pero perderás las conexiones establecidas.', 'flavor-chat-ia'),
                     'posicion' => 'left',
                 ],
                 [
-                    'elemento' => '.flavor-sync-settings, .sync-options',
-                    'titulo' => __('Opciones de Sincronización', 'flavor-chat-ia'),
-                    'contenido' => __('Configura qué datos sincronizar: prompts, plantillas, configuraciones y más.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-node-info, .node-details, .my-node-card',
+                    'titulo' => __('Perfil de tu Nodo', 'flavor-chat-ia'),
+                    'contenido' => __('Información pública de tu instalación: nombre de la organización, ubicación, tipo (asociación, ayuntamiento, cooperativa...) y descripción. Otros nodos verán esto al buscarte.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.flavor-sync-settings, .sync-options, .synchronization-config',
+                    'titulo' => __('Configuración de Sincronización', 'flavor-chat-ia'),
+                    'contenido' => __('Decide qué compartir: plantillas de eventos, prompts de IA, catálogos de cursos, recursos de biblioteca... Tú controlas qué datos salen de tu nodo.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.flavor-shared-resources, .resources-pool, .shared-content',
+                    'titulo' => __('Recursos Compartidos', 'flavor-chat-ia'),
+                    'contenido' => __('Biblioteca de recursos que otros nodos han compartido: plantillas, prompts IA, configuraciones probadas, traducciones... Puedes importarlos con un clic.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.flavor-federation-requests, .connection-requests, .pending-connections',
+                    'titulo' => __('Solicitudes de Federación', 'flavor-chat-ia'),
+                    'contenido' => __('Cuando otro nodo quiere conectarse contigo para compartir recursos específicos, aparece aquí. Puedes aprobar, rechazar o configurar permisos granulares.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-connected-nodes, .partner-nodes, .federation-partners',
+                    'titulo' => __('Nodos Asociados', 'flavor-chat-ia'),
+                    'contenido' => __('Lista de organizaciones con las que tienes federación activa. Puedes ver su estado, recursos compartidos y gestionar la relación desde aquí.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.flavor-network-stats, .federation-metrics, .network-analytics',
+                    'titulo' => __('Estadísticas de Red', 'flavor-chat-ia'),
+                    'contenido' => __('Métricas de tu participación: recursos compartidos, descargas de tus plantillas, nodos que te siguen, colaboraciones activas... Mide tu impacto en la comunidad.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-network-settings, .advanced-network-config',
+                    'titulo' => __('Configuración Avanzada', 'flavor-chat-ia'),
+                    'contenido' => __('Opciones técnicas: intervalos de sincronización, límites de ancho de banda, caché de recursos remotos, webhooks para integraciones y modo offline.', 'flavor-chat-ia'),
                     'posicion' => 'top',
                 ],
             ],
@@ -388,6 +541,80 @@ class Flavor_Guided_Tours {
             ],
         ];
 
+        // Tour: Configuración Esencial del Sistema
+        $this->tours['tour_configuracion'] = [
+            'id' => 'tour_configuracion',
+            'titulo' => __('Configuración Esencial', 'flavor-chat-ia'),
+            'descripcion' => __('Ajustes importantes para configurar correctamente tu plataforma', 'flavor-chat-ia'),
+            'icono' => 'dashicons-admin-generic',
+            'duracion' => '5 min',
+            'paginas' => ['flavor-platform_page_flavor-settings', 'toplevel_page_flavor-settings', 'flavor-platform_page_flavor-config'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.wrap > h1, .settings-header',
+                    'titulo' => __('Centro de Configuración', 'flavor-chat-ia'),
+                    'contenido' => __('Aquí se configuran todos los aspectos técnicos y funcionales de Flavor Platform. Tómate unos minutos para revisar las opciones principales.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '.nav-tab-wrapper, .flavor-settings-tabs',
+                    'titulo' => __('Pestañas de Configuración', 'flavor-chat-ia'),
+                    'contenido' => __('La configuración está organizada en pestañas: General, Módulos, Permisos, Notificaciones, Integraciones... Navega entre ellas para encontrar lo que buscas.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '[name*="site_name"], .site-identity, #blogname',
+                    'titulo' => __('Identidad del Sitio', 'flavor-chat-ia'),
+                    'contenido' => __('Nombre de tu organización, descripción y datos de contacto. Esta información aparece en emails, notificaciones y el pie de página.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '[name*="email"], .email-settings, .notification-email',
+                    'titulo' => __('Configuración de Email', 'flavor-chat-ia'),
+                    'contenido' => __('Email del administrador y configuración de notificaciones. Asegúrate de que el email sea correcto para recibir alertas importantes.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '[name*="timezone"], .timezone-select, select[name*="time"]',
+                    'titulo' => __('Zona Horaria', 'flavor-chat-ia'),
+                    'contenido' => __('Fundamental para que eventos, reservas y fechas funcionen correctamente. Selecciona la zona horaria de tu localidad.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.modules-section, [name*="active_modules"], .modules-config',
+                    'titulo' => __('Módulos Activos', 'flavor-chat-ia'),
+                    'contenido' => __('Activa solo los módulos que vayas a usar. Menos módulos = mejor rendimiento. Siempre puedes activar más cuando los necesites.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.permissions-section, [name*="permissions"], .roles-config',
+                    'titulo' => __('Permisos y Roles', 'flavor-chat-ia'),
+                    'contenido' => __('Controla quién puede hacer qué: administradores, moderadores, miembros... Cada rol tiene permisos específicos que puedes personalizar.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.api-section, [name*="api_key"], .integrations-config',
+                    'titulo' => __('Claves API e Integraciones', 'flavor-chat-ia'),
+                    'contenido' => __('Conecta servicios externos: proveedores de IA (Claude, OpenAI), pasarelas de pago, servicios de email marketing, mapas y más.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.privacy-section, [name*="privacy"], .legal-config',
+                    'titulo' => __('Privacidad y Legal', 'flavor-chat-ia'),
+                    'contenido' => __('Configura políticas de privacidad, términos de uso y cumplimiento RGPD. Importante para organizaciones que gestionan datos personales.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.submit, #submit, .button-primary',
+                    'titulo' => __('Guardar Cambios', 'flavor-chat-ia'),
+                    'contenido' => __('Recuerda guardar siempre tus cambios. El sistema valida automáticamente que todo esté correcto antes de guardar.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+            ],
+        ];
+
         // Tour de Perfiles de Apps
         $this->tours['tour_app_profiles'] = [
             'id' => 'tour_app_profiles',
@@ -424,40 +651,94 @@ class Flavor_Guided_Tours {
         // TOURS DEMO - Tejido Empresarial y Emprendimiento
         // =====================================================
 
-        // Tour: Demo Completo (Admin)
+        // Tour: Panel de Administración Completo
         $this->tours['demo_admin'] = [
             'id' => 'demo_admin',
-            'titulo' => __('Demo - Panel Admin', 'flavor-chat-ia'),
-            'descripcion' => __('Recorrido completo por las funcionalidades de administracion del ecosistema', 'flavor-chat-ia'),
-            'icono' => 'dashicons-building',
-            'duracion' => '5 min',
-            'paginas' => ['toplevel_page_flavor-chat-ia', 'flavor-platform_page_flavor-dashboard', 'toplevel_page_flavor-dashboard'],
+            'titulo' => __('Panel de Administración', 'flavor-chat-ia'),
+            'descripcion' => __('Recorrido completo por el panel de administración de Flavor Platform', 'flavor-chat-ia'),
+            'icono' => 'dashicons-admin-settings',
+            'duracion' => '6 min',
+            'paginas' => ['toplevel_page_flavor-chat-ia', 'flavor-platform_page_flavor-dashboard', 'toplevel_page_flavor-dashboard', 'flavor-platform_page_flavor-settings'],
             'video_url' => '',
             'pasos' => [
                 [
-                    'elemento' => '#adminmenu .toplevel_page_flavor-chat-ia, #adminmenu [href*="flavor"]',
-                    'titulo' => __('Menu Flavor Platform', 'flavor-chat-ia'),
-                    'contenido' => __('Todo el ecosistema se gestiona desde este menu. Configuracion, modulos, usuarios, contenido... cada seccion tiene su area dedicada.', 'flavor-chat-ia'),
+                    'elemento' => '#adminmenu .toplevel_page_flavor-chat-ia, #adminmenu [href*="flavor-dashboard"]',
+                    'titulo' => __('Menú Principal de Flavor', 'flavor-chat-ia'),
+                    'contenido' => __('Este es tu centro de control. Desde aquí accedes a todas las secciones: Dashboard, Módulos, Configuración, Diseño, Tours de ayuda y más.', 'flavor-chat-ia'),
                     'posicion' => 'right',
                     'destacar' => true,
                 ],
                 [
-                    'elemento' => '.wrap h1, .flavor-dashboard-header',
-                    'titulo' => __('Panel de Control', 'flavor-chat-ia'),
-                    'contenido' => __('Vision general del ecosistema: usuarios activos, modulos habilitados, actividad reciente. Ideal para monitorear el uso de la plataforma.', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-dashboard-header, .wrap > h1:first-child',
+                    'titulo' => __('Dashboard Principal', 'flavor-chat-ia'),
+                    'contenido' => __('Vista general de tu plataforma con métricas en tiempo real, estado del sistema y accesos rápidos a las funciones más usadas.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                 ],
                 [
-                    'elemento' => '.nav-tab-wrapper, .flavor-tabs',
-                    'titulo' => __('Configuracion por Pestanas', 'flavor-chat-ia'),
-                    'contenido' => __('Cada aspecto de la plataforma se configura en su propia pestana: modulos activos, diseno, permisos, notificaciones...', 'flavor-chat-ia'),
+                    'elemento' => '.flavor-widget-metrics, .flavor-metrics-grid, .flavor-dashboard-stats',
+                    'titulo' => __('Métricas y Estadísticas', 'flavor-chat-ia'),
+                    'contenido' => __('Monitorea usuarios activos, módulos habilitados, conversaciones del chat IA y actividad general de la comunidad.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                 ],
                 [
-                    'elemento' => '.submit, #submit, .button-primary',
-                    'titulo' => __('Guardar Cambios', 'flavor-chat-ia'),
-                    'contenido' => __('Todos los cambios se guardan de forma segura. El sistema valida automaticamente que no haya errores.', 'flavor-chat-ia'),
-                    'posicion' => 'top',
+                    'elemento' => '.flavor-widget-system, .flavor-health-semaphore, .system-status',
+                    'titulo' => __('Estado del Sistema', 'flavor-chat-ia'),
+                    'contenido' => __('Semáforo de salud: verde significa todo OK, amarillo requiere atención, rojo indica problemas. Incluye versiones de PHP, WordPress y estado de APIs.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-widget-alerts, .flavor-alerts-list, .pending-alerts',
+                    'titulo' => __('Alertas Pendientes', 'flavor-chat-ia'),
+                    'contenido' => __('Notificaciones importantes: actualizaciones disponibles, módulos que requieren configuración, o acciones pendientes de usuarios.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.flavor-quick-actions, .dashboard-quick-links, .flavor-shortcuts',
+                    'titulo' => __('Acciones Rápidas', 'flavor-chat-ia'),
+                    'contenido' => __('Atajos a las tareas más comunes: crear evento, añadir usuario, configurar chat IA, ver estadísticas detalladas...', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '#adminmenu [href*="flavor-module"], #adminmenu [href*="modulos"]',
+                    'titulo' => __('Gestión de Módulos', 'flavor-chat-ia'),
+                    'contenido' => __('Activa y configura más de 40 módulos: Eventos, Cursos, Marketplace, Miembros, Reservas, Biblioteca, Incidencias, Chat IA y muchos más.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '#adminmenu [href*="flavor-design"], #adminmenu [href*="diseno"]',
+                    'titulo' => __('Personalización de Diseño', 'flavor-chat-ia'),
+                    'contenido' => __('Colores, tipografías, logotipos y estilos. Adapta la apariencia de toda la plataforma a la identidad visual de tu organización.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '#adminmenu [href*="flavor-settings"], #adminmenu [href*="configuracion"]',
+                    'titulo' => __('Configuración General', 'flavor-chat-ia'),
+                    'contenido' => __('Ajustes globales: idioma, zona horaria, permisos de usuarios, integraciones con terceros, claves API y opciones avanzadas.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '#adminmenu [href*="flavor-chat-config"], .ia-config-link',
+                    'titulo' => __('Configuración del Chat IA', 'flavor-chat-ia'),
+                    'contenido' => __('Elige el motor de IA (Claude, OpenAI, DeepSeek...), configura el comportamiento del asistente, personalidad y límites de uso.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '#adminmenu [href*="flavor-tours"], .tours-link',
+                    'titulo' => __('Tours de Ayuda', 'flavor-chat-ia'),
+                    'contenido' => __('Accede a todos los tours guiados disponibles. Perfectos para aprender funcionalidades específicas o formar a nuevos administradores.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '#wp-admin-bar-root-default, #wpadminbar',
+                    'titulo' => __('Barra de Administración', 'flavor-chat-ia'),
+                    'contenido' => __('Acceso rápido a tu perfil, notificaciones del sistema y enlace para ver el sitio público. Siempre visible mientras administras.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '#flavor-help-launcher, .flavor-help-btn',
+                    'titulo' => __('Botón de Ayuda', 'flavor-chat-ia'),
+                    'contenido' => __('¿Necesitas ayuda? Este botón flotante te da acceso rápido a tours, documentación y recursos de soporte desde cualquier página.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
                 ],
             ],
         ];
@@ -468,8 +749,8 @@ class Flavor_Guided_Tours {
             'titulo' => __('Marketplace Local', 'flavor-chat-ia'),
             'descripcion' => __('Plataforma de compra-venta entre emprendedores y ciudadanos de la comunidad', 'flavor-chat-ia'),
             'icono' => 'dashicons-store',
-            'duracion' => '4 min',
-            'paginas' => ['flavor-platform_page_flavor-marketplace', 'toplevel_page_marketplace'],
+            'duracion' => '5 min',
+            'paginas' => ['flavor-platform_page_flavor-marketplace', 'toplevel_page_marketplace', 'admin_page_marketplace-dashboard'],
             'video_url' => '',
             'pasos' => [
                 [
@@ -481,20 +762,38 @@ class Flavor_Guided_Tours {
                 ],
                 [
                     'elemento' => '.tablenav, .search-box, .marketplace-filters',
-                    'titulo' => __('Busqueda y Filtros', 'flavor-chat-ia'),
-                    'contenido' => __('Los usuarios pueden buscar por categoria, precio, ubicacion y tipo (venta, intercambio, regalo). Perfecto para encontrar proveedores locales.', 'flavor-chat-ia'),
+                    'titulo' => __('Búsqueda y Filtros', 'flavor-chat-ia'),
+                    'contenido' => __('Los usuarios pueden buscar por categoría, precio, ubicación y tipo (venta, intercambio, regalo). Perfecto para encontrar proveedores locales.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                 ],
                 [
                     'elemento' => '.wp-list-table, .marketplace-items',
                     'titulo' => __('Listado de Anuncios', 'flavor-chat-ia'),
-                    'contenido' => __('Cada anuncio muestra foto, precio, vendedor y estado. El admin puede moderar contenido inapropiado.', 'flavor-chat-ia'),
+                    'contenido' => __('Cada anuncio muestra foto, precio, vendedor y estado. El admin puede moderar contenido inapropiado y destacar productos locales.', 'flavor-chat-ia'),
                     'posicion' => 'top',
                 ],
                 [
                     'elemento' => '.page-title-action, .add-new',
                     'titulo' => __('Publicar Anuncio', 'flavor-chat-ia'),
-                    'contenido' => __('Los emprendedores pueden publicar facilmente: foto, descripcion, precio y categoria. Sin comisiones, contacto directo.', 'flavor-chat-ia'),
+                    'contenido' => __('Los emprendedores pueden publicar fácilmente: foto, descripción, precio y categoría. Sin comisiones, contacto directo entre vecinos.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.tablenav .actions, .bulk-actions, .marketplace-categories',
+                    'titulo' => __('Categorías del Marketplace', 'flavor-chat-ia'),
+                    'contenido' => __('Organiza los productos en categorías: alimentación local, artesanía, servicios profesionales, segunda mano, huertos... Facilita la navegación.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-price, .marketplace-stats, .wrap h1',
+                    'titulo' => __('Estadísticas de Ventas', 'flavor-chat-ia'),
+                    'contenido' => __('Métricas del marketplace: productos activos, transacciones completadas, vendedores destacados. Mide el impacto económico en el territorio.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-author, .vendor-column, .wrap h1',
+                    'titulo' => __('Vendedores Verificados', 'flavor-chat-ia'),
+                    'contenido' => __('Los negocios locales pueden verificar su perfil para generar más confianza. Muestra valoraciones y opiniones de otros compradores.', 'flavor-chat-ia'),
                     'posicion' => 'left',
                 ],
             ],
@@ -506,27 +805,51 @@ class Flavor_Guided_Tours {
             'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'),
             'descripcion' => __('Intercambio de servicios sin dinero: 1 hora dada = 1 hora recibida', 'flavor-chat-ia'),
             'icono' => 'dashicons-clock',
-            'duracion' => '4 min',
-            'paginas' => ['flavor-platform_page_flavor-banco-tiempo', 'toplevel_page_banco-tiempo'],
+            'duracion' => '5 min',
+            'paginas' => ['flavor-platform_page_flavor-banco-tiempo', 'toplevel_page_banco-tiempo', 'admin_page_banco-tiempo-dashboard'],
             'video_url' => '',
             'pasos' => [
                 [
                     'elemento' => '.wrap h1, .banco-tiempo-header',
                     'titulo' => __('Banco de Tiempo', 'flavor-chat-ia'),
-                    'contenido' => __('Sistema de intercambio de servicios sin dinero. Ideal para emprendedores que empiezan con poco capital. Un disenador hace un logo a cambio de asesoria fiscal.', 'flavor-chat-ia'),
+                    'contenido' => __('Sistema de intercambio de servicios sin dinero. Ideal para emprendedores que empiezan con poco capital. Un diseñador hace un logo a cambio de asesoría fiscal.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                     'destacar' => true,
                 ],
                 [
-                    'elemento' => '.tablenav, .banco-tiempo-stats',
-                    'titulo' => __('Estadisticas del Banco', 'flavor-chat-ia'),
-                    'contenido' => __('Horas totales intercambiadas, usuarios activos, servicios mas demandados... Metricas utiles para reportar el impacto del programa.', 'flavor-chat-ia'),
+                    'elemento' => '.tablenav, .banco-tiempo-stats, .stats-cards',
+                    'titulo' => __('Estadísticas del Banco', 'flavor-chat-ia'),
+                    'contenido' => __('Horas totales intercambiadas, usuarios activos, servicios más demandados... Métricas útiles para reportar el impacto social del programa.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                 ],
                 [
                     'elemento' => '.wp-list-table, .servicios-lista',
                     'titulo' => __('Servicios Disponibles', 'flavor-chat-ia'),
-                    'contenido' => __('Cada usuario ofrece sus habilidades: diseno, reparaciones, formacion, cuidados, transporte... La comunidad decide el valor en horas.', 'flavor-chat-ia'),
+                    'contenido' => __('Cada usuario ofrece sus habilidades: diseño, reparaciones, formación, cuidados, transporte... La comunidad decide el valor en horas.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.page-title-action, .add-new, .nuevo-servicio',
+                    'titulo' => __('Ofrecer un Servicio', 'flavor-chat-ia'),
+                    'contenido' => __('Los miembros publican lo que saben hacer: clases de idiomas, cuidado de niños, fontanería, diseño web... Toda habilidad tiene valor.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.column-balance, .saldo-horas, .wrap h1',
+                    'titulo' => __('Saldo de Horas', 'flavor-chat-ia'),
+                    'contenido' => __('Cada usuario tiene un saldo: cuando da una hora gana +1, cuando recibe -1. El sistema garantiza el equilibrio y la reciprocidad.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-category, .categorias-servicios, .wrap h1',
+                    'titulo' => __('Categorías de Servicios', 'flavor-chat-ia'),
+                    'contenido' => __('Organiza los servicios: domésticos, profesionales, educativos, cuidados, transporte, manualidades... Facilita encontrar lo que necesitas.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-date, .historial, .wrap h1',
+                    'titulo' => __('Historial de Intercambios', 'flavor-chat-ia'),
+                    'contenido' => __('Registro completo de todos los intercambios: quién, qué, cuándo, valoraciones. Transparencia total para generar confianza comunitaria.', 'flavor-chat-ia'),
                     'posicion' => 'top',
                 ],
             ],
@@ -538,8 +861,8 @@ class Flavor_Guided_Tours {
             'titulo' => __('Grupos de Consumo', 'flavor-chat-ia'),
             'descripcion' => __('Pedidos colectivos a productores locales de la zona', 'flavor-chat-ia'),
             'icono' => 'dashicons-carrot',
-            'duracion' => '3 min',
-            'paginas' => ['flavor-platform_page_flavor-grupos-consumo', 'toplevel_page_grupos-consumo'],
+            'duracion' => '5 min',
+            'paginas' => ['flavor-platform_page_flavor-grupos-consumo', 'toplevel_page_grupos-consumo', 'admin_page_grupos-consumo-dashboard'],
             'video_url' => '',
             'pasos' => [
                 [
@@ -552,60 +875,156 @@ class Flavor_Guided_Tours {
                 [
                     'elemento' => '.wp-list-table, .grupos-lista',
                     'titulo' => __('Grupos Activos', 'flavor-chat-ia'),
-                    'contenido' => __('Cada grupo tiene su ciclo (semanal, quincenal), punto de recogida (Plaza de los Fueros, por ejemplo) y productores asociados.', 'flavor-chat-ia'),
+                    'contenido' => __('Cada grupo tiene su ciclo (semanal, quincenal), punto de recogida y productores asociados. Los vecinos se organizan por barrios.', 'flavor-chat-ia'),
                     'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.page-title-action, .add-new, .nuevo-grupo',
+                    'titulo' => __('Crear Nuevo Grupo', 'flavor-chat-ia'),
+                    'contenido' => __('Crea grupos por zona geográfica, tipo de producto o interés: verduras ecológicas, carnes locales, lácteos de la comarca...', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.tablenav, .productores-section, .wrap h1',
+                    'titulo' => __('Productores Locales', 'flavor-chat-ia'),
+                    'contenido' => __('Directorio de agricultores, ganaderos y artesanos alimentarios de la zona. Cada uno con su ficha: productos, certificaciones, zona de reparto.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-members, .miembros-grupo, .wrap h1',
+                    'titulo' => __('Miembros del Grupo', 'flavor-chat-ia'),
+                    'contenido' => __('Lista de consumidores inscritos en cada grupo. Gestiona altas, bajas y rotación de responsables de recogida.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-date, .pedidos-section, .wrap h1',
+                    'titulo' => __('Ciclo de Pedidos', 'flavor-chat-ia'),
+                    'contenido' => __('Calendario de pedidos: apertura, cierre, preparación y recogida. Notificaciones automáticas a productores y consumidores.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.column-status, .estado-pedido, .wrap h1',
+                    'titulo' => __('Estado de los Pedidos', 'flavor-chat-ia'),
+                    'contenido' => __('Seguimiento en tiempo real: abierto, cerrado, en preparación, listo para recoger. Los consumidores saben siempre el estado de su cesta.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
                 ],
             ],
         ];
 
-        // Tour: Talleres y Formacion
+        // Tour: Talleres y Formación
         $this->tours['demo_talleres'] = [
             'id' => 'demo_talleres',
-            'titulo' => __('Formacion y Talleres', 'flavor-chat-ia'),
-            'descripcion' => __('Capacitacion entre emprendedores de la comarca', 'flavor-chat-ia'),
+            'titulo' => __('Formación y Talleres', 'flavor-chat-ia'),
+            'descripcion' => __('Capacitación entre emprendedores de la comarca', 'flavor-chat-ia'),
             'icono' => 'dashicons-welcome-learn-more',
-            'duracion' => '3 min',
-            'paginas' => ['flavor-platform_page_flavor-talleres', 'flavor-platform_page_flavor-cursos', 'toplevel_page_talleres'],
+            'duracion' => '5 min',
+            'paginas' => ['flavor-platform_page_flavor-talleres', 'flavor-platform_page_flavor-cursos', 'toplevel_page_talleres', 'admin_page_cursos-dashboard'],
             'video_url' => '',
             'pasos' => [
                 [
                     'elemento' => '.wrap h1, .talleres-header',
-                    'titulo' => __('Talleres y Formacion', 'flavor-chat-ia'),
+                    'titulo' => __('Talleres y Formación', 'flavor-chat-ia'),
                     'contenido' => __('Los propios emprendedores comparten conocimiento: marketing digital, contabilidad, oficios... Pueden cobrar en euros o en horas de banco de tiempo.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                     'destacar' => true,
                 ],
                 [
                     'elemento' => '.wp-list-table, .talleres-lista',
-                    'titulo' => __('Catalogo de Formacion', 'flavor-chat-ia'),
+                    'titulo' => __('Catálogo de Formación', 'flavor-chat-ia'),
                     'contenido' => __('Fecha, lugar, formador, plazas disponibles. El sistema gestiona inscripciones, lista de espera y certificados digitales.', 'flavor-chat-ia'),
                     'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.page-title-action, .add-new, .nuevo-taller',
+                    'titulo' => __('Crear Nuevo Taller', 'flavor-chat-ia'),
+                    'contenido' => __('Cualquier miembro puede proponer formación. Define tema, fecha, lugar, precio y número de plazas. El sistema gestiona todo automáticamente.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.column-instructor, .formador-info, .wrap h1',
+                    'titulo' => __('Perfil del Formador', 'flavor-chat-ia'),
+                    'contenido' => __('Cada formador tiene su perfil con experiencia, valoraciones y talleres impartidos. Genera confianza y reconocimiento en la comunidad.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-attendees, .inscritos-section, .wrap h1',
+                    'titulo' => __('Gestión de Inscripciones', 'flavor-chat-ia'),
+                    'contenido' => __('Control de asistentes: confirmados, lista de espera, cancelaciones. Notificaciones automáticas cuando se liberan plazas.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-price, .precio-taller, .wrap h1',
+                    'titulo' => __('Precios y Pagos', 'flavor-chat-ia'),
+                    'contenido' => __('Flexibilidad total: gratis, precio en euros, pago en horas de banco de tiempo, o combinaciones. Cada formador decide.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.column-category, .categorias-formacion, .wrap h1',
+                    'titulo' => __('Categorías de Formación', 'flavor-chat-ia'),
+                    'contenido' => __('Organiza por temáticas: digitalización, sostenibilidad, oficios tradicionales, idiomas, gestión empresarial, habilidades sociales...', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.column-date, .certificados-section, .wrap h1',
+                    'titulo' => __('Certificados Digitales', 'flavor-chat-ia'),
+                    'contenido' => __('Los asistentes reciben certificado digital automático. Útil para currículum y demostrar competencias adquiridas.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
                 ],
             ],
         ];
 
-        // Tour: Directorio de Emprendedores (Socios)
+        // Tour: Tejido Empresarial Local (Socios/Directorio)
         $this->tours['demo_directorio'] = [
             'id' => 'demo_directorio',
-            'titulo' => __('Directorio de Emprendedores', 'flavor-chat-ia'),
-            'descripcion' => __('Mapa del tejido empresarial de la comunidad', 'flavor-chat-ia'),
+            'titulo' => __('Directorio Empresarial', 'flavor-chat-ia'),
+            'descripcion' => __('Directorio de emprendedores y negocios de la comunidad', 'flavor-chat-ia'),
             'icono' => 'dashicons-groups',
-            'duracion' => '2 min',
-            'paginas' => ['flavor-platform_page_flavor-socios', 'toplevel_page_socios'],
+            'duracion' => '5 min',
+            'paginas' => ['admin_page_socios-dashboard', 'admin_page_socios', 'admin_page_socios-listado', 'admin_page_bares-dashboard'],
             'video_url' => '',
             'pasos' => [
                 [
                     'elemento' => '.wrap h1, .socios-header',
                     'titulo' => __('Directorio de Emprendedores', 'flavor-chat-ia'),
-                    'contenido' => __('Cada emprendedor tiene su perfil completo: negocio, servicios, ubicacion, contacto. El ciudadano puede buscar "carpintero en Estella" y encontrarlo al instante.', 'flavor-chat-ia'),
+                    'contenido' => __('Cada emprendedor tiene su perfil completo: negocio, servicios, ubicación, contacto. El ciudadano puede buscar "carpintero en Estella" y encontrarlo al instante.', 'flavor-chat-ia'),
                     'posicion' => 'bottom',
                     'destacar' => true,
                 ],
                 [
                     'elemento' => '.wp-list-table, .socios-lista',
                     'titulo' => __('Listado de Emprendedores', 'flavor-chat-ia'),
-                    'contenido' => __('Filtrable por categoria, ubicacion, servicios. Perfecto para fomentar colaboraciones y que los negocios locales sean visibles online.', 'flavor-chat-ia'),
+                    'contenido' => __('Filtrable por categoría, ubicación, servicios. Perfecto para fomentar colaboraciones y que los negocios locales sean visibles online.', 'flavor-chat-ia'),
                     'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.page-title-action, .add-new, .nuevo-socio',
+                    'titulo' => __('Añadir Nuevo Negocio', 'flavor-chat-ia'),
+                    'contenido' => __('Registra emprendedores: datos de contacto, descripción del negocio, horarios, redes sociales, fotos del local o productos.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.tablenav, .categorias-section, .wrap h1',
+                    'titulo' => __('Categorías de Negocios', 'flavor-chat-ia'),
+                    'contenido' => __('Organiza por sectores: hostelería, comercio, servicios profesionales, artesanía, agricultura... Facilita encontrar lo que se busca.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-location, .ubicacion-mapa, .wrap h1',
+                    'titulo' => __('Mapa Interactivo', 'flavor-chat-ia'),
+                    'contenido' => __('Visualiza todos los negocios en un mapa. Los ciudadanos descubren comercios cercanos, rutas de compra local, zonas comerciales.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-status, .verificacion-negocio, .wrap h1',
+                    'titulo' => __('Verificación de Negocios', 'flavor-chat-ia'),
+                    'contenido' => __('Los negocios pueden verificar su perfil para generar confianza: licencias, certificaciones, sellos de calidad local.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.column-date, .estadisticas-directorio, .wrap h1',
+                    'titulo' => __('Estadísticas de Visibilidad', 'flavor-chat-ia'),
+                    'contenido' => __('Cada negocio ve cuántas visitas recibe su perfil, clics en contacto, valoraciones. Mide el impacto de estar en el directorio.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
                 ],
             ],
         ];
@@ -616,8 +1035,8 @@ class Flavor_Guided_Tours {
             'titulo' => __('Red Social de Emprendedores', 'flavor-chat-ia'),
             'descripcion' => __('LinkedIn local para la comunidad emprendedora', 'flavor-chat-ia'),
             'icono' => 'dashicons-networking',
-            'duracion' => '2 min',
-            'paginas' => ['flavor-platform_page_flavor-red-social', 'flavor-platform_page_flavor-comunidades', 'toplevel_page_red-social'],
+            'duracion' => '5 min',
+            'paginas' => ['admin_page_red-social-dashboard', 'admin_page_red-social', 'admin_page_comunidades-dashboard', 'admin_page_comunidades'],
             'video_url' => '',
             'pasos' => [
                 [
@@ -629,9 +1048,109 @@ class Flavor_Guided_Tours {
                 ],
                 [
                     'elemento' => '.wp-list-table, .comunidades-lista, .grupos-lista',
-                    'titulo' => __('Grupos Tematicos', 'flavor-chat-ia'),
-                    'contenido' => __('Grupos por sector (hosteleria, agricultura, servicios...) o por interes (sostenibilidad, digitalizacion...). Facilita el networking natural.', 'flavor-chat-ia'),
+                    'titulo' => __('Grupos Temáticos', 'flavor-chat-ia'),
+                    'contenido' => __('Grupos por sector (hostelería, agricultura, servicios...) o por interés (sostenibilidad, digitalización...). Facilita el networking natural.', 'flavor-chat-ia'),
                     'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.page-title-action, .add-new, .nuevo-grupo',
+                    'titulo' => __('Crear Comunidad', 'flavor-chat-ia'),
+                    'contenido' => __('Crea grupos de interés: "Hosteleros de la zona", "Emprendedoras rurales", "Digitalización de comercios"... Espacios de colaboración sectorial.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.tablenav, .muro-publicaciones, .wrap h1',
+                    'titulo' => __('Muro de Publicaciones', 'flavor-chat-ia'),
+                    'contenido' => __('Los miembros comparten: ofertas de colaboración, búsqueda de proveedores, éxitos conseguidos, dudas profesionales. Interacción constante.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-members, .miembros-comunidad, .wrap h1',
+                    'titulo' => __('Perfiles Profesionales', 'flavor-chat-ia'),
+                    'contenido' => __('Cada emprendedor tiene perfil con habilidades, experiencia y servicios. Facilita encontrar el colaborador perfecto para cada proyecto.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '.column-activity, .actividad-grupo, .wrap h1',
+                    'titulo' => __('Eventos y Quedadas', 'flavor-chat-ia'),
+                    'contenido' => __('Organiza networking presencial: desayunos de trabajo, afterworks, jornadas sectoriales. El online facilita lo presencial.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '.column-date, .mensajeria-privada, .wrap h1',
+                    'titulo' => __('Mensajería Privada', 'flavor-chat-ia'),
+                    'contenido' => __('Chat directo entre miembros para cerrar colaboraciones, resolver dudas o proponer proyectos conjuntos. Comunicación ágil.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '.column-status, .oportunidades-section, .wrap h1',
+                    'titulo' => __('Tablón de Oportunidades', 'flavor-chat-ia'),
+                    'contenido' => __('Ofertas de trabajo, búsqueda de socios, traspasos de negocio, alquiler de locales... El mercado laboral y empresarial local en un vistazo.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+            ],
+        ];
+
+        // Tour: Tejido Empresarial Local
+        // Este tour es conceptual y presenta las herramientas disponibles para emprendedores
+        $this->tours['tour_tejido_empresarial'] = [
+            'id' => 'tour_tejido_empresarial',
+            'titulo' => __('Tejido Empresarial Local', 'flavor-chat-ia'),
+            'descripcion' => __('Herramientas para fortalecer la economía local y conectar negocios del territorio', 'flavor-chat-ia'),
+            'icono' => 'dashicons-building',
+            'duracion' => '5 min',
+            'paginas' => ['toplevel_page_flavor-dashboard', 'flavor-platform_page_flavor-dashboard', 'toplevel_page_flavor-chat-ia', 'flavor-platform_page_flavor-modules'],
+            'video_url' => '',
+            'pasos' => [
+                [
+                    'elemento' => '.wrap',
+                    'titulo' => __('Ecosistema Empresarial Local', 'flavor-chat-ia'),
+                    'contenido' => __('Flavor Platform ofrece un conjunto completo de herramientas para fortalecer el tejido empresarial del territorio: CRM, facturación, marketplace, directorio de comercios y mucho más.', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                    'destacar' => true,
+                ],
+                [
+                    'elemento' => '#adminmenu',
+                    'titulo' => __('CRM de Clientes', 'flavor-chat-ia'),
+                    'contenido' => __('El módulo CRM permite registrar clientes, historial de compras y preferencias. Ideal para comercios de proximidad que quieren fidelizar a sus vecinos.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '#adminmenu',
+                    'titulo' => __('Facturación Simplificada', 'flavor-chat-ia'),
+                    'contenido' => __('Genera facturas, presupuestos y albaranes de forma sencilla. Sistema pensado para autónomos y pequeños comercios que necesitan cumplir con sus obligaciones fiscales.', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '#wpbody-content',
+                    'titulo' => __('Marketplace Local', 'flavor-chat-ia'),
+                    'contenido' => __('Un escaparate digital para productos y servicios del territorio. Los negocios locales pueden vender online sin depender de grandes plataformas, manteniendo el dinero en la comunidad.', 'flavor-chat-ia'),
+                    'posicion' => 'left',
+                ],
+                [
+                    'elemento' => '#wpbody-content',
+                    'titulo' => __('Directorio de Comercios', 'flavor-chat-ia'),
+                    'contenido' => __('Mapa interactivo con bares, restaurantes, tiendas y servicios de la zona. Los vecinos descubren negocios cercanos y los comerciantes ganan visibilidad local.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                ],
+                [
+                    'elemento' => '#wpadminbar',
+                    'titulo' => __('Crowdfunding Comunitario', 'flavor-chat-ia'),
+                    'contenido' => __('Financiación colectiva para proyectos locales. Los vecinos pueden apoyar iniciativas empresariales del barrio: apertura de tiendas, renovaciones, nuevos productos...', 'flavor-chat-ia'),
+                    'posicion' => 'bottom',
+                ],
+                [
+                    'elemento' => '#adminmenu',
+                    'titulo' => __('Banco de Tiempo Empresarial', 'flavor-chat-ia'),
+                    'contenido' => __('Intercambia servicios entre negocios sin dinero: un diseñador hace el logo, un contable lleva las cuentas, un fotógrafo hace las fotos del menú... ¡Colaboración local!', 'flavor-chat-ia'),
+                    'posicion' => 'right',
+                ],
+                [
+                    'elemento' => '.wrap',
+                    'titulo' => __('Economía Circular', 'flavor-chat-ia'),
+                    'contenido' => __('Todas estas herramientas trabajan juntas para que el dinero circule dentro del territorio, fortaleciendo el comercio de proximidad y creando empleo local sostenible.', 'flavor-chat-ia'),
+                    'posicion' => 'top',
+                    'destacar' => true,
                 ],
             ],
         ];
@@ -650,7 +1169,7 @@ class Flavor_Guided_Tours {
             'flavor-dashboard',
             __('Tours de Ayuda', 'flavor-chat-ia'),
             __('Tours', 'flavor-chat-ia'),
-            'manage_options',
+            'edit_posts',
             'flavor-tours',
             [$this, 'render_tours_panel']
         );
@@ -724,7 +1243,9 @@ class Flavor_Guided_Tours {
             'dismissedTours' => $this->get_dismissed_tours(),
             'currentPage' => $hook_suffix,
             'ajaxUrl' => admin_url('admin-ajax.php'),
+            'adminUrl' => admin_url('admin.php?'),
             'nonce' => wp_create_nonce('flavor_tour_nonce'),
+            'chatNonce' => wp_create_nonce('chat_ia_nonce'),
             'strings' => [
                 'next' => __('Siguiente', 'flavor-chat-ia'),
                 'prev' => __('Anterior', 'flavor-chat-ia'),
@@ -738,6 +1259,10 @@ class Flavor_Guided_Tours {
                 'restartTour' => __('Reiniciar Tour', 'flavor-chat-ia'),
                 'helpButton' => __('Ayuda', 'flavor-chat-ia'),
                 'watchVideo' => __('Ver Video', 'flavor-chat-ia'),
+                'chatIA' => __('Asistente IA', 'flavor-chat-ia'),
+                'askAnything' => __('Escribe tu pregunta...', 'flavor-chat-ia'),
+                'chatError' => __('Error al procesar el mensaje', 'flavor-chat-ia'),
+                'connectionError' => __('Error de conexión', 'flavor-chat-ia'),
             ],
         ]);
     }
@@ -800,6 +1325,31 @@ class Flavor_Guided_Tours {
                             </div>
                         <?php endforeach; ?>
                     </div>
+                <?php endif; ?>
+
+                <?php
+                // Verificar si el Chat IA está disponible y configurado
+                $chat_ia_disponible = false;
+                $chat_settings = get_option('flavor_chat_ia_settings', []);
+
+                if (!empty($chat_settings['enabled']) && class_exists('Flavor_Engine_Manager')) {
+                    $engine_manager = Flavor_Engine_Manager::get_instance();
+                    $active_engine = $engine_manager->get_active_engine();
+                    $chat_ia_disponible = $active_engine && $active_engine->is_configured();
+                }
+                ?>
+
+                <?php if ($chat_ia_disponible): ?>
+                <div class="flavor-help-section">
+                    <h4><?php esc_html_e('Asistente IA', 'flavor-chat-ia'); ?></h4>
+                    <div class="flavor-help-item flavor-help-chat-ia" id="flavor-help-chat-trigger">
+                        <span class="dashicons dashicons-format-chat"></span>
+                        <div class="flavor-help-item-content">
+                            <span class="flavor-help-item-title"><?php esc_html_e('Abrir Chat IA', 'flavor-chat-ia'); ?></span>
+                            <span class="flavor-help-item-desc"><?php esc_html_e('Pregunta lo que necesites', 'flavor-chat-ia'); ?></span>
+                        </div>
+                    </div>
+                </div>
                 <?php endif; ?>
 
                 <div class="flavor-help-section">

@@ -83,7 +83,7 @@ $tabla_existe = $wpdb->get_var(
     )
 );
 
-$usar_datos_demo = !$tabla_existe;
+$tablas_talleres_disponibles = (bool) $tabla_existe;
 
 // =============================================================================
 // PARÁMETROS DE FILTROS
@@ -99,113 +99,7 @@ $filtro_orden_dir = isset($_GET['order']) ? sanitize_text_field($_GET['order']) 
 // DATOS DEMO O REALES
 // =============================================================================
 
-if ($usar_datos_demo) {
-    // Datos de demostración
-    $talleres_demo = [
-        (object)[
-            'id' => 1,
-            'titulo' => 'Taller de Cocina Mediterránea',
-            'organizador' => 'María García',
-            'organizador_id' => 2,
-            'estado' => 'confirmado',
-            'fecha_inicio' => date('Y-m-d H:i:s', strtotime('+5 days')),
-            'inscritos_actuales' => 12,
-            'max_participantes' => 15,
-            'materiales_incluidos' => 1,
-            'materiales_necesarios' => "- Delantales (15 unidades)\n- Cuchillos de cocina (15)\n- Tablas de cortar (15)\n- Ingredientes frescos\n- Aceite de oliva virgen extra",
-        ],
-        (object)[
-            'id' => 2,
-            'titulo' => 'Introducción a la Fotografía',
-            'organizador' => 'Carlos López',
-            'organizador_id' => 3,
-            'estado' => 'publicado',
-            'fecha_inicio' => date('Y-m-d H:i:s', strtotime('+12 days')),
-            'inscritos_actuales' => 8,
-            'max_participantes' => 10,
-            'materiales_incluidos' => 0,
-            'materiales_necesarios' => "- Cámara réflex o mirrorless (cada participante)\n- Tarjeta SD (16GB mínimo)\n- Trípode (opcional)",
-        ],
-        (object)[
-            'id' => 3,
-            'titulo' => 'Huertos Urbanos Básico',
-            'organizador' => 'Ana Martínez',
-            'organizador_id' => 4,
-            'estado' => 'en_curso',
-            'fecha_inicio' => date('Y-m-d H:i:s', strtotime('-2 days')),
-            'inscritos_actuales' => 20,
-            'max_participantes' => 20,
-            'materiales_incluidos' => 1,
-            'materiales_necesarios' => "- Macetas pequeñas (40 unidades)\n- Tierra abonada (20 kg)\n- Semillas variadas\n- Guantes de jardinería (20 pares)\n- Regaderas pequeñas (10)",
-        ],
-        (object)[
-            'id' => 4,
-            'titulo' => 'Yoga para Principiantes',
-            'organizador' => 'Laura Ruiz',
-            'organizador_id' => 5,
-            'estado' => 'confirmado',
-            'fecha_inicio' => date('Y-m-d H:i:s', strtotime('+2 days')),
-            'inscritos_actuales' => 15,
-            'max_participantes' => 20,
-            'materiales_incluidos' => 1,
-            'materiales_necesarios' => "- Esterillas de yoga (20)\n- Bloques de yoga (40)\n- Cintas elásticas (20)\n- Mantas (20)",
-        ],
-        (object)[
-            'id' => 5,
-            'titulo' => 'Manualidades con Materiales Reciclados',
-            'organizador' => 'Pedro Sánchez',
-            'organizador_id' => 6,
-            'estado' => 'publicado',
-            'fecha_inicio' => date('Y-m-d H:i:s', strtotime('+20 days')),
-            'inscritos_actuales' => 5,
-            'max_participantes' => 12,
-            'materiales_incluidos' => 0,
-            'materiales_necesarios' => "- Botellas de plástico vacías (cada participante 3)\n- Cartón de cajas\n- Tijeras\n- Pegamento",
-        ],
-    ];
-
-    // Estadísticas demo
-    $total_talleres_materiales = count($talleres_demo);
-    $talleres_materiales_incluidos = 3;
-    $talleres_material_propio = 2;
-    $talleres_urgentes = 2;
-    $participantes_totales = 60;
-
-    // Aplicar filtros a datos demo
-    $talleres_filtrados = $talleres_demo;
-
-    if (!empty($filtro_busqueda)) {
-        $talleres_filtrados = array_filter($talleres_filtrados, function($t) use ($filtro_busqueda) {
-            return stripos($t->titulo, $filtro_busqueda) !== false
-                || stripos($t->organizador, $filtro_busqueda) !== false
-                || stripos($t->materiales_necesarios, $filtro_busqueda) !== false;
-        });
-    }
-
-    if (!empty($filtro_estado)) {
-        $talleres_filtrados = array_filter($talleres_filtrados, function($t) use ($filtro_estado) {
-            return $t->estado === $filtro_estado;
-        });
-    }
-
-    if ($filtro_materiales_incluidos !== '') {
-        $talleres_filtrados = array_filter($talleres_filtrados, function($t) use ($filtro_materiales_incluidos) {
-            return $t->materiales_incluidos == $filtro_materiales_incluidos;
-        });
-    }
-
-    $talleres_con_materiales = array_values($talleres_filtrados);
-
-    // Top materiales más solicitados demo
-    $materiales_frecuentes = [
-        ['nombre' => 'Delantales', 'cantidad' => 35],
-        ['nombre' => 'Cuchillos', 'cantidad' => 30],
-        ['nombre' => 'Esterillas', 'cantidad' => 20],
-        ['nombre' => 'Guantes', 'cantidad' => 20],
-        ['nombre' => 'Macetas', 'cantidad' => 40],
-    ];
-
-} else {
+if ($tablas_talleres_disponibles) {
     // Datos reales de la base de datos
 
     // Estadísticas generales
@@ -294,6 +188,14 @@ if ($usar_datos_demo) {
     }
 
     // Materiales frecuentes - placeholder
+    $materiales_frecuentes = [];
+} else {
+    $total_talleres_materiales = 0;
+    $talleres_materiales_incluidos = 0;
+    $talleres_material_propio = 0;
+    $talleres_urgentes = 0;
+    $participantes_totales = 0;
+    $talleres_con_materiales = [];
     $materiales_frecuentes = [];
 }
 ?>
@@ -656,10 +558,10 @@ if ($usar_datos_demo) {
     <hr class="wp-header-end">
 
     <div class="flavor-materiales-wrapper">
-        <?php if ($usar_datos_demo): ?>
+        <?php if (!$tablas_talleres_disponibles): ?>
             <div class="flavor-materiales-demo-notice">
                 <span class="dashicons dashicons-info"></span>
-                <span><?php echo esc_html__('Mostrando datos de demostración. La tabla de talleres no está configurada.', 'flavor-chat-ia'); ?></span>
+                <span><?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Talleres.', 'flavor-chat-ia'); ?></span>
             </div>
         <?php endif; ?>
 

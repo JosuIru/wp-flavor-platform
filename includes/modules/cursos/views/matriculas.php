@@ -61,10 +61,10 @@ $query = "SELECT i.*,
                  inst.display_name as instructor_nombre
           FROM $tabla_inscripciones i
           INNER JOIN $tabla_cursos c ON i.curso_id = c.id
-          INNER JOIN {$wpdb->users} u ON i.alumno_id = u.ID
+          INNER JOIN {$wpdb->users} u ON i.usuario_id = u.ID
           LEFT JOIN {$wpdb->users} inst ON c.instructor_id = inst.ID
           WHERE $where_sql
-          ORDER BY i.fecha_inscripcion DESC
+          ORDER BY i.created_at DESC
           LIMIT $per_page OFFSET $offset";
 
 $inscripciones = empty($prepare_values)
@@ -77,9 +77,9 @@ $cursos_para_filtro = $wpdb->get_results(
 );
 
 // Estadísticas rápidas
-$stats_hoy = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE DATE(fecha_inscripcion) = CURDATE()");
-$stats_semana = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE fecha_inscripcion >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
-$stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MONTH(fecha_inscripcion) = MONTH(CURDATE())");
+$stats_hoy = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE DATE(created_at) = CURDATE()");
+$stats_semana = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
+$stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MONTH(created_at) = MONTH(CURDATE())");
 
 ?>
 
@@ -202,10 +202,10 @@ $stats_mes = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_inscripciones WHERE MON
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?php echo date('d/m/Y', strtotime($inscripcion->fecha_inscripcion)); ?>
+                                    <?php echo date('d/m/Y', strtotime($inscripcion->created_at)); ?>
                                     <br>
                                     <small class="flavor-text-muted">
-                                        <?php echo date('H:i', strtotime($inscripcion->fecha_inscripcion)); ?>
+                                        <?php echo date('H:i', strtotime($inscripcion->created_at)); ?>
                                     </small>
                                 </td>
                                 <td>

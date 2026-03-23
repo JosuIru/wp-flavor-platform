@@ -121,13 +121,29 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                     'badge'    => [$this, 'contar_solicitudes_pendientes'],
                 ],
                 [
-                    'slug'     => 'transparencia-documentos',
-                    'titulo'   => __('Documentos', 'flavor-chat-ia'),
-                    'callback' => [$this, 'render_admin_documentos'],
+                    'slug'     => 'transparencia-datos',
+                    'titulo'   => __('Datos Públicos', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_datos'],
+                ],
+                [
+                    'slug'     => 'transparencia-solicitudes',
+                    'titulo'   => __('Solicitudes', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_solicitudes'],
+                    'badge'    => [$this, 'contar_solicitudes_pendientes'],
+                ],
+                [
+                    'slug'     => 'transparencia-publicar',
+                    'titulo'   => __('Publicar', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_publicar'],
+                ],
+                [
+                    'slug'     => 'transparencia-informes',
+                    'titulo'   => __('Informes', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_pagina_informes'],
                 ],
                 [
                     'slug'     => 'transparencia-configuracion',
-                    'titulo'   => __('Configuracion', 'flavor-chat-ia'),
+                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_admin_configuracion'],
                 ],
             ],
@@ -187,6 +203,15 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                 Flavor_Transparencia_Dashboard_Tab::get_instance();
             }
         }
+
+        // Controlador frontend (shortcodes y paneles de usuario en /mi-portal/).
+        $ruta_frontend_controller = dirname(__FILE__) . '/frontend/class-transparencia-frontend-controller.php';
+        if (file_exists($ruta_frontend_controller)) {
+            require_once $ruta_frontend_controller;
+            if (class_exists('Flavor_Transparencia_Frontend_Controller')) {
+                Flavor_Transparencia_Frontend_Controller::get_instance();
+            }
+        }
     }
 
     /**
@@ -195,14 +220,16 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     public function register_shortcodes() {
         add_shortcode('transparencia_portal', [$this, 'shortcode_portal']);
         add_shortcode('transparencia_presupuesto_actual', [$this, 'shortcode_presupuesto_actual']);
-        add_shortcode('transparencia_presupuestos', [$this, 'shortcode_presupuesto_actual']);
+        add_shortcode('transparencia_presupuestos', [$this, 'shortcode_presupuestos']);
         add_shortcode('transparencia_ultimos_gastos', [$this, 'shortcode_ultimos_gastos']);
         add_shortcode('transparencia_buscador_docs', [$this, 'shortcode_buscador_docs']);
         add_shortcode('transparencia_solicitar_info', [$this, 'shortcode_solicitar_info']);
         add_shortcode('transparencia_solicitar', [$this, 'shortcode_solicitar_info']);
         add_shortcode('transparencia_actas', [$this, 'shortcode_actas']);
+        add_shortcode('transparencia_contratos', [$this, 'shortcode_contratos']);
         add_shortcode('transparencia_grafico_presupuesto', [$this, 'shortcode_grafico_presupuesto']);
         add_shortcode('transparencia_indicadores', [$this, 'shortcode_indicadores']);
+        add_shortcode('transparencia_presupuesto_resumen', [$this, 'shortcode_presupuesto_resumen']);
         add_shortcode('transparencia_mis_solicitudes', [$this, 'shortcode_mis_solicitudes_alias']);
     }
 
@@ -226,6 +253,16 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         return '<div class="flavor-alert flavor-alert-info">' .
             __('El panel de seguimiento de solicitudes no está disponible en este momento.', 'flavor-chat-ia') .
             '</div>';
+    }
+
+    /**
+     * Render para tab de mis solicitudes en rutas dinámicas.
+     *
+     * @param int $user_id
+     * @return string
+     */
+    public function render_tab_mis_solicitudes($user_id = 0) {
+        return $this->shortcode_mis_solicitudes_alias([]);
     }
 
     /**
@@ -259,12 +296,14 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
 
         $ruta_base = plugin_dir_url(__FILE__) . 'assets/';
         $version_assets = self::VERSION;
+        $css_file = plugin_dir_path(__FILE__) . 'assets/css/transparencia.css';
+        $css_version = file_exists($css_file) ? (string) filemtime($css_file) : $version_assets;
 
         wp_enqueue_style(
             'flavor-transparencia',
             $ruta_base . 'css/transparencia.css',
             [],
-            $version_assets
+            $css_version
         );
 
         wp_enqueue_script(
@@ -301,6 +340,17 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     private function should_load_assets() {
         global $post;
 
+        // Rutas dinámicas del portal /mi-portal/transparencia/*
+        $modulo_actual = sanitize_key((string) get_query_var('flavor_module', ''));
+        if ($modulo_actual === 'transparencia') {
+            return true;
+        }
+
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '';
+        if ($request_uri !== '' && strpos($request_uri, '/mi-portal/transparencia') !== false) {
+            return true;
+        }
+
         if (!$post) {
             return false;
         }
@@ -309,7 +359,9 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
             'transparencia_portal', 'transparencia_presupuesto_actual',
             'transparencia_ultimos_gastos', 'transparencia_buscador_docs',
             'transparencia_solicitar_info', 'transparencia_actas',
-            'transparencia_grafico_presupuesto', 'transparencia_indicadores'
+            'transparencia_grafico_presupuesto', 'transparencia_indicadores',
+            'transparencia_presupuestos', 'transparencia_contratos',
+            'transparencia_presupuesto_resumen'
         ];
 
         foreach ($shortcodes_transparencia as $shortcode) {
@@ -329,7 +381,9 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
             return;
         }
 
-        wp_enqueue_style('flavor-transparencia-admin', plugin_dir_url(__FILE__) . 'assets/css/transparencia.css', [], self::VERSION);
+        $css_file = plugin_dir_path(__FILE__) . 'assets/css/transparencia.css';
+        $css_version = file_exists($css_file) ? (string) filemtime($css_file) : self::VERSION;
+        wp_enqueue_style('flavor-transparencia-admin', plugin_dir_url(__FILE__) . 'assets/css/transparencia.css', [], $css_version);
     }
 
     /**
@@ -1832,6 +1886,24 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Shortcode: Presupuestos completos
+     */
+    public function shortcode_presupuestos($atributos) {
+        $atts = shortcode_atts([
+            'limite' => 12,
+        ], $atributos);
+
+        $template_path = dirname(__FILE__) . '/templates/presupuestos.php';
+        if (file_exists($template_path)) {
+            ob_start();
+            include $template_path;
+            return ob_get_clean();
+        }
+
+        return $this->shortcode_presupuesto_actual($atributos);
+    }
+
+    /**
      * Shortcode: Ultimos gastos
      */
     public function shortcode_ultimos_gastos($atributos) {
@@ -1920,6 +1992,46 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         $configuracion = $this->get_settings();
         $usuario_logueado = is_user_logged_in();
         $usuario_actual = wp_get_current_user();
+        $estado_envio = null;
+        $valores_formulario = [
+            'nombre' => '',
+            'email' => '',
+            'telefono' => '',
+            'titulo' => '',
+            'categoria' => '',
+            'descripcion' => '',
+        ];
+
+        if ($usuario_logueado) {
+            $valores_formulario['nombre'] = (string) $usuario_actual->display_name;
+            $valores_formulario['email'] = (string) $usuario_actual->user_email;
+        }
+
+        // Fallback sin JS: procesar envio por POST del propio formulario.
+        if (
+            isset($_POST['flavor_transparencia_form'])
+            && sanitize_text_field(wp_unslash((string) $_POST['flavor_transparencia_form'])) === 'solicitud_info'
+        ) {
+            $nonce = sanitize_text_field(wp_unslash((string) ($_POST['flavor_transparencia_form_nonce'] ?? '')));
+            if (!wp_verify_nonce($nonce, 'flavor_transparencia_form_solicitud')) {
+                $estado_envio = [
+                    'success' => false,
+                    'error' => __('La sesión del formulario ha caducado. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia'),
+                ];
+            } else {
+                $datos_post = [
+                    'nombre' => sanitize_text_field(wp_unslash((string) ($_POST['nombre'] ?? ''))),
+                    'email' => sanitize_email(wp_unslash((string) ($_POST['email'] ?? ''))),
+                    'telefono' => sanitize_text_field(wp_unslash((string) ($_POST['telefono'] ?? ''))),
+                    'titulo' => sanitize_text_field(wp_unslash((string) ($_POST['titulo'] ?? ''))),
+                    'categoria' => sanitize_text_field(wp_unslash((string) ($_POST['categoria'] ?? ''))),
+                    'descripcion' => sanitize_textarea_field(wp_unslash((string) ($_POST['descripcion'] ?? ''))),
+                ];
+
+                $valores_formulario = array_merge($valores_formulario, $datos_post);
+                $estado_envio = $this->crear_solicitud_informacion($datos_post);
+            }
+        }
 
         ob_start();
         ?>
@@ -1939,28 +2051,54 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
             </div>
             <?php endif; ?>
 
-            <form class="transparencia-solicitud-form">
+            <?php if (is_array($estado_envio)) : ?>
+            <div class="transparencia-mensajes">
+                <?php if (!empty($estado_envio['success'])) : ?>
+                <div class="transparencia-mensaje transparencia-mensaje-success">
+                    <span class="dashicons dashicons-yes-alt"></span>
+                    <span>
+                        <?php
+                        printf(
+                            esc_html__('Solicitud enviada correctamente. Expediente: %s', 'flavor-chat-ia'),
+                            esc_html((string) ($estado_envio['numero_expediente'] ?? '-'))
+                        );
+                        ?>
+                    </span>
+                </div>
+                <?php else : ?>
+                <div class="transparencia-mensaje transparencia-mensaje-error">
+                    <span class="dashicons dashicons-warning"></span>
+                    <span><?php echo esc_html((string) ($estado_envio['error'] ?? __('No se pudo enviar la solicitud.', 'flavor-chat-ia'))); ?></span>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+
+            <form class="transparencia-solicitud-form" method="post" action="">
+                <input type="hidden" name="flavor_transparencia_form" value="solicitud_info">
+                <input type="hidden" name="flavor_transparencia_form_nonce" value="<?php echo esc_attr(wp_create_nonce('flavor_transparencia_form_solicitud')); ?>">
                 <?php if (!$usuario_logueado): ?>
                 <div class="transparencia-campo">
                     <label for="solicitud-nombre"><?php _e('Nombre completo', 'flavor-chat-ia'); ?></label>
-                    <input type="text" id="solicitud-nombre" name="nombre" required>
+                    <input type="text" id="solicitud-nombre" name="nombre" value="<?php echo esc_attr($valores_formulario['nombre']); ?>" required>
                 </div>
                 <div class="transparencia-campo">
                     <label for="solicitud-email"><?php _e('Correo electronico', 'flavor-chat-ia'); ?> *</label>
-                    <input type="email" id="solicitud-email" name="email" required>
+                    <input type="email" id="solicitud-email" name="email" value="<?php echo esc_attr($valores_formulario['email']); ?>" required>
                 </div>
                 <div class="transparencia-campo">
                     <label for="solicitud-telefono"><?php _e('Telefono', 'flavor-chat-ia'); ?></label>
-                    <input type="tel" id="solicitud-telefono" name="telefono">
+                    <input type="tel" id="solicitud-telefono" name="telefono" value="<?php echo esc_attr($valores_formulario['telefono']); ?>">
                 </div>
                 <?php else: ?>
-                <input type="hidden" name="nombre" value="<?php echo esc_attr($usuario_actual->display_name); ?>">
-                <input type="hidden" name="email" value="<?php echo esc_attr($usuario_actual->user_email); ?>">
+                <input type="hidden" name="nombre" value="<?php echo esc_attr($valores_formulario['nombre']); ?>">
+                <input type="hidden" name="email" value="<?php echo esc_attr($valores_formulario['email']); ?>">
                 <?php endif; ?>
 
                 <div class="transparencia-campo">
                     <label for="solicitud-titulo"><?php _e('Titulo de la solicitud', 'flavor-chat-ia'); ?> *</label>
                     <input type="text" id="solicitud-titulo" name="titulo" required
+                           value="<?php echo esc_attr($valores_formulario['titulo']); ?>"
                            placeholder="<?php _e('Describa brevemente la informacion que solicita', 'flavor-chat-ia'); ?>">
                 </div>
 
@@ -1968,19 +2106,19 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
                     <label for="solicitud-categoria"><?php _e('Categoria', 'flavor-chat-ia'); ?></label>
                     <select id="solicitud-categoria" name="categoria">
                         <option value=""><?php _e('Seleccione una categoria', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('presupuestos', 'flavor-chat-ia'); ?>"><?php _e('Presupuestos y cuentas', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('contratos', 'flavor-chat-ia'); ?>"><?php _e('Contratos y licitaciones', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('subvenciones', 'flavor-chat-ia'); ?>"><?php _e('Subvenciones y ayudas', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('personal', 'flavor-chat-ia'); ?>"><?php _e('Personal y retribuciones', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('normativa', 'flavor-chat-ia'); ?>"><?php _e('Normativa y acuerdos', 'flavor-chat-ia'); ?></option>
-                        <option value="<?php echo esc_attr__('otros', 'flavor-chat-ia'); ?>"><?php _e('Otros', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('presupuestos', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'presupuestos'); ?>><?php _e('Presupuestos y cuentas', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('contratos', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'contratos'); ?>><?php _e('Contratos y licitaciones', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('subvenciones', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'subvenciones'); ?>><?php _e('Subvenciones y ayudas', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('personal', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'personal'); ?>><?php _e('Personal y retribuciones', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('normativa', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'normativa'); ?>><?php _e('Normativa y acuerdos', 'flavor-chat-ia'); ?></option>
+                        <option value="<?php echo esc_attr__('otros', 'flavor-chat-ia'); ?>" <?php selected($valores_formulario['categoria'], 'otros'); ?>><?php _e('Otros', 'flavor-chat-ia'); ?></option>
                     </select>
                 </div>
 
                 <div class="transparencia-campo">
                     <label for="solicitud-descripcion"><?php _e('Descripcion detallada', 'flavor-chat-ia'); ?> *</label>
                     <textarea id="solicitud-descripcion" name="descripcion" required
-                              placeholder="<?php _e('Describa con detalle la informacion que necesita, incluyendo periodos, entidades o cualquier dato que ayude a localizar la informacion.', 'flavor-chat-ia'); ?>"></textarea>
+                              placeholder="<?php _e('Describa con detalle la informacion que necesita, incluyendo periodos, entidades o cualquier dato que ayude a localizar la informacion.', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($valores_formulario['descripcion']); ?></textarea>
                 </div>
 
                 <div class="transparencia-solicitud-acciones">
@@ -2066,6 +2204,24 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Shortcode: Contratos públicos
+     */
+    public function shortcode_contratos($atributos) {
+        $atts = shortcode_atts([
+            'limite' => 20,
+        ], $atributos);
+
+        $template_path = dirname(__FILE__) . '/templates/contratos.php';
+        if (file_exists($template_path)) {
+            ob_start();
+            include $template_path;
+            return ob_get_clean();
+        }
+
+        return '<div class="transparencia-vacio">' . esc_html__('No hay vista de contratos disponible.', 'flavor-chat-ia') . '</div>';
+    }
+
+    /**
      * Shortcode: Grafico de presupuesto
      */
     public function shortcode_grafico_presupuesto($atributos) {
@@ -2088,6 +2244,29 @@ class Flavor_Chat_Transparencia_Module extends Flavor_Chat_Module_Base {
         ]); ?>'></div>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Shortcode: Resumen de presupuesto
+     */
+    public function shortcode_presupuesto_resumen($atributos) {
+        $atts = shortcode_atts([
+            'ejercicio' => date('Y'),
+            'estilo' => 'default',
+            'mostrar_enlace' => true,
+        ], $atributos);
+
+        $template_path = dirname(__FILE__) . '/templates/presupuesto-resumen.php';
+        if (file_exists($template_path)) {
+            ob_start();
+            include $template_path;
+            return ob_get_clean();
+        }
+
+        return $this->shortcode_presupuesto_actual([
+            'ejercicio' => $atts['ejercicio'],
+            'mostrar_grafico' => 'false',
+        ]);
     }
 
     /**
@@ -3057,13 +3236,37 @@ KNOWLEDGE;
                 'documentos' => [
                     'label'   => __('Documentos', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-media-document',
-                    'content' => 'template:_archive.php',
+                    'content' => 'shortcode:transparencia_buscador_docs',
                     'public'  => true,
                 ],
                 'presupuestos' => [
                     'label'   => __('Presupuestos', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-chart-pie',
                     'content' => 'shortcode:transparencia_presupuestos',
+                    'public'  => true,
+                ],
+                'gastos' => [
+                    'label'   => __('Gastos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-money-alt',
+                    'content' => 'template:ultimos-gastos.php',
+                    'public'  => true,
+                ],
+                'contratos' => [
+                    'label'   => __('Contratos', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-media-document',
+                    'content' => 'shortcode:transparencia_contratos',
+                    'public'  => true,
+                ],
+                'actas' => [
+                    'label'   => __('Actas', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-text-page',
+                    'content' => 'template:actas.php',
+                    'public'  => true,
+                ],
+                'indicadores' => [
+                    'label'   => __('Indicadores', 'flavor-chat-ia'),
+                    'icon'    => 'dashicons-chart-bar',
+                    'content' => 'template:indicadores.php',
                     'public'  => true,
                 ],
                 'solicitar' => [
@@ -3075,32 +3278,8 @@ KNOWLEDGE;
                 'mis-solicitudes' => [
                     'label'      => __('Mis solicitudes', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-admin-users',
-                    'content'    => 'shortcode:transparencia_mis_solicitudes',
+                    'content'    => 'callback:render_tab_mis_solicitudes',
                     'requires_login' => true,
-                ],
-                'foro' => [
-                    'label'      => __('Foro', 'flavor-chat-ia'),
-                    'icon'       => 'dashicons-admin-comments',
-                    'content'    => 'action:foro_documento',
-                    'hidden_nav' => true,
-                ],
-                'chat' => [
-                    'label'      => __('Chat', 'flavor-chat-ia'),
-                    'icon'       => 'dashicons-format-chat',
-                    'content'    => 'action:chat_documento',
-                    'hidden_nav' => true,
-                ],
-                'multimedia' => [
-                    'label'      => __('Multimedia', 'flavor-chat-ia'),
-                    'icon'       => 'dashicons-format-gallery',
-                    'content'    => 'action:multimedia_documento',
-                    'hidden_nav' => true,
-                ],
-                'red-social' => [
-                    'label'      => __('Red social', 'flavor-chat-ia'),
-                    'icon'       => 'dashicons-share',
-                    'content'    => 'action:red_social_documento',
-                    'hidden_nav' => true,
                 ],
             ],
 
@@ -3148,16 +3327,27 @@ KNOWLEDGE;
      * Registrar páginas de administración (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
+
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
         $capability = 'manage_options';
 
-        add_submenu_page(
-            null,
-            __('Transparencia - Configuración', 'flavor-chat-ia'),
-            __('Configuración', 'flavor-chat-ia'),
-            $capability,
-            'transparencia-configuracion',
-            [$this, 'render_pagina_configuracion']
-        );
+        // Evitar doble registro del slug cuando el registrador automático
+        // de dashboards de módulos ya expone views/configuracion.php
+        if (!class_exists('Flavor_Module_Dashboards_Registrar')) {
+            add_submenu_page(
+                null,
+                __('Transparencia - Configuración', 'flavor-chat-ia'),
+                __('Configuración', 'flavor-chat-ia'),
+                $capability,
+                'transparencia-configuracion',
+                [$this, 'render_pagina_configuracion']
+            );
+        }
 
         add_submenu_page(
             null,
@@ -3210,7 +3400,7 @@ KNOWLEDGE;
     }
 
     /**
-     * Renderizar página de datos
+     * Renderizar página de datos públicos
      */
     public function render_pagina_datos() {
         $views_path = dirname(__FILE__) . '/views/datos.php';
@@ -3218,7 +3408,7 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap"><h1>' . esc_html__('Datos Públicos', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Gestión de datos públicos del portal de transparencia.', 'flavor-chat-ia') . '</p></div>';
+            echo '<p>' . esc_html__('Gestión de documentos y datos publicados en el portal de transparencia.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 

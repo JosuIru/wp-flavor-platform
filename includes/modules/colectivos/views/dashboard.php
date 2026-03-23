@@ -18,6 +18,19 @@ $tabla_asambleas = $wpdb->prefix . 'flavor_colectivos_asambleas';
 
 // Verificar si las tablas existen
 $tabla_existe = $wpdb->get_var("SHOW TABLES LIKE '{$tabla_colectivos}'") === $tabla_colectivos;
+$tablas_disponibles = $tabla_existe;
+
+$total_colectivos = 0;
+$activos = 0;
+$total_miembros = 0;
+$proyectos_activos = 0;
+$total_proyectos = 0;
+$asambleas_programadas = 0;
+$sin_actividad = 0;
+$por_tipo = [];
+$colectivos_activos = [];
+$proximas_asambleas = [];
+$proyectos_recientes = [];
 
 if ($tabla_existe) {
     $total_colectivos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_colectivos}");
@@ -92,51 +105,7 @@ if ($tabla_existe) {
         )
     ") : 0;
 
-    $hay_datos = $total_colectivos > 0;
-} else {
-    $hay_datos = false;
 }
-
-// Datos de demostración
-if (!$hay_datos) {
-    $total_colectivos = 12;
-    $activos = 10;
-    $total_miembros = 156;
-    $proyectos_activos = 8;
-    $total_proyectos = 24;
-    $asambleas_programadas = 5;
-    $sin_actividad = 2;
-
-    $por_tipo = [
-        ['tipo' => 'vecinal', 'total' => 4],
-        ['tipo' => 'cultural', 'total' => 3],
-        ['tipo' => 'ecologista', 'total' => 2],
-        ['tipo' => 'deportivo', 'total' => 2],
-        ['tipo' => 'social', 'total' => 1],
-    ];
-
-    $colectivos_activos = [
-        ['id' => 1, 'nombre' => 'Asociación Vecinal Centro', 'tipo' => 'vecinal', 'estado' => 'activo', 'num_miembros' => 45],
-        ['id' => 2, 'nombre' => 'Colectivo Ecologista Verde', 'tipo' => 'ecologista', 'estado' => 'activo', 'num_miembros' => 32],
-        ['id' => 3, 'nombre' => 'Club Deportivo Barrio Norte', 'tipo' => 'deportivo', 'estado' => 'activo', 'num_miembros' => 28],
-        ['id' => 4, 'nombre' => 'Asoc. Cultural La Tertulia', 'tipo' => 'cultural', 'estado' => 'activo', 'num_miembros' => 24],
-        ['id' => 5, 'nombre' => 'Plataforma Vivienda Digna', 'tipo' => 'social', 'estado' => 'activo', 'num_miembros' => 18],
-    ];
-
-    $proximas_asambleas = [
-        ['id' => 1, 'titulo' => 'Asamblea ordinaria mensual', 'fecha' => date('Y-m-d', strtotime('+3 days')), 'hora' => '19:00', 'lugar' => 'Local social', 'colectivo_nombre' => 'Asociación Vecinal Centro'],
-        ['id' => 2, 'titulo' => 'Reunión comisión proyectos', 'fecha' => date('Y-m-d', strtotime('+5 days')), 'hora' => '18:30', 'lugar' => 'Sede asociación', 'colectivo_nombre' => 'Colectivo Ecologista Verde'],
-        ['id' => 3, 'titulo' => 'Asamblea extraordinaria', 'fecha' => date('Y-m-d', strtotime('+7 days')), 'hora' => '20:00', 'lugar' => 'Polideportivo', 'colectivo_nombre' => 'Club Deportivo Barrio Norte'],
-    ];
-
-    $proyectos_recientes = [
-        ['id' => 1, 'nombre' => 'Rehabilitación plaza mayor', 'estado' => 'activo', 'progreso' => 65, 'colectivo_nombre' => 'Asociación Vecinal Centro'],
-        ['id' => 2, 'nombre' => 'Huerto comunitario escolar', 'estado' => 'activo', 'progreso' => 40, 'colectivo_nombre' => 'Colectivo Ecologista Verde'],
-        ['id' => 3, 'nombre' => 'Liga deportiva intercultural', 'estado' => 'activo', 'progreso' => 80, 'colectivo_nombre' => 'Club Deportivo Barrio Norte'],
-        ['id' => 4, 'nombre' => 'Festival de teatro amateur', 'estado' => 'planificado', 'progreso' => 15, 'colectivo_nombre' => 'Asoc. Cultural La Tertulia'],
-    ];
-}
-
 // Labels y colores por tipo
 $tipos_labels = [
     'vecinal' => 'Vecinal',
@@ -173,10 +142,11 @@ $estados_proyecto = [
     }
     ?>
 
-    <?php if (!$hay_datos): ?>
+    <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong>Modo demostración:</strong> Se muestran datos de ejemplo. Los datos reales aparecerán cuando se creen colectivos.
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Colectivos o aún no hay colectivos registrados.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 

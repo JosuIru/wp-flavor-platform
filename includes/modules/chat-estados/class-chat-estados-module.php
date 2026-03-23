@@ -398,13 +398,19 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
             true
         );
 
+        $settings = method_exists($this, 'get_settings') ? (array) $this->get_settings() : [];
+        $max_estados_dia = isset($settings['max_estados_dia']) ? (int) $settings['max_estados_dia'] : 30;
+        if ($max_estados_dia < 1) {
+            $max_estados_dia = 30;
+        }
+
         wp_localize_script('flavor-chat-estados', 'flavorEstados', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url('flavor/v1/estados/'),
             'nonce' => wp_create_nonce('flavor_estados_nonce'),
             'userId' => get_current_user_id(),
             'duracion' => self::DURACION_ESTADO,
-            'maxEstadosDia' => $this->config['max_estados_dia'],
+            'maxEstadosDia' => $max_estados_dia,
             'strings' => [
                 'tuEstado' => __('Tu estado', 'flavor-chat-ia'),
                 'agregarEstado' => __('Añadir estado', 'flavor-chat-ia'),
@@ -505,7 +511,13 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
 
         // Verificar límite diario
         $estados_hoy = $this->contar_estados_hoy($usuario_id);
-        if ($estados_hoy >= $this->config['max_estados_dia']) {
+        $settings = method_exists($this, 'get_settings') ? (array) $this->get_settings() : [];
+        $max_estados_dia = isset($settings['max_estados_dia']) ? (int) $settings['max_estados_dia'] : 30;
+        if ($max_estados_dia < 1) {
+            $max_estados_dia = 30;
+        }
+
+        if ($estados_hoy >= $max_estados_dia) {
             return new WP_Error('limite_alcanzado', 'Has alcanzado el límite de estados diarios');
         }
 

@@ -33,7 +33,7 @@ $stats_proyectos_estado = [];
 $proyectos_mas_votados = [];
 $distribucion_categoria = [];
 $tendencia_votos = [];
-$usando_demo = false;
+$tablas_disponibles = ($tabla_proyectos_existe && $tabla_votos_existe);
 
 if ($tabla_proyectos_existe && $tabla_votos_existe) {
     $presupuesto_asignado = (float) $wpdb->get_var("SELECT COALESCE(SUM(presupuesto_estimado), 0) FROM $tabla_proyectos WHERE estado = 'aprobada'");
@@ -80,47 +80,6 @@ if ($tabla_proyectos_existe && $tabla_votos_existe) {
     ");
 }
 
-// Datos de demostración si no hay datos reales
-if ($total_proyectos == 0 && $total_votos_pp == 0) {
-    $usando_demo = true;
-    $presupuesto_asignado = 235000;
-    $total_proyectos = 24;
-    $proyectos_votacion = 12;
-    $proyectos_aprobados = 8;
-    $votantes_unicos_pp = 1245;
-    $total_votos_pp = 3560;
-
-    $stats_proyectos_estado = [
-        (object) ['estado' => 'borrador', 'total' => 4],
-        (object) ['estado' => 'en_votacion', 'total' => 12],
-        (object) ['estado' => 'aprobada', 'total' => 8],
-        (object) ['estado' => 'rechazada', 'total' => 0],
-    ];
-
-    $proyectos_mas_votados = [
-        (object) ['titulo' => 'Parque Infantil Inclusivo', 'presupuesto_estimado' => 45000, 'total_votos' => 456],
-        (object) ['titulo' => 'Carril Bici Centro-Norte', 'presupuesto_estimado' => 85000, 'total_votos' => 389],
-        (object) ['titulo' => 'Huerto Comunitario La Paz', 'presupuesto_estimado' => 25000, 'total_votos' => 312],
-        (object) ['titulo' => 'Mejora Iluminación Barrio Sur', 'presupuesto_estimado' => 35000, 'total_votos' => 278],
-        (object) ['titulo' => 'Centro Cultural Juvenil', 'presupuesto_estimado' => 65000, 'total_votos' => 245],
-    ];
-
-    $distribucion_categoria = [
-        (object) ['categoria' => 'Urbanismo', 'total_presupuesto' => 120000],
-        (object) ['categoria' => 'Medio Ambiente', 'total_presupuesto' => 75000],
-        (object) ['categoria' => 'Cultura', 'total_presupuesto' => 65000],
-        (object) ['categoria' => 'Deportes', 'total_presupuesto' => 45000],
-        (object) ['categoria' => 'Servicios Sociales', 'total_presupuesto' => 30000],
-    ];
-
-    for ($i = 13; $i >= 0; $i--) {
-        $tendencia_votos[] = (object) [
-            'fecha' => date('Y-m-d', strtotime("-$i days")),
-            'total' => rand(15, 85)
-        ];
-    }
-}
-
 $presupuesto_disponible = $presupuesto_total - $presupuesto_asignado;
 $porcentaje_asignado = $presupuesto_total > 0 ? round(($presupuesto_asignado / $presupuesto_total) * 100, 1) : 0;
 
@@ -141,14 +100,18 @@ $categoria_data = array_column($distribucion_categoria, 'total_presupuesto');
 ?>
 
 <div class="dm-dashboard">
+    <?php if (!$tablas_disponibles): ?>
+        <div class="dm-alert dm-alert--info">
+            <span class="dashicons dashicons-info"></span>
+            <p><?php esc_html_e('Faltan tablas del módulo Presupuestos Participativos o aún no hay proyectos/votos.', 'flavor-chat-ia'); ?></p>
+        </div>
+    <?php endif; ?>
+
     <div class="dm-header">
         <h1 class="dm-header__title">
             <span class="dashicons dashicons-money-alt"></span>
             <?php esc_html_e('Dashboard de Presupuestos Participativos', 'flavor-chat-ia'); ?>
         </h1>
-        <?php if ($usando_demo): ?>
-            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
-        <?php endif; ?>
     </div>
 
     <!-- Accesos Rápidos -->

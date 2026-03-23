@@ -116,15 +116,23 @@ class Flavor_Compostaje_Frontend_Controller {
      * Registra shortcodes del frontend
      */
     public function registrar_shortcodes() {
-        add_shortcode('flavor_compostaje_mapa', [$this, 'shortcode_mapa']);
-        add_shortcode('flavor_compostaje_puntos', [$this, 'shortcode_lista_puntos']);
-        add_shortcode('flavor_compostaje_registrar', [$this, 'shortcode_registrar']);
-        add_shortcode('flavor_compostaje_mis_aportaciones', [$this, 'shortcode_mis_aportaciones']);
-        add_shortcode('flavor_compostaje_turnos', [$this, 'shortcode_turnos']);
-        add_shortcode('flavor_compostaje_guia', [$this, 'shortcode_guia']);
-        add_shortcode('flavor_compostaje_ranking', [$this, 'shortcode_ranking']);
-        add_shortcode('flavor_compostaje_mi_balance', [$this, 'shortcode_mi_balance']);
-        add_shortcode('flavor_compostaje_dashboard', [$this, 'shortcode_dashboard']);
+        $shortcodes = [
+            'flavor_compostaje_mapa' => 'shortcode_mapa',
+            'flavor_compostaje_puntos' => 'shortcode_lista_puntos',
+            'flavor_compostaje_registrar' => 'shortcode_registrar',
+            'flavor_compostaje_mis_aportaciones' => 'shortcode_mis_aportaciones',
+            'flavor_compostaje_turnos' => 'shortcode_turnos',
+            'flavor_compostaje_guia' => 'shortcode_guia',
+            'flavor_compostaje_ranking' => 'shortcode_ranking',
+            'flavor_compostaje_mi_balance' => 'shortcode_mi_balance',
+            'flavor_compostaje_dashboard' => 'shortcode_dashboard',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Gestión de sesiones de chat
+ * Gestión de sesiones del chat
  *
  * @package FlavorChatIA
  */
@@ -17,9 +17,9 @@ class Flavor_Chat_Session {
     private $session_id;
 
     /**
-     * Idioma de la sesión
+     * ID de la conversación
      */
-    private $language = 'es';
+    private $conversation_id;
 
     /**
      * Mensajes de la conversación
@@ -27,23 +27,22 @@ class Flavor_Chat_Session {
     private $messages = [];
 
     /**
-     * ID de conversación en BD
+     * Idioma de la conversación
      */
-    private $conversation_id = null;
-
-    /**
-     * Datos de contexto
-     */
-    private $context = [];
+    private $language = 'es';
 
     /**
      * Constructor
      *
-     * @param string $session_id
+     * @param string|null $session_id ID de sesión existente o null para crear nueva
      */
     public function __construct($session_id = null) {
-        $this->session_id = $session_id ?: $this->generate_session_id();
-        $this->load_session();
+        if ($session_id) {
+            $this->session_id = $session_id;
+            $this->load_session();
+        } else {
+            $this->session_id = $this->generate_session_id();
+        }
     }
 
     /**
@@ -52,206 +51,54 @@ class Flavor_Chat_Session {
      * @return string
      */
     private function generate_session_id() {
-        return 'fcia_' . wp_generate_password(32, false);
+        return 'fcia_' . wp_generate_password(16, false);
     }
 
     /**
-     * Carga la sesión desde la BD
+     * Carga una sesión existente desde transient
      */
     private function load_session() {
-        global $wpdb;
+        $data = get_transient('flavor_chat_session_' . $this->session_id);
 
-        $table = $wpdb->prefix . 'flavor_chat_conversations';
-        $conversation = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$table} WHERE session_id = %s ORDER BY id DESC LIMIT 1",
-            $this->session_id
-        ));
-
-        if ($conversation) {
-            $this->conversation_id = $conversation->id;
-            $this->language = $conversation->language ?: 'es';
-
-            // Cargar mensajes
-            $this->load_messages();
+        if ($data) {
+            $this->conversation_id = $data['conversation_id'] ?? null;
+            $this->messages = $data['messages'] ?? [];
+            $this->language = $data['language'] ?? 'es';
         }
     }
 
     /**
-     * Carga los mensajes de la conversación
+     * Guarda la sesión en transient
      */
-    private function load_messages() {
-        global $wpdb;
+    private function save_session() {
+        $data = [
+            'conversation_id' => $this->conversation_id,
+            'messages' => $this->messages,
+            'language' => $this->language,
+        ];
 
-        if (!$this->conversation_id) {
-            return;
-        }
-
-        $table = $wpdb->prefix . 'flavor_chat_messages';
-        $messages = $wpdb->get_results($wpdb->prepare(
-            "SELECT role, content FROM {$table} WHERE conversation_id = %d ORDER BY created_at ASC",
-            $this->conversation_id
-        ), ARRAY_A);
-
-        $this->messages = $messages ?: [];
+        // Guardar por 24 horas
+        set_transient('flavor_chat_session_' . $this->session_id, $data, DAY_IN_SECONDS);
     }
 
     /**
      * Inicia una nueva conversación
      *
      * @param string $language
-     * @return int ID de la conversación
+     * @return int ID de conversación
      */
     public function start_conversation($language = 'es') {
-        global $wpdb;
-
-        // Validar idioma
-        $supported_languages = ['es', 'eu', 'en', 'fr', 'ca'];
-        if (!in_array($language, $supported_languages)) {
-            $language = 'es';
-        }
-
         $this->language = $language;
-
-        $table = $wpdb->prefix . 'flavor_chat_conversations';
-
-        // Verificar que la tabla existe
-        $table_exists = Flavor_Chat_Helpers::tabla_existe($table);
-        if (!$table_exists) {
-            // Forzar creación de tablas
-            $this->create_tables_if_missing();
-        }
-
-        $result = $wpdb->insert(
-            $table,
-            [
-                'session_id' => $this->session_id,
-                'language' => $language,
-                'started_at' => current_time('mysql'),
-                'ip_address' => $this->get_client_ip(),
-                'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field($_SERVER['HTTP_USER_AGENT']) : '',
-                'user_id' => get_current_user_id() ?: null,
-            ],
-            ['%s', '%s', '%s', '%s', '%s', '%d']
-        );
-
-        if ($result === false) {
-            flavor_chat_ia_log('Error al crear conversación: ' . $wpdb->last_error, 'error');
-        }
-
-        $this->conversation_id = $wpdb->insert_id;
+        $this->conversation_id = time() . '_' . wp_generate_password(8, false);
         $this->messages = [];
+
+        $this->save_session();
 
         return $this->conversation_id;
     }
 
     /**
-     * Crea las tablas si no existen
-     */
-    private function create_tables_if_missing() {
-        global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
-
-        $table_conversations = $wpdb->prefix . 'flavor_chat_conversations';
-        $sql = "CREATE TABLE IF NOT EXISTS $table_conversations (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            session_id varchar(64) NOT NULL,
-            language varchar(10) DEFAULT 'es',
-            started_at datetime DEFAULT CURRENT_TIMESTAMP,
-            ended_at datetime DEFAULT NULL,
-            message_count int(11) DEFAULT 0,
-            escalated tinyint(1) DEFAULT 0,
-            escalation_reason text DEFAULT NULL,
-            conversion_type varchar(50) DEFAULT NULL,
-            conversion_value decimal(10,2) DEFAULT NULL,
-            ip_address varchar(45) DEFAULT NULL,
-            user_agent text DEFAULT NULL,
-            user_id bigint(20) unsigned DEFAULT NULL,
-            PRIMARY KEY (id),
-            KEY session_id (session_id),
-            KEY started_at (started_at)
-        ) $charset_collate;";
-
-        $table_messages = $wpdb->prefix . 'flavor_chat_messages';
-        $sql2 = "CREATE TABLE IF NOT EXISTS $table_messages (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            conversation_id bigint(20) unsigned NOT NULL,
-            role enum('user','assistant','system') NOT NULL,
-            content text NOT NULL,
-            tool_calls text DEFAULT NULL,
-            tokens_used int(11) DEFAULT 0,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY conversation_id (conversation_id)
-        ) $charset_collate;";
-
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql);
-        dbDelta($sql2);
-    }
-
-    /**
-     * Añade un mensaje a la conversación
-     *
-     * @param string $role 'user', 'assistant', 'system'
-     * @param string $content
-     * @param string $tool_calls JSON de tool calls si aplica
-     * @return bool
-     */
-    public function add_message($role, $content, $tool_calls = null) {
-        global $wpdb;
-
-        if (!$this->conversation_id) {
-            $this->start_conversation($this->language);
-        }
-
-        // Guardar en memoria
-        $this->messages[] = [
-            'role' => $role,
-            'content' => $content,
-        ];
-
-        // Guardar en BD
-        $result = $wpdb->insert(
-            $wpdb->prefix . 'flavor_chat_messages',
-            [
-                'conversation_id' => $this->conversation_id,
-                'role' => $role,
-                'content' => $content,
-                'tool_calls' => $tool_calls,
-                'created_at' => current_time('mysql'),
-            ],
-            ['%d', '%s', '%s', '%s', '%s']
-        );
-
-        if ($result === false) {
-            flavor_chat_ia_log('Error al guardar mensaje: ' . $wpdb->last_error, 'error');
-            return false;
-        }
-
-        // Actualizar contador de mensajes
-        $wpdb->query($wpdb->prepare(
-            "UPDATE {$wpdb->prefix}flavor_chat_conversations SET message_count = message_count + 1 WHERE id = %d",
-            $this->conversation_id
-        ));
-
-        return true;
-    }
-
-    /**
-     * Obtiene los mensajes de la conversación
-     *
-     * @param int $limit Límite de mensajes (0 = todos)
-     * @return array
-     */
-    public function get_messages($limit = 0) {
-        if ($limit > 0 && count($this->messages) > $limit) {
-            return array_slice($this->messages, -$limit);
-        }
-        return $this->messages;
-    }
-
-    /**
-     * Obtiene el ID de la sesión
+     * Obtiene el ID de sesión
      *
      * @return string
      */
@@ -260,7 +107,46 @@ class Flavor_Chat_Session {
     }
 
     /**
-     * Obtiene el idioma de la sesión
+     * Obtiene el ID de conversación
+     *
+     * @return string|null
+     */
+    public function get_conversation_id() {
+        return $this->conversation_id;
+    }
+
+    /**
+     * Añade un mensaje a la conversación
+     *
+     * @param string $role 'user' o 'assistant'
+     * @param string $content Contenido del mensaje
+     */
+    public function add_message($role, $content) {
+        $this->messages[] = [
+            'role' => $role,
+            'content' => $content,
+            'timestamp' => time(),
+        ];
+
+        // Limitar historial a últimos 20 mensajes para no sobrecargar
+        if (count($this->messages) > 20) {
+            $this->messages = array_slice($this->messages, -20);
+        }
+
+        $this->save_session();
+    }
+
+    /**
+     * Obtiene todos los mensajes de la conversación
+     *
+     * @return array
+     */
+    public function get_messages() {
+        return $this->messages;
+    }
+
+    /**
+     * Obtiene el idioma de la conversación
      *
      * @return string
      */
@@ -269,160 +155,11 @@ class Flavor_Chat_Session {
     }
 
     /**
-     * Establece el idioma de la sesión
-     *
-     * @param string $language
+     * Limpia la conversación
      */
-    public function set_language($language) {
-        $this->language = $language;
-
-        if ($this->conversation_id) {
-            global $wpdb;
-            $wpdb->update(
-                $wpdb->prefix . 'flavor_chat_conversations',
-                ['language' => $language],
-                ['id' => $this->conversation_id],
-                ['%s'],
-                ['%d']
-            );
-        }
-    }
-
-    /**
-     * Guarda datos de contexto
-     *
-     * @param string $key
-     * @param mixed $value
-     */
-    public function set_context($key, $value) {
-        $this->context[$key] = $value;
-    }
-
-    /**
-     * Obtiene datos de contexto
-     *
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
-     */
-    public function get_context($key, $default = null) {
-        return $this->context[$key] ?? $default;
-    }
-
-    /**
-     * Obtiene el ID de conversación
-     *
-     * @return int|null
-     */
-    public function get_conversation_id() {
-        return $this->conversation_id;
-    }
-
-    /**
-     * Marca la conversación como escalada
-     *
-     * @param string $reason
-     */
-    public function mark_escalated($reason) {
-        global $wpdb;
-
-        if ($this->conversation_id) {
-            $wpdb->update(
-                $wpdb->prefix . 'flavor_chat_conversations',
-                [
-                    'escalated' => 1,
-                    'escalation_reason' => $reason,
-                ],
-                ['id' => $this->conversation_id],
-                ['%d', '%s'],
-                ['%d']
-            );
-        }
-    }
-
-    /**
-     * Registra una conversión
-     *
-     * @param string $type Tipo de conversión
-     * @param float $value Valor
-     */
-    public function record_conversion($type, $value = 0) {
-        global $wpdb;
-
-        if ($this->conversation_id) {
-            $wpdb->update(
-                $wpdb->prefix . 'flavor_chat_conversations',
-                [
-                    'conversion_type' => $type,
-                    'conversion_value' => $value,
-                ],
-                ['id' => $this->conversation_id],
-                ['%s', '%f'],
-                ['%d']
-            );
-        }
-    }
-
-    /**
-     * Finaliza la conversación
-     */
-    public function end_conversation() {
-        global $wpdb;
-
-        if ($this->conversation_id) {
-            $wpdb->update(
-                $wpdb->prefix . 'flavor_chat_conversations',
-                ['ended_at' => current_time('mysql')],
-                ['id' => $this->conversation_id],
-                ['%s'],
-                ['%d']
-            );
-        }
-    }
-
-    /**
-     * Obtiene la IP del cliente
-     *
-     * @return string
-     */
-    private function get_client_ip() {
-        $ip_keys = [
-            'HTTP_CF_CONNECTING_IP', // Cloudflare
-            'HTTP_X_FORWARDED_FOR',
-            'HTTP_X_FORWARDED',
-            'HTTP_FORWARDED_FOR',
-            'HTTP_FORWARDED',
-            'REMOTE_ADDR',
-        ];
-
-        foreach ($ip_keys as $key) {
-            if (!empty($_SERVER[$key])) {
-                $ip = $_SERVER[$key];
-                // Si hay múltiples IPs, tomar la primera
-                if (strpos($ip, ',') !== false) {
-                    $ip = explode(',', $ip)[0];
-                }
-                $ip = trim($ip);
-                if (filter_var($ip, FILTER_VALIDATE_IP)) {
-                    return $ip;
-                }
-            }
-        }
-
-        return '0.0.0.0';
-    }
-
-    /**
-     * Obtiene estadísticas de la sesión
-     *
-     * @return array
-     */
-    public function get_stats() {
-        return [
-            'session_id' => $this->session_id,
-            'conversation_id' => $this->conversation_id,
-            'language' => $this->language,
-            'message_count' => count($this->messages),
-        ];
+    public function clear() {
+        $this->messages = [];
+        $this->conversation_id = null;
+        delete_transient('flavor_chat_session_' . $this->session_id);
     }
 }

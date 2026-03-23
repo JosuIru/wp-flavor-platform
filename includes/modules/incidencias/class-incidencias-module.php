@@ -298,6 +298,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $this->register_as_integration_consumer();
 
         add_action('init', [$this, 'maybe_create_tables']);
+        add_action('init', [$this, 'maybe_add_empresa_id']);
         add_action('init', [$this, 'maybe_create_pages']);
         add_action('init', [$this, 'register_shortcodes']);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
@@ -420,6 +421,35 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Migración: Añade columna empresa_id si no existe (soporte multi-empresa)
+     */
+    public function maybe_add_empresa_id() {
+        if (function_exists('flavor_incidencias_maybe_add_empresa_id')) {
+            flavor_incidencias_maybe_add_empresa_id();
+        }
+    }
+
+    /**
+     * Obtiene el ID de empresa del usuario actual (soporte multi-empresa)
+     *
+     * @param int|null $user_id ID del usuario (opcional)
+     * @return int|null ID de empresa o null
+     */
+    public function get_empresa_usuario($user_id = null) {
+        $user_id = $user_id ?: get_current_user_id();
+
+        if (class_exists('Flavor_Chat_Empresas_Module')) {
+            $empresas_module = Flavor_Chat_Module_Loader::get_instance()->get_module('empresas');
+            if ($empresas_module && method_exists($empresas_module, 'get_empresa_actual_usuario')) {
+                return $empresas_module->get_empresa_actual_usuario($user_id);
+            }
+        }
+
+        $empresa_id = get_user_meta($user_id, '_flavor_empresa_actual', true);
+        return $empresa_id ? absint($empresa_id) : null;
+    }
+
+    /**
      * Cuenta incidencias abiertas (pendientes, validadas, en proceso)
      *
      * @return int
@@ -437,9 +467,12 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             return 0;
         }
 
+        $empresa_id = $this->get_empresa_usuario();
+        $filtro_empresa = $empresa_id ? $wpdb->prepare(" AND empresa_id = %d", $empresa_id) : "";
+
         return (int) $wpdb->get_var(
             "SELECT COUNT(*) FROM {$tabla_incidencias}
-             WHERE estado IN ('pendiente', 'validada', 'en_proceso')"
+             WHERE estado IN ('pendiente', 'validada', 'en_proceso')" . $filtro_empresa
         );
     }
 
@@ -457,10 +490,13 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
             return $estadisticas;
         }
 
+        $empresa_id = $this->get_empresa_usuario();
+        $filtro_empresa = $empresa_id ? $wpdb->prepare(" AND empresa_id = %d", $empresa_id) : "";
+
         // Incidencias abiertas
         $incidencias_abiertas = (int) $wpdb->get_var(
             "SELECT COUNT(*) FROM {$tabla_incidencias}
-             WHERE estado IN ('pendiente', 'validada', 'en_proceso')"
+             WHERE estado IN ('pendiente', 'validada', 'en_proceso')" . $filtro_empresa
         );
         $estadisticas[] = [
             'icon' => 'dashicons-warning',
@@ -475,7 +511,7 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         $resueltas_mes = (int) $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$tabla_incidencias}
              WHERE estado = 'resuelta'
-             AND DATE_FORMAT(fecha_resolucion, '%%Y-%%m') = %s",
+             AND DATE_FORMAT(fecha_resolucion, '%%Y-%%m') = %s" . $filtro_empresa,
             $mes_actual
         ));
         $estadisticas[] = [
@@ -1033,12 +1069,20 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
      * Registrar shortcodes
      */
     public function register_shortcodes() {
-        add_shortcode('incidencias_reportar', [$this, 'shortcode_reportar']);
-        add_shortcode('incidencias_mapa', [$this, 'shortcode_mapa']);
-        add_shortcode('incidencias_listado', [$this, 'shortcode_listado']);
-        add_shortcode('incidencias_mis_incidencias', [$this, 'shortcode_mis_incidencias']);
-        add_shortcode('incidencias_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('incidencias_estadisticas', [$this, 'shortcode_estadisticas']);
+        $shortcodes = [
+            'incidencias_reportar' => 'shortcode_reportar',
+            'incidencias_mapa' => 'shortcode_mapa',
+            'incidencias_listado' => 'shortcode_listado',
+            'incidencias_mis_incidencias' => 'shortcode_mis_incidencias',
+            'incidencias_detalle' => 'shortcode_detalle',
+            'incidencias_estadisticas' => 'shortcode_estadisticas',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -3442,9 +3486,26 @@ KNOWLEDGE;
      * Registrar páginas de administración
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
-        // Páginas ocultas (sin menú visible en el sidebar)
+        // Página principal - alias con sufijo -dashboard para Admin Shell
+        add_submenu_page(
+            null,
+            __('Dashboard Incidencias', 'flavor-chat-ia'),
+            __('Dashboard', 'flavor-chat-ia'),
+            $capability,
+            'incidencias-dashboard',
+            [$this, 'render_pagina_dashboard']
+        );
+
+        // Páginas ocultas (sin menú visible en el sidebar) - mantener por compatibilidad
         add_submenu_page(
             null,
             __('Incidencias - Dashboard', 'flavor-chat-ia'),

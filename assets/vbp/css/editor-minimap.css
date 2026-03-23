@@ -1,47 +1,429 @@
 /**
  * Visual Builder Pro - Mini Mapa CSS
+ * Diseño mejorado con mejor visualización
  */
 
-/* Contenedor del mini mapa */
+/* ============================================
+   Contenedor principal del mini mapa
+   ============================================ */
 .vbp-minimap {
     position: fixed;
-    right: 320px; /* Después del inspector */
-    top: 100px;
-    width: 120px;
-    background: var(--vbp-bg-secondary, #f8fafc);
-    border: 1px solid var(--vbp-border-color, #e2e8f0);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    right: calc(var(--vbp-sidebar-width, 280px) + 16px);
+    top: calc(var(--vbp-toolbar-height, 48px) + 16px);
+    width: 160px;
+    max-height: calc(100vh - var(--vbp-toolbar-height, 48px) - 100px);
+    display: flex;
+    flex-direction: column;
+    background: var(--vbp-bg-secondary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 12px;
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     overflow: hidden;
     z-index: 100;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+}
+
+.vbp-minimap:hover {
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.2),
+        0 4px 6px -2px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
 }
 
 .vbp-minimap.hidden {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(20px) scale(0.95);
     pointer-events: none;
 }
 
-/* Header del mini mapa */
+/* ============================================
+   Header del mini mapa
+   ============================================ */
 .vbp-minimap-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 10px;
-    background: var(--vbp-bg-tertiary, #f1f5f9);
-    border-bottom: 1px solid var(--vbp-border-color, #e2e8f0);
+    padding: 10px 12px;
+    background: linear-gradient(
+        180deg,
+        var(--vbp-bg-tertiary) 0%,
+        var(--vbp-bg-secondary) 100%
+    );
+    border-bottom: 1px solid var(--vbp-border-color);
+    flex-shrink: 0;
 }
 
 .vbp-minimap-title {
-    font-size: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
     font-weight: 600;
-    color: var(--vbp-text-secondary, #64748b);
+    color: var(--vbp-text-primary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-.vbp-minimap-toggle {
+.vbp-minimap-title svg {
+    width: 14px;
+    height: 14px;
+    color: var(--vbp-accent-color);
+}
+
+.vbp-minimap-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vbp-minimap-btn {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--vbp-text-muted);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.vbp-minimap-btn:hover {
+    background: var(--vbp-bg-primary);
+    color: var(--vbp-text-primary);
+}
+
+.vbp-minimap-btn.active {
+    background: var(--vbp-accent-color);
+    color: white;
+}
+
+/* ============================================
+   Contenido del mini mapa (Canvas preview)
+   ============================================ */
+.vbp-minimap-content {
+    position: relative;
+    flex: 1;
+    min-height: 100px;
+    cursor: pointer;
+    background:
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        var(--vbp-bg-primary);
+    background-size: 10px 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--vbp-border-color) transparent;
+}
+
+/* Scrollbar personalizado para webkit */
+.vbp-minimap-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.vbp-minimap-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.vbp-minimap-content::-webkit-scrollbar-thumb {
+    background: var(--vbp-border-color);
+    border-radius: 2px;
+}
+
+.vbp-minimap-content::-webkit-scrollbar-thumb:hover {
+    background: var(--vbp-text-muted);
+}
+
+/* Indicador de scroll en la parte inferior */
+.vbp-minimap-content.has-scroll::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 24px;
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(26, 26, 26, 0.9) 100%
+    );
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* ============================================
+   Elementos del mini mapa
+   ============================================ */
+.vbp-minimap-element {
+    position: absolute;
+    left: 8%;
+    width: 84%;
+    border-radius: 3px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+/* Efecto de brillo sutil */
+.vbp-minimap-element::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.15) 0%,
+        transparent 100%
+    );
+    pointer-events: none;
+}
+
+.vbp-minimap-element:hover {
+    transform: scaleX(1.05);
+    box-shadow:
+        0 0 0 2px var(--vbp-accent-color),
+        0 2px 8px rgba(59, 130, 246, 0.3);
+    z-index: 5;
+}
+
+.vbp-minimap-element.selected {
+    box-shadow:
+        0 0 0 2px var(--vbp-accent-color),
+        0 0 12px rgba(59, 130, 246, 0.5);
+    z-index: 6;
+}
+
+/* Indicador de tipo con icono */
+.vbp-minimap-element-icon {
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6px;
+    color: rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+}
+
+/* ============================================
+   Viewport indicator (área visible)
+   ============================================ */
+.vbp-minimap-viewport {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(59, 130, 246, 0.15) 0%,
+        rgba(59, 130, 246, 0.08) 100%
+    );
+    border: 2px solid var(--vbp-accent-color);
+    border-left: none;
+    border-right: none;
+    pointer-events: none;
+    transition: top 0.1s ease;
+    z-index: 8;
+}
+
+/* Líneas de guía en el viewport */
+.vbp-minimap-viewport::before,
+.vbp-minimap-viewport::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--vbp-accent-color);
+}
+
+.vbp-minimap-viewport::before {
+    top: -2px;
+    box-shadow: 0 -2px 8px rgba(59, 130, 246, 0.5);
+}
+
+.vbp-minimap-viewport::after {
+    bottom: -2px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+}
+
+/* ============================================
+   Estado de arrastre
+   ============================================ */
+.vbp-minimap-content.dragging {
+    cursor: grabbing;
+}
+
+.vbp-minimap-content.dragging .vbp-minimap-viewport {
+    background: linear-gradient(
+        180deg,
+        rgba(59, 130, 246, 0.25) 0%,
+        rgba(59, 130, 246, 0.15) 100%
+    );
+}
+
+/* ============================================
+   Footer con leyenda de colores
+   ============================================ */
+.vbp-minimap-footer {
+    padding: 8px 10px;
+    background: var(--vbp-bg-tertiary);
+    border-top: 1px solid var(--vbp-border-color);
+    flex-shrink: 0;
+}
+
+.vbp-minimap-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.vbp-minimap-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    color: var(--vbp-text-muted);
+}
+
+.vbp-minimap-legend-color {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+}
+
+/* ============================================
+   Información del elemento (tooltip)
+   ============================================ */
+.vbp-minimap-tooltip {
+    position: fixed;
+    padding: 6px 10px;
+    background: var(--vbp-bg-primary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--vbp-text-primary);
+    pointer-events: none;
+    z-index: 1000;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.vbp-minimap-tooltip.visible {
+    opacity: 1;
+}
+
+/* ============================================
+   Botón flotante cuando está oculto
+   ============================================ */
+.vbp-minimap-show-btn {
+    position: fixed;
+    right: calc(var(--vbp-sidebar-width, 280px) + 16px);
+    top: calc(var(--vbp-toolbar-height, 48px) + 16px);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vbp-bg-secondary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 10px;
+    color: var(--vbp-text-secondary);
+    cursor: pointer;
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+    z-index: 99;
+}
+
+.vbp-minimap-show-btn:hover {
+    background: var(--vbp-bg-tertiary);
+    color: var(--vbp-accent-color);
+    transform: scale(1.05);
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.15),
+        0 4px 6px -2px rgba(0, 0, 0, 0.1);
+}
+
+.vbp-minimap-show-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Animación de pulso cuando está oculto */
+.vbp-minimap-show-btn::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--vbp-accent-color);
+    border-radius: 14px;
+    opacity: 0;
+    animation: minimap-pulse 2s ease-in-out infinite;
+}
+
+@keyframes minimap-pulse {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   Estado vacío
+   ============================================ */
+.vbp-minimap-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    text-align: center;
+    color: var(--vbp-text-muted);
+}
+
+.vbp-minimap-empty svg {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+}
+
+.vbp-minimap-empty-text {
+    font-size: 11px;
+}
+
+/* ============================================
+   Controles de zoom del minimapa
+   ============================================ */
+.vbp-minimap-zoom {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px;
+    background: var(--vbp-bg-primary);
+    border-radius: 6px;
+}
+
+.vbp-minimap-zoom-btn {
     width: 20px;
     height: 20px;
     display: flex;
@@ -49,115 +431,40 @@
     justify-content: center;
     background: transparent;
     border: none;
-    color: var(--vbp-text-muted, #94a3b8);
+    color: var(--vbp-text-muted);
     cursor: pointer;
     border-radius: 4px;
     transition: all 0.15s ease;
 }
 
-.vbp-minimap-toggle:hover {
-    background: var(--vbp-bg-hover, #e2e8f0);
-    color: var(--vbp-text-primary, #1e293b);
+.vbp-minimap-zoom-btn:hover {
+    background: var(--vbp-bg-tertiary);
+    color: var(--vbp-text-primary);
 }
 
-/* Contenido del mini mapa */
-.vbp-minimap-content {
-    position: relative;
-    min-height: 100px;
-    max-height: 300px;
-    cursor: pointer;
-    background: white;
+.vbp-minimap-zoom-value {
+    font-size: 10px;
+    color: var(--vbp-text-secondary);
+    min-width: 28px;
+    text-align: center;
 }
 
-/* Elementos del mini mapa */
-.vbp-minimap-element {
-    position: absolute;
-    left: 10%;
-    width: 80%;
-    border-radius: 2px;
-    transition: opacity 0.15s ease;
-    cursor: pointer;
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 1400px) {
+    .vbp-minimap {
+        width: 140px;
+    }
 }
 
-.vbp-minimap-element:hover {
-    opacity: 0.8 !important;
-    box-shadow: 0 0 0 1px var(--vbp-accent-color, #3b82f6);
-}
-
-.vbp-minimap-element.selected {
-    box-shadow: 0 0 0 2px var(--vbp-accent-color, #3b82f6);
-}
-
-/* Viewport indicator */
-.vbp-minimap-viewport {
-    position: absolute;
-    left: 0;
-    right: 0;
-    background: rgba(59, 130, 246, 0.1);
-    border: 2px solid rgba(59, 130, 246, 0.5);
-    border-radius: 2px;
-    pointer-events: none;
-    transition: top 0.1s ease;
-}
-
-/* Dragging state */
-.vbp-minimap-content.dragging {
-    cursor: grabbing;
-}
-
-.vbp-minimap-content.dragging .vbp-minimap-viewport {
-    border-color: var(--vbp-accent-color, #3b82f6);
-    background: rgba(59, 130, 246, 0.2);
-}
-
-/* Botón flotante cuando está oculto */
-.vbp-minimap-show-btn {
-    position: fixed;
-    right: 320px;
-    top: 100px;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--vbp-bg-secondary, #fff);
-    border: 1px solid var(--vbp-border-color, #e2e8f0);
-    border-radius: 6px;
-    color: var(--vbp-text-muted, #64748b);
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.15s ease;
-    z-index: 99;
-}
-
-.vbp-minimap-show-btn:hover {
-    background: var(--vbp-bg-hover, #f1f5f9);
-    color: var(--vbp-text-primary, #1e293b);
-}
-
-/* Modo oscuro */
-.vbp-dark .vbp-minimap {
-    background: var(--vbp-bg-dark, #1e293b);
-    border-color: var(--vbp-border-dark, #334155);
-}
-
-.vbp-dark .vbp-minimap-header {
-    background: var(--vbp-bg-subtle-dark, #0f172a);
-    border-color: var(--vbp-border-dark, #334155);
-}
-
-.vbp-dark .vbp-minimap-content {
-    background: var(--vbp-bg-dark, #1e293b);
-}
-
-/* Responsive - ocultar en pantallas pequeñas */
 @media (max-width: 1200px) {
     .vbp-minimap {
-        right: 20px;
+        right: 16px;
     }
 
     .vbp-minimap-show-btn {
-        right: 20px;
+        right: 16px;
     }
 }
 
@@ -166,4 +473,22 @@
     .vbp-minimap-show-btn {
         display: none;
     }
+}
+
+/* ============================================
+   Animaciones de entrada
+   ============================================ */
+@keyframes minimap-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.vbp-minimap:not(.hidden) {
+    animation: minimap-slide-in 0.3s ease-out;
 }

@@ -79,13 +79,27 @@ class Flavor_Economia_Don_Frontend_Controller {
      */
     public function init() {
         // Shortcodes
-        add_shortcode('flavor_don_listado', [$this, 'shortcode_listado']);
-        add_shortcode('flavor_don_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('flavor_don_ofrecer', [$this, 'shortcode_ofrecer']);
-        add_shortcode('flavor_don_mis_dones', [$this, 'shortcode_mis_dones']);
-        add_shortcode('flavor_don_mis_recepciones', [$this, 'shortcode_mis_recepciones']);
-        add_shortcode('flavor_don_muro_gratitud', [$this, 'shortcode_muro_gratitud']);
-        add_shortcode('flavor_don_estadisticas', [$this, 'shortcode_estadisticas']);
+        if (!shortcode_exists('flavor_don_listado')) {
+            add_shortcode('flavor_don_listado', [$this, 'shortcode_listado']);
+        }
+        if (!shortcode_exists('flavor_don_detalle')) {
+            add_shortcode('flavor_don_detalle', [$this, 'shortcode_detalle']);
+        }
+        if (!shortcode_exists('flavor_don_ofrecer')) {
+            add_shortcode('flavor_don_ofrecer', [$this, 'shortcode_ofrecer']);
+        }
+        if (!shortcode_exists('flavor_don_mis_dones')) {
+            add_shortcode('flavor_don_mis_dones', [$this, 'shortcode_mis_dones']);
+        }
+        if (!shortcode_exists('flavor_don_mis_recepciones')) {
+            add_shortcode('flavor_don_mis_recepciones', [$this, 'shortcode_mis_recepciones']);
+        }
+        if (!shortcode_exists('flavor_don_muro_gratitud')) {
+            add_shortcode('flavor_don_muro_gratitud', [$this, 'shortcode_muro_gratitud']);
+        }
+        if (!shortcode_exists('flavor_don_estadisticas')) {
+            add_shortcode('flavor_don_estadisticas', [$this, 'shortcode_estadisticas']);
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_don_ofrecer', [$this, 'ajax_ofrecer']);

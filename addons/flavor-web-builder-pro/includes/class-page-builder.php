@@ -3341,7 +3341,7 @@ class Flavor_Page_Builder {
                         ],
                     ],
                     'denendako_bazkideak' => [
-                        'name' => __('Bazkideak (Socios)', 'flavor-chat-ia'),
+                        'name' => __('Bazkideak (Miembros)', 'flavor-chat-ia'),
                         'description' => __('Elkarte eta kolektiboen zerrenda — Directorio de asociaciones', 'flavor-chat-ia'),
                         'icon' => 'dashicons-networking',
                         'preview' => '',
@@ -3436,7 +3436,7 @@ class Flavor_Page_Builder {
                         ],
                     ],
                     'denendako_partaide_egin' => [
-                        'name' => __('Partaide Egin (Hacerse socio)', 'flavor-chat-ia'),
+                        'name' => __('Partaide Egin (Hacerse miembro)', 'flavor-chat-ia'),
                         'description' => __('Bazkide berria izateko formularioa — Formulario para nuevos miembros', 'flavor-chat-ia'),
                         'icon' => 'dashicons-welcome-add-page',
                         'preview' => '',

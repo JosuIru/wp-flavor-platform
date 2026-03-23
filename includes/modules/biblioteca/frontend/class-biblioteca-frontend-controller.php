@@ -43,13 +43,21 @@ class Flavor_Biblioteca_Frontend_Controller {
         // Registrar assets
         add_action('wp_enqueue_scripts', [$this, 'registrar_assets']);
 
-        // Registrar shortcodes avanzados
-        add_shortcode('biblioteca_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('biblioteca_mis_prestamos', [$this, 'shortcode_mis_prestamos']);
-        add_shortcode('biblioteca_reservas', [$this, 'shortcode_reservas']);
-        add_shortcode('biblioteca_busqueda', [$this, 'shortcode_busqueda']);
-        add_shortcode('biblioteca_novedades', [$this, 'shortcode_novedades']);
-        add_shortcode('biblioteca_prestamos_activos', [$this, 'shortcode_prestamos_activos']);
+        // Registrar shortcodes avanzados sin pisar implementaciones previas.
+        $shortcodes = [
+            'biblioteca_catalogo' => 'shortcode_catalogo',
+            'biblioteca_mis_prestamos' => 'shortcode_mis_prestamos',
+            'biblioteca_reservas' => 'shortcode_reservas',
+            'biblioteca_busqueda' => 'shortcode_busqueda',
+            'biblioteca_novedades' => 'shortcode_novedades',
+            'biblioteca_prestamos_activos' => 'shortcode_prestamos_activos',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_biblioteca_reservar_libro', [$this, 'ajax_reservar_libro']);
@@ -207,6 +215,13 @@ class Flavor_Biblioteca_Frontend_Controller {
             'columnas' => 4,
             'limite' => 12,
             'mostrar_filtros' => 'si',
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'title',
+            'order' => 'ASC',
         ], $atts);
 
         ob_start();
@@ -218,14 +233,49 @@ class Flavor_Biblioteca_Frontend_Controller {
      * Renderizar catálogo
      */
     private function render_catalogo($atts) {
+        // Generar clases CSS visuales (VBP)
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta']) && $atts['estilo_tarjeta'] !== 'elevated') {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes']) && $atts['radio_bordes'] !== 'lg') {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $visual_class_string = implode(' ', $visual_classes);
+
+        // Mapeo de orderby para biblioteca
+        $orderby_map = [
+            'title' => 'title',
+            'date' => 'date',
+            'autor' => ['meta_key' => '_biblioteca_autor', 'orderby' => 'meta_value'],
+            'disponibilidad' => ['meta_key' => '_biblioteca_disponibles', 'orderby' => 'meta_value_num'],
+        ];
+        $orderby_config = $orderby_map[$atts['orderby']] ?? ['orderby' => 'title'];
+        $order = strtoupper($atts['order']) === 'DESC' ? 'DESC' : 'ASC';
+
         // Obtener libros
         $args = [
             'post_type' => 'biblioteca_libro',
             'post_status' => 'publish',
             'posts_per_page' => intval($atts['limite']),
-            'orderby' => 'title',
-            'order' => 'ASC',
+            'order' => $order,
         ];
+
+        // Aplicar orderby config
+        if (is_array($orderby_config)) {
+            if (isset($orderby_config['meta_key'])) {
+                $args['meta_key'] = $orderby_config['meta_key'];
+            }
+            $args['orderby'] = $orderby_config['orderby'] ?? 'title';
+        } else {
+            $args['orderby'] = $orderby_config;
+        }
 
         if (!empty($atts['categoria'])) {
             $args['tax_query'] = [[
@@ -243,7 +293,7 @@ class Flavor_Biblioteca_Frontend_Controller {
             'hide_empty' => true,
         ]);
         ?>
-        <div class="biblioteca-catalogo" data-columnas="<?php echo esc_attr($atts['columnas']); ?>">
+        <div class="biblioteca-catalogo <?php echo esc_attr($visual_class_string); ?>" data-columnas="<?php echo esc_attr($atts['columnas']); ?>">
             <?php if ($atts['mostrar_filtros'] === 'si'): ?>
                 <div class="biblioteca-filtros">
                     <div class="filtro-buscar">

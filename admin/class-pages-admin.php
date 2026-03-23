@@ -346,7 +346,7 @@ class Flavor_Pages_Admin {
 
         $resultado = Flavor_Page_Creator::create_all_pages();
 
-        wp_redirect(add_query_arg([
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg([
             'page' => 'flavor-create-pages',
             'created' => $resultado['total'],
         ], admin_url('admin.php')));
@@ -365,7 +365,7 @@ class Flavor_Pages_Admin {
 
         $paginas_eliminadas = Flavor_Page_Creator::delete_all_pages();
 
-        wp_redirect(add_query_arg([
+        Flavor_Chat_Helpers::safe_redirect(add_query_arg([
             'page' => 'flavor-create-pages',
             'deleted' => count($paginas_eliminadas),
         ], admin_url('admin.php')));

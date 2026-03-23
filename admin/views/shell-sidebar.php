@@ -38,6 +38,55 @@ $available_views = $custom_views_manager
 $active_custom_view = $custom_views_manager
     ? $custom_views_manager->get_user_active_view()
     : null;
+
+$current_post_type = isset($_GET['post_type']) ? sanitize_key((string) $_GET['post_type']) : '';
+$current_taxonomy = isset($_GET['taxonomy']) ? sanitize_key((string) $_GET['taxonomy']) : '';
+$current_pagenow = isset($GLOBALS['pagenow']) ? (string) $GLOBALS['pagenow'] : '';
+
+/**
+ * Determina si un item del shell debe marcarse como activo.
+ *
+ * @param array $item
+ * @return bool
+ */
+$shell_item_is_active = static function(array $item) use ($current_page, $current_post_type, $current_taxonomy, $current_pagenow) {
+    $item_slug = isset($item['slug']) ? sanitize_key((string) $item['slug']) : '';
+    if ($item_slug !== '' && $current_page === $item_slug) {
+        return true;
+    }
+
+    // Considerar subpáginas de módulo (ej: contabilidad-dashboard -> contabilidad-movimientos).
+    if ($item_slug !== '' && substr($item_slug, -strlen('-dashboard')) === '-dashboard') {
+        $module_prefix = substr($item_slug, 0, -strlen('-dashboard'));
+        if ($module_prefix !== '' && strpos($current_page, $module_prefix . '-') === 0) {
+            return true;
+        }
+    }
+
+    // Soportar items que navegan por URL (edit.php?post_type=... / admin.php?page=...).
+    $item_url = isset($item['url']) ? (string) $item['url'] : '';
+    if ($item_url !== '') {
+        $query = wp_parse_url($item_url, PHP_URL_QUERY);
+        if (is_string($query) && $query !== '') {
+            parse_str($query, $query_vars);
+            $query_page = isset($query_vars['page']) ? sanitize_key((string) $query_vars['page']) : '';
+            $query_post_type = isset($query_vars['post_type']) ? sanitize_key((string) $query_vars['post_type']) : '';
+            $query_taxonomy = isset($query_vars['taxonomy']) ? sanitize_key((string) $query_vars['taxonomy']) : '';
+
+            if ($query_page !== '' && $query_page === $current_page) {
+                return true;
+            }
+            if ($query_post_type !== '' && $query_post_type === $current_post_type && in_array($current_pagenow, ['edit.php', 'post-new.php'], true)) {
+                return true;
+            }
+            if ($query_taxonomy !== '' && $query_taxonomy === $current_taxonomy) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+};
 ?>
 
 <!-- Skip Link para Accesibilidad -->
@@ -96,7 +145,7 @@ $active_custom_view = $custom_views_manager
             <template x-for="(group, groupIndex) in groupedResults" :key="groupIndex">
                 <div class="fls-shell-search__group">
                     <div class="fls-shell-search__group-title" x-text="group.label"></div>
-                    <template x-for="(result, index) in group.items" :key="result.slug">
+                    <template x-for="(result, index) in group.items" :key="`${result.slug}-${index}`">
                         <a
                             :href="result.url"
                             class="fls-shell-search__result"
@@ -368,20 +417,53 @@ $active_custom_view = $custom_views_manager
 
     <!-- Navigation -->
     <nav class="fls-shell__nav" role="navigation" aria-label="<?php esc_attr_e('Menú principal', 'flavor-chat-ia'); ?>">
-        <?php foreach ($navigation as $section_id => $section) : ?>
-            <div class="fls-shell__section">
-                <div class="fls-shell__section-title">
-                    <?php echo esc_html($section['label']); ?>
-                </div>
+        <?php
+        $section_index = 0;
+        foreach ($navigation as $section_id => $section) :
+            $section_has_active = false;
+            if (!empty($section['items']) && is_array($section['items'])) {
+                foreach ($section['items'] as $section_item) {
+                    $section_item_active = $shell_item_is_active($section_item) || !empty($section_item['is_expanded']);
+                    if (!$section_item_active && !empty($section_item['subpages']) && is_array($section_item['subpages'])) {
+                        foreach ($section_item['subpages'] as $section_subpage) {
+                            $sub_slug = isset($section_subpage['slug']) ? sanitize_key((string) $section_subpage['slug']) : '';
+                            if ($sub_slug !== '' && $current_page === $sub_slug) {
+                                $section_item_active = true;
+                                break;
+                            }
+                        }
+                    }
+                    if ($section_item_active) {
+                        $section_has_active = true;
+                        break;
+                    }
+                }
+            }
 
-                <ul class="fls-shell__menu" role="menu">
+            // Abrir sección activa; fallback primera sección.
+            $default_open = ($section_has_active || $section_index === 0) ? 'true' : 'false';
+            $section_index++;
+        ?>
+            <div class="fls-shell__section" x-data="{ sectionOpen: <?php echo $default_open; ?> }">
+                <button
+                    type="button"
+                    class="fls-shell__section-toggle"
+                    @click="sectionOpen = !sectionOpen"
+                >
+                    <span class="fls-shell__section-title">
+                        <?php echo esc_html($section['label']); ?>
+                    </span>
+                    <span class="dashicons fls-shell__section-arrow" :class="sectionOpen ? 'dashicons-arrow-up-alt2' : 'dashicons-arrow-down-alt2'"></span>
+                </button>
+
+                <ul class="fls-shell__menu" role="menu" x-show="sectionOpen" x-transition x-cloak>
                     <?php foreach ($section['items'] as $item) :
                         // Soportar URLs directas o slugs de página
                         $item_url = isset($item['url']) ? admin_url($item['url']) : admin_url('admin.php?page=' . $item['slug']);
                         $is_expanded = !empty($item['is_expanded']);
                         $has_subpages = !empty($item['subpages']);
-                        // Activo si es la página actual O si estamos en una subpágina de este módulo
-                        $is_active = $current_page === $item['slug'] || $is_expanded;
+                        // Activo por contexto actual (no solo igualdad exacta).
+                        $is_active = $shell_item_is_active($item) || $is_expanded;
                         $has_badge = !empty($item['badge']) && $item['badge']['count'] > 0;
                         $badge_severity = $has_badge ? ($item['badge']['severity'] ?? 'info') : '';
                         // Verificar si es favorito

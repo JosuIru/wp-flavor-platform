@@ -595,13 +595,21 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
      * Registra shortcodes del módulo
      */
     public function register_shortcodes() {
-        add_shortcode('flavor_galeria', [$this, 'shortcode_galeria']);
-        add_shortcode('flavor_albumes', [$this, 'shortcode_albumes']);
-        add_shortcode('flavor_subir_multimedia', [$this, 'shortcode_subir']);
-        add_shortcode('flavor_mi_galeria', [$this, 'shortcode_mi_galeria']);
-        add_shortcode('flavor_carousel', [$this, 'shortcode_carousel']);
-        // Shortcode de integración para tabs de otros módulos
-        add_shortcode('flavor_multimedia_galeria', [$this, 'shortcode_galeria_integrada']);
+        $shortcodes = [
+            'flavor_galeria' => 'shortcode_galeria',
+            'flavor_albumes' => 'shortcode_albumes',
+            'flavor_subir_multimedia' => 'shortcode_subir',
+            'flavor_mi_galeria' => 'shortcode_mi_galeria',
+            'flavor_carousel' => 'shortcode_carousel',
+            // Shortcode de integración para tabs de otros módulos
+            'flavor_multimedia_galeria' => 'shortcode_galeria_integrada',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     public function maybe_create_tables() {
@@ -3526,6 +3534,13 @@ KNOWLEDGE;
      * Registrar páginas de administración
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Páginas ocultas (sin menú visible en el sidebar)

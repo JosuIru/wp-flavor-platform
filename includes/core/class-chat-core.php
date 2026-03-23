@@ -17,6 +17,11 @@ class Flavor_Chat_Core {
     private static $instance = null;
 
     /**
+     * Flag para evitar renderizar el widget más de una vez
+     */
+    private static $widget_rendered = false;
+
+    /**
      * Obtiene la instancia singleton
      *
      * @return Flavor_Chat_Core
@@ -98,6 +103,12 @@ class Flavor_Chat_Core {
      * @param string $language
      */
     private function render_chat_widget($style = 'floating', $language = 'es') {
+        // Evitar renderizar el widget más de una vez
+        if (self::$widget_rendered) {
+            return;
+        }
+        self::$widget_rendered = true;
+
         $settings = get_option('flavor_chat_ia_settings', []);
         $appearance = $settings['appearance'] ?? [];
 
@@ -121,9 +132,9 @@ class Flavor_Chat_Core {
         // Generar ID de sesión
         $session_id = 'fcia_' . wp_generate_password(16, false);
 
-        // CSS variables
+        // CSS variables - deben coincidir con chat-widget.css
         $css_vars = sprintf(
-            '--flavor-chat-primary: %s; --flavor-chat-header-bg: %s; --flavor-chat-user-bubble: %s; --flavor-chat-assistant-bubble: %s; --flavor-chat-width: %dpx; --flavor-chat-height: %dpx; --flavor-chat-radius: %dpx; --flavor-chat-bottom: %dpx; --flavor-chat-side: %dpx;',
+            '--chat-ia-primary: %s; --chat-ia-header-bg: %s; --chat-ia-user-bubble: %s; --chat-ia-assistant-bubble: %s; --chat-ia-width: %dpx; --chat-ia-height: %dpx; --chat-ia-radius: %dpx; --chat-ia-bottom-offset: %dpx; --chat-ia-side-offset: %dpx;',
             esc_attr($primary_color),
             esc_attr($header_bg),
             esc_attr($user_bubble),
@@ -212,18 +223,37 @@ class Flavor_Chat_Core {
                     <form id="chat-ia-form" class="chat-ia-form">
                         <!-- Honeypot antispam - campo oculto que los bots rellenan -->
                         <input type="text" name="website_url" id="chat-ia-honeypot" value="" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
+                        <!-- Botón micrófono para voz -->
+                        <button type="button" id="chat-ia-mic" class="chat-ia-mic" aria-label="<?php echo esc_attr__('Hablar', 'flavor-chat-ia'); ?>" title="<?php echo esc_attr__('Pulsa para hablar', 'flavor-chat-ia'); ?>">
+                            <svg class="chat-ia-mic-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
+                            <svg class="chat-ia-mic-stop" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                <rect x="6" y="6" width="12" height="12" rx="2"/>
+                            </svg>
+                        </button>
                         <input type="text"
                                id="chat-ia-input"
                                class="chat-ia-input"
                                placeholder="<?php echo esc_attr($placeholder); ?>"
                                autocomplete="off"
                                required>
-                        <button type="submit" class="chat-ia-send" aria-label="<?php echo esc_attr__('Enviar', 'flavor-chat-ia'); ?>">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
+                        <button type="submit" id="chat-ia-send" class="chat-ia-send" aria-label="<?php echo esc_attr__('Enviar', 'flavor-chat-ia'); ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="display:block;fill:#fff;">
                                 <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                             </svg>
                         </button>
                     </form>
+                    <!-- Toggle para voz del asistente -->
+                    <button type="button" id="chat-ia-tts-toggle" class="chat-ia-tts-toggle" aria-label="<?php echo esc_attr__('Activar/desactivar voz', 'flavor-chat-ia'); ?>" title="<?php echo esc_attr__('Leer respuestas en voz alta', 'flavor-chat-ia'); ?>">
+                        <svg class="chat-ia-tts-on" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                        </svg>
+                        <svg class="chat-ia-tts-off" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                        </svg>
+                    </button>
                 </div>
 
                 <!-- Footer con powered by -->

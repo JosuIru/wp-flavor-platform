@@ -73,14 +73,30 @@ class Flavor_Circulos_Cuidados_Frontend_Controller {
      */
     public function init() {
         // Shortcodes
-        add_shortcode('flavor_circulos_listado', [$this, 'shortcode_listado']);
-        add_shortcode('flavor_circulos_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('flavor_circulos_crear', [$this, 'shortcode_crear']);
-        add_shortcode('flavor_circulos_necesidades', [$this, 'shortcode_necesidades']);
-        add_shortcode('flavor_circulos_publicar_necesidad', [$this, 'shortcode_publicar_necesidad']);
-        add_shortcode('flavor_circulos_mis_circulos', [$this, 'shortcode_mis_circulos']);
-        add_shortcode('flavor_circulos_mis_horas', [$this, 'shortcode_mis_horas']);
-        add_shortcode('flavor_circulos_mapa', [$this, 'shortcode_mapa']);
+        if (!shortcode_exists('flavor_circulos_listado')) {
+            add_shortcode('flavor_circulos_listado', [$this, 'shortcode_listado']);
+        }
+        if (!shortcode_exists('flavor_circulos_detalle')) {
+            add_shortcode('flavor_circulos_detalle', [$this, 'shortcode_detalle']);
+        }
+        if (!shortcode_exists('flavor_circulos_crear')) {
+            add_shortcode('flavor_circulos_crear', [$this, 'shortcode_crear']);
+        }
+        if (!shortcode_exists('flavor_circulos_necesidades')) {
+            add_shortcode('flavor_circulos_necesidades', [$this, 'shortcode_necesidades']);
+        }
+        if (!shortcode_exists('flavor_circulos_publicar_necesidad')) {
+            add_shortcode('flavor_circulos_publicar_necesidad', [$this, 'shortcode_publicar_necesidad']);
+        }
+        if (!shortcode_exists('flavor_circulos_mis_circulos')) {
+            add_shortcode('flavor_circulos_mis_circulos', [$this, 'shortcode_mis_circulos']);
+        }
+        if (!shortcode_exists('flavor_circulos_mis_horas')) {
+            add_shortcode('flavor_circulos_mis_horas', [$this, 'shortcode_mis_horas']);
+        }
+        if (!shortcode_exists('flavor_circulos_mapa')) {
+            add_shortcode('flavor_circulos_mapa', [$this, 'shortcode_mapa']);
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_circulos_crear', [$this, 'ajax_crear_circulo']);

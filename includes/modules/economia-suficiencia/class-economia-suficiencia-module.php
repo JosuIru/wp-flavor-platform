@@ -559,10 +559,11 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             'post_author' => $user_id,
             'post_title' => $pregunta ?: __('Reflexión personal', 'flavor-chat-ia'),
             'post_content' => $respuesta,
-        ]);
+        ], true);
 
-        if (is_wp_error($reflexion_id)) {
-            wp_send_json_error(['message' => $reflexion_id->get_error_message()]);
+        if (is_wp_error($reflexion_id) || empty($reflexion_id)) {
+            $error = is_wp_error($reflexion_id) ? $reflexion_id->get_error_message() : __('No se pudo guardar la reflexión.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         update_post_meta($reflexion_id, '_es_categoria', $categoria);
@@ -603,10 +604,11 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             'post_status' => 'publish',
             'post_author' => $user_id,
             'post_title' => $compromiso_data['nombre'],
-        ]);
+        ], true);
 
-        if (is_wp_error($compromiso_id)) {
-            wp_send_json_error(['message' => $compromiso_id->get_error_message()]);
+        if (is_wp_error($compromiso_id) || empty($compromiso_id)) {
+            $error = is_wp_error($compromiso_id) ? $compromiso_id->get_error_message() : __('No se pudo crear el compromiso.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         update_post_meta($compromiso_id, '_es_tipo', $tipo);
@@ -651,7 +653,12 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             'post_status' => 'publish',
             'post_author' => $user_id,
             'post_title' => sprintf(__('Práctica: %s', 'flavor-chat-ia'), $compromiso->post_title),
-        ]);
+        ], true);
+
+        if (is_wp_error($practica_id) || empty($practica_id)) {
+            $error = is_wp_error($practica_id) ? $practica_id->get_error_message() : __('No se pudo registrar la práctica.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
+        }
 
         update_post_meta($practica_id, '_es_compromiso_id', $compromiso_id);
         update_post_meta($practica_id, '_es_fecha', current_time('mysql'));
@@ -696,10 +703,11 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
             'post_author' => $user_id,
             'post_title' => $nombre,
             'post_content' => $descripcion,
-        ]);
+        ], true);
 
-        if (is_wp_error($recurso_id)) {
-            wp_send_json_error(['message' => $recurso_id->get_error_message()]);
+        if (is_wp_error($recurso_id) || empty($recurso_id)) {
+            $error = is_wp_error($recurso_id) ? $recurso_id->get_error_message() : __('No se pudo crear el recurso.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         update_post_meta($recurso_id, '_es_categoria', $categoria);
@@ -2033,14 +2041,18 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
                 wp_update_post($post_data);
                 $mensaje = __('Recurso actualizado correctamente.', 'flavor-chat-ia');
             } else {
-                $recurso_id = wp_insert_post($post_data);
+                $recurso_id = wp_insert_post($post_data, true);
                 $mensaje = __('Recurso creado correctamente.', 'flavor-chat-ia');
             }
 
-            if ($recurso_id && !is_wp_error($recurso_id)) {
+            if (!is_wp_error($recurso_id) && !empty($recurso_id)) {
                 update_post_meta($recurso_id, '_es_categoria', $categoria_recurso);
                 update_post_meta($recurso_id, '_es_tipo', $tipo_recurso);
                 echo '<div class="notice notice-success"><p>' . esc_html($mensaje) . '</p></div>';
+            } elseif (is_wp_error($recurso_id)) {
+                echo '<div class="notice notice-error"><p>' . esc_html($recurso_id->get_error_message()) . '</p></div>';
+            } else {
+                echo '<div class="notice notice-error"><p>' . esc_html__('No se pudo guardar el recurso.', 'flavor-chat-ia') . '</p></div>';
             }
         }
 

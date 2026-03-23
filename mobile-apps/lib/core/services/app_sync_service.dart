@@ -160,6 +160,16 @@ class AppSyncService {
 
       Logger.i('Syncing with $cleanUrl', tag: 'AppSync');
 
+      // Detectar namespace API preferido del sitio (evitar forzar siempre chat-ia-mobile)
+      String preferredApiNamespace = ServerConfig.defaultApiNamespace;
+      final discoveryProbe = await ApiClient.discoverSiteAt(cleanUrl);
+      if (discoveryProbe.success && discoveryProbe.data != null) {
+        preferredApiNamespace = await ApiClient.detectPreferredApiNamespace(
+          cleanUrl,
+          discoveryData: discoveryProbe.data,
+        );
+      }
+
       // Limpiar cachés para forzar configuración nueva
       await DynamicConfig().clearCache();
       await LayoutService().clearCache();
@@ -167,7 +177,7 @@ class AppSyncService {
       // Guardar URL en ServerConfig
       await ServerConfig.setCurrentBusiness(
         serverUrl: cleanUrl,
-        apiNamespace: ServerConfig.defaultApiNamespace,
+        apiNamespace: preferredApiNamespace,
       );
 
       // Crear cliente API
@@ -175,12 +185,38 @@ class AppSyncService {
 
       // 1. Obtener información de descubrimiento (incluye layouts y tema)
       final discoveryResponse = await apiClient.getAppDiscoveryInfo();
+      Map<String, dynamic> siteInfo;
 
-      if (!discoveryResponse.success || discoveryResponse.data == null) {
-        throw Exception(discoveryResponse.error ?? 'Error al conectar con el sitio');
+      final bool usingLegacySync;
+      if (discoveryResponse.success && discoveryResponse.data != null) {
+        siteInfo = discoveryResponse.data!;
+        usingLegacySync = false;
+      } else {
+        // Fallback legado: sitios sin app-discovery pero con chat-ia-mobile.
+        final siteInfoResponse = await apiClient.getSiteInfo();
+        if (!siteInfoResponse.success || siteInfoResponse.data == null) {
+          throw Exception(
+            discoveryResponse.error ??
+                siteInfoResponse.error ??
+                'Error al conectar con el sitio',
+          );
+        }
+
+        final legacy = siteInfoResponse.data!;
+        final legacyTheme = <String, dynamic>{
+          'primary_color': legacy['config']?['primary_color'],
+          'logo_url': legacy['logo_url'],
+        };
+
+        siteInfo = {
+          'site_name': legacy['name'] ?? cleanUrl,
+          'app_name': legacy['name'] ?? cleanUrl,
+          'theme': legacyTheme,
+          'layouts': {'available': false},
+          'legacy_sync': true,
+        };
+        usingLegacySync = true;
       }
-
-      final siteInfo = discoveryResponse.data!;
 
       // Extraer información del sitio
       final siteName =
@@ -198,8 +234,11 @@ class AppSyncService {
           'accent': theme['accent_color'] ?? theme['accent'],
           'background': theme['background_color'] ?? theme['background'],
           'surface': theme['surface_color'] ?? theme['surface'],
-          'text_primary': theme['text_primary_color'] ?? theme['text_primary'] ?? theme['text_color'],
-          'text_secondary': theme['text_secondary_color'] ?? theme['text_secondary'],
+          'text_primary': theme['text_primary_color'] ??
+              theme['text_primary'] ??
+              theme['text_color'],
+          'text_secondary':
+              theme['text_secondary_color'] ?? theme['text_secondary'],
         };
 
         await DynamicConfig().updateConfig({
@@ -212,14 +251,39 @@ class AppSyncService {
         });
       }
 
+      // En modo legado (sin app-discovery), cargar también tabs/features desde
+      // /chat-ia-mobile/v1/client-app-config para que la app refleje el sitio.
+      if (usingLegacySync) {
+        final clientConfigResponse = await apiClient.getClientAppConfig();
+        if (clientConfigResponse.success && clientConfigResponse.data != null) {
+          final rawConfig = clientConfigResponse.data!['config'];
+          if (rawConfig is Map) {
+            await DynamicConfig()
+                .updateConfig(Map<String, dynamic>.from(rawConfig));
+            Logger.i(
+              'Legacy sync: client-app-config loaded',
+              tag: 'AppSync',
+            );
+          }
+        } else {
+          Logger.w(
+            'Legacy sync: client-app-config unavailable (${clientConfigResponse.error})',
+            tag: 'AppSync',
+          );
+        }
+      }
+
       // 3. Actualizar LayoutService con layouts
-      if (siteInfo['layouts'] != null && siteInfo['layouts']['available'] == true) {
+      if (siteInfo['layouts'] != null &&
+          siteInfo['layouts']['available'] == true) {
         final theme = siteInfo['theme'] != null
             ? Map<String, dynamic>.from(siteInfo['theme'] as Map)
             : <String, dynamic>{};
         final layoutTheme = <String, dynamic>{
           ...theme,
-          'text_color': theme['text_color'] ?? theme['text_primary_color'] ?? theme['text_primary'],
+          'text_color': theme['text_color'] ??
+              theme['text_primary_color'] ??
+              theme['text_primary'],
         };
         await LayoutService().updateConfig(
           siteInfo['layouts'],
@@ -248,8 +312,9 @@ class AppSyncService {
 
       Logger.i('Sync successful - $siteName', tag: 'AppSync');
 
-      final resolvedSiteName =
-          (siteName != null && siteName.trim().isNotEmpty) ? siteName : cleanUrl;
+      final resolvedSiteName = (siteName != null && siteName.trim().isNotEmpty)
+          ? siteName
+          : cleanUrl;
       return SyncResult.success(
         siteName: resolvedSiteName,
         siteInfo: siteInfo,
@@ -315,7 +380,9 @@ class AppSyncService {
     // Fallback a DynamicConfig
     final dynamicConfig = DynamicConfig();
     if (dynamicConfig.isLoaded) {
-      return dynamicConfig.buildColorScheme(brightness: brightness).toThemeData();
+      return dynamicConfig
+          .buildColorScheme(brightness: brightness)
+          .toThemeData();
     }
 
     // Tema por defecto

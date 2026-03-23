@@ -146,8 +146,12 @@ class Flavor_Transparencia_Frontend_Controller {
         add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_dashboard_tab']);
 
         // Shortcodes adicionales
-        add_shortcode('flavor_transparencia_dashboard', [$this, 'shortcode_dashboard']);
-        add_shortcode('flavor_transparencia_mis_solicitudes', [$this, 'shortcode_mis_solicitudes']);
+        if (!shortcode_exists('flavor_transparencia_dashboard')) {
+            add_shortcode('flavor_transparencia_dashboard', [$this, 'shortcode_dashboard']);
+        }
+        if (!shortcode_exists('flavor_transparencia_mis_solicitudes')) {
+            add_shortcode('flavor_transparencia_mis_solicitudes', [$this, 'shortcode_mis_solicitudes']);
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_transparencia_dashboard_data', [$this, 'ajax_dashboard_data']);
@@ -161,12 +165,14 @@ class Flavor_Transparencia_Frontend_Controller {
      */
     public function register_assets() {
         $modulo_url = plugins_url('', dirname(dirname(__FILE__)));
+        $css_file = dirname(dirname(__FILE__)) . '/assets/css/transparencia.css';
+        $css_version = file_exists($css_file) ? (string) filemtime($css_file) : FLAVOR_CHAT_IA_VERSION;
 
         wp_register_style(
             'flavor-transparencia-frontend',
             $modulo_url . '/assets/css/transparencia.css',
             [],
-            FLAVOR_CHAT_IA_VERSION
+            $css_version
         );
 
         wp_register_script(
@@ -177,9 +183,9 @@ class Flavor_Transparencia_Frontend_Controller {
             true
         );
 
-        wp_localize_script('flavor-transparencia-frontend', 'flavorTransparenciaConfig', [
+        wp_localize_script('flavor-transparencia-frontend', 'flavorTransparencia', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('flavor_transparencia_nonce'),
+            'nonce' => wp_create_nonce('transparencia_nonce'),
             'estados' => $this->estados_solicitud,
             'categorias' => $this->categorias,
             'strings' => [
@@ -290,7 +296,7 @@ class Flavor_Transparencia_Frontend_Controller {
                             <span class="dashicons dashicons-<?php echo esc_attr($estado_info['icono']); ?>"></span>
                         </div>
                         <div class="flavor-solicitud-info">
-                            <h4><?php echo esc_html($solicitud->asunto); ?></h4>
+                            <h4><?php echo esc_html($solicitud->titulo ?? $solicitud->asunto ?? ''); ?></h4>
                             <div class="flavor-solicitud-meta">
                                 <span><?php echo esc_html(date_i18n('d/m/Y', strtotime($solicitud->fecha_solicitud))); ?></span>
                                 <?php if ($solicitud->fecha_limite): ?>
@@ -337,13 +343,13 @@ class Flavor_Transparencia_Frontend_Controller {
 
             <!-- Acciones -->
             <div class="flavor-panel-actions">
-                <a href="<?php echo esc_url(home_url('/transparencia/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/transparencia/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-visibility"></span> Portal de Transparencia
                 </a>
-                <a href="<?php echo esc_url(home_url('/transparencia/solicitar/')); ?>" class="flavor-btn flavor-btn-secondary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/transparencia/solicitar/')); ?>" class="flavor-btn flavor-btn-secondary">
                     <span class="dashicons dashicons-email-alt"></span> Solicitar información
                 </a>
-                <a href="<?php echo esc_url(home_url('/transparencia/presupuestos/')); ?>" class="flavor-btn flavor-btn-outline">
+                <a href="<?php echo esc_url(home_url('/mi-portal/transparencia/presupuestos/')); ?>" class="flavor-btn flavor-btn-outline">
                     <span class="dashicons dashicons-chart-pie"></span> Presupuestos
                 </a>
             </div>
@@ -383,7 +389,7 @@ class Flavor_Transparencia_Frontend_Controller {
         <div class="flavor-mis-solicitudes-panel">
             <div class="flavor-panel-header">
                 <h2><span class="dashicons dashicons-email"></span> Mis solicitudes de información</h2>
-                <a href="<?php echo esc_url(home_url('/transparencia/solicitar/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/transparencia/solicitar/')); ?>" class="flavor-btn flavor-btn-primary">
                     <span class="dashicons dashicons-plus-alt"></span> Nueva solicitud
                 </a>
             </div>
@@ -392,13 +398,21 @@ class Flavor_Transparencia_Frontend_Controller {
             <div class="flavor-solicitudes-lista flavor-solicitudes-completa">
                 <?php foreach ($solicitudes as $solicitud): ?>
                 <?php $estado_info = $this->estados_solicitud[$solicitud->estado] ?? $this->estados_solicitud['recibida']; ?>
+                <?php
+                    $solicitud_titulo = '';
+                    if (isset($solicitud->titulo) && $solicitud->titulo !== '') {
+                        $solicitud_titulo = (string) $solicitud->titulo;
+                    } elseif (isset($solicitud->asunto) && $solicitud->asunto !== '') {
+                        $solicitud_titulo = (string) $solicitud->asunto;
+                    }
+                ?>
                 <div class="flavor-solicitud-item-completo" data-id="<?php echo esc_attr($solicitud->id); ?>">
                     <div class="flavor-solicitud-header">
                         <div class="flavor-solicitud-icono" style="background-color: <?php echo esc_attr($estado_info['color']); ?>">
                             <span class="dashicons dashicons-<?php echo esc_attr($estado_info['icono']); ?>"></span>
                         </div>
                         <div class="flavor-solicitud-titulo">
-                            <h4><?php echo esc_html($solicitud->asunto); ?></h4>
+                            <h4><?php echo esc_html($solicitud_titulo); ?></h4>
                             <span class="flavor-badge" style="background-color: <?php echo esc_attr($estado_info['color']); ?>">
                                 <?php echo esc_html($estado_info['nombre']); ?>
                             </span>
@@ -431,7 +445,7 @@ class Flavor_Transparencia_Frontend_Controller {
             <div class="flavor-empty-state">
                 <span class="dashicons dashicons-email"></span>
                 <p>No tienes solicitudes de información</p>
-                <a href="<?php echo esc_url(home_url('/transparencia/solicitar/')); ?>" class="flavor-btn flavor-btn-primary">
+                <a href="<?php echo esc_url(home_url('/mi-portal/transparencia/solicitar/')); ?>" class="flavor-btn flavor-btn-primary">
                     Realizar primera solicitud
                 </a>
             </div>

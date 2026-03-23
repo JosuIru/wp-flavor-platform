@@ -46,7 +46,8 @@ class Flavor_Chat_Crowdfunding_Module extends Flavor_Chat_Module_Base {
      * {@inheritdoc}
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe('flavor_crowdfunding_proyectos');
+        global $wpdb;
+        return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_crowdfunding_proyectos');
     }
 
     /**

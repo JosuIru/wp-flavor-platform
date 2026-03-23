@@ -58,9 +58,16 @@ if ($action === 'new' || $action === 'edit'):
 
                 <div class="em-form-section">
                     <label for="em-asunto"><?php _e('Asunto del email', 'flavor-chat-ia'); ?></label>
-                    <input type="text" id="em-asunto" name="asunto" required
-                           value="<?php echo esc_attr($campania->asunto ?? ''); ?>"
-                           placeholder="<?php esc_attr_e('Ej: Novedades de esta semana', 'flavor-chat-ia'); ?>">
+                    <div class="em-asunto-wrapper" style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="em-asunto" name="asunto" required style="flex: 1;"
+                               value="<?php echo esc_attr($campania->asunto ?? ''); ?>"
+                               placeholder="<?php esc_attr_e('Ej: Novedades de esta semana', 'flavor-chat-ia'); ?>">
+                        <button type="button" class="button flavor-ai-generate-subject-btn"
+                                title="<?php esc_attr_e('Generar asunto con IA', 'flavor-chat-ia'); ?>"
+                                data-target="em-asunto">
+                            <span class="dashicons dashicons-lightbulb"></span>
+                        </button>
+                    </div>
                     <p class="description"><?php _e('Usa {{nombre}} para personalizar con el nombre del suscriptor.', 'flavor-chat-ia'); ?></p>
                 </div>
 
@@ -95,7 +102,12 @@ if ($action === 'new' || $action === 'edit'):
                     </div>
 
                     <div class="em-tab-content" data-tab="html" style="display:none;">
-                        <textarea id="em-contenido-html-raw" name="contenido_html_raw" rows="20"><?php echo esc_textarea($campania->contenido_html ?? ''); ?></textarea>
+                        <div class="flavor-ai-textarea-wrapper" data-ai-enabled="true">
+                            <textarea id="em-contenido-html-raw" name="contenido_html_raw" rows="20"
+                                      class="flavor-ai-content-target"
+                                      data-content-type="email"
+                                      data-context="<?php echo esc_attr__('contenido de email marketing, newsletter', 'flavor-chat-ia'); ?>"><?php echo esc_textarea($campania->contenido_html ?? ''); ?></textarea>
+                        </div>
                     </div>
                 </div>
             </div>

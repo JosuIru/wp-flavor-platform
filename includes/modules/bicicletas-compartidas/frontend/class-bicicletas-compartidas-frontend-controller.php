@@ -51,18 +51,24 @@ class Flavor_Bicicletas_Compartidas_Frontend_Controller {
      */
     private function init() {
         // Shortcodes
-        add_shortcode('flavor_bicicletas_mapa', [$this, 'shortcode_mapa']);
-        add_shortcode('flavor_bicicletas_estaciones', [$this, 'shortcode_estaciones']);
-        add_shortcode('flavor_bicicletas_disponibles', [$this, 'shortcode_disponibles']);
-        add_shortcode('flavor_bicicletas_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('flavor_bicicletas_reservar', [$this, 'shortcode_reservar']);
-        add_shortcode('flavor_bicicletas_mis_prestamos', [$this, 'shortcode_mis_prestamos']);
-        add_shortcode('flavor_bicicletas_prestamo_activo', [$this, 'shortcode_prestamo_activo']);
-        add_shortcode('flavor_bicicletas_estadisticas', [$this, 'shortcode_estadisticas']);
-
-        // Alias para compatibilidad
-        add_shortcode('bicicletas_estaciones_cercanas', [$this, 'shortcode_estaciones']);
-        add_shortcode('bicicletas_prestamo_actual', [$this, 'shortcode_prestamo_activo']);
+        $shortcodes = [
+            'flavor_bicicletas_mapa' => 'shortcode_mapa',
+            'flavor_bicicletas_estaciones' => 'shortcode_estaciones',
+            'flavor_bicicletas_disponibles' => 'shortcode_disponibles',
+            'flavor_bicicletas_detalle' => 'shortcode_detalle',
+            'flavor_bicicletas_reservar' => 'shortcode_reservar',
+            'flavor_bicicletas_mis_prestamos' => 'shortcode_mis_prestamos',
+            'flavor_bicicletas_prestamo_activo' => 'shortcode_prestamo_activo',
+            'flavor_bicicletas_estadisticas' => 'shortcode_estadisticas',
+            // Alias para compatibilidad
+            'bicicletas_estaciones_cercanas' => 'shortcode_estaciones',
+            'bicicletas_prestamo_actual' => 'shortcode_prestamo_activo',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_bicicletas_reservar', [$this, 'ajax_reservar']);

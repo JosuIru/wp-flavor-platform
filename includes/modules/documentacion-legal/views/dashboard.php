@@ -21,6 +21,7 @@ $tabla_docs_existe = $wpdb->get_var($wpdb->prepare(
     DB_NAME,
     $tabla_docs
 )) > 0;
+$tablas_disponibles = $tabla_docs_existe;
 
 // Inicializar valores
 $total_docs = 0;
@@ -69,51 +70,6 @@ if ($tabla_docs_existe) {
     }
 }
 
-// Datos demo
-$usando_demo = $total_docs == 0;
-
-if ($usando_demo) {
-    $total_docs = 156;
-    $total_borradores = 12;
-    $total_revision = 5;
-    $total_descargas = 3420;
-    $total_visitas = 12580;
-    $total_favoritos = 89;
-    $pendientes_verificar = 8;
-
-    $docs_por_tipo = [
-        (object) ['tipo' => 'ley', 'total' => 45],
-        (object) ['tipo' => 'sentencia', 'total' => 38],
-        (object) ['tipo' => 'modelo_denuncia', 'total' => 28],
-        (object) ['tipo' => 'guia', 'total' => 22],
-        (object) ['tipo' => 'decreto', 'total' => 15],
-        (object) ['tipo' => 'modelo_recurso', 'total' => 8],
-    ];
-
-    $docs_por_ambito = [
-        (object) ['ambito' => 'estatal', 'total' => 65],
-        (object) ['ambito' => 'autonomico', 'total' => 48],
-        (object) ['ambito' => 'europeo', 'total' => 23],
-        (object) ['ambito' => 'municipal', 'total' => 12],
-    ];
-
-    $docs_recientes = [
-        (object) ['id' => 1, 'titulo' => 'Ley de Evaluación Ambiental', 'tipo' => 'ley', 'ambito' => 'estatal', 'estado' => 'publicado', 'verificado' => 1, 'descargas' => 234, 'created_at' => date('Y-m-d H:i:s', strtotime('-1 day'))],
-        (object) ['id' => 2, 'titulo' => 'Modelo denuncia vertidos ilegales', 'tipo' => 'modelo_denuncia', 'ambito' => 'estatal', 'estado' => 'publicado', 'verificado' => 1, 'descargas' => 189, 'created_at' => date('Y-m-d H:i:s', strtotime('-2 days'))],
-        (object) ['id' => 3, 'titulo' => 'Sentencia TS sobre acceso información', 'tipo' => 'sentencia', 'ambito' => 'estatal', 'estado' => 'publicado', 'verificado' => 1, 'descargas' => 156, 'created_at' => date('Y-m-d H:i:s', strtotime('-3 days'))],
-        (object) ['id' => 4, 'titulo' => 'Guía recurso de alzada', 'tipo' => 'guia', 'ambito' => 'estatal', 'estado' => 'revision', 'verificado' => 0, 'descargas' => 78, 'created_at' => date('Y-m-d H:i:s', strtotime('-4 days'))],
-        (object) ['id' => 5, 'titulo' => 'Decreto protección espacios naturales', 'tipo' => 'decreto', 'ambito' => 'autonomico', 'estado' => 'borrador', 'verificado' => 0, 'descargas' => 0, 'created_at' => date('Y-m-d H:i:s', strtotime('-5 days'))],
-    ];
-
-    $docs_populares = [
-        (object) ['id' => 1, 'titulo' => 'Modelo denuncia urbanística', 'tipo' => 'modelo_denuncia', 'descargas' => 456, 'visitas' => 1234],
-        (object) ['id' => 2, 'titulo' => 'Ley de Evaluación Ambiental', 'tipo' => 'ley', 'descargas' => 389, 'visitas' => 987],
-        (object) ['id' => 3, 'titulo' => 'Modelo recurso contencioso', 'tipo' => 'modelo_recurso', 'descargas' => 312, 'visitas' => 856],
-        (object) ['id' => 4, 'titulo' => 'Guía acceso información pública', 'tipo' => 'guia', 'descargas' => 278, 'visitas' => 743],
-        (object) ['id' => 5, 'titulo' => 'Sentencia sobre participación', 'tipo' => 'sentencia', 'descargas' => 234, 'visitas' => 654],
-    ];
-}
-
 $tipos_labels = [
     'ley' => 'Ley',
     'decreto' => 'Decreto',
@@ -145,11 +101,11 @@ $estado_variantes = [
         </p>
     </div>
 
-    <?php if ($usando_demo): ?>
+    <?php if (!$tablas_disponibles): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Se muestran datos de ejemplo. Agrega documentos para ver datos reales.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Documentación Legal o aún no hay documentos publicados.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 

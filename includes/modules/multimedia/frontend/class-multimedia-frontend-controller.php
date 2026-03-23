@@ -64,13 +64,27 @@ class Flavor_Multimedia_Frontend_Controller {
         add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_tabs']);
 
         // Shortcodes
-        add_shortcode('flavor_multimedia_galeria', [$this, 'shortcode_galeria']);
-        add_shortcode('flavor_multimedia_mis_fotos', [$this, 'shortcode_mis_fotos']);
-        add_shortcode('flavor_multimedia_subir', [$this, 'shortcode_subir']);
-        add_shortcode('flavor_multimedia_albumes', [$this, 'shortcode_albumes']);
-        add_shortcode('flavor_multimedia_album', [$this, 'shortcode_album']);
-        add_shortcode('flavor_multimedia_visor', [$this, 'shortcode_visor']);
-        add_shortcode('flavor_multimedia_dashboard', [$this, 'shortcode_dashboard']);
+        if (!shortcode_exists('flavor_multimedia_galeria')) {
+            add_shortcode('flavor_multimedia_galeria', [$this, 'shortcode_galeria']);
+        }
+        if (!shortcode_exists('flavor_multimedia_mis_fotos')) {
+            add_shortcode('flavor_multimedia_mis_fotos', [$this, 'shortcode_mis_fotos']);
+        }
+        if (!shortcode_exists('flavor_multimedia_subir')) {
+            add_shortcode('flavor_multimedia_subir', [$this, 'shortcode_subir']);
+        }
+        if (!shortcode_exists('flavor_multimedia_albumes')) {
+            add_shortcode('flavor_multimedia_albumes', [$this, 'shortcode_albumes']);
+        }
+        if (!shortcode_exists('flavor_multimedia_album')) {
+            add_shortcode('flavor_multimedia_album', [$this, 'shortcode_album']);
+        }
+        if (!shortcode_exists('flavor_multimedia_visor')) {
+            add_shortcode('flavor_multimedia_visor', [$this, 'shortcode_visor']);
+        }
+        if (!shortcode_exists('flavor_multimedia_dashboard')) {
+            add_shortcode('flavor_multimedia_dashboard', [$this, 'shortcode_dashboard']);
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_multimedia_subir', [$this, 'ajax_subir']);

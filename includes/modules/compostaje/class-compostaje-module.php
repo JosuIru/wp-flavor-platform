@@ -2915,6 +2915,13 @@ KNOWLEDGE;
      * Registra las páginas de administración del módulo
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         // Subpágina: Composteras
         add_submenu_page(
             null,

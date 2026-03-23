@@ -61,7 +61,7 @@ $grupos_demo = apply_filters('flavor_grupos_consumo_listado_demo', $grupos_demo)
                         </h3>
                         <p class="text-gray-600 text-sm mb-4"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 15)); ?></p>
                         <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span>👥 <?php echo esc_html($grupo_socios); ?> socios</span>
+                            <span>👥 <?php echo esc_html($grupo_socios); ?> miembros</span>
                             <a href="<?php echo esc_url($grupo_url); ?>" class="text-lime-600 font-medium hover:underline">
                                 <?php _e('Ver más', 'flavor-chat-ia'); ?> →
                             </a>
@@ -86,7 +86,7 @@ $grupos_demo = apply_filters('flavor_grupos_consumo_listado_demo', $grupos_demo)
                         </h3>
                         <p class="text-gray-600 text-sm mb-4"><?php echo esc_html($grupo['descripcion']); ?></p>
                         <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span>👥 <?php echo esc_html($grupo['socios']); ?> socios</span>
+                            <span>👥 <?php echo esc_html($grupo['socios']); ?> miembros</span>
                             <span class="text-gray-400 text-xs italic"><?php _e('Próximamente', 'flavor-chat-ia'); ?></span>
                         </div>
                     </div>

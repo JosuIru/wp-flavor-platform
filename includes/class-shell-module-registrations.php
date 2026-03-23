@@ -44,6 +44,37 @@ class Flavor_Shell_Module_Registrations {
     }
 
     /**
+     * Comprueba si una tabla existe.
+     *
+     * @param string $table Nombre completo de tabla.
+     * @return bool
+     */
+    private function table_exists($table) {
+        global $wpdb;
+        return $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table)) === $table;
+    }
+
+    /**
+     * Devuelve la primera columna existente de una lista.
+     *
+     * @param string $table Nombre completo de tabla.
+     * @param array  $candidates Columnas candidatas.
+     * @return string|null
+     */
+    private function first_existing_column($table, array $candidates) {
+        global $wpdb;
+
+        foreach ($candidates as $column) {
+            $exists = $wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM {$table} LIKE %s", $column));
+            if ($exists) {
+                return $column;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Registrar navegaciones de todos los módulos
      *
      * @param Flavor_Shell_Navigation_Registry $registry Instancia del registry
@@ -67,6 +98,7 @@ class Flavor_Shell_Module_Registrations {
         $this->register_radio($registry);
         $this->register_podcast($registry);
         $this->register_campanias($registry);
+        $this->register_contabilidad($registry);
         $this->register_chat_ia($registry);
     }
 
@@ -384,12 +416,32 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_badge_callback('foros-temas', function() {
             global $wpdb;
             $tabla = $wpdb->prefix . 'flavor_foros_temas';
-            if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
-                return 0;
+            $tabla_hilos = $wpdb->prefix . 'flavor_foros_hilos';
+
+            if ($this->table_exists($tabla)) {
+                $col_respuestas = $this->first_existing_column($tabla, ['respuestas_count', 'respuestas']);
+                $col_estado = $this->first_existing_column($tabla, ['estado', 'status']);
+
+                if ($col_respuestas && $col_estado) {
+                    return (int) $wpdb->get_var(
+                        "SELECT COUNT(*) FROM {$tabla} WHERE {$col_respuestas} = 0 AND {$col_estado} = 'abierto'"
+                    );
+                }
             }
-            return (int) $wpdb->get_var(
-                "SELECT COUNT(*) FROM {$tabla} WHERE respuestas_count = 0 AND estado = 'abierto'"
-            );
+
+            // Fallback a estructura nueva de foros_hilos.
+            if ($this->table_exists($tabla_hilos)) {
+                $col_respuestas = $this->first_existing_column($tabla_hilos, ['respuestas_count', 'respuestas']);
+                $col_estado = $this->first_existing_column($tabla_hilos, ['estado', 'status']);
+
+                if ($col_respuestas && $col_estado) {
+                    return (int) $wpdb->get_var(
+                        "SELECT COUNT(*) FROM {$tabla_hilos} WHERE {$col_respuestas} = 0 AND {$col_estado} = 'abierto'"
+                    );
+                }
+            }
+
+            return 0;
         }, 'info');
     }
 
@@ -562,11 +614,18 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_badge_callback('banco-tiempo-intercambios', function() {
             global $wpdb;
             $tabla = $wpdb->prefix . 'flavor_banco_tiempo_intercambios';
-            if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            if (!$this->table_exists($tabla)) {
                 return 0;
             }
+
+            $col_estado = $this->first_existing_column($tabla, ['estado', 'status']);
+            if (!$col_estado) {
+                return 0;
+            }
+
+            $valor_pendiente = ('status' === $col_estado) ? 'pending' : 'pendiente';
             return (int) $wpdb->get_var(
-                "SELECT COUNT(*) FROM {$tabla} WHERE estado = 'pendiente'"
+                $wpdb->prepare("SELECT COUNT(*) FROM {$tabla} WHERE {$col_estado} = %s", $valor_pendiente)
             );
         }, 'warning');
     }
@@ -602,11 +661,21 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_badge_callback('biblioteca-prestamos', function() {
             global $wpdb;
             $tabla = $wpdb->prefix . 'flavor_biblioteca_prestamos';
-            if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            if (!$this->table_exists($tabla)) {
                 return 0;
             }
+
+            $col_estado = $this->first_existing_column($tabla, ['estado', 'status']);
+            $col_fecha = $this->first_existing_column($tabla, ['fecha_devolucion_prevista', 'fecha_devolucion', 'fecha_fin', 'due_date']);
+
+            if (!$col_estado || !$col_fecha) {
+                return 0;
+            }
+
+            $valor_activo = ('status' === $col_estado) ? 'active' : 'activo';
             return (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM {$tabla} WHERE estado = 'activo' AND fecha_devolucion_prevista < %s",
+                "SELECT COUNT(*) FROM {$tabla} WHERE {$col_estado} = %s AND {$col_fecha} < %s",
+                $valor_activo,
                 current_time('Y-m-d')
             ));
         }, 'danger');
@@ -733,6 +802,42 @@ class Flavor_Shell_Module_Registrations {
     }
 
     /**
+     * Registrar módulo Contabilidad
+     */
+    private function register_contabilidad($registry) {
+        $registry->register_module_subpages('contabilidad-dashboard', [
+            [
+                'slug' => 'contabilidad-dashboard',
+                'label' => __('Resumen', 'flavor-chat-ia'),
+                'icon' => 'dashicons-chart-pie',
+            ],
+            [
+                'slug' => 'contabilidad-movimientos',
+                'label' => __('Movimientos', 'flavor-chat-ia'),
+                'icon' => 'dashicons-list-view',
+            ],
+            [
+                'slug' => 'contabilidad-config',
+                'label' => __('Configuración', 'flavor-chat-ia'),
+                'icon' => 'dashicons-admin-settings',
+            ],
+        ]);
+
+        // Badge: asientos en borrador pendientes de confirmar.
+        $registry->register_badge_callback('contabilidad-dashboard', function() {
+            global $wpdb;
+            $tabla = $wpdb->prefix . 'flavor_contabilidad_movimientos';
+            if (!$this->table_exists($tabla)) {
+                return 0;
+            }
+
+            return (int) $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla} WHERE estado = 'borrador'"
+            );
+        }, 'warning');
+    }
+
+    /**
      * Registrar módulo Chat IA
      */
     private function register_chat_ia($registry) {
@@ -753,11 +858,18 @@ class Flavor_Shell_Module_Registrations {
         $registry->register_badge_callback('flavor-chat-ia-escalations', function() {
             global $wpdb;
             $tabla = $wpdb->prefix . 'flavor_chat_escalations';
-            if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla)) !== $tabla) {
+            if (!$this->table_exists($tabla)) {
                 return 0;
             }
+
+            $col_estado = $this->first_existing_column($tabla, ['estado', 'status']);
+            if (!$col_estado) {
+                return 0;
+            }
+
+            $valor_pendiente = ('status' === $col_estado) ? 'pending' : 'pendiente';
             return (int) $wpdb->get_var(
-                "SELECT COUNT(*) FROM {$tabla} WHERE estado = 'pendiente'"
+                $wpdb->prepare("SELECT COUNT(*) FROM {$tabla} WHERE {$col_estado} = %s", $valor_pendiente)
             );
         }, 'danger');
     }

@@ -43,7 +43,9 @@ class Flavor_Landing_Shortcode {
      * Constructor privado
      */
     private function __construct() {
-        add_shortcode('flavor_landing', [$this, 'renderizar_landing']);
+        if (!shortcode_exists('flavor_landing')) {
+            add_shortcode('flavor_landing', [$this, 'renderizar_landing']);
+        }
     }
 
     /**

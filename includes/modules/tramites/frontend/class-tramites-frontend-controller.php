@@ -55,14 +55,21 @@ class Flavor_Tramites_Frontend_Controller {
 
     private function init_hooks() {
         // Shortcodes
-        add_shortcode('flavor_tramites_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('flavor_tramites_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('flavor_tramites_solicitar', [$this, 'shortcode_solicitar']);
-        add_shortcode('flavor_tramites_mis_solicitudes', [$this, 'shortcode_mis_solicitudes']);
-        add_shortcode('flavor_tramites_seguimiento', [$this, 'shortcode_seguimiento']);
-        add_shortcode('flavor_tramites_citas', [$this, 'shortcode_citas']);
-        add_shortcode('flavor_tramites_documentos', [$this, 'shortcode_documentos']);
-        add_shortcode('flavor_tramites_buscar', [$this, 'shortcode_buscar']);
+        $shortcodes = [
+            'flavor_tramites_catalogo' => 'shortcode_catalogo',
+            'flavor_tramites_detalle' => 'shortcode_detalle',
+            'flavor_tramites_solicitar' => 'shortcode_solicitar',
+            'flavor_tramites_mis_solicitudes' => 'shortcode_mis_solicitudes',
+            'flavor_tramites_seguimiento' => 'shortcode_seguimiento',
+            'flavor_tramites_citas' => 'shortcode_citas',
+            'flavor_tramites_documentos' => 'shortcode_documentos',
+            'flavor_tramites_buscar' => 'shortcode_buscar',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_tramites_iniciar', [$this, 'ajax_iniciar_tramite']);
@@ -283,6 +290,16 @@ class Flavor_Tramites_Frontend_Controller {
         if (!$tramite) {
             return $this->render_empty_state(__('Trámite no encontrado.', 'flavor-chat-ia'), __('Ver catálogo', 'flavor-chat-ia'), $this->get_catalogo_url());
         }
+
+        $tramite = wp_parse_args((array) $tramite, [
+            'online' => 0,
+            'cita_previa' => 0,
+            'tiempo_estimado' => '',
+            'precio' => '',
+            'categoria_nombre' => '',
+            'nombre' => '',
+            'descripcion' => '',
+        ]);
 
         $documentos_requeridos = $this->obtener_documentos_requeridos($tramite_id);
         $pasos = $this->obtener_pasos_tramite($tramite_id);

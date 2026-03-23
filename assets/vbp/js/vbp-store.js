@@ -72,12 +72,44 @@ document.addEventListener('alpine:init', () => {
     // Índice de elementos para búsquedas O(1)
     var elementIndex = new Map();
 
+    // Flag para modo batch - evita reconstruir índice en cada operación
+    var batchMode = false;
+    var batchPendingRebuild = false;
+
     // Función para reconstruir el índice
     function rebuildIndex(elements) {
+        // Si estamos en modo batch, marcar que necesita rebuild pero no hacerlo ahora
+        if (batchMode) {
+            batchPendingRebuild = true;
+            return;
+        }
         elementIndex.clear();
         elements.forEach(function(el, idx) {
             elementIndex.set(el.id, { element: el, index: idx });
         });
+    }
+
+    /**
+     * Ejecuta múltiples operaciones en modo batch
+     * El índice solo se reconstruye una vez al final
+     * @param {Function} callback - Función con las operaciones a ejecutar
+     */
+    function executeBatch(callback) {
+        batchMode = true;
+        batchPendingRebuild = false;
+        try {
+            callback();
+        } finally {
+            batchMode = false;
+            if (batchPendingRebuild) {
+                var store = Alpine.store('vbp');
+                elementIndex.clear();
+                store.elements.forEach(function(el, idx) {
+                    elementIndex.set(el.id, { element: el, index: idx });
+                });
+                batchPendingRebuild = false;
+            }
+        }
     }
 
     // Debounce para autosave usando VBPPerformance si está disponible
@@ -140,6 +172,21 @@ document.addEventListener('alpine:init', () => {
                 return this.ensureStylesComplete(element);
             }
             return null;
+        },
+
+        /**
+         * Ejecuta múltiples operaciones en modo batch
+         * El índice solo se reconstruye una vez al final, mejorando rendimiento
+         * @param {Function} callback - Función con las operaciones a ejecutar
+         * @example
+         * store.batchOperations(function() {
+         *     store.removeElement(id1);
+         *     store.removeElement(id2);
+         *     store.addElement('text');
+         * }); // rebuildIndex solo se llama una vez
+         */
+        batchOperations(callback) {
+            executeBatch(callback);
         },
 
         // Métodos de elementos
@@ -315,6 +362,49 @@ document.addEventListener('alpine:init', () => {
                 }
             }
             return null;
+        },
+
+        /**
+         * Obtiene la ruta completa de un elemento desde la raíz
+         * @param {string} id - ID del elemento
+         * @returns {Array} Array de objetos {id, name, type} desde la raíz hasta el elemento
+         */
+        getElementPath(id) {
+            var path = [];
+            var self = this;
+
+            // Añadir "Página" como raíz siempre
+            path.push({ id: 'root', name: 'Página', type: 'root' });
+
+            // Función recursiva para encontrar el camino
+            function findPath(elements, targetId, currentPath) {
+                for (var i = 0; i < elements.length; i++) {
+                    var el = elements[i];
+                    var newPath = currentPath.concat([{
+                        id: el.id,
+                        name: el.name || el.type,
+                        type: el.type
+                    }]);
+
+                    if (el.id === targetId) {
+                        return newPath;
+                    }
+
+                    // Buscar en hijos recursivamente
+                    if (el.children && el.children.length > 0) {
+                        var foundPath = findPath(el.children, targetId, newPath);
+                        if (foundPath) return foundPath;
+                    }
+                }
+                return null;
+            }
+
+            var elementPath = findPath(this.elements, id, []);
+            if (elementPath) {
+                path = path.concat(elementPath);
+            }
+
+            return path;
         },
 
         /**
@@ -603,6 +693,11 @@ document.addEventListener('alpine:init', () => {
             self.saveStatus = 'saving';
             self.saveError = null;
 
+            // Notificar inicio de guardado
+            document.dispatchEvent(new CustomEvent('vbp:beforeSave', {
+                detail: { postId: this.postId, elements: this.elements }
+            }));
+
             fetch(VBP_Config.restUrl + 'documents/' + this.postId, {
                 method: 'POST',
                 headers: {
@@ -617,6 +712,10 @@ document.addEventListener('alpine:init', () => {
                     self.saveStatus = 'saved';
                     self.lastSaved = new Date();
                     self.saveError = null;
+                    // Notificar guardado exitoso
+                    document.dispatchEvent(new CustomEvent('vbp:afterSave', {
+                        detail: { postId: self.postId, success: true }
+                    }));
                     return response.json();
                 } else {
                     // Leer el cuerpo del error para debugging
@@ -630,6 +729,10 @@ document.addEventListener('alpine:init', () => {
                 console.warn('[VBP] Autosave error:', error);
                 self.saveStatus = 'error';
                 self.saveError = error.message || 'Error al guardar';
+                // Notificar error
+                document.dispatchEvent(new CustomEvent('vbp:saveError', {
+                    detail: { message: error.message || 'Error al guardar' }
+                }));
             });
         },
 
@@ -664,6 +767,8 @@ document.addEventListener('alpine:init', () => {
         markAsDirty() {
             this.isDirty = true;
             this.saveStatus = 'dirty';
+            // Notificar al store de estado de guardado
+            document.dispatchEvent(new CustomEvent('vbp:contentChanged'));
         },
 
         // Inicializar elementos desde datos cargados
@@ -933,6 +1038,37 @@ document.addEventListener('alpine:init', () => {
                     label_despues: 'Después',
                     posicion_inicial: 50,
                     orientacion: 'horizontal'
+                },
+                timeline: {
+                    titulo: 'Línea de Tiempo',
+                    subtitulo: '',
+                    titulo_color: '#ffffff',
+                    subtitulo_color: '#9CA3AF',
+                    color_fondo: '#0f0f0f',
+                    linea_color: '#3b82f6',
+                    linea_posicion: 'center',
+                    eventos: [
+                        { fecha: '2020', titulo: 'Primer evento', descripcion: 'Descripción del primer evento', icono: '🚀' },
+                        { fecha: '2022', titulo: 'Segundo evento', descripcion: 'Descripción del segundo evento', icono: '📈' },
+                        { fecha: '2024', titulo: 'Tercer evento', descripcion: 'Descripción del tercer evento', icono: '🎯' }
+                    ]
+                },
+                carousel: {
+                    titulo: '',
+                    subtitulo: '',
+                    titulo_color: '#ffffff',
+                    subtitulo_color: '#9CA3AF',
+                    color_fondo: '#0f0f0f',
+                    autoplay: true,
+                    intervalo: 5,
+                    mostrar_flechas: true,
+                    mostrar_dots: true,
+                    loop: true,
+                    slides_visibles: 1,
+                    items: [
+                        { imagen: '', titulo: 'Slide 1', descripcion: 'Descripción del primer slide', enlace_url: '', enlace_texto: 'Ver más' },
+                        { imagen: '', titulo: 'Slide 2', descripcion: 'Descripción del segundo slide', enlace_url: '', enlace_texto: 'Ver más' }
+                    ]
                 }
             };
             return defaults[type] || {};

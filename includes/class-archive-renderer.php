@@ -653,8 +653,8 @@ class Flavor_Archive_Renderer {
             ],
 
             'socios' => [
-                'title'     => __('Directorio de Socios', 'flavor-chat-ia'),
-                'subtitle'  => __('Conecta con nuestra comunidad de socios activos', 'flavor-chat-ia'),
+                'title'     => __('Directorio de Miembros', 'flavor-chat-ia'),
+                'subtitle'  => __('Conecta con nuestra comunidad de miembros activos', 'flavor-chat-ia'),
                 'icon'      => '👥',
                 'color'     => 'rose',
                 'card_config' => [

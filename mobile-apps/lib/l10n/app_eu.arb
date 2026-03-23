@@ -1662,5 +1662,42 @@
   "huertosBenefits1": "Zure janari organikoak landatu",
   "huertosBenefits2": "Komunitatearekin konektatu",
   "huertosBenefits3": "Nekazaritza jasangarriaren teknikak ikasi",
-  "reciclajeCO2Saved": "CO₂ Aurreztua"
+  "reciclajeCO2Saved": "CO₂ Aurreztua",
+  "adminDrawerSectionNavigation": "Nabigazioa",
+  "adminDrawerSectionManagement": "Kudeaketa",
+  "adminDrawerManualCustomers": "Eskuzko bezeroak",
+  "networkExploreTitle": "Sarea Arakatu",
+  "networkExploreSubtitle": "Inguruko komunitateak aurkitu",
+  "networkAddCommunityTitle": "Komunitatea Gehitu",
+  "networkDirectoryTab": "Direktorioa",
+  "networkNearbyTab": "Hurbilekoak",
+  "networkSavedTab": "Gordetakoak",
+  "networkSearchHint": "Komunitateak bilatu...",
+  "networkNoResults": "Ez da komunitaterik aurkitu",
+  "networkNearbyEmpty": "Ez dago inguruko komunitaterik",
+  "networkNearbyRequiresLocation": "Gaitu kokapena inguruko komunitateak ikusteko",
+  "networkSavedEmpty": "Ez duzu gordetako komunitaterik",
+  "networkAddToSaved": "Gordetakoetara gehitu",
+  "networkRemoveFromSaved": "Gordetakoetatik kendu",
+  "networkConnect": "Konektatu",
+  "networkDistance": "{km} km",
+  "@networkDistance": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "networkMembers": "{count} kide",
+  "@networkMembers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkConnectionVerified": "Konexioa egiaztatuta",
+  "networkConnectionError": "Konexio errorea: URL-a egiaztatu",
+  "networkCommunityAdded": "Komunitatea ongi gehitu da",
+  "networkVerifyConnection": "Konexioa egiaztatu"
 }

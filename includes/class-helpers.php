@@ -416,6 +416,28 @@ class Flavor_Chat_Helpers {
     }
 
     /**
+     * Redirección segura con fallback cuando ya se enviaron headers.
+     *
+     * @param string $url
+     * @param int    $status
+     * @return void
+     */
+    public static function safe_redirect($url, $status = 302) {
+        $url = esc_url_raw((string) $url);
+        if ($url === '') {
+            return;
+        }
+
+        if (!headers_sent()) {
+            wp_safe_redirect($url, (int) $status);
+            return;
+        }
+
+        echo '<meta http-equiv="refresh" content="0;url=' . esc_url($url) . '">';
+        echo '<script>window.location.href=' . wp_json_encode($url) . ';</script>';
+    }
+
+    /**
      * Obtiene la URL de una acción específica en un módulo
      *
      * @param string $module_slug Slug del módulo
@@ -471,6 +493,42 @@ class Flavor_Chat_Helpers {
             $attr_str,
             esc_html($text)
         );
+    }
+
+    /**
+     * Normaliza un ID de módulo a formato estándar (guion_bajo)
+     *
+     * Convierte guiones a guiones bajos para consistencia interna.
+     * Útil para comparar IDs de módulos que pueden venir en distintos formatos.
+     *
+     * @param string $module_id ID del módulo (acepta guiones o guiones bajos)
+     * @return string ID normalizado con guiones bajos
+     */
+    public static function normalize_module_id( $module_id ) {
+        return str_replace( '-', '_', strtolower( trim( $module_id ) ) );
+    }
+
+    /**
+     * Compara dos IDs de módulos ignorando diferencias de formato
+     *
+     * @param string $module_id_a Primer ID de módulo
+     * @param string $module_id_b Segundo ID de módulo
+     * @return bool True si son equivalentes
+     */
+    public static function module_ids_match( $module_id_a, $module_id_b ) {
+        return self::normalize_module_id( $module_id_a ) === self::normalize_module_id( $module_id_b );
+    }
+
+    /**
+     * Obtiene el ID de módulo en formato slug (guion-medio)
+     *
+     * Útil para URLs y nombres de archivos.
+     *
+     * @param string $module_id ID del módulo
+     * @return string ID en formato slug con guiones
+     */
+    public static function module_id_to_slug( $module_id ) {
+        return str_replace( '_', '-', strtolower( trim( $module_id ) ) );
     }
 }
 
@@ -548,5 +606,29 @@ if (!function_exists('flavor_is_module_active')) {
         $id_normalizado = str_replace('-', '_', $module_id);
         return in_array($module_id, $modulos_activos_cache, true)
             || in_array($id_normalizado, $modulos_activos_cache, true);
+    }
+}
+
+if (!function_exists('flavor_normalize_module_id')) {
+    /**
+     * Normaliza un ID de módulo a formato estándar (guion_bajo)
+     *
+     * @param string $module_id ID del módulo
+     * @return string ID normalizado
+     */
+    function flavor_normalize_module_id(string $module_id): string {
+        return Flavor_Chat_Helpers::normalize_module_id($module_id);
+    }
+}
+
+if (!function_exists('flavor_module_id_to_slug')) {
+    /**
+     * Convierte un ID de módulo a formato slug (guion-medio)
+     *
+     * @param string $module_id ID del módulo
+     * @return string Slug del módulo
+     */
+    function flavor_module_id_to_slug(string $module_id): string {
+        return Flavor_Chat_Helpers::module_id_to_slug($module_id);
     }
 }

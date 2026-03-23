@@ -1205,6 +1205,11 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
                     'callback' => [$this, 'render_admin_miembros'],
                     'badge'    => [$this, 'contar_solicitudes_pendientes'],
                 ],
+                [
+                    'slug'     => 'colectivos-config',
+                    'titulo'   => __('Configuración', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_configuracion'],
+                ],
             ],
             'dashboard_widget' => [$this, 'render_dashboard_widget'],
             'estadisticas'     => [$this, 'get_estadisticas_globales'],
@@ -1227,7 +1232,21 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         );
 
         $estadisticas = $this->get_estadisticas_globales();
-        include dirname(__FILE__) . '/views/admin-dashboard.php';
+        $legacy_view = dirname(__FILE__) . '/views/admin-dashboard.php';
+        $canonical_view = dirname(__FILE__) . '/views/dashboard.php';
+
+        if (file_exists($legacy_view)) {
+            include $legacy_view;
+            return;
+        }
+
+        if (file_exists($canonical_view)) {
+            include $canonical_view;
+            return;
+        }
+
+        echo '<div class="wrap"><h1>' . esc_html__('Dashboard de Colectivos', 'flavor-chat-ia') . '</h1>';
+        echo '<p>' . esc_html__('No se encontró la vista de dashboard.', 'flavor-chat-ia') . '</p></div>';
     }
 
     /**
@@ -2818,6 +2837,13 @@ KNOWLEDGE;
      * Registra las páginas de administración del módulo (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Página principal (oculta)
@@ -3244,6 +3270,16 @@ KNOWLEDGE;
             if (class_exists('Flavor_Colectivos_Dashboard_Tab')) {
                 Flavor_Colectivos_Dashboard_Tab::get_instance();
             }
+        }
+    }
+
+    /**
+     * Renderiza la página de configuración
+     */
+    public function render_admin_configuracion() {
+        $template_path = dirname(__FILE__) . '/views/config.php';
+        if (file_exists($template_path)) {
+            include $template_path;
         }
     }
 }

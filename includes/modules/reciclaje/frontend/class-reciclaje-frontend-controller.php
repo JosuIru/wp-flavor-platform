@@ -65,14 +65,21 @@ class Flavor_Reciclaje_Frontend_Controller {
      */
     private function init() {
         // Shortcodes
-        add_shortcode('flavor_reciclaje_mapa', [$this, 'shortcode_mapa']);
-        add_shortcode('flavor_reciclaje_puntos', [$this, 'shortcode_puntos']);
-        add_shortcode('flavor_reciclaje_registrar', [$this, 'shortcode_registrar']);
-        add_shortcode('flavor_reciclaje_mis_registros', [$this, 'shortcode_mis_registros']);
-        add_shortcode('flavor_reciclaje_canjear', [$this, 'shortcode_canjear']);
-        add_shortcode('flavor_reciclaje_guia', [$this, 'shortcode_guia']);
-        add_shortcode('flavor_reciclaje_estadisticas', [$this, 'shortcode_estadisticas']);
-        add_shortcode('flavor_reciclaje_reportar', [$this, 'shortcode_reportar']);
+        $shortcodes = [
+            'flavor_reciclaje_mapa' => 'shortcode_mapa',
+            'flavor_reciclaje_puntos' => 'shortcode_puntos',
+            'flavor_reciclaje_registrar' => 'shortcode_registrar',
+            'flavor_reciclaje_mis_registros' => 'shortcode_mis_registros',
+            'flavor_reciclaje_canjear' => 'shortcode_canjear',
+            'flavor_reciclaje_guia' => 'shortcode_guia',
+            'flavor_reciclaje_estadisticas' => 'shortcode_estadisticas',
+            'flavor_reciclaje_reportar' => 'shortcode_reportar',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_reciclaje_registrar', [$this, 'ajax_registrar']);

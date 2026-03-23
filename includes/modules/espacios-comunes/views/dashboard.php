@@ -35,7 +35,8 @@ $tasa_ocupacion = 0;
 $ranking_espacios = [];
 $proximas_reservas = [];
 $estado_espacios = [];
-$usando_demo = false;
+$reservas_por_dia_semana = array_fill(0, 7, 0);
+$tablas_disponibles = ($tabla_espacios_existe && $tabla_reservas_existe);
 
 if ($tabla_espacios_existe && $tabla_reservas_existe) {
     $total_espacios = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_espacios} WHERE estado = 'activo'");
@@ -97,38 +98,17 @@ if ($tabla_espacios_existe && $tabla_reservas_existe) {
          WHERE e.estado = 'activo'
          ORDER BY e.nombre"
     );
-}
-
-// Usar datos demo si no hay datos reales
-if ($total_espacios == 0) {
-    $usando_demo = true;
-    $total_espacios = 6;
-    $reservas_activas = 4;
-    $usuarios_activos = 28;
-    $tasa_ocupacion = 42.5;
-
-    $ranking_espacios = [
-        (object) ['nombre' => 'Sala de Reuniones A', 'total_reservas' => 45],
-        (object) ['nombre' => 'Salón Multiusos', 'total_reservas' => 38],
-        (object) ['nombre' => 'Aula Formación', 'total_reservas' => 32],
-        (object) ['nombre' => 'Sala de Reuniones B', 'total_reservas' => 24],
-        (object) ['nombre' => 'Terraza Comunitaria', 'total_reservas' => 18],
-    ];
-
-    $proximas_reservas = [
-        (object) ['espacio' => 'Sala de Reuniones A', 'fecha_inicio' => date('Y-m-d H:i:s', strtotime('+2 hours')), 'fecha_fin' => date('Y-m-d H:i:s', strtotime('+4 hours')), 'display_name' => 'María García'],
-        (object) ['espacio' => 'Salón Multiusos', 'fecha_inicio' => date('Y-m-d H:i:s', strtotime('+1 day 10:00')), 'fecha_fin' => date('Y-m-d H:i:s', strtotime('+1 day 14:00')), 'display_name' => 'Asociación Vecinal'],
-        (object) ['espacio' => 'Aula Formación', 'fecha_inicio' => date('Y-m-d H:i:s', strtotime('+2 days 16:00')), 'fecha_fin' => date('Y-m-d H:i:s', strtotime('+2 days 19:00')), 'display_name' => 'Carlos López'],
-    ];
-
-    $estado_espacios = [
-        (object) ['id' => 1, 'nombre' => 'Sala de Reuniones A', 'disponible' => 1],
-        (object) ['id' => 2, 'nombre' => 'Sala de Reuniones B', 'disponible' => 0],
-        (object) ['id' => 3, 'nombre' => 'Salón Multiusos', 'disponible' => 1],
-        (object) ['id' => 4, 'nombre' => 'Aula Formación', 'disponible' => 1],
-        (object) ['id' => 5, 'nombre' => 'Terraza Comunitaria', 'disponible' => 1],
-        (object) ['id' => 6, 'nombre' => 'Cocina Comunitaria', 'disponible' => 0],
-    ];
+    $reservas_por_dia_sql = $wpdb->get_results(
+        "SELECT DAYOFWEEK(fecha_inicio) as dow, COUNT(*) as total
+         FROM {$tabla_reservas}
+         WHERE fecha_inicio >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+         GROUP BY DAYOFWEEK(fecha_inicio)"
+    );
+    foreach ($reservas_por_dia_sql as $row) {
+        $dow = (int) $row->dow; // MySQL: 1=Domingo ... 7=Sábado
+        $index = ($dow + 5) % 7; // Convertir a 0=Lunes ... 6=Domingo
+        $reservas_por_dia_semana[$index] = (int) $row->total;
+    }
 }
 ?>
 
@@ -156,10 +136,10 @@ if ($total_espacios == 0) {
         </div>
     </div>
 
-    <?php if ($usando_demo) : ?>
+    <?php if (!$tablas_disponibles) : ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <?php esc_html_e('Mostrando datos de demostración. Los datos reales aparecerán cuando se registren espacios y reservas.', 'flavor-chat-ia'); ?>
+        <?php esc_html_e('Faltan tablas del módulo Espacios Comunes o aún no hay reservas registradas.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 
@@ -359,9 +339,9 @@ jQuery(document).ready(function($) {
     var espaciosNombres = <?php echo wp_json_encode(array_map(function($e) { return $e->nombre; }, $ranking_espacios)); ?>;
     var espaciosReservas = <?php echo wp_json_encode(array_map(function($e) { return (int) $e->total_reservas; }, $ranking_espacios)); ?>;
 
-    // Datos demo para días de la semana
+    // Datos reales de reservas por día de la semana (últimos 30 días)
     var diasSemana = ['<?php echo esc_js(__('Lun', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Mar', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Mié', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Jue', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Vie', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Sáb', 'flavor-chat-ia')); ?>', '<?php echo esc_js(__('Dom', 'flavor-chat-ia')); ?>'];
-    var reservasDias = [12, 18, 15, 22, 28, 8, 4];
+    var reservasDias = <?php echo wp_json_encode(array_values($reservas_por_dia_semana)); ?>;
 
     // Gráfico de barras - Uso por espacio
     var ctx1 = document.getElementById('grafico-uso-espacios');

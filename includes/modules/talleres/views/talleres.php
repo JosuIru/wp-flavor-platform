@@ -174,209 +174,16 @@ $tabla_existe = $wpdb->get_var(
     )
 ) > 0;
 
-// Datos demo si la tabla no existe
 if (!$tabla_existe) {
-    $talleres_demo = [
-        (object)[
-            'id' => 1,
-            'titulo' => 'Introducción a la Huerta Urbana',
-            'descripcion' => 'Aprende los fundamentos del cultivo en espacios reducidos. Técnicas de siembra, riego y cuidado de plantas.',
-            'organizador' => 'María García',
-            'organizador_id' => 1,
-            'categoria' => 'agricultura',
-            'nivel' => 'basico',
-            'modalidad' => 'presencial',
-            'fecha_inicio' => date('Y-m-d', strtotime('+7 days')),
-            'fecha_fin' => date('Y-m-d', strtotime('+7 days')),
-            'hora_inicio' => '10:00',
-            'hora_fin' => '13:00',
-            'duracion_horas' => 3,
-            'ubicacion' => 'Centro Cívico Norte',
-            'inscritos_actuales' => 12,
-            'max_participantes' => 15,
-            'precio' => 0,
-            'estado' => 'confirmado',
-            'destacado' => 1,
-            'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-10 days'))
-        ],
-        (object)[
-            'id' => 2,
-            'titulo' => 'Reparación de Bicicletas',
-            'descripcion' => 'Taller práctico de mantenimiento y reparación básica de bicicletas. Cambio de ruedas, frenos y ajustes.',
-            'organizador' => 'Carlos López',
-            'organizador_id' => 2,
-            'categoria' => 'manualidades',
-            'nivel' => 'intermedio',
-            'modalidad' => 'presencial',
-            'fecha_inicio' => date('Y-m-d', strtotime('+14 days')),
-            'fecha_fin' => date('Y-m-d', strtotime('+14 days')),
-            'hora_inicio' => '16:00',
-            'hora_fin' => '19:00',
-            'duracion_horas' => 3,
-            'ubicacion' => 'Taller Comunitario',
-            'inscritos_actuales' => 8,
-            'max_participantes' => 10,
-            'precio' => 15.00,
-            'estado' => 'publicado',
-            'destacado' => 0,
-            'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-5 days'))
-        ],
-        (object)[
-            'id' => 3,
-            'titulo' => 'Programación Web para Principiantes',
-            'descripcion' => 'Curso introductorio de HTML, CSS y JavaScript. Crea tu primera página web desde cero.',
-            'organizador' => 'Ana Martínez',
-            'organizador_id' => 3,
-            'categoria' => 'tecnologia',
-            'nivel' => 'basico',
-            'modalidad' => 'online',
-            'fecha_inicio' => date('Y-m-d', strtotime('+3 days')),
-            'fecha_fin' => date('Y-m-d', strtotime('+30 days')),
-            'hora_inicio' => '18:00',
-            'hora_fin' => '20:00',
-            'duracion_horas' => 20,
-            'ubicacion' => 'Plataforma Zoom',
-            'inscritos_actuales' => 25,
-            'max_participantes' => 30,
-            'precio' => 50.00,
-            'estado' => 'en_curso',
-            'destacado' => 1,
-            'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-15 days'))
-        ],
-        (object)[
-            'id' => 4,
-            'titulo' => 'Cocina Vegetariana',
-            'descripcion' => 'Descubre recetas deliciosas y nutritivas sin carne. Técnicas de cocina saludable y sostenible.',
-            'organizador' => 'Pedro Sánchez',
-            'organizador_id' => 4,
-            'categoria' => 'cocina',
-            'nivel' => 'basico',
-            'modalidad' => 'presencial',
-            'fecha_inicio' => date('Y-m-d', strtotime('+21 days')),
-            'fecha_fin' => date('Y-m-d', strtotime('+21 days')),
-            'hora_inicio' => '11:00',
-            'hora_fin' => '14:00',
-            'duracion_horas' => 3,
-            'ubicacion' => 'Cocina Comunitaria',
-            'inscritos_actuales' => 10,
-            'max_participantes' => 12,
-            'precio' => 25.00,
-            'estado' => 'publicado',
-            'destacado' => 0,
-            'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-3 days'))
-        ],
-        (object)[
-            'id' => 5,
-            'titulo' => 'Yoga y Meditación',
-            'descripcion' => 'Sesiones de yoga para todos los niveles. Mejora tu flexibilidad, equilibrio y bienestar mental.',
-            'organizador' => 'Laura Fernández',
-            'organizador_id' => 5,
-            'categoria' => 'bienestar',
-            'nivel' => 'basico',
-            'modalidad' => 'hibrido',
-            'fecha_inicio' => date('Y-m-d', strtotime('+1 days')),
-            'fecha_fin' => date('Y-m-d', strtotime('+60 days')),
-            'hora_inicio' => '08:00',
-            'hora_fin' => '09:30',
-            'duracion_horas' => 24,
-            'ubicacion' => 'Parque Central / Online',
-            'inscritos_actuales' => 18,
-            'max_participantes' => 20,
-            'precio' => 30.00,
-            'estado' => 'confirmado',
-            'destacado' => 1,
-            'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-20 days'))
-        ],
-        (object)[
-            'id' => 6,
-            'titulo' => 'Fotografía con Smartphone',
-            'descripcion' => 'Aprende a sacar el máximo partido a la cámara de tu móvil. Composición, iluminación y edición.',
-            'organizador' => 'Roberto Díaz',
-            'organizador_id' => 6,
-            'categoria' => 'arte',
-            'nivel' => 'intermedio',
-            'modalidad' => 'presencial',
-            'fecha_inicio' => date('Y-m-d', strtotime('-7 days')),
-            'fecha_fin' => date('Y-m-d', strtotime('-7 days')),
-            'hora_inicio' => '17:00',
-            'hora_fin' => '20:00',
-            'duracion_horas' => 3,
-            'ubicacion' => 'Centro Cultural',
-            'inscritos_actuales' => 15,
-            'max_participantes' => 15,
-            'precio' => 20.00,
-            'estado' => 'finalizado',
-            'destacado' => 0,
-            'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-30 days'))
-        ],
-        (object)[
-            'id' => 7,
-            'titulo' => 'Primeros Auxilios',
-            'descripcion' => 'Formación básica en primeros auxilios y RCP. Certificado oficial incluido.',
-            'organizador' => 'Cruz Roja Local',
-            'organizador_id' => 7,
-            'categoria' => 'salud',
-            'nivel' => 'basico',
-            'modalidad' => 'presencial',
-            'fecha_inicio' => date('Y-m-d', strtotime('+28 days')),
-            'fecha_fin' => date('Y-m-d', strtotime('+29 days')),
-            'hora_inicio' => '09:00',
-            'hora_fin' => '14:00',
-            'duracion_horas' => 10,
-            'ubicacion' => 'Sede Cruz Roja',
-            'inscritos_actuales' => 5,
-            'max_participantes' => 20,
-            'precio' => 35.00,
-            'estado' => 'publicado',
-            'destacado' => 0,
-            'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-2 days'))
-        ],
-        (object)[
-            'id' => 8,
-            'titulo' => 'Electricidad Doméstica',
-            'descripcion' => 'Aprende a realizar pequeñas reparaciones eléctricas de forma segura en tu hogar.',
-            'organizador' => 'Miguel Torres',
-            'organizador_id' => 8,
-            'categoria' => 'manualidades',
-            'nivel' => 'avanzado',
-            'modalidad' => 'presencial',
-            'fecha_inicio' => date('Y-m-d', strtotime('+35 days')),
-            'fecha_fin' => date('Y-m-d', strtotime('+36 days')),
-            'hora_inicio' => '10:00',
-            'hora_fin' => '13:00',
-            'duracion_horas' => 6,
-            'ubicacion' => 'Taller Municipal',
-            'inscritos_actuales' => 0,
-            'max_participantes' => 8,
-            'precio' => 40.00,
-            'estado' => 'borrador',
-            'destacado' => 0,
-            'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-1 days'))
-        ]
-    ];
-
-    $categorias_disponibles = ['agricultura', 'manualidades', 'tecnologia', 'cocina', 'bienestar', 'arte', 'salud'];
-    $niveles_disponibles = ['basico', 'intermedio', 'avanzado'];
-
-    // Estadísticas demo
-    $total_talleres = count($talleres_demo);
-    $talleres_activos = count(array_filter($talleres_demo, fn($t) => in_array($t->estado, ['publicado', 'confirmado', 'en_curso'])));
-    $total_inscritos = array_sum(array_column($talleres_demo, 'inscritos_actuales'));
-    $ingresos_estimados = array_sum(array_map(fn($t) => $t->precio * $t->inscritos_actuales, $talleres_demo));
-
-    // Por categoría demo
+    $categorias_disponibles = [];
+    $niveles_disponibles = [];
+    $total_talleres = 0;
+    $talleres_activos = 0;
+    $total_inscritos = 0;
+    $ingresos_estimados = 0;
     $por_categoria = [];
-    foreach ($talleres_demo as $taller) {
-        if (!isset($por_categoria[$taller->categoria])) {
-            $por_categoria[$taller->categoria] = 0;
-        }
-        $por_categoria[$taller->categoria]++;
-    }
-
-    // Talleres destacados demo
-    $talleres_destacados = array_filter($talleres_demo, fn($t) => $t->destacado);
-
-    $usando_datos_demo = true;
+    $talleres_destacados = [];
+    $usando_datos_demo = false;
 } else {
     // =====================================================
     // DATOS REALES DE LA BASE DE DATOS
@@ -519,53 +326,9 @@ if ($tabla_existe) {
 
     $talleres = $wpdb->get_results($wpdb->prepare($query, $where_values));
 } else {
-    // Filtrar datos demo
-    $talleres_filtrados = $talleres_demo;
-
-    if (!empty($busqueda)) {
-        $talleres_filtrados = array_filter($talleres_filtrados, function($t) use ($busqueda) {
-            return stripos($t->titulo, $busqueda) !== false ||
-                   stripos($t->descripcion, $busqueda) !== false ||
-                   stripos($t->organizador, $busqueda) !== false;
-        });
-    }
-
-    if (!empty($filtro_estado)) {
-        $talleres_filtrados = array_filter($talleres_filtrados, fn($t) => $t->estado === $filtro_estado);
-    }
-
-    if (!empty($filtro_categoria)) {
-        $talleres_filtrados = array_filter($talleres_filtrados, fn($t) => $t->categoria === $filtro_categoria);
-    }
-
-    if (!empty($filtro_nivel)) {
-        $talleres_filtrados = array_filter($talleres_filtrados, fn($t) => ($t->nivel ?? '') === $filtro_nivel);
-    }
-
-    if (!empty($filtro_modalidad)) {
-        $talleres_filtrados = array_filter($talleres_filtrados, fn($t) => ($t->modalidad ?? '') === $filtro_modalidad);
-    }
-
-    // Ordenar
-    $talleres_filtrados = array_values($talleres_filtrados);
-    switch ($orden) {
-        case 'nombre':
-            usort($talleres_filtrados, fn($a, $b) => strcmp($a->titulo, $b->titulo));
-            break;
-        case 'fecha_inicio':
-            usort($talleres_filtrados, fn($a, $b) => strtotime($a->fecha_inicio) - strtotime($b->fecha_inicio));
-            break;
-        case 'precio_asc':
-            usort($talleres_filtrados, fn($a, $b) => $a->precio - $b->precio);
-            break;
-        case 'precio_desc':
-            usort($talleres_filtrados, fn($a, $b) => $b->precio - $a->precio);
-            break;
-    }
-
-    $total_items = count($talleres_filtrados);
-    $total_paginas = ceil($total_items / $items_por_pagina);
-    $talleres = array_slice($talleres_filtrados, $offset, $items_por_pagina);
+    $total_items = 0;
+    $total_paginas = 0;
+    $talleres = [];
 }
 
 // Preparar datos para el gráfico
@@ -610,12 +373,12 @@ $modalidades_disponibles = ['presencial', 'online', 'hibrido'];
         </div>
     </div>
 
-    <?php if ($usando_datos_demo): ?>
+    <?php if (!$tabla_existe): ?>
     <div class="notice notice-info is-dismissible" style="margin: 20px 0;">
         <p>
             <span class="dashicons dashicons-info"></span>
-            <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-            <?php esc_html_e('Mostrando datos de ejemplo. Los talleres reales aparecerán cuando se creen en el sistema.', 'flavor-chat-ia'); ?>
+            <strong><?php esc_html_e('Sin datos:', 'flavor-chat-ia'); ?></strong>
+            <?php esc_html_e('No hay tablas del módulo Talleres disponibles todavía.', 'flavor-chat-ia'); ?>
         </p>
     </div>
     <?php endif; ?>

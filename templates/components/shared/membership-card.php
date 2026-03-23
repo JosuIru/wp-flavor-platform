@@ -136,7 +136,7 @@ if ($end_date && $status === 'active') {
             <!-- Header -->
             <div class="relative flex items-start justify-between mb-6">
                 <div>
-                    <p class="text-xs text-white/60 uppercase tracking-wider"><?php esc_html_e('Tarjeta de socio', 'flavor-chat-ia'); ?></p>
+                    <p class="text-xs text-white/60 uppercase tracking-wider"><?php esc_html_e('Tarjeta de miembro', 'flavor-chat-ia'); ?></p>
                     <h3 class="text-2xl font-bold mt-1"><?php echo esc_html($plan_name); ?></h3>
                 </div>
                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-<?php echo esc_attr($status_info['color']); ?>-500/30 backdrop-blur-sm">
@@ -153,7 +153,7 @@ if ($end_date && $status === 'active') {
                 <div>
                     <p class="font-bold text-lg"><?php echo esc_html($user_name); ?></p>
                     <p class="text-sm text-white/70">
-                        <?php esc_html_e('Nº Socio:', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Nº Miembro:', 'flavor-chat-ia'); ?>
                         <span class="font-mono"><?php echo esc_html($member_number); ?></span>
                     </p>
                 </div>

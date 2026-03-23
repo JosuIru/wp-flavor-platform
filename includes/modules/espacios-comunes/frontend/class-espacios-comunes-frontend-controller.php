@@ -137,12 +137,20 @@ class Flavor_Espacios_Comunes_Frontend_Controller {
      * Registrar shortcodes
      */
     public function registrar_shortcodes() {
-        add_shortcode('espacios_listado', [$this, 'shortcode_listado']);
-        add_shortcode('espacios_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('espacios_reservar', [$this, 'shortcode_reservar']);
-        add_shortcode('espacios_mis_reservas', [$this, 'shortcode_mis_reservas']);
-        add_shortcode('espacios_calendario', [$this, 'shortcode_calendario']);
-        add_shortcode('espacios_proxima_reserva', [$this, 'shortcode_proxima_reserva']);
+        $shortcodes = [
+            'espacios_listado' => 'shortcode_listado',
+            'espacios_detalle' => 'shortcode_detalle',
+            'espacios_reservar' => 'shortcode_reservar',
+            'espacios_mis_reservas' => 'shortcode_mis_reservas',
+            'espacios_calendario' => 'shortcode_calendario',
+            'espacios_proxima_reserva' => 'shortcode_proxima_reserva',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**

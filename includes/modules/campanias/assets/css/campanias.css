@@ -364,3 +364,350 @@
         gap: 0.5rem;
     }
 }
+
+/* Admin dashboard (campanias) */
+.campanias-admin-dashboard__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.campanias-admin-dashboard__stat-card {
+    background: #fff;
+    border-left: 4px solid #2271b1;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.campanias-admin-dashboard__stat-card--green { border-left-color: #00a32a; }
+.campanias-admin-dashboard__stat-card--purple { border-left-color: #8c6ef8; }
+.campanias-admin-dashboard__stat-card--gold { border-left-color: #dba617; }
+
+.campanias-admin-dashboard__stat-icon {
+    font-size: 32px;
+}
+
+.campanias-admin-dashboard__stat-card--blue .campanias-admin-dashboard__stat-icon { color: #2271b1; }
+.campanias-admin-dashboard__stat-card--green .campanias-admin-dashboard__stat-icon { color: #00a32a; }
+.campanias-admin-dashboard__stat-card--purple .campanias-admin-dashboard__stat-icon { color: #8c6ef8; }
+.campanias-admin-dashboard__stat-card--gold .campanias-admin-dashboard__stat-icon { color: #dba617; }
+
+.campanias-admin-dashboard__stat-value {
+    font-size: 36px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.campanias-admin-dashboard__stat-label,
+.campanias-admin-dashboard__stat-extra {
+    color: #646970;
+}
+
+.campanias-admin-dashboard__stat-extra {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.campanias-admin-dashboard__columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.campanias-admin-dashboard__card {
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.campanias-admin-dashboard__card--mb {
+    margin-bottom: 20px;
+}
+
+.campanias-admin-dashboard__card-title {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.campanias-admin-dashboard__table-clean {
+    border: none;
+}
+
+.campanias-admin-dashboard__progress-col {
+    width: 40%;
+}
+
+.campanias-admin-dashboard__progress {
+    background: #f0f0f1;
+    border-radius: 4px;
+    height: 20px;
+    position: relative;
+}
+
+.campanias-admin-dashboard__progress-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.campanias-admin-dashboard__badge {
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.campanias-admin-dashboard__chart {
+    display: flex;
+    align-items: flex-end;
+    height: 150px;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.campanias-admin-dashboard__chart-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.campanias-admin-dashboard__chart-value {
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.campanias-admin-dashboard__chart-day {
+    font-size: 10px;
+    margin-top: 5px;
+    color: #646970;
+}
+
+.campanias-admin-dashboard__timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.campanias-admin-dashboard__timeline-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f1;
+    display: flex;
+    gap: 15px;
+}
+
+.campanias-admin-dashboard__timeline-date {
+    min-width: 80px;
+    text-align: center;
+    background: #f6f7f7;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.campanias-admin-dashboard__timeline-day {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2271b1;
+}
+
+.campanias-admin-dashboard__timeline-month {
+    font-size: 11px;
+    color: #646970;
+}
+
+.campanias-admin-dashboard__timeline-meta {
+    font-size: 12px;
+    color: #646970;
+}
+
+.campanias-admin-dashboard__status-list,
+.campanias-admin-dashboard__signatures-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.campanias-admin-dashboard__status-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.campanias-admin-dashboard__status-item--last {
+    border-bottom: 0;
+}
+
+.campanias-admin-dashboard__icon-muted { color: #646970; }
+.campanias-admin-dashboard__icon-green { color: #00a32a; }
+.campanias-admin-dashboard__icon-blue { color: #2271b1; }
+
+.campanias-admin-dashboard__signatures-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.campanias-admin-dashboard__signatures-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f1;
+    font-size: 13px;
+}
+
+.campanias-admin-dashboard__signatures-campaign {
+    color: #646970;
+    font-size: 11px;
+}
+
+.campanias-admin-dashboard__signatures-time {
+    color: #a0a0a0;
+    font-size: 10px;
+}
+
+.campanias-admin-dashboard__signatures-link {
+    margin-bottom: 0;
+    margin-top: 15px;
+}
+
+/* Admin listados (campanias/firmas) */
+.campanias-admin-list__filters,
+.campanias-admin-firmas__filters {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.campanias-admin-list__col-title {
+    width: 30%;
+}
+
+.campanias-admin-list__col-actions,
+.campanias-admin-firmas__col-actions {
+    width: 15%;
+}
+
+.campanias-admin-list__icon-star {
+    color: #dba617;
+    font-size: 14px;
+}
+
+.campanias-admin-list__status-badge {
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.campanias-admin-list__progress-track {
+    background: #f0f0f1;
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 3px;
+}
+
+.campanias-admin-firmas__stats-inline {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 15px;
+}
+
+.campanias-admin-firmas__stats-label {
+    color: #646970;
+}
+
+.campanias-admin-firmas__icon-user {
+    font-size: 14px;
+    color: #2271b1;
+}
+
+.campanias-admin-firmas__icon-verified {
+    color: #00a32a;
+}
+
+.campanias-admin-firmas__icon-pending {
+    color: #dba617;
+}
+
+.campanias-admin-firmas__icon-action {
+    vertical-align: middle;
+}
+
+/* Vistas completas (crear, mis campanias, firmar, mapa, calendario) */
+.flavor-campanias-crear,
+.flavor-mis-campanias,
+.flavor-campania-firma,
+.flavor-campanias-mapa,
+.flavor-campanias-calendario {
+    background: var(--flavor-surface, #fff);
+    border: 1px solid var(--flavor-border, #e5e7eb);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.flavor-campanias-crear h2,
+.flavor-mis-campanias h2,
+.flavor-campania-firma h2,
+.flavor-campanias-mapa h2,
+.flavor-campanias-calendario h2 {
+    margin-top: 0;
+    color: var(--flavor-text, #1f2937);
+}
+
+.flavor-campanias-crear form p,
+.flavor-campania-firma form p {
+    margin: 0 0 0.85rem;
+}
+
+.flavor-campanias-crear input[type="text"],
+.flavor-campanias-crear input[type="number"],
+.flavor-campanias-crear input[type="date"],
+.flavor-campanias-crear textarea,
+.flavor-campanias-crear select,
+.flavor-campania-firma input[type="text"],
+.flavor-campania-firma input[type="email"],
+.flavor-campania-firma textarea {
+    border: 1px solid var(--flavor-border, #d1d5db);
+    border-radius: 8px;
+    padding: 0.65rem 0.75rem;
+    background: #fff;
+}
+
+.flavor-campanias-crear input:focus,
+.flavor-campanias-crear textarea:focus,
+.flavor-campanias-crear select:focus,
+.flavor-campania-firma input:focus,
+.flavor-campania-firma textarea:focus {
+    outline: none;
+    border-color: var(--flavor-primary, #dc2626);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.flavor-mis-campanias .widefat,
+.flavor-campanias-mapa .widefat {
+    border: 1px solid var(--flavor-border, #e5e7eb);
+}
+
+.flavor-campanias-calendario article {
+    background: #fafafa;
+}
+
+@media (max-width: 768px) {
+    .flavor-campanias-crear,
+    .flavor-mis-campanias,
+    .flavor-campania-firma,
+    .flavor-campanias-mapa,
+    .flavor-campanias-calendario {
+        padding: 0.9rem;
+        border-radius: 10px;
+    }
+}

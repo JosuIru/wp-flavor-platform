@@ -21,6 +21,7 @@ $tabla_categorias = $wpdb->prefix . 'flavor_transparencia_categorias';
 // Verificar existencia de tablas
 $tabla_datos_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_datos)) === $tabla_datos;
 $tabla_solicitudes_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_solicitudes)) === $tabla_solicitudes;
+$tablas_disponibles = ($tabla_datos_existe || $tabla_solicitudes_existe);
 
 // Inicializar estadísticas
 $total_datos_publicados = 0;
@@ -96,51 +97,6 @@ if ($tabla_solicitudes_existe) {
     ");
 }
 
-// Datos de demostración si no hay datos reales
-$usando_demo = ($total_datos_publicados == 0 && $total_solicitudes == 0);
-
-if ($usando_demo) {
-    $total_datos_publicados = 156;
-    $total_solicitudes = 89;
-    $solicitudes_pendientes = 12;
-    $solicitudes_resueltas_mes = 8;
-    $tiempo_promedio_resolucion = 5.3;
-    $tasa_resolucion = 87.5;
-    $descargas_documentos = 567;
-
-    $estadisticas_estado_solicitudes = [
-        (object) ['estado' => 'recibida', 'total' => 8],
-        (object) ['estado' => 'en_tramite', 'total' => 4],
-        (object) ['estado' => 'resuelta', 'total' => 67],
-        (object) ['estado' => 'denegada', 'total' => 10],
-    ];
-
-    $tendencia_publicaciones_semana = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $fecha = date('Y-m-d', strtotime("-$i days"));
-        $tendencia_publicaciones_semana[] = (object) [
-            'fecha' => $fecha,
-            'total' => rand(2, 8)
-        ];
-    }
-
-    $solicitudes_recientes = [
-        (object) ['id' => 1, 'titulo' => 'Información sobre contratos de limpieza', 'estado' => 'en_tramite', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-2 days')), 'solicitante_nombre' => 'Juan García'],
-        (object) ['id' => 2, 'titulo' => 'Presupuesto detallado obras 2024', 'estado' => 'resuelta', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-5 days')), 'solicitante_nombre' => 'María López'],
-        (object) ['id' => 3, 'titulo' => 'Actas del pleno de febrero', 'estado' => 'recibida', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-1 day')), 'solicitante_nombre' => 'Pedro Martínez'],
-        (object) ['id' => 4, 'titulo' => 'Subvenciones asociaciones culturales', 'estado' => 'resuelta', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-10 days')), 'solicitante_nombre' => 'Ana Fernández'],
-        (object) ['id' => 5, 'titulo' => 'Plantilla personal municipal', 'estado' => 'denegada', 'fecha_solicitud' => date('Y-m-d H:i:s', strtotime('-15 days')), 'solicitante_nombre' => 'Carlos Ruiz'],
-    ];
-
-    $datos_recientes = [
-        (object) ['id' => 1, 'titulo' => 'Presupuesto General 2024', 'categoria' => 'presupuestos', 'fecha_publicacion' => date('Y-m-d H:i:s', strtotime('-1 day')), 'descargas' => 89, 'publicado_por' => 'Administrador'],
-        (object) ['id' => 2, 'titulo' => 'Contrato Mantenimiento Jardines', 'categoria' => 'contratos', 'fecha_publicacion' => date('Y-m-d H:i:s', strtotime('-3 days')), 'descargas' => 45, 'publicado_por' => 'Secretaría'],
-        (object) ['id' => 3, 'titulo' => 'Acta Pleno Ordinario Marzo', 'categoria' => 'actas', 'fecha_publicacion' => date('Y-m-d H:i:s', strtotime('-5 days')), 'descargas' => 123, 'publicado_por' => 'Secretaría'],
-        (object) ['id' => 4, 'titulo' => 'Subvenciones Deportivas 2024', 'categoria' => 'subvenciones', 'fecha_publicacion' => date('Y-m-d H:i:s', strtotime('-7 days')), 'descargas' => 67, 'publicado_por' => 'Deportes'],
-        (object) ['id' => 5, 'titulo' => 'Relación Puestos de Trabajo', 'categoria' => 'plantilla', 'fecha_publicacion' => date('Y-m-d H:i:s', strtotime('-10 days')), 'descargas' => 234, 'publicado_por' => 'RRHH'],
-    ];
-}
-
 // Preparar datos para gráficos
 $tendencia_labels = array_map(function($t) {
     return date_i18n('D', strtotime($t->fecha));
@@ -174,10 +130,14 @@ $estado_badge_classes = [
             <span class="dashicons dashicons-visibility"></span>
             <?php esc_html_e('Dashboard de Transparencia', 'flavor-chat-ia'); ?>
         </h1>
-        <?php if ($usando_demo): ?>
-            <span class="dm-badge dm-badge--warning"><?php esc_html_e('Datos de ejemplo', 'flavor-chat-ia'); ?></span>
-        <?php endif; ?>
     </div>
+
+    <?php if (!$tablas_disponibles): ?>
+        <div class="dm-alert dm-alert--info">
+            <span class="dashicons dashicons-info"></span>
+            <p><?php esc_html_e('Faltan tablas del módulo Transparencia o aún no hay datos/solicitudes registradas.', 'flavor-chat-ia'); ?></p>
+        </div>
+    <?php endif; ?>
 
     <?php if ($is_dashboard_viewer): ?>
         <div class="dm-alert dm-alert--info">
@@ -215,7 +175,7 @@ $estado_badge_classes = [
             <span class="dashicons dashicons-upload dm-text-success"></span>
             <span><?php esc_html_e('Publicar', 'flavor-chat-ia'); ?></span>
         </a>
-        <a href="<?php echo esc_url(home_url('/transparencia/')); ?>" class="dm-action-card">
+        <a href="<?php echo esc_url(home_url('/mi-portal/transparencia/')); ?>" class="dm-action-card">
             <span class="dashicons dashicons-external dm-text-purple"></span>
             <span><?php esc_html_e('Ver Portal', 'flavor-chat-ia'); ?></span>
         </a>

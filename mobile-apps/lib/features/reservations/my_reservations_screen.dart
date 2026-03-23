@@ -62,7 +62,9 @@ final myReservationsProvider = FutureProvider<Map<String, dynamic>>((ref) async 
         final list = json.decode(cachedData) as List;
         final reservations = list.map((r) => Reservation.fromJson(r as Map<String, dynamic>)).toList();
         return {'reservations': reservations, 'requires_verification': false};
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Error parseando reservas cacheadas: $e');
+      }
     }
     return {'reservations': <Reservation>[], 'requires_verification': false, 'no_email': true};
   }
@@ -99,6 +101,7 @@ final myReservationsProvider = FutureProvider<Map<String, dynamic>>((ref) async 
       };
     }
   } catch (e) {
+    debugPrint('Error obteniendo reservas del servidor: $e');
     // Si falla la red, intentar caché offline
     final cachedData = prefs.getString('my_reservations_cache');
     if (cachedData != null) {
@@ -106,7 +109,9 @@ final myReservationsProvider = FutureProvider<Map<String, dynamic>>((ref) async 
         final list = json.decode(cachedData) as List;
         final reservations = list.map((r) => Reservation.fromJson(r as Map<String, dynamic>)).toList();
         return {'reservations': reservations, 'requires_verification': false, 'offline': true};
-      } catch (_) {}
+      } catch (parseError) {
+        debugPrint('Error parseando caché offline de reservas: $parseError');
+      }
     }
   }
 

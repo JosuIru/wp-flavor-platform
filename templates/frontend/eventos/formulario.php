@@ -211,7 +211,7 @@ $estado = $evento['estado'] ?? 'borrador';
                 </div>
 
                 <div class="flavor-form-group">
-                    <label for="precio_socios"><?php _e('Precio para socios', 'flavor-chat-ia'); ?></label>
+                    <label for="precio_socios"><?php _e('Precio para miembros', 'flavor-chat-ia'); ?></label>
                     <div class="flavor-input-group">
                         <input type="number" id="precio_socios" name="precio_socios" value="<?php echo esc_attr($precio_socios); ?>"
                                min="0" step="0.01" class="flavor-input">

@@ -56,6 +56,19 @@
 
 ---
 
+## Impacto Social y Sostenibilidad
+
+| Concepto | Descripcion |
+|----------|-------------|
+| **Sello de Conciencia** | Evaluacion automatica de impacto basada en 5 premisas de economia consciente |
+| **RSC / ESG** | Metricas alineadas con estandares internacionales |
+| **ODS** | Contribucion directa a ODS 8, 10, 11, 12, 13, 17 |
+| **Modulos destacados** | Banco de Tiempo (95), Red de Cuidados (95), Energia Comunitaria (92) |
+
+Ver seccion completa en [RESUMEN-EJECUTIVO.md](RESUMEN-EJECUTIVO.md#impacto-social-y-sostenibilidad)
+
+---
+
 ## Sistemas
 
 | Documento | Descripcion |
@@ -77,12 +90,13 @@
 
 ---
 
-## Demo Tejido Empresarial
+## Presentaciones y Resumen
 
 | Documento | Descripcion |
 |-----------|-------------|
-| [GUIA-DEMO.md](GUIA-DEMO.md) | Script demo |
-| [PRESENTACION-EMPRENDIMIENTO.md](PRESENTACION-EMPRENDIMIENTO.md) | Presentacion |
+| [RESUMEN-EJECUTIVO.md](RESUMEN-EJECUTIVO.md) | Resumen ejecutivo del ecosistema |
+| [PRESENTACION-EMPRENDIMIENTO.md](PRESENTACION-EMPRENDIMIENTO.md) | Presentacion emprendimiento rural |
+| [GUIA-DEMO.md](GUIA-DEMO.md) | Script demo tejido empresarial |
 
 ---
 

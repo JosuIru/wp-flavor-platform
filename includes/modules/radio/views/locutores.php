@@ -40,7 +40,7 @@ $tabla_programas_existe = $wpdb->get_var(
     )
 );
 
-$usar_datos_demo = !$tabla_locutores_existe;
+$tablas_radio_disponibles = $tabla_locutores_existe && $tabla_programas_existe;
 
 // =====================================================
 // FUNCIONES HELPER
@@ -145,114 +145,6 @@ function calcular_rating_locutor($audiencia_promedio) {
 }
 
 // =====================================================
-// DATOS DEMO
-// =====================================================
-
-if ($usar_datos_demo) {
-    $locutores_demo = [
-        (object) [
-            'id' => 1,
-            'nombre' => 'María García',
-            'email' => 'maria@radio.com',
-            'telefono' => '600-111-222',
-            'bio' => 'Locutora con más de 10 años de experiencia en radio musical. Especializada en programas matutinos y entrevistas.',
-            'foto_url' => '',
-            'estado' => 'activo',
-            'especialidad' => 'Musical',
-            'fecha_inicio' => date('Y-m-d', strtotime('-3 years')),
-            'redes_sociales' => json_encode(['twitter' => '@mariaradio', 'instagram' => '@maria_radio']),
-            'total_programas' => 3,
-            'audiencia_promedio' => 850,
-            'horas_emision' => 156
-        ],
-        (object) [
-            'id' => 2,
-            'nombre' => 'Carlos Rodríguez',
-            'email' => 'carlos@radio.com',
-            'telefono' => '600-333-444',
-            'bio' => 'Periodista y locutor especializado en noticias y actualidad. Conductor del informativo de mediodía.',
-            'foto_url' => '',
-            'estado' => 'activo',
-            'especialidad' => 'Noticias',
-            'fecha_inicio' => date('Y-m-d', strtotime('-5 years')),
-            'redes_sociales' => json_encode(['twitter' => '@carlosinfo']),
-            'total_programas' => 5,
-            'audiencia_promedio' => 1200,
-            'horas_emision' => 340
-        ],
-        (object) [
-            'id' => 3,
-            'nombre' => 'Ana Martínez',
-            'email' => 'ana@radio.com',
-            'telefono' => '600-555-666',
-            'bio' => 'Locutora nocturna especializada en programas de entretenimiento y música alternativa.',
-            'foto_url' => '',
-            'estado' => 'activo',
-            'especialidad' => 'Entretenimiento',
-            'fecha_inicio' => date('Y-m-d', strtotime('-1 year')),
-            'redes_sociales' => json_encode(['instagram' => '@ana_noche']),
-            'total_programas' => 2,
-            'audiencia_promedio' => 450,
-            'horas_emision' => 78
-        ],
-        (object) [
-            'id' => 4,
-            'nombre' => 'Pedro López',
-            'email' => 'pedro@radio.com',
-            'telefono' => '600-777-888',
-            'bio' => 'Comentarista deportivo con amplia experiencia en retransmisiones de fútbol y baloncesto.',
-            'foto_url' => '',
-            'estado' => 'vacaciones',
-            'especialidad' => 'Deportes',
-            'fecha_inicio' => date('Y-m-d', strtotime('-2 years')),
-            'redes_sociales' => json_encode(['twitter' => '@pedroDeportes']),
-            'total_programas' => 2,
-            'audiencia_promedio' => 680,
-            'horas_emision' => 124
-        ],
-        (object) [
-            'id' => 5,
-            'nombre' => 'Laura Sánchez',
-            'email' => 'laura@radio.com',
-            'telefono' => '600-999-000',
-            'bio' => 'Nueva incorporación al equipo. Especializada en programas culturales y literarios.',
-            'foto_url' => '',
-            'estado' => 'activo',
-            'especialidad' => 'Cultural',
-            'fecha_inicio' => date('Y-m-d', strtotime('-3 months')),
-            'redes_sociales' => json_encode([]),
-            'total_programas' => 1,
-            'audiencia_promedio' => 180,
-            'horas_emision' => 24
-        ],
-        (object) [
-            'id' => 6,
-            'nombre' => 'Miguel Torres',
-            'email' => 'miguel@radio.com',
-            'telefono' => '600-123-456',
-            'bio' => 'Técnico de sonido y locutor ocasional. Actualmente inactivo por motivos personales.',
-            'foto_url' => '',
-            'estado' => 'inactivo',
-            'especialidad' => 'Técnico',
-            'fecha_inicio' => date('Y-m-d', strtotime('-4 years')),
-            'redes_sociales' => json_encode([]),
-            'total_programas' => 0,
-            'audiencia_promedio' => 0,
-            'horas_emision' => 45
-        ]
-    ];
-
-    // Estadísticas demo
-    $estadisticas = [
-        'total_locutores' => 6,
-        'locutores_activos' => 4,
-        'total_programas' => 13,
-        'audiencia_total' => 3360,
-        'horas_emision_mes' => 767
-    ];
-}
-
-// =====================================================
 // PARÁMETROS DE FILTRADO Y PAGINACIÓN
 // =====================================================
 
@@ -270,7 +162,7 @@ $filtro_orden = isset($_GET['orden']) ? sanitize_text_field($_GET['orden']) : 'n
 // CONSULTA DE DATOS REALES O FILTRADO DEMO
 // =====================================================
 
-if (!$usar_datos_demo) {
+if ($tablas_radio_disponibles) {
     // Construir query con filtros
     $where_clauses = ["1=1"];
     $having_clauses = [];
@@ -378,67 +270,23 @@ if (!$usar_datos_demo) {
     $especialidades = $wpdb->get_col("SELECT DISTINCT especialidad FROM $tabla_locutores WHERE especialidad IS NOT NULL AND especialidad != '' ORDER BY especialidad");
 
 } else {
-    // Filtrar datos demo
-    $locutores_filtrados = array_filter($locutores_demo, function($locutor) use ($filtro_busqueda, $filtro_estado, $filtro_especialidad, $filtro_nivel) {
-        if (!empty($filtro_busqueda)) {
-            $busqueda_lower = strtolower($filtro_busqueda);
-            if (strpos(strtolower($locutor->nombre), $busqueda_lower) === false &&
-                strpos(strtolower($locutor->email), $busqueda_lower) === false &&
-                strpos(strtolower($locutor->bio), $busqueda_lower) === false) {
-                return false;
-            }
-        }
-
-        if (!empty($filtro_estado) && $locutor->estado !== $filtro_estado) {
-            return false;
-        }
-
-        if (!empty($filtro_especialidad) && $locutor->especialidad !== $filtro_especialidad) {
-            return false;
-        }
-
-        if (!empty($filtro_nivel)) {
-            $nivel_locutor = obtener_nivel_locutor($locutor->total_programas, $locutor->fecha_inicio);
-            if ($nivel_locutor['clase'] !== $filtro_nivel) {
-                return false;
-            }
-        }
-
-        return true;
-    });
-
-    // Ordenar
-    usort($locutores_filtrados, function($a, $b) use ($filtro_orden) {
-        switch ($filtro_orden) {
-            case 'nombre_desc':
-                return strcasecmp($b->nombre, $a->nombre);
-            case 'programas_desc':
-                return $b->total_programas - $a->total_programas;
-            case 'programas_asc':
-                return $a->total_programas - $b->total_programas;
-            case 'audiencia_desc':
-                return $b->audiencia_promedio - $a->audiencia_promedio;
-            case 'fecha_desc':
-                return strtotime($b->fecha_inicio) - strtotime($a->fecha_inicio);
-            case 'fecha_asc':
-                return strtotime($a->fecha_inicio) - strtotime($b->fecha_inicio);
-            default:
-                return strcasecmp($a->nombre, $b->nombre);
-        }
-    });
-
-    $total_items = count($locutores_filtrados);
-    $locutores = array_slice($locutores_filtrados, $offset, $items_por_pagina);
-    $especialidades = array_unique(array_column($locutores_demo, 'especialidad'));
-    sort($especialidades);
+    $estadisticas = [
+        'total_locutores' => 0,
+        'locutores_activos' => 0,
+        'total_programas' => 0,
+        'audiencia_total' => 0,
+        'horas_emision_mes' => 0,
+    ];
+    $total_items = 0;
+    $locutores = [];
+    $especialidades = [];
 }
 
 $total_paginas = ceil($total_items / $items_por_pagina);
 
 // Top locutores para sidebar
-$top_locutores = $usar_datos_demo
-    ? array_slice(array_filter($locutores_demo, fn($l) => $l->estado === 'activo'), 0, 5)
-    : ($tabla_locutores_existe ? $wpdb->get_results("
+$top_locutores = $tablas_radio_disponibles
+    ? $wpdb->get_results("
         SELECT l.*, COUNT(p.id) as total_programas
         FROM $tabla_locutores l
         LEFT JOIN $tabla_programas p ON l.id = p.locutor_principal_id
@@ -446,29 +294,25 @@ $top_locutores = $usar_datos_demo
         GROUP BY l.id
         ORDER BY audiencia_promedio DESC
         LIMIT 5
-    ") : []);
+    ")
+    : [];
 
 // Distribución por especialidad para gráfico
 $distribucion_especialidad = [];
-$datos_distribucion = $usar_datos_demo ? $locutores_demo : ($tabla_locutores_existe ? $wpdb->get_results("SELECT especialidad, COUNT(*) as total FROM $tabla_locutores GROUP BY especialidad") : []);
+$datos_distribucion = $tablas_radio_disponibles
+    ? $wpdb->get_results("SELECT especialidad, COUNT(*) as total FROM $tabla_locutores GROUP BY especialidad")
+    : [];
 
 foreach ($datos_distribucion as $item) {
-    $esp = $usar_datos_demo ? $item->especialidad : $item->especialidad;
-    $total = $usar_datos_demo ? 1 : $item->total;
+    $esp = $item->especialidad;
+    $total = (int) $item->total;
+    if ('' === (string) $esp) {
+        continue;
+    }
     if (!isset($distribucion_especialidad[$esp])) {
         $distribucion_especialidad[$esp] = 0;
     }
-    $distribucion_especialidad[$esp] += $usar_datos_demo ? 1 : $total;
-}
-
-if ($usar_datos_demo) {
-    $distribucion_especialidad = [];
-    foreach ($locutores_demo as $l) {
-        if (!isset($distribucion_especialidad[$l->especialidad])) {
-            $distribucion_especialidad[$l->especialidad] = 0;
-        }
-        $distribucion_especialidad[$l->especialidad]++;
-    }
+    $distribucion_especialidad[$esp] += $total;
 }
 ?>
 
@@ -482,11 +326,11 @@ if ($usar_datos_demo) {
         <?php echo esc_html__('Nuevo Locutor', 'flavor-chat-ia'); ?>
     </a>
 
-    <?php if ($usar_datos_demo): ?>
+    <?php if (!$tablas_radio_disponibles): ?>
     <div class="notice notice-info inline" style="margin: 15px 0;">
         <p>
             <span class="dashicons dashicons-info"></span>
-            <?php echo esc_html__('Mostrando datos de demostración. Las tablas de la base de datos no están configuradas.', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Radio.', 'flavor-chat-ia'); ?>
         </p>
     </div>
     <?php endif; ?>

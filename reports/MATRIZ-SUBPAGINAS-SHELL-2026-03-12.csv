@@ -1,0 +1,73 @@
+subpagina,parent_dashboard,refs_outside_registry,estado,evidencia,archivo_objetivo
+banco-tiempo-config,banco-tiempo-dashboard,3,ok,includes/modules/banco-tiempo/class-banco-tiempo-module.php:1280:                    'slug' => 'banco-tiempo-config';,admin/class-guided-tours.php
+banco-tiempo-intercambios,banco-tiempo-dashboard,3,ok,admin/class-admin-shell.php:772:            'banco-tiempo-intercambios' => __('intercambios pendientes'; 'flavor-chat-ia');,admin/class-admin-shell.php
+banco-tiempo-miembros,banco-tiempo-dashboard,1,parcial,includes/modules/banco-tiempo/class-banco-tiempo-module.php:1270:                    'slug' => 'banco-tiempo-miembros';,admin/class-admin-shell.php
+banco-tiempo-servicios,banco-tiempo-dashboard,3,ok,includes/modules/banco-tiempo/class-banco-tiempo-module.php:1275:                    'slug' => 'banco-tiempo-servicios';,admin/class-admin-menu-manager.php
+biblioteca-catalogo,biblioteca-dashboard,13,ok,includes/dashboard/class-dashboard-help.php:772:                ['text' => __('Ver catálogo'; 'flavor-chat-ia'); 'url' => admin_url('admin.php?page=biblioteca-catalogo'); 'icon' => 'dashicons-book'];,admin/class-admin-shell.php
+biblioteca-config,biblioteca-dashboard,3,ok,includes/modules/biblioteca/class-biblioteca-module.php:3090:                    'slug'     => 'biblioteca-config';,admin/class-admin-menu-manager.php
+biblioteca-prestamos,biblioteca-dashboard,12,ok,admin/class-admin-shell.php:774:            'biblioteca-prestamos' => __('préstamos vencidos'; 'flavor-chat-ia');,admin/class-admin-shell.php
+biblioteca-reservas,biblioteca-dashboard,1,parcial,includes/modules/biblioteca/frontend/class-biblioteca-frontend-controller.php:146:        $tabs['biblioteca-reservas'] = [,admin/class-admin-shell.php
+campanias-config,campanias-dashboard,1,parcial,includes/modules/campanias/class-campanias-module.php:1325:                    'slug' => 'campanias-config';,admin/class-admin-menu-manager.php
+campanias-estadisticas,campanias-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-menu-manager.php
+campanias-listado,campanias-dashboard,15,ok,includes/modules/campanias/class-campanias-module.php:1314:                    'slug' => 'campanias-listado';,admin/class-admin-menu-manager.php
+colectivos-config,flavor-colectivos-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-shell.php
+colectivos-listado,flavor-colectivos-dashboard,4,ok,admin/class-unified-modules-view.php:1722:                ['slug' => 'colectivos-listado'; 'titulo' => __('Listado'; 'flavor-chat-ia'); 'icon' => 'dashicons-groups'];,admin/class-admin-shell.php
+colectivos-solicitudes,flavor-colectivos-dashboard,6,ok,admin/class-admin-shell.php:770:            'colectivos-solicitudes' => __('solicitudes de unión'; 'flavor-chat-ia');,admin/class-admin-menu-manager.php
+comunidades-config,comunidades-dashboard,3,ok,includes/modules/comunidades/views/dashboard.php:217:        <a href="<?php echo esc_url(admin_url('admin.php?page=comunidades-config')); ?>" class="dm-action-card">,admin/class-guided-tours.php
+comunidades-listado,comunidades-dashboard,22,ok,admin/class-unified-modules-view.php:1716:                ['slug' => 'comunidades-listado'; 'titulo' => __('Listado'; 'flavor-chat-ia'); 'icon' => 'dashicons-networking'];,admin/class-dashboard.php
+comunidades-miembros,comunidades-dashboard,14,ok,includes/modules/comunidades/views/miembros.php:139:            <input type="hidden" name="page" value="comunidades-miembros">,admin/class-admin-menu-manager.php
+contabilidad-config,contabilidad-dashboard,1,parcial,includes/modules/contabilidad/class-contabilidad-module.php:114:                    'slug' => 'contabilidad-config';,admin/class-admin-menu-manager.php
+contabilidad-dashboard,contabilidad-dashboard,11,ok,admin/class-admin-menu-manager.php:79:            $menus_base[] = 'contabilidad-dashboard';,admin/views/shell-sidebar.php
+contabilidad-movimientos,contabilidad-dashboard,7,ok,includes/modules/contabilidad/class-contabilidad-module.php:109:                    'slug' => 'contabilidad-movimientos';,admin/views/shell-sidebar.php
+cursos-config,cursos-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-menu-manager.php
+cursos-inscripciones,cursos-dashboard,3,ok,includes/modules/cursos/class-cursos-dashboard-tab.php:276:        $tabs['cursos-inscripciones'] = [,admin/class-admin-menu-manager.php
+cursos-listado,cursos-dashboard,4,ok,admin/class-unified-modules-view.php:1735:                ['slug' => 'cursos-listado'; 'titulo' => __('Cursos'; 'flavor-chat-ia'); 'icon' => 'dashicons-welcome-learn-more'];,admin/class-admin-menu-manager.php
+eventos-asistentes,eventos-dashboard,8,ok,admin/class-unified-modules-view.php:1730:                ['slug' => 'eventos-asistentes'; 'titulo' => __('Asistentes'; 'flavor-chat-ia'); 'icon' => 'dashicons-groups'];,admin/class-admin-menu-manager.php
+eventos-calendario,eventos-dashboard,8,ok,admin/class-unified-modules-view.php:1729:                ['slug' => 'eventos-calendario'; 'titulo' => __('Calendario'; 'flavor-chat-ia'); 'icon' => 'dashicons-calendar-alt'];,admin/class-admin-menu-manager.php
+eventos-config,eventos-dashboard,3,ok,includes/modules/eventos/views/dashboard.php:217:            <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-config')); ?>" class="dm-action-card">,admin/class-admin-shell.php
+eventos-nuevo,eventos-dashboard,7,ok,includes/dashboard/class-unified-dashboard.php:1053:                'url'   => admin_url('admin.php?page=eventos-nuevo');,admin/class-admin-shell.php
+eventos-proximos,eventos-dashboard,9,ok,includes/class-shell-navigation-registry.php:110:     *                                'slug'  => 'eventos-proximos';,admin/class-admin-menu-manager.php
+flavor-chat-ia-analytics,flavor-chat-config,0,falta,sin referencias fuera del registry,admin/views/ai-tools/ai-tools-hub.php
+flavor-chat-ia-escalations,flavor-chat-config,12,ok,admin/class-admin-menu-manager.php:308:                    'flavor-chat-ia-escalations' => __('Escalados'; 'flavor-chat-ia');,admin/views/ai-tools/ai-tools-hub.php
+foros-categorias,foros-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-shell.php
+foros-config,foros-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-menu-manager.php
+foros-moderacion,foros-dashboard,6,ok,admin/class-unified-modules-view.php:1775:                ['slug' => 'foros-moderacion'; 'titulo' => __('Moderación'; 'flavor-chat-ia'); 'icon' => 'dashicons-shield'];,admin/class-admin-shell.php
+foros-temas,foros-dashboard,1,parcial,admin/class-admin-shell.php:764:            'foros-temas' => __('sin respuesta'; 'flavor-chat-ia');,admin/class-admin-shell.php
+huertos-config,huertos-dashboard,3,ok,includes/modules/huertos-urbanos/class-huertos-urbanos-module.php:235:                    'slug' => 'huertos-config';,admin/class-admin-menu-manager.php
+huertos-cosechas,huertos-dashboard,2,parcial,includes/modules/huertos-urbanos/class-huertos-urbanos-module.php:3220:        add_submenu_page(null; __('Cosechas'; 'flavor-chat-ia'); __('Cosechas'; 'flavor-chat-ia'); $capability; 'huertos-cosechas'; [$this; 'render_pagina_cosechas']);,admin/class-admin-menu-manager.php
+huertos-huertanos,huertos-dashboard,2,parcial,includes/modules/huertos-urbanos/class-huertos-urbanos-module.php:3219:        add_submenu_page(null; __('Huertanos'; 'flavor-chat-ia'); __('Huertanos'; 'flavor-chat-ia'); $capability; 'huertos-huertanos'; [$this; 'render_pagina_huertanos']);,admin/class-admin-menu-manager.php
+huertos-parcelas,huertos-dashboard,15,ok,admin/class-admin-shell.php:768:            'huertos-parcelas' => __('solicitudes pendientes'; 'flavor-chat-ia');,admin/class-admin-menu-manager.php
+huertos-recursos,huertos-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-menu-manager.php
+incidencias-abiertas,incidencias-dashboard,8,ok,admin/class-admin-shell.php:756:            'incidencias-abiertas' => __('sin asignar'; 'flavor-chat-ia');,admin/class-admin-menu-manager.php
+incidencias-config,incidencias-dashboard,3,ok,includes/modules/incidencias/class-incidencias-module.php:413:                    'slug' => 'incidencias-config';,admin/class-admin-menu-manager.php
+incidencias-mapa,incidencias-dashboard,7,ok,includes/modules/incidencias/class-incidencias-module.php:408:                    'slug' => 'incidencias-mapa';,admin/class-admin-menu-manager.php
+incidencias-todas,incidencias-dashboard,11,ok,includes/modules/incidencias/class-incidencias-module.php:403:                    'slug' => 'incidencias-todas';,admin/class-admin-menu-manager.php
+marketplace-anuncios,marketplace-dashboard,7,ok,admin/class-admin-shell.php:760:            'marketplace-anuncios' => __('pendientes de aprobar'; 'flavor-chat-ia');,admin/class-admin-menu-manager.php
+marketplace-config,marketplace-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-menu-manager.php
+marketplace-vendedores,marketplace-dashboard,2,parcial,admin/class-unified-modules-view.php:1744:                ['slug' => 'marketplace-vendedores'; 'titulo' => __('Vendedores'; 'flavor-chat-ia'); 'icon' => 'dashicons-store'];,admin/class-dashboard.php
+marketplace-ventas,marketplace-dashboard,2,parcial,admin/class-unified-modules-view.php:1743:                ['slug' => 'marketplace-ventas'; 'titulo' => __('Ventas'; 'flavor-chat-ia'); 'icon' => 'dashicons-cart'];,admin/class-admin-shell.php
+participacion-config,participacion-dashboard,3,ok,includes/modules/participacion/views/dashboard.php:142:        <a href="<?php echo esc_url(admin_url('admin.php?page=participacion-config')); ?>" class="dm-quick-links__item">,admin/class-admin-shell.php
+participacion-propuestas,participacion-dashboard,6,ok,includes/modules/participacion/views/dashboard.php:126:        <a href="<?php echo esc_url(admin_url('admin.php?page=participacion-propuestas')); ?>" class="dm-quick-links__item">,admin/class-dashboard.php
+participacion-votaciones,participacion-dashboard,6,ok,admin/class-admin-shell.php:766:            'participacion-votaciones' => __('en votación activa'; 'flavor-chat-ia');,admin/class-admin-menu-manager.php
+podcast-config,podcast-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-shell.php
+podcast-episodios,podcast-dashboard,5,ok,admin/class-unified-modules-view.php:1780:                ['slug' => 'podcast-episodios'; 'titulo' => __('Episodios'; 'flavor-chat-ia'); 'icon' => 'dashicons-microphone'];,admin/class-admin-menu-manager.php
+podcast-series,podcast-dashboard,3,ok,admin/class-unified-modules-view.php:1779:                ['slug' => 'podcast-series'; 'titulo' => __('Series'; 'flavor-chat-ia'); 'icon' => 'dashicons-playlist-audio'];,admin/class-admin-menu-manager.php
+radio-config,flavor-radio-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-menu-manager.php
+radio-locutores,flavor-radio-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-menu-manager.php
+radio-programas,flavor-radio-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-menu-manager.php
+reservas-calendario,reservas-dashboard,13,ok,admin/class-unified-modules-view.php:1757:                ['slug' => 'reservas-calendario'; 'titulo' => __('Calendario'; 'flavor-chat-ia'); 'icon' => 'dashicons-calendar'];,admin/class-dashboard.php
+reservas-config,reservas-dashboard,4,ok,includes/modules/reservas/views/dashboard.php:214:        <a href="<?php echo esc_url(admin_url('admin.php?page=reservas-config')); ?>" class="dm-quick-links__item">,admin/class-dashboard.php
+reservas-espacios,reservas-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-menu-manager.php
+reservas-pendientes,reservas-dashboard,1,parcial,admin/class-admin-shell.php:762:            'reservas-pendientes' => __('reservas pendientes'; 'flavor-chat-ia');,admin/class-dashboard.php
+socios-config,socios-dashboard,3,ok,includes/modules/socios/views/dashboard.php:193:        <a href="<?php echo esc_url(admin_url('admin.php?page=socios-config')); ?>" class="dm-quick-links__item">,admin/class-admin-menu-manager.php
+socios-cuotas,socios-dashboard,15,ok,admin/class-unified-modules-view.php:1762:                ['slug' => 'socios-cuotas'; 'titulo' => __('Cuotas'; 'flavor-chat-ia'); 'icon' => 'dashicons-money'];,admin/class-admin-menu-manager.php
+socios-listado,socios-dashboard,16,ok,admin/class-unified-modules-view.php:1761:                ['slug' => 'socios-listado'; 'titulo' => __('Listado'; 'flavor-chat-ia'); 'icon' => 'dashicons-id-alt'];,admin/class-admin-shell.php
+socios-solicitudes,socios-dashboard,5,ok,admin/class-admin-shell.php:758:            'socios-solicitudes' => __('solicitudes de alta'; 'flavor-chat-ia');,admin/class-dashboard.php
+talleres-config,talleres-dashboard,0,falta,sin referencias fuera del registry,admin/class-admin-menu-manager.php
+talleres-inscripciones,talleres-dashboard,8,ok,admin/class-unified-modules-view.php:1750:                ['slug' => 'talleres-inscripciones'; 'titulo' => __('Inscripciones'; 'flavor-chat-ia'); 'icon' => 'dashicons-clipboard'];,admin/class-admin-shell.php
+talleres-listado,talleres-dashboard,3,ok,admin/class-unified-modules-view.php:1749:                ['slug' => 'talleres-listado'; 'titulo' => __('Talleres'; 'flavor-chat-ia'); 'icon' => 'dashicons-hammer'];,includes/modules/talleres/views/talleres.php
+talleres-materiales,talleres-dashboard,4,ok,admin/class-unified-modules-view.php:1751:                ['slug' => 'talleres-materiales'; 'titulo' => __('Materiales'; 'flavor-chat-ia'); 'icon' => 'dashicons-media-document'];,admin/class-admin-menu-manager.php
+tramites-config,tramites-dashboard,3,ok,includes/modules/tramites/views/dashboard.php:185:        <a href="<?php echo esc_url(admin_url('admin.php?page=tramites-config')); ?>" class="dm-quick-links__item">,admin/class-admin-menu-manager.php
+tramites-historial,tramites-dashboard,10,ok,includes/modules/tramites/class-tramites-dashboard-widget.php:108:                    'url' => $es_admin ? admin_url('admin.php?page=tramites-historial') : home_url('/mi-portal/tramites/mis-tramites/');,admin/class-admin-menu-manager.php
+tramites-pendientes,tramites-dashboard,12,ok,admin/class-admin-shell.php:753:            'tramites-pendientes' => __('urgentes sin cerrar'; 'flavor-chat-ia');,admin/class-admin-menu-manager.php
+tramites-tipos,tramites-dashboard,7,ok,includes/modules/tramites/class-tramites-dashboard-widget.php:158:                'url' => $es_admin ? admin_url('admin.php?page=tramites-tipos') : add_query_arg('tramite_id'; $tramite->id; home_url('/mi-portal/tramites/iniciar/'));,admin/class-admin-shell.php

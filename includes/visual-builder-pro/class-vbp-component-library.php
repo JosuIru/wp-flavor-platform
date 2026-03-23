@@ -2,11 +2,12 @@
 /**
  * Visual Builder Pro - Biblioteca de Componentes Reutilizables
  *
- * Permite guardar, gestionar y reutilizar componentes personalizados.
+ * Permite guardar, gestionar y reutilizar componentes/bloques
+ * en diferentes páginas del editor.
  *
  * @package Flavor_Chat_IA
  * @subpackage Visual_Builder_Pro
- * @since 2.1.0
+ * @since 2.0.21
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,49 +15,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Clase para gestionar la biblioteca de componentes reutilizables
- *
- * @since 2.1.0
+ * Clase para gestionar la biblioteca de componentes
  */
 class Flavor_VBP_Component_Library {
 
-    /**
-     * Instancia singleton
-     *
-     * @var Flavor_VBP_Component_Library|null
-     */
     private static $instancia = null;
+    private $tabla_componentes;
 
-    /**
-     * Nombre de la opción para almacenar componentes
-     *
-     * @var string
-     */
-    const OPTION_KEY = 'vbp_component_library';
-
-    /**
-     * Categorías predefinidas
-     *
-     * @var array
-     */
     private $categorias_predefinidas = array(
-        'custom'     => 'Personalizados',
-        'headers'    => 'Cabeceras',
-        'footers'    => 'Pie de página',
-        'heroes'     => 'Heroes',
-        'ctas'       => 'Llamadas a Acción',
-        'features'   => 'Características',
-        'pricing'    => 'Precios',
-        'forms'      => 'Formularios',
-        'navigation' => 'Navegación',
-        'content'    => 'Contenido',
+        'headers'    => array( 'name' => 'Cabeceras', 'icon' => 'layout' ),
+        'heroes'     => array( 'name' => 'Heroes', 'icon' => 'star' ),
+        'sections'   => array( 'name' => 'Secciones', 'icon' => 'layers' ),
+        'footers'    => array( 'name' => 'Footers', 'icon' => 'menu' ),
+        'cards'      => array( 'name' => 'Tarjetas', 'icon' => 'grid' ),
+        'forms'      => array( 'name' => 'Formularios', 'icon' => 'edit-3' ),
+        'navigation' => array( 'name' => 'Navegación', 'icon' => 'compass' ),
+        'custom'     => array( 'name' => 'Personalizados', 'icon' => 'folder' ),
     );
 
-    /**
-     * Obtiene la instancia singleton
-     *
-     * @return Flavor_VBP_Component_Library
-     */
     public static function get_instance() {
         if ( null === self::$instancia ) {
             self::$instancia = new self();
@@ -64,585 +40,448 @@ class Flavor_VBP_Component_Library {
         return self::$instancia;
     }
 
-    /**
-     * Constructor privado
-     */
     private function __construct() {
-        add_action( 'rest_api_init', array( $this, 'registrar_rutas_rest' ) );
+        global $wpdb;
+        $this->tabla_componentes = $wpdb->prefix . 'vbp_components';
+        $this->crear_tabla();
+        add_action( 'rest_api_init', array( $this, 'registrar_endpoints' ) );
     }
 
-    /**
-     * Registra las rutas REST para la biblioteca
-     */
-    public function registrar_rutas_rest() {
-        $namespace = 'flavor-vbp/v1';
+    private function crear_tabla() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        $tabla = $this->tabla_componentes;
 
-        // Listar componentes
-        register_rest_route(
-            $namespace,
-            '/components',
-            array(
-                array(
-                    'methods'             => WP_REST_Server::READABLE,
-                    'callback'            => array( $this, 'rest_listar_componentes' ),
-                    'permission_callback' => array( $this, 'verificar_permiso' ),
-                    'args'                => array(
-                        'category' => array(
-                            'required'          => false,
-                            'sanitize_callback' => 'sanitize_text_field',
-                        ),
-                    ),
-                ),
-                array(
-                    'methods'             => WP_REST_Server::CREATABLE,
-                    'callback'            => array( $this, 'rest_guardar_componente' ),
-                    'permission_callback' => array( $this, 'verificar_permiso' ),
-                ),
-            )
-        );
+        $sql = "CREATE TABLE IF NOT EXISTS $tabla (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            name varchar(255) NOT NULL,
+            slug varchar(255) NOT NULL,
+            category varchar(100) NOT NULL DEFAULT 'custom',
+            description text,
+            blocks longtext NOT NULL,
+            thumbnail varchar(500),
+            tags varchar(500),
+            author_id bigint(20) unsigned NOT NULL,
+            is_global tinyint(1) NOT NULL DEFAULT 0,
+            usage_count int(11) NOT NULL DEFAULT 0,
+            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY category (category),
+            KEY author_id (author_id),
+            KEY slug (slug)
+        ) $charset_collate;";
 
-        // Obtener/actualizar/eliminar componente individual
-        register_rest_route(
-            $namespace,
-            '/components/(?P<id>[a-zA-Z0-9_-]+)',
-            array(
-                array(
-                    'methods'             => WP_REST_Server::READABLE,
-                    'callback'            => array( $this, 'rest_obtener_componente' ),
-                    'permission_callback' => array( $this, 'verificar_permiso' ),
-                ),
-                array(
-                    'methods'             => WP_REST_Server::EDITABLE,
-                    'callback'            => array( $this, 'rest_actualizar_componente' ),
-                    'permission_callback' => array( $this, 'verificar_permiso' ),
-                ),
-                array(
-                    'methods'             => WP_REST_Server::DELETABLE,
-                    'callback'            => array( $this, 'rest_eliminar_componente' ),
-                    'permission_callback' => array( $this, 'verificar_permiso' ),
-                ),
-            )
-        );
-
-        // Categorías
-        register_rest_route(
-            $namespace,
-            '/components/categories',
-            array(
-                'methods'             => WP_REST_Server::READABLE,
-                'callback'            => array( $this, 'rest_listar_categorias' ),
-                'permission_callback' => array( $this, 'verificar_permiso' ),
-            )
-        );
-
-        // Importar/Exportar
-        register_rest_route(
-            $namespace,
-            '/components/import',
-            array(
-                'methods'             => WP_REST_Server::CREATABLE,
-                'callback'            => array( $this, 'rest_importar_componente' ),
-                'permission_callback' => array( $this, 'verificar_permiso' ),
-            )
-        );
-
-        register_rest_route(
-            $namespace,
-            '/components/(?P<id>[a-zA-Z0-9_-]+)/export',
-            array(
-                'methods'             => WP_REST_Server::READABLE,
-                'callback'            => array( $this, 'rest_exportar_componente' ),
-                'permission_callback' => array( $this, 'verificar_permiso' ),
-            )
-        );
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta( $sql );
     }
 
-    /**
-     * Verifica permisos de acceso
-     *
-     * @return bool
-     */
-    public function verificar_permiso() {
+    public function registrar_endpoints() {
+        $ns = 'flavor-vbp/v1';
+
+        register_rest_route( $ns, '/components', array(
+            'methods'             => 'GET',
+            'callback'            => array( $this, 'api_get_components' ),
+            'permission_callback' => array( $this, 'verificar_permisos' ),
+        ) );
+
+        register_rest_route( $ns, '/components/(?P<id>\d+)', array(
+            'methods'             => 'GET',
+            'callback'            => array( $this, 'api_get_component' ),
+            'permission_callback' => array( $this, 'verificar_permisos' ),
+        ) );
+
+        register_rest_route( $ns, '/components', array(
+            'methods'             => 'POST',
+            'callback'            => array( $this, 'api_save_component' ),
+            'permission_callback' => array( $this, 'verificar_permisos_escritura' ),
+        ) );
+
+        register_rest_route( $ns, '/components/(?P<id>\d+)', array(
+            'methods'             => 'PUT',
+            'callback'            => array( $this, 'api_update_component' ),
+            'permission_callback' => array( $this, 'verificar_permisos_escritura' ),
+        ) );
+
+        register_rest_route( $ns, '/components/(?P<id>\d+)', array(
+            'methods'             => 'DELETE',
+            'callback'            => array( $this, 'api_delete_component' ),
+            'permission_callback' => array( $this, 'verificar_permisos_escritura' ),
+        ) );
+
+        register_rest_route( $ns, '/components/categories', array(
+            'methods'             => 'GET',
+            'callback'            => array( $this, 'api_get_categories' ),
+            'permission_callback' => array( $this, 'verificar_permisos' ),
+        ) );
+
+        register_rest_route( $ns, '/components/(?P<id>\d+)/export', array(
+            'methods'             => 'GET',
+            'callback'            => array( $this, 'api_export_component' ),
+            'permission_callback' => array( $this, 'verificar_permisos' ),
+        ) );
+
+        register_rest_route( $ns, '/components/import', array(
+            'methods'             => 'POST',
+            'callback'            => array( $this, 'api_import_component' ),
+            'permission_callback' => array( $this, 'verificar_permisos_escritura' ),
+        ) );
+    }
+
+    public function verificar_permisos() {
         return current_user_can( 'edit_posts' );
     }
 
-    /**
-     * Guarda un componente en la biblioteca
-     *
-     * @param string $nombre   Nombre del componente.
-     * @param array  $bloques  Array de bloques que conforman el componente.
-     * @param string $categoria Categoría del componente.
-     * @param array  $meta     Metadatos adicionales.
-     * @return string|WP_Error ID del componente o error.
-     */
-    public function guardar_componente( $nombre, $bloques, $categoria = 'custom', $meta = array() ) {
-        if ( empty( $nombre ) || empty( $bloques ) ) {
-            return new WP_Error( 'datos_invalidos', __( 'Nombre y bloques son requeridos', 'flavor-chat-ia' ) );
-        }
-
-        $componentes = $this->obtener_todos_componentes();
-        $id          = $this->generar_id( $nombre );
-
-        $componente = array(
-            'id'          => $id,
-            'name'        => sanitize_text_field( $nombre ),
-            'category'    => sanitize_key( $categoria ),
-            'blocks'      => $bloques,
-            'thumbnail'   => isset( $meta['thumbnail'] ) ? esc_url_raw( $meta['thumbnail'] ) : '',
-            'description' => isset( $meta['description'] ) ? sanitize_textarea_field( $meta['description'] ) : '',
-            'tags'        => isset( $meta['tags'] ) ? array_map( 'sanitize_text_field', (array) $meta['tags'] ) : array(),
-            'created_at'  => current_time( 'mysql' ),
-            'updated_at'  => current_time( 'mysql' ),
-            'author'      => get_current_user_id(),
-            'version'     => '1.0.0',
-        );
-
-        $componentes[ $id ] = $componente;
-
-        update_option( self::OPTION_KEY, $componentes );
-
-        return $id;
+    public function verificar_permisos_escritura() {
+        return current_user_can( 'edit_posts' );
     }
 
-    /**
-     * Obtiene todos los componentes
-     *
-     * @param string|null $categoria Filtrar por categoría.
-     * @return array
-     */
-    public function obtener_todos_componentes( $categoria = null ) {
-        $componentes = get_option( self::OPTION_KEY, array() );
+    public function save_component( $name, $blocks, $category = 'custom', $opciones = array() ) {
+        global $wpdb;
 
-        if ( ! is_array( $componentes ) ) {
-            $componentes = array();
+        if ( empty( $name ) || empty( $blocks ) ) {
+            return new WP_Error( 'invalid_data', __( 'Nombre y bloques son requeridos', 'flavor-chat-ia' ) );
         }
 
-        if ( null !== $categoria ) {
-            $componentes = array_filter(
-                $componentes,
-                function( $componente ) use ( $categoria ) {
-                    return isset( $componente['category'] ) && $componente['category'] === $categoria;
-                }
-            );
+        $slug = sanitize_title( $name );
+        $descripcion = isset( $opciones['description'] ) ? sanitize_textarea_field( $opciones['description'] ) : '';
+        $thumbnail = isset( $opciones['thumbnail'] ) ? esc_url_raw( $opciones['thumbnail'] ) : '';
+        $tags = isset( $opciones['tags'] ) ? sanitize_text_field( $opciones['tags'] ) : '';
+        $is_global = isset( $opciones['is_global'] ) && $opciones['is_global'] ? 1 : 0;
+
+        if ( ! isset( $this->categorias_predefinidas[ $category ] ) ) {
+            $category = 'custom';
         }
 
-        return $componentes;
-    }
-
-    /**
-     * Obtiene un componente por ID
-     *
-     * @param string $id ID del componente.
-     * @return array|null
-     */
-    public function obtener_componente( $id ) {
-        $componentes = $this->obtener_todos_componentes();
-        return isset( $componentes[ $id ] ) ? $componentes[ $id ] : null;
-    }
-
-    /**
-     * Actualiza un componente existente
-     *
-     * @param string $id     ID del componente.
-     * @param array  $datos  Datos a actualizar.
-     * @return bool|WP_Error
-     */
-    public function actualizar_componente( $id, $datos ) {
-        $componentes = $this->obtener_todos_componentes();
-
-        if ( ! isset( $componentes[ $id ] ) ) {
-            return new WP_Error( 'not_found', __( 'Componente no encontrado', 'flavor-chat-ia' ) );
-        }
-
-        $permitidos = array( 'name', 'category', 'blocks', 'thumbnail', 'description', 'tags' );
-
-        foreach ( $permitidos as $campo ) {
-            if ( isset( $datos[ $campo ] ) ) {
-                switch ( $campo ) {
-                    case 'name':
-                        $componentes[ $id ][ $campo ] = sanitize_text_field( $datos[ $campo ] );
-                        break;
-                    case 'category':
-                        $componentes[ $id ][ $campo ] = sanitize_key( $datos[ $campo ] );
-                        break;
-                    case 'description':
-                        $componentes[ $id ][ $campo ] = sanitize_textarea_field( $datos[ $campo ] );
-                        break;
-                    case 'thumbnail':
-                        $componentes[ $id ][ $campo ] = esc_url_raw( $datos[ $campo ] );
-                        break;
-                    case 'tags':
-                        $componentes[ $id ][ $campo ] = array_map( 'sanitize_text_field', (array) $datos[ $campo ] );
-                        break;
-                    case 'blocks':
-                        $componentes[ $id ][ $campo ] = $datos[ $campo ];
-                        break;
-                }
-            }
-        }
-
-        $componentes[ $id ]['updated_at'] = current_time( 'mysql' );
-
-        update_option( self::OPTION_KEY, $componentes );
-
-        return true;
-    }
-
-    /**
-     * Elimina un componente
-     *
-     * @param string $id ID del componente.
-     * @return bool|WP_Error
-     */
-    public function eliminar_componente( $id ) {
-        $componentes = $this->obtener_todos_componentes();
-
-        if ( ! isset( $componentes[ $id ] ) ) {
-            return new WP_Error( 'not_found', __( 'Componente no encontrado', 'flavor-chat-ia' ) );
-        }
-
-        unset( $componentes[ $id ] );
-
-        update_option( self::OPTION_KEY, $componentes );
-
-        return true;
-    }
-
-    /**
-     * Importa un componente desde JSON
-     *
-     * @param string $json JSON del componente.
-     * @return string|WP_Error ID del componente importado o error.
-     */
-    public function importar_componente( $json ) {
-        $datos = json_decode( $json, true );
-
-        if ( json_last_error() !== JSON_ERROR_NONE ) {
-            return new WP_Error( 'json_invalido', __( 'JSON inválido', 'flavor-chat-ia' ) );
-        }
-
-        if ( empty( $datos['name'] ) || empty( $datos['blocks'] ) ) {
-            return new WP_Error( 'datos_incompletos', __( 'El componente debe tener nombre y bloques', 'flavor-chat-ia' ) );
-        }
-
-        return $this->guardar_componente(
-            $datos['name'],
-            $datos['blocks'],
-            isset( $datos['category'] ) ? $datos['category'] : 'custom',
+        $resultado = $wpdb->insert(
+            $this->tabla_componentes,
             array(
-                'thumbnail'   => isset( $datos['thumbnail'] ) ? $datos['thumbnail'] : '',
-                'description' => isset( $datos['description'] ) ? $datos['description'] : '',
-                'tags'        => isset( $datos['tags'] ) ? $datos['tags'] : array(),
-            )
+                'name'        => sanitize_text_field( $name ),
+                'slug'        => $slug,
+                'category'    => $category,
+                'description' => $descripcion,
+                'blocks'      => wp_json_encode( $blocks ),
+                'thumbnail'   => $thumbnail,
+                'tags'        => $tags,
+                'author_id'   => get_current_user_id(),
+                'is_global'   => $is_global,
+            ),
+            array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d' )
         );
+
+        if ( false === $resultado ) {
+            return new WP_Error( 'db_error', __( 'Error al guardar el componente', 'flavor-chat-ia' ) );
+        }
+
+        return $wpdb->insert_id;
     }
 
-    /**
-     * Exporta un componente a JSON
-     *
-     * @param string $id ID del componente.
-     * @return string|WP_Error JSON del componente o error.
-     */
-    public function exportar_componente( $id ) {
-        $componente = $this->obtener_componente( $id );
+    public function get_components( $args = array() ) {
+        global $wpdb;
 
+        $defaults = array(
+            'category'   => null,
+            'author_id'  => null,
+            'search'     => null,
+            'is_global'  => null,
+            'orderby'    => 'updated_at',
+            'order'      => 'DESC',
+            'limit'      => 50,
+            'offset'     => 0,
+        );
+
+        $args = wp_parse_args( $args, $defaults );
+        $where_clauses = array( '1=1' );
+        $where_values = array();
+
+        if ( ! empty( $args['category'] ) ) {
+            $where_clauses[] = 'category = %s';
+            $where_values[] = $args['category'];
+        }
+
+        if ( ! empty( $args['author_id'] ) ) {
+            $where_clauses[] = '(author_id = %d OR is_global = 1)';
+            $where_values[] = $args['author_id'];
+        }
+
+        if ( ! empty( $args['search'] ) ) {
+            $search_term = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+            $where_clauses[] = '(name LIKE %s OR description LIKE %s OR tags LIKE %s)';
+            $where_values[] = $search_term;
+            $where_values[] = $search_term;
+            $where_values[] = $search_term;
+        }
+
+        if ( $args['is_global'] !== null ) {
+            $where_clauses[] = 'is_global = %d';
+            $where_values[] = $args['is_global'] ? 1 : 0;
+        }
+
+        $where_sql = implode( ' AND ', $where_clauses );
+        $allowed_orderby = array( 'name', 'category', 'created_at', 'updated_at', 'usage_count' );
+        $orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'updated_at';
+        $order = strtoupper( $args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
+        $tabla = $this->tabla_componentes;
+
+        $where_values[] = $args['limit'];
+        $where_values[] = $args['offset'];
+
+        $query = "SELECT * FROM $tabla WHERE $where_sql ORDER BY $orderby $order LIMIT %d OFFSET %d";
+        $resultados = $wpdb->get_results( $wpdb->prepare( $query, $where_values ), ARRAY_A );
+
+        foreach ( $resultados as &$componente ) {
+            $componente['blocks'] = json_decode( $componente['blocks'], true );
+            $componente['author_name'] = get_the_author_meta( 'display_name', $componente['author_id'] );
+        }
+
+        return $resultados;
+    }
+
+    public function get_component( $component_id ) {
+        global $wpdb;
+        $tabla = $this->tabla_componentes;
+
+        $componente = $wpdb->get_row(
+            $wpdb->prepare( "SELECT * FROM $tabla WHERE id = %d", $component_id ),
+            ARRAY_A
+        );
+
+        if ( ! $componente ) {
+            return null;
+        }
+
+        $componente['blocks'] = json_decode( $componente['blocks'], true );
+        $componente['author_name'] = get_the_author_meta( 'display_name', $componente['author_id'] );
+
+        return $componente;
+    }
+
+    public function update_component( $component_id, $data ) {
+        global $wpdb;
+
+        $componente_actual = $this->get_component( $component_id );
+        if ( ! $componente_actual ) {
+            return new WP_Error( 'not_found', __( 'Componente no encontrado', 'flavor-chat-ia' ) );
+        }
+
+        if ( $componente_actual['author_id'] != get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+            return new WP_Error( 'forbidden', __( 'No tienes permisos para editar este componente', 'flavor-chat-ia' ) );
+        }
+
+        $campos = array();
+        $tipos = array();
+
+        if ( isset( $data['name'] ) ) {
+            $campos['name'] = sanitize_text_field( $data['name'] );
+            $campos['slug'] = sanitize_title( $data['name'] );
+            $tipos[] = '%s';
+            $tipos[] = '%s';
+        }
+
+        if ( isset( $data['category'] ) ) {
+            $cat = isset( $this->categorias_predefinidas[ $data['category'] ] ) ? $data['category'] : 'custom';
+            $campos['category'] = $cat;
+            $tipos[] = '%s';
+        }
+
+        if ( isset( $data['description'] ) ) {
+            $campos['description'] = sanitize_textarea_field( $data['description'] );
+            $tipos[] = '%s';
+        }
+
+        if ( isset( $data['blocks'] ) ) {
+            $campos['blocks'] = wp_json_encode( $data['blocks'] );
+            $tipos[] = '%s';
+        }
+
+        if ( isset( $data['thumbnail'] ) ) {
+            $campos['thumbnail'] = esc_url_raw( $data['thumbnail'] );
+            $tipos[] = '%s';
+        }
+
+        if ( isset( $data['tags'] ) ) {
+            $campos['tags'] = sanitize_text_field( $data['tags'] );
+            $tipos[] = '%s';
+        }
+
+        if ( isset( $data['is_global'] ) && current_user_can( 'manage_options' ) ) {
+            $campos['is_global'] = $data['is_global'] ? 1 : 0;
+            $tipos[] = '%d';
+        }
+
+        if ( empty( $campos ) ) {
+            return new WP_Error( 'no_data', __( 'No hay datos para actualizar', 'flavor-chat-ia' ) );
+        }
+
+        $resultado = $wpdb->update( $this->tabla_componentes, $campos, array( 'id' => $component_id ), $tipos, array( '%d' ) );
+        return $resultado !== false;
+    }
+
+    public function delete_component( $component_id ) {
+        global $wpdb;
+
+        $componente = $this->get_component( $component_id );
         if ( ! $componente ) {
             return new WP_Error( 'not_found', __( 'Componente no encontrado', 'flavor-chat-ia' ) );
         }
 
-        $exportar = array(
-            'name'        => $componente['name'],
-            'category'    => $componente['category'],
-            'blocks'      => $componente['blocks'],
-            'thumbnail'   => $componente['thumbnail'],
-            'description' => $componente['description'],
-            'tags'        => $componente['tags'],
-            'version'     => $componente['version'],
-            'exported_at' => current_time( 'mysql' ),
-        );
-
-        return wp_json_encode( $exportar, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE );
-    }
-
-    /**
-     * Obtiene las categorías disponibles
-     *
-     * @return array
-     */
-    public function obtener_categorias() {
-        $categorias = $this->categorias_predefinidas;
-
-        // Añadir categorías personalizadas de componentes existentes
-        $componentes = $this->obtener_todos_componentes();
-        foreach ( $componentes as $componente ) {
-            if ( ! empty( $componente['category'] ) && ! isset( $categorias[ $componente['category'] ] ) ) {
-                $categorias[ $componente['category'] ] = ucfirst( $componente['category'] );
-            }
+        if ( $componente['author_id'] != get_current_user_id() && ! current_user_can( 'manage_options' ) ) {
+            return new WP_Error( 'forbidden', __( 'No tienes permisos para eliminar este componente', 'flavor-chat-ia' ) );
         }
 
+        $resultado = $wpdb->delete( $this->tabla_componentes, array( 'id' => $component_id ), array( '%d' ) );
+        return $resultado !== false;
+    }
+
+    public function incrementar_uso( $component_id ) {
+        global $wpdb;
+        $tabla = $this->tabla_componentes;
+        $wpdb->query( $wpdb->prepare( "UPDATE $tabla SET usage_count = usage_count + 1 WHERE id = %d", $component_id ) );
+    }
+
+    public function export_component( $component_id ) {
+        $componente = $this->get_component( $component_id );
+        if ( ! $componente ) {
+            return new WP_Error( 'not_found', __( 'Componente no encontrado', 'flavor-chat-ia' ) );
+        }
+
+        return array(
+            'version'     => '1.0',
+            'type'        => 'vbp-component',
+            'name'        => $componente['name'],
+            'category'    => $componente['category'],
+            'description' => $componente['description'],
+            'blocks'      => $componente['blocks'],
+            'tags'        => $componente['tags'],
+            'exported_at' => current_time( 'mysql' ),
+        );
+    }
+
+    public function import_component( $data ) {
+        if ( ! isset( $data['type'] ) || $data['type'] !== 'vbp-component' ) {
+            return new WP_Error( 'invalid_format', __( 'Formato de archivo inválido', 'flavor-chat-ia' ) );
+        }
+
+        if ( ! isset( $data['name'] ) || ! isset( $data['blocks'] ) ) {
+            return new WP_Error( 'missing_data', __( 'Faltan datos requeridos', 'flavor-chat-ia' ) );
+        }
+
+        return $this->save_component(
+            $data['name'],
+            $data['blocks'],
+            isset( $data['category'] ) ? $data['category'] : 'custom',
+            array(
+                'description' => isset( $data['description'] ) ? $data['description'] : '',
+                'tags'        => isset( $data['tags'] ) ? $data['tags'] : '',
+            )
+        );
+    }
+
+    public function get_categories() {
+        global $wpdb;
+        $tabla = $this->tabla_componentes;
+        $conteos = $wpdb->get_results( "SELECT category, COUNT(*) as count FROM $tabla GROUP BY category", OBJECT_K );
+
+        $categorias = array();
+        foreach ( $this->categorias_predefinidas as $id => $cat ) {
+            $categorias[] = array(
+                'id'    => $id,
+                'name'  => $cat['name'],
+                'icon'  => $cat['icon'],
+                'count' => isset( $conteos[ $id ] ) ? (int) $conteos[ $id ]->count : 0,
+            );
+        }
         return $categorias;
     }
 
-    /**
-     * Genera un ID único para el componente
-     *
-     * @param string $nombre Nombre del componente.
-     * @return string
-     */
-    private function generar_id( $nombre ) {
-        $base = sanitize_title( $nombre );
-        $id   = $base;
-        $i    = 1;
-
-        $componentes = $this->obtener_todos_componentes();
-
-        while ( isset( $componentes[ $id ] ) ) {
-            $id = $base . '-' . $i;
-            $i++;
-        }
-
-        return $id;
-    }
-
-    // ============================================
-    // Callbacks REST API
-    // ============================================
-
-    /**
-     * REST: Listar componentes
-     *
-     * @param WP_REST_Request $request Petición REST.
-     * @return WP_REST_Response
-     */
-    public function rest_listar_componentes( $request ) {
-        $categoria   = $request->get_param( 'category' );
-        $componentes = $this->obtener_todos_componentes( $categoria );
-
-        // No incluir bloques en el listado para reducir payload
-        $listado = array_map(
-            function( $componente ) {
-                return array(
-                    'id'          => $componente['id'],
-                    'name'        => $componente['name'],
-                    'category'    => $componente['category'],
-                    'thumbnail'   => $componente['thumbnail'],
-                    'description' => $componente['description'],
-                    'tags'        => $componente['tags'],
-                    'created_at'  => $componente['created_at'],
-                    'updated_at'  => $componente['updated_at'],
-                );
-            },
-            array_values( $componentes )
+    // REST API Callbacks
+    public function api_get_components( $request ) {
+        $args = array(
+            'category'  => $request->get_param( 'category' ),
+            'search'    => $request->get_param( 'search' ),
+            'author_id' => get_current_user_id(),
+            'orderby'   => $request->get_param( 'orderby' ) ?: 'updated_at',
+            'order'     => $request->get_param( 'order' ) ?: 'DESC',
+            'limit'     => $request->get_param( 'limit' ) ?: 50,
+            'offset'    => $request->get_param( 'offset' ) ?: 0,
         );
 
-        return new WP_REST_Response(
-            array(
-                'components' => $listado,
-                'total'      => count( $listado ),
-            ),
-            200
-        );
+        return rest_ensure_response( array(
+            'success'    => true,
+            'components' => $this->get_components( $args ),
+        ) );
     }
 
-    /**
-     * REST: Guardar componente
-     *
-     * @param WP_REST_Request $request Petición REST.
-     * @return WP_REST_Response|WP_Error
-     */
-    public function rest_guardar_componente( $request ) {
-        $datos = $request->get_json_params();
+    public function api_get_component( $request ) {
+        $id = $request->get_param( 'id' );
+        $componente = $this->get_component( $id );
 
-        if ( empty( $datos['name'] ) || empty( $datos['blocks'] ) ) {
-            return new WP_Error(
-                'datos_invalidos',
-                __( 'Nombre y bloques son requeridos', 'flavor-chat-ia' ),
-                array( 'status' => 400 )
-            );
+        if ( ! $componente ) {
+            return new WP_Error( 'not_found', __( 'Componente no encontrado', 'flavor-chat-ia' ), array( 'status' => 404 ) );
         }
 
-        $id = $this->guardar_componente(
-            $datos['name'],
-            $datos['blocks'],
-            isset( $datos['category'] ) ? $datos['category'] : 'custom',
+        $this->incrementar_uso( $id );
+        return rest_ensure_response( array( 'success' => true, 'component' => $componente ) );
+    }
+
+    public function api_save_component( $request ) {
+        $resultado = $this->save_component(
+            $request->get_param( 'name' ),
+            $request->get_param( 'blocks' ),
+            $request->get_param( 'category' ) ?: 'custom',
             array(
-                'thumbnail'   => isset( $datos['thumbnail'] ) ? $datos['thumbnail'] : '',
-                'description' => isset( $datos['description'] ) ? $datos['description'] : '',
-                'tags'        => isset( $datos['tags'] ) ? $datos['tags'] : array(),
+                'description' => $request->get_param( 'description' ),
+                'thumbnail'   => $request->get_param( 'thumbnail' ),
+                'tags'        => $request->get_param( 'tags' ),
+                'is_global'   => $request->get_param( 'is_global' ),
             )
         );
 
-        if ( is_wp_error( $id ) ) {
-            return $id;
+        if ( is_wp_error( $resultado ) ) {
+            return $resultado;
         }
 
-        return new WP_REST_Response(
-            array(
-                'success' => true,
-                'id'      => $id,
-                'message' => __( 'Componente guardado correctamente', 'flavor-chat-ia' ),
-            ),
-            201
-        );
+        return rest_ensure_response( array( 'success' => true, 'id' => $resultado, 'message' => __( 'Componente guardado', 'flavor-chat-ia' ) ) );
     }
 
-    /**
-     * REST: Obtener componente
-     *
-     * @param WP_REST_Request $request Petición REST.
-     * @return WP_REST_Response|WP_Error
-     */
-    public function rest_obtener_componente( $request ) {
-        $id         = $request->get_param( 'id' );
-        $componente = $this->obtener_componente( $id );
-
-        if ( ! $componente ) {
-            return new WP_Error(
-                'not_found',
-                __( 'Componente no encontrado', 'flavor-chat-ia' ),
-                array( 'status' => 404 )
-            );
+    public function api_update_component( $request ) {
+        $resultado = $this->update_component( $request->get_param( 'id' ), $request->get_json_params() );
+        if ( is_wp_error( $resultado ) ) {
+            return $resultado;
         }
-
-        return new WP_REST_Response( $componente, 200 );
+        return rest_ensure_response( array( 'success' => true, 'message' => __( 'Componente actualizado', 'flavor-chat-ia' ) ) );
     }
 
-    /**
-     * REST: Actualizar componente
-     *
-     * @param WP_REST_Request $request Petición REST.
-     * @return WP_REST_Response|WP_Error
-     */
-    public function rest_actualizar_componente( $request ) {
-        $id     = $request->get_param( 'id' );
-        $datos  = $request->get_json_params();
-        $result = $this->actualizar_componente( $id, $datos );
-
-        if ( is_wp_error( $result ) ) {
-            return new WP_Error(
-                $result->get_error_code(),
-                $result->get_error_message(),
-                array( 'status' => 404 )
-            );
+    public function api_delete_component( $request ) {
+        $resultado = $this->delete_component( $request->get_param( 'id' ) );
+        if ( is_wp_error( $resultado ) ) {
+            return $resultado;
         }
-
-        return new WP_REST_Response(
-            array(
-                'success' => true,
-                'message' => __( 'Componente actualizado correctamente', 'flavor-chat-ia' ),
-            ),
-            200
-        );
+        return rest_ensure_response( array( 'success' => true, 'message' => __( 'Componente eliminado', 'flavor-chat-ia' ) ) );
     }
 
-    /**
-     * REST: Eliminar componente
-     *
-     * @param WP_REST_Request $request Petición REST.
-     * @return WP_REST_Response|WP_Error
-     */
-    public function rest_eliminar_componente( $request ) {
-        $id     = $request->get_param( 'id' );
-        $result = $this->eliminar_componente( $id );
-
-        if ( is_wp_error( $result ) ) {
-            return new WP_Error(
-                $result->get_error_code(),
-                $result->get_error_message(),
-                array( 'status' => 404 )
-            );
-        }
-
-        return new WP_REST_Response(
-            array(
-                'success' => true,
-                'message' => __( 'Componente eliminado correctamente', 'flavor-chat-ia' ),
-            ),
-            200
-        );
+    public function api_get_categories( $request ) {
+        return rest_ensure_response( array( 'success' => true, 'categories' => $this->get_categories() ) );
     }
 
-    /**
-     * REST: Listar categorías
-     *
-     * @param WP_REST_Request $request Petición REST.
-     * @return WP_REST_Response
-     */
-    public function rest_listar_categorias( $request ) {
-        $categorias = $this->obtener_categorias();
-
-        $resultado = array();
-        foreach ( $categorias as $slug => $nombre ) {
-            $resultado[] = array(
-                'slug' => $slug,
-                'name' => $nombre,
-            );
+    public function api_export_component( $request ) {
+        $resultado = $this->export_component( $request->get_param( 'id' ) );
+        if ( is_wp_error( $resultado ) ) {
+            return $resultado;
         }
-
-        return new WP_REST_Response( array( 'categories' => $resultado ), 200 );
+        return rest_ensure_response( array( 'success' => true, 'data' => $resultado ) );
     }
 
-    /**
-     * REST: Importar componente
-     *
-     * @param WP_REST_Request $request Petición REST.
-     * @return WP_REST_Response|WP_Error
-     */
-    public function rest_importar_componente( $request ) {
-        $json = $request->get_param( 'json' );
-
-        if ( empty( $json ) ) {
-            $datos = $request->get_json_params();
-            $json  = wp_json_encode( $datos );
+    public function api_import_component( $request ) {
+        $resultado = $this->import_component( $request->get_json_params() );
+        if ( is_wp_error( $resultado ) ) {
+            return $resultado;
         }
-
-        $id = $this->importar_componente( $json );
-
-        if ( is_wp_error( $id ) ) {
-            return new WP_Error(
-                $id->get_error_code(),
-                $id->get_error_message(),
-                array( 'status' => 400 )
-            );
-        }
-
-        return new WP_REST_Response(
-            array(
-                'success' => true,
-                'id'      => $id,
-                'message' => __( 'Componente importado correctamente', 'flavor-chat-ia' ),
-            ),
-            201
-        );
-    }
-
-    /**
-     * REST: Exportar componente
-     *
-     * @param WP_REST_Request $request Petición REST.
-     * @return WP_REST_Response|WP_Error
-     */
-    public function rest_exportar_componente( $request ) {
-        $id   = $request->get_param( 'id' );
-        $json = $this->exportar_componente( $id );
-
-        if ( is_wp_error( $json ) ) {
-            return new WP_Error(
-                $json->get_error_code(),
-                $json->get_error_message(),
-                array( 'status' => 404 )
-            );
-        }
-
-        return new WP_REST_Response(
-            array(
-                'success' => true,
-                'json'    => $json,
-            ),
-            200
-        );
+        return rest_ensure_response( array( 'success' => true, 'id' => $resultado, 'message' => __( 'Componente importado', 'flavor-chat-ia' ) ) );
     }
 }
 
-// Inicializar la biblioteca
-Flavor_VBP_Component_Library::get_instance();
+// Inicializar
+add_action( 'init', function() {
+    Flavor_VBP_Component_Library::get_instance();
+} );

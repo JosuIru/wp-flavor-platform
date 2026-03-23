@@ -256,7 +256,7 @@ class _ComunidadDetalleScreenState extends ConsumerState<ComunidadDetalleScreen>
 
     try {
       final clienteApi = ref.read(apiClientProvider);
-      final respuesta = await clienteApi.post('/comunidades/${widget.comunidadId}/unirse');
+      final respuesta = await clienteApi.post('/comunidades/${widget.comunidadId}/unirse', data: {});
 
       if (!mounted) return;
 

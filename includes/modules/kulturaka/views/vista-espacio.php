@@ -246,7 +246,7 @@ $historial_propuestas = $wpdb->get_results($wpdb->prepare(
             <section class="section-eventos">
                 <div class="section-header">
                     <h3><span class="dashicons dashicons-calendar-alt"></span> Próximos eventos</h3>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=flavor-eventos&action=nuevo')); ?>" class="button">
+                    <a href="<?php echo esc_url(admin_url('admin.php?page=eventos-dashboard&action=nuevo')); ?>" class="button">
                         <span class="dashicons dashicons-plus-alt"></span> Nuevo evento
                     </a>
                 </div>

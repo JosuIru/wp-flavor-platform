@@ -149,9 +149,15 @@ class Flavor_Seguimiento_Denuncias_Frontend_Controller {
         add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_dashboard_tab']);
 
         // Shortcodes adicionales
-        add_shortcode('flavor_seguimiento_denuncias_dashboard', [$this, 'shortcode_dashboard']);
-        add_shortcode('flavor_denuncias_buscador', [$this, 'shortcode_buscador']);
-        add_shortcode('flavor_denuncias_plantillas', [$this, 'shortcode_plantillas']);
+        if (!shortcode_exists('flavor_seguimiento_denuncias_dashboard')) {
+            add_shortcode('flavor_seguimiento_denuncias_dashboard', [$this, 'shortcode_dashboard']);
+        }
+        if (!shortcode_exists('flavor_denuncias_buscador')) {
+            add_shortcode('flavor_denuncias_buscador', [$this, 'shortcode_buscador']);
+        }
+        if (!shortcode_exists('flavor_denuncias_plantillas')) {
+            add_shortcode('flavor_denuncias_plantillas', [$this, 'shortcode_plantillas']);
+        }
 
         // AJAX handlers adicionales
         add_action('wp_ajax_flavor_seguimiento_denuncias_dashboard_data', [$this, 'ajax_dashboard_data']);
@@ -217,7 +223,8 @@ class Flavor_Seguimiento_Denuncias_Frontend_Controller {
             return $tabs;
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_seguimiento_denuncias')) {
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_seguimiento_denuncias')) {
             return $tabs;
         }
 

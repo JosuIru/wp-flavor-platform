@@ -358,7 +358,8 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
                 onApprove: function(data, actions) {
                     // Redirigir a la URL de captura
                     var captureUrl = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>';
-                    window.location.href = captureUrl + '?action=gc_paypal_capture&order_id=' + data.orderID;
+                    var nonce = '<?php echo esc_js(wp_create_nonce('gc_paypal_capture')); ?>';
+                    window.location.href = captureUrl + '?action=gc_paypal_capture&order_id=' + encodeURIComponent(data.orderID) + '&nonce=' + encodeURIComponent(nonce);
                 },
                 onCancel: function(data) {
                     document.getElementById('gc-paypal-message').textContent = '<?php echo esc_js(__('Pago cancelado.', 'flavor-chat-ia')); ?>';
@@ -408,19 +409,29 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
      * @return void
      */
     public function ajax_capture_payment(): void {
+        if (!is_user_logged_in()) {
+            wp_safe_redirect(home_url('/mi-portal/grupos-consumo/?error=not_logged_in'));
+            exit;
+        }
+
+        if (!isset($_GET['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['nonce'])), 'gc_paypal_capture')) {
+            wp_safe_redirect(home_url('/mi-portal/grupos-consumo/?error=invalid_nonce'));
+            exit;
+        }
+
         $order_id = sanitize_text_field($_GET['order_id'] ?? '');
 
         if (empty($order_id)) {
-            wp_redirect(home_url('/mi-portal/grupos-consumo/?error=missing_order'));
+            wp_safe_redirect(home_url('/mi-portal/grupos-consumo/?error=missing_order'));
             exit;
         }
 
         $resultado = $this->capture_payment($order_id);
 
         if ($resultado['success']) {
-            wp_redirect(home_url('/mi-portal/grupos-consumo/mis-pedidos/?payment=success'));
+            wp_safe_redirect(home_url('/mi-portal/grupos-consumo/mis-pedidos/?payment=success'));
         } else {
-            wp_redirect(home_url('/mi-portal/grupos-consumo/checkout/?error=payment_failed'));
+            wp_safe_redirect(home_url('/mi-portal/grupos-consumo/checkout/?error=payment_failed'));
         }
         exit;
     }
@@ -441,12 +452,12 @@ class Flavor_GC_Gateway_PayPal extends Flavor_GC_Payment_Gateway {
             $resultado = $this->capture_payment($token);
 
             if ($resultado['success']) {
-                wp_redirect(home_url('/mi-portal/grupos-consumo/mis-pedidos/?payment=success'));
+                wp_safe_redirect(home_url('/mi-portal/grupos-consumo/mis-pedidos/?payment=success'));
                 exit;
             }
         }
 
-        wp_redirect(home_url('/mi-portal/grupos-consumo/checkout/?error=payment_failed'));
+        wp_safe_redirect(home_url('/mi-portal/grupos-consumo/checkout/?error=payment_failed'));
         exit;
     }
 

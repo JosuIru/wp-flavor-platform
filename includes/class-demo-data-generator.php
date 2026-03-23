@@ -12,6 +12,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+if (class_exists('Flavor_Demo_Data_Generator', false)) {
+    return;
+}
+
 class Flavor_Demo_Data_Generator {
 
     private static $instance = null;

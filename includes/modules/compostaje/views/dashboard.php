@@ -18,6 +18,18 @@ $tabla_mantenimiento = $wpdb->prefix . 'flavor_compostaje_mantenimiento';
 
 // Verificar si las tablas existen
 $tabla_composteras_existe = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $tabla_composteras)) === $tabla_composteras;
+$tabla_depositos_existe = false;
+$tabla_mantenimiento_existe = false;
+
+$total_composteras = 0;
+$total_depositos_mes = 0;
+$total_kg_organicos_mes = 0.0;
+$compost_listo = 0;
+$stats_composteras = [];
+$usuarios_activos_compostaje = [];
+$evolucion_compostaje = [];
+$mantenimiento_pendiente = [];
+$composteras_atencion = [];
 
 if ($tabla_composteras_existe) {
     $total_composteras = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_composteras WHERE estado != 'inactiva'");
@@ -65,51 +77,6 @@ if ($tabla_composteras_existe) {
         WHERE estado IN ('llena', 'mantenimiento', 'problema')
         ORDER BY estado DESC LIMIT 5
     ") ?: [];
-
-    $usando_demo = $total_composteras === 0;
-} else {
-    $usando_demo = true;
-}
-
-if ($usando_demo) {
-    $total_composteras = 8;
-    $total_depositos_mes = 156;
-    $total_kg_organicos_mes = 523.5;
-    $compost_listo = 2;
-
-    $stats_composteras = [
-        (object) ['id' => 1, 'nombre' => 'Compostera Parque Norte', 'total_depositos' => 45, 'total_kg_depositado' => 156.3, 'nivel_llenado' => 75],
-        (object) ['id' => 2, 'nombre' => 'Compostera Plaza Mayor', 'total_depositos' => 38, 'total_kg_depositado' => 132.5, 'nivel_llenado' => 60],
-        (object) ['id' => 3, 'nombre' => 'Compostera Centro Cívico', 'total_depositos' => 32, 'total_kg_depositado' => 118.2, 'nivel_llenado' => 45],
-        (object) ['id' => 4, 'nombre' => 'Compostera Mercado', 'total_depositos' => 25, 'total_kg_depositado' => 87.5, 'nivel_llenado' => 80],
-        (object) ['id' => 5, 'nombre' => 'Compostera Barrio Sur', 'total_depositos' => 16, 'total_kg_depositado' => 29.0, 'nivel_llenado' => 25],
-    ];
-
-    $usuarios_activos_compostaje = [
-        (object) ['ID' => 1, 'display_name' => 'María García', 'total_depositos' => 18, 'total_kg' => 42.5],
-        (object) ['ID' => 2, 'display_name' => 'Carlos López', 'total_depositos' => 15, 'total_kg' => 38.2],
-        (object) ['ID' => 3, 'display_name' => 'Ana Martínez', 'total_depositos' => 12, 'total_kg' => 31.8],
-        (object) ['ID' => 4, 'display_name' => 'Pedro Sánchez', 'total_depositos' => 10, 'total_kg' => 25.3],
-        (object) ['ID' => 5, 'display_name' => 'Laura Fernández', 'total_depositos' => 9, 'total_kg' => 22.1],
-    ];
-
-    $evolucion_compostaje = [];
-    for ($i = 5; $i >= 0; $i--) {
-        $evolucion_compostaje[] = (object) [
-            'mes' => date('Y-m', strtotime("-{$i} months")),
-            'total_kg' => rand(300, 600),
-            'total_depositos' => rand(80, 180),
-        ];
-    }
-
-    $mantenimiento_pendiente = [
-        (object) ['id' => 1, 'compostera_nombre' => 'Compostera Mercado', 'tipo_mantenimiento' => 'Volteo', 'fecha_programada' => date('Y-m-d', strtotime('+3 days'))],
-        (object) ['id' => 2, 'compostera_nombre' => 'Compostera Parque Norte', 'tipo_mantenimiento' => 'Revisión humedad', 'fecha_programada' => date('Y-m-d', strtotime('+5 days'))],
-    ];
-
-    $composteras_atencion = [
-        (object) ['id' => 4, 'nombre' => 'Compostera Mercado', 'estado' => 'llena'],
-    ];
 }
 
 $co2_evitado = $total_kg_organicos_mes * 0.5;
@@ -135,11 +102,11 @@ $estado_badge_classes = [
     }
     ?>
 
-    <?php if ($usando_demo): ?>
+    <?php if (!$tabla_composteras_existe): ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info"></span>
-        <strong><?php esc_html_e('Modo demostración:', 'flavor-chat-ia'); ?></strong>
-        <?php esc_html_e('Se muestran datos de ejemplo. Los datos reales aparecerán cuando se registren composteras.', 'flavor-chat-ia'); ?>
+        <strong><?php esc_html_e('Sin datos disponibles:', 'flavor-chat-ia'); ?></strong>
+        <?php esc_html_e('Faltan tablas del módulo Compostaje o aún no hay composteras registradas.', 'flavor-chat-ia'); ?>
     </div>
     <?php endif; ?>
 

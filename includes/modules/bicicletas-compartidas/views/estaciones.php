@@ -20,6 +20,7 @@ global $wpdb;
 
 $tabla_estaciones = $wpdb->prefix . 'flavor_bicicletas_estaciones';
 $tabla_bicicletas = $wpdb->prefix . 'flavor_bicicletas_bicicletas';
+$tabla_bicicletas_alt = $wpdb->prefix . 'flavor_bicicletas';
 $tabla_reservas = $wpdb->prefix . 'flavor_bicicletas_reservas';
 
 // Verificar existencia de tablas
@@ -39,7 +40,21 @@ $tabla_bicicletas_existe = $wpdb->get_var(
     )
 );
 
-$usar_datos_demo = !$tabla_estaciones_existe;
+$tabla_bicicletas_alt_existe = $wpdb->get_var(
+    $wpdb->prepare(
+        "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
+        DB_NAME,
+        $tabla_bicicletas_alt
+    )
+);
+
+if (!$tabla_bicicletas_existe && $tabla_bicicletas_alt_existe) {
+    $tabla_bicicletas = $tabla_bicicletas_alt;
+    $tabla_bicicletas_existe = true;
+}
+
+$tablas_estaciones_disponibles = (bool) $tabla_estaciones_existe;
+$col_zona = null;
 
 // =====================================================
 // FUNCIONES HELPER
@@ -109,121 +124,6 @@ function obtener_tipo_estacion($capacidad) {
 }
 
 // =====================================================
-// DATOS DEMO
-// =====================================================
-
-if ($usar_datos_demo) {
-    $estaciones_demo = [
-        (object) [
-            'id' => 1,
-            'nombre' => 'Plaza Mayor',
-            'direccion' => 'Plaza Mayor, 1',
-            'coordenadas_lat' => '40.4168',
-            'coordenadas_lng' => '-3.7038',
-            'capacidad_maxima' => 30,
-            'bicicletas_actuales' => 24,
-            'espacios_libres' => 6,
-            'estado' => 'activa',
-            'horario' => '24h',
-            'zona' => 'Centro',
-            'fecha_instalacion' => date('Y-m-d', strtotime('-2 years')),
-            'reservas_mes' => 156
-        ],
-        (object) [
-            'id' => 2,
-            'nombre' => 'Estación de Tren',
-            'direccion' => 'Paseo de la Estación, 15',
-            'coordenadas_lat' => '40.4067',
-            'coordenadas_lng' => '-3.6893',
-            'capacidad_maxima' => 40,
-            'bicicletas_actuales' => 12,
-            'espacios_libres' => 28,
-            'estado' => 'activa',
-            'horario' => '06:00-23:00',
-            'zona' => 'Transporte',
-            'fecha_instalacion' => date('Y-m-d', strtotime('-18 months')),
-            'reservas_mes' => 234
-        ],
-        (object) [
-            'id' => 3,
-            'nombre' => 'Parque Central',
-            'direccion' => 'Av. del Parque, 45',
-            'coordenadas_lat' => '40.4230',
-            'coordenadas_lng' => '-3.7150',
-            'capacidad_maxima' => 20,
-            'bicicletas_actuales' => 18,
-            'espacios_libres' => 2,
-            'estado' => 'activa',
-            'horario' => '07:00-22:00',
-            'zona' => 'Parques',
-            'fecha_instalacion' => date('Y-m-d', strtotime('-1 year')),
-            'reservas_mes' => 98
-        ],
-        (object) [
-            'id' => 4,
-            'nombre' => 'Universidad Campus Norte',
-            'direccion' => 'Campus Universitario, Edificio A',
-            'coordenadas_lat' => '40.4350',
-            'coordenadas_lng' => '-3.7250',
-            'capacidad_maxima' => 35,
-            'bicicletas_actuales' => 8,
-            'espacios_libres' => 27,
-            'estado' => 'activa',
-            'horario' => '24h',
-            'zona' => 'Educación',
-            'fecha_instalacion' => date('Y-m-d', strtotime('-6 months')),
-            'reservas_mes' => 312
-        ],
-        (object) [
-            'id' => 5,
-            'nombre' => 'Centro Comercial Norte',
-            'direccion' => 'Av. Comercial, 100',
-            'coordenadas_lat' => '40.4450',
-            'coordenadas_lng' => '-3.6900',
-            'capacidad_maxima' => 25,
-            'bicicletas_actuales' => 0,
-            'espacios_libres' => 25,
-            'estado' => 'mantenimiento',
-            'horario' => '10:00-22:00',
-            'zona' => 'Comercial',
-            'fecha_instalacion' => date('Y-m-d', strtotime('-8 months')),
-            'reservas_mes' => 0
-        ],
-        (object) [
-            'id' => 6,
-            'nombre' => 'Hospital General',
-            'direccion' => 'C/ Salud, 1',
-            'coordenadas_lat' => '40.4100',
-            'coordenadas_lng' => '-3.7000',
-            'capacidad_maxima' => 15,
-            'bicicletas_actuales' => 10,
-            'espacios_libres' => 5,
-            'estado' => 'activa',
-            'horario' => '24h',
-            'zona' => 'Salud',
-            'fecha_instalacion' => date('Y-m-d', strtotime('-3 months')),
-            'reservas_mes' => 78
-        ]
-    ];
-
-    // Calcular estadísticas demo
-    $total_estaciones = count($estaciones_demo);
-    $estaciones_activas = count(array_filter($estaciones_demo, fn($e) => $e->estado === 'activa'));
-    $total_bicicletas = array_sum(array_column($estaciones_demo, 'bicicletas_actuales'));
-    $capacidad_total = array_sum(array_column($estaciones_demo, 'capacidad_maxima'));
-    $reservas_mes = array_sum(array_column($estaciones_demo, 'reservas_mes'));
-
-    $estadisticas = [
-        'total_estaciones' => $total_estaciones,
-        'estaciones_activas' => $estaciones_activas,
-        'total_bicicletas' => $total_bicicletas,
-        'capacidad_total' => $capacidad_total,
-        'ocupacion_promedio' => $capacidad_total > 0 ? round(($total_bicicletas / $capacidad_total) * 100, 1) : 0,
-        'reservas_mes' => $reservas_mes
-    ];
-}
-
-// =====================================================
 // PARÁMETROS DE FILTRADO Y PAGINACIÓN
 // =====================================================
 
@@ -241,7 +141,14 @@ $filtro_orden = isset($_GET['orden']) ? sanitize_text_field($_GET['orden']) : 'n
 // CONSULTA DE DATOS REALES O FILTRADO DEMO
 // =====================================================
 
-if (!$usar_datos_demo) {
+if ($tablas_estaciones_disponibles) {
+    $col_capacidad = (int) $wpdb->get_var("SHOW COLUMNS FROM $tabla_estaciones LIKE 'capacidad_maxima'")
+        ? 'capacidad_maxima'
+        : 'capacidad_total';
+    $col_zona = (int) $wpdb->get_var("SHOW COLUMNS FROM $tabla_estaciones LIKE 'zona'")
+        ? 'zona'
+        : null;
+
     // Construir query con filtros
     $where_clauses = ["1=1"];
     $params = [];
@@ -258,7 +165,7 @@ if (!$usar_datos_demo) {
         $params[] = $filtro_estado;
     }
 
-    if (!empty($filtro_zona)) {
+    if (!empty($filtro_zona) && $col_zona) {
         $where_clauses[] = "e.zona = %s";
         $params[] = $filtro_zona;
     }
@@ -287,7 +194,7 @@ if (!$usar_datos_demo) {
         'total_estaciones' => $wpdb->get_var("SELECT COUNT(*) FROM $tabla_estaciones"),
         'estaciones_activas' => $wpdb->get_var("SELECT COUNT(*) FROM $tabla_estaciones WHERE estado = 'activa'"),
         'total_bicicletas' => $tabla_bicicletas_existe ? $wpdb->get_var("SELECT COUNT(*) FROM $tabla_bicicletas WHERE estado = 'disponible'") : 0,
-        'capacidad_total' => $wpdb->get_var("SELECT COALESCE(SUM(capacidad_maxima), 0) FROM $tabla_estaciones"),
+        'capacidad_total' => $wpdb->get_var("SELECT COALESCE(SUM($col_capacidad), 0) FROM $tabla_estaciones"),
         'ocupacion_promedio' => 0,
         'reservas_mes' => 0
     ];
@@ -299,8 +206,10 @@ if (!$usar_datos_demo) {
     // Query principal
     $query = "
         SELECT e.*,
+               e.$col_capacidad as capacidad_maxima,
+               " . ($col_zona ? "e.$col_zona" : "''") . " as zona,
                COUNT(b.id) as bicicletas_actuales,
-               e.capacidad_maxima - COUNT(b.id) as espacios_libres
+               e.$col_capacidad - COUNT(b.id) as espacios_libres
         FROM $tabla_estaciones e
         LEFT JOIN $tabla_bicicletas b ON e.id = b.estacion_actual_id AND b.estado = 'disponible'
         WHERE $where_sql
@@ -318,7 +227,7 @@ if (!$usar_datos_demo) {
                 $having_clauses[] = "bicicletas_actuales = 0";
                 break;
             case 'llena':
-                $having_clauses[] = "bicicletas_actuales >= e.capacidad_maxima * 0.8";
+                $having_clauses[] = "bicicletas_actuales >= e.$col_capacidad * 0.8";
                 break;
         }
     }
@@ -339,67 +248,28 @@ if (!$usar_datos_demo) {
     $estaciones = !empty($params) ? $wpdb->get_results($wpdb->prepare($query, $params)) : $wpdb->get_results($query);
 
     // Obtener zonas únicas para filtro
-    $zonas = $wpdb->get_col("SELECT DISTINCT zona FROM $tabla_estaciones WHERE zona IS NOT NULL AND zona != '' ORDER BY zona");
-
+    $zonas = $col_zona
+        ? $wpdb->get_col("SELECT DISTINCT $col_zona FROM $tabla_estaciones WHERE $col_zona IS NOT NULL AND $col_zona != '' ORDER BY $col_zona")
+        : [];
 } else {
-    // Filtrar datos demo
-    $estaciones_filtradas = array_filter($estaciones_demo, function($estacion) use ($filtro_busqueda, $filtro_estado, $filtro_zona, $filtro_disponibilidad) {
-        if (!empty($filtro_busqueda)) {
-            $busqueda_lower = strtolower($filtro_busqueda);
-            if (strpos(strtolower($estacion->nombre), $busqueda_lower) === false &&
-                strpos(strtolower($estacion->direccion), $busqueda_lower) === false) {
-                return false;
-            }
-        }
-
-        if (!empty($filtro_estado) && $estacion->estado !== $filtro_estado) {
-            return false;
-        }
-
-        if (!empty($filtro_zona) && $estacion->zona !== $filtro_zona) {
-            return false;
-        }
-
-        if (!empty($filtro_disponibilidad)) {
-            $tiene_bicis = $estacion->bicicletas_actuales > 0;
-            $llena = $estacion->bicicletas_actuales >= $estacion->capacidad_maxima * 0.8;
-
-            if ($filtro_disponibilidad === 'con_bicis' && !$tiene_bicis) return false;
-            if ($filtro_disponibilidad === 'sin_bicis' && $tiene_bicis) return false;
-            if ($filtro_disponibilidad === 'llena' && !$llena) return false;
-        }
-
-        return true;
-    });
-
-    // Ordenar
-    usort($estaciones_filtradas, function($a, $b) use ($filtro_orden) {
-        switch ($filtro_orden) {
-            case 'nombre_desc':
-                return strcasecmp($b->nombre, $a->nombre);
-            case 'capacidad_desc':
-                return $b->capacidad_maxima - $a->capacidad_maxima;
-            case 'bicicletas_desc':
-                return $b->bicicletas_actuales - $a->bicicletas_actuales;
-            case 'reservas_desc':
-                return $b->reservas_mes - $a->reservas_mes;
-            default:
-                return strcasecmp($a->nombre, $b->nombre);
-        }
-    });
-
-    $total_items = count($estaciones_filtradas);
-    $estaciones = array_slice($estaciones_filtradas, $offset, $items_por_pagina);
-    $zonas = array_unique(array_column($estaciones_demo, 'zona'));
-    sort($zonas);
+    $estadisticas = [
+        'total_estaciones' => 0,
+        'estaciones_activas' => 0,
+        'total_bicicletas' => 0,
+        'capacidad_total' => 0,
+        'ocupacion_promedio' => 0,
+        'reservas_mes' => 0,
+    ];
+    $total_items = 0;
+    $estaciones = [];
+    $zonas = [];
 }
 
 $total_paginas = ceil($total_items / $items_por_pagina);
 
 // Top estaciones para sidebar
-$top_estaciones = $usar_datos_demo
-    ? array_slice(array_filter($estaciones_demo, fn($e) => $e->estado === 'activa'), 0, 5)
-    : ($tabla_estaciones_existe ? $wpdb->get_results("
+$top_estaciones = $tablas_estaciones_disponibles
+    ? $wpdb->get_results("
         SELECT e.*, COUNT(b.id) as bicicletas_actuales
         FROM $tabla_estaciones e
         LEFT JOIN $tabla_bicicletas b ON e.id = b.estacion_actual_id
@@ -407,19 +277,13 @@ $top_estaciones = $usar_datos_demo
         GROUP BY e.id
         ORDER BY bicicletas_actuales DESC
         LIMIT 5
-    ") : []);
+    ")
+    : [];
 
 // Distribución por zona para gráfico
 $distribucion_zona = [];
-if ($usar_datos_demo) {
-    foreach ($estaciones_demo as $e) {
-        if (!isset($distribucion_zona[$e->zona])) {
-            $distribucion_zona[$e->zona] = 0;
-        }
-        $distribucion_zona[$e->zona]++;
-    }
-} else if ($tabla_estaciones_existe) {
-    $resultados = $wpdb->get_results("SELECT zona, COUNT(*) as total FROM $tabla_estaciones GROUP BY zona");
+if ($tablas_estaciones_disponibles && $col_zona) {
+    $resultados = $wpdb->get_results("SELECT $col_zona as zona, COUNT(*) as total FROM $tabla_estaciones GROUP BY $col_zona");
     foreach ($resultados as $r) {
         $distribucion_zona[$r->zona] = $r->total;
     }
@@ -436,11 +300,11 @@ if ($usar_datos_demo) {
         <?php esc_html_e('Nueva Estación', 'flavor-chat-ia'); ?>
     </a>
 
-    <?php if ($usar_datos_demo): ?>
+    <?php if (!$tablas_estaciones_disponibles): ?>
     <div class="notice notice-info inline" style="margin: 15px 0;">
         <p>
             <span class="dashicons dashicons-info"></span>
-            <?php echo esc_html__('Mostrando datos de demostración. Las tablas de la base de datos no están configuradas.', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Bicicletas.', 'flavor-chat-ia'); ?>
         </p>
     </div>
     <?php endif; ?>

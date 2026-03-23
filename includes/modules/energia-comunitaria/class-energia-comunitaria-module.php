@@ -1827,8 +1827,14 @@ class Flavor_Chat_Energia_Comunitaria_Module extends Flavor_Chat_Module_Base
      *
      * @return void
      */
-    public function registrar_paginas_admin()
-    {
+    public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Dashboard principal

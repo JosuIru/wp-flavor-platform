@@ -319,7 +319,9 @@ class _DynamicDetailScreenState extends ConsumerState<DynamicDetailScreen> {
       try {
         final date = DateTime.parse(value);
         return '${date.day}/${date.month}/${date.year}';
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Error formateando fecha "$key": $e');
+      }
     }
     if (key.contains('precio') && value is num) {
       return '${value.toStringAsFixed(2)} €';

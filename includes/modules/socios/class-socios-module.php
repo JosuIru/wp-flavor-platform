@@ -23,8 +23,8 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function __construct() {
         $this->id = 'socios';
-        $this->name = 'Gestion de Socios'; // Translation loaded on init
-        $this->description = 'Gestion de socios, cuotas y membresias desde la app movil.'; // Translation loaded on init
+        $this->name = 'Gestion de Miembros'; // Translation loaded on init
+        $this->description = 'Gestion de miembros, cuotas y membresias desde la app movil.'; // Translation loaded on init
         $this->module_role = 'base';
         $this->ecosystem_base_for_modules = ['participacion', 'transparencia', 'reservas'];
         $this->ecosystem_supports_modules = ['participacion', 'transparencia', 'reservas'];
@@ -59,7 +59,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function get_activation_error() {
         if (!$this->can_activate()) {
-            return __('Las tablas de Socios no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
+            return __('Las tablas de Miembros no están creadas. Activa el módulo para crearlas automáticamente.', 'flavor-chat-ia');
         }
         
     return '';
@@ -83,9 +83,9 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
             'permite_cuota_reducida' => true,
             'requiere_validacion_alta' => true,
             'tipos_socio' => [
-                'consumidor' => __('Socio Consumidor', 'flavor-chat-ia'),
-                'trabajador' => __('Socio Trabajador', 'flavor-chat-ia'),
-                'colaborador' => __('Socio Colaborador', 'flavor-chat-ia'),
+                'consumidor' => __('Miembro Consumidor', 'flavor-chat-ia'),
+                'trabajador' => __('Miembro Trabajador', 'flavor-chat-ia'),
+                'colaborador' => __('Miembro Colaborador', 'flavor-chat-ia'),
             ],
         ];
     }
@@ -184,9 +184,17 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      * Registra los shortcodes del módulo
      */
     public function register_shortcodes() {
-        add_shortcode('socios_pagar_cuota', [$this, 'shortcode_pagar_cuota']);
-        add_shortcode('socios_mi_perfil', [$this, 'shortcode_mi_perfil']);
-        add_shortcode('socios_mis_cuotas', [$this, 'shortcode_mis_cuotas']);
+        $shortcodes = [
+            'socios_pagar_cuota' => 'shortcode_pagar_cuota',
+            'socios_mi_perfil' => 'shortcode_mi_perfil',
+            'socios_mis_cuotas' => 'shortcode_mis_cuotas',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -517,7 +525,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
     protected function get_admin_config() {
         return [
             'id' => 'socios',
-            'label' => __('Socios', 'flavor-chat-ia'),
+            'label' => __('Miembros', 'flavor-chat-ia'),
             'icon' => 'dashicons-groups',
             'capability' => 'manage_options',
             'categoria' => 'personas',
@@ -529,7 +537,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
                 ],
                 [
                     'slug' => 'socios-listado',
-                    'titulo' => __('Listado de Socios', 'flavor-chat-ia'),
+                    'titulo' => __('Listado de Miembros', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_admin_listado'],
                 ],
                 [
@@ -603,7 +611,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $estadisticas[] = [
             'icon' => 'dashicons-groups',
             'valor' => $socios_activos,
-            'label' => __('Socios activos', 'flavor-chat-ia'),
+            'label' => __('Miembros activos', 'flavor-chat-ia'),
             'color' => 'green',
             'enlace' => admin_url('admin.php?page=socios-listado&estado=activo'),
         ];
@@ -630,10 +638,10 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_dashboard() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Dashboard de Socios', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Socio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-altas-bajas'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Dashboard de Miembros', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Miembro', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-altas-bajas'), 'class' => 'button-primary'],
         ]);
-        echo '<p>' . __('Panel de control del módulo de gestión de socios.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Panel de control del módulo de gestión de miembros.', 'flavor-chat-ia') . '</p>';
 
         if (!$this->can_activate()) {
             echo '<div class="notice notice-warning"><p>' . esc_html__('El módulo no está activo o no tiene tablas creadas.', 'flavor-chat-ia') . '</p></div>';
@@ -651,7 +659,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $cuotas_pendientes = (int) $wpdb->get_var("SELECT COUNT(*) FROM $tabla_cuotas WHERE estado = 'pendiente'");
 
         echo '<div class="flavor-stats-grid">';
-        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-groups"></span><div class="stat-content"><span class="stat-number">' . esc_html($activos) . '</span><span class="stat-label">' . esc_html__('Socios activos', 'flavor-chat-ia') . '</span></div></div>';
+        echo '<div class="flavor-stat-card"><span class="dashicons dashicons-groups"></span><div class="stat-content"><span class="stat-number">' . esc_html($activos) . '</span><span class="stat-label">' . esc_html__('Miembros activos', 'flavor-chat-ia') . '</span></div></div>';
         echo '<div class="flavor-stat-card"><span class="dashicons dashicons-warning"></span><div class="stat-content"><span class="stat-number">' . esc_html($suspendidos) . '</span><span class="stat-label">' . esc_html__('Suspendidos', 'flavor-chat-ia') . '</span></div></div>';
         echo '<div class="flavor-stat-card"><span class="dashicons dashicons-dismiss"></span><div class="stat-content"><span class="stat-number">' . esc_html($bajas) . '</span><span class="stat-label">' . esc_html__('Bajas', 'flavor-chat-ia') . '</span></div></div>';
         echo '<div class="flavor-stat-card"><span class="dashicons dashicons-money-alt"></span><div class="stat-content"><span class="stat-number">' . esc_html($cuotas_pendientes) . '</span><span class="stat-label">' . esc_html__('Cuotas pendientes', 'flavor-chat-ia') . '</span></div></div>';
@@ -665,8 +673,8 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_listado() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Listado de Socios', 'flavor-chat-ia'), [
-            ['label' => __('Nuevo Socio', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-altas-bajas'), 'class' => 'button-primary'],
+        $this->render_page_header(__('Listado de Miembros', 'flavor-chat-ia'), [
+            ['label' => __('Nuevo Miembro', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=socios-altas-bajas'), 'class' => 'button-primary'],
         ]);
         $this->handle_admin_actions();
 
@@ -728,7 +736,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         $socios = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
 
         if (empty($socios)) {
-            echo '<p>' . esc_html__('No hay socios con esos filtros.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('No hay miembros con esos filtros.', 'flavor-chat-ia') . '</p>';
             echo '</div>';
             return;
         }
@@ -840,16 +848,16 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_altas_bajas() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Altas y Bajas de Socios', 'flavor-chat-ia'));
+        $this->render_page_header(__('Altas y Bajas de Miembros', 'flavor-chat-ia'));
         $this->handle_admin_create_socio();
         $this->handle_admin_baja_socio();
 
-        echo '<h3>' . esc_html__('Alta de socio', 'flavor-chat-ia') . '</h3>';
+        echo '<h3>' . esc_html__('Alta de miembro', 'flavor-chat-ia') . '</h3>';
         echo '<form method="post">';
         wp_nonce_field('socios_alta', 'socios_alta_nonce');
         echo '<table class="form-table"><tbody>';
         echo '<tr><th>' . esc_html__('Usuario ID', 'flavor-chat-ia') . '</th><td><input type="number" name="usuario_id" min="1" required></td></tr>';
-        echo '<tr><th>' . esc_html__('Número de socio', 'flavor-chat-ia') . '</th><td><input type="text" name="numero_socio" required></td></tr>';
+        echo '<tr><th>' . esc_html__('Número de miembro', 'flavor-chat-ia') . '</th><td><input type="text" name="numero_socio" required></td></tr>';
         echo '<tr><th>' . esc_html__('Tipo', 'flavor-chat-ia') . '</th><td><select name="tipo_socio">';
         foreach ($this->get_setting('tipos_socio', []) as $key => $label) {
             echo '<option value="' . esc_attr($key) . '">' . esc_html($label) . '</option>';
@@ -863,11 +871,11 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         echo '</form>';
 
         echo '<hr>';
-        echo '<h3>' . esc_html__('Baja de socio', 'flavor-chat-ia') . '</h3>';
+        echo '<h3>' . esc_html__('Baja de miembro', 'flavor-chat-ia') . '</h3>';
         echo '<form method="post">';
         wp_nonce_field('socios_baja', 'socios_baja_nonce');
         echo '<table class="form-table"><tbody>';
-        echo '<tr><th>' . esc_html__('ID Socio', 'flavor-chat-ia') . '</th><td><input type="number" name="socio_id" min="1" required></td></tr>';
+        echo '<tr><th>' . esc_html__('ID Miembro', 'flavor-chat-ia') . '</th><td><input type="number" name="socio_id" min="1" required></td></tr>';
         echo '<tr><th>' . esc_html__('Motivo', 'flavor-chat-ia') . '</th><td><textarea name="motivo" rows="3" class="large-text"></textarea></td></tr>';
         echo '</tbody></table>';
         submit_button(__('Dar de baja', 'flavor-chat-ia'));
@@ -880,9 +888,9 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function render_admin_config() {
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Configuración de Socios', 'flavor-chat-ia'));
+        $this->render_page_header(__('Configuración de Miembros', 'flavor-chat-ia'));
         $this->handle_admin_save_config();
-        echo '<p>' . __('Configuración del sistema de gestión de socios.', 'flavor-chat-ia') . '</p>';
+        echo '<p>' . __('Configuración del sistema de gestión de miembros.', 'flavor-chat-ia') . '</p>';
 
         $tipos = $this->get_setting('tipos_socio', []);
         $tipos_lineas = [];
@@ -898,7 +906,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
         echo '<tr><th>' . esc_html__('Día de cargo', 'flavor-chat-ia') . '</th><td><input type="number" name="dia_cargo" min="1" max="28" value="' . esc_attr($this->get_setting('dia_cargo')) . '"></td></tr>';
         echo '<tr><th>' . esc_html__('Permite cuota reducida', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="permite_cuota_reducida" value="1" ' . checked($this->get_setting('permite_cuota_reducida'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
         echo '<tr><th>' . esc_html__('Requiere validación de alta', 'flavor-chat-ia') . '</th><td><label><input type="checkbox" name="requiere_validacion_alta" value="1" ' . checked($this->get_setting('requiere_validacion_alta'), true, false) . '> ' . esc_html__('Sí', 'flavor-chat-ia') . '</label></td></tr>';
-        echo '<tr><th>' . esc_html__('Tipos de socio', 'flavor-chat-ia') . '</th><td>';
+        echo '<tr><th>' . esc_html__('Tipos de miembro', 'flavor-chat-ia') . '</th><td>';
         echo '<textarea name="tipos_socio" rows="5" class="large-text" placeholder="consumidor|Socio Consumidor">' . esc_textarea(implode("\n", $tipos_lineas)) . '</textarea>';
         echo '<p class="description">' . esc_html__('Un tipo por línea en formato clave|Etiqueta.', 'flavor-chat-ia') . '</p>';
         echo '</td></tr>';
@@ -1377,7 +1385,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
     public static function get_renderer_config(): array {
         return [
             'module'   => 'socios',
-            'title'    => __('Socios', 'flavor-chat-ia'),
+            'title'    => __('Miembros', 'flavor-chat-ia'),
             'subtitle' => __('Gestiona tu membresía y tus cuotas', 'flavor-chat-ia'),
             'icon'     => '🪪',
             'color'    => 'emerald',
@@ -1399,7 +1407,7 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
 
             'tabs' => [
                 'socios' => [
-                    'label'   => __('Socios', 'flavor-chat-ia'),
+                    'label'   => __('Miembros', 'flavor-chat-ia'),
                     'icon'    => 'dashicons-groups',
                     'content' => 'template:_archive.php',
                 ],
@@ -1443,23 +1451,23 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      */
     public function get_knowledge_base() {
         return <<<KNOWLEDGE
-**Sistema de Gestión de Socios**
+**Sistema de Gestión de Miembros**
 
-Control completo de socios, cuotas y membresías de la cooperativa.
+Control completo de miembros, cuotas y membresías de la cooperativa.
 
 **Funcionalidades:**
-- Registro de socios
+- Registro de miembros
 - Gestión de cuotas mensuales/anuales
 - Control de pagos
-- Tipos de socio configurables
+- Tipos de miembro configurables
 - Cuotas reducidas
 - Estadísticas y reportes
 - Altas y bajas
 
-**Tipos de socio:**
-- Consumidor: Socio que consume productos/servicios
-- Trabajador: Socio que trabaja en la cooperativa
-- Colaborador: Socio que colabora sin trabajar
+**Tipos de miembro:**
+- Consumidor: Miembro que consume productos/servicios
+- Trabajador: Miembro que trabaja en la cooperativa
+- Colaborador: Miembro que colabora sin trabajar
 
 **Gestión de cuotas:**
 - Generación automática mensual
@@ -1476,11 +1484,11 @@ KNOWLEDGE;
         return [
             [
                 'pregunta' => '¿Cómo pago mi cuota de socio?',
-                'respuesta' => 'Puedes pagar desde la app, sección Socios, o mediante transferencia bancaria a la cuenta de la cooperativa.',
+                'respuesta' => 'Puedes pagar desde la app, sección Miembros, o mediante transferencia bancaria a la cuenta de la cooperativa.',
             ],
             [
                 'pregunta' => '¿Qué pasa si no pago mi cuota?',
-                'respuesta' => 'Tras varios meses impagados, tu estado de socio puede ser suspendido hasta regularizar la situación.',
+                'respuesta' => 'Tras varios meses impagados, tu estado de miembro puede ser suspendido hasta regularizar la situación.',
             ],
         ];
     }
@@ -1494,17 +1502,17 @@ KNOWLEDGE;
     public function get_form_config($action_name) {
         $configs = [
             'dar_alta_socio' => [
-                'title' => __('Hazte Socio', 'flavor-chat-ia'),
+                'title' => __('Hazte Miembro', 'flavor-chat-ia'),
                 'description' => __('Únete a nuestra comunidad y disfruta de todos los beneficios', 'flavor-chat-ia'),
                 'fields' => [
                     'tipo_socio' => [
                         'type' => 'select',
-                        'label' => __('Tipo de socio', 'flavor-chat-ia'),
+                        'label' => __('Tipo de miembro', 'flavor-chat-ia'),
                         'required' => true,
                         'options' => [
-                            'consumidor' => __('Socio Consumidor - Acceso a grupo de consumo', 'flavor-chat-ia'),
-                            'trabajador' => __('Socio Trabajador - Trabajas en la cooperativa', 'flavor-chat-ia'),
-                            'colaborador' => __('Socio Colaborador - Apoyas el proyecto', 'flavor-chat-ia'),
+                            'consumidor' => __('Miembro Consumidor - Acceso a grupo de consumo', 'flavor-chat-ia'),
+                            'trabajador' => __('Miembro Trabajador - Trabajas en la cooperativa', 'flavor-chat-ia'),
+                            'colaborador' => __('Miembro Colaborador - Apoyas el proyecto', 'flavor-chat-ia'),
                         ],
                         'default' => 'consumidor',
                     ],
@@ -1643,7 +1651,7 @@ KNOWLEDGE;
     public function get_web_components() {
         return [
             'hero' => [
-                'label' => __('Hero Socios', 'flavor-chat-ia'),
+                'label' => __('Hero Miembros', 'flavor-chat-ia'),
                 'description' => __('Sección hero con información de membresía', 'flavor-chat-ia'),
                 'category' => 'hero',
                 'icon' => 'dashicons-groups',
@@ -1651,7 +1659,7 @@ KNOWLEDGE;
                     'titulo' => [
                         'type' => 'text',
                         'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Hazte Socio', 'flavor-chat-ia'),
+                        'default' => __('Hazte Miembro', 'flavor-chat-ia'),
                     ],
                     'subtitulo' => [
                         'type' => 'textarea',
@@ -1660,15 +1668,15 @@ KNOWLEDGE;
                     ],
                     'mostrar_contador' => [
                         'type' => 'toggle',
-                        'label' => __('Mostrar número de socios', 'flavor-chat-ia'),
+                        'label' => __('Mostrar número de miembros', 'flavor-chat-ia'),
                         'default' => true,
                     ],
                 ],
                 'template' => 'socios/hero',
             ],
             'beneficios' => [
-                'label' => __('Beneficios de Socios', 'flavor-chat-ia'),
-                'description' => __('Grid de ventajas de ser socio', 'flavor-chat-ia'),
+                'label' => __('Beneficios de Miembros', 'flavor-chat-ia'),
+                'description' => __('Grid de ventajas de ser miembro', 'flavor-chat-ia'),
                 'category' => 'features',
                 'icon' => 'dashicons-star-filled',
                 'fields' => [
@@ -1707,7 +1715,7 @@ KNOWLEDGE;
             ],
             'formulario_alta' => [
                 'label' => __('Formulario de Alta', 'flavor-chat-ia'),
-                'description' => __('Formulario para hacerse socio', 'flavor-chat-ia'),
+                'description' => __('Formulario para hacerse miembro', 'flavor-chat-ia'),
                 'category' => 'forms',
                 'icon' => 'dashicons-edit',
                 'fields' => [
@@ -1725,15 +1733,15 @@ KNOWLEDGE;
                 'template' => 'socios/formulario-alta',
             ],
             'testimonios' => [
-                'label' => __('Testimonios de Socios', 'flavor-chat-ia'),
-                'description' => __('Opiniones de socios actuales', 'flavor-chat-ia'),
+                'label' => __('Testimonios de Miembros', 'flavor-chat-ia'),
+                'description' => __('Opiniones de miembros actuales', 'flavor-chat-ia'),
                 'category' => 'testimonials',
                 'icon' => 'dashicons-format-quote',
                 'fields' => [
                     'titulo' => [
                         'type' => 'text',
                         'label' => __('Título', 'flavor-chat-ia'),
-                        'default' => __('Lo que dicen nuestros socios', 'flavor-chat-ia'),
+                        'default' => __('Lo que dicen nuestros miembros', 'flavor-chat-ia'),
                     ],
                     'limite' => [
                         'type' => 'number',
@@ -2030,10 +2038,10 @@ KNOWLEDGE;
     public function get_pages_definition() {
         return [
             [
-                'title' => __('Socios', 'flavor-chat-ia'),
+                'title' => __('Miembros', 'flavor-chat-ia'),
                 'slug' => 'socios',
-                'content' => '<h1>' . __('Gestión de Socios', 'flavor-chat-ia') . '</h1>
-<p>' . __('Bienvenido al área de socios. Aquí podrás gestionar tu membresía, consultar cuotas y actualizar tus datos.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Gestión de Miembros', 'flavor-chat-ia') . '</h1>
+<p>' . __('Bienvenido al área de miembros. Aquí podrás gestionar tu membresía, consultar cuotas y actualizar tus datos.', 'flavor-chat-ia') . '</p>
 
 [flavor_module_listing module="socios" action="listar" columnas="3" limite="12"]',
                 'parent' => 0,
@@ -2041,8 +2049,8 @@ KNOWLEDGE;
             [
                 'title' => __('Unirse', 'flavor-chat-ia'),
                 'slug' => 'unirse',
-                'content' => '<h1>' . __('Hazte Socio', 'flavor-chat-ia') . '</h1>
-<p>' . __('Únete a nuestra comunidad y disfruta de todos los beneficios de ser socio.', 'flavor-chat-ia') . '</p>
+                'content' => '<h1>' . __('Hazte Miembro', 'flavor-chat-ia') . '</h1>
+<p>' . __('Únete a nuestra comunidad y disfruta de todos los beneficios de ser miembro.', 'flavor-chat-ia') . '</p>
 
 [flavor_module_form module="socios" action="dar_alta_socio"]',
                 'parent' => 'socios',
@@ -2050,7 +2058,7 @@ KNOWLEDGE;
             [
                 'title' => __('Mi Perfil', 'flavor-chat-ia'),
                 'slug' => 'mi-perfil',
-                'content' => '<h1>' . __('Mi Perfil de Socio', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Mi Perfil de Miembro', 'flavor-chat-ia') . '</h1>
 <p>' . __('Consulta y actualiza tu información personal y datos de contacto.', 'flavor-chat-ia') . '</p>
 
 [flavor_module_listing module="socios" action="mi_perfil_socio" columnas="1" limite="1"]
@@ -2061,7 +2069,7 @@ KNOWLEDGE;
             [
                 'title' => __('Pagar Cuota', 'flavor-chat-ia'),
                 'slug' => 'pagar-cuota',
-                'content' => '<h1>' . __('Pagar Cuota de Socio', 'flavor-chat-ia') . '</h1>
+                'content' => '<h1>' . __('Pagar Cuota de Miembro', 'flavor-chat-ia') . '</h1>
 <p>' . __('Gestiona el pago de tus cuotas de membresía.', 'flavor-chat-ia') . '</p>
 
 [flavor_module_listing module="socios" action="mis_cuotas" columnas="1" limite="12"]
@@ -2082,7 +2090,7 @@ KNOWLEDGE;
                 'title' => __('Mi Carnet', 'flavor-chat-ia'),
                 'slug' => 'carnet',
                 'content' => '<h1>' . __('Mi Carnet Digital', 'flavor-chat-ia') . '</h1>
-<p>' . __('Accede a tu carnet de socio desde el portal.', 'flavor-chat-ia') . '</p>
+<p>' . __('Accede a tu carnet de miembro desde el portal.', 'flavor-chat-ia') . '</p>
 
 [socios_mi_carnet]',
                 'parent' => 'socios',
@@ -2094,12 +2102,19 @@ KNOWLEDGE;
      * Registrar páginas de administración (ocultas del sidebar)
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Página principal - alias con sufijo -dashboard para Admin Shell
         add_submenu_page(
             null,
-            __('Dashboard Socios', 'flavor-chat-ia'),
+            __('Dashboard Miembros', 'flavor-chat-ia'),
             __('Dashboard', 'flavor-chat-ia'),
             $capability,
             'socios-dashboard',
@@ -2109,8 +2124,8 @@ KNOWLEDGE;
         // Página principal (oculta) - mantener por compatibilidad
         add_submenu_page(
             null,
-            __('Socios', 'flavor-chat-ia'),
-            __('Socios', 'flavor-chat-ia'),
+            __('Miembros', 'flavor-chat-ia'),
+            __('Miembros', 'flavor-chat-ia'),
             $capability,
             'socios',
             [$this, 'render_pagina_dashboard']
@@ -2119,8 +2134,8 @@ KNOWLEDGE;
         // Página: Listado Socios (oculta)
         add_submenu_page(
             null,
-            __('Listado Socios', 'flavor-chat-ia'),
-            __('Listado Socios', 'flavor-chat-ia'),
+            __('Listado Miembros', 'flavor-chat-ia'),
+            __('Listado Miembros', 'flavor-chat-ia'),
             $capability,
             'socios-listado',
             [$this, 'render_pagina_socios']
@@ -2159,7 +2174,7 @@ KNOWLEDGE;
         // Página: Configuración (oculta)
         add_submenu_page(
             null,
-            __('Configuración Socios', 'flavor-chat-ia'),
+            __('Configuración Miembros', 'flavor-chat-ia'),
             __('Configuración', 'flavor-chat-ia'),
             $capability,
             'socios-config',
@@ -2185,8 +2200,8 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Socios', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Panel de administración del módulo de socios.', 'flavor-chat-ia') . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Dashboard Miembros', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Panel de administración del módulo de miembros.', 'flavor-chat-ia') . '</p></div>';
         }
     }
 
@@ -2198,7 +2213,7 @@ KNOWLEDGE;
         if (file_exists($views_path)) {
             include $views_path;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Socios', 'flavor-chat-ia') . '</h1></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Gestión de Miembros', 'flavor-chat-ia') . '</h1></div>';
         }
     }
 
@@ -2235,7 +2250,7 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap">';
-            echo '<h1>' . esc_html__('Altas y Bajas de Socios', 'flavor-chat-ia') . '</h1>';
+            echo '<h1>' . esc_html__('Altas y Bajas de Miembros', 'flavor-chat-ia') . '</h1>';
             echo '<p>' . esc_html__('Gestión de movimientos de altas y bajas del período actual.', 'flavor-chat-ia') . '</p>';
             echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
             echo '</div>';
@@ -2251,8 +2266,8 @@ KNOWLEDGE;
             include $views_path;
         } else {
             echo '<div class="wrap">';
-            echo '<h1>' . esc_html__('Configuración de Socios', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Ajustes del módulo de gestión de socios.', 'flavor-chat-ia') . '</p>';
+            echo '<h1>' . esc_html__('Configuración de Miembros', 'flavor-chat-ia') . '</h1>';
+            echo '<p>' . esc_html__('Ajustes del módulo de gestión de miembros.', 'flavor-chat-ia') . '</p>';
             echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
             echo '</div>';
         }
@@ -2268,7 +2283,7 @@ KNOWLEDGE;
         } else {
             echo '<div class="wrap">';
             echo '<h1>' . esc_html__('Solicitudes de Alta', 'flavor-chat-ia') . '</h1>';
-            echo '<p>' . esc_html__('Gestión de solicitudes de nuevos socios.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('Gestión de solicitudes de nuevos miembros.', 'flavor-chat-ia') . '</p>';
             echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
             echo '</div>';
         }

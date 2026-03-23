@@ -20,6 +20,7 @@ $tabla_respuestas = $wpdb->prefix . 'flavor_foros_respuestas';
 $tabla_foros_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_foros'");
 $tabla_hilos_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_hilos'");
 $tabla_respuestas_existe = $wpdb->get_var("SHOW TABLES LIKE '$tabla_respuestas'");
+$tablas_disponibles = ($tabla_foros_existe || $tabla_hilos_existe || $tabla_respuestas_existe);
 
 $total_foros = 0;
 $total_hilos = 0;
@@ -39,15 +40,6 @@ if ($tabla_hilos_existe) {
 
 if ($tabla_respuestas_existe) {
     $total_respuestas = $wpdb->get_var("SELECT COUNT(*) FROM $tabla_respuestas WHERE estado = 'visible'");
-}
-
-$usar_datos_ejemplo = ($total_hilos == 0 && $total_respuestas == 0);
-
-if ($usar_datos_ejemplo) {
-    $total_foros = 5;
-    $total_hilos = 87;
-    $total_respuestas = 456;
-    $usuarios_activos = 62;
 }
 
 $hilos_recientes = [];
@@ -76,6 +68,13 @@ $estado_badge_classes = [
         flavor_dashboard_help('foros');
     }
     ?>
+
+    <?php if (!$tablas_disponibles): ?>
+    <div class="dm-alert dm-alert--info">
+        <span class="dashicons dashicons-info"></span>
+        <p><?php esc_html_e('Faltan tablas del módulo Foros o aún no hay actividad registrada.', 'flavor-chat-ia'); ?></p>
+    </div>
+    <?php endif; ?>
 
     <div class="dm-header">
         <div class="dm-header__title">
@@ -158,7 +157,7 @@ $estado_badge_classes = [
                 <span class="dashicons dashicons-update"></span>
                 <?php esc_html_e('Hilos Recientes', 'flavor-chat-ia'); ?>
             </h2>
-            <?php if (!empty($hilos_recientes) || $usar_datos_ejemplo) : ?>
+            <?php if (!empty($hilos_recientes)) : ?>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=foros-hilos')); ?>" class="dm-btn dm-btn--secondary dm-btn--sm">
                     <?php esc_html_e('Ver todos los hilos', 'flavor-chat-ia'); ?>
                 </a>
@@ -208,58 +207,6 @@ $estado_badge_classes = [
                             </td>
                         </tr>
                     <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php elseif ($usar_datos_ejemplo) : ?>
-            <table class="dm-table">
-                <thead>
-                    <tr>
-                        <th style="width: 50px;"><?php esc_html_e('ID', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Título', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Autor', 'flavor-chat-ia'); ?></th>
-                        <th><?php esc_html_e('Foro', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 80px;"><?php esc_html_e('Respuestas', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 120px;"><?php esc_html_e('Última Act.', 'flavor-chat-ia'); ?></th>
-                        <th style="width: 100px;"><?php esc_html_e('Estado', 'flavor-chat-ia'); ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>#87</strong></td>
-                        <td>Cómo mejorar la participación comunitaria</td>
-                        <td>Ana Martínez</td>
-                        <td>General</td>
-                        <td style="text-align: center;">12</td>
-                        <td>hace 2 horas</td>
-                        <td><span class="dm-badge dm-badge--success">Abierto</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>#86</strong></td>
-                        <td>Propuesta para nuevo evento local</td>
-                        <td>Pedro Sánchez</td>
-                        <td>Eventos</td>
-                        <td style="text-align: center;">8</td>
-                        <td>hace 5 horas</td>
-                        <td><span class="dm-badge dm-badge--success">Abierto</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>#85</strong></td>
-                        <td>Dudas sobre el nuevo sistema de reservas</td>
-                        <td>Laura Gómez</td>
-                        <td>Soporte</td>
-                        <td style="text-align: center;">5</td>
-                        <td>hace 1 día</td>
-                        <td><span class="dm-badge dm-badge--info">Fijado</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>#84</strong></td>
-                        <td>Sugerencias para mejorar la app</td>
-                        <td>Roberto Díaz</td>
-                        <td>Sugerencias</td>
-                        <td style="text-align: center;">15</td>
-                        <td>hace 2 días</td>
-                        <td><span class="dm-badge dm-badge--warning">Cerrado</span></td>
-                    </tr>
                 </tbody>
             </table>
         <?php else : ?>

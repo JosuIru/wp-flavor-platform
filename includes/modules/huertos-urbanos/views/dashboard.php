@@ -36,6 +36,7 @@ $solicitudes_pendientes = 0;
 $por_cultivo = [];
 $huertos_recientes = [];
 $lista_actividades = [];
+$tablas_disponibles = $tabla_huertos_existe;
 
 if ($tabla_huertos_existe) {
     $total_huertos = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$tabla_huertos}");
@@ -87,45 +88,6 @@ if ($tabla_huertos_existe) {
     ", ARRAY_A) ?: [];
 }
 
-$hay_datos = $total_huertos > 0;
-
-// Datos de demostración
-if (!$hay_datos) {
-    $total_huertos = 5;
-    $huertos_activos = 4;
-    $total_parcelas = 120;
-    $parcelas_ocupadas = 98;
-    $parcelas_disponibles = 22;
-    $lista_espera = 15;
-    $total_huertanos = 85;
-    $kg_cosechados = 1450.5;
-    $solicitudes_pendientes = 7;
-
-    $por_cultivo = [
-        ['tipo_cultivo' => 'Tomate', 'total_kg' => 320],
-        ['tipo_cultivo' => 'Lechuga', 'total_kg' => 185],
-        ['tipo_cultivo' => 'Pimiento', 'total_kg' => 145],
-        ['tipo_cultivo' => 'Calabacín', 'total_kg' => 210],
-        ['tipo_cultivo' => 'Berenjena', 'total_kg' => 95],
-        ['tipo_cultivo' => 'Otros', 'total_kg' => 495.5],
-    ];
-
-    $huertos_recientes = [
-        ['id' => 1, 'nombre' => 'Huerto El Retiro', 'ubicacion' => 'Parque del Retiro', 'estado' => 'activo', 'capacidad_parcelas' => 40],
-        ['id' => 2, 'nombre' => 'Huerto Comunitario Norte', 'ubicacion' => 'Barrio Norte', 'estado' => 'activo', 'capacidad_parcelas' => 25],
-        ['id' => 3, 'nombre' => 'Huerto Vecinal Centro', 'ubicacion' => 'Centro Histórico', 'estado' => 'activo', 'capacidad_parcelas' => 30],
-        ['id' => 4, 'nombre' => 'Huerto Sur Sostenible', 'ubicacion' => 'Zona Sur', 'estado' => 'activo', 'capacidad_parcelas' => 20],
-        ['id' => 5, 'nombre' => 'Huerto Escolar', 'ubicacion' => 'CEIP San Martín', 'estado' => 'inactivo', 'capacidad_parcelas' => 5],
-    ];
-
-    $lista_actividades = [
-        ['id' => 1, 'titulo' => 'Taller de compostaje', 'tipo' => 'taller', 'fecha' => date('Y-m-d', strtotime('+2 days')), 'hora' => '10:00', 'huerto_nombre' => 'Huerto El Retiro'],
-        ['id' => 2, 'titulo' => 'Jornada de siembra primaveral', 'tipo' => 'jornada', 'fecha' => date('Y-m-d', strtotime('+5 days')), 'hora' => '09:00', 'huerto_nombre' => 'Huerto Comunitario Norte'],
-        ['id' => 3, 'titulo' => 'Asamblea general de huertanos', 'tipo' => 'asamblea', 'fecha' => date('Y-m-d', strtotime('+7 days')), 'hora' => '18:00', 'huerto_nombre' => 'Huerto Vecinal Centro'],
-        ['id' => 4, 'titulo' => 'Mercadillo de intercambio', 'tipo' => 'evento', 'fecha' => date('Y-m-d', strtotime('+10 days')), 'hora' => '11:00', 'huerto_nombre' => 'Huerto Sur Sostenible'],
-    ];
-}
-
 // Estados y tipos
 $estados_huerto = [
     'activo' => 'dm-badge--success',
@@ -164,12 +126,12 @@ $tasa_ocupacion = $total_parcelas > 0 ? round(($parcelas_ocupadas / $total_parce
         </div>
     </div>
 
-    <?php if (!$hay_datos) : ?>
+    <?php if (!$tablas_disponibles) : ?>
     <div class="dm-alert dm-alert--info">
         <span class="dashicons dashicons-info-outline dm-alert__icon"></span>
         <div class="dm-alert__content">
-            <strong><?php esc_html_e('Modo demostración', 'flavor-chat-ia'); ?>:</strong>
-            <?php esc_html_e('Se muestran datos de ejemplo. Los datos reales aparecerán cuando se creen huertos.', 'flavor-chat-ia'); ?>
+            <strong><?php esc_html_e('Sin datos disponibles', 'flavor-chat-ia'); ?>:</strong>
+            <?php esc_html_e('Faltan tablas del módulo Huertos Urbanos o aún no hay huertos registrados.', 'flavor-chat-ia'); ?>
         </div>
     </div>
     <?php endif; ?>

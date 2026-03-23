@@ -10,6 +10,7 @@
 
 (function($) {
     'use strict';
+    const flavorDashboard = window.flavorDashboard || null;
 
     /**
      * Controlador principal del Dashboard
@@ -1249,8 +1250,11 @@
     // Inicializar cuando el documento este listo
     $(document).ready(function() {
         // Solo inicializar si estamos en la pagina del dashboard
-        if ($('.flavor-dashboard-wrapper').length) {
+        const hasDashboardMarkup = $('.flavor-dashboard-wrapper, .flavor-dashboard-v2').length > 0;
+        if (hasDashboardMarkup && flavorDashboard && flavorDashboard.restUrl) {
             FlavorDashboardController.init();
+        } else if (hasDashboardMarkup) {
+            console.warn('FlavorDashboard: configuración incompleta, se omite init para evitar bloqueo');
         }
     });
 

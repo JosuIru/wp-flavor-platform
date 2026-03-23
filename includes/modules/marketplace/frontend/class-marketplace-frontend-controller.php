@@ -44,14 +44,30 @@ class Flavor_Marketplace_Frontend_Controller {
         add_action('wp_enqueue_scripts', [$this, 'registrar_assets']);
 
         // Registrar shortcodes avanzados
-        add_shortcode('marketplace_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('marketplace_listado', [$this, 'shortcode_catalogo']); // Alias para páginas dinámicas
-        add_shortcode('marketplace_destacados', [$this, 'shortcode_destacados']); // Alias legacy para widgets dinámicos
-        add_shortcode('marketplace_mis_anuncios', [$this, 'shortcode_mis_anuncios']);
-        add_shortcode('marketplace_formulario', [$this, 'shortcode_formulario']);
-        add_shortcode('marketplace_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('marketplace_favoritos', [$this, 'shortcode_favoritos']);
-        add_shortcode('marketplace_busqueda', [$this, 'shortcode_busqueda']);
+        if (!shortcode_exists('marketplace_catalogo')) {
+            add_shortcode('marketplace_catalogo', [$this, 'shortcode_catalogo']);
+        }
+        if (!shortcode_exists('marketplace_listado')) {
+            add_shortcode('marketplace_listado', [$this, 'shortcode_catalogo']); // Alias para páginas dinámicas
+        }
+        if (!shortcode_exists('marketplace_destacados')) {
+            add_shortcode('marketplace_destacados', [$this, 'shortcode_destacados']); // Alias legacy para widgets dinámicos
+        }
+        if (!shortcode_exists('marketplace_mis_anuncios')) {
+            add_shortcode('marketplace_mis_anuncios', [$this, 'shortcode_mis_anuncios']);
+        }
+        if (!shortcode_exists('marketplace_formulario')) {
+            add_shortcode('marketplace_formulario', [$this, 'shortcode_formulario']);
+        }
+        if (!shortcode_exists('marketplace_detalle')) {
+            add_shortcode('marketplace_detalle', [$this, 'shortcode_detalle']);
+        }
+        if (!shortcode_exists('marketplace_favoritos')) {
+            add_shortcode('marketplace_favoritos', [$this, 'shortcode_favoritos']);
+        }
+        if (!shortcode_exists('marketplace_busqueda')) {
+            add_shortcode('marketplace_busqueda', [$this, 'shortcode_busqueda']);
+        }
 
         // AJAX handlers
         add_action('wp_ajax_marketplace_agregar_favorito', [$this, 'ajax_agregar_favorito']);
@@ -213,6 +229,13 @@ class Flavor_Marketplace_Frontend_Controller {
             'limit' => null, // Compatibilidad con shortcodes legacy
             'mostrar_filtros' => 'si',
             'comunidad' => $request_comunidad, // ID de comunidad para filtrar anuncios
+            // Parámetros visuales (VBP)
+            'esquema_color' => 'default',
+            'estilo_tarjeta' => 'elevated',
+            'radio_bordes' => 'lg',
+            'animacion_entrada' => 'fade',
+            'orderby' => 'date',
+            'order' => 'DESC',
         ], $atts);
 
         if (!empty($atributos['limit']) && empty($atts['limite'])) {
@@ -477,9 +500,25 @@ class Flavor_Marketplace_Frontend_Controller {
             'post_type' => 'marketplace_item',
             'post_status' => 'publish',
             'posts_per_page' => intval($atts['limite']),
-            'orderby' => 'date',
-            'order' => 'DESC',
+            'orderby' => sanitize_key($atts['orderby'] ?? 'date'),
+            'order' => in_array(strtoupper($atts['order'] ?? 'DESC'), ['ASC', 'DESC']) ? strtoupper($atts['order']) : 'DESC',
         ];
+
+        // Clases CSS para estilos visuales
+        $visual_classes = [];
+        if (!empty($atts['esquema_color']) && $atts['esquema_color'] !== 'default') {
+            $visual_classes[] = 'flavor-scheme-' . sanitize_html_class($atts['esquema_color']);
+        }
+        if (!empty($atts['estilo_tarjeta'])) {
+            $visual_classes[] = 'flavor-card-' . sanitize_html_class($atts['estilo_tarjeta']);
+        }
+        if (!empty($atts['radio_bordes'])) {
+            $visual_classes[] = 'flavor-radius-' . sanitize_html_class($atts['radio_bordes']);
+        }
+        if (!empty($atts['animacion_entrada']) && $atts['animacion_entrada'] !== 'none') {
+            $visual_classes[] = 'flavor-animate-' . sanitize_html_class($atts['animacion_entrada']);
+        }
+        $visual_class_str = implode(' ', $visual_classes);
 
         // Filtrar por tipo usando tax_query (marketplace_tipo es una taxonomía)
         if (!empty($atts['tipo'])) {
@@ -541,7 +580,7 @@ class Flavor_Marketplace_Frontend_Controller {
             ));
         }
         ?>
-        <div class="marketplace-catalogo" data-columnas="<?php echo esc_attr($atts['columnas']); ?>" <?php if ($comunidad_info): ?>data-comunidad="<?php echo esc_attr($comunidad_info->id); ?>"<?php endif; ?>>
+        <div class="marketplace-catalogo <?php echo esc_attr($visual_class_str); ?>" data-columnas="<?php echo esc_attr($atts['columnas']); ?>" <?php if ($comunidad_info): ?>data-comunidad="<?php echo esc_attr($comunidad_info->id); ?>"<?php endif; ?>>
             <?php if ($comunidad_info): ?>
                 <div class="marketplace-comunidad-banner">
                     <div class="banner-info">
@@ -1143,6 +1182,16 @@ class Flavor_Marketplace_Frontend_Controller {
         }
 
         update_post_meta($anuncio_id, '_marketplace_estado', 'vendido');
+        update_post_meta($anuncio_id, '_marketplace_fecha_venta', current_time('mysql'));
+
+        $precio_venta = (float) get_post_meta($anuncio_id, '_marketplace_precio', true);
+        do_action('flavor_marketplace_anuncio_vendido', $anuncio_id, [
+            'origen' => 'marketplace_frontend',
+            'vendedor_id' => (int) get_current_user_id(),
+            'precio' => $precio_venta,
+            'titulo' => (string) $anuncio->post_title,
+            'fecha_venta' => current_time('mysql'),
+        ]);
 
         wp_send_json_success(['message' => __('Anuncio marcado como vendido', 'flavor-chat-ia')]);
     }

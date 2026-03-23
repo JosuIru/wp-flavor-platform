@@ -1029,3 +1029,326 @@
         min-width: auto;
     }
 }
+
+/* =====================================================================
+   MIGRACIÓN COMPLETA DEL SITIO
+   ===================================================================== */
+
+.flavor-migration-section {
+    padding: 20px 0;
+}
+
+.flavor-migration-info-card {
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.flavor-migration-info-card h3 {
+    margin: 0 0 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flavor-migration-info-card table {
+    margin: 0;
+}
+
+.flavor-migration-info-card code {
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.flavor-migration-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.flavor-migration-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.flavor-migration-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.flavor-migration-card-header .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #2271b1;
+}
+
+.flavor-migration-card-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.flavor-migration-card p {
+    color: #646970;
+    margin: 0 0 16px;
+}
+
+.flavor-checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.flavor-checkbox-list label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.flavor-warning {
+    background: #fcf9e8;
+    border: 1px solid #dba617;
+    border-radius: 4px;
+    padding: 12px;
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1d2327;
+}
+
+.flavor-warning .dashicons {
+    color: #dba617;
+}
+
+.flavor-download-ready {
+    background: #edfaef;
+    border: 1px solid #00a32a;
+    border-radius: 4px;
+    padding: 16px;
+    margin-top: 16px;
+    text-align: center;
+}
+
+.flavor-download-ready p {
+    margin: 0 0 12px;
+    color: #00a32a;
+}
+
+.flavor-search-replace-preview {
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.flavor-search-replace-preview h4 {
+    margin: 0 0 12px;
+}
+
+.flavor-search-replace-preview table {
+    margin: 0;
+}
+
+/* Dropzone estados */
+.flavor-dropzone-uploading {
+    text-align: center;
+    padding: 30px;
+}
+
+.flavor-dropzone-uploading .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #2271b1;
+}
+
+.flavor-dropzone-uploading progress {
+    width: 100%;
+    height: 8px;
+    margin-top: 16px;
+    border-radius: 4px;
+}
+
+.flavor-dropzone-success {
+    text-align: center;
+    padding: 30px;
+    color: #00a32a;
+}
+
+.flavor-dropzone-success .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.flavor-dropzone-success ul {
+    text-align: left;
+    margin: 16px 0 0;
+    color: #1d2327;
+}
+
+/* =====================================================================
+   SISTEMA DE BACKUPS
+   ===================================================================== */
+
+.flavor-backup-section {
+    padding: 20px 0;
+}
+
+.flavor-backup-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.flavor-backup-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 24px;
+}
+
+.flavor-backup-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.flavor-backup-card-header .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #2271b1;
+}
+
+.flavor-backup-card-header h3 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.flavor-backup-create {
+    background: linear-gradient(135deg, #f0f6fc 0%, #fff 100%);
+    border-color: #2271b1;
+}
+
+.flavor-backup-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.flavor-backup-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.flavor-backup-options label:hover {
+    border-color: #2271b1;
+    background: #f0f6fc;
+}
+
+.flavor-backup-options .dashicons {
+    color: #646970;
+}
+
+.flavor-backup-name {
+    margin-bottom: 20px;
+}
+
+.flavor-backup-name label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.flavor-backup-name input {
+    width: 100%;
+}
+
+.button-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 24px !important;
+    font-size: 15px !important;
+}
+
+/* Lista de backups */
+.flavor-backups-list {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+}
+
+.flavor-backups-list h3 {
+    margin: 0;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f1;
+    font-size: 15px;
+}
+
+#flavor-backups-table {
+    margin: 0;
+    border: 0;
+}
+
+#flavor-backups-table th,
+#flavor-backups-table td {
+    padding: 12px 20px;
+}
+
+#flavor-backups-table .backup-actions {
+    display: flex;
+    gap: 8px;
+}
+
+#flavor-backups-table .backup-actions .button {
+    padding: 4px 10px;
+}
+
+#flavor-backups-table .backup-size {
+    color: #646970;
+    font-size: 12px;
+}
+
+#flavor-backups-table tr.restoring {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .flavor-migration-cards,
+    .flavor-backup-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .flavor-backup-options {
+        grid-template-columns: 1fr;
+    }
+}

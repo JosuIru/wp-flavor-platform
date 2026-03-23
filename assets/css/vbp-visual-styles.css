@@ -1,0 +1,387 @@
+/**
+ * VBP Visual Styles
+ * Clases CSS generadas por el Visual Builder Pro para personalizar
+ * la apariencia de los módulos/widgets.
+ *
+ * @package FlavorChatIA
+ * @since 2.4.0
+ */
+
+/* ==========================================================================
+   ESQUEMAS DE COLOR
+   ========================================================================== */
+
+/* Primario (indigo) */
+.flavor-scheme-primary {
+    --card-accent: #6366f1;
+    --card-accent-light: #e0e7ff;
+    --card-text-accent: #4f46e5;
+}
+
+/* Secundario (slate) */
+.flavor-scheme-secondary {
+    --card-accent: #64748b;
+    --card-accent-light: #f1f5f9;
+    --card-text-accent: #475569;
+}
+
+/* Success (green) */
+.flavor-scheme-success {
+    --card-accent: #22c55e;
+    --card-accent-light: #dcfce7;
+    --card-text-accent: #16a34a;
+}
+
+/* Warning (amber) */
+.flavor-scheme-warning {
+    --card-accent: #f59e0b;
+    --card-accent-light: #fef3c7;
+    --card-text-accent: #d97706;
+}
+
+/* Danger (red) */
+.flavor-scheme-danger {
+    --card-accent: #ef4444;
+    --card-accent-light: #fee2e2;
+    --card-text-accent: #dc2626;
+}
+
+/* Info (cyan) */
+.flavor-scheme-info {
+    --card-accent: #06b6d4;
+    --card-accent-light: #cffafe;
+    --card-text-accent: #0891b2;
+}
+
+/* Aplicar variables de color a elementos internos */
+[class*="flavor-scheme-"] .btn-primary,
+[class*="flavor-scheme-"] .btn-ver-detalle,
+[class*="flavor-scheme-"] .btn-inscribirse,
+[class*="flavor-scheme-"] .btn-reservar,
+[class*="flavor-scheme-"] .btn-agregar,
+[class*="flavor-scheme-"] .gc-btn-agregar-lista {
+    background-color: var(--card-accent, #6366f1);
+    border-color: var(--card-accent, #6366f1);
+}
+
+[class*="flavor-scheme-"] .btn-primary:hover,
+[class*="flavor-scheme-"] .btn-ver-detalle:hover,
+[class*="flavor-scheme-"] .btn-inscribirse:hover,
+[class*="flavor-scheme-"] .btn-reservar:hover {
+    filter: brightness(1.1);
+}
+
+[class*="flavor-scheme-"] .badge,
+[class*="flavor-scheme-"] .estado-badge,
+[class*="flavor-scheme-"] .modalidad-badge {
+    background-color: var(--card-accent-light, #e0e7ff);
+    color: var(--card-text-accent, #4f46e5);
+}
+
+/* ==========================================================================
+   ESTILOS DE TARJETA
+   ========================================================================== */
+
+/* Elevated (default) - sombra elevada */
+.flavor-card-elevated [class*="-card"],
+.flavor-card-elevated [class*="_card"] {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.flavor-card-elevated [class*="-card"]:hover,
+.flavor-card-elevated [class*="_card"]:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Flat - sin sombra */
+.flavor-card-flat [class*="-card"],
+.flavor-card-flat [class*="_card"] {
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+}
+
+.flavor-card-flat [class*="-card"]:hover,
+.flavor-card-flat [class*="_card"]:hover {
+    border-color: #d1d5db;
+    background-color: #fafafa;
+}
+
+/* Outlined - solo borde */
+.flavor-card-outlined [class*="-card"],
+.flavor-card-outlined [class*="_card"] {
+    box-shadow: none;
+    border: 2px solid var(--card-accent, #e5e7eb);
+    background: transparent;
+}
+
+.flavor-card-outlined [class*="-card"]:hover,
+.flavor-card-outlined [class*="_card"]:hover {
+    background-color: var(--card-accent-light, #f9fafb);
+}
+
+/* Glass - efecto cristal */
+.flavor-card-glass [class*="-card"],
+.flavor-card-glass [class*="_card"] {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient - fondo degradado sutil */
+.flavor-card-gradient [class*="-card"],
+.flavor-card-gradient [class*="_card"] {
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    border: 1px solid #e5e7eb;
+}
+
+.flavor-card-gradient [class*="-card"]:hover,
+.flavor-card-gradient [class*="_card"]:hover {
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+/* ==========================================================================
+   RADIO DE BORDES
+   ========================================================================== */
+
+/* None - sin redondeo */
+.flavor-radius-none [class*="-card"],
+.flavor-radius-none [class*="_card"],
+.flavor-radius-none img,
+.flavor-radius-none .btn,
+.flavor-radius-none button {
+    border-radius: 0 !important;
+}
+
+/* SM - redondeo pequeño */
+.flavor-radius-sm [class*="-card"],
+.flavor-radius-sm [class*="_card"] {
+    border-radius: 4px;
+}
+
+.flavor-radius-sm img {
+    border-radius: 2px;
+}
+
+/* MD - redondeo medio */
+.flavor-radius-md [class*="-card"],
+.flavor-radius-md [class*="_card"] {
+    border-radius: 8px;
+}
+
+.flavor-radius-md img {
+    border-radius: 4px;
+}
+
+/* LG - redondeo grande (default) */
+.flavor-radius-lg [class*="-card"],
+.flavor-radius-lg [class*="_card"] {
+    border-radius: 12px;
+}
+
+.flavor-radius-lg img {
+    border-radius: 8px;
+}
+
+/* XL - redondeo extra grande */
+.flavor-radius-xl [class*="-card"],
+.flavor-radius-xl [class*="_card"] {
+    border-radius: 16px;
+}
+
+.flavor-radius-xl img {
+    border-radius: 10px;
+}
+
+/* Full - completamente redondeado (pill) */
+.flavor-radius-full [class*="-card"],
+.flavor-radius-full [class*="_card"] {
+    border-radius: 24px;
+}
+
+.flavor-radius-full img {
+    border-radius: 16px;
+}
+
+/* ==========================================================================
+   ANIMACIONES DE ENTRADA
+   ========================================================================== */
+
+/* Fade - aparecer suavemente */
+.flavor-animate-fade [class*="-card"],
+.flavor-animate-fade [class*="_card"] {
+    animation: flavorFadeIn 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes flavorFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Slide Up - deslizar hacia arriba */
+.flavor-animate-slide-up [class*="-card"],
+.flavor-animate-slide-up [class*="_card"] {
+    animation: flavorSlideUp 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes flavorSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide Left - deslizar desde la derecha */
+.flavor-animate-slide-left [class*="-card"],
+.flavor-animate-slide-left [class*="_card"] {
+    animation: flavorSlideLeft 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+@keyframes flavorSlideLeft {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Scale - escalar desde pequeño */
+.flavor-animate-scale [class*="-card"],
+.flavor-animate-scale [class*="_card"] {
+    animation: flavorScaleIn 0.4s ease-out forwards;
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+@keyframes flavorScaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Bounce - rebote suave */
+.flavor-animate-bounce [class*="-card"],
+.flavor-animate-bounce [class*="_card"] {
+    animation: flavorBounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+@keyframes flavorBounceIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Stagger animations para múltiples elementos */
+.flavor-animate-fade [class*="-card"]:nth-child(1),
+.flavor-animate-slide-up [class*="-card"]:nth-child(1),
+.flavor-animate-slide-left [class*="-card"]:nth-child(1),
+.flavor-animate-scale [class*="-card"]:nth-child(1),
+.flavor-animate-bounce [class*="-card"]:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.flavor-animate-fade [class*="-card"]:nth-child(2),
+.flavor-animate-slide-up [class*="-card"]:nth-child(2),
+.flavor-animate-slide-left [class*="-card"]:nth-child(2),
+.flavor-animate-scale [class*="-card"]:nth-child(2),
+.flavor-animate-bounce [class*="-card"]:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.flavor-animate-fade [class*="-card"]:nth-child(3),
+.flavor-animate-slide-up [class*="-card"]:nth-child(3),
+.flavor-animate-slide-left [class*="-card"]:nth-child(3),
+.flavor-animate-scale [class*="-card"]:nth-child(3),
+.flavor-animate-bounce [class*="-card"]:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.flavor-animate-fade [class*="-card"]:nth-child(4),
+.flavor-animate-slide-up [class*="-card"]:nth-child(4),
+.flavor-animate-slide-left [class*="-card"]:nth-child(4),
+.flavor-animate-scale [class*="-card"]:nth-child(4),
+.flavor-animate-bounce [class*="-card"]:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.flavor-animate-fade [class*="-card"]:nth-child(5),
+.flavor-animate-slide-up [class*="-card"]:nth-child(5),
+.flavor-animate-slide-left [class*="-card"]:nth-child(5),
+.flavor-animate-scale [class*="-card"]:nth-child(5),
+.flavor-animate-bounce [class*="-card"]:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.flavor-animate-fade [class*="-card"]:nth-child(6),
+.flavor-animate-slide-up [class*="-card"]:nth-child(6),
+.flavor-animate-slide-left [class*="-card"]:nth-child(6),
+.flavor-animate-scale [class*="-card"]:nth-child(6),
+.flavor-animate-bounce [class*="-card"]:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+/* Continuar stagger para más elementos */
+.flavor-animate-fade [class*="-card"]:nth-child(n+7),
+.flavor-animate-slide-up [class*="-card"]:nth-child(n+7),
+.flavor-animate-slide-left [class*="-card"]:nth-child(n+7),
+.flavor-animate-scale [class*="-card"]:nth-child(n+7),
+.flavor-animate-bounce [class*="-card"]:nth-child(n+7) {
+    animation-delay: 0.35s;
+}
+
+/* ==========================================================================
+   PREFERENCIA DE MOVIMIENTO REDUCIDO
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .flavor-animate-fade [class*="-card"],
+    .flavor-animate-slide-up [class*="-card"],
+    .flavor-animate-slide-left [class*="-card"],
+    .flavor-animate-scale [class*="-card"],
+    .flavor-animate-bounce [class*="-card"],
+    .flavor-animate-fade [class*="_card"],
+    .flavor-animate-slide-up [class*="_card"],
+    .flavor-animate-slide-left [class*="_card"],
+    .flavor-animate-scale [class*="_card"],
+    .flavor-animate-bounce [class*="_card"] {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .flavor-card-elevated [class*="-card"]:hover,
+    .flavor-card-elevated [class*="_card"]:hover {
+        transform: none;
+    }
+}

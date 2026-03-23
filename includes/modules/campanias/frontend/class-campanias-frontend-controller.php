@@ -136,9 +136,13 @@ class Flavor_Campanias_Frontend_Controller {
         // Dashboard tabs
         add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_dashboard_tab']);
 
-        // Shortcodes adicionales
-        add_shortcode('flavor_campanias_dashboard', [$this, 'shortcode_dashboard']);
-        add_shortcode('flavor_campanias_destacadas', [$this, 'shortcode_destacadas']);
+        // Shortcodes adicionales (sin sobrescribir uno ya registrado)
+        if (!shortcode_exists('flavor_campanias_dashboard')) {
+            add_shortcode('flavor_campanias_dashboard', [$this, 'shortcode_dashboard']);
+        }
+        if (!shortcode_exists('flavor_campanias_destacadas')) {
+            add_shortcode('flavor_campanias_destacadas', [$this, 'shortcode_destacadas']);
+        }
 
         // AJAX handlers adicionales
         add_action('wp_ajax_flavor_campanias_dashboard_data', [$this, 'ajax_dashboard_data']);
@@ -199,7 +203,8 @@ class Flavor_Campanias_Frontend_Controller {
             return $tabs;
         }
 
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_campanias')) {
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_campanias')) {
             return $tabs;
         }
 

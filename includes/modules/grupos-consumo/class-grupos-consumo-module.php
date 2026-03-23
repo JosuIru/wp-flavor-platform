@@ -1181,24 +1181,31 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
      * Registra shortcodes del módulo
      */
     public function register_shortcodes() {
-        add_shortcode('gc_ciclo_actual', [$this, 'shortcode_ciclo_actual']);
-        add_shortcode('gc_productos', [$this, 'shortcode_productos']);
-        add_shortcode('gc_mi_pedido', [$this, 'shortcode_mi_pedido']);
-        add_shortcode('gc_catalogo', [$this, 'shortcode_catalogo']);
-        add_shortcode('gc_carrito', [$this, 'shortcode_carrito']);
-        add_shortcode('gc_calendario', [$this, 'shortcode_calendario']);
-        add_shortcode('gc_historial', [$this, 'shortcode_historial']);
-        add_shortcode('gc_suscripciones', [$this, 'shortcode_suscripciones']);
-        add_shortcode('gc_mi_cesta', [$this, 'shortcode_mi_cesta']);
-        add_shortcode('gc_grupos_lista', [$this, 'shortcode_grupos_lista']);
-        add_shortcode('gc_productores_cercanos', [$this, 'shortcode_productores_cercanos']);
-        add_shortcode('gc_panel', [$this, 'shortcode_panel']);
-        add_shortcode('gc_nav', [$this, 'shortcode_nav']);
+        $shortcodes = [
+            'gc_ciclo_actual' => 'shortcode_ciclo_actual',
+            'gc_productos' => 'shortcode_productos',
+            'gc_mi_pedido' => 'shortcode_mi_pedido',
+            'gc_catalogo' => 'shortcode_catalogo',
+            'gc_carrito' => 'shortcode_carrito',
+            'gc_calendario' => 'shortcode_calendario',
+            'gc_historial' => 'shortcode_historial',
+            'gc_suscripciones' => 'shortcode_suscripciones',
+            'gc_mi_cesta' => 'shortcode_mi_cesta',
+            'gc_grupos_lista' => 'shortcode_grupos_lista',
+            'gc_productores_cercanos' => 'shortcode_productores_cercanos',
+            'gc_panel' => 'shortcode_panel',
+            'gc_nav' => 'shortcode_nav',
+            // Aliases para compatibilidad con tabs del dashboard
+            'gc_mis_pedidos' => 'shortcode_historial',
+            'gc_productores' => 'shortcode_productores_cercanos',
+            'gc_ciclos' => 'shortcode_ciclo_actual',
+        ];
 
-        // Aliases para compatibilidad con tabs del dashboard
-        add_shortcode('gc_mis_pedidos', [$this, 'shortcode_historial']);
-        add_shortcode('gc_productores', [$this, 'shortcode_productores_cercanos']);
-        add_shortcode('gc_ciclos', [$this, 'shortcode_ciclo_actual']);
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -5021,6 +5028,13 @@ KNOWLEDGE;
      * pero siguen siendo accesibles via URL directa: admin.php?page=slug
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         // Capability base para acceder al menú (administradores)
         $capability_base = 'manage_options';
 
@@ -5109,6 +5123,13 @@ KNOWLEDGE;
      * Renderiza página dashboard
      */
     public function render_pagina_dashboard() {
+        if (class_exists('Flavor_Module_Dashboards_Registrar')) {
+            $registrar = Flavor_Module_Dashboards_Registrar::get_instance();
+            if (is_object($registrar) && method_exists($registrar, 'render_relationship_panel_for_module')) {
+                $registrar->render_relationship_panel_for_module('grupos_consumo');
+            }
+        }
+
         $views_path = dirname(__FILE__) . '/views/dashboard.php';
         if (file_exists($views_path)) {
             include $views_path;

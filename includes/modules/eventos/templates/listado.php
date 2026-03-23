@@ -92,7 +92,8 @@ $usuario_id = get_current_user_id();
                      WHERE evento_id = %d AND estado IN ('confirmada', 'pendiente')",
                     $evento->id
                 ));
-                $plazas_disponibles = $evento->aforo_maximo > 0 ? $evento->aforo_maximo - $inscritos : null;
+                $aforo_maximo = isset($evento->aforo_maximo) ? $evento->aforo_maximo : 0;
+                $plazas_disponibles = $aforo_maximo > 0 ? $aforo_maximo - $inscritos : null;
                 ?>
                 <div class="evento-card">
                     <div class="evento-card-imagen">
@@ -103,7 +104,10 @@ $usuario_id = get_current_user_id();
                                 <span class="dashicons dashicons-calendar-alt"></span>
                             </div>
                         <?php endif; ?>
-                        <span class="evento-card-tipo"><?php echo esc_html(ucfirst($evento->tipo)); ?></span>
+                        <?php $tipo_evento = isset($evento->tipo) ? $evento->tipo : ''; ?>
+                        <?php if ($tipo_evento): ?>
+                            <span class="evento-card-tipo"><?php echo esc_html(ucfirst($tipo_evento)); ?></span>
+                        <?php endif; ?>
                         <?php if ($plazas_disponibles !== null && $plazas_disponibles <= 5 && $plazas_disponibles > 0): ?>
                             <span class="evento-card-plazas"><?php printf(__('%d plazas', 'flavor-chat-ia'), $plazas_disponibles); ?></span>
                         <?php elseif ($plazas_disponibles === 0): ?>

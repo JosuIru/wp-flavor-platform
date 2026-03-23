@@ -123,51 +123,6 @@ $nuevos_usuarios_semana = (int) $wpdb->get_var(
     "SELECT COUNT(*) FROM {$wpdb->users} WHERE user_registered >= DATE_SUB(NOW(), INTERVAL 7 DAY)"
 );
 
-// Datos de demostración si no hay datos reales
-$usar_datos_demo = ($total_publicaciones == 0);
-
-if ($usar_datos_demo) {
-    $total_publicaciones = 1247;
-    $publicaciones_hoy = 34;
-    $usuarios_activos = 156;
-    $total_interacciones = 892;
-    $total_comentarios = 423;
-    $reportes_pendientes = 3;
-    $nuevos_usuarios_semana = 28;
-
-    $distribucion_tipo = [
-        (object) ['tipo' => 'texto', 'total' => 678],
-        (object) ['tipo' => 'imagen', 'total' => 423],
-        (object) ['tipo' => 'video', 'total' => 89],
-        (object) ['tipo' => 'enlace', 'total' => 57],
-    ];
-
-    $actividad_diaria = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $fecha = date('Y-m-d', strtotime("-$i days"));
-        $actividad_diaria[] = (object) [
-            'fecha' => $fecha,
-            'publicaciones' => rand(20, 60)
-        ];
-    }
-
-    $publicaciones_recientes = [
-        (object) ['id' => 1, 'contenido' => 'Gran evento comunitario este fin de semana. Todos están invitados a participar en las actividades...', 'autor_nombre' => 'María García', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-1 hour')), 'likes' => 45, 'comentarios' => 12, 'tipo' => 'texto', 'estado' => 'publicado'],
-        (object) ['id' => 2, 'contenido' => 'Nuevos talleres disponibles para inscripción. No te pierdas esta oportunidad única...', 'autor_nombre' => 'Carlos López', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-3 hours')), 'likes' => 32, 'comentarios' => 8, 'tipo' => 'imagen', 'estado' => 'publicado'],
-        (object) ['id' => 3, 'contenido' => 'Buscando voluntarios para limpieza del parque central. Será el próximo sábado...', 'autor_nombre' => 'Ana Martínez', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-5 hours')), 'likes' => 67, 'comentarios' => 23, 'tipo' => 'texto', 'estado' => 'publicado'],
-        (object) ['id' => 4, 'contenido' => 'Felicitaciones a todos los participantes del torneo deportivo anual...', 'autor_nombre' => 'Pedro Sánchez', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-8 hours')), 'likes' => 89, 'comentarios' => 15, 'tipo' => 'imagen', 'estado' => 'publicado'],
-        (object) ['id' => 5, 'contenido' => 'Recordatorio: Mañana es la reunión mensual de vecinos en el centro cívico...', 'autor_nombre' => 'Laura Fernández', 'fecha_creacion' => date('Y-m-d H:i:s', strtotime('-12 hours')), 'likes' => 28, 'comentarios' => 5, 'tipo' => 'texto', 'estado' => 'publicado'],
-    ];
-
-    $usuarios_mas_activos = [
-        (object) ['usuario_id' => 1, 'nombre' => 'María García', 'publicaciones' => 156, 'total_likes' => 2340],
-        (object) ['usuario_id' => 2, 'nombre' => 'Carlos López', 'publicaciones' => 132, 'total_likes' => 1890],
-        (object) ['usuario_id' => 3, 'nombre' => 'Ana Martínez', 'publicaciones' => 98, 'total_likes' => 1567],
-        (object) ['usuario_id' => 4, 'nombre' => 'Pedro Sánchez', 'publicaciones' => 87, 'total_likes' => 1234],
-        (object) ['usuario_id' => 5, 'nombre' => 'Laura Fernández', 'publicaciones' => 76, 'total_likes' => 987],
-    ];
-}
-
 // Preparar datos para gráficos
 $tipos_labels = array_map(function($t) {
     $nombres = ['texto' => 'Texto', 'imagen' => 'Imagen', 'video' => 'Video', 'enlace' => 'Enlace'];
@@ -196,9 +151,9 @@ $actividad_data = array_map(function($a) { return (int) $a->publicaciones; }, $a
 
     <hr class="wp-header-end">
 
-    <?php if ($usar_datos_demo): ?>
+    <?php if (!$tabla_posts_existe): ?>
         <div class="notice notice-info">
-            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('Mostrando datos de demostración. Los datos reales aparecerán cuando haya actividad en la red social.', 'flavor-chat-ia'); ?></p>
+            <p><span class="dashicons dashicons-info"></span> <?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Red Social.', 'flavor-chat-ia'); ?></p>
         </div>
     <?php endif; ?>
 

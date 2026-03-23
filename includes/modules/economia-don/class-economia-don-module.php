@@ -354,10 +354,11 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             'post_content' => $descripcion,
             'post_status' => 'publish',
             'post_author' => get_current_user_id(),
-        ]);
+        ], true);
 
-        if (is_wp_error($don_id)) {
-            return new \WP_REST_Response(['success' => false, 'error' => $don_id->get_error_message()], 500);
+        if (is_wp_error($don_id) || empty($don_id)) {
+            $error = is_wp_error($don_id) ? $don_id->get_error_message() : __('No se pudo crear el don.', 'flavor-chat-ia');
+            return new \WP_REST_Response(['success' => false, 'error' => $error], 500);
         }
 
         update_post_meta($don_id, '_ed_categoria', $categoria);
@@ -391,7 +392,12 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             'post_title' => sprintf(__('Solicitud de %s', 'flavor-chat-ia'), get_userdata($user_id)->display_name),
             'post_status' => 'publish',
             'post_author' => $user_id,
-        ]);
+        ], true);
+
+        if (is_wp_error($solicitud_id) || empty($solicitud_id)) {
+            $error = is_wp_error($solicitud_id) ? $solicitud_id->get_error_message() : __('No se pudo crear la solicitud.', 'flavor-chat-ia');
+            return new \WP_REST_Response(['success' => false, 'error' => $error], 500);
+        }
 
         update_post_meta($solicitud_id, '_ed_don_id', $don_id);
         update_post_meta($solicitud_id, '_ed_mensaje', $mensaje);
@@ -677,17 +683,24 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
      * Registra shortcodes del módulo
      */
     public function register_shortcodes() {
-        // Shortcodes principales
-        add_shortcode('economia_don', [$this, 'shortcode_listado']);
-        add_shortcode('mis_dones', [$this, 'shortcode_mis_dones']);
-        add_shortcode('ofrecer_don', [$this, 'shortcode_ofrecer']);
-        add_shortcode('muro_gratitud', [$this, 'shortcode_muro_gratitud']);
+        // Shortcodes principales y aliases sin sobrescribir registros previos.
+        $shortcodes = [
+            'economia_don' => 'shortcode_listado',
+            'mis_dones' => 'shortcode_mis_dones',
+            'ofrecer_don' => 'shortcode_ofrecer',
+            'muro_gratitud' => 'shortcode_muro_gratitud',
+            // Aliases con prefijo flavor_ para compatibilidad con dynamic-pages
+            'flavor_don_listado' => 'shortcode_listado',
+            'flavor_don_mis_dones' => 'shortcode_mis_dones',
+            'flavor_don_ofrecer' => 'shortcode_ofrecer',
+            'flavor_don_muro_gratitud' => 'shortcode_muro_gratitud',
+        ];
 
-        // Aliases con prefijo flavor_ para compatibilidad con dynamic-pages
-        add_shortcode('flavor_don_listado', [$this, 'shortcode_listado']);
-        add_shortcode('flavor_don_mis_dones', [$this, 'shortcode_mis_dones']);
-        add_shortcode('flavor_don_ofrecer', [$this, 'shortcode_ofrecer']);
-        add_shortcode('flavor_don_muro_gratitud', [$this, 'shortcode_muro_gratitud']);
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**
@@ -707,6 +720,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             'has_archive' => true,
             'supports' => ['title', 'editor', 'thumbnail'],
             'menu_icon' => 'dashicons-heart',
+            'show_in_menu' => false,
             'show_in_rest' => true,
             'rewrite' => ['slug' => 'economia-don'],
         ]);
@@ -719,7 +733,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             ],
             'public' => false,
             'show_ui' => true,
-            'show_in_menu' => 'edit.php?post_type=ed_don',
+            'show_in_menu' => false,
             'supports' => ['title'],
         ]);
 
@@ -733,6 +747,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             'has_archive' => true,
             'supports' => ['title', 'editor'],
             'menu_icon' => 'dashicons-smiley',
+            'show_in_menu' => false,
             'rewrite' => ['slug' => 'muro-gratitud'],
         ]);
     }
@@ -892,9 +907,9 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             ),
             'post_status' => 'publish',
             'post_author' => $user_id,
-        ]);
+        ], true);
 
-        if ($solicitud_id) {
+        if (!is_wp_error($solicitud_id) && !empty($solicitud_id)) {
             update_post_meta($solicitud_id, '_ed_don_id', $don_id);
             update_post_meta($solicitud_id, '_ed_mensaje', $mensaje);
             update_post_meta($solicitud_id, '_ed_estado', 'pendiente');
@@ -912,7 +927,10 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             ]);
         }
 
-        wp_send_json_error(['message' => __('Error al procesar la solicitud', 'flavor-chat-ia')]);
+        $error_message = is_wp_error($solicitud_id)
+            ? $solicitud_id->get_error_message()
+            : __('Error al procesar la solicitud', 'flavor-chat-ia');
+        wp_send_json_error(['message' => $error_message]);
     }
 
     /**
@@ -979,9 +997,9 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             'post_content' => $mensaje,
             'post_status' => 'publish',
             'post_author' => $user_id,
-        ]);
+        ], true);
 
-        if ($gratitud_id) {
+        if (!is_wp_error($gratitud_id) && !empty($gratitud_id)) {
             update_post_meta($gratitud_id, '_ed_don_id', $don_id);
             update_post_meta($don_id, '_ed_estado', 'recibido');
             update_post_meta($don_id, '_ed_gratitud_id', $gratitud_id);
@@ -995,7 +1013,10 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             ]);
         }
 
-        wp_send_json_error(['message' => __('Error al publicar gratitud', 'flavor-chat-ia')]);
+        $error_message = is_wp_error($gratitud_id)
+            ? $gratitud_id->get_error_message()
+            : __('Error al publicar gratitud', 'flavor-chat-ia');
+        wp_send_json_error(['message' => $error_message]);
     }
 
     /**
@@ -1026,9 +1047,9 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             'post_content' => $descripcion,
             'post_status' => 'publish',
             'post_author' => $user_id,
-        ]);
+        ], true);
 
-        if ($don_id) {
+        if (!is_wp_error($don_id) && !empty($don_id)) {
             update_post_meta($don_id, '_ed_categoria', $categoria);
             update_post_meta($don_id, '_ed_estado', 'disponible');
             update_post_meta($don_id, '_ed_ubicacion', $ubicacion);
@@ -1042,7 +1063,10 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             ]);
         }
 
-        wp_send_json_error(['message' => __('Error al publicar el don', 'flavor-chat-ia')]);
+        $error_message = is_wp_error($don_id)
+            ? $don_id->get_error_message()
+            : __('Error al publicar el don', 'flavor-chat-ia');
+        wp_send_json_error(['message' => $error_message]);
     }
 
     /**

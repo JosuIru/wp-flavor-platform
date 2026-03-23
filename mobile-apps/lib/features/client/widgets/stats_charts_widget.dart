@@ -16,6 +16,7 @@ class QuickStat {
   final String colorHex;
   final double? trendPercentage;
   final bool? isTrendUp;
+  final String? moduleId;
 
   const QuickStat({
     required this.id,
@@ -26,6 +27,7 @@ class QuickStat {
     required this.colorHex,
     this.trendPercentage,
     this.isTrendUp,
+    this.moduleId,
   });
 
   bool get hasTrend => trendPercentage != null;
@@ -40,7 +42,31 @@ class QuickStat {
       colorHex: json['color'] as String? ?? '#2196F3',
       trendPercentage: (json['trend_percentage'] as num?)?.toDouble(),
       isTrendUp: json['is_trend_up'] as bool?,
+      moduleId: json['module_id'] as String? ?? _inferModuleId(json['id']?.toString() ?? ''),
     );
+  }
+
+  /// Infiere el moduleId basado en el id del stat
+  static String? _inferModuleId(String statId) {
+    final mapping = {
+      'pedidos': 'woocommerce',
+      'grupos_consumo': 'grupos_consumo',
+      'banco_tiempo': 'banco_tiempo',
+      'marketplace': 'marketplace',
+      'eventos': 'eventos',
+      'socios': 'socios',
+      'reservas': 'reservas',
+      'foros': 'foros',
+      'red_social': 'red_social',
+      'comunidades': 'comunidades',
+      'carpooling': 'carpooling',
+    };
+    for (final entry in mapping.entries) {
+      if (statId.contains(entry.key)) {
+        return entry.value;
+      }
+    }
+    return null;
   }
 }
 
@@ -91,6 +117,7 @@ class DistributionData {
 }
 
 /// Provider para quick stats del usuario
+/// Devuelve lista vacía si el endpoint no existe - no usar datos de ejemplo
 final quickStatsProvider = FutureProvider<List<QuickStat>>((ref) async {
   final api = ref.read(apiClientProvider);
 
@@ -103,13 +130,15 @@ final quickStatsProvider = FutureProvider<List<QuickStat>>((ref) async {
           .toList();
     }
   } catch (error) {
-    debugPrint('[QuickStats] Error: $error');
+    debugPrint('[QuickStats] Endpoint no disponible: $error');
   }
 
-  return _getExampleQuickStats();
+  // No devolver datos de ejemplo - solo stats reales del servidor
+  return [];
 });
 
 /// Provider para datos de grafico de actividad semanal
+/// Devuelve lista vacía si el endpoint no existe - no usar datos de ejemplo
 final weeklyActivityProvider = FutureProvider<List<WeeklyActivityData>>((ref) async {
   final api = ref.read(apiClientProvider);
 
@@ -122,13 +151,15 @@ final weeklyActivityProvider = FutureProvider<List<WeeklyActivityData>>((ref) as
           .toList();
     }
   } catch (error) {
-    debugPrint('[WeeklyActivity] Error: $error');
+    debugPrint('[WeeklyActivity] Endpoint no disponible: $error');
   }
 
-  return _getExampleWeeklyActivity();
+  // No devolver datos de ejemplo - solo datos reales del servidor
+  return [];
 });
 
 /// Provider para datos de grafico de distribucion
+/// Devuelve lista vacía si el endpoint no existe - no usar datos de ejemplo
 final distributionChartProvider = FutureProvider<List<DistributionData>>((ref) async {
   final api = ref.read(apiClientProvider);
 
@@ -145,10 +176,11 @@ final distributionChartProvider = FutureProvider<List<DistributionData>>((ref) a
           .toList();
     }
   } catch (error) {
-    debugPrint('[DistributionChart] Error: $error');
+    debugPrint('[DistributionChart] Endpoint no disponible: $error');
   }
 
-  return _getExampleDistribution();
+  // No devolver datos de ejemplo - solo datos reales del servidor
+  return [];
 });
 
 /// Widget de panel de quick stats horizontal

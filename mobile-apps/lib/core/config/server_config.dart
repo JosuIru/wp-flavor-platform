@@ -27,6 +27,10 @@ class ServerConfig {
   // Leave empty so the app always prompts for setup on fresh installs.
   static const String defaultServerUrl = '';
 
+  /// URL del servidor para el directorio inicial en setup
+  /// Usa defaultServerUrl si está preconfigurado
+  static String get bootstrapServerUrl => defaultServerUrl;
+
   /// Namespace de la API por defecto
   static const String defaultApiNamespace = '/wp-json/chat-ia-mobile/v1';
 

@@ -93,18 +93,66 @@ class Flavor_App_Generator {
      */
     private function setup_casos_uso_modulos() {
         $this->casos_uso_modulos = [
+            // ========== PACKS EMPRESARIALES ==========
+            'empresa_pyme' => [
+                'keywords' => [ 'empresa', 'pyme', 'negocio', 'startup', 'coworking', 'oficina', 'compañía', 'corporativo', 'comercial' ],
+                'modulos' => [ 'clientes', 'fichaje-empleados', 'facturas', 'reservas', 'incidencias', 'foros', 'avisos-municipales' ],
+                'descripcion' => 'Plataforma completa para empresas y PYMEs',
+                'paginas_sugeridas' => [
+                    'inicio', 'mi-portal', 'fichar', 'clientes', 'facturas',
+                    'reservar-sala', 'directorio', 'comunicados', 'soporte'
+                ],
+                'es_pack' => true,
+            ],
+
             // Gestión de personas
             'socios' => [
                 'keywords' => [ 'socios', 'miembros', 'membresía', 'cuotas', 'asociados', 'afiliados' ],
                 'modulo' => 'socios',
-                'descripcion' => 'Gestión de socios y cuotas',
+                'descripcion' => 'Gestión de miembros y cuotas',
                 'paginas_sugeridas' => [ 'mis-datos', 'pagar-cuota' ],
             ],
             'empleados' => [
-                'keywords' => [ 'empleados', 'trabajadores', 'fichaje', 'horarios', 'turnos', 'nóminas' ],
+                'keywords' => [ 'empleados', 'trabajadores', 'fichaje', 'horarios', 'turnos', 'nóminas', 'asistencia', 'control horario', 'jornada', 'plantilla', 'rrhh', 'recursos humanos', 'portal empleado' ],
                 'modulo' => 'fichaje-empleados',
-                'descripcion' => 'Control de fichaje y horarios',
-                'paginas_sugeridas' => [ 'fichar', 'mis-fichajes' ],
+                'descripcion' => 'Control de fichaje y asistencia de empleados',
+                'paginas_sugeridas' => [ 'fichar', 'mis-fichajes', 'mi-portal' ],
+            ],
+            'clientes' => [
+                'keywords' => [ 'clientes', 'crm', 'contactos', 'comercial', 'ventas', 'leads', 'oportunidades', 'cartera', 'base de datos clientes' ],
+                'modulo' => 'clientes',
+                'descripcion' => 'CRM básico para gestión de clientes',
+                'paginas_sugeridas' => [ 'clientes', 'nuevo-cliente', 'seguimiento' ],
+            ],
+            'facturacion' => [
+                'keywords' => [ 'facturas', 'facturación', 'presupuestos', 'cobros', 'pagos', 'contabilidad', 'albaranes', 'recibos', 'tesorería' ],
+                'modulo' => 'facturas',
+                'descripcion' => 'Sistema de facturación y presupuestos',
+                'paginas_sugeridas' => [ 'facturas', 'nueva-factura', 'presupuestos' ],
+            ],
+            'directorio' => [
+                'keywords' => [ 'directorio', 'organigrama', 'equipo', 'quien es quien', 'contactos internos', 'departamentos' ],
+                'modulo' => 'mapa-actores',
+                'descripcion' => 'Directorio de empleados y organigrama',
+                'paginas_sugeridas' => [ 'directorio', 'equipo', 'departamentos' ],
+            ],
+            'comunicacion_interna' => [
+                'keywords' => [ 'comunicación interna', 'anuncios', 'comunicados', 'noticias internas', 'tablón', 'intranet', 'avisos' ],
+                'modulo' => 'avisos-municipales',
+                'descripcion' => 'Tablón de anuncios y comunicación interna',
+                'paginas_sugeridas' => [ 'comunicados', 'anuncios', 'noticias' ],
+            ],
+            'documentos' => [
+                'keywords' => [ 'documentos', 'archivos', 'nóminas', 'contratos', 'repositorio', 'gestión documental', 'expedientes' ],
+                'modulo' => 'biblioteca',
+                'descripcion' => 'Repositorio de documentos y nóminas',
+                'paginas_sugeridas' => [ 'documentos', 'mis-documentos', 'nominas' ],
+            ],
+            'proyectos' => [
+                'keywords' => [ 'proyectos', 'tareas', 'gestión proyectos', 'seguimiento', 'hitos', 'planificación' ],
+                'modulo' => 'colectivos',
+                'descripcion' => 'Gestión de proyectos y equipos de trabajo',
+                'paginas_sugeridas' => [ 'proyectos', 'mis-tareas', 'equipo' ],
             ],
 
             // Eventos y actividades
@@ -129,13 +177,13 @@ class Flavor_App_Generator {
 
             // Reservas y espacios
             'reservas' => [
-                'keywords' => [ 'reservas', 'reservar', 'disponibilidad', 'booking', 'citas' ],
+                'keywords' => [ 'reservas', 'reservar', 'disponibilidad', 'booking', 'citas', 'salas', 'salas de reuniones', 'sala reunión', 'equipamiento', 'recursos' ],
                 'modulo' => 'reservas',
-                'descripcion' => 'Sistema de reservas',
-                'paginas_sugeridas' => [ 'reservar', 'mis-reservas' ],
+                'descripcion' => 'Sistema de reservas de salas y recursos',
+                'paginas_sugeridas' => [ 'reservar', 'mis-reservas', 'disponibilidad' ],
             ],
             'espacios' => [
-                'keywords' => [ 'espacios', 'salas', 'instalaciones', 'local', 'alquiler' ],
+                'keywords' => [ 'espacios', 'espacios comunes', 'instalaciones', 'local', 'alquiler' ],
                 'modulo' => 'espacios-comunes',
                 'descripcion' => 'Gestión de espacios comunes',
                 'paginas_sugeridas' => [ 'espacios', 'reservar-espacio' ],
@@ -345,7 +393,7 @@ class Flavor_App_Generator {
             'deportiva'        => [ 'comunidad-viva', 'forest-green', 'ecos-comunitarios' ],
             'cultural'         => [ 'kulturaka', 'campi', 'escena-familiar' ],
             'educativa'        => [ 'academia-espiral', 'comunidad-viva', 'themacle' ],
-            'empresarial'      => [ 'naarq', 'corporate', 'minimal' ],
+            'empresarial'      => [ 'corporate', 'pyme', 'naarq', 'startup', 'consultoria', 'minimal' ],
             'ecologica'        => [ 'zunbeltz', 'grupos-consumo', 'mercado-espiral' ],
             'consumo'          => [ 'grupos-consumo', 'mercado-espiral', 'zunbeltz' ],
             'cuidados'         => [ 'red-cuidados', 'comunidad-viva', 'escena-familiar' ],
@@ -448,6 +496,10 @@ class Flavor_App_Generator {
             'kulturaka'            => [ 'label' => 'Kulturaka', 'desc' => 'Cultura Cooperativa', 'color' => '#e63946', 'icon' => 'dashicons-tickets-alt' ],
             'academia-espiral'     => [ 'label' => 'Academia Espiral', 'desc' => 'Educación P2P', 'color' => '#d97706', 'icon' => 'dashicons-welcome-learn-more' ],
             'naarq'                => [ 'label' => 'Naarq', 'desc' => 'Estudi d\'Arquitectura', 'color' => '#1a1a1a', 'icon' => 'dashicons-building' ],
+            'corporate'            => [ 'label' => 'Corporate', 'desc' => 'Empresas y Startups', 'color' => '#1e40af', 'icon' => 'dashicons-businessman' ],
+            'pyme'                 => [ 'label' => 'PYME', 'desc' => 'Pequeña y Mediana Empresa', 'color' => '#0369a1', 'icon' => 'dashicons-store' ],
+            'startup'              => [ 'label' => 'Startup', 'desc' => 'Startup Tecnológica', 'color' => '#7c3aed', 'icon' => 'dashicons-lightbulb' ],
+            'consultoria'          => [ 'label' => 'Consultoría', 'desc' => 'Servicios Profesionales', 'color' => '#0f766e', 'icon' => 'dashicons-chart-line' ],
             'denendako'            => [ 'label' => 'Denendako', 'desc' => 'Herri Sarea', 'color' => '#333333', 'icon' => 'dashicons-networking' ],
             'pueblo-vivo'          => [ 'label' => 'Pueblo Vivo', 'desc' => 'Revitalización Rural', 'color' => '#c2703a', 'icon' => 'dashicons-admin-home' ],
             'ecos-comunitarios'    => [ 'label' => 'Ecos Comunitarios', 'desc' => 'Espacios Compartidos', 'color' => '#0891b2', 'icon' => 'dashicons-admin-multisite' ],
@@ -535,10 +587,27 @@ class Flavor_App_Generator {
      */
     public function analizar_requisitos( $descripcion, $documentos = [], $imagenes = [] ) {
         $engine = $this->get_ai_engine();
+        $ia_status = [
+            'disponible' => false,
+            'motor' => null,
+            'configurado' => false,
+            'usado' => false,
+            'error' => null,
+        ];
+
+        // Diagnóstico del motor
+        if ( $engine ) {
+            $ia_status['disponible'] = true;
+            $ia_status['motor'] = method_exists( $engine, 'get_id' ) ? $engine->get_id() : 'desconocido';
+            $ia_status['configurado'] = $engine->is_configured();
+        }
 
         // Si no hay motor de IA configurado, usar análisis local
         if ( ! $engine || ! $engine->is_configured() ) {
-            return $this->analizar_requisitos_local( $descripcion );
+            $ia_status['error'] = ! $engine ? 'Motor no disponible' : 'Motor no configurado (falta API key)';
+            $resultado = $this->analizar_requisitos_local( $descripcion );
+            $resultado['ia_status'] = $ia_status;
+            return $resultado;
         }
 
         $system_prompt = $this->construir_system_prompt();
@@ -556,15 +625,24 @@ class Flavor_App_Generator {
             $resultado = $engine->send_message( $messages, $system_prompt );
 
             if ( ! empty( $resultado['success'] ) && ! empty( $resultado['response'] ) ) {
-                return $this->parsear_respuesta_ia( $resultado['response'] );
+                $ia_status['usado'] = true;
+                $parsed = $this->parsear_respuesta_ia( $resultado['response'] );
+                $parsed['ia_status'] = $ia_status;
+                return $parsed;
             }
 
             // Si la IA falló, usar análisis local
-            return $this->analizar_requisitos_local( $descripcion );
+            $ia_status['error'] = $resultado['error'] ?? 'La IA no devolvió respuesta válida';
+            $resultado_local = $this->analizar_requisitos_local( $descripcion );
+            $resultado_local['ia_status'] = $ia_status;
+            return $resultado_local;
 
         } catch ( Exception $e ) {
             // Fallback a análisis local
-            return $this->analizar_requisitos_local( $descripcion );
+            $ia_status['error'] = $e->getMessage();
+            $resultado_local = $this->analizar_requisitos_local( $descripcion );
+            $resultado_local['ia_status'] = $ia_status;
+            return $resultado_local;
         }
     }
 
@@ -574,7 +652,33 @@ class Flavor_App_Generator {
      * @return string
      */
     private function construir_system_prompt() {
-        return 'Eres un experto en diseño de plataformas comunitarias y webs. Analiza descripciones de proyectos y proporciona estructuras recomendadas en formato JSON. Solo responde con JSON válido, sin texto adicional.';
+        $prompt = "Eres un experto arquitecto de plataformas con Flavor Platform.
+Tu rol es analizar las necesidades del usuario y proponer TODOS los módulos que necesiten.
+
+REGLAS CRÍTICAS:
+1. Lee TODA la descripción del usuario cuidadosamente
+2. Por cada necesidad mencionada, busca el módulo correspondiente en el catálogo
+3. NO limites la cantidad de módulos - si el usuario necesita 8 módulos, propón 8
+4. Para EMPRESAS/PYMEs típicamente necesitan: clientes, fichaje-empleados, facturas, reservas, avisos-municipales, biblioteca, foros, incidencias
+5. Analiza cada frase de la descripción y mapea a módulos
+
+EJEMPLO - Si el usuario dice:
+'Empresa con 30 empleados. Necesitamos fichaje, clientes, facturas, reserva salas, portal empleado, directorio, comunicación interna, proyectos'
+
+Debes proponer MÍNIMO estos módulos:
+- fichaje-empleados (fichaje y asistencia)
+- clientes (CRM)
+- facturas (facturación y presupuestos)
+- reservas (salas de reuniones)
+- biblioteca (portal con documentos y nóminas)
+- mapa-actores (directorio empleados)
+- avisos-municipales (comunicación interna)
+- colectivos (proyectos y equipos)
+- foros (comunicación)
+
+SIEMPRE responde SOLO con JSON válido, sin explicaciones.";
+
+        return $prompt;
     }
 
     /**
@@ -585,40 +689,48 @@ class Flavor_App_Generator {
      * @return string
      */
     private function construir_prompt_analisis( $descripcion, $documentos = [] ) {
-        $modulos_disponibles = array_keys( $this->casos_uso_modulos );
+        // Obtener catálogo completo de módulos
+        $modulos_texto = $this->get_modulos_para_prompt();
+
+        // Obtener addons disponibles
+        $addons_texto = $this->get_addons_para_prompt();
+
+        // Obtener perfiles disponibles
+        $perfiles_texto = $this->get_perfiles_para_prompt();
+
+        // Obtener temas disponibles
+        $temas_texto = $this->get_temas_para_prompt();
 
         $prompt = <<<PROMPT
-Eres un experto en diseño de plataformas comunitarias y webs. Analiza la siguiente descripción de proyecto y proporciona una estructura recomendada.
+Analiza la siguiente descripción de proyecto y proporciona una estructura recomendada usando los módulos de Flavor Platform.
 
 ## DESCRIPCIÓN DEL PROYECTO:
 {$descripcion}
 
-## MÓDULOS DISPONIBLES:
-Los siguientes módulos están disponibles para activar:
-- socios: Gestión de membresías y cuotas
-- eventos: Calendario y gestión de eventos
-- reservas: Sistema de reservas de recursos
-- foros: Foros de discusión comunitarios
-- marketplace: Compraventa entre miembros
-- banco-tiempo: Intercambio de servicios
-- participacion: Votaciones y propuestas
-- huertos-urbanos: Gestión de parcelas
-- biblioteca: Préstamo de libros
-- incidencias: Reporte de problemas
-- colectivos: Grupos de trabajo
-- cursos: Formación y talleres
-- radio: Radio comunitaria
-- bicicletas-compartidas: Préstamo de bicis
-- carpooling: Compartir coche
-- tramites: Gestión de expedientes
-- compostaje: Sistema de compostaje
-- espacios-comunes: Reserva de salas
-- comunidades: Comunidades de vecinos
+## CATÁLOGO COMPLETO DE MÓDULOS DISPONIBLES:
+{$modulos_texto}
+
+## ADDONS DISPONIBLES:
+{$addons_texto}
+
+## PERFILES DE APLICACIÓN:
+{$perfiles_texto}
+
+## TEMAS VISUALES DISPONIBLES:
+{$temas_texto}
+
+## INSTRUCCIONES:
+1. Analiza qué necesita el usuario según su descripción
+2. Selecciona los módulos más relevantes (no todos, solo los necesarios)
+3. Sugiere un perfil de aplicación adecuado
+4. Recomienda un tema visual que encaje con el tipo de organización
+5. Propón páginas útiles basadas en los módulos seleccionados
 
 ## RESPONDE EN FORMATO JSON:
 {
     "nombre_proyecto": "Nombre sugerido para el proyecto",
-    "tipo_comunidad": "vecinal|deportiva|cultural|educativa|empresarial|otra",
+    "tipo_comunidad": "colectivo_social|vecinal|deportiva|cultural|educativa|empresarial|ecologica|consumo|cuidados|gastronomia|finanzas|medios|otra",
+    "perfil_recomendado": "asociacion|ayuntamiento|cooperativa|empresa|comunidad|educativo",
     "descripcion_corta": "Descripción de 1-2 frases",
     "modulos_recomendados": ["modulo1", "modulo2"],
     "modulos_opcionales": ["modulo3"],
@@ -626,19 +738,439 @@ Los siguientes módulos están disponibles para activar:
         {"slug": "inicio", "titulo": "Inicio", "template": "home", "descripcion": "Página principal"},
         {"slug": "mi-panel", "titulo": "Mi Panel", "template": "dashboard_miembro", "descripcion": "Dashboard del usuario"}
     ],
+    "tema_recomendado": "id-del-tema",
     "colores_sugeridos": {
         "primario": "#3b82f6",
         "secundario": "#8b5cf6",
         "acento": "#10b981"
     },
     "funcionalidades_clave": ["func1", "func2", "func3"],
-    "publico_objetivo": "Descripción del público objetivo"
+    "publico_objetivo": "Descripción del público objetivo",
+    "addons_sugeridos": ["addon1"]
 }
 
 Solo responde con el JSON, sin texto adicional.
 PROMPT;
 
         return $prompt;
+    }
+
+    /**
+     * Obtener lista de módulos formateada para el prompt
+     *
+     * @return string
+     */
+    private function get_modulos_para_prompt() {
+        $catalogo = $this->get_modules_catalog();
+        $lineas = [];
+
+        $categorias = [
+            'gestion' => 'GESTIÓN DE MIEMBROS',
+            'actividades' => 'ACTIVIDADES Y EVENTOS',
+            'espacios' => 'ESPACIOS Y RESERVAS',
+            'comunicacion' => 'COMUNICACIÓN',
+            'participacion' => 'PARTICIPACIÓN CIUDADANA',
+            'economia' => 'ECONOMÍA Y FINANZAS',
+            'sostenibilidad' => 'SOSTENIBILIDAD',
+            'contenidos' => 'CONTENIDOS Y MULTIMEDIA',
+        ];
+
+        foreach ( $categorias as $cat_id => $cat_nombre ) {
+            $modulos_cat = array_filter( $catalogo, fn($m) => ($m['categoria'] ?? '') === $cat_id );
+            if ( ! empty( $modulos_cat ) ) {
+                $lineas[] = "\n### {$cat_nombre}:";
+                foreach ( $modulos_cat as $id => $mod ) {
+                    $lineas[] = "- {$id}: {$mod['descripcion']}";
+                }
+            }
+        }
+
+        return implode( "\n", $lineas );
+    }
+
+    /**
+     * Obtener lista de addons formateada para el prompt
+     *
+     * @return string
+     */
+    private function get_addons_para_prompt() {
+        $addons = [
+            'flavor-admin-assistant' => 'Asistente IA avanzado con atajos y comandos para administradores',
+            'flavor-web-builder-pro' => 'Constructor visual de páginas con bloques personalizados',
+            'flavor-network-communities' => 'Red de comunidades conectadas (multisite)',
+            'flavor-restaurant-ordering' => 'Sistema de pedidos y reservas para restaurantes',
+            'flavor-demo-orchestrator' => 'Generador de datos de demostración para pruebas',
+        ];
+
+        $lineas = [];
+        $addons_dir = FLAVOR_CHAT_IA_PATH . 'addons/';
+
+        foreach ( $addons as $slug => $desc ) {
+            $instalado = is_dir( $addons_dir . $slug ) ? '(instalado)' : '(disponible)';
+            $lineas[] = "- {$slug}: {$desc} {$instalado}";
+        }
+
+        return implode( "\n", $lineas );
+    }
+
+    /**
+     * Obtener lista de perfiles formateada para el prompt
+     *
+     * @return string
+     */
+    private function get_perfiles_para_prompt() {
+        $perfiles = [
+            'asociacion' => [
+                'nombre' => 'Asociación/Colectivo',
+                'ideal' => 'asociaciones vecinales, culturales, deportivas, ONGs',
+                'modulos' => 'socios, eventos, foros, reservas, encuestas',
+            ],
+            'ayuntamiento' => [
+                'nombre' => 'Ayuntamiento/Institución',
+                'ideal' => 'ayuntamientos, administraciones públicas, instituciones',
+                'modulos' => 'avisos-municipales, tramites, participacion, transparencia, incidencias',
+            ],
+            'cooperativa' => [
+                'nombre' => 'Cooperativa',
+                'ideal' => 'cooperativas de trabajo, consumo, vivienda o servicios',
+                'modulos' => 'socios, grupos-consumo, transparencia, encuestas, foros',
+            ],
+            'empresa' => [
+                'nombre' => 'Empresa/PYME',
+                'ideal' => 'pequeñas y medianas empresas, startups, coworkings',
+                'modulos' => 'clientes, facturas, fichaje-empleados, reservas, incidencias',
+            ],
+            'comunidad' => [
+                'nombre' => 'Comunidad de Vecinos',
+                'ideal' => 'comunidades de propietarios, urbanizaciones',
+                'modulos' => 'comunidades, incidencias, reservas, foros, encuestas',
+            ],
+            'educativo' => [
+                'nombre' => 'Centro Educativo',
+                'ideal' => 'escuelas, academias, centros de formación',
+                'modulos' => 'cursos, talleres, biblioteca, eventos, foros',
+            ],
+        ];
+
+        $lineas = [];
+        foreach ( $perfiles as $id => $info ) {
+            $lineas[] = "- {$id} ({$info['nombre']}): Ideal para {$info['ideal']}. Módulos típicos: {$info['modulos']}";
+        }
+
+        return implode( "\n", $lineas );
+    }
+
+    /**
+     * Obtener lista de temas formateada para el prompt
+     *
+     * @return string
+     */
+    private function get_temas_para_prompt() {
+        $temas = $this->get_temas_disponibles();
+        $lineas = [];
+
+        // Agrupar por tipo de uso
+        $grupos = [
+            'Comunidades y Colectivos' => ['comunidad-viva', 'denendako', 'pueblo-vivo', 'ecos-comunitarios', 'democracia-universal'],
+            'Ecología y Sostenibilidad' => ['zunbeltz', 'grupos-consumo', 'mercado-espiral', 'forest-green'],
+            'Cultura y Educación' => ['kulturaka', 'campi', 'academia-espiral', 'escena-familiar'],
+            'Empresas y Negocios' => ['corporate', 'pyme', 'startup', 'consultoria', 'naarq', 'minimal'],
+            'Servicios Especializados' => ['jantoki', 'spiral-bank', 'red-cuidados', 'flujo'],
+            'Generales' => ['default', 'dark-mode', 'ocean-blue', 'sunset-orange'],
+        ];
+
+        foreach ( $grupos as $grupo_nombre => $tema_ids ) {
+            $lineas[] = "\n### {$grupo_nombre}:";
+            foreach ( $tema_ids as $tema_id ) {
+                if ( isset( $temas[$tema_id] ) ) {
+                    $tema = $temas[$tema_id];
+                    $lineas[] = "- {$tema_id}: {$tema['label']} - {$tema['desc']}";
+                }
+            }
+        }
+
+        return implode( "\n", $lineas );
+    }
+
+    /**
+     * Obtener catálogo completo de módulos
+     * Versión extendida con todos los módulos disponibles
+     *
+     * @return array
+     */
+    private function get_modules_catalog() {
+        return [
+            // Gestión de Miembros
+            'socios' => [
+                'nombre' => 'Socios/Miembros',
+                'descripcion' => 'Gestión completa de miembros, cuotas, carnets digitales y directorio',
+                'categoria' => 'gestion',
+            ],
+            'clientes' => [
+                'nombre' => 'Clientes',
+                'descripcion' => 'CRM básico para gestionar clientes y relaciones comerciales',
+                'categoria' => 'gestion',
+            ],
+            'comunidades' => [
+                'nombre' => 'Comunidades',
+                'descripcion' => 'Gestión de comunidades de vecinos y propietarios',
+                'categoria' => 'gestion',
+            ],
+            'colectivos' => [
+                'nombre' => 'Colectivos',
+                'descripcion' => 'Grupos de trabajo, comisiones y equipos internos',
+                'categoria' => 'gestion',
+            ],
+            'incidencias' => [
+                'nombre' => 'Incidencias',
+                'descripcion' => 'Sistema de tickets de soporte, averías y mantenimiento',
+                'categoria' => 'gestion',
+            ],
+            'tramites' => [
+                'nombre' => 'Trámites',
+                'descripcion' => 'Gestión de trámites, solicitudes y expedientes',
+                'categoria' => 'gestion',
+            ],
+            'fichaje-empleados' => [
+                'nombre' => 'Fichaje',
+                'descripcion' => 'Control de horarios y fichaje de empleados',
+                'categoria' => 'gestion',
+            ],
+            'ayuda-vecinal' => [
+                'nombre' => 'Ayuda Vecinal',
+                'descripcion' => 'Red de ayuda mutua entre vecinos',
+                'categoria' => 'gestion',
+            ],
+            'seguimiento-denuncias' => [
+                'nombre' => 'Seguimiento Denuncias',
+                'descripcion' => 'Sistema de seguimiento de denuncias ciudadanas',
+                'categoria' => 'gestion',
+            ],
+
+            // Actividades y Eventos
+            'eventos' => [
+                'nombre' => 'Eventos',
+                'descripcion' => 'Calendario de eventos con inscripciones y gestión de asistentes',
+                'categoria' => 'actividades',
+            ],
+            'cursos' => [
+                'nombre' => 'Cursos',
+                'descripcion' => 'Formación online con lecciones, matrículas y certificados',
+                'categoria' => 'actividades',
+            ],
+            'talleres' => [
+                'nombre' => 'Talleres',
+                'descripcion' => 'Talleres presenciales con inscripciones y materiales',
+                'categoria' => 'actividades',
+            ],
+            'campanias' => [
+                'nombre' => 'Campañas',
+                'descripcion' => 'Campañas de recogida de firmas y sensibilización',
+                'categoria' => 'actividades',
+            ],
+
+            // Espacios y Reservas
+            'reservas' => [
+                'nombre' => 'Reservas',
+                'descripcion' => 'Sistema de reservas de recursos, salas y equipamiento',
+                'categoria' => 'espacios',
+            ],
+            'espacios-comunes' => [
+                'nombre' => 'Espacios Comunes',
+                'descripcion' => 'Gestión de espacios compartidos con calendario',
+                'categoria' => 'espacios',
+            ],
+            'parkings' => [
+                'nombre' => 'Parkings',
+                'descripcion' => 'Gestión de plazas de parking y rotación',
+                'categoria' => 'espacios',
+            ],
+
+            // Comunicación
+            'foros' => [
+                'nombre' => 'Foros',
+                'descripcion' => 'Foros de discusión por categorías y temas',
+                'categoria' => 'comunicacion',
+            ],
+            'chat-interno' => [
+                'nombre' => 'Chat Interno',
+                'descripcion' => 'Mensajería privada entre miembros',
+                'categoria' => 'comunicacion',
+            ],
+            'chat-grupos' => [
+                'nombre' => 'Chat de Grupos',
+                'descripcion' => 'Salas de chat grupales por colectivo o tema',
+                'categoria' => 'comunicacion',
+            ],
+            'avisos-municipales' => [
+                'nombre' => 'Avisos/Tablón',
+                'descripcion' => 'Tablón de anuncios y avisos oficiales',
+                'categoria' => 'comunicacion',
+            ],
+            'email-marketing' => [
+                'nombre' => 'Email Marketing',
+                'descripcion' => 'Newsletters, listas de correo y automatizaciones',
+                'categoria' => 'comunicacion',
+            ],
+            'red-social' => [
+                'nombre' => 'Red Social',
+                'descripcion' => 'Red social interna con publicaciones, likes y seguimiento',
+                'categoria' => 'comunicacion',
+            ],
+
+            // Participación
+            'encuestas' => [
+                'nombre' => 'Encuestas',
+                'descripcion' => 'Encuestas y votaciones con resultados en tiempo real',
+                'categoria' => 'participacion',
+            ],
+            'participacion' => [
+                'nombre' => 'Participación',
+                'descripcion' => 'Propuestas ciudadanas y debates participativos',
+                'categoria' => 'participacion',
+            ],
+            'presupuestos-participativos' => [
+                'nombre' => 'Presupuestos Participativos',
+                'descripcion' => 'Votación de proyectos con asignación de presupuesto',
+                'categoria' => 'participacion',
+            ],
+            'transparencia' => [
+                'nombre' => 'Transparencia',
+                'descripcion' => 'Portal de transparencia con presupuestos, actas y contratos',
+                'categoria' => 'participacion',
+            ],
+            'justicia-restaurativa' => [
+                'nombre' => 'Justicia Restaurativa',
+                'descripcion' => 'Mediación y resolución de conflictos comunitarios',
+                'categoria' => 'participacion',
+            ],
+
+            // Economía
+            'marketplace' => [
+                'nombre' => 'Marketplace',
+                'descripcion' => 'Tienda de productos y servicios entre miembros',
+                'categoria' => 'economia',
+            ],
+            'grupos-consumo' => [
+                'nombre' => 'Grupos de Consumo',
+                'descripcion' => 'Pedidos colectivos a productores locales',
+                'categoria' => 'economia',
+            ],
+            'banco-tiempo' => [
+                'nombre' => 'Banco de Tiempo',
+                'descripcion' => 'Intercambio de servicios y habilidades por tiempo',
+                'categoria' => 'economia',
+            ],
+            'crowdfunding' => [
+                'nombre' => 'Crowdfunding',
+                'descripcion' => 'Financiación colectiva de proyectos',
+                'categoria' => 'economia',
+            ],
+            'facturas' => [
+                'nombre' => 'Facturación',
+                'descripcion' => 'Emisión de facturas y gestión de cobros',
+                'categoria' => 'economia',
+            ],
+            'economia-don' => [
+                'nombre' => 'Economía del Don',
+                'descripcion' => 'Sistema de regalos y donaciones entre miembros',
+                'categoria' => 'economia',
+            ],
+            'trabajo-digno' => [
+                'nombre' => 'Trabajo Digno',
+                'descripcion' => 'Bolsa de trabajo con ofertas y demandas laborales',
+                'categoria' => 'economia',
+            ],
+
+            // Sostenibilidad
+            'huertos-urbanos' => [
+                'nombre' => 'Huertos Urbanos',
+                'descripcion' => 'Gestión de parcelas y huertos comunitarios',
+                'categoria' => 'sostenibilidad',
+            ],
+            'compostaje' => [
+                'nombre' => 'Compostaje',
+                'descripcion' => 'Puntos de compostaje comunitario',
+                'categoria' => 'sostenibilidad',
+            ],
+            'bicicletas-compartidas' => [
+                'nombre' => 'Bicicletas',
+                'descripcion' => 'Sistema de préstamo de bicicletas',
+                'categoria' => 'sostenibilidad',
+            ],
+            'carpooling' => [
+                'nombre' => 'Carpooling',
+                'descripcion' => 'Compartir coche para trayectos',
+                'categoria' => 'sostenibilidad',
+            ],
+            'reciclaje' => [
+                'nombre' => 'Reciclaje',
+                'descripcion' => 'Puntos de reciclaje y gamificación ecológica',
+                'categoria' => 'sostenibilidad',
+            ],
+            'huella-ecologica' => [
+                'nombre' => 'Huella Ecológica',
+                'descripcion' => 'Calculadora y seguimiento de huella de carbono',
+                'categoria' => 'sostenibilidad',
+            ],
+            'biodiversidad-local' => [
+                'nombre' => 'Biodiversidad Local',
+                'descripcion' => 'Catálogo de fauna y flora local con avistamientos',
+                'categoria' => 'sostenibilidad',
+            ],
+            'energia-comunitaria' => [
+                'nombre' => 'Energía Comunitaria',
+                'descripcion' => 'Gestión de comunidades energéticas',
+                'categoria' => 'sostenibilidad',
+            ],
+
+            // Contenidos
+            'biblioteca' => [
+                'nombre' => 'Biblioteca',
+                'descripcion' => 'Catálogo de libros con préstamos y reservas',
+                'categoria' => 'contenidos',
+            ],
+            'multimedia' => [
+                'nombre' => 'Multimedia',
+                'descripcion' => 'Galería de fotos, vídeos y documentos',
+                'categoria' => 'contenidos',
+            ],
+            'podcast' => [
+                'nombre' => 'Podcast',
+                'descripcion' => 'Publicación y gestión de podcasts',
+                'categoria' => 'contenidos',
+            ],
+            'radio' => [
+                'nombre' => 'Radio',
+                'descripcion' => 'Radio comunitaria con programación',
+                'categoria' => 'contenidos',
+            ],
+            'recetas' => [
+                'nombre' => 'Recetas',
+                'descripcion' => 'Recetario colaborativo de la comunidad',
+                'categoria' => 'contenidos',
+            ],
+            'saberes-ancestrales' => [
+                'nombre' => 'Saberes Ancestrales',
+                'descripcion' => 'Documentación de conocimientos tradicionales',
+                'categoria' => 'contenidos',
+            ],
+            'mapa-actores' => [
+                'nombre' => 'Mapa de Actores',
+                'descripcion' => 'Directorio geolocalizado de actores y recursos',
+                'categoria' => 'contenidos',
+            ],
+            'kulturaka' => [
+                'nombre' => 'Kulturaka',
+                'descripcion' => 'Agenda cultural con artistas y espacios',
+                'categoria' => 'contenidos',
+            ],
+            'documentacion-legal' => [
+                'nombre' => 'Documentación Legal',
+                'descripcion' => 'Repositorio de documentos legales y estatutos',
+                'categoria' => 'contenidos',
+            ],
+        ];
     }
 
     /**
@@ -678,9 +1210,38 @@ PROMPT;
         $modulos_detectados = [];
         $modulos_lista = [];
         $paginas_sugeridas = [];
+        $es_pack_aplicado = false;
 
-        // Detectar módulos por keywords
+        // PASO 1: Detectar primero los PACKS (tienen prioridad)
         foreach ( $this->casos_uso_modulos as $caso => $config ) {
+            if ( empty( $config['es_pack'] ) ) {
+                continue;
+            }
+            foreach ( $config['keywords'] as $keyword ) {
+                if ( strpos( $descripcion_lower, $keyword ) !== false ) {
+                    $modulos_detectados[ $caso ] = $config;
+                    $es_pack_aplicado = true;
+
+                    // Añadir todos los módulos del pack
+                    if ( ! empty( $config['modulos'] ) && is_array( $config['modulos'] ) ) {
+                        foreach ( $config['modulos'] as $modulo ) {
+                            if ( ! in_array( $modulo, $modulos_lista, true ) ) {
+                                $modulos_lista[] = $modulo;
+                            }
+                        }
+                    }
+                    break 2; // Salir de ambos bucles, un pack es suficiente
+                }
+            }
+        }
+
+        // PASO 2: Detectar módulos individuales por keywords
+        foreach ( $this->casos_uso_modulos as $caso => $config ) {
+            // Si ya es un pack detectado, saltar
+            if ( ! empty( $config['es_pack'] ) ) {
+                continue;
+            }
+
             foreach ( $config['keywords'] as $keyword ) {
                 if ( strpos( $descripcion_lower, $keyword ) !== false ) {
                     $modulos_detectados[ $caso ] = $config;
@@ -736,9 +1297,13 @@ PROMPT;
             }
         }
 
-        // Detectar tipo de comunidad
+        // Detectar tipo de comunidad (empresarial tiene prioridad si se detectan keywords empresariales)
         $tipo = 'otra';
-        if ( preg_match( '/colectivo|ong|movimiento|activis|social/i', $descripcion ) ) {
+
+        // Detectar primero empresarial (más específico)
+        if ( preg_match( '/empresa|pyme|negocio|cowork|profesional|startup|empleado|fichaje|factura|crm|cliente|comercial|corporativo|oficina|rrhh|nómina|plantilla/i', $descripcion ) ) {
+            $tipo = 'empresarial';
+        } elseif ( preg_match( '/colectivo|ong|movimiento|activis|social/i', $descripcion ) ) {
             $tipo = 'colectivo_social';
         } elseif ( preg_match( '/ecolog|sostenib|verde|huerto|compost/i', $descripcion ) ) {
             $tipo = 'ecologica';
@@ -754,8 +1319,6 @@ PROMPT;
             $tipo = 'cultural';
         } elseif ( preg_match( '/educa|escuela|formaci|aprend/i', $descripcion ) ) {
             $tipo = 'educativa';
-        } elseif ( preg_match( '/empresa|negocio|cowork|profesional/i', $descripcion ) ) {
-            $tipo = 'empresarial';
         }
 
         // Nombre según tipo
@@ -765,11 +1328,21 @@ PROMPT;
             'deportiva'        => 'Mi Club',
             'cultural'         => 'Mi Asociación Cultural',
             'educativa'        => 'Mi Centro',
-            'empresarial'      => 'Mi Espacio',
+            'empresarial'      => 'Mi Empresa',
             'ecologica'        => 'Mi Iniciativa Verde',
             'consumo'          => 'Mi Grupo de Consumo',
             'cuidados'         => 'Mi Red de Cuidados',
         ];
+
+        // Para tipo empresarial, asegurar perfil recomendado
+        $perfil_recomendado = 'asociacion';
+        if ( $tipo === 'empresarial' ) {
+            $perfil_recomendado = 'empresa';
+        } elseif ( $tipo === 'educativa' ) {
+            $perfil_recomendado = 'educativo';
+        } elseif ( $tipo === 'vecinal' ) {
+            $perfil_recomendado = 'comunidad';
+        }
 
         // Obtener temas recomendados para este tipo
         $temas_recomendados = $this->get_temas_recomendados( $tipo );
@@ -787,9 +1360,18 @@ PROMPT;
         // Obtener todos los temas (recomendados + resto)
         $todos_los_temas = $this->get_temas_disponibles();
 
+        // Público objetivo según tipo
+        $publicos = [
+            'empresarial' => 'Empleados y equipo de la empresa',
+            'colectivo_social' => 'Miembros del colectivo y activistas',
+            'vecinal' => 'Vecinos y residentes de la comunidad',
+            'educativa' => 'Alumnos, profesores y personal educativo',
+        ];
+
         return [
             'nombre_proyecto'       => $nombres_por_tipo[ $tipo ] ?? 'Mi Comunidad',
             'tipo_comunidad'        => $tipo,
+            'perfil_recomendado'    => $perfil_recomendado,
             'descripcion_corta'     => substr( $descripcion, 0, 150 ),
             'modulos_recomendados'  => array_values( array_unique( $modulos_lista ) ),
             'modulos_opcionales'    => [],
@@ -799,7 +1381,7 @@ PROMPT;
             'temas_recomendados'    => $temas_recomendados,
             'todos_los_temas'       => $todos_los_temas,
             'funcionalidades_clave' => array_column( array_values( $modulos_detectados ), 'descripcion' ),
-            'publico_objetivo'      => 'Miembros de la comunidad',
+            'publico_objetivo'      => $publicos[ $tipo ] ?? 'Miembros de la organización',
             'analisis_local'        => true,
         ];
     }
@@ -872,20 +1454,30 @@ PROMPT;
 
         $datos = wp_parse_args( $datos, $defaults );
 
-        // Validar módulos (que existan)
-        $modulos_validos = array_keys( $this->casos_uso_modulos );
-        $datos['modulos_recomendados'] = array_filter(
-            $datos['modulos_recomendados'],
-            function( $m ) use ( $modulos_validos ) {
-                // Buscar por nombre de módulo
-                foreach ( $this->casos_uso_modulos as $caso => $config ) {
-                    if ( $config['modulo'] === $m || $caso === $m ) {
-                        return true;
+        // Validar módulos contra el catálogo completo (no solo casos_uso)
+        $catalogo_modulos = array_keys( $this->get_modules_catalog() );
+
+        // También incluir módulos de casos_uso
+        foreach ( $this->casos_uso_modulos as $caso => $config ) {
+            if ( ! empty( $config['modulo'] ) && ! in_array( $config['modulo'], $catalogo_modulos, true ) ) {
+                $catalogo_modulos[] = $config['modulo'];
+            }
+            if ( ! empty( $config['modulos'] ) && is_array( $config['modulos'] ) ) {
+                foreach ( $config['modulos'] as $mod ) {
+                    if ( ! in_array( $mod, $catalogo_modulos, true ) ) {
+                        $catalogo_modulos[] = $mod;
                     }
                 }
-                return false;
             }
-        );
+        }
+
+        // Filtrar solo módulos que existen en el catálogo
+        $datos['modulos_recomendados'] = array_values( array_filter(
+            $datos['modulos_recomendados'],
+            function( $m ) use ( $catalogo_modulos ) {
+                return in_array( $m, $catalogo_modulos, true );
+            }
+        ) );
 
         // Asegurar página de inicio y dashboard
         $tiene_inicio = false;
@@ -1024,10 +1616,9 @@ PROMPT;
         }
 
         if ( $activados > 0 ) {
-            // Sincronizar con ambas opciones para compatibilidad
+            // Solo escribir a flavor_chat_ia_settings (fuente única)
             $configuracion['active_modules'] = $modulos_activos;
             update_option( 'flavor_chat_ia_settings', $configuracion );
-            update_option( 'flavor_active_modules', $modulos_activos );
         }
 
         return [

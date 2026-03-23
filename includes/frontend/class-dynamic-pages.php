@@ -570,14 +570,89 @@ class Flavor_Dynamic_Pages {
         // CSS del módulo específico (si existe)
         $module = $this->current_module ?? '';
         if ($module) {
+            // Bypass explícito para módulos con formularios AJAX críticos.
+            // Evita depender de auto-detección de rutas de assets en entornos con rutas híbridas.
+            if (in_array($module, ['trabajo_digno', 'trabajo-digno'], true)) {
+                wp_enqueue_script(
+                    'flavor-trabajo-digno-direct',
+                    FLAVOR_CHAT_IA_URL . 'includes/modules/trabajo-digno/assets/js/trabajo-digno.js',
+                    ['jquery'],
+                    FLAVOR_CHAT_IA_VERSION,
+                    true
+                );
+                wp_localize_script('flavor-trabajo-digno-direct', 'flavorTrabajoDigno', [
+                    'ajaxurl' => admin_url('admin-ajax.php'),
+                    'nonce' => wp_create_nonce('trabajo_digno_nonce'),
+                    'i18n' => [
+                        'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+                        'confirm_postular' => __('¿Confirmas tu postulación?', 'flavor-chat-ia'),
+                    ],
+                ]);
+            } elseif (in_array($module, ['economia_don', 'economia-don'], true)) {
+                wp_enqueue_script(
+                    'flavor-economia-don-direct',
+                    FLAVOR_CHAT_IA_URL . 'includes/modules/economia-don/assets/js/economia-don.js',
+                    ['jquery'],
+                    FLAVOR_CHAT_IA_VERSION,
+                    true
+                );
+                wp_localize_script('flavor-economia-don-direct', 'edData', [
+                    'ajaxUrl' => admin_url('admin-ajax.php'),
+                    'nonce' => wp_create_nonce('ed_nonce'),
+                    'i18n' => [
+                        'confirmSolicitar' => __('¿Deseas solicitar este don?', 'flavor-chat-ia'),
+                        'confirmEntrega' => __('¿Confirmas que has entregado este don?', 'flavor-chat-ia'),
+                        'gracias' => __('¡Gracias por tu generosidad!', 'flavor-chat-ia'),
+                    ],
+                ]);
+            } elseif (in_array($module, ['biodiversidad_local', 'biodiversidad-local'], true)) {
+                wp_enqueue_script(
+                    'flavor-biodiversidad-direct',
+                    FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/js/biodiversidad-local.js',
+                    ['jquery'],
+                    FLAVOR_CHAT_IA_VERSION,
+                    true
+                );
+                wp_localize_script('flavor-biodiversidad-direct', 'flavorBiodiversidad', [
+                    'ajaxurl' => admin_url('admin-ajax.php'),
+                    'nonce' => wp_create_nonce('biodiversidad_nonce'),
+                    'categorias' => [],
+                    'estados' => [],
+                    'habitats' => [],
+                    'i18n' => [
+                        'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+                        'success' => __('Operación completada', 'flavor-chat-ia'),
+                        'confirm_avistamiento' => __('¿Registrar este avistamiento?', 'flavor-chat-ia'),
+                    ],
+                ]);
+            } elseif (in_array($module, ['recetas'], true)) {
+                wp_enqueue_script(
+                    'flavor-recetas-direct',
+                    FLAVOR_CHAT_IA_URL . 'includes/modules/recetas/assets/js/recetas-frontend.js',
+                    ['jquery'],
+                    FLAVOR_CHAT_IA_VERSION,
+                    true
+                );
+                wp_localize_script('flavor-recetas-direct', 'flavorRecetasConfig', [
+                    'ajaxUrl' => admin_url('admin-ajax.php'),
+                    'nonce' => wp_create_nonce('flavor_recetas_nonce'),
+                    'strings' => [
+                        'error' => __('Error al procesar', 'flavor-chat-ia'),
+                    ],
+                ]);
+            }
+
             // Convertir module_id (guión_bajo) a slug de directorio (guión)
             $module_dir = str_replace('_', '-', $module);
 
             // Paths posibles para el CSS del módulo
             $module_css_paths = [
                 // Con formato de directorio (guiones)
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/css/{$module_dir}.css",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/css/{$module_dir}-frontend.css",
                 FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/frontend.css",
                 FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}-frontend.css",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}.css",
                 FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/gc-frontend.css",
                 FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/gc-catalogo.css",
                 // Con formato de ID (guiones bajos) como fallback
@@ -588,14 +663,25 @@ class Flavor_Dynamic_Pages {
             foreach ($module_css_paths as $css_path) {
                 if (file_exists($css_path)) {
                     $css_handle = 'flavor-module-' . basename($css_path, '.css');
+                    $css_url = str_replace(FLAVOR_CHAT_IA_PATH, FLAVOR_CHAT_IA_URL, $css_path);
                     wp_enqueue_style(
                         $css_handle,
-                        str_replace(FLAVOR_CHAT_IA_PATH, FLAVOR_CHAT_IA_URL, $css_path),
-                        ['flavor-portal'],
+                        $css_url,
+                        [],
                         FLAVOR_CHAT_IA_VERSION
                     );
                 }
             }
+        }
+
+        // CSS específico para Biodiversidad Local
+        if (in_array($module, ['biodiversidad-local', 'biodiversidad_local'])) {
+            wp_enqueue_style(
+                'flavor-biodiversidad-local',
+                FLAVOR_CHAT_IA_URL . 'includes/modules/biodiversidad-local/assets/css/biodiversidad-local.css',
+                [],
+                FLAVOR_CHAT_IA_VERSION
+            );
         }
 
         // CSS específico para Mi Red Social
@@ -680,10 +766,15 @@ class Flavor_Dynamic_Pages {
             // Paths posibles para el JS del módulo
             $module_js_paths = [
                 // Con formato de directorio (guiones)
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/js/{$module_dir}.js",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/js/{$module_dir}-frontend.js",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/js/frontend.js",
                 FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/frontend.js",
                 FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/{$module_dir}-frontend.js",
                 FLAVOR_CHAT_IA_PATH . "includes/modules/{$module_dir}/assets/gc-frontend.js",
                 // Con formato de ID (guiones bajos) como fallback
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/js/{$module}.js",
+                FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/js/{$module}-frontend.js",
                 FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/frontend.js",
                 FLAVOR_CHAT_IA_PATH . "includes/modules/{$module}/assets/{$module}-frontend.js",
             ];
@@ -723,6 +814,46 @@ class Flavor_Dynamic_Pages {
                                 ],
                             ]);
                         }
+                    } elseif ($module_dir === 'trabajo-digno') {
+                        wp_localize_script($js_handle, 'flavorTrabajoDigno', [
+                            'ajaxurl' => admin_url('admin-ajax.php'),
+                            'nonce' => wp_create_nonce('trabajo_digno_nonce'),
+                            'i18n' => [
+                                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+                                'confirm_postular' => __('¿Confirmas tu postulación?', 'flavor-chat-ia'),
+                            ],
+                        ]);
+                    } elseif ($module_dir === 'biodiversidad-local') {
+                        wp_localize_script($js_handle, 'flavorBiodiversidad', [
+                            'ajaxurl' => admin_url('admin-ajax.php'),
+                            'nonce' => wp_create_nonce('biodiversidad_nonce'),
+                            'categorias' => [],
+                            'estados' => [],
+                            'habitats' => [],
+                            'i18n' => [
+                                'error' => __('Error al procesar la solicitud', 'flavor-chat-ia'),
+                                'success' => __('Operación completada', 'flavor-chat-ia'),
+                                'confirm_avistamiento' => __('¿Registrar este avistamiento?', 'flavor-chat-ia'),
+                            ],
+                        ]);
+                    } elseif ($module_dir === 'economia-don') {
+                        wp_localize_script($js_handle, 'edData', [
+                            'ajaxUrl' => admin_url('admin-ajax.php'),
+                            'nonce' => wp_create_nonce('ed_nonce'),
+                            'i18n' => [
+                                'confirmSolicitar' => __('¿Deseas solicitar este don?', 'flavor-chat-ia'),
+                                'confirmEntrega' => __('¿Confirmas que has entregado este don?', 'flavor-chat-ia'),
+                                'gracias' => __('¡Gracias por tu generosidad!', 'flavor-chat-ia'),
+                            ],
+                        ]);
+                    } elseif ($module_dir === 'recetas') {
+                        wp_localize_script($js_handle, 'flavorRecetasConfig', [
+                            'ajaxUrl' => admin_url('admin-ajax.php'),
+                            'nonce' => wp_create_nonce('flavor_recetas_nonce'),
+                            'strings' => [
+                                'error' => __('Error al procesar', 'flavor-chat-ia'),
+                            ],
+                        ]);
                     }
                 }
             }
@@ -1623,13 +1754,20 @@ class Flavor_Dynamic_Pages {
                         $tabs_base[$tab_id] = $tab_info;
                     }
                 }
-                $tiene_integraciones = !empty($tabs_integracion);
+                $tabs_base_visibles = array_filter($tabs_base, static function($tab_info) {
+                    return empty($tab_info['hidden_nav']);
+                });
+                $tabs_integracion_visibles = array_filter($tabs_integracion, static function($tab_info) {
+                    return empty($tab_info['hidden_nav']);
+                });
+                $tabs_visibles = array_merge($tabs_base_visibles, $tabs_integracion_visibles);
+                $tiene_integraciones = !empty($tabs_integracion_visibles);
                 ?>
                 <div class="fmd-tabs <?php echo $tiene_integraciones ? 'has-integrations' : ''; ?>">
                     <nav class="fmd-tabs-nav">
                         <?php
                         $is_first = true;
-                        foreach ($tabs_base as $tab_id => $tab_info):
+                        foreach ($tabs_base_visibles as $tab_id => $tab_info):
                             $badge = $this->get_tab_badge_value($tab_info);
                         ?>
                             <button class="fmd-tab <?php echo $is_first ? 'active' : ''; ?>" data-tab="<?php echo esc_attr($tab_id); ?>">
@@ -1644,11 +1782,11 @@ class Flavor_Dynamic_Pages {
                         endforeach;
 
                         // Tabs de integración (módulos de red)
-                        if ($tiene_integraciones):
+                        if (!empty($tabs_integracion_visibles)):
                         ?>
                         <span class="fmd-tabs-separator" title="<?php esc_attr_e('Módulos de red', 'flavor-chat-ia'); ?>"></span>
                         <?php
-                        foreach ($tabs_integracion as $tab_id => $tab_info):
+                        foreach ($tabs_integracion_visibles as $tab_id => $tab_info):
                             $badge = $this->get_tab_badge_value($tab_info);
                         ?>
                             <button class="fmd-tab fmd-tab--integration" data-tab="<?php echo esc_attr($tab_id); ?>" data-source="<?php echo esc_attr($tab_info['source_module'] ?? ''); ?>">
@@ -1667,7 +1805,7 @@ class Flavor_Dynamic_Pages {
                     <div class="fmd-tab-panels">
                         <?php
                         $is_first = true;
-                        foreach ($tabs as $tab_id => $tab_info):
+                        foreach ($tabs_visibles as $tab_id => $tab_info):
                         ?>
                             <div class="fmd-tab-panel <?php echo $is_first ? 'active' : ''; ?>" data-panel="<?php echo esc_attr($tab_id); ?>">
                                 <?php $this->render_tab_content($tab_id, $tab_info, $module); ?>
@@ -1871,7 +2009,7 @@ class Flavor_Dynamic_Pages {
             'comunidad' => __('Comunidad viva', 'flavor-chat-ia'),
             'miembro' => __('Vínculo activo', 'flavor-chat-ia'),
             'membresia' => __('Vínculo activo', 'flavor-chat-ia'),
-            'socios' => __('Red de socios', 'flavor-chat-ia'),
+            'socios' => __('Red de miembros', 'flavor-chat-ia'),
             'colectivos' => __('Coordinación colectiva', 'flavor-chat-ia'),
             'gobernanza' => __('Gobernanza compartida', 'flavor-chat-ia'),
             'participacion' => __('Participación activa', 'flavor-chat-ia'),
@@ -2237,7 +2375,7 @@ class Flavor_Dynamic_Pages {
             // === TRANSPARENCIA ===
             // Widget: Resumen presupuesto | Tabs: Portal completo
             'transparencia' => [
-                ['title' => __('Recursos Comunes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'large', 'shortcode' => '[transparencia_presupuesto_resumen]', 'action' => 'presupuesto'],
+                ['title' => __('Recursos Comunes', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-pie', 'size' => 'large', 'shortcode' => '[transparencia_presupuesto_actual mostrar_grafico="false"]', 'action' => 'presupuestos'],
             ],
 
             // === FICHAJE EMPLEADOS ===
@@ -3066,7 +3204,7 @@ class Flavor_Dynamic_Pages {
             ?>
             <div class="fmd-widget-summary fmd-widget-summary--empty">
                 <span class="dashicons dashicons-id"></span>
-                <p><?php _e('No eres socio todavía', 'flavor-chat-ia'); ?></p>
+                <p><?php _e('No eres miembro todavía', 'flavor-chat-ia'); ?></p>
             </div>
             <?php
         }
@@ -3440,9 +3578,8 @@ class Flavor_Dynamic_Pages {
         }
 
         // PRIORIDAD 2: Nuevo sistema - get_renderer_config()['tabs']
-        $module_class = $module ? get_class($module) : null;
-        if ($module_class && method_exists($module_class, 'get_renderer_config')) {
-            $config = $module_class::get_renderer_config();
+        if ($module && method_exists($module, 'get_renderer_config')) {
+            $config = $module->get_renderer_config();
             if (!empty($config['tabs'])) {
                 $tabs_renderer = $this->convert_renderer_tabs_to_legacy($config['tabs'], $config);
             }
@@ -3634,11 +3771,11 @@ class Flavor_Dynamic_Pages {
 
             // === CURSOS ===
             'cursos' => [
-                'catalogo'   => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more'],
-                'mis-cursos' => ['label' => __('Mis Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
-                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar'],
+                'catalogo'   => ['label' => __('Catálogo', 'flavor-chat-ia'), 'icon' => 'dashicons-welcome-learn-more', 'content' => '[cursos_catalogo]'],
+                'mis-cursos' => ['label' => __('Mis Cursos', 'flavor-chat-ia'), 'icon' => 'dashicons-awards', 'content' => '[cursos_mis_inscripciones]'],
+                'calendario' => ['label' => __('Calendario', 'flavor-chat-ia'), 'icon' => 'dashicons-calendar', 'content' => '[cursos_calendario]'],
+                'aula'       => ['label' => __('Aula Virtual', 'flavor-chat-ia'), 'icon' => 'dashicons-desktop', 'content' => '[cursos_aula]', 'requires_login' => true],
                 // Integraciones
-                'materiales' => ['label' => __('Materiales', 'flavor-chat-ia'), 'icon' => 'dashicons-media-document', 'is_integration' => true, 'content' => '[cursos_materiales]'],
                 'multimedia' => ['label' => __('Videos', 'flavor-chat-ia'), 'icon' => 'dashicons-video-alt3', 'is_integration' => true, 'source_module' => 'multimedia'],
                 'foro'       => ['label' => __('Foro', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-comments', 'is_integration' => true, 'source_module' => 'foros'],
             ],
@@ -3683,7 +3820,7 @@ class Flavor_Dynamic_Pages {
             'socios' => [
                 'mi-membresia' => ['label' => __('Mi vínculo', 'flavor-chat-ia'), 'icon' => 'dashicons-id-alt'],
                 'cuotas'       => ['label' => __('Aportaciones', 'flavor-chat-ia'), 'icon' => 'dashicons-money-alt'],
-                'directorio'   => ['label' => __('Red de socios', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
+                'directorio'   => ['label' => __('Red de miembros', 'flavor-chat-ia'), 'icon' => 'dashicons-groups'],
                 'beneficios'   => ['label' => __('Beneficios', 'flavor-chat-ia'), 'icon' => 'dashicons-awards'],
                 'carnet'       => ['label' => __('Identidad', 'flavor-chat-ia'), 'icon' => 'dashicons-id'],
                 'historial'    => ['label' => __('Historial', 'flavor-chat-ia'), 'icon' => 'dashicons-backup'],
@@ -3708,13 +3845,13 @@ class Flavor_Dynamic_Pages {
 
             // === RED SOCIAL ===
             'red-social' => [
-                'feed'      => ['label' => __('Feed', 'flavor-chat-ia'), 'icon' => 'dashicons-rss'],
-                'mi-perfil' => ['label' => __('Mi Perfil', 'flavor-chat-ia'), 'icon' => 'dashicons-admin-users'],
-                'explorar'  => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search'],
+                'feed'        => ['label' => __('Feed', 'flavor-chat-ia'), 'icon' => 'dashicons-rss', 'content' => 'template:feed.php'],
+                'explorar'    => ['label' => __('Explorar', 'flavor-chat-ia'), 'icon' => 'dashicons-search', 'content' => 'template:explorar.php'],
+                'amigos'      => ['label' => __('Amigos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'content' => 'template:amigos.php'],
+                'historias'   => ['label' => __('Historias', 'flavor-chat-ia'), 'icon' => 'dashicons-format-video', 'content' => 'template:historias.php'],
+                'mi-actividad' => ['label' => __('Mi Actividad', 'flavor-chat-ia'), 'icon' => 'dashicons-chart-line', 'content' => 'template:mi-actividad.php', 'requires_login' => true],
                 // Integraciones
-                'amigos'    => ['label' => __('Amigos', 'flavor-chat-ia'), 'icon' => 'dashicons-groups', 'is_integration' => true, 'content' => '[red_social_amigos]'],
-                'mensajes'  => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
-                'historias' => ['label' => __('Historias', 'flavor-chat-ia'), 'icon' => 'dashicons-format-video', 'is_integration' => true, 'content' => '[red_social_historias]'],
+                'mensajes'    => ['label' => __('Mensajes', 'flavor-chat-ia'), 'icon' => 'dashicons-email-alt', 'is_integration' => true, 'source_module' => 'chat-interno'],
             ],
 
             // === PARTICIPACIÓN ===
@@ -4302,18 +4439,12 @@ class Flavor_Dynamic_Pages {
         $contenido = $tab_info['content'];
         $module_id = str_replace('_', '-', $this->current_module);
 
-        // Algunas tabs modernas siguen declarando shortcodes válidos, pero
-        // en rutas dinámicas el registro puede no haberse resuelto a tiempo.
-        // Si el módulo expone el método real del shortcode, priorizarlo.
-        if (
-            $module &&
-            $module_id === 'comunidades' &&
-            $tab_id === 'crear' &&
-            method_exists($module, 'shortcode_crear')
-        ) {
-            $output = $module->shortcode_crear([]);
-            if (is_string($output) && trim($output) !== '') {
-                echo $output;
+        // Priorizar renderizadores reales de creación del módulo para evitar
+        // caer en shortcodes genéricos de listado en acciones tipo "crear".
+        if ($this->is_create_action($tab_id)) {
+            $create_output = $this->resolve_module_create_content($module);
+            if ($create_output !== null && trim($create_output) !== '') {
+                echo $create_output;
                 return;
             }
         }
@@ -4357,14 +4488,72 @@ class Flavor_Dynamic_Pages {
         // Tipo 2: Shortcode con prefijo shortcode:nombre
         if (is_string($contenido) && strpos($contenido, 'shortcode:') === 0) {
             $shortcode_name = str_replace('shortcode:', '', $contenido);
-            // Verificar si el shortcode existe
-            if (shortcode_exists($shortcode_name)) {
-                $output = do_shortcode('[' . $shortcode_name . ']');
+
+            // Resolver variantes comunes para evitar fallos por prefijos/aliases
+            // y por diferencias guion/guion_bajo entre módulos.
+            $base_candidates = [
+                $shortcode_name,
+                str_replace('-', '_', $shortcode_name),
+                str_replace('_', '-', $shortcode_name),
+            ];
+
+            $shortcode_candidates = [];
+            foreach ($base_candidates as $candidate) {
+                if (!is_string($candidate) || $candidate === '') {
+                    continue;
+                }
+
+                $shortcode_candidates[] = $candidate;
+                if (strpos($candidate, 'flavor_') !== 0) {
+                    $shortcode_candidates[] = 'flavor_' . $candidate;
+                }
+            }
+
+            foreach (array_unique($shortcode_candidates) as $candidate) {
+                if (!shortcode_exists($candidate)) {
+                    continue;
+                }
+
+                $output = do_shortcode('[' . $candidate . ']');
                 if (!empty(trim($output))) {
                     echo $output;
                     return;
                 }
             }
+
+            // Intentar resolver con metodos del modulo cuando el shortcode
+            // configurado no esta registrado (o devuelve vacio).
+            if ($module) {
+                $normalized_shortcode = str_replace('-', '_', (string) $shortcode_name);
+                $normalized_tab = str_replace('-', '_', (string) $tab_id);
+                $module_prefix = str_replace('-', '_', (string) $module_id) . '_';
+
+                $method_candidates = [
+                    'shortcode_' . $normalized_tab,
+                    'shortcode_' . $normalized_shortcode,
+                ];
+
+                $shortcode_without_prefix = preg_replace('/^flavor_/', '', $normalized_shortcode);
+                if (strpos((string) $shortcode_without_prefix, $module_prefix) === 0) {
+                    $suffix = substr((string) $shortcode_without_prefix, strlen($module_prefix));
+                    if ($suffix !== '') {
+                        $method_candidates[] = 'shortcode_' . $suffix;
+                    }
+                }
+
+                foreach (array_unique($method_candidates) as $method_name) {
+                    if (!method_exists($module, $method_name)) {
+                        continue;
+                    }
+
+                    $output = $module->{$method_name}([]);
+                    if (is_string($output) && trim($output) !== '') {
+                        echo $output;
+                        return;
+                    }
+                }
+            }
+
             // Fallback: usar Archive Renderer
             $this->render_tab_fallback($tab_id, $module_id);
             return;
@@ -4416,6 +4605,54 @@ class Flavor_Dynamic_Pages {
 
         // Fallback: mensaje vacío
         echo '<p class="fmd-empty">' . esc_html__('Todavía no hay contenido en este espacio.', 'flavor-chat-ia') . '</p>';
+    }
+
+    /**
+     * Resuelve el contenido real de creación para un módulo.
+     *
+     * Muchos módulos registran shortcodes comunes "modulo_crear" que renderizan
+     * listados genéricos; este método prioriza callbacks nativos de creación.
+     *
+     * @param object|null $module
+     * @return string|null
+     */
+    private function resolve_module_create_content($module): ?string {
+        if (!is_object($module)) {
+            return null;
+        }
+
+        $preferred_methods = [
+            'shortcode_crear',
+            'shortcode_formulario',
+            'shortcode_nuevo',
+        ];
+
+        foreach ($preferred_methods as $method_name) {
+            if (!method_exists($module, $method_name)) {
+                continue;
+            }
+
+            $output = $module->{$method_name}([]);
+            if (is_string($output) && trim($output) !== '') {
+                return $output;
+            }
+        }
+
+        // Fallback: si existe un unico shortcode de creacion especifico.
+        $methods = get_class_methods($module) ?: [];
+        $create_methods = array_values(array_filter($methods, static function($method) {
+            return strpos((string) $method, 'shortcode_crear_') === 0;
+        }));
+
+        if (count($create_methods) === 1) {
+            $method_name = $create_methods[0];
+            $output = $module->{$method_name}([]);
+            if (is_string($output) && trim($output) !== '') {
+                return $output;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -6283,10 +6520,10 @@ class Flavor_Dynamic_Pages {
             <?php if (!$socio): ?>
                 <div class="fmd-empty-state">
                     <span class="dashicons dashicons-id"></span>
-                    <h3><?php esc_html_e('¡Únete como socio!', 'flavor-chat-ia'); ?></h3>
+                    <h3><?php esc_html_e('¡Únete como miembro!', 'flavor-chat-ia'); ?></h3>
                     <p><?php esc_html_e('Accede a beneficios exclusivos, descuentos y participa activamente.', 'flavor-chat-ia'); ?></p>
                     <a href="<?php echo esc_url(home_url('/mi-portal/socios/unirse/')); ?>" class="fmd-btn fmd-btn-primary">
-                        <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Hacerme miembro', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             <?php else: ?>
@@ -6394,7 +6631,7 @@ class Flavor_Dynamic_Pages {
             <?php if (!$socio): ?>
                 <div class="fmd-empty-state">
                     <span class="dashicons dashicons-id"></span>
-                    <p><?php esc_html_e('No eres socio todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No eres miembro todavía.', 'flavor-chat-ia'); ?></p>
                 </div>
             <?php elseif (empty($cuotas)): ?>
                 <div class="fmd-empty-state">
@@ -6458,7 +6695,7 @@ class Flavor_Dynamic_Pages {
 
         if (!Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
             echo '<div class="fmd-empty-state">';
-            echo '<p>' . esc_html__('El directorio de socios no está disponible.', 'flavor-chat-ia') . '</p>';
+            echo '<p>' . esc_html__('El directorio de miembros no está disponible.', 'flavor-chat-ia') . '</p>';
             echo '</div>';
             return;
         }
@@ -6476,7 +6713,7 @@ class Flavor_Dynamic_Pages {
 
         // Completar datos
         foreach ($socios as $socio) {
-            $socio->nombre = $socio->display_name ?: 'Socio';
+            $socio->nombre = $socio->display_name ?: 'Miembro';
             $socio->apellidos = '';
         }
 
@@ -6485,7 +6722,7 @@ class Flavor_Dynamic_Pages {
             <?php if (empty($socios)): ?>
                 <div class="fmd-empty-state">
                     <span class="dashicons dashicons-groups"></span>
-                    <p><?php esc_html_e('No hay socios registrados.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No hay miembros registrados.', 'flavor-chat-ia'); ?></p>
                 </div>
             <?php else: ?>
                 <div class="fmd-directorio-grid">
@@ -6611,7 +6848,7 @@ class Flavor_Dynamic_Pages {
                     </div>
                     <div style="text-align: center; margin-top: 30px;">
                         <a href="<?php echo esc_url(home_url('/mi-portal/socios/unirse/')); ?>" class="fmd-btn fmd-btn-primary">
-                            <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
+                            <?php esc_html_e('Hacerme miembro', 'flavor-chat-ia'); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -6666,10 +6903,10 @@ class Flavor_Dynamic_Pages {
             <?php if (!$socio): ?>
                 <div class="fmd-empty-state">
                     <span class="dashicons dashicons-id"></span>
-                    <h3><?php esc_html_e('No tienes carnet de socio', 'flavor-chat-ia'); ?></h3>
-                    <p><?php esc_html_e('Hazte socio para obtener tu carnet digital.', 'flavor-chat-ia'); ?></p>
+                    <h3><?php esc_html_e('No tienes carnet de miembro', 'flavor-chat-ia'); ?></h3>
+                    <p><?php esc_html_e('Hazte miembro para obtener tu carnet digital.', 'flavor-chat-ia'); ?></p>
                     <a href="<?php echo esc_url(home_url('/mi-portal/socios/unirse/')); ?>" class="fmd-btn fmd-btn-primary">
-                        <?php esc_html_e('Hacerme socio', 'flavor-chat-ia'); ?>
+                        <?php esc_html_e('Hacerme miembro', 'flavor-chat-ia'); ?>
                     </a>
                 </div>
             <?php elseif ($socio->estado !== 'activo'): ?>
@@ -6797,7 +7034,7 @@ class Flavor_Dynamic_Pages {
             <?php if (!$socio): ?>
                 <div class="fmd-empty-state">
                     <span class="dashicons dashicons-backup"></span>
-                    <p><?php esc_html_e('No eres socio todavía.', 'flavor-chat-ia'); ?></p>
+                    <p><?php esc_html_e('No eres miembro todavía.', 'flavor-chat-ia'); ?></p>
                 </div>
             <?php else: ?>
                 <?php if (!empty($estadisticas)): ?>
@@ -7794,12 +8031,9 @@ class Flavor_Dynamic_Pages {
         $module_instance = $this->get_module_instance($module);
         $integration_tabs = [];
 
-        if ($module_instance) {
-            $module_class = get_class($module_instance);
-            if (method_exists($module_class, 'get_renderer_config')) {
-                $config = $module_class::get_renderer_config();
-                $integration_tabs = $config['tabs'] ?? [];
-            }
+        if ($module_instance && method_exists($module_instance, 'get_renderer_config')) {
+            $config = $module_instance->get_renderer_config();
+            $integration_tabs = $config['tabs'] ?? [];
         }
 
         $module_tabs = $this->get_module_tabs($module_instance);
@@ -10758,10 +10992,10 @@ class Flavor_Dynamic_Pages {
             align-items: center;
             gap: 8px;
             padding: 12px 24px;
-            background: var(--flavor-dashboard-btn-primary, var(--module-color));
-            color: var(--flavor-dashboard-btn-text, white);
+            background: var(--flavor-dashboard-btn-primary, var(--module-color)) !important;
+            color: var(--flavor-dashboard-btn-text, white) !important;
             border-radius: 10px;
-            text-decoration: none;
+            text-decoration: none !important;
             font-weight: 600;
             transition: all 0.2s;
         }
@@ -10770,6 +11004,7 @@ class Flavor_Dynamic_Pages {
             filter: brightness(1.1);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: var(--flavor-dashboard-btn-text, white) !important;
         }
 
         /* Stats Grid */
@@ -10969,13 +11204,13 @@ class Flavor_Dynamic_Pages {
             height: 16px;
         }
         .fmd-widget-btn--primary {
-            background: var(--flavor-dashboard-btn-primary, var(--module-color));
-            color: var(--flavor-dashboard-btn-text, white);
-            border-color: var(--flavor-dashboard-btn-primary, var(--module-color));
+            background: var(--flavor-dashboard-btn-primary, var(--module-color)) !important;
+            color: var(--flavor-dashboard-btn-text, white) !important;
+            border-color: var(--flavor-dashboard-btn-primary, var(--module-color)) !important;
         }
         .fmd-widget-btn--primary:hover {
             filter: brightness(1.1);
-            color: var(--flavor-dashboard-btn-text, white);
+            color: var(--flavor-dashboard-btn-text, white) !important;
         }
 
         /* Widget summary styles (resúmenes breves) */

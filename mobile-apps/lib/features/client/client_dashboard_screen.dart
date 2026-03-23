@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart';
 import '../../core/providers/admin_modules_provider.dart';
 import '../../core/widgets/common_widgets.dart';
@@ -17,7 +15,8 @@ import 'widgets/network_status_widget.dart';
 import 'widgets/stats_charts_widget.dart';
 
 /// Provider para metricas del usuario desde el servicio
-final enhancedUserMetricsProvider = FutureProvider<List<UserStatistic>>((ref) async {
+final enhancedUserMetricsProvider =
+    FutureProvider<List<UserStatistic>>((ref) async {
   final api = ref.read(apiClientProvider);
   final statistics = <UserStatistic>[];
 
@@ -26,7 +25,10 @@ final enhancedUserMetricsProvider = FutureProvider<List<UserStatistic>>((ref) as
     final response = await api.get('/client/statistics');
     if (response.success && response.data != null) {
       final statsJson = response.data!['statistics'] as List? ?? [];
-      return statsJson.map((statistic) => UserStatistic.fromJson(statistic as Map<String, dynamic>)).toList();
+      return statsJson
+          .map((statistic) =>
+              UserStatistic.fromJson(statistic as Map<String, dynamic>))
+          .toList();
     }
   } catch (error) {
     debugPrint('[UserMetrics] Error getting statistics from endpoint: $error');
@@ -37,23 +39,29 @@ final enhancedUserMetricsProvider = FutureProvider<List<UserStatistic>>((ref) as
     // Obtener modulos activos para cargar metricas relevantes
     final modulesAsync = await ref.watch(adminModulesProvider.future);
 
-    // Mis Pedidos (WooCommerce)
-    final pedidos = await api.getWooPedidos(limite: 100);
-    if (pedidos.success && pedidos.data != null) {
-      final list = pedidos.data!['pedidos'] as List? ?? [];
-      statistics.add(UserStatistic(
-        id: 'my_orders',
-        title: 'Mis Pedidos',
-        value: list.length.toString(),
-        numericValue: list.length.toDouble(),
-        iconName: 'shopping_cart',
-        colorHex: '#2196F3',
-      ));
+    // Mis Pedidos (WooCommerce) - solo si hay WooCommerce activo
+    if (modulesAsync.contains('woocommerce') ||
+        modulesAsync.contains('pedidos') ||
+        modulesAsync.contains('tienda')) {
+      final pedidos = await api.getWooPedidos(limite: 100);
+      if (pedidos.success && pedidos.data != null) {
+        final list = pedidos.data!['pedidos'] as List? ?? [];
+        statistics.add(UserStatistic(
+          id: 'my_orders',
+          title: 'Mis Pedidos',
+          value: list.length.toString(),
+          numericValue: list.length.toDouble(),
+          iconName: 'shopping_cart',
+          colorHex: '#2196F3',
+        ));
+      }
     }
 
     // Grupos de Consumo
-    if (modulesAsync.contains('grupos_consumo') || modulesAsync.contains('grupos-consumo')) {
-      final pedidosGruposConsumo = await api.getGruposConsumoPedidos(estado: 'abierto', perPage: 10, page: 1);
+    if (modulesAsync.contains('grupos_consumo') ||
+        modulesAsync.contains('grupos-consumo')) {
+      final pedidosGruposConsumo = await api.getGruposConsumoPedidos(
+          estado: 'abierto', perPage: 10, page: 1);
       if (pedidosGruposConsumo.success && pedidosGruposConsumo.data != null) {
         final list = pedidosGruposConsumo.data!['data'] as List? ?? [];
         statistics.add(UserStatistic(
@@ -68,8 +76,10 @@ final enhancedUserMetricsProvider = FutureProvider<List<UserStatistic>>((ref) as
     }
 
     // Banco de Tiempo
-    if (modulesAsync.contains('banco_tiempo') || modulesAsync.contains('banco-tiempo')) {
-      final servicios = await api.getBancoTiempoServicios(limite: 50, pagina: 1);
+    if (modulesAsync.contains('banco_tiempo') ||
+        modulesAsync.contains('banco-tiempo')) {
+      final servicios =
+          await api.getBancoTiempoServicios(limite: 50, pagina: 1);
       if (servicios.success && servicios.data != null) {
         final list = servicios.data!['servicios'] as List? ?? [];
         statistics.add(UserStatistic(
@@ -119,6 +129,7 @@ final enhancedUserMetricsProvider = FutureProvider<List<UserStatistic>>((ref) as
 });
 
 /// Provider para actividad reciente del usuario
+/// Devuelve lista vacía si el endpoint no existe - no usar datos de ejemplo
 final userActivityProvider = FutureProvider<List<UserActivity>>((ref) async {
   final api = ref.read(apiClientProvider);
 
@@ -126,25 +137,32 @@ final userActivityProvider = FutureProvider<List<UserActivity>>((ref) async {
     final response = await api.get('/client/activity?limit=10');
     if (response.success && response.data != null) {
       final activityJson = response.data!['activity'] as List? ?? [];
-      return activityJson.map((activity) => UserActivity.fromJson(activity as Map<String, dynamic>)).toList();
+      return activityJson
+          .map((activity) =>
+              UserActivity.fromJson(activity as Map<String, dynamic>))
+          .toList();
     }
   } catch (error) {
-    debugPrint('[UserActivity] Error: $error');
+    debugPrint('[UserActivity] Endpoint no disponible: $error');
   }
 
-  // Devolver actividad de ejemplo si no hay endpoint
-  return _getExampleActivities();
+  // No devolver datos de ejemplo - solo datos reales del servidor
+  return [];
 });
 
 /// Provider para notificaciones del usuario
-final userNotificationsProvider = FutureProvider<List<UserNotification>>((ref) async {
+final userNotificationsProvider =
+    FutureProvider<List<UserNotification>>((ref) async {
   final api = ref.read(apiClientProvider);
 
   try {
     final response = await api.get('/client/notifications?limit=5');
     if (response.success && response.data != null) {
       final notificationsJson = response.data!['notifications'] as List? ?? [];
-      return notificationsJson.map((notification) => UserNotification.fromJson(notification as Map<String, dynamic>)).toList();
+      return notificationsJson
+          .map((notification) =>
+              UserNotification.fromJson(notification as Map<String, dynamic>))
+          .toList();
     }
   } catch (error) {
     debugPrint('[UserNotifications] Error: $error');
@@ -160,7 +178,8 @@ final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
   try {
     final response = await api.get('/client/profile');
     if (response.success && response.data != null) {
-      return UserProfile.fromJson(response.data!['profile'] as Map<String, dynamic>? ?? {});
+      return UserProfile.fromJson(
+          response.data!['profile'] as Map<String, dynamic>? ?? {});
     }
   } catch (error) {
     debugPrint('[UserProfile] Error: $error');
@@ -185,7 +204,9 @@ final userChartDataProvider = FutureProvider.family<List<ChartData>, String>(
       final response = await api.getDashboardCharts(type: type, days: 7);
       if (response.success && response.data != null) {
         final List<dynamic> chartData = response.data!['data'] as List? ?? [];
-        return chartData.map((item) => ChartData.fromJson(item as Map<String, dynamic>)).toList();
+        return chartData
+            .map((item) => ChartData.fromJson(item as Map<String, dynamic>))
+            .toList();
       }
     } catch (error) {
       debugPrint('[UserChartData] Error getting $type chart: $error');
@@ -194,6 +215,24 @@ final userChartDataProvider = FutureProvider.family<List<ChartData>, String>(
     return [];
   },
 );
+
+/// Provider de configuración de inicio (quick actions + home widgets) desde servidor
+final clientHomeConfigProvider =
+    FutureProvider<Map<String, dynamic>>((ref) async {
+  final api = ref.read(apiClientProvider);
+  try {
+    final response = await api.getClientAppConfig();
+    if (response.success && response.data != null) {
+      final config = response.data!['config'];
+      if (config is Map<String, dynamic>) {
+        return config;
+      }
+    }
+  } catch (error) {
+    debugPrint('[ClientHomeConfig] Error: $error');
+  }
+  return const <String, dynamic>{};
+});
 
 /// Dashboard mejorado para clientes - Home Screen moderno
 class ClientDashboardScreen extends ConsumerStatefulWidget {
@@ -205,7 +244,8 @@ class ClientDashboardScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ClientDashboardScreen> createState() => _ClientDashboardScreenState();
+  ConsumerState<ClientDashboardScreen> createState() =>
+      _ClientDashboardScreenState();
 }
 
 class _ClientDashboardScreenState extends ConsumerState<ClientDashboardScreen> {
@@ -280,7 +320,10 @@ class _ClientDashboardScreenState extends ConsumerState<ClientDashboardScreen> {
                 child: QuickStatsPanel(
                   onStatTap: (quickStat) {
                     Haptics.light();
-                    debugPrint('Tap on quick stat: ${quickStat.id}');
+                    // Navegar al módulo correspondiente
+                    if (widget.onNavigateToModule != null && quickStat.moduleId != null) {
+                      widget.onNavigateToModule!(quickStat.moduleId!);
+                    }
                   },
                 ),
               ),
@@ -290,7 +333,9 @@ class _ClientDashboardScreenState extends ConsumerState<ClientDashboardScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                child: _EnhancedMetricsSection(),
+                child: _EnhancedMetricsSection(
+                  onNavigateToModule: widget.onNavigateToModule,
+                ),
               ),
             ),
 
@@ -415,11 +460,15 @@ class _UserProfileHeader extends ConsumerWidget {
         if (profile == null) return const SizedBox.shrink();
 
         final unreadCount = notificationsAsync.whenOrNull(
-          data: (notifications) => notifications.where((notification) => !notification.isRead).length,
-        ) ?? 0;
+              data: (notifications) => notifications
+                  .where((notification) => !notification.isRead)
+                  .length,
+            ) ??
+            0;
 
         return Semantics(
-          label: 'Perfil de ${profile.displayName}, nivel ${profile.level}, ${profile.points} puntos',
+          label:
+              'Perfil de ${profile.displayName}, nivel ${profile.level}, ${profile.points} puntos',
           child: Row(
             children: [
               // Avatar con indicador de nivel
@@ -435,9 +484,10 @@ class _UserProfileHeader extends ConsumerWidget {
                     ExcludeSemantics(
                       child: Text(
                         profile.displayName,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -451,7 +501,8 @@ class _UserProfileHeader extends ConsumerWidget {
               // Boton de notificaciones
               Semantics(
                 button: true,
-                label: 'Notificaciones${unreadCount > 0 ? ', $unreadCount sin leer' : ''}',
+                label:
+                    'Notificaciones${unreadCount > 0 ? ', $unreadCount sin leer' : ''}',
                 child: Badge(
                   isLabelVisible: unreadCount > 0,
                   label: Text(
@@ -476,17 +527,22 @@ class _UserProfileHeader extends ConsumerWidget {
     );
   }
 
-  Widget _buildAvatar(BuildContext context, UserProfile profile, ColorScheme colorScheme) {
+  Widget _buildAvatar(
+      BuildContext context, UserProfile profile, ColorScheme colorScheme) {
     return Stack(
       children: [
         ExcludeSemantics(
           child: CircleAvatar(
             radius: 28,
             backgroundColor: colorScheme.primaryContainer,
-            backgroundImage: profile.avatarUrl != null ? NetworkImage(profile.avatarUrl!) : null,
+            backgroundImage: profile.avatarUrl != null
+                ? NetworkImage(profile.avatarUrl!)
+                : null,
             child: profile.avatarUrl == null
                 ? Text(
-                    profile.displayName.isNotEmpty ? profile.displayName[0].toUpperCase() : 'U',
+                    profile.displayName.isNotEmpty
+                        ? profile.displayName[0].toUpperCase()
+                        : 'U',
                     style: TextStyle(
                       color: colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.bold,
@@ -526,7 +582,8 @@ class _UserProfileHeader extends ConsumerWidget {
     );
   }
 
-  Widget _buildLevelBadge(BuildContext context, UserProfile profile, ColorScheme colorScheme) {
+  Widget _buildLevelBadge(
+      BuildContext context, UserProfile profile, ColorScheme colorScheme) {
     return ExcludeSemantics(
       child: Row(
         children: [
@@ -687,6 +744,28 @@ class _GreetingSection extends ConsumerWidget {
 
 /// Seccion de metricas mejorada
 class _EnhancedMetricsSection extends ConsumerWidget {
+  final Function(String)? onNavigateToModule;
+
+  const _EnhancedMetricsSection({this.onNavigateToModule});
+
+  /// Mapea el ID de la estadística al módulo correspondiente
+  String? _getModuleFromStatisticId(String statisticId) {
+    final mapping = {
+      'my_orders': 'woocommerce',
+      'gc_pedidos': 'grupos_consumo',
+      'bt_servicios': 'banco_tiempo',
+      'marketplace_anuncios': 'marketplace',
+      'eventos_proximos': 'eventos',
+      'socios_total': 'socios',
+      'foros_posts': 'foros',
+      'red_social': 'red_social',
+      'reservas': 'reservas',
+      'carpooling': 'carpooling',
+      'comunidades': 'comunidades',
+    };
+    return mapping[statisticId];
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final metricsAsync = ref.watch(enhancedUserMetricsProvider);
@@ -709,7 +788,10 @@ class _EnhancedMetricsSection extends ConsumerWidget {
             statistics: statistics,
             onStatisticTap: (statistic) {
               Haptics.light();
-              debugPrint('Tap on statistic: ${statistic.id}');
+              final moduleId = _getModuleFromStatisticId(statistic.id);
+              if (moduleId != null && onNavigateToModule != null) {
+                onNavigateToModule!(moduleId);
+              }
             },
           ),
           loading: () => const ClientStatsGrid(statistics: [], isLoading: true),
@@ -733,30 +815,145 @@ class _QuickActionsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final homeConfigAsync = ref.watch(clientHomeConfigProvider);
     final modulesAsync = ref.watch(adminModulesProvider);
 
-    return modulesAsync.when(
-      data: (modules) {
-        final actions = _buildQuickActions(modules);
+    return homeConfigAsync.when(
+      data: (homeConfig) {
+        final configuredActions = _buildQuickActionsFromConfig(homeConfig);
+        if (configuredActions.isNotEmpty) {
+          return QuickActionsSection(
+            title: 'Accesos rapidos',
+            actions: configuredActions,
+            onActionTap: (action) {
+              Haptics.selection();
+              if (action.route != null) {
+                onNavigateToModule?.call(action.route!);
+              }
+            },
+            gridColumns: 4,
+          );
+        }
 
-        return QuickActionsSection(
-          title: 'Accesos rapidos',
-          actions: actions,
-          onActionTap: (action) {
-            Haptics.selection();
-            if (action.route != null) {
-              onNavigateToModule?.call(action.route!);
-            }
+        return modulesAsync.when(
+          data: (modules) {
+            final actions = _buildQuickActions(modules);
+            return QuickActionsSection(
+              title: 'Accesos rapidos',
+              actions: actions,
+              onActionTap: (action) {
+                Haptics.selection();
+                if (action.route != null) {
+                  onNavigateToModule?.call(action.route!);
+                }
+              },
+              gridColumns: 4,
+            );
           },
-          gridColumns: 4,
+          loading: () => const SizedBox(
+            height: 100,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (_, __) => const SizedBox.shrink(),
         );
       },
-      loading: () => const SizedBox(
-        height: 100,
-        child: Center(child: CircularProgressIndicator()),
+      loading: () => modulesAsync.when(
+        data: (modules) {
+          final actions = _buildQuickActions(modules);
+          return QuickActionsSection(
+            title: 'Accesos rapidos',
+            actions: actions,
+            onActionTap: (action) {
+              Haptics.selection();
+              if (action.route != null) {
+                onNavigateToModule?.call(action.route!);
+              }
+            },
+            gridColumns: 4,
+          );
+        },
+        loading: () => const SizedBox(
+          height: 100,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+        error: (_, __) => const SizedBox.shrink(),
       ),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, __) => modulesAsync.when(
+        data: (modules) {
+          final actions = _buildQuickActions(modules);
+          return QuickActionsSection(
+            title: 'Accesos rapidos',
+            actions: actions,
+            onActionTap: (action) {
+              Haptics.selection();
+              if (action.route != null) {
+                onNavigateToModule?.call(action.route!);
+              }
+            },
+            gridColumns: 4,
+          );
+        },
+        loading: () => const SizedBox(
+          height: 100,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+        error: (_, __) => const SizedBox.shrink(),
+      ),
     );
+  }
+
+  List<QuickAction> _buildQuickActionsFromConfig(Map<String, dynamic> config) {
+    final raw = config['quick_actions'];
+    if (raw is! List) {
+      return const <QuickAction>[];
+    }
+
+    final actions = <QuickAction>[];
+    for (final item in raw) {
+      if (item is! Map) {
+        continue;
+      }
+      final map = Map<String, dynamic>.from(item);
+      final moduleId = (map['module_id'] as String? ?? '').trim();
+      if (moduleId.isEmpty) {
+        continue;
+      }
+
+      actions.add(QuickAction(
+        id: moduleId,
+        label: (map['label'] as String? ?? moduleId).trim(),
+        iconName: (map['icon'] as String? ?? 'star').trim(),
+        colorHex: _colorForModule(moduleId),
+        route: moduleId,
+      ));
+    }
+
+    return actions;
+  }
+
+  String _colorForModule(String moduleId) {
+    switch (moduleId) {
+      case 'eventos':
+        return '#E91E63';
+      case 'marketplace':
+        return '#FF9800';
+      case 'grupos_consumo':
+        return '#4CAF50';
+      case 'banco_tiempo':
+        return '#009688';
+      case 'socios':
+        return '#3F51B5';
+      case 'reservas':
+        return '#2196F3';
+      case 'foros':
+        return '#673AB7';
+      case 'incidencias':
+        return '#F44336';
+      case 'tramites':
+        return '#607D8B';
+      default:
+        return '#795548';
+    }
   }
 
   List<QuickAction> _buildQuickActions(List<String> modules) {
@@ -781,7 +978,8 @@ class _QuickActionsSection extends ConsumerWidget {
     ));
 
     // Grupos de Consumo
-    if (modules.contains('grupos_consumo') || modules.contains('grupos-consumo')) {
+    if (modules.contains('grupos_consumo') ||
+        modules.contains('grupos-consumo')) {
       actions.add(const QuickAction(
         id: 'grupos_consumo',
         label: 'Grupos',
@@ -886,8 +1084,6 @@ class _EnhancedActivitySection extends ConsumerWidget {
 class _ChartsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1040,31 +1236,129 @@ class _ModuleWidgetsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final homeConfigAsync = ref.watch(clientHomeConfigProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Semantics(
-          header: true,
-          child: Text(
-            'Proximas citas',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+    return homeConfigAsync.when(
+      data: (config) {
+        final rawWidgets = config['home_widgets'];
+        final widgets = rawWidgets is List
+            ? rawWidgets
+                .whereType<Map>()
+                .map((e) => Map<String, dynamic>.from(e))
+                .toList()
+            : const <Map<String, dynamic>>[];
+
+        if (widgets.isNotEmpty) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Semantics(
+                header: true,
+                child: Text(
+                  'Widgets de inicio',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
-          ),
-        ),
-        const SizedBox(height: 12),
+              ),
+              const SizedBox(height: 12),
+              ...widgets.map((widget) {
+                final moduleId = (widget['module_id'] as String? ?? '').trim();
+                final title = (widget['title'] as String? ?? moduleId).trim();
+                final icon = (widget['icon'] as String? ?? 'widgets').trim();
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: ListTile(
+                    leading: Icon(_iconFromName(icon)),
+                    title: Text(title),
+                    subtitle: Text(moduleId.replaceAll('_', ' ')),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: moduleId.isEmpty
+                        ? null
+                        : () {
+                            Haptics.light();
+                            onNavigateToModule?.call(moduleId);
+                          },
+                  ),
+                );
+              }),
+            ],
+          );
+        }
 
-        // Widget de proximas reservas
-        _UpcomingReservationsWidget(
-          onViewAll: () {
-            Haptics.light();
-            onNavigateToModule?.call('my_tickets');
-          },
-        ),
-      ],
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Semantics(
+              header: true,
+              child: Text(
+                'Proximas citas',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            _UpcomingReservationsWidget(
+              onViewAll: () {
+                Haptics.light();
+                onNavigateToModule?.call('my_tickets');
+              },
+            ),
+          ],
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(
+              'Proximas citas',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          _UpcomingReservationsWidget(
+            onViewAll: () {
+              Haptics.light();
+              onNavigateToModule?.call('my_tickets');
+            },
+          ),
+        ],
+      ),
     );
+  }
+
+  IconData _iconFromName(String iconName) {
+    switch (iconName) {
+      case 'event':
+        return Icons.event;
+      case 'store':
+      case 'storefront':
+        return Icons.storefront;
+      case 'shopping_basket':
+        return Icons.shopping_basket;
+      case 'handyman':
+        return Icons.handyman;
+      case 'card_membership':
+        return Icons.card_membership;
+      case 'event_available':
+        return Icons.event_available;
+      case 'people':
+        return Icons.people;
+      case 'forum':
+        return Icons.forum;
+      case 'report_problem':
+        return Icons.report_problem;
+      case 'description':
+        return Icons.description;
+      default:
+        return Icons.widgets_outlined;
+    }
   }
 }
 
@@ -1132,7 +1426,8 @@ class _UpcomingReservationsWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          ...reservas.map((reserva) => _ReservationPreviewTile(reserva: reserva)),
+          ...reservas
+              .map((reserva) => _ReservationPreviewTile(reserva: reserva)),
           if (onViewAll != null)
             ListTile(
               title: Text(
@@ -1304,12 +1599,16 @@ class _NotificationsSheet extends ConsumerWidget {
                             Icon(
                               Icons.notifications_none,
                               size: 64,
-                              color: colorScheme.onSurfaceVariant.withOpacity(0.5),
+                              color:
+                                  colorScheme.onSurfaceVariant.withOpacity(0.5),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               'Sin notificaciones',
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(
                                     color: colorScheme.onSurfaceVariant,
                                   ),
                             ),
@@ -1341,7 +1640,9 @@ class _NotificationsSheet extends ConsumerWidget {
                           title: Text(
                             notification.title,
                             style: TextStyle(
-                              fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
+                              fontWeight: notification.isRead
+                                  ? FontWeight.normal
+                                  : FontWeight.bold,
                             ),
                           ),
                           subtitle: Text(
@@ -1351,9 +1652,10 @@ class _NotificationsSheet extends ConsumerWidget {
                           ),
                           trailing: Text(
                             _formatNotificationTime(notification.createdAt),
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
                           ),
                           onTap: () {
                             Haptics.light();
@@ -1363,8 +1665,10 @@ class _NotificationsSheet extends ConsumerWidget {
                       },
                     );
                   },
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (_, __) => const Center(child: Text('Error al cargar notificaciones')),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (_, __) => const Center(
+                      child: Text('Error al cargar notificaciones')),
                 ),
               ),
             ],

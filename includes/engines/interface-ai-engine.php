@@ -138,7 +138,7 @@ abstract class Chat_IA_Engine_Base implements Chat_IA_Engine_Interface {
         $this->config = [
             'api_key' => $api_key,
             'model' => $settings[$provider_id . '_model'] ?? '',
-            'max_tokens' => $settings['max_tokens'] ?? 1000,
+            'max_tokens' => $settings['max_tokens_per_message'] ?? ($settings['max_tokens'] ?? 1000),
         ];
     }
 

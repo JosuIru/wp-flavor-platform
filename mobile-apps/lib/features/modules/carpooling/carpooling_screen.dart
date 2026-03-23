@@ -367,7 +367,7 @@ class _CarpoolingScreenState extends ConsumerState<CarpoolingScreen> {
 
     try {
       final clienteApi = ref.read(apiClientProvider);
-      final respuesta = await clienteApi.post('/carpooling/viajes/$viajeId/reservar');
+      final respuesta = await clienteApi.post('/carpooling/viajes/$viajeId/reservar', data: {});
 
       if (mounted) {
         if (respuesta.success) {
@@ -508,7 +508,9 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
       if (fechaStr != null && fechaStr.toString().isNotEmpty) {
         try {
           _fechaSeleccionada = DateTime.parse(fechaStr.toString().split(' ')[0]);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('Error parseando fecha de viaje: $e');
+        }
       }
 
       // Parsear hora si existe
@@ -520,7 +522,9 @@ class _NuevoViajeScreenState extends ConsumerState<NuevoViajeScreen> {
             hour: int.parse(partes[0]),
             minute: int.parse(partes[1]),
           );
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('Error parseando hora de viaje: $e');
+        }
       }
     }
   }

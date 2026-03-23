@@ -9,6 +9,15 @@
  */
 
 /* ══════════════════════════════════════════════════════════════════════════
+   ALPINE.JS UTILITIES
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Ocultar elementos antes de que Alpine.js los procese */
+[x-cloak] {
+    display: none !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
    MODAL DE PREVIEW
    ══════════════════════════════════════════════════════════════════════════ */
 
@@ -42,7 +51,6 @@
     max-height: 90vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
     animation: modalSlideIn 0.2s ease-out;
 }
 
@@ -840,4 +848,45 @@
 
 .opacity-100 {
     opacity: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MODAL FOOTER - Acciones del modal
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.flavor-template-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--flavor-border-light, #e0e0e0);
+    background: var(--flavor-bg-light, #f6f7f7);
+    flex-shrink: 0;
+}
+
+.flavor-template-modal-footer .button-hero {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    font-size: 14px;
+    min-height: 40px;
+}
+
+.flavor-template-modal-footer .button-hero .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.flavor-template-modal-footer .spinner-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flavor-template-modal-footer .spinner-inline .spinner {
+    margin: 0;
+    float: none;
 }

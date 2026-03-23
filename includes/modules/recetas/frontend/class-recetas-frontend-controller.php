@@ -72,14 +72,21 @@ class Flavor_Recetas_Frontend_Controller {
         add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_tabs']);
 
         // Shortcodes adicionales
-        add_shortcode('flavor_recetas_buscador', [$this, 'shortcode_buscador']);
-        add_shortcode('flavor_recetas_categorias', [$this, 'shortcode_categorias']);
-        add_shortcode('flavor_recetas_mis_recetas', [$this, 'shortcode_mis_recetas']);
-        add_shortcode('flavor_recetas_favoritas', [$this, 'shortcode_favoritas']);
-        add_shortcode('flavor_recetas_crear', [$this, 'shortcode_crear']);
-        add_shortcode('flavor_recetas_destacadas', [$this, 'shortcode_destacadas']);
-        add_shortcode('flavor_recetas_por_ingrediente', [$this, 'shortcode_por_ingrediente']);
-        add_shortcode('flavor_recetas_dashboard', [$this, 'shortcode_dashboard']);
+        $shortcodes = [
+            'flavor_recetas_buscador' => 'shortcode_buscador',
+            'flavor_recetas_categorias' => 'shortcode_categorias',
+            'flavor_recetas_mis_recetas' => 'shortcode_mis_recetas',
+            'flavor_recetas_favoritas' => 'shortcode_favoritas',
+            'flavor_recetas_crear' => 'shortcode_crear',
+            'flavor_recetas_destacadas' => 'shortcode_destacadas',
+            'flavor_recetas_por_ingrediente' => 'shortcode_por_ingrediente',
+            'flavor_recetas_dashboard' => 'shortcode_dashboard',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_recetas_guardar', [$this, 'ajax_guardar']);
@@ -1138,13 +1145,14 @@ class Flavor_Recetas_Frontend_Controller {
                 wp_send_json_error(['message' => __('No tienes permiso para editar esta receta', 'flavor-chat-ia')]);
             }
             $datos_receta['ID'] = $receta_id;
-            $receta_id = wp_update_post($datos_receta);
+            $receta_id = wp_update_post($datos_receta, true);
         } else {
-            $receta_id = wp_insert_post($datos_receta);
+            $receta_id = wp_insert_post($datos_receta, true);
         }
 
-        if (is_wp_error($receta_id)) {
-            wp_send_json_error(['message' => $receta_id->get_error_message()]);
+        if (is_wp_error($receta_id) || empty($receta_id)) {
+            $error = is_wp_error($receta_id) ? $receta_id->get_error_message() : __('No se pudo guardar la receta.', 'flavor-chat-ia');
+            wp_send_json_error(['message' => $error]);
         }
 
         // Guardar metas

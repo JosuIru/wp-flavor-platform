@@ -6,6 +6,9 @@
  * @since 2.0.0
  */
 
+/* Import Material Icons */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
 /* ============================================
    CSS Variables (Fallbacks - Settings override these)
    ============================================ */
@@ -121,12 +124,13 @@ body.single-flavor_landing.vbp-fullscreen #colophon {
     line-height: 1.6;
 }
 
-.vbp-hero__button {
+.vbp-hero__button,
+a.vbp-hero__button {
     display: inline-block;
     padding: 14px 32px;
     background: var(--flavor-primary, #3b82f6);
-    color: white;
-    text-decoration: none;
+    color: #ffffff !important;
+    text-decoration: none !important;
     font-weight: 600;
     border-radius: 8px;
     transition: background 0.3s ease, transform 0.3s ease;
@@ -137,6 +141,56 @@ body.single-flavor_landing.vbp-fullscreen #colophon {
     transform: translateY(-2px);
 }
 
+/* Overlay del hero */
+.vbp-hero__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+/* Descripción del hero */
+.vbp-hero__description {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 30px;
+    line-height: 1.7;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Contenedor de botones */
+.vbp-hero__buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.vbp-hero--left .vbp-hero__buttons {
+    justify-content: flex-start;
+}
+
+/* Botón secundario */
+.vbp-hero__button--secondary,
+a.vbp-hero__button--secondary {
+    background: transparent !important;
+    border: 2px solid currentColor;
+}
+
+.vbp-hero__button--secondary:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: translateY(-2px);
+}
+
+/* Variante fullscreen */
+.vbp-hero--fullscreen {
+    min-height: 100vh;
+}
+
 /* ============================================
    Features Section
    ============================================ */
@@ -144,24 +198,51 @@ body.single-flavor_landing.vbp-fullscreen #colophon {
     padding: 80px 20px;
 }
 
+.vbp-features .vbp-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
 .vbp-features__title {
     text-align: center;
     font-size: 2.5rem;
     font-weight: 700;
+    margin: 0 0 16px;
+}
+
+.vbp-features__subtitle {
+    text-align: center;
+    font-size: 1.125rem;
     margin: 0 0 50px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .vbp-features__grid {
+    --features-columns: 3;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(var(--features-columns), 1fr);
     gap: 30px;
     max-width: 1200px;
     margin: 0 auto;
 }
 
+@media (max-width: 992px) {
+    .vbp-features__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .vbp-features__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .vbp-feature-card {
     padding: 30px;
-    background: var(--flavor-bg-muted, #f8fafc);
+    background: var(--flavor-bg-card, rgba(255, 255, 255, 0.05));
     border-radius: 12px;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -169,23 +250,30 @@ body.single-flavor_landing.vbp-fullscreen #colophon {
 
 .vbp-feature-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .vbp-feature-card__icon {
     font-size: 3rem;
     margin-bottom: 20px;
+    line-height: 1;
+}
+
+.vbp-feature-card__icon .material-icons {
+    font-size: inherit;
 }
 
 .vbp-feature-card__title {
     font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0 0 10px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: inherit;
 }
 
 .vbp-feature-card__description {
     font-size: 0.95rem;
-    color: var(--flavor-text-muted, #64748b);
+    color: inherit;
+    opacity: 0.8;
     margin: 0;
     line-height: 1.6;
 }
@@ -218,19 +306,41 @@ body.single-flavor_landing.vbp-fullscreen #colophon {
     line-height: 1.6;
 }
 
-.vbp-cta__button {
+.vbp-cta__button,
+a.vbp-cta__button {
     display: inline-block;
     padding: 14px 32px;
     background: var(--flavor-bg, white);
-    color: var(--flavor-primary, #3b82f6);
-    text-decoration: none;
+    color: var(--flavor-primary, #3b82f6) !important;
+    text-decoration: none !important;
     font-weight: 600;
     border-radius: 8px;
     transition: transform 0.3s ease;
+    border: 2px solid transparent;
 }
 
 .vbp-cta__button:hover {
     transform: translateY(-2px);
+}
+
+/* Contenedor de botones CTA */
+.vbp-cta__buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+/* Botón secundario CTA */
+.vbp-cta__button--secondary,
+a.vbp-cta__button--secondary {
+    background: transparent !important;
+    border: 2px solid currentColor;
+}
+
+.vbp-cta__button--secondary:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* ============================================
@@ -4749,4 +4859,1518 @@ body.single-flavor_landing.vbp-fullscreen #colophon {
     .vbp-timeline--horizontal .vbp-timeline__item {
         width: 220px;
     }
+}
+
+/* ========================================
+   CARRUSEL / CAROUSEL
+   ======================================== */
+
+.vbp-carousel {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.vbp-carousel__track {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.vbp-carousel__slide {
+    flex: 0 0 100%;
+    min-width: 0;
+    padding: 0 8px;
+    box-sizing: border-box;
+}
+
+.vbp-carousel--cards .vbp-carousel__slide {
+    flex: 0 0 calc(100% / var(--slides-visible, 1));
+}
+
+.vbp-carousel__slide-inner {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    height: 100%;
+}
+
+.vbp-carousel__image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+.vbp-carousel__content {
+    padding: 24px;
+}
+
+.vbp-carousel__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: var(--vbp-text-primary, #1e293b);
+}
+
+.vbp-carousel__description {
+    color: var(--vbp-text-secondary, #64748b);
+    line-height: 1.6;
+    margin: 0 0 16px;
+}
+
+/* Flechas de navegación */
+.vbp-carousel__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.2s ease;
+}
+
+.vbp-carousel__arrow:hover {
+    background: #fff;
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.vbp-carousel__arrow--prev { left: 16px; }
+.vbp-carousel__arrow--next { right: 16px; }
+
+.vbp-carousel__arrow svg {
+    width: 20px;
+    height: 20px;
+    color: #1e293b;
+}
+
+/* Dots / Indicadores */
+.vbp-carousel__dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 20px 0;
+}
+
+.vbp-carousel__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vbp-carousel__dot:hover {
+    background: #94a3b8;
+}
+
+.vbp-carousel__dot--active {
+    background: var(--vbp-primary, #6366f1);
+    transform: scale(1.2);
+}
+
+/* Variante: Fullwidth */
+.vbp-carousel--fullwidth .vbp-carousel__slide {
+    padding: 0;
+}
+
+.vbp-carousel--fullwidth .vbp-carousel__slide-inner {
+    border-radius: 0;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Variante: Testimonios */
+.vbp-carousel--testimonials .vbp-carousel__slide-inner {
+    text-align: center;
+    padding: 40px;
+}
+
+.vbp-carousel--testimonials .vbp-carousel__quote {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: #475569;
+    margin-bottom: 24px;
+    line-height: 1.8;
+}
+
+.vbp-carousel--testimonials .vbp-carousel__author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.vbp-carousel--testimonials .vbp-carousel__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* ========================================
+   TABS / PESTAÑAS
+   ======================================== */
+
+.vbp-tabs {
+    width: 100%;
+}
+
+.vbp-tabs__nav {
+    display: flex;
+    gap: 4px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 24px;
+}
+
+.vbp-tabs__button {
+    padding: 12px 24px;
+    background: transparent;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-tabs__button:hover {
+    color: #1e293b;
+}
+
+.vbp-tabs__button--active {
+    color: var(--vbp-primary, #6366f1);
+}
+
+.vbp-tabs__button--active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--vbp-primary, #6366f1);
+}
+
+.vbp-tabs__icon {
+    width: 18px;
+    height: 18px;
+}
+
+.vbp-tabs__content {
+    position: relative;
+}
+
+.vbp-tabs__panel {
+    display: none;
+    animation: vbp-tab-fade-in 0.3s ease;
+}
+
+.vbp-tabs__panel--active {
+    display: block;
+}
+
+@keyframes vbp-tab-fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Variante: Vertical */
+.vbp-tabs--vertical {
+    display: flex;
+    gap: 24px;
+}
+
+.vbp-tabs--vertical .vbp-tabs__nav {
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 2px solid #e2e8f0;
+    margin-bottom: 0;
+    padding-right: 0;
+    min-width: 200px;
+}
+
+.vbp-tabs--vertical .vbp-tabs__button--active::after {
+    bottom: auto;
+    left: auto;
+    right: -2px;
+    top: 0;
+    width: 2px;
+    height: 100%;
+}
+
+.vbp-tabs--vertical .vbp-tabs__content {
+    flex: 1;
+}
+
+/* Variante: Pills */
+.vbp-tabs--pills .vbp-tabs__nav {
+    border-bottom: none;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 10px;
+    gap: 0;
+}
+
+.vbp-tabs--pills .vbp-tabs__button {
+    border-radius: 8px;
+    padding: 10px 20px;
+}
+
+.vbp-tabs--pills .vbp-tabs__button--active {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.vbp-tabs--pills .vbp-tabs__button--active::after {
+    display: none;
+}
+
+/* Variante: Underlined */
+.vbp-tabs--underlined .vbp-tabs__nav {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.vbp-tabs--underlined .vbp-tabs__button--active::after {
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+}
+
+/* ========================================
+   ACORDEÓN / ACCORDION
+   ======================================== */
+
+.vbp-accordion {
+    width: 100%;
+}
+
+.vbp-accordion__item {
+    border: 1px solid #e2e8f0;
+    margin-bottom: -1px;
+}
+
+.vbp-accordion__item:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.vbp-accordion__item:last-child {
+    border-radius: 0 0 8px 8px;
+}
+
+.vbp-accordion__item:only-child {
+    border-radius: 8px;
+}
+
+.vbp-accordion__header {
+    padding: 16px 20px;
+    background: #f8fafc;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.vbp-accordion__header:hover {
+    background: #f1f5f9;
+}
+
+.vbp-accordion__title {
+    font-weight: 500;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.vbp-accordion__title-icon {
+    width: 20px;
+    height: 20px;
+    color: #6366f1;
+}
+
+.vbp-accordion__icon {
+    width: 20px;
+    height: 20px;
+    color: #94a3b8;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.vbp-accordion__item--open .vbp-accordion__icon {
+    transform: rotate(180deg);
+}
+
+.vbp-accordion__content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.vbp-accordion__item--open .vbp-accordion__content {
+    max-height: 1000px;
+}
+
+.vbp-accordion__body {
+    padding: 20px;
+    color: #475569;
+    line-height: 1.7;
+}
+
+/* Variante: Cards */
+.vbp-accordion--cards .vbp-accordion__item {
+    border-radius: 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.vbp-accordion--cards .vbp-accordion__header {
+    border-radius: 10px;
+}
+
+.vbp-accordion--cards .vbp-accordion__item--open .vbp-accordion__header {
+    border-radius: 10px 10px 0 0;
+}
+
+/* Variante: Minimal */
+.vbp-accordion--minimal .vbp-accordion__item {
+    border: none;
+    border-bottom: 1px solid #e2e8f0;
+    border-radius: 0;
+}
+
+.vbp-accordion--minimal .vbp-accordion__header {
+    background: transparent;
+    padding: 16px 0;
+}
+
+/* Variante: Bordered */
+.vbp-accordion--bordered .vbp-accordion__item {
+    border-width: 2px;
+}
+
+.vbp-accordion--bordered .vbp-accordion__item--open {
+    border-color: var(--vbp-primary, #6366f1);
+}
+
+/* ========================================
+   TIMELINE / LÍNEA DE TIEMPO
+   ======================================== */
+
+.vbp-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.vbp-timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--vbp-primary, #6366f1), #c7d2fe);
+}
+
+.vbp-timeline__item {
+    position: relative;
+    padding-bottom: 32px;
+}
+
+.vbp-timeline__item:last-child {
+    padding-bottom: 0;
+}
+
+.vbp-timeline__marker {
+    position: absolute;
+    left: -30px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--vbp-primary, #6366f1);
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 3px var(--vbp-primary, #6366f1);
+    z-index: 1;
+}
+
+.vbp-timeline__item--current .vbp-timeline__marker {
+    animation: vbp-pulse 2s ease-in-out infinite;
+}
+
+@keyframes vbp-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px var(--vbp-primary, #6366f1); }
+    50% { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.3); }
+}
+
+.vbp-timeline__date {
+    font-size: 0.85rem;
+    color: #6366f1;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.vbp-timeline__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.vbp-timeline__description {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.vbp-timeline__image {
+    margin-top: 12px;
+    border-radius: 8px;
+    max-width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Variante: Horizontal */
+.vbp-timeline--horizontal {
+    display: flex;
+    padding-left: 0;
+    padding-top: 30px;
+    overflow-x: auto;
+}
+
+.vbp-timeline--horizontal::before {
+    left: 0;
+    right: 0;
+    top: 7px;
+    bottom: auto;
+    width: auto;
+    height: 2px;
+}
+
+.vbp-timeline--horizontal .vbp-timeline__item {
+    flex: 0 0 250px;
+    padding-bottom: 0;
+    padding-right: 32px;
+}
+
+.vbp-timeline--horizontal .vbp-timeline__marker {
+    left: 0;
+    top: -30px;
+}
+
+/* Variante: Alternating */
+.vbp-timeline--alternating {
+    padding-left: 0;
+}
+
+.vbp-timeline--alternating::before {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.vbp-timeline--alternating .vbp-timeline__item {
+    width: 50%;
+    padding-right: 40px;
+}
+
+.vbp-timeline--alternating .vbp-timeline__item:nth-child(even) {
+    margin-left: 50%;
+    padding-left: 40px;
+    padding-right: 0;
+}
+
+.vbp-timeline--alternating .vbp-timeline__marker {
+    left: auto;
+    right: -8px;
+}
+
+.vbp-timeline--alternating .vbp-timeline__item:nth-child(even) .vbp-timeline__marker {
+    left: -8px;
+    right: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .vbp-tabs--vertical {
+        flex-direction: column;
+    }
+
+    .vbp-tabs--vertical .vbp-tabs__nav {
+        border-right: none;
+        border-bottom: 2px solid #e2e8f0;
+        flex-direction: row;
+        overflow-x: auto;
+        min-width: 0;
+    }
+
+    .vbp-timeline--alternating .vbp-timeline__item,
+    .vbp-timeline--alternating .vbp-timeline__item:nth-child(even) {
+        width: 100%;
+        margin-left: 0;
+        padding-left: 30px;
+        padding-right: 0;
+    }
+
+    .vbp-timeline--alternating::before {
+        left: 7px;
+        transform: none;
+    }
+
+    .vbp-timeline--alternating .vbp-timeline__marker,
+    .vbp-timeline--alternating .vbp-timeline__item:nth-child(even) .vbp-timeline__marker {
+        left: -30px;
+        right: auto;
+    }
+}
+
+/* ============================================
+   VBP Section Base Styles
+   ============================================ */
+.vbp-section {
+    padding: 60px 0;
+    width: 100%;
+}
+
+.vbp-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.vbp-section__header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.vbp-section__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+}
+
+.vbp-section__subtitle {
+    font-size: 1.125rem;
+    margin: 0;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+/* Eventos Listado & Calendario */
+.vbp-eventos-listado__content,
+.vbp-eventos-calendario__content {
+    margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .vbp-section {
+        padding: 40px 0;
+    }
+
+    .vbp-section__header {
+        margin-bottom: 30px;
+    }
+
+    .vbp-section__title {
+        font-size: 1.75rem;
+    }
+
+    .vbp-section__subtitle {
+        font-size: 1rem;
+    }
+
+    .vbp-container {
+        padding: 0 15px;
+    }
+}
+
+/* ============================================
+   Accordion / FAQ Section
+   ============================================ */
+.vbp-accordion,
+.vbp-faq {
+    padding: 60px 20px;
+}
+
+.vbp-accordion__title,
+.vbp-faq__title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 10px;
+}
+
+.vbp-accordion__subtitle,
+.vbp-faq__subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--flavor-text-muted, #64748b);
+    margin: 0 0 40px;
+}
+
+.vbp-accordion__items,
+.vbp-faq__items {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.vbp-accordion__item,
+.vbp-faq__item {
+    border: 1px solid var(--flavor-border, #e2e8f0);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    background: var(--flavor-bg-card, #ffffff);
+}
+
+.vbp-accordion__header,
+.vbp-faq__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--flavor-text, #1e293b);
+    background: var(--flavor-bg-muted, #f8fafc);
+    transition: background 0.2s ease;
+}
+
+.vbp-accordion__header:hover,
+.vbp-faq__header:hover {
+    background: var(--flavor-bg, #f1f5f9);
+}
+
+.vbp-accordion__icon,
+.vbp-faq__icon {
+    font-size: 1.25rem;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.vbp-accordion__item--open .vbp-accordion__icon,
+.vbp-faq__item--open .vbp-faq__icon {
+    transform: rotate(180deg);
+}
+
+.vbp-accordion__content,
+.vbp-faq__content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.vbp-accordion__item--open .vbp-accordion__content,
+.vbp-faq__item--open .vbp-faq__content {
+    max-height: 1000px;
+    padding: 20px;
+}
+
+.vbp-accordion__text,
+.vbp-faq__text {
+    color: var(--flavor-text, #374151);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Variante sin bordes */
+.vbp-accordion--borderless .vbp-accordion__item,
+.vbp-faq--borderless .vbp-faq__item {
+    border: none;
+    border-bottom: 1px solid var(--flavor-border, #e2e8f0);
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+/* Variante con sombra */
+.vbp-accordion--shadow .vbp-accordion__item,
+.vbp-faq--shadow .vbp-faq__item {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: none;
+}
+
+/* Responsive accordion */
+@media (max-width: 768px) {
+    .vbp-accordion,
+    .vbp-faq {
+        padding: 40px 15px;
+    }
+
+    .vbp-accordion__title,
+    .vbp-faq__title {
+        font-size: 1.5rem;
+    }
+
+    .vbp-accordion__header,
+    .vbp-faq__header {
+        padding: 14px 16px;
+        font-size: 0.95rem;
+    }
+
+    .vbp-accordion__item--open .vbp-accordion__content,
+    .vbp-faq__item--open .vbp-faq__content {
+        padding: 16px;
+    }
+}
+
+/* ============================================
+   Tabs Component
+   ============================================ */
+.vbp-tabs {
+    padding: 60px 20px;
+}
+
+.vbp-tabs__title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 10px;
+}
+
+.vbp-tabs__nav {
+    display: flex;
+    border-bottom: 2px solid var(--flavor-border, #e2e8f0);
+    gap: 4px;
+    overflow-x: auto;
+}
+
+.vbp-tabs__button {
+    flex-shrink: 0;
+    padding: 12px 24px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--flavor-text-muted, #64748b);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vbp-tabs__button:hover {
+    color: var(--flavor-text, #1e293b);
+}
+
+.vbp-tabs__button--active {
+    color: var(--flavor-primary, #3b82f6);
+    border-bottom-color: var(--flavor-primary, #3b82f6);
+}
+
+.vbp-tabs__content {
+    padding: 24px 0;
+}
+
+.vbp-tabs__panel {
+    display: none;
+}
+
+.vbp-tabs__panel--active {
+    display: block;
+    animation: vbp-tab-fade 0.3s ease;
+}
+
+@keyframes vbp-tab-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ============================================
+   Carousel Component
+   ============================================ */
+.vbp-carousel {
+    position: relative;
+    padding: 60px 20px;
+    overflow: hidden;
+}
+
+.vbp-carousel__wrapper {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.vbp-carousel__track {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.vbp-carousel__slide {
+    flex-shrink: 0;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.vbp-carousel__slide-content {
+    background: var(--flavor-bg-card, #ffffff);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.vbp-carousel__slide-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.vbp-carousel__slide-body {
+    padding: 24px;
+}
+
+.vbp-carousel__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    background: var(--flavor-bg, #ffffff);
+    border: 1px solid var(--flavor-border, #e2e8f0);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.vbp-carousel__arrow:hover {
+    background: var(--flavor-primary, #3b82f6);
+    color: #ffffff;
+}
+
+.vbp-carousel__arrow--prev { left: 10px; }
+.vbp-carousel__arrow--next { right: 10px; }
+
+.vbp-carousel__dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+.vbp-carousel__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--flavor-border, #e2e8f0);
+    border: none;
+    cursor: pointer;
+}
+
+.vbp-carousel__dot--active {
+    background: var(--flavor-primary, #3b82f6);
+}
+
+/* ============================================
+   Timeline Component
+   ============================================ */
+.vbp-timeline {
+    position: relative;
+    padding: 60px 20px;
+}
+
+.vbp-timeline__container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.vbp-timeline__line {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 100%;
+    background: var(--flavor-primary, #3b82f6);
+}
+
+.vbp-timeline__item {
+    position: relative;
+    padding: 20px 0;
+    display: flex;
+}
+
+.vbp-timeline__item:nth-child(odd) {
+    padding-right: calc(50% + 30px);
+    text-align: right;
+}
+
+.vbp-timeline__item:nth-child(even) {
+    flex-direction: row-reverse;
+    padding-left: calc(50% + 30px);
+}
+
+.vbp-timeline__marker {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background: var(--flavor-bg, #ffffff);
+    border: 3px solid var(--flavor-primary, #3b82f6);
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.vbp-timeline__content {
+    flex: 1;
+    background: var(--flavor-bg-card, #ffffff);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.vbp-timeline__date {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--flavor-primary, #3b82f6);
+    margin-bottom: 8px;
+}
+
+.vbp-timeline__item-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+/* Timeline animation */
+.vbp-timeline--animated .vbp-timeline__item {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.vbp-timeline--animated .vbp-timeline__item.vbp-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .vbp-tabs__button {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
+    .vbp-carousel__arrow {
+        width: 36px;
+        height: 36px;
+    }
+
+    .vbp-timeline__line {
+        left: 20px;
+    }
+
+    .vbp-timeline__item,
+    .vbp-timeline__item:nth-child(odd),
+    .vbp-timeline__item:nth-child(even) {
+        padding-left: 50px;
+        padding-right: 0;
+        text-align: left;
+        flex-direction: row;
+    }
+
+    .vbp-timeline__marker {
+        left: 20px;
+    }
+}
+
+/* ============================================
+   ESTÉTICA ANTIFAXISTA
+   Estilos específicos para diseño militante
+   ============================================ */
+
+/* Badge/Etiqueta Militante */
+.vbp-badge-antifa {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
+}
+
+.vbp-badge-antifa::before {
+    content: '✊';
+    font-size: 0.9em;
+}
+
+/* Sección Hero Antifaxista */
+.vbp-hero--antifa {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1f1f1f 50%, #dc2626 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.vbp-hero--antifa::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 40px,
+            rgba(220, 38, 38, 0.05) 40px,
+            rgba(220, 38, 38, 0.05) 80px
+        );
+    pointer-events: none;
+}
+
+.vbp-hero--antifa .vbp-hero__title {
+    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+}
+
+.vbp-hero--antifa .vbp-hero__button {
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+}
+
+.vbp-hero--antifa .vbp-hero__button:hover {
+    background: #ffffff !important;
+    color: #dc2626 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+}
+
+/* Bloque de Llamada a la Acción Militante */
+.vbp-cta--antifa {
+    background: #dc2626;
+    position: relative;
+}
+
+.vbp-cta--antifa::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #fbbf24 0%, #dc2626 50%, #1f2937 100%);
+}
+
+.vbp-cta--antifa .vbp-cta__title {
+    color: #ffffff;
+    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    text-transform: uppercase;
+}
+
+.vbp-cta--antifa .vbp-cta__button {
+    background: #1f2937 !important;
+    color: #ffffff !important;
+    border: none;
+    font-weight: 700;
+}
+
+/* Tarjetas con estilo militante */
+.vbp-card--antifa {
+    background: #1f2937;
+    border: none;
+    border-left: 4px solid #dc2626;
+    color: #ffffff;
+}
+
+.vbp-card--antifa:hover {
+    border-left-color: #fbbf24;
+    transform: translateX(4px);
+}
+
+.vbp-card--antifa h3,
+.vbp-card--antifa h4 {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* Texto destacado antifaxista */
+.vbp-text-highlight--antifa {
+    background: linear-gradient(transparent 60%, rgba(220, 38, 38, 0.3) 60%);
+    padding: 0 4px;
+}
+
+/* Separador/Divider militante */
+.vbp-divider--antifa {
+    height: 4px;
+    background: linear-gradient(90deg,
+        #dc2626 0%,
+        #dc2626 33%,
+        #1f2937 33%,
+        #1f2937 66%,
+        #fbbf24 66%,
+        #fbbf24 100%
+    );
+    border: none;
+    margin: 40px 0;
+}
+
+/* Stats/Números con estilo impactante */
+.vbp-stats--antifa .vbp-stat-item__number {
+    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    font-size: 4rem;
+    color: #dc2626;
+    line-height: 1;
+}
+
+.vbp-stats--antifa .vbp-stat-item__label {
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+
+/* Banner de alerta/urgencia */
+.vbp-alert-banner--antifa {
+    background: #dc2626;
+    color: #ffffff;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    animation: vbp-pulse-antifa 2s ease-in-out infinite;
+}
+
+@keyframes vbp-pulse-antifa {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+}
+
+/* Grid de acciones/campañas */
+.vbp-campaigns-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.vbp-campaign-card {
+    background: #1f2937;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vbp-campaign-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(220, 38, 38, 0.2);
+}
+
+.vbp-campaign-card__image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    filter: grayscale(20%);
+    transition: filter 0.3s ease;
+}
+
+.vbp-campaign-card:hover .vbp-campaign-card__image {
+    filter: grayscale(0%);
+}
+
+.vbp-campaign-card__content {
+    padding: 20px;
+}
+
+.vbp-campaign-card__tag {
+    display: inline-block;
+    background: #dc2626;
+    color: #ffffff;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+}
+
+.vbp-campaign-card__title {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 8px;
+}
+
+.vbp-campaign-card__excerpt {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Footer estilo antifaxista */
+.vbp-footer--antifa {
+    background: #0f0f0f;
+    border-top: 4px solid #dc2626;
+}
+
+.vbp-footer--antifa a {
+    color: #9ca3af;
+    transition: color 0.2s ease;
+}
+
+.vbp-footer--antifa a:hover {
+    color: #dc2626;
+}
+
+/* Icono puño alzado */
+.vbp-icon-fist::before {
+    content: '✊';
+    margin-right: 8px;
+}
+
+/* Modo oscuro antifaxista (aplicado automáticamente con preset antifa-red) */
+body[data-theme="antifa-red"],
+body.vbp-theme-antifa-red {
+    --flavor-primary: #dc2626;
+    --flavor-primary-dark: #991b1b;
+    --flavor-secondary: #1f2937;
+    --flavor-accent: #fbbf24;
+    --flavor-bg: #0f0f0f;
+    --flavor-bg-muted: #1f1f1f;
+    --flavor-bg-card: #1f2937;
+    --flavor-text: #ffffff;
+    --flavor-text-muted: #9ca3af;
+    --flavor-border: #374151;
+}
+
+/* Fix: Hero button text color */
+.flavor-hero .flavor-hero-btn {
+    color: #333 !important;
+}
+.flavor-hero .flavor-hero-btn:hover {
+    color: var(--flavor-primary, #3b82f6) !important;
+}
+
+/* Fix: Ver calendario button */
+.flavor-ver-calendario {
+    color: var(--flavor-primary, #e91e63) !important;
+}
+/* Fix: Proponer evento button */  
+.flavor-button--outline {
+    color: var(--flavor-primary, #e91e63) !important;
+}
+
+/* Fix: All outline buttons in comunidad section */
+.flavor-comunidad-eventos .flavor-button--outline,
+.flavor-eventos-cta .flavor-button--outline {
+    color: var(--color-primario, #e91e63) !important;
+    border-color: var(--color-primario, #e91e63) !important;
+}
+
+/* ===========================================
+   FIX: Timeline alternado - diseño completo
+   =========================================== */
+
+/* Contenedor del timeline centrado */
+.vbp-section--timeline .vbp-timeline--alternating {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    position: relative;
+}
+
+/* Línea central correctamente posicionada */
+.vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__line {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
+
+/* Items del timeline con posicionamiento relativo para los marcadores */
+.vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__item {
+    position: relative !important;
+    width: calc(50% - 50px) !important;
+    padding-bottom: 60px !important;
+    box-sizing: border-box !important;
+}
+
+/* Items IMPARES (1, 3, 5...) -> DERECHA de la línea */
+.vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__item:nth-child(odd) {
+    margin-left: calc(50% + 30px) !important;
+    margin-right: 0 !important;
+    padding-left: 20px !important;
+    padding-right: 0 !important;
+    text-align: left !important;
+}
+
+/* Items PARES (2, 4, 6...) -> IZQUIERDA de la línea */
+.vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__item:nth-child(even) {
+    margin-left: 0 !important;
+    margin-right: calc(50% + 30px) !important;
+    padding-left: 0 !important;
+    padding-right: 20px !important;
+    text-align: right !important;
+}
+
+/* Marcadores centrados sobre la línea */
+.vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__marker {
+    position: absolute !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    z-index: 5 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    top: 0 !important;
+}
+
+/* Marcador de items impares (derecha) - posicionar a la izquierda del item */
+.vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__item:nth-child(odd) .vbp-timeline__marker {
+    left: -52px !important;
+    right: auto !important;
+}
+
+/* Marcador de items pares (izquierda) - posicionar a la derecha del item */
+.vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__item:nth-child(even) .vbp-timeline__marker {
+    right: -52px !important;
+    left: auto !important;
+}
+
+/* Iconos del marcador */
+.vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__marker-icon {
+    font-size: 18px !important;
+    color: white !important;
+}
+
+.vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__marker-icon .material-icons {
+    font-size: 22px !important;
+}
+
+/* Contenido del timeline con mejor contraste */
+.vbp-section--timeline .vbp-timeline__content {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Fecha del timeline */
+.vbp-section--timeline .vbp-timeline__date {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: var(--flavor-primary, #dc2626) !important;
+}
+
+/* Responsive móvil */
+@media (max-width: 768px) {
+    .vbp-section--timeline .vbp-timeline--alternating {
+        max-width: 100% !important;
+        padding: 30px 15px !important;
+    }
+
+    .vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__line {
+        left: 25px !important;
+        transform: none !important;
+    }
+
+    .vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__item,
+    .vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__item:nth-child(odd),
+    .vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__item:nth-child(even) {
+        width: calc(100% - 60px) !important;
+        margin-left: 55px !important;
+        margin-right: 0 !important;
+        padding-left: 15px !important;
+        padding-right: 0 !important;
+        text-align: left !important;
+    }
+
+    .vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__item:nth-child(odd) .vbp-timeline__marker,
+    .vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__item:nth-child(even) .vbp-timeline__marker {
+        left: -42px !important;
+        right: auto !important;
+    }
+
+    .vbp-section--timeline .vbp-timeline--alternating .vbp-timeline__marker {
+        width: 32px !important;
+        height: 32px !important;
+    }
+}
+
+/* ===========================================
+   FIX: Colores de texto en tarjetas de eventos
+   =========================================== */
+
+/* Tarjetas de eventos - texto debe ser oscuro sobre fondo blanco */
+.flavor-evento-card {
+    background: white !important;
+}
+
+.flavor-evento-card .flavor-evento-titulo {
+    color: #1f2937 !important;
+}
+
+.flavor-evento-card .flavor-evento-detalles {
+    color: #6b7280 !important;
+}
+
+.flavor-evento-card .flavor-evento-detalles .flavor-detalle {
+    color: #6b7280 !important;
+}
+
+.flavor-evento-card .flavor-evento-contenido {
+    color: #374151 !important;
+}
+
+/* ===========================================
+   FIX: Ocultar timelines vacíos (sin items)
+   =========================================== */
+
+/* Timeline que solo tiene la línea pero no tiene items */
+.vbp-timeline:not(:has(.vbp-timeline__item)) {
+    display: none !important;
+}
+
+/* Fallback para navegadores que no soportan :has() */
+.vbp-timeline:empty {
+    display: none !important;
+}
+
+/* Sección de timeline sin contenido real */
+.vbp-section--timeline:not(:has(.vbp-timeline__item)) {
+    display: none !important;
 }

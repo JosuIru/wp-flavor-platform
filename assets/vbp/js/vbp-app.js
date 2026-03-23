@@ -44,12 +44,64 @@ function vbpApp() {
             return store && store.elements ? store.elements : [];
         },
 
+        // Getter para breadcrumbs del elemento seleccionado
+        get breadcrumbs() {
+            var store = Alpine.store('vbp');
+            if (!store || store.selection.elementIds.length !== 1) {
+                return [{ id: 'root', name: 'Página', type: 'root' }];
+            }
+            var selectedId = store.selection.elementIds[0];
+            return store.getElementPath(selectedId);
+        },
+
+        // Navegar a un elemento desde los breadcrumbs
+        navigateToBreadcrumb: function(crumb) {
+            if (crumb.id === 'root') {
+                // Deseleccionar todo
+                Alpine.store('vbp').clearSelection();
+            } else {
+                // Seleccionar el elemento
+                Alpine.store('vbp').setSelection([crumb.id]);
+            }
+        },
+
+        // Obtener icono para tipo de elemento en breadcrumbs
+        getBreadcrumbIcon: function(type) {
+            var icons = {
+                'root': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>',
+                'section': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>',
+                'container': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>',
+                'columns': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg>',
+                'row': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18"/></svg>',
+                'grid': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
+                'text': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>',
+                'heading': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h8M4 18V6M12 18V6"/></svg>',
+                'image': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
+                'button': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="8" rx="4"/></svg>',
+                'video': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><polygon points="10,8 16,12 10,16"/></svg>',
+                'hero': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>',
+                'default': '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>'
+            };
+            return icons[type] || icons['default'];
+        },
+
         documentTitle: '',
         isSaving: false,
         saveStatus: '',
         saveStatusClass: '',
         zoom: 100,
-        devicePreview: 'desktop',
+        // devicePreview sincronizado con el store para que el inspector y canvas usen el mismo valor
+        get devicePreview() {
+            var store = Alpine.store('vbp');
+            return store ? store.devicePreview : 'desktop';
+        },
+        set devicePreview(value) {
+            var store = Alpine.store('vbp');
+            if (store) {
+                store.devicePreview = value;
+                store.activeBreakpoint = value;
+            }
+        },
         splitScreenMode: false,
         splitScreenSyncScroll: true,
         splitScreenDevices: ['desktop', 'mobile'],
@@ -182,6 +234,7 @@ function vbpApp() {
             this.loadTemplates();
             this.loadGlobalWidgets();
             this.startAutosave();
+            this.initBeforeUnload();
             this.initZoomWheel();
             this.initCountdownTimer();
             this.initInteractiveElements();
@@ -539,9 +592,13 @@ function vbpApp() {
             .catch(function(error) {
                 self.saveStatus = VBP_Config.strings.error;
                 self.saveStatusClass = 'error';
-                self.showNotification('Error al guardar: ' + error.message, 'error');
+                self.showNotificationWithAction(
+                    'Error al guardar: ' + error.message,
+                    'error',
+                    'Reintentar',
+                    function() { self.saveDocument(); }
+                );
                 self.isSaving = false;
-                setTimeout(function() { self.saveStatus = ''; }, 3000);
             });
         },
 
@@ -555,6 +612,34 @@ function vbpApp() {
             this.autosaveTimer = setInterval(function() {
                 if (Alpine.store('vbp').isDirty) { self.saveDocument(); }
             }, this.autosaveInterval);
+        },
+
+        /**
+         * Inicializa el handler para guardar antes de cerrar la página
+         */
+        initBeforeUnload: function() {
+            var self = this;
+            window.addEventListener('beforeunload', function(event) {
+                if (Alpine.store('vbp').isDirty) {
+                    // Intentar guardar sincrónicamente con sendBeacon
+                    var datos = JSON.stringify({
+                        elements: Alpine.store('vbp').elements,
+                        settings: Alpine.store('vbp').settings
+                    });
+                    var formData = new FormData();
+                    formData.append('action', 'vbp_guardar_documento');
+                    formData.append('nonce', VBP_Config.nonce);
+                    formData.append('post_id', VBP_Config.postId);
+                    formData.append('title', self.documentTitle);
+                    formData.append('data', datos);
+                    navigator.sendBeacon(VBP_Config.ajaxUrl, formData);
+
+                    // Mostrar advertencia del navegador
+                    event.preventDefault();
+                    event.returnValue = 'Tienes cambios sin guardar. ¿Seguro que quieres salir?';
+                    return event.returnValue;
+                }
+            });
         },
 
         markDirty: function() { Alpine.store('vbp').isDirty = true; },
@@ -581,12 +666,15 @@ function vbpApp() {
             }
         },
         setDevicePreview: function(device) {
+            var store = Alpine.store('vbp');
+            // Sincronizar devicePreview y activeBreakpoint para que inspector y canvas estén siempre alineados
             this.devicePreview = device;
-            Alpine.store('vbp').devicePreview = device;
+            store.devicePreview = device;
+            store.activeBreakpoint = device;
             // Ajustar ancho del canvas según dispositivo
             var widths = { desktop: 1200, tablet: 768, mobile: 375 };
             if (widths[device]) {
-                Alpine.store('vbp').settings.previewWidth = widths[device];
+                store.settings.previewWidth = widths[device];
             }
         },
 
@@ -3414,6 +3502,12 @@ function vbpApp() {
 
         handleDragOver: function(event) {
             event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+
+            // Añadir clase de drag activo al canvas
+            if (this.$refs.canvas && !this.$refs.canvas.classList.contains('drag-active')) {
+                this.$refs.canvas.classList.add('drag-active');
+            }
 
             // Detectar si estamos sobre un dropzone de contenedor
             var dropzone = event.target.closest('.vbp-column-dropzone, .vbp-container-dropzone');
@@ -3437,6 +3531,39 @@ function vbpApp() {
                 var y = event.clientY - canvasRect.top;
                 this.dropIndicator.visible = true;
                 this.dropIndicator.y = this.getDropPosition(y);
+
+                // Añadir clase drag-over a elemento más cercano
+                this.updateDragOverElement(event);
+            }
+        },
+
+        updateDragOverElement: function(event) {
+            var canvas = this.$refs.canvas;
+            var canvasRect = canvas.getBoundingClientRect();
+            var y = event.clientY - canvasRect.top;
+
+            // Remover clase drag-over de todos los elementos
+            document.querySelectorAll('.vbp-element.drag-over').forEach(function(el) {
+                el.classList.remove('drag-over');
+            });
+
+            // Encontrar el elemento más cercano
+            var elements = canvas.querySelectorAll('.vbp-element');
+            var closestElement = null;
+            var minDistance = Infinity;
+
+            elements.forEach(function(el) {
+                var rect = el.getBoundingClientRect();
+                var elY = rect.top - canvasRect.top + rect.height / 2;
+                var distance = Math.abs(y - elY);
+                if (distance < minDistance && distance < 100) {
+                    minDistance = distance;
+                    closestElement = el;
+                }
+            });
+
+            if (closestElement) {
+                closestElement.classList.add('drag-over');
             }
         },
 
@@ -3444,10 +3571,8 @@ function vbpApp() {
             event.preventDefault();
             this.dropIndicator.visible = false;
 
-            // Limpiar indicadores de dropzone
-            document.querySelectorAll('.vbp-dropzone-active').forEach(function(el) {
-                el.classList.remove('vbp-dropzone-active');
-            });
+            // Limpiar todas las clases de drag
+            this.cleanupDragClasses();
 
             var blockData = event.dataTransfer.getData('application/json');
             if (!blockData) return;
@@ -3514,11 +3639,53 @@ function vbpApp() {
             if (element.locked) { event.preventDefault(); return; }
             this.draggedElement = element;
             event.dataTransfer.effectAllowed = 'move';
+
+            // Añadir clase al elemento que se está arrastrando
+            var draggedEl = event.target.closest('.vbp-element');
+            if (draggedEl) {
+                draggedEl.classList.add('drag-source');
+                // Crear ghost personalizado después de un pequeño delay
+                setTimeout(function() {
+                    draggedEl.classList.add('dragging');
+                }, 0);
+            }
+
+            // Almacenar datos del elemento para el drop
+            event.dataTransfer.setData('application/json', JSON.stringify({
+                type: element.type,
+                id: element.id,
+                isExisting: true
+            }));
         },
 
         handleElementDragEnd: function(event) {
             this.draggedElement = null;
             this.dropIndicator.visible = false;
+
+            // Limpiar todas las clases de drag
+            this.cleanupDragClasses();
+        },
+
+        cleanupDragClasses: function() {
+            // Remover clase drag-active del canvas
+            if (this.$refs.canvas) {
+                this.$refs.canvas.classList.remove('drag-active');
+            }
+
+            // Remover clases de elementos
+            document.querySelectorAll('.vbp-element.dragging, .vbp-element.drag-source, .vbp-element.drag-over').forEach(function(el) {
+                el.classList.remove('dragging', 'drag-source', 'drag-over');
+            });
+
+            // Remover indicadores de dropzone
+            document.querySelectorAll('.vbp-dropzone-active').forEach(function(el) {
+                el.classList.remove('vbp-dropzone-active');
+            });
+
+            // Remover clases de bloques en biblioteca
+            document.querySelectorAll('.vbp-block-item.dragging').forEach(function(el) {
+                el.classList.remove('dragging');
+            });
         },
 
         drawRulers: function() {
@@ -3567,6 +3734,37 @@ function vbpApp() {
             }
         },
 
+        /**
+         * Muestra notificación con botón de acción
+         * @param {string} message - Mensaje a mostrar
+         * @param {string} type - Tipo: 'info', 'success', 'error', 'warning'
+         * @param {string} actionLabel - Texto del botón
+         * @param {function} actionCallback - Función a ejecutar al hacer clic
+         */
+        showNotificationWithAction: function(message, type, actionLabel, actionCallback) {
+            type = type || 'info';
+            var notificationId = Date.now();
+            this.notifications.push({
+                id: notificationId,
+                message: message,
+                type: type,
+                visible: true,
+                actionLabel: actionLabel,
+                actionCallback: actionCallback
+            });
+            // No auto-dismiss para notificaciones con acción (el usuario debe interactuar)
+        },
+
+        /**
+         * Ejecuta la acción de una notificación y la cierra
+         */
+        executeNotificationAction: function(notification) {
+            if (notification.actionCallback && typeof notification.actionCallback === 'function') {
+                notification.actionCallback();
+            }
+            this.dismissNotification(notification.id);
+        },
+
         handleKeydown: function(event) {
             var isCtrl = event.ctrlKey || event.metaKey;
 
@@ -3596,7 +3794,7 @@ function vbpApp() {
                 var selection = Alpine.store('vbp').selection;
                 if (selection.elementIds.length > 0 && !event.target.closest('[contenteditable]')) {
                     event.preventDefault();
-                    selection.elementIds.forEach(function(id) { Alpine.store('vbp').removeElement(id); });
+                    this.deleteSelectedElements();
                 }
             }
             if (event.key === 'Escape') {
@@ -3604,6 +3802,72 @@ function vbpApp() {
                 else if (this.showHelpModal) { this.showHelpModal = false; }
                 else { this.clearSelection(); }
             }
+        },
+
+        /**
+         * Elimina los elementos seleccionados con confirmación si es necesario
+         */
+        deleteSelectedElements: function() {
+            var store = Alpine.store('vbp');
+            var selection = store.selection;
+            var elementIds = selection.elementIds;
+
+            if (elementIds.length === 0) return;
+
+            // Contar elementos totales incluyendo hijos
+            var totalElements = 0;
+            var hasChildren = false;
+
+            elementIds.forEach(function(id) {
+                var element = store.getElementById(id);
+                if (element) {
+                    totalElements++;
+                    if (element.children && element.children.length > 0) {
+                        hasChildren = true;
+                        totalElements += countNestedChildren(element.children);
+                    }
+                }
+            });
+
+            function countNestedChildren(children) {
+                var count = 0;
+                children.forEach(function(child) {
+                    count++;
+                    if (child.children && child.children.length > 0) {
+                        count += countNestedChildren(child.children);
+                    }
+                });
+                return count;
+            }
+
+            // Mostrar confirmación si hay múltiples elementos o elementos con hijos
+            if (totalElements > 1 || hasChildren) {
+                var message = totalElements === 1
+                    ? '¿Eliminar este elemento y sus ' + (totalElements - 1) + ' elementos hijos?'
+                    : '¿Eliminar ' + elementIds.length + ' elemento(s) seleccionado(s)' +
+                      (hasChildren ? ' (incluyendo ' + (totalElements - elementIds.length) + ' elementos hijos)' : '') + '?';
+
+                if (!confirm(message)) {
+                    return;
+                }
+            }
+
+            // Eliminar elementos usando batch para mejor rendimiento
+            if (elementIds.length > 1) {
+                // Usar batchOperations para evitar reconstruir índice en cada eliminación
+                store.batchOperations(function() {
+                    elementIds.forEach(function(id) {
+                        store.removeElement(id);
+                    });
+                });
+            } else {
+                store.removeElement(elementIds[0]);
+            }
+
+            this.showNotification(
+                totalElements === 1 ? 'Elemento eliminado' : totalElements + ' elementos eliminados',
+                'success'
+            );
         },
 
         // ============ COMMAND PALETTE ============

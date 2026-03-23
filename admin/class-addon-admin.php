@@ -135,7 +135,7 @@ class Flavor_Addon_Admin {
         }
 
         // Redirigir para evitar reenvío de formulario
-        wp_safe_redirect(admin_url('admin.php?page=flavor-addons'));
+        Flavor_Chat_Helpers::safe_redirect(admin_url('admin.php?page=flavor-addons'));
         exit;
     }
 
@@ -146,7 +146,8 @@ class Flavor_Addon_Admin {
      * @return void
      */
     public function enqueue_admin_assets($hook_suffix) {
-        if ($hook_suffix !== 'flavor-platform_page_flavor-addons') {
+        // El hook puede variar según el parent del menú
+        if (strpos($hook_suffix, 'flavor-addons') === false) {
             return;
         }
 

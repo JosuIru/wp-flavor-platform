@@ -331,6 +331,8 @@ class Flavor_Unified_Admin_Panel {
      * Los módulos se registran mediante el filtro 'flavor_admin_panel_modules'
      */
     public function recopilar_modulos_admin() {
+        $this->preload_module_for_current_admin_page();
+
         /**
          * Filtro para que los módulos registren sus páginas de admin
          *
@@ -364,6 +366,50 @@ class Flavor_Unified_Admin_Panel {
             $orden_b = $this->categorias[$cat_b]['orden'] ?? 999;
             return $orden_a - $orden_b;
         });
+    }
+
+    /**
+     * Precarga el módulo asociado a la página admin actual para asegurar
+     * que registre sus callbacks de páginas antes de construir el panel.
+     *
+     * @return void
+     */
+    private function preload_module_for_current_admin_page() {
+        if (!is_admin() || !class_exists('Flavor_Chat_Module_Loader')) {
+            return;
+        }
+
+        $current_page = isset($_GET['page']) ? sanitize_text_field((string) $_GET['page']) : '';
+        if ($current_page === '') {
+            return;
+        }
+
+        $loader = Flavor_Chat_Module_Loader::get_instance();
+        $registered_modules = $loader->get_registered_modules();
+        if (empty($registered_modules)) {
+            return;
+        }
+
+        foreach (array_keys($registered_modules) as $module_id) {
+            $dashboard_page = null;
+            if (class_exists('Flavor_Module_Admin_Pages_Helper')) {
+                $dashboard_page = Flavor_Module_Admin_Pages_Helper::get_module_dashboard_page($module_id);
+            }
+            if (empty($dashboard_page)) {
+                $dashboard_page = str_replace('_', '-', $module_id) . '-dashboard';
+            }
+
+            if ($current_page === $dashboard_page) {
+                $loader->get_module($module_id);
+                return;
+            }
+
+            $page_prefix = str_replace('dashboard', '', $dashboard_page);
+            if ($page_prefix !== $dashboard_page && strpos($current_page, $page_prefix) === 0) {
+                $loader->get_module($module_id);
+                return;
+            }
+        }
     }
 
     /**
@@ -454,6 +500,11 @@ class Flavor_Unified_Admin_Panel {
         $paginas = array_values($modulo['paginas']);
 
         foreach ($paginas as $index => $pagina) {
+            $slug_pagina = isset($pagina['slug']) ? sanitize_key($pagina['slug']) : '';
+            if ($slug_pagina === '' || $this->is_page_slug_already_registered($slug_pagina)) {
+                continue;
+            }
+
             $titulo_menu = $pagina['titulo'];
             $capability = $this->resolve_page_capability($modulo, $pagina, $default_capability, $index === 0);
 
@@ -478,10 +529,62 @@ class Flavor_Unified_Admin_Panel {
                 $pagina['titulo'],
                 $titulo_menu,
                 $capability,
-                $pagina['slug'],
+                $slug_pagina,
                 $pagina['callback']
             );
         }
+    }
+
+    /**
+     * Verifica si un slug de página ya fue registrado en admin.
+     *
+     * Evita callbacks duplicados cuando conviven registradores legacy (hidden pages)
+     * y el panel unificado.
+     *
+     * @param string $slug
+     * @return bool
+     */
+    private function is_page_slug_already_registered($slug) {
+        if ($slug === '') {
+            return false;
+        }
+
+        if (has_action('admin_page_' . $slug)) {
+            return true;
+        }
+
+        global $menu, $submenu, $_registered_pages;
+
+        if (is_array($menu)) {
+            foreach ($menu as $item) {
+                if (!empty($item[2]) && $item[2] === $slug) {
+                    return true;
+                }
+            }
+        }
+
+        if (is_array($submenu)) {
+            foreach ($submenu as $subitems) {
+                if (!is_array($subitems)) {
+                    continue;
+                }
+                foreach ($subitems as $entry) {
+                    if (!empty($entry[2]) && $entry[2] === $slug) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        if (is_array($_registered_pages)) {
+            foreach (array_keys($_registered_pages) as $hook_name) {
+                if ($hook_name === 'admin_page_' . $slug || str_ends_with($hook_name, '_page_' . $slug)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -573,6 +573,11 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
                     'titulo' => __('Configuracion', 'flavor-chat-ia'),
                     'callback' => [$this, 'render_admin_config'],
                 ],
+                [
+                    'slug' => 'clientes-nuevo',
+                    'titulo' => __('Nuevo Cliente', 'flavor-chat-ia'),
+                    'callback' => [$this, 'render_admin_nuevo_alias'],
+                ],
             ],
             'estadisticas' => [$this, 'get_estadisticas_dashboard'],
         ];
@@ -712,11 +717,24 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
      * Renderiza el listado de clientes
      */
     public function render_admin_listado() {
+        $admin_action = isset($_GET['action']) ? sanitize_key(wp_unslash((string) $_GET['action'])) : '';
+
+        if ($admin_action === 'exportar') {
+            $this->exportar_clientes_csv_admin();
+            return;
+        }
+
         echo '<div class="wrap flavor-modulo-page">';
-        $this->render_page_header(__('Listado de Clientes', 'flavor-chat-ia'), [
+        $this->render_page_header(__('Clientes', 'flavor-chat-ia'), [
             ['label' => __('Nuevo Cliente', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado&action=nuevo'), 'class' => 'button-primary'],
             ['label' => __('Exportar', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado&action=exportar'), 'class' => 'button'],
         ]);
+
+        if ($admin_action === 'nuevo') {
+            $this->render_admin_form_cliente();
+            echo '</div>';
+            return;
+        }
 
         // Filtros
         $estado_filtro = isset($_GET['estado']) ? sanitize_text_field($_GET['estado']) : '';
@@ -775,7 +793,14 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
                 echo '<td>' . esc_html($this->format_price((float) $cliente['valor_estimado'])) . '</td>';
                 echo '<td>';
                 echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-fichas&cliente_id=' . $cliente['id'])) . '" class="button button-small">' . __('Ver', 'flavor-chat-ia') . '</a> ';
-                echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-nuevo&editar=' . $cliente['id'])) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a>';
+                echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-listado&action=nuevo&editar=' . $cliente['id'])) . '" class="button button-small">' . __('Editar', 'flavor-chat-ia') . '</a>';
+                echo ' <a href="' . esc_url(add_query_arg([
+                    'page' => 'facturas-nueva',
+                    'cliente_id' => absint($cliente['id']),
+                    'cliente_tipo' => 'crm_cliente',
+                    'cliente_nombre' => (string) $cliente['nombre'],
+                    'cliente_email' => (string) $cliente['email'],
+                ], admin_url('admin.php'))) . '" class="button button-small">' . __('Facturar', 'flavor-chat-ia') . '</a>';
                 echo '</td>';
                 echo '</tr>';
             }
@@ -785,6 +810,241 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         }
 
         echo '</div>';
+    }
+
+    /**
+     * Renderiza formulario admin de cliente (crear/editar) y procesa guardado.
+     *
+     * @return void
+     */
+    private function render_admin_form_cliente() {
+        global $wpdb;
+        $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
+        $settings = $this->get_default_settings();
+
+        $cliente_id = isset($_GET['editar']) ? absint($_GET['editar']) : 0;
+        $modo_edicion = $cliente_id > 0;
+
+        $form_data = [
+            'nombre' => '',
+            'email' => '',
+            'telefono' => '',
+            'empresa' => '',
+            'cargo' => '',
+            'direccion' => '',
+            'tipo' => 'particular',
+            'estado' => 'potencial',
+            'etiquetas' => '',
+            'valor_estimado' => '0',
+            'origen' => 'directo',
+            'asignado_a' => 0,
+        ];
+
+        if ($modo_edicion) {
+            $cliente = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_clientes WHERE id = %d", $cliente_id));
+            if ($cliente) {
+                $etiquetas = json_decode((string) $cliente->etiquetas, true);
+                if (!is_array($etiquetas)) {
+                    $etiquetas = [];
+                }
+
+                $form_data = [
+                    'nombre' => (string) $cliente->nombre,
+                    'email' => (string) $cliente->email,
+                    'telefono' => (string) $cliente->telefono,
+                    'empresa' => (string) $cliente->empresa,
+                    'cargo' => (string) $cliente->cargo,
+                    'direccion' => (string) $cliente->direccion,
+                    'tipo' => (string) $cliente->tipo,
+                    'estado' => (string) $cliente->estado,
+                    'etiquetas' => implode(', ', $etiquetas),
+                    'valor_estimado' => (string) $cliente->valor_estimado,
+                    'origen' => (string) $cliente->origen,
+                    'asignado_a' => (int) $cliente->asignado_a,
+                ];
+            } else {
+                echo '<div class="notice notice-error"><p>' . esc_html__('Cliente no encontrado para editar.', 'flavor-chat-ia') . '</p></div>';
+                $modo_edicion = false;
+                $cliente_id = 0;
+            }
+        }
+
+        if (isset($_POST['flavor_cliente_guardar'])) {
+            $nonce = isset($_POST['flavor_cliente_nonce']) ? sanitize_text_field(wp_unslash((string) $_POST['flavor_cliente_nonce'])) : '';
+
+            if (!wp_verify_nonce($nonce, 'flavor_cliente_admin_guardar')) {
+                echo '<div class="notice notice-error"><p>' . esc_html__('Error de seguridad. Recarga la página e inténtalo de nuevo.', 'flavor-chat-ia') . '</p></div>';
+            } else {
+                $valor_estimado_raw = isset($_POST['valor_estimado']) ? sanitize_text_field(wp_unslash((string) $_POST['valor_estimado'])) : '0';
+                $valor_estimado = str_replace(',', '.', $valor_estimado_raw);
+
+                $params = [
+                    'nombre' => isset($_POST['nombre']) ? sanitize_text_field(wp_unslash((string) $_POST['nombre'])) : '',
+                    'email' => isset($_POST['email']) ? sanitize_email(wp_unslash((string) $_POST['email'])) : '',
+                    'telefono' => isset($_POST['telefono']) ? sanitize_text_field(wp_unslash((string) $_POST['telefono'])) : '',
+                    'empresa' => isset($_POST['empresa']) ? sanitize_text_field(wp_unslash((string) $_POST['empresa'])) : '',
+                    'cargo' => isset($_POST['cargo']) ? sanitize_text_field(wp_unslash((string) $_POST['cargo'])) : '',
+                    'direccion' => isset($_POST['direccion']) ? sanitize_textarea_field(wp_unslash((string) $_POST['direccion'])) : '',
+                    'tipo' => isset($_POST['tipo']) ? sanitize_text_field(wp_unslash((string) $_POST['tipo'])) : 'particular',
+                    'estado' => isset($_POST['estado']) ? sanitize_text_field(wp_unslash((string) $_POST['estado'])) : 'potencial',
+                    'etiquetas' => isset($_POST['etiquetas']) ? sanitize_text_field(wp_unslash((string) $_POST['etiquetas'])) : '',
+                    'valor_estimado' => (float) $valor_estimado,
+                    'origen' => isset($_POST['origen']) ? sanitize_text_field(wp_unslash((string) $_POST['origen'])) : 'directo',
+                    'asignado_a' => isset($_POST['asignado_a']) ? absint($_POST['asignado_a']) : 0,
+                ];
+
+                if ($modo_edicion) {
+                    $params['cliente_id'] = $cliente_id;
+                }
+
+                $resultado = $this->execute_action($modo_edicion ? 'actualizar_cliente' : 'crear_cliente', $params);
+
+                if (!empty($resultado['success'])) {
+                    $redirect_url = $modo_edicion
+                        ? admin_url('admin.php?page=clientes-listado&action=nuevo&editar=' . $cliente_id . '&updated=1')
+                        : admin_url('admin.php?page=clientes-listado&action=nuevo&created=1&cliente_id=' . absint($resultado['cliente_id'] ?? 0));
+                    wp_safe_redirect($redirect_url);
+                    exit;
+                }
+
+                echo '<div class="notice notice-error"><p>' . esc_html($resultado['error'] ?? __('No se pudo guardar el cliente.', 'flavor-chat-ia')) . '</p></div>';
+                $form_data = array_merge($form_data, $params);
+            }
+        }
+
+        if (isset($_GET['created']) && absint($_GET['created']) === 1) {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Cliente creado correctamente.', 'flavor-chat-ia') . '</p></div>';
+        }
+        if (isset($_GET['updated']) && absint($_GET['updated']) === 1) {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Cliente actualizado correctamente.', 'flavor-chat-ia') . '</p></div>';
+        }
+
+        $usuarios = get_users([
+            'orderby' => 'display_name',
+            'order' => 'ASC',
+            'number' => 200,
+        ]);
+
+        echo '<h2 style="margin-top:16px;">' . esc_html($modo_edicion ? __('Editar Cliente', 'flavor-chat-ia') : __('Nuevo Cliente', 'flavor-chat-ia')) . '</h2>';
+        echo '<form method="post" action="' . esc_url(admin_url('admin.php?page=clientes-listado&action=nuevo' . ($modo_edicion ? '&editar=' . $cliente_id : ''))) . '">';
+        wp_nonce_field('flavor_cliente_admin_guardar', 'flavor_cliente_nonce');
+        echo '<table class="form-table" role="presentation"><tbody>';
+
+        echo '<tr><th scope="row"><label for="cliente_nombre">' . esc_html__('Nombre', 'flavor-chat-ia') . ' *</label></th>';
+        echo '<td><input type="text" id="cliente_nombre" name="nombre" class="regular-text" required value="' . esc_attr((string) $form_data['nombre']) . '" /></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_email">' . esc_html__('Email', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="email" id="cliente_email" name="email" class="regular-text" value="' . esc_attr((string) $form_data['email']) . '" /></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_telefono">' . esc_html__('Teléfono', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="text" id="cliente_telefono" name="telefono" class="regular-text" value="' . esc_attr((string) $form_data['telefono']) . '" /></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_empresa">' . esc_html__('Empresa', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="text" id="cliente_empresa" name="empresa" class="regular-text" value="' . esc_attr((string) $form_data['empresa']) . '" /></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_cargo">' . esc_html__('Cargo', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="text" id="cliente_cargo" name="cargo" class="regular-text" value="' . esc_attr((string) $form_data['cargo']) . '" /></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_direccion">' . esc_html__('Dirección', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><textarea id="cliente_direccion" name="direccion" class="large-text" rows="3">' . esc_textarea((string) $form_data['direccion']) . '</textarea></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_tipo">' . esc_html__('Tipo', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><select id="cliente_tipo" name="tipo">';
+        foreach ((array) $settings['tipos_cliente'] as $tipo) {
+            echo '<option value="' . esc_attr((string) $tipo) . '"' . selected($form_data['tipo'], $tipo, false) . '>' . esc_html(ucfirst((string) $tipo)) . '</option>';
+        }
+        echo '</select></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_estado">' . esc_html__('Estado', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><select id="cliente_estado" name="estado">';
+        foreach ((array) $settings['estados_cliente'] as $estado) {
+            echo '<option value="' . esc_attr((string) $estado) . '"' . selected($form_data['estado'], $estado, false) . '>' . esc_html(ucfirst((string) $estado)) . '</option>';
+        }
+        echo '</select></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_origen">' . esc_html__('Origen', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><select id="cliente_origen" name="origen">';
+        foreach ((array) $settings['origenes_cliente'] as $origen) {
+            echo '<option value="' . esc_attr((string) $origen) . '"' . selected($form_data['origen'], $origen, false) . '>' . esc_html(ucfirst((string) $origen)) . '</option>';
+        }
+        echo '</select></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_valor_estimado">' . esc_html__('Valor estimado', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="number" id="cliente_valor_estimado" name="valor_estimado" min="0" step="0.01" class="regular-text" value="' . esc_attr((string) $form_data['valor_estimado']) . '" /></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_etiquetas">' . esc_html__('Etiquetas', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><input type="text" id="cliente_etiquetas" name="etiquetas" class="regular-text" value="' . esc_attr((string) $form_data['etiquetas']) . '" />';
+        echo '<p class="description">' . esc_html__('Separadas por comas. Ejemplo: vip, lead, ecommerce', 'flavor-chat-ia') . '</p></td></tr>';
+
+        echo '<tr><th scope="row"><label for="cliente_asignado_a">' . esc_html__('Asignado a', 'flavor-chat-ia') . '</label></th>';
+        echo '<td><select id="cliente_asignado_a" name="asignado_a">';
+        echo '<option value="0">' . esc_html__('Sin asignar', 'flavor-chat-ia') . '</option>';
+        foreach ($usuarios as $usuario) {
+            echo '<option value="' . esc_attr((string) $usuario->ID) . '"' . selected((int) $form_data['asignado_a'], (int) $usuario->ID, false) . '>' . esc_html($usuario->display_name) . '</option>';
+        }
+        echo '</select></td></tr>';
+
+        echo '</tbody></table>';
+
+        echo '<p class="submit">';
+        echo '<button type="submit" name="flavor_cliente_guardar" value="1" class="button button-primary">' . esc_html($modo_edicion ? __('Guardar cambios', 'flavor-chat-ia') : __('Crear cliente', 'flavor-chat-ia')) . '</button> ';
+        echo '<a href="' . esc_url(admin_url('admin.php?page=clientes-listado')) . '" class="button">' . esc_html__('Volver al listado', 'flavor-chat-ia') . '</a>';
+        echo '</p>';
+        echo '</form>';
+    }
+
+    /**
+     * Exporta clientes en CSV desde la vista admin.
+     *
+     * @return void
+     */
+    private function exportar_clientes_csv_admin() {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('No tienes permisos para exportar clientes.', 'flavor-chat-ia'));
+        }
+
+        global $wpdb;
+        $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
+
+        $estado_filtro = isset($_GET['estado']) ? sanitize_text_field(wp_unslash((string) $_GET['estado'])) : '';
+        $tipo_filtro = isset($_GET['tipo']) ? sanitize_text_field(wp_unslash((string) $_GET['tipo'])) : '';
+
+        $where = ['1=1'];
+        $params = [];
+
+        if ($estado_filtro !== '') {
+            $where[] = 'estado = %s';
+            $params[] = $estado_filtro;
+        }
+        if ($tipo_filtro !== '') {
+            $where[] = 'tipo = %s';
+            $params[] = $tipo_filtro;
+        }
+
+        $sql = "SELECT id, nombre, email, telefono, empresa, cargo, tipo, estado, valor_estimado, origen, created_at, updated_at
+                FROM {$tabla_clientes}
+                WHERE " . implode(' AND ', $where) . '
+                ORDER BY updated_at DESC';
+
+        $rows = !empty($params)
+            ? $wpdb->get_results($wpdb->prepare($sql, ...$params), ARRAY_A)
+            : $wpdb->get_results($sql, ARRAY_A);
+
+        nocache_headers();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=clientes-' . gmdate('Y-m-d-His') . '.csv');
+
+        $output = fopen('php://output', 'w');
+        if (!$output) {
+            wp_die(esc_html__('No se pudo generar el archivo CSV.', 'flavor-chat-ia'));
+        }
+
+        fputcsv($output, ['id', 'nombre', 'email', 'telefono', 'empresa', 'cargo', 'tipo', 'estado', 'valor_estimado', 'origen', 'created_at', 'updated_at']);
+        foreach ($rows as $row) {
+            fputcsv($output, $row);
+        }
+        fclose($output);
+        exit;
     }
 
     /**
@@ -806,6 +1066,13 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
                     sprintf(__('Ficha: %s', 'flavor-chat-ia'), $cliente['nombre']),
                     [
                         ['label' => __('Editar', 'flavor-chat-ia'), 'url' => '#', 'class' => 'button-primary'],
+                        ['label' => __('Nueva Factura', 'flavor-chat-ia'), 'url' => add_query_arg([
+                            'page' => 'facturas-nueva',
+                            'cliente_id' => absint($cliente['id']),
+                            'cliente_tipo' => 'crm_cliente',
+                            'cliente_nombre' => (string) $cliente['nombre'],
+                            'cliente_email' => (string) $cliente['email'],
+                        ], admin_url('admin.php')), 'class' => 'button'],
                         ['label' => __('Volver al listado', 'flavor-chat-ia'), 'url' => admin_url('admin.php?page=clientes-listado'), 'class' => 'button'],
                     ]
                 );
@@ -902,6 +1169,16 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         echo '<p class="submit"><input type="submit" name="guardar_config" class="button-primary" value="' . __('Guardar Configuracion', 'flavor-chat-ia') . '" /></p>';
         echo '</form>';
         echo '</div>';
+    }
+
+    /**
+     * Alias legacy para "clientes-nuevo".
+     *
+     * @return void
+     */
+    public function render_admin_nuevo_alias() {
+        wp_safe_redirect(admin_url('admin.php?page=clientes-listado&action=nuevo'));
+        exit;
     }
 
     /**
@@ -1263,6 +1540,15 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
         }
 
         $nuevo_cliente_id = $wpdb->insert_id;
+
+        do_action('flavor_cliente_creado', $nuevo_cliente_id, [
+            'nombre' => $nombre_cliente,
+            'email' => sanitize_email($parametros['email'] ?? ''),
+            'telefono' => sanitize_text_field($parametros['telefono'] ?? ''),
+            'empresa' => sanitize_text_field($parametros['empresa'] ?? ''),
+            'origen' => sanitize_text_field($parametros['origen'] ?? 'directo'),
+            'created_by' => get_current_user_id(),
+        ]);
 
         return [
             'success' => true,

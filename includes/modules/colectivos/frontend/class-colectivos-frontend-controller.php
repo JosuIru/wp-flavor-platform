@@ -69,15 +69,22 @@ class Flavor_Colectivos_Frontend_Controller {
      * Inicializa el controlador
      */
     public function init() {
-        // Shortcodes
-        add_shortcode('flavor_colectivos_listado', [$this, 'shortcode_listado']);
-        add_shortcode('flavor_colectivos_detalle', [$this, 'shortcode_detalle']);
-        add_shortcode('flavor_colectivos_crear', [$this, 'shortcode_crear']);
-        add_shortcode('flavor_colectivos_mis_colectivos', [$this, 'shortcode_mis_colectivos']);
-        add_shortcode('flavor_colectivos_proyectos', [$this, 'shortcode_proyectos']);
-        add_shortcode('flavor_colectivos_asambleas', [$this, 'shortcode_asambleas']);
-        add_shortcode('flavor_colectivos_miembros', [$this, 'shortcode_miembros']);
-        add_shortcode('flavor_colectivos_mapa', [$this, 'shortcode_mapa']);
+        // Shortcodes (idempotente para no pisar handlers legacy/externos)
+        $shortcodes = [
+            'flavor_colectivos_listado' => 'shortcode_listado',
+            'flavor_colectivos_detalle' => 'shortcode_detalle',
+            'flavor_colectivos_crear' => 'shortcode_crear',
+            'flavor_colectivos_mis_colectivos' => 'shortcode_mis_colectivos',
+            'flavor_colectivos_proyectos' => 'shortcode_proyectos',
+            'flavor_colectivos_asambleas' => 'shortcode_asambleas',
+            'flavor_colectivos_miembros' => 'shortcode_miembros',
+            'flavor_colectivos_mapa' => 'shortcode_mapa',
+        ];
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers
         add_action('wp_ajax_flavor_colectivos_crear', [$this, 'ajax_crear']);

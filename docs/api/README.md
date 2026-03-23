@@ -1,14 +1,27 @@
 # Flavor Platform REST API
 
-## Introduccion
+## Documentación Principal
 
-La API REST de Flavor Platform proporciona acceso programatico a todas las funcionalidades de la plataforma, incluyendo:
+| Documento | Descripción | Audiencia |
+|-----------|-------------|-----------|
+| **[CLAUDE-API-GUIDE.md](CLAUDE-API-GUIDE.md)** | Guía completa de APIs para automatización | Claude Code / Desarrolladores |
+| **[WORKFLOW-CREAR-SITIO.md](WORKFLOW-CREAR-SITIO.md)** | Tutorial paso a paso para crear un sitio | Claude Code / Desarrolladores |
+| **[ENDPOINTS-REFERENCE.md](ENDPOINTS-REFERENCE.md)** | Referencia técnica de 100+ endpoints | Desarrolladores |
+| **[../GUIA-ADMINISTRADOR.md](../GUIA-ADMINISTRADOR.md)** | Manual completo de administración | Administradores |
 
-- **Grupos de Consumo**: Pedidos colectivos, productos, productores y suscripciones
-- **Red de Comunidades**: Directorio, mapa, tablon y colaboraciones
-- **PWA**: Sincronizacion y gestion de cache
-- **Eventos**: Calendario y gestion de eventos
-- **Banco de Tiempo**: Intercambio de servicios
+---
+
+## Introducción
+
+La API REST de Flavor Platform proporciona acceso programático a todas las funcionalidades de la plataforma, incluyendo:
+
+- **Site Builder**: Creación automática de sitios completos
+- **Visual Builder Pro (VBP)**: Creación de páginas visuales con bloques
+- **Módulos**: 60+ módulos activables (eventos, socios, foros, marketplace, etc.)
+- **Grupos de Consumo**: Pedidos colectivos, productos, productores
+- **Red de Comunidades**: Directorio, mapa, tablón y colaboraciones
+- **SEO**: Metadatos, Open Graph, Schema.org
+- **Apps Móviles**: Configuración para Flutter
 
 ## URL Base
 
@@ -16,13 +29,16 @@ La API REST de Flavor Platform proporciona acceso programatico a todas las funci
 https://tu-sitio.com/wp-json/
 ```
 
-Los endpoints estan organizados bajo diferentes namespaces:
+## Namespaces Disponibles
 
-| Namespace | Descripcion |
-|-----------|-------------|
-| `flavor-chat-ia/v1` | Grupos de consumo y funcionalidades principales |
-| `flavor-network/v1` | Red de comunidades |
-| `flavor/v1` | PWA, temas y utilidades generales |
+| Namespace | Descripción | Endpoints |
+|-----------|-------------|-----------|
+| `flavor-site-builder/v1` | Orquestador para crear sitios | 17 |
+| `flavor-vbp/v1` | VBP, Site Config, Modules, Media, SEO, App | 78 |
+| `flavor-chat-ia/v1` | Grupos de consumo y funcionalidades principales | 20+ |
+| `flavor-network/v1` | Red de comunidades | 15+ |
+| `flavor/v1` | PWA, temas, dashboard cliente | 10+ |
+| `chat-ia-mobile/v1` | API móvil Flutter | 10+ |
 
 ## Autenticacion
 

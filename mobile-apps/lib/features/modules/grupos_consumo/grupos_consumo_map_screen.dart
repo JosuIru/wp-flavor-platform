@@ -79,13 +79,17 @@ class _GruposConsumoMapScreenState extends State<GruposConsumoMapScreen> {
         if (!raw) return null;
         const data = JSON.parse(raw);
         if (data && typeof data.lat === 'number' && typeof data.lng === 'number') return data;
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Error leyendo geocode cache:', e);
+      }
       return null;
     };
     const setCachedGeocode = (address, lat, lng) => {
       try {
         localStorage.setItem(cacheKey(address), JSON.stringify({ lat, lng, ts: Date.now() }));
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Error guardando geocode cache:', e);
+      }
     };
 
     if (useGoogle) {

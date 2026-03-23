@@ -1050,7 +1050,7 @@ class Flavor_Unified_Dashboard {
                 'id'    => 'nuevo-evento',
                 'label' => __('Nuevo Evento', 'flavor-chat-ia'),
                 'icon'  => 'dashicons-calendar-alt',
-                'url'   => admin_url('admin.php?page=flavor-eventos&action=nuevo'),
+                'url'   => admin_url('admin.php?page=eventos-nuevo'),
                 'color' => '#e74c3c',
             ];
         }
@@ -2478,7 +2478,7 @@ class Flavor_Unified_Dashboard {
             'saberes' => __('Saberes', 'flavor-chat-ia'),
             'agenda' => __('Agenda', 'flavor-chat-ia'),
             'eventos' => __('Encuentros', 'flavor-chat-ia'),
-            'socios' => __('Socios', 'flavor-chat-ia'),
+            'socios' => __('Miembros', 'flavor-chat-ia'),
             'membresia' => __('Membresía', 'flavor-chat-ia'),
             'cuenta' => __('Cuenta', 'flavor-chat-ia'),
             'colectivos' => __('Colectivos', 'flavor-chat-ia'),
@@ -3828,7 +3828,7 @@ class Flavor_Unified_Dashboard {
             'talleres'              => ['nombre' => __('Talleres', 'flavor-chat-ia'), 'icono' => 'dashicons-hammer', 'categoria' => 'comunidad'],
             'comunidades'           => ['nombre' => __('Comunidades', 'flavor-chat-ia'), 'icono' => 'dashicons-groups', 'categoria' => 'comunidad'],
             'colectivos'            => ['nombre' => __('Colectivos', 'flavor-chat-ia'), 'icono' => 'dashicons-networking', 'categoria' => 'comunidad'],
-            'socios'                => ['nombre' => __('Socios', 'flavor-chat-ia'), 'icono' => 'dashicons-id', 'categoria' => 'comunidad'],
+            'socios'                => ['nombre' => __('Miembros', 'flavor-chat-ia'), 'icono' => 'dashicons-id', 'categoria' => 'comunidad'],
             'participacion'         => ['nombre' => __('Participación', 'flavor-chat-ia'), 'icono' => 'dashicons-megaphone', 'categoria' => 'comunidad'],
             'presupuestos_participativos' => ['nombre' => __('Presupuestos Participativos', 'flavor-chat-ia'), 'icono' => 'dashicons-chart-pie', 'categoria' => 'comunidad'],
             'ayuda_vecinal'         => ['nombre' => __('Ayuda Vecinal', 'flavor-chat-ia'), 'icono' => 'dashicons-heart', 'categoria' => 'comunidad'],
@@ -4128,154 +4128,6 @@ class Flavor_Unified_Dashboard {
             </div>
         </section>
         <?php
-    }
-
-    // =========================================================================
-    // AJAX Handlers
-    // =========================================================================
-
-    /**
-     * AJAX: Cargar widget lazy
-     *
-     * Carga el contenido de un widget específico cuando entra en el viewport.
-     *
-     * @since 4.2.0
-     * @return void
-     */
-    public function ajax_load_widget(): void {
-        check_ajax_referer('fud_dashboard_nonce', 'nonce');
-
-        if (!current_user_can('read')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
-        }
-
-        $widget_id = isset($_POST['widget_id']) ? sanitize_key($_POST['widget_id']) : '';
-
-        if (empty($widget_id)) {
-            wp_send_json_error(['message' => __('Widget ID requerido', 'flavor-chat-ia')]);
-        }
-
-        // Asegurar que el registry está disponible
-        if (!$this->registry) {
-            wp_send_json_error(['message' => __('Sistema de widgets no disponible', 'flavor-chat-ia')]);
-        }
-
-        $widget = $this->registry->get($widget_id);
-
-        if (!$widget) {
-            wp_send_json_error(['message' => __('Widget no encontrado', 'flavor-chat-ia')]);
-        }
-
-        // Verificar permisos del widget
-        if (method_exists($widget, 'can_view') && !$widget->can_view()) {
-            wp_send_json_error(['message' => __('Sin acceso a este widget', 'flavor-chat-ia')]);
-        }
-
-        // Renderizar widget
-        ob_start();
-        if (method_exists($widget, 'render_content')) {
-            $widget->render_content();
-        } elseif (method_exists($widget, 'render')) {
-            $widget->render();
-        } else {
-            echo '<p class="fud-widget__empty">' . esc_html__('Sin contenido', 'flavor-chat-ia') . '</p>';
-        }
-        $html = ob_get_clean();
-
-        // Obtener datos adicionales si existen
-        $widget_data = [];
-        if (method_exists($widget, 'get_data')) {
-            $widget_data = $widget->get_data();
-        }
-
-        wp_send_json_success([
-            'widget_id' => $widget_id,
-            'html'      => $html,
-            'data'      => $widget_data,
-            'timestamp' => current_time('c'),
-        ]);
-    }
-
-    /**
-     * AJAX: Obtener datos del dashboard
-     *
-     * @since 4.0.0
-     * @return void
-     */
-    public function ajax_get_dashboard_data(): void {
-        check_ajax_referer('fud_dashboard_nonce', 'nonce');
-
-        if (!current_user_can('read')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
-        }
-
-        $widgets_data = [];
-
-        if ($this->registry) {
-            foreach ($this->registry->get_all() as $widget_id => $widget) {
-                if (method_exists($widget, 'can_view') && !$widget->can_view()) {
-                    continue;
-                }
-                if (method_exists($widget, 'get_data')) {
-                    $widgets_data[$widget_id] = $widget->get_data();
-                }
-            }
-        }
-
-        wp_send_json_success([
-            'widgets'   => $widgets_data,
-            'timestamp' => current_time('c'),
-        ]);
-    }
-
-    /**
-     * AJAX: Guardar layout del dashboard
-     *
-     * @since 4.0.0
-     * @return void
-     */
-    public function ajax_save_layout(): void {
-        check_ajax_referer('fud_dashboard_nonce', 'nonce');
-
-        if (!current_user_can('read')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
-        }
-
-        $layout = isset($_POST['layout']) ? json_decode(stripslashes($_POST['layout']), true) : [];
-
-        if (!is_array($layout)) {
-            wp_send_json_error(['message' => __('Formato de layout inválido', 'flavor-chat-ia')]);
-        }
-
-        $user_id = get_current_user_id();
-        update_user_meta($user_id, 'fud_dashboard_layout', $layout);
-
-        wp_send_json_success([
-            'message'   => __('Layout guardado', 'flavor-chat-ia'),
-            'timestamp' => current_time('c'),
-        ]);
-    }
-
-    /**
-     * AJAX: Refrescar todos los widgets
-     *
-     * @since 4.0.0
-     * @return void
-     */
-    public function ajax_refresh_all(): void {
-        check_ajax_referer('fud_dashboard_nonce', 'nonce');
-
-        if (!current_user_can('read')) {
-            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
-        }
-
-        // Limpiar cache de widgets
-        if (function_exists('wp_cache_delete')) {
-            wp_cache_delete('fud_widgets_data_' . get_current_user_id(), 'flavor_dashboard');
-        }
-
-        // Obtener datos frescos
-        $this->ajax_get_dashboard_data();
     }
 }
 

@@ -70,6 +70,7 @@ class Flavor_Dashboard {
         // AJAX para usuarios no autenticados con REST API
         add_action('wp_ajax_flavor_dashboard_stats', [$this, 'ajax_obtener_estadisticas']);
         add_action('wp_ajax_flavor_dashboard_quick_action', [$this, 'ajax_ejecutar_accion_rapida']);
+        add_action('wp_ajax_flavor_save_panel_state', [$this, 'ajax_guardar_estado_panel']);
     }
 
     /**
@@ -166,7 +167,7 @@ class Flavor_Dashboard {
         // 1. Design Tokens (variables CSS base)
         wp_enqueue_style(
             'fl-design-tokens',
-            $plugin_url . 'assets/css/design-tokens.css',
+            $plugin_url . 'assets/css/core/design-tokens.css',
             [],
             $version
         );
@@ -174,7 +175,7 @@ class Flavor_Dashboard {
         // 2. Compatibilidad con variables antiguas
         wp_enqueue_style(
             'fl-design-tokens-compat',
-            $plugin_url . 'assets/css/design-tokens-compat.css',
+            $plugin_url . 'assets/css/core/design-tokens-compat.css',
             ['fl-design-tokens'],
             $version
         );
@@ -182,7 +183,7 @@ class Flavor_Dashboard {
         // 3. CSS Base del dashboard
         wp_enqueue_style(
             'fud-dashboard-base',
-            $plugin_url . 'assets/css/dashboard-base.css',
+            $plugin_url . 'assets/css/layouts/dashboard-base.css',
             ['fl-design-tokens-compat'],
             $version
         );
@@ -190,7 +191,7 @@ class Flavor_Dashboard {
         // 4. Widgets y niveles
         wp_enqueue_style(
             'fl-dashboard-widgets',
-            $plugin_url . 'assets/css/dashboard-widgets.css',
+            $plugin_url . 'assets/css/layouts/dashboard-widgets.css',
             ['fud-dashboard-base'],
             $version
         );
@@ -198,7 +199,7 @@ class Flavor_Dashboard {
         // 5. Grupos y categorías
         wp_enqueue_style(
             'fl-dashboard-groups',
-            $plugin_url . 'assets/css/dashboard-groups.css',
+            $plugin_url . 'assets/css/layouts/dashboard-groups.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -206,7 +207,7 @@ class Flavor_Dashboard {
         // 6. Estados visuales
         wp_enqueue_style(
             'fl-dashboard-states',
-            $plugin_url . 'assets/css/dashboard-states.css',
+            $plugin_url . 'assets/css/layouts/dashboard-states.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -214,7 +215,7 @@ class Flavor_Dashboard {
         // 7. Accesibilidad
         wp_enqueue_style(
             'fl-dashboard-a11y',
-            $plugin_url . 'assets/css/dashboard-a11y.css',
+            $plugin_url . 'assets/css/layouts/dashboard-a11y.css',
             ['fl-dashboard-widgets'],
             $version
         );
@@ -222,7 +223,7 @@ class Flavor_Dashboard {
         // 8. Responsive
         wp_enqueue_style(
             'fl-dashboard-responsive',
-            $plugin_url . 'assets/css/dashboard-responsive.css',
+            $plugin_url . 'assets/css/layouts/dashboard-responsive.css',
             ['fl-dashboard-groups'],
             $version
         );
@@ -230,7 +231,7 @@ class Flavor_Dashboard {
         // 9. Breadcrumbs
         wp_enqueue_style(
             'fl-breadcrumbs',
-            $plugin_url . 'assets/css/breadcrumbs.css',
+            $plugin_url . 'assets/css/components/breadcrumbs.css',
             ['fl-design-tokens'],
             $version
         );
@@ -238,7 +239,7 @@ class Flavor_Dashboard {
         // 10. CSS Componentes
         wp_enqueue_style(
             'fud-dashboard-components',
-            $plugin_url . 'assets/css/dashboard-components.css',
+            $plugin_url . 'assets/css/layouts/dashboard-components.css',
             ['fl-dashboard-responsive'],
             $version
         );
@@ -334,47 +335,83 @@ class Flavor_Dashboard {
      * @return void
      */
     public function render_dashboard_page() {
-        $estadisticas = $this->get_dashboard_stats();
+        // Determinar vista activa
         $vista_dashboard = Flavor_Admin_Menu_Manager::VISTA_ADMIN;
         if (class_exists('Flavor_Admin_Menu_Manager')) {
             $vista_dashboard = Flavor_Admin_Menu_Manager::get_instance()->obtener_vista_activa();
         }
         $es_vista_gestor_grupos = ($vista_dashboard === Flavor_Admin_Menu_Manager::VISTA_GESTOR_GRUPOS);
 
-        $addons_activos = $es_vista_gestor_grupos ? [] : Flavor_Addon_Manager::get_active_addons();
-        $addons_registrados = $es_vista_gestor_grupos ? [] : Flavor_Addon_Manager::get_registered_addons();
-
-        // Datos del perfil activo
-        $datos_perfil_activo = $this->obtener_datos_perfil_activo();
-        $checks_onboarding = $this->obtener_checks_onboarding();
-        $progreso_onboarding = $this->calcular_progreso_onboarding($checks_onboarding);
-        $nivel_salud = $this->obtener_semaforo_salud();
-        $estado_sistema = $this->obtener_estado_sistema();
-        $alertas = $this->obtener_alertas_pendientes();
+        // =====================================================
+        // DATOS COMUNES
+        // =====================================================
+        $resumen_stats = $this->obtener_resumen_stats();
         $actividad_reciente = $this->obtener_actividad_reciente();
-        $acciones_rapidas = $this->obtener_acciones_rapidas_completas($datos_perfil_activo['id']);
-        $acciones_rapidas = $this->filtrar_acciones_rapidas_por_vista($acciones_rapidas, $vista_dashboard);
 
-        // Datos avanzados solo para la vista completa
+        // =====================================================
+        // DATOS PARA ADMINISTRADOR
+        // =====================================================
+        $tareas_pendientes = [];
+        $modulos_usados = [];
+        $alertas_config = [];
+        $accesos_rapidos = [];
+
+        // Datos avanzados (paneles colapsables)
         $estadisticas_red = [];
-        $modulos_compartidos = [];
-        $datos_mapa_actividad = [
-            'centro' => [],
-            'zoom' => 6,
-            'estadisticas_zona' => [],
-        ];
+        $datos_mapa_actividad = [];
         $kpis_principales = [];
         $comparativas_temporales = [];
+        $datos_graficos = [];
+        $gailu_metricas = [];
+        $addons_activos = [];
+        $addons_registrados = [];
 
         if (!$es_vista_gestor_grupos) {
+            $tareas_pendientes = $this->obtener_tareas_pendientes();
+            $modulos_usados = $this->obtener_modulos_mas_usados(6);
+            $alertas_config = $this->obtener_alertas_configuracion();
+            $accesos_rapidos = $this->obtener_accesos_rapidos_contextuales();
+
+            // Datos para paneles avanzados
             $estadisticas_red = $this->obtener_estadisticas_red();
-            $modulos_compartidos = $this->obtener_modulos_compartidos();
             $datos_mapa_actividad = $this->obtener_datos_mapa_actividad();
             $kpis_principales = $this->obtener_kpis_principales();
             $comparativas_temporales = $this->obtener_comparativas_temporales();
+            $datos_graficos = $this->obtener_datos_graficos();
+
+            // Datos Gailu
+            $configuracion_gailu = get_option('flavor_chat_ia_settings', []);
+            $modulos_activos_ids = $configuracion_gailu['active_modules'] ?? [];
+            if (class_exists('Flavor_Chat_Module_Loader')) {
+                $gailu_metricas = Flavor_Chat_Module_Loader::get_gailu_metricas($modulos_activos_ids);
+            }
+
+            // Addons
+            if (class_exists('Flavor_Addon_Manager')) {
+                $addons_activos = Flavor_Addon_Manager::get_active_addons();
+                $addons_registrados = Flavor_Addon_Manager::get_registered_addons();
+            }
         }
 
-        // Incluir la vista del dashboard
+        // =====================================================
+        // DATOS PARA GESTOR DE GRUPOS
+        // =====================================================
+        $datos_gestor = [];
+        if ($es_vista_gestor_grupos) {
+            $datos_gestor = $this->obtener_datos_gestor_grupos();
+        }
+
+        // Preferencias de paneles colapsables del usuario
+        $paneles_estado = get_user_meta(get_current_user_id(), 'flavor_dashboard_panels', true);
+        if (!is_array($paneles_estado)) {
+            $paneles_estado = [
+                'graficos' => false,
+                'red' => false,
+                'gailu' => false,
+            ];
+        }
+
+        // Incluir la vista del dashboard mejorado
         include FLAVOR_CHAT_IA_PATH . 'admin/views/dashboard.php';
     }
 
@@ -617,7 +654,7 @@ class Flavor_Dashboard {
                     'tipo'    => 'warning',
                     'icono'   => 'dashicons-cart',
                     'mensaje' => sprintf(__('%d pedidos sin procesar', 'flavor-chat-ia'), $pedidos_pendientes),
-                    'url'     => admin_url('admin.php?page=flavor-grupos-consumo&tab=pedidos'),
+                    'url'     => admin_url('admin.php?page=grupos-consumo-dashboard&tab=pedidos'),
                 ];
             }
         }
@@ -629,8 +666,8 @@ class Flavor_Dashboard {
                 $alertas[] = [
                     'tipo'    => 'info',
                     'icono'   => 'dashicons-groups',
-                    'mensaje' => sprintf(__('%d solicitudes de socio pendientes', 'flavor-chat-ia'), $solicitudes_pendientes),
-                    'url'     => admin_url('admin.php?page=flavor-socios&tab=solicitudes'),
+                    'mensaje' => sprintf(__('%d solicitudes de miembro pendientes', 'flavor-chat-ia'), $solicitudes_pendientes),
+                    'url'     => admin_url('admin.php?page=socios-dashboard&tab=solicitudes'),
                 ];
             }
         }
@@ -643,7 +680,7 @@ class Flavor_Dashboard {
                     'tipo'    => 'warning',
                     'icono'   => 'dashicons-calendar-alt',
                     'mensaje' => sprintf(__('%d ciclos cierran en las proximas 48h', 'flavor-chat-ia'), count($ciclos_por_cerrar)),
-                    'url'     => admin_url('admin.php?page=flavor-grupos-consumo&tab=ciclos'),
+                    'url'     => admin_url('admin.php?page=grupos-consumo-dashboard&tab=ciclos'),
                 ];
             }
         }
@@ -656,7 +693,7 @@ class Flavor_Dashboard {
                     'tipo'    => 'info',
                     'icono'   => 'dashicons-calendar',
                     'mensaje' => sprintf(__('%d eventos en los proximos 7 dias', 'flavor-chat-ia'), $eventos_proximos),
-                    'url'     => admin_url('admin.php?page=flavor-eventos'),
+                    'url'     => admin_url('admin.php?page=eventos-dashboard'),
                 ];
             }
         }
@@ -680,7 +717,7 @@ class Flavor_Dashboard {
                     'tipo'    => 'error',
                     'icono'   => 'dashicons-warning',
                     'mensaje' => sprintf(__('%d incidencias sin resolver', 'flavor-chat-ia'), $incidencias_abiertas),
-                    'url'     => admin_url('admin.php?page=flavor-incidencias'),
+                    'url'     => admin_url('admin.php?page=incidencias-dashboard'),
                 ];
             }
         }
@@ -925,7 +962,7 @@ class Flavor_Dashboard {
                 'id'       => 'crear_evento',
                 'etiqueta' => __('Crear Evento', 'flavor-chat-ia'),
                 'icono'    => 'dashicons-calendar-alt',
-                'url'      => admin_url('admin.php?page=flavor-eventos&action=nuevo'),
+                'url'      => admin_url('admin.php?page=eventos-dashboard&action=nuevo'),
                 'color'    => '#e74c3c',
                 'modal'    => true,
             ];
@@ -936,7 +973,7 @@ class Flavor_Dashboard {
                 'id'       => 'crear_producto',
                 'etiqueta' => __('Crear Producto', 'flavor-chat-ia'),
                 'icono'    => 'dashicons-products',
-                'url'      => admin_url('admin.php?page=flavor-grupos-consumo&action=nuevo_producto'),
+                'url'      => admin_url('admin.php?page=grupos-consumo-dashboard&action=nuevo_producto'),
                 'color'    => '#f39c12',
                 'modal'    => true,
             ];
@@ -945,9 +982,9 @@ class Flavor_Dashboard {
         if (in_array('socios', $modulos_activos)) {
             $acciones['contextuales'][] = [
                 'id'       => 'ver_socios',
-                'etiqueta' => __('Ver Socios', 'flavor-chat-ia'),
+                'etiqueta' => __('Ver Miembros', 'flavor-chat-ia'),
                 'icono'    => 'dashicons-groups',
-                'url'      => admin_url('admin.php?page=flavor-socios'),
+                'url'      => admin_url('admin.php?page=socios-dashboard'),
                 'color'    => '#3498db',
             ];
         }
@@ -1241,7 +1278,7 @@ class Flavor_Dashboard {
             'author'        => __('Autor', 'flavor-chat-ia'),
             'contributor'   => __('Colaborador', 'flavor-chat-ia'),
             'subscriber'    => __('Suscriptor', 'flavor-chat-ia'),
-            'socio'         => __('Socio', 'flavor-chat-ia'),
+            'socio'         => __('Miembro', 'flavor-chat-ia'),
             'cliente'       => __('Cliente', 'flavor-chat-ia'),
         ];
 
@@ -2180,5 +2217,692 @@ class Flavor_Dashboard {
             default:
                 wp_send_json_error(['message' => __('Accion no reconocida', 'flavor-chat-ia')]);
         }
+    }
+
+    /**
+     * AJAX handler para guardar el estado de los paneles colapsables
+     *
+     * @return void
+     */
+    public function ajax_guardar_estado_panel() {
+        check_ajax_referer('flavor_panel_state', '_wpnonce');
+
+        if (!$this->usuario_puede_ver_dashboard()) {
+            wp_send_json_error(['message' => __('Permisos insuficientes', 'flavor-chat-ia')]);
+        }
+
+        $panel_id = sanitize_key($_POST['panel'] ?? '');
+        $state = !empty($_POST['state']) && $_POST['state'] === '1';
+
+        $paneles_validos = ['graficos', 'red', 'gailu', 'addons'];
+
+        if (!in_array($panel_id, $paneles_validos, true)) {
+            wp_send_json_error(['message' => __('Panel no válido', 'flavor-chat-ia')]);
+        }
+
+        $user_id = get_current_user_id();
+        $paneles_estado = get_user_meta($user_id, 'flavor_dashboard_panels', true);
+
+        if (!is_array($paneles_estado)) {
+            $paneles_estado = [
+                'graficos' => false,
+                'red' => false,
+                'gailu' => false,
+                'addons' => false,
+            ];
+        }
+
+        $paneles_estado[$panel_id] = $state;
+        update_user_meta($user_id, 'flavor_dashboard_panels', $paneles_estado);
+
+        wp_send_json_success(['panel' => $panel_id, 'state' => $state]);
+    }
+
+    // =========================================================================
+    // MÉTODOS PARA DASHBOARD MEJORADO V2
+    // =========================================================================
+
+    /**
+     * Obtiene resumen de tareas pendientes para el administrador
+     *
+     * @return array
+     */
+    public function obtener_tareas_pendientes() {
+        global $wpdb;
+        $tareas = [];
+
+        // 1. Contenido pendiente de moderación (posts en pending)
+        $pendientes_moderacion = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts}
+             WHERE post_status = 'pending'
+             AND post_type NOT IN ('revision', 'nav_menu_item', 'attachment')"
+        );
+        if ($pendientes_moderacion > 0) {
+            $tareas[] = [
+                'tipo' => 'moderacion',
+                'icono' => 'dashicons-visibility',
+                'titulo' => sprintf(__('%d publicaciones pendientes de revisión', 'flavor-chat-ia'), $pendientes_moderacion),
+                'url' => admin_url('edit.php?post_status=pending'),
+                'cantidad' => (int) $pendientes_moderacion,
+                'prioridad' => 'media',
+            ];
+        }
+
+        // 2. Comentarios pendientes
+        $comentarios_pendientes = wp_count_comments()->moderated;
+        if ($comentarios_pendientes > 0) {
+            $tareas[] = [
+                'tipo' => 'comentarios',
+                'icono' => 'dashicons-admin-comments',
+                'titulo' => sprintf(__('%d comentarios por moderar', 'flavor-chat-ia'), $comentarios_pendientes),
+                'url' => admin_url('edit-comments.php?comment_status=moderated'),
+                'cantidad' => (int) $comentarios_pendientes,
+                'prioridad' => 'media',
+            ];
+        }
+
+        // 3. Solicitudes de socios pendientes
+        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        if ($this->tabla_existe($tabla_socios)) {
+            $socios_pendientes = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_socios} WHERE estado = 'pendiente'"
+            );
+            if ($socios_pendientes > 0) {
+                $tareas[] = [
+                    'tipo' => 'socios',
+                    'icono' => 'dashicons-groups',
+                    'titulo' => sprintf(__('%d solicitudes de socios', 'flavor-chat-ia'), $socios_pendientes),
+                    'url' => admin_url('admin.php?page=socios-dashboard&estado=pendiente'),
+                    'cantidad' => (int) $socios_pendientes,
+                    'prioridad' => 'alta',
+                ];
+            }
+        }
+
+        // 4. Incidencias abiertas
+        $tabla_incidencias = $wpdb->prefix . 'flavor_incidencias';
+        if ($this->tabla_existe($tabla_incidencias)) {
+            $incidencias_abiertas = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_incidencias} WHERE estado IN ('abierta', 'nueva')"
+            );
+            if ($incidencias_abiertas > 0) {
+                $tareas[] = [
+                    'tipo' => 'incidencias',
+                    'icono' => 'dashicons-warning',
+                    'titulo' => sprintf(__('%d incidencias abiertas', 'flavor-chat-ia'), $incidencias_abiertas),
+                    'url' => admin_url('admin.php?page=incidencias-dashboard'),
+                    'cantidad' => (int) $incidencias_abiertas,
+                    'prioridad' => 'alta',
+                ];
+            }
+        }
+
+        // 5. Reservas pendientes de confirmar
+        $tabla_reservas = $wpdb->prefix . 'flavor_reservas';
+        if ($this->tabla_existe($tabla_reservas)) {
+            $reservas_pendientes = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_reservas} WHERE estado = 'pendiente'"
+            );
+            if ($reservas_pendientes > 0) {
+                $tareas[] = [
+                    'tipo' => 'reservas',
+                    'icono' => 'dashicons-calendar-alt',
+                    'titulo' => sprintf(__('%d reservas por confirmar', 'flavor-chat-ia'), $reservas_pendientes),
+                    'url' => admin_url('admin.php?page=reservas-dashboard&estado=pendiente'),
+                    'cantidad' => (int) $reservas_pendientes,
+                    'prioridad' => 'media',
+                ];
+            }
+        }
+
+        // 6. Propuestas pendientes de votación
+        $tabla_propuestas = $wpdb->prefix . 'flavor_propuestas';
+        if ($this->tabla_existe($tabla_propuestas)) {
+            $propuestas_pendientes = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_propuestas} WHERE estado = 'pendiente'"
+            );
+            if ($propuestas_pendientes > 0) {
+                $tareas[] = [
+                    'tipo' => 'propuestas',
+                    'icono' => 'dashicons-megaphone',
+                    'titulo' => sprintf(__('%d propuestas pendientes', 'flavor-chat-ia'), $propuestas_pendientes),
+                    'url' => admin_url('admin.php?page=participacion-dashboard'),
+                    'cantidad' => (int) $propuestas_pendientes,
+                    'prioridad' => 'baja',
+                ];
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // ALERTAS PROACTIVAS ADICIONALES (basadas en datos en tiempo real)
+        // ═══════════════════════════════════════════════════════════════════
+
+        // 7. Incidencias URGENTES (prioridad alta sin resolver)
+        if ($this->tabla_existe($tabla_incidencias)) {
+            $incidencias_urgentes = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_incidencias}
+                 WHERE prioridad = 'alta'
+                 AND estado NOT IN ('cerrada', 'resuelta')"
+            );
+            if ($incidencias_urgentes > 0) {
+                $tareas[] = [
+                    'tipo' => 'incidencias_urgentes',
+                    'icono' => 'dashicons-sos',
+                    'titulo' => sprintf(__('⚠️ %d incidencias URGENTES', 'flavor-chat-ia'), $incidencias_urgentes),
+                    'url' => admin_url('admin.php?page=incidencias-dashboard&prioridad=alta'),
+                    'cantidad' => (int) $incidencias_urgentes,
+                    'prioridad' => 'critica',
+                ];
+            }
+        }
+
+        // 8. Cuotas de socios pendientes de cobro
+        $tabla_cuotas = $wpdb->prefix . 'flavor_socios_cuotas';
+        if ($this->tabla_existe($tabla_cuotas)) {
+            $cuotas_vencidas = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_cuotas}
+                 WHERE estado = 'pendiente'
+                 AND fecha_vencimiento < CURDATE()"
+            );
+            if ($cuotas_vencidas > 0) {
+                $tareas[] = [
+                    'tipo' => 'cuotas',
+                    'icono' => 'dashicons-money-alt',
+                    'titulo' => sprintf(__('%d cuotas vencidas sin cobrar', 'flavor-chat-ia'), $cuotas_vencidas),
+                    'url' => admin_url('admin.php?page=socios-dashboard&tab=cuotas&estado=vencida'),
+                    'cantidad' => (int) $cuotas_vencidas,
+                    'prioridad' => 'alta',
+                ];
+            }
+        }
+
+        // 9. Inscripciones de eventos sin confirmar
+        $tabla_inscripciones = $wpdb->prefix . 'flavor_eventos_inscripciones';
+        if ($this->tabla_existe($tabla_inscripciones)) {
+            $inscripciones_pendientes = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_inscripciones}
+                 WHERE estado = 'pendiente'"
+            );
+            if ($inscripciones_pendientes > 0) {
+                $tareas[] = [
+                    'tipo' => 'inscripciones',
+                    'icono' => 'dashicons-tickets-alt',
+                    'titulo' => sprintf(__('%d inscripciones por confirmar', 'flavor-chat-ia'), $inscripciones_pendientes),
+                    'url' => admin_url('admin.php?page=eventos-dashboard&tab=inscripciones'),
+                    'cantidad' => (int) $inscripciones_pendientes,
+                    'prioridad' => 'media',
+                ];
+            }
+        }
+
+        // 10. Ciclos de grupos de consumo próximos a cerrar (48h)
+        $tabla_ciclos = $wpdb->prefix . 'flavor_gc_ciclos';
+        if ($this->tabla_existe($tabla_ciclos)) {
+            $ciclos_por_cerrar = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_ciclos}
+                 WHERE estado = 'abierto'
+                 AND fecha_cierre BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 48 HOUR)"
+            );
+            if ($ciclos_por_cerrar > 0) {
+                $tareas[] = [
+                    'tipo' => 'ciclos_gc',
+                    'icono' => 'dashicons-clock',
+                    'titulo' => sprintf(__('%d ciclo(s) cierran en 48h', 'flavor-chat-ia'), $ciclos_por_cerrar),
+                    'url' => admin_url('admin.php?page=grupos-consumo-dashboard&tab=ciclos'),
+                    'cantidad' => (int) $ciclos_por_cerrar,
+                    'prioridad' => 'alta',
+                ];
+            }
+        }
+
+        // 11. Pedidos de GC pendientes de procesar
+        $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
+        if ($this->tabla_existe($tabla_pedidos)) {
+            $pedidos_pendientes = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_pedidos}
+                 WHERE estado IN ('pendiente', 'confirmado')"
+            );
+            if ($pedidos_pendientes > 0) {
+                $tareas[] = [
+                    'tipo' => 'pedidos_gc',
+                    'icono' => 'dashicons-cart',
+                    'titulo' => sprintf(__('%d pedidos por procesar', 'flavor-chat-ia'), $pedidos_pendientes),
+                    'url' => admin_url('admin.php?page=grupos-consumo-dashboard&tab=pedidos'),
+                    'cantidad' => (int) $pedidos_pendientes,
+                    'prioridad' => 'media',
+                ];
+            }
+        }
+
+        // 12. Préstamos de biblioteca vencidos
+        $tabla_prestamos = $wpdb->prefix . 'flavor_biblioteca_prestamos';
+        if ($this->tabla_existe($tabla_prestamos)) {
+            $prestamos_vencidos = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_prestamos}
+                 WHERE estado = 'activo'
+                 AND fecha_devolucion < CURDATE()"
+            );
+            if ($prestamos_vencidos > 0) {
+                $tareas[] = [
+                    'tipo' => 'prestamos',
+                    'icono' => 'dashicons-book',
+                    'titulo' => sprintf(__('%d préstamos vencidos', 'flavor-chat-ia'), $prestamos_vencidos),
+                    'url' => admin_url('admin.php?page=biblioteca-dashboard&tab=prestamos&estado=vencido'),
+                    'cantidad' => (int) $prestamos_vencidos,
+                    'prioridad' => 'media',
+                ];
+            }
+        }
+
+        // 13. Reservas para HOY sin confirmar
+        if ($this->tabla_existe($tabla_reservas)) {
+            $reservas_hoy_pendientes = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_reservas}
+                 WHERE estado = 'pendiente'
+                 AND DATE(fecha_inicio) = CURDATE()"
+            );
+            if ($reservas_hoy_pendientes > 0) {
+                $tareas[] = [
+                    'tipo' => 'reservas_hoy',
+                    'icono' => 'dashicons-calendar',
+                    'titulo' => sprintf(__('⏰ %d reservas de HOY sin confirmar', 'flavor-chat-ia'), $reservas_hoy_pendientes),
+                    'url' => admin_url('admin.php?page=reservas-dashboard&fecha=hoy&estado=pendiente'),
+                    'cantidad' => (int) $reservas_hoy_pendientes,
+                    'prioridad' => 'critica',
+                ];
+            }
+        }
+
+        // 14. Matrículas de cursos pendientes
+        $tabla_matriculas = $wpdb->prefix . 'flavor_cursos_matriculas';
+        if ($this->tabla_existe($tabla_matriculas)) {
+            $matriculas_pendientes = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_matriculas}
+                 WHERE estado = 'pendiente'"
+            );
+            if ($matriculas_pendientes > 0) {
+                $tareas[] = [
+                    'tipo' => 'matriculas',
+                    'icono' => 'dashicons-welcome-learn-more',
+                    'titulo' => sprintf(__('%d matrículas por aprobar', 'flavor-chat-ia'), $matriculas_pendientes),
+                    'url' => admin_url('admin.php?page=cursos-dashboard&tab=matriculas'),
+                    'cantidad' => (int) $matriculas_pendientes,
+                    'prioridad' => 'media',
+                ];
+            }
+        }
+
+        // 15. Productos de marketplace pendientes de aprobación
+        $tabla_marketplace = $wpdb->prefix . 'flavor_marketplace_productos';
+        if ($this->tabla_existe($tabla_marketplace)) {
+            $productos_pendientes = $wpdb->get_var(
+                "SELECT COUNT(*) FROM {$tabla_marketplace}
+                 WHERE estado = 'pendiente'"
+            );
+            if ($productos_pendientes > 0) {
+                $tareas[] = [
+                    'tipo' => 'marketplace',
+                    'icono' => 'dashicons-store',
+                    'titulo' => sprintf(__('%d anuncios por aprobar', 'flavor-chat-ia'), $productos_pendientes),
+                    'url' => admin_url('admin.php?page=marketplace-dashboard&estado=pendiente'),
+                    'cantidad' => (int) $productos_pendientes,
+                    'prioridad' => 'baja',
+                ];
+            }
+        }
+
+        // Ordenar por prioridad (critica > alta > media > baja)
+        usort($tareas, function($a, $b) {
+            $prioridades = ['critica' => 0, 'alta' => 1, 'media' => 2, 'baja' => 3];
+            return ($prioridades[$a['prioridad']] ?? 3) <=> ($prioridades[$b['prioridad']] ?? 3);
+        });
+
+        // Limitar a las 10 más importantes para no saturar
+        return array_slice($tareas, 0, 10);
+    }
+
+    /**
+     * Obtiene los módulos más usados basado en actividad
+     *
+     * @param int $limite Número máximo de módulos a devolver
+     * @return array
+     */
+    public function obtener_modulos_mas_usados($limite = 6) {
+        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $modulos_activos = $configuracion['active_modules'] ?? [];
+
+        if (empty($modulos_activos)) {
+            return [];
+        }
+
+        // Obtener metadatos de módulos
+        $modulos_info = [];
+        if (class_exists('Flavor_Chat_Module_Loader')) {
+            $loader = Flavor_Chat_Module_Loader::get_instance();
+            $todos_modulos = $loader->get_registered_modules();
+            foreach ($modulos_activos as $modulo_id) {
+                if (isset($todos_modulos[$modulo_id])) {
+                    $meta = $todos_modulos[$modulo_id];
+                    $modulos_info[] = [
+                        'id' => $modulo_id,
+                        'nombre' => $meta['name'] ?? ucfirst(str_replace(['_', '-'], ' ', $modulo_id)),
+                        'icono' => $meta['icon'] ?? 'dashicons-admin-generic',
+                        'color' => $meta['color'] ?? '#2271b1',
+                        'url' => admin_url('admin.php?page=' . str_replace('_', '-', $modulo_id) . '-dashboard'),
+                        'descripcion' => $meta['description'] ?? '',
+                    ];
+                }
+            }
+        }
+
+        // Si no hay info de módulos, crear desde los IDs
+        if (empty($modulos_info)) {
+            foreach (array_slice($modulos_activos, 0, $limite) as $modulo_id) {
+                $modulos_info[] = [
+                    'id' => $modulo_id,
+                    'nombre' => ucfirst(str_replace(['_', '-'], ' ', $modulo_id)),
+                    'icono' => 'dashicons-admin-generic',
+                    'color' => '#2271b1',
+                    'url' => admin_url('admin.php?page=' . str_replace('_', '-', $modulo_id) . '-dashboard'),
+                    'descripcion' => '',
+                ];
+            }
+        }
+
+        return array_slice($modulos_info, 0, $limite);
+    }
+
+    /**
+     * Obtiene datos para el dashboard del gestor de grupos
+     *
+     * @return array
+     */
+    public function obtener_datos_gestor_grupos() {
+        global $wpdb;
+        $user_id = get_current_user_id();
+        $datos = [
+            'mis_grupos' => [],
+            'miembros_recientes' => [],
+            'contenido_pendiente' => [],
+            'solicitudes_pendientes' => [],
+            'estadisticas' => [
+                'total_grupos' => 0,
+                'total_miembros' => 0,
+                'publicaciones_semana' => 0,
+            ],
+        ];
+
+        // Obtener grupos/comunidades donde el usuario es gestor
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidad_miembros';
+
+        if ($this->tabla_existe($tabla_comunidades)) {
+            // Grupos donde es admin/gestor
+            $mis_grupos = $wpdb->get_results($wpdb->prepare(
+                "SELECT c.*,
+                        (SELECT COUNT(*) FROM {$tabla_miembros} WHERE comunidad_id = c.id AND estado = 'activo') as total_miembros,
+                        (SELECT COUNT(*) FROM {$tabla_miembros} WHERE comunidad_id = c.id AND estado = 'pendiente') as pendientes
+                 FROM {$tabla_comunidades} c
+                 WHERE c.creador_id = %d OR c.id IN (
+                     SELECT comunidad_id FROM {$tabla_miembros}
+                     WHERE user_id = %d AND rol IN ('admin', 'moderador')
+                 )
+                 ORDER BY c.created_at DESC
+                 LIMIT 10",
+                $user_id,
+                $user_id
+            ));
+
+            foreach ($mis_grupos as $grupo) {
+                $datos['mis_grupos'][] = [
+                    'id' => $grupo->id,
+                    'nombre' => $grupo->nombre,
+                    'miembros' => (int) $grupo->total_miembros,
+                    'pendientes' => (int) $grupo->pendientes,
+                    'url' => admin_url('admin.php?page=comunidades-dashboard&comunidad=' . $grupo->id),
+                ];
+                $datos['estadisticas']['total_grupos']++;
+                $datos['estadisticas']['total_miembros'] += (int) $grupo->total_miembros;
+
+                // Acumular solicitudes pendientes
+                if ($grupo->pendientes > 0) {
+                    $datos['solicitudes_pendientes'][] = [
+                        'grupo_id' => $grupo->id,
+                        'grupo_nombre' => $grupo->nombre,
+                        'cantidad' => (int) $grupo->pendientes,
+                        'url' => admin_url('admin.php?page=comunidades-dashboard&comunidad=' . $grupo->id . '&tab=solicitudes'),
+                    ];
+                }
+            }
+
+            // Miembros recientes (últimos 7 días)
+            if (!empty($mis_grupos)) {
+                $grupo_ids = array_column($mis_grupos, 'id');
+                $placeholders = implode(',', array_fill(0, count($grupo_ids), '%d'));
+
+                $miembros_recientes = $wpdb->get_results($wpdb->prepare(
+                    "SELECT m.*, u.display_name, u.user_email, c.nombre as grupo_nombre
+                     FROM {$tabla_miembros} m
+                     JOIN {$wpdb->users} u ON m.user_id = u.ID
+                     JOIN {$tabla_comunidades} c ON m.comunidad_id = c.id
+                     WHERE m.comunidad_id IN ({$placeholders})
+                     AND m.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                     AND m.estado = 'activo'
+                     ORDER BY m.created_at DESC
+                     LIMIT 10",
+                    ...$grupo_ids
+                ));
+
+                foreach ($miembros_recientes as $miembro) {
+                    $datos['miembros_recientes'][] = [
+                        'user_id' => $miembro->user_id,
+                        'nombre' => $miembro->display_name,
+                        'email' => $miembro->user_email,
+                        'grupo' => $miembro->grupo_nombre,
+                        'fecha' => human_time_diff(strtotime($miembro->created_at), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+                    ];
+                }
+            }
+        }
+
+        // Contenido pendiente de moderación en colectivos
+        $tabla_colectivos = $wpdb->prefix . 'flavor_colectivos';
+        $tabla_publicaciones = $wpdb->prefix . 'flavor_publicaciones';
+
+        if ($this->tabla_existe($tabla_publicaciones)) {
+            $contenido_pendiente = $wpdb->get_results($wpdb->prepare(
+                "SELECT p.*, u.display_name as autor_nombre
+                 FROM {$tabla_publicaciones} p
+                 JOIN {$wpdb->users} u ON p.user_id = u.ID
+                 WHERE p.estado = 'pendiente'
+                 AND p.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                 ORDER BY p.created_at DESC
+                 LIMIT 10"
+            ));
+
+            foreach ($contenido_pendiente as $pub) {
+                $datos['contenido_pendiente'][] = [
+                    'id' => $pub->id,
+                    'titulo' => wp_trim_words($pub->contenido, 10, '...'),
+                    'autor' => $pub->autor_nombre,
+                    'fecha' => human_time_diff(strtotime($pub->created_at), current_time('timestamp')) . ' ' . __('atrás', 'flavor-chat-ia'),
+                    'url' => admin_url('admin.php?page=moderacion-dashboard&id=' . $pub->id),
+                ];
+            }
+        }
+
+        return $datos;
+    }
+
+    /**
+     * Obtiene accesos rápidos contextuales basados en módulos activos
+     *
+     * @return array
+     */
+    public function obtener_accesos_rapidos_contextuales() {
+        $configuracion = get_option('flavor_chat_ia_settings', []);
+        $modulos_activos = $configuracion['active_modules'] ?? [];
+        $accesos = [];
+
+        // Mapeo de módulos a accesos rápidos
+        $accesos_por_modulo = [
+            'marketplace' => [
+                'etiqueta' => __('Nuevo producto', 'flavor-chat-ia'),
+                'icono' => 'dashicons-plus-alt',
+                'url' => admin_url('post-new.php?post_type=marketplace_item'),
+                'color' => '#10b981',
+            ],
+            'eventos' => [
+                'etiqueta' => __('Crear evento', 'flavor-chat-ia'),
+                'icono' => 'dashicons-calendar-alt',
+                'url' => admin_url('post-new.php?post_type=evento'),
+                'color' => '#8b5cf6',
+            ],
+            'talleres' => [
+                'etiqueta' => __('Nuevo taller', 'flavor-chat-ia'),
+                'icono' => 'dashicons-welcome-learn-more',
+                'url' => admin_url('post-new.php?post_type=taller'),
+                'color' => '#f59e0b',
+            ],
+            'reservas' => [
+                'etiqueta' => __('Ver reservas', 'flavor-chat-ia'),
+                'icono' => 'dashicons-calendar',
+                'url' => admin_url('admin.php?page=reservas-dashboard'),
+                'color' => '#3b82f6',
+            ],
+            'socios' => [
+                'etiqueta' => __('Gestionar miembros', 'flavor-chat-ia'),
+                'icono' => 'dashicons-groups',
+                'url' => admin_url('admin.php?page=socios-dashboard'),
+                'color' => '#ec4899',
+            ],
+            'banco_tiempo' => [
+                'etiqueta' => __('Banco de tiempo', 'flavor-chat-ia'),
+                'icono' => 'dashicons-clock',
+                'url' => admin_url('admin.php?page=banco-tiempo-dashboard'),
+                'color' => '#06b6d4',
+            ],
+            'incidencias' => [
+                'etiqueta' => __('Incidencias', 'flavor-chat-ia'),
+                'icono' => 'dashicons-warning',
+                'url' => admin_url('admin.php?page=incidencias-dashboard'),
+                'color' => '#ef4444',
+            ],
+            'comunidades' => [
+                'etiqueta' => __('Comunidades', 'flavor-chat-ia'),
+                'icono' => 'dashicons-networking',
+                'url' => admin_url('admin.php?page=comunidades-dashboard'),
+                'color' => '#a855f7',
+            ],
+        ];
+
+        foreach ($modulos_activos as $modulo) {
+            $modulo_key = str_replace('-', '_', $modulo);
+            if (isset($accesos_por_modulo[$modulo_key])) {
+                $accesos[] = $accesos_por_modulo[$modulo_key];
+            }
+        }
+
+        // Limitar a 8 accesos rápidos
+        return array_slice($accesos, 0, 8);
+    }
+
+    /**
+     * Obtiene alertas de configuración incompleta
+     *
+     * @return array
+     */
+    public function obtener_alertas_configuracion() {
+        $alertas = [];
+        $configuracion = get_option('flavor_chat_ia_settings', []);
+
+        // Verificar API key
+        if (empty($configuracion['openai_api_key'])) {
+            $alertas[] = [
+                'tipo' => 'warning',
+                'icono' => 'dashicons-admin-network',
+                'mensaje' => __('API de IA no configurada', 'flavor-chat-ia'),
+                'url' => admin_url('admin.php?page=flavor-chat-config'),
+                'accion' => __('Configurar', 'flavor-chat-ia'),
+            ];
+        }
+
+        // Verificar módulos activos
+        $modulos_activos = $configuracion['active_modules'] ?? [];
+        if (empty($modulos_activos)) {
+            $alertas[] = [
+                'tipo' => 'info',
+                'icono' => 'dashicons-screenoptions',
+                'mensaje' => __('No hay módulos activados', 'flavor-chat-ia'),
+                'url' => admin_url('admin.php?page=flavor-app-composer'),
+                'accion' => __('Activar módulos', 'flavor-chat-ia'),
+            ];
+        }
+
+        // Verificar páginas creadas
+        $paginas_creadas = get_option('flavor_pages_created', []);
+        if (empty($paginas_creadas)) {
+            $alertas[] = [
+                'tipo' => 'info',
+                'icono' => 'dashicons-admin-page',
+                'mensaje' => __('Páginas del portal no creadas', 'flavor-chat-ia'),
+                'url' => admin_url('admin.php?page=flavor-create-pages'),
+                'accion' => __('Crear páginas', 'flavor-chat-ia'),
+            ];
+        }
+
+        // Verificar errores de PHP recientes
+        $errores_recientes = get_option('flavor_recent_errors', []);
+        if (!empty($errores_recientes)) {
+            $alertas[] = [
+                'tipo' => 'error',
+                'icono' => 'dashicons-warning',
+                'mensaje' => sprintf(__('%d errores registrados', 'flavor-chat-ia'), count($errores_recientes)),
+                'url' => admin_url('admin.php?page=flavor-health-check'),
+                'accion' => __('Ver detalles', 'flavor-chat-ia'),
+            ];
+        }
+
+        return $alertas;
+    }
+
+    /**
+     * Obtiene resumen compacto de estadísticas principales
+     *
+     * @return array
+     */
+    public function obtener_resumen_stats() {
+        $stats = $this->get_dashboard_stats();
+
+        return [
+            [
+                'id' => 'usuarios',
+                'valor' => $stats['usuarios_activos_30d'] ?? 0,
+                'etiqueta' => __('Usuarios activos', 'flavor-chat-ia'),
+                'icono' => 'dashicons-admin-users',
+                'color' => '#3b82f6',
+            ],
+            [
+                'id' => 'modulos',
+                'valor' => ($stats['modulos_activos'] ?? 0) . '/' . ($stats['modulos_totales'] ?? 0),
+                'etiqueta' => __('Módulos', 'flavor-chat-ia'),
+                'icono' => 'dashicons-screenoptions',
+                'color' => '#10b981',
+            ],
+            [
+                'id' => 'socios',
+                'valor' => $stats['socios_activos'] ?? 0,
+                'etiqueta' => __('Miembros', 'flavor-chat-ia'),
+                'icono' => 'dashicons-groups',
+                'color' => '#8b5cf6',
+            ],
+            [
+                'id' => 'conversaciones',
+                'valor' => $stats['conversaciones'] ?? 0,
+                'etiqueta' => __('Conversaciones IA', 'flavor-chat-ia'),
+                'icono' => 'dashicons-format-chat',
+                'color' => '#f59e0b',
+            ],
+        ];
     }
 }

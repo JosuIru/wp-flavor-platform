@@ -82,7 +82,7 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
                 'fecha_alta' => current_time('mysql'),
             ]);
         }
-        echo '<div class="notice notice-success is-dismissible"><p>' . __('Solicitud aprobada. Socio creado.', 'flavor-chat-ia') . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . __('Solicitud aprobada. Miembro creado.', 'flavor-chat-ia') . '</p></div>';
     } elseif ($accion === 'rechazar') {
         $wpdb->update($tabla_solicitudes, ['estado' => 'rechazada', 'fecha_resolucion' => current_time('mysql')], ['id' => $solicitud_id]);
         echo '<div class="notice notice-warning is-dismissible"><p>' . __('Solicitud rechazada.', 'flavor-chat-ia') . '</p></div>';
@@ -96,7 +96,7 @@ if (isset($_POST['accion']) && isset($_POST['solicitud_id']) && wp_verify_nonce(
     <nav class="flavor-breadcrumbs" style="margin-bottom: 15px; font-size: 13px;">
         <a href="<?php echo admin_url('admin.php?page=socios-dashboard'); ?>" style="color: #2271b1; text-decoration: none;">
             <span class="dashicons dashicons-id-alt" style="font-size: 14px; vertical-align: middle;"></span>
-            <?php _e('Socios', 'flavor-chat-ia'); ?>
+            <?php _e('Miembros', 'flavor-chat-ia'); ?>
         </a>
         <span style="color: #646970; margin: 0 5px;">›</span>
         <span style="color: #1d2327;"><?php _e('Solicitudes de Alta', 'flavor-chat-ia'); ?></span>

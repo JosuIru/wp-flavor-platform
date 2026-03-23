@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 class Flavor_Sello_Conciencia_Dashboard_Tab {
 
     private static $instance = null;
+    private $mensajes = [];
 
     public static function get_instance() {
         if (null === self::$instance) {
@@ -26,6 +27,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
 
     private function __construct() {
         add_filter('flavor_user_dashboard_tabs', [$this, 'registrar_tabs']);
+        $this->maybe_create_tables();
     }
 
     public function registrar_tabs($tabs) {
@@ -39,11 +41,20 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
     }
 
     public function render_tab() {
+        $this->handle_solicitud_submission();
         $datos = $this->obtener_datos_usuario();
         $subtab = isset($_GET['subtab']) ? sanitize_text_field($_GET['subtab']) : 'mis-sellos';
 
         ?>
         <div class="flavor-sello-dashboard">
+            <?php if (!empty($this->mensajes)) : ?>
+                <?php foreach ($this->mensajes as $mensaje) : ?>
+                    <div class="flavor-notice flavor-notice-<?php echo esc_attr($mensaje['tipo']); ?>">
+                        <p><?php echo esc_html($mensaje['texto']); ?></p>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+
             <div class="flavor-dashboard-subtabs">
                 <a href="?tab=sello-conciencia&subtab=mis-sellos" class="subtab <?php echo $subtab === 'mis-sellos' ? 'active' : ''; ?>">
                     <span class="dashicons dashicons-awards"></span> Mis Sellos
@@ -82,6 +93,159 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
             </div>
         </div>
         <?php
+    }
+
+    private function maybe_create_tables() {
+        global $wpdb;
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $tabla_sellos = $wpdb->prefix . 'flavor_sellos_conciencia';
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_sellos_solicitudes';
+
+        $sql_sellos = "CREATE TABLE IF NOT EXISTS $tabla_sellos (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) unsigned NOT NULL,
+            tipo varchar(60) NOT NULL,
+            nombre_entidad varchar(255) NOT NULL,
+            descripcion longtext NULL,
+            categorias text NULL,
+            nivel varchar(20) NOT NULL DEFAULT 'bronce',
+            estado varchar(20) NOT NULL DEFAULT 'activo',
+            direccion text NULL,
+            fecha_emision datetime NULL,
+            fecha_expiracion datetime NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado),
+            KEY nivel (nivel)
+        ) $charset_collate;";
+
+        $sql_solicitudes = "CREATE TABLE IF NOT EXISTS $tabla_solicitudes (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            usuario_id bigint(20) unsigned NOT NULL,
+            tipo varchar(60) NOT NULL,
+            nombre_entidad varchar(255) NOT NULL,
+            nif varchar(64) NULL,
+            anio_fundacion int(4) NULL,
+            descripcion longtext NOT NULL,
+            direccion text NULL,
+            web varchar(255) NULL,
+            categorias text NULL,
+            documentos text NULL,
+            estado varchar(30) NOT NULL DEFAULT 'pendiente',
+            notas_revision text NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY usuario_id (usuario_id),
+            KEY estado (estado)
+        ) $charset_collate;";
+
+        dbDelta($sql_sellos);
+        dbDelta($sql_solicitudes);
+    }
+
+    private function handle_solicitud_submission() {
+        if (
+            $_SERVER['REQUEST_METHOD'] !== 'POST'
+            || empty($_POST['sello_form_action'])
+            || sanitize_text_field(wp_unslash((string) $_POST['sello_form_action'])) !== 'crear_solicitud'
+        ) {
+            return;
+        }
+
+        if (!is_user_logged_in()) {
+            $this->mensajes[] = [
+                'tipo' => 'error',
+                'texto' => __('Debes iniciar sesión para enviar una solicitud.', 'flavor-chat-ia'),
+            ];
+            return;
+        }
+
+        $nonce = sanitize_text_field(wp_unslash((string) ($_POST['sello_nonce'] ?? '')));
+        if (!wp_verify_nonce($nonce, 'flavor_solicitud_sello')) {
+            $this->mensajes[] = [
+                'tipo' => 'error',
+                'texto' => __('No se pudo validar el formulario. Inténtalo de nuevo.', 'flavor-chat-ia'),
+            ];
+            return;
+        }
+
+        $tipo = sanitize_text_field($_POST['tipo'] ?? '');
+        $nombre_entidad = sanitize_text_field($_POST['nombre_entidad'] ?? '');
+        $descripcion = sanitize_textarea_field($_POST['descripcion'] ?? '');
+        $acepto = !empty($_POST['acepto_condiciones']);
+
+        if ($tipo === '' || $nombre_entidad === '' || $descripcion === '' || !$acepto) {
+            $this->mensajes[] = [
+                'tipo' => 'error',
+                'texto' => __('Completa los campos obligatorios y acepta las condiciones.', 'flavor-chat-ia'),
+            ];
+            return;
+        }
+
+        global $wpdb;
+        $tabla_solicitudes = $wpdb->prefix . 'flavor_sellos_solicitudes';
+        $usuario_id = get_current_user_id();
+
+        $pendiente = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $tabla_solicitudes WHERE usuario_id = %d AND estado IN ('pendiente', 'revision', 'en_revision')",
+            $usuario_id
+        ));
+        if ($pendiente > 0) {
+            $this->mensajes[] = [
+                'tipo' => 'warning',
+                'texto' => __('Ya tienes una solicitud en proceso. Espera su revisión antes de enviar otra.', 'flavor-chat-ia'),
+            ];
+            return;
+        }
+
+        $categorias = isset($_POST['categorias']) ? (array) $_POST['categorias'] : [];
+        $categorias = array_filter(array_map('sanitize_text_field', $categorias));
+
+        $documentos = [];
+        if (!empty($_FILES['documentos']['name']) && is_array($_FILES['documentos']['name'])) {
+            foreach ($_FILES['documentos']['name'] as $idx => $nombre) {
+                if (trim((string) $nombre) !== '') {
+                    $documentos[] = sanitize_file_name((string) $nombre);
+                }
+            }
+        }
+
+        $insertado = $wpdb->insert(
+            $tabla_solicitudes,
+            [
+                'usuario_id' => $usuario_id,
+                'tipo' => $tipo,
+                'nombre_entidad' => $nombre_entidad,
+                'nif' => sanitize_text_field($_POST['nif'] ?? ''),
+                'anio_fundacion' => absint($_POST['anio_fundacion'] ?? 0) ?: null,
+                'descripcion' => $descripcion,
+                'direccion' => sanitize_textarea_field($_POST['direccion'] ?? ''),
+                'web' => esc_url_raw($_POST['web'] ?? ''),
+                'categorias' => implode(',', $categorias),
+                'documentos' => wp_json_encode($documentos),
+                'estado' => 'pendiente',
+            ],
+            ['%d', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s']
+        );
+
+        if ($insertado === false) {
+            $this->mensajes[] = [
+                'tipo' => 'error',
+                'texto' => __('No se pudo guardar la solicitud. Revisa la configuración de base de datos.', 'flavor-chat-ia'),
+            ];
+            return;
+        }
+
+        $this->mensajes[] = [
+            'tipo' => 'success',
+            'texto' => __('Solicitud enviada correctamente. La revisaremos y te notificaremos el resultado.', 'flavor-chat-ia'),
+        ];
     }
 
     private function render_mis_sellos($datos) {
@@ -168,10 +332,6 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
         <div class="solicitar-sello">
             <h3>Solicitar Sello Conciencia</h3>
 
-            <div class="flavor-notice flavor-notice-warning">
-                <p><?php esc_html_e('La solicitud completa todavía no está conectada a un handler de dashboard. El formulario se muestra como referencia y el envío queda desactivado para evitar falsas confirmaciones.', 'flavor-chat-ia'); ?></p>
-            </div>
-
             <div class="info-proceso">
                 <h4>¿Cómo funciona?</h4>
                 <ol>
@@ -185,6 +345,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
 
             <form id="form-solicitud-sello" method="post" enctype="multipart/form-data">
                 <?php wp_nonce_field('flavor_solicitud_sello', 'sello_nonce'); ?>
+                <input type="hidden" name="sello_form_action" value="crear_solicitud">
 
                 <h4>Datos de la entidad</h4>
                 <div class="form-row">
@@ -260,7 +421,7 @@ class Flavor_Sello_Conciencia_Dashboard_Tab {
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" class="flavor-btn" disabled aria-disabled="true"><?php esc_html_e('Envío pendiente de integración', 'flavor-chat-ia'); ?></button>
+                    <button type="submit" class="flavor-btn flavor-btn-primary"><?php esc_html_e('Enviar solicitud', 'flavor-chat-ia'); ?></button>
                 </div>
             </form>
         </div>

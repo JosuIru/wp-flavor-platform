@@ -51,20 +51,27 @@ class Flavor_Radio_Frontend_Controller {
      */
     private function init() {
         // Shortcodes
-        add_shortcode('flavor_radio_player', [$this, 'shortcode_player']);
-        add_shortcode('flavor_radio_programacion', [$this, 'shortcode_programacion']);
-        add_shortcode('flavor_radio_programa_actual', [$this, 'shortcode_programa_actual']);
-        add_shortcode('flavor_radio_dedicatorias', [$this, 'shortcode_dedicatorias']);
-        add_shortcode('flavor_radio_chat', [$this, 'shortcode_chat']);
-        add_shortcode('flavor_radio_proponer_programa', [$this, 'shortcode_proponer_programa']);
-        add_shortcode('flavor_radio_podcasts', [$this, 'shortcode_podcasts']);
-        add_shortcode('flavor_radio_estadisticas', [$this, 'shortcode_estadisticas']);
+        $shortcodes = [
+            'flavor_radio_player' => 'shortcode_player',
+            'flavor_radio_programacion' => 'shortcode_programacion',
+            'flavor_radio_programa_actual' => 'shortcode_programa_actual',
+            'flavor_radio_dedicatorias' => 'shortcode_dedicatorias',
+            'flavor_radio_chat' => 'shortcode_chat',
+            'flavor_radio_proponer_programa' => 'shortcode_proponer_programa',
+            'flavor_radio_podcasts' => 'shortcode_podcasts',
+            'flavor_radio_estadisticas' => 'shortcode_estadisticas',
+            // Nuevos shortcodes v2.0
+            'flavor_radio_locutor' => 'shortcode_locutor_perfil',
+            'flavor_radio_calendario' => 'shortcode_calendario',
+            'flavor_radio_favoritos' => 'shortcode_mis_favoritos',
+            'flavor_radio_canales' => 'shortcode_canales',
+        ];
 
-        // Nuevos shortcodes v2.0
-        add_shortcode('flavor_radio_locutor', [$this, 'shortcode_locutor_perfil']);
-        add_shortcode('flavor_radio_calendario', [$this, 'shortcode_calendario']);
-        add_shortcode('flavor_radio_favoritos', [$this, 'shortcode_mis_favoritos']);
-        add_shortcode('flavor_radio_canales', [$this, 'shortcode_canales']);
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
 
         // AJAX handlers (complementarios a los del módulo)
         add_action('wp_ajax_flavor_radio_frontend_dedicatoria', [$this, 'ajax_enviar_dedicatoria']);

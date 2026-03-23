@@ -21,7 +21,7 @@ global $wpdb;
 
 $tabla_listas = $wpdb->prefix . 'flavor_em_listas';
 $tabla_suscriptores = $wpdb->prefix . 'flavor_em_suscriptores';
-$tabla_suscriptores_listas = $wpdb->prefix . 'flavor_em_suscriptores_listas';
+$tabla_suscriptores_listas = $wpdb->prefix . 'flavor_em_suscriptor_lista';
 $tabla_campanas = $wpdb->prefix . 'flavor_em_campanas';
 
 // Verificar existencia de tablas
@@ -33,7 +33,7 @@ $tabla_listas_existe = $wpdb->get_var(
     )
 );
 
-$usar_datos_demo = !$tabla_listas_existe;
+$tablas_email_disponibles = (bool) $tabla_listas_existe;
 
 // =====================================================
 // FUNCIONES HELPER
@@ -125,127 +125,6 @@ function calcular_crecimiento($actual, $anterior) {
 }
 
 // =====================================================
-// DATOS DEMO
-// =====================================================
-
-if ($usar_datos_demo) {
-    $listas_demo = [
-        (object) [
-            'id' => 1,
-            'nombre' => 'Newsletter Principal',
-            'slug' => 'newsletter-principal',
-            'descripcion' => 'Lista principal de suscriptores del boletín semanal con noticias y actualizaciones.',
-            'tipo' => 'newsletter',
-            'estado' => 'activa',
-            'doble_optin' => 1,
-            'total_suscriptores' => 2450,
-            'suscriptores_activos' => 2180,
-            'suscriptores_mes' => 156,
-            'tasa_apertura' => 28.5,
-            'tasa_clics' => 4.2,
-            'campanas_enviadas' => 52,
-            'fecha_creacion' => date('Y-m-d', strtotime('-2 years')),
-            'ultima_campana' => date('Y-m-d', strtotime('-3 days'))
-        ],
-        (object) [
-            'id' => 2,
-            'nombre' => 'Ofertas y Promociones',
-            'slug' => 'ofertas-promociones',
-            'descripcion' => 'Suscriptores interesados en recibir ofertas especiales y descuentos exclusivos.',
-            'tipo' => 'segmento',
-            'estado' => 'activa',
-            'doble_optin' => 1,
-            'total_suscriptores' => 1280,
-            'suscriptores_activos' => 1150,
-            'suscriptores_mes' => 89,
-            'tasa_apertura' => 35.2,
-            'tasa_clics' => 8.7,
-            'campanas_enviadas' => 24,
-            'fecha_creacion' => date('Y-m-d', strtotime('-1 year')),
-            'ultima_campana' => date('Y-m-d', strtotime('-1 week'))
-        ],
-        (object) [
-            'id' => 3,
-            'nombre' => 'Nuevos Usuarios',
-            'slug' => 'nuevos-usuarios',
-            'descripcion' => 'Lista automática con usuarios registrados en los últimos 30 días.',
-            'tipo' => 'automatica',
-            'estado' => 'activa',
-            'doble_optin' => 0,
-            'total_suscriptores' => 342,
-            'suscriptores_activos' => 342,
-            'suscriptores_mes' => 342,
-            'tasa_apertura' => 45.8,
-            'tasa_clics' => 12.3,
-            'campanas_enviadas' => 12,
-            'fecha_creacion' => date('Y-m-d', strtotime('-6 months')),
-            'ultima_campana' => date('Y-m-d', strtotime('-2 days'))
-        ],
-        (object) [
-            'id' => 4,
-            'nombre' => 'Compradores VIP',
-            'slug' => 'compradores-vip',
-            'descripcion' => 'Clientes con más de 3 compras realizadas. Contenido exclusivo y ofertas premium.',
-            'tipo' => 'segmento',
-            'estado' => 'activa',
-            'doble_optin' => 1,
-            'total_suscriptores' => 187,
-            'suscriptores_activos' => 182,
-            'suscriptores_mes' => 12,
-            'tasa_apertura' => 52.4,
-            'tasa_clics' => 18.9,
-            'campanas_enviadas' => 18,
-            'fecha_creacion' => date('Y-m-d', strtotime('-8 months')),
-            'ultima_campana' => date('Y-m-d', strtotime('-5 days'))
-        ],
-        (object) [
-            'id' => 5,
-            'nombre' => 'Lista Antigua',
-            'slug' => 'lista-antigua',
-            'descripcion' => 'Lista histórica ya no utilizada. Mantenida para referencia.',
-            'tipo' => 'newsletter',
-            'estado' => 'archivada',
-            'doble_optin' => 0,
-            'total_suscriptores' => 890,
-            'suscriptores_activos' => 234,
-            'suscriptores_mes' => 0,
-            'tasa_apertura' => 8.2,
-            'tasa_clics' => 0.5,
-            'campanas_enviadas' => 156,
-            'fecha_creacion' => date('Y-m-d', strtotime('-4 years')),
-            'ultima_campana' => date('Y-m-d', strtotime('-1 year'))
-        ],
-        (object) [
-            'id' => 6,
-            'nombre' => 'Notificaciones Transaccionales',
-            'slug' => 'transaccionales',
-            'descripcion' => 'Emails automáticos de confirmación de pedidos, envíos y cuenta.',
-            'tipo' => 'transaccional',
-            'estado' => 'activa',
-            'doble_optin' => 0,
-            'total_suscriptores' => 3200,
-            'suscriptores_activos' => 3200,
-            'suscriptores_mes' => 245,
-            'tasa_apertura' => 78.5,
-            'tasa_clics' => 22.1,
-            'campanas_enviadas' => 0,
-            'fecha_creacion' => date('Y-m-d', strtotime('-18 months')),
-            'ultima_campana' => null
-        ]
-    ];
-
-    // Estadísticas demo
-    $estadisticas = [
-        'total_listas' => 6,
-        'listas_activas' => 5,
-        'total_suscriptores' => array_sum(array_column($listas_demo, 'total_suscriptores')),
-        'suscriptores_activos' => array_sum(array_column($listas_demo, 'suscriptores_activos')),
-        'promedio_apertura' => round(array_sum(array_column($listas_demo, 'tasa_apertura')) / count($listas_demo), 1),
-        'nuevos_mes' => array_sum(array_column($listas_demo, 'suscriptores_mes'))
-    ];
-}
-
-// =====================================================
 // PARÁMETROS DE FILTRADO Y PAGINACIÓN
 // =====================================================
 
@@ -263,7 +142,7 @@ $filtro_orden = isset($_GET['orden']) ? sanitize_text_field($_GET['orden']) : 's
 // CONSULTA DE DATOS REALES O FILTRADO DEMO
 // =====================================================
 
-if (!$usar_datos_demo) {
+if ($tablas_email_disponibles) {
     // Construir query con filtros
     $where_clauses = ["1=1"];
     $params = [];
@@ -338,78 +217,33 @@ if (!$usar_datos_demo) {
     $listas = $wpdb->get_results($wpdb->prepare($query, $params));
 
 } else {
-    // Filtrar datos demo
-    $listas_filtradas = array_filter($listas_demo, function($lista) use ($filtro_busqueda, $filtro_tipo, $filtro_estado, $filtro_optin) {
-        if (!empty($filtro_busqueda)) {
-            $busqueda_lower = strtolower($filtro_busqueda);
-            if (strpos(strtolower($lista->nombre), $busqueda_lower) === false &&
-                strpos(strtolower($lista->descripcion), $busqueda_lower) === false &&
-                strpos(strtolower($lista->slug), $busqueda_lower) === false) {
-                return false;
-            }
-        }
-
-        if (!empty($filtro_tipo) && $lista->tipo !== $filtro_tipo) {
-            return false;
-        }
-
-        if (!empty($filtro_estado) && $lista->estado !== $filtro_estado) {
-            return false;
-        }
-
-        if ($filtro_optin !== '' && $lista->doble_optin != intval($filtro_optin)) {
-            return false;
-        }
-
-        return true;
-    });
-
-    // Ordenar
-    usort($listas_filtradas, function($a, $b) use ($filtro_orden) {
-        switch ($filtro_orden) {
-            case 'nombre_asc':
-                return strcasecmp($a->nombre, $b->nombre);
-            case 'nombre_desc':
-                return strcasecmp($b->nombre, $a->nombre);
-            case 'suscriptores_asc':
-                return $a->total_suscriptores - $b->total_suscriptores;
-            case 'apertura_desc':
-                return $b->tasa_apertura - $a->tasa_apertura;
-            case 'fecha_desc':
-                return strtotime($b->fecha_creacion) - strtotime($a->fecha_creacion);
-            case 'fecha_asc':
-                return strtotime($a->fecha_creacion) - strtotime($b->fecha_creacion);
-            default:
-                return $b->total_suscriptores - $a->total_suscriptores;
-        }
-    });
-
-    $total_items = count($listas_filtradas);
-    $listas = array_slice($listas_filtradas, $offset, $items_por_pagina);
+    $estadisticas = [
+        'total_listas' => 0,
+        'listas_activas' => 0,
+        'total_suscriptores' => 0,
+        'suscriptores_activos' => 0,
+        'promedio_apertura' => 0,
+        'nuevos_mes' => 0,
+    ];
+    $total_items = 0;
+    $listas = [];
 }
 
 $total_paginas = ceil($total_items / $items_por_pagina);
 
 // Top listas para sidebar
-$top_listas = $usar_datos_demo
-    ? array_slice(array_filter($listas_demo, fn($l) => $l->estado === 'activa'), 0, 5)
-    : ($tabla_listas_existe ? $wpdb->get_results("
+$top_listas = $tablas_email_disponibles
+    ? $wpdb->get_results("
         SELECT * FROM $tabla_listas
         WHERE estado = 'activa'
         ORDER BY total_suscriptores DESC
         LIMIT 5
-    ") : []);
+    ")
+    : [];
 
 // Distribución por tipo para gráfico
 $distribucion_tipo = [];
-if ($usar_datos_demo) {
-    foreach ($listas_demo as $l) {
-        if (!isset($distribucion_tipo[$l->tipo])) {
-            $distribucion_tipo[$l->tipo] = 0;
-        }
-        $distribucion_tipo[$l->tipo]++;
-    }
-} else if ($tabla_listas_existe) {
+if ($tablas_email_disponibles) {
     $resultados = $wpdb->get_results("SELECT tipo, COUNT(*) as total FROM $tabla_listas GROUP BY tipo");
     foreach ($resultados as $r) {
         $distribucion_tipo[$r->tipo] = $r->total;
@@ -427,11 +261,11 @@ if ($usar_datos_demo) {
         <?php echo esc_html__('Nueva Lista', 'flavor-chat-ia'); ?>
     </button>
 
-    <?php if ($usar_datos_demo): ?>
+    <?php if (!$tablas_email_disponibles): ?>
     <div class="notice notice-info inline" style="margin: 15px 0;">
         <p>
             <span class="dashicons dashicons-info"></span>
-            <?php echo esc_html__('Mostrando datos de demostración. Las tablas de la base de datos no están configuradas.', 'flavor-chat-ia'); ?>
+            <?php echo esc_html__('No hay datos disponibles: faltan tablas del módulo Email Marketing.', 'flavor-chat-ia'); ?>
         </p>
     </div>
     <?php endif; ?>

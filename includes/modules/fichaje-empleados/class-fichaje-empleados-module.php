@@ -370,6 +370,13 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         $condiciones_where = ['usuario_id = %d'];
         $valores_preparados = [$usuario_id];
 
+        // Filtrar por empresa si corresponde
+        $empresa_id = $this->get_empresa_usuario($usuario_id);
+        if ($empresa_id) {
+            $condiciones_where[] = 'empresa_id = %d';
+            $valores_preparados[] = $empresa_id;
+        }
+
         if ($desde) {
             $condiciones_where[] = 'DATE(fecha_hora) >= %s';
             $valores_preparados[] = sanitize_text_field($desde);
@@ -1061,6 +1068,7 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
 
         $sql_fichajes = "CREATE TABLE IF NOT EXISTS $tabla_fichajes (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            empresa_id bigint(20) unsigned DEFAULT NULL,
             usuario_id bigint(20) unsigned NOT NULL,
             tipo enum('entrada','salida','pausa_inicio','pausa_fin') NOT NULL,
             fecha_hora datetime NOT NULL,
@@ -1074,12 +1082,14 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
             fecha_creacion datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY usuario_id (usuario_id),
+            KEY empresa_id (empresa_id),
             KEY fecha_hora (fecha_hora),
             KEY tipo (tipo)
         ) $charset_collate;";
 
         $sql_horarios = "CREATE TABLE IF NOT EXISTS $tabla_horarios (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            empresa_id bigint(20) unsigned DEFAULT NULL,
             usuario_id bigint(20) unsigned NOT NULL,
             dia_semana enum('monday','tuesday','wednesday','thursday','friday','saturday','sunday') NOT NULL,
             hora_entrada time NOT NULL,
@@ -1087,12 +1097,62 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
             es_laboral tinyint(1) DEFAULT 1,
             activo tinyint(1) DEFAULT 1,
             PRIMARY KEY (id),
-            UNIQUE KEY usuario_dia (usuario_id, dia_semana)
+            UNIQUE KEY usuario_dia_empresa (usuario_id, dia_semana, empresa_id),
+            KEY empresa_id (empresa_id)
         ) $charset_collate;";
+
+        // Migrar tablas existentes: añadir columna empresa_id si no existe
+        $this->maybe_add_empresa_id_columns();
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta($sql_fichajes);
         dbDelta($sql_horarios);
+    }
+
+    /**
+     * Añade columna empresa_id a tablas existentes si no existe
+     */
+    private function maybe_add_empresa_id_columns() {
+        global $wpdb;
+
+        $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
+        $tabla_horarios = $wpdb->prefix . 'flavor_empleados_horarios';
+
+        // Verificar si la columna empresa_id ya existe en fichajes
+        $columnas_fichajes = $wpdb->get_col("DESCRIBE {$tabla_fichajes}", 0);
+        if (!in_array('empresa_id', $columnas_fichajes)) {
+            $wpdb->query("ALTER TABLE {$tabla_fichajes} ADD COLUMN empresa_id bigint(20) unsigned DEFAULT NULL AFTER id");
+            $wpdb->query("ALTER TABLE {$tabla_fichajes} ADD INDEX idx_empresa_id (empresa_id)");
+        }
+
+        // Verificar si la columna empresa_id ya existe en horarios
+        $columnas_horarios = $wpdb->get_col("DESCRIBE {$tabla_horarios}", 0);
+        if (!in_array('empresa_id', $columnas_horarios)) {
+            $wpdb->query("ALTER TABLE {$tabla_horarios} ADD COLUMN empresa_id bigint(20) unsigned DEFAULT NULL AFTER id");
+            $wpdb->query("ALTER TABLE {$tabla_horarios} ADD INDEX idx_empresa_id (empresa_id)");
+        }
+    }
+
+    /**
+     * Obtiene el ID de empresa del usuario actual
+     *
+     * @param int|null $user_id ID del usuario (opcional, usa el actual)
+     * @return int|null ID de empresa o null si no pertenece a ninguna
+     */
+    public function get_empresa_usuario($user_id = null) {
+        $user_id = $user_id ?: get_current_user_id();
+
+        // Intentar obtener del módulo Empresas si está activo
+        if (class_exists('Flavor_Chat_Empresas_Module')) {
+            $empresas_module = Flavor_Chat_Module_Loader::get_instance()->get_module('empresas');
+            if ($empresas_module && method_exists($empresas_module, 'get_empresa_actual_usuario')) {
+                return $empresas_module->get_empresa_actual_usuario($user_id);
+            }
+        }
+
+        // Fallback: verificar meta del usuario
+        $empresa_id = get_user_meta($user_id, '_flavor_empresa_actual', true);
+        return $empresa_id ? absint($empresa_id) : null;
     }
 
     /**
@@ -1222,21 +1282,25 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
 
-        $resultado = $wpdb->insert(
-            $tabla_fichajes,
-            [
-                'usuario_id' => $usuario_id,
-                'tipo' => $tipo,
-                'fecha_hora' => current_time('mysql'),
-                'latitud' => $params['latitud'] ?? null,
-                'longitud' => $params['longitud'] ?? null,
-                'dispositivo' => $params['dispositivo'] ?? 'app_movil',
-                'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
-                'notas' => sanitize_textarea_field($params['notas'] ?? ''),
-                'validado' => 1,
-            ],
-            ['%d', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%d']
-        );
+        // Obtener empresa_id del usuario (si pertenece a alguna)
+        $empresa_id = $this->get_empresa_usuario($usuario_id);
+
+        $datos_insert = [
+            'empresa_id' => $empresa_id,
+            'usuario_id' => $usuario_id,
+            'tipo' => $tipo,
+            'fecha_hora' => current_time('mysql'),
+            'latitud' => $params['latitud'] ?? null,
+            'longitud' => $params['longitud'] ?? null,
+            'dispositivo' => $params['dispositivo'] ?? 'app_movil',
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+            'notas' => sanitize_textarea_field($params['notas'] ?? ''),
+            'validado' => 1,
+        ];
+
+        $formatos = $empresa_id ? ['%d', '%d', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%d'] : [null, '%d', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%d'];
+
+        $resultado = $wpdb->insert($tabla_fichajes, $datos_insert);
 
         if ($resultado === false) {
             return [
@@ -1283,10 +1347,15 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
 
         $hoy = current_time('Y-m-d');
 
+        // Filtrar por empresa si el usuario pertenece a una
+        $empresa_id = $this->get_empresa_usuario($usuario_id);
+        $filtro_empresa = $empresa_id ? $wpdb->prepare(" AND empresa_id = %d", $empresa_id) : "";
+
         $fichajes = $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM $tabla_fichajes
             WHERE usuario_id = %d
             AND DATE(fecha_hora) = %s
+            {$filtro_empresa}
             ORDER BY fecha_hora ASC",
             $usuario_id,
             $hoy
@@ -1333,9 +1402,14 @@ class Flavor_Chat_Fichaje_Empleados_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_fichajes = $wpdb->prefix . 'flavor_fichajes';
 
+        // Filtrar por empresa si corresponde
+        $empresa_id = $this->get_empresa_usuario($usuario_id);
+        $filtro_empresa = $empresa_id ? $wpdb->prepare(" AND empresa_id = %d", $empresa_id) : "";
+
         $ultimo_fichaje = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM $tabla_fichajes
             WHERE usuario_id = %d
+            {$filtro_empresa}
             ORDER BY fecha_hora DESC
             LIMIT 1",
             $usuario_id

@@ -2,76 +2,124 @@
 
 Este directorio contiene la documentación técnica detallada de cada módulo del plugin.
 
+> **Estado**: 18 de 60+ módulos documentados (30%)
+> **Última actualización**: 2026-03-19
+
 ## Índice de Módulos
 
-### Módulos Completos
-- [advertising](./advertising.md) - Sistema de publicidad
-- [avisos-municipales](./avisos-municipales.md) - Avisos oficiales
-- [ayuda-vecinal](./ayuda-vecinal.md) - Ayuda entre vecinos
-- [banco-tiempo](./banco-tiempo.md) - Intercambio de servicios
-- [bares](./bares.md) - Directorio hostelería
-- [biblioteca](./biblioteca.md) - Biblioteca comunitaria
-- [bicicletas-compartidas](./bicicletas-compartidas.md) - Bike sharing
-- [biodiversidad-local](./biodiversidad-local.md) - Especies locales
-- [campanias](./campanias.md) - Campañas sociales
-- [carpooling](./carpooling.md) - Viajes compartidos
-- [chat-estados](./chat-estados.md) - Estados de usuario
-- [chat-grupos](./chat-grupos.md) - Chat grupal
-- [chat-interno](./chat-interno.md) - Mensajería privada
-- [circulos-cuidados](./circulos-cuidados.md) - Apoyo mutuo
-- [clientes](./clientes.md) - Gestión clientes
-- [colectivos](./colectivos.md) - Asociaciones
-- [compostaje](./compostaje.md) - Compostaje comunitario
-- [comunidades](./comunidades.md) - Comunidades virtuales
-- [cursos](./cursos.md) - Formación online
-- [documentacion-legal](./documentacion-legal.md) - Documentos legales
-- [economia-don](./economia-don.md) - Economía del don
-- [economia-suficiencia](./economia-suficiencia.md) - Autogestión
-- [email-marketing](./email-marketing.md) - Newsletters
-- [empresarial](./empresarial.md) - Gestión empresarial
-- [encuestas](./encuestas.md) - Encuestas y votaciones
-- [espacios-comunes](./espacios-comunes.md) - Espacios compartidos
-- [eventos](./eventos.md) - Gestión de eventos
-- [facturas](./facturas.md) - Facturación
-- [fichaje-empleados](./fichaje-empleados.md) - Control horario
-- [foros](./foros.md) - Foros de discusión
-- [grupos-consumo](./grupos-consumo.md) - Grupos de consumo
-- [huella-ecologica](./huella-ecologica.md) - Huella ecológica
-- [huertos-urbanos](./huertos-urbanos.md) - Huertos urbanos
-- [incidencias](./incidencias.md) - Incidencias urbanas
-- [justicia-restaurativa](./justicia-restaurativa.md) - Mediación
-- [mapa-actores](./mapa-actores.md) - Red de actores
-- [marketplace](./marketplace.md) - Mercadillo
-- [multimedia](./multimedia.md) - Galería multimedia
-- [parkings](./parkings.md) - Parking compartido
-- [participacion](./participacion.md) - Participación ciudadana
-- [podcast](./podcast.md) - Podcasts
-- [presupuestos-participativos](./presupuestos-participativos.md) - PP
-- [radio](./radio.md) - Radio comunitaria
-- [reciclaje](./reciclaje.md) - Reciclaje
-- [recetas](./recetas.md) - Recetario
-- [red-social](./red-social.md) - Red social interna
-- [reservas](./reservas.md) - Sistema reservas
-- [saberes-ancestrales](./saberes-ancestrales.md) - Conocimientos tradicionales
-- [seguimiento-denuncias](./seguimiento-denuncias.md) - Denuncias
-- [sello-conciencia](./sello-conciencia.md) - Certificaciones
-- [socios](./socios.md) - Gestión socios
-- [talleres](./talleres.md) - Talleres presenciales
-- [tramites](./tramites.md) - Trámites administrativos
-- [transparencia](./transparencia.md) - Portal transparencia
-- [trabajo-digno](./trabajo-digno.md) - Bolsa de empleo
+### Módulos Documentados (18)
+
+| Módulo | Categoría | Descripción |
+|--------|-----------|-------------|
+| [banco-tiempo](./banco-tiempo.md) | Economía | Intercambio de servicios por tiempo |
+| [biblioteca](./biblioteca.md) | Formación | Préstamo de libros comunitarios |
+| [comunidades](./comunidades.md) | Social | Comunidades y grupos virtuales |
+| [cursos](./cursos.md) | Formación | Plataforma de formación online |
+| [email-marketing](./email-marketing.md) | Marketing | Newsletters y campañas email |
+| [encuestas](./encuestas.md) | Participación | Encuestas, formularios y quizzes |
+| [espacios-comunes](./espacios-comunes.md) | Servicios | Reserva de espacios compartidos |
+| [eventos](./eventos.md) | Social | Gestión de eventos y actividades |
+| [foros](./foros.md) | Social | Foros de discusión comunitarios |
+| [grupos-consumo](./grupos-consumo.md) | Economía | Grupos de consumo responsable |
+| [incidencias](./incidencias.md) | Servicios | Tickets de soporte e incidencias |
+| [marketplace](./marketplace.md) | Economía | Mercadillo local |
+| [participacion](./participacion.md) | Gobernanza | Participación ciudadana |
+| [presupuestos-participativos](./presupuestos-participativos.md) | Gobernanza | Presupuestos participativos |
+| [reservas](./reservas.md) | Servicios | Sistema genérico de reservas |
+| [socios](./socios.md) | Gestión | Gestión de membresías |
+| [talleres](./talleres.md) | Formación | Talleres y workshops |
+| [transparencia](./transparencia.md) | Gobernanza | Portal de transparencia |
+
+### Módulos Pendientes de Documentar
+
+#### Categoría: Economía Local
+- advertising - Sistema de publicidad
+- bares - Directorio de hostelería
+- clientes - Gestión de clientes
+- economia-don - Economía del don
+- economia-suficiencia - Autogestión económica
+- empresarial - Gestión empresarial
+- facturas - Sistema de facturación
+- trabajo-digno - Bolsa de empleo ético
+
+#### Categoría: Movilidad
+- bicicletas-compartidas - Bike sharing
+- carpooling - Viajes compartidos
+- parkings - Parking compartido
+
+#### Categoría: Social y Comunicación
+- avisos-municipales - Avisos oficiales
+- chat-estados - Estados de usuario
+- chat-grupos - Chat grupal
+- chat-interno - Mensajería privada
+- colectivos - Asociaciones y colectivos
+- multimedia - Galería multimedia
+- podcast - Podcasts comunitarios
+- radio - Radio comunitaria
+- red-social - Red social interna
+
+#### Categoría: Ecología y Sostenibilidad
+- biodiversidad-local - Especies locales
+- compostaje - Compostaje comunitario
+- huella-ecologica - Huella ecológica
+- huertos-urbanos - Huertos urbanos
+- reciclaje - Reciclaje y puntos limpios
+- sello-conciencia - Certificaciones sostenibles
+
+#### Categoría: Cuidados y Comunidad
+- ayuda-vecinal - Ayuda entre vecinos
+- circulos-cuidados - Círculos de apoyo mutuo
+- justicia-restaurativa - Mediación comunitaria
+- saberes-ancestrales - Conocimientos tradicionales
+
+#### Categoría: Administración
+- campanias - Campañas sociales
+- documentacion-legal - Documentos legales
+- fichaje-empleados - Control horario
+- mapa-actores - Red de actores locales
+- recetas - Recetario comunitario
+- seguimiento-denuncias - Seguimiento de denuncias
+- tramites - Trámites administrativos
+
+---
 
 ## Estructura de Documentación
 
 Cada archivo de módulo incluye:
 
-1. **Descripción** - Propósito del módulo
-2. **CPTs** - Custom Post Types que utiliza
-3. **Taxonomías** - Taxonomías registradas
-4. **Tablas BD** - Tablas de base de datos con campos
-5. **Shortcodes** - Shortcodes disponibles con parámetros
-6. **Dashboard Tab** - Configuración del tab en mi-portal
-7. **Widget** - Widget del dashboard si existe
-8. **Páginas** - Páginas/rutas disponibles
-9. **Vinculaciones** - Relaciones con otros módulos
-10. **API Endpoints** - Endpoints REST si existen
+| Sección | Contenido |
+|---------|-----------|
+| **Información General** | ID, versión, categoría, principios Gailu |
+| **Descripción** | Propósito y funcionalidades principales |
+| **Tablas BD** | Esquema de tablas con campos y tipos |
+| **Endpoints API** | Endpoints REST con métodos y parámetros |
+| **Shortcodes** | Shortcodes disponibles con atributos |
+| **Configuración** | Opciones configurables del módulo |
+| **Estados** | Estados posibles de las entidades |
+| **Permisos** | Capabilities y roles requeridos |
+| **Cron Jobs** | Tareas programadas |
+| **Integraciones** | Relaciones con otros módulos |
+| **Dashboard Tabs** | Pestañas del panel de usuario |
+| **AJAX Actions** | Acciones AJAX disponibles |
+
+## Categorías de Módulos
+
+| Categoría | Módulos | Principio Gailu |
+|-----------|---------|-----------------|
+| **Economía** | banco-tiempo, grupos-consumo, marketplace... | Economía local |
+| **Formación** | cursos, talleres, biblioteca | Aprendizaje |
+| **Social** | eventos, foros, comunidades, red-social | Comunidad |
+| **Gobernanza** | participacion, transparencia, presupuestos-participativos | Democracia |
+| **Servicios** | reservas, espacios-comunes, incidencias | Cuidados |
+| **Ecología** | huertos-urbanos, compostaje, reciclaje | Sostenibilidad |
+| **Movilidad** | carpooling, bicicletas, parkings | Movilidad sostenible |
+
+## Principios Gailu
+
+Los módulos están alineados con los principios de la filosofía Gailu:
+
+- **Economía local**: Fomentar economías circulares y de proximidad
+- **Aprendizaje**: Compartir conocimientos y habilidades
+- **Cuidados**: Atención mutua y bienestar comunitario
+- **Sostenibilidad**: Reducir impacto ambiental
+- **Democracia**: Participación y transparencia en decisiones

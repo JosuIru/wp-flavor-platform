@@ -42,11 +42,17 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
     const TIPOS_CAMPO = [
         'texto'              => 'Texto corto',
         'textarea'           => 'Texto largo',
+        'email'              => 'Email',
+        'telefono'           => 'Teléfono',
+        'url'                => 'URL',
         'seleccion_unica'    => 'Selección única',
         'seleccion_multiple' => 'Selección múltiple',
         'fecha'              => 'Fecha',
+        'fecha_hora'         => 'Fecha y hora',
         'numero'             => 'Número',
+        'rango'              => 'Rango (slider)',
         'escala'             => 'Escala (1-10)',
+        'nps'                => 'NPS (0-10)',
         'si_no'              => 'Sí/No',
         'estrellas'          => 'Estrellas (1-5)',
     ];
@@ -197,6 +203,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
             'encuestas_responder',
             'encuestas_obtener_resultados',
             'encuestas_cerrar',
+            'encuestas_buscar_contexto',
             'encuestas_agregar_campo',
             'encuestas_eliminar_campo',
             'encuestas_reordenar_campos',
@@ -229,6 +236,13 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         add_shortcode('flavor_encuestas_contexto', [$this, 'shortcode_encuestas_contexto']);
         add_shortcode('flavor_encuesta_resultados', [$this, 'shortcode_resultados']);
         add_shortcode('flavor_encuesta_mini', [$this, 'shortcode_encuesta_mini']);
+
+        // Aliases de compatibilidad para tabs legacy declaradas en renderer config.
+        add_shortcode('encuestas_crear', [$this, 'shortcode_crear_encuesta']);
+        add_shortcode('encuestas_mis_encuestas', [$this, 'shortcode_mis_encuestas']);
+        add_shortcode('encuestas_resultados', [$this, 'shortcode_encuestas_resultados']);
+        add_shortcode('flavor_encuestas_mis_encuestas', [$this, 'shortcode_mis_encuestas']);
+        add_shortcode('flavor_encuestas_resultados', [$this, 'shortcode_encuestas_resultados']);
     }
 
     /**
@@ -240,19 +254,26 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         }
 
         $ruta_assets = plugin_dir_url(__FILE__) . 'assets/';
+        $asset_path_base = dirname(__FILE__) . '/assets/';
+        $css_version = file_exists($asset_path_base . 'css/encuestas.css')
+            ? (string) filemtime($asset_path_base . 'css/encuestas.css')
+            : self::VERSION;
+        $js_version = file_exists($asset_path_base . 'js/encuestas.js')
+            ? (string) filemtime($asset_path_base . 'js/encuestas.js')
+            : self::VERSION;
 
         wp_enqueue_style(
             'flavor-encuestas',
             $ruta_assets . 'css/encuestas.css',
             [],
-            self::VERSION
+            $css_version
         );
 
         wp_enqueue_script(
             'flavor-encuestas',
             $ruta_assets . 'js/encuestas.js',
             ['jquery'],
-            self::VERSION,
+            $js_version,
             true
         );
 
@@ -271,6 +292,9 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                 'error'              => __('Ha ocurrido un error', 'flavor-chat-ia'),
                 'campoRequerido'     => __('Este campo es obligatorio', 'flavor-chat-ia'),
                 'seleccionaOpcion'   => __('Selecciona una opción', 'flavor-chat-ia'),
+                'buscando'           => __('Buscando...', 'flavor-chat-ia'),
+                'sinResultados'      => __('No se han encontrado resultados', 'flavor-chat-ia'),
+                'contextoObligatorio'=> __('Debes seleccionar un destino para el contexto elegido', 'flavor-chat-ia'),
             ],
             'tiposCampo'    => self::TIPOS_CAMPO,
         ]);
@@ -291,6 +315,25 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         }
         if ($post && has_shortcode($post->post_content, 'flavor_encuestas_contexto')) {
             return true;
+        }
+
+        // Portal dinámico: cargar assets en rutas de encuestas aunque el
+        // contenido no provenga de un post con shortcode explícito.
+        $is_flavor_app = (bool) get_query_var('flavor_app');
+        $flavor_module = sanitize_key((string) get_query_var('flavor_module', ''));
+        if ($is_flavor_app && in_array($flavor_module, ['encuestas', 'encuesta'], true)) {
+            return true;
+        }
+
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash((string) $_SERVER['REQUEST_URI']) : '';
+        if ($request_uri !== '') {
+            $uri = strtolower($request_uri);
+            if (
+                strpos($uri, '/mi-portal/encuestas') !== false ||
+                preg_match('#/(encuestas|encuesta)(/|$)#', $uri)
+            ) {
+                return true;
+            }
         }
 
         // Cargar si hay filtro que lo permita
@@ -733,10 +776,24 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                 break;
 
             case 'numero':
+            case 'rango':
+            case 'nps':
             case 'escala':
             case 'estrellas':
                 $datos['valor'] = is_numeric($valor) ? floatval($valor) : null;
                 $datos['opcion_index'] = absint($valor);
+                break;
+
+            case 'email':
+                $datos['valor'] = sanitize_email($valor);
+                break;
+
+            case 'url':
+                $datos['valor'] = esc_url_raw($valor);
+                break;
+
+            case 'telefono':
+                $datos['valor'] = preg_replace('/[^0-9+()\-\s]/', '', (string) $valor);
                 break;
 
             default:
@@ -927,6 +984,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                     break;
 
                 case 'numero':
+                case 'rango':
+                case 'nps':
                     // Estadísticas numéricas
                     $stats = $wpdb->get_row($wpdb->prepare(
                         "SELECT
@@ -1108,6 +1167,48 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Shortcode: Mis encuestas creadas.
+     */
+    public function shortcode_mis_encuestas($atts) {
+        if (!is_user_logged_in()) {
+            return '';
+        }
+
+        $atts = shortcode_atts([
+            'limit' => 10,
+        ], $atts);
+
+        $encuestas = $this->listar_por_usuario(get_current_user_id(), [
+            'limit' => absint($atts['limit']),
+        ]);
+
+        if (empty($encuestas)) {
+            return '<div class="flavor-encuestas-lista__empty-state">' .
+                '<p class="flavor-encuestas-lista__empty">' . esc_html__('No has creado encuestas todavía.', 'flavor-chat-ia') . '</p>' .
+                '<p><a class="flavor-encuestas-lista__empty-cta" href="' . esc_url(home_url('/mi-portal/encuestas/crear/')) . '">' . esc_html__('Crear encuesta', 'flavor-chat-ia') . '</a></p>' .
+                '</div>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-encuestas-lista">
+            <?php foreach ($encuestas as $encuesta): ?>
+                <div class="flavor-encuestas-lista__item">
+                    <a class="flavor-encuestas-lista__link" href="<?php echo esc_url(home_url('/mi-portal/encuestas/' . absint($encuesta->id) . '/')); ?>">
+                        <h4 class="flavor-encuestas-lista__titulo"><?php echo esc_html($encuesta->titulo); ?></h4>
+                        <div class="flavor-encuestas-lista__meta">
+                            <span><?php echo esc_html(ucfirst((string) $encuesta->estado)); ?></span>
+                            <span><?php echo esc_html((int) $encuesta->total_participantes); ?> <?php esc_html_e('participantes', 'flavor-chat-ia'); ?></span>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
      * Shortcode: Listar encuestas de contexto
      */
     public function shortcode_encuestas_contexto($atts) {
@@ -1143,6 +1244,56 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         }
 
         return '';
+    }
+
+    /**
+     * Shortcode: Resumen de encuestas con resultados.
+     */
+    public function shortcode_encuestas_resultados($atts) {
+        global $wpdb;
+
+        $atts = shortcode_atts([
+            'limit' => 8,
+        ], $atts);
+
+        $tabla = $wpdb->prefix . 'flavor_encuestas';
+        $limit = max(1, min(20, absint($atts['limit'])));
+
+        $encuestas = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT id, titulo, estado, total_respuestas, total_participantes
+                 FROM {$tabla}
+                 WHERE total_respuestas > 0
+                 ORDER BY fecha_creacion DESC
+                 LIMIT %d",
+                $limit
+            )
+        );
+
+        if (empty($encuestas)) {
+            return '<div class="flavor-encuestas-lista__empty-state">' .
+                '<p class="flavor-encuestas-lista__empty">' . esc_html__('No hay resultados disponibles todavía.', 'flavor-chat-ia') . '</p>' .
+                '<p><a class="flavor-encuestas-lista__empty-cta" href="' . esc_url(home_url('/mi-portal/encuestas/crear/')) . '">' . esc_html__('Crear encuesta', 'flavor-chat-ia') . '</a></p>' .
+                '</div>';
+        }
+
+        ob_start();
+        ?>
+        <div class="flavor-encuestas-lista">
+            <?php foreach ($encuestas as $encuesta): ?>
+                <div class="flavor-encuestas-lista__item">
+                    <a class="flavor-encuestas-lista__link" href="<?php echo esc_url(home_url('/mi-portal/encuestas/' . absint($encuesta->id) . '/')); ?>">
+                        <h4 class="flavor-encuestas-lista__titulo"><?php echo esc_html($encuesta->titulo); ?></h4>
+                        <div class="flavor-encuestas-lista__meta">
+                            <span><?php echo esc_html((int) $encuesta->total_respuestas); ?> <?php esc_html_e('respuestas', 'flavor-chat-ia'); ?></span>
+                            <span><?php echo esc_html((int) $encuesta->total_participantes); ?> <?php esc_html_e('participantes', 'flavor-chat-ia'); ?></span>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 
     /**
@@ -1273,6 +1424,414 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
         }
 
         wp_send_json_success(['message' => __('Encuesta cerrada', 'flavor-chat-ia')]);
+    }
+
+    /**
+     * AJAX: Buscar entidades para vincular la encuesta por contexto.
+     */
+    public function ajax_encuestas_buscar_contexto() {
+        check_ajax_referer('flavor_encuestas_nonce', 'nonce');
+
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('Debes iniciar sesión', 'flavor-chat-ia')], 401);
+        }
+
+        $contexto_tipo = sanitize_key((string) ($_POST['contexto_tipo'] ?? $_GET['contexto_tipo'] ?? ''));
+        $query = sanitize_text_field(wp_unslash((string) ($_POST['q'] ?? $_GET['q'] ?? '')));
+        $limit = max(3, min(12, absint($_POST['limit'] ?? $_GET['limit'] ?? 8)));
+
+        if (!in_array($contexto_tipo, self::CONTEXTOS_VALIDOS, true) || $contexto_tipo === 'general') {
+            wp_send_json_success(['items' => []]);
+        }
+
+        if (strlen($query) < 2) {
+            wp_send_json_success(['items' => []]);
+        }
+
+        $items = $this->buscar_items_contexto($contexto_tipo, $query, $limit);
+        wp_send_json_success(['items' => $items]);
+    }
+
+    /**
+     * Busca entidades por tipo de contexto.
+     *
+     * @param string $contexto_tipo
+     * @param string $query
+     * @param int $limit
+     * @return array<int, array<string, mixed>>
+     */
+    private function buscar_items_contexto($contexto_tipo, $query, $limit = 8) {
+        global $wpdb;
+
+        $like = '%' . $wpdb->esc_like($query) . '%';
+        $items = [];
+        $user_id = get_current_user_id();
+        $is_admin = current_user_can('manage_options');
+
+        switch ($contexto_tipo) {
+            case 'chat_grupo':
+                $tabla = $wpdb->prefix . 'flavor_chat_grupos';
+                if ($this->tabla_existe_segura($tabla)) {
+                    $cols = $this->obtener_columnas_tabla_segura($tabla);
+                    $search_col = in_array('descripcion', $cols, true) ? 'descripcion' : 'nombre';
+                    $where = ["(g.nombre LIKE %s OR g.{$search_col} LIKE %s)"];
+                    $params = [$like, $like];
+
+                    if (in_array('estado', $cols, true)) {
+                        $where[] = "g.estado = 'activo'";
+                    }
+
+                    $join = '';
+                    if (!$is_admin && $user_id > 0) {
+                        $canales = [];
+                        if (in_array('tipo', $cols, true)) {
+                            $canales[] = "g.tipo = 'publico'";
+                        }
+                        if (in_array('creador_id', $cols, true)) {
+                            $canales[] = 'g.creador_id = %d';
+                            $params[] = $user_id;
+                        }
+
+                        $tabla_miembros = $wpdb->prefix . 'flavor_chat_grupos_miembros';
+                        if ($this->tabla_existe_segura($tabla_miembros)) {
+                            $join = " LEFT JOIN {$tabla_miembros} m ON m.grupo_id = g.id AND m.usuario_id = %d";
+                            array_unshift($params, $user_id);
+                            $canales[] = 'm.id IS NOT NULL';
+                        }
+
+                        if (!empty($canales)) {
+                            $where[] = '(' . implode(' OR ', $canales) . ')';
+                        }
+                    }
+
+                    $sql = "SELECT DISTINCT g.id, g.nombre, " . (in_array('descripcion', $cols, true) ? 'g.descripcion' : "'' AS descripcion") . ", " . (in_array('estado', $cols, true) ? 'g.estado' : "'' AS estado") . "
+                        FROM {$tabla} g
+                        {$join}
+                        WHERE " . implode(' AND ', $where) . "
+                        ORDER BY g.id DESC
+                        LIMIT %d";
+                    $params[] = $limit;
+
+                    $rows = $wpdb->get_results($this->prepare_query($sql, $params));
+                    $items = $this->mapear_items_desde_filas($rows, 'nombre', 'descripcion', __('Grupo de chat', 'flavor-chat-ia'));
+                }
+                break;
+
+            case 'foro':
+                $tabla = $wpdb->prefix . 'flavor_foros';
+                if ($this->tabla_existe_segura($tabla)) {
+                    $cols = $this->obtener_columnas_tabla_segura($tabla);
+                    $where = ["(nombre LIKE %s OR " . (in_array('descripcion', $cols, true) ? 'descripcion' : 'nombre') . " LIKE %s)"];
+                    $params = [$like, $like];
+
+                    if (in_array('estado', $cols, true)) {
+                        $where[] = "estado = 'activo'";
+                    }
+                    if (!$is_admin && in_array('solo_admins', $cols, true)) {
+                        $where[] = 'solo_admins = 0';
+                    }
+
+                    $sql = "SELECT id, nombre, " . (in_array('descripcion', $cols, true) ? 'descripcion' : "'' AS descripcion") . ", " . (in_array('estado', $cols, true) ? 'estado' : "'' AS estado") . "
+                        FROM {$tabla}
+                        WHERE " . implode(' AND ', $where) . "
+                        ORDER BY id DESC
+                        LIMIT %d";
+                    $params[] = $limit;
+
+                    $rows = $wpdb->get_results($this->prepare_query($sql, $params));
+                    $items = $this->mapear_items_desde_filas($rows, 'nombre', 'descripcion', __('Foro', 'flavor-chat-ia'));
+                }
+                break;
+
+            case 'comunidad':
+                $tabla = $wpdb->prefix . 'flavor_comunidades';
+                if ($this->tabla_existe_segura($tabla)) {
+                    $cols = $this->obtener_columnas_tabla_segura($tabla);
+                    $join = '';
+                    $where = ["(c.nombre LIKE %s OR " . (in_array('descripcion', $cols, true) ? 'c.descripcion' : 'c.nombre') . ' LIKE %s)'];
+                    $params = [$like, $like];
+
+                    if (in_array('estado', $cols, true)) {
+                        $where[] = "c.estado = 'activa'";
+                    }
+
+                    if (!$is_admin && $user_id > 0) {
+                        $canales = [];
+                        if (in_array('tipo', $cols, true)) {
+                            $canales[] = "c.tipo = 'abierta'";
+                        }
+                        if (in_array('creador_id', $cols, true)) {
+                            $canales[] = 'c.creador_id = %d';
+                            $params[] = $user_id;
+                        }
+
+                        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+                        if ($this->tabla_existe_segura($tabla_miembros) && $this->columna_existe_segura($tabla_miembros, 'user_id')) {
+                            $join = " LEFT JOIN {$tabla_miembros} m ON m.comunidad_id = c.id AND m.user_id = %d";
+                            array_unshift($params, $user_id);
+                            $canales[] = 'm.id IS NOT NULL';
+                        }
+
+                        if (!empty($canales)) {
+                            $where[] = '(' . implode(' OR ', $canales) . ')';
+                        }
+                    }
+
+                    $sql = "SELECT DISTINCT c.id, c.nombre, " . (in_array('descripcion', $cols, true) ? 'c.descripcion' : "'' AS descripcion") . ", " . (in_array('estado', $cols, true) ? 'c.estado' : "'' AS estado") . "
+                        FROM {$tabla} c
+                        {$join}
+                        WHERE " . implode(' AND ', $where) . "
+                        ORDER BY c.id DESC
+                        LIMIT %d";
+                    $params[] = $limit;
+
+                    $rows = $wpdb->get_results($this->prepare_query($sql, $params));
+                    $items = $this->mapear_items_desde_filas($rows, 'nombre', 'descripcion', __('Comunidad', 'flavor-chat-ia'));
+                }
+                break;
+
+            case 'evento':
+                $tabla = $wpdb->prefix . 'flavor_eventos';
+                if ($this->tabla_existe_segura($tabla)) {
+                    $cols = $this->obtener_columnas_tabla_segura($tabla);
+                    $join = '';
+                    $where = ["(e.titulo LIKE %s OR " . (in_array('descripcion', $cols, true) ? 'e.descripcion' : 'e.titulo') . ' LIKE %s)'];
+                    $params = [$like, $like];
+
+                    if (!$is_admin && $user_id > 0) {
+                        $canales = [];
+                        if (in_array('estado', $cols, true)) {
+                            $canales[] = "e.estado = 'publicado'";
+                        }
+                        if (in_array('organizador_id', $cols, true)) {
+                            $canales[] = 'e.organizador_id = %d';
+                            $params[] = $user_id;
+                        }
+
+                        $tabla_ins = $wpdb->prefix . 'flavor_eventos_inscripciones';
+                        if ($this->tabla_existe_segura($tabla_ins) && $this->columna_existe_segura($tabla_ins, 'user_id')) {
+                            $join = " LEFT JOIN {$tabla_ins} i ON i.evento_id = e.id AND i.user_id = %d";
+                            array_unshift($params, $user_id);
+                            $canales[] = 'i.id IS NOT NULL';
+                        }
+
+                        if (!empty($canales)) {
+                            $where[] = '(' . implode(' OR ', $canales) . ')';
+                        }
+                    }
+
+                    $sql = "SELECT DISTINCT e.id, e.titulo, " . (in_array('descripcion', $cols, true) ? 'e.descripcion' : "'' AS descripcion") . ", " . (in_array('fecha_inicio', $cols, true) ? 'e.fecha_inicio' : 'NULL AS fecha_inicio') . ", " . (in_array('estado', $cols, true) ? 'e.estado' : "'' AS estado") . "
+                         FROM {$tabla} e
+                         {$join}
+                         WHERE " . implode(' AND ', $where) . "
+                         ORDER BY " . (in_array('fecha_inicio', $cols, true) ? 'e.fecha_inicio DESC, ' : '') . "e.id DESC
+                         LIMIT %d";
+                    $params[] = $limit;
+
+                    $rows = $wpdb->get_results($this->prepare_query($sql, $params));
+
+                    foreach ((array) $rows as $row) {
+                        $subtitle = __('Evento', 'flavor-chat-ia');
+                        if (!empty($row->fecha_inicio)) {
+                            $subtitle .= ' • ' . mysql2date(get_option('date_format'), $row->fecha_inicio);
+                        }
+                        $items[] = [
+                            'id'       => (int) $row->id,
+                            'label'    => wp_strip_all_tags((string) $row->titulo),
+                            'subtitle' => $subtitle,
+                            'type_label' => __('Evento', 'flavor-chat-ia'),
+                            'status_label' => !empty($row->estado) ? $this->formatear_estado_contexto($row->estado) : '',
+                        ];
+                    }
+                }
+                break;
+
+            case 'curso':
+                $tabla = $wpdb->prefix . 'flavor_cursos';
+                if ($this->tabla_existe_segura($tabla)) {
+                    $cols = $this->obtener_columnas_tabla_segura($tabla);
+                    $join = '';
+                    $where = ["(c.titulo LIKE %s OR " . (in_array('descripcion', $cols, true) ? 'c.descripcion' : 'c.titulo') . ' LIKE %s)'];
+                    $params = [$like, $like];
+
+                    if (!$is_admin && $user_id > 0) {
+                        $canales = [];
+                        if (in_array('estado', $cols, true)) {
+                            $canales[] = "c.estado = 'publicado'";
+                        }
+                        if (in_array('instructor_id', $cols, true)) {
+                            $canales[] = 'c.instructor_id = %d';
+                            $params[] = $user_id;
+                        }
+
+                        $tabla_ins = $wpdb->prefix . 'flavor_cursos_inscripciones';
+                        if ($this->tabla_existe_segura($tabla_ins) && $this->columna_existe_segura($tabla_ins, 'usuario_id')) {
+                            $join = " LEFT JOIN {$tabla_ins} i ON i.curso_id = c.id AND i.usuario_id = %d";
+                            array_unshift($params, $user_id);
+                            $canales[] = 'i.id IS NOT NULL';
+                        }
+
+                        if (!empty($canales)) {
+                            $where[] = '(' . implode(' OR ', $canales) . ')';
+                        }
+                    }
+
+                    $sql = "SELECT DISTINCT c.id, c.titulo, " . (in_array('descripcion', $cols, true) ? 'c.descripcion' : "'' AS descripcion") . ", " . (in_array('estado', $cols, true) ? 'c.estado' : "'' AS estado") . "
+                         FROM {$tabla} c
+                         {$join}
+                         WHERE " . implode(' AND ', $where) . "
+                         ORDER BY c.id DESC
+                         LIMIT %d";
+                    $params[] = $limit;
+
+                    $rows = $wpdb->get_results($this->prepare_query($sql, $params));
+                    $items = $this->mapear_items_desde_filas($rows, 'titulo', 'descripcion', __('Curso', 'flavor-chat-ia'));
+                }
+                break;
+
+            case 'red_social':
+                $tabla = $wpdb->prefix . 'flavor_social_publicaciones';
+                if ($this->tabla_existe_segura($tabla)) {
+                    $cols = $this->obtener_columnas_tabla_segura($tabla);
+                    $where = ["contenido LIKE %s"];
+                    $params = [$like];
+
+                    if (!$is_admin) {
+                        if (in_array('estado', $cols, true)) {
+                            $where[] = "estado = 'publicado'";
+                        }
+                        if ($user_id > 0 && in_array('visibilidad', $cols, true) && in_array('autor_id', $cols, true)) {
+                            $where[] = "(visibilidad IN ('publica','comunidad') OR autor_id = %d)";
+                            $params[] = $user_id;
+                        } elseif (in_array('visibilidad', $cols, true)) {
+                            $where[] = "visibilidad IN ('publica','comunidad')";
+                        }
+                    }
+
+                    $sql = "SELECT id, contenido, " . (in_array('estado', $cols, true) ? 'estado' : "'' AS estado") . "
+                         FROM {$tabla}
+                         WHERE " . implode(' AND ', $where) . "
+                         ORDER BY id DESC
+                         LIMIT %d";
+                    $params[] = $limit;
+
+                    $rows = $wpdb->get_results($this->prepare_query($sql, $params));
+                    foreach ((array) $rows as $row) {
+                        $items[] = [
+                            'id'       => (int) $row->id,
+                            'label'    => sprintf(__('Publicación #%d', 'flavor-chat-ia'), (int) $row->id),
+                            'subtitle' => wp_trim_words(wp_strip_all_tags((string) $row->contenido), 12, '…'),
+                            'type_label' => __('Red social', 'flavor-chat-ia'),
+                            'status_label' => !empty($row->estado) ? $this->formatear_estado_contexto($row->estado) : '',
+                        ];
+                    }
+                }
+                break;
+        }
+
+        return $items;
+    }
+
+    /**
+     * Mapea filas DB a formato común de resultados de búsqueda.
+     *
+     * @param array<int, object> $rows
+     * @param string $label_key
+     * @param string $desc_key
+     * @param string $type_label
+     * @return array<int, array<string, mixed>>
+     */
+    private function mapear_items_desde_filas($rows, $label_key, $desc_key, $type_label) {
+        $items = [];
+        foreach ((array) $rows as $row) {
+            $label = isset($row->{$label_key}) ? wp_strip_all_tags((string) $row->{$label_key}) : '';
+            if ($label === '') {
+                continue;
+            }
+
+            $subtitle = $type_label;
+            $desc = isset($row->{$desc_key}) ? wp_strip_all_tags((string) $row->{$desc_key}) : '';
+            if ($desc !== '') {
+                $subtitle .= ' • ' . wp_trim_words($desc, 12, '…');
+            }
+
+            $items[] = [
+                'id'       => isset($row->id) ? (int) $row->id : 0,
+                'label'    => $label,
+                'subtitle' => $subtitle,
+                'type_label' => $type_label,
+                'status_label' => isset($row->estado) ? $this->formatear_estado_contexto($row->estado) : '',
+            ];
+        }
+
+        return $items;
+    }
+
+    /**
+     * Formatea un estado técnico para mostrarlo en UI.
+     *
+     * @param string $estado
+     * @return string
+     */
+    private function formatear_estado_contexto($estado) {
+        $estado = trim((string) $estado);
+        if ($estado === '') {
+            return '';
+        }
+        return ucwords(str_replace('_', ' ', $estado));
+    }
+
+    /**
+     * Comprueba existencia de tabla sin lanzar errores SQL al frontend.
+     *
+     * @param string $tabla Nombre completo de tabla.
+     * @return bool
+     */
+    private function tabla_existe_segura($tabla) {
+        global $wpdb;
+        $found = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tabla));
+        return $found === $tabla;
+    }
+
+    /**
+     * Comprueba existencia de columna en una tabla.
+     *
+     * @param string $tabla
+     * @param string $columna
+     * @return bool
+     */
+    private function columna_existe_segura($tabla, $columna) {
+        global $wpdb;
+        $found = $wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM {$tabla} LIKE %s", $columna));
+        return !empty($found);
+    }
+
+    /**
+     * Devuelve listado de columnas disponibles para una tabla.
+     *
+     * @param string $tabla
+     * @return string[]
+     */
+    private function obtener_columnas_tabla_segura($tabla) {
+        global $wpdb;
+        $result = $wpdb->get_col("SHOW COLUMNS FROM {$tabla}", 0);
+        if (empty($result) || !is_array($result)) {
+            return [];
+        }
+        return array_map('strval', $result);
+    }
+
+    /**
+     * Prepara una query con parámetros variables.
+     *
+     * @param string $sql
+     * @param array<int, mixed> $params
+     * @return string
+     */
+    private function prepare_query($sql, array $params) {
+        global $wpdb;
+        $prepared = call_user_func_array([$wpdb, 'prepare'], array_merge([$sql], $params));
+        return is_string($prepared) ? $prepared : $sql;
     }
 
     // =========================================================================
@@ -1413,6 +1972,13 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
      * Registra las páginas de admin ocultas (accesibles desde panel unificado)
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Páginas ocultas (sin menú visible en el sidebar de WordPress)
@@ -2481,10 +3047,11 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
 
                         case 'escala':
                         case 'estrellas':
+                            $min_valor = 1;
                             $max_valor = $campo['tipo'] === 'estrellas' ? 5 : 10;
                             $total_votos = array_sum($campo['conteos'] ?? []);
 
-                            for ($i = 1; $i <= $max_valor; $i++):
+                            for ($i = $min_valor; $i <= $max_valor; $i++):
                                 $votos = $campo['conteos'][$i] ?? 0;
                                 $porcentaje = $total_votos > 0 ? round(($votos / $total_votos) * 100, 1) : 0;
                             ?>
@@ -2513,6 +3080,8 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                             break;
 
                         case 'numero':
+                        case 'rango':
+                        case 'nps':
                             $stats = $campo['estadisticas'] ?? [];
                             ?>
                             <div class="flavor-estadisticas-num">
@@ -2870,7 +3439,7 @@ class Flavor_Chat_Encuestas_Module extends Flavor_Chat_Module_Base {
                 'crear' => [
                     'label'      => __('Crear encuesta', 'flavor-chat-ia'),
                     'icon'       => 'dashicons-plus-alt',
-                    'content'    => 'shortcode:encuestas_crear',
+                    'content'    => 'shortcode:flavor_encuesta_crear',
                     'requires_login' => true,
                 ],
                 'mis-encuestas' => [

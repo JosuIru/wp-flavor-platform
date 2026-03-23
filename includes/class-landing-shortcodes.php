@@ -242,10 +242,18 @@ class Flavor_Landing_Shortcodes {
      * Registra los shortcodes
      */
     private function register_shortcodes() {
-        add_shortcode('flavor_landing', [$this, 'render_landing']);
-        add_shortcode('flavor_section', [$this, 'render_section']);
-        add_shortcode('flavor_grupos_consumo', [$this, 'render_grupos_consumo']);
-        add_shortcode('flavor_banco_tiempo', [$this, 'render_banco_tiempo']);
+        $shortcodes = [
+            'flavor_landing' => 'render_landing',
+            'flavor_section' => 'render_section',
+            'flavor_grupos_consumo' => 'render_grupos_consumo',
+            'flavor_banco_tiempo' => 'render_banco_tiempo',
+        ];
+
+        foreach ($shortcodes as $tag => $method) {
+            if (!shortcode_exists($tag)) {
+                add_shortcode($tag, [$this, $method]);
+            }
+        }
     }
 
     /**

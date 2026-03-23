@@ -1640,7 +1640,7 @@ class Flavor_Client_Dashboard {
 
             $signals[] = [
                 'module_id' => 'socios',
-                'label' => __('Tu vínculo de socio requiere atención', 'flavor-chat-ia'),
+                'label' => __('Tu vínculo de miembro requiere atención', 'flavor-chat-ia'),
                 'meta' => implode(' · ', $meta_parts),
                 'url' => home_url('/mi-portal/socios/cuotas/'),
                 'kind' => __('Senal', 'flavor-chat-ia'),

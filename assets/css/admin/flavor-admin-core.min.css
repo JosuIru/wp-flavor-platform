@@ -1,0 +1,570 @@
+/**
+ * Flavor Admin Core - Sistema CSS Unificado para Admin
+ *
+ * Extiende los design tokens del frontend para el contexto WordPress Admin.
+ * Incluye: variables admin, dark mode, skeleton loaders, componentes comunes.
+ *
+ * @package FlavorChatIA
+ * @since 4.3.0
+ */
+
+/* Importar design tokens base */
+@import url('../core/design-tokens.css');
+
+/* =========================================================================
+ * VARIABLES ESPECÍFICAS ADMIN
+ * ========================================================================= */
+
+:root {
+    /* WordPress Admin Colors */
+    --flavor-admin-primary: #2271b1;
+    --flavor-admin-primary-hover: #135e96;
+    --flavor-admin-primary-focus: #043959;
+
+    /* Admin Backgrounds */
+    --flavor-admin-bg: #f0f0f1;
+    --flavor-admin-bg-card: #ffffff;
+    --flavor-admin-bg-header: #1d2327;
+
+    /* Admin Borders */
+    --flavor-admin-border: #c3c4c7;
+    --flavor-admin-border-light: #dcdcde;
+    --flavor-admin-border-focus: #2271b1;
+
+    /* Admin Text */
+    --flavor-admin-text: #1d2327;
+    --flavor-admin-text-secondary: #50575e;
+    --flavor-admin-text-muted: #787c82;
+
+    /* Status Colors */
+    --flavor-admin-success: #00a32a;
+    --flavor-admin-success-bg: #edfaef;
+    --flavor-admin-warning: #dba617;
+    --flavor-admin-warning-bg: #fcf9e8;
+    --flavor-admin-error: #d63638;
+    --flavor-admin-error-bg: #fcf0f1;
+    --flavor-admin-info: #72aee6;
+    --flavor-admin-info-bg: #f0f6fc;
+
+    /* Card Styles */
+    --flavor-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --flavor-card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
+    --flavor-card-radius: 12px;
+    --flavor-card-padding: 20px;
+
+    /* Animation */
+    --flavor-transition-fast: 0.15s ease;
+    --flavor-transition: 0.2s ease;
+    --flavor-transition-slow: 0.3s ease;
+}
+
+/* =========================================================================
+ * DARK MODE - WordPress Admin
+ * ========================================================================= */
+
+/* Detectar preferencia del sistema */
+@media (prefers-color-scheme: dark) {
+    body.flavor-admin-auto-dark {
+        --flavor-admin-bg: #1e1e1e;
+        --flavor-admin-bg-card: #2d2d2d;
+        --flavor-admin-border: #3c3c3c;
+        --flavor-admin-border-light: #4a4a4a;
+        --flavor-admin-text: #e0e0e0;
+        --flavor-admin-text-secondary: #b0b0b0;
+        --flavor-admin-text-muted: #808080;
+
+        /* Ajustar sombras para dark mode */
+        --flavor-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        --flavor-card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* Clase explícita para dark mode */
+body.flavor-admin-dark,
+body.admin-color-flavor-dark {
+    --flavor-admin-bg: #1e1e1e;
+    --flavor-admin-bg-card: #2d2d2d;
+    --flavor-admin-bg-header: #0a0a0a;
+    --flavor-admin-border: #3c3c3c;
+    --flavor-admin-border-light: #4a4a4a;
+    --flavor-admin-text: #e0e0e0;
+    --flavor-admin-text-secondary: #b0b0b0;
+    --flavor-admin-text-muted: #808080;
+    --flavor-admin-primary: #72aee6;
+    --flavor-admin-primary-hover: #9ec9f0;
+
+    /* Status colors ajustados */
+    --flavor-admin-success: #68de7c;
+    --flavor-admin-success-bg: #1a3d1f;
+    --flavor-admin-warning: #f0c33c;
+    --flavor-admin-warning-bg: #3d3520;
+    --flavor-admin-error: #f86368;
+    --flavor-admin-error-bg: #3d1f20;
+    --flavor-admin-info: #72aee6;
+    --flavor-admin-info-bg: #1f2f3d;
+
+    --flavor-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --flavor-card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Aplicar variables al wrapper de páginas Flavor */
+.flavor-admin-page,
+.wrap.flavor-network-admin,
+.wrap.flavor-apps-config {
+    background: var(--flavor-admin-bg);
+    color: var(--flavor-admin-text);
+}
+
+/* =========================================================================
+ * SKELETON LOADERS
+ * ========================================================================= */
+
+.flavor-skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--flavor-admin-border-light) 25%,
+        var(--flavor-admin-bg) 50%,
+        var(--flavor-admin-border-light) 75%
+    );
+    background-size: 200% 100%;
+    animation: flavor-skeleton-pulse 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+@keyframes flavor-skeleton-pulse {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Variantes de skeleton */
+.flavor-skeleton-text {
+    height: 14px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+.flavor-skeleton-text.short {
+    width: 60%;
+}
+
+.flavor-skeleton-text.medium {
+    width: 80%;
+}
+
+.flavor-skeleton-title {
+    height: 20px;
+    width: 40%;
+    margin-bottom: 16px;
+    border-radius: 4px;
+}
+
+.flavor-skeleton-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.flavor-skeleton-card {
+    background: var(--flavor-admin-bg-card);
+    border: 1px solid var(--flavor-admin-border-light);
+    border-radius: var(--flavor-card-radius);
+    padding: var(--flavor-card-padding);
+}
+
+.flavor-skeleton-card .flavor-skeleton-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.flavor-skeleton-card .flavor-skeleton-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+}
+
+.flavor-skeleton-card .flavor-skeleton-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Skeleton para grid de módulos */
+.flavor-skeleton-modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+/* Skeleton para stats */
+.flavor-skeleton-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+    background: var(--flavor-admin-bg-card);
+    border: 1px solid var(--flavor-admin-border-light);
+    border-radius: var(--flavor-card-radius);
+}
+
+.flavor-skeleton-stat-value {
+    height: 32px;
+    width: 50%;
+    border-radius: 4px;
+}
+
+.flavor-skeleton-stat-label {
+    height: 14px;
+    width: 70%;
+    border-radius: 4px;
+}
+
+/* =========================================================================
+ * COMPONENTES COMUNES ADMIN
+ * ========================================================================= */
+
+/* Card Base */
+.flavor-admin-card {
+    background: var(--flavor-admin-bg-card);
+    border: 1px solid var(--flavor-admin-border-light);
+    border-radius: var(--flavor-card-radius);
+    padding: var(--flavor-card-padding);
+    box-shadow: var(--flavor-card-shadow);
+    transition: all var(--flavor-transition);
+}
+
+.flavor-admin-card:hover {
+    box-shadow: var(--flavor-card-shadow-hover);
+}
+
+/* Stat Card */
+.flavor-admin-stat-card {
+    background: linear-gradient(135deg, var(--flavor-admin-bg-card) 0%, var(--fl-gray-50) 100%);
+    border: 1px solid var(--flavor-admin-border-light);
+    border-radius: var(--flavor-card-radius);
+    padding: 20px 24px;
+    transition: all var(--flavor-transition);
+}
+
+.flavor-admin-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--flavor-card-shadow-hover);
+}
+
+.flavor-admin-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--flavor-admin-text);
+    line-height: 1.2;
+}
+
+.flavor-admin-stat-label {
+    font-size: 13px;
+    color: var(--flavor-admin-text-secondary);
+    margin-top: 4px;
+}
+
+.flavor-admin-stat-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-top: 8px;
+}
+
+.flavor-admin-stat-trend.up {
+    color: var(--flavor-admin-success);
+    background: var(--flavor-admin-success-bg);
+}
+
+.flavor-admin-stat-trend.down {
+    color: var(--flavor-admin-error);
+    background: var(--flavor-admin-error-bg);
+}
+
+/* Badge */
+.flavor-admin-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flavor-admin-badge.success {
+    color: var(--flavor-admin-success);
+    background: var(--flavor-admin-success-bg);
+}
+
+.flavor-admin-badge.warning {
+    color: var(--flavor-admin-warning);
+    background: var(--flavor-admin-warning-bg);
+}
+
+.flavor-admin-badge.error {
+    color: var(--flavor-admin-error);
+    background: var(--flavor-admin-error-bg);
+}
+
+.flavor-admin-badge.info {
+    color: var(--flavor-admin-info);
+    background: var(--flavor-admin-info-bg);
+}
+
+/* Section Header */
+.flavor-admin-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--flavor-admin-border-light);
+}
+
+.flavor-admin-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--flavor-admin-text);
+    margin: 0;
+}
+
+.flavor-admin-section-title .dashicons {
+    color: var(--flavor-admin-primary);
+}
+
+/* Empty State */
+.flavor-admin-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--flavor-admin-text-muted);
+}
+
+.flavor-admin-empty-state .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.flavor-admin-empty-state h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: var(--flavor-admin-text-secondary);
+}
+
+.flavor-admin-empty-state p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Copy Button */
+.flavor-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--flavor-admin-text-secondary);
+    background: var(--flavor-admin-bg);
+    border: 1px solid var(--flavor-admin-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all var(--flavor-transition-fast);
+}
+
+.flavor-copy-btn:hover {
+    color: var(--flavor-admin-primary);
+    border-color: var(--flavor-admin-primary);
+    background: var(--flavor-admin-info-bg);
+}
+
+.flavor-copy-btn.copied {
+    color: var(--flavor-admin-success);
+    border-color: var(--flavor-admin-success);
+    background: var(--flavor-admin-success-bg);
+}
+
+.flavor-copy-btn .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* =========================================================================
+ * DROPDOWN MEJORADO
+ * ========================================================================= */
+
+.flavor-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.flavor-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.flavor-dropdown-toggle .dashicons-arrow-down-alt2 {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    transition: transform var(--flavor-transition-fast);
+}
+
+.flavor-dropdown:hover .flavor-dropdown-toggle .dashicons-arrow-down-alt2 {
+    transform: rotate(180deg);
+}
+
+.flavor-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 200px;
+    background: var(--flavor-admin-bg-card);
+    border: 1px solid var(--flavor-admin-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all var(--flavor-transition-fast);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.flavor-dropdown:hover .flavor-dropdown-menu,
+.flavor-dropdown:focus-within .flavor-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(4px);
+}
+
+.flavor-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    color: var(--flavor-admin-text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--flavor-admin-border-light);
+    transition: all var(--flavor-transition-fast);
+}
+
+.flavor-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.flavor-dropdown-item:hover {
+    background: var(--flavor-admin-bg);
+    color: var(--flavor-admin-primary);
+}
+
+.flavor-dropdown-item.active {
+    background: var(--flavor-admin-primary);
+    color: #fff;
+}
+
+/* =========================================================================
+ * ANIMACIONES UTILES
+ * ========================================================================= */
+
+@keyframes flavor-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes flavor-slide-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes flavor-slide-down {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes flavor-scale-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes flavor-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.flavor-animate-fade-in { animation: flavor-fade-in var(--flavor-transition); }
+.flavor-animate-slide-up { animation: flavor-slide-up var(--flavor-transition); }
+.flavor-animate-slide-down { animation: flavor-slide-down var(--flavor-transition); }
+.flavor-animate-scale-in { animation: flavor-scale-in var(--flavor-transition); }
+.flavor-animate-spin { animation: flavor-spin 1s linear infinite; }
+
+/* =========================================================================
+ * UTILIDADES
+ * ========================================================================= */
+
+.flavor-text-success { color: var(--flavor-admin-success) !important; }
+.flavor-text-warning { color: var(--flavor-admin-warning) !important; }
+.flavor-text-error { color: var(--flavor-admin-error) !important; }
+.flavor-text-info { color: var(--flavor-admin-info) !important; }
+.flavor-text-muted { color: var(--flavor-admin-text-muted) !important; }
+
+.flavor-bg-success { background: var(--flavor-admin-success-bg) !important; }
+.flavor-bg-warning { background: var(--flavor-admin-warning-bg) !important; }
+.flavor-bg-error { background: var(--flavor-admin-error-bg) !important; }
+.flavor-bg-info { background: var(--flavor-admin-info-bg) !important; }
+
+.flavor-flex { display: flex; }
+.flavor-flex-center { display: flex; align-items: center; justify-content: center; }
+.flavor-flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flavor-gap-1 { gap: 4px; }
+.flavor-gap-2 { gap: 8px; }
+.flavor-gap-3 { gap: 12px; }
+.flavor-gap-4 { gap: 16px; }
+.flavor-gap-6 { gap: 24px; }
+
+.flavor-mt-0 { margin-top: 0 !important; }
+.flavor-mb-0 { margin-bottom: 0 !important; }
+.flavor-mt-4 { margin-top: 16px !important; }
+.flavor-mb-4 { margin-bottom: 16px !important; }
+.flavor-mt-6 { margin-top: 24px !important; }
+.flavor-mb-6 { margin-bottom: 24px !important; }
+
+/* =========================================================================
+ * RESPONSIVE
+ * ========================================================================= */
+
+@media (max-width: 782px) {
+    .flavor-admin-stat-card {
+        padding: 16px;
+    }
+
+    .flavor-admin-stat-value {
+        font-size: 24px;
+    }
+
+    .flavor-admin-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}

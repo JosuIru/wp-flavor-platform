@@ -37,7 +37,8 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      * Verifica si el modulo puede activarse
      */
     public function can_activate() {
-        return Flavor_Chat_Helpers::tabla_existe('flavor_mapa_actores');
+        global $wpdb;
+        return Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_mapa_actores');
     }
 
     /**
@@ -60,6 +61,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
         $this->register_rest_routes();
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
 
         // Registrar páginas de administración
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
@@ -69,7 +71,8 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe('flavor_mapa_actores')) {
+        global $wpdb;
+        if (!Flavor_Chat_Helpers::tabla_existe($wpdb->prefix . 'flavor_mapa_actores')) {
             $this->create_tables();
         }
     }
@@ -716,6 +719,30 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Carga assets en admin del modulo.
+     *
+     * @param string $hook Hook actual de admin.
+     * @return void
+     */
+    public function enqueue_admin_assets($hook) {
+        if (!is_admin()) {
+            return;
+        }
+
+        $page = isset($_GET['page']) ? sanitize_key((string) $_GET['page']) : '';
+        if ($page === '' || strpos($page, 'actores-') !== 0) {
+            return;
+        }
+
+        wp_enqueue_style(
+            'flavor-mapa-actores-admin',
+            FLAVOR_CHAT_IA_URL . 'includes/modules/mapa-actores/assets/css/mapa-actores.css',
+            [],
+            FLAVOR_CHAT_IA_VERSION
+        );
+    }
+
+    /**
      * Determina si cargar assets
      */
     private function should_load_assets() {
@@ -1064,37 +1091,37 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 ]); ?>
             <?php endif; ?>
             <!-- KPIs principales -->
-            <div id="mapa-actores-stats" class="flavor-admin-kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <span class="dashicons dashicons-networking" style="font-size: 32px; color: #2271b1; margin-bottom: 10px;"></span>
-                    <div style="font-size: 28px; font-weight: 600;"><?php echo esc_html($estadisticas['total_actores']); ?></div>
-                    <div style="color: #646970;"><?php _e('Total Actores', 'flavor-chat-ia'); ?></div>
+            <div id="mapa-actores-stats" class="flavor-admin-kpis mapa-actores-admin-dashboard__kpis">
+                <div class="flavor-kpi-card mapa-actores-admin-dashboard__kpi-card">
+                    <span class="dashicons dashicons-networking mapa-actores-admin-dashboard__kpi-icon mapa-actores-admin-dashboard__kpi-icon--blue"></span>
+                    <div class="mapa-actores-admin-dashboard__kpi-value"><?php echo esc_html($estadisticas['total_actores']); ?></div>
+                    <div class="mapa-actores-admin-dashboard__kpi-label"><?php _e('Total Actores', 'flavor-chat-ia'); ?></div>
                 </div>
-                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <span class="dashicons dashicons-thumbs-up" style="font-size: 32px; color: #00a32a; margin-bottom: 10px;"></span>
-                    <div style="font-size: 28px; font-weight: 600;"><?php echo esc_html($estadisticas['aliados']); ?></div>
-                    <div style="color: #646970;"><?php _e('Aliados', 'flavor-chat-ia'); ?></div>
+                <div class="flavor-kpi-card mapa-actores-admin-dashboard__kpi-card">
+                    <span class="dashicons dashicons-thumbs-up mapa-actores-admin-dashboard__kpi-icon mapa-actores-admin-dashboard__kpi-icon--green"></span>
+                    <div class="mapa-actores-admin-dashboard__kpi-value"><?php echo esc_html($estadisticas['aliados']); ?></div>
+                    <div class="mapa-actores-admin-dashboard__kpi-label"><?php _e('Aliados', 'flavor-chat-ia'); ?></div>
                 </div>
-                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <span class="dashicons dashicons-thumbs-down" style="font-size: 32px; color: #d63638; margin-bottom: 10px;"></span>
-                    <div style="font-size: 28px; font-weight: 600;"><?php echo esc_html($estadisticas['opositores']); ?></div>
-                    <div style="color: #646970;"><?php _e('Opositores', 'flavor-chat-ia'); ?></div>
+                <div class="flavor-kpi-card mapa-actores-admin-dashboard__kpi-card">
+                    <span class="dashicons dashicons-thumbs-down mapa-actores-admin-dashboard__kpi-icon mapa-actores-admin-dashboard__kpi-icon--red"></span>
+                    <div class="mapa-actores-admin-dashboard__kpi-value"><?php echo esc_html($estadisticas['opositores']); ?></div>
+                    <div class="mapa-actores-admin-dashboard__kpi-label"><?php _e('Opositores', 'flavor-chat-ia'); ?></div>
                 </div>
-                <div class="flavor-kpi-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <span class="dashicons dashicons-admin-links" style="font-size: 32px; color: #8b5cf6; margin-bottom: 10px;"></span>
-                    <div style="font-size: 28px; font-weight: 600;"><?php echo esc_html($estadisticas['total_relaciones']); ?></div>
-                    <div style="color: #646970;"><?php _e('Relaciones', 'flavor-chat-ia'); ?></div>
+                <div class="flavor-kpi-card mapa-actores-admin-dashboard__kpi-card">
+                    <span class="dashicons dashicons-admin-links mapa-actores-admin-dashboard__kpi-icon mapa-actores-admin-dashboard__kpi-icon--purple"></span>
+                    <div class="mapa-actores-admin-dashboard__kpi-value"><?php echo esc_html($estadisticas['total_relaciones']); ?></div>
+                    <div class="mapa-actores-admin-dashboard__kpi-label"><?php _e('Relaciones', 'flavor-chat-ia'); ?></div>
                 </div>
             </div>
 
-            <div class="flavor-admin-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+            <div class="flavor-admin-grid mapa-actores-admin-dashboard__grid">
                 <!-- Columna principal -->
                 <div class="flavor-admin-main">
                     <!-- Tipos de actores -->
-                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                        <h3 style="margin-top: 0;"><?php _e('Distribucion por Tipo', 'flavor-chat-ia'); ?></h3>
+                    <div class="flavor-admin-card mapa-actores-admin-dashboard__card mapa-actores-admin-dashboard__card--mb">
+                        <h3 class="mapa-actores-admin-dashboard__card-title"><?php _e('Distribucion por Tipo', 'flavor-chat-ia'); ?></h3>
                         <?php if (!empty($tipos_actores)): ?>
-                            <table class="widefat striped" style="border: none;">
+                            <table class="widefat striped mapa-actores-admin-dashboard__table-clean">
                                 <tbody>
                                     <?php
                                     $tipos_labels = $this->get_tipos_actor();
@@ -1102,21 +1129,21 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                     ?>
                                         <tr>
                                             <td><?php echo esc_html($tipos_labels[$tipo_actor->tipo] ?? $tipo_actor->tipo); ?></td>
-                                            <td style="text-align: right; font-weight: 600;"><?php echo esc_html($tipo_actor->cantidad); ?></td>
+                                            <td class="mapa-actores-admin-dashboard__td-right-strong"><?php echo esc_html($tipo_actor->cantidad); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
                         <?php else: ?>
-                            <p style="color: #646970;"><?php _e('No hay actores registrados.', 'flavor-chat-ia'); ?></p>
+                            <p class="mapa-actores-admin-dashboard__muted"><?php _e('No hay actores registrados.', 'flavor-chat-ia'); ?></p>
                         <?php endif; ?>
                     </div>
 
                     <!-- Actores recientes -->
-                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <h3 style="margin-top: 0;"><?php _e('Actores Recientes', 'flavor-chat-ia'); ?></h3>
+                    <div class="flavor-admin-card mapa-actores-admin-dashboard__card">
+                        <h3 class="mapa-actores-admin-dashboard__card-title"><?php _e('Actores Recientes', 'flavor-chat-ia'); ?></h3>
                         <?php if (!empty($actores_recientes)): ?>
-                            <table class="widefat striped" style="border: none;">
+                            <table class="widefat striped mapa-actores-admin-dashboard__table-clean">
                                 <thead>
                                     <tr>
                                         <th><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
@@ -1149,15 +1176,15 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                             <td><?php echo esc_html($tipos_labels[$actor_reciente->tipo] ?? $actor_reciente->tipo); ?></td>
                                             <td>
                                                 <?php
-                                                $posicion_color = [
-                                                    'aliado' => '#00a32a',
-                                                    'neutro' => '#646970',
-                                                    'opositor' => '#d63638',
-                                                    'desconocido' => '#9ca3af',
+                                                $posicion_classes = [
+                                                    'aliado' => 'mapa-actores-pos-aliado',
+                                                    'neutro' => 'mapa-actores-pos-neutro',
+                                                    'opositor' => 'mapa-actores-pos-opositor',
+                                                    'desconocido' => 'mapa-actores-pos-desconocido',
                                                 ];
-                                                $color_actual = $posicion_color[$actor_reciente->posicion_general] ?? '#646970';
+                                                $posicion_class = $posicion_classes[$actor_reciente->posicion_general] ?? 'mapa-actores-pos-neutro';
                                                 ?>
-                                                <span style="color: <?php echo esc_attr($color_actual); ?>; font-weight: 500;">
+                                                <span class="mapa-actores-admin-dashboard__position <?php echo esc_attr($posicion_class); ?>">
                                                     <?php echo esc_html($posiciones_labels[$actor_reciente->posicion_general] ?? $actor_reciente->posicion_general); ?>
                                                 </span>
                                             </td>
@@ -1167,14 +1194,14 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                 </tbody>
                             </table>
                             <?php if (!$is_dashboard_viewer) : ?>
-                                <p style="margin-bottom: 0; margin-top: 15px;">
+                                <p class="mapa-actores-admin-dashboard__card-footer">
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado')); ?>" class="button">
                                         <?php _e('Ver todos los actores', 'flavor-chat-ia'); ?>
                                     </a>
                                 </p>
                             <?php endif; ?>
                         <?php else: ?>
-                            <p style="color: #646970;"><?php _e('No hay actores registrados.', 'flavor-chat-ia'); ?></p>
+                            <p class="mapa-actores-admin-dashboard__muted"><?php _e('No hay actores registrados.', 'flavor-chat-ia'); ?></p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -1182,10 +1209,10 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 <!-- Sidebar -->
                 <div class="flavor-admin-sidebar">
                     <!-- Actores influyentes -->
-                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                        <h3 style="margin-top: 0;"><?php _e('Actores Clave', 'flavor-chat-ia'); ?></h3>
+                    <div class="flavor-admin-card mapa-actores-admin-dashboard__card mapa-actores-admin-dashboard__card--mb">
+                        <h3 class="mapa-actores-admin-dashboard__card-title"><?php _e('Actores Clave', 'flavor-chat-ia'); ?></h3>
                         <?php if (!empty($actores_influyentes)): ?>
-                            <ul style="margin: 0; padding: 0; list-style: none;">
+                            <ul class="mapa-actores-admin-dashboard__actors-list">
                                 <?php
                                 $influencia_icons = [
                                     'muy_alto' => '🔥',
@@ -1195,7 +1222,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                 ];
                                 foreach ($actores_influyentes as $actor_influyente):
                                 ?>
-                                    <li style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                                    <li class="mapa-actores-admin-dashboard__actors-item">
                                         <span title="<?php echo esc_attr(ucfirst(str_replace('_', ' ', $actor_influyente->nivel_influencia))); ?>">
                                             <?php echo esc_html($influencia_icons[$actor_influyente->nivel_influencia] ?? '●'); ?>
                                         </span>
@@ -1210,29 +1237,29 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                 <?php endforeach; ?>
                             </ul>
                         <?php else: ?>
-                            <p style="color: #646970; margin-bottom: 0;"><?php _e('Sin datos.', 'flavor-chat-ia'); ?></p>
+                            <p class="mapa-actores-admin-dashboard__muted mapa-actores-admin-dashboard__muted--mb0"><?php _e('Sin datos.', 'flavor-chat-ia'); ?></p>
                         <?php endif; ?>
                     </div>
 
                     <!-- Acciones rapidas -->
-                    <div class="flavor-admin-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <h3 style="margin-top: 0;"><?php _e('Acciones Rapidas', 'flavor-chat-ia'); ?></h3>
+                    <div class="flavor-admin-card mapa-actores-admin-dashboard__card">
+                        <h3 class="mapa-actores-admin-dashboard__card-title"><?php _e('Acciones Rapidas', 'flavor-chat-ia'); ?></h3>
                         <?php if (!$is_dashboard_viewer) : ?>
-                            <div style="display: flex; flex-direction: column; gap: 10px;">
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=nuevo')); ?>" class="button button-primary" style="text-align: center;">
+                            <div class="mapa-actores-admin-dashboard__actions">
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=nuevo')); ?>" class="button button-primary mapa-actores-admin-dashboard__action-btn">
                                     <?php _e('Agregar Actor', 'flavor-chat-ia'); ?>
                                 </a>
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-relaciones')); ?>" class="button" style="text-align: center;">
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-relaciones')); ?>" class="button mapa-actores-admin-dashboard__action-btn">
                                     <?php _e('Gestionar Relaciones', 'flavor-chat-ia'); ?>
                                 </a>
-                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-config')); ?>" class="button" style="text-align: center;">
+                                <a href="<?php echo esc_url(admin_url('admin.php?page=actores-config')); ?>" class="button mapa-actores-admin-dashboard__action-btn">
                                     <?php _e('Configuracion', 'flavor-chat-ia'); ?>
                                 </a>
                             </div>
                         <?php endif; ?>
 
                         <?php if ($estadisticas['relaciones_sin_verificar'] > 0): ?>
-                            <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 4px; border-left: 4px solid #ffc107;">
+                            <div class="mapa-actores-admin-dashboard__pending-box">
                                 <strong><?php _e('Pendiente:', 'flavor-chat-ia'); ?></strong>
                                 <?php printf(
                                     _n('%d relacion sin verificar', '%d relaciones sin verificar', $estadisticas['relaciones_sin_verificar'], 'flavor-chat-ia'),
@@ -1251,12 +1278,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      * Renderizar página dashboard con vista completa
      */
     public function render_pagina_dashboard() {
-        $views_path = dirname(__FILE__) . '/views/dashboard.php';
-        if (file_exists($views_path)) {
-            include $views_path;
-        } else {
-            $this->render_admin_dashboard();
-        }
+        $this->render_admin_dashboard();
     }
 
     /**
@@ -1338,12 +1360,12 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 <div class="notice notice-info"><p><?php esc_html_e('Vista de consulta para gestor de grupos. El alta, edición y configuración del mapa de actores siguen reservadas a administración.', 'flavor-chat-ia'); ?></p></div>
             <?php endif; ?>
             <!-- Filtros -->
-            <form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <form method="get" class="mapa-actores-admin-list__filters">
                 <input type="hidden" name="page" value="actores-listado">
 
                 <input type="search" name="s" value="<?php echo esc_attr($busqueda); ?>"
                        placeholder="<?php esc_attr_e('Buscar actores...', 'flavor-chat-ia'); ?>"
-                       style="min-width: 200px;">
+                       class="mapa-actores-admin-list__search">
 
                 <select name="filtro_tipo">
                     <option value=""><?php _e('Todos los tipos', 'flavor-chat-ia'); ?></option>
@@ -1379,22 +1401,22 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th style="width: 30%;"><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
+                            <th class="mapa-actores-admin-list__col-name"><?php _e('Nombre', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Tipo', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Posicion', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Influencia', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Ubicacion', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 120px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th class="mapa-actores-admin-list__col-actions"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $tipos_labels = $this->get_tipos_actor();
-                        $posiciones_colores = [
-                            'aliado' => '#00a32a',
-                            'neutro' => '#646970',
-                            'opositor' => '#d63638',
-                            'desconocido' => '#9ca3af',
+                        $posiciones_classes = [
+                            'aliado' => 'mapa-actores-pos-aliado',
+                            'neutro' => 'mapa-actores-pos-neutro',
+                            'opositor' => 'mapa-actores-pos-opositor',
+                            'desconocido' => 'mapa-actores-pos-desconocido',
                         ];
                         $influencia_labels = [
                             'bajo' => __('Bajo', 'flavor-chat-ia'),
@@ -1421,7 +1443,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                 </td>
                                 <td><?php echo esc_html($tipos_labels[$actor->tipo] ?? $actor->tipo); ?></td>
                                 <td>
-                                    <span style="color: <?php echo esc_attr($posiciones_colores[$actor->posicion_general] ?? '#646970'); ?>; font-weight: 500;">
+                                    <span class="mapa-actores-admin-list__position <?php echo esc_attr($posiciones_classes[$actor->posicion_general] ?? 'mapa-actores-pos-neutro'); ?>">
                                         <?php echo esc_html(ucfirst($actor->posicion_general)); ?>
                                     </span>
                                 </td>
@@ -1433,11 +1455,11 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                     <?php else : ?>
                                         <a href="<?php echo esc_url(admin_url('admin.php?page=actores-listado&action=editar&id=' . $actor->id)); ?>"
                                            class="button button-small" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
-                                            <span class="dashicons dashicons-edit" style="vertical-align: middle;"></span>
+                                            <span class="dashicons dashicons-edit mapa-actores-admin-list__icon-action"></span>
                                         </a>
                                         <a href="<?php echo esc_url(admin_url('admin.php?page=actores-relaciones&actor_id=' . $actor->id)); ?>"
                                            class="button button-small" title="<?php esc_attr_e('Ver Relaciones', 'flavor-chat-ia'); ?>">
-                                            <span class="dashicons dashicons-admin-links" style="vertical-align: middle;"></span>
+                                            <span class="dashicons dashicons-admin-links mapa-actores-admin-list__icon-action"></span>
                                         </a>
                                     <?php endif; ?>
                                 </td>
@@ -1448,7 +1470,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
 
                 <!-- Paginacion -->
                 <?php if ($total_paginas > 1): ?>
-                    <div class="tablenav bottom" style="margin-top: 20px;">
+                    <div class="tablenav bottom mapa-actores-admin-list__tablenav-bottom">
                         <div class="tablenav-pages">
                             <span class="displaying-num">
                                 <?php printf(_n('%s elemento', '%s elementos', $total_items, 'flavor-chat-ia'), number_format_i18n($total_items)); ?>
@@ -1475,7 +1497,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 <?php endif; ?>
 
             <?php else: ?>
-                <div class="notice notice-info" style="margin-top: 20px;">
+                <div class="notice notice-info mapa-actores-admin-list__notice-top">
                     <p>
                         <?php if ($busqueda || $filtro_tipo || $filtro_posicion): ?>
                             <?php _e('No se encontraron actores con los filtros seleccionados.', 'flavor-chat-ia'); ?>
@@ -1559,10 +1581,10 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 <div class="notice notice-info"><p><?php esc_html_e('Vista de consulta para gestor de grupos. Las relaciones pueden revisarse, pero su creación y mantenimiento siguen reservados a administración.', 'flavor-chat-ia'); ?></p></div>
             <?php endif; ?>
             <!-- Filtro por actor -->
-            <form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
+            <form method="get" class="mapa-actores-admin-relaciones__filters">
                 <input type="hidden" name="page" value="actores-relaciones">
 
-                <select name="actor_id" style="min-width: 250px;">
+                <select name="actor_id" class="mapa-actores-admin-relaciones__actor-select">
                     <option value=""><?php _e('Todos los actores', 'flavor-chat-ia'); ?></option>
                     <?php foreach ($lista_actores as $actor_opcion): ?>
                         <option value="<?php echo esc_attr($actor_opcion->id); ?>" <?php selected($actor_id_filtro, $actor_opcion->id); ?>>
@@ -1585,12 +1607,12 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th style="width: 25%;"><?php _e('Actor Origen', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 15%;"><?php _e('Tipo Relacion', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 25%;"><?php _e('Actor Destino', 'flavor-chat-ia'); ?></th>
+                            <th class="mapa-actores-admin-relaciones__col-origin"><?php _e('Actor Origen', 'flavor-chat-ia'); ?></th>
+                            <th class="mapa-actores-admin-relaciones__col-type"><?php _e('Tipo Relacion', 'flavor-chat-ia'); ?></th>
+                            <th class="mapa-actores-admin-relaciones__col-target"><?php _e('Actor Destino', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Intensidad', 'flavor-chat-ia'); ?></th>
                             <th><?php _e('Estado', 'flavor-chat-ia'); ?></th>
-                            <th style="width: 100px;"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
+                            <th class="mapa-actores-admin-relaciones__col-actions"><?php _e('Acciones', 'flavor-chat-ia'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1634,14 +1656,14 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                 </td>
                                 <td>
                                     <?php if ($relacion->verificada): ?>
-                                        <span style="color: #00a32a;">✓ <?php _e('Verificada', 'flavor-chat-ia'); ?></span>
+                                        <span class="mapa-actores-admin-relaciones__status-ok">✓ <?php _e('Verificada', 'flavor-chat-ia'); ?></span>
                                     <?php else: ?>
-                                        <span style="color: #dba617;">⏳ <?php _e('Pendiente', 'flavor-chat-ia'); ?></span>
+                                        <span class="mapa-actores-admin-relaciones__status-pending">⏳ <?php _e('Pendiente', 'flavor-chat-ia'); ?></span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
                                     <button type="button" class="button button-small" title="<?php esc_attr_e('Editar', 'flavor-chat-ia'); ?>">
-                                        <span class="dashicons dashicons-edit" style="vertical-align: middle;"></span>
+                                        <span class="dashicons dashicons-edit mapa-actores-admin-list__icon-action"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -1661,9 +1683,9 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
             <?php endif; ?>
 
             <!-- Grafo de relaciones (placeholder) -->
-            <div style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <h3 style="margin-top: 0;"><?php _e('Visualizacion del Grafo', 'flavor-chat-ia'); ?></h3>
-                <div id="grafo-relaciones" style="height: 400px; background: #f6f7f7; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #646970;">
+            <div class="mapa-actores-admin-relaciones__graph-card">
+                <h3 class="mapa-actores-admin-relaciones__graph-title"><?php _e('Visualizacion del Grafo', 'flavor-chat-ia'); ?></h3>
+                <div id="grafo-relaciones" class="mapa-actores-admin-relaciones__graph-placeholder">
                     <?php _e('El grafo de relaciones se mostrara aqui. Requiere la libreria de visualizacion.', 'flavor-chat-ia'); ?>
                 </div>
             </div>
@@ -1711,8 +1733,8 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 <?php wp_nonce_field('actores_config_nonce'); ?>
 
                 <!-- Tipos de actores -->
-                <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                    <h3 style="margin-top: 0;"><?php _e('Tipos de Actores', 'flavor-chat-ia'); ?></h3>
+                <div class="mapa-actores-admin-config__card">
+                    <h3 class="mapa-actores-admin-config__title"><?php _e('Tipos de Actores', 'flavor-chat-ia'); ?></h3>
                     <p class="description"><?php _e('Los tipos predefinidos son: Administracion Publica, Empresa, Institucion, Medio de Comunicacion, Partido Politico, Sindicato, ONG, Colectivo, Persona, Otro.', 'flavor-chat-ia'); ?></p>
 
                     <table class="form-table">
@@ -1730,8 +1752,8 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <!-- Tipos de relaciones -->
-                <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                    <h3 style="margin-top: 0;"><?php _e('Tipos de Relaciones', 'flavor-chat-ia'); ?></h3>
+                <div class="mapa-actores-admin-config__card">
+                    <h3 class="mapa-actores-admin-config__title"><?php _e('Tipos de Relaciones', 'flavor-chat-ia'); ?></h3>
                     <p class="description"><?php _e('Los tipos predefinidos son: Pertenece a, Controla, Financia, Colabora, Compite, Influye, Depende, Otro.', 'flavor-chat-ia'); ?></p>
 
                     <table class="form-table">
@@ -1749,8 +1771,8 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                 </div>
 
                 <!-- Opciones del mapa -->
-                <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                    <h3 style="margin-top: 0;"><?php _e('Opciones de Visualizacion', 'flavor-chat-ia'); ?></h3>
+                <div class="mapa-actores-admin-config__card">
+                    <h3 class="mapa-actores-admin-config__title"><?php _e('Opciones de Visualizacion', 'flavor-chat-ia'); ?></h3>
 
                     <table class="form-table">
                         <tr>
@@ -1794,7 +1816,7 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
                                     ];
                                     foreach ($ambitos_todos as $ambito_valor => $ambito_etiqueta):
                                     ?>
-                                        <label style="display: inline-block; margin-right: 15px;">
+                                        <label class="mapa-actores-admin-config__ambito-label">
                                             <input type="checkbox" name="ambitos_disponibles[]" value="<?php echo esc_attr($ambito_valor); ?>"
                                                    <?php checked(in_array($ambito_valor, $configuracion['ambitos_disponibles'])); ?>>
                                             <?php echo esc_html($ambito_etiqueta); ?>
@@ -1953,6 +1975,13 @@ class Flavor_Chat_Mapa_Actores_Module extends Flavor_Chat_Module_Base {
      * Se acceden desde el Dashboard Unificado
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Páginas ocultas (null como parent = no aparecen en menú)

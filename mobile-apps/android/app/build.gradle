@@ -41,12 +41,12 @@ android {
         admin {
             dimension "app"
             applicationIdSuffix ".admin"
-            resValue "string", "app_name", "Basabere Admin"
+            resValue "string", "app_name", "Flavor Chat Admin"
         }
         client {
             dimension "app"
             applicationIdSuffix ".client"
-            resValue "string", "app_name", "Basabere"
+            resValue "string", "app_name", "Flavor Chat"
         }
     }
 

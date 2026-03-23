@@ -58,7 +58,7 @@ class Flavor_Module_Gap_Status_API {
     }
 
     private function load_module_status_rows() {
-        $path = FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz.csv';
+        $path = $this->resolve_matrix_path();
         if (!file_exists($path)) {
             return [];
         }
@@ -92,6 +92,50 @@ class Flavor_Module_Gap_Status_API {
 
         fclose($handle);
         return $rows;
+    }
+
+    /**
+     * Resuelve la ruta de la matriz de módulos más confiable disponible.
+     *
+     * @return string
+     */
+    private function resolve_matrix_path() {
+        $candidates = [
+            FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz_actual_2026-03-01.csv',
+            FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz.csv',
+        ];
+
+        foreach ($candidates as $candidate) {
+            if (!$this->is_usable_csv($candidate)) {
+                continue;
+            }
+            return $candidate;
+        }
+
+        return FLAVOR_CHAT_IA_PATH . 'reports/modulos_matriz.csv';
+    }
+
+    /**
+     * Verifica si un CSV existe y tiene al menos cabecera + una fila de datos.
+     *
+     * @param string $path
+     * @return bool
+     */
+    private function is_usable_csv($path) {
+        if (!file_exists($path) || !is_readable($path)) {
+            return false;
+        }
+
+        $handle = fopen($path, 'r');
+        if ($handle === false) {
+            return false;
+        }
+
+        $header = fgetcsv($handle);
+        $row = fgetcsv($handle);
+        fclose($handle);
+
+        return $header !== false && $row !== false;
     }
 
     private function build_summary(array $rows) {

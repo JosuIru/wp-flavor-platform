@@ -209,7 +209,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
             <span class="dashicons dashicons-filter"></span> <?php echo esc_html__('Filtros', 'flavor-chat-ia'); ?>
         </a>
     <?php else: ?>
-        <a href="<?php echo admin_url('admin.php?page=flavor-incidencias-tickets'); ?>" class="page-title-action">
+        <a href="<?php echo admin_url('admin.php?page=incidencias-todas'); ?>" class="page-title-action">
             <span class="dashicons dashicons-arrow-left-alt"></span> <?php echo esc_html__('Volver al listado', 'flavor-chat-ia'); ?>
         </a>
     <?php endif; ?>
@@ -222,7 +222,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
         <div id="filtros" class="postbox" style="margin: 20px 0; display: none;">
             <div class="inside">
                 <form method="get" action="">
-                    <input type="hidden" name="page" value="<?php echo esc_attr__('flavor-incidencias-tickets', 'flavor-chat-ia'); ?>">
+                    <input type="hidden" name="page" value="<?php echo esc_attr__('incidencias-todas', 'flavor-chat-ia'); ?>">
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
 
@@ -274,7 +274,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                     <button type="submit" class="button button-primary">
                         <span class="dashicons dashicons-search"></span> <?php echo esc_html__('Filtrar', 'flavor-chat-ia'); ?>
                     </button>
-                    <a href="<?php echo admin_url('admin.php?page=flavor-incidencias-tickets'); ?>" class="button">
+                    <a href="<?php echo admin_url('admin.php?page=incidencias-todas'); ?>" class="button">
                         <?php echo esc_html__('Limpiar filtros', 'flavor-chat-ia'); ?>
                     </a>
                 </form>
@@ -350,7 +350,7 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
                                         <?php echo $incidencia->votos_ciudadanos; ?>
                                     </td>
                                     <td>
-                                        <a href="<?php echo admin_url('admin.php?page=flavor-incidencias-tickets&id=' . $incidencia->id); ?>" class="button button-small">
+                                        <a href="<?php echo admin_url('admin.php?page=incidencias-todas&id=' . $incidencia->id); ?>" class="button button-small">
                                             <?php echo esc_html__('Ver detalles', 'flavor-chat-ia'); ?>
                                         </a>
                                     </td>
@@ -534,14 +534,19 @@ $usuarios_staff = get_users(['role__in' => ['administrator', 'editor']]);
 
                             <!-- Formulario para agregar comentario -->
                             <hr style="margin: 20px 0;">
-                            <form method="post" action="">
+                            <form method="post" action="" id="form-agregar-comentario">
                                 <?php wp_nonce_field('flavor_incidencias_action'); ?>
                                 <input type="hidden" name="action" value="<?php echo esc_attr__('agregar_comentario', 'flavor-chat-ia'); ?>">
                                 <input type="hidden" name="incidencia_id" value="<?php echo $incidencia_detalle->id; ?>">
 
                                 <p>
                                     <label><strong><?php echo esc_html__('Agregar Comentario:', 'flavor-chat-ia'); ?></strong></label>
-                                    <textarea name="comentario" rows="4" class="large-text" required></textarea>
+                                    <!-- Panel de sugerencias IA se inyecta aquí vía JS -->
+                                    <textarea name="comentario" id="incidencia-respuesta" rows="4" class="large-text ticket-reply-textarea" required
+                                        data-incidencia-id="<?php echo esc_attr($incidencia_detalle->id); ?>"
+                                        data-titulo="<?php echo esc_attr($incidencia_detalle->titulo); ?>"
+                                        data-categoria="<?php echo esc_attr($incidencia_detalle->categoria); ?>"
+                                        data-prioridad="<?php echo esc_attr($incidencia_detalle->prioridad); ?>"></textarea>
                                 </p>
 
                                 <p>

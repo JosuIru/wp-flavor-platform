@@ -4240,6 +4240,13 @@ KNOWLEDGE;
      * Se acceden desde el Dashboard Unificado
      */
     public function registrar_paginas_admin() {
+        static $registered = false;
+        if ($registered) {
+            return;
+        }
+        $registered = true;
+
+
         $capability = 'manage_options';
 
         // Páginas ocultas (null como parent = no aparecen en menú)

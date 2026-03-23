@@ -391,8 +391,10 @@ class ClientTab {
       id: json['id'] ?? '',
       label: json['label'] ?? '',
       icon: json['icon'] ?? 'help',
-      type: json['type'] ?? 'native',
-      url: json['url'],
+      // Soporta tanto 'type' como 'content_type' de WordPress
+      type: json['type'] ?? json['content_type'] ?? 'native',
+      // Soporta tanto 'url' como 'content_ref' de WordPress
+      url: json['url'] ?? json['content_ref'],
       enabled: json['enabled'] ?? true,
       order: json['order'] ?? 0,
     );
@@ -492,8 +494,10 @@ class LayoutConfig {
     // Ordenar por order
     organizedItems.sort((a, b) => a.order.compareTo(b.order));
 
-    // Parse client tabs (compatibilidad con calendario)
-    final clientTabsJson = json['client_tabs'] as List<dynamic>? ?? [];
+    // Parse client tabs (soporta tanto 'client_tabs' como 'tabs' de WordPress)
+    final clientTabsJson = json['client_tabs'] as List<dynamic>?
+        ?? json['tabs'] as List<dynamic>?
+        ?? [];
     final clientTabs = clientTabsJson
         .map((tab) => ClientTab.fromJson(tab as Map<String, dynamic>))
         .where((tab) => tab.enabled)

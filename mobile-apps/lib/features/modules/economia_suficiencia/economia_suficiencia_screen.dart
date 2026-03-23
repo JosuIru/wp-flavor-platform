@@ -270,7 +270,7 @@ class _EconomiaSuficienciaScreenState extends ConsumerState<EconomiaSuficienciaS
 
     try {
       final api = ref.read(apiClientProvider);
-      final response = await api.post('/economia-suficiencia/retos/$retoId/unirse');
+      final response = await api.post('/economia-suficiencia/retos/$retoId/unirse', data: {});
 
       if (mounted) {
         if (response.success) {
@@ -461,7 +461,7 @@ class _EconomiaSuficienciaScreenState extends ConsumerState<EconomiaSuficienciaS
 
     try {
       final api = ref.read(apiClientProvider);
-      final response = await api.post('/economia-suficiencia/recursos/$recursoId/completar');
+      final response = await api.post('/economia-suficiencia/recursos/$recursoId/completar', data: {});
 
       if (mounted) {
         if (response.success) {
