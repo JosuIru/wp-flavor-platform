@@ -323,6 +323,7 @@
             $.ajax({
                 url: flavorExportImport.ajaxUrl,
                 type: 'POST',
+                timeout: 30000, // 30 segundos timeout
                 data: datosFormulario,
                 processData: false,
                 contentType: false,
@@ -335,8 +336,12 @@
                         this.showNotice(respuesta.data.message || 'Error al analizar el archivo', 'error');
                     }
                 },
-                error: () => {
-                    this.showNotice('Error de conexión', 'error');
+                error: (xhr, status, error) => {
+                    if (status === 'timeout') {
+                        this.showNotice('El análisis tardó demasiado. Inténtalo de nuevo.', 'error');
+                    } else {
+                        this.showNotice('Error de conexión', 'error');
+                    }
                 },
                 complete: () => {
                     $botonPreview.prop('disabled', false).html('<span class="dashicons dashicons-visibility"></span> Analizar y Previsualizar');
@@ -481,6 +486,7 @@
             $.ajax({
                 url: flavorExportImport.ajaxUrl,
                 type: 'POST',
+                timeout: 60000, // 60 segundos timeout para importación (puede ser pesada)
                 data: {
                     action: 'flavor_import_config',
                     nonce: flavorExportImport.nonce,
@@ -501,11 +507,17 @@
                         this.showNotice(respuesta.data.message, 'error');
                     }
                 },
-                error: () => {
+                error: (xhr, status, error) => {
                     $barraProgreso.addClass('hidden');
                     $areaResultado.removeClass('hidden').addClass('error');
-                    $areaResultado.html(`<p><span class="dashicons dashicons-warning"></span> ${flavorExportImport.strings.errorImport}</p>`);
-                    this.showNotice(flavorExportImport.strings.errorImport, 'error');
+
+                    if (status === 'timeout') {
+                        $areaResultado.html(`<p><span class="dashicons dashicons-warning"></span> La importación tardó demasiado. La configuración es muy grande, intenta importar secciones por separado.</p>`);
+                        this.showNotice('Timeout: Intenta importar menos secciones a la vez', 'error');
+                    } else {
+                        $areaResultado.html(`<p><span class="dashicons dashicons-warning"></span> ${flavorExportImport.strings.errorImport}</p>`);
+                        this.showNotice(flavorExportImport.strings.errorImport, 'error');
+                    }
                 },
                 complete: () => {
                     $botonAplicar.prop('disabled', false);
@@ -612,6 +624,7 @@
             $.ajax({
                 url: flavorExportImport.ajaxUrl,
                 type: 'POST',
+                timeout: 60000, // 60 segundos timeout para preset (puede ser pesado)
                 data: {
                     action: 'flavor_apply_preset',
                     nonce: flavorExportImport.nonce,
@@ -625,8 +638,12 @@
                         this.showNotice(respuesta.data.message || 'Error al aplicar preset', 'error');
                     }
                 },
-                error: () => {
-                    this.showNotice('Error de conexión', 'error');
+                error: (xhr, status, error) => {
+                    if (status === 'timeout') {
+                        this.showNotice('La aplicación del preset tardó demasiado. Recarga la página para ver si se aplicó.', 'error');
+                    } else {
+                        this.showNotice('Error de conexión', 'error');
+                    }
                 },
                 complete: () => {
                     $botonAplicar.prop('disabled', false).html('<span class="dashicons dashicons-yes"></span> Aplicar Preset');
@@ -707,6 +724,7 @@
             $.ajax({
                 url: flavorExportImport.ajaxUrl,
                 type: 'POST',
+                timeout: 120000, // 120 segundos (2 minutos) timeout para exportación completa
                 data: {
                     action: 'flavor_export_full_site',
                     nonce: flavorExportImport.nonce,
@@ -733,8 +751,12 @@
                         this.showNotice('error', respuesta.data.message);
                     }
                 },
-                error: () => {
-                    this.showNotice('error', 'Error de conexión al generar el paquete.');
+                error: (xhr, status, error) => {
+                    if (status === 'timeout') {
+                        this.showNotice('error', 'La exportación tardó demasiado (>2 minutos). El sitio es muy grande, intenta exportar solo algunas opciones.');
+                    } else {
+                        this.showNotice('error', 'Error de conexión al generar el paquete.');
+                    }
                 },
                 complete: () => {
                     $botonSubmit.prop('disabled', false).html(textoBtnOriginal);
