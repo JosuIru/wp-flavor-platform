@@ -1,0 +1,729 @@
+openapi: 3.0.3
+info:
+  title: Flavor Multilingual API
+  description: |
+    API REST para el sistema de traducción multiidioma de Flavor Platform.
+
+    ## Autenticación
+
+    La API utiliza la autenticación estándar de WordPress REST API:
+    - Cookie authentication (para usuarios logueados)
+    - Application Passwords
+    - JWT (si está configurado)
+
+    ## Códigos de idioma
+
+    Se utilizan códigos ISO 639-1 de dos letras: `es`, `en`, `eu`, `ca`, `gl`, etc.
+
+  version: 1.4.0
+  contact:
+    name: Gailu Labs
+    url: https://gailu.net
+  license:
+    name: GPL-2.0+
+    url: https://www.gnu.org/licenses/gpl-2.0.html
+
+servers:
+  - url: /wp-json/flavor-multilingual/v1
+    description: WordPress REST API
+
+tags:
+  - name: Languages
+    description: Gestión de idiomas
+  - name: Translations
+    description: Traducciones de contenido
+  - name: AI Translation
+    description: Traducción automática con IA
+  - name: Memory
+    description: Memoria de traducción
+  - name: Glossary
+    description: Glosario de términos
+  - name: XLIFF
+    description: Import/Export XLIFF
+  - name: Stats
+    description: Estadísticas
+
+paths:
+  /languages:
+    get:
+      tags:
+        - Languages
+      summary: Listar idiomas activos
+      description: Obtiene todos los idiomas activos en el sitio
+      responses:
+        '200':
+          description: Lista de idiomas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Language'
+              example:
+                - code: es
+                  name: Spanish
+                  native_name: Español
+                  locale: es_ES
+                  flag: es.svg
+                  is_default: true
+                  is_rtl: false
+                - code: eu
+                  name: Basque
+                  native_name: Euskara
+                  locale: eu
+                  flag: eu.svg
+                  is_default: false
+                  is_rtl: false
+
+  /languages/{code}:
+    get:
+      tags:
+        - Languages
+      summary: Obtener idioma específico
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z]{2,3}$'
+          example: eu
+      responses:
+        '200':
+          description: Datos del idioma
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Language'
+        '404':
+          description: Idioma no encontrado
+
+  /current-language:
+    get:
+      tags:
+        - Languages
+      summary: Obtener idioma actual
+      description: Devuelve el código del idioma activo para el usuario actual
+      responses:
+        '200':
+          description: Idioma actual
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: es
+                  detected_from:
+                    type: string
+                    enum: [cookie, browser, default, url]
+
+  /posts/{id}/translations:
+    get:
+      tags:
+        - Translations
+      summary: Obtener traducciones de un post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del post
+      responses:
+        '200':
+          description: Traducciones del post
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/PostTranslation'
+              example:
+                eu:
+                  title: Kaixo mundua
+                  content: Hau edukia da
+                  excerpt: Laburpena
+                  status: published
+                  progress: 100
+                en:
+                  title: Hello world
+                  content: ""
+                  excerpt: ""
+                  status: pending
+                  progress: 33
+    post:
+      tags:
+        - Translations
+      summary: Guardar traducción de un post
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - language
+                - fields
+              properties:
+                language:
+                  type: string
+                  example: eu
+                fields:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    content:
+                      type: string
+                    excerpt:
+                      type: string
+                status:
+                  type: string
+                  enum: [draft, pending, in_progress, needs_review, approved, published]
+      responses:
+        '200':
+          description: Traducción guardada
+        '401':
+          description: No autorizado
+        '403':
+          description: Sin permisos
+
+  /posts/{id}/translations/{lang}:
+    get:
+      tags:
+        - Translations
+      summary: Obtener traducción específica
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: lang
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Traducción del post en el idioma especificado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostTranslation'
+    put:
+      tags:
+        - Translations
+      summary: Actualizar traducción específica
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: lang
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostTranslation'
+      responses:
+        '200':
+          description: Traducción actualizada
+
+  /translate:
+    post:
+      tags:
+        - AI Translation
+      summary: Traducir texto con IA
+      description: Traduce un texto usando el motor de IA configurado (Claude, OpenAI, etc.)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+                - from_lang
+                - to_lang
+              properties:
+                text:
+                  type: string
+                  description: Texto a traducir
+                  maxLength: 10000
+                from_lang:
+                  type: string
+                  example: es
+                to_lang:
+                  type: string
+                  example: eu
+                context:
+                  type: string
+                  description: Contexto adicional para mejorar la traducción
+                content_type:
+                  type: string
+                  enum: [title, content, excerpt, meta]
+                  default: content
+      responses:
+        '200':
+          description: Traducción completada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  translation:
+                    type: string
+                  engine:
+                    type: string
+                    example: claude
+                  cached:
+                    type: boolean
+        '429':
+          description: Rate limit alcanzado
+        '503':
+          description: Servicio de IA no disponible
+
+  /translate/post/{id}:
+    post:
+      tags:
+        - AI Translation
+      summary: Traducir post completo con IA
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - to_lang
+              properties:
+                to_lang:
+                  type: string
+                fields:
+                  type: array
+                  items:
+                    type: string
+                  default: [title, content, excerpt]
+                auto_publish:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Post traducido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  translated_fields:
+                    type: array
+                    items:
+                      type: string
+                  status:
+                    type: string
+
+  /memory/search:
+    post:
+      tags:
+        - Memory
+      summary: Buscar en memoria de traducción
+      description: Busca traducciones similares en la memoria de traducción
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+                - source_lang
+                - target_lang
+              properties:
+                text:
+                  type: string
+                source_lang:
+                  type: string
+                target_lang:
+                  type: string
+                min_similarity:
+                  type: number
+                  minimum: 0
+                  maximum: 1
+                  default: 0.7
+                limit:
+                  type: integer
+                  default: 5
+      responses:
+        '200':
+          description: Sugerencias encontradas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TMSuggestion'
+
+  /glossary:
+    get:
+      tags:
+        - Glossary
+      summary: Obtener términos del glosario
+      parameters:
+        - name: source_lang
+          in: query
+          schema:
+            type: string
+        - name: target_lang
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de términos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GlossaryTerm'
+    post:
+      tags:
+        - Glossary
+      summary: Añadir término al glosario
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GlossaryTerm'
+      responses:
+        '201':
+          description: Término añadido
+
+  /strings:
+    get:
+      tags:
+        - Translations
+      summary: Obtener strings traducibles
+      parameters:
+        - name: domain
+          in: query
+          schema:
+            type: string
+            default: flavor-chat-ia
+        - name: language
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de strings
+    post:
+      tags:
+        - Translations
+      summary: Guardar traducción de string
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - original
+                - translation
+                - language
+              properties:
+                original:
+                  type: string
+                translation:
+                  type: string
+                language:
+                  type: string
+                domain:
+                  type: string
+                context:
+                  type: string
+      responses:
+        '200':
+          description: String guardado
+
+  /xliff/export:
+    post:
+      tags:
+        - XLIFF
+      summary: Exportar traducciones a XLIFF
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - source_lang
+                - target_lang
+              properties:
+                source_lang:
+                  type: string
+                target_lang:
+                  type: string
+                post_ids:
+                  type: array
+                  items:
+                    type: integer
+                include_translated:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Archivo XLIFF
+          content:
+            application/xml:
+              schema:
+                type: string
+                format: binary
+
+  /xliff/import:
+    post:
+      tags:
+        - XLIFF
+      summary: Importar traducciones desde XLIFF
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                auto_publish:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Importación completada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  imported:
+                    type: integer
+                  skipped:
+                    type: integer
+                  errors:
+                    type: array
+                    items:
+                      type: string
+
+  /stats:
+    get:
+      tags:
+        - Stats
+      summary: Obtener estadísticas de traducción
+      responses:
+        '200':
+          description: Estadísticas globales
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranslationStats'
+
+  /sitemap:
+    get:
+      tags:
+        - Languages
+      summary: Sitemap multiidioma
+      description: Devuelve URLs para sitemap con alternativas por idioma
+      responses:
+        '200':
+          description: URLs del sitemap
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                    lastmod:
+                      type: string
+                      format: date-time
+                    alternates:
+                      type: object
+                      additionalProperties:
+                        type: string
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: wordpress_logged_in
+
+  schemas:
+    Language:
+      type: object
+      properties:
+        code:
+          type: string
+          example: eu
+        name:
+          type: string
+          example: Basque
+        native_name:
+          type: string
+          example: Euskara
+        locale:
+          type: string
+          example: eu
+        flag:
+          type: string
+          example: eu.svg
+        is_default:
+          type: boolean
+        is_active:
+          type: boolean
+        is_rtl:
+          type: boolean
+        sort_order:
+          type: integer
+
+    PostTranslation:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        excerpt:
+          type: string
+        slug:
+          type: string
+        status:
+          type: string
+          enum: [draft, pending, in_progress, needs_review, approved, published]
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+        translator:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+
+    TMSuggestion:
+      type: object
+      properties:
+        source_text:
+          type: string
+        target_text:
+          type: string
+        similarity:
+          type: number
+          minimum: 0
+          maximum: 1
+        source:
+          type: string
+          description: Origen de la sugerencia (memory, glossary, etc.)
+
+    GlossaryTerm:
+      type: object
+      required:
+        - source_term
+        - target_term
+        - source_lang
+        - target_lang
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        source_term:
+          type: string
+        target_term:
+          type: string
+        source_lang:
+          type: string
+        target_lang:
+          type: string
+        case_sensitive:
+          type: boolean
+          default: false
+        description:
+          type: string
+
+    TranslationStats:
+      type: object
+      properties:
+        total_translations:
+          type: integer
+        by_status:
+          type: object
+          properties:
+            draft:
+              type: integer
+            pending:
+              type: integer
+            in_progress:
+              type: integer
+            needs_review:
+              type: integer
+            approved:
+              type: integer
+            published:
+              type: integer
+        by_language:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              total:
+                type: integer
+              completed:
+                type: integer
+              percentage:
+                type: integer
+        memory_entries:
+          type: integer
+        glossary_terms:
+          type: integer

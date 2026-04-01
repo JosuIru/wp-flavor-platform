@@ -1,145 +1,74 @@
-# Flavor Platform 3.4.0
+# Flavor Platform
 
-Plugin WordPress modular para comunidades, administracion, dashboards, contenidos, economia colaborativa, apps y modulos sectoriales.
+Plugin WordPress modular para comunidades, cooperativas y asociaciones. Incluye web builder, apps móviles Flutter y automatización con IA.
 
-## Novedades v3.4.0
+## Quickstart
 
-- **Sistema de Versionado de Modulos** - Cada modulo puede tener su propia version independiente via `module.json`
-- **Verificacion de Dependencias** - Sistema automatico para verificar dependencias entre modulos
-- **Verificacion de Compatibilidad** - Comprobacion de versiones de WordPress, PHP y Flavor Platform
-- **Changelog por Modulo** - Historial de cambios granular a nivel de modulo
+```bash
+# 1. Activar plugin en WordPress
+wp plugin activate flavor-chat-ia
 
-Ver `docs/SISTEMA-VERSIONADO-MODULOS.md` para detalles tecnicos.
+# 2. Verificar instalación
+bash tools/full-inventory.sh "http://tu-sitio.local" "." "mobile-apps"
 
-## Novedades v3.3.0
+# 3. Crear sitio con API
+curl -X POST "http://tu-sitio.local/wp-json/flavor-site-builder/v1/site/create" \
+  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "Content-Type: application/json" \
+  -d '{"template": "cooperativa", "name": "Mi Cooperativa"}'
+```
 
-- **Bootstrap Modular** - Código principal refactorizado en 5 clases especializadas
-- **Sistema de Migrations** - 9 migrations versionadas con WP-CLI
-- **CSS Consolidado** - 102 archivos organizados en 5 subdirectorios con build system
-- **Federación Completa** - Sincronización de 8 tipos de contenido entre nodos
-- **Webhooks** - Notificaciones en tiempo real con firma HMAC-SHA256
-- **Shortcodes de Red** - 8 shortcodes para mostrar contenido federado
+## Documentación
 
-Ver `docs/ARQUITECTURA-V3.3.md` para detalles técnicos.
+| Archivo | Contenido |
+|---------|-----------|
+| `CLAUDE.md` | **Instrucciones para Claude Code** (reglas, APIs, flujos) |
+| `CLAUDE-APK.md` | Configuración de apps móviles |
+| `CHANGELOG.md` | Historial de cambios |
+| `docs/` | Documentación técnica detallada |
 
-## Punto de entrada recomendado
+## Estructura Principal
 
-La documentacion canonica para entender el plugin y navegar por sus subsistemas esta en:
+```
+flavor-chat-ia/
+├── includes/
+│   ├── modules/           # 43 módulos disponibles
+│   ├── visual-builder-pro/ # Page builder
+│   └── api/               # REST APIs
+├── mobile-apps/           # Apps Flutter
+│   └── lib/features/modules/  # 55 templates
+├── addons/                # Extensiones opcionales
+│   └── flavor-multilingual/   # Multiidioma
+└── tools/                 # Scripts de utilidad
+    ├── full-inventory.sh     # Inventario completo
+    ├── vbp-inventory.sh      # Inventario VBP
+    └── apk-inventory.sh      # Inventario APKs
+```
 
-- `docs/INDICE-DOCUMENTACION.md`
-- `docs/ARQUITECTURA-V3.3.md` (nuevo)
+## APIs Principales
 
-## Lectura minima recomendada
+| Base | Uso |
+|------|-----|
+| `/wp-json/flavor-vbp/v1/claude/` | Automatización con Claude Code |
+| `/wp-json/flavor-site-builder/v1/` | Creación de sitios |
+| `/wp-json/flavor-platform/v1/` | Diagnóstico y compatibilidad |
+| `/wp-json/flavor-multilingual/v1/` | Traducciones (addon) |
 
-- `docs/FILOSOFIA-PLUGIN.md`
-- `docs/PLUGIN-COMPLETO.md`
-- `docs/GUIA-ADMINISTRACION.md`
-- `docs/GUIA_MODULOS.md`
-- `docs/ESTADO-REAL-PLUGIN.md`
+## Requisitos
 
-## Referencia de estado vigente
+- WordPress 6.0+
+- PHP 8.0+
+- Para apps: Flutter 3.19+
 
-La auditoria de referencia para el estado real del sistema pasa a ser:
+## Auditoría de Estado
 
+La referencia actualizada del estado real del sistema:
 - `reports/AUDITORIA-ESTADO-REAL-2026-03-04.md`
 
-## Alineacion documental realizada
+## Documentación Histórica
 
-Ya quedaron alineados con esa auditoria:
+Los documentos anteriores a marzo 2026 se han movido a `archive/docs-historicos/` para referencia. En caso de contradicción, el código y la auditoría tienen prioridad.
 
-- `docs/ESTADO-REAL-PLUGIN.md`
-- `docs/PLUGIN-COMPLETO.md`
-- `docs/GUIA_MODULOS.md`
-- `docs/CATALOGO-MODULOS.md`
-- `docs/INDICE-DOCUMENTACION.md`
+## Licencia
 
-Esos documentos deben leerse como capa canonica actual.
-
-## Nota
-
-Si un documento historico contradice:
-
-- el codigo actual
-- la version declarada `3.3.0`
-- la auditoria de `2026-03-04`
-- la documentacion canonica de `docs/`
-
-debe tratarse como material de contexto, no como fuente unica de verdad.
-
-## Sistema de Versionado de Modulos
-
-A partir de v3.4.0, cada modulo puede tener su version independiente mediante un archivo `module.json` en su directorio.
-
-### Estructura del module.json
-
-```json
-{
-  "id": "eventos",
-  "name": "Eventos y Calendario",
-  "version": "2.0.0",
-  "description": "Descripcion del modulo",
-  "dependencies": {
-    "comunidades": "^1.0.0"
-  },
-  "wp_version_min": "6.0",
-  "php_version_min": "7.4",
-  "flavor_version_min": "3.3.0"
-}
-```
-
-### Uso de la API de Versionado
-
-```php
-// Obtener instancia
-$versioning = Flavor_Module_Versioning::get_instance();
-
-// Obtener version de un modulo
-$version = $versioning->get_module_version('eventos');
-
-// Verificar dependencias
-$dependencies = $versioning->verify_dependencies('eventos');
-if ($dependencies['success']) {
-    // Todas las dependencias satisfechas
-}
-
-// Verificar compatibilidad
-$compatibility = $versioning->verify_compatibility('eventos');
-if ($compatibility['compatible']) {
-    // Modulo compatible con el sistema
-}
-
-// Obtener changelog
-$changelog = $versioning->get_module_changelog('eventos');
-
-// Obtener changelog desde version especifica
-$changelog = $versioning->get_module_changelog('eventos', '1.0.0', '2.0.0');
-
-// Generar reporte de estado
-$report = $versioning->generate_status_report();
-```
-
-### Restricciones de Version (Semver)
-
-El sistema soporta las siguientes restricciones de version:
-
-| Formato | Significado | Ejemplo |
-|---------|-------------|---------|
-| `1.0.0` | Version exacta | Solo 1.0.0 |
-| `>=1.0.0` | Mayor o igual | 1.0.0, 1.5.0, 2.0.0 |
-| `>1.0.0` | Mayor estricto | 1.0.1, 1.5.0, 2.0.0 |
-| `<2.0.0` | Menor estricto | 1.0.0, 1.9.9 |
-| `<=2.0.0` | Menor o igual | 1.0.0, 2.0.0 |
-| `^1.0.0` | Compatible (caret) | >=1.0.0 <2.0.0 |
-| `~1.2.0` | Aproximada (tilde) | >=1.2.0 <1.3.0 |
-| `1.0.0 - 2.0.0` | Rango | 1.0.0 a 2.0.0 inclusive |
-| `1.*` | Wildcard | 1.0.0, 1.5.3, 1.99.0 |
-
-### Schema Completo
-
-El schema JSON completo esta disponible en:
-`includes/modules/module-schema.json`
-
-### Ejemplo de Implementacion
-
-Ver el modulo de eventos como referencia:
-`includes/modules/eventos/module.json`
+GPL-2.0+

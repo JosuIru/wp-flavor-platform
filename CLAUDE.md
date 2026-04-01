@@ -67,6 +67,76 @@ curl -s "http://SITIO/wp-json/flavor-site-builder/v1/system/health" \
 
 ---
 
+## PASO 0.5: Discovery de Elementos (OBLIGATORIO antes de componer páginas)
+
+> **CRÍTICO**: ANTES de crear cualquier página con VBP, DEBES consultar qué elementos están realmente disponibles. NO supongas qué bloques existen.
+
+### Script de inventario rápido
+
+```bash
+# Ejecutar SIEMPRE antes de componer páginas
+bash tools/vbp-inventory.sh "http://SITIO"
+```
+
+Este script muestra todos los bloques, secciones, módulos y presets disponibles.
+
+### Consultas manuales de discovery
+
+#### A. Schema completo (fuente de verdad)
+```bash
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/schema" \
+  -H "X-VBP-Key: flavor-vbp-2024" > /tmp/vbp-schema.json
+
+# Ver bloques por categoría
+cat /tmp/vbp-schema.json | jq '.blocks | group_by(.category)'
+
+# Consultar un bloque específico con sus props
+cat /tmp/vbp-schema.json | jq '.blocks[] | select(.id=="hero-banner")'
+```
+
+#### B. Bloques disponibles
+```bash
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/blocks" \
+  -H "X-VBP-Key: flavor-vbp-2024" | jq '.blocks[] | {id, name, category}'
+```
+
+#### C. Tipos de sección
+```bash
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/section-types" \
+  -H "X-VBP-Key: flavor-vbp-2024"
+```
+
+#### D. Presets de diseño
+```bash
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/design-presets" \
+  -H "X-VBP-Key: flavor-vbp-2024"
+```
+
+#### E. Módulos activos (¡IMPORTANTE! solo usar los activos)
+```bash
+curl -s "http://SITIO/wp-json/flavor-site-builder/v1/modules" \
+  -H "X-VBP-Key: flavor-vbp-2024" | jq '.[] | select(.active==true) | .id'
+```
+
+### REGLAS DE DISCOVERY
+
+1. **NUNCA uses un bloque que no aparezca en `/claude/blocks`**
+2. **NUNCA references un módulo que no esté ACTIVO**
+3. **NUNCA inventes presets de diseño** - usa solo los existentes
+4. **Si algo no existe, PREGUNTA** antes de improvisar con HTML/Gutenberg
+
+### Flujo obligatorio para componer páginas
+
+```
+1. Ejecutar vbp-inventory.sh
+2. Listar qué bloques/módulos vas a usar
+3. Verificar que TODOS existen en el inventario
+4. Solo entonces componer la página
+5. Si falta algo, preguntar al usuario
+```
+
+---
+
 ## Estructura de APIs
 
 ### Site Builder API
@@ -528,6 +598,21 @@ fi
 
 Para configurar las apps Flutter según los módulos activados en el sitio.
 
+> **IMPORTANTE**: Antes de configurar cualquier APK, ejecutar `bash tools/apk-inventory.sh`
+> Ver documentación completa en `CLAUDE-APK.md`
+
+### Regla de Habilitación de Módulos
+
+| Soporte | Acción |
+|---------|--------|
+| **3/3** (WordPress + Flutter + API) | Habilitar automáticamente |
+| **2/3** (soporte parcial) | **Pedir permiso al usuario** explicando qué falta y el fallback disponible |
+| **1/3 o menos** | Advertir y no recomendar |
+
+**Ejemplo de solicitud de permiso:**
+> "El módulo `chat-grupos` está activo en WordPress pero no tiene template Flutter nativo.
+> ¿Quieres que lo habilite usando WebView como fallback? (será más lento pero funcional)"
+
 ### API de Configuración de Apps
 
 Base: `/wp-json/flavor-vbp/v1/app/`
@@ -698,11 +783,48 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/sync-from-site" \
 
 ## Documentación Adicional
 
+### Guías Especializadas
+- `CLAUDE-APK.md` - **Configuración de APKs móviles (OBLIGATORIO para apps)**
 - `docs/api/CLAUDE-API-GUIDE.md` - Guía completa APIs
 - `docs/api/WORKFLOW-CREAR-SITIO.md` - Tutorial detallado
 - `docs/api/ENDPOINTS-REFERENCE.md` - Referencia endpoints
 - `docs/modulos/` - Documentación por módulo
-- `tools/validate-site.sh` - Script de validación
+
+### Scripts de Discovery (OBLIGATORIOS)
+| Script | Uso | Ejecutar antes de |
+|--------|-----|-------------------|
+| `tools/validate-site.sh` | Validar entorno WordPress | Cualquier operación |
+| `tools/vbp-inventory.sh` | Inventario de bloques VBP | Componer páginas |
+| `tools/apk-inventory.sh` | Inventario 3 niveles APK | Configurar apps móviles |
+| `tools/full-inventory.sh` | **Inventario completo** (3 en 1) | Proyectos nuevos |
+
+### Pre-commit Hook
+Para validar módulos antes de commit:
+```bash
+cp tools/hooks/pre-commit-modules .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+```
+
+### API de Compatibilidad de Módulos
+Base: `/wp-json/flavor-platform/v1/`
+
+| Endpoint | Descripción |
+|----------|-------------|
+| `/modules/compatibility` | Matriz completa 3 niveles |
+| `/modules/{id}/check` | Verificar módulo específico |
+| `/modules/supported` | Lista de módulos con soporte completo |
+| `/diagnostics` | Diagnóstico completo del sistema |
+
+### Regla de Discovery
+**NUNCA** asumas qué elementos existen. Ejecuta el script correspondiente:
+```bash
+# Inventario completo (recomendado para proyectos nuevos)
+bash tools/full-inventory.sh "http://SITIO" "." "mobile-apps"
+
+# O inventarios individuales:
+bash tools/vbp-inventory.sh "http://SITIO"      # Solo páginas web
+bash tools/apk-inventory.sh "http://SITIO" "mobile-apps"  # Solo APKs
+```
 
 ---
 
@@ -783,4 +905,90 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
 
 # ❌ INCORRECTO: WordPress posts
 wp post create --post_type=page --post_title="..." --post_content="..."
+```
+
+---
+
+## Plantilla de Prompt Estructurado para Componer Páginas
+
+Cuando el usuario pida crear una página, sigue este flujo estructurado:
+
+### Paso 1: Definir contexto
+
+```
+TAREA: Componer página con Visual Builder Pro
+
+CONTEXTO:
+- Tipo: [landing captación / portal comunidad / página informativa]
+- Público: [clínica, cooperativa, asociación, tienda...]
+- Objetivo principal: [captar socios / mostrar servicios / informar / vender]
+- Módulos requeridos: [marketplace, eventos, socios...]
+```
+
+### Paso 2: Discovery obligatorio (ANTES de escribir código)
+
+```bash
+# 1. Ejecutar inventario completo
+bash tools/vbp-inventory.sh "http://SITIO"
+
+# 2. O consultas específicas:
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/blocks" -H "X-VBP-Key: flavor-vbp-2024"
+curl -s "http://SITIO/wp-json/flavor-site-builder/v1/modules" -H "X-VBP-Key: flavor-vbp-2024" | jq '.[] | select(.active==true)'
+```
+
+### Paso 3: Listar qué vas a usar
+
+Antes de componer, declara explícitamente:
+
+```
+VOY A USAR:
+- Preset de diseño: community (verificado en /design-presets)
+- Secciones: hero, features, module_eventos (verificadas en /section-types)
+- Bloques: heading, text, button, columns (verificados en /blocks)
+- Módulos: eventos, socios (verificados como ACTIVOS)
+```
+
+### Paso 4: Si algo no existe, PREGUNTAR
+
+```
+⚠️ El bloque "video-gallery" no aparece en /claude/blocks.
+¿Quieres que:
+  A) Use un bloque alternativo existente (gallery, multimedia)
+  B) Omita esa sección
+  C) Otra solución
+```
+
+### Paso 5: Solo entonces, componer la página
+
+```bash
+curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
+  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "...",
+    "preset": "community",
+    "sections": ["hero", "features", "module_eventos"],
+    "status": "publish"
+  }'
+```
+
+---
+
+## Herramientas de Diagnóstico
+
+| Script | Descripción | Uso |
+|--------|-------------|-----|
+| `tools/validate-site.sh` | Validación pre-vuelo completa | `bash tools/validate-site.sh "http://SITIO" "/ruta/wp"` |
+| `tools/vbp-inventory.sh` | Inventario de elementos VBP | `bash tools/vbp-inventory.sh "http://SITIO"` |
+
+### Ejecutar ambos antes de cualquier tarea compleja:
+
+```bash
+# 1. Validar que el sitio está configurado correctamente
+bash tools/validate-site.sh "http://sitio.local" "/ruta/wordpress"
+
+# 2. Obtener inventario de elementos disponibles
+bash tools/vbp-inventory.sh "http://sitio.local"
+
+# 3. Solo entonces, proceder con la tarea
 ```

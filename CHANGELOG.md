@@ -7,6 +7,74 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [3.5.0] - 2026-04-01
+
+### Añadido
+- **Sistema de Discovery** - Scripts obligatorios antes de componer páginas/APKs
+  - `tools/full-inventory.sh` - Inventario completo 3 fases
+  - `tools/vbp-inventory.sh` - Inventario Visual Builder Pro
+  - `tools/apk-inventory.sh` - Inventario APK 3 niveles
+- **API de Compatibilidad de Módulos** (`/flavor-platform/v1/modules/compatibility`)
+- **Pre-commit hook** para validar módulos antes de commit
+- **Addon Multilingual v1.4.0** completo
+  - 94 tests unitarios
+  - Object cache con wp_cache
+  - Documentación OpenAPI
+  - Assets minificados (45% reducción)
+  - Editor side-by-side con atajos de teclado
+  - Sistema de comentarios de traducción
+
+### Mejorado
+- **CLAUDE.md** con reglas de discovery obligatorio
+- **CLAUDE-APK.md** nueva documentación para apps móviles
+- **README.md** simplificado a quickstart
+
+### Limpieza
+- 34 archivos .md históricos movidos a `archive/docs-historicos/`
+- Estructura de documentación consolidada
+
+---
+
+## [3.4.0] - 2026-03-23
+
+### Añadido
+- **Sistema de Versionado de Módulos** con `module.json`
+- **Visual Builder Pro mejorado** - Split-screen preview
+- **Modularización de keyboard shortcuts** en VBP
+
+### Arquitectura
+- Bootstrap modular refactorizado
+- Sistema de migrations con WP-CLI
+
+---
+
+## [3.3.0] - 2026-03-10
+
+### Añadido
+- **Federación completa** - Sincronización entre nodos WordPress
+- **Webhooks** con firma HMAC-SHA256
+- **8 shortcodes de red** para contenido federado
+- **Apps móviles extendidas** - 55 templates Flutter
+
+### Seguridad
+- Corrección de vulnerabilidades en endpoints A/B testing
+- Mejoras en endpoints públicos de blog
+
+---
+
+## [3.2.0] - 2026-02-23
+
+### Añadido
+- **Addon Multilingual** - Sistema de traducción multiidioma
+- **Templates dinámicos** para CPTs en VBP
+- **REST API para Claude Code** (`/flavor-vbp/v1/claude/`)
+
+### Rendimiento
+- Lazy loading de widgets en dashboard
+- Consolidación de queries N+1
+
+---
+
 ## [3.1.1] - 2026-02-12
 
 ### Seguridad

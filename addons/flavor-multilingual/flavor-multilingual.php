@@ -2,7 +2,7 @@
 /**
  * Addon Name: Flavor Multilingual
  * Description: Sistema de traducción multiidioma para Flavor Platform con integración de IA para traducciones automáticas. Soporta español, inglés, euskera, catalán, gallego y más idiomas.
- * Version: 1.0.0
+ * Version: 1.3.0
  * Author: Gailu Labs
  * Author URI: https://gailu.net
  * Requires: Flavor Chat IA 3.0.0+
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Constantes del addon
-define('FLAVOR_MULTILINGUAL_VERSION', '1.0.0');
+define('FLAVOR_MULTILINGUAL_VERSION', '1.4.0');
 define('FLAVOR_MULTILINGUAL_PATH', plugin_dir_path(__FILE__));
 define('FLAVOR_MULTILINGUAL_URL', plugin_dir_url(__FILE__));
 define('FLAVOR_MULTILINGUAL_BASENAME', plugin_basename(__FILE__));
@@ -396,6 +396,23 @@ class Flavor_Multilingual {
         require_once $includes_path . 'class-po-mo-handler.php';
         require_once $includes_path . 'class-wpml-compatibility.php';
 
+        // Sistema de caché y memoria de traducción
+        require_once $includes_path . 'class-translation-cache.php';
+        require_once $includes_path . 'class-translation-memory.php';
+        require_once $includes_path . 'class-object-cache.php';
+
+        // Sistema de roles y permisos
+        require_once $includes_path . 'class-translation-roles.php';
+
+        // XLIFF import/export
+        require_once $includes_path . 'class-xliff-handler.php';
+
+        // Geolocalización
+        require_once $includes_path . 'class-geolocation.php';
+
+        // Notificaciones por email
+        require_once $includes_path . 'class-translation-notifications.php';
+
         // Admin
         if (is_admin()) {
             require_once FLAVOR_MULTILINGUAL_PATH . 'admin/class-admin-settings.php';
@@ -403,6 +420,11 @@ class Flavor_Multilingual {
             require_once FLAVOR_MULTILINGUAL_PATH . 'admin/class-string-manager.php';
             require_once FLAVOR_MULTILINGUAL_PATH . 'admin/class-taxonomy-translations.php';
             require_once FLAVOR_MULTILINGUAL_PATH . 'admin/class-menu-translations.php';
+            require_once FLAVOR_MULTILINGUAL_PATH . 'admin/class-translation-dashboard.php';
+            require_once FLAVOR_MULTILINGUAL_PATH . 'admin/class-side-by-side-editor.php';
+            require_once FLAVOR_MULTILINGUAL_PATH . 'admin/class-progress-widget.php';
+            require_once FLAVOR_MULTILINGUAL_PATH . 'admin/class-posts-column.php';
+            require_once FLAVOR_MULTILINGUAL_PATH . 'admin/class-translation-comments.php';
         }
 
         // Frontend
@@ -413,6 +435,66 @@ class Flavor_Multilingual {
 
         // API
         require_once FLAVOR_MULTILINGUAL_PATH . 'api/class-translation-api.php';
+
+        // Integraciones con plugins de terceros
+        $this->load_integrations();
+    }
+
+    /**
+     * Carga las integraciones con plugins de terceros
+     */
+    private function load_integrations() {
+        $integrations_path = FLAVOR_MULTILINGUAL_PATH . 'integrations/';
+
+        // ACF - Advanced Custom Fields
+        if (class_exists('ACF') || function_exists('acf_get_field_groups')) {
+            require_once $integrations_path . 'class-acf-integration.php';
+        }
+
+        // WooCommerce
+        if (class_exists('WooCommerce') || defined('WC_VERSION')) {
+            require_once $integrations_path . 'class-woocommerce-integration.php';
+        }
+
+        // Visual Builder Pro (Flavor)
+        if (class_exists('Flavor_VBP_Editor') || defined('FLAVOR_VBP_VERSION')) {
+            require_once $integrations_path . 'class-vbp-integration.php';
+        }
+
+        // Media Library Integration (siempre cargar)
+        require_once $integrations_path . 'class-media-integration.php';
+
+        // Sitemap Integration (siempre cargar, detecta plugins SEO internamente)
+        require_once $integrations_path . 'class-sitemap-integration.php';
+
+        // Cargar integraciones siempre (detectan internamente si el plugin está activo)
+        // Esto permite que se carguen cuando los plugins se activan después
+        add_action('plugins_loaded', array($this, 'late_load_integrations'), 100);
+    }
+
+    /**
+     * Carga tardía de integraciones (para plugins que se cargan después)
+     */
+    public function late_load_integrations() {
+        $integrations_path = FLAVOR_MULTILINGUAL_PATH . 'integrations/';
+
+        // ACF - si no se cargó antes y ahora está disponible
+        if (!class_exists('Flavor_ML_ACF_Integration') && (class_exists('ACF') || function_exists('acf_get_field_groups'))) {
+            require_once $integrations_path . 'class-acf-integration.php';
+            Flavor_ML_ACF_Integration::get_instance();
+        }
+
+        // WooCommerce - si no se cargó antes y ahora está disponible
+        if (!class_exists('Flavor_ML_WooCommerce_Integration') && class_exists('WooCommerce')) {
+            require_once $integrations_path . 'class-woocommerce-integration.php';
+            Flavor_ML_WooCommerce_Integration::get_instance();
+        }
+
+        // VBP - si no se cargó antes y ahora está disponible
+        if (!class_exists('Flavor_ML_VBP_Integration') && (class_exists('Flavor_VBP_Editor') || defined('FLAVOR_VBP_VERSION'))) {
+            require_once $integrations_path . 'class-vbp-integration.php';
+            Flavor_ML_VBP_Integration::get_instance();
+        }
     }
 
     /**
@@ -425,6 +507,26 @@ class Flavor_Multilingual {
         Flavor_WPML_Compatibility::get_instance();
         Flavor_PO_MO_Handler::get_instance();
 
+        // Sistema de caché (siempre activo para rendimiento)
+        Flavor_Translation_Cache::get_instance();
+        Flavor_ML_Object_Cache::get_instance();
+
+        // Memoria de traducción y glosario
+        $translation_memory = Flavor_Translation_Memory::get_instance();
+        $translation_memory->maybe_create_tables();
+
+        // Sistema de roles y permisos
+        Flavor_Translation_Roles::get_instance();
+
+        // XLIFF import/export
+        Flavor_XLIFF_Handler::get_instance();
+
+        // Geolocalización (siempre activa)
+        Flavor_ML_Geolocation::get_instance();
+
+        // Sistema de notificaciones por email
+        Flavor_Translation_Notifications::get_instance();
+
         // Admin
         if (is_admin()) {
             Flavor_Multilingual_Admin_Settings::get_instance();
@@ -433,6 +535,11 @@ class Flavor_Multilingual {
             Flavor_Taxonomy_Translations::get_instance();
             Flavor_Menu_Translations::get_instance();
             Flavor_Content_Duplicator::get_instance();
+            Flavor_Translation_Dashboard::get_instance();
+            Flavor_Side_By_Side_Editor::get_instance();
+            Flavor_Translation_Progress_Widget::get_instance();
+            Flavor_Translation_Posts_Column::get_instance();
+            Flavor_Translation_Comments::get_instance();
         }
 
         // Frontend
@@ -442,6 +549,39 @@ class Flavor_Multilingual {
 
         // API REST
         Flavor_Translation_API::get_instance();
+
+        // Inicializar integraciones
+        $this->init_integrations();
+    }
+
+    /**
+     * Inicializa las integraciones con plugins de terceros
+     */
+    private function init_integrations() {
+        // ACF Integration
+        if (class_exists('Flavor_ML_ACF_Integration')) {
+            Flavor_ML_ACF_Integration::get_instance();
+        }
+
+        // WooCommerce Integration
+        if (class_exists('Flavor_ML_WooCommerce_Integration')) {
+            Flavor_ML_WooCommerce_Integration::get_instance();
+        }
+
+        // VBP Integration
+        if (class_exists('Flavor_ML_VBP_Integration')) {
+            Flavor_ML_VBP_Integration::get_instance();
+        }
+
+        // Media Library Integration
+        if (class_exists('Flavor_ML_Media_Integration')) {
+            Flavor_ML_Media_Integration::get_instance();
+        }
+
+        // Sitemap Integration
+        if (class_exists('Flavor_ML_Sitemap_Integration')) {
+            Flavor_ML_Sitemap_Integration::get_instance();
+        }
     }
 
     /**

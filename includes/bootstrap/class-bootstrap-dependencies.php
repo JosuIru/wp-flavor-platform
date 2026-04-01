@@ -305,6 +305,9 @@ final class Flavor_Bootstrap_Dependencies {
         // API de Diagnóstico VBP (para verificar estado del sistema)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-vbp-diagnostics.php';
 
+        // API de Compatibilidad de Módulos (matriz 3 niveles para APKs)
+        require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-module-compatibility-api.php';
+
         // API de Preview VBP (endpoints públicos para previsualizar landings)
         require_once FLAVOR_CHAT_IA_PATH . 'includes/api/class-vbp-preview-api.php';
 

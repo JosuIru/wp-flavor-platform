@@ -7,7 +7,7 @@
  * Plugin Name: Flavor Platform
  * Plugin URI: https://gailu.net
  * Description: Plataforma integral para WordPress: Red de Comunidades, Asistente IA, Page Builder, Deep Links, Matching, Newsletter, Sellos de Calidad y más.
- * Version: 3.3.0
+ * Version: 3.5.0
  * Author: Gailu Labs
  * Author URI: https://gailu.net
  * License: GPL v2 or later
@@ -380,6 +380,12 @@ final class Flavor_Chat_IA {
     public function init_demo_data_generator() {
         if (is_admin()) {
             require_once FLAVOR_CHAT_IA_PATH . 'includes/admin/class-demo-data-generator.php';
+
+            // Herramienta de migración VBP (solo admin)
+            $migration_tool_path = FLAVOR_CHAT_IA_PATH . 'includes/tools/class-vbp-migration-tool.php';
+            if (file_exists($migration_tool_path)) {
+                require_once $migration_tool_path;
+            }
         }
     }
 
@@ -661,6 +667,11 @@ final class Flavor_Chat_IA {
         // Registrar post type de Visual Builder y regenerar permalinks
         if (class_exists('Flavor_Visual_Builder')) {
             Flavor_Visual_Builder::on_plugin_activation();
+        }
+
+        // Crear tabla de Audit Log del VBP
+        if (class_exists('Flavor_VBP_Audit_Log')) {
+            Flavor_VBP_Audit_Log::create_table();
         }
 
         // Limpiar caché de rewrite

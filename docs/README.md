@@ -1,110 +1,86 @@
-# Flavor Platform - Documentacion
+# Documentación Flavor Platform
 
-> Fuente principal de consulta para el plugin.
+## Inicio Rápido
 
----
-
-## Inicio Rapido
-
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
 | [GUIA-INICIO-RAPIDO.md](GUIA-INICIO-RAPIDO.md) | Primeros pasos |
-| [GUIA-ADMINISTRACION.md](GUIA-ADMINISTRACION.md) | Manual admin |
-| [FILOSOFIA-PLUGIN.md](FILOSOFIA-PLUGIN.md) | Vision del proyecto |
-| [PLUGIN-COMPLETO.md](PLUGIN-COMPLETO.md) | Funcionalidades |
-
----
+| [GUIA-ADMINISTRACION.md](GUIA-ADMINISTRACION.md) | Panel de administración |
+| [GUIA_MODULOS.md](GUIA_MODULOS.md) | Trabajar con módulos |
 
 ## Arquitectura
 
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
-| [ARQUITECTURA-TECNICA-V3.3.md](ARQUITECTURA-TECNICA-V3.3.md) | Arquitectura completa |
-| [ARQUITECTURA-PLUGIN.md](ARQUITECTURA-PLUGIN.md) | Estructura plugin |
-| [ARQUITECTURA-MODULOS.md](ARQUITECTURA-MODULOS.md) | Sistema modular |
+| [ARQUITECTURA-PLUGIN.md](ARQUITECTURA-PLUGIN.md) | Estructura general |
+| [ARQUITECTURA-TECNICA-V3.3.md](ARQUITECTURA-TECNICA-V3.3.md) | Detalles técnicos v3.3+ |
+| [ARQUITECTURA-MODULOS.md](ARQUITECTURA-MODULOS.md) | Sistema de módulos |
+| [SISTEMA-VERSIONADO-MODULOS.md](SISTEMA-VERSIONADO-MODULOS.md) | Versionado semver |
 
----
+## Módulos
 
-## Modulos
-
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
-| [CATALOGO-MODULOS.md](CATALOGO-MODULOS.md) | Listado de modulos |
-| [GUIA_MODULOS.md](GUIA_MODULOS.md) | Uso de modulos |
-| [ESTANDARES-MODULOS.md](ESTANDARES-MODULOS.md) | Desarrollo |
-| [EJEMPLO-MODULO-COMPLETO.md](EJEMPLO-MODULO-COMPLETO.md) | Tutorial |
-| [REFERENCIA_RAPIDA_MODULOS.md](REFERENCIA_RAPIDA_MODULOS.md) | Referencia |
+| [CATALOGO-MODULOS.md](CATALOGO-MODULOS.md) | Lista completa (43 módulos) |
+| [ESTANDARES-MODULOS.md](ESTANDARES-MODULOS.md) | Estándares de desarrollo |
+| [EJEMPLO-MODULO-COMPLETO.md](EJEMPLO-MODULO-COMPLETO.md) | Tutorial crear módulo |
+| [modulos/](modulos/) | Documentación por módulo |
 
----
+## APIs
 
-## Dashboards
-
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
-| [ARQUITECTURA-DASHBOARDS-ECOSISTEMA.md](ARQUITECTURA-DASHBOARDS-ECOSISTEMA.md) | Ecosistema |
-| [GUIA-CONTEXTOS-DASHBOARD-MODULOS.md](GUIA-CONTEXTOS-DASHBOARD-MODULOS.md) | Contextos |
+| [api/](api/) | Documentación de APIs REST |
+| [HOOKS-REFERENCE.md](HOOKS-REFERENCE.md) | Hooks disponibles |
+| [PERMISSIONS-USAGE.md](PERMISSIONS-USAGE.md) | Sistema de permisos |
 
----
+## Addons y Sistemas
 
-## Apps Mobile
-
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
-| [CONFIGURACION-APPS.md](CONFIGURACION-APPS.md) | Configurar apps |
-| [CONSTRUIR_APLICACION.md](CONSTRUIR_APLICACION.md) | Compilar Flutter |
-| [CPT-APPS-GUIA.md](CPT-APPS-GUIA.md) | CPT Apps |
+| [ADDON-SYSTEM.md](ADDON-SYSTEM.md) | Sistema de addons |
+| [ADDON-EXAMPLE.md](ADDON-EXAMPLE.md) | Crear un addon |
+| [RED-DE-NODOS.md](RED-DE-NODOS.md) | Federación entre nodos |
+| [INTEGRACIONES.md](INTEGRACIONES.md) | Integraciones externas |
 
----
+## Apps Móviles
 
-## Impacto Social y Sostenibilidad
-
-| Concepto | Descripcion |
-|----------|-------------|
-| **Sello de Conciencia** | Evaluacion automatica de impacto basada en 5 premisas de economia consciente |
-| **RSC / ESG** | Metricas alineadas con estandares internacionales |
-| **ODS** | Contribucion directa a ODS 8, 10, 11, 12, 13, 17 |
-| **Modulos destacados** | Banco de Tiempo (95), Red de Cuidados (95), Energia Comunitaria (92) |
-
-Ver seccion completa en [RESUMEN-EJECUTIVO.md](RESUMEN-EJECUTIVO.md#impacto-social-y-sostenibilidad)
-
----
-
-## Sistemas
-
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
-| [ADDON-SYSTEM.md](ADDON-SYSTEM.md) | Addons |
-| [RED-DE-NODOS.md](RED-DE-NODOS.md) | Red distribuida |
-| [INTEGRACIONES.md](INTEGRACIONES.md) | Integraciones |
-| [PERMISSIONS-USAGE.md](PERMISSIONS-USAGE.md) | Permisos |
+| [CONFIGURACION-APPS.md](CONFIGURACION-APPS.md) | Configurar apps Flutter |
+| [CONSTRUIR_APLICACION.md](CONSTRUIR_APLICACION.md) | Compilar APK/IPA |
+| [CPT-APPS-GUIA.md](CPT-APPS-GUIA.md) | Custom Post Types en apps |
 
----
+## Claude Code
 
-## Estado y Planificacion
-
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
-| [ESTADO-REAL-PLUGIN.md](ESTADO-REAL-PLUGIN.md) | Estado actual |
-| [PLAN-DESARROLLO.md](PLAN-DESARROLLO.md) | Roadmap |
-| [CHECKLIST-RELEASE.md](CHECKLIST-RELEASE.md) | Release |
+| [claude-code/](claude-code/) | Guías específicas |
+| [INSTRUCCIONES-CLAUDE-CODE.md](INSTRUCCIONES-CLAUDE-CODE.md) | Uso con Claude Code |
+| `../CLAUDE.md` | **Reglas obligatorias** (raíz) |
+| `../CLAUDE-APK.md` | **Reglas para APKs** (raíz) |
 
----
+## Estado del Proyecto
 
-## Presentaciones y Resumen
-
-| Documento | Descripcion |
+| Documento | Descripción |
 |-----------|-------------|
-| [RESUMEN-EJECUTIVO.md](RESUMEN-EJECUTIVO.md) | Resumen ejecutivo del ecosistema |
-| [PRESENTACION-EMPRENDIMIENTO.md](PRESENTACION-EMPRENDIMIENTO.md) | Presentacion emprendimiento rural |
-| [GUIA-DEMO.md](GUIA-DEMO.md) | Script demo tejido empresarial |
-
----
+| [ESTADO-REAL-PLUGIN.md](ESTADO-REAL-PLUGIN.md) | Estado actual verificado |
+| [PLUGIN-COMPLETO.md](PLUGIN-COMPLETO.md) | Visión general completa |
+| [FILOSOFIA-PLUGIN.md](FILOSOFIA-PLUGIN.md) | Principios de diseño |
 
 ## Subdirectorios
 
-- `api/` - Documentacion API REST
-- `modulos/` - Docs por modulo
+```
+docs/
+├── api/           # Endpoints REST
+├── modulos/       # Doc por módulo
+└── claude-code/   # Guías IA
+```
+
+## Documentación Archivada
+
+Planes de desarrollo, matrices y documentos históricos → `archive/`
 
 ---
 
-*Marzo 2026*
+*Abril 2026 - v3.5.0*

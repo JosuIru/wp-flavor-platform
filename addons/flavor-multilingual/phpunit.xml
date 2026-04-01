@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<phpunit
+    bootstrap="tests/bootstrap.php"
+    backupGlobals="false"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    >
+    <testsuites>
+        <testsuite name="Flavor Multilingual Test Suite">
+            <directory suffix="Test.php">./tests/unit</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./includes</directory>
+            <directory suffix=".php">./admin</directory>
+            <directory suffix=".php">./frontend</directory>
+            <directory suffix=".php">./api</directory>
+            <directory suffix=".php">./integrations</directory>
+            <exclude>
+                <directory suffix=".php">./tests</directory>
+                <directory suffix=".php">./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
+    <php>
+        <const name="FLAVOR_ML_TESTING" value="true"/>
+    </php>
+
+    <logging>
+        <log type="coverage-html" target="./tests/coverage" lowUpperBound="35" highLowerBound="70"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
+    </logging>
+</phpunit>
