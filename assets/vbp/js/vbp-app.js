@@ -7,6 +7,152 @@
  */
 
 /**
+ * Sistema de logging controlado para VBP
+ * Se activa con window.VBP_DEBUG = true o en entornos de desarrollo
+ */
+window.VBP_DEBUG = window.VBP_DEBUG || (window.location.hostname === 'localhost' || window.location.hostname.includes('.local'));
+
+/**
+ * Logger de VBP - Solo muestra logs si VBP_DEBUG está activo
+ */
+window.vbpLog = {
+    log: function() {
+        if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments)));
+    },
+    warn: function() {
+        if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments)));
+    },
+    error: function() {
+        // Los errores siempre se muestran
+        console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments)));
+    },
+    info: function() {
+        if (window.VBP_DEBUG) console.info.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments)));
+    }
+};
+
+/**
+ * Genera un ID único para elementos VBP
+ * Usa crypto.getRandomValues para máxima unicidad (equivalente a PHP random_bytes)
+ * Formato: el_XXXXXXXXXXXX (12 caracteres hex = 6 bytes)
+ * @param {string} prefix - Prefijo del ID (default: 'el')
+ * @returns {string} - ID único
+ */
+function generateElementId(prefix) {
+    prefix = prefix || 'el';
+    var bytes;
+
+    // Usar crypto.getRandomValues si está disponible (navegadores modernos)
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+        bytes = new Uint8Array(6);
+        crypto.getRandomValues(bytes);
+    } else {
+        // Fallback robusto: combinar timestamp con múltiples random
+        bytes = new Uint8Array(6);
+        var timestamp = Date.now();
+        for (var i = 0; i < 6; i++) {
+            bytes[i] = (timestamp >> (i * 4) ^ Math.floor(Math.random() * 256)) & 0xff;
+        }
+    }
+
+    // Convertir a hex string (equivalente a bin2hex en PHP)
+    var hex = '';
+    for (var j = 0; j < bytes.length; j++) {
+        hex += ('0' + bytes[j].toString(16)).slice(-2);
+    }
+
+    return prefix + '_' + hex;
+}
+
+// Exponer globalmente para uso en otros módulos
+window.generateElementId = generateElementId;
+
+window.vbpAIPanel = window.vbpAIPanel || function() {
+    return {
+        get store() {
+            return typeof Alpine !== 'undefined' ? Alpine.store('vbpAI') : null;
+        },
+        init: function() {}
+    };
+};
+
+document.addEventListener('alpine:init', function() {
+    var existingStore;
+
+    try {
+        existingStore = Alpine.store('vbpAI');
+    } catch (error) {
+        existingStore = null;
+    }
+
+    if (!existingStore) {
+        Alpine.store('vbpAI', {
+            isOpen: false,
+            isLoading: false,
+            currentField: null,
+            currentElement: null,
+            currentType: null,
+            currentContent: '',
+            generatedContent: '',
+            error: null,
+            mode: 'element',
+            industry: '',
+            tone: 'profesional',
+            companyName: '',
+            description: '',
+            targetAudience: '',
+            industries: [],
+            tones: [],
+            actions: [],
+            pageTypes: [],
+            sectionTypes: [],
+            selectedPageType: '',
+            selectedSections: [],
+            generatedPage: null,
+            history: [],
+            maxHistoryItems: 20,
+            showHistory: false,
+            open: function(field, element, type, content) {
+                this.currentField = field || null;
+                this.currentElement = element || null;
+                this.currentType = type || null;
+                this.currentContent = content || '';
+                this.error = null;
+                this.mode = 'element';
+                this.isOpen = true;
+            },
+            close: function() {
+                this.isOpen = false;
+            },
+            openPageMode: function() {
+                this.mode = 'page';
+                this.isOpen = true;
+            },
+            loadHistoryFromStorage: function() {},
+            selectPageType: function(pageType) {
+                this.selectedPageType = pageType || '';
+            },
+            isSectionSelected: function(sectionId) {
+                return this.selectedSections.indexOf(sectionId) !== -1;
+            },
+            toggleSection: function(sectionId) {
+                var index = this.selectedSections.indexOf(sectionId);
+                if (index === -1) {
+                    this.selectedSections.push(sectionId);
+                } else {
+                    this.selectedSections.splice(index, 1);
+                }
+            },
+            generate: function() {},
+            improve: function() {},
+            apply: function() {},
+            generatePage: function() {},
+            applyPage: function() {}
+        });
+    }
+});
+
+/**
  * Sanitiza elementos asegurando que todos tengan ID válido
  * @param {Array} elements - Array de elementos
  * @returns {Array} - Array filtrado con elementos válidos
@@ -16,7 +162,7 @@ function sanitizeElements(elements) {
     return elements.filter(function(el) {
         // Filtrar elementos sin ID o con ID undefined/null
         if (!el || typeof el.id !== 'string' || !el.id) {
-            console.warn('[VBP] Elemento inválido filtrado:', el);
+            vbpLog.warn('Elemento inválido filtrado:', el);
             return false;
         }
         return true;
@@ -37,7 +183,7 @@ function sanitizeElements(elements) {
 }
 
 function vbpApp() {
-    return {
+    var app = {
         // Getter seguro para elementos del store
         get elements() {
             var store = Alpine.store('vbp');
@@ -115,6 +261,12 @@ function vbpApp() {
         draggedElement: null,
         autosaveTimer: null,
         autosaveInterval: 30000,
+        countdownTimer: null,
+        optionalScriptPromises: {},
+
+        // Sistema de cleanup para evitar memory leaks
+        _eventHandlers: {},
+        _isDestroyed: false,
 
         // Modales
         showHelpModal: false,
@@ -137,6 +289,8 @@ function vbpApp() {
         templateCategory: '',
         templates: [],
         userTemplates: [],
+        templatesLoaded: false,
+        templatesLoading: false,
         selectedTemplate: null,
         newTemplateName: '',
         newTemplateCategory: 'landing',
@@ -148,6 +302,8 @@ function vbpApp() {
         // Widgets Globales
         globalWidgets: [],
         globalWidgetsLoaded: false,
+        globalWidgetsLoading: false,
+        globalWidgetsPromise: null,
         showSaveGlobalWidgetModal: false,
         newGlobalWidgetName: '',
         newGlobalWidgetCategory: 'general',
@@ -175,6 +331,12 @@ function vbpApp() {
         isRestoringVersion: false,
         newVersionLabel: '',
 
+        // Clipboard de estilos y elementos
+        copiedElement: null,
+        copiedStyles: null,
+        eyedropperActive: false,
+        eyedropperCallback: null,
+
         commands: [
             { id: 'save', name: 'Guardar', shortcut: 'Ctrl+S', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/></svg>', action: 'save' },
             { id: 'undo', name: 'Deshacer', shortcut: 'Ctrl+Z', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>', action: 'undo' },
@@ -182,6 +344,9 @@ function vbpApp() {
             { id: 'copy', name: 'Copiar', shortcut: 'Ctrl+C', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>', action: 'copy' },
             { id: 'paste', name: 'Pegar', shortcut: 'Ctrl+V', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>', action: 'paste' },
             { id: 'duplicate', name: 'Duplicar', shortcut: 'Ctrl+D', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>', action: 'duplicate' },
+            { id: 'copyStyles', name: 'Copiar estilos', shortcut: 'Ctrl+Alt+C', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>', action: 'copyStyles' },
+            { id: 'pasteStyles', name: 'Pegar estilos', shortcut: 'Ctrl+Alt+V', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>', action: 'pasteStyles' },
+            { id: 'eyedropper', name: 'Cuentagotas de color', shortcut: 'I', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 22l1-1h3l9-9"/><path d="M3 21v-3l9-9"/><circle cx="17" cy="7" r="3"/><path d="M20 4l-1.5 1.5"/></svg>', action: 'eyedropper' },
             { id: 'saveAsGlobal', name: 'Guardar como widget global', shortcut: 'Ctrl+Shift+G', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>', action: 'saveAsGlobal' },
             { id: 'delete', name: 'Eliminar', shortcut: 'Delete', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>', action: 'delete' },
             { id: 'selectAll', name: 'Seleccionar todo', shortcut: 'Ctrl+A', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>', action: 'selectAll' },
@@ -218,6 +383,447 @@ function vbpApp() {
             pageId: ''
         },
 
+        // === VALORES POR DEFECTO PARA MÓDULOS ENTERPRISE ===
+        // Estos valores se sobrescriben cuando los módulos cargan
+
+        // Colaboración
+        collaborationEnabled: false,
+        activeUsers: [],
+        comments: [],
+        userCursors: {},
+        canEdit: true,
+
+        // Workflows
+        workflowStatus: null,
+        pendingReviewsCount: 0,
+        showWorkflowPanel: false,
+        workflowHistory: [],
+        pendingReviews: [],
+
+        // Audit Log
+        auditLoading: false,
+        auditLogs: [],
+        showAuditPanel: false,
+        auditFilter: {
+            action: '',
+            user: '',
+            dateFrom: '',
+            dateTo: ''
+        },
+        auditStats: {
+            total: 0,
+            today: 0,
+            thisWeek: 0
+        },
+        auditPage: 1,
+        auditTotalPages: 1,
+
+        // Multisite
+        multisiteEnabled: false,
+        networkSites: [],
+        sharedTemplates: [],
+        showMultisitePanel: false,
+
+        // Métodos stub para módulos Enterprise (se sobrescriben cuando cargan)
+        getUserColor: function(userId) {
+            var colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+            var hash = 0;
+            var idStr = String(userId);
+            for (var i = 0; i < idStr.length; i++) {
+                hash = idStr.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return colors[Math.abs(hash) % colors.length];
+        },
+
+        getUserAvatar: function(user) {
+            if (user && user.avatar) return user.avatar;
+            return 'https://www.gravatar.com/avatar/?d=mp&s=40';
+        },
+
+        getUnresolvedCount: function() {
+            if (!this.comments || !Array.isArray(this.comments)) return 0;
+            return this.comments.filter(function(c) { return !c.resolved; }).length;
+        },
+
+        openCommentsPanel: function() {
+            vbpLog.log('Módulo de comentarios no cargado');
+        },
+
+        openWorkflowPanel: function() {
+            this.showWorkflowPanel = !this.showWorkflowPanel;
+        },
+
+        openAuditPanel: function() {
+            this.showAuditPanel = !this.showAuditPanel;
+        },
+
+        closeAuditPanel: function() {
+            this.showAuditPanel = false;
+        },
+
+        closeWorkflowPanel: function() {
+            this.showWorkflowPanel = false;
+        },
+
+        // Stubs para funciones de Audit Log
+        applyAuditFilters: function() {
+            vbpLog.log('Módulo de Audit Log no cargado');
+        },
+
+        clearAuditFilters: function() {
+            vbpLog.log('Módulo de Audit Log no cargado');
+        },
+
+        exportAuditLogs: function() {
+            vbpLog.log('Módulo de Audit Log no cargado');
+        },
+
+        auditNextPage: function() {
+            vbpLog.log('Módulo de Audit Log no cargado');
+        },
+
+        auditPrevPage: function() {
+            vbpLog.log('Módulo de Audit Log no cargado');
+        },
+
+        // Stubs para funciones de Workflow
+        executeTransition: function(transition) {
+            vbpLog.log('Módulo de Workflow no cargado');
+        },
+
+        getWorkflowStatusColor: function(status) {
+            var colors = {
+                'draft': '#94a3b8',
+                'pending_review': '#f59e0b',
+                'in_review': '#3b82f6',
+                'approved': '#10b981',
+                'rejected': '#ef4444',
+                'published': '#22c55e'
+            };
+            return colors[status] || '#94a3b8';
+        },
+
+        getWorkflowStatusIcon: function(status) {
+            var icons = {
+                'draft': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+                'pending_review': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+                'approved': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>',
+                'rejected': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>',
+                'published': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>'
+            };
+            return icons[status] || icons['draft'];
+        },
+
+        getWorkflowActionIcon: function(action) {
+            var icons = {
+                'submit': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
+                'approve': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
+                'reject': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+                'publish': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>'
+            };
+            return icons[action] || icons['submit'];
+        },
+
+        getAuditActionIcon: function(action) {
+            var icons = {
+                'create': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>',
+                'update': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+                'delete': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
+                'publish': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>',
+                'login': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><path d="M15 12H3"/></svg>'
+            };
+            return icons[action] || icons['update'];
+        },
+
+        getDiffChangeTypeLabel: function(type) {
+            var labels = {
+                'added': 'Añadido',
+                'removed': 'Eliminado',
+                'modified': 'Modificado',
+                'unchanged': 'Sin cambios'
+            };
+            return labels[type] || type;
+        },
+
+        // Stubs para Design Tokens (se sobrescriben cuando el módulo carga)
+        getTokenCategories: function() {
+            return ['colors', 'typography', 'spacing', 'shadows'];
+        },
+
+        getFilteredTokens: function(category) {
+            return [];
+        },
+
+        getQuickColorPalette: function() {
+            return ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#000000', '#ffffff'];
+        },
+
+        getAuditActionTypes: function() {
+            return [
+                { value: 'create', label: 'Crear' },
+                { value: 'update', label: 'Actualizar' },
+                { value: 'delete', label: 'Eliminar' },
+                { value: 'publish', label: 'Publicar' }
+            ];
+        },
+
+        // Design Tokens Panel
+        showTokensPanel: false,
+        activeTokenCategory: 'colors',
+        tokenSearchQuery: '',
+        documentTokenOverrides: {},
+
+        // Workflow Schedule
+        activeTab: 'pending',
+        showScheduleModal: false,
+        scheduledDate: '',
+
+        // Funciones auxiliares para módulos
+        formatDateForInput: function(date) {
+            if (!date) return '';
+            var d = new Date(date);
+            var year = d.getFullYear();
+            var month = String(d.getMonth() + 1).padStart(2, '0');
+            var day = String(d.getDate()).padStart(2, '0');
+            var hours = String(d.getHours()).padStart(2, '0');
+            var minutes = String(d.getMinutes()).padStart(2, '0');
+            return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+        },
+
+        openTokensPanel: function() {
+            var self = this;
+
+            return this.loadOptionalScript('designTokens')
+                .then(function() {
+                    if (window.VBPAppDesignTokens) {
+                        var descriptors = Object.getOwnPropertyDescriptors(window.VBPAppDesignTokens);
+                        Object.keys(descriptors).forEach(function(key) {
+                            try {
+                                Object.defineProperty(self, key, descriptors[key]);
+                            } catch (error) {
+                                self[key] = window.VBPAppDesignTokens[key];
+                            }
+                        });
+
+                        if (!self._designTokensInitialized && typeof self.initDesignTokens === 'function') {
+                            self.initDesignTokens();
+                            self._designTokensInitialized = true;
+                        }
+
+                        self.showTokensPanel = true;
+                        if (typeof self.loadDocumentOverrides === 'function') {
+                            self.loadDocumentOverrides();
+                        }
+                        return true;
+                    }
+
+                    throw new Error('Módulo de design tokens no disponible');
+                })
+                .catch(function(error) {
+                    vbpLog.warn('No se pudo cargar Design Tokens:', error);
+                    self.showNotification('No se pudo cargar Design Tokens', 'error');
+                    return false;
+                });
+        },
+
+        closeTokensPanel: function() {
+            this.showTokensPanel = false;
+        },
+
+        // Stubs adicionales para Design Tokens
+        editTokenValue: function(token) {
+            vbpLog.log('Módulo de Design Tokens no cargado');
+        },
+
+        resetToken: function(token) {
+            vbpLog.log('Módulo de Design Tokens no cargado');
+        },
+
+        resetAllTokens: function() {
+            vbpLog.log('Módulo de Design Tokens no cargado');
+        },
+
+        copyTokensCSS: function() {
+            vbpLog.log('Módulo de Design Tokens no cargado');
+        },
+
+        insertTokenVariable: function(token) {
+            vbpLog.log('Módulo de Design Tokens no cargado');
+        },
+
+        // Stubs adicionales para Workflow Schedule
+        confirmSchedule: function() {
+            vbpLog.log('Módulo de Workflow no cargado');
+        },
+
+        cancelSchedule: function() {
+            this.showScheduleModal = false;
+        },
+
+        getElementClasses: function(element) {
+            if (!element || !element.styles) return '';
+            return element.styles.customClasses || '';
+        },
+
+        getDiffChangeTypeClass: function(type) {
+            var classes = {
+                'added': 'vbp-diff-added',
+                'removed': 'vbp-diff-removed',
+                'modified': 'vbp-diff-modified',
+                'unchanged': 'vbp-diff-unchanged'
+            };
+            return classes[type] || '';
+        },
+
+        getTypeClass: function(type) {
+            return 'vbp-type-' + (type || 'default');
+        },
+
+        // Stub para Design Tokens - verificar si un token tiene override
+        isTokenOverridden: function(tokenKey) {
+            return false; // Se sobrescribe cuando el módulo carga
+        },
+
+        // Stubs para Mobile
+        mobileSidebarOpen: null,
+
+        closeMobileSidebars: function() {
+            this.mobileSidebarOpen = null;
+        },
+
+        toggleMobileSidebar: function(sidebar) {
+            if (this.mobileSidebarOpen === sidebar) {
+                this.mobileSidebarOpen = null;
+            } else {
+                this.mobileSidebarOpen = sidebar;
+            }
+        },
+
+        // Stub para executeAction - usado en varios contextos
+        executeAction: function(action, params) {
+            if (typeof action === 'string' && typeof this[action] === 'function') {
+                return this[action](params);
+            }
+            vbpLog.log('Acción no reconocida:', action);
+        },
+
+        loadOptionalScript: function(scriptKey) {
+            var optionalScripts = VBP_Config.optionalScripts || {};
+            var scriptUrl = optionalScripts[scriptKey];
+
+            if (!scriptUrl) {
+                return Promise.resolve(false);
+            }
+
+            if (this.optionalScriptPromises[scriptKey]) {
+                return this.optionalScriptPromises[scriptKey];
+            }
+
+            var existingScript = document.querySelector('script[data-vbp-optional="' + scriptKey + '"]');
+            if (existingScript) {
+                this.optionalScriptPromises[scriptKey] = Promise.resolve(true);
+                return this.optionalScriptPromises[scriptKey];
+            }
+
+            this.optionalScriptPromises[scriptKey] = new Promise(function(resolve, reject) {
+                var script = document.createElement('script');
+                script.src = scriptUrl;
+                script.async = true;
+                script.dataset.vbpOptional = scriptKey;
+                script.onload = function() {
+                    resolve(true);
+                };
+                script.onerror = function() {
+                    reject(new Error('No se pudo cargar el módulo opcional: ' + scriptKey));
+                };
+                document.body.appendChild(script);
+            }).catch(function(error) {
+                delete app.optionalScriptPromises[scriptKey];
+                throw error;
+            });
+
+            return this.optionalScriptPromises[scriptKey];
+        },
+
+        ensureComponentLibraryReady: function() {
+            return this.loadOptionalScript('componentLibrary').then(function() {
+                if (window.VBPComponentLibrary && typeof window.VBPComponentLibrary.init === 'function' && !window.VBPComponentLibrary._vbpInitialized) {
+                    window.VBPComponentLibrary.init();
+                    window.VBPComponentLibrary._vbpInitialized = true;
+                }
+                return !!window.VBPComponentLibrary;
+            });
+        },
+
+        setActiveLeftTab: function(tab) {
+            var self = this;
+
+            if (tab === 'components') {
+                return this.ensureComponentLibraryReady()
+                    .then(function() {
+                        self.activeLeftTab = 'components';
+                        return true;
+                    })
+                    .catch(function(error) {
+                        vbpLog.warn('No se pudo abrir la biblioteca de componentes:', error);
+                        self.showNotification('No se pudo cargar la biblioteca de componentes', 'error');
+                        return false;
+                    });
+            }
+
+            this.activeLeftTab = tab;
+            return Promise.resolve(true);
+        },
+
+        openHelpModal: function() {
+            var self = this;
+
+            return this.loadOptionalScript('helpSystem')
+                .catch(function(error) {
+                    vbpLog.warn('No se pudo cargar el sistema de ayuda opcional:', error);
+                })
+                .then(function() {
+                    self.showHelpModal = true;
+                    return true;
+                });
+        },
+
+        ensureAIAssistantReady: function() {
+            return this.loadOptionalScript('aiAssistant').then(function() {
+                if (typeof window.initVbpAI === 'function') {
+                    window.initVbpAI();
+                }
+
+                return !!(typeof Alpine !== 'undefined' && Alpine.store('vbpAI'));
+            });
+        },
+
+        triggerAIAssistant: function(detail) {
+            var self = this;
+            var payload = detail || {};
+
+            return this.ensureAIAssistantReady()
+                .then(function() {
+                    var aiStore = Alpine.store('vbpAI');
+                    if (aiStore && typeof aiStore.open === 'function') {
+                        aiStore.open(
+                            payload.field,
+                            payload.element,
+                            payload.type,
+                            payload.content
+                        );
+                        return true;
+                    }
+
+                    throw new Error('Store de IA no disponible');
+                })
+                .catch(function(error) {
+                    vbpLog.warn('No se pudo cargar el asistente de IA:', error);
+                    self.showNotification('No se pudo cargar el asistente de IA', 'error');
+                    return false;
+                });
+        },
+
         initEditor: function(datos) {
             if (datos && datos.elements) {
                 Alpine.store('vbp').elements = sanitizeElements(datos.elements);
@@ -231,13 +837,26 @@ function vbpApp() {
             }
             Alpine.store('vbp').postId = VBP_Config.postId;
             this.loadDocument();
-            this.loadTemplates();
-            this.loadGlobalWidgets();
-            this.startAutosave();
             this.initBeforeUnload();
             this.initZoomWheel();
             this.initCountdownTimer();
             this.initInteractiveElements();
+            // Inicializar sistema de colaboración si está disponible
+            if (typeof this.initCollaboration === 'function') {
+                this.initCollaboration();
+            }
+            // Inicializar sistema de workflows si está disponible
+            if (typeof this.initWorkflow === 'function') {
+                this.initWorkflow();
+            }
+            // Inicializar optimizaciones móviles si está disponible
+            if (typeof this.initMobile === 'function') {
+                this.initMobile();
+            }
+            // Inicializar soporte multisite si está disponible
+            if (typeof this.initMultisite === 'function') {
+                this.initMultisite();
+            }
             var self = this;
             this.$nextTick(function() { self.drawRulers(); });
         },
@@ -289,8 +908,8 @@ function vbpApp() {
         initInteractiveElements: function() {
             var self = this;
 
-            // Delegación de eventos para accordion, tabs y elementos hijos de contenedores
-            document.addEventListener('click', function(e) {
+            // Handler para clicks delegados (accordion, tabs, elementos hijos)
+            var handleDelegatedClick = function(e) {
                 // Selección de elementos hijos dentro de contenedores
                 var childElement = e.target.closest('.vbp-element-child');
                 if (childElement) {
@@ -330,103 +949,239 @@ function vbpApp() {
                     e.stopPropagation();
                     self.switchTab(tabButton);
                 }
-            });
+            };
 
-            // Escuchar eventos de apertura de modales (desde keyboard shortcuts)
-            document.addEventListener('vbp:openModal', function(e) {
+            // Handler para eventos de modal
+            var handleOpenModal = function(e) {
                 var modalType = e.detail && e.detail.modal;
                 switch (modalType) {
                     case 'export':
                         self.showExportModal = true;
                         break;
                     case 'templates':
-                        self.showTemplatesModal = true;
+                        self.openTemplatesModal();
                         break;
                     case 'commandPalette':
                         self.openCommandPalette();
                         break;
                     case 'help':
-                        self.showHelpModal = true;
+                        self.openHelpModal();
                         break;
                     case 'settings':
                         self.showPageSettings = true;
                         break;
                 }
-            });
+            };
 
-            // Escuchar eventos de notificación (desde keyboard shortcuts)
-            document.addEventListener('vbp:notification', function(e) {
+            // Handler para notificaciones
+            var handleNotification = function(e) {
                 if (e.detail && e.detail.message) {
                     self.showNotification(e.detail.message, e.detail.type || 'info');
                 }
-            });
+            };
+
+            var handleAIAssist = function(e) {
+                if (e && e.detail) {
+                    self.triggerAIAssistant(e.detail);
+                }
+            };
+
+            // Registrar event listeners
+            document.addEventListener('click', handleDelegatedClick);
+            document.addEventListener('vbp:openModal', handleOpenModal);
+            document.addEventListener('vbp:notification', handleNotification);
+            document.addEventListener('vbp-ai-assist', handleAIAssist);
+
+            // Guardar referencias para cleanup
+            this._eventHandlers.delegatedClick = handleDelegatedClick;
+            this._eventHandlers.openModal = handleOpenModal;
+            this._eventHandlers.notification = handleNotification;
+            this._eventHandlers.aiAssist = handleAIAssist;
 
             // Before/After slider interactivity
             self.initBeforeAfterSliders();
         },
 
-        // Inicializar sliders Before/After
+        // Inicializar sliders Before/After (optimizado con RAF y cleanup)
         initBeforeAfterSliders: function() {
             var self = this;
             var isDragging = false;
             var currentSlider = null;
             var currentContainer = null;
+            var cachedRect = null;
+            var cachedOrientation = null;
+            var cachedBeforeElement = null;
+            var rafId = null;
+            var pendingPercentage = null;
+            var storeUpdateTimeout = null;
 
-            document.addEventListener('mousedown', function(e) {
+            // Handler para mousedown
+            var handleMouseDown = function(e) {
                 var slider = e.target.closest('.vbp-ba-slider');
                 if (slider) {
                     e.preventDefault();
                     isDragging = true;
                     currentSlider = slider;
                     currentContainer = slider.closest('.vbp-ba-container');
+                    // Cachear valores que no cambian durante el drag
+                    cachedRect = currentContainer.getBoundingClientRect();
+                    cachedOrientation = currentContainer.getAttribute('data-orientation') || 'horizontal';
+                    cachedBeforeElement = currentContainer.querySelector('.vbp-ba-before');
                 }
-            });
+            };
 
-            document.addEventListener('mousemove', function(e) {
+            // Función que hace el update visual (llamada por RAF)
+            var updateVisual = function() {
+                if (pendingPercentage === null || !cachedBeforeElement) return;
+
+                if (cachedOrientation === 'horizontal') {
+                    cachedBeforeElement.style.width = pendingPercentage + '%';
+                    currentSlider.style.left = pendingPercentage + '%';
+                } else {
+                    cachedBeforeElement.style.height = pendingPercentage + '%';
+                    currentSlider.style.top = pendingPercentage + '%';
+                }
+                rafId = null;
+            };
+
+            // Handler para mousemove (optimizado con RAF)
+            var handleMouseMove = function(e) {
                 if (!isDragging || !currentContainer) return;
 
-                var rect = currentContainer.getBoundingClientRect();
-                var orientation = currentContainer.getAttribute('data-orientation') || 'horizontal';
                 var percentage;
-
-                if (orientation === 'horizontal') {
-                    percentage = ((e.clientX - rect.left) / rect.width) * 100;
+                if (cachedOrientation === 'horizontal') {
+                    percentage = ((e.clientX - cachedRect.left) / cachedRect.width) * 100;
                 } else {
-                    percentage = ((e.clientY - rect.top) / rect.height) * 100;
+                    percentage = ((e.clientY - cachedRect.top) / cachedRect.height) * 100;
                 }
 
-                percentage = Math.max(0, Math.min(100, percentage));
+                pendingPercentage = Math.max(0, Math.min(100, percentage));
 
-                var beforeElement = currentContainer.querySelector('.vbp-ba-before');
-                if (beforeElement) {
-                    if (orientation === 'horizontal') {
-                        beforeElement.style.width = percentage + '%';
-                        currentSlider.style.left = percentage + '%';
-                    } else {
-                        beforeElement.style.height = percentage + '%';
-                        currentSlider.style.top = percentage + '%';
+                // Usar RAF para actualización visual (máx 60fps)
+                if (!rafId) {
+                    rafId = requestAnimationFrame(updateVisual);
+                }
+
+                // Debounce la actualización del store (solo al final o cada 100ms)
+                clearTimeout(storeUpdateTimeout);
+                storeUpdateTimeout = setTimeout(function() {
+                    var elementWrapper = currentContainer.closest('[data-element-id]');
+                    if (elementWrapper && pendingPercentage !== null) {
+                        var id = elementWrapper.getAttribute('data-element-id');
+                        var store = Alpine.store('vbp');
+                        var element = store.getElement(id);
+                        if (element && element.data) {
+                            element.data.posicion = Math.round(pendingPercentage);
+                            store.updateElement(id, { data: element.data });
+                        }
+                    }
+                }, 100);
+            };
+
+            // Handler para mouseup
+            var handleMouseUp = function() {
+                if (isDragging && storeUpdateTimeout) {
+                    // Forzar update final del store
+                    clearTimeout(storeUpdateTimeout);
+                    var elementWrapper = currentContainer ? currentContainer.closest('[data-element-id]') : null;
+                    if (elementWrapper && pendingPercentage !== null) {
+                        var id = elementWrapper.getAttribute('data-element-id');
+                        var store = Alpine.store('vbp');
+                        var element = store.getElement(id);
+                        if (element && element.data) {
+                            element.data.posicion = Math.round(pendingPercentage);
+                            store.updateElement(id, { data: element.data });
+                        }
                     }
                 }
-
-                // Actualizar el store con la nueva posición
-                var elementId = currentContainer.closest('[data-element-id]');
-                if (elementId) {
-                    var id = elementId.getAttribute('data-element-id');
-                    var store = Alpine.store('vbp');
-                    var element = store.getElement(id);
-                    if (element) {
-                        var data = JSON.parse(JSON.stringify(element.data || {}));
-                        data.posicion = Math.round(percentage);
-                        store.updateElement(id, { data: data });
-                    }
-                }
-            });
-
-            document.addEventListener('mouseup', function() {
                 isDragging = false;
                 currentSlider = null;
                 currentContainer = null;
-            });
+                cachedRect = null;
+                cachedOrientation = null;
+                cachedBeforeElement = null;
+                pendingPercentage = null;
+                if (rafId) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+            };
+
+            // Registrar event listeners
+            document.addEventListener('mousedown', handleMouseDown);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+
+            // Guardar referencias para cleanup
+            this._eventHandlers.baSliderMouseDown = handleMouseDown;
+            this._eventHandlers.baSliderMouseMove = handleMouseMove;
+            this._eventHandlers.baSliderMouseUp = handleMouseUp;
+        },
+
+        /**
+         * Destruir el componente y limpiar recursos
+         * Previene memory leaks removiendo event listeners y timers
+         */
+        destroy: function() {
+            if (this._isDestroyed) return;
+            this._isDestroyed = true;
+
+            // Limpiar timers
+            if (this.autosaveTimer) {
+                clearInterval(this.autosaveTimer);
+                this.autosaveTimer = null;
+            }
+            if (this.countdownTimer) {
+                clearInterval(this.countdownTimer);
+                this.countdownTimer = null;
+            }
+
+            // Remover event listeners de elementos interactivos
+            if (this._eventHandlers.delegatedClick) {
+                document.removeEventListener('click', this._eventHandlers.delegatedClick);
+            }
+            if (this._eventHandlers.openModal) {
+                document.removeEventListener('vbp:openModal', this._eventHandlers.openModal);
+            }
+            if (this._eventHandlers.notification) {
+                document.removeEventListener('vbp:notification', this._eventHandlers.notification);
+            }
+
+            // Remover event listeners de Before/After sliders
+            if (this._eventHandlers.baSliderMouseDown) {
+                document.removeEventListener('mousedown', this._eventHandlers.baSliderMouseDown);
+            }
+            if (this._eventHandlers.baSliderMouseMove) {
+                document.removeEventListener('mousemove', this._eventHandlers.baSliderMouseMove);
+            }
+            if (this._eventHandlers.baSliderMouseUp) {
+                document.removeEventListener('mouseup', this._eventHandlers.baSliderMouseUp);
+            }
+
+            // Remover event listeners de zoom wheel
+            if (this._eventHandlers.zoomWheel && this._eventHandlers.zoomWheelElement) {
+                this._eventHandlers.zoomWheelElement.removeEventListener('wheel', this._eventHandlers.zoomWheel);
+            }
+
+            // Remover event listeners de split screen scroll
+            if (this._eventHandlers.splitScrollLeft) {
+                var leftPanel = document.querySelector('.vbp-split-left');
+                if (leftPanel) leftPanel.removeEventListener('scroll', this._eventHandlers.splitScrollLeft);
+            }
+            if (this._eventHandlers.splitScrollRight) {
+                var rightPanel = document.querySelector('.vbp-split-right');
+                if (rightPanel) rightPanel.removeEventListener('scroll', this._eventHandlers.splitScrollRight);
+            }
+
+            // Remover beforeunload listener
+            if (this._eventHandlers.beforeUnload) {
+                window.removeEventListener('beforeunload', this._eventHandlers.beforeUnload);
+            }
+
+            // Limpiar referencias
+            this._eventHandlers = {};
+
+            vbpLog.log('Componente destruido - recursos liberados');
         },
 
         toggleAccordionItem: function(header) {
@@ -466,7 +1221,7 @@ function vbpApp() {
             var self = this;
             var canvasArea = document.querySelector('.vbp-canvas-area');
             if (canvasArea) {
-                canvasArea.addEventListener('wheel', function(e) {
+                var handleZoomWheel = function(e) {
                     if (e.ctrlKey || e.metaKey) {
                         e.preventDefault();
                         if (e.deltaY < 0) {
@@ -475,7 +1230,11 @@ function vbpApp() {
                             self.zoomOut();
                         }
                     }
-                }, { passive: false });
+                };
+                canvasArea.addEventListener('wheel', handleZoomWheel, { passive: false });
+                // Guardar referencia para cleanup
+                this._eventHandlers.zoomWheel = handleZoomWheel;
+                this._eventHandlers.zoomWheelElement = canvasArea;
             }
         },
 
@@ -548,6 +1307,8 @@ function vbpApp() {
                         }
                         Alpine.store('vbp').settings = settings;
                     }
+
+                    self.maybeOfferAutosaveRecovery(result.data.autosave || null);
                 }
             })
             .catch(function(error) {
@@ -555,49 +1316,97 @@ function vbpApp() {
             });
         },
 
+        setWorkspaceMode: function(mode) {
+            var store = Alpine.store('vbp');
+            if (!store || (mode !== 'basic' && mode !== 'advanced')) {
+                return;
+            }
+
+            store.setInspectorMode(mode);
+
+            if (mode === 'basic') {
+                if (this.activeLeftTab === 'components' || this.activeLeftTab === 'layers') {
+                    this.activeLeftTab = 'blocks';
+                }
+                if (this.splitScreenMode) {
+                    this.splitScreenMode = false;
+                }
+                this.showTokensPanel = false;
+                this.panels.layers = false;
+            } else {
+                this.panels.layers = true;
+            }
+        },
+
+        maybeOfferAutosaveRecovery: function(autosave) {
+            if (!autosave || !autosave.available || !autosave.data) {
+                return;
+            }
+
+            var self = this;
+            var message = 'Hay un autosave más reciente';
+            if (autosave.time) {
+                message += ' (' + autosave.time + ')';
+            }
+            message += '. ¿Quieres recuperarlo?';
+
+            var restoreAutosave = function() {
+                var store = Alpine.store('vbp');
+                if (!store) return;
+
+                store.elements = sanitizeElements((autosave.data && autosave.data.elements) || []);
+                store.settings = Object.assign({}, store.settings || {}, (autosave.data && autosave.data.settings) || {});
+                store.markAsDirty();
+                self.showNotification('Autosave recuperado. Revisa y guarda los cambios.', 'info');
+            };
+
+            if (window.vbpConfirm && typeof window.vbpConfirm.show === 'function') {
+                window.vbpConfirm.show({
+                    title: 'Recuperar autosave',
+                    message: message,
+                    confirmText: 'Recuperar',
+                    cancelText: 'Mantener actual'
+                }).then(function(confirmed) {
+                    if (confirmed) {
+                        restoreAutosave();
+                    }
+                });
+                return;
+            }
+
+            if (confirm(message)) {
+                restoreAutosave();
+            }
+        },
+
         saveDocument: function() {
             if (this.isSaving) return;
+
+            var store = Alpine.store('vbp');
+            if (!store) return;
+
             this.isSaving = true;
-            this.saveStatus = VBP_Config.strings.saving;
-            this.saveStatusClass = 'saving';
             var self = this;
 
-            fetch(VBP_Config.ajaxUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    action: 'vbp_guardar_documento',
-                    nonce: VBP_Config.nonce,
-                    post_id: VBP_Config.postId,
-                    title: this.documentTitle,
-                    data: JSON.stringify({
-                        elements: Alpine.store('vbp').elements,
-                        settings: Alpine.store('vbp').settings
-                    })
-                })
+            store.saveDocument({
+                title: this.documentTitle
             })
-            .then(function(response) { return response.json(); })
             .then(function(result) {
                 if (result.success) {
-                    self.saveStatus = VBP_Config.strings.saved;
-                    self.saveStatusClass = 'saved';
-                    Alpine.store('vbp').isDirty = false;
                     self.showNotification('Documento guardado', 'success');
-                } else {
-                    throw new Error(result.data.message);
+                } else if (!result.skipped) {
+                    throw new Error(result.message || 'Error al guardar');
                 }
-                self.isSaving = false;
-                setTimeout(function() { self.saveStatus = ''; }, 3000);
             })
             .catch(function(error) {
-                self.saveStatus = VBP_Config.strings.error;
-                self.saveStatusClass = 'error';
                 self.showNotificationWithAction(
                     'Error al guardar: ' + error.message,
                     'error',
                     'Reintentar',
                     function() { self.saveDocument(); }
                 );
+            })
+            .finally(function() {
                 self.isSaving = false;
             });
         },
@@ -608,41 +1417,26 @@ function vbpApp() {
         },
 
         startAutosave: function() {
-            var self = this;
-            this.autosaveTimer = setInterval(function() {
-                if (Alpine.store('vbp').isDirty) { self.saveDocument(); }
-            }, this.autosaveInterval);
+            // Legacy no-op: el autosave canónico vive en Alpine.store('vbp').markAsDirty()
+            return;
         },
 
         /**
          * Inicializa el handler para guardar antes de cerrar la página
          */
         initBeforeUnload: function() {
-            var self = this;
-            window.addEventListener('beforeunload', function(event) {
+            var handleBeforeUnload = function(event) {
                 if (Alpine.store('vbp').isDirty) {
-                    // Intentar guardar sincrónicamente con sendBeacon
-                    var datos = JSON.stringify({
-                        elements: Alpine.store('vbp').elements,
-                        settings: Alpine.store('vbp').settings
-                    });
-                    var formData = new FormData();
-                    formData.append('action', 'vbp_guardar_documento');
-                    formData.append('nonce', VBP_Config.nonce);
-                    formData.append('post_id', VBP_Config.postId);
-                    formData.append('title', self.documentTitle);
-                    formData.append('data', datos);
-                    navigator.sendBeacon(VBP_Config.ajaxUrl, formData);
-
-                    // Mostrar advertencia del navegador
                     event.preventDefault();
                     event.returnValue = 'Tienes cambios sin guardar. ¿Seguro que quieres salir?';
                     return event.returnValue;
                 }
-            });
+            };
+            window.addEventListener('beforeunload', handleBeforeUnload);
+            this._eventHandlers.beforeUnload = handleBeforeUnload;
         },
 
-        markDirty: function() { Alpine.store('vbp').isDirty = true; },
+        markDirty: function() { Alpine.store('vbp').markAsDirty(); },
         zoomIn: function() { if (this.zoom < 200) { this.zoom += 10; Alpine.store('vbp').zoom = this.zoom; this.drawRulers(); } },
         zoomOut: function() { if (this.zoom > 25) { this.zoom -= 10; Alpine.store('vbp').zoom = this.zoom; this.drawRulers(); } },
         setZoom: function(value) { this.zoom = Math.max(25, Math.min(200, value)); Alpine.store('vbp').zoom = this.zoom; this.drawRulers(); },
@@ -924,13 +1718,21 @@ function vbpApp() {
         // ============ TEMPLATES ============
         loadTemplates: function() {
             var self = this;
+            if (this.templatesLoaded || this.templatesLoading) {
+                return Promise.resolve(this.templates);
+            }
+
+            this.templatesLoading = true;
             // Cargar templates desde VBP_Config si están disponibles
             if (typeof VBP_Config !== 'undefined' && VBP_Config.templates) {
                 this.templates = VBP_Config.templates.library || [];
                 this.userTemplates = VBP_Config.templates.user || [];
+                this.templatesLoaded = true;
+                this.templatesLoading = false;
+                return Promise.resolve(this.templates);
             } else {
                 // Cargar desde REST API si no están en config
-                fetch(VBP_Config.restUrl + 'templates', {
+                return fetch(VBP_Config.restUrl + 'templates', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -951,13 +1753,32 @@ function vbpApp() {
                 .then(function(data) {
                     self.templates = data.library || [];
                     self.userTemplates = data.user || [];
+                    self.templatesLoaded = true;
+                    return self.templates;
                 })
                 .catch(function(error) {
-                    console.warn('Error cargando templates (usando librería vacía):', error.message);
+                    vbpLog.warn('Error cargando templates (usando librería vacía):', error.message);
                     self.templates = [];
                     self.userTemplates = [];
+                    self.templatesLoaded = true;
+                    return self.templates;
+                })
+                .finally(function() {
+                    self.templatesLoading = false;
                 });
             }
+        },
+
+        openTemplatesModal: function() {
+            var self = this;
+            return this.loadTemplates()
+                .catch(function(error) {
+                    vbpLog.warn('Error preparando templates:', error);
+                })
+                .then(function() {
+                    self.showTemplatesModal = true;
+                    return true;
+                });
         },
 
         get filteredTemplates() {
@@ -1074,6 +1895,7 @@ function vbpApp() {
                     self.newTemplateName = '';
                     self.newTemplateDescription = '';
                     // Recargar templates
+                    self.templatesLoaded = false;
                     self.loadTemplates();
                 } else {
                     throw new Error(result.message || 'Error al guardar template');
@@ -1101,6 +1923,7 @@ function vbpApp() {
             .then(function(result) {
                 if (result.success) {
                     self.showNotification('Template eliminado', 'success');
+                    self.templatesLoaded = false;
                     self.loadTemplates();
                 } else {
                     throw new Error(result.message || 'Error al eliminar template');
@@ -1139,7 +1962,7 @@ function vbpApp() {
                 self.globalWidgets = Array.isArray(data) ? data : [];
             })
             .catch(function(error) {
-                console.warn('Error cargando widgets globales:', error.message);
+                vbpLog.warn('Error cargando widgets globales:', error.message);
                 self.globalWidgets = [];
             });
         },
@@ -1328,6 +2151,168 @@ function vbpApp() {
             this.showNotification(VBP_Config.strings.duplicated, 'success');
         },
 
+        // ============ CLIPBOARD DE ESTILOS ============
+
+        /**
+         * Copiar elemento completo al clipboard
+         */
+        copyElement: function() {
+            var store = Alpine.store('vbp');
+            var selectedIds = store.selection.elementIds;
+            if (selectedIds.length === 0) {
+                this.showNotification('Selecciona un elemento para copiar', 'warning');
+                return;
+            }
+            var element = store.getElementById(selectedIds[0]);
+            if (element) {
+                this.copiedElement = JSON.parse(JSON.stringify(element));
+                this.showNotification('Elemento copiado', 'success');
+            }
+        },
+
+        /**
+         * Pegar elemento del clipboard
+         */
+        pasteElement: function() {
+            if (!this.copiedElement) {
+                this.showNotification('No hay elemento para pegar', 'warning');
+                return;
+            }
+            var store = Alpine.store('vbp');
+            var newElement = JSON.parse(JSON.stringify(this.copiedElement));
+            newElement.id = generateElementId();
+            newElement.name = (newElement.name || newElement.type) + ' (copia)';
+            // Regenerar IDs de hijos recursivamente
+            this.regenerateChildIds(newElement);
+            store.elements.push(newElement);
+            store.pushHistory('Pegar elemento');
+            store.setSelection([newElement.id]);
+            this.showNotification('Elemento pegado', 'success');
+        },
+
+        /**
+         * Regenerar IDs de elementos hijos recursivamente
+         */
+        regenerateChildIds: function(element) {
+            var self = this;
+            if (element.children && element.children.length > 0) {
+                element.children.forEach(function(child) {
+                    child.id = generateElementId();
+                    self.regenerateChildIds(child);
+                });
+            }
+        },
+
+        /**
+         * Copiar solo los estilos del elemento seleccionado
+         */
+        copyStyles: function() {
+            var store = Alpine.store('vbp');
+            var selectedIds = store.selection.elementIds;
+            if (selectedIds.length === 0) {
+                this.showNotification('Selecciona un elemento para copiar sus estilos', 'warning');
+                return;
+            }
+            var element = store.getElementById(selectedIds[0]);
+            if (element && element.styles) {
+                this.copiedStyles = JSON.parse(JSON.stringify(element.styles));
+                this.showNotification('Estilos copiados (' + Object.keys(this.copiedStyles).length + ' propiedades)', 'success');
+            } else {
+                this.showNotification('El elemento no tiene estilos para copiar', 'warning');
+            }
+        },
+
+        /**
+         * Pegar estilos al elemento seleccionado
+         */
+        pasteStyles: function() {
+            if (!this.copiedStyles) {
+                this.showNotification('No hay estilos para pegar. Usa Ctrl+Alt+C para copiar estilos primero.', 'warning');
+                return;
+            }
+            var store = Alpine.store('vbp');
+            var selectedIds = store.selection.elementIds;
+            if (selectedIds.length === 0) {
+                this.showNotification('Selecciona un elemento donde pegar los estilos', 'warning');
+                return;
+            }
+            var self = this;
+            selectedIds.forEach(function(elementId) {
+                var element = store.getElementById(elementId);
+                if (element) {
+                    var mergedStyles = Object.assign({}, element.styles || {}, self.copiedStyles);
+                    store.updateElement(elementId, { styles: mergedStyles });
+                }
+            });
+            this.showNotification('Estilos pegados en ' + selectedIds.length + ' elemento(s)', 'success');
+        },
+
+        /**
+         * Activar modo eyedropper para seleccionar color
+         */
+        activateEyedropper: function(callback) {
+            this.eyedropperActive = true;
+            this.eyedropperCallback = callback;
+            document.body.style.cursor = 'crosshair';
+            this.showNotification('Haz clic en cualquier elemento para copiar su color', 'info');
+        },
+
+        /**
+         * Manejar click del eyedropper
+         */
+        handleEyedropperClick: function(event) {
+            if (!this.eyedropperActive) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            var targetElement = event.target;
+            var computedStyle = window.getComputedStyle(targetElement);
+            var bgColor = computedStyle.backgroundColor;
+            var textColor = computedStyle.color;
+
+            // Convertir rgb a hex
+            var extractedColor = bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent' ? bgColor : textColor;
+            var hexColor = this.rgbToHex(extractedColor);
+
+            if (this.eyedropperCallback) {
+                this.eyedropperCallback(hexColor);
+            }
+
+            // Copiar al clipboard del sistema
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(hexColor);
+            }
+
+            this.deactivateEyedropper();
+            this.showNotification('Color copiado: ' + hexColor, 'success');
+        },
+
+        /**
+         * Desactivar eyedropper
+         */
+        deactivateEyedropper: function() {
+            this.eyedropperActive = false;
+            this.eyedropperCallback = null;
+            document.body.style.cursor = '';
+        },
+
+        /**
+         * Convertir RGB a Hex
+         */
+        rgbToHex: function(rgb) {
+            if (!rgb || rgb === 'transparent') return '#000000';
+            if (rgb.startsWith('#')) return rgb;
+
+            var match = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (!match) return '#000000';
+
+            var r = parseInt(match[1]).toString(16).padStart(2, '0');
+            var g = parseInt(match[2]).toString(16).padStart(2, '0');
+            var b = parseInt(match[3]).toString(16).padStart(2, '0');
+            return '#' + r + g + b;
+        },
+
         moveElementUp: function(element) {
             var index = Alpine.store('vbp').elements.findIndex(function(el) { return el.id === element.id; });
             if (index > 0) { Alpine.store('vbp').moveElement(index, index - 1); }
@@ -1460,18 +2445,73 @@ function vbpApp() {
                     boton2Html = ' <a href="' + (data.boton_2_url || '#') + '" contenteditable="true" data-field="boton_2_texto" class="flavor-button flavor-button--secondary" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + boton2Fondo + '; color: ' + boton2Texto + '; border: 2px solid ' + boton2Borde + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight); margin-left: 12px;">' + data.boton_2_texto + '</a>';
                 }
 
-                // Estilo de fondo
-                var bgStyle = data.imagen_fondo
-                    ? 'background-image: url(' + data.imagen_fondo + '); background-size: cover; background-position: center;'
-                    : 'background: ' + colorFondo + ';';
+                // Tipo de fondo (imagen, video, color)
+                var fondoTipo = data.fondo_tipo || 'imagen';
+                var bgStyle = '';
+                var videoHtml = '';
+                var hasVideoBackground = false;
+
+                if (fondoTipo === 'video' && (data.video_url || data.video_archivo)) {
+                    hasVideoBackground = true;
+                    var videoSrc = data.video_archivo || data.video_url;
+                    var isYoutube = videoSrc && (videoSrc.indexOf('youtube.com') !== -1 || videoSrc.indexOf('youtu.be') !== -1);
+                    var isVimeo = videoSrc && videoSrc.indexOf('vimeo.com') !== -1;
+                    var videoAutoplay = data.video_autoplay !== false ? 'autoplay' : '';
+                    var videoLoop = data.video_loop !== false ? 'loop' : '';
+                    var videoMuted = data.video_muted !== false ? 'muted' : '';
+                    var videoPoster = data.video_poster ? 'poster="' + data.video_poster + '"' : '';
+
+                    // Fondo de respaldo mientras carga
+                    bgStyle = data.video_poster
+                        ? 'background-image: url(' + data.video_poster + '); background-size: cover; background-position: center;'
+                        : 'background: ' + colorFondo + ';';
+
+                    if (isYoutube) {
+                        // Extraer ID de YouTube
+                        var ytMatch = videoSrc.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+                        var ytId = ytMatch ? ytMatch[1] : '';
+                        if (ytId) {
+                            videoHtml = '<div class="vbp-hero-video-bg" style="position: absolute; inset: 0; overflow: hidden; z-index: 0;">' +
+                                '<iframe src="https://www.youtube.com/embed/' + ytId + '?autoplay=1&mute=1&loop=1&playlist=' + ytId + '&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" ' +
+                                'style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100%; min-width: 177.77vh; transform: translate(-50%, -50%); pointer-events: none;" ' +
+                                'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+                        }
+                    } else if (isVimeo) {
+                        // Extraer ID de Vimeo
+                        var vimeoMatch = videoSrc.match(/vimeo\.com\/(\d+)/);
+                        var vimeoId = vimeoMatch ? vimeoMatch[1] : '';
+                        if (vimeoId) {
+                            videoHtml = '<div class="vbp-hero-video-bg" style="position: absolute; inset: 0; overflow: hidden; z-index: 0;">' +
+                                '<iframe src="https://player.vimeo.com/video/' + vimeoId + '?autoplay=1&muted=1&loop=1&background=1&autopause=0" ' +
+                                'style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100%; min-width: 177.77vh; transform: translate(-50%, -50%); pointer-events: none;" ' +
+                                'frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>';
+                        }
+                    } else {
+                        // Video directo (mp4, webm)
+                        videoHtml = '<div class="vbp-hero-video-bg" style="position: absolute; inset: 0; overflow: hidden; z-index: 0;">' +
+                            '<video ' + videoAutoplay + ' ' + videoLoop + ' ' + videoMuted + ' playsinline ' + videoPoster + ' ' +
+                            'style="position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translate(-50%, -50%); object-fit: cover;">' +
+                            '<source src="' + videoSrc + '" type="video/mp4">' +
+                            '</video></div>';
+                    }
+                } else if (fondoTipo === 'imagen' && data.imagen_fondo) {
+                    bgStyle = 'background-image: url(' + data.imagen_fondo + '); background-size: cover; background-position: center;';
+                } else {
+                    bgStyle = 'background: ' + colorFondo + ';';
+                }
+
+                // Para variantes con video, necesitamos position relative y z-index en el contenido
+                var videoContainerStyle = hasVideoBackground ? 'position: relative; overflow: hidden;' : '';
+                var videoContentStyle = hasVideoBackground ? 'position: relative; z-index: 1;' : '';
 
                 // Altura de la sección
                 var alturaStyle = altura !== 'auto' ? 'min-height: ' + altura + ';' : '';
 
                 // Variante: Centrado (default)
                 if (heroVariant === 'centered' || heroVariant === 'default') {
-                    return '<section class="vbp-hero vbp-hero--centered flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: ' + alineacion + '; ' + alturaStyle + ' display: flex; align-items: center; justify-content: center; ' + bgStyle + customStyle + '">' +
-                        '<div class="vbp-hero-overlay" style="background: ' + overlayColor + '; padding: 40px; border-radius: ' + cardRadius + '; display: inline-block; max-width: 800px;">' +
+                    return '<section class="vbp-hero vbp-hero--centered flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: ' + alineacion + '; ' + alturaStyle + ' display: flex; align-items: center; justify-content: center; ' + videoContainerStyle + bgStyle + customStyle + '">' +
+                        videoHtml +
+                        '<div class="vbp-hero-overlay" style="background: ' + overlayColor + '; padding: 40px; border-radius: ' + cardRadius + '; display: inline-block; max-width: 800px; ' + videoContentStyle + '">' +
                         '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; font-family: var(--flavor-font-headings); color: ' + tituloColor + ';">' + (data.titulo || 'Título Principal') + '</h1>' +
                         '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; margin: 0 0 32px; line-height: var(--flavor-line-height-base); color: ' + subtituloColor + ';">' + (data.subtitulo || 'Subtítulo descriptivo que explica el valor de tu propuesta') + '</p>' +
                         '<div class="vbp-hero-buttons">' +
@@ -1482,8 +2522,9 @@ function vbpApp() {
 
                 // Variante: Izquierda
                 if (heroVariant === 'left') {
-                    return '<section class="vbp-hero vbp-hero--left flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: left; ' + alturaStyle + ' display: flex; align-items: center; ' + bgStyle + customStyle + '">' +
-                        '<div style="max-width: 600px; background: ' + overlayColor + '; padding: 40px; border-radius: ' + cardRadius + ';">' +
+                    return '<section class="vbp-hero vbp-hero--left flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: left; ' + alturaStyle + ' display: flex; align-items: center; ' + videoContainerStyle + bgStyle + customStyle + '">' +
+                        videoHtml +
+                        '<div style="max-width: 600px; background: ' + overlayColor + '; padding: 40px; border-radius: ' + cardRadius + '; ' + videoContentStyle + '">' +
                         '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; font-family: var(--flavor-font-headings); color: ' + tituloColor + ';">' + (data.titulo || 'Título Principal') + '</h1>' +
                         '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; margin: 0 0 32px; line-height: var(--flavor-line-height-base); color: ' + subtituloColor + ';">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
                         '<div class="vbp-hero-buttons">' +
@@ -1505,18 +2546,21 @@ function vbpApp() {
 
                 // Variante: Minimalista
                 if (heroVariant === 'minimal') {
-                    return '<section class="vbp-hero vbp-hero--minimal flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: center; background: ' + colorFondo + '; ' + alturaStyle + ' display: flex; align-items: center; justify-content: center; flex-direction: column; ' + customStyle + '">' +
+                    return '<section class="vbp-hero vbp-hero--minimal flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: center; ' + alturaStyle + ' display: flex; align-items: center; justify-content: center; flex-direction: column; ' + videoContainerStyle + bgStyle + customStyle + '">' +
+                        videoHtml +
+                        '<div style="' + videoContentStyle + '">' +
                         '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; color: ' + tituloColor + '; font-family: var(--flavor-font-headings);">' + (data.titulo || 'Título Principal') + '</h1>' +
                         '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; margin: 0 0 32px; color: ' + subtituloColor + '; max-width: 600px; line-height: var(--flavor-line-height-base);">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
                         '<div class="vbp-hero-buttons">' +
                         '<a href="' + (data.boton_url || '#') + '" contenteditable="true" data-field="boton_texto" class="flavor-button" style="display: inline-block; padding: var(--flavor-button-py) var(--flavor-button-px); background: ' + botonFondo + '; color: ' + botonTexto + '; border-radius: ' + buttonRadius + '; text-decoration: none; font-weight: var(--flavor-button-weight);">' + (data.boton_texto || 'Comenzar') + '</a>' +
                         boton2Html +
-                        '</div></section>';
+                        '</div></div></section>';
                 }
 
                 // Fallback al centered
-                return '<section class="vbp-hero flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: ' + alineacion + '; ' + alturaStyle + ' display: flex; align-items: center; justify-content: center; ' + bgStyle + customStyle + '">' +
-                    '<div class="vbp-hero-overlay" style="background: ' + overlayColor + '; padding: 40px; border-radius: ' + cardRadius + '; display: inline-block; max-width: 800px;">' +
+                return '<section class="vbp-hero flavor-component" style="padding: ' + sectionPaddingY + ' ' + sectionPaddingX + '; text-align: ' + alineacion + '; ' + alturaStyle + ' display: flex; align-items: center; justify-content: center; ' + videoContainerStyle + bgStyle + customStyle + '">' +
+                    videoHtml +
+                    '<div class="vbp-hero-overlay" style="background: ' + overlayColor + '; padding: 40px; border-radius: ' + cardRadius + '; display: inline-block; max-width: 800px; ' + videoContentStyle + '">' +
                     '<h1 contenteditable="true" data-field="titulo" style="font-size: ' + fontH1 + '; margin: 0 0 16px; font-weight: 700; font-family: var(--flavor-font-headings); color: ' + tituloColor + ';">' + (data.titulo || 'Título Principal') + '</h1>' +
                     '<p contenteditable="true" data-field="subtitulo" style="font-size: 20px; margin: 0 0 32px; color: ' + subtituloColor + ';">' + (data.subtitulo || 'Subtítulo descriptivo') + '</p>' +
                     '<div class="vbp-hero-buttons">' +
@@ -2896,6 +3940,170 @@ function vbpApp() {
                     '</div></div></div>';
             }
 
+            // ============ CAROUSEL / SLIDER ============
+            if (type === 'carousel') {
+                var carouselVariant = element.variant || 'simple';
+                var carouselItems = data.items || [
+                    { imagen: '', titulo: 'Slide 1', descripcion: 'Descripción del primer slide' },
+                    { imagen: '', titulo: 'Slide 2', descripcion: 'Descripción del segundo slide' },
+                    { imagen: '', titulo: 'Slide 3', descripcion: 'Descripción del tercer slide' }
+                ];
+                var carouselAutoplay = data.autoplay !== false;
+                var carouselDots = data.mostrar_dots !== false;
+                var carouselNavigation = data.mostrar_navegacion !== false;
+                var carouselInterval = data.intervalo || 5000;
+
+                var carouselBgColor = data.fondo_color || '#1a1a2e';
+                var carouselTextColor = data.texto_color || '#ffffff';
+                var carouselAccentColor = data.acento_color || primaryColor;
+
+                var slidesHtml = '';
+                for (var ci = 0; ci < carouselItems.length; ci++) {
+                    var slide = carouselItems[ci];
+                    var isFirst = ci === 0;
+                    var slideStyle = slide.imagen
+                        ? 'background-image: url(' + slide.imagen + '); background-size: cover; background-position: center;'
+                        : 'background: linear-gradient(135deg, ' + carouselBgColor + ', ' + secondaryColor + ');';
+
+                    slidesHtml += '<div class="vbp-carousel__slide" style="flex: 0 0 100%; min-width: 100%; ' + slideStyle + ' display: ' + (isFirst ? 'flex' : 'none') + '; align-items: center; justify-content: center; min-height: 400px; position: relative;">' +
+                        '<div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4);"></div>' +
+                        '<div style="position: relative; z-index: 1; text-align: center; padding: 40px; max-width: 700px;">' +
+                        '<h3 contenteditable="true" style="font-size: 36px; font-weight: 700; color: ' + carouselTextColor + '; margin: 0 0 16px;">' + (slide.titulo || 'Título') + '</h3>' +
+                        '<p contenteditable="true" style="font-size: 18px; color: rgba(255,255,255,0.9); margin: 0;">' + (slide.descripcion || '') + '</p>' +
+                        '</div></div>';
+                }
+
+                var dotsHtml = '';
+                if (carouselDots) {
+                    dotsHtml = '<div class="vbp-carousel__dots" style="display: flex; justify-content: center; gap: 8px; padding: 16px 0; position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 10;">';
+                    for (var di = 0; di < carouselItems.length; di++) {
+                        dotsHtml += '<span class="vbp-carousel__dot' + (di === 0 ? ' is-active' : '') + '" style="width: 10px; height: 10px; border-radius: 50%; background: ' + (di === 0 ? carouselAccentColor : 'rgba(255,255,255,0.5)') + '; cursor: pointer;"></span>';
+                    }
+                    dotsHtml += '</div>';
+                }
+
+                var navHtml = '';
+                if (carouselNavigation) {
+                    navHtml = '<button class="vbp-carousel__nav vbp-carousel__nav--prev" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 18px;">◀</button>' +
+                        '<button class="vbp-carousel__nav vbp-carousel__nav--next" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 18px;">▶</button>';
+                }
+
+                return '<div class="vbp-carousel vbp-carousel--' + carouselVariant + ' flavor-component" style="position: relative; border-radius: ' + cardRadius + '; overflow: hidden; ' + customStyle + '">' +
+                    '<div class="vbp-carousel__track" style="display: flex; transition: transform 0.3s ease;">' +
+                    slidesHtml +
+                    '</div>' +
+                    navHtml +
+                    dotsHtml +
+                    '</div>';
+            }
+
+            // ============ TIMELINE ============
+            if (type === 'timeline') {
+                var timelineVariant = element.variant || 'alternating';
+                var timelineItems = data.items || [
+                    { fecha: '2024', titulo: 'Evento 1', descripcion: 'Descripción del primer evento', icono: '🚀' },
+                    { fecha: '2023', titulo: 'Evento 2', descripcion: 'Descripción del segundo evento', icono: '⭐' },
+                    { fecha: '2022', titulo: 'Evento 3', descripcion: 'Descripción del tercer evento', icono: '🎯' }
+                ];
+
+                var timelineLineColor = data.linea_color || '#e5e7eb';
+                var timelineMarkerColor = data.marcador_color || primaryColor;
+                var timelineCardBg = data.card_fondo_color || '#ffffff';
+                var timelineCardBorder = data.card_borde_color || '#e5e7eb';
+                var timelineTitleColor = data.titulo_color || textColor;
+                var timelineTextColor = data.texto_color || textMutedColor;
+                var timelineDateColor = data.fecha_color || primaryColor;
+
+                var timelineHtml = '<div class="vbp-timeline vbp-timeline--' + timelineVariant + ' flavor-component" style="position: relative; padding: 24px 0; ' + customStyle + '">';
+
+                // Línea central
+                if (timelineVariant === 'alternating') {
+                    timelineHtml += '<div class="vbp-timeline__line" style="position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: ' + timelineLineColor + '; transform: translateX(-50%);"></div>';
+                } else {
+                    timelineHtml += '<div class="vbp-timeline__line" style="position: absolute; left: 24px; top: 0; bottom: 0; width: 3px; background: ' + timelineLineColor + ';"></div>';
+                }
+
+                for (var ti = 0; ti < timelineItems.length; ti++) {
+                    var tItem = timelineItems[ti];
+                    var isOdd = ti % 2 === 0;
+
+                    if (timelineVariant === 'alternating') {
+                        var alignSide = isOdd ? 'right' : 'left';
+                        var paddingSide = isOdd ? 'padding-right: calc(50% + 32px);' : 'padding-left: calc(50% + 32px);';
+                        var textAlign = isOdd ? 'text-align: right;' : 'text-align: left;';
+
+                        timelineHtml += '<div class="vbp-timeline__item" style="position: relative; margin-bottom: 32px; ' + paddingSide + '">' +
+                            '<div class="vbp-timeline__marker" style="position: absolute; left: 50%; transform: translateX(-50%); width: 44px; height: 44px; background: ' + timelineMarkerColor + '; border: 4px solid ' + timelineCardBg + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 0 4px ' + timelineMarkerColor + '30; z-index: 1;">' + (tItem.icono || '📌') + '</div>' +
+                            '<div class="vbp-timeline__content" style="background: ' + timelineCardBg + '; border: 1px solid ' + timelineCardBorder + '; border-radius: ' + cardRadius + '; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); ' + textAlign + '">' +
+                            '<div class="vbp-timeline__date" style="font-size: 14px; color: ' + timelineDateColor + '; font-weight: 600; margin-bottom: 8px;">' + (tItem.fecha || '') + '</div>' +
+                            '<h4 contenteditable="true" class="vbp-timeline__title" style="font-size: 18px; font-weight: 600; color: ' + timelineTitleColor + '; margin: 0 0 8px;">' + (tItem.titulo || 'Título') + '</h4>' +
+                            '<p contenteditable="true" class="vbp-timeline__description" style="color: ' + timelineTextColor + '; margin: 0; line-height: 1.6;">' + (tItem.descripcion || '') + '</p>' +
+                            '</div></div>';
+                    } else {
+                        // Variante vertical (izquierda)
+                        timelineHtml += '<div class="vbp-timeline__item" style="position: relative; margin-bottom: 32px; padding-left: 64px;">' +
+                            '<div class="vbp-timeline__marker" style="position: absolute; left: 8px; width: 36px; height: 36px; background: ' + timelineMarkerColor + '; border: 4px solid ' + timelineCardBg + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 0 0 3px ' + timelineMarkerColor + '30; z-index: 1;">' + (tItem.icono || '📌') + '</div>' +
+                            '<div class="vbp-timeline__content" style="background: ' + timelineCardBg + '; border: 1px solid ' + timelineCardBorder + '; border-radius: ' + cardRadius + '; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">' +
+                            '<div class="vbp-timeline__date" style="font-size: 13px; color: ' + timelineDateColor + '; font-weight: 600; margin-bottom: 6px;">' + (tItem.fecha || '') + '</div>' +
+                            '<h4 contenteditable="true" class="vbp-timeline__title" style="font-size: 16px; font-weight: 600; color: ' + timelineTitleColor + '; margin: 0 0 6px;">' + (tItem.titulo || 'Título') + '</h4>' +
+                            '<p contenteditable="true" class="vbp-timeline__description" style="color: ' + timelineTextColor + '; margin: 0; line-height: 1.5; font-size: 14px;">' + (tItem.descripcion || '') + '</p>' +
+                            '</div></div>';
+                    }
+                }
+
+                timelineHtml += '</div>';
+                return timelineHtml;
+            }
+
+            // ============ PROCESS / STEPS ============
+            if (type === 'process' || type === 'steps') {
+                var processVariant = element.variant || 'horizontal';
+                var processItems = data.items || [
+                    { numero: '1', titulo: 'Paso 1', descripcion: 'Descripción del primer paso' },
+                    { numero: '2', titulo: 'Paso 2', descripcion: 'Descripción del segundo paso' },
+                    { numero: '3', titulo: 'Paso 3', descripcion: 'Descripción del tercer paso' }
+                ];
+
+                var processColor = data.color || primaryColor;
+                var processBgColor = data.fondo_color || '#ffffff';
+                var processTitleColor = data.titulo_color || textColor;
+                var processTextColor = data.texto_color || textMutedColor;
+                var processLineColor = data.linea_color || '#e5e7eb';
+
+                var isHorizontal = processVariant === 'horizontal';
+                var flexDirection = isHorizontal ? 'row' : 'column';
+                var alignItems = isHorizontal ? 'flex-start' : 'stretch';
+
+                var processHtml = '<div class="vbp-process vbp-process--' + processVariant + ' flavor-component" style="display: flex; flex-direction: ' + flexDirection + '; align-items: ' + alignItems + '; gap: 24px; padding: 24px; ' + customStyle + '">';
+
+                for (var pi = 0; pi < processItems.length; pi++) {
+                    var pItem = processItems[pi];
+                    var isLast = pi === processItems.length - 1;
+
+                    if (isHorizontal) {
+                        processHtml += '<div class="vbp-process__item" style="flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative;">' +
+                            '<div class="vbp-process__number" style="width: 48px; height: 48px; background: ' + processColor + '; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; margin-bottom: 16px; position: relative; z-index: 1;">' + (pItem.numero || (pi + 1)) + '</div>' +
+                            (!isLast ? '<div class="vbp-process__connector" style="position: absolute; top: 24px; left: calc(50% + 32px); width: calc(100% - 64px); height: 2px; background: ' + processLineColor + ';"></div>' : '') +
+                            '<h4 contenteditable="true" style="font-size: 16px; font-weight: 600; color: ' + processTitleColor + '; margin: 0 0 8px;">' + (pItem.titulo || 'Paso') + '</h4>' +
+                            '<p contenteditable="true" style="color: ' + processTextColor + '; margin: 0; font-size: 14px; line-height: 1.5;">' + (pItem.descripcion || '') + '</p>' +
+                            '</div>';
+                    } else {
+                        processHtml += '<div class="vbp-process__item" style="display: flex; gap: 16px; position: relative;">' +
+                            '<div style="display: flex; flex-direction: column; align-items: center;">' +
+                            '<div class="vbp-process__number" style="width: 44px; height: 44px; background: ' + processColor + '; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0;">' + (pItem.numero || (pi + 1)) + '</div>' +
+                            (!isLast ? '<div class="vbp-process__connector" style="width: 2px; flex: 1; background: ' + processLineColor + '; margin-top: 8px;"></div>' : '') +
+                            '</div>' +
+                            '<div class="vbp-process__content" style="flex: 1; padding-bottom: 24px;">' +
+                            '<h4 contenteditable="true" style="font-size: 16px; font-weight: 600; color: ' + processTitleColor + '; margin: 0 0 6px;">' + (pItem.titulo || 'Paso') + '</h4>' +
+                            '<p contenteditable="true" style="color: ' + processTextColor + '; margin: 0; font-size: 14px; line-height: 1.5;">' + (pItem.descripcion || '') + '</p>' +
+                            '</div></div>';
+                    }
+                }
+
+                processHtml += '</div>';
+                return processHtml;
+            }
+
             // ============ MÓDULOS (shortcode-based) ============
             if (data.shortcode || element.shortcode) {
                 var shortcodeTag = data.shortcode || element.shortcode;
@@ -3139,24 +4347,48 @@ function vbpApp() {
                 'compostaje': { icon: '♻️', color: '#84cc16', label: 'Mapa de Composteras', preview: 'map' },
                 'biodiversidad-local': { icon: '🦋', color: '#10b981', label: 'Mapa Biodiversidad', preview: 'map' },
                 'incidencias': { icon: '⚠️', color: '#ef4444', label: 'Mapa de Incidencias', preview: 'map' },
+                'bicicletas-compartidas': { icon: '🚲', color: '#0ea5e9', label: 'Bicicletas', preview: 'map' },
+                'carpooling': { icon: '🚗', color: '#6366f1', label: 'Carpooling', preview: 'map' },
+                'energia-comunitaria': { icon: '⚡', color: '#f59e0b', label: 'Energía', preview: 'map' },
                 // Economía
                 'banco-tiempo': { icon: '⏱️', color: '#f59e0b', label: 'Banco de Tiempo', preview: 'dashboard' },
                 'economia-don': { icon: '🎁', color: '#ec4899', label: 'Economía del Don', preview: 'cards' },
                 'grupos-consumo': { icon: '🛒', color: '#22c55e', label: 'Grupos de Consumo', preview: 'grid' },
                 'marketplace': { icon: '🏪', color: '#8b5cf6', label: 'Marketplace', preview: 'grid' },
+                'crowdfunding': { icon: '💳', color: '#10b981', label: 'Crowdfunding', preview: 'cards' },
+                'woocommerce': { icon: '🛍️', color: '#96588a', label: 'WooCommerce', preview: 'grid' },
+                'economia-suficiencia': { icon: '🌿', color: '#22c55e', label: 'Economía Suficiencia', preview: 'cards' },
+                // Gestión
+                'facturas': { icon: '🧾', color: '#6366f1', label: 'Facturas', preview: 'list' },
+                'clientes': { icon: '👤', color: '#0ea5e9', label: 'Clientes', preview: 'list' },
+                'contabilidad': { icon: '📊', color: '#14b8a6', label: 'Contabilidad', preview: 'dashboard' },
+                'tramites': { icon: '📋', color: '#8b5cf6', label: 'Trámites', preview: 'list' },
+                'fichaje-empleados': { icon: '⏰', color: '#f97316', label: 'Fichaje', preview: 'dashboard' },
                 // Comunidad
                 'eventos': { icon: '📅', color: '#6366f1', label: 'Eventos', preview: 'calendar' },
                 'socios': { icon: '👥', color: '#0ea5e9', label: 'Socios', preview: 'list' },
                 'comunidades': { icon: '🏘️', color: '#14b8a6', label: 'Comunidades', preview: 'cards' },
                 'foros': { icon: '💬', color: '#8b5cf6', label: 'Foros', preview: 'list' },
+                'colectivos': { icon: '✊', color: '#ef4444', label: 'Colectivos', preview: 'cards' },
+                'circulos-cuidados': { icon: '💜', color: '#a855f7', label: 'Círculos de Cuidados', preview: 'cards' },
+                'ayuda-vecinal': { icon: '🤝', color: '#22c55e', label: 'Ayuda Vecinal', preview: 'cards' },
+                // Comunicación
+                'red-social': { icon: '🌐', color: '#3b82f6', label: 'Red Social', preview: 'social' },
+                'chat-interno': { icon: '💭', color: '#6366f1', label: 'Chat', preview: 'chat' },
+                'chat-grupos': { icon: '👥', color: '#8b5cf6', label: 'Grupos de Chat', preview: 'chat' },
+                'avisos-municipales': { icon: '📢', color: '#f59e0b', label: 'Avisos', preview: 'list' },
+                'email-marketing': { icon: '📧', color: '#0ea5e9', label: 'Email Marketing', preview: 'list' },
                 // Formación
                 'cursos': { icon: '🎓', color: '#3b82f6', label: 'Cursos', preview: 'grid' },
                 'talleres': { icon: '🔧', color: '#f97316', label: 'Talleres', preview: 'grid' },
                 'biblioteca': { icon: '📚', color: '#a855f7', label: 'Biblioteca', preview: 'grid' },
+                'saberes-ancestrales': { icon: '🌾', color: '#a3a352', label: 'Saberes Ancestrales', preview: 'grid' },
+                'recetas': { icon: '🍳', color: '#f97316', label: 'Recetas', preview: 'grid' },
                 // Multimedia
                 'multimedia': { icon: '🎬', color: '#ef4444', label: 'Galería', preview: 'gallery' },
                 'podcast': { icon: '🎙️', color: '#ec4899', label: 'Podcast', preview: 'audio' },
                 'radio': { icon: '📻', color: '#f59e0b', label: 'Radio', preview: 'audio' },
+                'kulturaka': { icon: '🎭', color: '#a855f7', label: 'Kulturaka', preview: 'gallery' },
                 // Dashboard widgets
                 'dashboard-widget': { icon: '📊', color: '#6366f1', label: 'Widget', preview: 'widget' },
                 'dashboard-widgets-grid': { icon: '📋', color: '#6366f1', label: 'Grid de Widgets', preview: 'widget-grid' },
@@ -3164,9 +4396,30 @@ function vbpApp() {
                 'encuestas': { icon: '📝', color: '#14b8a6', label: 'Encuestas', preview: 'form' },
                 'participacion': { icon: '🗳️', color: '#8b5cf6', label: 'Participación', preview: 'form' },
                 'presupuestos-participativos': { icon: '💰', color: '#22c55e', label: 'Presupuestos', preview: 'cards' },
+                'campanias': { icon: '📣', color: '#ef4444', label: 'Campañas', preview: 'cards' },
                 // Reservas
                 'reservas': { icon: '📆', color: '#0ea5e9', label: 'Reservas', preview: 'calendar' },
-                'espacios-comunes': { icon: '🏛️', color: '#6366f1', label: 'Espacios', preview: 'grid' }
+                'espacios-comunes': { icon: '🏛️', color: '#6366f1', label: 'Espacios', preview: 'grid' },
+                // Transparencia
+                'transparencia': { icon: '🔍', color: '#14b8a6', label: 'Transparencia', preview: 'list' },
+                'documentacion-legal': { icon: '⚖️', color: '#64748b', label: 'Documentación Legal', preview: 'list' },
+                // Ecología
+                'reciclaje': { icon: '♻️', color: '#22c55e', label: 'Reciclaje', preview: 'map' },
+                'huella-ecologica': { icon: '👣', color: '#10b981', label: 'Huella Ecológica', preview: 'dashboard' },
+                // Empleo
+                'trabajo-digno': { icon: '💼', color: '#6366f1', label: 'Trabajo Digno', preview: 'list' },
+                'empresas': { icon: '🏢', color: '#3b82f6', label: 'Empresas', preview: 'grid' },
+                'bares': { icon: '🍺', color: '#f59e0b', label: 'Bares', preview: 'grid' },
+                // Publicidad
+                'advertising': { icon: '📺', color: '#ec4899', label: 'Publicidad', preview: 'grid' },
+                // Justicia
+                'justicia-restaurativa': { icon: '⚖️', color: '#6366f1', label: 'Justicia Restaurativa', preview: 'form' },
+                'seguimiento-denuncias': { icon: '📋', color: '#ef4444', label: 'Seguimiento Denuncias', preview: 'list' },
+                // Certificaciones
+                'sello-conciencia': { icon: '🏅', color: '#f59e0b', label: 'Sello Conciencia', preview: 'cards' },
+                // Otros
+                'mapa-actores': { icon: '🗺️', color: '#14b8a6', label: 'Mapa de Actores', preview: 'map' },
+                'agregador-contenido': { icon: '📰', color: '#6366f1', label: 'Agregador', preview: 'list' }
             };
 
             var config = moduleConfig[moduleType] || { icon: '📦', color: pc, label: moduleName, preview: 'default' };
@@ -3366,6 +4619,64 @@ function vbpApp() {
                         '<div style="height: 40px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;"></div>' +
                         '<div style="height: 80px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;"></div>' +
                         '<button style="padding: 12px; background: ' + modColor + '; color: white; border: none; border-radius: 8px; font-weight: 500;">Enviar</button></div></div>';
+                    break;
+
+                case 'social':
+                    previewContent = '<div style="padding: ' + cp + '; background: white; border-radius: ' + cr + '; border: 1px solid #e5e7eb;">' +
+                        titleSection +
+                        '<div style="display: flex; flex-direction: column; gap: 16px;">' +
+                        // Post 1
+                        '<div style="padding: 16px; background: #f9fafb; border-radius: 12px;">' +
+                        '<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">' +
+                        '<div style="width: 40px; height: 40px; background: linear-gradient(135deg, ' + modColor + ', ' + sc + '); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">JD</div>' +
+                        '<div><div style="font-weight: 600; color: ' + tc + '; font-size: 14px;">Juan Díaz</div><div style="font-size: 11px; color: ' + tm + ';">Hace 2 horas</div></div></div>' +
+                        '<div style="height: 10px; background: #e5e7eb; border-radius: 4px; width: 90%; margin-bottom: 8px;"></div>' +
+                        '<div style="height: 10px; background: #e5e7eb; border-radius: 4px; width: 70%; margin-bottom: 12px;"></div>' +
+                        '<div style="display: flex; gap: 16px; font-size: 12px; color: ' + tm + ';">' +
+                        '<span style="display: flex; align-items: center; gap: 4px;">❤️ 24</span>' +
+                        '<span style="display: flex; align-items: center; gap: 4px;">💬 8</span>' +
+                        '<span style="display: flex; align-items: center; gap: 4px;">🔄 3</span></div></div>' +
+                        // Post 2
+                        '<div style="padding: 16px; background: #f9fafb; border-radius: 12px;">' +
+                        '<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">' +
+                        '<div style="width: 40px; height: 40px; background: linear-gradient(135deg, #ec4899, #f59e0b); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">ML</div>' +
+                        '<div><div style="font-weight: 600; color: ' + tc + '; font-size: 14px;">María López</div><div style="font-size: 11px; color: ' + tm + ';">Hace 5 horas</div></div></div>' +
+                        '<div style="height: 100px; background: linear-gradient(135deg, ' + modColor + '20, ' + sc + '20); border-radius: 8px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📷</div>' +
+                        '<div style="display: flex; gap: 16px; font-size: 12px; color: ' + tm + ';">' +
+                        '<span style="display: flex; align-items: center; gap: 4px;">❤️ 56</span>' +
+                        '<span style="display: flex; align-items: center; gap: 4px;">💬 12</span></div></div></div>' +
+                        '<div style="text-align: center; margin-top: 12px; font-size: 13px; color: ' + tm + ';">' + config.icon + ' ' + config.label + '</div></div>';
+                    break;
+
+                case 'chat':
+                    previewContent = '<div style="padding: 0; background: white; border-radius: ' + cr + '; border: 1px solid #e5e7eb; overflow: hidden;">' +
+                        // Header
+                        '<div style="padding: 12px 16px; background: ' + modColor + '; color: white; display: flex; align-items: center; gap: 12px;">' +
+                        '<div style="font-size: 20px;">' + config.icon + '</div>' +
+                        '<div style="font-weight: 600;">' + config.label + '</div>' +
+                        '<div style="margin-left: auto; display: flex; gap: 8px;"><span>📞</span><span>📹</span></div></div>' +
+                        // Messages
+                        '<div style="padding: 16px; min-height: 180px; background: #f8fafc; display: flex; flex-direction: column; gap: 12px;">' +
+                        // Message received
+                        '<div style="display: flex; gap: 8px; align-items: flex-start;">' +
+                        '<div style="width: 32px; height: 32px; background: #e5e7eb; border-radius: 50%; flex-shrink: 0;"></div>' +
+                        '<div style="background: white; padding: 10px 14px; border-radius: 0 16px 16px 16px; max-width: 70%; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">' +
+                        '<div style="height: 8px; background: #e5e7eb; border-radius: 4px; width: 120px; margin-bottom: 4px;"></div>' +
+                        '<div style="height: 8px; background: #f3f4f6; border-radius: 4px; width: 80px;"></div></div></div>' +
+                        // Message sent
+                        '<div style="display: flex; gap: 8px; align-items: flex-start; justify-content: flex-end;">' +
+                        '<div style="background: ' + modColor + '; padding: 10px 14px; border-radius: 16px 0 16px 16px; max-width: 70%;">' +
+                        '<div style="height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; width: 100px; margin-bottom: 4px;"></div>' +
+                        '<div style="height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; width: 140px;"></div></div></div>' +
+                        // Message received
+                        '<div style="display: flex; gap: 8px; align-items: flex-start;">' +
+                        '<div style="width: 32px; height: 32px; background: #e5e7eb; border-radius: 50%; flex-shrink: 0;"></div>' +
+                        '<div style="background: white; padding: 10px 14px; border-radius: 0 16px 16px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">' +
+                        '<div style="height: 8px; background: #e5e7eb; border-radius: 4px; width: 60px;"></div></div></div></div>' +
+                        // Input
+                        '<div style="padding: 12px 16px; border-top: 1px solid #e5e7eb; display: flex; align-items: center; gap: 12px;">' +
+                        '<div style="flex: 1; height: 36px; background: #f3f4f6; border-radius: 18px;"></div>' +
+                        '<div style="width: 36px; height: 36px; background: ' + modColor + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">➤</div></div></div>';
                     break;
 
                 default:
@@ -3717,25 +5028,30 @@ function vbpApp() {
             }
         },
 
+        /**
+         * Muestra notificación usando el sistema Toast unificado
+         * @param {string} message - Mensaje a mostrar
+         * @param {string} type - Tipo: 'info', 'success', 'error', 'warning'
+         */
         showNotification: function(message, type) {
             type = type || 'info';
-            var id = Date.now();
-            this.notifications.push({ id: id, message: message, type: type, visible: true });
-            var self = this;
-            setTimeout(function() { self.dismissNotification(id); }, 4000);
+            // Usar el sistema de Toast unificado
+            var toastStore = Alpine.store('vbpToast');
+            if (toastStore && toastStore.show) {
+                toastStore.show(message, type);
+            }
         },
 
         dismissNotification: function(id) {
-            var self = this;
-            var index = this.notifications.findIndex(function(n) { return n.id === id; });
-            if (index !== -1) {
-                this.notifications[index].visible = false;
-                setTimeout(function() { self.notifications.splice(index, 1); }, 300);
+            // Usar el sistema de Toast unificado
+            var toastStore = Alpine.store('vbpToast');
+            if (toastStore && toastStore.dismiss) {
+                toastStore.dismiss(id);
             }
         },
 
         /**
-         * Muestra notificación con botón de acción
+         * Muestra notificación con botón de acción usando Toast unificado
          * @param {string} message - Mensaje a mostrar
          * @param {string} type - Tipo: 'info', 'success', 'error', 'warning'
          * @param {string} actionLabel - Texto del botón
@@ -3743,20 +5059,20 @@ function vbpApp() {
          */
         showNotificationWithAction: function(message, type, actionLabel, actionCallback) {
             type = type || 'info';
-            var notificationId = Date.now();
-            this.notifications.push({
-                id: notificationId,
-                message: message,
-                type: type,
-                visible: true,
-                actionLabel: actionLabel,
-                actionCallback: actionCallback
-            });
-            // No auto-dismiss para notificaciones con acción (el usuario debe interactuar)
+            // Usar el sistema de Toast unificado con acción
+            var toastStore = Alpine.store('vbpToast');
+            if (toastStore && toastStore.show) {
+                toastStore.show(message, type, {
+                    action: actionCallback,
+                    actionLabel: actionLabel,
+                    duration: 0 // No auto-dismiss para notificaciones con acción
+                });
+            }
         },
 
         /**
          * Ejecuta la acción de una notificación y la cierra
+         * @deprecated Usar executeAction del sistema Toast
          */
         executeNotificationAction: function(notification) {
             if (notification.actionCallback && typeof notification.actionCallback === 'function') {
@@ -3778,18 +5094,53 @@ function vbpApp() {
             // Abrir ayuda con ?
             if (event.key === '?' && !event.target.closest('[contenteditable], input, textarea')) {
                 event.preventDefault();
-                this.showHelpModal = true;
+                this.openHelpModal();
                 return;
             }
 
             if (isCtrl && event.key === 's') { event.preventDefault(); this.saveDocument(); }
-            if (isCtrl && event.key === 'z' && !event.shiftKey) { event.preventDefault(); Alpine.store('vbp').undo(); }
-            if (isCtrl && event.key === 'z' && event.shiftKey) { event.preventDefault(); Alpine.store('vbp').redo(); }
-            if (isCtrl && event.key === 't') { event.preventDefault(); this.showTemplatesModal = true; }
+            if (isCtrl && event.key === 'z' && !event.shiftKey) {
+                event.preventDefault();
+                var undoDesc = Alpine.store('vbp').undo();
+                if (undoDesc) this.showNotification('Deshacer: ' + undoDesc, 'info');
+            }
+            if (isCtrl && event.key === 'z' && event.shiftKey) {
+                event.preventDefault();
+                var redoDesc = Alpine.store('vbp').redo();
+                if (redoDesc) this.showNotification('Rehacer: ' + redoDesc, 'info');
+            }
+            if (isCtrl && event.key === 't') { event.preventDefault(); this.openTemplatesModal(); }
             if (isCtrl && event.key === 'e') { event.preventDefault(); this.showExportModal = true; }
             if (isCtrl && event.key === 'u') { event.preventDefault(); this.openUnsplash(); }
             if (isCtrl && event.shiftKey && event.key === 'S') { event.preventDefault(); this.saveAsTemplate(); }
             if (isCtrl && event.shiftKey && (event.key === 'G' || event.key === 'g')) { event.preventDefault(); this.saveAsGlobalWidget(); }
+            if (isCtrl && event.shiftKey && (event.key === 'D' || event.key === 'd')) { event.preventDefault(); this.openTokensPanel(); }
+
+            // Copiar/Pegar elementos y estilos
+            if (isCtrl && !event.shiftKey && !event.altKey && (event.key === 'c' || event.key === 'C') && !event.target.closest('[contenteditable]')) {
+                event.preventDefault(); this.copyElement();
+            }
+            if (isCtrl && !event.shiftKey && !event.altKey && (event.key === 'v' || event.key === 'V') && !event.target.closest('[contenteditable]')) {
+                event.preventDefault(); this.pasteElement();
+            }
+            if (isCtrl && event.altKey && (event.key === 'c' || event.key === 'C')) {
+                event.preventDefault(); this.copyStyles();
+            }
+            if (isCtrl && event.altKey && (event.key === 'v' || event.key === 'V')) {
+                event.preventDefault(); this.pasteStyles();
+            }
+
+            // Eyedropper con tecla I
+            if (event.key === 'i' && !event.target.closest('[contenteditable], input, textarea') && !isCtrl) {
+                event.preventDefault(); this.activateEyedropper();
+            }
+
+            // Escape cancela eyedropper
+            if (event.key === 'Escape' && this.eyedropperActive) {
+                this.deactivateEyedropper();
+                return;
+            }
+
             if (event.key === 'Delete' || event.key === 'Backspace') {
                 var selection = Alpine.store('vbp').selection;
                 if (selection.elementIds.length > 0 && !event.target.closest('[contenteditable]')) {
@@ -3800,6 +5151,7 @@ function vbpApp() {
             if (event.key === 'Escape') {
                 if (this.showCommandPalette) { this.showCommandPalette = false; }
                 else if (this.showHelpModal) { this.showHelpModal = false; }
+                else if (this.showTokensPanel) { this.closeTokensPanel(); }
                 else { this.clearSelection(); }
             }
         },
@@ -3904,10 +5256,19 @@ function vbpApp() {
 
             switch (cmd.action) {
                 case 'save': this.saveDocument(); break;
-                case 'undo': store.undo(); break;
-                case 'redo': store.redo(); break;
-                case 'copy': document.dispatchEvent(new CustomEvent('vbp:command', { detail: { action: 'copy' } })); break;
-                case 'paste': document.dispatchEvent(new CustomEvent('vbp:command', { detail: { action: 'paste' } })); break;
+                case 'undo':
+                    var undoDescription = store.undo();
+                    if (undoDescription) self.showNotification('Deshacer: ' + undoDescription, 'info');
+                    break;
+                case 'redo':
+                    var redoDescription = store.redo();
+                    if (redoDescription) self.showNotification('Rehacer: ' + redoDescription, 'info');
+                    break;
+                case 'copy': this.copyElement(); break;
+                case 'copyStyles': this.copyStyles(); break;
+                case 'pasteStyles': this.pasteStyles(); break;
+                case 'eyedropper': this.activateEyedropper(); break;
+                case 'paste': this.pasteElement(); break;
                 case 'duplicate':
                     store.selection.elementIds.forEach(function(id) { store.duplicateElement(id); });
                     break;
@@ -3927,7 +5288,7 @@ function vbpApp() {
                 case 'preview':
                     if (VBP_Config.previewUrl) { window.open(VBP_Config.previewUrl, '_blank'); }
                     break;
-                case 'help': this.showHelpModal = true; break;
+                case 'help': this.openHelpModal(); break;
                 case 'togglePanels':
                     var allVisible = this.panels.blocks && this.panels.inspector && this.panels.layers;
                     this.panels.blocks = !allVisible;
@@ -3938,171 +5299,11 @@ function vbpApp() {
                 case 'addText': store.addElement('text'); break;
                 case 'addImage': store.addElement('image'); break;
                 case 'addButton': store.addElement('button'); break;
-                case 'templates': this.showTemplatesModal = true; break;
+                case 'templates': this.openTemplatesModal(); break;
                 case 'export': this.showExportModal = true; break;
                 case 'unsplash': this.openUnsplash(); break;
                 case 'versionHistory': this.openVersionHistory(); break;
             }
-        },
-
-        // ============ TEMPLATES ============
-
-        get filteredTemplates() {
-            var self = this;
-            var result = this.templates.slice();
-
-            if (this.templateSearch) {
-                var search = this.templateSearch.toLowerCase();
-                result = result.filter(function(t) {
-                    return t.title.toLowerCase().includes(search) ||
-                           (t.description && t.description.toLowerCase().includes(search));
-                });
-            }
-
-            if (this.templateCategory) {
-                result = result.filter(function(t) {
-                    return t.category === self.templateCategory;
-                });
-            }
-
-            return result;
-        },
-
-        loadTemplates: function() {
-            var self = this;
-            fetch(VBP_Config.restUrl + 'templates', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) {
-                var contentType = response.headers.get('content-type');
-                if (!response.ok) {
-                    throw new Error('Error HTTP: ' + response.status);
-                }
-                if (!contentType || !contentType.includes('application/json')) {
-                    throw new Error('Respuesta no es JSON válido');
-                }
-                return response.json();
-            })
-            .then(function(data) {
-                self.templates = data.library || [];
-                self.userTemplates = data.user || [];
-            })
-            .catch(function(error) {
-                console.warn('Error cargando templates (usando librería vacía):', error.message);
-                self.templates = [];
-                self.userTemplates = [];
-            });
-        },
-
-        selectTemplate: function(template) {
-            if (confirm(VBP_Config.strings.confirmApplyTemplate || '¿Aplicar este template? Se reemplazará el contenido actual.')) {
-                this.applyTemplate(template);
-            }
-        },
-
-        previewTemplate: function(template) {
-            if (template.preview_url) {
-                window.open(template.preview_url, '_blank');
-            } else {
-                this.showNotification('Preview no disponible', 'warning');
-            }
-        },
-
-        applyTemplate: function(template) {
-            var self = this;
-
-            fetch(VBP_Config.restUrl + 'documents/' + VBP_Config.postId + '/apply-template', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                },
-                body: JSON.stringify({ template_id: template.id })
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.document) {
-                    Alpine.store('vbp').elements = sanitizeElements(result.document.elements || []);
-                    Alpine.store('vbp').settings = result.document.settings || {};
-                    self.showNotification('Template aplicado correctamente', 'success');
-                    self.showTemplatesModal = false;
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error aplicando template: ' + error.message, 'error');
-            });
-        },
-
-        deleteTemplate: function(template) {
-            if (!confirm(VBP_Config.strings.confirmDeleteTemplate || '¿Eliminar este template?')) {
-                return;
-            }
-
-            var self = this;
-            fetch(VBP_Config.restUrl + 'templates/' + template.id, {
-                method: 'DELETE',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.success) {
-                    self.userTemplates = self.userTemplates.filter(function(t) { return t.id !== template.id; });
-                    self.showNotification('Template eliminado', 'success');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error eliminando template', 'error');
-            });
-        },
-
-        saveAsTemplate: function() {
-            this.newTemplateName = this.documentTitle + ' - Template';
-            this.newTemplateCategory = 'landing';
-            this.newTemplateDescription = '';
-            this.showSaveTemplateModal = true;
-        },
-
-        confirmSaveTemplate: function() {
-            if (!this.newTemplateName.trim()) return;
-
-            this.isSavingTemplate = true;
-            var self = this;
-
-            fetch(VBP_Config.restUrl + 'templates', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                },
-                body: JSON.stringify({
-                    post_id: VBP_Config.postId,
-                    name: this.newTemplateName,
-                    category: this.newTemplateCategory,
-                    description: this.newTemplateDescription
-                })
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.success) {
-                    self.showNotification('Template guardado correctamente', 'success');
-                    self.showSaveTemplateModal = false;
-                    self.loadTemplates(); // Recargar lista de templates
-                } else {
-                    throw new Error(result.message || 'Error desconocido');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error guardando template: ' + error.message, 'error');
-            })
-            .finally(function() {
-                self.isSavingTemplate = false;
-            });
         },
 
         // ============ IMPORT/EXPORT ============
@@ -4352,7 +5553,15 @@ function vbpApp() {
 
         loadGlobalWidgets: function() {
             var self = this;
-            fetch(VBP_Config.restUrl.replace('flavor-vbp/v1/', 'flavor-vbp/v1/') + 'global-widgets', {
+            if (this.globalWidgetsLoaded && !this.globalWidgetsLoading) {
+                return Promise.resolve(this.globalWidgets);
+            }
+            if (this.globalWidgetsPromise) {
+                return this.globalWidgetsPromise;
+            }
+
+            this.globalWidgetsLoading = true;
+            this.globalWidgetsPromise = fetch(VBP_Config.restUrl.replace('flavor-vbp/v1/', 'flavor-vbp/v1/') + 'global-widgets', {
                 method: 'GET',
                 headers: {
                     'X-WP-Nonce': VBP_Config.restNonce
@@ -4371,12 +5580,20 @@ function vbpApp() {
             .then(function(widgets) {
                 self.globalWidgets = widgets || [];
                 self.globalWidgetsLoaded = true;
+                return self.globalWidgets;
             })
             .catch(function(error) {
-                console.warn('Error cargando widgets globales:', error.message);
+                vbpLog.warn('Error cargando widgets globales:', error.message);
                 self.globalWidgets = [];
                 self.globalWidgetsLoaded = true;
+                return self.globalWidgets;
+            })
+            .finally(function() {
+                self.globalWidgetsLoading = false;
+                self.globalWidgetsPromise = null;
             });
+
+            return this.globalWidgetsPromise;
         },
 
         saveAsGlobalWidget: function() {
@@ -4432,6 +5649,7 @@ function vbpApp() {
                 if (result.id) {
                     self.showNotification('Widget global guardado correctamente', 'success');
                     self.showSaveGlobalWidgetModal = false;
+                    self.globalWidgetsLoaded = false;
                     self.loadGlobalWidgets();
                 } else {
                     throw new Error(result.error || 'Error desconocido');
@@ -4459,7 +5677,7 @@ function vbpApp() {
                 if (data.element) {
                     var store = Alpine.store('vbp');
                     var newElement = JSON.parse(JSON.stringify(data.element));
-                    newElement.id = 'el_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    newElement.id = generateElementId();
                     newElement.data = newElement.data || {};
                     newElement.data.globalWidgetId = widget.id;
                     newElement.name = widget.title;
@@ -5048,6 +6266,13 @@ function vbpApp() {
             }
         }
     };
+
+    // Extender con módulos si están disponibles
+    if (typeof window.extendVBPApp === 'function') {
+        app = window.extendVBPApp(app);
+    }
+
+    return app;
 }
 
 /**
@@ -5080,7 +6305,7 @@ window.vbpModulePreview = {
 
         // Verificar que VBP_Config existe
         if (typeof VBP_Config === 'undefined' || !VBP_Config.restUrl) {
-            console.warn('VBP_Config no disponible para cargar previsualización');
+            vbpLog.warn('VBP_Config no disponible para cargar previsualización');
             this.showError(elementId, shortcode, 'Config no disponible');
             return;
         }
@@ -5107,7 +6332,7 @@ window.vbpModulePreview = {
             }
         })
         .catch(function(error) {
-            console.warn('Error cargando previsualización:', error);
+            vbpLog.warn('Error cargando previsualización:', error);
 
             // Reintentar si no se ha alcanzado el máximo
             self.retryCount[elementId] = (self.retryCount[elementId] || 0) + 1;
@@ -5220,3 +6445,221 @@ window.vbpModulePreview = {
         });
     }
 };
+
+/**
+ * Componente Alpine para el Minimapa
+ * @returns {Object} Componente Alpine
+ */
+function vbpMinimap() {
+    return {
+        elements: [],
+        scale: 0.15,
+        viewportTop: 0,
+        viewportHeight: 50,
+        canvasHeight: 200,
+        isDragging: false,
+        dragStartY: 0,
+
+        init: function() {
+            var self = this;
+            this.updateMinimap();
+
+            // Escuchar cambios en el store
+            this.$watch('$store.vbp.elements', function() {
+                self.updateMinimap();
+            });
+
+            // Escuchar scroll del canvas
+            var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+            if (canvasWrapper) {
+                canvasWrapper.addEventListener('scroll', function() {
+                    self.updateViewport();
+                });
+            }
+
+            // Actualizar periódicamente
+            setInterval(function() {
+                self.updateMinimap();
+            }, 2000);
+        },
+
+        updateMinimap: function() {
+            var store = Alpine.store('vbp');
+            if (!store || !store.elements) return;
+
+            var self = this;
+            var yPosition = 0;
+            var elementsList = [];
+
+            store.elements.forEach(function(el) {
+                var height = self.estimateElementHeight(el.type);
+                elementsList.push({
+                    id: el.id,
+                    type: el.type,
+                    top: yPosition * self.scale,
+                    height: height * self.scale,
+                    selected: store.selection.elementIds.indexOf(el.id) !== -1
+                });
+                yPosition += height + 20;
+            });
+
+            this.elements = elementsList;
+            this.canvasHeight = yPosition * this.scale;
+            this.updateViewport();
+        },
+
+        updateViewport: function() {
+            var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+            if (!canvasWrapper) return;
+
+            var scrollTop = canvasWrapper.scrollTop;
+            var viewportHeight = canvasWrapper.clientHeight;
+            var scrollHeight = canvasWrapper.scrollHeight;
+
+            this.viewportTop = (scrollTop / scrollHeight) * this.canvasHeight;
+            this.viewportHeight = Math.max((viewportHeight / scrollHeight) * this.canvasHeight, 20);
+        },
+
+        estimateElementHeight: function(type) {
+            var heights = {
+                hero: 500,
+                features: 400,
+                testimonials: 350,
+                pricing: 450,
+                cta: 200,
+                faq: 400,
+                contact: 350,
+                team: 350,
+                heading: 60,
+                text: 80,
+                image: 200,
+                button: 50,
+                divider: 30,
+                spacer: 60,
+                container: 150,
+                columns: 200
+            };
+            return heights[type] || 100;
+        },
+
+        getElementColor: function(type) {
+            var colors = {
+                hero: '#ec4899',
+                features: '#10b981',
+                testimonials: '#f59e0b',
+                pricing: '#8b5cf6',
+                cta: '#3b82f6',
+                faq: '#06b6d4',
+                contact: '#14b8a6',
+                team: '#f97316',
+                heading: '#6366f1',
+                text: '#64748b',
+                image: '#22c55e',
+                button: '#ef4444',
+                container: '#475569',
+                columns: '#475569'
+            };
+            return colors[type] || '#64748b';
+        },
+
+        getElementLabel: function(type) {
+            var labels = {
+                hero: 'Hero',
+                features: 'Características',
+                testimonials: 'Testimonios',
+                pricing: 'Precios',
+                cta: 'CTA',
+                faq: 'FAQ',
+                contact: 'Contacto',
+                team: 'Equipo',
+                heading: 'Título',
+                text: 'Texto',
+                image: 'Imagen',
+                button: 'Botón',
+                container: 'Contenedor',
+                columns: 'Columnas'
+            };
+            return labels[type] || type;
+        },
+
+        scrollToElement: function(elementId) {
+            var elementDiv = document.querySelector('[data-element-id="' + elementId + '"]');
+            if (elementDiv) {
+                elementDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Seleccionar el elemento
+                var store = Alpine.store('vbp');
+                if (store) {
+                    store.setSelection([elementId]);
+                }
+            }
+        },
+
+        handleMinimapClick: function(event) {
+            if (this.isDragging) return;
+
+            var rect = this.$refs.minimap.getBoundingClientRect();
+            var clickY = event.clientY - rect.top;
+            var targetScrollPercent = clickY / this.canvasHeight;
+
+            var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+            if (canvasWrapper) {
+                canvasWrapper.scrollTo({
+                    top: targetScrollPercent * canvasWrapper.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
+        },
+
+        startDrag: function(event) {
+            this.isDragging = true;
+            this.dragStartY = event.clientY;
+        },
+
+        handleDrag: function(event) {
+            if (!this.isDragging) return;
+
+            var deltaY = event.clientY - this.dragStartY;
+            var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+            if (canvasWrapper) {
+                var scrollDelta = (deltaY / this.canvasHeight) * canvasWrapper.scrollHeight;
+                canvasWrapper.scrollTop += scrollDelta;
+            }
+            this.dragStartY = event.clientY;
+        },
+
+        endDrag: function() {
+            this.isDragging = false;
+        },
+
+        zoomIn: function() {
+            this.scale = Math.min(this.scale + 0.05, 0.5);
+            this.updateMinimap();
+        },
+
+        zoomOut: function() {
+            this.scale = Math.max(this.scale - 0.05, 0.05);
+            this.updateMinimap();
+        },
+
+        showTooltip: function(event, element) {
+            // Implementación simple de tooltip
+            var tooltip = document.querySelector('.vbp-minimap-tooltip');
+            if (tooltip && tooltip.__x) {
+                tooltip.__x.$data.show = true;
+                tooltip.__x.$data.text = this.getElementLabel(element.type);
+                tooltip.__x.$data.x = event.clientX + 10;
+                tooltip.__x.$data.y = event.clientY + 10;
+            }
+        },
+
+        hideTooltip: function() {
+            var tooltip = document.querySelector('.vbp-minimap-tooltip');
+            if (tooltip && tooltip.__x) {
+                tooltip.__x.$data.show = false;
+            }
+        }
+    };
+}
+
+// Exponer globalmente
+window.vbpMinimap = vbpMinimap;

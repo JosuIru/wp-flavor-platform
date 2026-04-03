@@ -9,6 +9,15 @@
 (function() {
     'use strict';
 
+    // Fallback de vbpLog si no está definido
+    if (!window.vbpLog) {
+        window.vbpLog = {
+            log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+            warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+            error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+        };
+    }
+
     /**
      * Sistema de preview de módulos
      */
@@ -64,7 +73,7 @@
                 self.cleanExpiredCache();
             }, 60000);
 
-            console.log('[VBP ModulePreview] Sistema de preview inicializado');
+            vbpLog.log('ModulePreview: Sistema de preview inicializado');
         },
 
         /**
@@ -149,7 +158,7 @@
                     return html;
                 })
                 .catch(function(error) {
-                    console.error('[VBP ModulePreview] Error cargando preview:', error);
+                    vbpLog.error('ModulePreview: Error cargando preview:', error);
                     self.showError(elementId, error.message || 'Error al cargar preview');
                     self.loadingElements.delete(elementId);
                     return null;

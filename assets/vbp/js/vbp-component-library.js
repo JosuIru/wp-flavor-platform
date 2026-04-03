@@ -11,6 +11,15 @@
 (function() {
     'use strict';
 
+    // Fallback de vbpLog si no está definido
+    if (!window.vbpLog) {
+        window.vbpLog = {
+            log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+            warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+            error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+        };
+    }
+
     /**
      * Biblioteca de Componentes VBP
      */
@@ -44,6 +53,11 @@
          * Inicializar la biblioteca
          */
         init: function() {
+            if (this._vbpInitialized) {
+                return;
+            }
+
+            this._vbpInitialized = true;
             var self = this;
             this.cargarCategorias();
             this.cargarComponentes();
@@ -71,7 +85,7 @@
                 }
             })
             .catch(function(error) {
-                console.warn('[VBP] Error cargando categorías:', error);
+                vbpLog.warn('Error cargando categorías:', error);
             });
         },
 
@@ -113,7 +127,7 @@
             })
             .catch(function(error) {
                 self.cargando = false;
-                console.warn('[VBP] Error cargando componentes:', error);
+                vbpLog.warn('Error cargando componentes:', error);
                 self.mostrarError('Error al cargar componentes');
             });
         },
@@ -241,7 +255,7 @@
         insertarBloque: function(bloque, store) {
             // Generar nuevo ID para evitar duplicados
             var nuevoBloque = JSON.parse(JSON.stringify(bloque));
-            nuevoBloque.id = 'el_' + Math.random().toString(36).substr(2, 9);
+            nuevoBloque.id = (typeof generateElementId === 'function') ? generateElementId() : 'el_' + Math.random().toString(36).substr(2, 9);
 
             // Regenerar IDs de hijos si existen
             if (nuevoBloque.children && nuevoBloque.children.length > 0) {
@@ -259,7 +273,7 @@
         regenerarIdsHijos: function(children) {
             var self = this;
             children.forEach(function(child) {
-                child.id = 'el_' + Math.random().toString(36).substr(2, 9);
+                child.id = (typeof generateElementId === 'function') ? generateElementId() : 'el_' + Math.random().toString(36).substr(2, 9);
                 if (child.children && child.children.length > 0) {
                     self.regenerarIdsHijos(child.children);
                 }
@@ -656,7 +670,7 @@
                     return;
                 }
             }
-            console.log('[VBP] ' + mensaje);
+            vbpLog.log(mensaje);
         },
 
         /**
@@ -670,7 +684,7 @@
                     return;
                 }
             }
-            console.error('[VBP] ' + mensaje);
+            vbpLog.error(mensaje);
         }
     };
 

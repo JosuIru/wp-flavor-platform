@@ -6,6 +6,15 @@
  * @since 2.0.0
  */
 
+// Fallback de vbpLog si no está definido
+if (!window.vbpLog) {
+    window.vbpLog = {
+        log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+    };
+}
+
 document.addEventListener('alpine:init', function() {
     Alpine.data('vbpCanvas', function() {
         return {
@@ -94,7 +103,7 @@ document.addEventListener('alpine:init', function() {
                 var canvas = this.$refs.canvas || document.querySelector('.vbp-canvas');
 
                 if (!canvas || typeof Sortable === 'undefined') {
-                    console.warn('VBP Canvas: Sortable no disponible');
+                    vbpLog.warn('Canvas: Sortable no disponible');
                     return;
                 }
 
@@ -278,36 +287,58 @@ document.addEventListener('alpine:init', function() {
                 }
 
                 // Fallback: drag & drop nativo para navegadores sin Sortable
+                // Optimizado: cachear último dropzone para evitar querySelectorAll
+                var lastHighlightedDropzone = null;
+                var dragoverThrottled = false;
+
                 canvas.addEventListener('dragover', function(e) {
                     e.preventDefault();
                     e.dataTransfer.dropEffect = 'copy';
 
+                    // Throttle: máximo 30fps para updates visuales
+                    if (dragoverThrottled) return;
+                    dragoverThrottled = true;
+                    requestAnimationFrame(function() {
+                        dragoverThrottled = false;
+                    });
+
                     // Resaltar contenedor si estamos sobre uno
                     var dropzone = e.target.closest('.vbp-container-dropzone, .vbp-column-dropzone');
-                    canvas.querySelectorAll('.vbp-drop-highlight').forEach(function(el) {
-                        el.classList.remove('vbp-drop-highlight');
-                    });
-                    if (dropzone) {
-                        dropzone.classList.add('vbp-drop-highlight');
-                    } else {
-                        canvas.classList.add('vbp-drop-active');
+
+                    // Solo actualizar si cambió el dropzone (evita querySelectorAll repetido)
+                    if (dropzone !== lastHighlightedDropzone) {
+                        if (lastHighlightedDropzone) {
+                            lastHighlightedDropzone.classList.remove('vbp-drop-highlight');
+                        }
+                        if (dropzone) {
+                            dropzone.classList.add('vbp-drop-highlight');
+                            canvas.classList.remove('vbp-drop-active');
+                        } else {
+                            canvas.classList.add('vbp-drop-active');
+                        }
+                        lastHighlightedDropzone = dropzone;
                     }
                 });
 
                 canvas.addEventListener('dragleave', function(e) {
-                    canvas.classList.remove('vbp-drop-active');
-                    var dropzone = e.target.closest('.vbp-container-dropzone, .vbp-column-dropzone');
-                    if (dropzone) {
-                        dropzone.classList.remove('vbp-drop-highlight');
+                    // Solo limpiar si salimos del canvas completamente
+                    if (!canvas.contains(e.relatedTarget)) {
+                        canvas.classList.remove('vbp-drop-active');
+                        if (lastHighlightedDropzone) {
+                            lastHighlightedDropzone.classList.remove('vbp-drop-highlight');
+                            lastHighlightedDropzone = null;
+                        }
                     }
                 });
 
                 canvas.addEventListener('drop', function(e) {
                     e.preventDefault();
                     canvas.classList.remove('vbp-drop-active');
-                    canvas.querySelectorAll('.vbp-drop-highlight').forEach(function(el) {
-                        el.classList.remove('vbp-drop-highlight');
-                    });
+                    // Limpiar highlight cacheado
+                    if (lastHighlightedDropzone) {
+                        lastHighlightedDropzone.classList.remove('vbp-drop-highlight');
+                        lastHighlightedDropzone = null;
+                    }
 
                     var blockType = e.dataTransfer.getData('text/vbp-block-type');
                     if (!blockType) return;
@@ -457,6 +488,9 @@ document.addEventListener('alpine:init', function() {
                 }, true); // Usar captura para detectar blur en elementos anidados
 
                 // También sincronizar en input para feedback en tiempo real
+                // Optimizado: usar Map centralizado para debounce en lugar de propiedades DOM
+                var inputDebounceMap = new Map();
+
                 canvas.addEventListener('input', function(e) {
                     var editableContent = e.target;
                     if (!editableContent.hasAttribute('contenteditable')) return;
@@ -468,26 +502,33 @@ document.addEventListener('alpine:init', function() {
                     if (!element) return;
 
                     var elementId = element.dataset.elementId;
-                    var store = Alpine.store('vbp');
-                    var storeElement = store.getElement(elementId);
+                    var debounceKey = elementId + '_' + field;
 
-                    if (storeElement) {
-                        var newContent = editableContent.innerHTML;
-                        if (field === 'text' || field === 'titulo' || field === 'subtitulo' ||
-                            field === 'descripcion' || field === 'boton_texto') {
-                            newContent = editableContent.textContent;
-                        }
-
-                        // Debounce para evitar demasiadas actualizaciones
-                        clearTimeout(editableContent._vbpInputTimeout);
-                        editableContent._vbpInputTimeout = setTimeout(function() {
-                            if (storeElement.data[field] !== newContent) {
-                                var data = JSON.parse(JSON.stringify(storeElement.data || {}));
-                                data[field] = newContent;
-                                store.updateElement(elementId, { data: data });
-                            }
-                        }, 200);
+                    // Cancelar timeout anterior si existe
+                    if (inputDebounceMap.has(debounceKey)) {
+                        clearTimeout(inputDebounceMap.get(debounceKey));
                     }
+
+                    // Capturar valores actuales para el closure
+                    var newContent = (field === 'text' || field === 'titulo' || field === 'subtitulo' ||
+                        field === 'descripcion' || field === 'boton_texto')
+                        ? editableContent.textContent
+                        : editableContent.innerHTML;
+
+                    // Debounce: actualizar store después de 200ms de inactividad
+                    var timeoutId = setTimeout(function() {
+                        inputDebounceMap.delete(debounceKey);
+                        var store = Alpine.store('vbp');
+                        var storeElement = store.getElement(elementId);
+
+                        if (storeElement && storeElement.data && storeElement.data[field] !== newContent) {
+                            // Actualizar directamente sin clonar todo el objeto
+                            storeElement.data[field] = newContent;
+                            store.updateElement(elementId, { data: storeElement.data });
+                        }
+                    }, 200);
+
+                    inputDebounceMap.set(debounceKey, timeoutId);
                 }, true);
             },
 

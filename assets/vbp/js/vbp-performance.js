@@ -6,6 +6,15 @@
  * @since 2.0.0
  */
 
+// Fallback de vbpLog si no está definido
+if (!window.vbpLog) {
+    window.vbpLog = {
+        log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+    };
+}
+
 window.VBPPerformance = (function() {
     'use strict';
 
@@ -145,7 +154,7 @@ window.VBPPerformance = (function() {
                     try {
                         cb();
                     } catch (e) {
-                        console.error('VBP batch update error:', e);
+                        vbpLog.error('Batch update error:', e);
                     }
                 });
             });
@@ -229,7 +238,7 @@ window.VBPPerformance = (function() {
         var start = performance.now();
         var result = func();
         var end = performance.now();
-        console.log('[VBP Performance] ' + name + ': ' + (end - start).toFixed(2) + 'ms');
+        vbpLog.log('Performance ' + name + ': ' + (end - start).toFixed(2) + 'ms');
         return result;
     }
 

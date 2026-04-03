@@ -643,3 +643,22 @@
     animation: vbp-pulse-dot 1.5s ease-in-out infinite;
     display: inline-block;
 }
+
+.vbp-workspace-mode-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px;
+    border: 1px solid var(--vbp-border-color, rgba(255, 255, 255, 0.12));
+    border-radius: 10px;
+    background: var(--vbp-surface-secondary, rgba(255, 255, 255, 0.04));
+}
+
+.vbp-workspace-mode-toggle .vbp-mode-toggle-btn {
+    min-width: 84px;
+    justify-content: center;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.2;
+}

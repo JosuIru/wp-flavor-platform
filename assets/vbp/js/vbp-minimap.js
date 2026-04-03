@@ -46,6 +46,11 @@ document.addEventListener('alpine:init', function() {
             viewportHeight: 0,
             scale: 0.06,
             tooltipElement: null,
+            refreshTimer: null,
+            scrollHandler: null,
+            resizeHandler: null,
+            isActive: false,
+            rafPending: false,
 
             // Etiquetas para cada tipo de elemento
             elementLabels: {
@@ -98,29 +103,111 @@ document.addEventListener('alpine:init', function() {
                 // Watch para cambios en scale del store
                 this.$watch('$store.vbpMinimap.scale', function(newScale) {
                     self.scale = newScale;
-                    self.updateElements();
-                    self.updateViewport();
+                    self.queueRefresh();
                 });
 
-                // Listener de scroll
                 var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+                this.scrollHandler = function() {
+                    self.queueRefresh();
+                };
+
                 if (canvasWrapper) {
-                    canvasWrapper.addEventListener('scroll', function() {
-                        self.updateViewport();
-                    }, { passive: true });
+                    canvasWrapper.addEventListener('scroll', this.scrollHandler, { passive: true });
                 }
+
+                this.resizeHandler = function() {
+                    self.queueRefresh();
+                };
+                window.addEventListener('resize', this.resizeHandler, { passive: true });
+
+                this.$watch('$store.vbp.inspectorMode', function(mode) {
+                    self.setActiveState(mode === 'advanced' && self.$store.vbpMinimap.isVisible);
+                });
+
+                this.$watch('$store.vbpMinimap.isVisible', function(isVisible) {
+                    self.setActiveState(self.$store.vbp.inspectorMode === 'advanced' && isVisible);
+                });
 
                 // Inicializar
                 this.$nextTick(function() {
-                    self.updateElements();
-                    self.updateViewport();
+                    self.setActiveState(self.$store.vbp.inspectorMode === 'advanced' && self.$store.vbpMinimap.isVisible);
                 });
+            },
 
-                // Actualizar periódicamente
-                setInterval(function() {
-                    self.updateElements();
-                    self.updateViewport();
-                }, 500);
+            destroy: function() {
+                var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
+                if (canvasWrapper && this.scrollHandler) {
+                    canvasWrapper.removeEventListener('scroll', this.scrollHandler);
+                }
+
+                if (this.resizeHandler) {
+                    window.removeEventListener('resize', this.resizeHandler);
+                }
+
+                if (this.refreshTimer) {
+                    clearTimeout(this.refreshTimer);
+                    this.refreshTimer = null;
+                }
+            },
+
+            setActiveState: function(isActive) {
+                this.isActive = !!isActive;
+
+                if (!this.isActive) {
+                    if (this.refreshTimer) {
+                        clearTimeout(this.refreshTimer);
+                        this.refreshTimer = null;
+                    }
+                    return;
+                }
+
+                this.queueRefresh(true);
+            },
+
+            queueRefresh: function(immediate) {
+                var self = this;
+
+                if (!this.isActive) {
+                    return;
+                }
+
+                if (immediate) {
+                    if (this.refreshTimer) {
+                        clearTimeout(this.refreshTimer);
+                        this.refreshTimer = null;
+                    }
+                    this.refreshNow();
+                    return;
+                }
+
+                if (this.rafPending) {
+                    return;
+                }
+
+                this.rafPending = true;
+                requestAnimationFrame(function() {
+                    self.rafPending = false;
+                    self.refreshNow();
+                });
+            },
+
+            refreshNow: function() {
+                var self = this;
+
+                if (!this.isActive) {
+                    return;
+                }
+
+                this.updateElements();
+                this.updateViewport();
+
+                if (this.refreshTimer) {
+                    clearTimeout(this.refreshTimer);
+                }
+
+                this.refreshTimer = setTimeout(function() {
+                    self.refreshNow();
+                }, 2000);
             },
 
             // Zoom controls

@@ -7,6 +7,15 @@
  * @since 2.2.0
  */
 
+// Fallback de vbpLog si no está definido
+if (!window.vbpLog) {
+    window.vbpLog = {
+        log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+    };
+}
+
 document.addEventListener('alpine:init', function() {
     // Store para el sistema de comentarios
     Alpine.store('vbpComments', {
@@ -97,7 +106,7 @@ document.addEventListener('alpine:init', function() {
                 }
             })
             .catch(function(error) {
-                console.warn('[VBP Comments] Error loading stats:', error);
+                vbpLog.warn('Comments: Error loading stats:', error);
             });
         },
 
@@ -277,7 +286,7 @@ document.addEventListener('alpine:init', function() {
                 }
             })
             .catch(function(error) {
-                console.error('[VBP Comments] Error toggling resolved:', error);
+                vbpLog.error('Comments: Error toggling resolved:', error);
             });
         },
 
@@ -312,7 +321,7 @@ document.addEventListener('alpine:init', function() {
                 }
             })
             .catch(function(error) {
-                console.error('[VBP Comments] Error deleting comment:', error);
+                vbpLog.error('Comments: Error deleting comment:', error);
             });
         },
 

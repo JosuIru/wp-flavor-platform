@@ -6,6 +6,15 @@
  * @since 2.0.0
  */
 
+// Fallback de vbpLog si no está definido
+if (!window.vbpLog) {
+    window.vbpLog = {
+        log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+    };
+}
+
 /**
  * Componente Inspector
  */
@@ -14,9 +23,20 @@ function vbpInspector() {
         activeTab: 'content',
         editingItemIndex: null,
         styleUpdateFrame: null,
+        styleDebounceTimers: {},
         mediaLibraryField: null,
         mediaLibraryItemIndex: null,
         spacerHeight: 60,
+
+        // Modal de URL fallback
+        urlModal: {
+            isOpen: false,
+            title: '',
+            url: '',
+            error: '',
+            callback: null,
+            mediaType: 'image'
+        },
 
         /**
          * Normaliza un color para input type="color"
@@ -407,24 +427,108 @@ function vbpInspector() {
         },
 
         /**
-         * Actualizar estilo con requestAnimationFrame (preview instantáneo)
-         * Ahora soporta estilos responsive por breakpoint
+         * Actualizar estilo con debounce real + preview instantáneo
+         * Combina preview inmediato (CSS variable) con guardado debounced al store
+         * @param {string} path - Ruta del estilo (ej: 'spacing.margin.top')
+         * @param {*} value - Valor a establecer
+         * @param {boolean} immediate - Si true, guarda inmediatamente sin debounce
          */
-        updateStyle: function(path, value) {
+        updateStyle: function(path, value, immediate) {
             if (!this.selectedElement) return;
             var self = this;
             var store = Alpine.store('vbp');
+            var elementId = this.selectedElement.id;
 
-            // Cancelar frame anterior si existe
-            if (this.styleUpdateFrame) {
-                cancelAnimationFrame(this.styleUpdateFrame);
+            // Preview instantáneo usando CSS custom properties (no afecta el store)
+            this.applyStylePreview(elementId, path, value);
+
+            // Cancelar debounce anterior si existe
+            if (this.styleDebounceTimers && this.styleDebounceTimers[path]) {
+                clearTimeout(this.styleDebounceTimers[path]);
             }
 
-            // Usar requestAnimationFrame para update instantáneo pero sincronizado con render
-            this.styleUpdateFrame = requestAnimationFrame(function() {
-                // Usar el método del store que maneja breakpoints
-                store.updateElementStyleForBreakpoint(self.selectedElement.id, path, value);
+            // Inicializar objeto de timers si no existe
+            if (!this.styleDebounceTimers) {
+                this.styleDebounceTimers = {};
+            }
+
+            // Si es inmediato, guardar directamente
+            if (immediate) {
+                store.updateElementStyleForBreakpoint(elementId, path, value);
+                return;
+            }
+
+            // Debounce de 150ms antes de guardar al store
+            this.styleDebounceTimers[path] = setTimeout(function() {
+                // Verificar que el elemento sigue seleccionado
+                if (self.selectedElement && self.selectedElement.id === elementId) {
+                    store.updateElementStyleForBreakpoint(elementId, path, value);
+                }
+                delete self.styleDebounceTimers[path];
+            }, 150);
+        },
+
+        /**
+         * Aplicar preview visual instantáneo sin guardar al store
+         * Usa CSS custom properties para feedback inmediato
+         */
+        applyStylePreview: function(elementId, path, value) {
+            // Buscar el elemento en el canvas iframe
+            var canvas = document.getElementById('vbp-preview-frame');
+            if (!canvas || !canvas.contentDocument) return;
+
+            var element = canvas.contentDocument.querySelector('[data-vbp-id="' + elementId + '"]');
+            if (!element) return;
+
+            // Mapear path a propiedad CSS
+            var cssProperty = this.pathToCssProperty(path);
+            if (cssProperty) {
+                element.style.setProperty(cssProperty, value);
+            }
+        },
+
+        /**
+         * Mapear path de estilo VBP a propiedad CSS
+         */
+        pathToCssProperty: function(path) {
+            var mappings = {
+                'spacing.margin.top': 'margin-top',
+                'spacing.margin.right': 'margin-right',
+                'spacing.margin.bottom': 'margin-bottom',
+                'spacing.margin.left': 'margin-left',
+                'spacing.padding.top': 'padding-top',
+                'spacing.padding.right': 'padding-right',
+                'spacing.padding.bottom': 'padding-bottom',
+                'spacing.padding.left': 'padding-left',
+                'layout.width': 'width',
+                'layout.maxWidth': 'max-width',
+                'layout.minHeight': 'min-height',
+                'layout.height': 'height',
+                'typography.fontSize': 'font-size',
+                'typography.lineHeight': 'line-height',
+                'typography.letterSpacing': 'letter-spacing',
+                'typography.color': 'color',
+                'background.color': 'background-color',
+                'border.radius': 'border-radius',
+                'border.width': 'border-width',
+                'border.color': 'border-color',
+                'effects.opacity': 'opacity'
+            };
+            return mappings[path] || null;
+        },
+
+        /**
+         * Forzar guardado inmediato de todos los estilos pendientes
+         * Útil antes de cambiar de elemento o guardar el documento
+         */
+        flushPendingStyles: function() {
+            if (!this.styleDebounceTimers) return;
+
+            var self = this;
+            Object.keys(this.styleDebounceTimers).forEach(function(path) {
+                clearTimeout(self.styleDebounceTimers[path]);
             });
+            this.styleDebounceTimers = {};
         },
 
         /**
@@ -473,6 +577,152 @@ function vbpInspector() {
 
             responsiveStyles[store.activeBreakpoint] = breakpointStyles;
             store.updateElement(this.selectedElement.id, { responsiveStyles: responsiveStyles });
+        },
+
+        /**
+         * Toggle Auto-layout (Flexbox) en el elemento seleccionado
+         */
+        toggleAutoLayout: function() {
+            if (!this.selectedElement) return;
+            var currentDisplay = this.getStyleValue('layout.display', 'block');
+            var isFlexActive = currentDisplay === 'flex';
+
+            if (isFlexActive) {
+                // Desactivar flex - volver a block
+                this.updateStyle('layout.display', 'block');
+                this.updateStyle('layout.flexDirection', '');
+                this.updateStyle('layout.justifyContent', '');
+                this.updateStyle('layout.alignItems', '');
+                this.updateStyle('layout.flexWrap', '');
+                this.updateStyle('layout.gap', '');
+            } else {
+                // Activar flex con valores por defecto
+                this.updateStyle('layout.display', 'flex');
+                this.updateStyle('layout.flexDirection', 'row');
+                this.updateStyle('layout.justifyContent', 'flex-start');
+                this.updateStyle('layout.alignItems', 'stretch');
+                this.updateStyle('layout.gap', '12px');
+            }
+        },
+
+        /**
+         * Verificar si Auto-layout está activo
+         */
+        isAutoLayoutActive: function() {
+            return this.getStyleValue('layout.display', 'block') === 'flex';
+        },
+
+        /**
+         * Establecer dirección del flex
+         */
+        setFlexDirection: function(direction) {
+            if (!this.selectedElement) return;
+            this.updateStyle('layout.flexDirection', direction);
+        },
+
+        /**
+         * Establecer alineación (justify-content y align-items)
+         */
+        setAlignment: function(justify, items) {
+            if (!this.selectedElement) return;
+            if (justify) this.updateStyle('layout.justifyContent', justify);
+            if (items) this.updateStyle('layout.alignItems', items);
+        },
+
+        /**
+         * Establecer distribución de espacio
+         */
+        setDistribution: function(value) {
+            if (!this.selectedElement) return;
+            this.updateStyle('layout.justifyContent', value);
+        },
+
+        /**
+         * Establecer gap entre elementos
+         */
+        setGap: function(value) {
+            if (!this.selectedElement) return;
+            var gapValue = value + (isNaN(value) ? '' : 'px');
+            this.updateStyle('layout.gap', gapValue);
+        },
+
+        /**
+         * Obtener clase activa para botón de dirección
+         */
+        getDirectionClass: function(direction) {
+            var current = this.getStyleValue('layout.flexDirection', 'row');
+            return current === direction ? 'active' : '';
+        },
+
+        /**
+         * Obtener clase activa para celda de alineación
+         */
+        getAlignmentClass: function(justify, items) {
+            var currentJustify = this.getStyleValue('layout.justifyContent', 'flex-start');
+            var currentItems = this.getStyleValue('layout.alignItems', 'stretch');
+            return (currentJustify === justify && currentItems === items) ? 'active' : '';
+        },
+
+        /**
+         * Obtener clase activa para botón de distribución
+         */
+        getDistributionClass: function(value) {
+            var current = this.getStyleValue('layout.justifyContent', 'flex-start');
+            return current === value ? 'active' : '';
+        },
+
+        // ============ PRESETS DE ESPACIADO ============
+
+        /**
+         * Aplicar preset de padding a los 4 lados
+         */
+        applyPaddingPreset: function(value) {
+            if (!this.selectedElement) return;
+            this.updateStyle('spacing.padding.top', value);
+            this.updateStyle('spacing.padding.right', value);
+            this.updateStyle('spacing.padding.bottom', value);
+            this.updateStyle('spacing.padding.left', value);
+        },
+
+        /**
+         * Aplicar preset de margin a los 4 lados
+         */
+        applyMarginPreset: function(value) {
+            if (!this.selectedElement) return;
+            this.updateStyle('spacing.margin.top', value);
+            this.updateStyle('spacing.margin.right', value);
+            this.updateStyle('spacing.margin.bottom', value);
+            this.updateStyle('spacing.margin.left', value);
+        },
+
+        /**
+         * Verificar si el preset de padding está activo
+         */
+        isPaddingPresetActive: function(value) {
+            if (!this.selectedElement) return false;
+            var padding = this.selectedElement.styles && this.selectedElement.styles.spacing && this.selectedElement.styles.spacing.padding;
+            if (!padding) return value === '0px' || value === '0';
+            var normalizedValue = value.replace('px', '');
+            var top = (padding.top || '0').toString().replace('px', '');
+            var right = (padding.right || '0').toString().replace('px', '');
+            var bottom = (padding.bottom || '0').toString().replace('px', '');
+            var left = (padding.left || '0').toString().replace('px', '');
+            return top === normalizedValue && right === normalizedValue && bottom === normalizedValue && left === normalizedValue;
+        },
+
+        /**
+         * Verificar si el preset de margin está activo
+         */
+        isMarginPresetActive: function(value) {
+            if (!this.selectedElement) return false;
+            var margin = this.selectedElement.styles && this.selectedElement.styles.spacing && this.selectedElement.styles.spacing.margin;
+            if (!margin) return value === '0px' || value === '0';
+            var normalizedValue = value.replace('px', '');
+            var top = (margin.top || '0').toString().replace('px', '');
+            var right = (margin.right || '0').toString().replace('px', '');
+            var bottom = (margin.bottom || '0').toString().replace('px', '');
+            var left = (margin.left || '0').toString().replace('px', '');
+            return top === normalizedValue && right === normalizedValue && bottom === normalizedValue && left === normalizedValue;
         },
 
         /**
@@ -839,73 +1089,359 @@ function vbpInspector() {
         },
 
         // ============================================
-        // MEDIA LIBRARY
+        // MEDIA LIBRARY (Expandida para todos los tipos)
         // ============================================
 
         /**
-         * Abrir Media Library de WordPress
+         * Configuración de tipos de media soportados
          */
-        openMediaLibrary: function(field) {
+        mediaTypeConfig: {
+            image: {
+                title: 'Seleccionar imagen',
+                button: 'Usar imagen',
+                libraryType: 'image',
+                extensions: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']
+            },
+            video: {
+                title: 'Seleccionar video',
+                button: 'Usar video',
+                libraryType: 'video',
+                extensions: ['mp4', 'webm', 'ogg', 'mov']
+            },
+            audio: {
+                title: 'Seleccionar audio',
+                button: 'Usar audio',
+                libraryType: 'audio',
+                extensions: ['mp3', 'wav', 'ogg', 'm4a', 'flac']
+            },
+            file: {
+                title: 'Seleccionar archivo',
+                button: 'Usar archivo',
+                libraryType: null, // Todos los tipos
+                extensions: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar']
+            },
+            pdf: {
+                title: 'Seleccionar PDF',
+                button: 'Usar PDF',
+                libraryType: 'application/pdf',
+                extensions: ['pdf']
+            },
+            any: {
+                title: 'Seleccionar archivo',
+                button: 'Usar archivo',
+                libraryType: null,
+                extensions: []
+            }
+        },
+
+        /**
+         * Extraer metadata completa de un attachment
+         * @param {object} attachment - Objeto attachment de WordPress
+         * @param {string} mediaType - Tipo de media
+         * @returns {object} - Metadata normalizada
+         */
+        extractAttachmentMetadata: function(attachment, mediaType) {
+            if (!attachment) return null;
+
+            var metadata = {
+                id: attachment.id || null,
+                url: attachment.url || '',
+                alt: attachment.alt || '',
+                title: attachment.title || '',
+                caption: attachment.caption || '',
+                mime: attachment.mime || attachment.type || '',
+                filename: attachment.filename || '',
+                filesize: attachment.filesizeHumanReadable || '',
+                width: attachment.width || null,
+                height: attachment.height || null
+            };
+
+            // Añadir tamaños responsive para imágenes
+            if (mediaType === 'image' && attachment.sizes) {
+                metadata.sizes = {};
+                var sizeNames = ['thumbnail', 'medium', 'medium_large', 'large', 'full'];
+                sizeNames.forEach(function(size) {
+                    if (attachment.sizes[size]) {
+                        metadata.sizes[size] = {
+                            url: attachment.sizes[size].url,
+                            width: attachment.sizes[size].width,
+                            height: attachment.sizes[size].height
+                        };
+                    }
+                });
+            }
+
+            // Para video, añadir poster si existe
+            if (mediaType === 'video' && attachment.image && attachment.image.src) {
+                metadata.poster = attachment.image.src;
+            }
+
+            // Para audio, añadir duración si existe
+            if (mediaType === 'audio' && attachment.meta) {
+                metadata.duration = attachment.meta.length_formatted || null;
+                metadata.artist = attachment.meta.artist || '';
+                metadata.album = attachment.meta.album || '';
+            }
+
+            return metadata;
+        },
+
+        /**
+         * Abrir Media Library de WordPress (expandida)
+         * @param {string} field - Campo a actualizar
+         * @param {string} mediaType - Tipo de medio: 'image', 'video', 'audio', 'file', 'pdf', 'any'
+         * @param {object} options - Opciones adicionales { saveMetadata: boolean, metadataField: string }
+         */
+        openMediaLibrary: function(field, mediaType, options) {
             var self = this;
             this.mediaLibraryField = field || 'src';
             this.mediaLibraryItemIndex = null;
+            mediaType = mediaType || 'image';
+            options = options || {};
 
             if (typeof wp !== 'undefined' && wp.media) {
-                var frame = wp.media({
-                    title: 'Seleccionar imagen',
-                    button: { text: 'Usar imagen' },
+                var typeConfig = this.mediaTypeConfig[mediaType] || this.mediaTypeConfig.any;
+
+                var mediaFrameConfig = {
+                    title: typeConfig.title,
+                    button: { text: typeConfig.button },
                     multiple: false
-                });
+                };
+
+                // Filtrar por tipo de archivo si está definido
+                if (typeConfig.libraryType) {
+                    mediaFrameConfig.library = { type: typeConfig.libraryType };
+                }
+
+                var frame = wp.media(mediaFrameConfig);
 
                 frame.on('select', function() {
-                    var attachment = frame.state().get('selection').first().toJSON();
+                    var selection = frame.state().get('selection').first();
+                    if (!selection) {
+                        vbpLog.warn('No se seleccionó ningún archivo');
+                        return;
+                    }
+
+                    var attachment = selection.toJSON();
+
+                    // Validar que el attachment tiene URL
+                    if (!attachment.url) {
+                        vbpLog.error('El attachment no tiene URL válida');
+                        if (window.vbpApp && window.vbpApp.showNotification) {
+                            window.vbpApp.showNotification('Error: archivo sin URL válida', 'error');
+                        }
+                        return;
+                    }
+
+                    // Guardar URL en el campo principal
                     self.updateElementData(self.mediaLibraryField, attachment.url);
 
-                    // Si es imagen, también actualizar el alt
-                    if (self.mediaLibraryField === 'src' && attachment.alt) {
-                        self.updateElementData('alt', attachment.alt);
+                    // Extraer y guardar metadata completa
+                    var metadata = self.extractAttachmentMetadata(attachment, mediaType);
+
+                    // Guardar metadata adicional según el tipo
+                    if (mediaType === 'image') {
+                        if (attachment.alt) {
+                            self.updateElementData('alt', attachment.alt);
+                        }
+                        if (attachment.id) {
+                            self.updateElementData('attachment_id', attachment.id);
+                        }
+                        if (metadata.sizes) {
+                            self.updateElementData('sizes', metadata.sizes);
+                        }
+                        if (metadata.width && metadata.height) {
+                            self.updateElementData('width', metadata.width);
+                            self.updateElementData('height', metadata.height);
+                        }
+                    } else if (mediaType === 'video') {
+                        if (metadata.poster) {
+                            self.updateElementData('video_poster', metadata.poster);
+                        }
+                        if (attachment.id) {
+                            self.updateElementData('attachment_id', attachment.id);
+                        }
+                    } else if (mediaType === 'audio') {
+                        if (attachment.id) {
+                            self.updateElementData('attachment_id', attachment.id);
+                        }
+                        if (metadata.duration) {
+                            self.updateElementData('duration', metadata.duration);
+                        }
+                        if (metadata.title) {
+                            self.updateElementData('audio_title', metadata.title);
+                        }
+                    } else if (mediaType === 'file' || mediaType === 'pdf') {
+                        if (attachment.id) {
+                            self.updateElementData('attachment_id', attachment.id);
+                        }
+                        if (metadata.filename) {
+                            self.updateElementData('filename', metadata.filename);
+                        }
+                        if (metadata.filesize) {
+                            self.updateElementData('filesize', metadata.filesize);
+                        }
+                        if (metadata.mime) {
+                            self.updateElementData('mime_type', metadata.mime);
+                        }
+                    }
+
+                    // Guardar toda la metadata si se solicita
+                    if (options.saveMetadata && options.metadataField) {
+                        self.updateElementData(options.metadataField, metadata);
+                    }
+
+                    // Notificar éxito
+                    if (window.vbpApp && window.vbpApp.showNotification) {
+                        window.vbpApp.showNotification('Archivo seleccionado correctamente', 'success');
                     }
                 });
 
                 frame.open();
             } else {
-                // Fallback: prompt para URL
-                var url = prompt('Introduce la URL de la imagen:');
-                if (url) {
-                    this.updateElementData(field, url);
-                }
+                // Fallback mejorado: mostrar modal si está disponible, sino prompt
+                this.showMediaFallbackDialog(field, mediaType);
             }
         },
 
         /**
-         * Abrir Media Library para un item específico
+         * Mostrar diálogo fallback cuando wp.media no está disponible
+         * Usa un modal interno mejorado en lugar de prompt()
          */
-        openMediaLibraryForItem: function(itemIndex, field) {
+        showMediaFallbackDialog: function(field, mediaType) {
             var self = this;
+            var typeConfig = this.mediaTypeConfig[mediaType] || this.mediaTypeConfig.any;
+
+            // Usar modal interno del inspector
+            this.urlModal.isOpen = true;
+            this.urlModal.title = typeConfig.title;
+            this.urlModal.url = '';
+            this.urlModal.error = '';
+            this.urlModal.mediaType = mediaType;
+            this.urlModal.callback = function(url) {
+                if (url && self.isValidUrl(url)) {
+                    self.updateElementData(field, url);
+                    if (window.vbpApp && window.vbpApp.showNotification) {
+                        window.vbpApp.showNotification('URL aplicada correctamente', 'success');
+                    }
+                }
+            };
+        },
+
+        /**
+         * Confirmar URL del modal
+         */
+        confirmUrlModal: function() {
+            var url = this.urlModal.url.trim();
+
+            // Validar URL
+            if (!url) {
+                this.urlModal.error = 'Por favor, introduce una URL';
+                return;
+            }
+
+            if (!this.isValidUrl(url)) {
+                this.urlModal.error = 'URL no válida. Debe comenzar con http://, https:// o /';
+                return;
+            }
+
+            // Ejecutar callback
+            if (this.urlModal.callback) {
+                this.urlModal.callback(url);
+            }
+
+            // Cerrar modal
+            this.closeUrlModal();
+        },
+
+        /**
+         * Cerrar modal de URL
+         */
+        closeUrlModal: function() {
+            this.urlModal.isOpen = false;
+            this.urlModal.url = '';
+            this.urlModal.error = '';
+            this.urlModal.callback = null;
+        },
+
+        /**
+         * Obtener placeholder para el modal según el tipo
+         */
+        getUrlPlaceholder: function() {
+            var typeConfig = this.mediaTypeConfig[this.urlModal.mediaType] || this.mediaTypeConfig.any;
+            var extension = typeConfig.extensions[0] || 'jpg';
+            return 'https://ejemplo.com/archivo.' + extension;
+        },
+
+        /**
+         * Validar si una URL es válida
+         * @param {string} url - URL a validar
+         * @returns {boolean}
+         */
+        isValidUrl: function(url) {
+            if (!url || typeof url !== 'string') return false;
+            // Permitir URLs relativas y absolutas
+            if (url.startsWith('/')) return true;
+            try {
+                new URL(url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        },
+
+        /**
+         * Abrir Media Library para un item específico (expandida)
+         * @param {number} itemIndex - Índice del item
+         * @param {string} field - Campo a actualizar
+         * @param {string} mediaType - Tipo de medio (default: 'image')
+         */
+        openMediaLibraryForItem: function(itemIndex, field, mediaType) {
+            var self = this;
+            mediaType = mediaType || 'image';
+
+            // Validar índice
+            if (typeof itemIndex !== 'number' || itemIndex < 0) {
+                vbpLog.error('Índice de item inválido:', itemIndex);
+                return;
+            }
 
             if (typeof wp !== 'undefined' && wp.media) {
+                var typeConfig = this.mediaTypeConfig[mediaType] || this.mediaTypeConfig.image;
+
                 var frame = wp.media({
-                    title: 'Seleccionar imagen',
-                    button: { text: 'Usar imagen' },
-                    multiple: false
+                    title: typeConfig.title,
+                    button: { text: typeConfig.button },
+                    multiple: false,
+                    library: typeConfig.libraryType ? { type: typeConfig.libraryType } : undefined
                 });
 
                 frame.on('select', function() {
-                    var attachment = frame.state().get('selection').first().toJSON();
+                    var selection = frame.state().get('selection').first();
+                    if (!selection) return;
+
+                    var attachment = selection.toJSON();
+                    if (!attachment.url) return;
+
                     self.updateItem(itemIndex, field, attachment.url);
+
+                    // Guardar metadata adicional para imágenes
+                    if (mediaType === 'image' && attachment.alt) {
+                        self.updateItem(itemIndex, 'alt', attachment.alt);
+                    }
                 });
 
                 frame.open();
             } else {
-                var url = prompt('Introduce la URL de la imagen:');
-                if (url) {
+                var url = prompt('Introduce la URL:');
+                if (url && this.isValidUrl(url)) {
                     this.updateItem(itemIndex, field, url);
                 }
             }
         },
 
         /**
-         * Añadir imagen a galería
+         * Añadir imagen a galería (con metadata mejorada)
          */
         addGalleryImage: function() {
             var self = this;
@@ -914,34 +1450,72 @@ function vbpInspector() {
                 var frame = wp.media({
                     title: 'Seleccionar imágenes',
                     button: { text: 'Añadir imágenes' },
-                    multiple: true
+                    multiple: true,
+                    library: { type: 'image' }
                 });
 
                 frame.on('select', function() {
                     var attachments = frame.state().get('selection').toJSON();
-                    var data = JSON.parse(JSON.stringify(self.selectedElement.data || {}));
+                    if (!attachments || attachments.length === 0) return;
 
+                    var data = JSON.parse(JSON.stringify(self.selectedElement.data || {}));
                     if (!data.items) data.items = [];
 
                     attachments.forEach(function(attachment) {
-                        data.items.push({
+                        if (!attachment.url) return;
+
+                        var item = {
                             src: attachment.url,
-                            alt: attachment.alt || ''
-                        });
+                            alt: attachment.alt || '',
+                            attachment_id: attachment.id || null,
+                            width: attachment.width || null,
+                            height: attachment.height || null
+                        };
+
+                        // Añadir tamaños responsive si existen
+                        if (attachment.sizes && attachment.sizes.medium) {
+                            item.thumbnail = attachment.sizes.medium.url;
+                        }
+
+                        data.items.push(item);
                     });
 
                     Alpine.store('vbp').updateElement(self.selectedElement.id, { data: data });
+
+                    if (window.vbpApp && window.vbpApp.showNotification) {
+                        window.vbpApp.showNotification(attachments.length + ' imagen(es) añadida(s)', 'success');
+                    }
                 });
 
                 frame.open();
             } else {
                 var url = prompt('Introduce la URL de la imagen:');
-                if (url) {
+                if (url && this.isValidUrl(url)) {
                     this.addItem('gallery');
-                    var lastIndex = this.selectedElement.data.items.length - 1;
-                    this.updateItem(lastIndex, 'src', url);
+                    var items = this.selectedElement.data.items || [];
+                    var lastIndex = items.length - 1;
+                    if (lastIndex >= 0) {
+                        this.updateItem(lastIndex, 'src', url);
+                    }
                 }
             }
+        },
+
+        /**
+         * Abrir Media Library para seleccionar archivo (PDF, documento, etc.)
+         * Útil para campos de enlace que apuntan a archivos
+         * @param {string} field - Campo a actualizar
+         */
+        openFileLibrary: function(field) {
+            this.openMediaLibrary(field, 'file');
+        },
+
+        /**
+         * Abrir Media Library para seleccionar audio
+         * @param {string} field - Campo a actualizar
+         */
+        openAudioLibrary: function(field) {
+            this.openMediaLibrary(field, 'audio');
         },
 
         // ============================================
@@ -1451,7 +2025,7 @@ function vbpInspector() {
                 }
             })
             .catch(function(error) {
-                console.error('[VBP] Error de geocodificación:', error);
+                vbpLog.error('Error de geocodificación:', error);
                 if (typeof VBPToast !== 'undefined') {
                     VBPToast.error('Error al buscar coordenadas');
                 }

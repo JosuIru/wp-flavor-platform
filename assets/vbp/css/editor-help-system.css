@@ -1,0 +1,1080 @@
+/**
+ * VBP Help System - Atajos, Onboarding, Ayuda Contextual
+ * Sistema completo de ayuda y guía para el editor
+ */
+
+/* ============================================
+   VARIABLES
+   ============================================ */
+:root {
+    --vbp-help-bg: rgba(15, 23, 42, 0.95);
+    --vbp-help-card-bg: #1e293b;
+    --vbp-help-border: rgba(255, 255, 255, 0.1);
+    --vbp-help-text: #e2e8f0;
+    --vbp-help-muted: #94a3b8;
+    --vbp-help-accent: #6366f1;
+    --vbp-help-success: #10b981;
+    --vbp-help-warning: #f59e0b;
+    --vbp-help-radius: 12px;
+    --vbp-help-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   1. MODAL DE ATAJOS DE TECLADO
+   ============================================ */
+.vbp-shortcuts-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vbp-help-bg);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    backdrop-filter: blur(8px);
+}
+
+.vbp-shortcuts-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vbp-shortcuts-content {
+    background: var(--vbp-help-card-bg);
+    border-radius: var(--vbp-help-radius);
+    box-shadow: var(--vbp-help-shadow);
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.95);
+    transition: transform 0.2s ease;
+}
+
+.vbp-shortcuts-modal.is-open .vbp-shortcuts-content {
+    transform: scale(1);
+}
+
+.vbp-shortcuts-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--vbp-help-border);
+}
+
+.vbp-shortcuts-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--vbp-help-text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.vbp-shortcuts-title .material-icons {
+    color: var(--vbp-help-accent);
+}
+
+.vbp-shortcuts-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    color: var(--vbp-help-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.vbp-shortcuts-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--vbp-help-text);
+}
+
+.vbp-shortcuts-search {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--vbp-help-border);
+}
+
+.vbp-shortcuts-search-input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--vbp-help-border);
+    border-radius: 8px;
+    color: var(--vbp-help-text);
+    font-size: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2394a3b8' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 12px center;
+    background-size: 18px;
+}
+
+.vbp-shortcuts-search-input::placeholder {
+    color: var(--vbp-help-muted);
+}
+
+.vbp-shortcuts-search-input:focus {
+    outline: none;
+    border-color: var(--vbp-help-accent);
+}
+
+.vbp-shortcuts-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.vbp-shortcuts-category {
+    margin-bottom: 28px;
+}
+
+.vbp-shortcuts-category:last-child {
+    margin-bottom: 0;
+}
+
+.vbp-shortcuts-category-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--vbp-help-accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-shortcuts-category-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--vbp-help-border);
+}
+
+.vbp-shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+}
+
+.vbp-shortcut-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    transition: background 0.15s ease;
+}
+
+.vbp-shortcut-item:hover {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.vbp-shortcut-item.is-hidden {
+    display: none;
+}
+
+.vbp-shortcut-label {
+    font-size: 13px;
+    color: var(--vbp-help-text);
+}
+
+.vbp-shortcut-keys {
+    display: flex;
+    gap: 4px;
+}
+
+.vbp-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-help-text);
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.vbp-key--wide {
+    min-width: auto;
+    padding: 0 10px;
+}
+
+.vbp-shortcuts-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--vbp-help-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--vbp-help-muted);
+}
+
+.vbp-shortcuts-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ============================================
+   2. ONBOARDING / TOUR GUIADO
+   ============================================ */
+.vbp-onboarding-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99998;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.vbp-onboarding-overlay.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vbp-onboarding-highlight {
+    position: absolute;
+    z-index: 99999;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vbp-onboarding-highlight::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--vbp-help-accent);
+    border-radius: 10px;
+    animation: vbp-pulse-border 2s ease-in-out infinite;
+}
+
+@keyframes vbp-pulse-border {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.vbp-onboarding-tooltip {
+    position: absolute;
+    z-index: 100000;
+    width: 320px;
+    background: var(--vbp-help-card-bg);
+    border-radius: var(--vbp-help-radius);
+    box-shadow: var(--vbp-help-shadow);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.vbp-onboarding-tooltip.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.vbp-onboarding-tooltip::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--vbp-help-card-bg);
+    transform: rotate(45deg);
+}
+
+.vbp-onboarding-tooltip[data-position="top"]::before {
+    bottom: -6px;
+    left: 50%;
+    margin-left: -6px;
+}
+
+.vbp-onboarding-tooltip[data-position="bottom"]::before {
+    top: -6px;
+    left: 50%;
+    margin-left: -6px;
+}
+
+.vbp-onboarding-tooltip[data-position="left"]::before {
+    right: -6px;
+    top: 50%;
+    margin-top: -6px;
+}
+
+.vbp-onboarding-tooltip[data-position="right"]::before {
+    left: -6px;
+    top: 50%;
+    margin-top: -6px;
+}
+
+.vbp-onboarding-header {
+    padding: 20px 20px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.vbp-onboarding-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--vbp-help-accent), #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.vbp-onboarding-step-info {
+    flex: 1;
+}
+
+.vbp-onboarding-step-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--vbp-help-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+}
+
+.vbp-onboarding-step-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--vbp-help-text);
+}
+
+.vbp-onboarding-body {
+    padding: 16px 20px;
+}
+
+.vbp-onboarding-description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--vbp-help-muted);
+}
+
+.vbp-onboarding-tip {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--vbp-help-accent);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.vbp-onboarding-tip .material-icons {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.vbp-onboarding-footer {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--vbp-help-border);
+}
+
+.vbp-onboarding-progress {
+    display: flex;
+    gap: 6px;
+}
+
+.vbp-onboarding-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+}
+
+.vbp-onboarding-dot.is-active {
+    background: var(--vbp-help-accent);
+    width: 20px;
+    border-radius: 4px;
+}
+
+.vbp-onboarding-dot.is-completed {
+    background: var(--vbp-help-success);
+}
+
+.vbp-onboarding-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.vbp-onboarding-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-onboarding-btn--skip {
+    background: transparent;
+    color: var(--vbp-help-muted);
+}
+
+.vbp-onboarding-btn--skip:hover {
+    color: var(--vbp-help-text);
+}
+
+.vbp-onboarding-btn--prev {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--vbp-help-text);
+}
+
+.vbp-onboarding-btn--prev:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.vbp-onboarding-btn--next {
+    background: var(--vbp-help-accent);
+    color: white;
+}
+
+.vbp-onboarding-btn--next:hover {
+    background: #5558e3;
+}
+
+/* Welcome Screen */
+.vbp-onboarding-welcome {
+    position: fixed;
+    inset: 0;
+    z-index: 100001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vbp-help-bg);
+    backdrop-filter: blur(10px);
+}
+
+.vbp-onboarding-welcome-content {
+    text-align: center;
+    max-width: 480px;
+    padding: 40px;
+}
+
+.vbp-onboarding-welcome-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--vbp-help-accent), #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+}
+
+.vbp-onboarding-welcome-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--vbp-help-text);
+    margin-bottom: 12px;
+}
+
+.vbp-onboarding-welcome-subtitle {
+    font-size: 16px;
+    color: var(--vbp-help-muted);
+    margin-bottom: 32px;
+    line-height: 1.6;
+}
+
+.vbp-onboarding-welcome-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.vbp-onboarding-welcome-btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vbp-onboarding-welcome-btn--start {
+    background: var(--vbp-help-accent);
+    color: white;
+}
+
+.vbp-onboarding-welcome-btn--start:hover {
+    background: #5558e3;
+    transform: translateY(-2px);
+}
+
+.vbp-onboarding-welcome-btn--skip {
+    background: transparent;
+    color: var(--vbp-help-muted);
+}
+
+.vbp-onboarding-welcome-btn--skip:hover {
+    color: var(--vbp-help-text);
+}
+
+/* ============================================
+   3. PANEL DE AYUDA CONTEXTUAL
+   ============================================ */
+.vbp-contextual-help {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    z-index: 9999;
+    width: 300px;
+    background: var(--vbp-help-card-bg);
+    border-radius: var(--vbp-help-radius);
+    box-shadow: var(--vbp-help-shadow);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vbp-contextual-help.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.vbp-contextual-help-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--vbp-help-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vbp-contextual-help-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--vbp-help-text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-contextual-help-title .material-icons {
+    font-size: 18px;
+    color: var(--vbp-help-accent);
+}
+
+.vbp-contextual-help-close {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--vbp-help-muted);
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vbp-contextual-help-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--vbp-help-text);
+}
+
+.vbp-contextual-help-body {
+    padding: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.vbp-contextual-help-section {
+    margin-bottom: 16px;
+}
+
+.vbp-contextual-help-section:last-child {
+    margin-bottom: 0;
+}
+
+.vbp-contextual-help-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--vbp-help-muted);
+    margin-bottom: 8px;
+}
+
+.vbp-contextual-help-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--vbp-help-text);
+}
+
+.vbp-contextual-help-shortcuts {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vbp-contextual-shortcut {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.vbp-contextual-shortcut-label {
+    color: var(--vbp-help-muted);
+}
+
+.vbp-contextual-shortcut-keys {
+    display: flex;
+    gap: 3px;
+}
+
+.vbp-contextual-shortcut-keys .vbp-key {
+    height: 20px;
+    min-width: 20px;
+    font-size: 10px;
+}
+
+.vbp-contextual-help-tip {
+    padding: 10px 12px;
+    background: rgba(245, 158, 11, 0.1);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--vbp-help-warning);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.vbp-contextual-help-tip .material-icons {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+/* Help Toggle Button */
+.vbp-help-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9998;
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: var(--vbp-help-accent);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    transition: all 0.2s ease;
+}
+
+.vbp-help-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5);
+}
+
+.vbp-help-toggle .material-icons {
+    font-size: 24px;
+}
+
+.vbp-help-toggle.is-active {
+    background: #ef4444;
+}
+
+.vbp-help-toggle.is-active .material-icons::before {
+    content: 'close';
+}
+
+/* ============================================
+   4. INDICADOR DE CAMBIOS SIN GUARDAR
+   ============================================ */
+.vbp-unsaved-indicator {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--vbp-help-card-bg);
+    border: 1px solid var(--vbp-help-border);
+    border-radius: 20px;
+    box-shadow: var(--vbp-help-shadow);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(-20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vbp-unsaved-indicator.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.vbp-unsaved-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--vbp-help-warning);
+    animation: vbp-pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes vbp-pulse-dot {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(0.8);
+    }
+}
+
+.vbp-unsaved-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--vbp-help-text);
+}
+
+.vbp-unsaved-time {
+    font-size: 12px;
+    color: var(--vbp-help-muted);
+}
+
+.vbp-unsaved-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: 8px;
+}
+
+.vbp-unsaved-btn {
+    padding: 4px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-unsaved-btn--save {
+    background: var(--vbp-help-success);
+    color: white;
+}
+
+.vbp-unsaved-btn--save:hover {
+    background: #0d9668;
+}
+
+.vbp-unsaved-btn--discard {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--vbp-help-muted);
+}
+
+.vbp-unsaved-btn--discard:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+/* Título del documento con indicador */
+.vbp-document-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-document-title-text {
+    font-weight: 500;
+}
+
+.vbp-document-title-badge {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--vbp-help-warning);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.vbp-document-title.has-changes .vbp-document-title-badge {
+    opacity: 1;
+}
+
+/* Tab con indicador de cambios */
+.vbp-tab.has-changes::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--vbp-help-warning);
+}
+
+/* Confirmación antes de salir */
+.vbp-leave-confirm {
+    position: fixed;
+    inset: 0;
+    z-index: 100002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vbp-help-bg);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+.vbp-leave-confirm.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vbp-leave-confirm-content {
+    background: var(--vbp-help-card-bg);
+    border-radius: var(--vbp-help-radius);
+    box-shadow: var(--vbp-help-shadow);
+    width: 90%;
+    max-width: 400px;
+    padding: 24px;
+    text-align: center;
+}
+
+.vbp-leave-confirm-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: rgba(245, 158, 11, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vbp-leave-confirm-icon .material-icons {
+    font-size: 28px;
+    color: var(--vbp-help-warning);
+}
+
+.vbp-leave-confirm-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--vbp-help-text);
+    margin-bottom: 8px;
+}
+
+.vbp-leave-confirm-message {
+    font-size: 14px;
+    color: var(--vbp-help-muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.vbp-leave-confirm-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.vbp-leave-confirm-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-leave-confirm-btn--save {
+    background: var(--vbp-help-success);
+    color: white;
+}
+
+.vbp-leave-confirm-btn--save:hover {
+    background: #0d9668;
+}
+
+.vbp-leave-confirm-btn--discard {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.vbp-leave-confirm-btn--discard:hover {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+.vbp-leave-confirm-btn--cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--vbp-help-text);
+}
+
+.vbp-leave-confirm-btn--cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   5. ANIMACIONES Y TRANSICIONES
+   ============================================ */
+@keyframes vbp-fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes vbp-bounce-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes vbp-shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.vbp-animate-fade-in-up {
+    animation: vbp-fade-in-up 0.4s ease forwards;
+}
+
+.vbp-animate-bounce-in {
+    animation: vbp-bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+.vbp-animate-shake {
+    animation: vbp-shake 0.5s ease;
+}
+
+/* ============================================
+   6. RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .vbp-shortcuts-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .vbp-shortcuts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .vbp-onboarding-tooltip {
+        width: 280px;
+    }
+
+    .vbp-contextual-help {
+        right: 10px;
+        bottom: 70px;
+        width: 280px;
+    }
+
+    .vbp-help-toggle {
+        right: 10px;
+        bottom: 10px;
+        width: 44px;
+        height: 44px;
+    }
+
+    .vbp-unsaved-indicator {
+        width: calc(100% - 20px);
+        max-width: 360px;
+    }
+}
+
+/* ============================================
+   7. TEMA CLARO
+   ============================================ */
+.vbp-editor.theme-light .vbp-shortcuts-modal,
+.vbp-editor.theme-light .vbp-onboarding-overlay,
+.vbp-editor.theme-light .vbp-leave-confirm {
+    --vbp-help-bg: rgba(255, 255, 255, 0.95);
+}
+
+.vbp-editor.theme-light .vbp-shortcuts-content,
+.vbp-editor.theme-light .vbp-onboarding-tooltip,
+.vbp-editor.theme-light .vbp-contextual-help,
+.vbp-editor.theme-light .vbp-unsaved-indicator,
+.vbp-editor.theme-light .vbp-leave-confirm-content {
+    --vbp-help-card-bg: #ffffff;
+    --vbp-help-border: rgba(0, 0, 0, 0.1);
+    --vbp-help-text: #1e293b;
+    --vbp-help-muted: #64748b;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.vbp-editor.theme-light .vbp-shortcut-item,
+.vbp-editor.theme-light .vbp-contextual-shortcut {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.vbp-editor.theme-light .vbp-shortcut-item:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.vbp-editor.theme-light .vbp-key {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: var(--vbp-help-text);
+}
+
+.vbp-editor.theme-light .vbp-shortcuts-search-input {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: var(--vbp-help-text);
+}
+
+.vbp-editor.theme-light .vbp-onboarding-welcome {
+    --vbp-help-bg: rgba(255, 255, 255, 0.98);
+}

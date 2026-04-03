@@ -6,9 +6,28 @@
  * @since 2.1.0
  */
 
-document.addEventListener('alpine:init', function() {
-    // Store para el panel de AI
-    Alpine.store('vbpAI', {
+// Fallback de vbpLog si no está definido
+if (!window.vbpLog) {
+    window.vbpLog = {
+        log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+    };
+}
+
+function initVbpAI() {
+    if (typeof Alpine === 'undefined' || window.__vbpAIInitialized) {
+        return !!window.__vbpAIInitialized;
+    }
+
+    var existingStore = null;
+    try {
+        existingStore = Alpine.store('vbpAI');
+    } catch (error) {
+        existingStore = null;
+    }
+
+    var aiStoreDefinition = {
         isOpen: false,
         isLoading: false,
         currentField: null,
@@ -78,7 +97,7 @@ document.addEventListener('alpine:init', function() {
             try {
                 localStorage.setItem('vbp_ai_history', JSON.stringify(this.history));
             } catch (e) {
-                console.warn('[VBP AI] Error saving history:', e);
+                vbpLog.warn('AI: Error saving history:', e);
             }
         },
 
@@ -92,7 +111,7 @@ document.addEventListener('alpine:init', function() {
                     this.history = JSON.parse(saved);
                 }
             } catch (e) {
-                console.warn('[VBP AI] Error loading history:', e);
+                vbpLog.warn('AI: Error loading history:', e);
                 this.history = [];
             }
         },
@@ -202,7 +221,7 @@ document.addEventListener('alpine:init', function() {
                 if (data.actions) self.actions = Object.entries(data.actions).map(function(entry) { return { id: entry[0], name: entry[1] }; });
             })
             .catch(function(error) {
-                console.warn('[VBP AI] Error loading options:', error);
+                vbpLog.warn('AI: Error loading options:', error);
             });
 
             // Cargar tipos de página
@@ -249,7 +268,7 @@ document.addEventListener('alpine:init', function() {
                 }
             })
             .catch(function(error) {
-                console.warn('[VBP AI] Error loading page types:', error);
+                vbpLog.warn('AI: Error loading page types:', error);
             });
         },
 
@@ -501,7 +520,7 @@ document.addEventListener('alpine:init', function() {
          * Convierte un bloque individual al formato VBP
          */
         convertSingleBlock: function(block, yPosition) {
-            var blockId = 'ai_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            var blockId = (typeof generateElementId === 'function') ? generateElementId('ai') : 'ai_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
             var vbpBlock = {
                 id: blockId,
@@ -629,10 +648,17 @@ document.addEventListener('alpine:init', function() {
 
             this.close();
         }
-    });
+    };
 
-    // Componente para el panel de AI
-    Alpine.data('vbpAIPanel', function() {
+    if (existingStore) {
+        Object.keys(aiStoreDefinition).forEach(function(key) {
+            existingStore[key] = aiStoreDefinition[key];
+        });
+    } else {
+        Alpine.store('vbpAI', aiStoreDefinition);
+    }
+
+    window.vbpAIPanel = function() {
         return {
             get store() {
                 return Alpine.store('vbpAI');
@@ -656,8 +682,25 @@ document.addEventListener('alpine:init', function() {
                 });
             }
         };
-    });
+    };
+
+    if (typeof Alpine.data === 'function') {
+        Alpine.data('vbpAIPanel', window.vbpAIPanel);
+    }
+
+    window.__vbpAIInitialized = true;
+    return true;
+}
+
+window.initVbpAI = initVbpAI;
+
+document.addEventListener('alpine:init', function() {
+    initVbpAI();
 });
+
+if (typeof Alpine !== 'undefined') {
+    initVbpAI();
+}
 
 // Listener global para el evento vbp-ai-assist
 document.addEventListener('DOMContentLoaded', function() {

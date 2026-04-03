@@ -6,6 +6,15 @@
  * @since 2.0.0
  */
 
+// Fallback de vbpLog si no está definido
+if (!window.vbpLog) {
+    window.vbpLog = {
+        log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+    };
+}
+
 document.addEventListener('alpine:init', () => {
     // Store para modales de selectores
     Alpine.store('vbpModals', {
@@ -70,11 +79,11 @@ document.addEventListener('alpine:init', () => {
     });
 
     // Índice de elementos para búsquedas O(1)
-    var elementIndex = new Map();
+    const elementIndex = new Map();
 
     // Flag para modo batch - evita reconstruir índice en cada operación
-    var batchMode = false;
-    var batchPendingRebuild = false;
+    let batchMode = false;
+    let batchPendingRebuild = false;
 
     // Función para reconstruir el índice
     function rebuildIndex(elements) {
@@ -102,7 +111,7 @@ document.addEventListener('alpine:init', () => {
         } finally {
             batchMode = false;
             if (batchPendingRebuild) {
-                var store = Alpine.store('vbp');
+                const store = Alpine.store('vbp');
                 elementIndex.clear();
                 store.elements.forEach(function(el, idx) {
                     elementIndex.set(el.id, { element: el, index: idx });
@@ -113,10 +122,10 @@ document.addEventListener('alpine:init', () => {
     }
 
     // Debounce para autosave usando VBPPerformance si está disponible
-    var debouncedSave = window.VBPPerformance
+    const debouncedSave = window.VBPPerformance
         ? window.VBPPerformance.debounce(function(store) {
             if (store.isDirty && store.postId) {
-                store.autoSave();
+                store.saveDocument({ autosave: true });
             }
         }, 3000)
         : function() {};
@@ -137,13 +146,16 @@ document.addEventListener('alpine:init', () => {
         saveStatus: 'saved', // 'saved' | 'saving' | 'error' | 'dirty'
         lastSaved: null,
         saveError: null,
+        savePromise: null,
 
         // UI
         zoom: 100,
         devicePreview: 'desktop',
         activeBreakpoint: 'desktop', // Breakpoint actual para edición de estilos
+        activeStyleState: 'normal', // Estado de estilos: 'normal', 'hover', 'active', 'focus'
         showRulers: true,
         panels: { blocks: true, inspector: true, layers: true },
+        inspectorMode: localStorage.getItem('vbp_inspector_mode') || 'basic', // 'basic' o 'advanced'
         showFloatingToolbar: false,
         floatingToolbarPosition: { x: 0, y: 0 },
 
@@ -157,13 +169,28 @@ document.addEventListener('alpine:init', () => {
         // Selección
         selection: { elementIds: [], multiSelect: false },
 
-        // Historial
+        // Historial con descripciones
         history: { past: [], future: [] },
         maxHistorySize: 50,
+        lastUndoDescription: '',
+        lastRedoDescription: '',
 
         // Getters computados
         get canUndo() { return this.history.past.length > 0; },
         get canRedo() { return this.history.future.length > 0; },
+        get undoDescription() {
+            if (this.history.past.length > 0) {
+                var lastEntry = this.history.past[this.history.past.length - 1];
+                return lastEntry.description || 'Cambio';
+            }
+            return '';
+        },
+        get redoDescription() {
+            if (this.history.future.length > 0) {
+                return this.history.future[0].description || 'Cambio';
+            }
+            return '';
+        },
         get selectedElement() {
             if (this.selection.elementIds.length === 1) {
                 // Usar getElementDeep para encontrar elementos hijos de contenedores
@@ -197,7 +224,7 @@ document.addEventListener('alpine:init', () => {
             var bloqueOriginal = this.getBlockFromConfig(type);
 
             const nuevoElemento = {
-                id: 'el_' + Math.random().toString(36).substr(2, 9),
+                id: (typeof generateElementId === 'function' ? generateElementId() : 'el_' + Math.random().toString(36).substr(2, 9)),
                 type: type,
                 variant: this.getDefaultVariant(type),
                 name: bloqueOriginal ? bloqueOriginal.name : this.getDefaultName(type),
@@ -282,7 +309,7 @@ document.addEventListener('alpine:init', () => {
             var bloqueOriginal = this.getBlockFromConfig(type);
 
             var nuevoElemento = {
-                id: 'el_' + Math.random().toString(36).substr(2, 9),
+                id: (typeof generateElementId === 'function' ? generateElementId() : 'el_' + Math.random().toString(36).substr(2, 9)),
                 type: type,
                 variant: this.getDefaultVariant(type),
                 name: bloqueOriginal ? bloqueOriginal.name : this.getDefaultName(type),
@@ -602,7 +629,7 @@ document.addEventListener('alpine:init', () => {
             var duplicado = window.VBPPerformance
                 ? window.VBPPerformance.deepClone(original)
                 : JSON.parse(JSON.stringify(original));
-            duplicado.id = 'el_' + Math.random().toString(36).substr(2, 9);
+            duplicado.id = (typeof generateElementId === 'function') ? generateElementId() : 'el_' + Math.random().toString(36).substr(2, 9);
             duplicado.name = original.name + ' (copia)';
 
             const index = this.getElementIndex(id);
@@ -646,10 +673,144 @@ document.addEventListener('alpine:init', () => {
             this.selection.elementIds = [];
         },
 
-        // Historial
-        saveToHistory() {
-            const estado = JSON.stringify(this.elements);
-            this.history.past.push(estado);
+        // Inspector Mode
+        toggleInspectorMode() {
+            this.inspectorMode = this.inspectorMode === 'basic' ? 'advanced' : 'basic';
+            localStorage.setItem('vbp_inspector_mode', this.inspectorMode);
+        },
+
+        setInspectorMode(mode) {
+            if (mode === 'basic' || mode === 'advanced') {
+                this.inspectorMode = mode;
+                localStorage.setItem('vbp_inspector_mode', mode);
+            }
+        },
+
+        // Style States (hover, active, focus)
+        /**
+         * Cambiar el estado de estilos activo para edición
+         * @param {string} state - 'normal', 'hover', 'active', 'focus'
+         */
+        setStyleState(state) {
+            var validStates = ['normal', 'hover', 'active', 'focus'];
+            if (validStates.indexOf(state) !== -1) {
+                this.activeStyleState = state;
+            }
+        },
+
+        /**
+         * Obtener estilos de un estado específico para un elemento
+         * @param {string} elementId - ID del elemento
+         * @param {string} state - 'normal', 'hover', 'active', 'focus'
+         */
+        getStateStyles(elementId, state) {
+            var element = this.getElementDeep(elementId);
+            if (!element || !element.styles) return null;
+
+            if (state === 'normal') {
+                return element.styles;
+            }
+
+            if (element.styles.states && element.styles.states[state]) {
+                return element.styles.states[state];
+            }
+
+            return null;
+        },
+
+        /**
+         * Actualizar un estilo de estado específico
+         * @param {string} elementId - ID del elemento
+         * @param {string} state - 'hover', 'active', 'focus'
+         * @param {string} property - Propiedad a actualizar (background, color, etc.)
+         * @param {string} value - Nuevo valor
+         */
+        updateStateStyle(elementId, state, property, value) {
+            var element = this.getElementDeep(elementId);
+            if (!element || !element.styles) return;
+
+            // Asegurar estructura de states
+            if (!element.styles.states) {
+                element.styles.states = {
+                    hover: { enabled: false },
+                    active: { enabled: false },
+                    focus: { enabled: false }
+                };
+            }
+
+            if (!element.styles.states[state]) {
+                element.styles.states[state] = { enabled: false };
+            }
+
+            // Actualizar propiedad
+            element.styles.states[state][property] = value;
+
+            // Auto-habilitar si se establece algún valor
+            if (value && value !== '') {
+                element.styles.states[state].enabled = true;
+            }
+
+            this.markAsDirty();
+        },
+
+        /**
+         * Verificar si un elemento tiene estilos de estado definidos
+         * @param {string} elementId - ID del elemento
+         * @param {string} state - 'hover', 'active', 'focus'
+         */
+        hasStateStyles(elementId, state) {
+            var element = this.getElementDeep(elementId);
+            if (!element || !element.styles || !element.styles.states) return false;
+
+            var stateStyles = element.styles.states[state];
+            if (!stateStyles || !stateStyles.enabled) return false;
+
+            // Verificar si hay algún valor definido
+            var props = ['background', 'color', 'borderColor', 'boxShadow', 'transform', 'opacity'];
+            for (var i = 0; i < props.length; i++) {
+                if (stateStyles[props[i]] && stateStyles[props[i]] !== '') {
+                    return true;
+                }
+            }
+
+            return false;
+        },
+
+        /**
+         * Actualizar configuración de transición
+         * @param {string} elementId - ID del elemento
+         * @param {object} transitionConfig - Configuración de transición
+         */
+        updateTransition(elementId, transitionConfig) {
+            var element = this.getElementDeep(elementId);
+            if (!element || !element.styles) return;
+
+            if (!element.styles.transition) {
+                element.styles.transition = {
+                    enabled: false,
+                    property: 'all',
+                    duration: '0.3s',
+                    timing: 'ease',
+                    delay: ''
+                };
+            }
+
+            Object.assign(element.styles.transition, transitionConfig);
+            this.markAsDirty();
+        },
+
+        // Historial con descripciones
+        saveToHistory(description) {
+            this.pushHistory(description || 'Cambio');
+        },
+
+        pushHistory(description) {
+            var entry = {
+                state: JSON.stringify(this.elements),
+                description: description || 'Cambio',
+                timestamp: Date.now()
+            };
+            this.history.past.push(entry);
             this.history.future = [];
 
             if (this.history.past.length > this.maxHistorySize) {
@@ -658,30 +819,63 @@ document.addEventListener('alpine:init', () => {
         },
 
         undo() {
-            if (!this.canUndo) return;
-            const estadoActual = JSON.stringify(this.elements);
-            this.history.future.unshift(estadoActual);
-            const estadoAnterior = this.history.past.pop();
-            this.elements = JSON.parse(estadoAnterior);
-            // Reconstruir índice después de undo
+            if (!this.canUndo) return null;
+            var lastEntry = this.history.past.pop();
+            var currentEntry = {
+                state: JSON.stringify(this.elements),
+                description: lastEntry.description,
+                timestamp: Date.now()
+            };
+            this.history.future.unshift(currentEntry);
+
+            // Compatibilidad: si es string antiguo, parsearlo directamente
+            var stateData = typeof lastEntry === 'string' ? lastEntry : lastEntry.state;
+            this.elements = JSON.parse(stateData);
+            this.lastUndoDescription = lastEntry.description || 'Cambio';
+
             rebuildIndex(this.elements);
             this.markAsDirty();
+            return this.lastUndoDescription;
         },
 
         redo() {
-            if (!this.canRedo) return;
-            const estadoActual = JSON.stringify(this.elements);
-            this.history.past.push(estadoActual);
-            const estadoSiguiente = this.history.future.shift();
-            this.elements = JSON.parse(estadoSiguiente);
-            // Reconstruir índice después de redo
+            if (!this.canRedo) return null;
+            var nextEntry = this.history.future.shift();
+            var currentEntry = {
+                state: JSON.stringify(this.elements),
+                description: nextEntry.description,
+                timestamp: Date.now()
+            };
+            this.history.past.push(currentEntry);
+
+            // Compatibilidad: si es string antiguo, parsearlo directamente
+            var stateData = typeof nextEntry === 'string' ? nextEntry : nextEntry.state;
+            this.elements = JSON.parse(stateData);
+            this.lastRedoDescription = nextEntry.description || 'Cambio';
+
             rebuildIndex(this.elements);
             this.markAsDirty();
+            return this.lastRedoDescription;
         },
 
-        // Autosave - llamado por debounce
-        autoSave() {
-            if (!this.isDirty || !this.postId) return;
+        saveDocument(options) {
+            options = options || {};
+
+            if (!this.postId) {
+                return Promise.resolve({ success: false, message: 'Documento sin postId' });
+            }
+
+            if (!this.isDirty && !options.force) {
+                return Promise.resolve({
+                    success: true,
+                    message: 'Sin cambios',
+                    skipped: true
+                });
+            }
+
+            if (this.savePromise) {
+                return this.savePromise;
+            }
 
             var self = this;
             var datosDocumento = {
@@ -689,16 +883,22 @@ document.addEventListener('alpine:init', () => {
                 settings: this.settings
             };
 
-            // Actualizar estado a "saving"
+            if (options.title !== undefined) {
+                datosDocumento.title = options.title;
+            }
+
             self.saveStatus = 'saving';
             self.saveError = null;
 
-            // Notificar inicio de guardado
             document.dispatchEvent(new CustomEvent('vbp:beforeSave', {
-                detail: { postId: this.postId, elements: this.elements }
+                detail: {
+                    postId: this.postId,
+                    elements: this.elements,
+                    autosave: !!options.autosave
+                }
             }));
 
-            fetch(VBP_Config.restUrl + 'documents/' + this.postId, {
+            this.savePromise = fetch(VBP_Config.restUrl + 'documents/' + this.postId, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -707,33 +907,60 @@ document.addEventListener('alpine:init', () => {
                 body: JSON.stringify(datosDocumento)
             })
             .then(function(response) {
-                if (response.ok) {
-                    self.isDirty = false;
-                    self.saveStatus = 'saved';
-                    self.lastSaved = new Date();
-                    self.saveError = null;
-                    // Notificar guardado exitoso
-                    document.dispatchEvent(new CustomEvent('vbp:afterSave', {
-                        detail: { postId: self.postId, success: true }
-                    }));
-                    return response.json();
-                } else {
-                    // Leer el cuerpo del error para debugging
-                    return response.json().then(function(errorData) {
-                        console.error('[VBP] Autosave server error:', response.status, errorData);
-                        throw new Error(errorData.message || 'Error del servidor');
-                    });
-                }
+                return response.json().catch(function() {
+                    return {};
+                }).then(function(payload) {
+                    if (!response.ok || payload.success === false) {
+                        var message = payload.message || (payload.data && payload.data.message) || 'Error del servidor';
+                        throw new Error(message);
+                    }
+                    return payload;
+                });
+            })
+            .then(function(result) {
+                self.isDirty = false;
+                self.saveStatus = 'saved';
+                self.lastSaved = new Date();
+                self.saveError = null;
+
+                document.dispatchEvent(new CustomEvent('vbp:afterSave', {
+                    detail: {
+                        postId: self.postId,
+                        success: true,
+                        autosave: !!options.autosave,
+                        result: result
+                    }
+                }));
+
+                return result;
             })
             .catch(function(error) {
-                console.warn('[VBP] Autosave error:', error);
+                console.warn('[VBP] Save error:', error);
                 self.saveStatus = 'error';
                 self.saveError = error.message || 'Error al guardar';
-                // Notificar error
+
                 document.dispatchEvent(new CustomEvent('vbp:saveError', {
-                    detail: { message: error.message || 'Error al guardar' }
+                    detail: {
+                        message: self.saveError,
+                        autosave: !!options.autosave
+                    }
                 }));
+
+                return {
+                    success: false,
+                    message: self.saveError
+                };
+            })
+            .finally(function() {
+                self.savePromise = null;
             });
+
+            return this.savePromise;
+        },
+
+        // Compatibilidad: autosave ahora usa el mismo flujo canónico
+        autoSave() {
+            return this.saveDocument({ autosave: true });
         },
 
         /**
@@ -767,8 +994,10 @@ document.addEventListener('alpine:init', () => {
         markAsDirty() {
             this.isDirty = true;
             this.saveStatus = 'dirty';
+            this.saveError = null;
             // Notificar al store de estado de guardado
             document.dispatchEvent(new CustomEvent('vbp:contentChanged'));
+            debouncedSave(this);
         },
 
         // Inicializar elementos desde datos cargados
@@ -1096,7 +1325,7 @@ document.addEventListener('alpine:init', () => {
                 typography: { fontSize: '', fontWeight: '', lineHeight: '', textAlign: '' },
                 borders: { radius: '', width: '', color: '', style: '' },
                 shadows: { boxShadow: '' },
-                layout: { display: '', flexDirection: '', justifyContent: '', alignItems: '', gap: '' },
+                layout: { display: '', flexDirection: '', justifyContent: '', alignItems: '', flexWrap: '', gap: '', gridTemplateColumns: '', gridTemplateRows: '' },
                 dimensions: { width: '', height: '', minHeight: '', maxWidth: '' },
                 position: {
                     position: '',
@@ -1116,6 +1345,44 @@ document.addEventListener('alpine:init', () => {
                 },
                 overflow: '',
                 opacity: '',
+                // Estilos para estados interactivos (hover, active, focus)
+                states: {
+                    hover: {
+                        enabled: false,
+                        background: '',
+                        color: '',
+                        borderColor: '',
+                        boxShadow: '',
+                        transform: '',
+                        opacity: ''
+                    },
+                    active: {
+                        enabled: false,
+                        background: '',
+                        color: '',
+                        borderColor: '',
+                        boxShadow: '',
+                        transform: '',
+                        opacity: ''
+                    },
+                    focus: {
+                        enabled: false,
+                        background: '',
+                        color: '',
+                        borderColor: '',
+                        boxShadow: '',
+                        outline: '',
+                        outlineOffset: ''
+                    }
+                },
+                // Transiciones para estados
+                transition: {
+                    enabled: false,
+                    property: 'all',
+                    duration: '0.3s',
+                    timing: 'ease',
+                    delay: ''
+                },
                 advanced: {
                     cssId: '',
                     cssClasses: '',
@@ -1143,7 +1410,7 @@ document.addEventListener('alpine:init', () => {
             }
 
             // Merge profundo para cada sección
-            var sections = ['spacing', 'colors', 'background', 'typography', 'borders', 'shadows', 'layout', 'dimensions', 'position', 'transform', 'advanced'];
+            var sections = ['spacing', 'colors', 'background', 'typography', 'borders', 'shadows', 'layout', 'dimensions', 'position', 'transform', 'states', 'transition', 'advanced'];
             var self = this;
 
             sections.forEach(function(section) {
@@ -1430,6 +1697,11 @@ document.addEventListener('alpine:init', () => {
 
             var responsiveStyles = element.responsiveStyles || {};
             return responsiveStyles[breakpoint] && Object.keys(responsiveStyles[breakpoint]).length > 0;
-        }
+        },
+
+        // ============================================
+        // Inspector Mode (Basic/Advanced)
+        // ============================================
+
     });
 });

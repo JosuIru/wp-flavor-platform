@@ -1,0 +1,1125 @@
+/**
+ * Visual Builder Pro - UX Improvements
+ * Mejoras de accesibilidad, animaciones, feedback visual y controles
+ *
+ * @package Flavor_Chat_IA
+ * @since 3.5.1
+ */
+
+/* ============================================
+   CSS Variables para UX
+   ============================================ */
+:root {
+    --vbp-transition-fast: 0.15s ease;
+    --vbp-transition-normal: 0.2s ease;
+    --vbp-transition-slow: 0.3s ease;
+    --vbp-focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.3);
+    --vbp-focus-ring-error: 0 0 0 3px rgba(239, 68, 68, 0.3);
+    --vbp-focus-ring-success: 0 0 0 3px rgba(34, 197, 94, 0.3);
+    --vbp-skeleton-bg: linear-gradient(90deg, var(--vbp-bg-tertiary) 25%, var(--vbp-bg-secondary) 50%, var(--vbp-bg-tertiary) 75%);
+}
+
+/* ============================================
+   1. FOCUS STATES - Accesibilidad
+   ============================================ */
+
+/* Focus visible global para todos los elementos interactivos */
+.vbp-editor *:focus-visible {
+    outline: 2px solid var(--vbp-accent-color);
+    outline-offset: 2px;
+}
+
+/* Focus ring mejorado para inputs */
+.vbp-field-input:focus,
+.vbp-field-select:focus,
+.vbp-field-textarea:focus,
+.vbp-search-input:focus {
+    outline: none;
+    border-color: var(--vbp-accent-color);
+    box-shadow: var(--vbp-focus-ring);
+    transition: border-color var(--vbp-transition-fast), box-shadow var(--vbp-transition-fast);
+}
+
+/* Focus para tabs del inspector */
+.vbp-inspector-tab:focus-visible {
+    outline: none;
+    box-shadow: var(--vbp-focus-ring);
+    border-radius: 6px;
+}
+
+.vbp-inspector-tab.active:focus-visible {
+    box-shadow: inset 0 -2px 0 var(--vbp-accent-color), var(--vbp-focus-ring);
+}
+
+/* Focus para botones */
+.vbp-btn:focus-visible,
+.vbp-layer-control:focus-visible,
+.vbp-toolbar-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--vbp-focus-ring);
+}
+
+/* Focus para items de capas */
+.vbp-layer-item:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--vbp-accent-color);
+}
+
+/* Focus para categorías de bloques */
+.vbp-category-header:focus-visible {
+    outline: none;
+    background: var(--vbp-bg-tertiary);
+    box-shadow: var(--vbp-focus-ring);
+}
+
+/* Focus para items de bloques */
+.vbp-block-item:focus-visible {
+    outline: none;
+    border-color: var(--vbp-accent-color);
+    box-shadow: var(--vbp-focus-ring);
+}
+
+/* Focus para color picker */
+.vbp-color-native:focus-visible {
+    outline: none;
+    box-shadow: var(--vbp-focus-ring);
+}
+
+/* ============================================
+   2. ESTADOS DISABLED
+   ============================================ */
+
+.vbp-field-input:disabled,
+.vbp-field-select:disabled,
+.vbp-field-textarea:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--vbp-bg-tertiary);
+    border-color: var(--vbp-border-color);
+}
+
+.vbp-btn:disabled,
+.vbp-toolbar-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.vbp-layer-control:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Input readonly */
+.vbp-field-input[readonly] {
+    background: var(--vbp-bg-tertiary);
+    cursor: default;
+}
+
+/* ============================================
+   3. ESTADOS DE ERROR
+   ============================================ */
+
+.vbp-field-input.has-error,
+.vbp-field-select.has-error,
+.vbp-field-textarea.has-error {
+    border-color: var(--vbp-danger-color, #ef4444);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.vbp-field-input.has-error:focus {
+    box-shadow: var(--vbp-focus-ring-error);
+}
+
+.vbp-field-error {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--vbp-danger-color, #ef4444);
+    animation: vbp-shake 0.4s ease;
+}
+
+.vbp-field-error::before {
+    content: '⚠';
+    font-size: 12px;
+}
+
+@keyframes vbp-shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+}
+
+/* ============================================
+   4. ESTADOS DE ÉXITO
+   ============================================ */
+
+.vbp-field-input.has-success {
+    border-color: var(--vbp-success-color, #22c55e);
+}
+
+.vbp-field-input.has-success:focus {
+    box-shadow: var(--vbp-focus-ring-success);
+}
+
+/* ============================================
+   5. ANIMACIONES Y TRANSICIONES
+   ============================================ */
+
+/* Transición suave para tabs del inspector */
+.vbp-inspector-tabs {
+    position: relative;
+}
+
+.vbp-inspector-panel {
+    animation: vbp-fade-in var(--vbp-transition-normal);
+}
+
+@keyframes vbp-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Transición para dropdowns */
+.vbp-dropdown,
+.vbp-color-picker-dropdown,
+.vbp-select-dropdown {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.95);
+    transition: opacity var(--vbp-transition-fast),
+                transform var(--vbp-transition-fast),
+                visibility var(--vbp-transition-fast);
+}
+
+.vbp-dropdown.is-open,
+.vbp-color-picker-dropdown.is-open,
+.vbp-select-dropdown.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* Transición para categorías colapsables */
+.vbp-category-blocks {
+    overflow: hidden;
+    transition: max-height var(--vbp-transition-slow),
+                opacity var(--vbp-transition-normal);
+}
+
+.vbp-category-blocks.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+/* Transición para items de capas */
+.vbp-layer-item {
+    transition: background-color var(--vbp-transition-fast),
+                color var(--vbp-transition-fast),
+                box-shadow var(--vbp-transition-fast),
+                transform var(--vbp-transition-fast);
+}
+
+.vbp-layer-item:hover {
+    transform: translateX(2px);
+}
+
+.vbp-layer-item.selected {
+    transition: all var(--vbp-transition-fast);
+}
+
+/* Animación de entrada para bloques */
+.vbp-block-item {
+    transition: all var(--vbp-transition-fast);
+}
+
+.vbp-block-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Animación de selección en canvas */
+.vbp-element-selected {
+    animation: vbp-pulse-selection 0.3s ease;
+}
+
+@keyframes vbp-pulse-selection {
+    0% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.3);
+    }
+}
+
+/* ============================================
+   6. LOADING STATES Y SKELETONS
+   ============================================ */
+
+/* Skeleton base */
+.vbp-skeleton {
+    background: var(--vbp-skeleton-bg);
+    background-size: 200% 100%;
+    animation: vbp-skeleton-pulse 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+@keyframes vbp-skeleton-pulse {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Skeleton para texto */
+.vbp-skeleton-text {
+    height: 14px;
+    margin-bottom: 8px;
+}
+
+.vbp-skeleton-text:last-child {
+    width: 70%;
+}
+
+/* Skeleton para imagen */
+.vbp-skeleton-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+}
+
+/* Skeleton para bloque */
+.vbp-skeleton-block {
+    height: 60px;
+    margin-bottom: 8px;
+}
+
+/* Loading spinner mejorado */
+.vbp-loading-spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.vbp-loading-spinner::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--vbp-border-color);
+    border-top-color: var(--vbp-accent-color);
+    border-radius: 50%;
+    animation: vbp-spin 0.8s linear infinite;
+}
+
+@keyframes vbp-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Loading overlay para paneles */
+.vbp-loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(var(--vbp-bg-primary-rgb), 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(2px);
+}
+
+/* ============================================
+   7. RANGE SLIDERS MEJORADOS
+   ============================================ */
+
+.vbp-range-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--vbp-bg-tertiary);
+    border-radius: 3px;
+    outline: none;
+    transition: background var(--vbp-transition-fast);
+}
+
+.vbp-range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--vbp-accent-color);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+    transition: transform var(--vbp-transition-fast), box-shadow var(--vbp-transition-fast);
+}
+
+.vbp-range-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 3px 10px rgba(99, 102, 241, 0.4);
+}
+
+.vbp-range-slider::-webkit-slider-thumb:active {
+    transform: scale(1.1);
+}
+
+.vbp-range-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--vbp-accent-color);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+
+/* Range con valor visual */
+.vbp-range-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vbp-range-value {
+    min-width: 48px;
+    padding: 4px 8px;
+    background: var(--vbp-bg-tertiary);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--vbp-text-primary);
+    transition: background var(--vbp-transition-fast), color var(--vbp-transition-fast);
+}
+
+.vbp-range-wrapper:hover .vbp-range-value {
+    background: var(--vbp-accent-color);
+    color: white;
+}
+
+/* Range con min/max labels */
+.vbp-range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--vbp-text-muted);
+    margin-top: 4px;
+}
+
+/* ============================================
+   8. COLOR PICKER MEJORADO
+   ============================================ */
+
+.vbp-color-picker-wrapper {
+    position: relative;
+}
+
+/* Preview del color más grande */
+.vbp-color-preview {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 2px solid var(--vbp-border-color);
+    cursor: pointer;
+    transition: transform var(--vbp-transition-fast), box-shadow var(--vbp-transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.vbp-color-preview:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Patrón de transparencia para colores con alpha */
+.vbp-color-preview::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(45deg, #ccc 25%, transparent 25%),
+        linear-gradient(-45deg, #ccc 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ccc 75%),
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 8px 8px;
+    background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+    z-index: 0;
+}
+
+.vbp-color-preview-color {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+/* Input de color hex con preview */
+.vbp-color-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vbp-color-hex-input {
+    flex: 1;
+    font-family: monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+/* Paleta de colores recientes */
+.vbp-color-recent {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--vbp-border-color);
+}
+
+.vbp-color-recent-label {
+    width: 100%;
+    font-size: 10px;
+    color: var(--vbp-text-muted);
+    margin-bottom: 4px;
+}
+
+.vbp-color-recent-item {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid var(--vbp-border-color);
+    cursor: pointer;
+    transition: transform var(--vbp-transition-fast);
+}
+
+.vbp-color-recent-item:hover {
+    transform: scale(1.15);
+}
+
+/* ============================================
+   9. BREAKPOINT INDICATOR
+   ============================================ */
+
+.vbp-breakpoint-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--vbp-bg-tertiary);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all var(--vbp-transition-fast);
+}
+
+.vbp-breakpoint-indicator[data-breakpoint="desktop"] {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.vbp-breakpoint-indicator[data-breakpoint="tablet"] {
+    background: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+}
+
+.vbp-breakpoint-indicator[data-breakpoint="mobile"] {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.vbp-breakpoint-indicator svg,
+.vbp-breakpoint-indicator .material-icons {
+    font-size: 14px;
+}
+
+/* ============================================
+   10. DRAG & DROP MEJORADO
+   ============================================ */
+
+/* Estado dragging del bloque */
+.vbp-block-item.dragging {
+    opacity: 0.6;
+    transform: scale(0.98);
+    cursor: grabbing !important;
+}
+
+/* Ghost element mientras se arrastra */
+.vbp-drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10000;
+    padding: 12px 16px;
+    background: var(--vbp-bg-primary);
+    border: 2px solid var(--vbp-accent-color);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--vbp-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: vbp-ghost-appear 0.15s ease;
+}
+
+@keyframes vbp-ghost-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Drop zone highlight mejorado */
+.vbp-drop-zone {
+    position: relative;
+    transition: all var(--vbp-transition-fast);
+}
+
+.vbp-drop-zone.drag-over {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.vbp-drop-zone.drag-over::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px dashed var(--vbp-accent-color);
+    border-radius: 8px;
+    pointer-events: none;
+    animation: vbp-drop-pulse 1s ease-in-out infinite;
+}
+
+@keyframes vbp-drop-pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Drop indicator line */
+.vbp-drop-indicator {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--vbp-accent-color);
+    border-radius: 2px;
+    z-index: 100;
+    pointer-events: none;
+    animation: vbp-indicator-pulse 0.8s ease-in-out infinite;
+}
+
+.vbp-drop-indicator::before,
+.vbp-drop-indicator::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    background: var(--vbp-accent-color);
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.vbp-drop-indicator::before { left: -4px; }
+.vbp-drop-indicator::after { right: -4px; }
+
+@keyframes vbp-indicator-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* ============================================
+   11. LAYER STATES MEJORADOS
+   ============================================ */
+
+/* Estado locked */
+.vbp-layer-item.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.vbp-layer-item.locked::after {
+    content: '🔒';
+    position: absolute;
+    right: 8px;
+    font-size: 10px;
+}
+
+.vbp-layer-item.locked:hover {
+    transform: none;
+}
+
+/* Estado hidden */
+.vbp-layer-item.hidden {
+    opacity: 0.4;
+    text-decoration: line-through;
+}
+
+.vbp-layer-item.hidden::after {
+    content: '👁';
+    position: absolute;
+    right: 8px;
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+/* ============================================
+   12. INSPECTOR EMPTY STATE
+   ============================================ */
+
+.vbp-inspector-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--vbp-text-muted);
+}
+
+.vbp-inspector-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+    animation: vbp-float 3s ease-in-out infinite;
+}
+
+@keyframes vbp-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.vbp-inspector-empty-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--vbp-text-primary);
+    margin-bottom: 8px;
+}
+
+.vbp-inspector-empty-text {
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* ============================================
+   13. SEARCH RESULTS COUNTER
+   ============================================ */
+
+.vbp-search-results {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--vbp-bg-tertiary);
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--vbp-text-muted);
+}
+
+.vbp-search-results-count {
+    font-weight: 600;
+    color: var(--vbp-text-primary);
+}
+
+.vbp-search-clear {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--vbp-text-muted);
+    cursor: pointer;
+    transition: all var(--vbp-transition-fast);
+}
+
+.vbp-search-clear:hover {
+    background: var(--vbp-bg-secondary);
+    color: var(--vbp-text-primary);
+}
+
+/* ============================================
+   14. CONFIRM DIALOG PERSONALIZADO
+   ============================================ */
+
+.vbp-confirm-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--vbp-transition-normal);
+}
+
+.vbp-confirm-dialog.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vbp-confirm-dialog-content {
+    background: var(--vbp-bg-primary);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+    padding: 24px;
+    transform: scale(0.9) translateY(20px);
+    transition: transform var(--vbp-transition-normal);
+}
+
+.vbp-confirm-dialog.is-open .vbp-confirm-dialog-content {
+    transform: scale(1) translateY(0);
+}
+
+.vbp-confirm-dialog-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 50%;
+    font-size: 24px;
+}
+
+.vbp-confirm-dialog-title {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--vbp-text-primary);
+    margin-bottom: 8px;
+}
+
+.vbp-confirm-dialog-message {
+    font-size: 14px;
+    text-align: center;
+    color: var(--vbp-text-muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.vbp-confirm-dialog-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.vbp-confirm-dialog-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--vbp-transition-fast);
+}
+
+.vbp-confirm-dialog-btn--cancel {
+    background: var(--vbp-bg-tertiary);
+    color: var(--vbp-text-primary);
+}
+
+.vbp-confirm-dialog-btn--cancel:hover {
+    background: var(--vbp-bg-secondary);
+}
+
+.vbp-confirm-dialog-btn--confirm {
+    background: var(--vbp-danger-color, #ef4444);
+    color: white;
+}
+
+.vbp-confirm-dialog-btn--confirm:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   15. SPACING CONTROLS VISUAL
+   ============================================ */
+
+.vbp-spacing-control {
+    position: relative;
+    width: 120px;
+    height: 80px;
+    margin: 0 auto;
+}
+
+.vbp-spacing-box {
+    position: absolute;
+    inset: 16px;
+    background: var(--vbp-bg-tertiary);
+    border: 2px dashed var(--vbp-border-color);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--vbp-text-muted);
+}
+
+.vbp-spacing-input {
+    position: absolute;
+    width: 32px;
+    height: 20px;
+    padding: 2px 4px;
+    background: var(--vbp-bg-primary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 4px;
+    font-size: 10px;
+    text-align: center;
+    color: var(--vbp-text-primary);
+}
+
+.vbp-spacing-input:focus {
+    border-color: var(--vbp-accent-color);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.vbp-spacing-input--top { top: 0; left: 50%; transform: translateX(-50%); }
+.vbp-spacing-input--right { right: 0; top: 50%; transform: translateY(-50%); }
+.vbp-spacing-input--bottom { bottom: 0; left: 50%; transform: translateX(-50%); }
+.vbp-spacing-input--left { left: 0; top: 50%; transform: translateY(-50%); }
+
+.vbp-spacing-link {
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--vbp-text-muted);
+    cursor: pointer;
+    transition: all var(--vbp-transition-fast);
+}
+
+.vbp-spacing-link:hover {
+    background: var(--vbp-bg-tertiary);
+    color: var(--vbp-text-primary);
+}
+
+.vbp-spacing-link.is-linked {
+    color: var(--vbp-accent-color);
+}
+
+/* ============================================
+   16. TOOLTIPS ACCESIBLES
+   ============================================ */
+
+.vbp-tooltip {
+    position: relative;
+}
+
+.vbp-tooltip[aria-label]::after {
+    content: attr(aria-label);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    padding: 6px 10px;
+    background: var(--vbp-bg-primary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vbp-text-primary);
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--vbp-transition-fast);
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.vbp-tooltip[aria-label]::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--vbp-border-color);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--vbp-transition-fast);
+    z-index: 1001;
+}
+
+.vbp-tooltip:hover[aria-label]::after,
+.vbp-tooltip:focus-visible[aria-label]::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.vbp-tooltip:hover[aria-label]::before,
+.vbp-tooltip:focus-visible[aria-label]::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ============================================
+   17. NOTIFICACIÓN DE PRESET APLICADO
+   ============================================ */
+
+.vbp-preset-applied {
+    animation: vbp-preset-flash 0.5s ease;
+}
+
+@keyframes vbp-preset-flash {
+    0% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+        background: rgba(34, 197, 94, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    }
+    100% {
+        box-shadow: none;
+        background: transparent;
+    }
+}
+
+/* ============================================
+   18. ZOOM INDICATOR MEJORADO
+   ============================================ */
+
+.vbp-zoom-indicator {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    padding: 8px 16px;
+    background: var(--vbp-bg-primary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vbp-text-primary);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--vbp-transition-fast);
+    z-index: 1000;
+}
+
+.vbp-zoom-indicator.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+}
+
+/* ============================================
+   19. KEYBOARD SHORTCUTS HINTS
+   ============================================ */
+
+.vbp-shortcut-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 8px;
+    font-size: 10px;
+    color: var(--vbp-text-muted);
+}
+
+.vbp-shortcut-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background: var(--vbp-bg-tertiary);
+    border: 1px solid var(--vbp-border-color);
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    font-family: inherit;
+}
+
+/* ============================================
+   20. RESPONSIVE / MOBILE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+    .vbp-confirm-dialog-content {
+        padding: 20px;
+    }
+
+    .vbp-confirm-dialog-actions {
+        flex-direction: column;
+    }
+
+    .vbp-spacing-control {
+        width: 100px;
+        height: 70px;
+    }
+
+    .vbp-spacing-input {
+        width: 28px;
+        height: 18px;
+        font-size: 9px;
+    }
+}
+
+/* ============================================
+   21. DARK MODE ADJUSTMENTS
+   ============================================ */
+
+[data-theme="dark"] .vbp-drag-ghost {
+    background: var(--vbp-bg-secondary);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .vbp-confirm-dialog-content {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .vbp-tooltip[aria-label]::after {
+    background: var(--vbp-bg-secondary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   22. PRINT STYLES (HIDE EDITOR UI)
+   ============================================ */
+
+@media print {
+    .vbp-editor,
+    .vbp-toolbar,
+    .vbp-sidebar,
+    .vbp-inspector {
+        display: none !important;
+    }
+}

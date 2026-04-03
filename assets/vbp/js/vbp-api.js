@@ -6,6 +6,15 @@
  * @since 2.0.0
  */
 
+// Fallback de vbpLog si no está definido
+if (!window.vbpLog) {
+    window.vbpLog = {
+        log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+    };
+}
+
 window.vbpApi = {
     /**
      * Estado de la API
@@ -70,58 +79,27 @@ window.vbpApi = {
      * Guardar documento
      */
     async saveDocument(postId, elements, settings) {
-        if (this.isSaving) {
-            console.log('VBP: Ya hay un guardado en progreso');
-            return { success: false, message: 'Guardado en progreso' };
-        }
+        var store = typeof Alpine !== 'undefined' ? Alpine.store('vbp') : null;
+        var titleInput = document.querySelector('.vbp-title-input');
+        var title = titleInput ? titleInput.value : undefined;
 
-        this.isSaving = true;
-        var self = this;
-
-        try {
-            // Dispatch evento antes de guardar
-            document.dispatchEvent(new CustomEvent('vbp:beforeSave', {
-                detail: { postId: postId, elements: elements }
-            }));
-
-            // Preparar datos completos
-            var documentData = {
-                elements: elements,
-                settings: settings
-            };
-
-            var result = await this.request('vbp_guardar_documento', {
-                post_id: postId,
-                data: documentData
-            });
-
-            if (result.success) {
-                self.lastSaveTime = new Date();
-                Alpine.store('vbp').isDirty = false;
-
-                // Dispatch evento después de guardar
-                document.dispatchEvent(new CustomEvent('vbp:afterSave', {
-                    detail: { postId: postId, success: true }
-                }));
-
-                console.log('VBP: Documento guardado correctamente');
-            } else {
-                console.error('VBP: Error al guardar', result.data);
-                document.dispatchEvent(new CustomEvent('vbp:saveError', {
-                    detail: { error: result.data }
-                }));
+        if (store && typeof store.saveDocument === 'function') {
+            if (postId) {
+                store.postId = postId;
+            }
+            if (elements) {
+                store.elements = elements;
+            }
+            if (settings) {
+                store.settings = settings;
             }
 
-            return result;
-        } catch (error) {
-            console.error('VBP: Error de red al guardar', error);
-            document.dispatchEvent(new CustomEvent('vbp:saveError', {
-                detail: { error: error.message }
-            }));
-            return { success: false, message: error.message };
-        } finally {
-            self.isSaving = false;
+            return store.saveDocument({
+                title: title
+            });
         }
+
+        return { success: false, message: 'Store VBP no disponible' };
     },
 
     /**
@@ -142,7 +120,7 @@ window.vbpApi = {
 
             return result;
         } catch (error) {
-            console.error('VBP: Error al cargar documento', error);
+            vbpLog.error('Error al cargar documento', error);
             return { success: false, message: error.message };
         }
     },
@@ -151,35 +129,17 @@ window.vbpApi = {
      * Iniciar autosave
      */
     startAutoSave() {
-        var self = this;
-
-        // Observar cambios en el store
-        if (typeof Alpine !== 'undefined') {
-            Alpine.effect(function() {
-                var store = Alpine.store('vbp');
-                if (store && store.isDirty) {
-                    self.scheduleAutoSave();
-                }
-            });
-        }
+        // Legacy no-op: el autosave canónico se dispara desde Alpine.store('vbp').markAsDirty()
     },
 
     /**
      * Programar autosave con debounce
      */
     scheduleAutoSave() {
-        var self = this;
-
-        if (this.autoSaveTimer) {
-            clearTimeout(this.autoSaveTimer);
+        var store = typeof Alpine !== 'undefined' ? Alpine.store('vbp') : null;
+        if (store && typeof store.autoSave === 'function') {
+            return store.autoSave();
         }
-
-        this.autoSaveTimer = setTimeout(function() {
-            var store = Alpine.store('vbp');
-            if (store && store.isDirty && store.postId) {
-                self.saveDocument(store.postId, store.elements, store.settings);
-            }
-        }, this.autoSaveDelay);
     },
 
     /**
@@ -196,14 +156,21 @@ window.vbpApi = {
      * Guardar como borrador (autosave)
      */
     async saveDraft(postId, elements, settings) {
-        var documentData = {
-            elements: elements,
-            settings: settings
-        };
-        return this.request('vbp_autosave', {
-            post_id: postId,
-            data: documentData
-        });
+        var store = typeof Alpine !== 'undefined' ? Alpine.store('vbp') : null;
+        if (store && typeof store.saveDocument === 'function') {
+            if (postId) {
+                store.postId = postId;
+            }
+            if (elements) {
+                store.elements = elements;
+            }
+            if (settings) {
+                store.settings = settings;
+            }
+            return store.saveDocument({ autosave: true });
+        }
+
+        return { success: false, message: 'Store VBP no disponible' };
     },
 
     /**

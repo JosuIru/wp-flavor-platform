@@ -23,7 +23,7 @@
 
 [data-tooltip]::before {
     content: attr(data-tooltip);
-    bottom: calc(100% + 8px);
+    bottom: calc(100% + 12px);
     left: 50%;
     transform: translateX(-50%) translateY(4px);
     padding: 6px 10px;
@@ -34,16 +34,18 @@
     background: var(--vbp-tooltip-bg, #1e293b);
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10001;
 }
 
 /* Flecha del tooltip */
 [data-tooltip]::after {
     content: '';
-    bottom: calc(100% + 2px);
+    bottom: calc(100% + 6px);
     left: 50%;
     transform: translateX(-50%);
     border: 6px solid transparent;
     border-top-color: var(--vbp-tooltip-bg, #1e293b);
+    z-index: 10000;
 }
 
 [data-tooltip]:hover::before,
@@ -89,13 +91,13 @@
 /* Tooltip abajo */
 [data-tooltip-position="bottom"]::before {
     bottom: auto;
-    top: calc(100% + 8px);
+    top: calc(100% + 12px);
     transform: translateX(-50%) translateY(-4px);
 }
 
 [data-tooltip-position="bottom"]::after {
     bottom: auto;
-    top: calc(100% + 2px);
+    top: calc(100% + 6px);
     border-top-color: transparent;
     border-bottom-color: var(--vbp-tooltip-bg, #1e293b);
 }
@@ -108,7 +110,7 @@
 [data-tooltip-position="left"]::before {
     bottom: auto;
     left: auto;
-    right: calc(100% + 8px);
+    right: calc(100% + 12px);
     top: 50%;
     transform: translateY(-50%) translateX(4px);
 }
@@ -116,7 +118,7 @@
 [data-tooltip-position="left"]::after {
     bottom: auto;
     left: auto;
-    right: calc(100% + 2px);
+    right: calc(100% + 6px);
     top: 50%;
     transform: translateY(-50%);
     border-top-color: transparent;
@@ -130,14 +132,14 @@
 /* Tooltip derecha */
 [data-tooltip-position="right"]::before {
     bottom: auto;
-    left: calc(100% + 8px);
+    left: calc(100% + 12px);
     top: 50%;
     transform: translateY(-50%) translateX(-4px);
 }
 
 [data-tooltip-position="right"]::after {
     bottom: auto;
-    left: calc(100% + 2px);
+    left: calc(100% + 6px);
     top: 50%;
     transform: translateY(-50%);
     border-top-color: transparent;
@@ -242,6 +244,41 @@
 }
 
 /* ============================================
+   TOOLTIPS EN TOOLBAR
+   Evita que se corten por overflow del canvas
+   ============================================ */
+
+/* El toolbar debe permitir overflow para tooltips */
+.vbp-toolbar-top,
+.vbp-toolbar-right,
+.vbp-toolbar-left,
+.vbp-toolbar-center {
+    overflow: visible !important;
+}
+
+/* Asegurar z-index máximo para tooltips del toolbar */
+.vbp-toolbar-top [data-tooltip]::before,
+.vbp-toolbar-top [data-tooltip]::after {
+    z-index: 100001;
+}
+
+/* ============================================
+   PREVENIR TOOLTIPS DUPLICADOS
+   Elementos con data-tooltip no deben tener title
+   ============================================ */
+
+/*
+ * IMPORTANTE: No usar title="" junto con data-tooltip=""
+ * El navegador mostrará dos tooltips (nativo + CSS)
+ *
+ * ❌ Incorrecto:
+ * <button title="Ayuda" data-tooltip="Ayuda">
+ *
+ * ✅ Correcto:
+ * <button data-tooltip="Ayuda">
+ */
+
+/* ============================================
    MODO OSCURO
    ============================================ */
 
@@ -252,4 +289,19 @@
 
 .vbp-dark [data-tooltip]::after {
     border-top-color: var(--vbp-bg-secondary, #f8fafc);
+}
+
+.vbp-dark [data-tooltip-position="bottom"]::after {
+    border-top-color: transparent;
+    border-bottom-color: var(--vbp-bg-secondary, #f8fafc);
+}
+
+.vbp-dark [data-tooltip-position="left"]::after {
+    border-top-color: transparent;
+    border-left-color: var(--vbp-bg-secondary, #f8fafc);
+}
+
+.vbp-dark [data-tooltip-position="right"]::after {
+    border-top-color: transparent;
+    border-right-color: var(--vbp-bg-secondary, #f8fafc);
 }

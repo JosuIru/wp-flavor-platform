@@ -18,6 +18,15 @@
  * - vbp-keyboard-figma.js: Importación de Figma (carga diferida)
  */
 
+// Fallback de vbpLog si no está definido
+if (!window.vbpLog) {
+    window.vbpLog = {
+        log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+        error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+    };
+}
+
 document.addEventListener('alpine:init', function() {
     Alpine.data('vbpKeyboard', function() {
         return {
@@ -83,7 +92,7 @@ document.addEventListener('alpine:init', function() {
                         self.shortcuts = self.flattenShortcuts(data.categories);
                     })
                     .catch(function(error) {
-                        console.warn('VBP: Usando atajos por defecto', error);
+                        vbpLog.warn('Usando atajos por defecto', error);
                         self.shortcuts = self.getDefaultShortcuts();
                     });
             },
@@ -145,7 +154,7 @@ document.addEventListener('alpine:init', function() {
                         resolve();
                     };
                     script.onerror = function() {
-                        console.error('VBP: Error cargando módulo ' + moduleName);
+                        vbpLog.error('Error cargando módulo ' + moduleName);
                         reject();
                     };
                     document.head.appendChild(script);
@@ -428,7 +437,7 @@ document.addEventListener('alpine:init', function() {
                     return;
                 }
 
-                console.warn('VBP: Acción no reconocida:', action);
+                vbpLog.warn('Acción no reconocida:', action);
             },
 
             /**

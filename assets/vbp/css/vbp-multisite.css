@@ -1,0 +1,604 @@
+/**
+ * Visual Builder Pro - Estilos Multisite
+ * Panel de gestión de recursos compartidos en red
+ *
+ * @package Flavor_Chat_IA
+ * @since 2.3.0
+ */
+
+/* ============================================
+   PANEL MULTISITE
+   ============================================ */
+
+.vbp-multisite-panel {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 400px;
+    height: 100vh;
+    background: var(--vbp-panel-bg);
+    border-left: 1px solid var(--vbp-border);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+}
+
+.vbp-multisite-panel.open {
+    right: 0;
+}
+
+.vbp-multisite-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--vbp-border);
+    background: var(--vbp-panel-header-bg);
+}
+
+.vbp-multisite-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--vbp-text);
+}
+
+.vbp-multisite-panel-title svg {
+    color: var(--vbp-primary);
+}
+
+.vbp-multisite-network-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--vbp-primary-soft);
+    color: var(--vbp-primary);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.vbp-multisite-panel-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--vbp-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-multisite-panel-close:hover {
+    background: var(--vbp-hover);
+    color: var(--vbp-text);
+}
+
+/* Tabs */
+.vbp-multisite-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--vbp-border);
+    background: var(--vbp-bg-subtle);
+    overflow-x: auto;
+}
+
+.vbp-multisite-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--vbp-text-muted);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.vbp-multisite-tab:hover {
+    background: var(--vbp-hover);
+    color: var(--vbp-text);
+}
+
+.vbp-multisite-tab.active {
+    background: var(--vbp-primary);
+    color: white;
+}
+
+.vbp-multisite-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: rgba(0, 0, 0, 0.1);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.vbp-multisite-tab.active .vbp-multisite-tab-count {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Contenido */
+.vbp-multisite-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+/* ============================================
+   TEMPLATES COMPARTIDOS
+   ============================================ */
+
+.vbp-shared-templates-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.vbp-shared-template-card {
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    border: 1px solid var(--vbp-border);
+    border-radius: 10px;
+    background: var(--vbp-panel-bg);
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+
+.vbp-shared-template-card:hover {
+    border-color: var(--vbp-primary);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+}
+
+.vbp-shared-template-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.vbp-shared-template-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.vbp-shared-template-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--vbp-text);
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vbp-shared-template-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--vbp-text-muted);
+}
+
+.vbp-shared-template-site {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vbp-shared-template-site svg {
+    width: 12px;
+    height: 12px;
+    opacity: 0.7;
+}
+
+.vbp-shared-template-category {
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--vbp-bg-subtle);
+    font-weight: 500;
+}
+
+.vbp-shared-template-description {
+    font-size: 12px;
+    color: var(--vbp-text-muted);
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.vbp-shared-template-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.vbp-shared-template-actions .vbp-btn {
+    flex: 1;
+    justify-content: center;
+}
+
+/* ============================================
+   TOKENS DE RED
+   ============================================ */
+
+.vbp-network-tokens-section {
+    margin-bottom: 24px;
+}
+
+.vbp-network-tokens-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.vbp-network-tokens-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vbp-text);
+}
+
+.vbp-network-tokens-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.vbp-network-token-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px;
+    border: 1px solid var(--vbp-border);
+    border-radius: 8px;
+    background: var(--vbp-panel-bg);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-network-token-item:hover {
+    border-color: var(--vbp-primary);
+}
+
+.vbp-network-token-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    margin-bottom: 6px;
+}
+
+.vbp-network-token-name {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--vbp-text-muted);
+    text-transform: capitalize;
+}
+
+/* ============================================
+   WIDGETS COMPARTIDOS
+   ============================================ */
+
+.vbp-shared-widgets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vbp-shared-widget-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--vbp-border);
+    border-radius: 8px;
+    background: var(--vbp-panel-bg);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-shared-widget-item:hover {
+    border-color: var(--vbp-primary);
+    background: var(--vbp-primary-soft);
+}
+
+.vbp-shared-widget-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--vbp-bg-subtle);
+    color: var(--vbp-text-muted);
+}
+
+.vbp-shared-widget-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.vbp-shared-widget-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vbp-text);
+    margin-bottom: 2px;
+}
+
+.vbp-shared-widget-type {
+    font-size: 11px;
+    color: var(--vbp-text-muted);
+}
+
+.vbp-shared-widget-source {
+    font-size: 10px;
+    color: var(--vbp-text-muted);
+}
+
+/* ============================================
+   SITIOS DE RED
+   ============================================ */
+
+.vbp-network-sites-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vbp-network-site-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--vbp-border);
+    border-radius: 8px;
+    background: var(--vbp-panel-bg);
+}
+
+.vbp-network-site-item.current {
+    border-color: var(--vbp-primary);
+    background: var(--vbp-primary-soft);
+}
+
+.vbp-network-site-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--vbp-primary);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.vbp-network-site-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.vbp-network-site-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vbp-text);
+}
+
+.vbp-network-site-main-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--vbp-warning);
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.vbp-network-site-url {
+    font-size: 11px;
+    color: var(--vbp-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vbp-network-site-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 10px;
+    color: var(--vbp-text-muted);
+}
+
+/* ============================================
+   ESTADOS VACÍOS
+   ============================================ */
+
+.vbp-multisite-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--vbp-text-muted);
+}
+
+.vbp-multisite-empty svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+}
+
+.vbp-multisite-empty-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--vbp-text);
+    margin-bottom: 8px;
+}
+
+.vbp-multisite-empty-text {
+    font-size: 12px;
+    line-height: 1.5;
+    max-width: 280px;
+}
+
+/* ============================================
+   MODAL COMPARTIR TEMPLATE
+   ============================================ */
+
+.vbp-share-template-modal {
+    max-width: 480px;
+}
+
+.vbp-share-template-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.vbp-share-template-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vbp-share-template-field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vbp-text);
+}
+
+.vbp-share-template-field input,
+.vbp-share-template-field textarea,
+.vbp-share-template-field select {
+    padding: 10px 12px;
+    border: 1px solid var(--vbp-border);
+    border-radius: 6px;
+    background: var(--vbp-input-bg);
+    color: var(--vbp-text);
+    font-size: 13px;
+    transition: border-color 0.15s ease;
+}
+
+.vbp-share-template-field input:focus,
+.vbp-share-template-field textarea:focus,
+.vbp-share-template-field select:focus {
+    outline: none;
+    border-color: var(--vbp-primary);
+}
+
+.vbp-share-template-field textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.vbp-share-template-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid var(--vbp-border);
+}
+
+/* ============================================
+   INDICADOR DE RED EN TOOLBAR
+   ============================================ */
+
+.vbp-multisite-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--vbp-info-soft);
+    color: var(--vbp-info);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.vbp-multisite-indicator:hover {
+    background: var(--vbp-info);
+    color: white;
+}
+
+.vbp-multisite-indicator svg {
+    width: 14px;
+    height: 14px;
+}
+
+.vbp-multisite-indicator-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: vbp-pulse 2s infinite;
+}
+
+@keyframes vbp-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ============================================
+   LOADING STATE
+   ============================================ */
+
+.vbp-multisite-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.vbp-multisite-loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--vbp-border);
+    border-top-color: var(--vbp-primary);
+    border-radius: 50%;
+    animation: vbp-spin 0.8s linear infinite;
+}
+
+@keyframes vbp-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .vbp-multisite-panel {
+        width: 100%;
+        right: -100%;
+    }
+
+    .vbp-network-tokens-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -13,6 +13,15 @@
 (function() {
     'use strict';
 
+    // Fallback de vbpLog si no está definido
+    if (!window.vbpLog) {
+        window.vbpLog = {
+            log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+            warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+            error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+        };
+    }
+
     var keyboardLoaded = false;
     var keyboardLoading = false;
     var pendingEvents = [];
@@ -128,7 +137,7 @@
         script.onload = function() {
             keyboardLoaded = true;
             keyboardLoading = false;
-            console.log('[VBP] Módulo de teclado cargado');
+            vbpLog.log('Módulo de teclado cargado');
 
             // Ejecutar callbacks pendientes
             if (callback) callback();
@@ -138,7 +147,7 @@
 
         script.onerror = function() {
             keyboardLoading = false;
-            console.warn('[VBP] Error cargando módulo de teclado');
+            vbpLog.warn('Error cargando módulo de teclado');
         };
 
         document.head.appendChild(script);

@@ -9,6 +9,15 @@
 (function() {
     'use strict';
 
+    // Fallback de vbpLog si no está definido
+    if (!window.vbpLog) {
+        window.vbpLog = {
+            log: function() { if (window.VBP_DEBUG) console.log.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+            warn: function() { if (window.VBP_DEBUG) console.warn.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); },
+            error: function() { console.error.apply(console, ['[VBP]'].concat(Array.prototype.slice.call(arguments))); }
+        };
+    }
+
     /**
      * Inicializar todos los componentes
      */
@@ -813,7 +822,9 @@
                     successDiv.style.display = 'block';
                 } else if (statusDiv) {
                     statusDiv.className = 'vbp-form-status vbp-form-status--success';
-                    statusDiv.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ' + (data.data.message || form.dataset.successMessage || '¡Enviado!');
+                    var successMsg = document.createTextNode(data.data.message || form.dataset.successMessage || '¡Enviado!');
+                    statusDiv.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ';
+                    statusDiv.appendChild(successMsg);
                 }
 
                 // Resetear formulario
@@ -831,7 +842,9 @@
 
                 if (statusDiv) {
                     statusDiv.className = 'vbp-form-status vbp-form-status--error';
-                    statusDiv.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ' + errorMessage;
+                    var errorText = document.createTextNode(errorMessage);
+                    statusDiv.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ';
+                    statusDiv.appendChild(errorText);
                 }
 
                 // Mostrar errores de campo específicos
@@ -861,7 +874,7 @@
             }
         })
         .catch(function(error) {
-            console.error('[VBP Form] Error:', error);
+            vbpLog.error('Form Error:', error);
 
             if (statusDiv) {
                 statusDiv.className = 'vbp-form-status vbp-form-status--error';
