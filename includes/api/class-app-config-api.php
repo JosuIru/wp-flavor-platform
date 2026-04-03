@@ -63,7 +63,7 @@ class Flavor_App_Config_API {
      */
     private function __construct() {
         $settings = get_option( 'flavor_chat_ia_settings', array() );
-        $this->api_key = $settings['vbp_api_key'] ?? 'flavor-vbp-2024';
+        $this->api_key = flavor_get_vbp_api_key();
         $this->mobile_apps_path = FLAVOR_CHAT_IA_PATH . 'mobile-apps/';
 
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
@@ -82,7 +82,8 @@ class Flavor_App_Config_API {
             $api_key = $request->get_param( 'api_key' );
         }
 
-        if ( $api_key !== $this->api_key ) {
+        // Usar helper centralizado para verificar API key
+        if ( ! flavor_verify_vbp_api_key( $api_key ) ) {
             return new WP_Error(
                 'rest_forbidden',
                 __( 'API key inválida', 'flavor-chat-ia' ),

@@ -55,7 +55,7 @@ class Flavor_Site_Builder_API {
      */
     private function __construct() {
         $settings = get_option( 'flavor_chat_ia_settings', array() );
-        $this->api_key = $settings['vbp_api_key'] ?? 'flavor-vbp-2024';
+        $this->api_key = flavor_get_vbp_api_key();
 
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
     }
@@ -227,13 +227,9 @@ class Flavor_Site_Builder_API {
      * @return bool
      */
     public function check_permission( $request ) {
+        // Verificar header X-VBP-Key usando helper centralizado
         $auth_header = $request->get_header( 'X-VBP-Key' );
-        if ( $auth_header === $this->api_key ) {
-            return true;
-        }
-
-        $key_param = $request->get_param( 'api_key' );
-        if ( $key_param === $this->api_key ) {
+        if ( flavor_verify_vbp_api_key( $auth_header ) ) {
             return true;
         }
 

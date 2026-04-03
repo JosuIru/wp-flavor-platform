@@ -106,7 +106,7 @@ class Flavor_App_Manifest_API {
      */
     private function __construct() {
         $settings = get_option( 'flavor_chat_ia_settings', array() );
-        $this->api_key = $settings['vbp_api_key'] ?? 'flavor-vbp-2024';
+        $this->api_key = flavor_get_vbp_api_key();
 
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 
@@ -193,11 +193,8 @@ class Flavor_App_Manifest_API {
     public function check_api_permission( $request ) {
         $api_key = $request->get_header( 'X-VBP-Key' );
 
-        if ( empty( $api_key ) ) {
-            $api_key = $request->get_param( 'api_key' );
-        }
-
-        if ( $api_key !== $this->api_key ) {
+        // Usar helper centralizado para verificar API key
+        if ( ! flavor_verify_vbp_api_key( $api_key ) ) {
             return new WP_Error(
                 'rest_forbidden',
                 __( 'API key inválida', 'flavor-chat-ia' ),
@@ -426,6 +423,8 @@ class Flavor_App_Manifest_API {
             'from_cache' => false,
         );
 
+        $manifest = $this->sanitize_public_manifest( $manifest );
+
         // Guardar en caché
         set_transient( $cache_key, $manifest, $cache_duration );
 
@@ -494,6 +493,19 @@ class Flavor_App_Manifest_API {
             );
         }
 
+        if ( strlen( $device_id ) < 8 || strlen( $device_id ) > 128 ) {
+            return new WP_Error(
+                'invalid_device_id',
+                'device_id inválido',
+                array( 'status' => 400 )
+            );
+        }
+
+        $allowed_platforms = array( 'android', 'ios', 'web', 'unknown' );
+        if ( ! in_array( $platform, $allowed_platforms, true ) ) {
+            $platform = 'unknown';
+        }
+
         // Obtener registro de dispositivos sincronizados
         $synced_devices = get_option( 'flavor_app_synced_devices', array() );
 
@@ -501,10 +513,10 @@ class Flavor_App_Manifest_API {
         $synced_devices[ $device_id ] = array(
             'config_version' => $config_version,
             'platform'       => $platform,
-            'app_version'    => $app_version,
+            'app_version'    => substr( $app_version, 0, 32 ),
             'synced_at'      => current_time( 'c' ),
-            'ip_address'     => $this->get_client_ip(),
-            'user_agent'     => sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ?? '' ),
+            'ip_hash'        => md5( $this->get_client_ip() ),
+            'user_agent'     => substr( sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ?? '' ), 0, 191 ),
         );
 
         // Limpiar dispositivos antiguos (más de 30 días)
@@ -800,6 +812,32 @@ class Flavor_App_Manifest_API {
                 'play_store_id' => $branding['play_store_id'] ?? '',
             ),
         );
+    }
+
+    /**
+     * Sanitiza el manifiesto para exposición pública.
+     *
+     * @param array $manifest
+     * @return array
+     */
+    private function sanitize_public_manifest( $manifest ) {
+        if ( isset( $manifest['branding']['developer']['email'] ) ) {
+            unset( $manifest['branding']['developer']['email'] );
+        }
+
+        if ( isset( $manifest['branding']['stores']['app_store_id'] ) && '' === $manifest['branding']['stores']['app_store_id'] ) {
+            unset( $manifest['branding']['stores']['app_store_id'] );
+        }
+
+        if ( isset( $manifest['branding']['stores']['play_store_id'] ) && '' === $manifest['branding']['stores']['play_store_id'] ) {
+            unset( $manifest['branding']['stores']['play_store_id'] );
+        }
+
+        if ( isset( $manifest['build'] ) ) {
+            unset( $manifest['build'] );
+        }
+
+        return $manifest;
     }
 
     /**

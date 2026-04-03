@@ -97,6 +97,11 @@ class Flavor_VBP_Loader {
             'class-vbp-component-library.php',
             'class-vbp-design-presets.php',
             'class-vbp-comments.php',
+            'class-vbp-collaboration-api.php',
+            'class-vbp-audit-log.php',
+            'class-vbp-workflows.php',
+            'class-vbp-multisite.php',
+            'class-vbp-settings.php',
             'ai/class-vbp-ai-content.php',
         );
 
@@ -105,6 +110,26 @@ class Flavor_VBP_Loader {
             if ( file_exists( $ruta_archivo ) ) {
                 require_once $ruta_archivo;
             }
+        }
+
+        // Herramienta de migración (solo admin)
+        if ( is_admin() ) {
+            $migration_tool_path = FLAVOR_CHAT_IA_PATH . 'includes/tools/class-vbp-migration-tool.php';
+            if ( file_exists( $migration_tool_path ) ) {
+                require_once $migration_tool_path;
+            }
+        }
+
+        // Exporters de código (React, Vue, Svelte)
+        $exporter_path = $this->ruta_base . 'exporters/class-vbp-code-exporter.php';
+        if ( file_exists( $exporter_path ) ) {
+            require_once $exporter_path;
+        }
+
+        // Importador de Figma
+        $figma_path = $this->ruta_base . 'importers/class-vbp-figma-importer.php';
+        if ( file_exists( $figma_path ) ) {
+            require_once $figma_path;
         }
     }
 
@@ -178,6 +203,11 @@ class Flavor_VBP_Loader {
             Flavor_VBP_Version_History::get_instance();
         }
 
+        // Herramienta de migración de landings legacy (solo admin)
+        if ( is_admin() && class_exists( 'Flavor_VBP_Migration_Tool' ) ) {
+            Flavor_VBP_Migration_Tool::get_instance();
+        }
+
         // Single Templates (plantillas VBP para singles de cualquier CPT)
         if ( class_exists( 'Flavor_VBP_Single_Templates' ) ) {
             Flavor_VBP_Single_Templates::get_instance();
@@ -196,6 +226,36 @@ class Flavor_VBP_Loader {
         // Sistema de comentarios colaborativos
         if ( class_exists( 'Flavor_VBP_Comments' ) ) {
             Flavor_VBP_Comments::get_instance();
+        }
+
+        // API de colaboración en tiempo real
+        if ( class_exists( 'Flavor_VBP_Collaboration_API' ) ) {
+            Flavor_VBP_Collaboration_API::get_instance();
+        }
+
+        // Audit Log (Enterprise)
+        if ( class_exists( 'Flavor_VBP_Audit_Log' ) ) {
+            Flavor_VBP_Audit_Log::get_instance();
+        }
+
+        // Workflows (Enterprise)
+        if ( class_exists( 'Flavor_VBP_Workflows' ) ) {
+            Flavor_VBP_Workflows::get_instance();
+        }
+
+        // Multi-site Support (Enterprise)
+        if ( class_exists( 'Flavor_VBP_Multisite' ) ) {
+            Flavor_VBP_Multisite::get_instance();
+        }
+
+        // Code Exporter (exportación a React, Vue, Svelte)
+        if ( class_exists( 'Flavor_VBP_Code_Exporter' ) ) {
+            Flavor_VBP_Code_Exporter::get_instance();
+        }
+
+        // Figma Importer (importación de diseños)
+        if ( class_exists( 'Flavor_VBP_Figma_Importer' ) ) {
+            Flavor_VBP_Figma_Importer::get_instance();
         }
 
         // Registrar CPT de templates
