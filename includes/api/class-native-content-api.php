@@ -25,6 +25,74 @@ class Flavor_Native_Content_API {
     private static $instance = null;
 
     /**
+     * Determina si la petición tiene acceso ampliado.
+     *
+     * @return bool
+     */
+    private function can_access_extended_content() {
+        return is_user_logged_in() || current_user_can('edit_posts');
+    }
+
+    /**
+     * Comprueba que un post type sea público.
+     *
+     * @param string $post_type
+     * @return bool
+     */
+    private function is_public_post_type($post_type) {
+        $post_type_obj = get_post_type_object($post_type);
+        return $post_type_obj && $post_type_obj->public;
+    }
+
+    /**
+     * Callback de permisos públicos con rate limiting.
+     *
+     * @param WP_REST_Request $request
+     * @return bool|WP_Error
+     */
+    public function public_permission_with_rate_limit($request) {
+        $client_ip = $this->get_client_ip();
+        $transient_key = 'native_content_rate_' . md5($client_ip);
+        $request_count = (int) get_transient($transient_key);
+        $rate_limit = 120; // peticiones por minuto
+
+        if ($request_count >= $rate_limit) {
+            return new WP_Error(
+                'rate_limit_exceeded',
+                __('Demasiadas peticiones. Intente de nuevo en un minuto.', 'flavor-chat-ia'),
+                ['status' => 429]
+            );
+        }
+
+        set_transient($transient_key, $request_count + 1, MINUTE_IN_SECONDS);
+
+        return true;
+    }
+
+    /**
+     * Obtiene la IP del cliente.
+     *
+     * @return string
+     */
+    private function get_client_ip() {
+        $headers = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                $ip_list = explode(',', sanitize_text_field(wp_unslash($_SERVER[$header])));
+                return trim($ip_list[0]);
+            }
+        }
+
+        return '127.0.0.1';
+    }
+
+    /**
      * Obtener instancia
      */
     public static function get_instance() {
@@ -49,7 +117,7 @@ class Flavor_Native_Content_API {
         register_rest_route(self::API_NAMESPACE, '/content/page/(?P<slug>[a-z0-9-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_page_content'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
             'args' => [
                 'slug' => [
                     'required' => true,
@@ -63,7 +131,7 @@ class Flavor_Native_Content_API {
         register_rest_route(self::API_NAMESPACE, '/content/post/(?P<slug>[a-z0-9-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_post_content'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
             'args' => [
                 'slug' => [
                     'required' => true,
@@ -77,56 +145,56 @@ class Flavor_Native_Content_API {
         register_rest_route(self::API_NAMESPACE, '/content/cpt/(?P<type>[a-z0-9_-]+)/(?P<slug>[a-z0-9-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_cpt_content'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
         ]);
 
         // Obtener CPT por ID
         register_rest_route(self::API_NAMESPACE, '/content/by-id/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_content_by_id'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
         ]);
 
         // Listar contenido de un CPT
         register_rest_route(self::API_NAMESPACE, '/content/list/(?P<type>[a-z0-9_-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_content_list'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
         ]);
 
         // Obtener sección de Info
         register_rest_route(self::API_NAMESPACE, '/content/info-section/(?P<section>[a-z0-9_-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_info_section'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
         ]);
 
         // Obtener todas las secciones de Info
         register_rest_route(self::API_NAMESPACE, '/content/info-sections', [
             'methods' => 'GET',
             'callback' => [$this, 'get_all_info_sections'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
         ]);
 
         // Obtener menú de navegación
         register_rest_route(self::API_NAMESPACE, '/content/menu/(?P<location>[a-z0-9_-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_menu_content'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
         ]);
 
         // Obtener pantalla nativa del sistema (info, chat, reservations, etc.)
         register_rest_route(self::API_NAMESPACE, '/screen/(?P<screen_id>[a-z0-9_-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_native_screen'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
         ]);
 
         // Obtener datos de módulo del plugin
         register_rest_route(self::API_NAMESPACE, '/module/(?P<module_id>[a-z0-9_-]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'get_module_data'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
         ]);
     }
 
@@ -137,7 +205,7 @@ class Flavor_Native_Content_API {
         $slug = $request->get_param('slug');
         $page = get_page_by_path($slug);
 
-        if (!$page) {
+        if (!$page || $page->post_status !== 'publish') {
             return new WP_Error('not_found', __('Página no encontrada', 'flavor-chat-ia'), ['status' => 404]);
         }
 
@@ -177,7 +245,7 @@ class Flavor_Native_Content_API {
         $type = sanitize_key($request->get_param('type'));
         $slug = sanitize_title($request->get_param('slug'));
 
-        if (!post_type_exists($type)) {
+        if (!post_type_exists($type) || !$this->is_public_post_type($type)) {
             return new WP_Error('invalid_type', __('Tipo de contenido no válido', 'flavor-chat-ia'), ['status' => 400]);
         }
 
@@ -231,7 +299,7 @@ class Flavor_Native_Content_API {
             $order = 'DESC';
         }
 
-        if (!post_type_exists($type)) {
+        if (!post_type_exists($type) || !$this->is_public_post_type($type)) {
             return new WP_Error('invalid_type', __('Tipo de contenido no válido', 'flavor-chat-ia'), ['status' => 400]);
         }
 
@@ -354,7 +422,7 @@ class Flavor_Native_Content_API {
 
         $items = [];
         foreach ($menu_items as $item) {
-            $items[] = [
+            $menu_item = [
                 'id' => $item->ID,
                 'title' => $item->title,
                 'url' => $item->url,
@@ -362,12 +430,16 @@ class Flavor_Native_Content_API {
                 'parent' => (int) $item->menu_item_parent,
                 'order' => $item->menu_order,
                 'type' => $item->type,
-                'object' => $item->object,
-                'object_id' => (int) $item->object_id,
                 'icon' => get_post_meta($item->ID, '_menu_item_icon', true) ?: null,
-                // Datos para renderizado nativo
-                'native_route' => $this->get_native_route_for_menu_item($item),
             ];
+
+            if ($this->can_access_extended_content()) {
+                $menu_item['object'] = $item->object;
+                $menu_item['object_id'] = (int) $item->object_id;
+                $menu_item['native_route'] = $this->get_native_route_for_menu_item($item);
+            }
+
+            $items[] = $menu_item;
         }
 
         return new WP_REST_Response([
@@ -382,25 +454,29 @@ class Flavor_Native_Content_API {
     private function format_post_content($post) {
         $content_blocks = $this->parse_content_blocks($post->post_content);
         $featured_image = $this->get_featured_image_data($post->ID);
-        $meta = $this->get_post_meta_data($post);
         $taxonomies = $this->get_post_taxonomies($post);
+        $extended_access = $this->can_access_extended_content();
 
-        return [
+        $content = [
+            'rendered' => apply_filters('the_content', $post->post_content),
+            'blocks' => $content_blocks,
+        ];
+
+        if ($extended_access) {
+            $content['raw'] = $post->post_content;
+        }
+
+        $data = [
             'id' => $post->ID,
             'type' => $post->post_type,
             'slug' => $post->post_name,
             'title' => get_the_title($post),
             'excerpt' => get_the_excerpt($post),
-            'content' => [
-                'raw' => $post->post_content,
-                'rendered' => apply_filters('the_content', $post->post_content),
-                'blocks' => $content_blocks,
-            ],
+            'content' => $content,
             'featured_image' => $featured_image,
             'date' => get_the_date('c', $post),
             'modified' => get_the_modified_date('c', $post),
             'author' => $this->get_author_data($post->post_author),
-            'meta' => $meta,
             'taxonomies' => $taxonomies,
             'template' => get_page_template_slug($post->ID) ?: 'default',
             'parent' => $post->post_parent ? [
@@ -409,6 +485,12 @@ class Flavor_Native_Content_API {
                 'slug' => get_post_field('post_name', $post->post_parent),
             ] : null,
         ];
+
+        if ($extended_access) {
+            $data['meta'] = $this->get_post_meta_data($post);
+        }
+
+        return $data;
     }
 
     /**
@@ -710,11 +792,16 @@ class Flavor_Native_Content_API {
             return null;
         }
 
-        return [
-            'id' => $user->ID,
+        $author = [
             'name' => $user->display_name,
             'avatar' => get_avatar_url($user->ID, ['size' => 96]),
         ];
+
+        if ($this->can_access_extended_content()) {
+            $author['id'] = $user->ID;
+        }
+
+        return $author;
     }
 
     /**
@@ -978,6 +1065,10 @@ class Flavor_Native_Content_API {
             return new WP_Error('not_found', __('Pantalla no encontrada', 'flavor-chat-ia'), ['status' => 404]);
         }
 
+        if (!$this->can_access_extended_content() && isset($screen_data['config']['api_endpoint'])) {
+            unset($screen_data['config']['api_endpoint']);
+        }
+
         return new WP_REST_Response([
             'success' => true,
             'data' => $screen_data,
@@ -1126,6 +1217,10 @@ class Flavor_Native_Content_API {
 
         if (!$module_data) {
             return new WP_Error('not_found', __('Módulo no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+        }
+
+        if (!$this->can_access_extended_content()) {
+            unset($module_data['endpoints']);
         }
 
         return new WP_REST_Response([

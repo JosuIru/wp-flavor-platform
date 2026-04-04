@@ -39,6 +39,54 @@ class Flavor_Reputation_API {
     }
 
     /**
+     * Callback de permisos públicos con rate limiting.
+     *
+     * @param WP_REST_Request $request
+     * @return bool|WP_Error
+     */
+    public function public_permission_with_rate_limit($request) {
+        $client_ip = $this->get_client_ip();
+        $transient_key = 'reputation_api_rate_' . md5($client_ip);
+        $request_count = (int) get_transient($transient_key);
+        $rate_limit = 60; // peticiones por minuto
+
+        if ($request_count >= $rate_limit) {
+            return new WP_Error(
+                'rate_limit_exceeded',
+                __('Demasiadas peticiones. Intente de nuevo en un minuto.', 'flavor-chat-ia'),
+                ['status' => 429]
+            );
+        }
+
+        set_transient($transient_key, $request_count + 1, MINUTE_IN_SECONDS);
+
+        return true;
+    }
+
+    /**
+     * Obtiene la IP del cliente.
+     *
+     * @return string
+     */
+    private function get_client_ip() {
+        $headers = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                $ip_list = explode(',', sanitize_text_field(wp_unslash($_SERVER[$header])));
+                return trim($ip_list[0]);
+            }
+        }
+
+        return '127.0.0.1';
+    }
+
+    /**
      * Registrar rutas de la API
      */
     public function registrar_rutas() {
@@ -46,7 +94,7 @@ class Flavor_Reputation_API {
         register_rest_route($this->namespace, '/reputation/user/(?P<id>\d+)', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_reputacion_usuario'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'check_self_or_admin'],
             'args' => [
                 'id' => [
                     'required' => true,
@@ -68,7 +116,7 @@ class Flavor_Reputation_API {
         register_rest_route($this->namespace, '/reputation/leaderboard', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_leaderboard'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
             'args' => [
                 'periodo' => [
                     'default' => 'total',
@@ -87,14 +135,14 @@ class Flavor_Reputation_API {
         register_rest_route($this->namespace, '/reputation/badges', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_badges'],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this, 'public_permission_with_rate_limit']
         ]);
 
         // Obtener badges de un usuario
         register_rest_route($this->namespace, '/reputation/user/(?P<id>\d+)/badges', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_badges_usuario'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'check_self_or_admin'],
             'args' => [
                 'id' => [
                     'required' => true,
@@ -161,6 +209,17 @@ class Flavor_Reputation_API {
      */
     public function check_admin() {
         return current_user_can('manage_options');
+    }
+
+    /**
+     * Verificar si el usuario autenticado puede consultar datos del usuario indicado.
+     *
+     * @param WP_REST_Request $request
+     * @return bool
+     */
+    public function check_self_or_admin($request) {
+        $usuario_id = (int) $request->get_param('id');
+        return is_user_logged_in() && (get_current_user_id() === $usuario_id || current_user_can('manage_options'));
     }
 
     /**

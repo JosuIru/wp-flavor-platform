@@ -153,7 +153,7 @@ class Flavor_Lazy_Loading_API {
      */
     public function check_permission($request) {
         $api_key = $request->get_header('X-VBP-Key');
-        return $api_key === 'flavor-vbp-2024' || is_user_logged_in();
+        return flavor_verify_vbp_api_key( $api_key ) || is_user_logged_in();
     }
 
     /**

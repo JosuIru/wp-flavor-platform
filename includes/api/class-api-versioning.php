@@ -155,6 +155,54 @@ class Flavor_API_Versioning {
     }
 
     /**
+     * Callback de permisos públicos con rate limiting.
+     *
+     * @param WP_REST_Request $request
+     * @return bool|WP_Error
+     */
+    public function public_permission_with_rate_limit($request) {
+        $client_ip = $this->get_client_ip();
+        $transient_key = 'api_versioning_rate_' . md5($client_ip);
+        $request_count = (int) get_transient($transient_key);
+        $rate_limit = 30; // peticiones por minuto
+
+        if ($request_count >= $rate_limit) {
+            return new WP_Error(
+                'rate_limit_exceeded',
+                __('Demasiadas peticiones. Intente de nuevo en un minuto.', 'flavor-chat-ia'),
+                ['status' => 429]
+            );
+        }
+
+        set_transient($transient_key, $request_count + 1, MINUTE_IN_SECONDS);
+
+        return true;
+    }
+
+    /**
+     * Obtiene la IP del cliente.
+     *
+     * @return string
+     */
+    private function get_client_ip() {
+        $headers = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                $ip_list = explode(',', sanitize_text_field(wp_unslash($_SERVER[$header])));
+                return trim($ip_list[0]);
+            }
+        }
+
+        return '127.0.0.1';
+    }
+
+    /**
      * Registrar endpoints de versionado
      */
     public function register_versioning_endpoints() {
@@ -162,14 +210,14 @@ class Flavor_API_Versioning {
         register_rest_route('flavor-app/v2', '/versions', [
             'methods' => 'GET',
             'callback' => [$this, 'get_versions_info'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
         ]);
 
         // Deprecations activos
         register_rest_route('flavor-app/v2', '/deprecations', [
             'methods' => 'GET',
             'callback' => [$this, 'get_deprecations'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_permission_with_rate_limit'],
         ]);
 
         // Migración automática

@@ -241,8 +241,8 @@ class Flavor_API_Rate_Limiter_V2 {
      * Valida API key
      */
     private function validate_api_key($key) {
-        // API key estándar de Flavor
-        if ($key === 'flavor-vbp-2024') {
+        // Verificar contra key VBP centralizada
+        if ( function_exists( 'flavor_verify_vbp_api_key' ) && flavor_verify_vbp_api_key( $key ) ) {
             return true;
         }
 
@@ -512,7 +512,7 @@ class Flavor_API_Rate_Limiter_V2 {
      */
     public function check_admin_permission($request) {
         $api_key = $request->get_header('X-VBP-Key');
-        return $api_key === 'flavor-vbp-2024';
+        return flavor_verify_vbp_api_key( $api_key );
     }
 
     /**

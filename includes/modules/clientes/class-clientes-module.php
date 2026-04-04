@@ -1185,11 +1185,20 @@ class Flavor_Chat_Clientes_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_clientes = $wpdb->prefix . 'flavor_clientes';
+        $db_version_key = 'flavor_clientes_db_version';
+        $db_version = get_option($db_version_key, '');
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_clientes)) {
-            $this->create_tables();
+        if ($db_version === '1.0.0') {
+            return; // Ya instaladas
+        }
+
+        $install_path = dirname(__FILE__) . '/install.php';
+        if (file_exists($install_path)) {
+            require_once $install_path;
+
+            if (function_exists('flavor_clientes_crear_tablas')) {
+                flavor_clientes_crear_tablas();
+            }
         }
     }
 
@@ -2410,29 +2419,6 @@ KNOWLEDGE;
         ];
     }
 
-
-    /**
-     * Crea las tablas del módulo si no existen
-     *
-     * @return void
-     */
-    public function maybe_create_tables() {
-        $db_version_key = 'flavor_clientes_db_version';
-        $db_version = get_option($db_version_key, '');
-
-        if ($db_version === '1.0.0') {
-            return; // Ya instaladas
-        }
-
-        $install_path = dirname(__FILE__) . '/install.php';
-        if (file_exists($install_path)) {
-            require_once $install_path;
-
-            if (function_exists('flavor_clientes_crear_tablas')) {
-                flavor_clientes_crear_tablas();
-            }
-        }
-    }
 
     /**
      * Inicializa el dashboard tab del módulo

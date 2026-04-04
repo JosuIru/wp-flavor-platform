@@ -777,7 +777,7 @@ class Flavor_Chat_Grupos_Consumo_Module extends Flavor_Chat_Module_Base {
 
         // Obtener datos del consumidor
         $consumidor = $wpdb->get_row($wpdb->prepare(
-            "SELECT c.*, u.display_name, u.user_email
+            "SELECT c.id, c.usuario_id, c.estado, c.rol, c.fecha_registro, u.display_name, u.user_email
              FROM {$tabla_consumidores} c
              LEFT JOIN {$wpdb->users} u ON c.usuario_id = u.ID
              WHERE c.id = %d",
@@ -4211,7 +4211,9 @@ KNOWLEDGE;
         $tabla_pedidos = $wpdb->prefix . 'flavor_gc_pedidos';
 
         $items_pedido = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_pedidos WHERE ciclo_id = %d AND usuario_id = %d",
+            "SELECT id, ciclo_id, usuario_id, producto_id, cantidad, precio_unitario, subtotal, estado
+             FROM $tabla_pedidos
+             WHERE ciclo_id = %d AND usuario_id = %d",
             $ciclo_id,
             $usuario_id
         ));

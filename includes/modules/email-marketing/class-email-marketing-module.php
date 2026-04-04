@@ -574,7 +574,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         // Verificar si el email está suscrito
         global $wpdb;
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_suscriptores WHERE email = %s AND estado = 'activo'",
+            "SELECT id FROM {$wpdb->prefix}flavor_em_suscriptores WHERE email = %s AND estado = 'activo'",
             $datos['email']
         ));
 
@@ -1563,7 +1563,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'suscriptores';
 
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, email, nombre, apellidos, usuario_id, estado, origen, ip_registro, fecha_registro, fecha_confirmacion, fecha_baja, motivo_baja, tags, campos_personalizados, total_emails_enviados, total_abiertos, total_clicks, ultima_apertura, ultimo_click, puntuacion
+             FROM $tabla
+             WHERE id = %d",
             $id
         ));
 
@@ -1576,7 +1578,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla_listas = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
 
         $listas = $wpdb->get_results($wpdb->prepare(
-            "SELECT l.*, sl.estado as estado_suscripcion, sl.fecha_suscripcion
+            "SELECT l.id, l.nombre, l.slug, l.descripcion, l.activa, l.publica, l.doble_optin, l.mensaje_bienvenida, l.total_suscriptores, l.fecha_creacion, sl.estado as estado_suscripcion, sl.fecha_suscripcion
              FROM $tabla_listas l
              INNER JOIN $tabla_relacion sl ON l.id = sl.lista_id
              WHERE sl.suscriptor_id = %d",
@@ -1635,7 +1637,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'suscriptores';
 
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, estado
+             FROM $tabla
+             WHERE id = %d",
             $id
         ));
 
@@ -1685,7 +1689,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla_relacion = $wpdb->prefix . self::TABLE_PREFIX . 'suscriptor_lista';
 
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, estado
+             FROM $tabla
+             WHERE id = %d",
             $id
         ));
 
@@ -1717,7 +1723,10 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $where = $solo_publicas ? "WHERE activa = 1 AND publica = 1" : "WHERE 1=1";
 
         $listas = $wpdb->get_results(
-            "SELECT * FROM $tabla $where ORDER BY nombre ASC"
+            "SELECT id, nombre, slug, descripcion, activa, publica, doble_optin, mensaje_bienvenida, total_suscriptores, fecha_creacion
+             FROM $tabla
+             $where
+             ORDER BY nombre ASC"
         );
 
         return new WP_REST_Response($listas);
@@ -1736,7 +1745,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
 
         $lista = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, slug, descripcion, activa, publica, doble_optin, mensaje_bienvenida, total_suscriptores, fecha_creacion
+             FROM $tabla
+             WHERE id = %d",
             $id
         ));
 
@@ -1804,7 +1815,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
 
         $lista = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id
+             FROM $tabla
+             WHERE id = %d",
             $id
         ));
 
@@ -1854,7 +1867,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla_relacion = $wpdb->prefix . self::TABLE_PREFIX . 'suscriptor_lista';
 
         $lista = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id
+             FROM $tabla
+             WHERE id = %d",
             $id
         ));
 
@@ -1906,11 +1921,16 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         $campanias = $estado
             ? $wpdb->get_results($wpdb->prepare(
-                "SELECT * FROM $tabla $where ORDER BY fecha_creacion DESC LIMIT %d OFFSET %d",
+                "SELECT id, nombre, asunto, asunto_alternativo, preview_text, tipo, estado, listas_ids, segmentos_ids, remitente_nombre, remitente_email, responder_a, fecha_programada, fecha_inicio_envio, fecha_fin_envio, total_destinatarios, total_enviados, total_abiertos, total_clicks, total_bajas, total_rebotes, total_spam, creado_por, fecha_creacion, fecha_modificacion
+                 FROM $tabla
+                 $where
+                 ORDER BY fecha_creacion DESC LIMIT %d OFFSET %d",
                 ...$params
             ))
             : $wpdb->get_results($wpdb->prepare(
-                "SELECT * FROM $tabla ORDER BY fecha_creacion DESC LIMIT %d OFFSET %d",
+                "SELECT id, nombre, asunto, asunto_alternativo, preview_text, tipo, estado, listas_ids, segmentos_ids, remitente_nombre, remitente_email, responder_a, fecha_programada, fecha_inicio_envio, fecha_fin_envio, total_destinatarios, total_enviados, total_abiertos, total_clicks, total_bajas, total_rebotes, total_spam, creado_por, fecha_creacion, fecha_modificacion
+                 FROM $tabla
+                 ORDER BY fecha_creacion DESC LIMIT %d OFFSET %d",
                 $por_pagina,
                 $offset
             ));
@@ -1937,7 +1957,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
 
         $campania = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, asunto, asunto_alternativo, preview_text, contenido_html, contenido_texto, plantilla_id, tipo, estado, listas_ids, segmentos_ids, remitente_nombre, remitente_email, responder_a, fecha_programada, fecha_inicio_envio, fecha_fin_envio, total_destinatarios, total_enviados, total_abiertos, total_clicks, total_bajas, total_rebotes, total_spam, creado_por, fecha_creacion, fecha_modificacion
+             FROM $tabla
+             WHERE id = %d",
             $id
         ));
 
@@ -1989,7 +2011,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
 
         $campania = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, estado
+             FROM $tabla
+             WHERE id = %d",
             $id
         ));
 
@@ -2039,7 +2063,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
 
         $campania = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, estado
+             FROM $tabla
+             WHERE id = %d",
             $id
         ));
 
@@ -2105,7 +2131,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'automatizaciones';
 
         $automatizaciones = $wpdb->get_results(
-            "SELECT * FROM $tabla ORDER BY fecha_creacion DESC"
+            "SELECT id, nombre, descripcion, trigger_tipo, trigger_condiciones, pasos, estado, fecha_creacion
+             FROM $tabla
+             ORDER BY fecha_creacion DESC"
         );
 
         foreach ($automatizaciones as &$auto) {
@@ -2146,7 +2174,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $nueva_id = $wpdb->insert_id;
 
         $auto = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, descripcion, trigger_tipo, trigger_condiciones, pasos, estado, fecha_creacion
+             FROM $tabla
+             WHERE id = %d",
             $nueva_id
         ));
 
@@ -2276,7 +2306,10 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $where = $categoria ? $wpdb->prepare("WHERE categoria = %s", $categoria) : '';
 
         $plantillas = $wpdb->get_results(
-            "SELECT * FROM $tabla $where ORDER BY nombre ASC"
+            "SELECT id, nombre, categoria, contenido_html, contenido_texto, thumbnail_url, fecha_creacion
+             FROM $tabla
+             $where
+             ORDER BY nombre ASC"
         );
 
         return new WP_REST_Response($plantillas);
@@ -2310,7 +2343,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $nueva_id = $wpdb->insert_id;
 
         $plantilla = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, categoria, contenido_html, contenido_texto, thumbnail_url, fecha_creacion
+             FROM $tabla
+             WHERE id = %d",
             $nueva_id
         ));
 
@@ -2637,7 +2672,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla_listas = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
 
         $listas_suscriptor = $wpdb->get_results($wpdb->prepare(
-            "SELECT l.*, sl.estado as estado_suscripcion
+            "SELECT l.id, l.nombre, l.slug, l.descripcion, l.activa, l.publica, l.doble_optin, l.mensaje_bienvenida, l.total_suscriptores, l.fecha_creacion, sl.estado as estado_suscripcion
              FROM $tabla_listas l
              INNER JOIN $tabla_relacion sl ON l.id = sl.lista_id
              WHERE sl.suscriptor_id = %d AND l.publica = 1",
@@ -2645,7 +2680,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         ));
 
         $listas_disponibles = $wpdb->get_results($wpdb->prepare(
-            "SELECT l.* FROM $tabla_listas l
+            "SELECT l.id, l.nombre, l.slug, l.descripcion, l.activa, l.publica, l.doble_optin, l.mensaje_bienvenida, l.total_suscriptores, l.fecha_creacion
+             FROM $tabla_listas l
              WHERE l.activa = 1 AND l.publica = 1
              AND l.id NOT IN (
                  SELECT lista_id FROM $tabla_relacion WHERE suscriptor_id = %d
@@ -3029,7 +3065,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
 
         $campania = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d AND estado = 'enviada'",
+            "SELECT id, contenido_html
+             FROM $tabla
+             WHERE id = %d AND estado = 'enviada'",
             $campania_id
         ));
 
@@ -3069,7 +3107,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         // Buscar o crear suscriptor
         $tabla_suscriptores = $wpdb->prefix . 'flavor_em_suscriptores';
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_suscriptores WHERE email = %s",
+            "SELECT id FROM $tabla_suscriptores WHERE email = %s",
             $email
         ));
 
@@ -3183,7 +3221,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Token almacenado en metadata
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT s.* FROM $tabla_suscriptores s
+            "SELECT s.id FROM $tabla_suscriptores s
              WHERE s.estado = 'pendiente'
              AND JSON_EXTRACT(s.campos_personalizados, '$.token_confirmacion') = %s",
             $token
@@ -3213,7 +3251,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Obtener listas y enviar bienvenida
         $listas = $wpdb->get_results($wpdb->prepare(
-            "SELECT l.* FROM {$wpdb->prefix}flavor_em_listas l
+            "SELECT l.id, l.nombre, l.slug, l.descripcion, l.activa, l.publica, l.doble_optin, l.mensaje_bienvenida, l.total_suscriptores, l.fecha_creacion
+             FROM {$wpdb->prefix}flavor_em_listas l
              INNER JOIN $tabla_relacion sl ON l.id = sl.lista_id
              WHERE sl.suscriptor_id = %d AND sl.estado = 'activo'",
             $suscriptor->id
@@ -3324,7 +3363,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     public function get_lista_por_slug($slug) {
         global $wpdb;
         return $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_listas WHERE slug = %s",
+            "SELECT id, nombre, slug, descripcion, activa, publica, doble_optin, mensaje_bienvenida, total_suscriptores, fecha_creacion
+             FROM {$wpdb->prefix}flavor_em_listas
+             WHERE slug = %s",
             $slug
         ));
     }
@@ -3335,7 +3376,10 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
     public function get_listas_activas() {
         global $wpdb;
         return $wpdb->get_results(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_listas WHERE activa = 1 ORDER BY nombre ASC"
+            "SELECT id, nombre, slug, descripcion, activa, publica, doble_optin, mensaje_bienvenida, total_suscriptores, fecha_creacion
+             FROM {$wpdb->prefix}flavor_em_listas
+             WHERE activa = 1
+             ORDER BY nombre ASC"
         );
     }
 
@@ -3403,7 +3447,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . 'flavor_em_campanias';
 
         $campania = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, asunto, contenido_html, listas_ids
+             FROM $tabla
+             WHERE id = %d",
             $campania_id
         ));
 
@@ -3480,7 +3526,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         $tabla_cola = $wpdb->prefix . 'flavor_em_cola';
         $campania = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_campanias WHERE id = %d",
+            "SELECT id, asunto, contenido_html
+             FROM {$wpdb->prefix}flavor_em_campanias
+             WHERE id = %d",
             $campania_id
         ));
 
@@ -3536,7 +3584,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Obtener emails pendientes
         $emails = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_cola
+            "SELECT id, campania_id, automatizacion_id, paso_auto, suscriptor_id, email, asunto, contenido, prioridad, estado, intentos, programado_para
+             FROM $tabla_cola
              WHERE estado = 'pendiente'
              AND (programado_para IS NULL OR programado_para <= %s)
              ORDER BY prioridad ASC, id ASC
@@ -3706,7 +3755,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Buscar automatizaciones activas con este trigger
         $automatizaciones = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE trigger_tipo = %s AND estado = 'activa'",
+            "SELECT id, pasos
+             FROM $tabla
+             WHERE trigger_tipo = %s AND estado = 'activa'",
             $tipo
         ));
 
@@ -3768,7 +3819,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Obtener suscriptores con pasos pendientes
         $pendientes = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_auto_sus
+            "SELECT id, automatizacion_id, suscriptor_id, paso_actual, fecha_proximo_paso, estado
+             FROM $tabla_auto_sus
              WHERE estado = 'activo'
              AND fecha_proximo_paso <= %s
              LIMIT 50",
@@ -3787,7 +3839,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $automatizacion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_automatizaciones WHERE id = %d",
+            "SELECT id, pasos, estado
+             FROM {$wpdb->prefix}flavor_em_automatizaciones
+             WHERE id = %d",
             $inscrito->automatizacion_id
         ));
 
@@ -3893,7 +3947,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tracking = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_tracking
+            "SELECT id, campania_id, automatizacion_id, suscriptor_id, email_hash
+             FROM {$wpdb->prefix}flavor_em_tracking
              WHERE email_hash = %s AND tipo = 'enviado'
              LIMIT 1",
             $hash
@@ -3956,7 +4011,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tracking = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_tracking
+            "SELECT id, campania_id, automatizacion_id, suscriptor_id, email_hash
+             FROM {$wpdb->prefix}flavor_em_tracking
              WHERE email_hash = %s AND tipo = 'enviado'
              LIMIT 1",
             $hash
@@ -4073,7 +4129,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Buscar en todos los suscriptores activos
         $suscriptores = $wpdb->get_results(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_suscriptores WHERE estado != 'baja'"
+            "SELECT id, email, nombre, estado, total_emails_enviados, total_abiertos, total_clicks
+             FROM {$wpdb->prefix}flavor_em_suscriptores
+             WHERE estado != 'baja'"
         );
 
         foreach ($suscriptores as $suscriptor) {
@@ -4128,12 +4186,16 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_suscriptores WHERE id = %d",
+            "SELECT id, email, nombre, campos_personalizados
+             FROM {$wpdb->prefix}flavor_em_suscriptores
+             WHERE id = %d",
             $suscriptor_id
         ));
 
         $lista = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_listas WHERE id = %d",
+            "SELECT id, nombre
+             FROM {$wpdb->prefix}flavor_em_listas
+             WHERE id = %d",
             $lista_id
         ));
 
@@ -4180,7 +4242,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_suscriptores WHERE id = %d",
+            "SELECT id, email, nombre
+             FROM {$wpdb->prefix}flavor_em_suscriptores
+             WHERE id = %d",
             $suscriptor_id
         ));
 
@@ -4202,7 +4266,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_suscriptores WHERE id = %d",
+            "SELECT id, email, nombre
+             FROM {$wpdb->prefix}flavor_em_suscriptores
+             WHERE id = %d",
             $suscriptor_id
         ));
 
@@ -4235,7 +4301,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_suscriptores WHERE id = %d",
+            "SELECT id, tags
+             FROM {$wpdb->prefix}flavor_em_suscriptores
+             WHERE id = %d",
             $suscriptor_id
         ));
 
@@ -4462,7 +4530,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
 
         $campania = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, asunto, asunto_alternativo, preview_text, contenido_html, contenido_texto, plantilla_id, tipo, estado, listas_ids, segmentos_ids, remitente_nombre, remitente_email, responder_a, fecha_programada, fecha_inicio_envio, fecha_fin_envio, total_destinatarios, total_enviados, total_abiertos, total_clicks, total_bajas, total_rebotes, total_spam, creado_por, fecha_creacion, fecha_modificacion
+             FROM $tabla
+             WHERE id = %d",
             $campania_id
         ));
 
@@ -4496,7 +4566,10 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $total = $wpdb->get_var("SELECT COUNT(*) FROM $tabla $where");
 
         $campanias = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla $where ORDER BY fecha_creacion DESC LIMIT %d OFFSET %d",
+            "SELECT id, nombre, asunto, asunto_alternativo, preview_text, tipo, estado, listas_ids, segmentos_ids, remitente_nombre, remitente_email, responder_a, fecha_programada, fecha_inicio_envio, fecha_fin_envio, total_destinatarios, total_enviados, total_abiertos, total_clicks, total_bajas, total_rebotes, total_spam, creado_por, fecha_creacion, fecha_modificacion
+             FROM $tabla
+             $where
+             ORDER BY fecha_creacion DESC LIMIT %d OFFSET %d",
             $por_pagina,
             $offset
         ));
@@ -4637,7 +4710,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'campanias';
 
         $campania = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, asunto, asunto_alternativo, preview_text, contenido_html, contenido_texto, plantilla_id, tipo, estado, listas_ids, segmentos_ids, remitente_nombre, remitente_email, responder_a, fecha_programada, fecha_inicio_envio, fecha_fin_envio, total_destinatarios, total_enviados, total_abiertos, total_clicks, total_bajas, total_rebotes, total_spam, creado_por, fecha_creacion, fecha_modificacion
+             FROM $tabla
+             WHERE id = %d",
             $campania_id
         ));
 
@@ -4805,7 +4880,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $campania = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}" . self::TABLE_PREFIX . "campanias WHERE id = %d",
+            "SELECT id, asunto, contenido_html
+             FROM {$wpdb->prefix}" . self::TABLE_PREFIX . "campanias
+             WHERE id = %d",
             $campania_id
         ));
 
@@ -4900,7 +4977,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
-        $listas = $wpdb->get_results("SELECT * FROM $tabla ORDER BY nombre ASC");
+        $listas = $wpdb->get_results("SELECT id, nombre, slug, descripcion, activa, publica, doble_optin, mensaje_bienvenida, total_suscriptores, fecha_creacion FROM $tabla ORDER BY nombre ASC");
 
         wp_send_json_success($listas);
     }
@@ -4916,7 +4993,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
 
         $lista = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, slug, descripcion, activa, publica, doble_optin, mensaje_bienvenida, total_suscriptores, fecha_creacion
+             FROM $tabla
+             WHERE id = %d",
             $lista_id
         ));
 
@@ -4989,7 +5068,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
 
         $lista = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, descripcion, activa, publica, doble_optin, mensaje_bienvenida
+             FROM $tabla
+             WHERE id = %d",
             $lista_id
         ));
 
@@ -5168,7 +5249,10 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $params[] = $offset;
 
         $suscriptores = $wpdb->get_results($wpdb->prepare(
-            "SELECT s.* FROM $tabla s WHERE $where_sql ORDER BY s.fecha_registro DESC LIMIT %d OFFSET %d",
+            "SELECT s.id, s.email, s.nombre, s.apellidos, s.usuario_id, s.estado, s.origen, s.fecha_registro, s.fecha_confirmacion, s.fecha_baja, s.total_emails_enviados, s.total_abiertos, s.total_clicks, s.ultima_apertura, s.ultimo_click, s.puntuacion
+             FROM $tabla s
+             WHERE $where_sql
+             ORDER BY s.fecha_registro DESC LIMIT %d OFFSET %d",
             ...$params
         ));
 
@@ -5191,7 +5275,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'suscriptores';
 
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, email, nombre, apellidos, usuario_id, estado, origen, ip_registro, fecha_registro, fecha_confirmacion, fecha_baja, motivo_baja, tags, campos_personalizados, total_emails_enviados, total_abiertos, total_clicks, ultima_apertura, ultimo_click, puntuacion
+             FROM $tabla
+             WHERE id = %d",
             $suscriptor_id
         ));
 
@@ -5204,7 +5290,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla_listas = $wpdb->prefix . self::TABLE_PREFIX . 'listas';
 
         $listas = $wpdb->get_results($wpdb->prepare(
-            "SELECT l.*, sl.estado as estado_suscripcion, sl.fecha_suscripcion
+            "SELECT l.id, l.nombre, l.slug, l.descripcion, l.activa, l.publica, l.doble_optin, l.mensaje_bienvenida, l.total_suscriptores, l.fecha_creacion, sl.estado as estado_suscripcion, sl.fecha_suscripcion
              FROM $tabla_listas l
              INNER JOIN $tabla_relacion sl ON l.id = sl.lista_id
              WHERE sl.suscriptor_id = %d",
@@ -5287,7 +5373,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'suscriptores';
 
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, apellidos, estado, tags, campos_personalizados
+             FROM $tabla
+             WHERE id = %d",
             $suscriptor_id
         ));
 
@@ -5640,7 +5728,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'automatizaciones';
-        $automatizaciones = $wpdb->get_results("SELECT * FROM $tabla ORDER BY fecha_creacion DESC");
+        $automatizaciones = $wpdb->get_results("SELECT id, nombre, descripcion, trigger_tipo, trigger_condiciones, pasos, estado, fecha_creacion FROM $tabla ORDER BY fecha_creacion DESC");
 
         foreach ($automatizaciones as &$auto) {
             $auto->pasos = json_decode($auto->pasos) ?: [];
@@ -5660,7 +5748,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'automatizaciones';
 
         $auto = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, descripcion, trigger_tipo, trigger_condiciones, pasos, estado, fecha_creacion
+             FROM $tabla
+             WHERE id = %d",
             $automatizacion_id
         ));
 
@@ -5725,7 +5815,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'automatizaciones';
 
         $auto = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, descripcion, trigger_tipo, trigger_condiciones, pasos, estado
+             FROM $tabla
+             WHERE id = %d",
             $automatizacion_id
         ));
 
@@ -5857,7 +5949,7 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         $where = $categoria ? $wpdb->prepare("WHERE categoria = %s", $categoria) : '';
 
-        $plantillas = $wpdb->get_results("SELECT * FROM $tabla $where ORDER BY nombre ASC");
+        $plantillas = $wpdb->get_results("SELECT id, nombre, categoria, contenido_html, contenido_texto, thumbnail_url, fecha_creacion FROM $tabla $where ORDER BY nombre ASC");
 
         wp_send_json_success($plantillas);
     }
@@ -5873,7 +5965,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'plantillas';
 
         $plantilla = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, categoria, contenido_html, contenido_texto, thumbnail_url, fecha_creacion
+             FROM $tabla
+             WHERE id = %d",
             $plantilla_id
         ));
 
@@ -5972,7 +6066,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $tabla = $wpdb->prefix . self::TABLE_PREFIX . 'plantillas';
 
         $plantilla = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla WHERE id = %d",
+            "SELECT id, nombre, categoria, contenido_html, contenido_texto, thumbnail_url
+             FROM $tabla
+             WHERE id = %d",
             $plantilla_id
         ));
 
@@ -6464,7 +6560,8 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
 
         // Buscar campañas programadas que deben iniciar
         $campanias = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla
+            "SELECT id, nombre
+             FROM $tabla
              WHERE estado = 'programada'
              AND fecha_programada <= %s",
             current_time('mysql')
@@ -6893,7 +6990,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $email = sanitize_email($params['email'] ?? '');
 
         $suscriptor = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_suscriptores WHERE email = %s",
+            "SELECT id, email, nombre, estado, total_emails_enviados, total_abiertos, total_clicks
+             FROM {$wpdb->prefix}flavor_em_suscriptores
+             WHERE email = %s",
             $email
         ));
 
@@ -6934,7 +7033,9 @@ class Flavor_Chat_Email_Marketing_Module extends Flavor_Chat_Module_Base {
         $campania_id = absint($params['campania_id'] ?? 0);
 
         $campania = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}flavor_em_campanias WHERE id = %d",
+            "SELECT id, nombre, asunto, estado, total_destinatarios, total_enviados, total_abiertos, total_clicks, total_bajas, total_rebotes, total_spam
+             FROM {$wpdb->prefix}flavor_em_campanias
+             WHERE id = %d",
             $campania_id
         ));
 

@@ -26,11 +26,20 @@ class Flavor_Module_Gap_Status_API {
         add_action('rest_api_init', [$this, 'register_routes']);
     }
 
+    /**
+     * Restringe el acceso a auditorías internas.
+     *
+     * @return bool
+     */
+    public function check_admin_permission() {
+        return current_user_can('manage_options');
+    }
+
     public function register_routes() {
         register_rest_route(self::API_NAMESPACE, '/status', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_status'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'check_admin_permission'],
             'args' => [
                 'estado' => [
                     'type' => 'string',

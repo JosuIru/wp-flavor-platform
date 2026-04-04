@@ -6122,15 +6122,18 @@ PROMPT;
             return new WP_Error('upload_error', __('Error al recibir el archivo.', 'flavor-chat-ia'));
         }
 
-        // Validar tipo de archivo (solo imágenes por ahora)
-        $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        $mime_type = sanitize_text_field($file_data['type'] ?? '');
+        $allowed_types = $this->get_mobile_allowed_upload_types($context);
 
-        if (!in_array($file_data['type'], $allowed_types)) {
-            return new WP_Error('invalid_type', __('Tipo de archivo no permitido. Solo se aceptan imágenes.', 'flavor-chat-ia'));
+        if (empty($mime_type) || !in_array($mime_type, $allowed_types, true)) {
+            return new WP_Error(
+                'invalid_type',
+                __('Tipo de archivo no permitido para la subida móvil.', 'flavor-chat-ia')
+            );
         }
 
-        // Limitar tamaño (5MB por defecto)
-        $max_size = apply_filters('flavor_mobile_upload_max_size', 5 * 1024 * 1024);
+        // Limitar tamaño por contexto/tipo
+        $max_size = $this->get_mobile_upload_max_size($context, $mime_type);
         if ($file_data['size'] > $max_size) {
             return new WP_Error('file_too_large', sprintf(
                 __('El archivo es demasiado grande. Máximo permitido: %s MB', 'flavor-chat-ia'),
@@ -6157,13 +6160,101 @@ PROMPT;
 
         // Devolver URL completa
         $url = wp_get_attachment_url($attachment_id);
+        $filename = sanitize_file_name($file_data['name'] ?? basename((string) $url));
+        $is_image = strpos($mime_type, 'image/') === 0;
+        $is_audio = strpos($mime_type, 'audio/') === 0;
+        $is_video = strpos($mime_type, 'video/') === 0;
 
         return [
             'id' => $attachment_id,
             'url' => $url,
-            'thumbnail' => wp_get_attachment_image_url($attachment_id, 'thumbnail'),
-            'medium' => wp_get_attachment_image_url($attachment_id, 'medium'),
+            'filename' => $filename,
+            'size' => (int) $file_data['size'],
+            'mime_type' => $mime_type,
+            'thumbnail' => $is_image ? wp_get_attachment_image_url($attachment_id, 'thumbnail') : null,
+            'medium' => $is_image ? wp_get_attachment_image_url($attachment_id, 'medium') : null,
+            'is_image' => $is_image,
+            'is_audio' => $is_audio,
+            'is_video' => $is_video,
+            'context' => $context,
         ];
+    }
+
+    /**
+     * Tipos MIME permitidos para subidas móviles.
+     *
+     * @param string $context Contexto de la subida.
+     * @return array
+     */
+    private function get_mobile_allowed_upload_types($context) {
+        $base_types = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'application/pdf',
+            'text/plain',
+            'text/csv',
+            'audio/mpeg',
+            'audio/mp3',
+            'audio/mp4',
+            'audio/x-m4a',
+            'audio/aac',
+            'audio/wav',
+            'audio/x-wav',
+            'audio/ogg',
+            'video/mp4',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ];
+
+        $context_types = [
+            'chat_legacy_group' => $base_types,
+            'chat_legacy_internal' => $base_types,
+            'marketplace' => [
+                'image/jpeg',
+                'image/jpg',
+                'image/png',
+                'image/gif',
+                'image/webp',
+                'application/pdf',
+            ],
+        ];
+
+        $allowed = $context_types[$context] ?? $base_types;
+
+        return apply_filters(
+            'flavor_mobile_upload_allowed_types',
+            $allowed,
+            $context
+        );
+    }
+
+    /**
+     * Tamaño máximo para subidas móviles.
+     *
+     * @param string $context   Contexto de la subida.
+     * @param string $mime_type Tipo MIME.
+     * @return int
+     */
+    private function get_mobile_upload_max_size($context, $mime_type) {
+        $default_max = 10 * 1024 * 1024;
+
+        if (strpos($mime_type, 'video/') === 0) {
+            $default_max = 25 * 1024 * 1024;
+        } elseif (strpos($mime_type, 'audio/') === 0) {
+            $default_max = 15 * 1024 * 1024;
+        }
+
+        return (int) apply_filters(
+            'flavor_mobile_upload_max_size',
+            $default_max,
+            $context,
+            $mime_type
+        );
     }
 
     // ==========================================

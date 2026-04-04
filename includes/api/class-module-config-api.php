@@ -29,6 +29,96 @@ class Flavor_Module_Config_API {
     private $modules_config = [];
 
     /**
+     * Determina si la petición puede acceder a la configuración completa.
+     *
+     * @return bool
+     */
+    private function can_access_full_config() {
+        return current_user_can('manage_options');
+    }
+
+    /**
+     * Reduce la configuración expuesta en endpoints públicos.
+     *
+     * @param array $config
+     * @return array
+     */
+    private function get_public_module_config(array $config) {
+        $public = array_intersect_key($config, array_flip(array(
+            'id',
+            'titulo',
+            'icono',
+            'layout',
+            'requiere_auth',
+        )));
+
+        if (isset($config['campos']) && is_array($config['campos'])) {
+            $public['campos'] = $config['campos'];
+        }
+
+        if (isset($config['filtros']) && is_array($config['filtros'])) {
+            $public['filtros'] = array_map(function($filter) {
+                return array_intersect_key((array) $filter, array_flip(array(
+                    'id',
+                    'label',
+                    'tipo',
+                    'opciones',
+                )));
+            }, $config['filtros']);
+        }
+
+        return $public;
+    }
+
+    /**
+     * Callback de permisos públicos con rate limiting.
+     *
+     * @param WP_REST_Request $request
+     * @return bool|WP_Error
+     */
+    public function public_permission_with_rate_limit($request) {
+        $client_ip = $this->get_client_ip();
+        $transient_key = 'module_config_rate_' . md5($client_ip);
+        $request_count = (int) get_transient($transient_key);
+        $rate_limit = 60; // peticiones por minuto
+
+        if ($request_count >= $rate_limit) {
+            return new WP_Error(
+                'rate_limit_exceeded',
+                __('Demasiadas peticiones. Intente de nuevo en un minuto.', 'flavor-chat-ia'),
+                ['status' => 429]
+            );
+        }
+
+        set_transient($transient_key, $request_count + 1, MINUTE_IN_SECONDS);
+
+        return true;
+    }
+
+    /**
+     * Obtiene la IP del cliente.
+     *
+     * @return string
+     */
+    private function get_client_ip() {
+        $headers = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                $ip_list = explode(',', sanitize_text_field(wp_unslash($_SERVER[$header])));
+                return trim($ip_list[0]);
+            }
+        }
+
+        return '127.0.0.1';
+    }
+
+    /**
      * Constructor
      */
     public function __construct() {
@@ -43,7 +133,7 @@ class Flavor_Module_Config_API {
         register_rest_route($this->namespace, '/modules/config', array(
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => array($this, 'get_all_configs'),
-            'permission_callback' => '__return_true',
+            'permission_callback' => array($this, 'public_permission_with_rate_limit'),
             'args'                => array(
                 'all' => array(
                     'type'        => 'boolean',
@@ -56,7 +146,7 @@ class Flavor_Module_Config_API {
         register_rest_route($this->namespace, '/modules/config/(?P<module_id>[a-z0-9_-]+)', array(
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => array($this, 'get_module_config'),
-            'permission_callback' => '__return_true',
+            'permission_callback' => array($this, 'public_permission_with_rate_limit'),
             'args'                => array(
                 'module_id' => array(
                     'required'          => true,
@@ -70,7 +160,7 @@ class Flavor_Module_Config_API {
         register_rest_route($this->namespace, '/modules/docs/(?P<module_id>[a-z0-9_-]+)', array(
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => array($this, 'get_module_docs'),
-            'permission_callback' => '__return_true',
+            'permission_callback' => array($this, 'public_permission_with_rate_limit'),
             'args'                => array(
                 'module_id' => array(
                     'required'          => true,
@@ -84,7 +174,7 @@ class Flavor_Module_Config_API {
         register_rest_route($this->namespace, '/modules/docs', array(
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => array($this, 'get_all_docs'),
-            'permission_callback' => '__return_true',
+            'permission_callback' => array($this, 'public_permission_with_rate_limit'),
         ));
     }
 
@@ -1432,7 +1522,8 @@ class Flavor_Module_Config_API {
      * @return WP_REST_Response
      */
     public function get_all_configs($request) {
-        $include_all = $request->get_param('all');
+        $can_access_full = $this->can_access_full_config();
+        $include_all = $can_access_full ? (bool) $request->get_param('all') : false;
         $configs = array();
         $active_count = 0;
 
@@ -1442,13 +1533,13 @@ class Flavor_Module_Config_API {
             if ($include_all) {
                 // Incluir todos con indicador de estado
                 $config['activo'] = $is_active;
-                $configs[$id] = $config;
+                $configs[$id] = $can_access_full ? $config : $this->get_public_module_config($config);
                 if ($is_active) {
                     $active_count++;
                 }
             } elseif ($is_active) {
                 // Solo incluir módulos activos
-                $configs[$id] = $config;
+                $configs[$id] = $can_access_full ? $config : $this->get_public_module_config($config);
                 $active_count++;
             }
         }
@@ -1480,6 +1571,11 @@ class Flavor_Module_Config_API {
 
         $config = $this->modules_config[$module_id];
         $config['activo'] = $this->is_module_active($module_id);
+
+        if (!$this->can_access_full_config()) {
+            $config = $this->get_public_module_config($config);
+            $config['activo'] = $this->is_module_active($module_id);
+        }
 
         return new WP_REST_Response(array(
             'success' => true,

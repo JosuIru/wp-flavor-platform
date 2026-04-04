@@ -3085,7 +3085,11 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         // Comunidades mas activas
         echo '<h2>' . __('Comunidades mas activas', 'flavor-chat-ia') . '</h2>';
         $comunidades_top = $wpdb->get_results(
-            "SELECT * FROM $tabla_comunidades WHERE estado = 'activa' ORDER BY miembros_count DESC LIMIT 5"
+            "SELECT id, nombre, tipo, categoria, miembros_count
+             FROM $tabla_comunidades
+             WHERE estado = 'activa'
+             ORDER BY miembros_count DESC
+             LIMIT 5"
         );
 
         if ($comunidades_top) {
@@ -3168,7 +3172,10 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         // Consulta de comunidades con paginacion
         $comunidades = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $tabla_comunidades $condicion_estado ORDER BY created_at DESC LIMIT %d OFFSET %d",
+                "SELECT id, creador_id, nombre, tipo, categoria, miembros_count, estado, created_at
+                 FROM $tabla_comunidades
+                 $condicion_estado
+                 ORDER BY created_at DESC LIMIT %d OFFSET %d",
                 $por_pagina,
                 $offset
             )
@@ -3242,7 +3249,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         // Cargar comunidad existente si es edicion
         if ($comunidad_id > 0) {
             $comunidad = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM $tabla_comunidades WHERE id = %d",
+                "SELECT id, nombre, descripcion, tipo, categoria, ubicacion, reglas, estado, imagen_portada
+                 FROM $tabla_comunidades
+                 WHERE id = %d",
                 $comunidad_id
             ));
             if (!$comunidad) {
@@ -3409,7 +3418,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         $tabla_actividad = $wpdb->prefix . 'flavor_comunidades_actividad';
 
         $comunidad = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_comunidades WHERE id = %d",
+            "SELECT id, creador_id, nombre, descripcion, tipo, categoria, ubicacion, reglas, estado, miembros_count, created_at
+             FROM $tabla_comunidades
+             WHERE id = %d",
             $comunidad_id
         ));
 
@@ -4510,7 +4521,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         }
 
         $comunidad = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_comunidades WHERE id = %d",
+            "SELECT id, nombre, descripcion, tipo, categoria, imagen, slug
+             FROM $tabla_comunidades
+             WHERE id = %d",
             $comunidad_id
         ));
 
@@ -4989,7 +5002,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         // Verificar que la comunidad existe y esta activa
         $comunidad = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_comunidades WHERE id = %d AND estado = 'activa'",
+            "SELECT id, nombre, descripcion, tipo, categoria, slug, estado
+             FROM $tabla_comunidades
+             WHERE id = %d AND estado = 'activa'",
             $comunidad_id
         ));
 
@@ -5002,7 +5017,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         // Verificar si ya es miembro
         $membresia_existente = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_miembros WHERE comunidad_id = %d AND user_id = %d",
+            "SELECT id, estado, rol
+             FROM $tabla_miembros
+             WHERE comunidad_id = %d AND user_id = %d",
             $comunidad_id,
             $usuario_actual_id
         ));
@@ -5117,7 +5134,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         // Verificar que es miembro activo
         $membresia = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_miembros WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
+            "SELECT id, rol
+             FROM $tabla_miembros
+             WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
             $comunidad_id,
             $usuario_actual_id
         ));
@@ -5288,7 +5307,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         // Verificar membresia activa
         $membresia = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_miembros WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
+            "SELECT id, rol
+             FROM $tabla_miembros
+             WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
             $comunidad_id,
             $usuario_actual_id
         ));
@@ -5530,7 +5551,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         // Verificar que el usuario actual es admin de la comunidad
         $membresia_admin = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_miembros WHERE comunidad_id = %d AND user_id = %d AND rol = 'admin' AND estado = 'activo'",
+            "SELECT id
+             FROM $tabla_miembros
+             WHERE comunidad_id = %d AND user_id = %d AND rol = 'admin' AND estado = 'activo'",
             $comunidad_id,
             $usuario_actual_id
         ));
@@ -5552,7 +5575,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
 
         // Verificar que el usuario objetivo es miembro
         $membresia_objetivo = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_miembros WHERE comunidad_id = %d AND user_id = %d",
+            "SELECT id, user_id, rol, estado
+             FROM $tabla_miembros
+             WHERE comunidad_id = %d AND user_id = %d",
             $comunidad_id,
             $usuario_objetivo_id
         ));
@@ -7713,7 +7738,9 @@ KNOWLEDGE;
         $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
 
         return $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_comunidades WHERE id = %d",
+            "SELECT id, creador_id, nombre, descripcion, tipo, categoria, slug, imagen, imagen_portada, ubicacion, reglas, estado, miembros_count, created_at
+             FROM $tabla_comunidades
+             WHERE id = %d",
             $comunidad_id
         ));
     }

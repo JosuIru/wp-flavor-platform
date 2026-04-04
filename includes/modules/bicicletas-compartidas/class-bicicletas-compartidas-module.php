@@ -421,7 +421,8 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
             }
 
             $estaciones = $wpdb->get_results($wpdb->prepare(
-                "SELECT * FROM $tabla_estaciones
+                "SELECT id, nombre, direccion, latitud, longitud, capacidad_total, bicicletas_disponibles, estado, tipo
+                 FROM $tabla_estaciones
                  WHERE estado = 'activa' $condicion_disponibilidad
                  ORDER BY $orden_sql
                  LIMIT %d",
@@ -1717,7 +1718,9 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
         // Verificar que la bicicleta existe y está disponible
         $bicicleta = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_bicicletas WHERE id = %d",
+            "SELECT id, codigo, estado, estacion_actual_id
+             FROM $tabla_bicicletas
+             WHERE id = %d",
             $bicicleta_id
         ));
 
@@ -1816,7 +1819,9 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
         // Verificar que existe un préstamo activo para esta bicicleta y usuario
         $prestamo = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_prestamos WHERE bicicleta_id = %d AND usuario_id = %d AND estado = 'activo'",
+            "SELECT id, bicicleta_id, usuario_id, fecha_inicio, fianza, estado
+             FROM $tabla_prestamos
+             WHERE bicicleta_id = %d AND usuario_id = %d AND estado = 'activo'",
             $bicicleta_id,
             $usuario_id
         ));
@@ -1830,7 +1835,9 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
         // Verificar que la estación existe
         $estacion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_estaciones WHERE id = %d AND estado = 'activa'",
+            "SELECT id, nombre, capacidad_total, bicicletas_disponibles, estado
+             FROM $tabla_estaciones
+             WHERE id = %d AND estado = 'activa'",
             $estacion_id
         ));
 
@@ -2205,10 +2212,15 @@ class Flavor_Chat_Bicicletas_Compartidas_Module extends Flavor_Chat_Module_Base 
 
         if ($lat == 0 || $lng == 0) {
             // Sin ubicación, devolver todas las estaciones activas
-            $estaciones = $wpdb->get_results("SELECT * FROM $tabla_estaciones WHERE estado = 'activa' ORDER BY nombre");
+            $estaciones = $wpdb->get_results(
+                "SELECT id, nombre, direccion, latitud, longitud, capacidad_total, bicicletas_disponibles, estado, tipo
+                 FROM $tabla_estaciones
+                 WHERE estado = 'activa'
+                 ORDER BY nombre"
+            );
         } else {
             // Con ubicación, calcular distancia
-            $sql = "SELECT *,
+            $sql = "SELECT id, nombre, direccion, latitud, longitud, capacidad_total, bicicletas_disponibles, estado, tipo,
                     (6371 * acos(cos(radians(%f)) * cos(radians(latitud)) * cos(radians(longitud) - radians(%f)) + sin(radians(%f)) * sin(radians(latitud)))) AS distancia
                     FROM $tabla_estaciones
                     WHERE estado = 'activa'
@@ -2609,7 +2621,11 @@ KNOWLEDGE;
 
         $bicicletas = [];
         if (Flavor_Chat_Helpers::tabla_existe($tabla_bicicletas)) {
-            $bicicletas = $wpdb->get_results("SELECT * FROM $tabla_bicicletas ORDER BY codigo ASC");
+            $bicicletas = $wpdb->get_results(
+                "SELECT id, codigo, tipo, marca, modelo, talla, estado, kilometros_acumulados
+                 FROM $tabla_bicicletas
+                 ORDER BY codigo ASC"
+            );
         }
 
         ?>
@@ -2680,7 +2696,11 @@ KNOWLEDGE;
 
         $estaciones = [];
         if (Flavor_Chat_Helpers::tabla_existe($tabla_estaciones)) {
-            $estaciones = $wpdb->get_results("SELECT * FROM $tabla_estaciones ORDER BY nombre ASC");
+            $estaciones = $wpdb->get_results(
+                "SELECT id, nombre, direccion, latitud, longitud, capacidad_total, bicicletas_disponibles, estado, tipo
+                 FROM $tabla_estaciones
+                 ORDER BY nombre ASC"
+            );
         }
 
         ?>

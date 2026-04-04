@@ -776,7 +776,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         $tabla_valoraciones = $wpdb->prefix . 'flavor_talleres_valoraciones';
 
         $taller = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_talleres WHERE id = %d",
+            "SELECT id, organizador_id, titulo, slug, descripcion, descripcion_corta, imagen_portada, categoria, tipo, nivel, duracion_horas, numero_sesiones, max_participantes, min_participantes, inscritos_actuales, lista_espera_count, precio, es_gratuito, materiales_incluidos, materiales_necesarios, ubicacion, fecha_inicio, fecha_fin, fecha_limite_inscripcion, estado, valoracion_media, permite_certificado, porcentaje_asistencia_certificado
+             FROM $tabla_talleres
+             WHERE id = %d",
             intval($params['taller_id'])
         ));
 
@@ -786,7 +788,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         // Obtener sesiones
         $sesiones = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_sesiones WHERE taller_id = %d ORDER BY numero_sesion ASC",
+            "SELECT id, taller_id, numero_sesion, titulo, descripcion, fecha_hora, duracion_minutos, ubicacion, estado
+             FROM $tabla_sesiones
+             WHERE taller_id = %d ORDER BY numero_sesion ASC",
             $taller->id
         ));
 
@@ -806,7 +810,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         if (is_user_logged_in()) {
             $tabla_inscripciones = $wpdb->prefix . 'flavor_talleres_inscripciones';
             $inscripcion = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM $tabla_inscripciones WHERE taller_id = %d AND participante_id = %d",
+                "SELECT id, estado, lista_espera, posicion_espera, sesiones_asistidas, sesiones_totales, porcentaje_asistencia, precio_pagado, estado_pago, valoracion, comentario_valoracion, certificado_emitido, certificado_codigo, certificado_fecha
+                 FROM $tabla_inscripciones
+                 WHERE taller_id = %d AND participante_id = %d",
                 $taller->id,
                 get_current_user_id()
             ));
@@ -911,7 +917,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         // Verificar que el taller existe y esta abierto
         $taller = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_talleres WHERE id = %d AND estado IN ('publicado', 'confirmado')",
+            "SELECT id, titulo, max_participantes, inscritos_actuales, lista_espera_count, precio, es_gratuito, fecha_limite_inscripcion, estado
+             FROM $tabla_talleres
+             WHERE id = %d AND estado IN ('publicado', 'confirmado')",
             $taller_id
         ));
 
@@ -1465,7 +1473,7 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         // Verificar inscripcion y certificado
         $inscripcion = $wpdb->get_row($wpdb->prepare(
-            "SELECT i.*, t.titulo, t.duracion_horas, t.permite_certificado, t.porcentaje_asistencia_certificado
+            "SELECT i.id, i.taller_id, i.participante_id, i.porcentaje_asistencia, i.certificado_emitido, i.certificado_codigo, i.certificado_fecha, t.titulo, t.duracion_horas, t.permite_certificado, t.porcentaje_asistencia_certificado
              FROM $tabla_inscripciones i
              INNER JOIN $tabla_talleres t ON i.taller_id = t.id
              WHERE i.taller_id = %d AND i.participante_id = %d AND i.estado = 'completada'",
@@ -1545,7 +1553,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         // Verificar que es el organizador
         $taller = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_talleres WHERE id = %d AND organizador_id = %d",
+            "SELECT id, precio, es_gratuito
+             FROM $tabla_talleres
+             WHERE id = %d AND organizador_id = %d",
             $taller_id,
             $usuario_id
         ));
@@ -1555,7 +1565,12 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         }
 
         if (!$taller) {
-            $taller = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tabla_talleres WHERE id = %d", $taller_id));
+            $taller = $wpdb->get_row($wpdb->prepare(
+                "SELECT id, precio, es_gratuito
+                 FROM $tabla_talleres
+                 WHERE id = %d",
+                $taller_id
+            ));
         }
 
         // Estadisticas de inscripciones
@@ -1707,7 +1722,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         $where_solo_inscritos = $inscrito ? '' : 'AND solo_inscritos = 0';
 
         $materiales = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_materiales WHERE taller_id = %d $where_solo_inscritos ORDER BY orden, fecha_subida",
+            "SELECT id, taller_id, sesion_id, titulo, descripcion, tipo, archivo_url, archivo_nombre, archivo_tamano, enlace_externo, solo_inscritos, orden, descargas, fecha_subida
+             FROM $tabla_materiales
+             WHERE taller_id = %d $where_solo_inscritos ORDER BY orden, fecha_subida",
             $taller_id
         ));
 
@@ -1749,7 +1766,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         $talleres = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_talleres WHERE organizador_id = %d ORDER BY fecha_creacion DESC",
+            "SELECT id, titulo, categoria, estado, inscritos_actuales, max_participantes, valoracion_media, fecha_creacion
+             FROM $tabla_talleres
+             WHERE organizador_id = %d ORDER BY fecha_creacion DESC",
             $usuario_id
         ));
 
@@ -2036,7 +2055,9 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
 
         // Obtener datos del taller
         $taller = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_talleres WHERE id = %d",
+            "SELECT id, titulo, max_participantes, inscritos_actuales
+             FROM $tabla_talleres
+             WHERE id = %d",
             $taller_id
         ));
 
@@ -2408,7 +2429,8 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         }
 
         $siguiente = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_inscripciones
+            "SELECT id, participante_id
+             FROM $tabla_inscripciones
              WHERE taller_id = %d AND lista_espera = 1 AND estado = 'pendiente'
              ORDER BY posicion_espera ASC LIMIT 1",
             $taller_id

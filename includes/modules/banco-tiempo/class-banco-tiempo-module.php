@@ -543,7 +543,13 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         }
 
         $servicio = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$tabla_servicios} WHERE id = %d LIMIT 1", $servicio_id),
+            $wpdb->prepare(
+                "SELECT id, usuario_id, comunidad_id, titulo, descripcion, categoria, horas_estimadas, ubicacion, disponibilidad, estado, fecha_publicacion, fecha_actualizacion, tipo, modalidad, valoracion_promedio
+                 FROM {$tabla_servicios}
+                 WHERE id = %d
+                 LIMIT 1",
+                $servicio_id
+            ),
             ARRAY_A
         );
 
@@ -606,7 +612,13 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
 
         if (Flavor_Chat_Helpers::tabla_existe($tabla_reputacion)) {
             $reputacion = $wpdb->get_row(
-                $wpdb->prepare("SELECT * FROM {$tabla_reputacion} WHERE usuario_id = %d LIMIT 1", $usuario_id),
+                $wpdb->prepare(
+                    "SELECT id, usuario_id, nombre, total_intercambios_completados, total_horas_dadas, total_horas_recibidas, rating_promedio, rating_puntualidad, rating_calidad, rating_comunicacion, puntos_confianza, nivel, badges, estado_verificacion, fecha_primer_intercambio
+                     FROM {$tabla_reputacion}
+                     WHERE usuario_id = %d
+                     LIMIT 1",
+                    $usuario_id
+                ),
                 ARRAY_A
             );
         }
@@ -736,7 +748,11 @@ class Flavor_Chat_Banco_Tiempo_Module extends Flavor_Chat_Module_Base {
         }
 
         $sql_where = implode(' AND ', $where);
-        $sql = "SELECT * FROM $tabla_servicios WHERE $sql_where ORDER BY fecha_publicacion DESC LIMIT %d";
+        $sql = "SELECT id, usuario_id, titulo, descripcion, categoria, horas_estimadas, fecha_publicacion
+                FROM $tabla_servicios
+                WHERE $sql_where
+                ORDER BY fecha_publicacion DESC
+                LIMIT %d";
         $preparar_valores[] = $limite;
 
         $servicios_encontrados = $wpdb->get_results($wpdb->prepare($sql, ...$preparar_valores));
@@ -1431,7 +1447,7 @@ KNOWLEDGE;
         }
 
         $intercambios = $wpdb->get_results(
-            "SELECT t.*, s.titulo as servicio_titulo
+            "SELECT t.id, t.servicio_id, t.usuario_solicitante_id, t.usuario_receptor_id, t.horas, t.estado, t.fecha_solicitud, t.fecha_completado, t.notas, s.titulo as servicio_titulo
              FROM $tabla_transacciones t
              LEFT JOIN $tabla_servicios s ON t.servicio_id = s.id
              ORDER BY t.fecha_solicitud DESC
@@ -1689,7 +1705,10 @@ KNOWLEDGE;
         }
 
         $servicios = $wpdb->get_results(
-            "SELECT * FROM $tabla_servicios ORDER BY fecha_publicacion DESC LIMIT 50",
+            "SELECT id, usuario_id, titulo, categoria, horas_estimadas, estado, fecha_publicacion
+             FROM $tabla_servicios
+             ORDER BY fecha_publicacion DESC
+             LIMIT 50",
             ARRAY_A
         );
 
@@ -2079,7 +2098,9 @@ KNOWLEDGE;
         }
 
         $servicio = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$tabla_servicios} WHERE id = %d AND estado = 'activo'",
+            "SELECT id, usuario_id, titulo, descripcion, tipo, categoria, horas_estimadas, modalidad, disponibilidad, valoracion_promedio, estado
+             FROM {$tabla_servicios}
+             WHERE id = %d AND estado = 'activo'",
             $servicio_id
         ));
 
@@ -2225,7 +2246,7 @@ function banco_tiempo_ajax_ver_intercambio() {
     $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
     $intercambio = $wpdb->get_row($wpdb->prepare(
-        "SELECT t.*, s.titulo as servicio_nombre,
+        "SELECT t.id, t.servicio_id, t.usuario_receptor_id, t.usuario_solicitante_id, t.horas, t.estado, t.fecha_creacion, t.notas, s.titulo as servicio_nombre,
                 u1.display_name as ofertante, u2.display_name as solicitante
          FROM {$tabla_transacciones} t
          LEFT JOIN {$tabla_servicios} s ON t.servicio_id = s.id
@@ -2270,7 +2291,9 @@ function banco_tiempo_ajax_obtener_servicio() {
     $tabla_servicios = $wpdb->prefix . 'flavor_banco_tiempo_servicios';
 
     $servicio = $wpdb->get_row($wpdb->prepare(
-        "SELECT * FROM {$tabla_servicios} WHERE id = %d",
+        "SELECT id, usuario_id, titulo, descripcion, categoria, horas_estimadas, estado
+         FROM {$tabla_servicios}
+         WHERE id = %d",
         $servicio_id
     ));
 
@@ -2330,7 +2353,7 @@ function banco_tiempo_ajax_historial_usuario() {
 
     // Obtener historial
     $historial = $wpdb->get_results($wpdb->prepare(
-        "SELECT t.*, s.titulo as servicio,
+        "SELECT t.id, t.servicio_id, t.usuario_receptor_id, t.usuario_solicitante_id, t.horas, t.estado, t.fecha_solicitud, t.fecha_completado, t.notas, s.titulo as servicio,
                 u1.display_name as ofertante, u2.display_name as solicitante
          FROM {$tabla_transacciones} t
          LEFT JOIN {$tabla_servicios} s ON t.servicio_id = s.id

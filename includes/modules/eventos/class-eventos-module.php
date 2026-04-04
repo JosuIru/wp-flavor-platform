@@ -412,7 +412,8 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         }
 
         $eventos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$tabla_eventos}
+            "SELECT id, titulo, descripcion, tipo, fecha_inicio, fecha_fin, ubicacion, precio, aforo_maximo, inscritos_count, estado, imagen
+             FROM {$tabla_eventos}
              WHERE estado = 'publicado' AND fecha_inicio >= NOW()
              ORDER BY fecha_inicio ASC
              LIMIT %d",
@@ -1312,7 +1313,11 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
         $tabla_eventos = $wpdb->prefix . 'flavor_eventos';
         $eventos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_eventos WHERE estado = 'publicado' AND fecha_inicio > %s ORDER BY fecha_inicio ASC LIMIT 20",
+            "SELECT id, titulo, fecha_inicio, tipo, inscritos_count, aforo_maximo
+             FROM $tabla_eventos
+             WHERE estado = 'publicado' AND fecha_inicio > %s
+             ORDER BY fecha_inicio ASC
+             LIMIT 20",
             current_time('mysql')
         ), ARRAY_A);
 
@@ -1584,9 +1589,21 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
     }
 
     public function maybe_create_tables() {
-        global $wpdb;
-        $t = $wpdb->prefix . 'flavor_eventos';
-        if (!Flavor_Chat_Helpers::tabla_existe($t)) { $this->create_tables(); }
+        $db_version_key = 'flavor_eventos_db_version';
+        $db_version = get_option($db_version_key, '');
+
+        if ($db_version === '1.0.0') {
+            return; // Ya instaladas
+        }
+
+        $install_path = dirname(__FILE__) . '/install.php';
+        if (file_exists($install_path)) {
+            require_once $install_path;
+
+            if (function_exists('flavor_eventos_crear_tablas')) {
+                flavor_eventos_crear_tablas();
+            }
+        }
     }
 
     private function create_tables() {
@@ -1709,7 +1726,11 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         }
         $limite = isset($params['limite']) ? absint($params['limite']) : 20;
         $where_sql = implode(' AND ', $where);
-        $sql = "SELECT * FROM $tabla WHERE $where_sql ORDER BY fecha_inicio ASC LIMIT %d";
+        $sql = "SELECT id, titulo, tipo, fecha_inicio, fecha_fin, ubicacion, precio, aforo_maximo, inscritos_count, estado
+                FROM $tabla
+                WHERE $where_sql
+                ORDER BY fecha_inicio ASC
+                LIMIT %d";
         $values[] = $limite;
         $eventos = $wpdb->get_results($wpdb->prepare($sql, ...$values), ARRAY_A);
         if (!$eventos) {
@@ -1745,7 +1766,12 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $tabla_ins = $wpdb->prefix . 'flavor_eventos_inscripciones';
         $evento_id = absint($params['evento_id']);
         $evento = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM $tabla_ev WHERE id = %d", $evento_id),
+            $wpdb->prepare(
+                "SELECT id, titulo, descripcion, tipo, fecha_inicio, fecha_fin, ubicacion, precio, aforo_maximo, inscritos_count, estado, imagen
+                 FROM $tabla_ev
+                 WHERE id = %d",
+                $evento_id
+            ),
             ARRAY_A
         );
         if (!$evento) {
@@ -1854,7 +1880,9 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
 
         // Obtener datos del evento
         $evento = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_eventos WHERE id = %d",
+            "SELECT id, organizador_id, titulo, descripcion, tipo, fecha_inicio, fecha_fin, ubicacion, direccion, coordenadas_lat, coordenadas_lng, es_online, url_online, precio, aforo_maximo, inscritos_count, imagen, estado
+             FROM $tabla_eventos
+             WHERE id = %d",
             $evento_id
         ));
 
@@ -1973,7 +2001,12 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $tabla_ins = $wpdb->prefix . 'flavor_eventos_inscripciones';
         $evento_id = absint($params['evento_id']);
         $evento = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM $tabla_ev WHERE id = %d AND estado = 'publicado'", $evento_id),
+            $wpdb->prepare(
+                "SELECT id, titulo, fecha_inicio, fecha_fin, ubicacion, precio, aforo_maximo, inscritos_count, estado
+                 FROM $tabla_ev
+                 WHERE id = %d AND estado = 'publicado'",
+                $evento_id
+            ),
             ARRAY_A
         );
         if (!$evento) {
@@ -2044,9 +2077,11 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $evento_id = absint($params['evento_id']);
         if (!empty($params['inscripcion_id'])) {
             $inscripcion_id = absint($params['inscripcion_id']);
-            $inscripcion = $wpdb->get_row(
+                $inscripcion = $wpdb->get_row(
                 $wpdb->prepare(
-                    "SELECT * FROM $tabla_ins WHERE id = %d AND evento_id = %d AND estado != 'cancelada'",
+                    "SELECT id, evento_id, user_id, num_plazas, estado
+                     FROM $tabla_ins
+                     WHERE id = %d AND evento_id = %d AND estado != 'cancelada'",
                     $inscripcion_id, $evento_id
                 ), ARRAY_A
             );
@@ -2057,7 +2092,9 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             }
             $inscripcion = $wpdb->get_row(
                 $wpdb->prepare(
-                    "SELECT * FROM $tabla_ins WHERE user_id = %d AND evento_id = %d AND estado != 'cancelada'",
+                    "SELECT id, evento_id, user_id, num_plazas, estado
+                     FROM $tabla_ins
+                     WHERE user_id = %d AND evento_id = %d AND estado != 'cancelada'",
                     $user_id, $evento_id
                 ), ARRAY_A
             );
@@ -2095,7 +2132,11 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         $args[] = $limite;
         $eventos = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $tabla WHERE organizador_id = %d$estado_filtro ORDER BY fecha_inicio DESC LIMIT %d",
+                "SELECT id, titulo, descripcion, tipo, fecha_inicio, fecha_fin, ubicacion, precio, aforo_maximo, inscritos_count, estado
+                 FROM $tabla
+                 WHERE organizador_id = %d$estado_filtro
+                 ORDER BY fecha_inicio DESC
+                 LIMIT %d",
                 ...$args
             ), ARRAY_A
         );
@@ -2144,7 +2185,10 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
         }
         $eventos = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $tabla WHERE estado = 'publicado' AND fecha_inicio BETWEEN %s AND %s$tipo_filtro ORDER BY fecha_inicio ASC",
+                "SELECT id, titulo, descripcion, tipo, fecha_inicio, fecha_fin, ubicacion, precio, aforo_maximo, inscritos_count, estado
+                 FROM $tabla
+                 WHERE estado = 'publicado' AND fecha_inicio BETWEEN %s AND %s$tipo_filtro
+                 ORDER BY fecha_inicio ASC",
                 ...$args
             ), ARRAY_A
         );
@@ -2757,29 +2801,6 @@ class Flavor_Chat_Eventos_Module extends Flavor_Chat_Module_Base {
             echo '<p><a href="' . esc_url(admin_url('admin.php?page=eventos-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
         }
         echo '</div>';
-    }
-
-    /**
-     * Crea las tablas del módulo si no existen
-     *
-     * @return void
-     */
-    public function maybe_create_tables() {
-        $db_version_key = 'flavor_eventos_db_version';
-        $db_version = get_option($db_version_key, '');
-
-        if ($db_version === '1.0.0') {
-            return; // Ya instaladas
-        }
-
-        $install_path = dirname(__FILE__) . '/install.php';
-        if (file_exists($install_path)) {
-            require_once $install_path;
-
-            if (function_exists('flavor_eventos_crear_tablas')) {
-                flavor_eventos_crear_tablas();
-            }
-        }
     }
 
     /**

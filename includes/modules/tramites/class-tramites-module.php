@@ -550,7 +550,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         }
 
         global $wpdb;
-        $tipos = $wpdb->get_results("SELECT * FROM {$this->tabla_tipos_tramite} ORDER BY orden ASC, nombre ASC");
+        $tipos = $wpdb->get_results("SELECT id, nombre, descripcion, categoria, icono, plazo_resolucion_dias, requiere_cita, permite_online, permite_presencial, precio, estado, orden, created_at FROM {$this->tabla_tipos_tramite} ORDER BY orden ASC, nombre ASC");
 
         echo '<p>' . __('Aquí se gestionan los diferentes tipos de trámites disponibles.', 'flavor-chat-ia') . '</p>';
 
@@ -1383,7 +1383,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $tipo_id = absint($request->get_param('id'));
 
         $tipo = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_tipos_tramite} WHERE id = %d AND estado = 'activo'",
+            "SELECT id, nombre, descripcion, categoria, icono, color, plazo_resolucion_dias, requiere_cita, permite_online, permite_presencial, precio, estado, orden, created_at, requisitos, documentos_requeridos, tasa
+             FROM {$this->tabla_tipos_tramite}
+             WHERE id = %d AND estado = 'activo'",
             $tipo_id
         ));
 
@@ -1392,7 +1394,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         }
 
         $campos_formulario = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_campos_formulario} WHERE tipo_tramite_id = %d AND activo = 1 ORDER BY orden ASC",
+            "SELECT id, tipo_tramite_id, nombre_campo, etiqueta, tipo_campo, opciones, requerido, placeholder, ayuda, orden, grupo, ancho, clase_css, condicion_visible, valor_defecto, patron_validacion, mensaje_error, es_readonly, es_obligatorio, activo
+             FROM {$this->tabla_campos_formulario}
+             WHERE tipo_tramite_id = %d AND activo = 1 ORDER BY orden ASC",
             $tipo_id
         ));
 
@@ -1754,7 +1758,8 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $where_publico = $es_admin ? '' : 'AND es_publico = 1';
 
         $historial = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_historial}
+            "SELECT id, expediente_id, usuario_id, accion, descripcion, metadata, fecha, es_publico, fecha_evento
+             FROM {$this->tabla_historial}
              WHERE expediente_id = %d {$where_publico}
              ORDER BY fecha_evento DESC",
             $expediente_id
@@ -1979,7 +1984,7 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
             $where[] = "visibilidad = 'publico'";
         }
 
-        $sql = "SELECT * FROM {$this->tabla_tipos_tramite} WHERE " . implode(' AND ', $where) . " ORDER BY orden ASC, nombre ASC LIMIT %d";
+        $sql = "SELECT id, nombre, descripcion, categoria, icono, color, plazo_resolucion_dias, requiere_cita, permite_online, permite_presencial, precio, estado, orden, created_at, requisitos, documentos_requeridos, tasa FROM {$this->tabla_tipos_tramite} WHERE " . implode(' AND ', $where) . " ORDER BY orden ASC, nombre ASC LIMIT %d";
         $valores[] = absint($atributos['limite']);
 
         $tipos = $wpdb->get_results($wpdb->prepare($sql, ...$valores));
@@ -2386,7 +2391,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
     private function get_tipo_tramite($tipo_id) {
         global $wpdb;
         return $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_tipos_tramite} WHERE id = %d",
+            "SELECT id, nombre, descripcion, categoria, icono, color, plazo_resolucion_dias, requiere_cita, permite_online, permite_presencial, precio, estado, orden, created_at, requisitos, documentos_requeridos, tasa
+             FROM {$this->tabla_tipos_tramite}
+             WHERE id = %d",
             $tipo_id
         ));
     }
@@ -2398,7 +2405,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $tipo = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_tipos_tramite} WHERE id = %d AND estado = 'activo'",
+            "SELECT id, nombre, descripcion, categoria, icono, color, plazo_resolucion_dias, requiere_cita, permite_online, permite_presencial, precio, estado, orden, created_at, requisitos, documentos_requeridos, tasa
+             FROM {$this->tabla_tipos_tramite}
+             WHERE id = %d AND estado = 'activo'",
             $tipo_id
         ));
 
@@ -2407,7 +2416,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         }
 
         $campos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_campos_formulario} WHERE tipo_tramite_id = %d AND activo = 1 ORDER BY orden ASC",
+            "SELECT id, tipo_tramite_id, nombre_campo, etiqueta, tipo_campo, opciones, requerido, placeholder, ayuda, orden, grupo, ancho, clase_css, condicion_visible, valor_defecto, patron_validacion, mensaje_error, es_readonly, es_obligatorio, activo
+             FROM {$this->tabla_campos_formulario}
+             WHERE tipo_tramite_id = %d AND activo = 1 ORDER BY orden ASC",
             $tipo_id
         ));
 
@@ -2433,7 +2444,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
     private function get_expediente($expediente_id) {
         global $wpdb;
         return $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_expedientes} WHERE id = %d",
+            "SELECT id, numero_expediente, tipo_tramite_id, user_id, solicitante_id, estado_actual, via_tramitacion, datos_formulario, observaciones, fecha_solicitud, fecha_creacion, fecha_resolucion, fecha_limite, asignado_a, prioridad, created_at, updated_at
+             FROM {$this->tabla_expedientes}
+             WHERE id = %d",
             $expediente_id
         ));
     }
@@ -2462,12 +2475,16 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         $expediente->datos_formulario = $expediente->datos_formulario ? json_decode($expediente->datos_formulario, true) : [];
 
         $expediente->documentos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_documentos} WHERE expediente_id = %d AND visible_solicitante = 1 ORDER BY fecha_subida ASC",
+            "SELECT id, expediente_id, nombre_archivo, ruta_archivo, tipo_documento, tamano_bytes, subido_por, fecha_subida, visible_solicitante
+             FROM {$this->tabla_documentos}
+             WHERE expediente_id = %d AND visible_solicitante = 1 ORDER BY fecha_subida ASC",
             $expediente_id
         ));
 
         $expediente->historial = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_historial} WHERE expediente_id = %d AND es_publico = 1 ORDER BY fecha_evento DESC",
+            "SELECT id, expediente_id, usuario_id, accion, descripcion, metadata, fecha, es_publico, fecha_evento
+             FROM {$this->tabla_historial}
+             WHERE expediente_id = %d AND es_publico = 1 ORDER BY fecha_evento DESC",
             $expediente_id
         ));
 
@@ -2480,7 +2497,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
     private function get_estado($codigo) {
         global $wpdb;
         return $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_estados} WHERE codigo = %s",
+            "SELECT codigo, nombre, descripcion, color, icono, es_inicial, es_final, permite_edicion, permite_documentos, notifica_solicitante, orden, activo
+             FROM {$this->tabla_estados}
+             WHERE codigo = %s",
             $codigo
         ));
     }
@@ -2548,7 +2567,9 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         global $wpdb;
 
         $campos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$this->tabla_campos_formulario} WHERE tipo_tramite_id = %d AND activo = 1",
+            "SELECT id, tipo_tramite_id, nombre_campo, etiqueta, tipo_campo, opciones, requerido, placeholder, ayuda, orden, grupo, ancho, clase_css, condicion_visible, valor_defecto, patron_validacion, mensaje_error, es_readonly, es_obligatorio, activo
+             FROM {$this->tabla_campos_formulario}
+             WHERE tipo_tramite_id = %d AND activo = 1",
             $tipo_id
         ));
 

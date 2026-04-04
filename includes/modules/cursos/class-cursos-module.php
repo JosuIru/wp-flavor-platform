@@ -335,7 +335,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $cursos = [];
         if (Flavor_Chat_Helpers::tabla_existe($tabla_cursos)) {
             $cursos = $wpdb->get_results(
-                "SELECT * FROM $tabla_cursos ORDER BY fecha_creacion DESC"
+                "SELECT id, instructor_id, titulo, slug, descripcion, imagen_destacada, estado, nivel, duracion_horas, precio, es_gratuito, max_alumnos, alumnos_inscritos, fecha_inicio, fecha_fin, destacado, valoracion_media, numero_valoraciones, fecha_creacion
+                 FROM $tabla_cursos
+                 ORDER BY fecha_creacion DESC"
             );
         }
 
@@ -865,7 +867,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
             $prepare_values[] = $busqueda;
         }
 
-        $sql = "SELECT * FROM $tabla_cursos WHERE " . implode(' AND ', $where) . " ORDER BY destacado DESC, fecha_inicio DESC LIMIT 50";
+        $sql = "SELECT id, instructor_id, titulo, slug, descripcion, imagen_destacada, estado, nivel, duracion_horas, precio, es_gratuito, max_alumnos, alumnos_inscritos, fecha_inicio, fecha_fin, destacado, valoracion_media, numero_valoraciones, fecha_creacion
+                FROM $tabla_cursos
+                WHERE " . implode(' AND ', $where) . " ORDER BY destacado DESC, fecha_inicio DESC LIMIT 50";
 
         if (!empty($prepare_values)) {
             $cursos = $wpdb->get_results($wpdb->prepare($sql, ...$prepare_values));
@@ -892,7 +896,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $tabla_lecciones = $wpdb->prefix . 'flavor_cursos_lecciones';
 
         $curso = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_cursos WHERE id = %d",
+            "SELECT id, instructor_id, titulo, slug, descripcion, imagen_destacada, estado, nivel, duracion_horas, precio, es_gratuito, max_alumnos, alumnos_inscritos, fecha_inicio, fecha_fin, destacado, valoracion_media, numero_valoraciones, fecha_creacion
+             FROM $tabla_cursos
+             WHERE id = %d",
             intval($params['curso_id'])
         ));
 
@@ -914,7 +920,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         if (is_user_logged_in()) {
             $tabla_inscripciones = $wpdb->prefix . 'flavor_cursos_inscripciones';
             $inscripcion = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM $tabla_inscripciones WHERE curso_id = %d AND usuario_id = %d",
+                "SELECT id, estado, progreso_porcentaje, precio_pagado, fecha_inscripcion, fecha_completado, valoracion, comentario_valoracion
+                 FROM $tabla_inscripciones
+                 WHERE curso_id = %d AND usuario_id = %d",
                 $curso->id,
                 get_current_user_id()
             ));
@@ -994,7 +1002,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Verificar que el curso existe y está abierto
         $curso = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_cursos WHERE id = %d AND estado IN ('publicado', 'en_curso')",
+            "SELECT id, precio, es_gratuito, alumnos_inscritos, max_alumnos
+             FROM $tabla_cursos
+             WHERE id = %d AND estado IN ('publicado', 'en_curso')",
             $curso_id
         ));
 
@@ -1128,7 +1138,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Obtener lección
         $leccion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_lecciones WHERE id = %d",
+            "SELECT id, curso_id, numero_orden, titulo, descripcion, tipo, contenido, video_url, archivo_url, duracion_minutos, puntos, es_gratuita
+             FROM $tabla_lecciones
+             WHERE id = %d",
             $leccion_id
         ));
 
@@ -1138,7 +1150,8 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Verificar inscripción (a menos que sea gratuita)
         $inscripcion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_inscripciones
+            "SELECT id
+             FROM $tabla_inscripciones
              WHERE curso_id = %d AND usuario_id = %d AND estado = 'activo'",
             $leccion->curso_id,
             $usuario_id
@@ -1152,7 +1165,8 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $progreso = null;
         if ($inscripcion) {
             $progreso = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM $tabla_progreso
+                "SELECT id, completada, tiempo_dedicado_minutos, puntuacion
+                 FROM $tabla_progreso
                  WHERE inscripcion_id = %d AND leccion_id = %d",
                 $inscripcion->id,
                 $leccion_id
@@ -1212,7 +1226,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Obtener lección
         $leccion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_lecciones WHERE id = %d",
+            "SELECT id, curso_id
+             FROM $tabla_lecciones
+             WHERE id = %d",
             $leccion_id
         ));
 
@@ -1222,7 +1238,8 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Verificar inscripción
         $inscripcion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_inscripciones
+            "SELECT id
+             FROM $tabla_inscripciones
              WHERE curso_id = %d AND usuario_id = %d AND estado = 'activo'",
             $leccion->curso_id,
             $usuario_id
@@ -1234,7 +1251,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Actualizar o crear progreso
         $progreso_existente = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_progreso WHERE inscripcion_id = %d AND leccion_id = %d",
+            "SELECT id, completada, tiempo_dedicado_minutos
+             FROM $tabla_progreso
+             WHERE inscripcion_id = %d AND leccion_id = %d",
             $inscripcion->id,
             $leccion_id
         ));
@@ -1352,7 +1371,8 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Verificar inscripción completada
         $inscripcion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_inscripciones
+            "SELECT id
+             FROM $tabla_inscripciones
              WHERE curso_id = %d AND usuario_id = %d AND estado = 'completado'",
             $curso_id,
             $usuario_id
@@ -1415,7 +1435,8 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Verificar inscripción completada
         $inscripcion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_inscripciones
+            "SELECT id
+             FROM $tabla_inscripciones
              WHERE curso_id = %d AND usuario_id = %d AND estado = 'completado'",
             $curso_id,
             $usuario_id
@@ -1427,7 +1448,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Verificar si ya tiene certificado
         $certificado_existente = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_certificados WHERE inscripcion_id = %d",
+            "SELECT id, codigo_verificacion, fecha_emision, pdf_url
+             FROM $tabla_certificados
+             WHERE inscripcion_id = %d",
             $inscripcion->id
         ));
 
@@ -1485,7 +1508,10 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
         $usuario_id = get_current_user_id();
 
         $cursos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_cursos WHERE instructor_id = %d ORDER BY fecha_creacion DESC",
+            "SELECT id, titulo, estado, alumnos_inscritos, valoracion_media, fecha_creacion
+             FROM $tabla_cursos
+             WHERE instructor_id = %d
+             ORDER BY fecha_creacion DESC",
             $usuario_id
         ));
 
@@ -1524,7 +1550,9 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Verificar que es el instructor
         $curso = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_cursos WHERE id = %d AND instructor_id = %d",
+            "SELECT id, es_gratuito, precio
+             FROM $tabla_cursos
+             WHERE id = %d AND instructor_id = %d",
             $curso_id,
             $usuario_id
         ));
@@ -1635,7 +1663,8 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
 
         // Verificar inscripción
         $inscripcion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_inscripciones
+            "SELECT id, progreso_porcentaje
+             FROM $tabla_inscripciones
              WHERE curso_id = %d AND usuario_id = %d AND estado IN ('activo', 'completado')",
             $curso_id,
             $usuario_id
@@ -2725,7 +2754,9 @@ KNOWLEDGE;
 
         // Obtener datos del curso
         $curso = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$tabla_cursos} WHERE id = %d AND estado = 'publicado'",
+            "SELECT id, instructor_id, titulo, descripcion, contenido, imagen_destacada, estado, nivel, duracion_horas, precio, es_gratuito, alumnos_inscritos, max_alumnos, fecha_inicio, fecha_fin, destacado, valoracion_media, numero_valoraciones, compartir_en_red, fecha_creacion
+             FROM {$tabla_cursos}
+             WHERE id = %d AND estado = 'publicado'",
             $curso_id
         ));
 

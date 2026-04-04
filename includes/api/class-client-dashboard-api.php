@@ -288,6 +288,28 @@ class Flavor_Client_Dashboard_API {
             ],
         ]);
 
+        // GET /wp-json/flavor/v1/client/shared-resources
+        // Recursos compartidos accesibles desde el dashboard movil
+        register_rest_route(self::API_NAMESPACE, '/client/shared-resources', [
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => [$this, 'get_shared_resources'],
+            'permission_callback' => [$this, 'check_user_authenticated'],
+            'args'                => [
+                'type' => [
+                    'description' => __('Filtrar por tipo de recurso compartido', 'flavor-chat-ia'),
+                    'type'        => 'string',
+                    'default'     => 'all',
+                ],
+                'limit' => [
+                    'description' => __('Numero maximo de recursos a devolver', 'flavor-chat-ia'),
+                    'type'        => 'integer',
+                    'default'     => 30,
+                    'minimum'     => 1,
+                    'maximum'     => 100,
+                ],
+            ],
+        ]);
+
         // GET /wp-json/flavor/v1/client/activity-map
         // Mapa de actividad de la plataforma
         register_rest_route(self::API_NAMESPACE, '/client/activity-map', [
@@ -1106,6 +1128,51 @@ class Flavor_Client_Dashboard_API {
     }
 
     // =========================================================================
+    // ENDPOINT: GET /client/shared-resources
+    // =========================================================================
+
+    /**
+     * Obtiene recursos compartidos relevantes para el usuario autenticado.
+     *
+     * @param WP_REST_Request $request Peticion REST.
+     * @return WP_REST_Response Respuesta con recursos compartidos.
+     */
+    public function get_shared_resources(WP_REST_Request $request) {
+        $id_usuario_actual = get_current_user_id();
+        $tipo_filtro       = sanitize_key((string) $request->get_param('type'));
+        $tipo_filtro       = $tipo_filtro ?: 'all';
+        $limite            = max(1, min(100, (int) $request->get_param('limit')));
+
+        $clave_cache = self::CACHE_PREFIX . 'shared_resources_' . $id_usuario_actual . '_' . $tipo_filtro . '_' . $limite;
+        $datos_cacheados = $this->get_cached_data($clave_cache);
+
+        if ($datos_cacheados !== false && (!defined('WP_DEBUG') || !WP_DEBUG)) {
+            return rest_ensure_response($datos_cacheados);
+        }
+
+        $recursos = $this->get_shared_resources_data($id_usuario_actual, $tipo_filtro, $limite);
+
+        $respuesta = [
+            'items' => $recursos,
+            'total' => count($recursos),
+            'filters' => [
+                'type' => $tipo_filtro,
+            ],
+            'available_types' => $this->get_shared_resource_available_types($id_usuario_actual),
+            'meta' => [
+                'generated_at' => current_time('c'),
+                'cache_ttl'    => self::CACHE_DURATION,
+            ],
+        ];
+
+        $respuesta = apply_filters('flavor_client_dashboard_shared_resources_rest', $respuesta, $id_usuario_actual, $tipo_filtro, $limite);
+
+        $this->set_cached_data($clave_cache, $respuesta);
+
+        return rest_ensure_response($respuesta);
+    }
+
+    // =========================================================================
     // ENDPOINT: GET /client/activity-map
     // =========================================================================
 
@@ -1400,6 +1467,181 @@ class Flavor_Client_Dashboard_API {
 
         // Fallback: formatear el ID como nombre
         return ucwords(str_replace(['-', '_'], ' ', $id_modulo));
+    }
+
+    /**
+     * Obtiene recursos compartidos listos para la API movil.
+     *
+     * @param int    $id_usuario  ID del usuario autenticado.
+     * @param string $tipo_filtro Tipo solicitado.
+     * @param int    $limite      Limite de resultados.
+     * @return array
+     */
+    private function get_shared_resources_data($id_usuario, $tipo_filtro = 'all', $limite = 30) {
+        global $wpdb;
+
+        $recursos = [];
+        $limite_eventos = max(3, min(10, (int) ceil($limite / 3)));
+        $limite_contenido = max(5, $limite * 2);
+
+        $tabla_eventos = $wpdb->prefix . 'flavor_network_events';
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_eventos)) {
+            $eventos = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT id, titulo, fecha_inicio, nodo_origen_nombre
+                     FROM {$tabla_eventos}
+                     WHERE estado = 'publicado' AND fecha_inicio >= %s
+                     ORDER BY fecha_inicio ASC
+                     LIMIT %d",
+                    current_time('mysql'),
+                    $limite_eventos
+                ),
+                ARRAY_A
+            );
+
+            foreach ($eventos as $evento) {
+                $recursos[] = [
+                    'id' => 'event-' . (int) $evento['id'],
+                    'resource_id' => (int) $evento['id'],
+                    'title' => $evento['titulo'],
+                    'type' => 'eventos',
+                    'raw_type' => 'evento',
+                    'source' => 'network_events',
+                    'origin' => $evento['nodo_origen_nombre'] ?: __('Red', 'flavor-chat-ia'),
+                    'date' => $evento['fecha_inicio'],
+                    'url' => home_url('/eventos/' . (int) $evento['id']),
+                    'icon' => 'event',
+                    'accent' => '#7C3AED',
+                    'summary' => __('Evento compartido desde la red', 'flavor-chat-ia'),
+                ];
+            }
+        }
+
+        $tabla_contenido = $wpdb->prefix . 'flavor_network_shared_content';
+        if (Flavor_Chat_Helpers::tabla_existe($tabla_contenido)) {
+            $contenidos = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT id, titulo, tipo, nodo_origen_nombre, created_at
+                     FROM {$tabla_contenido}
+                     WHERE estado = 'publicado'
+                     ORDER BY created_at DESC
+                     LIMIT %d",
+                    $limite_contenido
+                ),
+                ARRAY_A
+            );
+
+            foreach ($contenidos as $contenido) {
+                [$tipo_mapeado, $icono, $color, $resumen] = $this->map_shared_resource_type($contenido['tipo'] ?? '');
+
+                $recursos[] = [
+                    'id' => 'content-' . (int) $contenido['id'],
+                    'resource_id' => (int) $contenido['id'],
+                    'title' => $contenido['titulo'],
+                    'type' => $tipo_mapeado,
+                    'raw_type' => $contenido['tipo'],
+                    'source' => 'shared_content',
+                    'origin' => $contenido['nodo_origen_nombre'] ?: __('Red', 'flavor-chat-ia'),
+                    'date' => $contenido['created_at'],
+                    'url' => home_url('/recursos/' . (int) $contenido['id']),
+                    'icon' => $icono,
+                    'accent' => $color,
+                    'summary' => $resumen,
+                ];
+            }
+        }
+
+        usort($recursos, static function ($recurso_a, $recurso_b) {
+            return strtotime($recurso_b['date'] ?? '0') <=> strtotime($recurso_a['date'] ?? '0');
+        });
+
+        if ($tipo_filtro !== 'all') {
+            $recursos = array_values(array_filter($recursos, static function ($recurso) use ($tipo_filtro) {
+                return ($recurso['type'] ?? '') === $tipo_filtro;
+            }));
+        }
+
+        $recursos = array_slice($recursos, 0, $limite);
+
+        return apply_filters('flavor_client_dashboard_shared_resources_data', $recursos, $id_usuario, $tipo_filtro, $limite);
+    }
+
+    /**
+     * Devuelve tipos disponibles para recursos compartidos.
+     *
+     * @param int $id_usuario ID del usuario.
+     * @return array
+     */
+    private function get_shared_resource_available_types($id_usuario) {
+        $recursos = $this->get_shared_resources_data($id_usuario, 'all', 100);
+        $conteos = [];
+
+        foreach ($recursos as $recurso) {
+            $tipo = $recurso['type'] ?? 'general';
+            if (!isset($conteos[$tipo])) {
+                $conteos[$tipo] = 0;
+            }
+            $conteos[$tipo]++;
+        }
+
+        $tipos = [[
+            'id' => 'all',
+            'label' => __('Todos', 'flavor-chat-ia'),
+            'count' => count($recursos),
+        ]];
+
+        foreach ($conteos as $tipo => $cantidad) {
+            $tipos[] = [
+                'id' => $tipo,
+                'label' => $this->get_shared_resource_type_label($tipo),
+                'count' => $cantidad,
+            ];
+        }
+
+        return $tipos;
+    }
+
+    /**
+     * Mapea tipos internos de recursos a datos visuales para mobile.
+     *
+     * @param string $tipo Tipo original.
+     * @return array{0:string,1:string,2:string,3:string}
+     */
+    private function map_shared_resource_type($tipo) {
+        $tipo = sanitize_key((string) $tipo);
+
+        if (in_array($tipo, ['oferta', 'promocion', 'descuento'], true)) {
+            return ['ofertas', 'local_offer', '#F59E0B', __('Oferta o promocion compartida en la red', 'flavor-chat-ia')];
+        }
+
+        if (in_array($tipo, ['servicio', 'profesional'], true)) {
+            return ['servicios', 'handyman', '#0EA5E9', __('Servicio compartido por otra comunidad', 'flavor-chat-ia')];
+        }
+
+        if (in_array($tipo, ['recurso', 'documento', 'material'], true)) {
+            return ['recursos', 'inventory_2', '#10B981', __('Recurso compartido disponible en la red', 'flavor-chat-ia')];
+        }
+
+        return ['general', 'hub', '#6366F1', __('Contenido compartido desde la red', 'flavor-chat-ia')];
+    }
+
+    /**
+     * Etiqueta legible para un tipo de recurso compartido.
+     *
+     * @param string $tipo Tipo.
+     * @return string
+     */
+    private function get_shared_resource_type_label($tipo) {
+        $labels = [
+            'all' => __('Todos', 'flavor-chat-ia'),
+            'eventos' => __('Eventos', 'flavor-chat-ia'),
+            'ofertas' => __('Ofertas', 'flavor-chat-ia'),
+            'servicios' => __('Servicios', 'flavor-chat-ia'),
+            'recursos' => __('Recursos', 'flavor-chat-ia'),
+            'general' => __('General', 'flavor-chat-ia'),
+        ];
+
+        return $labels[$tipo] ?? ucwords(str_replace(['-', '_'], ' ', $tipo));
     }
 
     // =========================================================================

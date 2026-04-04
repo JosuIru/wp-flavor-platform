@@ -1059,11 +1059,20 @@ class Flavor_Chat_Socios_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen
      */
     public function maybe_create_tables() {
-        global $wpdb;
-        $tabla_socios = $wpdb->prefix . 'flavor_socios';
+        $db_version_key = 'flavor_socios_db_version';
+        $db_version = get_option($db_version_key, '');
 
-        if (!Flavor_Chat_Helpers::tabla_existe($tabla_socios)) {
-            $this->create_tables();
+        if ($db_version === '1.0.0') {
+            return; // Ya instaladas
+        }
+
+        $install_path = dirname(__FILE__) . '/install.php';
+        if (file_exists($install_path)) {
+            require_once $install_path;
+
+            if (function_exists('flavor_socios_crear_tablas')) {
+                flavor_socios_crear_tablas();
+            }
         }
     }
 
@@ -2286,29 +2295,6 @@ KNOWLEDGE;
             echo '<p>' . esc_html__('Gestión de solicitudes de nuevos miembros.', 'flavor-chat-ia') . '</p>';
             echo '<p><a href="' . esc_url(admin_url('admin.php?page=socios-dashboard')) . '" class="button">' . esc_html__('Volver al Dashboard', 'flavor-chat-ia') . '</a></p>';
             echo '</div>';
-        }
-    }
-
-    /**
-     * Crea las tablas del módulo si no existen
-     *
-     * @return void
-     */
-    public function maybe_create_tables() {
-        $db_version_key = 'flavor_socios_db_version';
-        $db_version = get_option($db_version_key, '');
-
-        if ($db_version === '1.0.0') {
-            return; // Ya instaladas
-        }
-
-        $install_path = dirname(__FILE__) . '/install.php';
-        if (file_exists($install_path)) {
-            require_once $install_path;
-
-            if (function_exists('flavor_socios_crear_tablas')) {
-                flavor_socios_crear_tablas();
-            }
         }
     }
 

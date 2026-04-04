@@ -60,21 +60,21 @@ class Flavor_VBP_Diagnostics {
         register_rest_route( self::NAMESPACE, '/diagnostics/status', array(
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => array( $this, 'get_status' ),
-            'permission_callback' => '__return_true', // Público para diagnóstico
+            'permission_callback' => array( $this, 'check_admin_permission' ),
         ) );
 
         // Verificar configuración de permalinks
         register_rest_route( self::NAMESPACE, '/diagnostics/permalinks', array(
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => array( $this, 'check_permalinks' ),
-            'permission_callback' => '__return_true',
+            'permission_callback' => array( $this, 'check_admin_permission' ),
         ) );
 
         // Listar templates disponibles
         register_rest_route( self::NAMESPACE, '/diagnostics/templates', array(
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => array( $this, 'list_templates' ),
-            'permission_callback' => '__return_true',
+            'permission_callback' => array( $this, 'check_admin_permission' ),
         ) );
 
         // Arreglar permalinks (requiere autenticación)
@@ -88,14 +88,14 @@ class Flavor_VBP_Diagnostics {
         register_rest_route( self::NAMESPACE, '/diagnostics/landing/(?P<id>\d+)', array(
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => array( $this, 'diagnose_landing' ),
-            'permission_callback' => '__return_true',
+            'permission_callback' => array( $this, 'check_admin_permission' ),
         ) );
 
         // Listar todas las landings con su estado
         register_rest_route( self::NAMESPACE, '/diagnostics/landings', array(
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => array( $this, 'list_landings_status' ),
-            'permission_callback' => '__return_true',
+            'permission_callback' => array( $this, 'check_admin_permission' ),
         ) );
     }
 
@@ -107,11 +107,8 @@ class Flavor_VBP_Diagnostics {
      */
     public function check_admin_permission( $request ) {
         // Verificar API key en header (misma que usa Claude API)
-        $settings = get_option( 'flavor_chat_ia_settings', array() );
-        $api_key = $settings['vbp_api_key'] ?? 'flavor-vbp-2024';
-
         $auth_header = $request->get_header( 'X-VBP-Key' );
-        if ( $auth_header === $api_key ) {
+        if ( flavor_verify_vbp_api_key( $auth_header ) ) {
             return true;
         }
 

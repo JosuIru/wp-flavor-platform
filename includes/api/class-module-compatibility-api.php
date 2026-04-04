@@ -138,7 +138,7 @@ class Flavor_Module_Compatibility_API {
             }
         }
 
-        return $api_key === 'flavor-vbp-2024';
+        return flavor_verify_vbp_api_key( $api_key );
     }
 
     /**

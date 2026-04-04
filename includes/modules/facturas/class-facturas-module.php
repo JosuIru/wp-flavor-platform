@@ -1031,11 +1031,22 @@ class Flavor_Chat_Facturas_Module extends Flavor_Chat_Module_Base {
      * Crea las tablas si no existen y actualiza estructura si es necesario
      */
     public function maybe_create_tables() {
-        if (!Flavor_Chat_Helpers::tabla_existe($this->tablas['facturas'])) {
-            $this->create_tables();
-        } else {
-            // Migrar: añadir columna cliente_tipo si no existe
+        $db_version_key = 'flavor_facturas_db_version';
+        $db_version = get_option($db_version_key, '');
+
+        if ($db_version === '1.0.0') {
+            // Ya instaladas, verificar migraciones
             $this->maybe_add_cliente_tipo_column();
+            return;
+        }
+
+        $install_path = dirname(__FILE__) . '/install.php';
+        if (file_exists($install_path)) {
+            require_once $install_path;
+
+            if (function_exists('flavor_facturas_crear_tablas')) {
+                flavor_facturas_crear_tablas();
+            }
         }
     }
 
@@ -3511,32 +3522,6 @@ KNOWLEDGE;
             ],
         ];
     }
-
-
-
-    /**
-     * Crea las tablas del módulo si no existen
-     *
-     * @return void
-     */
-    public function maybe_create_tables() {
-        $db_version_key = 'flavor_facturas_db_version';
-        $db_version = get_option($db_version_key, '');
-
-        if ($db_version === '1.0.0') {
-            return; // Ya instaladas
-        }
-
-        $install_path = dirname(__FILE__) . '/install.php';
-        if (file_exists($install_path)) {
-            require_once $install_path;
-
-            if (function_exists('flavor_facturas_crear_tablas')) {
-                flavor_facturas_crear_tablas();
-            }
-        }
-    }
-
     /**
      * Inicializa el dashboard tab del módulo
      */

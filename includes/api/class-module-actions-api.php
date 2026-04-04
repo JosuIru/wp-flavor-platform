@@ -237,8 +237,17 @@ class Flavor_Module_Actions_API {
             );
         }
 
-        // Para acciones no públicas, exigir nonce válido
+        // Para acciones no públicas, permitir auth móvil por token/bearer
+        // y exigir nonce solo en contextos web tradicionales.
         if (!$es_publica) {
+            $authorization = $request->get_header('Authorization');
+            $has_bearer_auth = is_string($authorization) && stripos($authorization, 'Bearer ') === 0;
+            $has_app_token = (bool) $request->get_header('X-Flavor-Token');
+
+            if ($has_bearer_auth || $has_app_token) {
+                return true;
+            }
+
             $nonce = $request->get_header('X-WP-Nonce');
             if (!$nonce || !wp_verify_nonce($nonce, 'wp_rest')) {
                 return new WP_Error(
@@ -488,9 +497,23 @@ class Flavor_Module_Actions_API {
             'active'      => true,
         ];
 
-        // Solo exponer acciones a administradores autenticados
-        if (current_user_can('manage_options')) {
+        // Exponer acciones y formularios a usuarios autenticados para apps móviles.
+        if (is_user_logged_in()) {
             $datos_respuesta_modulo['actions'] = $module->get_actions();
+
+            if (method_exists($module, 'get_form_config')) {
+                $form_configs = [];
+                foreach ($module->get_actions() as $action_name => $action_config) {
+                    $form_config = $module->get_form_config($action_name);
+                    if (!empty($form_config['fields'])) {
+                        $form_configs[$action_name] = $form_config;
+                    }
+                }
+
+                if (!empty($form_configs)) {
+                    $datos_respuesta_modulo['form_configs'] = $form_configs;
+                }
+            }
         }
 
         return new WP_REST_Response($datos_respuesta_modulo, 200);

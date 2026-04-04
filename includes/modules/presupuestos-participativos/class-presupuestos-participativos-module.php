@@ -342,7 +342,11 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         global $wpdb;
         $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
         $edicion = $wpdb->get_row(
-            "SELECT * FROM $tabla_ediciones WHERE fase = 'propuestas' ORDER BY anio DESC LIMIT 1"
+            "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+             FROM $tabla_ediciones
+             WHERE fase = 'propuestas'
+             ORDER BY anio DESC
+             LIMIT 1"
         );
 
         if (!$edicion) {
@@ -384,7 +388,11 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         global $wpdb;
         $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
         $edicion = $wpdb->get_row(
-            "SELECT * FROM $tabla_ediciones WHERE fase = 'votacion' ORDER BY anio DESC LIMIT 1"
+            "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+             FROM $tabla_ediciones
+             WHERE fase = 'votacion'
+             ORDER BY anio DESC
+             LIMIT 1"
         );
 
         if (!$edicion) {
@@ -396,7 +404,8 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         // Obtener proyectos disponibles para votar
         $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
         $proyectos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_proyectos
+            "SELECT id, titulo, descripcion, categoria, ubicacion, presupuesto_solicitado, votos_recibidos, estado, imagenes
+             FROM $tabla_proyectos
              WHERE edicion_id = %d AND estado IN ('validado', 'en_votacion')
              ORDER BY votos_recibidos DESC, fecha_creacion DESC
              LIMIT %d",
@@ -444,12 +453,17 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         // Obtener edición
         if (!empty($atributos['edicion'])) {
             $edicion = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM $tabla_ediciones WHERE anio = %d",
+                "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+                 FROM $tabla_ediciones
+                 WHERE anio = %d",
                 intval($atributos['edicion'])
             ));
         } else {
             $edicion = $wpdb->get_row(
-                "SELECT * FROM $tabla_ediciones ORDER BY anio DESC LIMIT 1"
+                "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+                 FROM $tabla_ediciones
+                 ORDER BY anio DESC
+                 LIMIT 1"
             );
         }
 
@@ -513,7 +527,8 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         $identificador_usuario = get_current_user_id();
 
         $propuestas = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_proyectos
+            "SELECT id, titulo, descripcion, categoria, estado, presupuesto_solicitado, fecha_creacion
+             FROM $tabla_proyectos
              WHERE proponente_id = %d
              ORDER BY fecha_creacion DESC
              LIMIT %d",
@@ -547,7 +562,11 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
 
         // Obtener ciclo activo
         $ciclo_activo = $wpdb->get_row(
-            "SELECT * FROM $tabla_ciclos WHERE estado = 'activo' ORDER BY fecha_inicio DESC LIMIT 1"
+            "SELECT id, anio, estado, fecha_inicio, fecha_fin
+             FROM $tabla_ciclos
+             WHERE estado = 'activo'
+             ORDER BY fecha_inicio DESC
+             LIMIT 1"
         );
 
         // Estadísticas generales
@@ -736,7 +755,11 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
 
         // Verificar fase de votación
         $edicion = $wpdb->get_row(
-            "SELECT * FROM $tabla_ediciones WHERE fase = 'votacion' ORDER BY anio DESC LIMIT 1"
+            "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+             FROM $tabla_ediciones
+             WHERE fase = 'votacion'
+             ORDER BY anio DESC
+             LIMIT 1"
         );
 
         if (!$edicion) {
@@ -791,7 +814,9 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
 
         // Verificar propiedad y estado
         $proyecto = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_proyectos WHERE id = %d AND proponente_id = %d",
+            "SELECT id, titulo, descripcion, categoria, presupuesto_solicitado, ubicacion, estado
+             FROM $tabla_proyectos
+             WHERE id = %d AND proponente_id = %d",
             $identificador_proyecto,
             $identificador_usuario
         ));
@@ -858,7 +883,9 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
 
         // Verificar propiedad y estado
         $proyecto = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_proyectos WHERE id = %d AND proponente_id = %d",
+            "SELECT id, estado
+             FROM $tabla_proyectos
+             WHERE id = %d AND proponente_id = %d",
             $identificador_proyecto,
             $identificador_usuario
         ));
@@ -998,7 +1025,11 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
 
         $edicion = $wpdb->get_row(
-            "SELECT * FROM $tabla_ediciones WHERE fase != 'cerrada' ORDER BY anio DESC LIMIT 1"
+            "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+             FROM $tabla_ediciones
+             WHERE fase != 'cerrada'
+             ORDER BY anio DESC
+             LIMIT 1"
         );
 
         if (!$edicion) {
@@ -1029,7 +1060,11 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         $valores_preparados[] = $offset;
 
         $proyectos = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_proyectos WHERE $clausula_where ORDER BY $orden_sql LIMIT %d OFFSET %d",
+            "SELECT id, titulo, descripcion, categoria, presupuesto_solicitado, votos_recibidos, estado, ubicacion, imagenes
+             FROM $tabla_proyectos
+             WHERE $clausula_where
+             ORDER BY $orden_sql
+             LIMIT %d OFFSET %d",
             ...$valores_preparados
         ));
 
@@ -1077,7 +1112,9 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         $tabla_proyectos = $wpdb->prefix . 'flavor_pp_proyectos';
 
         $proyecto = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_proyectos WHERE id = %d",
+            "SELECT id, titulo, descripcion, categoria, ubicacion, presupuesto_solicitado, estado, votos_recibidos, ranking, porcentaje_ejecucion, fecha_creacion, imagenes, proponente_id
+             FROM $tabla_proyectos
+             WHERE id = %d",
             $identificador_proyecto
         ));
 
@@ -1304,7 +1341,9 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         $identificador_proyecto = absint($request->get_param('id'));
 
         $proyecto = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_proyectos WHERE id = %d",
+            "SELECT id, titulo, descripcion, categoria, ambito, ubicacion, presupuesto_solicitado, presupuesto_aprobado, estado, votos_recibidos, ranking, es_viable, porcentaje_ejecucion, fecha_creacion
+             FROM $tabla_proyectos
+             WHERE id = %d",
             $identificador_proyecto
         ));
 
@@ -1386,12 +1425,18 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         // Obtener edición
         if ($identificador_edicion) {
             $edicion = $wpdb->get_row($wpdb->prepare(
-                "SELECT * FROM $tabla_ediciones WHERE id = %d",
+                "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+                 FROM $tabla_ediciones
+                 WHERE id = %d",
                 $identificador_edicion
             ));
         } else {
             $edicion = $wpdb->get_row(
-                "SELECT * FROM $tabla_ediciones WHERE fase != 'cerrada' ORDER BY anio DESC LIMIT 1"
+                "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+                 FROM $tabla_ediciones
+                 WHERE fase != 'cerrada'
+                 ORDER BY anio DESC
+                 LIMIT 1"
             );
         }
 
@@ -1405,7 +1450,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
 
         // Obtener proyectos ordenados por votos
         $proyectos_ranking = $wpdb->get_results($wpdb->prepare(
-            "SELECT p.*, COUNT(v.id) as total_votos
+            "SELECT p.id, p.titulo, p.descripcion, p.categoria, p.presupuesto_solicitado, p.estado, p.porcentaje_ejecucion, COUNT(v.id) as total_votos
              FROM $tabla_proyectos p
              LEFT JOIN $tabla_votos v ON p.id = v.proyecto_id
              WHERE p.edicion_id = %d AND p.estado IN ('validado', 'en_votacion', 'seleccionado', 'en_ejecucion', 'ejecutado')
@@ -1483,7 +1528,11 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         $valores_preparados[] = $limite_resultados;
 
         $propuestas = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM $tabla_proyectos WHERE $clausula_where ORDER BY fecha_creacion DESC LIMIT %d",
+            "SELECT id, titulo, descripcion, categoria, presupuesto_solicitado, estado, votos_recibidos, fecha_creacion
+             FROM $tabla_proyectos
+             WHERE $clausula_where
+             ORDER BY fecha_creacion DESC
+             LIMIT %d",
             ...$valores_preparados
         ));
 
@@ -1529,7 +1578,11 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
 
         // Obtener edición actual
         $edicion = $wpdb->get_row(
-            "SELECT * FROM $tabla_ediciones WHERE fase != 'cerrada' ORDER BY anio DESC LIMIT 1"
+            "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+             FROM $tabla_ediciones
+             WHERE fase != 'cerrada'
+             ORDER BY anio DESC
+             LIMIT 1"
         );
 
         if (!$edicion) {
@@ -1541,7 +1594,7 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         }
 
         $votos_usuario = $wpdb->get_results($wpdb->prepare(
-            "SELECT v.*, p.titulo, p.categoria, p.presupuesto_solicitado
+            "SELECT v.proyecto_id, v.prioridad, v.fecha_voto, p.titulo, p.categoria, p.presupuesto_solicitado
              FROM $tabla_votos v
              INNER JOIN $tabla_proyectos p ON v.proyecto_id = p.id
              WHERE v.usuario_id = %d AND v.edicion_id = %d
@@ -1611,7 +1664,11 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
 
         // Verificar fase de votación
         $edicion = $wpdb->get_row(
-            "SELECT * FROM $tabla_ediciones WHERE fase = 'votacion' ORDER BY anio DESC LIMIT 1"
+            "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+             FROM $tabla_ediciones
+             WHERE fase = 'votacion'
+             ORDER BY anio DESC
+             LIMIT 1"
         );
 
         if (!$edicion) {
@@ -1626,7 +1683,9 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
 
         // Verificar que el proyecto existe y está en votación
         $proyecto = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_proyectos WHERE id = %d AND edicion_id = %d AND estado IN ('validado', 'en_votacion')",
+            "SELECT id, edicion_id, estado
+             FROM $tabla_proyectos
+             WHERE id = %d AND edicion_id = %d AND estado IN ('validado', 'en_votacion')",
             $identificador_proyecto,
             $edicion->id
         ));
@@ -2649,7 +2708,9 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         $tabla_ediciones = $wpdb->prefix . 'flavor_pp_ediciones';
 
         $proyecto = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_proyectos WHERE id = %d",
+            "SELECT id, edicion_id, titulo, descripcion, categoria, ubicacion, presupuesto_solicitado, estado, votos_recibidos, ranking, porcentaje_ejecucion, fecha_creacion, fecha_inicio_ejecucion, fecha_fin_ejecucion, fecha_actualizacion, imagenes, proponente_id
+             FROM $tabla_proyectos
+             WHERE id = %d",
             $proyecto_id
         ));
 
@@ -2661,7 +2722,9 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         }
 
         $edicion = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM $tabla_ediciones WHERE id = %d",
+            "SELECT id, anio, fase, presupuesto_total, presupuesto_gastado, fecha_inicio_propuestas, fecha_fin_propuestas, fecha_inicio_votacion, fecha_fin_votacion
+             FROM $tabla_ediciones
+             WHERE id = %d",
             $proyecto->edicion_id
         ));
 
