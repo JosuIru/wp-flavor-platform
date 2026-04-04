@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../../core/utils/flavor_url_launcher.dart';
+import '../../../../core/widgets/flavor_image_viewer.dart';
+import '../../../../core/widgets/flavor_state_widgets.dart';
 import '../../../../core/services/chat_service.dart';
 
 /// Widget de burbuja de mensaje tipo WhatsApp/Telegram
@@ -197,7 +200,7 @@ class MessageBubble extends StatelessWidget {
   }
 
   Widget _buildImageMessage(BuildContext context, ColorScheme colorScheme) {
-    final imageUrl = message.metadata?['url'] as String?;
+    final imageUrl = message.metadata?['url'] as String? ?? message.mediaUrl;
     final thumbnail = message.metadata?['thumbnail'] as String?;
 
     return ClipRRect(
@@ -217,7 +220,7 @@ class MessageBubble extends StatelessWidget {
                   width: 250,
                   height: 200,
                   color: Colors.grey[300],
-                  child: const Center(child: CircularProgressIndicator()),
+                  child: const FlavorLoadingState(),
                 ),
                 errorWidget: (_, __, ___) => Container(
                   width: 250,
@@ -277,7 +280,7 @@ class MessageBubble extends StatelessWidget {
             ),
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.black54,
               shape: BoxShape.circle,
             ),
@@ -355,28 +358,38 @@ class MessageBubble extends StatelessWidget {
 
   Widget _buildAudioMessage(BuildContext context, ColorScheme colorScheme) {
     final filename = message.metadata?['filename'] as String? ?? 'Audio';
+    final audioUrl = message.metadata?['url'] as String? ?? message.mediaUrl;
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isMe
-            ? colorScheme.primary.withOpacity(0.15)
-            : colorScheme.surfaceContainerHighest,
-        borderRadius: _getBorderRadius(),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.audiotrack, size: 32),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(filename, style: const TextStyle(fontWeight: FontWeight.w500)),
-              _buildTimeAndStatus(colorScheme),
-            ],
-          ),
-        ],
+    return InkWell(
+      onTap: audioUrl == null ? null : () => _openExternalUrl(context, audioUrl),
+      borderRadius: _getBorderRadius(),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isMe
+              ? colorScheme.primary.withOpacity(0.15)
+              : colorScheme.surfaceContainerHighest,
+          borderRadius: _getBorderRadius(),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.audiotrack, size: 32),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(filename, style: const TextStyle(fontWeight: FontWeight.w500)),
+                if (audioUrl != null)
+                  const Text(
+                    'Toca para abrir',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                _buildTimeAndStatus(colorScheme),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -384,44 +397,54 @@ class MessageBubble extends StatelessWidget {
   Widget _buildFileMessage(BuildContext context, ColorScheme colorScheme) {
     final filename = message.metadata?['filename'] as String? ?? 'Archivo';
     final size = message.metadata?['size'] as int? ?? 0;
+    final fileUrl = message.metadata?['url'] as String? ?? message.mediaUrl;
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isMe
-            ? colorScheme.primary.withOpacity(0.15)
-            : colorScheme.surfaceContainerHighest,
-        borderRadius: _getBorderRadius(),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: colorScheme.primary.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(8),
+    return InkWell(
+      onTap: fileUrl == null ? null : () => _openExternalUrl(context, fileUrl),
+      borderRadius: _getBorderRadius(),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isMe
+              ? colorScheme.primary.withOpacity(0.15)
+              : colorScheme.surfaceContainerHighest,
+          borderRadius: _getBorderRadius(),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: colorScheme.primary.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(Icons.insert_drive_file, color: colorScheme.primary),
             ),
-            child: Icon(Icons.insert_drive_file, color: colorScheme.primary),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                filename,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                _formatFileSize(size),
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-              _buildTimeAndStatus(colorScheme),
-            ],
-          ),
-        ],
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  filename,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  _formatFileSize(size),
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                if (fileUrl != null)
+                  const Text(
+                    'Toca para abrir',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                _buildTimeAndStatus(colorScheme),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -430,44 +453,52 @@ class MessageBubble extends StatelessWidget {
     final lat = message.metadata?['latitude'] as double?;
     final lng = message.metadata?['longitude'] as double?;
     final address = message.metadata?['address'] as String?;
+    final hasCoordinates = lat != null && lng != null;
 
-    return ClipRRect(
+    return InkWell(
+      onTap: hasCoordinates ? () => _openMapLocation(context, lat, lng) : null,
       borderRadius: _getBorderRadius(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Mapa estático
-          Container(
-            width: 250,
-            height: 150,
-            color: Colors.grey[300],
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                if (lat != null && lng != null)
-                  // TODO: Usar mapa real
-                  const Icon(Icons.map, size: 64, color: Colors.grey),
-                const Icon(Icons.location_on, size: 48, color: Colors.red),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(10),
-            color: isMe
-                ? colorScheme.primary.withOpacity(0.15)
-                : colorScheme.surfaceContainerHighest,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (address != null) ...[
-                  Text(address, style: const TextStyle(fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 4),
+      child: ClipRRect(
+        borderRadius: _getBorderRadius(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 250,
+              height: 150,
+              color: Colors.grey[300],
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (hasCoordinates)
+                    const Icon(Icons.map, size: 64, color: Colors.grey),
+                  const Icon(Icons.location_on, size: 48, color: Colors.red),
                 ],
-                _buildTimeAndStatus(colorScheme),
-              ],
+              ),
             ),
-          ),
-        ],
+            Container(
+              padding: const EdgeInsets.all(10),
+              color: isMe
+                  ? colorScheme.primary.withOpacity(0.15)
+                  : colorScheme.surfaceContainerHighest,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (address != null) ...[
+                    Text(address, style: const TextStyle(fontWeight: FontWeight.w500)),
+                    const SizedBox(height: 4),
+                  ],
+                  if (hasCoordinates)
+                    const Text(
+                      'Toca para abrir en mapas',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  _buildTimeAndStatus(colorScheme),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -671,7 +702,7 @@ class MessageBubble extends StatelessWidget {
   String _formatDuration(int seconds) {
     final minutes = seconds ~/ 60;
     final secs = seconds % 60;
-    return '${minutes}:${secs.toString().padLeft(2, '0')}';
+    return '$minutes:${secs.toString().padLeft(2, '0')}';
   }
 
   String _formatFileSize(int bytes) {
@@ -684,19 +715,29 @@ class MessageBubble extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => Scaffold(
-          backgroundColor: Colors.black,
-          appBar: AppBar(
-            backgroundColor: Colors.black,
-            iconTheme: const IconThemeData(color: Colors.white),
-          ),
-          body: Center(
-            child: InteractiveViewer(
-              child: CachedNetworkImage(imageUrl: url),
-            ),
-          ),
+        builder: (_) => FlavorImageViewer(
+          images: [
+            FlavorImageViewerItem(url: url),
+          ],
         ),
       ),
+    );
+  }
+
+  Future<void> _openExternalUrl(BuildContext context, String url) async {
+    await FlavorUrlLauncher.openExternal(
+      context,
+      url,
+      errorMessage: 'No se pudo abrir el archivo.',
+    );
+  }
+
+  Future<void> _openMapLocation(BuildContext context, double lat, double lng) async {
+    final uri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+    await FlavorUrlLauncher.openExternalUri(
+      context,
+      uri,
+      errorMessage: 'No se pudo abrir la ubicacion.',
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart';
 import '../../core/providers/admin_modules_provider.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 import 'admin_reservations_screen.dart';
 import 'camps/camps_management_screen.dart';
 import 'module_placeholder_screen.dart';
@@ -31,6 +32,8 @@ import '../modules/socios/socios_screen.dart';
 import '../modules/talleres/talleres_screen.dart';
 import '../modules/tramites/tramites_screen.dart';
 
+part 'modules_admin_screen_dynamic_parts.dart';
+
 /// Dashboard dinámico de módulos administrativos
 ///
 /// Lee los módulos activos desde la API y muestra métricas
@@ -43,6 +46,37 @@ class ModulesAdminScreenDynamic extends ConsumerStatefulWidget {
 }
 
 class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDynamic> {
+  String _localizedModuleSubtitle(AppLocalizations i18n, _ModuleMetrics metric) {
+    switch (metric.id) {
+      case 'grupos-consumo':
+        return i18n.adminMetricOpenOrders;
+      case 'banco-tiempo':
+        return i18n.adminMetricActiveServices;
+      case 'marketplace':
+        return i18n.adminMetricActiveListings;
+      case 'eventos':
+        return i18n.adminModuleScheduledEvents;
+      case 'cursos':
+      case 'biblioteca':
+        return i18n.adminModuleActive;
+      default:
+        switch (metric.subtitle) {
+          case '__OPEN_ORDERS__':
+            return i18n.adminMetricOpenOrders;
+          case '__ACTIVE_SERVICES__':
+            return i18n.adminMetricActiveServices;
+          case '__ACTIVE_LISTINGS__':
+            return i18n.adminMetricActiveListings;
+          case '__SCHEDULED_EVENTS__':
+            return i18n.adminModuleScheduledEvents;
+          case '__ACTIVE_MODULE__':
+            return i18n.adminModuleActive;
+          default:
+            return metric.subtitle;
+        }
+    }
+  }
+
   late Future<List<_ModuleMetrics>> _futureMetrics;
 
   @override
@@ -101,7 +135,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
           return _ModuleMetrics(
             id: moduleId,
             name: moduleName,
-            subtitle: 'Pedidos abiertos',
+            subtitle: '__OPEN_ORDERS__',
             value: count.toString(),
             icon: Icons.shopping_basket_outlined,
             color: Colors.green,
@@ -116,7 +150,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
           return _ModuleMetrics(
             id: moduleId,
             name: moduleName,
-            subtitle: 'Servicios activos',
+            subtitle: '__ACTIVE_SERVICES__',
             value: count.toString(),
             icon: Icons.volunteer_activism,
             color: Colors.blue,
@@ -131,7 +165,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
           return _ModuleMetrics(
             id: moduleId,
             name: moduleName,
-            subtitle: 'Anuncios activos',
+            subtitle: '__ACTIVE_LISTINGS__',
             value: count.toString(),
             icon: Icons.storefront_outlined,
             color: Colors.orange,
@@ -146,7 +180,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
           return _ModuleMetrics(
             id: moduleId,
             name: moduleName,
-            subtitle: 'Eventos programados',
+            subtitle: '__SCHEDULED_EVENTS__',
             value: count.toString(),
             icon: Icons.event,
             color: Colors.purple,
@@ -159,7 +193,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
         return _ModuleMetrics(
           id: moduleId,
           name: moduleName,
-          subtitle: 'Módulo activo',
+          subtitle: '__ACTIVE_MODULE__',
           value: '✓',
           icon: Icons.school,
           color: Colors.indigo,
@@ -169,7 +203,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
         return _ModuleMetrics(
           id: moduleId,
           name: moduleName,
-          subtitle: 'Módulo activo',
+          subtitle: '__ACTIVE_MODULE__',
           value: '✓',
           icon: Icons.library_books,
           color: Colors.teal,
@@ -180,7 +214,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
         return _ModuleMetrics(
           id: moduleId,
           name: moduleName,
-          subtitle: 'Módulo activo',
+          subtitle: '__ACTIVE_MODULE__',
           value: '✓',
           icon: Icons.extension,
           color: Colors.grey,
@@ -198,7 +232,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final modulesAsync = ref.watch(adminModulesProvider);
 
     return Scaffold(
@@ -208,7 +242,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _refresh,
-            tooltip: 'Actualizar',
+            tooltip: i18n.actualizar2e7be1,
           ),
         ],
       ),
@@ -216,7 +250,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
         onRefresh: _refresh,
         child: modulesAsync.when(
           data: (modules) => _buildContent(i18n, modules),
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const FlavorLoadingState(),
           error: (error, stack) => Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -224,7 +258,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
                 Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
                 const SizedBox(height: 16),
                 Text(
-                  'Error al cargar módulos',
+                  i18n.adminModulesLoadError,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
@@ -243,7 +277,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
                     _refresh();
                   },
                   icon: const Icon(Icons.refresh),
-                  label: const Text('Reintentar'),
+                  label: Text(i18n.commonRetry),
                 ),
               ],
             ),
@@ -262,12 +296,12 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
             Icon(Icons.extension_off, size: 64, color: Colors.grey.shade400),
             const SizedBox(height: 16),
             Text(
-              'No hay módulos activos',
+              i18n.adminModulesEmpty,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              'Activa módulos desde el panel de WordPress',
+              i18n.adminModulesEnableInWordPress,
               style: TextStyle(color: Colors.grey.shade600),
             ),
           ],
@@ -279,7 +313,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
       future: _futureMetrics,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const FlavorLoadingState();
         }
 
         if (snapshot.hasError) {
@@ -290,7 +324,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
                 Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
                 const SizedBox(height: 16),
                 Text(
-                  'Error al cargar métricas',
+                  i18n.adminModulesMetricsLoadError,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
@@ -316,7 +350,7 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
                 Icon(Icons.query_stats, size: 64, color: Colors.grey.shade400),
                 const SizedBox(height: 16),
                 Text(
-                  'Sin métricas disponibles',
+                  i18n.adminModulesDashboardEmpty,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -330,66 +364,10 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
           separatorBuilder: (_, __) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
             final metric = metrics[index];
-            return Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: InkWell(
-                onTap: () => _navigateToModule(context, metric.id, metric.name),
-                borderRadius: BorderRadius.circular(12),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 56,
-                        height: 56,
-                        decoration: BoxDecoration(
-                          color: metric.color.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          metric.icon,
-                          color: metric.color,
-                          size: 28,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              metric.name,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              metric.subtitle,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        metric.value,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: metric.color,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Icon(Icons.chevron_right, color: Colors.grey.shade400),
-                    ],
-                  ),
-                ),
-              ),
+            return _ModuleMetricsCard(
+              metric: metric,
+              subtitle: _localizedModuleSubtitle(i18n, metric),
+              onTap: () => _navigateToModule(context, metric.id, metric.name),
             );
           },
         );
@@ -398,140 +376,11 @@ class _ModulesAdminScreenDynamicState extends ConsumerState<ModulesAdminScreenDy
   }
 
   void _navigateToModule(BuildContext context, String moduleId, String moduleName) {
-    Widget? screen;
-
-    // Mapear módulos activos a sus pantallas
-    // Los IDs vienen del endpoint /app-discovery/v1/modules
-    switch (moduleId) {
-      // Módulos principales
-      case 'reservas':
-        screen = const AdminReservationsScreen();
-        break;
-      case 'facturas':
-        screen = const FacturasScreen();
-        break;
-      case 'fichaje_empleados':
-        screen = const FichajeEmpleadosScreen();
-        break;
-      case 'bares':
-        screen = const BaresScreen();
-        break;
-      case 'woocommerce':
-        screen = const WooCommerceAdminScreen();
-        break;
-      case 'campamentos':
-      case 'basabere-campamentos':
-        screen = const CampsManagementScreen();
-        break;
-
-      // Módulos comunitarios
-      case 'avisos_municipales':
-      case 'avisos-municipales':
-        screen = const AvisosMunicipalesScreen();
-        break;
-      case 'ayuda_vecinal':
-      case 'ayuda-vecinal':
-        screen = const AyudaVecinalScreen();
-        break;
-      case 'banco_tiempo':
-      case 'banco-tiempo':
-        screen = const BancoTiempoScreen();
-        break;
-      case 'grupos_consumo':
-      case 'grupos-consumo':
-        screen = const GruposConsumoScreen();
-        break;
-      case 'huertos_urbanos':
-      case 'huertos-urbanos':
-        screen = const HuertosUrbanosScreen();
-        break;
-
-      // Servicios y recursos
-      case 'biblioteca':
-        screen = const BibliotecaScreen();
-        break;
-      case 'espacios_comunes':
-      case 'espacios-comunes':
-        screen = const EspaciosComunesScreen();
-        break;
-      case 'eventos':
-        screen = const EventosScreen();
-        break;
-      case 'cursos':
-        screen = const CursosScreen();
-        break;
-      case 'talleres':
-        screen = const TalleresScreen();
-        break;
-
-      // Movilidad y transporte
-      case 'bicicletas_compartidas':
-      case 'bicicletas-compartidas':
-        screen = const BicicletasCompartidasScreen();
-        break;
-      case 'parkings':
-        screen = const ParkingsScreen();
-        break;
-
-      // Comunicación
-      case 'chat_grupos':
-      case 'chat-grupos':
-        screen = const ChatGruposScreen();
-        break;
-      case 'chat_interno':
-      case 'chat-interno':
-        screen = const ChatInternoScreen();
-        break;
-
-      // Gestión y servicios
-      case 'incidencias':
-        screen = const IncidenciasScreen();
-        break;
-      case 'tramites':
-        screen = const TramitesScreen();
-        break;
-      case 'marketplace':
-        screen = const MarketplaceScreen();
-        break;
-      case 'socios':
-        screen = const SociosScreen();
-        break;
-      case 'reciclaje':
-        screen = const ReciclajeScreen();
-        break;
-
-      // Otros módulos sin pantalla específica
-      default:
-        screen = ModulePlaceholderScreen(
-          moduleId: moduleId,
-          moduleName: moduleName,
-        );
-    }
-
-    // Navegar a la pantalla
+    final screen = _buildAdminModuleScreen(moduleId, moduleName);
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => screen!,
+        builder: (_) => screen,
       ),
     );
   }
-}
-
-/// Métricas de un módulo
-class _ModuleMetrics {
-  final String id;
-  final String name;
-  final String subtitle;
-  final String value;
-  final IconData icon;
-  final Color color;
-
-  const _ModuleMetrics({
-    required this.id,
-    required this.name,
-    required this.subtitle,
-    required this.value,
-    required this.icon,
-    required this.color,
-  });
 }

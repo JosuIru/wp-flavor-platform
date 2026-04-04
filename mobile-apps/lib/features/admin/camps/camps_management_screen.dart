@@ -3,10 +3,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/models/models.dart';
 import '../../../core/widgets/common_widgets.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
 import 'camp_form_screen.dart';
 import 'camp_inscriptions_screen.dart';
 
@@ -21,7 +21,7 @@ class CampsManagementScreen extends ConsumerStatefulWidget {
 
 class _CampsManagementScreenState
     extends ConsumerState<CampsManagementScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   List<Map<String, dynamic>> _camps = [];
   bool _isLoading = false;
 
@@ -47,11 +47,9 @@ class _CampsManagementScreenState
     } else {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.error ?? 'Error al cargar campamentos'),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          response.error ?? 'Error al cargar campamentos',
         );
       }
     }
@@ -64,22 +62,18 @@ class _CampsManagementScreenState
     if (response.success) {
       _loadCamps(); // Recargar lista
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(currentIsActive
-                ? 'Campamento desactivado'
-                : 'Campamento activado'),
-            backgroundColor: Colors.green,
-          ),
+        FlavorSnackbar.showSuccess(
+          context,
+          currentIsActive
+              ? 'Campamento desactivado'
+              : 'Campamento activado',
         );
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.error ?? 'Error al cambiar estado'),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          response.error ?? 'Error al cambiar estado',
         );
       }
     }
@@ -117,19 +111,16 @@ class _CampsManagementScreenState
     if (response.success) {
       _loadCamps(); // Recargar lista
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(i18n.campamentoEliminadoCorrectamenteEe685d),
-            backgroundColor: Colors.green,
-          ),
+        FlavorSnackbar.showSuccess(
+          context,
+          i18n.campamentoEliminadoCorrectamenteEe685d,
         );
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.error ?? 'Error al eliminar campamento'),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          response.error ?? 'Error al eliminar campamento',
         );
       }
     }
@@ -153,8 +144,8 @@ class _CampsManagementScreenState
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(AppLocalizations.of(context)!.enlaceWeb,
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Text(i18n.enlaceWeb,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               SelectableText(shareableUrl),
@@ -165,9 +156,9 @@ class _CampsManagementScreenState
                     child: OutlinedButton.icon(
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: shareableUrl));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(i18n.enlaceCopiadoAlPortapapelesBdfefc),
-                          ),
+                        FlavorSnackbar.showInfo(
+                          context,
+                          i18n.enlaceCopiadoAlPortapapelesBdfefc,
                         );
                       },
                       icon: const Icon(Icons.copy),
@@ -192,8 +183,8 @@ class _CampsManagementScreenState
               const SizedBox(height: 16),
               const Divider(),
               const SizedBox(height: 8),
-              Text(AppLocalizations.of(context)!.enlaceParaAppMovil,
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Text(i18n.enlaceParaAppMovil,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               SelectableText(appDeeplink),
@@ -201,9 +192,9 @@ class _CampsManagementScreenState
               OutlinedButton.icon(
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: appDeeplink));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(i18n.deeplinkCopiadoAlPortapapeles3bd450),
-                    ),
+                  FlavorSnackbar.showInfo(
+                    context,
+                    i18n.deeplinkCopiadoAlPortapapeles3bd450,
                   );
                 },
                 icon: const Icon(Icons.copy),
@@ -221,12 +212,9 @@ class _CampsManagementScreenState
       );
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:
-                Text(response.error ?? 'Error al obtener enlace compartible'),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          response.error ?? 'Error al obtener enlace compartible',
         );
       }
     }
@@ -281,7 +269,7 @@ class _CampsManagementScreenState
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(i18n.gestiNDeCampamentos247af6),
@@ -363,7 +351,7 @@ class _CampManagementCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final inscriptionOpen = camp['inscription_open'] == true;
     final inscriptionCount = camp['inscription_count'] ?? 0;
     final priceTotal = camp['price_total'] ?? 0.0;

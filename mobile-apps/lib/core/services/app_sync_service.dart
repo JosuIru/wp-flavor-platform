@@ -10,12 +10,14 @@
 /// Esto permite que una única APK se transforme en la app
 /// de cualquier sitio que tenga el plugin Flavor Chat IA.
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../api/api_client.dart';
 import '../config/server_config.dart';
 import '../config/dynamic_config.dart';
 import '../utils/logger.dart';
+import 'app_manifest_service.dart';
 import '../../features/layouts/layout_config.dart';
 
 /// Estado de sincronización
@@ -65,6 +67,8 @@ class AppSyncService {
   static final AppSyncService _instance = AppSyncService._internal();
   factory AppSyncService() => _instance;
   AppSyncService._internal();
+
+  final AppManifestService _manifestService = AppManifestService();
 
   // Estado
   SyncStatus _status = SyncStatus.idle;
@@ -116,6 +120,8 @@ class AppSyncService {
   /// Inicializar servicio (cargar estado desde caché)
   Future<void> initialize() async {
     try {
+      await _manifestService.initialize();
+
       final prefs = await SharedPreferences.getInstance();
       _currentSiteUrl = prefs.getString(_siteUrlKey);
       _currentSiteName = prefs.getString(_siteNameKey);
@@ -127,6 +133,12 @@ class AppSyncService {
 
       // Cargar configuración de layouts desde caché
       await LayoutService().loadFromCache();
+      await DynamicConfig().loadFromCache();
+
+      // Si no hay estado propio, reutilizar el más moderno del manifiesto.
+      _currentSiteUrl ??= _manifestService.currentSiteUrl;
+      _currentSiteName ??= _manifestService.currentSiteName;
+      _lastSyncTime ??= _manifestService.lastSyncTime;
 
       Logger.i('Initialized - Site: $_currentSiteName', tag: 'AppSync');
     } catch (e) {
@@ -178,6 +190,45 @@ class AppSyncService {
       await ServerConfig.setCurrentBusiness(
         serverUrl: cleanUrl,
         apiNamespace: preferredApiNamespace,
+      );
+
+      // Intentar primero la sincronización unificada por manifest.
+      final manifestResult = await _manifestService.syncWithSite(
+        cleanUrl,
+        forceRefresh: true,
+      );
+
+      if (manifestResult.success && manifestResult.manifest != null) {
+        final manifest = manifestResult.manifest!;
+        final siteName = (manifestResult.siteName != null &&
+                manifestResult.siteName!.trim().isNotEmpty)
+            ? manifestResult.siteName!
+            : cleanUrl;
+
+        _currentSiteUrl = cleanUrl;
+        _currentSiteName = siteName;
+        _lastSyncTime = DateTime.now();
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_siteUrlKey, cleanUrl);
+        await prefs.setString(_siteNameKey, siteName);
+        await prefs.setInt(_lastSyncKey, DateTime.now().millisecondsSinceEpoch);
+        await prefs.setString(_siteInfoKey, jsonEncode(_buildSiteInfoFromManifest(manifest)));
+
+        _status = SyncStatus.success;
+        _notifyListeners();
+
+        Logger.i('Sync successful via manifest - $siteName', tag: 'AppSync');
+
+        return SyncResult.success(
+          siteName: siteName,
+          siteInfo: _buildSiteInfoFromManifest(manifest),
+        );
+      }
+
+      Logger.w(
+        'Manifest sync unavailable, using discovery fallback: ${manifestResult.error}',
+        tag: 'AppSync',
       );
 
       // Crear cliente API
@@ -305,7 +356,7 @@ class AppSyncService {
         await prefs.setString(_siteNameKey, siteName);
       }
       await prefs.setInt(_lastSyncKey, DateTime.now().millisecondsSinceEpoch);
-      await prefs.setString(_siteInfoKey, siteInfo.toString());
+      await prefs.setString(_siteInfoKey, jsonEncode(siteInfo));
 
       _status = SyncStatus.success;
       _notifyListeners();
@@ -339,6 +390,8 @@ class AppSyncService {
 
   /// Desconectar del sitio actual
   Future<void> disconnect() async {
+    await _manifestService.disconnect();
+
     _currentSiteUrl = null;
     _currentSiteName = null;
     _lastSyncTime = null;
@@ -390,6 +443,28 @@ class AppSyncService {
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
     );
+  }
+
+  Map<String, dynamic> _buildSiteInfoFromManifest(Map<String, dynamic> manifest) {
+    final branding = manifest['branding'] as Map<String, dynamic>? ?? <String, dynamic>{};
+    final theme = manifest['theme'] as Map<String, dynamic>? ?? <String, dynamic>{};
+    final navigation = manifest['navigation'] as Map<String, dynamic>? ?? <String, dynamic>{};
+    final modules = manifest['modules'] as Map<String, dynamic>? ?? <String, dynamic>{};
+
+    return {
+      'site_name': branding['app_name'] ?? manifest['site']?['name'],
+      'app_name': branding['app_name'] ?? manifest['site']?['name'],
+      'theme': theme['light'] ?? theme,
+      'layouts': {
+        'available': navigation.isNotEmpty,
+        'navigation': navigation['bottom_tabs'],
+        'drawer': navigation['drawer'],
+      },
+      'modules': modules['active'] ?? const <dynamic>[],
+      'features': manifest['features'] ?? const <String, dynamic>{},
+      'sync_source': 'manifest_v2',
+      'config_version': manifest['version'],
+    };
   }
 }
 

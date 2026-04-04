@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class PodcastScreen extends ConsumerStatefulWidget {
   const PodcastScreen({super.key});
@@ -70,34 +71,17 @@ class _PodcastScreenState extends ConsumerState<PodcastScreen> {
         ],
       ),
       body: _cargando
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _mensajeError != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.podcasts, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(_mensajeError!),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _cargarDatos,
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
+              ? FlavorErrorState(
+                  message: _mensajeError!,
+                  onRetry: _cargarDatos,
+                  icon: Icons.podcasts,
                 )
               : _listaEpisodios.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.podcasts,
-                              size: 64, color: Colors.grey.shade400),
-                          const SizedBox(height: 16),
-                          const Text('No hay episodios disponibles'),
-                        ],
-                      ),
+                  ? const FlavorEmptyState(
+                      icon: Icons.podcasts,
+                      title: 'No hay episodios disponibles',
                     )
                   : RefreshIndicator(
                       onRefresh: _cargarDatos,
@@ -198,7 +182,7 @@ class _PodcastScreenState extends ConsumerState<PodcastScreen> {
                     Row(
                       children: [
                         if (duracionEpisodio.isNotEmpty) ...[
-                          Icon(Icons.access_time,
+                          const Icon(Icons.access_time,
                               size: 14, color: Colors.grey),
                           const SizedBox(width: 4),
                           Text(
@@ -211,7 +195,7 @@ class _PodcastScreenState extends ConsumerState<PodcastScreen> {
                         ],
                         if (fechaPublicacion.isNotEmpty) ...[
                           const SizedBox(width: 12),
-                          Icon(Icons.calendar_today,
+                          const Icon(Icons.calendar_today,
                               size: 14, color: Colors.grey),
                           const SizedBox(width: 4),
                           Text(
@@ -553,13 +537,10 @@ class _EpisodioDetalleScreenState extends ConsumerState<EpisodioDetalleScreen> {
                               ),
                               child: IconButton(
                                 icon: _cargandoAudio
-                                    ? SizedBox(
-                                        width: 32,
-                                        height: 32,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 3,
-                                          color: Colors.white,
-                                        ),
+                                    ? const FlavorInlineSpinner(
+                                        size: 32,
+                                        strokeWidth: 3,
+                                        color: Colors.white,
                                       )
                                     : Icon(
                                         _estaReproduciendo

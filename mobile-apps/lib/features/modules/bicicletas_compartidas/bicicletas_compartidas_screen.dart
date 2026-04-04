@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
+import '../../../core/utils/flavor_url_launcher.dart';
+import '../../../core/utils/map_launch_helper.dart';
+import '../../../core/widgets/flavor_confirm_dialog.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class BicicletasCompartidasScreen extends ConsumerStatefulWidget {
   const BicicletasCompartidasScreen({super.key});
@@ -27,7 +31,7 @@ class _BicicletasCompartidasScreenState extends ConsumerState<BicicletasComparti
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
 
     return DefaultTabController(
       length: 3,
@@ -46,12 +50,16 @@ class _BicicletasCompartidasScreenState extends ConsumerState<BicicletasComparti
           future: _future,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
+              return const FlavorLoadingState();
             }
 
             final response = snapshot.data!;
             if (!response.success || response.data == null) {
-              return Center(child: Text(i18n.bicicletasError));
+              return FlavorErrorState(
+                message: i18n.bicicletasError,
+                onRetry: _refresh,
+                icon: Icons.pedal_bike_outlined,
+              );
             }
 
             final data = response.data!;
@@ -74,7 +82,10 @@ class _BicicletasCompartidasScreenState extends ConsumerState<BicicletasComparti
 
   Widget _buildEstacionesTab(BuildContext context, List<Map<String, dynamic>> estaciones, AppLocalizations i18n) {
     if (estaciones.isEmpty) {
-      return Center(child: Text(i18n.bicicletasNoStations));
+      return FlavorEmptyState(
+        icon: Icons.place_outlined,
+        title: i18n.bicicletasNoStations,
+      );
     }
 
     return RefreshIndicator(
@@ -136,17 +147,10 @@ class _BicicletasCompartidasScreenState extends ConsumerState<BicicletasComparti
 
   Widget _buildActivoTab(BuildContext context, Map<String, dynamic>? alquiler, AppLocalizations i18n) {
     if (alquiler == null || alquiler.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.pedal_bike, size: 80, color: Colors.grey[400]),
-            const SizedBox(height: 16),
-            Text(i18n.bicicletasNoActiveRental, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Text(i18n.bicicletasRentFromStations, style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ),
+      return FlavorEmptyState(
+        icon: Icons.pedal_bike,
+        title: i18n.bicicletasNoActiveRental,
+        message: i18n.bicicletasRentFromStations,
       );
     }
 
@@ -203,7 +207,10 @@ class _BicicletasCompartidasScreenState extends ConsumerState<BicicletasComparti
 
   Widget _buildHistorialTab(BuildContext context, List<Map<String, dynamic>> historial, AppLocalizations i18n) {
     if (historial.isEmpty) {
-      return Center(child: Text(i18n.bicicletasNoHistory));
+      return FlavorEmptyState(
+        icon: Icons.history,
+        title: i18n.bicicletasNoHistory,
+      );
     }
 
     return RefreshIndicator(
@@ -274,73 +281,75 @@ class _BicicletasCompartidasScreenState extends ConsumerState<BicicletasComparti
     if (latitud != null && longitud != null) {
       final lat = double.tryParse(latitud.toString()) ?? 0;
       final lng = double.tryParse(longitud.toString()) ?? 0;
-      final url = Uri.parse('https://www.openstreetmap.org/?mlat=$lat&mlon=$lng#map=18/$lat/$lng');
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
-      } else {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No se puede abrir el mapa')),
-          );
-        }
-      }
+      final url = MapLaunchHelper.buildConfiguredMapUri(
+        lat,
+        lng,
+        query: nombre,
+      );
+      if (!context.mounted) return;
+      await FlavorUrlLauncher.openExternalUri(
+        context,
+        url,
+        errorMessage: 'No se puede abrir el mapa',
+      );
     } else {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ubicación no disponible para "$nombre"')),
+        FlavorSnackbar.showInfo(
+          context,
+          'Ubicación no disponible para "$nombre"',
         );
       }
     }
   }
 
   Future<void> _alquilarBicicleta(BuildContext context, Map<String, dynamic> estacion) async {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final api = ref.read(apiClientProvider);
     final estacionId = (estacion['id'] as num?)?.toInt() ?? 0;
 
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(i18n.bicicletasRentBike),
-        content: Text('${i18n.bicicletasRentConfirm} ${estacion['nombre']}?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(i18n.commonCancel)),
-          FilledButton(onPressed: () => Navigator.pop(context, true), child: Text(i18n.commonConfirm)),
-        ],
-      ),
+    final confirm = await FlavorConfirmDialog.show(
+      context,
+      title: i18n.bicicletasRentBike,
+      message: '${i18n.bicicletasRentConfirm} ${estacion['nombre']}?',
+      cancelLabel: i18n.commonCancel,
+      confirmLabel: i18n.commonConfirm,
     );
 
     if (confirm == true && context.mounted) {
       final response = await api.alquilarBicicleta(estacionId);
       if (context.mounted) {
         final msg = response.success ? i18n.bicicletasRentSuccess : (response.error ?? i18n.bicicletasRentError);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+        if (response.success) {
+          FlavorSnackbar.showSuccess(context, msg);
+        } else {
+          FlavorSnackbar.showError(context, msg);
+        }
         if (response.success) _refresh();
       }
     }
   }
 
   Future<void> _finalizarAlquiler(BuildContext context) async {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final api = ref.read(apiClientProvider);
 
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(i18n.bicicletasEndRental),
-        content: Text(i18n.bicicletasEndConfirm),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(i18n.commonCancel)),
-          FilledButton(onPressed: () => Navigator.pop(context, true), child: Text(i18n.commonConfirm)),
-        ],
-      ),
+    final confirm = await FlavorConfirmDialog.show(
+      context,
+      title: i18n.bicicletasEndRental,
+      message: i18n.bicicletasEndConfirm,
+      cancelLabel: i18n.commonCancel,
+      confirmLabel: i18n.commonConfirm,
     );
 
     if (confirm == true && context.mounted) {
       final response = await api.finalizarAlquilerBicicleta();
       if (context.mounted) {
         final msg = response.success ? i18n.bicicletasEndSuccess : (response.error ?? i18n.bicicletasEndError);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+        if (response.success) {
+          FlavorSnackbar.showSuccess(context, msg);
+        } else {
+          FlavorSnackbar.showError(context, msg);
+        }
         if (response.success) _refresh();
       }
     }

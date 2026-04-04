@@ -3,6 +3,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
+import '../../../core/utils/flavor_mutation.dart';
+import '../../../core/widgets/flavor_confirm_dialog.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class MarketplaceScreen extends ConsumerStatefulWidget {
   const MarketplaceScreen({super.key});
@@ -33,7 +36,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final api = ref.read(apiClientProvider);
 
     return DefaultTabController(
@@ -67,107 +70,114 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
     return FutureBuilder<ApiResponse<Map<String, dynamic>>>(
       future: _future,
       builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final response = snapshot.data!;
-          if (!response.success || response.data == null) {
-            return Center(child: Text(i18n.marketplaceError));
-          }
+        if (!snapshot.hasData) {
+          return const FlavorLoadingState();
+        }
+        final response = snapshot.data!;
+        if (!response.success || response.data == null) {
+          return FlavorErrorState(
+            message: i18n.marketplaceError,
+            onRetry: _refresh,
+            icon: Icons.storefront_outlined,
+          );
+        }
 
-          final anuncios = (response.data!['anuncios'] as List<dynamic>? ?? [])
-              .whereType<Map<String, dynamic>>()
-              .toList();
+        final anuncios = (response.data!['anuncios'] as List<dynamic>? ?? [])
+            .whereType<Map<String, dynamic>>()
+            .toList();
 
-          if (anuncios.isEmpty) {
-            return Center(child: Text(i18n.marketplaceEmpty));
-          }
+        if (anuncios.isEmpty) {
+          return FlavorEmptyState(
+            icon: Icons.storefront_outlined,
+            title: i18n.marketplaceEmpty,
+          );
+        }
 
-          return RefreshIndicator(
-            onRefresh: _refresh,
-            child: ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: anuncios.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final anuncio = anuncios[index];
-                final title = anuncio['titulo']?.toString() ?? '';
-                final precio = anuncio['precio'];
-                final tipo = anuncio['tipo']?.toString() ?? '';
-                final ubicacion = anuncio['ubicacion']?.toString() ?? '';
-                final imagen = anuncio['imagen']?.toString() ?? '';
+        return RefreshIndicator(
+          onRefresh: _refresh,
+          child: ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: anuncios.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final anuncio = anuncios[index];
+              final title = anuncio['titulo']?.toString() ?? '';
+              final precio = anuncio['precio'];
+              final tipo = anuncio['tipo']?.toString() ?? '';
+              final ubicacion = anuncio['ubicacion']?.toString() ?? '';
+              final imagen = anuncio['imagen']?.toString() ?? '';
 
-                return Card(
-                  elevation: 1,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      children: [
-                        if (imagen.isNotEmpty)
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              imagen,
-                              width: 72,
-                              height: 72,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        else
-                          Container(
+              return Card(
+                elevation: 1,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      if (imagen.isNotEmpty)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            imagen,
                             width: 72,
                             height: 72,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surfaceVariant,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(Icons.storefront_outlined),
+                            fit: BoxFit.cover,
                           ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title,
-                                style: Theme.of(context).textTheme.titleMedium,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 6),
-                              if (tipo.isNotEmpty)
-                                Chip(
-                                  label: Text(tipo),
-                                  visualDensity: VisualDensity.compact,
-                                ),
-                              const SizedBox(height: 6),
-                              Row(
-                                children: [
-                                  if (precio != null)
-                                    Text(
-                                      '${precio.toString()} €',
-                                      style: Theme.of(context).textTheme.labelMedium,
-                                    ),
-                                  const Spacer(),
-                                  if (ubicacion.isNotEmpty)
-                                    Text(
-                                      ubicacion,
-                                      style: Theme.of(context).textTheme.labelSmall,
-                                    ),
-                                ],
-                              ),
-                            ],
+                        )
+                      else
+                        Container(
+                          width: 72,
+                          height: 72,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(8),
                           ),
+                          child: const Icon(Icons.storefront_outlined),
                         ),
-                      ],
-                    ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: Theme.of(context).textTheme.titleMedium,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 6),
+                            if (tipo.isNotEmpty)
+                              Chip(
+                                label: Text(tipo),
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                if (precio != null)
+                                  Text(
+                                    '${precio.toString()} €',
+                                    style: Theme.of(context).textTheme.labelMedium,
+                                  ),
+                                const Spacer(),
+                                if (ubicacion.isNotEmpty)
+                                  Text(
+                                    ubicacion,
+                                    style: Theme.of(context).textTheme.labelSmall,
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
-          );
-        },
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -176,11 +186,15 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
       future: _futureMine,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const FlavorLoadingState();
         }
         final response = snapshot.data!;
         if (!response.success || response.data == null) {
-          return Center(child: Text(i18n.marketplaceMineError));
+          return FlavorErrorState(
+            message: i18n.marketplaceMineError,
+            onRetry: _refresh,
+            icon: Icons.storefront_outlined,
+          );
         }
 
         final anuncios = (response.data!['anuncios'] as List<dynamic>? ?? [])
@@ -188,7 +202,10 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
             .toList();
 
         if (anuncios.isEmpty) {
-          return Center(child: Text(i18n.marketplaceMineEmpty));
+          return FlavorEmptyState(
+            icon: Icons.storefront_outlined,
+            title: i18n.marketplaceMineEmpty,
+          );
         }
 
         return ListView.separated(
@@ -224,27 +241,29 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                       ubicacion: ubicacion,
                     );
                   } else if (value == 'sold') {
-                    final res = await api.markMarketplaceSold(id);
-                    if (context.mounted) {
-                      final msg = res.success
-                          ? i18n.marketplaceMarkSoldSuccess
-                          : (res.error ?? i18n.marketplaceMarkSoldError);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(msg)),
-                      );
-                      if (res.success) _refresh();
-                    }
+                    await FlavorMutation.runApiResponse(
+                      context,
+                      request: () => api.markMarketplaceSold(id),
+                      successMessage: i18n.marketplaceMarkSoldSuccess,
+                      fallbackErrorMessage: i18n.marketplaceMarkSoldError,
+                      onSuccess: _refresh,
+                    );
                   } else if (value == 'delete') {
-                    final res = await api.deleteMarketplaceAnuncio(id);
-                    if (context.mounted) {
-                      final msg = res.success
-                          ? i18n.marketplaceDeleteSuccess
-                          : (res.error ?? i18n.marketplaceDeleteError);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(msg)),
-                      );
-                      if (res.success) _refresh();
-                    }
+                    final confirmed = await FlavorConfirmDialog.show(
+                      context,
+                      title: i18n.marketplaceDelete,
+                      message: '¿Estás seguro?',
+                      destructive: true,
+                    );
+                    if (confirmed != true) return;
+                    if (!mounted) return;
+                    await FlavorMutation.runApiResponse(
+                      this.context,
+                      request: () => api.deleteMarketplaceAnuncio(id),
+                      successMessage: i18n.marketplaceDeleteSuccess,
+                      fallbackErrorMessage: i18n.marketplaceDeleteError,
+                      onSuccess: _refresh,
+                    );
                   }
                 },
                 itemBuilder: (context) => [
@@ -270,7 +289,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
   }
 
   Future<void> _showCreateAnuncio(BuildContext context, ApiClient api) async {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final titleController = TextEditingController();
     final descController = TextEditingController();
     final categoriaController = TextEditingController();
@@ -338,21 +357,21 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
 
     if (result == true) {
       final precio = double.tryParse(precioController.text.replaceAll(',', '.'));
-      final response = await api.createMarketplaceAnuncio(
-        titulo: titleController.text.trim(),
-        descripcion: descController.text.trim(),
-        tipo: tipoController.text.trim().isEmpty ? 'venta' : tipoController.text.trim(),
-        categoria: categoriaController.text.trim().isEmpty ? 'general' : categoriaController.text.trim(),
-        precio: precio,
-        ubicacion: ubicacionController.text.trim(),
-      );
-
-      if (context.mounted) {
-        final msg = response.success ? i18n.marketplaceCreateSuccess : (response.error ?? i18n.marketplaceCreateError);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-        if (response.success) {
-          _refresh();
-        }
+      if (mounted) {
+        await FlavorMutation.runApiResponse(
+          this.context,
+          request: () => api.createMarketplaceAnuncio(
+            titulo: titleController.text.trim(),
+            descripcion: descController.text.trim(),
+            tipo: tipoController.text.trim().isEmpty ? 'venta' : tipoController.text.trim(),
+            categoria: categoriaController.text.trim().isEmpty ? 'general' : categoriaController.text.trim(),
+            precio: precio,
+            ubicacion: ubicacionController.text.trim(),
+          ),
+          successMessage: i18n.marketplaceCreateSuccess,
+          fallbackErrorMessage: i18n.marketplaceCreateError,
+          onSuccess: _refresh,
+        );
       }
     }
 
@@ -374,7 +393,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
     double? precio,
     required String ubicacion,
   }) async {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final api = ref.read(apiClientProvider);
 
     final titleController = TextEditingController(text: titulo);
@@ -446,22 +465,22 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
 
     if (result == true) {
       final precioValue = double.tryParse(precioController.text.replaceAll(',', '.'));
-      final response = await api.updateMarketplaceAnuncio(
-        anuncioId: id,
-        titulo: titleController.text.trim(),
-        descripcion: descController.text.trim(),
-        tipo: tipoController.text.trim().isEmpty ? 'venta' : tipoController.text.trim(),
-        categoria: categoriaController.text.trim().isEmpty ? 'general' : categoriaController.text.trim(),
-        precio: precioValue,
-        ubicacion: ubicacionController.text.trim(),
-      );
-
-      if (context.mounted) {
-        final msg = response.success ? i18n.marketplaceUpdateSuccess : (response.error ?? i18n.marketplaceUpdateError);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-        if (response.success) {
-          _refresh();
-        }
+      if (mounted) {
+        await FlavorMutation.runApiResponse(
+          this.context,
+          request: () => api.updateMarketplaceAnuncio(
+            anuncioId: id,
+            titulo: titleController.text.trim(),
+            descripcion: descController.text.trim(),
+            tipo: tipoController.text.trim().isEmpty ? 'venta' : tipoController.text.trim(),
+            categoria: categoriaController.text.trim().isEmpty ? 'general' : categoriaController.text.trim(),
+            precio: precioValue,
+            ubicacion: ubicacionController.text.trim(),
+          ),
+          successMessage: i18n.marketplaceUpdateSuccess,
+          fallbackErrorMessage: i18n.marketplaceUpdateError,
+          onSuccess: _refresh,
+        );
       }
     }
 

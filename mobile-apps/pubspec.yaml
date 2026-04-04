@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.19.0
   url_launcher: ^6.2.2
   image_picker: ^1.0.7
+  file_picker: ^8.1.2
   webview_flutter: ^4.4.4
   connectivity_plus: ^5.0.2
   permission_handler: ^11.1.0
@@ -78,8 +79,8 @@ dependencies:
   # QR Code generation
   qr_flutter: ^4.1.0
 
-  # Add to device calendar (disabled temporarily due to Kotlin compatibility)
-  # add_2_calendar: ^3.0.1
+  # Add to device calendar
+  add_2_calendar: ^3.0.1
 
   # Maps launcher
   map_launcher: ^3.1.0

@@ -4,7 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla para crear/editar anuncios en Marketplace
 class MarketplaceFormScreen extends ConsumerStatefulWidget {
@@ -80,12 +81,8 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error al seleccionar imágenes: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (!mounted) return;
+      FlavorSnackbar.showError(context, 'Error al seleccionar imágenes: $e');
     }
   }
 
@@ -106,12 +103,8 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error al tomar foto: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (!mounted) return;
+      FlavorSnackbar.showError(context, 'Error al tomar foto: $e');
     }
   }
 
@@ -126,7 +119,6 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
       return;
     }
 
-    final i18n = AppLocalizations.of(context)!;
     setState(() => _isLoading = true);
 
     try {
@@ -155,11 +147,9 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
         } else {
           // Mostrar error pero permitir continuar sin imágenes
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Advertencia: ${uploadResponse.error ?? 'No se pudieron subir las imágenes'}'),
-                backgroundColor: Colors.orange,
-              ),
+            FlavorSnackbar.showInfo(
+              context,
+              'Advertencia: ${uploadResponse.error ?? 'No se pudieron subir las imágenes'}',
             );
           }
         }
@@ -179,40 +169,27 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
         setState(() => _isLoading = false);
 
         if (response.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(widget.anuncioId == null
-                  ? 'Anuncio creado correctamente'
-                  : 'Anuncio actualizado correctamente'),
-              backgroundColor: Colors.green,
-            ),
+          FlavorSnackbar.showSuccess(
+            context,
+            widget.anuncioId == null
+                ? 'Anuncio creado correctamente'
+                : 'Anuncio actualizado correctamente',
           );
           Navigator.pop(context, true); // true = cambios realizados
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.error ?? 'Error al guardar'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          FlavorSnackbar.showError(context, response.error ?? 'Error al guardar');
         }
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error de conexión: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        FlavorSnackbar.showError(context, 'Error de conexión: $e');
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -227,11 +204,11 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
             // Título
             TextFormField(
               controller: _tituloController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Título del anuncio *',
                 hintText: 'Ej: Bicicleta montaña seminueva',
-                prefixIcon: const Icon(Icons.title),
-                border: const OutlineInputBorder(),
+                prefixIcon: Icon(Icons.title),
+                border: OutlineInputBorder(),
               ),
               maxLength: 100,
               validator: (value) {
@@ -252,7 +229,7 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
                 border: OutlineInputBorder(),
               ),
               items: _categorias.map((cat) {
-                return DropdownMenuItem(
+                return DropdownMenuItem<String>(
                   value: cat['value'],
                   child: Text(cat['label']!),
                 );
@@ -275,7 +252,7 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
                 border: OutlineInputBorder(),
                 suffixText: '€',
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'El precio es obligatorio';
@@ -411,14 +388,7 @@ class _MarketplaceFormScreenState extends ConsumerState<MarketplaceFormScreen> {
             FilledButton.icon(
               onPressed: _isLoading ? null : _guardarAnuncio,
               icon: _isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
+                  ? const FlavorInlineSpinner(color: Colors.white)
                   : const Icon(Icons.check),
               label: Text(_isLoading
                   ? 'Guardando...'

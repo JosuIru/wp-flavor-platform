@@ -1,10 +1,8 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../api/api_client.dart';
 import '../config/app_config.dart';
+import '../utils/flavor_url_launcher.dart';
 
 /// Información de actualización disponible
 class UpdateInfo {
@@ -98,17 +96,16 @@ class AppUpdateService {
     }
 
     try {
-      final packageInfo = await PackageInfo.fromPlatform();
       final platform = Platform.isIOS ? 'ios' : 'android';
-      final appType = AppConfig.isAdminApp ? 'admin' : 'client';
+      const appType = AppConfig.isAdminApp ? 'admin' : 'client';
 
       final response = await _apiClient.get(
         '/flavor-app/v2/releases/check-update',
         queryParameters: {
           'app_type': appType,
           'platform': platform,
-          'current_version': packageInfo.version,
-          'current_build': packageInfo.buildNumber,
+          'current_version': AppConfig.appVersion,
+          'current_build': AppConfig.appBuild,
         },
       );
 
@@ -135,12 +132,7 @@ class AppUpdateService {
     if (_lastUpdateInfo?.downloadUrl == null) return false;
 
     try {
-      final uri = Uri.parse(_lastUpdateInfo!.downloadUrl!);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-        return true;
-      }
-      return false;
+      return FlavorUrlLauncher.openExternalRaw(_lastUpdateInfo!.downloadUrl!);
     } catch (e) {
       debugPrint('[AppUpdateService] Error abriendo descarga: $e');
       return false;
@@ -154,12 +146,7 @@ class AppUpdateService {
           ? 'https://apps.apple.com/app/id${AppConfig.appStoreId}'
           : 'https://play.google.com/store/apps/details?id=${AppConfig.packageName}';
 
-      final uri = Uri.parse(storeUrl);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-        return true;
-      }
-      return false;
+      return FlavorUrlLauncher.openExternalRaw(storeUrl);
     } catch (e) {
       debugPrint('[AppUpdateService] Error abriendo store: $e');
       return false;
@@ -206,8 +193,8 @@ class UpdateDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return WillPopScope(
-      onWillPop: () async => !updateInfo.isMandatory,
+    return PopScope(
+      canPop: !updateInfo.isMandatory,
       child: AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         contentPadding: const EdgeInsets.all(24),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla para crear/editar servicios en Banco de Tiempo
 class BancoTiempoFormScreen extends ConsumerStatefulWidget {
@@ -65,7 +65,6 @@ class _BancoTiempoFormScreenState extends ConsumerState<BancoTiempoFormScreen> {
       return;
     }
 
-    final i18n = AppLocalizations.of(context)!;
     setState(() => _isLoading = true);
 
     try {
@@ -126,7 +125,6 @@ class _BancoTiempoFormScreenState extends ConsumerState<BancoTiempoFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -179,11 +177,11 @@ class _BancoTiempoFormScreenState extends ConsumerState<BancoTiempoFormScreen> {
             // Título
             TextFormField(
               controller: _tituloController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Título del servicio *',
                 hintText: 'Ej: Clases de inglés, Ayuda con compras...',
-                prefixIcon: const Icon(Icons.title),
-                border: const OutlineInputBorder(),
+                prefixIcon: Icon(Icons.title),
+                border: OutlineInputBorder(),
               ),
               maxLength: 100,
               validator: (value) {
@@ -204,7 +202,7 @@ class _BancoTiempoFormScreenState extends ConsumerState<BancoTiempoFormScreen> {
                 border: OutlineInputBorder(),
               ),
               items: _categorias.map((cat) {
-                return DropdownMenuItem(
+                return DropdownMenuItem<String>(
                   value: cat['value'],
                   child: Text(cat['label']!),
                 );
@@ -227,7 +225,7 @@ class _BancoTiempoFormScreenState extends ConsumerState<BancoTiempoFormScreen> {
                 border: OutlineInputBorder(),
                 suffixText: 'horas',
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'La duración es obligatoria';
@@ -269,14 +267,7 @@ class _BancoTiempoFormScreenState extends ConsumerState<BancoTiempoFormScreen> {
             FilledButton.icon(
               onPressed: _isLoading ? null : _guardarServicio,
               icon: _isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
+                  ? const FlavorInlineSpinner(color: Colors.white)
                   : const Icon(Icons.check),
               label: Text(_isLoading
                   ? 'Guardando...'

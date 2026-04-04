@@ -3151,6 +3151,29 @@ class ApiClient {
   }
 
   // ==========================================
+  // CLIENT SHARED RESOURCES
+  // ==========================================
+
+  Future<ApiResponse<Map<String, dynamic>>> getClientSharedResources({
+    String? type,
+    int limit = 30,
+  }) async {
+    try {
+      final serverUrl = await ServerConfig.getServerUrl();
+      final response = await _dio.get(
+        '$serverUrl/wp-json/flavor/v1/client/shared-resources',
+        queryParameters: {
+          if (type != null && type.isNotEmpty) 'type': type,
+          'limit': limit,
+        },
+      );
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  // ==========================================
   // CHAT GRUPOS
   // ==========================================
 
@@ -3209,12 +3232,18 @@ class ApiClient {
   Future<ApiResponse<Map<String, dynamic>>> sendChatGrupoMensaje({
     required int grupoId,
     required String mensaje,
+    List<Map<String, dynamic>>? adjuntos,
+    int? respondeA,
   }) async {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
         '$serverUrl/wp-json/flavor/v1/chat-grupos/$grupoId/mensajes',
-        data: {'mensaje': mensaje},
+        data: {
+          'mensaje': mensaje,
+          if (adjuntos != null && adjuntos.isNotEmpty) 'adjuntos': adjuntos,
+          if (respondeA != null) 'responde_a': respondeA,
+        },
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -3257,12 +3286,20 @@ class ApiClient {
   Future<ApiResponse<Map<String, dynamic>>> sendChatInternoMensaje({
     required int conversacionId,
     required String mensaje,
+    String tipo = 'texto',
+    Map<String, dynamic>? adjuntos,
+    int? respondeA,
   }) async {
     try {
       final serverUrl = await ServerConfig.getServerUrl();
       final response = await _dio.post(
         '$serverUrl/wp-json/flavor/v1/chat-interno/conversacion/$conversacionId/enviar',
-        data: {'mensaje': mensaje},
+        data: {
+          'mensaje': mensaje,
+          'tipo': tipo,
+          if (adjuntos != null) 'adjuntos': adjuntos,
+          if (respondeA != null) 'responde_a': respondeA,
+        },
       );
       return ApiResponse.success(response.data);
     } on DioException catch (e) {
@@ -3835,6 +3872,93 @@ class ApiClient {
     } on DioException catch (e) {
       return ApiResponse.error(_handleError(e));
     }
+  }
+
+  /// Sube un único archivo al endpoint indicado.
+  Future<ApiResponse<Map<String, dynamic>>> uploadFile(
+    String endpoint,
+    String filePath,
+    String fieldName, {
+    String? fileName,
+    String? context,
+  }) async {
+    try {
+      final resolvedName = fileName ?? filePath.split('/').last;
+      final formData = FormData.fromMap({
+        fieldName: await MultipartFile.fromFile(
+          filePath,
+          filename: resolvedName,
+        ),
+        if (context != null && context.isNotEmpty) 'context': context,
+      });
+
+      final response = await _dio.post(
+        endpoint,
+        data: formData,
+        options: Options(
+          contentType: 'multipart/form-data',
+          sendTimeout: const Duration(seconds: 120),
+          receiveTimeout: const Duration(seconds: 120),
+        ),
+      );
+
+      return ApiResponse.success(response.data);
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Sube un archivo al endpoint móvil común y devuelve metadata normalizada.
+  Future<ApiResponse<Map<String, dynamic>>> uploadSingleFile(
+    dynamic file, {
+    String context = 'general',
+    String fieldName = 'file',
+  }) async {
+    try {
+      String path;
+      String filename;
+
+      if (file is String) {
+        path = file;
+        filename = file.split('/').last;
+      } else {
+        path = file.path;
+        filename = file.name ?? path.split('/').last;
+      }
+
+      final response = await uploadFile(
+        '/media/upload',
+        path,
+        fieldName,
+        fileName: filename,
+        context: context,
+      );
+
+      if (!response.success || response.data == null) {
+        return ApiResponse.error(response.error ?? 'Error al subir archivo');
+      }
+
+      final urls = response.data!['urls'];
+      if (urls is List && urls.isNotEmpty && urls.first is Map<String, dynamic>) {
+        return ApiResponse.success(urls.first as Map<String, dynamic>);
+      }
+
+      return ApiResponse.error('Respuesta de subida inválida');
+    } on DioException catch (e) {
+      return ApiResponse.error(_handleError(e));
+    }
+  }
+
+  /// Sube una sola imagen y devuelve su metadata normalizada.
+  Future<ApiResponse<Map<String, dynamic>>> uploadSingleImage(
+    dynamic image, {
+    String context = 'general',
+  }) async {
+    return uploadSingleFile(
+      image,
+      context: context,
+      fieldName: 'image',
+    );
   }
 
   String _handleError(DioException error) {

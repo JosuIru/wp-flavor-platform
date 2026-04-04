@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import '../../../../core/widgets/flavor_initials_avatar.dart';
+import '../../../../core/widgets/flavor_state_widgets.dart';
 import '../../../../core/services/chat_service.dart';
 
 /// Estado de la llamada
@@ -38,8 +40,6 @@ class CallScreen extends ConsumerStatefulWidget {
 
 class _CallScreenState extends ConsumerState<CallScreen>
     with SingleTickerProviderStateMixin {
-  final ChatService _chatService = ChatService();
-
   CallState _callState = CallState.connecting;
   Duration _callDuration = Duration.zero;
   Timer? _durationTimer;
@@ -241,7 +241,7 @@ class _CallScreenState extends ConsumerState<CallScreen>
                       : null,
                   child: widget.recipientAvatar == null
                       ? Text(
-                          widget.recipientName[0].toUpperCase(),
+                          FlavorInitialsAvatar.initialsFor(widget.recipientName),
                           style: const TextStyle(fontSize: 48),
                         )
                       : null,
@@ -736,7 +736,7 @@ class _GroupCallScreenState extends ConsumerState<GroupCallScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(color: Colors.white),
+            FlavorInlineSpinner(color: Colors.white),
             SizedBox(height: 16),
             Text(
               'Esperando participantes...',
@@ -792,7 +792,7 @@ class _GroupCallScreenState extends ConsumerState<GroupCallScreen> {
                         ? CachedNetworkImageProvider(member.avatarUrl!)
                         : null,
                     child: member.avatarUrl == null
-                        ? Text(member.name[0].toUpperCase())
+                        ? Text(FlavorInitialsAvatar.initialsFor(member.name))
                         : null,
                   ),
           ),
@@ -822,7 +822,7 @@ class _GroupCallScreenState extends ConsumerState<GroupCallScreen> {
             Container(
               color: Colors.black54,
               child: const Center(
-                child: CircularProgressIndicator(color: Colors.white),
+                child: FlavorInlineSpinner(color: Colors.white),
               ),
             ),
         ],
@@ -905,12 +905,11 @@ class _ParticipantState {
   final GroupMember member;
   bool isConnected;
   bool isSpeaking;
-  bool isMuted;
+  bool isMuted = false;
 
   _ParticipantState({
     required this.member,
     this.isConnected = false,
     this.isSpeaking = false,
-    this.isMuted = false,
   });
 }

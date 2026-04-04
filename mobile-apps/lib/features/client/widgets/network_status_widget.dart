@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/utils/haptics.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 /// Estado de la conexion de red
 enum NetworkConnectionStatus {
@@ -628,7 +628,7 @@ class NetworkStatusWidget extends ConsumerWidget {
       ),
       child: const Padding(
         padding: EdgeInsets.all(32),
-        child: Center(child: CircularProgressIndicator()),
+        child: FlavorLoadingState(),
       ),
     );
   }

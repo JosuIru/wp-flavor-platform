@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/utils/flavor_contact_launcher.dart';
+import '../../../core/utils/flavor_url_launcher.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class AdvertisingScreen extends ConsumerStatefulWidget {
   const AdvertisingScreen({super.key});
@@ -65,34 +66,17 @@ class _AdvertisingScreenState extends ConsumerState<AdvertisingScreen> {
         ],
       ),
       body: _cargandoDatos
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _mensajeError != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.campaign, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(_mensajeError!),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _cargarAnuncios,
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
+              ? FlavorErrorState(
+                  message: _mensajeError!,
+                  onRetry: _cargarAnuncios,
+                  icon: Icons.campaign,
                 )
               : _anunciosEticos.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.campaign,
-                              size: 64, color: Colors.grey.shade400),
-                          const SizedBox(height: 16),
-                          const Text('No hay anuncios disponibles'),
-                        ],
-                      ),
+                  ? const FlavorEmptyState(
+                      icon: Icons.campaign,
+                      title: 'No hay anuncios disponibles',
                     )
                   : RefreshIndicator(
                       onRefresh: _cargarAnuncios,
@@ -197,7 +181,6 @@ class AnuncioDetalleScreen extends ConsumerStatefulWidget {
 class _AnuncioDetalleScreenState extends ConsumerState<AnuncioDetalleScreen> {
   Map<String, dynamic>? _anuncioDetalle;
   bool _cargandoDetalle = true;
-  String? _mensajeError;
   bool _enviandoContacto = false;
 
   @override
@@ -209,7 +192,6 @@ class _AnuncioDetalleScreenState extends ConsumerState<AnuncioDetalleScreen> {
   Future<void> _cargarDetalle() async {
     setState(() {
       _cargandoDetalle = true;
-      _mensajeError = null;
     });
     try {
       final clienteApi = ref.read(apiClientProvider);
@@ -264,7 +246,7 @@ class _AnuncioDetalleScreenState extends ConsumerState<AnuncioDetalleScreen> {
         ],
       ),
       body: _cargandoDetalle
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : RefreshIndicator(
               onRefresh: _cargarDetalle,
               child: SingleChildScrollView(
@@ -511,50 +493,25 @@ class _AnuncioDetalleScreenState extends ConsumerState<AnuncioDetalleScreen> {
   }
 
   Future<void> _abrirEnlace(String url) async {
-    try {
-      final uri = Uri.parse(url.startsWith('http') ? url : 'https://$url');
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No se puede abrir el enlace')),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al abrir enlace: $e')),
-        );
-      }
-    }
+    await FlavorUrlLauncher.openExternal(
+      context,
+      url,
+      emptyMessage: 'No hay enlace disponible.',
+      errorMessage: 'No se puede abrir el enlace',
+      normalizeHttpScheme: true,
+    );
   }
 
   Future<void> _abrirEmail(String email) async {
-    final uri = Uri.parse('mailto:$email');
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No se puede abrir el cliente de email')),
-        );
-      }
-    }
+    await FlavorContactLauncher.email(
+      context,
+      email,
+      errorMessage: 'No se puede abrir el cliente de email',
+    );
   }
 
   Future<void> _llamarTelefono(String telefono) async {
-    final uri = Uri.parse('tel:$telefono');
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No se puede realizar la llamada')),
-        );
-      }
-    }
+    await FlavorContactLauncher.call(context, telefono);
   }
 
   void _mostrarFormularioContacto({
@@ -654,14 +611,11 @@ class _AnuncioDetalleScreenState extends ConsumerState<AnuncioDetalleScreen> {
                             email: emailController.text,
                             mensaje: mensajeController.text,
                           );
-                          if (mounted) Navigator.pop(context);
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
                         },
                   icon: _enviandoContacto
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
+                      ? const FlavorInlineSpinner()
                       : const Icon(Icons.send),
                   label: Text(_enviandoContacto ? 'Enviando...' : 'Enviar mensaje'),
                 ),

@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../../core/widgets/flavor_initials_avatar.dart';
 import '../../../../core/services/chat_service.dart';
+import '../../../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla de búsqueda global de mensajes, usuarios y grupos
 class SearchScreen extends ConsumerStatefulWidget {
@@ -134,8 +136,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -206,7 +206,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
       body: _query.isEmpty
           ? _buildRecentSearches()
           : _isLoading
-              ? const Center(child: CircularProgressIndicator())
+              ? const FlavorLoadingState()
               : widget.conversationId != null
                   ? _buildMessagesList()
                   : TabBarView(
@@ -412,7 +412,7 @@ class _MessageSearchResult extends StatelessWidget {
             ? CachedNetworkImageProvider(message.senderAvatar!)
             : null,
         child: message.senderAvatar == null
-            ? Text(message.senderName[0].toUpperCase())
+            ? Text(FlavorInitialsAvatar.initialsFor(message.senderName))
             : null,
       ),
       title: Row(
@@ -520,7 +520,7 @@ class _UserSearchResult extends StatelessWidget {
                 ? CachedNetworkImageProvider(user.avatarUrl!)
                 : null,
             child: user.avatarUrl == null
-                ? Text(user.name[0].toUpperCase())
+                ? Text(FlavorInitialsAvatar.initialsFor(user.name))
                 : null,
           ),
           if (user.isOnline)

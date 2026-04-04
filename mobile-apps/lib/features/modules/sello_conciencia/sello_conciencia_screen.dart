@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/utils/flavor_contact_launcher.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class SelloConcienciaScreen extends ConsumerStatefulWidget {
   const SelloConcienciaScreen({super.key});
@@ -54,7 +55,7 @@ class _SelloConcienciaScreenState extends ConsumerState<SelloConcienciaScreen> {
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : RefreshIndicator(
               onRefresh: _loadData,
               child: SingleChildScrollView(
@@ -160,7 +161,10 @@ class _SelloConcienciaScreenState extends ConsumerState<SelloConcienciaScreen> {
         ),
         const SizedBox(height: 12),
         if (_negocios.isEmpty)
-          const Text('No hay negocios certificados aun')
+          const FlavorEmptyState(
+            icon: Icons.verified_outlined,
+            title: 'No hay negocios certificados aun',
+          )
         else
           ..._negocios.take(5).map((n) => _buildNegocioCard(n)),
       ],
@@ -218,7 +222,10 @@ class _SelloConcienciaScreenState extends ConsumerState<SelloConcienciaScreen> {
             const Divider(height: 1),
             Expanded(
               child: _negocios.isEmpty
-                  ? const Center(child: Text('No hay negocios certificados aun'))
+                  ? const FlavorEmptyState(
+                      icon: Icons.verified_outlined,
+                      title: 'No hay negocios certificados aun',
+                    )
                   : ListView.builder(
                       controller: scrollController,
                       padding: const EdgeInsets.all(16),
@@ -421,14 +428,8 @@ class _SelloConcienciaScreenState extends ConsumerState<SelloConcienciaScreen> {
                   subtitle: Text(telefono),
                   onTap: () async {
                     Navigator.pop(context);
-                    final uri = Uri.parse('tel:$telefono');
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri);
-                    } else if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('No se puede realizar la llamada')),
-                      );
-                    }
+                    if (!mounted) return;
+                    await FlavorContactLauncher.call(context, telefono);
                   },
                 ),
               if (email.isNotEmpty)
@@ -441,14 +442,13 @@ class _SelloConcienciaScreenState extends ConsumerState<SelloConcienciaScreen> {
                   subtitle: Text(email),
                   onTap: () async {
                     Navigator.pop(context);
-                    final uri = Uri.parse('mailto:$email?subject=Consulta sobre $nombre');
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri);
-                    } else if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('No se puede abrir el cliente de email')),
-                      );
-                    }
+                    if (!mounted) return;
+                    await FlavorContactLauncher.email(
+                      context,
+                      email,
+                      subject: 'Consulta sobre $nombre',
+                      errorMessage: 'No se puede abrir el cliente de email',
+                    );
                   },
                 ),
               const SizedBox(height: 8),

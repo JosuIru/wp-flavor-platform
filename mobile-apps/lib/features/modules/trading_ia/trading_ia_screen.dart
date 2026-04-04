@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class TradingIaScreen extends ConsumerStatefulWidget {
   const TradingIaScreen({super.key});
@@ -67,23 +68,12 @@ class _TradingIaScreenState extends ConsumerState<TradingIaScreen> {
         ],
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.trending_up,
-                          size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(_error!, textAlign: TextAlign.center),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _loadData,
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
+              ? FlavorErrorState(
+                  message: _error!,
+                  icon: Icons.trending_up,
+                  onRetry: _loadData,
                 )
               : RefreshIndicator(
                   onRefresh: _loadData,
@@ -508,9 +498,7 @@ class _TradingIaScreenState extends ConsumerState<TradingIaScreen> {
                     child: OutlinedButton.icon(
                       onPressed: () {
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Senal $simbolo ignorada')),
-                        );
+                        FlavorSnackbar.showInfo(context, 'Senal $simbolo ignorada');
                       },
                       icon: const Icon(Icons.close),
                       label: const Text('Ignorar'),
@@ -585,27 +573,15 @@ class _TradingIaScreenState extends ConsumerState<TradingIaScreen> {
 
       if (mounted) {
         if (response.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Orden de $tipo ejecutada para $simbolo'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          FlavorSnackbar.showSuccess(context, 'Orden de $tipo ejecutada para $simbolo');
           _loadData();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.error ?? 'Error al ejecutar orden'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          FlavorSnackbar.showError(context, response.error ?? 'Error al ejecutar orden');
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
-        );
+        FlavorSnackbar.showError(context, 'Error: $e');
       }
     }
   }

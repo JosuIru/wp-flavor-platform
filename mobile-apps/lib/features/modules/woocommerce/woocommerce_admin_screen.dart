@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class WooCommerceAdminScreen extends ConsumerStatefulWidget {
   const WooCommerceAdminScreen({super.key});
@@ -63,19 +63,13 @@ class _WooCommerceAdminScreenState extends ConsumerState<WooCommerceAdminScreen>
 
   Widget _buildPedidosView() {
     if (_isLoadingPedidos) {
-      return const Center(child: CircularProgressIndicator());
+      return const FlavorLoadingState();
     }
 
     if (_pedidos.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.grey.shade400),
-            const SizedBox(height: 16),
-            const Text('No hay pedidos'),
-          ],
-        ),
+      return const FlavorEmptyState(
+        icon: Icons.shopping_cart_outlined,
+        title: 'No hay pedidos',
       );
     }
 

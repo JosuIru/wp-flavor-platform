@@ -260,12 +260,12 @@ class MarketplaceCrudService extends CrudService<Anuncio> with MarketplaceCrudMi
   /// Subir imagen
   Future<String?> subirImagen(String filePath) async {
     try {
-      final response = await apiClient.uploadFile(
-        '/flavor-app/v2/media/upload',
+      final response = await apiClient.uploadSingleFile(
         filePath,
-        'imagen',
+        context: 'marketplace',
+        fieldName: 'image',
       );
-      return response.data?['url'];
+      return response.data?['url']?.toString();
     } catch (e) {
       debugPrint('[MarketplaceCrudService] Error subiendo imagen: $e');
       return null;

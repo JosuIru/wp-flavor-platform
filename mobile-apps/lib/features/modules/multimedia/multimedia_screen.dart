@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class MultimediaScreen extends ConsumerStatefulWidget {
   const MultimediaScreen({super.key});
@@ -62,34 +64,17 @@ class _MultimediaScreenState extends ConsumerState<MultimediaScreen> {
         ],
       ),
       body: _cargando
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _mensajeError != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.perm_media, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(_mensajeError!),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _cargarDatos,
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
+              ? FlavorErrorState(
+                  message: _mensajeError!,
+                  onRetry: _cargarDatos,
+                  icon: Icons.perm_media,
                 )
               : _galeriaItems.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.perm_media,
-                              size: 64, color: Colors.grey.shade400),
-                          const SizedBox(height: 16),
-                          const Text('No hay contenido multimedia disponible'),
-                        ],
-                      ),
+                  ? const FlavorEmptyState(
+                      icon: Icons.perm_media,
+                      title: 'No hay contenido multimedia disponible',
                     )
                   : RefreshIndicator(
                       onRefresh: _cargarDatos,
@@ -231,12 +216,16 @@ class MultimediaDetalleScreen extends StatelessWidget {
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                            color: Colors.white,
+                          child: SizedBox(
+                            width: 28,
+                            height: 28,
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                              color: Colors.white,
+                            ),
                           ),
                         );
                       },
@@ -250,16 +239,18 @@ class MultimediaDetalleScreen extends StatelessWidget {
                     ),
                   // Indicador de video
                   if (esVideo)
-                    Container(
-                      padding: const EdgeInsets.all(16),
+                    const DecoratedBox(
                       decoration: BoxDecoration(
                         color: Colors.black54,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.play_arrow,
-                        color: Colors.white,
-                        size: 48,
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Icon(
+                          Icons.play_arrow,
+                          color: Colors.white,
+                          size: 48,
+                        ),
                       ),
                     ),
                 ],
@@ -394,9 +385,7 @@ class MultimediaDetalleScreen extends StatelessWidget {
 
   void _reproducirVideo(BuildContext context, String urlVideo) {
     if (urlVideo.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('URL del video no disponible')),
-      );
+      FlavorSnackbar.showError(context, 'URL del video no disponible');
       return;
     }
     // En una implementación real, se usaría video_player o chewie
@@ -431,9 +420,7 @@ class MultimediaDetalleScreen extends StatelessWidget {
 
   Future<void> _compartir(BuildContext context, String titulo, String url) async {
     if (url.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('URL no disponible para compartir')),
-      );
+      FlavorSnackbar.showError(context, 'URL no disponible para compartir');
       return;
     }
 
@@ -441,12 +428,7 @@ class MultimediaDetalleScreen extends StatelessWidget {
     await Clipboard.setData(ClipboardData(text: textoCompartir));
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Enlace copiado al portapapeles'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      FlavorSnackbar.showSuccess(context, 'Enlace copiado al portapapeles');
     }
   }
 

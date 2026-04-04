@@ -3,13 +3,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart' show apiClientProvider;
+import '../../core/widgets/flavor_state_widgets.dart';
 
 class ModuleClientDashboardScreen extends ConsumerWidget {
   const ModuleClientDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final api = ref.read(apiClientProvider);
 
     return Scaffold(
@@ -20,11 +21,14 @@ class ModuleClientDashboardScreen extends ConsumerWidget {
         future: _loadMetrics(api),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const FlavorLoadingState();
           }
           final metrics = snapshot.data!;
           if (metrics.isEmpty) {
-            return Center(child: Text(i18n.clientDashboardEmpty));
+            return FlavorEmptyState(
+              icon: Icons.dashboard_outlined,
+              title: i18n.clientDashboardEmpty,
+            );
           }
 
           return ListView.separated(

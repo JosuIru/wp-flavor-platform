@@ -57,17 +57,132 @@ class ModuleDefinition {
     final moduleId = data['id']?.toString() ?? '';
     final moduleName = data['name']?.toString() ?? moduleId;
     final moduleDescription = data['description']?.toString() ?? '';
-    final isActive = data['active'] == true;
+    final normalizedId = _normalizeModuleId(moduleId);
+    final isActive =
+        data['active'] == true ||
+        data['enabled'] == true ||
+        data['is_active'] == true;
+
+    final endpoints = _stringListFromDynamic(
+      data['endpoints'] ?? data['routes'] ?? data['rest_endpoints'],
+    );
+    final requiredPermissions = _stringListFromDynamic(
+      data['required_permissions'] ?? data['permissions'],
+    );
 
     return ModuleDefinition(
       id: moduleId,
       name: moduleName,
       description: moduleDescription,
-      icon: _getIconForModule(moduleId),
-      color: _getColorForModule(moduleId),
-      category: _getCategoryForModule(moduleId),
+      icon: _parseIcon(data['icon']) ?? _getIconForModule(normalizedId),
+      color: _parseColor(data['color']) ?? _getColorForModule(normalizedId),
+      category: _parseCategory(data['category']) ?? _getCategoryForModule(normalizedId),
       isActive: isActive,
+      endpoints: endpoints,
+      requiredPermissions: requiredPermissions,
     );
+  }
+
+  static String _normalizeModuleId(String moduleId) {
+    return moduleId.replaceAll('_', '-').trim();
+  }
+
+  static List<String> _stringListFromDynamic(dynamic value) {
+    if (value is List) {
+      return value
+          .map((item) => item?.toString() ?? '')
+          .where((item) => item.isNotEmpty)
+          .toList();
+    }
+    return const [];
+  }
+
+  static IconData? _parseIcon(dynamic rawIcon) {
+    final icon = rawIcon?.toString().trim();
+    if (icon == null || icon.isEmpty) return null;
+
+    switch (icon) {
+      case 'calendar':
+      case 'calendar_today':
+      case 'event':
+        return Icons.calendar_today;
+      case 'store':
+      case 'storefront':
+        return Icons.storefront;
+      case 'groups':
+      case 'groups_2':
+      case 'people':
+        return Icons.groups;
+      case 'handshake':
+        return Icons.handshake;
+      case 'receipt':
+        return Icons.receipt_long;
+      case 'school':
+      case 'book':
+      case 'library':
+        return Icons.school;
+      case 'forum':
+      case 'chat':
+      case 'chat_bubble':
+        return Icons.chat_bubble_outline;
+      case 'warning':
+      case 'report_problem':
+        return Icons.report_problem_outlined;
+      case 'eco':
+      case 'recycling':
+        return Icons.recycling;
+      case 'settings':
+        return Icons.settings;
+      default:
+        return null;
+    }
+  }
+
+  static Color? _parseColor(dynamic rawColor) {
+    final color = rawColor?.toString().trim();
+    if (color == null || color.isEmpty) return null;
+
+    final clean = color.replaceAll('#', '');
+    final normalized = clean.length == 6 ? 'FF$clean' : clean;
+
+    try {
+      return Color(int.parse(normalized, radix: 16));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static ModuleCategory? _parseCategory(dynamic rawCategory) {
+    final category = rawCategory?.toString().trim().toLowerCase();
+    switch (category) {
+      case 'commerce':
+      case 'comercio':
+        return ModuleCategory.commerce;
+      case 'education':
+      case 'educacion':
+      case 'educación':
+        return ModuleCategory.education;
+      case 'social':
+        return ModuleCategory.social;
+      case 'community':
+      case 'comunidad':
+        return ModuleCategory.community;
+      case 'mobility':
+      case 'movilidad':
+        return ModuleCategory.mobility;
+      case 'media':
+      case 'multimedia':
+        return ModuleCategory.media;
+      case 'environment':
+      case 'medio_ambiente':
+      case 'medio-ambiente':
+        return ModuleCategory.environment;
+      case 'other':
+      case 'otros':
+        return ModuleCategory.other;
+      default:
+        return null;
+    }
   }
 
   /// Determina el icono según el ID del módulo

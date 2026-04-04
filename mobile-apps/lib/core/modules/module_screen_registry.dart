@@ -25,6 +25,7 @@ import '../../features/modules/bicicletas_compartidas/bicicletas_compartidas_scr
 import '../../features/modules/parkings/parkings_screen.dart';
 import '../../features/modules/avisos_municipales/avisos_municipales_screen.dart';
 import '../../features/modules/ayuda_vecinal/ayuda_vecinal_screen.dart';
+import '../../features/modules/recursos_compartidos/recursos_compartidos_screen.dart';
 import '../../features/modules/biodiversidad_local/biodiversidad_local_screen.dart';
 import '../../features/modules/circulos_cuidados/circulos_cuidados_screen.dart';
 import '../../features/modules/economia_don/economia_don_screen.dart';
@@ -105,6 +106,10 @@ class ModuleScreenRegistry {
     loader.registerScreenBuilder(
         'ayuda-vecinal', (_) => const AyudaVecinalScreen());
     loader.registerScreenBuilder(
+        'shared-resources', (_) => const RecursosCompartidosScreen());
+    loader.registerScreenBuilder(
+        'recursos-compartidos', (_) => const RecursosCompartidosScreen());
+    loader.registerScreenBuilder(
         'biodiversidad-local', (_) => const BiodiversidadLocalScreen());
     loader.registerScreenBuilder(
         'circulos-cuidados', (_) => const CirculosCuidadosScreen());
@@ -181,6 +186,10 @@ class ModuleScreenRegistry {
         'avisos_municipales', (_) => const AvisosMunicipalesScreen());
     loader.registerScreenBuilder(
         'ayuda_vecinal', (_) => const AyudaVecinalScreen());
+    loader.registerScreenBuilder(
+        'shared_resources', (_) => const RecursosCompartidosScreen());
+    loader.registerScreenBuilder(
+        'recursos_compartidos', (_) => const RecursosCompartidosScreen());
     loader.registerScreenBuilder(
         'biodiversidad_local', (_) => const BiodiversidadLocalScreen());
     loader.registerScreenBuilder(

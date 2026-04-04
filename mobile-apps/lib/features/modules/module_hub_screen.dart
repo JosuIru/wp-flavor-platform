@@ -5,6 +5,7 @@ import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart' show apiClientProvider;
 import '../../core/modules/module_definition.dart';
 import '../../core/modules/module_screen_registry.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 import 'module_client_dashboard_screen.dart';
 
 class ModuleHubScreen extends ConsumerWidget {
@@ -17,7 +18,7 @@ class ModuleHubScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final api = ref.read(apiClientProvider);
 
     return Scaffold(
@@ -28,18 +29,24 @@ class ModuleHubScreen extends ConsumerWidget {
         future: api.getAvailableModules(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const FlavorLoadingState();
           }
           final response = snapshot.data!;
           if (!response.success || response.data == null) {
-            return Center(child: Text(i18n.moduleHubError));
+            return FlavorErrorState(
+              message: i18n.moduleHubError,
+              icon: Icons.extension_off_outlined,
+            );
           }
           final modules = (response.data!['modules'] as List<dynamic>? ?? [])
               .whereType<Map<String, dynamic>>()
               .toList();
 
           if (modules.isEmpty) {
-            return Center(child: Text(i18n.moduleHubEmpty));
+            return FlavorEmptyState(
+              icon: Icons.extension_outlined,
+              title: i18n.moduleHubEmpty,
+            );
           }
 
           return ListView.separated(
@@ -68,8 +75,8 @@ class ModuleHubScreen extends ConsumerWidget {
               }
 
               final module = modules[index - 1];
-              final id = module['id']?.toString() ?? '';
-              final name = module['name']?.toString() ?? id;
+              final moduleId = module['id']?.toString() ?? '';
+              final name = module['name']?.toString() ?? moduleId;
               final description = module['description']?.toString() ?? '';
               final color = _parseColor(module['color']?.toString());
               final icon = _mapIcon(module['icon']?.toString());
@@ -85,7 +92,7 @@ class ModuleHubScreen extends ConsumerWidget {
                   title: Text(name),
                   subtitle: Text(description.isNotEmpty ? description : i18n.moduleHubNoDescription),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _openModule(context, id, name, description),
+                  onTap: () => _openModule(context, module),
                 ),
               );
             },
@@ -95,47 +102,27 @@ class ModuleHubScreen extends ConsumerWidget {
     );
   }
 
-  void _openModule(
-    BuildContext context,
-    String id,
-    String name,
-    String description,
-  ) {
-    // Crear definición del módulo desde los datos de la API
-    final module = ModuleDefinition(
-      id: id,
-      name: name,
-      description: description,
-      icon: _mapIcon(null),
-      color: Colors.blue,
-      category: ModuleCategory.other,
-      isActive: true,
-      endpoints: const [],
-    );
+  void _openModule(BuildContext context, Map<String, dynamic> moduleData) {
+    final module = ModuleDefinition.fromApi({
+      ...moduleData,
+      if (!moduleData.containsKey('active') &&
+          !moduleData.containsKey('enabled') &&
+          !moduleData.containsKey('is_active'))
+        'active': true,
+    });
 
     // Usar el registro para obtener la pantalla (implementada o genérica)
     final registry = ModuleScreenRegistry();
     final screen = registry.getScreenForModule(
       context,
       module,
-      fallbackTitle: name,
-      fallbackDescription: description,
+      fallbackTitle: module.name,
+      fallbackDescription: module.description,
     );
 
     Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => screen),
     );
-  }
-
-  Color? _parseColor(String? value) {
-    if (value == null || value.isEmpty) return null;
-    final clean = value.replaceAll('#', '');
-    final hex = clean.length == 6 ? 'FF$clean' : clean;
-    try {
-      return Color(int.parse(hex, radix: 16));
-    } catch (_) {
-      return null;
-    }
   }
 
   IconData _mapIcon(String? icon) {
@@ -163,5 +150,13 @@ class ModuleHubScreen extends ConsumerWidget {
       default:
         return Icons.extension;
     }
+  }
+
+  Color? _parseColor(String? rawColor) {
+    final normalized = rawColor?.replaceAll('#', '').trim() ?? '';
+    if (normalized.length != 6) {
+      return null;
+    }
+    return Color(int.parse('FF$normalized', radix: 16));
   }
 }

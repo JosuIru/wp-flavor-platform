@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/utils/dynamic_form_support.dart';
+import '../../../core/utils/flavor_mutation.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 import '../models/module_config.dart';
 import '../widgets/icon_helper.dart';
 
@@ -153,11 +156,7 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
           TextButton(
             onPressed: _loading ? null : _onSave,
             child: _loading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
+                ? const FlavorInlineSpinner()
                 : const Text('Guardar'),
           ),
         ],
@@ -168,19 +167,13 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
 
   Widget _buildBody() {
     if (_fields == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const FlavorLoadingState();
     }
 
     if (_fields!.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.warning_amber, size: 64, color: Colors.orange.shade300),
-            const SizedBox(height: 16),
-            const Text('No hay campos configurados'),
-          ],
-        ),
+      return const FlavorEmptyState(
+        icon: Icons.warning_amber_outlined,
+        title: 'No hay campos configurados',
       );
     }
 
@@ -194,14 +187,7 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
           FilledButton.icon(
             onPressed: _loading ? null : _onSave,
             icon: _loading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
+                ? const FlavorInlineSpinner(color: Colors.white)
                 : const Icon(Icons.save),
             label: Text(widget.mode == FormMode.create ? 'Crear' : 'Guardar cambios'),
           ),
@@ -379,16 +365,10 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
         ),
         readOnly: true,
         onTap: () async {
-          final date = await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100),
-          );
+          final date = await DynamicFormSupport.pickDate(context);
           if (date != null) {
-            final formatted = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-            _controllers[field.name]?.text = '${date.day}/${date.month}/${date.year}';
-            _formData[field.name] = formatted;
+            _controllers[field.name]?.text = date.displayValue;
+            _formData[field.name] = date.submitValue;
           }
         },
         validator: field.required
@@ -411,14 +391,10 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
         ),
         readOnly: true,
         onTap: () async {
-          final time = await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.now(),
-          );
+          final time = await DynamicFormSupport.pickTime(context);
           if (time != null) {
-            final formatted = '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-            _controllers[field.name]?.text = formatted;
-            _formData[field.name] = formatted;
+            _controllers[field.name]?.text = time.displayValue;
+            _formData[field.name] = time.submitValue;
           }
         },
         validator: field.required
@@ -465,9 +441,7 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
 
   Widget _buildCheckbox(FormFieldConfig field) {
     final currentValue = _formData[field.name] == true ||
-        _formData[field.name] == 1 ||
-        _formData[field.name] == '1' ||
-        _formData[field.name] == 'true';
+        DynamicFormSupport.parseBool(_formData[field.name]);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -609,11 +583,7 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
     } else {
       // Para camera y gallery, mostrar mensaje de que requiere image_picker
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Usa la opcion de URL para agregar una imagen'),
-          ),
-        );
+        FlavorSnackbar.showInfo(context, 'Usa la opcion de URL para agregar una imagen');
       }
     }
   }
@@ -646,7 +616,7 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
                   // Buscar el campo de imagen y actualizarlo
                   final imageField = _fields?.firstWhere(
                     (f) => f.type == 'image',
-                    orElse: () => FormFieldConfig(name: '', label: '', type: ''),
+                    orElse: () => const FormFieldConfig(name: '', label: '', type: ''),
                   );
                   if (imageField != null && imageField.name.isNotEmpty) {
                     _formData[imageField.name] = urlController.text;
@@ -688,34 +658,29 @@ class _DynamicFormScreenState extends ConsumerState<DynamicFormScreen> {
         }
       }
 
-      ApiResponse response;
-      if (widget.mode == FormMode.create) {
-        response = await api.post(widget.config.endpoint, data: data);
-      } else {
-        final endpoint = widget.config.updateEndpoint ??
-                        '${widget.config.endpoint}/${widget.itemId}';
-        response = await api.put(endpoint, data: data);
-      }
+      final saved = await FlavorMutation.runApiResponse(
+        context,
+        request: () {
+          if (widget.mode == FormMode.create) {
+            return api.post(widget.config.endpoint, data: data);
+          }
 
-      if (response.success) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(widget.mode == FormMode.create
-                  ? 'Creado correctamente'
-                  : 'Guardado correctamente'),
-            ),
-          );
-          Navigator.pop(context, true);
-        }
-      } else {
-        throw Exception(response.error ?? 'Error al guardar');
+          final endpoint =
+              widget.config.updateEndpoint ?? '${widget.config.endpoint}/${widget.itemId}';
+          return api.put(endpoint, data: data);
+        },
+        successMessage: widget.mode == FormMode.create
+            ? 'Creado correctamente'
+            : 'Guardado correctamente',
+        fallbackErrorMessage: 'Error al guardar',
+      );
+
+      if (saved && mounted) {
+        Navigator.pop(context, true);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        FlavorSnackbar.showError(context, 'Error: $e');
       }
     } finally {
       if (mounted) {

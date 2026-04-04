@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../../core/widgets/flavor_initials_avatar.dart';
+import '../../../../core/widgets/flavor_state_widgets.dart';
 import 'call_screen.dart';
 
 /// Modelo de registro de llamada
@@ -104,7 +106,7 @@ class _CallsHistoryScreenState extends ConsumerState<CallsHistoryScreen> {
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _filteredCalls.isEmpty
               ? _buildEmptyState()
               : _buildCallsList(),
@@ -187,7 +189,7 @@ class _CallsHistoryScreenState extends ConsumerState<CallsHistoryScreen> {
             ? CachedNetworkImageProvider(call.recipientAvatar!)
             : null,
         child: call.recipientAvatar == null
-            ? Text(call.recipientName[0].toUpperCase())
+            ? Text(FlavorInitialsAvatar.initialsFor(call.recipientName))
             : null,
       ),
       title: Text(
@@ -318,7 +320,7 @@ class _CallsHistoryScreenState extends ConsumerState<CallsHistoryScreen> {
                   ? CachedNetworkImageProvider(call.recipientAvatar!)
                   : null,
               child: call.recipientAvatar == null
-                  ? Text(call.recipientName[0].toUpperCase())
+                  ? Text(FlavorInitialsAvatar.initialsFor(call.recipientName))
                   : null,
             ),
             title: Text(call.recipientName),

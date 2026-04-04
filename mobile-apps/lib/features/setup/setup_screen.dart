@@ -6,6 +6,8 @@ import '../../core/config/server_config.dart';
 import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart' show apiClientProvider;
 import '../../core/widgets/common_widgets.dart';
+import '../../core/widgets/flavor_snackbar.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 import '../../core/utils/haptics.dart';
 import 'setup_directory_tab.dart';
 import 'dart:convert';
@@ -38,8 +40,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen>
   String? _error;
   String? _successMessage;
   bool _hasUnsavedChanges = false;
-  String _initialUrl = '';
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  final String _initialUrl = '';
+  AppLocalizations get i18n => AppLocalizations.of(context);
 
   /// Si hay URL preconfigurada, mostramos tabs (Directorio + QR)
   bool get _showDirectoryTab => ServerConfig.bootstrapServerUrl.isNotEmpty;
@@ -173,23 +175,12 @@ class _SetupScreenState extends ConsumerState<SetupScreen>
         // Validacion para app Admin
         if (widget.isAdminApp) {
           if (qrType != 'admin') {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(i18n.setupQrClientAppWarning),
-                backgroundColor: Colors.orange,
-                duration: Duration(seconds: 4),
-              ),
-            );
+            FlavorSnackbar.showInfo(context, i18n.setupQrClientAppWarning);
             return;
           }
 
           if (token == null || token.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(i18n.setupAdminQrMissingToken),
-                backgroundColor: Colors.red,
-              ),
-            );
+            FlavorSnackbar.showError(context, i18n.setupAdminQrMissingToken);
             return;
           }
 
@@ -231,12 +222,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen>
         _urlController.text = url;
 
         // Mostrar informacion adicional si existe
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.setupConfigDetected(siteName)),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (!mounted) return;
+        FlavorSnackbar.showSuccess(context, i18n.setupConfigDetected(siteName));
 
         // Mostrar URL manual y auto-validar
         setState(() => _showManualUrl = true);
@@ -247,34 +234,21 @@ class _SetupScreenState extends ConsumerState<SetupScreen>
       if (code.contains('.') || code.startsWith('http')) {
         // Para admin app, no permitir URL directa sin token
         if (widget.isAdminApp) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(i18n.setupAdminRequiresSecureQr),
-              backgroundColor: Colors.orange,
-              duration: Duration(seconds: 4),
-            ),
-          );
+          if (!mounted) return;
+          FlavorSnackbar.showInfo(context, i18n.setupAdminRequiresSecureQr);
           return;
         }
 
         _urlController.text = code;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.setupUrlDetected),
-            backgroundColor: Colors.green,
-          ),
-        );
+        if (!mounted) return;
+        FlavorSnackbar.showSuccess(context, i18n.setupUrlDetected);
 
         // Mostrar URL manual y auto-validar
         setState(() => _showManualUrl = true);
         _validateAndSave();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.setupInvalidQr),
-            backgroundColor: Colors.red,
-          ),
-        );
+        if (!mounted) return;
+        FlavorSnackbar.showError(context, i18n.setupInvalidQr);
       }
     }
   }
@@ -553,11 +527,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen>
               FilledButton.icon(
                 onPressed: _isLoading ? null : _validateAndSave,
                 icon: _isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
+                    ? const FlavorInlineSpinner()
                     : const Icon(Icons.check),
                 label:
                     Text(_isLoading ? i18n.setupConnecting : i18n.setupConnect),
@@ -587,9 +557,7 @@ class SetupChecker extends ConsumerWidget {
       future: _checkIfConfigured(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const Scaffold(body: FlavorLoadingState());
         }
 
         final isConfigured = snapshot.data ?? false;

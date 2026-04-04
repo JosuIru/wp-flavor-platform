@@ -3,13 +3,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/config/app_config.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
 
 /// Pantalla de soporte y contacto con desarrolladores
 class SupportScreen extends StatelessWidget {
   const SupportScreen({super.key});
 
   Future<void> _launchEmail(BuildContext context, {String? subject, String? body}) async {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final uri = Uri(
       scheme: 'mailto',
       path: AppConfig.developerEmail,
@@ -23,33 +24,35 @@ class SupportScreen extends StatelessWidget {
       await launchUrl(uri);
     } else {
       // Copiar email al portapapeles
-      await Clipboard.setData(ClipboardData(text: AppConfig.developerEmail));
+      await Clipboard.setData(const ClipboardData(text: AppConfig.developerEmail));
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(i18n.emailCopiadoAlPortapapelesDf197f)),
+        FlavorSnackbar.showInfo(
+          context,
+          i18n.emailCopiadoAlPortapapelesDf197f,
         );
       }
     }
   }
 
   Future<void> _launchPhone(BuildContext context) async {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final uri = Uri(scheme: 'tel', path: AppConfig.developerPhone);
 
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      await Clipboard.setData(ClipboardData(text: AppConfig.developerPhone));
+      await Clipboard.setData(const ClipboardData(text: AppConfig.developerPhone));
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(i18n.telefonoCopiadoAlPortapapeles5300e7)),
+        FlavorSnackbar.showInfo(
+          context,
+          i18n.telefonoCopiadoAlPortapapeles5300e7,
         );
       }
     }
   }
 
   Future<void> _launchWhatsApp(BuildContext context) async {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     // Limpiar el numero de telefono para WhatsApp
     final phone = AppConfig.developerPhone.replaceAll(RegExp(r'[^\d]'), '');
     final uri = Uri.parse('https://wa.me/$phone');
@@ -58,8 +61,9 @@ class SupportScreen extends StatelessWidget {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(i18n.noSePudoAbrirWhatsapp0e9a90)),
+        FlavorSnackbar.showError(
+          context,
+          i18n.noSePudoAbrirWhatsapp0e9a90,
         );
       }
     }
@@ -67,7 +71,7 @@ class SupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -110,7 +114,7 @@ class SupportScreen extends StatelessWidget {
                                 ),
                           ),
                           const SizedBox(height: 4),
-                          Text(AppLocalizations.of(context)!.equipoDeDesarrollo,
+                          Text(i18n.equipoDeDesarrollo,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: colorScheme.onPrimaryContainer.withOpacity(0.8),
                                 ),
@@ -126,7 +130,7 @@ class SupportScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Contacto rapido
-            Text(AppLocalizations.of(context)!.contactoRapido,
+            Text(i18n.contactoRapido,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -166,7 +170,7 @@ class SupportScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Opciones de soporte
-            Text(AppLocalizations.of(context)!.necesitoAyudaCon,
+            Text(i18n.necesitoAyudaCon,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -226,7 +230,7 @@ class SupportScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Info de contacto
-            Text(AppLocalizations.of(context)!.datosDeContacto,
+            Text(i18n.datosDeContacto,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -238,16 +242,17 @@ class SupportScreen extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.email),
                     title: Text(i18n.emailCe8ae9),
-                    subtitle: Text(AppConfig.developerEmail),
+                    subtitle: const Text(AppConfig.developerEmail),
                     trailing: IconButton(
                       icon: const Icon(Icons.copy),
                       onPressed: () async {
                         await Clipboard.setData(
-                          ClipboardData(text: AppConfig.developerEmail),
+                          const ClipboardData(text: AppConfig.developerEmail),
                         );
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(i18n.emailCopiadoFa2686)),
+                          FlavorSnackbar.showInfo(
+                            context,
+                            i18n.emailCopiadoFa2686,
                           );
                         }
                       },
@@ -258,16 +263,17 @@ class SupportScreen extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.phone),
                     title: Text(i18n.telefonoBdf77d),
-                    subtitle: Text(AppConfig.developerPhone),
+                    subtitle: const Text(AppConfig.developerPhone),
                     trailing: IconButton(
                       icon: const Icon(Icons.copy),
                       onPressed: () async {
                         await Clipboard.setData(
-                          ClipboardData(text: AppConfig.developerPhone),
+                          const ClipboardData(text: AppConfig.developerPhone),
                         );
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(i18n.telefonoCopiado6cb976)),
+                          FlavorSnackbar.showInfo(
+                            context,
+                            i18n.telefonoCopiado6cb976,
                           );
                         }
                       },
@@ -295,13 +301,13 @@ class SupportScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppLocalizations.of(context)!.horarioDeAtencion,
+                          Text(i18n.horarioDeAtencion,
                             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
                           const SizedBox(height: 4),
-                          Text(AppLocalizations.of(context)!.lunesAViernes9001800,
+                          Text(i18n.lunesAViernes9001800,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
@@ -335,7 +341,6 @@ class _ContactButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -382,7 +387,6 @@ class _SupportOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(

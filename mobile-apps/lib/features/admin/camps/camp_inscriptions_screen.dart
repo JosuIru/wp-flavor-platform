@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/models/models.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
 
 /// Pantalla para ver inscripciones de un campamento específico
 class CampInscriptionsScreen extends ConsumerStatefulWidget {
@@ -24,7 +24,7 @@ class CampInscriptionsScreen extends ConsumerStatefulWidget {
 
 class _CampInscriptionsScreenState
     extends ConsumerState<CampInscriptionsScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   List<CampInscription> _inscriptions = [];
   Map<String, int>? _stats;
   bool _isLoading = false;
@@ -65,11 +65,9 @@ class _CampInscriptionsScreenState
     } else {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.error ?? i18n.campInscriptionsLoadError),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          response.error ?? i18n.campInscriptionsLoadError,
         );
       }
     }
@@ -81,11 +79,9 @@ class _CampInscriptionsScreenState
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.commonCannotOpenUrl(urlString)),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          i18n.commonCannotOpenUrl(urlString),
         );
       }
     }
@@ -99,19 +95,16 @@ class _CampInscriptionsScreenState
       final downloadUrl = response.data!['download_url'];
       _launchUrl(downloadUrl);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(i18n.exportandoAExcel583e30),
-            backgroundColor: Colors.green,
-          ),
+        FlavorSnackbar.showSuccess(
+          context,
+          i18n.exportandoAExcel583e30,
         );
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.error ?? i18n.campInscriptionsExportError),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          response.error ?? i18n.campInscriptionsExportError,
         );
       }
     }
@@ -119,7 +112,7 @@ class _CampInscriptionsScreenState
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -146,7 +139,7 @@ class _CampInscriptionsScreenState
           if (_stats != null)
             Container(
               padding: const EdgeInsets.all(16),
-              color: Theme.of(context).colorScheme.surfaceVariant,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -181,8 +174,8 @@ class _CampInscriptionsScreenState
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: i18n.buscar113f74,
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.search),
+                      border: const OutlineInputBorder(),
                     ),
                     onChanged: (value) {
                       setState(() => _searchQuery = value);
@@ -224,7 +217,7 @@ class _CampInscriptionsScreenState
                               color: Colors.grey[400],
                             ),
                             const SizedBox(height: 16),
-                            Text(AppLocalizations.of(context)!.noHayInscripciones,
+                            Text(i18n.noHayInscripciones,
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.grey[600],
@@ -277,7 +270,6 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Icon(icon, color: color, size: 32),
@@ -317,7 +309,7 @@ class _InscriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ExpansionTile(
@@ -362,8 +354,8 @@ class _InscriptionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Información del responsable
-                Text(AppLocalizations.of(context)!.responsable,
-                  style: TextStyle(
+                Text(i18n.responsable,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -443,7 +435,7 @@ class _InscriptionCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(AppLocalizations.of(context)!.inscripcion,
+                    Text(i18n.inscripcion,
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     Text(inscription.inscriptionDate),
@@ -453,7 +445,7 @@ class _InscriptionCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(AppLocalizations.of(context)!.importe,
+                    Text(i18n.importe,
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     Text(

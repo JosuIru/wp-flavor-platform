@@ -737,6 +737,10 @@
   "adminChatSuggestionExportClientsCsv": "Lista de clientes en CSV",
   "adminChatSuggestionExportMonthlyRevenue": "Informe de ingresos mensual",
   "notificationsTitle": "Notificaciones",
+  "notificationsEmpty": "No hay notificaciones",
+  "adminGreetingMorning": "Buenos días",
+  "adminGreetingAfternoon": "Buenas tardes",
+  "adminGreetingEvening": "Buenas noches",
   "notificationsPushTitle": "Notificaciones push",
   "notificationsPushDesc": "Las notificaciones push estaran disponibles proximamente.",
   "notificationsSectionReservations": "Reservas",
@@ -1090,6 +1094,16 @@
   },
   "escalatedChatReplyHint": "Escribe tu respuesta...",
   "escalatedChatResolvedBanner": "Este chat ha sido marcado como resuelto",
+  "escalatedChatsPending": "Pendientes",
+  "escalatedChatsContacted": "Contactados",
+  "escalatedChatsResolved": "Resueltos",
+  "escalatedChatsEmpty": "No hay chats escalados",
+  "escalatedChatsMessagesCount": "{count} mensajes",
+  "@escalatedChatsMessagesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "campInscriptionAcceptTermsError": "Debes aceptar los términos y condiciones",
   "loadingConnecting": "Conectando...",
   "adminSetupQrScannedTitle": "QR Escaneado",
@@ -1725,5 +1739,33 @@
         "type": "String"
       }
     }
-  }
+  },
+  "adminMetricOpenOrders": "Pedidos abiertos",
+  "adminMetricActiveServices": "Servicios activos",
+  "adminMetricActiveListings": "Anuncios activos",
+  "adminMetricUpcomingEvents": "Próximos eventos",
+  "adminMetricOpenIncidents": "Incidencias abiertas",
+  "adminMetricPendingResolution": "Pendientes de resolver",
+  "adminMetricActiveMembers": "Socios activos",
+  "adminMetricRequiresAttention": "Requieren atención",
+  "adminMetricAllCaughtUp": "Todo al día",
+  "adminChartReservationsLast7Days": "Reservaciones por día (últimos 7 días)",
+  "adminChartRevenueTrendLast7Days": "Tendencia de ingresos (últimos 7 días)",
+  "adminChartUsageByModule": "Distribución de uso por módulo",
+  "adminNotificationNewReservation": "Nueva reserva",
+  "adminNotificationTableReservation": "Reserva para Mesa 5 - 4 personas",
+  "adminNotificationFiveMinutesAgo": "Hace 5 min",
+  "adminNotificationOrderCompleted": "Pedido completado",
+  "adminNotificationConsumptionGroup": "Grupo de Consumo Ecológico",
+  "adminNotificationOneHourAgo": "Hace 1 hora",
+  "adminNotificationEscalatedChat": "Chat escalado",
+  "adminNotificationHumanAttentionRequired": "Cliente requiere atención humana",
+  "adminNotificationTwoHoursAgo": "Hace 2 horas",
+  "adminModulesLoadError": "Error al cargar módulos",
+  "adminModulesMetricsLoadError": "Error al cargar métricas",
+  "adminModulesEmpty": "No hay módulos activos",
+  "adminModulesEnableInWordPress": "Activa módulos desde el panel de WordPress",
+  "adminModuleScheduledEvents": "Eventos programados",
+  "adminModuleActive": "Módulo activo",
+  "adminChartsSectionTitle": "Análisis y tendencias"
 }

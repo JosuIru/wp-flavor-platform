@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/models/models.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla de formulario de inscripción a un campamento
 class CampInscriptionFormScreen extends ConsumerStatefulWidget {
@@ -21,7 +22,7 @@ class CampInscriptionFormScreen extends ConsumerStatefulWidget {
 
 class _CampInscriptionFormScreenState
     extends ConsumerState<CampInscriptionFormScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
@@ -41,12 +42,7 @@ class _CampInscriptionFormScreenState
     if (!_formKey.currentState!.validate()) return;
 
     if (!_acceptTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(i18n.campInscriptionAcceptTermsError),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      FlavorSnackbar.showInfo(context, i18n.campInscriptionAcceptTermsError);
       return;
     }
 
@@ -111,12 +107,7 @@ class _CampInscriptionFormScreenState
         ),
       );
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(response.error ?? i18n.campInscriptionCreateError),
-          backgroundColor: Colors.red,
-        ),
-      );
+      FlavorSnackbar.showError(context, response.error ?? i18n.campInscriptionCreateError);
     }
   }
 
@@ -179,7 +170,7 @@ class _CampInscriptionFormScreenState
               controller: _participantNameController,
               decoration: InputDecoration(
                 labelText: i18n.campInscriptionFullNameRequired,
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.person),
               ),
               validator: (value) {
@@ -195,7 +186,7 @@ class _CampInscriptionFormScreenState
               controller: _participantAgeController,
               decoration: InputDecoration(
                 labelText: i18n.campInscriptionAgeRequired,
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.cake),
                 suffixText: i18n.campInscriptionYearsSuffix,
               ),
@@ -217,7 +208,7 @@ class _CampInscriptionFormScreenState
               controller: _participantAllergiesController,
               decoration: InputDecoration(
                 labelText: i18n.campInscriptionAllergiesLabel,
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.medical_services),
                 helperText: i18n.campInscriptionAllergiesHelper,
               ),
@@ -236,7 +227,7 @@ class _CampInscriptionFormScreenState
               controller: _guardianNameController,
               decoration: InputDecoration(
                 labelText: i18n.campInscriptionFullNameRequired,
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.person_outline),
               ),
               validator: (value) {
@@ -252,7 +243,7 @@ class _CampInscriptionFormScreenState
               controller: _guardianEmailController,
               decoration: InputDecoration(
                 labelText: i18n.campInscriptionEmailRequired,
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.email),
               ),
               keyboardType: TextInputType.emailAddress,
@@ -272,7 +263,7 @@ class _CampInscriptionFormScreenState
               controller: _guardianPhoneController,
               decoration: InputDecoration(
                 labelText: i18n.campInscriptionPhoneRequired,
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.phone),
                 helperText: i18n.campInscriptionPhoneHelper,
               ),
@@ -344,14 +335,7 @@ class _CampInscriptionFormScreenState
             FilledButton.icon(
               onPressed: _isLoading ? null : _submitInscription,
               icon: _isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
+                  ? const FlavorInlineSpinner(color: Colors.white)
                   : const Icon(Icons.send),
               label: Text(_isLoading ? i18n.commonSending : i18n.campInscriptionSubmit),
               style: FilledButton.styleFrom(

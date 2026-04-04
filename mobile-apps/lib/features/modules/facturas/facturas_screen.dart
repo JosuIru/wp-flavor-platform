@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
+import '../../../core/utils/flavor_url_launcher.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class FacturasScreen extends ConsumerStatefulWidget {
   const FacturasScreen({super.key});
@@ -34,17 +35,24 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
         future: _future,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const FlavorLoadingState();
           }
           final res = snapshot.data!;
           if (!res.success || res.data == null) {
-            return Center(child: Text(res.error ?? 'No se pudieron cargar facturas'));
+            return FlavorErrorState(
+              message: res.error ?? 'No se pudieron cargar facturas',
+              onRetry: _refresh,
+              icon: Icons.receipt_long_outlined,
+            );
           }
           final facturas = (res.data!['facturas'] as List<dynamic>? ?? [])
               .whereType<Map<String, dynamic>>()
               .toList();
           if (facturas.isEmpty) {
-            return const Center(child: Text('No hay facturas'));
+            return const FlavorEmptyState(
+              icon: Icons.receipt_long_outlined,
+              title: 'No hay facturas',
+            );
           }
           return RefreshIndicator(
             onRefresh: _refresh,
@@ -66,12 +74,15 @@ class _FacturasScreenState extends ConsumerState<FacturasScreen> {
                     title: Text(numero),
                     subtitle: Text('$cliente · $estado'),
                     trailing: Text(total),
-                    onTap: () {
-                      Navigator.of(context).push(
+                    onTap: () async {
+                      final result = await Navigator.of(context).push<bool>(
                         MaterialPageRoute(
                           builder: (_) => FacturaDetailScreen(facturaId: id),
                         ),
                       );
+                      if (result == true && mounted) {
+                        _refresh();
+                      }
                     },
                   ),
                 );
@@ -103,14 +114,19 @@ class _FacturaDetailScreenState extends ConsumerState<FacturaDetailScreen> {
 
   Future<void> _openPdf() async {
     final url = await ref.read(apiClientProvider).getFacturaPdfUrl(widget.facturaId);
-    final uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No se pudo abrir el PDF')),
-        );
-      }
-    }
+    if (!mounted) return;
+    await FlavorUrlLauncher.openExternal(
+      context,
+      url,
+      emptyMessage: 'La factura no tiene PDF disponible.',
+      errorMessage: 'No se pudo abrir el PDF',
+    );
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      _future = ref.read(apiClientProvider).getFactura(widget.facturaId);
+    });
   }
 
   @override
@@ -121,31 +137,38 @@ class _FacturaDetailScreenState extends ConsumerState<FacturaDetailScreen> {
         future: _future,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const FlavorLoadingState();
           }
           final res = snapshot.data!;
           if (!res.success || res.data == null) {
-            return Center(child: Text(res.error ?? 'No se pudo cargar la factura'));
+            return FlavorErrorState(
+              message: res.error ?? 'No se pudo cargar la factura',
+              onRetry: _refresh,
+              icon: Icons.receipt_outlined,
+            );
           }
           final f = res.data!;
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              ListTile(
-                title: Text(f['numero_factura']?.toString() ?? 'Factura'),
-                subtitle: Text(f['cliente_nombre']?.toString() ?? ''),
-                trailing: Text(f['estado']?.toString() ?? ''),
-              ),
-              ListTile(
-                title: const Text('Total'),
-                trailing: Text(f['total']?.toString() ?? ''),
-              ),
-              const SizedBox(height: 12),
-              FilledButton(
-                onPressed: _openPdf,
-                child: const Text('Ver PDF'),
-              ),
-            ],
+          return RefreshIndicator(
+            onRefresh: _refresh,
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                ListTile(
+                  title: Text(f['numero_factura']?.toString() ?? 'Factura'),
+                  subtitle: Text(f['cliente_nombre']?.toString() ?? ''),
+                  trailing: Text(f['estado']?.toString() ?? ''),
+                ),
+                ListTile(
+                  title: const Text('Total'),
+                  trailing: Text(f['total']?.toString() ?? ''),
+                ),
+                const SizedBox(height: 12),
+                FilledButton(
+                  onPressed: _openPdf,
+                  child: const Text('Ver PDF'),
+                ),
+              ],
+            ),
           );
         },
       ),

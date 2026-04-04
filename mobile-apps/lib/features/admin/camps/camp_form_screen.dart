@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/models/models.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
 
 /// Pantalla para crear o editar un campamento
 class CampFormScreen extends ConsumerStatefulWidget {
@@ -19,7 +20,7 @@ class CampFormScreen extends ConsumerStatefulWidget {
 }
 
 class _CampFormScreenState extends ConsumerState<CampFormScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _excerptController = TextEditingController();
@@ -43,9 +44,9 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
   List<CampTerm> _availableAges = [];
   List<CampTerm> _availableLanguages = [];
 
-  List<int> _selectedCategoryIds = [];
-  List<int> _selectedAgeIds = [];
-  List<int> _selectedLanguageIds = [];
+  final List<int> _selectedCategoryIds = [];
+  final List<int> _selectedAgeIds = [];
+  final List<int> _selectedLanguageIds = [];
 
   @override
   void initState() {
@@ -210,21 +211,17 @@ class _CampFormScreenState extends ConsumerState<CampFormScreen> {
     setState(() => _isLoading = false);
 
     if (response.success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(widget.camp == null
-              ? i18n.campFormCreatedSuccess
-              : i18n.campFormUpdatedSuccess),
-          backgroundColor: Colors.green,
-        ),
+      FlavorSnackbar.showSuccess(
+        context,
+        widget.camp == null
+            ? i18n.campFormCreatedSuccess
+            : i18n.campFormUpdatedSuccess,
       );
       Navigator.of(context).pop(true); // Volver con resultado exitoso
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(response.error ?? i18n.campFormSaveError),
-          backgroundColor: Colors.red,
-        ),
+      FlavorSnackbar.showError(
+        context,
+        response.error ?? i18n.campFormSaveError,
       );
     }
   }

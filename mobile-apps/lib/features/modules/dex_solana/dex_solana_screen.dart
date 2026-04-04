@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class DexSolanaScreen extends ConsumerStatefulWidget {
   const DexSolanaScreen({super.key});
@@ -60,22 +60,12 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
         ],
       ),
       body: _cargando
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _mensajeError != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.currency_bitcoin, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(_mensajeError!),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _cargarDatos,
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
+              ? FlavorErrorState(
+                  message: _mensajeError!,
+                  onRetry: _cargarDatos,
+                  icon: Icons.currency_bitcoin,
                 )
               : RefreshIndicator(
                   onRefresh: _cargarDatos,
@@ -90,14 +80,9 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
                       ),
                       const SizedBox(height: 12),
                       if (_listaTokens.isEmpty)
-                        Center(
-                          child: Column(
-                            children: [
-                              Icon(Icons.currency_bitcoin, size: 48, color: Colors.grey.shade400),
-                              const SizedBox(height: 8),
-                              const Text('No hay tokens disponibles'),
-                            ],
-                          ),
+                        const FlavorEmptyState(
+                          icon: Icons.currency_bitcoin,
+                          title: 'No hay tokens disponibles',
                         )
                       else
                         ..._listaTokens.map((token) => _construirTarjetaToken(token)),
@@ -237,8 +222,6 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
   }
 
   void _mostrarSwapModal(BuildContext context) {
-    final tokenOrigenController = TextEditingController();
-    final tokenDestinoController = TextEditingController();
     final cantidadController = TextEditingController();
     String? tokenOrigenSeleccionado;
     String? tokenDestinoSeleccionado;
@@ -360,11 +343,7 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
                             if (context.mounted) Navigator.pop(context);
                           },
                     icon: ejecutandoSwap
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
+                        ? const FlavorInlineSpinner()
                         : const Icon(Icons.swap_horiz),
                     label: Text(ejecutandoSwap ? 'Ejecutando...' : 'Ejecutar Swap'),
                   ),
@@ -521,11 +500,7 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
                             if (context.mounted) Navigator.pop(context);
                           },
                     icon: enviando
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
+                        ? const FlavorInlineSpinner()
                         : const Icon(Icons.send),
                     label: Text(enviando ? 'Enviando...' : 'Enviar'),
                   ),
@@ -626,11 +601,14 @@ class _TokenDetalleScreenState extends ConsumerState<TokenDetalleScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Detalle del Token')),
       body: _cargando
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _mensajeError != null
-              ? Center(child: Text(_mensajeError!))
+              ? FlavorErrorState(message: _mensajeError!, onRetry: _cargarDetalle)
               : _datosToken == null
-                  ? const Center(child: Text('No se encontraron datos'))
+                  ? const FlavorEmptyState(
+                      icon: Icons.token_outlined,
+                      title: 'No se encontraron datos',
+                    )
                   : ListView(
                       padding: const EdgeInsets.all(16),
                       children: [
@@ -753,11 +731,7 @@ class _TokenDetalleScreenState extends ConsumerState<TokenDetalleScreen> {
                             if (context.mounted) Navigator.pop(context);
                           },
                     icon: comprando
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
+                        ? const FlavorInlineSpinner()
                         : const Icon(Icons.shopping_cart),
                     label: Text(comprando ? 'Comprando...' : 'Comprar'),
                     style: FilledButton.styleFrom(backgroundColor: Colors.green),
@@ -913,11 +887,7 @@ class _TokenDetalleScreenState extends ConsumerState<TokenDetalleScreen> {
                             if (context.mounted) Navigator.pop(context);
                           },
                     icon: vendiendo
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
+                        ? const FlavorInlineSpinner()
                         : const Icon(Icons.sell),
                     label: Text(vendiendo ? 'Vendiendo...' : 'Vender'),
                     style: FilledButton.styleFrom(backgroundColor: Colors.red),

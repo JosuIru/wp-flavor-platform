@@ -3,9 +3,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/utils/haptics.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/utils/map_launch_helper.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
+import '../../../core/widgets/google_marker_map.dart';
 
 /// Modelo para punto de interes en el mapa
 class MapPointOfInterest {
@@ -216,6 +219,15 @@ class _DashboardMapWidgetState extends ConsumerState<DashboardMapWidget>
     });
   }
 
+  Future<void> _openPointInMap(MapPointOfInterest point) async {
+    final uri = MapLaunchHelper.buildConfiguredMapUri(
+      point.latitude,
+      point.longitude,
+      query: point.address ?? point.title,
+    );
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   List<Marker> _buildMarkers(List<MapPointOfInterest> points) {
     final filteredPoints = widget.moduleFilters != null
         ? points.where((point) => widget.moduleFilters!.contains(point.moduleType)).toList()
@@ -345,6 +357,10 @@ class _DashboardMapWidgetState extends ConsumerState<DashboardMapWidget>
   }
 
   Widget _buildMap(List<MapPointOfInterest> points, ColorScheme colorScheme) {
+    if (MapLaunchHelper.usesEmbeddedGoogle) {
+      return _buildGoogleMap(points);
+    }
+
     final markers = _buildMarkers(points);
     final bounds = _calculateBounds(points);
 
@@ -450,6 +466,45 @@ class _DashboardMapWidgetState extends ConsumerState<DashboardMapWidget>
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildGoogleMap(List<MapPointOfInterest> points) {
+    final visiblePoints = widget.moduleFilters != null && widget.moduleFilters!.isNotEmpty
+        ? points.where((point) => widget.moduleFilters!.contains(point.moduleType)).toList()
+        : points;
+    final bounds = _calculateBounds(visiblePoints);
+    final center = bounds?.center ?? _defaultCenter;
+
+    return GoogleMarkerMap(
+      apiKey: MapLaunchHelper.googleMapsApiKey,
+      centerLat: center.latitude,
+      centerLng: center.longitude,
+      zoom: _defaultZoom,
+      markers: visiblePoints
+          .map(
+            (point) => GoogleMarkerMapItem(
+              id: point.id,
+              title: point.title,
+              subtitle: point.address ?? point.description,
+              latitude: point.latitude,
+              longitude: point.longitude,
+              colorHex: point.colorHex,
+            ),
+          )
+          .toList(),
+      onMarkerTap: (markerId) {
+        MapPointOfInterest? match;
+        for (final point in visiblePoints) {
+          if (point.id == markerId) {
+            match = point;
+            break;
+          }
+        }
+        if (match != null) {
+          _handleMarkerTap(match);
+        }
+      },
     );
   }
 
@@ -580,17 +635,30 @@ class _DashboardMapWidgetState extends ConsumerState<DashboardMapWidget>
                   ),
                 ],
                 const SizedBox(height: 8),
-                // Boton de accion
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.tonal(
-                    onPressed: () {
-                      Haptics.medium();
-                      _hideBottomSheet();
-                      widget.onPointTap?.call(point);
-                    },
-                    child: const Text('Ver detalles'),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          Haptics.light();
+                          await _openPointInMap(point);
+                        },
+                        icon: const Icon(Icons.map_outlined),
+                        label: Text(MapLaunchHelper.providerLabel),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FilledButton.tonal(
+                        onPressed: () {
+                          Haptics.medium();
+                          _hideBottomSheet();
+                          widget.onPointTap?.call(point);
+                        },
+                        child: const Text('Ver detalles'),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -603,9 +671,7 @@ class _DashboardMapWidgetState extends ConsumerState<DashboardMapWidget>
   Widget _buildLoadingState(ColorScheme colorScheme) {
     return Container(
       color: colorScheme.surfaceContainerLow,
-      child: const Center(
-        child: CircularProgressIndicator(),
-      ),
+      child: const FlavorLoadingState(),
     );
   }
 

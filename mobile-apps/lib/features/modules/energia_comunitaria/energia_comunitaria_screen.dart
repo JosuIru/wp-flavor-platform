@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class EnergiaComunitariaScreen extends ConsumerStatefulWidget {
   const EnergiaComunitariaScreen({super.key});
@@ -214,6 +215,7 @@ class _EnergiaComunitariaScreenState extends ConsumerState<EnergiaComunitariaScr
     String estado,
     BuildContext sheetContext,
   ) async {
+    final navigator = Navigator.of(sheetContext);
     final liquidacionId = _parseInt(item['id']);
     if (liquidacionId == null || liquidacionId <= 0) {
       return;
@@ -230,7 +232,7 @@ class _EnergiaComunitariaScreenState extends ConsumerState<EnergiaComunitariaScr
     }
 
     if (response.data?['success'] == true) {
-      Navigator.of(sheetContext).pop();
+      navigator.pop();
       await _loadLiquidaciones(reset: true);
       if (!mounted) {
         return;
@@ -401,7 +403,7 @@ class _EnergiaComunitariaScreenState extends ConsumerState<EnergiaComunitariaScr
     return Scaffold(
       appBar: AppBar(title: const Text('Energia Comunitaria')),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : RefreshIndicator(
               onRefresh: _loadData,
               child: ListView(
@@ -477,7 +479,10 @@ class _EnergiaComunitariaScreenState extends ConsumerState<EnergiaComunitariaScr
         const Text('Comunidades energeticas', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
         if (_comunidades.isEmpty)
-          const Text('No hay comunidades energéticas registradas')
+          const FlavorEmptyState(
+            icon: Icons.groups_outlined,
+            title: 'No hay comunidades energéticas registradas',
+          )
         else
           ..._comunidades.take(5).map((item) => Card(
                 margin: const EdgeInsets.only(bottom: 8),
@@ -499,7 +504,10 @@ class _EnergiaComunitariaScreenState extends ConsumerState<EnergiaComunitariaScr
         const Text('Instalaciones', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
         if (_instalaciones.isEmpty)
-          const Text('No hay instalaciones registradas')
+          const FlavorEmptyState(
+            icon: Icons.electrical_services_outlined,
+            title: 'No hay instalaciones registradas',
+          )
         else
           ..._instalaciones.take(8).map((item) => ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -631,7 +639,10 @@ class _EnergiaComunitariaScreenState extends ConsumerState<EnergiaComunitariaScr
         ),
         const SizedBox(height: 12),
         if (_liquidaciones.isEmpty)
-          const Text('No hay liquidaciones para los filtros seleccionados')
+          const FlavorEmptyState(
+            icon: Icons.receipt_long_outlined,
+            title: 'No hay liquidaciones para los filtros seleccionados',
+          )
         else
             ...[
             ..._liquidaciones.map(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import '../../core/config/app_config.dart';
+import '../../core/widgets/flavor_webview_page.dart';
 
 /// WebView para el checkout de WooCommerce
 class CheckoutWebView extends StatefulWidget {
@@ -17,53 +16,7 @@ class CheckoutWebView extends StatefulWidget {
 }
 
 class _CheckoutWebViewState extends State<CheckoutWebView> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
-  late final WebViewController _controller;
-  bool _isLoading = true;
-  double _progress = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _initWebView();
-  }
-
-  void _initWebView() {
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.white)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (progress) {
-            setState(() {
-              _progress = progress / 100;
-            });
-          },
-          onPageStarted: (url) {
-            setState(() => _isLoading = true);
-          },
-          onPageFinished: (url) {
-            setState(() => _isLoading = false);
-            _checkForCompletion(url);
-          },
-          onNavigationRequest: (request) {
-            // Permitir navegación dentro del dominio
-            return NavigationDecision.navigate;
-          },
-          onWebResourceError: (error) {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(i18n.commonError(error.description)),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            }
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.checkoutUrl));
-  }
+  AppLocalizations get i18n => AppLocalizations.of(context);
 
   void _checkForCompletion(String url) {
     // Detectar URLs de confirmación de WooCommerce
@@ -109,22 +62,24 @@ class _CheckoutWebViewState extends State<CheckoutWebView> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(i18n.completePurchaseTitle),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => _showExitConfirmation(),
-        ),
-        bottom: _isLoading
-            ? PreferredSize(
-                preferredSize: const Size.fromHeight(4),
-                child: LinearProgressIndicator(value: _progress),
-              )
-            : null,
+    final i18n = AppLocalizations.of(context);
+    return FlavorWebViewPage(
+      title: i18n.completePurchaseTitle,
+      url: widget.checkoutUrl,
+      leading: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: _showExitConfirmation,
       ),
-      body: WebViewWidget(controller: _controller),
+      onPageFinished: _checkForCompletion,
+      onWebResourceError: (error) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(i18n.commonError(error.description)),
+            backgroundColor: Colors.red,
+          ),
+        );
+      },
     );
   }
 

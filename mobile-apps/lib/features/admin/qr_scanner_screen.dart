@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vibration/vibration.dart';
-import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart';
-import '../../core/widgets/common_widgets.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla de escáner QR para check-in de reservas
 class QRScannerScreen extends ConsumerStatefulWidget {
@@ -17,7 +15,7 @@ class QRScannerScreen extends ConsumerStatefulWidget {
 }
 
 class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   late MobileScannerController _scannerController;
   bool _isProcessing = false;
   String? _lastScannedCode;
@@ -185,9 +183,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(i18n.serverConfigQrScanTitle),
@@ -260,12 +256,8 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                      SizedBox(width: 12),
+                      const FlavorInlineSpinner(),
+                      const SizedBox(width: 12),
                       Text(i18n.procesandoF16b30),
                     ],
                   ),
@@ -286,7 +278,6 @@ class _ScannerOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return CustomPaint(
       painter: _ScannerOverlayPainter(
         borderColor: isProcessing
@@ -357,8 +348,6 @@ class _ScanResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
     final isSuccess = result.success;
 
     return Semantics(

@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/utils/flavor_contact_launcher.dart';
+import '../../../core/utils/map_launch_helper.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class BaresScreen extends ConsumerStatefulWidget {
   const BaresScreen({super.key});
@@ -27,17 +30,18 @@ class _BaresScreenState extends ConsumerState<BaresScreen> {
   }
 
   Future<void> _abrirMapa(double lat, double lng, String nombre) async {
-    final url = Uri.parse('https://www.openstreetmap.org/?mlat=$lat&mlon=$lng#map=18/$lat/$lng');
+    final url = MapLaunchHelper.buildConfiguredMapUri(
+      lat,
+      lng,
+      query: nombre,
+    );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     }
   }
 
   Future<void> _llamarTelefono(String telefono) async {
-    final url = Uri.parse('tel:$telefono');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    }
+    await FlavorContactLauncher.call(context, telefono);
   }
 
   @override
@@ -56,30 +60,23 @@ class _BaresScreenState extends ConsumerState<BaresScreen> {
         future: _future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const FlavorLoadingState();
           }
 
           if (!snapshot.hasData) {
-            return const Center(child: Text('Error al cargar bares'));
+            return FlavorErrorState(
+              message: 'Error al cargar bares',
+              onRetry: _refresh,
+              icon: Icons.local_bar_outlined,
+            );
           }
 
           final response = snapshot.data!;
           if (!response.success || response.data == null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
-                  const SizedBox(height: 16),
-                  Text(response.error ?? 'Error al cargar bares'),
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: _refresh,
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Reintentar'),
-                  ),
-                ],
-              ),
+            return FlavorErrorState(
+              message: response.error ?? 'Error al cargar bares',
+              onRetry: _refresh,
+              icon: Icons.local_bar_outlined,
             );
           }
 
@@ -88,15 +85,9 @@ class _BaresScreenState extends ConsumerState<BaresScreen> {
               .toList();
 
           if (bares.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.local_bar, size: 64, color: Colors.grey.shade400),
-                  const SizedBox(height: 16),
-                  const Text('No hay bares disponibles'),
-                ],
-              ),
+            return const FlavorEmptyState(
+              icon: Icons.local_bar_outlined,
+              title: 'No hay bares disponibles',
             );
           }
 

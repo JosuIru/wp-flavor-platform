@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
 import '../../core/widgets/common_widgets.dart';
+import '../../core/widgets/flavor_snackbar.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 import 'manual_customers_screen.dart' show ManualCustomer, unifiedCustomersProvider;
 
 /// Plantillas de mensajes predefinidas
@@ -86,7 +88,7 @@ class AdminReservationsScreen extends ConsumerStatefulWidget {
 
 class _AdminReservationsScreenState
     extends ConsumerState<AdminReservationsScreen> with SingleTickerProviderStateMixin {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   late TabController _tabController;
 
   // Modo de filtro: fecha única o rango
@@ -263,12 +265,17 @@ class _AdminReservationsScreenState
     }
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(i18n.reservationsCheckinResult(successCount, errorCount)),
-          backgroundColor: errorCount == 0 ? Colors.green : Colors.orange,
-        ),
-      );
+      if (errorCount == 0) {
+        FlavorSnackbar.showSuccess(
+          context,
+          i18n.reservationsCheckinResult(successCount, errorCount),
+        );
+      } else {
+        FlavorSnackbar.showInfo(
+          context,
+          i18n.reservationsCheckinResult(successCount, errorCount),
+        );
+      }
       setState(() {
         _isSelectionMode = false;
         _selectedIds.clear();
@@ -315,12 +322,17 @@ class _AdminReservationsScreenState
     }
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(i18n.reservationsCancelResult(successCount, errorCount)),
-          backgroundColor: errorCount == 0 ? Colors.orange : Colors.red,
-        ),
-      );
+      if (errorCount == 0) {
+        FlavorSnackbar.showInfo(
+          context,
+          i18n.reservationsCancelResult(successCount, errorCount),
+        );
+      } else {
+        FlavorSnackbar.showError(
+          context,
+          i18n.reservationsCancelResult(successCount, errorCount),
+        );
+      }
       setState(() {
         _isSelectionMode = false;
         _selectedIds.clear();
@@ -345,10 +357,9 @@ class _AdminReservationsScreenState
         .toList();
 
     if (withPhone.isEmpty && withEmail.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(i18n.ningunaReservaSeleccionadaTieneDatosB33ea0),
-          backgroundColor: Colors.orange,
-        ),
+      FlavorSnackbar.showInfo(
+        context,
+        i18n.ningunaReservaSeleccionadaTieneDatosB33ea0,
       );
       return;
     }
@@ -369,7 +380,6 @@ class _AdminReservationsScreenState
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     final reservationsAsync = ref.watch(adminReservationsProvider(_params));
 
     return Scaffold(
@@ -614,7 +624,7 @@ class _FiltersSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     // Obtener disponibilidad del mes seleccionado para saber el estado del día
     final monthKey = _getMonthKey(selectedDate);
     final availabilityAsync = ref.watch(availabilityProvider(monthKey));
@@ -774,7 +784,7 @@ class _FiltersSection extends ConsumerWidget {
                   },
                   loading: () => const SizedBox(
                     height: 48,
-                    child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                    child: Center(child: FlavorInlineSpinner()),
                   ),
                   error: (_, __) => const SizedBox.shrink(),
                 ),
@@ -796,7 +806,7 @@ class _FiltersSection extends ConsumerWidget {
     DateTime? end,
     String localeName,
   ) {
-    if (start == null || end == null) return AppLocalizations.of(context)!.commonSelect;
+    if (start == null || end == null) return AppLocalizations.of(context).commonSelect;
     final startLabel = DateFormat.Md(localeName).format(start);
     final endLabel = DateFormat.Md(localeName).format(end);
     return '$startLabel - $endLabel';
@@ -820,7 +830,7 @@ class _ReservationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
@@ -944,7 +954,7 @@ class _ReservationDetailsSheet extends ConsumerStatefulWidget {
 }
 
 class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsSheet> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   bool _isLoading = false;
 
   Future<void> _launchUrl(String urlString) async {
@@ -953,11 +963,9 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.commonCannotOpenUrl(urlString)),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          i18n.commonCannotOpenUrl(urlString),
         );
       }
     }
@@ -974,17 +982,14 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
     if (response.success && mounted) {
       Navigator.pop(context);
       widget.onStatusChanged?.call();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(i18n.checkInRealizadoCorrectamente74e5cd),
-          backgroundColor: Colors.green,
-        ),
+      FlavorSnackbar.showSuccess(
+        context,
+        i18n.checkInRealizadoCorrectamente74e5cd,
       );
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(response.error ?? i18n.reservationsCheckinError),
-          backgroundColor: Colors.red,
-        ),
+      FlavorSnackbar.showError(
+        context,
+        response.error ?? i18n.reservationsCheckinError,
       );
     }
   }
@@ -1021,24 +1026,20 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
     if (response.success && mounted) {
       Navigator.pop(context);
       widget.onStatusChanged?.call();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(i18n.reservaCanceladaB25309),
-          backgroundColor: Colors.orange,
-        ),
+      FlavorSnackbar.showInfo(
+        context,
+        i18n.reservaCanceladaB25309,
       );
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(response.error ?? i18n.reservationsCancelError),
-          backgroundColor: Colors.red,
-        ),
+      FlavorSnackbar.showError(
+        context,
+        response.error ?? i18n.reservationsCancelError,
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       minChildSize: 0.4,
@@ -1066,7 +1067,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                 const SizedBox(height: 24),
 
                 // Título
-                Text(AppLocalizations.of(context)!.detallesDeLaReserva,
+                Text(i18n.detallesDeLaReserva,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -1106,7 +1107,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                 // Cliente
                 if (widget.reservation.customer != null) ...[
                   const Divider(height: 32),
-                  Text(AppLocalizations.of(context)!.cliente,
+                  Text(i18n.cliente,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -1149,7 +1150,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                     (widget.reservation.customer!.phone.isNotEmpty ||
                         widget.reservation.customer!.email.isNotEmpty)) ...[
                   const Divider(height: 32),
-                  Text(AppLocalizations.of(context)!.contactarCliente,
+                  Text(i18n.contactarCliente,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -1196,7 +1197,7 @@ class _ReservationDetailsSheetState extends ConsumerState<_ReservationDetailsShe
                 // Acciones
                 if (widget.reservation.isPending)
                   _isLoading
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const FlavorLoadingState()
                       : Row(
                     children: [
                       Expanded(
@@ -1268,7 +1269,6 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -1315,7 +1315,7 @@ class _MessageDialog extends StatefulWidget {
 }
 
 class _MessageDialogState extends State<_MessageDialog> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   final _messageController = TextEditingController();
   MessageTemplate? _selectedTemplate;
 
@@ -1365,7 +1365,6 @@ class _MessageDialogState extends State<_MessageDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
@@ -1399,7 +1398,7 @@ class _MessageDialogState extends State<_MessageDialog> {
             const SizedBox(height: 16),
 
             // Plantillas
-            Text(AppLocalizations.of(context)!.plantillasRapidas,
+            Text(i18n.plantillasRapidas,
               style: Theme.of(context).textTheme.labelMedium,
             ),
             const SizedBox(height: 8),
@@ -1474,7 +1473,7 @@ class _BulkMessageSheet extends StatefulWidget {
 }
 
 class _BulkMessageSheetState extends State<_BulkMessageSheet> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   final _messageController = TextEditingController();
   MessageTemplate? _selectedTemplate;
   bool _sendWhatsApp = true;
@@ -1543,11 +1542,9 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
     setState(() => _isSending = false);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(i18n.reservationsMessagesSent(_sentCount, targetList.length)),
-          backgroundColor: Colors.green,
-        ),
+      FlavorSnackbar.showSuccess(
+        context,
+        i18n.reservationsMessagesSent(_sentCount, targetList.length),
       );
       Navigator.pop(context);
     }
@@ -1555,7 +1552,6 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return DraggableScrollableSheet(
       initialChildSize: 0.8,
       minChildSize: 0.5,
@@ -1582,7 +1578,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                 ),
                 const SizedBox(height: 24),
 
-                Text(AppLocalizations.of(context)!.enviarMensajeMasivo,
+                Text(i18n.enviarMensajeMasivo,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -1597,7 +1593,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                 const SizedBox(height: 24),
 
                 // Selector de canal
-                Text(AppLocalizations.of(context)!.enviarPor,
+                Text(i18n.enviarPor,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -1624,7 +1620,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                 const SizedBox(height: 24),
 
                 // Plantillas
-                Text(AppLocalizations.of(context)!.plantillas,
+                Text(i18n.plantillas,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -1661,7 +1657,7 @@ class _BulkMessageSheetState extends State<_BulkMessageSheet> {
                               color: Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
-                            Text(AppLocalizations.of(context)!.variablesDisponibles,
+                            Text(i18n.variablesDisponibles,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.primary,
@@ -1759,7 +1755,7 @@ class _WeeklyCustomersView extends ConsumerStatefulWidget {
 }
 
 class _WeeklyCustomersViewState extends ConsumerState<_WeeklyCustomersView> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
   String _filterOrigin = 'all';
@@ -1799,7 +1795,6 @@ class _WeeklyCustomersViewState extends ConsumerState<_WeeklyCustomersView> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     final customersAsync = ref.watch(unifiedCustomersProvider(_cachedParams));
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -1953,7 +1948,6 @@ class _OriginFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return FilterChip(
       label: Text(label),
       selected: selected,
@@ -1976,7 +1970,7 @@ class _CustomerDaySection extends StatelessWidget {
   String _formatDate(BuildContext context, String dateStr) {
     try {
       final dt = DateTime.parse(dateStr);
-      final i18n = AppLocalizations.of(context)!;
+      final i18n = AppLocalizations.of(context);
       final weekday = DateFormat.E(i18n.localeName).format(dt);
       final day = DateFormat.Md(i18n.localeName).format(dt);
       return '$weekday $day';
@@ -1987,7 +1981,7 @@ class _CustomerDaySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final manualCount = customers.where((c) => c.origin == 'manual').length;
     final wcCount = customers.where((c) => c.origin == 'woocommerce').length;
 
@@ -2074,7 +2068,7 @@ class _CompactCustomerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
     final isManual = customer.origin == 'manual';
     final borderColor = isManual ? Colors.orange : Colors.purple;

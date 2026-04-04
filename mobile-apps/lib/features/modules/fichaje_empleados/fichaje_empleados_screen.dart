@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class FichajeEmpleadosScreen extends ConsumerStatefulWidget {
   const FichajeEmpleadosScreen({super.key});
@@ -139,7 +139,7 @@ class _FichajeEmpleadosScreenState extends ConsumerState<FichajeEmpleadosScreen>
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : RefreshIndicator(
               onRefresh: _loadEstado,
               child: SingleChildScrollView(
@@ -306,18 +306,12 @@ class _FichajeEmpleadosScreenState extends ConsumerState<FichajeEmpleadosScreen>
 
   Widget _buildHistorialSection() {
     if (_historialReciente.isEmpty) {
-      return Card(
+      return const Card(
         child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            children: [
-              Icon(Icons.history, size: 48, color: Colors.grey.shade400),
-              const SizedBox(height: 8),
-              Text(
-                'No hay fichajes recientes',
-                style: TextStyle(color: Colors.grey.shade600),
-              ),
-            ],
+          padding: EdgeInsets.all(12),
+          child: FlavorEmptyState(
+            icon: Icons.history,
+            title: 'No hay fichajes recientes',
           ),
         ),
       );

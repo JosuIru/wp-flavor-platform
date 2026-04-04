@@ -737,6 +737,10 @@
   "adminChatSuggestionExportClientsCsv": "Customer list in CSV",
   "adminChatSuggestionExportMonthlyRevenue": "Monthly revenue report",
   "notificationsTitle": "Notifications",
+  "notificationsEmpty": "No notifications",
+  "adminGreetingMorning": "Good morning",
+  "adminGreetingAfternoon": "Good afternoon",
+  "adminGreetingEvening": "Good evening",
   "notificationsPushTitle": "Push notifications",
   "notificationsPushDesc": "Push notifications will be available soon.",
   "notificationsSectionReservations": "Reservations",
@@ -1090,6 +1094,16 @@
   },
   "escalatedChatReplyHint": "Write your reply...",
   "escalatedChatResolvedBanner": "This chat has been marked as resolved",
+  "escalatedChatsPending": "Pending",
+  "escalatedChatsContacted": "Contacted",
+  "escalatedChatsResolved": "Resolved",
+  "escalatedChatsEmpty": "No escalated chats",
+  "escalatedChatsMessagesCount": "{count} messages",
+  "@escalatedChatsMessagesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "campInscriptionAcceptTermsError": "You must accept the terms and conditions",
   "loadingConnecting": "Connecting...",
   "adminSetupQrScannedTitle": "QR Scanned",
@@ -1725,5 +1739,33 @@
         "type": "String"
       }
     }
-  }
+  },
+  "adminMetricOpenOrders": "Open orders",
+  "adminMetricActiveServices": "Active services",
+  "adminMetricActiveListings": "Active listings",
+  "adminMetricUpcomingEvents": "Upcoming events",
+  "adminMetricOpenIncidents": "Open incidents",
+  "adminMetricPendingResolution": "Pending resolution",
+  "adminMetricActiveMembers": "Active members",
+  "adminMetricRequiresAttention": "Requires attention",
+  "adminMetricAllCaughtUp": "All caught up",
+  "adminChartReservationsLast7Days": "Reservations per day (last 7 days)",
+  "adminChartRevenueTrendLast7Days": "Revenue trend (last 7 days)",
+  "adminChartUsageByModule": "Usage distribution by module",
+  "adminNotificationNewReservation": "New reservation",
+  "adminNotificationTableReservation": "Reservation for Table 5 - 4 people",
+  "adminNotificationFiveMinutesAgo": "5 min ago",
+  "adminNotificationOrderCompleted": "Order completed",
+  "adminNotificationConsumptionGroup": "Consumption Group Ecológico",
+  "adminNotificationOneHourAgo": "1 hour ago",
+  "adminNotificationEscalatedChat": "Escalated chat",
+  "adminNotificationHumanAttentionRequired": "Customer requires human attention",
+  "adminNotificationTwoHoursAgo": "2 hours ago",
+  "adminModulesLoadError": "Error loading modules",
+  "adminModulesMetricsLoadError": "Error loading metrics",
+  "adminModulesEmpty": "No active modules",
+  "adminModulesEnableInWordPress": "Enable modules from the WordPress panel",
+  "adminModuleScheduledEvents": "Scheduled events",
+  "adminModuleActive": "Active module",
+  "adminChartsSectionTitle": "Analytics and trends"
 }

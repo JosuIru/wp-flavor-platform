@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/utils/flavor_url_launcher.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class EconomiaSuficienciaScreen extends ConsumerStatefulWidget {
   const EconomiaSuficienciaScreen({super.key});
@@ -49,7 +50,7 @@ class _EconomiaSuficienciaScreenState extends ConsumerState<EconomiaSuficienciaS
     return Scaffold(
       appBar: AppBar(title: const Text('Economia de Suficiencia')),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : RefreshIndicator(
               onRefresh: _loadData,
               child: SingleChildScrollView(
@@ -118,7 +119,10 @@ class _EconomiaSuficienciaScreenState extends ConsumerState<EconomiaSuficienciaS
         const Text('Retos activos', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
         if (_retos.isEmpty)
-          const Text('No hay retos disponibles')
+          const FlavorEmptyState(
+            icon: Icons.flag_outlined,
+            title: 'No hay retos disponibles',
+          )
         else
           ..._retos.take(3).map((reto) => _buildRetoCard(reto)),
       ],
@@ -306,7 +310,10 @@ class _EconomiaSuficienciaScreenState extends ConsumerState<EconomiaSuficienciaS
         const Text('Recursos', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
         if (_recursos.isEmpty)
-          const Text('No hay recursos disponibles')
+          const FlavorEmptyState(
+            icon: Icons.menu_book_outlined,
+            title: 'No hay recursos disponibles',
+          )
         else
           ..._recursos.take(5).map((recurso) => ListTile(
                 leading: Icon(
@@ -421,20 +428,14 @@ class _EconomiaSuficienciaScreenState extends ConsumerState<EconomiaSuficienciaS
                   child: FilledButton.icon(
                     onPressed: () async {
                       Navigator.pop(context);
-                      final urlString = url.toString();
-                      final uri = Uri.tryParse(
-                        urlString.startsWith('http') ? urlString : 'https://$urlString',
+                      if (!mounted) return;
+                      await FlavorUrlLauncher.openExternal(
+                        context,
+                        url.toString(),
+                        emptyMessage: 'No hay enlace disponible.',
+                        errorMessage: 'No se puede abrir el recurso',
+                        normalizeHttpScheme: true,
                       );
-                      if (uri != null && await canLaunchUrl(uri)) {
-                        await launchUrl(uri, mode: LaunchMode.externalApplication);
-                      } else if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('No se puede abrir el recurso'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
                     },
                     icon: const Icon(Icons.open_in_new),
                     label: const Text('Abrir recurso'),

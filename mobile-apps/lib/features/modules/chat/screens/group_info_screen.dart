@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../../core/widgets/flavor_initials_avatar.dart';
 import '../../../../core/services/chat_service.dart';
+import '../../../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla de información y configuración de grupo
 class GroupInfoScreen extends ConsumerStatefulWidget {
@@ -65,14 +67,17 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(child: CircularProgressIndicator()),
+        body: const FlavorLoadingState(),
       );
     }
 
     if (_group == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(child: Text('Grupo no encontrado')),
+        body: const FlavorEmptyState(
+          icon: Icons.group_off_outlined,
+          title: 'Grupo no encontrado',
+        ),
       );
     }
 
@@ -325,7 +330,7 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
             ? CachedNetworkImageProvider(member.avatarUrl!)
             : null,
         child: member.avatarUrl == null
-            ? Text(member.name[0].toUpperCase())
+            ? Text(FlavorInitialsAvatar.initialsFor(member.name))
             : null,
       ),
       title: Row(
@@ -562,12 +567,11 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
           ),
           TextButton(
             onPressed: () async {
+              final navigator = Navigator.of(context);
               Navigator.pop(context);
               await _chatService.leaveGroup(widget.groupId);
-              if (mounted) {
-                Navigator.pop(context);
-                Navigator.pop(context); // Volver al listado de chats
-              }
+              navigator.pop();
+              navigator.pop(); // Volver al listado de chats
             },
             child: const Text('Salir', style: TextStyle(color: Colors.red)),
           ),
@@ -592,12 +596,11 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
           ),
           TextButton(
             onPressed: () async {
+              final navigator = Navigator.of(context);
               Navigator.pop(context);
               await _chatService.deleteGroup(widget.groupId);
-              if (mounted) {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              }
+              navigator.pop();
+              navigator.pop();
             },
             child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
           ),
@@ -843,14 +846,17 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(child: CircularProgressIndicator()),
+        body: const FlavorLoadingState(),
       );
     }
 
     if (_user == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(child: Text('Usuario no encontrado')),
+        body: const FlavorEmptyState(
+          icon: Icons.person_off_outlined,
+          title: 'Usuario no encontrado',
+        ),
       );
     }
 

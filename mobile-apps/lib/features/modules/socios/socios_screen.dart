@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/utils/flavor_mutation.dart';
+import '../../../core/widgets/flavor_confirm_dialog.dart';
+import '../../../core/widgets/flavor_initials_avatar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla de perfil de socio (usuario)
 class SociosScreen extends ConsumerStatefulWidget {
@@ -77,26 +81,15 @@ class _SociosScreenState extends ConsumerState<SociosScreen>
       future: _perfilFuture,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const FlavorLoadingState();
         }
 
         final res = snapshot.data!;
         if (!res.success || res.data == null) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error_outline, size: 48, color: theme.colorScheme.error),
-                const SizedBox(height: 16),
-                Text(res.error ?? 'Error al cargar perfil'),
-                const SizedBox(height: 16),
-                FilledButton.icon(
-                  onPressed: _refresh,
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Reintentar'),
-                ),
-              ],
-            ),
+          return FlavorErrorState(
+            message: res.error ?? 'Error al cargar perfil',
+            onRetry: _refresh,
+            icon: Icons.person_off_outlined,
           );
         }
 
@@ -125,16 +118,16 @@ class _SociosScreenState extends ConsumerState<SociosScreen>
               Center(
                 child: Column(
                   children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: avatar != null ? NetworkImage(avatar) : null,
-                      child: avatar == null
-                          ? Text(
-                              nombre.isNotEmpty ? nombre[0].toUpperCase() : 'U',
-                              style: const TextStyle(fontSize: 36),
-                            )
-                          : null,
-                    ),
+                    avatar != null
+                        ? CircleAvatar(
+                            radius: 50,
+                            backgroundImage: NetworkImage(avatar),
+                          )
+                        : FlavorInitialsAvatar(
+                            name: nombre,
+                            radius: 50,
+                            textStyle: const TextStyle(fontSize: 36),
+                          ),
                     const SizedBox(height: 12),
                     Text(
                       nombre,
@@ -194,11 +187,7 @@ class _SociosScreenState extends ConsumerState<SociosScreen>
                                 ),
                                 IconButton(
                                   icon: _saving
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(strokeWidth: 2),
-                                        )
+                                      ? const FlavorInlineSpinner()
                                       : const Icon(Icons.check),
                                   onPressed: _saving ? null : () => _guardarDatos(),
                                 ),
@@ -322,31 +311,21 @@ class _SociosScreenState extends ConsumerState<SociosScreen>
 
     try {
       final api = ref.read(apiClientProvider);
-      final response = await api.updateSociosDatos(
-        telefono: _telefonoController.text.trim(),
-        direccion: _direccionController.text.trim(),
+      final saved = await FlavorMutation.runApiResponse(
+        context,
+        request: () => api.updateSociosDatos(
+          telefono: _telefonoController.text.trim(),
+          direccion: _direccionController.text.trim(),
+        ),
+        successMessage: 'Datos actualizados correctamente',
+        fallbackErrorMessage: 'Error al guardar',
+        onSuccess: _refresh,
       );
 
-      if (mounted) {
-        if (response.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Datos actualizados correctamente'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          setState(() {
-            _editMode = false;
-          });
-          _refresh();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.error ?? 'Error al guardar'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+      if (mounted && saved) {
+        setState(() {
+          _editMode = false;
+        });
       }
     } finally {
       if (mounted) {
@@ -360,26 +339,15 @@ class _SociosScreenState extends ConsumerState<SociosScreen>
       future: _cuotasFuture,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const FlavorLoadingState();
         }
 
         final res = snapshot.data!;
         if (!res.success || res.data == null) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error_outline, size: 48, color: theme.colorScheme.error),
-                const SizedBox(height: 16),
-                Text(res.error ?? 'Error al cargar cuotas'),
-                const SizedBox(height: 16),
-                FilledButton.icon(
-                  onPressed: _refresh,
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Reintentar'),
-                ),
-              ],
-            ),
+          return FlavorErrorState(
+            message: res.error ?? 'Error al cargar cuotas',
+            onRetry: _refresh,
+            icon: Icons.receipt_long_outlined,
           );
         }
 
@@ -516,58 +484,25 @@ class _SociosScreenState extends ConsumerState<SociosScreen>
   }
 
   Future<void> _pagarCuota(int cuotaId, double importe, String periodo) async {
-    final confirmado = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmar pago'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('¿Confirmar pago de la cuota de $periodo?'),
-            const SizedBox(height: 8),
-            Text(
-              'Importe: ${importe.toStringAsFixed(2)} €',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Confirmar pago'),
-          ),
-        ],
-      ),
+    final confirmado = await FlavorConfirmDialog.show(
+      context,
+      title: 'Confirmar pago',
+      message:
+          '¿Confirmar pago de la cuota de $periodo?\n\nImporte: ${importe.toStringAsFixed(2)} €',
+      confirmLabel: 'Confirmar pago',
     );
 
     if (confirmado != true) return;
+    if (!mounted) return;
 
     final api = ref.read(apiClientProvider);
-    final response = await api.pagarSociosCuota(cuotaId: cuotaId);
-
-    if (mounted) {
-      if (response.success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Pago registrado correctamente'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        _refresh();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.error ?? 'Error al procesar el pago'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
+    await FlavorMutation.runApiResponse(
+      context,
+      request: () => api.pagarSociosCuota(cuotaId: cuotaId),
+      successMessage: 'Pago registrado correctamente',
+      fallbackErrorMessage: 'Error al procesar el pago',
+      onSuccess: _refresh,
+    );
   }
 
   String _formatDate(String dateStr) {

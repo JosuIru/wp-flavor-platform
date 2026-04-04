@@ -9,6 +9,8 @@ import '../../core/services/business_directory_service.dart';
 import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart' show apiClientProvider;
 import '../../core/utils/haptics.dart';
+import '../../core/widgets/flavor_snackbar.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 
 /// Tab de directorio para la pantalla de setup inicial.
 /// Permite descubrir y conectarse a comunidades sin tener servidor configurado.
@@ -25,7 +27,7 @@ class SetupDirectoryTab extends ConsumerStatefulWidget {
 }
 
 class _SetupDirectoryTabState extends ConsumerState<SetupDirectoryTab> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   final _searchController = TextEditingController();
   final Distance _distanceCalculator = const Distance();
 
@@ -134,12 +136,7 @@ class _SetupDirectoryTabState extends ConsumerState<SetupDirectoryTab> {
 
   Future<void> _connectToNode(DirectoryNode node) async {
     if (node.siteUrl.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Este nodo no tiene URL disponible'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      FlavorSnackbar.showError(context, 'Este nodo no tiene URL disponible');
       return;
     }
 
@@ -339,12 +336,7 @@ class _SetupDirectoryTabState extends ConsumerState<SetupDirectoryTab> {
 
           // Indicador de carga
           if (_isLoading)
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.all(32),
-                child: CircularProgressIndicator(),
-              ),
-            )
+            const FlavorLoadingState()
           else if (nodes.isEmpty)
             Center(
               child: Padding(
@@ -394,7 +386,7 @@ class _SetupDirectoryTabState extends ConsumerState<SetupDirectoryTab> {
                       backgroundImage: NetworkImage(node.logoUrl),
                       radius: 24,
                     )
-                  : CircleAvatar(
+                  : const CircleAvatar(
                       radius: 24,
                       child: Icon(Icons.store),
                     ),
@@ -426,7 +418,7 @@ class _SetupDirectoryTabState extends ConsumerState<SetupDirectoryTab> {
                           _buildBadge('${distancia.toStringAsFixed(1)} km'),
                         if (node.verificado) ...[
                           const SizedBox(width: 6),
-                          Icon(
+                          const Icon(
                             Icons.verified,
                             size: 16,
                             color: Colors.green,
@@ -441,11 +433,7 @@ class _SetupDirectoryTabState extends ConsumerState<SetupDirectoryTab> {
               FilledButton(
                 onPressed: _isConnecting ? null : () => _connectToNode(node),
                 child: _isConnecting
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
+                    ? const FlavorInlineSpinner(size: 16)
                     : Text(i18n.conectar4b2e15),
               ),
             ],

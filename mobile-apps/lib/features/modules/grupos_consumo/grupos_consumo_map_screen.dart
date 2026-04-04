@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../../../core/utils/flavor_url_launcher.dart';
+import '../../../core/utils/map_launch_helper.dart';
 
 class GruposConsumoMapScreen extends StatefulWidget {
   final String title;
@@ -26,12 +28,48 @@ class GruposConsumoMapScreen extends StatefulWidget {
 
 class _GruposConsumoMapScreenState extends State<GruposConsumoMapScreen> {
   late final WebViewController _controller;
+  bool _isLoading = true;
+  double _progress = 0;
+
+  String get _effectiveProvider {
+    final provider = widget.provider.trim().toLowerCase();
+    return provider.isEmpty ? MapLaunchHelper.provider : provider;
+  }
+
+  String get _effectiveGoogleMapsApiKey {
+    final key = widget.googleMapsApiKey.trim();
+    return key.isEmpty ? MapLaunchHelper.googleMapsApiKey : key;
+  }
 
   @override
   void initState() {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (progress) {
+            setState(() {
+              _progress = progress / 100;
+            });
+          },
+          onPageStarted: (_) {
+            setState(() {
+              _isLoading = true;
+            });
+          },
+          onPageFinished: (_) {
+            setState(() {
+              _isLoading = false;
+            });
+          },
+          onWebResourceError: (_) {
+            setState(() {
+              _isLoading = false;
+            });
+          },
+        ),
+      )
       ..loadHtmlString(_buildHtml());
   }
 
@@ -52,8 +90,9 @@ class _GruposConsumoMapScreenState extends State<GruposConsumoMapScreen> {
     }).toList();
     final markersJson = jsonEncode(markers);
     final routesJson = jsonEncode(routes);
-    final useGoogle = widget.provider == 'google' && widget.googleMapsApiKey.isNotEmpty;
-    final googleKey = widget.googleMapsApiKey;
+    final useGoogle =
+        _effectiveProvider == 'google' && _effectiveGoogleMapsApiKey.isNotEmpty;
+    final googleKey = _effectiveGoogleMapsApiKey;
     return '''
 <!DOCTYPE html>
 <html>
@@ -322,8 +361,49 @@ class _GruposConsumoMapScreenState extends State<GruposConsumoMapScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            tooltip: MapLaunchHelper.providerLabel,
+            onPressed: _openCurrentMapExternally,
+            icon: const Icon(Icons.open_in_new),
+          ),
+        ],
+        bottom: _isLoading
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(4),
+                child: LinearProgressIndicator(value: _progress),
+              )
+            : null,
       ),
       body: WebViewWidget(controller: _controller),
+    );
+  }
+
+  Future<void> _openCurrentMapExternally() async {
+    Map<String, dynamic>? target;
+    for (final marker in widget.markers) {
+      if (marker['lat'] != null && marker['lng'] != null) {
+        target = marker;
+        break;
+      }
+    }
+    target ??= widget.markers.isNotEmpty ? widget.markers.first : null;
+    if (target == null) return;
+
+    final lat = double.tryParse((target['lat'] ?? '').toString());
+    final lng = double.tryParse((target['lng'] ?? '').toString());
+    if (lat == null || lng == null) return;
+
+    final uri = MapLaunchHelper.buildConfiguredMapUri(
+      lat,
+      lng,
+      query: target['title']?.toString() ?? target['address']?.toString() ?? '',
+    );
+    if (!mounted) return;
+    await FlavorUrlLauncher.openExternalUri(
+      context,
+      uri,
+      errorMessage: 'No se puede abrir el mapa',
     );
   }
 }

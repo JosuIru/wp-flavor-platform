@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class EconomiaDonScreen extends ConsumerStatefulWidget {
   const EconomiaDonScreen({super.key});
@@ -14,7 +14,6 @@ class _EconomiaDonScreenState extends ConsumerState<EconomiaDonScreen> {
   bool _isLoading = true;
   List<Map<String, dynamic>> _ofertas = [];
   List<Map<String, dynamic>> _necesidades = [];
-  Map<String, dynamic>? _miPerfil;
 
   @override
   void initState() {
@@ -36,7 +35,6 @@ class _EconomiaDonScreenState extends ConsumerState<EconomiaDonScreen> {
           _necesidades = (response.data!['necesidades'] as List<dynamic>? ?? [])
               .whereType<Map<String, dynamic>>()
               .toList();
-          _miPerfil = response.data!['mi_perfil'];
         });
       }
     } finally {
@@ -80,7 +78,7 @@ class _EconomiaDonScreenState extends ConsumerState<EconomiaDonScreen> {
   }
 
   Widget _buildListaOfertas() {
-    if (_isLoading) return const Center(child: CircularProgressIndicator());
+    if (_isLoading) return const FlavorLoadingState();
 
     if (_ofertas.isEmpty) {
       return _buildEmptyState(
@@ -101,7 +99,7 @@ class _EconomiaDonScreenState extends ConsumerState<EconomiaDonScreen> {
   }
 
   Widget _buildListaNecesidades() {
-    if (_isLoading) return const Center(child: CircularProgressIndicator());
+    if (_isLoading) return const FlavorLoadingState();
 
     if (_necesidades.isEmpty) {
       return _buildEmptyState(
@@ -188,17 +186,10 @@ class _EconomiaDonScreenState extends ConsumerState<EconomiaDonScreen> {
   }
 
   Widget _buildEmptyState({required IconData icon, required String message, required String action}) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 64, color: Colors.grey.shade400),
-          const SizedBox(height: 16),
-          Text(message, style: TextStyle(color: Colors.grey.shade600)),
-          const SizedBox(height: 8),
-          Text(action, style: TextStyle(color: Colors.grey.shade500, fontSize: 13)),
-        ],
-      ),
+    return FlavorEmptyState(
+      icon: icon,
+      title: message,
+      message: action,
     );
   }
 

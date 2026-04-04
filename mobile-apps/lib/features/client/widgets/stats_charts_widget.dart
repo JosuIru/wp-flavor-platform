@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../core/utils/haptics.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
-import '../../../core/widgets/chart_widgets.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 /// Modelo para estadistica rapida (quick stat)
 class QuickStat {
@@ -789,7 +788,7 @@ class _AnimatedWeeklyActivityChartState
       ),
       child: const SizedBox(
         height: 250,
-        child: Center(child: CircularProgressIndicator()),
+        child: FlavorLoadingState(),
       ),
     );
   }
@@ -1054,7 +1053,7 @@ class _AnimatedDistributionPieChartState
       ),
       child: const SizedBox(
         height: 250,
-        child: Center(child: CircularProgressIndicator()),
+        child: FlavorLoadingState(),
       ),
     );
   }
@@ -1095,80 +1094,4 @@ class StatsChartsPanel extends StatelessWidget {
       ],
     );
   }
-}
-
-// Datos de ejemplo
-List<QuickStat> _getExampleQuickStats() {
-  return const [
-    QuickStat(
-      id: '1',
-      label: 'Reservas',
-      value: '12',
-      numericValue: 12,
-      iconName: 'event',
-      colorHex: '#2196F3',
-      trendPercentage: 15,
-      isTrendUp: true,
-    ),
-    QuickStat(
-      id: '2',
-      label: 'Pedidos',
-      value: '8',
-      numericValue: 8,
-      iconName: 'shopping_basket',
-      colorHex: '#4CAF50',
-      trendPercentage: 25,
-      isTrendUp: true,
-    ),
-    QuickStat(
-      id: '3',
-      label: 'Horas ganadas',
-      value: '24h',
-      numericValue: 24,
-      iconName: 'timer',
-      colorHex: '#009688',
-      trendPercentage: 10,
-      isTrendUp: true,
-    ),
-    QuickStat(
-      id: '4',
-      label: 'Puntos',
-      value: '450',
-      numericValue: 450,
-      iconName: 'star',
-      colorHex: '#FF9800',
-      trendPercentage: -5,
-      isTrendUp: false,
-    ),
-    QuickStat(
-      id: '5',
-      label: 'Favoritos',
-      value: '23',
-      numericValue: 23,
-      iconName: 'favorite',
-      colorHex: '#E91E63',
-    ),
-  ];
-}
-
-List<WeeklyActivityData> _getExampleWeeklyActivity() {
-  return const [
-    WeeklyActivityData(dayLabel: 'Lun', value: 5),
-    WeeklyActivityData(dayLabel: 'Mar', value: 8),
-    WeeklyActivityData(dayLabel: 'Mie', value: 3),
-    WeeklyActivityData(dayLabel: 'Jue', value: 12),
-    WeeklyActivityData(dayLabel: 'Vie', value: 7),
-    WeeklyActivityData(dayLabel: 'Sab', value: 15),
-    WeeklyActivityData(dayLabel: 'Dom', value: 4),
-  ];
-}
-
-List<DistributionData> _getExampleDistribution() {
-  return const [
-    DistributionData(label: 'Reservas', value: 35, colorHex: '#2196F3', percentage: 35),
-    DistributionData(label: 'Pedidos', value: 25, colorHex: '#4CAF50', percentage: 25),
-    DistributionData(label: 'Intercambios', value: 20, colorHex: '#009688', percentage: 20),
-    DistributionData(label: 'Eventos', value: 15, colorHex: '#FF9800', percentage: 15),
-    DistributionData(label: 'Otros', value: 5, colorHex: '#9E9E9E', percentage: 5),
-  ];
 }

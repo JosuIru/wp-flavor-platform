@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class ComunidadesScreen extends ConsumerStatefulWidget {
   const ComunidadesScreen({super.key});
@@ -58,33 +58,17 @@ class _ComunidadesScreenState extends ConsumerState<ComunidadesScreen> {
         ],
       ),
       body: _cargando
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _mensajeError != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.location_city, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(_mensajeError!),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _cargarDatos,
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
+              ? FlavorErrorState(
+                  message: _mensajeError!,
+                  onRetry: _cargarDatos,
+                  icon: Icons.location_city,
                 )
               : _listaComunidades.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.location_city, size: 64, color: Colors.grey.shade400),
-                          const SizedBox(height: 16),
-                          const Text('No hay comunidades disponibles'),
-                        ],
-                      ),
+                  ? const FlavorEmptyState(
+                      icon: Icons.location_city,
+                      title: 'No hay comunidades disponibles',
                     )
                   : RefreshIndicator(
                       onRefresh: _cargarDatos,
@@ -197,11 +181,17 @@ class _ComunidadDetalleScreenState extends ConsumerState<ComunidadDetalleScreen>
     return Scaffold(
       appBar: AppBar(title: const Text('Detalle de Comunidad')),
       body: _cargando
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _mensajeError != null
-              ? Center(child: Text(_mensajeError!))
+              ? FlavorErrorState(
+                  message: _mensajeError!,
+                  onRetry: _cargarDetalle,
+                )
               : _datosComunidad == null
-                  ? const Center(child: Text('No se encontraron datos'))
+                  ? const FlavorEmptyState(
+                      icon: Icons.groups_outlined,
+                      title: 'No se encontraron datos',
+                    )
                   : ListView(
                       padding: const EdgeInsets.all(16),
                       children: [
@@ -216,11 +206,7 @@ class _ComunidadDetalleScreenState extends ConsumerState<ComunidadDetalleScreen>
                         FilledButton.icon(
                           onPressed: _uniendose ? null : _unirseAComunidad,
                           icon: _uniendose
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                                )
+                              ? const FlavorInlineSpinner(color: Colors.white)
                               : const Icon(Icons.group_add),
                           label: Text(_uniendose ? 'Uniendose...' : 'Unirse a la comunidad'),
                         ),

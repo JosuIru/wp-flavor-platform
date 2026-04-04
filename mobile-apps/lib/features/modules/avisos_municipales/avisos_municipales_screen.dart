@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
+import '../../../core/utils/flavor_url_launcher.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class AvisosMunicipalesScreen extends ConsumerStatefulWidget {
   const AvisosMunicipalesScreen({super.key});
@@ -28,7 +29,7 @@ class _AvisosMunicipalesScreenState extends ConsumerState<AvisosMunicipalesScree
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -45,25 +46,30 @@ class _AvisosMunicipalesScreenState extends ConsumerState<AvisosMunicipalesScree
         future: _future,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const FlavorLoadingState();
           }
 
           final response = snapshot.data!;
           if (!response.success || response.data == null) {
-            return Center(child: Text(i18n.avisosError));
+            return FlavorErrorState(
+              message: i18n.avisosError,
+              onRetry: _refresh,
+              icon: Icons.campaign_outlined,
+            );
           }
 
           final data = response.data!;
           final avisos = (data['avisos'] as List?)?.cast<Map<String, dynamic>>() ?? [];
           final categorias = (data['categorias'] as List?)?.cast<String>() ?? [];
-          final suscripciones = (data['mis_suscripciones'] as List?)?.cast<String>() ?? [];
-
           return Column(
             children: [
               _buildCategoriaFilter(context, categorias, i18n),
               Expanded(
                 child: avisos.isEmpty
-                    ? Center(child: Text(i18n.avisosEmpty))
+                    ? FlavorEmptyState(
+                        icon: Icons.campaign_outlined,
+                        title: i18n.avisosEmpty,
+                      )
                     : RefreshIndicator(
                         onRefresh: _refresh,
                         child: ListView.builder(
@@ -253,7 +259,7 @@ class _AvisosMunicipalesScreenState extends ConsumerState<AvisosMunicipalesScree
   }
 
   void _verDetalleAviso(BuildContext context, Map<String, dynamic> aviso) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final api = ref.read(apiClientProvider);
     final id = (aviso['id'] as num?)?.toInt() ?? 0;
     final titulo = aviso['titulo']?.toString() ?? '';
@@ -322,18 +328,15 @@ class _AvisosMunicipalesScreenState extends ConsumerState<AvisosMunicipalesScree
                     const SizedBox(height: 16),
                     FilledButton.icon(
                       onPressed: () async {
-                        final uri = Uri.tryParse(
-                            enlace.startsWith('http') ? enlace : 'https://$enlace');
-                        if (uri != null) {
-                          Navigator.pop(context);
-                          if (await canLaunchUrl(uri)) {
-                            await launchUrl(uri, mode: LaunchMode.externalApplication);
-                          } else if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('No se puede abrir el enlace')),
-                            );
-                          }
-                        }
+                        Navigator.pop(context);
+                        if (!mounted) return;
+                        await FlavorUrlLauncher.openExternal(
+                          context,
+                          enlace,
+                          emptyMessage: 'No hay enlace disponible.',
+                          errorMessage: 'No se puede abrir el enlace',
+                          normalizeHttpScheme: true,
+                        );
                       },
                       icon: const Icon(Icons.link),
                       label: Text(i18n.avisosMoreInfo),
@@ -350,7 +353,7 @@ class _AvisosMunicipalesScreenState extends ConsumerState<AvisosMunicipalesScree
   }
 
   void _configurarSuscripciones(BuildContext context) async {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final api = ref.read(apiClientProvider);
 
     final response = await api.getAvisosMunicipales();

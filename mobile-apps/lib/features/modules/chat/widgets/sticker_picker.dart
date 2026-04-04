@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../../core/widgets/flavor_state_widgets.dart';
 
 /// Modelo de sticker
 class Sticker {
@@ -208,8 +209,6 @@ class _StickerGifPickerState extends ConsumerState<StickerGifPicker>
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Container(
       height: 350,
       decoration: BoxDecoration(
@@ -255,7 +254,7 @@ class _StickerGifPickerState extends ConsumerState<StickerGifPicker>
 
   Widget _buildStickersTab() {
     if (_isLoadingStickers) {
-      return const Center(child: CircularProgressIndicator());
+      return const FlavorLoadingState();
     }
 
     if (_stickerPacks.isEmpty) {
@@ -474,7 +473,7 @@ class _StickerGifPickerState extends ConsumerState<StickerGifPicker>
     final isLoading = _isSearchingGifs || (_isLoadingGifs && gifs.isEmpty);
 
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const FlavorLoadingState();
     }
 
     if (gifs.isEmpty) {
@@ -516,7 +515,7 @@ class _StickerGifPickerState extends ConsumerState<StickerGifPicker>
           placeholder: (context, url) => Container(
             color: Colors.grey[200],
             child: const Center(
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child: FlavorInlineSpinner(),
             ),
           ),
           errorWidget: (context, url, error) => Container(

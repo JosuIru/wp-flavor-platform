@@ -4,9 +4,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
+import '../../core/widgets/flavor_snackbar.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla de visualización y exportación de resúmenes
 class ExportScreen extends ConsumerStatefulWidget {
@@ -21,8 +22,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   String? _selectedTicketType;
   DateTimeRange? _dateRange;
   bool _isLoading = false;
-  String? _lastExportPath;
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
 
   @override
   void initState() {
@@ -56,8 +56,9 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
   Future<void> _viewData() async {
     if (_dateRange == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(i18n.exportSelectDateRange)),
+      FlavorSnackbar.showInfo(
+        context,
+        i18n.exportSelectDateRange,
       );
       return;
     }
@@ -86,8 +87,9 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
       final total = response.data!['total'] ?? 0;
 
       if (data.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(i18n.exportNoDataToShow)),
+        FlavorSnackbar.showInfo(
+          context,
+          i18n.exportNoDataToShow,
         );
         return;
       }
@@ -107,16 +109,18 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.error ?? i18n.exportErrorFetchingData)),
+      FlavorSnackbar.showError(
+        context,
+        response.error ?? i18n.exportErrorFetchingData,
       );
     }
   }
 
   Future<void> _exportData() async {
     if (_dateRange == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(i18n.exportSelectDateRange)),
+      FlavorSnackbar.showInfo(
+        context,
+        i18n.exportSelectDateRange,
       );
       return;
     }
@@ -147,28 +151,29 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           final file = File('${tempDir.path}/$filename');
           await file.writeAsString(csvContent);
 
-          setState(() {
-            _lastExportPath = file.path;
-            _isLoading = false;
-          });
+          setState(() => _isLoading = false);
 
+          if (!mounted) return;
           _showShareOptions(file.path, filename);
         } catch (e) {
           setState(() => _isLoading = false);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(i18n.exportFileSaveError(e.toString()))),
+          FlavorSnackbar.showError(
+            context,
+            i18n.exportFileSaveError(e.toString()),
           );
         }
       } else {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(i18n.exportNoDataToExport)),
+        FlavorSnackbar.showInfo(
+          context,
+          i18n.exportNoDataToExport,
         );
       }
     } else {
       setState(() => _isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.error ?? i18n.exportErrorExporting)),
+      FlavorSnackbar.showError(
+        context,
+        response.error ?? i18n.exportErrorExporting,
       );
     }
   }
@@ -319,11 +324,9 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                     });
                   },
                 ),
-                loading: () => const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: CircularProgressIndicator(),
-                  ),
+                loading: () => const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: FlavorLoadingState(),
                 ),
                 error: (_, __) => Card(
                   child: Padding(
@@ -476,14 +479,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                   child: FilledButton.icon(
                     onPressed: _isLoading ? null : _exportData,
                     icon: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
+                        ? const FlavorInlineSpinner(color: Colors.white)
                         : const Icon(Icons.file_download),
                     label: Text(_isLoading ? i18n.commonLoading : i18n.exportCsv),
                   ),
@@ -519,8 +515,8 @@ class _TicketTypeFilter extends StatelessWidget {
           children: [
             // Opción "Todos"
             RadioListTile<String?>(
-              title: Text(AppLocalizations.of(context)!.exportAllTickets),
-              subtitle: Text(AppLocalizations.of(context)!.exportNoTicketFilter),
+              title: Text(AppLocalizations.of(context).exportAllTickets),
+              subtitle: Text(AppLocalizations.of(context).exportNoTicketFilter),
               value: null,
               groupValue: selectedTicketType,
               onChanged: onTicketTypeChanged,
@@ -578,7 +574,7 @@ class _DataViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final typeLabel = switch (_typeLabel) {
       'reservations' => i18n.exportTypeReservations,
       'customers' => i18n.exportTypeCustomers,
@@ -745,7 +741,7 @@ class _ExportTypeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final types = [
       (
         type: 'reservations',

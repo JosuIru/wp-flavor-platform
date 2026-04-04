@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class HuellaEcologicaScreen extends ConsumerStatefulWidget {
   const HuellaEcologicaScreen({super.key});
@@ -51,7 +52,7 @@ class _HuellaEcologicaScreenState extends ConsumerState<HuellaEcologicaScreen> {
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : RefreshIndicator(
               onRefresh: _loadData,
               child: SingleChildScrollView(
@@ -415,7 +416,7 @@ class _HuellaEcologicaScreenState extends ConsumerState<HuellaEcologicaScreen> {
             expand: false,
             builder: (context, scrollController) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const FlavorLoadingState();
               }
 
               final historial = (snapshot.data?.data?['historial'] as List<dynamic>? ?? [])
@@ -445,23 +446,16 @@ class _HuellaEcologicaScreenState extends ConsumerState<HuellaEcologicaScreen> {
                   const Divider(height: 1),
                   Expanded(
                     child: historial.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.history, size: 64, color: Colors.grey.shade400),
-                                const SizedBox(height: 16),
-                                const Text('No hay mediciones previas'),
-                                const SizedBox(height: 8),
-                                TextButton.icon(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    _calcularHuella();
-                                  },
-                                  icon: const Icon(Icons.calculate),
-                                  label: const Text('Calcular ahora'),
-                                ),
-                              ],
+                        ? FlavorEmptyState(
+                            icon: Icons.history,
+                            title: 'No hay mediciones previas',
+                            action: TextButton.icon(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                _calcularHuella();
+                              },
+                              icon: const Icon(Icons.calculate),
+                              label: const Text('Calcular ahora'),
                             ),
                           )
                         : ListView.builder(

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
+import '../../../core/widgets/flavor_state_widgets.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
+
+part 'eventos_screen_parts.dart';
 
 class EventosScreen extends ConsumerStatefulWidget {
   const EventosScreen({super.key});
@@ -33,17 +37,24 @@ class _EventosScreenState extends ConsumerState<EventosScreen> {
         future: _future,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const FlavorLoadingState();
           }
           final res = snapshot.data!;
           if (!res.success || res.data == null) {
-            return Center(child: Text(res.error ?? 'Error al cargar eventos'));
+            return FlavorErrorState(
+              message: res.error ?? 'Error al cargar eventos',
+              onRetry: _refresh,
+              icon: Icons.event_busy,
+            );
           }
           final items = (res.data!['data'] as List<dynamic>? ?? [])
               .whereType<Map<String, dynamic>>()
               .toList();
           if (items.isEmpty) {
-            return const Center(child: Text('No hay eventos disponibles'));
+            return const FlavorEmptyState(
+              icon: Icons.event_available,
+              title: 'No hay eventos disponibles',
+            );
           }
           return RefreshIndicator(
             onRefresh: _refresh,
@@ -65,7 +76,7 @@ class _EventosScreenState extends ConsumerState<EventosScreen> {
                     leading: const Icon(Icons.event),
                     title: Text(titulo),
                     subtitle: Text('$fecha${ubicacion.isNotEmpty ? ' · $ubicacion' : ''}'),
-                    trailing: Text(precio == '0' ? 'Gratis' : '${precio}€'),
+                    trailing: Text(precio == '0' ? 'Gratis' : '$precio€'),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -84,98 +95,3 @@ class _EventosScreenState extends ConsumerState<EventosScreen> {
   }
 }
 
-class EventoDetailScreen extends ConsumerStatefulWidget {
-  final int eventoId;
-  const EventoDetailScreen({super.key, required this.eventoId});
-
-  @override
-  ConsumerState<EventoDetailScreen> createState() => _EventoDetailScreenState();
-}
-
-class _EventoDetailScreenState extends ConsumerState<EventoDetailScreen> {
-  late Future<ApiResponse<Map<String, dynamic>>> _future;
-  int _plazas = 1;
-
-  @override
-  void initState() {
-    super.initState();
-    _future = ref.read(apiClientProvider).getEvento(widget.eventoId);
-  }
-
-  Future<void> _inscribirse() async {
-    final res = await ref.read(apiClientProvider).inscribirseEvento(
-          eventoId: widget.eventoId,
-          numPlazas: _plazas,
-        );
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(res.success ? 'Inscripcion enviada' : (res.error ?? 'Error')),
-        backgroundColor: res.success ? Colors.green : Colors.red,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Detalle del evento')),
-      body: FutureBuilder<ApiResponse<Map<String, dynamic>>>(
-        future: _future,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final res = snapshot.data!;
-          if (!res.success || res.data == null) {
-            return Center(child: Text(res.error ?? 'No se pudo cargar el evento'));
-          }
-          final data = res.data!;
-          final evento = (data['data'] as Map?) ?? data;
-          final titulo = evento['titulo']?.toString() ?? 'Evento';
-          final descripcion = evento['descripcion']?.toString() ?? '';
-          final fecha = evento['fecha_inicio']?.toString() ?? '';
-          final ubicacion = evento['ubicacion']?.toString() ?? '';
-          final plazas = evento['plazas_disponibles']?.toString() ?? '';
-          final precio = evento['precio']?.toString() ?? '0';
-
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Text(titulo, style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 8),
-              Text('$fecha${ubicacion.isNotEmpty ? ' · $ubicacion' : ''}'),
-              const SizedBox(height: 8),
-              Text(precio == '0' ? 'Gratis' : '${precio}€'),
-              if (plazas.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text('Plazas disponibles: $plazas'),
-              ],
-              const SizedBox(height: 16),
-              if (descripcion.isNotEmpty) Text(descripcion),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  const Text('Plazas:'),
-                  const SizedBox(width: 8),
-                  DropdownButton<int>(
-                    value: _plazas,
-                    items: [1, 2, 3, 4, 5]
-                        .map((n) => DropdownMenuItem(value: n, child: Text('$n')))
-                        .toList(),
-                    onChanged: (value) => setState(() => _plazas = value ?? 1),
-                  ),
-                  const Spacer(),
-                  FilledButton(
-                    onPressed: _inscribirse,
-                    child: const Text('Inscribirse'),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}

@@ -7,6 +7,8 @@ import '../../core/api/api_client.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
 import '../../core/widgets/common_widgets.dart';
+import '../../core/widgets/flavor_snackbar.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 
 /// Modelo para cliente manual
 class ManualCustomer {
@@ -112,7 +114,7 @@ class ManualCustomersScreen extends ConsumerStatefulWidget {
 }
 
 class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
   String _filterOrigin = 'all'; // 'all', 'manual', 'woocommerce'
@@ -156,7 +158,6 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     final customersAsync = ref.watch(unifiedCustomersProvider(_params));
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -324,8 +325,9 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
 
   void _showEditCustomerDialog(ManualCustomer customer) {
     if (!customer.isManual) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(i18n.soloSePuedenEditarClientesManualesE83c06)),
+      FlavorSnackbar.showInfo(
+        context,
+        i18n.soloSePuedenEditarClientesManualesE83c06,
       );
       return;
     }
@@ -339,7 +341,7 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => _CustomerFormSheet(
+      builder: (sheetContext) => _CustomerFormSheet(
         customer: customer,
         onSave: (data) async {
           final api = ref.read(apiClientProvider);
@@ -353,13 +355,14 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
 
           if (response.success) {
             ref.invalidate(unifiedCustomersProvider(_params));
-            if (mounted) Navigator.pop(context);
+            if (!sheetContext.mounted) return;
+            Navigator.pop(sheetContext);
           } else {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(response.error ?? i18n.customersSaveError)),
-              );
-            }
+            if (!sheetContext.mounted) return;
+            FlavorSnackbar.showError(
+              sheetContext,
+              response.error ?? i18n.customersSaveError,
+            );
           }
         },
       ),
@@ -371,19 +374,19 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(i18n.customersNotesTitle(customer.name)),
         content: TextField(
           controller: controller,
           decoration: InputDecoration(
             hintText: i18n.escribeLasNotas771c72,
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
           ),
           maxLines: 5,
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(i18n.commonCancel),
           ),
           FilledButton(
@@ -396,7 +399,8 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
                 date: customer.date,
               );
               ref.invalidate(unifiedCustomersProvider(_params));
-              if (mounted) Navigator.pop(context);
+              if (!dialogContext.mounted) return;
+              Navigator.pop(dialogContext);
             },
             child: Text(i18n.guardarD3270b),
           ),
@@ -407,8 +411,9 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
 
   Future<void> _deleteCustomer(ManualCustomer customer) async {
     if (!customer.isManual) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(i18n.soloSePuedenEliminarClientesManuale76681f)),
+      FlavorSnackbar.showInfo(
+        context,
+        i18n.soloSePuedenEliminarClientesManuale76681f,
       );
       return;
     }
@@ -439,8 +444,9 @@ class _ManualCustomersScreenState extends ConsumerState<ManualCustomersScreen> {
         ref.invalidate(unifiedCustomersProvider(_params));
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response.error ?? i18n.customersDeleteError)),
+          FlavorSnackbar.showError(
+            context,
+            response.error ?? i18n.customersDeleteError,
           );
         }
       }
@@ -463,7 +469,6 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return FilterChip(
       label: Text(label),
       selected: selected,
@@ -492,7 +497,7 @@ class _DaySection extends StatelessWidget {
   String _formatDate(BuildContext context, String dateStr) {
     try {
       final dt = DateTime.parse(dateStr);
-      final i18n = AppLocalizations.of(context)!;
+      final i18n = AppLocalizations.of(context);
       final weekday = DateFormat.E(i18n.localeName).format(dt);
       final day = DateFormat.Md(i18n.localeName).format(dt);
       return '$weekday $day';
@@ -503,7 +508,7 @@ class _DaySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final manualCount = customers.where((c) => c.isManual).length;
     final wcCount = customers.where((c) => c.isWooCommerce).length;
 
@@ -616,7 +621,7 @@ class _CustomerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
     final borderColor = customer.isManual ? Colors.orange : Colors.purple;
 
@@ -782,14 +787,14 @@ class _CustomerFormSheet extends ConsumerStatefulWidget {
 }
 
 class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _notesController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
-  Map<String, int> _ticketQuantities = {};
+  final Map<String, int> _ticketQuantities = {};
   bool _isLoading = false;
 
   @override
@@ -818,7 +823,6 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     final ticketsAsync = ref.watch(ticketsProvider);
 
     return DraggableScrollableSheet(
@@ -859,7 +863,7 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                   controller: _nameController,
                   decoration: InputDecoration(
                     labelText: i18n.nombre45576f,
-                    prefixIcon: Icon(Icons.person),
+                    prefixIcon: const Icon(Icons.person),
                   ),
                   validator: (v) => v?.isEmpty == true ? i18n.commonRequired : null,
                 ),
@@ -870,7 +874,7 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                   controller: _phoneController,
                   decoration: InputDecoration(
                     labelText: i18n.telFonoD091ea,
-                    prefixIcon: Icon(Icons.phone),
+                    prefixIcon: const Icon(Icons.phone),
                   ),
                   keyboardType: TextInputType.phone,
                 ),
@@ -881,7 +885,7 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: i18n.emailCe8ae9,
-                    prefixIcon: Icon(Icons.email),
+                    prefixIcon: const Icon(Icons.email),
                   ),
                   keyboardType: TextInputType.emailAddress,
                 ),
@@ -938,7 +942,7 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                       },
                     )).toList(),
                   ),
-                  loading: () => const CircularProgressIndicator(),
+                  loading: () => const FlavorLoadingState(),
                   error: (_, __) => Text(i18n.errorAlCargarTicketsAb3af0),
                 ),
                 const SizedBox(height: 16),
@@ -948,7 +952,7 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                   controller: _notesController,
                   decoration: InputDecoration(
                     labelText: i18n.notas265b13,
-                    prefixIcon: Icon(Icons.note),
+                    prefixIcon: const Icon(Icons.note),
                     alignLabelWithHint: true,
                   ),
                   maxLines: 3,
@@ -961,11 +965,7 @@ class _CustomerFormSheetState extends ConsumerState<_CustomerFormSheet> {
                   child: FilledButton(
                     onPressed: _isLoading ? null : _save,
                     child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
+                        ? const FlavorInlineSpinner()
                         : Text(i18n.guardarD3270b),
                   ),
                 ),
@@ -1014,7 +1014,6 @@ class _TicketRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -1060,7 +1059,6 @@ class _ContactButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),

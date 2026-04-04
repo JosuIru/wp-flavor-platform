@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import '../../core/api/api_client.dart';
 import '../../core/config/server_config.dart';
 import '../../core/providers/providers.dart';
+import '../../core/widgets/flavor_snackbar.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla de descubrimiento de comunidades en la red federada
 ///
@@ -141,12 +142,7 @@ class _NetworkDiscoveryScreenState extends ConsumerState<NetworkDiscoveryScreen>
                    comunidad['nombre']?.toString() ?? 'Comunidad';
 
     if (url.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Esta comunidad no tiene URL configurada'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      FlavorSnackbar.showError(context, 'Esta comunidad no tiene URL configurada');
       return;
     }
 
@@ -175,12 +171,7 @@ class _NetworkDiscoveryScreenState extends ConsumerState<NetworkDiscoveryScreen>
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error al añadir: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        FlavorSnackbar.showError(context, 'Error al añadir: $e');
       }
     }
   }
@@ -248,7 +239,7 @@ class _NetworkDiscoveryScreenState extends ConsumerState<NetworkDiscoveryScreen>
         // Lista de comunidades
         Expanded(
           child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
+              ? const FlavorLoadingState()
               : _error != null
                   ? _buildError(_error!)
                   : _comunidades.isEmpty
@@ -270,16 +261,7 @@ class _NetworkDiscoveryScreenState extends ConsumerState<NetworkDiscoveryScreen>
 
   Widget _buildCercanasTab(ThemeData theme) {
     if (_isLoadingNearby) {
-      return const Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Buscando comunidades cercanas...'),
-          ],
-        ),
-      );
+      return const FlavorLoadingState();
     }
 
     if (_cercanas.isEmpty) {
@@ -323,7 +305,7 @@ class _NetworkDiscoveryScreenState extends ConsumerState<NetworkDiscoveryScreen>
       future: ServerConfig.getBusinesses(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const FlavorLoadingState();
         }
 
         final guardadas = snapshot.data!;
@@ -367,9 +349,8 @@ class _NetworkDiscoveryScreenState extends ConsumerState<NetworkDiscoveryScreen>
                       name: business.name,
                       type: business.type,
                     );
-                    if (mounted) {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    }
+                    if (!context.mounted) return;
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                 ),
               ),

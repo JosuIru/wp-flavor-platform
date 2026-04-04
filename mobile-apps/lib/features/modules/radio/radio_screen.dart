@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class RadioScreen extends ConsumerStatefulWidget {
   const RadioScreen({super.key});
@@ -132,22 +133,12 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
         ],
       ),
       body: _cargando
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _mensajeError != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.radio, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(_mensajeError!),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _cargarDatos,
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
+              ? FlavorErrorState(
+                  message: _mensajeError!,
+                  onRetry: _cargarDatos,
+                  icon: Icons.radio,
                 )
               : SingleChildScrollView(
                   child: Column(
@@ -323,8 +314,8 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Boton anterior (para radio en vivo no tiene sentido, pero lo dejamos deshabilitado)
-              IconButton(
-                icon: const Icon(Icons.skip_previous,
+              const IconButton(
+                icon: Icon(Icons.skip_previous,
                     color: Colors.white54, size: 32),
                 onPressed: null, // Deshabilitado para streaming en vivo
                 tooltip: 'No disponible para radio en vivo',
@@ -344,13 +335,10 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
                 ),
                 child: IconButton(
                   icon: _cargandoAudio
-                      ? SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
-                            color: Colors.deepOrange.shade700,
-                          ),
+                      ? FlavorInlineSpinner(
+                          size: 40,
+                          strokeWidth: 3,
+                          color: Colors.deepOrange.shade700,
                         )
                       : Icon(
                           _estaReproduciendo
@@ -366,8 +354,8 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
               ),
               const SizedBox(width: 16),
               // Boton siguiente (para radio en vivo no tiene sentido)
-              IconButton(
-                icon: const Icon(Icons.skip_next, color: Colors.white54, size: 32),
+              const IconButton(
+                icon: Icon(Icons.skip_next, color: Colors.white54, size: 32),
                 onPressed: null, // Deshabilitado para streaming en vivo
                 tooltip: 'No disponible para radio en vivo',
               ),
@@ -499,7 +487,7 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
                 descripcionPrograma,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 12),
+                style: const TextStyle(fontSize: 12),
               ),
           ],
         ),

@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:uuid/uuid.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 import '../../main_client.dart' show clientEmailProvider;
 
 /// Provider para el email guardado del cliente
@@ -127,10 +128,9 @@ class MyReservationsScreen extends ConsumerStatefulWidget {
 }
 
 class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   final _emailController = TextEditingController();
   final _codeController = TextEditingController();
-  bool _isOffline = false;
   bool _isSendingCode = false;
   bool _isVerifying = false;
   String? _pendingEmail;
@@ -278,12 +278,8 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                    SizedBox(width: 12),
+                    const FlavorInlineSpinner(size: 16),
+                    const SizedBox(width: 12),
                     Text(i18n.enviandoCDigo36cd31),
                   ],
                 ),
@@ -367,12 +363,8 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                    SizedBox(width: 12),
+                    const FlavorInlineSpinner(size: 16),
+                    const SizedBox(width: 12),
                     Text(i18n.verificando1361c9),
                   ],
                 ),
@@ -421,7 +413,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final emailAsync = ref.watch(savedClientEmailProvider);
     final reservationsAsync = ref.watch(myReservationsProvider);
     final clientEmail = ref.watch(clientEmailProvider);
@@ -502,11 +494,11 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.wifi_off, color: Colors.orange, size: 20),
-                            SizedBox(width: 8),
+                            const Icon(Icons.wifi_off, color: Colors.orange, size: 20),
+                            const SizedBox(width: 8),
                             Expanded(
-                              child: Text(AppLocalizations.of(context)!.modoOfflineMostrandoTicketsGuardados,
-                                style: TextStyle(color: Colors.orange),
+                              child: Text(AppLocalizations.of(context).modoOfflineMostrandoTicketsGuardados,
+                                style: const TextStyle(color: Colors.orange),
                               ),
                             ),
                           ],
@@ -538,7 +530,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                               children: [
                                 Text(email, style: const TextStyle(fontSize: 13)),
                                 if (isVerified)
-                                  Text(AppLocalizations.of(context)!.emailVerificado,
+                                  Text(AppLocalizations.of(context).emailVerificado,
                                     style: TextStyle(
                                       fontSize: 11,
                                       color: Colors.green.shade700,
@@ -588,14 +580,13 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
                 ),
               );
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const FlavorLoadingState(),
             error: (error, _) {
-              _isOffline = true;
               return _buildErrorState(error.toString());
             },
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const FlavorLoadingState(),
         error: (_, __) => _buildEmailPrompt(),
       ),
     );
@@ -621,14 +612,14 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            Text(AppLocalizations.of(context)!.verificacionRequerida,
+            Text(AppLocalizations.of(context).verificacionRequerida,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(AppLocalizations.of(context)!.paraVerTusTicketsNecesitasVerificarTuEmail,
+            Text(AppLocalizations.of(context).paraVerTusTicketsNecesitasVerificarTuEmail,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
@@ -677,14 +668,14 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
               color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
             ),
             const SizedBox(height: 24),
-            Text(AppLocalizations.of(context)!.tuBilleteraDeTickets,
+            Text(AppLocalizations.of(context).tuBilleteraDeTickets,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(AppLocalizations.of(context)!.verificaTuEmailParaAccederATusTicketsDeFormaSegura,
+            Text(AppLocalizations.of(context).verificaTuEmailParaAccederATusTicketsDeFormaSegura,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
@@ -716,7 +707,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
             ),
             const SizedBox(height: 24),
             Text(i18n.noTienesReservas,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
@@ -763,7 +754,7 @@ class _MyReservationsScreenState extends ConsumerState<MyReservationsScreen> {
             const Icon(Icons.wifi_off, size: 64, color: Colors.orange),
             const SizedBox(height: 16),
             Text(i18n.sinConexion,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(i18n.mostrandoTicketsGuardadosEnElDispositivo,
@@ -824,7 +815,7 @@ class _ReservationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
@@ -931,7 +922,7 @@ class _ReservationCard extends StatelessWidget {
   }
 
   void _addToCalendar(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     try {
       final date = DateTime.parse(reservation.date);
       final event = Event(
@@ -956,7 +947,7 @@ class _QRDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
@@ -992,7 +983,7 @@ class _QRDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Text(AppLocalizations.of(context)!.muestraEsteCodigoEnLaEntrada,
+            Text(AppLocalizations.of(context).muestraEsteCodigoEnLaEntrada,
               style: Theme.of(context).textTheme.bodySmall,
               textAlign: TextAlign.center,
             ),
@@ -1033,7 +1024,7 @@ class _ReservationDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     return DraggableScrollableSheet(
@@ -1209,7 +1200,6 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Pantalla de detalle de evento con inscripción
@@ -62,14 +62,14 @@ class _EventosDetailScreenState extends ConsumerState<EventosDetailScreen> {
   }
 
   Future<void> _inscribirse() async {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
 
     // Confirmar inscripción
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(i18n.commonConfirm),
-        content: Text('¿Deseas inscribirte en este evento?'),
+        content: const Text('¿Deseas inscribirte en este evento?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -77,7 +77,7 @@ class _EventosDetailScreenState extends ConsumerState<EventosDetailScreen> {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('Inscribirse'),
+            child: const Text('Inscribirse'),
           ),
         ],
       ),
@@ -102,7 +102,7 @@ class _EventosDetailScreenState extends ConsumerState<EventosDetailScreen> {
           _loadEventoDetail();
 
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('¡Inscripción exitosa!'),
               backgroundColor: Colors.green,
             ),
@@ -131,7 +131,7 @@ class _EventosDetailScreenState extends ConsumerState<EventosDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -139,13 +139,13 @@ class _EventosDetailScreenState extends ConsumerState<EventosDetailScreen> {
         title: Text(widget.eventoTitle),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _error != null
               ? Center(
-                  child: Column(
+                      child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline, size: 64, color: Colors.red),
+                      const Icon(Icons.error_outline, size: 64, color: Colors.red),
                       const SizedBox(height: 16),
                       Text(_error!, style: theme.textTheme.bodyLarge),
                       const SizedBox(height: 16),
@@ -158,7 +158,7 @@ class _EventosDetailScreenState extends ConsumerState<EventosDetailScreen> {
                   ),
                 )
               : _evento == null
-                  ? Center(child: Text('Evento no encontrado'))
+                  ? const Center(child: Text('Evento no encontrado'))
                   : RefreshIndicator(
                       onRefresh: _loadEventoDetail,
                       child: SingleChildScrollView(
@@ -176,7 +176,7 @@ class _EventosDetailScreenState extends ConsumerState<EventosDetailScreen> {
                                 errorBuilder: (context, error, stackTrace) => Container(
                                   height: 250,
                                   color: Colors.grey[300],
-                                  child: Icon(Icons.event, size: 80, color: Colors.grey),
+                                  child: const Icon(Icons.event, size: 80, color: Colors.grey),
                                 ),
                               ),
 
@@ -251,7 +251,7 @@ class _EventosDetailScreenState extends ConsumerState<EventosDetailScreen> {
                                         padding: const EdgeInsets.all(16),
                                         child: Row(
                                           children: [
-                                            Icon(Icons.check_circle, color: Colors.green),
+                                            const Icon(Icons.check_circle, color: Colors.green),
                                             const SizedBox(width: 12),
                                             Expanded(
                                               child: Text(
@@ -277,14 +277,7 @@ class _EventosDetailScreenState extends ConsumerState<EventosDetailScreen> {
                                       child: FilledButton.icon(
                                         onPressed: _isInscribing ? null : _inscribirse,
                                         icon: _isInscribing
-                                            ? const SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                                ),
-                                              )
+                                            ? const FlavorInlineSpinner(color: Colors.white)
                                             : const Icon(Icons.check_circle_outline),
                                         label: Text(_isInscribing ? 'Inscribiendo...' : 'Inscribirse'),
                                         style: FilledButton.styleFrom(

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../core/config/server_config.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
 
 /// Pantalla de configuracion del servidor
 class ServerConfigScreen extends ConsumerStatefulWidget {
@@ -22,7 +23,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
   String? _testResult;
   bool? _testSuccess;
   Future<List<SavedBusiness>>? _businessesFuture;
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
 
   @override
   void initState() {
@@ -88,14 +89,10 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
       _refreshBusinesses();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              i18n.serverConfigConnectedTo(
-                business.name.isNotEmpty ? business.name : business.serverUrl,
-              ),
-            ),
-            backgroundColor: Colors.green,
+        FlavorSnackbar.showSuccess(
+          context,
+          i18n.serverConfigConnectedTo(
+            business.name.isNotEmpty ? business.name : business.serverUrl,
           ),
         );
       }
@@ -178,20 +175,16 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
       _refreshBusinesses();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(i18n.serverConfigSavedRestartNotice),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 3),
-          ),
+        FlavorSnackbar.showSuccess(
+          context,
+          i18n.serverConfigSavedRestartNotice,
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.serverConfigSaveError(e.toString())),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          i18n.serverConfigSaveError(e.toString()),
         );
       }
     } finally {
@@ -264,11 +257,9 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
           await _saveConfig();
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.serverConfigInvalidQr(serverUrl)),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          i18n.serverConfigInvalidQr(serverUrl),
         );
       }
     }
@@ -299,11 +290,9 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
       ref.read(serverConfigProvider.notifier).resetToDefaults();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.serverConfigResetDone),
-            backgroundColor: Colors.blue,
-          ),
+        FlavorSnackbar.showInfo(
+          context,
+          i18n.serverConfigResetDone,
         );
       }
     }
@@ -311,7 +300,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -687,7 +676,7 @@ class _QRScannerScreenState extends State<_QRScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(i18n.serverConfigQrScanTitle),
@@ -728,7 +717,7 @@ class _QRScannerScreenState extends State<_QRScannerScreen> {
                   const SizedBox(height: 16),
                   Text(
                     i18n.serverConfigQrScanInstruction,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -737,7 +726,7 @@ class _QRScannerScreenState extends State<_QRScannerScreen> {
                   const SizedBox(height: 8),
                   Text(
                     i18n.serverConfigQrScanHelp,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
                     ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class BiodiversidadLocalScreen extends ConsumerStatefulWidget {
   const BiodiversidadLocalScreen({super.key});
@@ -56,8 +56,6 @@ class _BiodiversidadLocalScreenState extends ConsumerState<BiodiversidadLocalScr
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Biodiversidad Local'),
@@ -74,9 +72,17 @@ class _BiodiversidadLocalScreenState extends ConsumerState<BiodiversidadLocalScr
           _buildCategoriaFilter(),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const FlavorLoadingState()
                 : _especies.isEmpty
-                    ? _buildEmptyState()
+                    ? FlavorEmptyState(
+                        icon: Icons.eco_outlined,
+                        title: 'No hay especies registradas',
+                        action: TextButton.icon(
+                          onPressed: _registrarAvistamiento,
+                          icon: const Icon(Icons.add),
+                          label: const Text('Registrar la primera'),
+                        ),
+                      )
                     : RefreshIndicator(
                         onRefresh: _loadData,
                         child: ListView.builder(
@@ -127,7 +133,6 @@ class _BiodiversidadLocalScreenState extends ConsumerState<BiodiversidadLocalScr
   Widget _buildEspecieCard(Map<String, dynamic> especie) {
     final nombre = especie['nombre'] ?? 'Especie desconocida';
     final nombreCientifico = especie['nombre_cientifico'] ?? '';
-    final categoria = especie['categoria'] ?? '';
     final estado = especie['estado_conservacion'] ?? '';
     final imagen = especie['imagen'] ?? '';
     final avistamientos = especie['total_avistamientos'] ?? 0;
@@ -180,25 +185,6 @@ class _BiodiversidadLocalScreenState extends ConsumerState<BiodiversidadLocalScr
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.eco_outlined, size: 64, color: Colors.grey.shade400),
-          const SizedBox(height: 16),
-          Text('No hay especies registradas', style: TextStyle(color: Colors.grey.shade600)),
-          const SizedBox(height: 8),
-          TextButton.icon(
-            onPressed: _registrarAvistamiento,
-            icon: const Icon(Icons.add),
-            label: const Text('Registrar la primera'),
-          ),
-        ],
       ),
     );
   }
@@ -413,7 +399,6 @@ class _BiodiversidadLocalScreenState extends ConsumerState<BiodiversidadLocalScr
   }
 
   void _registrarAvistamiento({String? especieId}) {
-    final especieController = TextEditingController();
     final ubicacionController = TextEditingController();
     final notasController = TextEditingController();
     String? especieSeleccionadaId = especieId;

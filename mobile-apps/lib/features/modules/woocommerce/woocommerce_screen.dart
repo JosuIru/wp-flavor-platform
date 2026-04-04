@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class WooCommerceScreen extends ConsumerStatefulWidget {
   const WooCommerceScreen({super.key});
@@ -150,9 +152,7 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
       _loadCarrito();
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.error ?? 'Error al actualizar cantidad')),
-        );
+        FlavorSnackbar.showError(context, response.error ?? 'Error al actualizar cantidad');
       }
     }
   }
@@ -200,7 +200,7 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
         if (_categorias.isNotEmpty) _buildCategoriaFilter(),
         Expanded(
           child: _isLoadingProductos
-              ? const Center(child: CircularProgressIndicator())
+              ? const FlavorLoadingState()
               : _productos.isEmpty
                   ? _buildEmptyState(
                       icon: Icons.inventory_2_outlined,
@@ -287,7 +287,7 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
                       width: double.infinity,
                       placeholder: (_, __) => Container(
                         color: Colors.grey.shade200,
-                        child: const Center(child: CircularProgressIndicator()),
+                        child: const FlavorLoadingState(),
                       ),
                       errorWidget: (_, __, ___) => Container(
                         color: Colors.grey.shade200,
@@ -353,7 +353,7 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
 
   Widget _buildCarritoTab() {
     if (_isLoadingCarrito) {
-      return const Center(child: CircularProgressIndicator());
+      return const FlavorLoadingState();
     }
 
     if (_carrito.isEmpty) {
@@ -510,7 +510,7 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
 
   Widget _buildPedidosTab() {
     if (_isLoadingPedidos) {
-      return const Center(child: CircularProgressIndicator());
+      return const FlavorLoadingState();
     }
 
     if (_misPedidos.isEmpty) {
@@ -573,19 +573,10 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
     required String message,
     Widget? action,
   }) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 64, color: Colors.grey.shade400),
-          const SizedBox(height: 16),
-          Text(message, style: TextStyle(color: Colors.grey.shade600)),
-          if (action != null) ...[
-            const SizedBox(height: 16),
-            action,
-          ],
-        ],
-      ),
+    return FlavorEmptyState(
+      icon: icon,
+      title: message,
+      action: action,
     );
   }
 
@@ -715,12 +706,7 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
       if (response.success) {
         final numeroPedido = response.data?['order_number'] ?? '';
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Pedido #$numeroPedido creado correctamente'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          FlavorSnackbar.showSuccess(context, 'Pedido #$numeroPedido creado correctamente');
           // Limpiar carrito y cargar pedidos
           _carrito.clear();
           _loadCarrito();
@@ -732,9 +718,7 @@ class _WooCommerceScreenState extends ConsumerState<WooCommerceScreen>
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
-        );
+        FlavorSnackbar.showError(context, 'Error: $e');
       }
     }
   }

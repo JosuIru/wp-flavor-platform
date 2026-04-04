@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api/api_client.dart';
 import '../../core/config/server_config.dart';
-import '../../core/providers/providers.dart';
+import '../../core/widgets/flavor_snackbar.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla para añadir una comunidad manualmente introduciendo la URL
 class AddCommunityScreen extends ConsumerStatefulWidget {
@@ -111,22 +112,12 @@ class _AddCommunityScreenState extends ConsumerState<AddCommunityScreen> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Comunidad añadida correctamente'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        FlavorSnackbar.showSuccess(context, 'Comunidad añadida correctamente');
         Navigator.pop(context, true);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        FlavorSnackbar.showError(context, 'Error: $e');
       }
     }
   }
@@ -173,11 +164,7 @@ class _AddCommunityScreenState extends ConsumerState<AddCommunityScreen> {
                   suffixIcon: _isValidating
                       ? const Padding(
                           padding: EdgeInsets.all(12),
-                          child: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
+                          child: FlavorInlineSpinner(),
                         )
                       : _isValid
                           ? const Icon(Icons.check_circle, color: Colors.green)

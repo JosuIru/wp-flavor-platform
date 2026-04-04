@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../core/providers/providers.dart' show apiClientProvider;
 import '../../../core/services/chat_service.dart';
+import '../../../core/widgets/flavor_initials_avatar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
+import 'services/chat_conversations_legacy_bridge.dart';
 import 'chat_main_screen.dart';
 import 'screens/create_group_screen.dart';
 import 'screens/search_messages_screen.dart';
@@ -9,7 +13,16 @@ import 'screens/status_screen.dart';
 
 /// Pantalla principal de conversaciones (lista de chats)
 class ChatConversationsScreen extends ConsumerStatefulWidget {
-  const ChatConversationsScreen({super.key});
+  final String title;
+  final String? legacyNotice;
+  final int initialTabIndex;
+
+  const ChatConversationsScreen({
+    super.key,
+    this.title = 'Chat',
+    this.legacyNotice,
+    this.initialTabIndex = 0,
+  });
 
   @override
   ConsumerState<ChatConversationsScreen> createState() => _ChatConversationsScreenState();
@@ -24,12 +37,16 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
   List<ChatConversation> _archivedConversations = [];
   bool _isLoading = true;
   bool _isSelectionMode = false;
-  Set<String> _selectedConversations = {};
+  final Set<String> _selectedConversations = {};
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: widget.initialTabIndex.clamp(0, 2),
+    );
     _loadConversations();
 
     // Escuchar cambios en tiempo real
@@ -49,11 +66,15 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
 
   Future<void> _loadConversations() async {
     try {
-      final conversations = await _chatService.getConversations();
       final archived = await _chatService.getArchivedConversations();
+      final mergedConversations =
+          await ChatConversationsLegacyBridge.loadMergedConversations(
+        _chatService,
+        ref.read(apiClientProvider),
+      );
 
       setState(() {
-        _conversations = conversations;
+        _conversations = mergedConversations;
         _archivedConversations = archived;
         _isLoading = false;
       });
@@ -89,7 +110,7 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
           ? _buildSelectionAppBar()
           : _buildNormalAppBar(),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : TabBarView(
               controller: _tabController,
               children: [
@@ -121,7 +142,7 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
 
   AppBar _buildNormalAppBar() {
     return AppBar(
-      title: const Text('Chat'),
+      title: Text(widget.title),
       actions: [
         IconButton(
           icon: const Icon(Icons.search),
@@ -214,13 +235,22 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
   }
 
   Widget _buildChatsTab() {
+    final notice = widget.legacyNotice;
+
     if (_conversations.isEmpty) {
-      return _buildEmptyState(
-        icon: Icons.chat_bubble_outline,
-        title: 'No hay conversaciones',
-        subtitle: 'Inicia una nueva conversación',
-        action: 'Nuevo chat',
-        onAction: _showNewChatOptions,
+      return Column(
+        children: [
+          if (notice != null) _buildLegacyNotice(notice),
+          Expanded(
+            child: _buildEmptyState(
+              icon: Icons.chat_bubble_outline,
+              title: 'No hay conversaciones',
+              subtitle: 'Inicia una nueva conversación',
+              action: 'Nuevo chat',
+              onAction: _showNewChatOptions,
+            ),
+          ),
+        ],
       );
     }
 
@@ -232,6 +262,7 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
       onRefresh: _loadConversations,
       child: ListView(
         children: [
+          if (notice != null) _buildLegacyNotice(notice),
           // Archivados (si hay)
           if (_archivedConversations.isNotEmpty)
             ListTile(
@@ -261,6 +292,33 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
               _buildSectionHeader('Todos los chats'),
             ...normalConversations.map((conv) => _buildConversationTile(conv)),
           ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegacyNotice(String text) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(top: 2),
+            child: Icon(Icons.merge_type, size: 18),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
         ],
       ),
     );
@@ -313,7 +371,7 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
                     : null,
                 child: conversation.avatarUrl == null
                     ? Text(
-                        conversation.name[0].toUpperCase(),
+                        FlavorInitialsAvatar.initialsFor(conversation.name),
                         style: const TextStyle(fontSize: 20),
                       )
                     : null,
@@ -646,6 +704,58 @@ class _ChatConversationsScreenState extends ConsumerState<ChatConversationsScree
   }
 
   void _openChat(ChatConversation conversation) {
+    if (conversation.id.startsWith(
+      ChatConversationsLegacyBridge.legacyGroupPrefix,
+    )) {
+      final groupId = int.tryParse(
+        conversation.id.substring(
+          ChatConversationsLegacyBridge.legacyGroupPrefix.length,
+        ),
+      );
+      if (groupId != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatMainScreen(
+              conversationId: conversation.id,
+              name: conversation.name,
+              avatarUrl: conversation.avatarUrl,
+              isGroup: true,
+              legacyGroupId: groupId,
+            ),
+          ),
+        );
+      }
+      return;
+    }
+
+    if (conversation.id.startsWith(
+      ChatConversationsLegacyBridge.legacyInternalPrefix,
+    )) {
+      final payload = conversation.id.substring(
+        ChatConversationsLegacyBridge.legacyInternalPrefix.length,
+      );
+      final parts = payload.split(':');
+      final conversationId = parts.isNotEmpty ? int.tryParse(parts[0]) : null;
+      final otherUserId = parts.length > 1 ? int.tryParse(parts[1]) : null;
+      if (conversationId != null && otherUserId != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatMainScreen(
+              conversationId: conversation.id,
+              name: conversation.name,
+              avatarUrl: conversation.avatarUrl,
+              isGroup: false,
+              legacyInternalConversationId: conversationId,
+              legacyOtherUserId: otherUserId,
+            ),
+          ),
+        );
+      }
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(

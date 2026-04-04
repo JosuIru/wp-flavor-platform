@@ -3,6 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
+import '../../core/widgets/flavor_snackbar.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla de detalle de chat escalado con conversación y respuestas
 class EscalatedChatDetailScreen extends ConsumerStatefulWidget {
@@ -20,7 +22,7 @@ class EscalatedChatDetailScreen extends ConsumerStatefulWidget {
 
 class _EscalatedChatDetailScreenState
     extends ConsumerState<EscalatedChatDetailScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   EscalatedChatDetail? _chatDetail;
   bool _isLoading = true;
   String? _error;
@@ -107,27 +109,24 @@ class _EscalatedChatDetailScreenState
         await _loadChatDetail();
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(i18n.escalatedChatReplySent)),
+          FlavorSnackbar.showSuccess(
+            context,
+            i18n.escalatedChatReplySent,
           );
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.error ?? i18n.escalatedChatSendError),
-              backgroundColor: Colors.red,
-            ),
+          FlavorSnackbar.showError(
+            context,
+            response.error ?? i18n.escalatedChatSendError,
           );
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.escalatedChatError(e.toString())),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          i18n.escalatedChatError(e.toString()),
         );
       }
     } finally {
@@ -185,28 +184,25 @@ class _EscalatedChatDetailScreenState
 
       if (response.success) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(i18n.escalatedChatResolvedToast)),
+          FlavorSnackbar.showSuccess(
+            context,
+            i18n.escalatedChatResolvedToast,
           );
           Navigator.pop(context, true); // Volver con resultado true
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.error ?? i18n.escalatedChatResolveError),
-              backgroundColor: Colors.red,
-            ),
+          FlavorSnackbar.showError(
+            context,
+            response.error ?? i18n.escalatedChatResolveError,
           );
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.escalatedChatError(e.toString())),
-            backgroundColor: Colors.red,
-          ),
+        FlavorSnackbar.showError(
+          context,
+          i18n.escalatedChatError(e.toString()),
         );
       }
     }
@@ -229,7 +225,7 @@ class _EscalatedChatDetailScreenState
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _error != null
               ? Center(
                   child: Column(
@@ -269,7 +265,7 @@ class _EscalatedChatDetailScreenState
                               children: [
                                 Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.warning_amber_rounded,
                                       color: Colors.orange,
                                       size: 20,
@@ -390,14 +386,7 @@ class _EscalatedChatDetailScreenState
                                     padding: const EdgeInsets.all(16),
                                   ),
                                   child: _isSending
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Colors.white,
-                                          ),
-                                        )
+                                      ? const FlavorInlineSpinner(color: Colors.white)
                                       : const Icon(Icons.send),
                                 ),
                               ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
 
 /// Provider para el idioma seleccionado
 final languageProvider = StateNotifierProvider<LanguageNotifier, String>((ref) {
@@ -36,6 +37,7 @@ class LanguageScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final i18n = AppLocalizations.of(context);
     final selectedLanguage = ref.watch(languageProvider);
 
     final languages = [
@@ -48,7 +50,7 @@ class LanguageScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.languageTitle),
+        title: Text(i18n.languageTitle),
       ),
       body: ListView(
         children: [
@@ -67,7 +69,7 @@ class LanguageScreen extends ConsumerWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        AppLocalizations.of(context)!.languageDescription,
+                        i18n.languageDescription,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
@@ -100,13 +102,9 @@ class LanguageScreen extends ConsumerWidget {
                   : null,
               onTap: () {
                 ref.read(languageProvider.notifier).setLanguage(lang.code);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(context)!.languageChanged(lang.name),
-                    ),
-                    duration: const Duration(seconds: 2),
-                  ),
+                FlavorSnackbar.showSuccess(
+                  context,
+                  i18n.languageChanged(lang.name),
                 );
               },
             );

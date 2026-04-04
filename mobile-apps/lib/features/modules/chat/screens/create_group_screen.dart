@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../core/widgets/flavor_initials_avatar.dart';
 import '../../../../core/services/chat_service.dart';
+import '../../../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla para crear un nuevo grupo
 class CreateGroupScreen extends ConsumerStatefulWidget {
@@ -26,7 +28,6 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
   List<ChatUser> _searchResults = [];
   List<ChatUser> _contacts = [];
   bool _isLoading = false;
-  bool _isSearching = false;
 
   int _currentStep = 0;
 
@@ -65,21 +66,17 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
     if (query.isEmpty) {
       setState(() {
         _searchResults = [];
-        _isSearching = false;
       });
       return;
     }
-
-    setState(() => _isSearching = true);
 
     try {
       final results = await _chatService.searchUsers(query);
       setState(() {
         _searchResults = results;
-        _isSearching = false;
       });
     } catch (e) {
-      setState(() => _isSearching = false);
+      debugPrint('Search users error: $e');
     }
   }
 
@@ -143,8 +140,6 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(_currentStep == 0 ? 'Nuevo grupo' : 'Añadir participantes'),
@@ -162,11 +157,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                   ? _createGroup
                   : null,
               child: _isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
+                  ? const FlavorInlineSpinner()
                   : const Text('Crear'),
             ),
         ],
@@ -255,7 +246,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
         // Lista de contactos
         Expanded(
           child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
+              ? const FlavorLoadingState()
               : _buildContactsList(),
         ),
       ],
@@ -276,7 +267,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                     ? CachedNetworkImageProvider(user.avatarUrl!)
                     : null,
                 child: user.avatarUrl == null
-                    ? Text(user.name[0].toUpperCase())
+                    ? Text(FlavorInitialsAvatar.initialsFor(user.name))
                     : null,
               ),
               Positioned(
@@ -355,7 +346,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                     ? CachedNetworkImageProvider(user.avatarUrl!)
                     : null,
                 child: user.avatarUrl == null
-                    ? Text(user.name[0].toUpperCase())
+                    ? Text(FlavorInitialsAvatar.initialsFor(user.name))
                     : null,
               ),
               if (user.isOnline)
@@ -586,7 +577,7 @@ class _ContactPickerScreenState extends ConsumerState<ContactPickerScreen> {
 
   List<ChatUser> _contacts = [];
   List<ChatUser> _searchResults = [];
-  List<ChatUser> _selectedUsers = [];
+  final List<ChatUser> _selectedUsers = [];
   bool _isLoading = false;
 
   @override
@@ -694,9 +685,12 @@ class _ContactPickerScreenState extends ConsumerState<ContactPickerScreen> {
           // Lista
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const FlavorLoadingState()
                 : displayList.isEmpty
-                    ? const Center(child: Text('No se encontraron contactos'))
+                    ? const FlavorEmptyState(
+                        icon: Icons.person_search_outlined,
+                        title: 'No se encontraron contactos',
+                      )
                     : ListView.builder(
                         itemCount: displayList.length,
                         itemBuilder: (context, index) {
@@ -709,7 +703,7 @@ class _ContactPickerScreenState extends ConsumerState<ContactPickerScreen> {
                                   ? CachedNetworkImageProvider(user.avatarUrl!)
                                   : null,
                               child: user.avatarUrl == null
-                                  ? Text(user.name[0])
+                                  ? Text(FlavorInitialsAvatar.initialsFor(user.name))
                                   : null,
                             ),
                             title: Text(user.name),

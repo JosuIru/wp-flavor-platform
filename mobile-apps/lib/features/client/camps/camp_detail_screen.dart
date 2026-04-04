@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
 import '../../../core/models/models.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 import 'camp_inscription_form_screen.dart';
 
 /// Pantalla de detalle de un campamento
@@ -21,7 +22,7 @@ class CampDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   Camp? _camp;
   bool _isLoading = true;
 
@@ -45,12 +46,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
     } else {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.error ?? i18n.campDetailLoadError),
-            backgroundColor: Colors.red,
-          ),
-        );
+        FlavorSnackbar.showError(context, response.error ?? i18n.campDetailLoadError);
       }
     }
   }
@@ -59,20 +55,12 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
     if (_camp == null) return;
 
     if (_camp!.isClosed) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(i18n.lasInscripcionesEstNCerradas4a5c6d),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      FlavorSnackbar.showInfo(context, i18n.lasInscripcionesEstNCerradas4a5c6d);
       return;
     }
 
     if (_camp!.isFull) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(i18n.elCampamentoEstCompleto98127c),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      FlavorSnackbar.showInfo(context, i18n.elCampamentoEstCompleto98127c);
       return;
     }
 
@@ -86,11 +74,11 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(),
-        body: Center(child: CircularProgressIndicator()),
+        body: const FlavorLoadingState(),
       );
     }
 
@@ -281,7 +269,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(AppLocalizations.of(context)!.precios,
+                      Text(AppLocalizations.of(context).precios,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 12),
@@ -291,7 +279,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(AppLocalizations.of(context)!.inscripcion2,
+                              Text(AppLocalizations.of(context).inscripcion2,
                                 style: TextStyle(color: Colors.grey[600]),
                               ),
                               const SizedBox(height: 4),
@@ -304,7 +292,7 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(AppLocalizations.of(context)!.total,
+                              Text(AppLocalizations.of(context).total,
                                 style: TextStyle(color: Colors.grey[600]),
                               ),
                               const SizedBox(height: 4),
@@ -336,12 +324,12 @@ class _CampDetailScreenState extends ConsumerState<CampDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppLocalizations.of(context)!.descripcion,
+                        Text(AppLocalizations.of(context).descripcion,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          camp.description!,
+                          camp.description ?? '',
                           style: const TextStyle(height: 1.5),
                         ),
                       ],
@@ -442,7 +430,6 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return Row(
       children: [
         Icon(icon, size: 20, color: Colors.grey[600]),
@@ -486,7 +473,6 @@ class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(

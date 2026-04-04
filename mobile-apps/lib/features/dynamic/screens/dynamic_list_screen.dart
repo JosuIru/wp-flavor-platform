@@ -1,7 +1,13 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/api/api_client.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/utils/flavor_mutation.dart';
+import '../../../core/utils/map_launch_helper.dart';
+import '../../../core/widgets/flavor_confirm_dialog.dart';
+import '../../../core/widgets/flavor_snackbar.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 import '../models/module_config.dart';
 import '../widgets/dynamic_card.dart';
 import '../widgets/dynamic_list_tile.dart';
@@ -36,6 +42,7 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
   @override
   void initState() {
     super.initState();
+    _searchController.text = _busqueda;
     _loadData();
   }
 
@@ -54,18 +61,10 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
     try {
       final api = ref.read(apiClientProvider);
 
-      // Construir parámetros de query
-      final queryParams = <String, dynamic>{};
-      _filtrosActivos.forEach((key, value) {
-        if (value != null && value.toString().isNotEmpty) {
-          queryParams[key] = value;
-        }
-      });
-      if (_busqueda.isNotEmpty) {
-        queryParams['busqueda'] = _busqueda;
-      }
-
-      final response = await api.get(config.endpoint, queryParameters: queryParams);
+      final response = await api.get(
+        config.endpoint,
+        queryParameters: _buildQueryParams(),
+      );
 
       if (response.success && response.data != null) {
         setState(() {
@@ -93,6 +92,19 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
         _loading = false;
       });
     }
+  }
+
+  Map<String, dynamic> _buildQueryParams() {
+    final queryParams = <String, dynamic>{};
+    _filtrosActivos.forEach((key, value) {
+      if (value != null && value.toString().isNotEmpty) {
+        queryParams[key] = value;
+      }
+    });
+    if (_busqueda.isNotEmpty) {
+      queryParams['busqueda'] = _busqueda;
+    }
+    return queryParams;
   }
 
   List<dynamic> _extractItems(Map<String, dynamic> data) {
@@ -128,17 +140,33 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
 
   void _onFilterChanged(String key, dynamic value) {
     setState(() {
-      _filtrosActivos[key] = value;
+      if (value == null || value.toString().isEmpty) {
+        _filtrosActivos.remove(key);
+      } else {
+        _filtrosActivos[key] = value;
+      }
     });
     _loadData();
   }
 
   void _onSearch(String value) {
     setState(() {
-      _busqueda = value;
+      _busqueda = value.trim();
+    });
+    _searchController.text = _busqueda;
+    _loadData();
+  }
+
+  void _clearFilters() {
+    setState(() {
+      _filtrosActivos = {};
+      _busqueda = '';
+      _searchController.clear();
     });
     _loadData();
   }
+
+  bool get _hasActiveFilters => _filtrosActivos.isNotEmpty || _busqueda.isNotEmpty;
 
   void _onItemTap(Map<String, dynamic> item) {
     if (config.detailEndpoint != null) {
@@ -181,42 +209,137 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
         break;
       case 'api_call':
         if (action.requiereConfirmacion) {
-          final confirmed = await showDialog<bool>(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: Text(action.label),
-              content: const Text('¿Estás seguro?'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(ctx, false),
-                  child: const Text('Cancelar'),
-                ),
-                FilledButton(
-                  onPressed: () => Navigator.pop(ctx, true),
-                  child: const Text('Confirmar'),
-                ),
-              ],
-            ),
+          final confirmed = await FlavorConfirmDialog.show(
+            context,
+            title: action.label,
+            message: '¿Estás seguro?',
           );
           if (confirmed != true) return;
         }
 
         if (action.endpoint != null) {
-          final api = ref.read(apiClientProvider);
+          if (!mounted) return;
           final endpoint = action.endpoint!.replaceAll('{id}', item['id'].toString());
-          await api.post(endpoint, data: {});
-          _loadData();
+          await FlavorMutation.runApiResponse(
+            context,
+            request: () => ref.read(apiClientProvider).post(endpoint, data: {}),
+            successMessage: '${action.label} completado',
+            fallbackErrorMessage: 'No se pudo completar la acción.',
+            onSuccess: _loadData,
+          );
         }
         break;
       case 'call':
         final telefono = item['telefono'] ?? item['phone'] ?? '';
         if (telefono.isNotEmpty) {
-          // Usar url_launcher
+          await _launchUrlString(
+            'tel:$telefono',
+            errorMessage: 'No se pudo abrir el teléfono.',
+          );
+        } else if (mounted) {
+          FlavorSnackbar.showInfo(context, 'Este elemento no tiene teléfono.');
         }
         break;
-      case 'share':
-        // Usar share_plus
+      case 'map':
+        await _openMapForItem(item);
         break;
+      case 'share':
+        await _shareItem(item);
+        break;
+    }
+  }
+
+  Future<void> _shareItem(Map<String, dynamic> item) async {
+    final text = _resolveShareText(item);
+    if (text.isEmpty) {
+      if (mounted) {
+        FlavorSnackbar.showInfo(context, 'No hay contenido para compartir.');
+      }
+      return;
+    }
+
+    await Clipboard.setData(ClipboardData(text: text));
+    if (mounted) {
+      FlavorSnackbar.showSuccess(context, 'Contenido copiado al portapapeles.');
+    }
+  }
+
+  String _resolveShareText(Map<String, dynamic> item) {
+    final parts = <String>[];
+
+    final title = _extractText(item, const ['titulo', 'nombre', 'title']);
+    final description = _extractText(item, const ['descripcion', 'excerpt', 'resumen']);
+    final url = _extractText(item, const ['url', 'link', 'permalink']);
+
+    if (title != null) parts.add(title);
+    if (description != null) parts.add(description);
+    if (url != null) parts.add(url);
+
+    return parts.join('\n');
+  }
+
+  Future<void> _openMapForItem(Map<String, dynamic> item) async {
+    final lat = _extractCoordinate(item, const ['lat', 'latitude', 'latitude_value']);
+    final lng = _extractCoordinate(item, const ['lng', 'lon', 'longitud', 'longitude']);
+    final address = _extractText(item, const ['direccion', 'address', 'ubicacion']);
+
+    if (lat != null && lng != null) {
+      final uri = MapLaunchHelper.buildConfiguredMapUri(
+        lat,
+        lng,
+        query: address,
+      );
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication) && mounted) {
+        FlavorSnackbar.showError(context, 'No se pudo abrir el mapa.');
+      }
+      return;
+    }
+
+    if (address != null) {
+      final encoded = Uri.encodeComponent(address);
+      final uri = MapLaunchHelper.provider.contains('google')
+          ? Uri.parse('https://www.google.com/maps/search/?api=1&query=$encoded')
+          : Uri.parse('https://www.openstreetmap.org/search?query=$encoded');
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication) && mounted) {
+        FlavorSnackbar.showError(context, 'No se pudo abrir el mapa.');
+      }
+      return;
+    }
+
+    if (mounted) {
+      FlavorSnackbar.showInfo(context, 'Este elemento no tiene ubicación.');
+    }
+  }
+
+  double? _extractCoordinate(Map<String, dynamic> item, List<String> keys) {
+    for (final key in keys) {
+      final value = item[key];
+      if (value is num) return value.toDouble();
+      if (value is String) {
+        final parsed = double.tryParse(value.replaceAll(',', '.'));
+        if (parsed != null) return parsed;
+      }
+    }
+    return null;
+  }
+
+  String? _extractText(Map<String, dynamic> item, List<String> keys) {
+    for (final key in keys) {
+      final value = item[key]?.toString().trim();
+      if (value != null && value.isNotEmpty) return value;
+    }
+    return null;
+  }
+
+  Future<void> _launchUrlString(
+    String url, {
+    required String errorMessage,
+  }) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null || !await launchUrl(uri)) {
+      if (mounted) {
+        FlavorSnackbar.showError(context, errorMessage);
+      }
     }
   }
 
@@ -231,6 +354,12 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
               icon: const Icon(Icons.search),
               onPressed: () => _showSearchDialog(),
             ),
+          if (_hasActiveFilters)
+            IconButton(
+              icon: const Icon(Icons.filter_alt_off_outlined),
+              tooltip: 'Limpiar filtros',
+              onPressed: _clearFilters,
+            ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadData,
@@ -241,6 +370,7 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
         children: [
           // Filtros
           if (config.filtros.isNotEmpty) _buildFilters(),
+          if (_hasActiveFilters) _buildActiveFiltersBar(),
 
           // Contenido principal
           Expanded(child: _buildBody()),
@@ -272,7 +402,7 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
                 hint: Text(filtro.label),
                 value: _filtrosActivos[filtro.paramName ?? filtro.id]?.toString(),
                 items: [
-                  DropdownMenuItem(value: '', child: Text('Todos')),
+                  const DropdownMenuItem(value: '', child: Text('Todos')),
                   ...filtro.opciones.map((op) => DropdownMenuItem(
                     value: op.value,
                     child: Text(op.label),
@@ -290,9 +420,50 @@ class _DynamicListScreenState extends ConsumerState<DynamicListScreen> {
     );
   }
 
+  Widget _buildActiveFiltersBar() {
+    final chips = <Widget>[];
+
+    if (_busqueda.isNotEmpty) {
+      chips.add(
+        InputChip(
+          label: Text('Buscar: $_busqueda'),
+          onDeleted: () => _onSearch(''),
+        ),
+      );
+    }
+
+    for (final entry in _filtrosActivos.entries) {
+      chips.add(
+        InputChip(
+          label: Text('${_formatFilterLabel(entry.key)}: ${entry.value}'),
+          onDeleted: () => _onFilterChanged(entry.key, ''),
+        ),
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: chips,
+      ),
+    );
+  }
+
+  String _formatFilterLabel(String key) {
+    for (final filter in config.filtros) {
+      if ((filter.paramName ?? filter.id) == key) {
+        return filter.label;
+      }
+    }
+    return key;
+  }
+
   Widget _buildBody() {
     if (_loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const FlavorLoadingState();
     }
 
     if (_error != null) {

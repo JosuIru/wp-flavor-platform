@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/utils/flavor_mutation.dart';
+import '../../../core/widgets/flavor_confirm_dialog.dart';
+import '../../../core/widgets/flavor_detail_widgets.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 import '../models/module_config.dart';
 import '../widgets/icon_helper.dart';
 import 'dynamic_form_screen.dart';
@@ -101,25 +104,13 @@ class _DynamicDetailScreenState extends ConsumerState<DynamicDetailScreen> {
 
   Widget _buildBody() {
     if (_loading && _data == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const FlavorLoadingState();
     }
 
     if (_error != null && _data == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
-            const SizedBox(height: 16),
-            Text(_error!),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _loadData,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Reintentar'),
-            ),
-          ],
-        ),
+      return FlavorErrorState(
+        message: _error!,
+        onRetry: _loadData,
       );
     }
 
@@ -135,16 +126,11 @@ class _DynamicDetailScreenState extends ConsumerState<DynamicDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Imagen header
-            if (_hasImage())
-              Image.network(
-                _getImageUrl(),
-                height: 250,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => _buildImagePlaceholder(),
-              )
-            else
-              _buildImagePlaceholder(),
+            FlavorHeroImage(
+              imageUrl: _getImageUrl(),
+              height: 250,
+              placeholder: _buildImagePlaceholder(),
+            ),
 
             // Estado badge
             if (_data!['estado'] != null)
@@ -174,13 +160,6 @@ class _DynamicDetailScreenState extends ConsumerState<DynamicDetailScreen> {
     );
   }
 
-  bool _hasImage() {
-    return _data!['imagen'] != null ||
-           _data!['image'] != null ||
-           _data!['foto'] != null ||
-           _data!['thumbnail'] != null;
-  }
-
   String _getImageUrl() {
     return _data!['imagen']?.toString() ??
            _data!['image']?.toString() ??
@@ -204,19 +183,10 @@ class _DynamicDetailScreenState extends ConsumerState<DynamicDetailScreen> {
   }
 
   Widget _buildStatusChip(String estado) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: IconHelper.getStatusColor(estado),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text(
-        IconHelper.getStatusLabel(estado),
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+    return FlavorStatusChip(
+      label: IconHelper.getStatusLabel(estado),
+      backgroundColor: IconHelper.getStatusColor(estado),
+      foregroundColor: Colors.white,
     );
   }
 
@@ -260,7 +230,7 @@ class _DynamicDetailScreenState extends ConsumerState<DynamicDetailScreen> {
 
     for (final entry in infoFields.entries) {
       if (_data![entry.key] != null && _data![entry.key].toString().isNotEmpty) {
-        widgets.add(_buildInfoRow(
+        widgets.add(FlavorDetailInfoRow(
           icon: entry.value,
           label: _formatLabel(entry.key),
           value: _formatValue(entry.key, _data![entry.key]),
@@ -269,41 +239,6 @@ class _DynamicDetailScreenState extends ConsumerState<DynamicDetailScreen> {
     }
 
     return widgets;
-  }
-
-  Widget _buildInfoRow({
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 20, color: Colors.grey.shade600),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                Text(
-                  value,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   String _formatLabel(String key) {
@@ -370,47 +305,26 @@ class _DynamicDetailScreenState extends ConsumerState<DynamicDetailScreen> {
 
   Future<void> _executeAction(ModuleAction action) async {
     if (action.requiereConfirmacion) {
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(action.label),
-          content: const Text('¿Estás seguro?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancelar'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Confirmar'),
-            ),
-          ],
-        ),
+      final confirmed = await FlavorConfirmDialog.show(
+        context,
+        title: action.label,
+        message: '¿Estás seguro?',
       );
       if (confirmed != true) return;
     }
 
     if (action.endpoint != null) {
+      if (!mounted) return;
       final api = ref.read(apiClientProvider);
       final endpoint = action.endpoint!.replaceAll('{id}', widget.itemId);
 
-      try {
-        final response = await api.post(endpoint, data: {});
-        if (response.success) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('${action.label} completado')),
-            );
-          }
-          _loadData();
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $e')),
-          );
-        }
-      }
+      await FlavorMutation.runApiResponse(
+        context,
+        request: () => api.post(endpoint, data: {}),
+        successMessage: '${action.label} completado',
+        fallbackErrorMessage: 'No se pudo completar la acción.',
+        onSuccess: _loadData,
+      );
     }
   }
 }

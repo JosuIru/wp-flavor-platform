@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/providers.dart';
 import '../../core/models/models.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 import 'escalated_chat_detail_screen.dart';
 
 /// Pantalla de chats escalados para admin
@@ -14,7 +15,7 @@ class EscalatedChatsScreen extends ConsumerStatefulWidget {
 }
 
 class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   String? _selectedStatus;
   List<EscalatedChat> _chats = [];
   bool _isLoading = false;
@@ -48,13 +49,13 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
         });
       } else {
         setState(() {
-          _error = response.error ?? 'Error al cargar chats';
+          _error = response.error ?? i18n.escalatedChatLoadError;
           _isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        _error = 'Error de conexión: $e';
+        _error = i18n.escalatedChatConnectionError(e.toString());
         _isLoading = false;
       });
     }
@@ -62,7 +63,7 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     // Contar por estado
@@ -91,7 +92,7 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _StatBadge(
-                  label: 'Pendientes',
+                  label: i18n.escalatedChatsPending,
                   count: pendingCount,
                   color: Colors.orange,
                   onTap: () {
@@ -103,7 +104,7 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
                   isSelected: _selectedStatus == 'pending',
                 ),
                 _StatBadge(
-                  label: 'Contactados',
+                  label: i18n.escalatedChatsContacted,
                   count: contactedCount,
                   color: Colors.blue,
                   onTap: () {
@@ -115,7 +116,7 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
                   isSelected: _selectedStatus == 'contacted',
                 ),
                 _StatBadge(
-                  label: 'Resueltos',
+                  label: i18n.escalatedChatsResolved,
                   count: resolvedCount,
                   color: Colors.green,
                   onTap: () {
@@ -152,7 +153,7 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
           // Lista de chats
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const FlavorLoadingState()
                 : _error != null
                     ? Center(
                         child: Column(
@@ -190,7 +191,7 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  'No hay chats escalados',
+                                  i18n.escalatedChatsEmpty,
                                   style: TextStyle(color: colorScheme.outline),
                                 ),
                               ],
@@ -219,11 +220,11 @@ class _EscalatedChatsScreenState extends ConsumerState<EscalatedChatsScreen> {
   String _getStatusLabel(String status) {
     switch (status) {
       case 'pending':
-        return 'Pendientes';
+        return i18n.escalatedChatsPending;
       case 'contacted':
-        return 'Contactados';
+        return i18n.escalatedChatsContacted;
       case 'resolved':
-        return 'Resueltos';
+        return i18n.escalatedChatsResolved;
       default:
         return status;
     }
@@ -264,7 +265,6 @@ class _StatBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -325,7 +325,7 @@ class _ChatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
@@ -431,7 +431,7 @@ class _ChatCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '${chat.messageCount} mensajes',
+                    i18n.escalatedChatsMessagesCount(chat.messageCount),
                     style: TextStyle(
                       color: colorScheme.outline,
                       fontSize: 12,

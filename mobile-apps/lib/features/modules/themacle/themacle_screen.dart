@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class ThemacleScreen extends ConsumerStatefulWidget {
   const ThemacleScreen({super.key});
@@ -65,40 +65,18 @@ class _ThemacleScreenState extends ConsumerState<ThemacleScreen> {
         ],
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.auto_awesome,
-                          size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(_error!, textAlign: TextAlign.center),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _loadData,
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
+              ? FlavorErrorState(
+                  message: _error!,
+                  onRetry: _loadData,
+                  icon: Icons.auto_awesome,
                 )
               : _modelos.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.auto_awesome,
-                              size: 64, color: Colors.grey.shade400),
-                          const SizedBox(height: 16),
-                          const Text('No hay modelos ML disponibles'),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Los modelos de Machine Learning apareceran aqui',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
+                  ? const FlavorEmptyState(
+                      icon: Icons.auto_awesome,
+                      title: 'No hay modelos ML disponibles',
+                      message: 'Los modelos de Machine Learning apareceran aqui',
                     )
                   : RefreshIndicator(
                       onRefresh: _loadData,
@@ -230,7 +208,7 @@ class _ThemacleScreenState extends ConsumerState<ThemacleScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
+                FlavorInlineSpinner(size: 28),
                 SizedBox(height: 16),
                 Text('Ejecutando prediccion...'),
               ],
@@ -273,11 +251,11 @@ class _ThemacleScreenState extends ConsumerState<ThemacleScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Row(
+        title: const Row(
           children: [
-            const Icon(Icons.check_circle, color: Colors.green),
-            const SizedBox(width: 8),
-            const Text('Resultado'),
+            Icon(Icons.check_circle, color: Colors.green),
+            SizedBox(width: 8),
+            Text('Resultado'),
           ],
         ),
         content: Column(

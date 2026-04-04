@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../../core/widgets/flavor_initials_avatar.dart';
 import '../../../../core/services/chat_service.dart';
+import '../../../../core/widgets/flavor_state_widgets.dart';
 
 /// Pantalla de estados tipo WhatsApp Stories
 class StatusScreen extends ConsumerStatefulWidget {
@@ -128,7 +130,7 @@ class _StatusScreenState extends ConsumerState<StatusScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const FlavorLoadingState();
     }
 
     return RefreshIndicator(
@@ -253,7 +255,7 @@ class _StatusScreenState extends ConsumerState<StatusScreen> {
                 ? CachedNetworkImageProvider(firstStatus.userAvatar!)
                 : null,
             child: firstStatus.userAvatar == null
-                ? Text(firstStatus.userName[0].toUpperCase())
+                ? Text(FlavorInitialsAvatar.initialsFor(firstStatus.userName))
                 : null,
           ),
         ),
@@ -406,7 +408,7 @@ class StatusRingPainter extends CustomPainter {
       paint.color = viewedCount == 1 ? viewedColor : primaryColor;
       canvas.drawCircle(center, radius, paint);
     } else {
-      final gapAngle = 0.1;
+      const gapAngle = 0.1;
       final arcAngle = (2 * pi - (statusCount * gapAngle)) / statusCount;
 
       for (int i = 0; i < statusCount; i++) {
@@ -615,7 +617,6 @@ class _StatusViewerScreenState extends State<StatusViewerScreen>
     with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   late AnimationController _progressController;
-  bool _isPaused = false;
 
   @override
   void initState() {
@@ -679,15 +680,12 @@ class _StatusViewerScreenState extends State<StatusViewerScreen>
       body: GestureDetector(
         onTapDown: (_) {
           _progressController.stop();
-          setState(() => _isPaused = true);
         },
         onTapUp: (_) {
           _progressController.forward();
-          setState(() => _isPaused = false);
         },
         onTapCancel: () {
           _progressController.forward();
-          setState(() => _isPaused = false);
         },
         onHorizontalDragEnd: (details) {
           if (details.primaryVelocity! < 0) {
@@ -782,8 +780,9 @@ class _StatusViewerScreenState extends State<StatusViewerScreen>
                       onSelected: (action) async {
                         if (action == 'delete' && widget.onStatusDeleted != null) {
                           await widget.onStatusDeleted!(status.id);
+                          if (!context.mounted) return;
                           if (widget.statuses.length == 1) {
-                            if (mounted) Navigator.pop(context);
+                            Navigator.pop(context);
                           } else {
                             _nextStatus();
                           }
@@ -814,11 +813,11 @@ class _StatusViewerScreenState extends State<StatusViewerScreen>
                 right: 0,
                 child: Container(
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, Colors.black54],
+                      colors: <Color>[Colors.transparent, Colors.black54],
                     ),
                   ),
                   child: Row(

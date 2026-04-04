@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/api/api_client.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
+import '../../../core/widgets/flavor_state_widgets.dart';
 
 class EmailMarketingScreen extends ConsumerStatefulWidget {
   const EmailMarketingScreen({super.key});
@@ -63,38 +63,18 @@ class _EmailMarketingScreenState extends ConsumerState<EmailMarketingScreen> {
         label: const Text('Nueva campana'),
       ),
       body: _cargando
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _mensajeError != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.email, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(_mensajeError!),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _cargarDatos,
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
+              ? FlavorErrorState(
+                  message: _mensajeError!,
+                  onRetry: _cargarDatos,
+                  icon: Icons.email_outlined,
                 )
               : _listaCampanas.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.email, size: 64, color: Colors.grey.shade400),
-                          const SizedBox(height: 16),
-                          const Text('No hay campanas disponibles'),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Crea tu primera campana de email marketing',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
+                  ? const FlavorEmptyState(
+                      icon: Icons.email_outlined,
+                      title: 'No hay campanas disponibles',
+                      message: 'Crea tu primera campana de email marketing',
                     )
                   : RefreshIndicator(
                       onRefresh: _cargarDatos,
@@ -327,11 +307,7 @@ class _EmailMarketingScreenState extends ConsumerState<EmailMarketingScreen> {
                             if (context.mounted) Navigator.pop(context);
                           },
                     icon: creando
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
+                        ? const FlavorInlineSpinner()
                         : const Icon(Icons.save),
                     label: Text(creando ? 'Guardando...' : 'Crear campana'),
                   ),
@@ -441,11 +417,17 @@ class _CampanaDetalleScreenState extends ConsumerState<CampanaDetalleScreen> {
         ],
       ),
       body: _cargando
-          ? const Center(child: CircularProgressIndicator())
+          ? const FlavorLoadingState()
           : _mensajeError != null
-              ? Center(child: Text(_mensajeError!))
+              ? FlavorErrorState(
+                  message: _mensajeError!,
+                  onRetry: _cargarDetalle,
+                )
               : _datosCampana == null
-                  ? const Center(child: Text('No se encontraron datos'))
+                  ? const FlavorEmptyState(
+                      icon: Icons.mark_email_read_outlined,
+                      title: 'No se encontraron datos',
+                    )
                   : ListView(
                       padding: const EdgeInsets.all(16),
                       children: [
@@ -596,11 +578,7 @@ class _CampanaDetalleScreenState extends ConsumerState<CampanaDetalleScreen> {
                             }
                           },
                     icon: guardando
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
+                        ? const FlavorInlineSpinner()
                         : const Icon(Icons.save),
                     label: Text(guardando ? 'Guardando...' : 'Guardar cambios'),
                   ),
@@ -646,7 +624,7 @@ class _CampanaDetalleScreenState extends ConsumerState<CampanaDetalleScreen> {
 
       if (mounted) {
         if (respuesta.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(this.context).showSnackBar(
             const SnackBar(
               content: Text('Campana enviada correctamente'),
               backgroundColor: Colors.green,
@@ -654,7 +632,7 @@ class _CampanaDetalleScreenState extends ConsumerState<CampanaDetalleScreen> {
           );
           _cargarDetalle();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.of(this.context).showSnackBar(
             SnackBar(
               content: Text(respuesta.error ?? 'Error al enviar'),
               backgroundColor: Colors.red,
@@ -664,7 +642,7 @@ class _CampanaDetalleScreenState extends ConsumerState<CampanaDetalleScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(this.context).showSnackBar(
           SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
         );
       }

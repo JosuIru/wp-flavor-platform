@@ -12,6 +12,10 @@ import '../../core/models/directory_models.dart';
 import '../../core/services/business_directory_service.dart';
 import '../../core/providers/providers.dart';
 import '../../core/providers/sync_provider.dart';
+import '../../core/utils/map_launch_helper.dart';
+import '../../core/widgets/flavor_snackbar.dart';
+import '../../core/widgets/google_marker_map.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 
 class DirectoryScreen extends ConsumerStatefulWidget {
   final VoidCallback? onConnected;
@@ -30,7 +34,7 @@ class DirectoryScreen extends ConsumerStatefulWidget {
 }
 
 class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
-  AppLocalizations get i18n => AppLocalizations.of(context)!;
+  AppLocalizations get i18n => AppLocalizations.of(context);
   final _searchController = TextEditingController();
   bool _isLoading = false;
   String? _error;
@@ -45,6 +49,16 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
     if (url.isEmpty) return;
     final uri = Uri.tryParse(url);
     if (uri == null) return;
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  Future<void> _openNodeInMap(DirectoryNode node) async {
+    if (node.latitud == null || node.longitud == null) return;
+    final uri = MapLaunchHelper.buildConfiguredMapUri(
+      node.latitud!,
+      node.longitud!,
+      query: node.nombre.isNotEmpty ? node.nombre : node.siteUrl,
+    );
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
@@ -175,12 +189,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(i18n.commonConnectedTo(business.nombre)),
-            backgroundColor: Colors.green,
-          ),
-        );
+        FlavorSnackbar.showSuccess(context, i18n.commonConnectedTo(business.nombre));
         widget.onConnected?.call();
         if (widget.closeOnConnect) {
           Navigator.pop(context, true);
@@ -242,7 +251,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final data = _data;
     final nodes = List<DirectoryNode>.from(data?.nodos ?? []);
     final filteredNodes =
@@ -265,8 +274,8 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
             controller: _searchController,
             decoration: InputDecoration(
               labelText: i18n.buscar113f74,
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(),
+              prefixIcon: const Icon(Icons.search),
+              border: const OutlineInputBorder(),
             ),
             onSubmitted: (_) => _loadDirectory(),
           ),
@@ -294,7 +303,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                   value: _selectedTipo,
                   decoration: InputDecoration(
                     labelText: i18n.tipo4f427c,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                   items: [
                     DropdownMenuItem(value: '', child: Text(i18n.todos32630c)),
@@ -334,7 +343,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                   value: _selectedNivel,
                   decoration: InputDecoration(
                     labelText: i18n.nivel48281f,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                   items: [
                     DropdownMenuItem(value: '', child: Text(i18n.todos32630c)),
@@ -360,7 +369,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
           TextField(
             decoration: InputDecoration(
               labelText: i18n.sectorOpcional94b201,
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
             onChanged: (value) => _selectedSector = value,
           ),
@@ -368,7 +377,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
           TextField(
             decoration: InputDecoration(
               labelText: i18n.ciudadOpcionalE747b0,
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
             onChanged: (value) => _cityFilter = value,
           ),
@@ -430,7 +439,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
             ),
           if (_isLoading) ...[
             const SizedBox(height: 24),
-            Center(child: CircularProgressIndicator()),
+            const FlavorLoadingState(),
           ] else if (_showMap) ...[
             const SizedBox(height: 8),
             _buildMap(),
@@ -641,6 +650,10 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
   }
 
   Widget _buildMap() {
+    if (MapLaunchHelper.usesEmbeddedGoogle) {
+      return _buildGoogleMap();
+    }
+
     final markers = _mapNodes
         .where((n) => n.latitud != null && n.longitud != null)
         .map((n) => Marker(
@@ -712,6 +725,50 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
     );
   }
 
+  Widget _buildGoogleMap() {
+    final nodes = _mapNodes
+        .where((n) => n.latitud != null && n.longitud != null)
+        .toList();
+    final center = _userLocation ??
+        (nodes.isNotEmpty
+            ? LatLng(nodes.first.latitud!, nodes.first.longitud!)
+            : const LatLng(40.4168, -3.7038));
+
+    return SizedBox(
+      height: 320,
+      child: GoogleMarkerMap(
+        apiKey: MapLaunchHelper.googleMapsApiKey,
+        centerLat: center.latitude,
+        centerLng: center.longitude,
+        zoom: 6,
+        userLat: _userLocation?.latitude,
+        userLng: _userLocation?.longitude,
+        markers: nodes
+            .map(
+              (node) => GoogleMarkerMapItem(
+                id: _favoriteKeyFor(node),
+                title: node.nombre.isNotEmpty ? node.nombre : node.siteUrl,
+                subtitle: node.descripcionCorta.isNotEmpty
+                    ? node.descripcionCorta
+                    : node.siteUrl,
+                latitude: node.latitud!,
+                longitude: node.longitud!,
+                colorHex: node.verificado ? '#16A34A' : '#DC2626',
+              ),
+            )
+            .toList(),
+        onMarkerTap: (markerId) {
+          for (final node in nodes) {
+            if (_favoriteKeyFor(node) == markerId) {
+              _showNodePreview(node);
+              break;
+            }
+          }
+        },
+      ),
+    );
+  }
+
   void _showNodePreview(DirectoryNode node) {
     showModalBottomSheet(
       context: context,
@@ -779,6 +836,17 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                 icon: const Icon(Icons.open_in_browser),
                 label: Text(i18n.verPerfilD615f4),
               ),
+              if (node.latitud != null && node.longitud != null) ...[
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _openNodeInMap(node);
+                  },
+                  icon: const Icon(Icons.map_outlined),
+                  label: Text(MapLaunchHelper.providerLabel),
+                ),
+              ],
               const SizedBox(height: 8),
               FilledButton.icon(
                 onPressed: () {

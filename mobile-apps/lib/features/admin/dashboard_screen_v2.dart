@@ -6,15 +6,15 @@ import '../../core/providers/providers.dart';
 import '../../core/providers/admin_modules_provider.dart';
 import '../../core/widgets/common_widgets.dart';
 import '../../core/widgets/chart_widgets.dart';
-import '../../core/api/api_client.dart';
+import '../../core/widgets/flavor_state_widgets.dart';
 import 'qr_scanner_screen.dart';
-import 'export_screen.dart';
 import 'stats_screen.dart';
 import 'calendar_view_screen.dart';
 import 'customers_screen.dart';
-import 'manual_customers_screen.dart';
 import 'escalated_chats_screen.dart';
 import 'camps/camps_management_screen.dart';
+
+part 'dashboard_screen_v2_widgets.dart';
 
 /// Modelo para módulo con métricas
 class _ModuleMetric {
@@ -24,8 +24,6 @@ class _ModuleMetric {
   final String? subtitle;
   final IconData icon;
   final Color color;
-  final VoidCallback? onTap;
-
   const _ModuleMetric({
     required this.id,
     required this.title,
@@ -33,7 +31,6 @@ class _ModuleMetric {
     this.subtitle,
     required this.icon,
     required this.color,
-    this.onTap,
   });
 }
 
@@ -73,9 +70,9 @@ final adminModuleMetricsProviderV2 = FutureProvider<List<_ModuleMetric>>((ref) a
           : 0;
       metrics.add(_ModuleMetric(
         id: 'grupos_consumo',
-        title: 'Pedidos Abiertos',
+        title: '',
         value: count.toString(),
-        subtitle: count > 0 ? 'Requieren atención' : 'Todo al día',
+        subtitle: '',
         icon: Icons.shopping_basket_outlined,
         color: count > 0 ? Colors.orange : Colors.green,
       ));
@@ -89,7 +86,7 @@ final adminModuleMetricsProviderV2 = FutureProvider<List<_ModuleMetric>>((ref) a
           : 0;
       metrics.add(_ModuleMetric(
         id: 'banco_tiempo',
-        title: 'Servicios Activos',
+        title: '',
         value: count.toString(),
         icon: Icons.volunteer_activism_outlined,
         color: Colors.teal,
@@ -104,7 +101,7 @@ final adminModuleMetricsProviderV2 = FutureProvider<List<_ModuleMetric>>((ref) a
           : 0;
       metrics.add(_ModuleMetric(
         id: 'marketplace',
-        title: 'Anuncios Activos',
+        title: '',
         value: count.toString(),
         icon: Icons.storefront_outlined,
         color: Colors.orange,
@@ -114,9 +111,9 @@ final adminModuleMetricsProviderV2 = FutureProvider<List<_ModuleMetric>>((ref) a
     // Eventos
     if (modules.contains('eventos')) {
       // Aquí podrías hacer una llamada a eventos si existe el endpoint
-      metrics.add(_ModuleMetric(
+      metrics.add(const _ModuleMetric(
         id: 'eventos',
-        title: 'Próximos Eventos',
+        title: '',
         value: '5', // Mock - reemplazar con API real
         icon: Icons.event_outlined,
         color: Colors.pink,
@@ -125,11 +122,11 @@ final adminModuleMetricsProviderV2 = FutureProvider<List<_ModuleMetric>>((ref) a
 
     // Incidencias
     if (modules.contains('incidencias')) {
-      metrics.add(_ModuleMetric(
+      metrics.add(const _ModuleMetric(
         id: 'incidencias',
-        title: 'Incidencias Abiertas',
+        title: '',
         value: '3', // Mock - reemplazar con API real
-        subtitle: 'Pendientes de resolver',
+        subtitle: '',
         icon: Icons.report_problem_outlined,
         color: Colors.red,
       ));
@@ -137,9 +134,9 @@ final adminModuleMetricsProviderV2 = FutureProvider<List<_ModuleMetric>>((ref) a
 
     // Socios
     if (modules.contains('socios')) {
-      metrics.add(_ModuleMetric(
+      metrics.add(const _ModuleMetric(
         id: 'socios',
-        title: 'Socios Activos',
+        title: '',
         value: '42', // Mock - reemplazar con API real
         icon: Icons.people_outlined,
         color: Colors.indigo,
@@ -156,29 +153,29 @@ final adminModuleMetricsProviderV2 = FutureProvider<List<_ModuleMetric>>((ref) a
 final adminNotificationsProvider = FutureProvider<List<_Notification>>((ref) async {
   // Mock data - en producción vendría del API
   return [
-    _Notification(
+    const _Notification(
       id: '1',
-      title: 'Nueva reserva',
-      message: 'Reserva para Mesa 5 - 4 personas',
-      time: 'Hace 5 min',
+      title: '',
+      message: '',
+      time: '',
       icon: Icons.calendar_today,
       color: Colors.blue,
       isRead: false,
     ),
-    _Notification(
+    const _Notification(
       id: '2',
-      title: 'Pedido completado',
-      message: 'Grupo de Consumo Ecológico',
-      time: 'Hace 1 hora',
+      title: '',
+      message: '',
+      time: '',
       icon: Icons.check_circle,
       color: Colors.green,
       isRead: false,
     ),
-    _Notification(
+    const _Notification(
       id: '3',
-      title: 'Chat escalado',
-      message: 'Cliente requiere atención humana',
-      time: 'Hace 2 horas',
+      title: '',
+      message: '',
+      time: '',
       icon: Icons.support_agent,
       color: Colors.orange,
       isRead: true,
@@ -218,7 +215,7 @@ class DashboardScreenV2 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i18n = AppLocalizations.of(context)!;
+    final i18n = AppLocalizations.of(context);
     final dashboardAsync = ref.watch(dashboardProvider);
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -246,7 +243,7 @@ class DashboardScreenV2 extends ConsumerWidget {
                           top: 8,
                           child: Container(
                             padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Colors.red,
                               shape: BoxShape.circle,
                             ),
@@ -383,6 +380,48 @@ class DashboardScreenV2 extends ConsumerWidget {
     );
   }
 
+  String _notificationTitle(BuildContext context, _Notification notification) {
+    final i18n = AppLocalizations.of(context);
+    switch (notification.id) {
+      case '1':
+        return i18n.adminNotificationNewReservation;
+      case '2':
+        return i18n.adminNotificationOrderCompleted;
+      case '3':
+        return i18n.adminNotificationEscalatedChat;
+      default:
+        return notification.title;
+    }
+  }
+
+  String _notificationMessage(BuildContext context, _Notification notification) {
+    final i18n = AppLocalizations.of(context);
+    switch (notification.id) {
+      case '1':
+        return i18n.adminNotificationTableReservation;
+      case '2':
+        return i18n.adminNotificationConsumptionGroup;
+      case '3':
+        return i18n.adminNotificationHumanAttentionRequired;
+      default:
+        return notification.message;
+    }
+  }
+
+  String _notificationTime(BuildContext context, _Notification notification) {
+    final i18n = AppLocalizations.of(context);
+    switch (notification.id) {
+      case '1':
+        return i18n.adminNotificationFiveMinutesAgo;
+      case '2':
+        return i18n.adminNotificationOneHourAgo;
+      case '3':
+        return i18n.adminNotificationTwoHoursAgo;
+      default:
+        return notification.time;
+    }
+  }
+
   void _showNotifications(BuildContext context, List<_Notification> notifications) {
     showModalBottomSheet(
       context: context,
@@ -393,17 +432,17 @@ class DashboardScreenV2 extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Notificaciones',
+              AppLocalizations.of(context).notificationsTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 16),
             if (notifications.isEmpty)
-              const Center(
+              Center(
                 child: Padding(
-                  padding: EdgeInsets.all(32),
-                  child: Text('No hay notificaciones'),
+                  padding: const EdgeInsets.all(32),
+                  child: Text(AppLocalizations.of(context).notificationsEmpty),
                 ),
               )
             else
@@ -417,14 +456,14 @@ class DashboardScreenV2 extends ConsumerWidget {
                   child: Icon(notif.icon, color: notif.color),
                 ),
                 title: Text(
-                  notif.title,
+                  _notificationTitle(context, notif),
                   style: TextStyle(
                     fontWeight: notif.isRead ? FontWeight.normal : FontWeight.bold,
                   ),
                 ),
-                subtitle: Text(notif.message),
+                subtitle: Text(_notificationMessage(context, notif)),
                 trailing: Text(
-                  notif.time,
+                  _notificationTime(context, notif),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               )),
@@ -436,579 +475,3 @@ class DashboardScreenV2 extends ConsumerWidget {
 }
 
 /// Header de saludo
-class _GreetingHeader extends StatelessWidget {
-  final String date;
-
-  const _GreetingHeader({required this.date});
-
-  @override
-  Widget build(BuildContext context) {
-    final hour = DateTime.now().hour;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    String greeting;
-    IconData icon;
-
-    if (hour < 12) {
-      greeting = 'Buenos días';
-      icon = Icons.wb_sunny;
-    } else if (hour < 19) {
-      greeting = 'Buenas tardes';
-      icon = Icons.wb_twilight;
-    } else {
-      greeting = 'Buenas noches';
-      icon = Icons.nightlight;
-    }
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            colorScheme.primary,
-            colorScheme.secondary,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: Colors.white, size: 28),
-              const SizedBox(width: 12),
-              Text(
-                greeting,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            _formatDate(date, context),
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.white.withOpacity(0.9),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatDate(String date, BuildContext context) {
-    try {
-      final dateObj = DateTime.parse(date);
-      final locale = Localizations.localeOf(context).toLanguageTag();
-      return DateFormat('EEEE, d \'de\' MMMM', locale).format(dateObj);
-    } catch (e) {
-      return date;
-    }
-  }
-}
-
-/// Grid de estadísticas de hoy
-class _TodayStatsGrid extends StatelessWidget {
-  final dynamic todayData;
-
-  const _TodayStatsGrid({required this.todayData});
-
-  @override
-  Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
-
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
-      childAspectRatio: 1.3,
-      children: [
-        _ModernStatCard(
-          title: i18n.dashboardReservationsLabel,
-          value: '${todayData.reservations}',
-          icon: Icons.calendar_today,
-          color: Colors.blue,
-        ),
-        _ModernStatCard(
-          title: i18n.dashboardCheckinsLabel,
-          value: '${todayData.checkins}',
-          subtitle: i18n.dashboardPending(todayData.pendingCheckins),
-          icon: Icons.check_circle,
-          color: Colors.green,
-        ),
-      ],
-    );
-  }
-}
-
-/// Card de estadística moderno
-class _ModernStatCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final String? subtitle;
-  final IconData icon;
-  final Color color;
-
-  const _ModernStatCard({
-    required this.title,
-    required this.value,
-    this.subtitle,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: colorScheme.outlineVariant,
-          width: 1,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(icon, color: color, size: 20),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (subtitle != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: color.withOpacity(0.8),
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Grid de métricas de módulos V2
-class _ModuleMetricsGridV2 extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final i18n = AppLocalizations.of(context)!;
-    final metricsAsync = ref.watch(adminModuleMetricsProviderV2);
-
-    return metricsAsync.when(
-      data: (metrics) {
-        if (metrics.isEmpty) {
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline, color: Theme.of(context).colorScheme.primary),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(i18n.adminModulesDashboardEmpty)),
-                ],
-              ),
-            ),
-          );
-        }
-
-        return GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 1.3,
-          children: metrics
-              .map((metric) => _ModernStatCard(
-                    title: metric.title,
-                    value: metric.value,
-                    subtitle: metric.subtitle,
-                    icon: metric.icon,
-                    color: metric.color,
-                  ))
-              .toList(),
-        );
-      },
-      loading: () => const SizedBox(
-        height: 120,
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      error: (_, __) => Text(i18n.adminModulesDashboardEmpty),
-    );
-  }
-}
-
-/// Accesos rápidos V2 mejorado
-class _QuickActionsV2 extends ConsumerWidget {
-  final VoidCallback? onNavigateToReservations;
-  final VoidCallback? onNavigateToChat;
-
-  const _QuickActionsV2({
-    this.onNavigateToReservations,
-    this.onNavigateToChat,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final i18n = AppLocalizations.of(context)!;
-    final modulesAsync = ref.watch(adminModulesProvider);
-
-    return modulesAsync.when(
-      data: (modules) {
-        final hasReservations = modules.any((m) =>
-            m == 'reservas' || m == 'reservations' || m == 'experiences');
-        final hasChat = modules.any((m) => m.contains('chat'));
-        final hasCamps = modules.any((m) => m.contains('camp'));
-
-        return Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            _QuickActionButton(
-              icon: Icons.qr_code_scanner,
-              label: i18n.dashboardScanQr,
-              color: Colors.purple,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const QRScannerScreen()),
-                );
-              },
-            ),
-            if (hasReservations)
-              _QuickActionButton(
-                icon: Icons.calendar_today,
-                label: i18n.dashboardViewReservations,
-                color: Colors.blue,
-                onTap: onNavigateToReservations ?? () {},
-              ),
-            if (hasChat)
-              _QuickActionButton(
-                icon: Icons.smart_toy,
-                label: i18n.dashboardChatIa,
-                color: Colors.teal,
-                onTap: onNavigateToChat ?? () {},
-              ),
-            _QuickActionButton(
-              icon: Icons.bar_chart,
-              label: i18n.dashboardStats,
-              color: Colors.orange,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const StatsScreen()),
-                );
-              },
-            ),
-            if (hasReservations)
-              _QuickActionButton(
-                icon: Icons.calendar_month,
-                label: i18n.dashboardCalendar,
-                color: Colors.pink,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CalendarViewScreen()),
-                  );
-                },
-              ),
-            _QuickActionButton(
-              icon: Icons.people,
-              label: i18n.dashboardCustomers,
-              color: Colors.indigo,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CustomersScreen()),
-                );
-              },
-            ),
-            if (hasChat)
-              _QuickActionButton(
-                icon: Icons.support_agent,
-                label: i18n.dashboardEscalatedChats,
-                color: Colors.red,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const EscalatedChatsScreen()),
-                  );
-                },
-              ),
-            if (hasCamps)
-              _QuickActionButton(
-                icon: Icons.cabin,
-                label: i18n.dashboardCamps,
-                color: Colors.brown,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CampsManagementScreen()),
-                  );
-                },
-              ),
-          ],
-        );
-      },
-      loading: () => const SizedBox(
-        height: 64,
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      error: (_, __) => const SizedBox.shrink(),
-    );
-  }
-}
-
-/// Botón de acción rápida mejorado
-class _QuickActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _QuickActionButton({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: color.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 20, color: color),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Estadísticas de la semana
-class _WeekStats extends StatelessWidget {
-  final dynamic weekData;
-
-  const _WeekStats({required this.weekData});
-
-  @override
-  Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
-
-    return _ModernStatCard(
-      title: i18n.dashboardTotalReservationsLabel,
-      value: '${weekData.reservations}',
-      icon: Icons.event_note,
-      color: Colors.purple,
-    );
-  }
-}
-
-/// Estadísticas del mes
-class _MonthStats extends StatelessWidget {
-  final dynamic monthData;
-
-  const _MonthStats({required this.monthData});
-
-  @override
-  Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
-
-    return _ModernStatCard(
-      title: i18n.dashboardRevenueLabel,
-      value: monthData.formattedRevenue,
-      icon: Icons.euro,
-      color: Colors.amber,
-    );
-  }
-}
-
-/// Sección de gráficos para admin
-class _AdminChartsSection extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Análisis y Tendencias',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 12),
-
-        // Gráfico de actividad diaria
-        _AdminActivityBarChartWidget(),
-
-        const SizedBox(height: 16),
-
-        // Gráfico de tendencias
-        _AdminTrendsLineChartWidget(),
-
-        const SizedBox(height: 16),
-
-        // Gráfico de distribución por módulo
-        _AdminDistributionPieChartWidget(),
-      ],
-    );
-  }
-}
-
-/// Widget de gráfico de barras para admin
-class _AdminActivityBarChartWidget extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final chartDataAsync = ref.watch(adminChartDataProvider('activity'));
-
-    return chartDataAsync.when(
-      data: (data) {
-        if (data.isEmpty) {
-          return const SizedBox.shrink();
-        }
-        return ActivityBarChart(
-          data: data,
-          title: 'Reservaciones por día (últimos 7 días)',
-          barColor: Theme.of(context).colorScheme.primary,
-        );
-      },
-      loading: () => SizedBox(
-        height: 200,
-        child: Card(
-          child: Center(child: CircularProgressIndicator()),
-        ),
-      ),
-      error: (error, stack) {
-        debugPrint('[AdminActivityBarChart] Error: $error');
-        return const SizedBox.shrink();
-      },
-    );
-  }
-}
-
-/// Widget de gráfico de líneas de tendencias para admin
-class _AdminTrendsLineChartWidget extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final chartDataAsync = ref.watch(adminChartDataProvider('trends'));
-
-    return chartDataAsync.when(
-      data: (data) {
-        if (data.isEmpty) {
-          return const SizedBox.shrink();
-        }
-        return TrendsLineChart(
-          data: data,
-          title: 'Tendencia de ingresos (últimos 7 días)',
-          lineColor: Colors.green,
-        );
-      },
-      loading: () => SizedBox(
-        height: 200,
-        child: Card(
-          child: Center(child: CircularProgressIndicator()),
-        ),
-      ),
-      error: (error, stack) {
-        debugPrint('[AdminTrendsLineChart] Error: $error');
-        return const SizedBox.shrink();
-      },
-    );
-  }
-}
-
-/// Widget de gráfico circular de distribución para admin
-class _AdminDistributionPieChartWidget extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final chartDataAsync = ref.watch(adminChartDataProvider('distribution'));
-
-    return chartDataAsync.when(
-      data: (data) {
-        if (data.isEmpty) {
-          return const SizedBox.shrink();
-        }
-        return DistributionPieChart(
-          data: data,
-          title: 'Distribución de uso por módulo',
-        );
-      },
-      loading: () => SizedBox(
-        height: 200,
-        child: Card(
-          child: Center(child: CircularProgressIndicator()),
-        ),
-      ),
-      error: (error, stack) {
-        debugPrint('[AdminDistributionPieChart] Error: $error');
-        return const SizedBox.shrink();
-      },
-    );
-  }
-}

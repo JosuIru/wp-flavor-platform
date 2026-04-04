@@ -10,6 +10,9 @@ class ChatInput extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final bool isSending;
+  final bool enableAttachments;
+  final bool enableCamera;
+  final bool enableVoiceRecording;
   final VoidCallback onSend;
   final ValueChanged<String> onTextChanged;
   final VoidCallback onAttachmentTap;
@@ -20,6 +23,9 @@ class ChatInput extends StatefulWidget {
     required this.controller,
     required this.focusNode,
     required this.isSending,
+    this.enableAttachments = true,
+    this.enableCamera = true,
+    this.enableVoiceRecording = true,
     required this.onSend,
     required this.onTextChanged,
     required this.onAttachmentTap,
@@ -66,6 +72,7 @@ class _ChatInputState extends State<ChatInput> with SingleTickerProviderStateMix
   Future<void> _startRecording() async {
     // Verificar permisos
     final status = await Permission.microphone.request();
+    if (!mounted) return;
     if (!status.isGranted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Se necesita permiso de micrófono')),
@@ -151,8 +158,9 @@ class _ChatInputState extends State<ChatInput> with SingleTickerProviderStateMix
         // Botón de adjuntos
         IconButton(
           icon: const Icon(Icons.attach_file),
-          onPressed: widget.onAttachmentTap,
+          onPressed: widget.enableAttachments ? widget.onAttachmentTap : null,
           color: colorScheme.onSurfaceVariant,
+          tooltip: widget.enableAttachments ? 'Adjuntar' : 'No disponible aquí',
         ),
 
         // Campo de texto
@@ -196,11 +204,15 @@ class _ChatInputState extends State<ChatInput> with SingleTickerProviderStateMix
                 if (!hasText)
                   IconButton(
                     icon: const Icon(Icons.camera_alt_outlined),
-                    onPressed: () {
+                    onPressed: widget.enableCamera
+                        ? () {
                       // TODO: Abrir cámara
-                    },
+                    }
+                        : null,
                     iconSize: 22,
                     color: colorScheme.onSurfaceVariant,
+                    tooltip:
+                        widget.enableCamera ? 'Cámara' : 'No disponible aquí',
                   ),
               ],
             ),
@@ -211,9 +223,13 @@ class _ChatInputState extends State<ChatInput> with SingleTickerProviderStateMix
 
         // Botón de enviar o grabar
         GestureDetector(
-          onLongPressStart: hasText ? null : (_) => _startRecording(),
-          onLongPressEnd: hasText ? null : (_) => _stopRecording(),
-          onLongPressMoveUpdate: hasText
+          onLongPressStart: hasText || !widget.enableVoiceRecording
+              ? null
+              : (_) => _startRecording(),
+          onLongPressEnd: hasText || !widget.enableVoiceRecording
+              ? null
+              : (_) => _stopRecording(),
+          onLongPressMoveUpdate: hasText || !widget.enableVoiceRecording
               ? null
               : (details) {
                   setState(() {
@@ -240,7 +256,17 @@ class _ChatInputState extends State<ChatInput> with SingleTickerProviderStateMix
                   ? widget.isSending
                       ? null
                       : widget.onSend
-                  : null,
+                  : widget.enableVoiceRecording
+                      ? null
+                      : () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Notas de voz no disponibles en este chat',
+                              ),
+                            ),
+                          );
+                        },
             ),
           ),
         ),
