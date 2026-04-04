@@ -12,8 +12,9 @@ wp plugin activate flavor-chat-ia
 bash tools/full-inventory.sh "http://tu-sitio.local" "." "mobile-apps"
 
 # 3. Crear sitio con API
+API_KEY=$(wp eval 'echo flavor_get_vbp_api_key();')
 curl -X POST "http://tu-sitio.local/wp-json/flavor-site-builder/v1/site/create" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"template": "cooperativa", "name": "Mi Cooperativa"}'
 ```

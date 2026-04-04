@@ -248,7 +248,7 @@ flutter build apk --release
 ### Endpoints para Configurar Apps desde WordPress
 
 Base: `/wp-json/flavor-vbp/v1/app/`
-Header: `X-VBP-Key: flavor-vbp-2024`
+Header: `X-VBP-Key: <API_KEY>`
 
 | Endpoint | Método | Descripción |
 |----------|--------|-------------|
@@ -263,12 +263,13 @@ Header: `X-VBP-Key: flavor-vbp-2024`
 
 ```bash
 # Obtener configuración actual
+API_KEY=$(wp eval 'echo flavor_get_vbp_api_key();')
 curl -s "http://SITIO/wp-json/flavor-vbp/v1/app/config" \
-  -H "X-VBP-Key: flavor-vbp-2024"
+  -H "X-VBP-Key: $API_KEY"
 
 # Sincronizar automáticamente
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/sync-from-site" \
-  -H "X-VBP-Key: flavor-vbp-2024"
+  -H "X-VBP-Key: $API_KEY"
 ```
 
 ---

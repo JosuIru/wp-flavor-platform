@@ -402,7 +402,7 @@ GET /wp-json/flavor-site-builder/v1/system/health
 
 Las APIs requieren autenticación con header:
 ```
-X-VBP-Key: flavor-vbp-2024
+X-VBP-Key: <API_KEY>
 ```
 
 ### Documentación Completa

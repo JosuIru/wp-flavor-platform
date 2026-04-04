@@ -15,7 +15,7 @@ Todos los endpoints requieren autenticación JWT o el header `X-VBP-Key`.
 ```bash
 Authorization: Bearer <jwt_token>
 # o
-X-VBP-Key: flavor-vbp-2024
+X-VBP-Key: <tu-api-key>
 ```
 
 ---

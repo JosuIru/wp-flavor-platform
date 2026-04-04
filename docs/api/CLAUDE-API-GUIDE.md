@@ -10,17 +10,17 @@ Todas las APIs requieren autenticación mediante una clave de API.
 
 **1. Header HTTP (recomendado):**
 ```bash
-curl -H "X-VBP-Key: flavor-vbp-2024" https://tu-sitio.com/wp-json/flavor-vbp/v1/endpoint
+curl -H "X-VBP-Key: <tu-api-key>" https://tu-sitio.com/wp-json/flavor-vbp/v1/endpoint
 ```
 
 **2. Parámetro de query:**
 ```bash
-curl "https://tu-sitio.com/wp-json/flavor-vbp/v1/endpoint?api_key=flavor-vbp-2024"
+curl "https://tu-sitio.com/wp-json/flavor-vbp/v1/endpoint?api_key=<tu-api-key>"
 ```
 
-### Clave por defecto
+### Clave de API
 
-La clave de API por defecto es `flavor-vbp-2024`. Puede cambiarse en:
+La clave de API debe obtenerse desde la instalación actual. Puede consultarse o regenerarse en:
 - Ajustes del plugin > API Settings > VBP API Key
 
 ---
@@ -84,7 +84,7 @@ El orquestador principal que integra todas las herramientas para crear sitios co
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template": "grupos_consumo",
@@ -117,7 +117,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template": "grupos_consumo",
@@ -144,14 +144,14 @@ curl -X POST \
 #### Ejemplo: Exportar configuración
 
 ```bash
-curl -H "X-VBP-Key: flavor-vbp-2024" \
+curl -H "X-VBP-Key: $API_KEY" \
   "https://tu-sitio.com/wp-json/flavor-site-builder/v1/site/export?include_content=true"
 ```
 
 #### Ejemplo: Health check
 
 ```bash
-curl -H "X-VBP-Key: flavor-vbp-2024" \
+curl -H "X-VBP-Key: $API_KEY" \
   https://tu-sitio.com/wp-json/flavor-site-builder/v1/system/health
 ```
 
@@ -209,7 +209,7 @@ Configuración de layouts, menús y ajustes del sitio.
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Menu Principal",
@@ -228,7 +228,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "menu": "mega-menu",
@@ -279,7 +279,7 @@ Activación, configuración y gestión de módulos.
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "modules": ["eventos", "socios", "foros", "marketplace"]
@@ -291,7 +291,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "count": 20 }' \
   https://tu-sitio.com/wp-json/flavor-vbp/v1/modules/eventos/demo-data
@@ -362,7 +362,7 @@ Crear y gestionar páginas visuales con bloques.
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Bienvenidos a nuestra Cooperativa",
@@ -402,7 +402,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Nuestros Servicios",
@@ -442,7 +442,7 @@ Gestión de imágenes, iconos y recursos multimedia.
 #### Ejemplo: Buscar imágenes
 
 ```bash
-curl -H "X-VBP-Key: flavor-vbp-2024" \
+curl -H "X-VBP-Key: $API_KEY" \
   "https://tu-sitio.com/wp-json/flavor-vbp/v1/media/search-stock?query=vegetables&per_page=10"
 ```
 
@@ -450,7 +450,7 @@ curl -H "X-VBP-Key: flavor-vbp-2024" \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://images.unsplash.com/photo-123...",
@@ -526,7 +526,7 @@ Configuración completa de SEO, Open Graph, Schema.org.
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Cooperativa Verde - Consumo Ecológico",
@@ -542,7 +542,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "type": "LocalBusiness",
@@ -610,7 +610,7 @@ Configuración para apps móviles Flutter.
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "app_name": "Cooperativa Verde",
@@ -626,7 +626,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "files": ["app_config", "app_colors", "app_theme"]

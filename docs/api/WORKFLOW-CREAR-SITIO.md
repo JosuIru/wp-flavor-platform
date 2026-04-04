@@ -5,7 +5,7 @@ Este tutorial guía paso a paso cómo crear un sitio web completo usando las API
 ## Requisitos Previos
 
 - WordPress instalado con Flavor Chat IA activo
-- API Key configurada (por defecto: `flavor-vbp-2024`)
+- API Key configurada en la instalación actual
 - URL base del sitio (ejemplo: `https://mi-sitio.com`)
 
 ## Escenario de Ejemplo
@@ -19,12 +19,18 @@ Vamos a crear un sitio para una **Cooperativa de Consumo** con:
 
 ---
 
+```bash
+API_KEY=$(wp eval 'echo flavor_get_vbp_api_key();')
+```
+
+---
+
 ## Paso 1: Explorar Plantillas Disponibles
 
 Primero, veamos qué plantillas están disponibles:
 
 ```bash
-curl -H "X-VBP-Key: flavor-vbp-2024" \
+curl -H "X-VBP-Key: $API_KEY" \
   https://mi-sitio.com/wp-json/flavor-site-builder/v1/templates
 ```
 
@@ -53,7 +59,7 @@ curl -H "X-VBP-Key: flavor-vbp-2024" \
 Obtenemos la configuración completa de la plantilla elegida:
 
 ```bash
-curl -H "X-VBP-Key: flavor-vbp-2024" \
+curl -H "X-VBP-Key: $API_KEY" \
   https://mi-sitio.com/wp-json/flavor-site-builder/v1/config-template/grupos_consumo
 ```
 
@@ -99,7 +105,7 @@ La forma más rápida es usar el endpoint de creación completa:
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template": "grupos_consumo",
@@ -175,7 +181,7 @@ Si prefieres control total, sigue estos pasos individuales:
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "modules": ["grupos-consumo", "socios", "eventos", "foros"]
@@ -198,7 +204,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "theme": "light-eco",
@@ -215,7 +221,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Cooperativa Verde",
@@ -254,7 +260,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "modules": ["grupos-consumo", "socios", "eventos"],
@@ -267,7 +273,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Menu Principal",
@@ -288,7 +294,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "menu": "mega-menu",
@@ -299,7 +305,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "logo_url": "https://mi-sitio.com/wp-content/uploads/logo.png",
@@ -319,7 +325,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Cooperativa Verde - Consumo Ecológico en Madrid",
@@ -332,7 +338,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "type": "LocalBusiness",
@@ -355,7 +361,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "modules": ["grupos-consumo", "socios", "eventos"],
@@ -373,7 +379,7 @@ curl -X POST \
 ## Paso 4: Verificar Estado del Sitio
 
 ```bash
-curl -H "X-VBP-Key: flavor-vbp-2024" \
+curl -H "X-VBP-Key: $API_KEY" \
   https://mi-sitio.com/wp-json/flavor-site-builder/v1/site/status
 ```
 
@@ -425,7 +431,7 @@ curl -H "X-VBP-Key: flavor-vbp-2024" \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Sobre Nosotros",
@@ -465,7 +471,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "to_lang": "eu",
@@ -478,7 +484,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "app_name": "Cooperativa Verde",

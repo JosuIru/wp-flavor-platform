@@ -6,7 +6,7 @@ info:
     APIs para creación automatizada de sitios con Claude Code.
 
     ## Autenticación
-    Header requerido: `X-VBP-Key: flavor-vbp-2024`
+    Header requerido: `X-VBP-Key: <tu-api-key>`
 
     ## APIs Incluidas
     - **Site Builder**: Configuración completa de sitios

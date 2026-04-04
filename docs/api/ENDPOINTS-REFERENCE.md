@@ -5,8 +5,8 @@ Tabla exhaustiva de todos los endpoints REST disponibles en Flavor Chat IA.
 ## Autenticación
 
 Todos los endpoints requieren autenticación:
-- **Header:** `X-VBP-Key: flavor-vbp-2024`
-- **Parámetro:** `?api_key=flavor-vbp-2024`
+- **Header:** `X-VBP-Key: <tu-api-key>`
+- **Parámetro:** `?api_key=<tu-api-key>`
 
 ---
 

@@ -58,9 +58,10 @@ ls wp-content/themes/flavor-starter || echo "ERROR: Tema no instalado"
 # 3. Verificar tema activo
 wp option get template  # Debe ser "flavor-starter"
 
-# 4. Verificar API responde
+# 4. Obtener API key y verificar API
+API_KEY=$(wp eval "echo flavor_get_vbp_api_key();")
 curl -s "http://SITIO/wp-json/flavor-site-builder/v1/system/health" \
-  -H "X-VBP-Key: flavor-vbp-2024"
+  -H "X-VBP-Key: $API_KEY"
 ```
 
 **SI LA VALIDACIÓN FALLA**: No continúes. Primero corrige los errores.
@@ -82,10 +83,16 @@ Este script muestra todos los bloques, secciones, módulos y presets disponibles
 
 ### Consultas manuales de discovery
 
+> **NOTA**: Primero obtén la API key dinámicamente:
+> ```bash
+> cd /ruta/wordpress
+> API_KEY=$(wp eval "echo flavor_get_vbp_api_key();")
+> ```
+
 #### A. Schema completo (fuente de verdad)
 ```bash
 curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/schema" \
-  -H "X-VBP-Key: flavor-vbp-2024" > /tmp/vbp-schema.json
+  -H "X-VBP-Key: $API_KEY" > /tmp/vbp-schema.json
 
 # Ver bloques por categoría
 cat /tmp/vbp-schema.json | jq '.blocks | group_by(.category)'
@@ -97,25 +104,25 @@ cat /tmp/vbp-schema.json | jq '.blocks[] | select(.id=="hero-banner")'
 #### B. Bloques disponibles
 ```bash
 curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/blocks" \
-  -H "X-VBP-Key: flavor-vbp-2024" | jq '.blocks[] | {id, name, category}'
+  -H "X-VBP-Key: $API_KEY" | jq '.blocks[] | {id, name, category}'
 ```
 
 #### C. Tipos de sección
 ```bash
 curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/section-types" \
-  -H "X-VBP-Key: flavor-vbp-2024"
+  -H "X-VBP-Key: $API_KEY"
 ```
 
 #### D. Presets de diseño
 ```bash
 curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/design-presets" \
-  -H "X-VBP-Key: flavor-vbp-2024"
+  -H "X-VBP-Key: $API_KEY"
 ```
 
 #### E. Módulos activos (¡IMPORTANTE! solo usar los activos)
 ```bash
 curl -s "http://SITIO/wp-json/flavor-site-builder/v1/modules" \
-  -H "X-VBP-Key: flavor-vbp-2024" | jq '.[] | select(.active==true) | .id'
+  -H "X-VBP-Key: $API_KEY" | jq '.[] | select(.active==true) | .id'
 ```
 
 ### REGLAS DE DISCOVERY
@@ -137,11 +144,56 @@ curl -s "http://SITIO/wp-json/flavor-site-builder/v1/modules" \
 
 ---
 
+## Configuración de API Key (IMPORTANTE)
+
+La API de VBP usa una key de autenticación configurable. **NO usar la key legacy en producción.**
+
+### Obtener la API Key actual
+
+```bash
+# Via WP-CLI
+wp eval "echo flavor_get_vbp_api_key();"
+
+# O via API (requiere estar autenticado en WP)
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/status" \
+  -H "Cookie: wordpress_logged_in_xxx=..."
+```
+
+### Regenerar API Key (recomendado en producción)
+
+```bash
+wp eval "echo flavor_regenerate_vbp_api_key();"
+```
+
+### Usar API Key en requests
+
+```bash
+# Obtener la key
+API_KEY=$(wp eval "echo flavor_get_vbp_api_key();" 2>/dev/null)
+
+# Usar en requests
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/status" \
+  -H "X-VBP-Key: $API_KEY"
+```
+
+### Modo desarrollo (solo local)
+
+Para usar la key legacy `flavor-vbp-2024` en desarrollo:
+
+```php
+// wp-config.php
+define( 'FLAVOR_VBP_ALLOW_LEGACY_KEY', true );
+```
+
+> **ADVERTENCIA**: Nunca habilitar `FLAVOR_VBP_ALLOW_LEGACY_KEY` en producción.
+
+---
+
 ## Estructura de APIs
 
 ### Site Builder API
 Base: `/wp-json/flavor-site-builder/v1/`
-Header: `X-VBP-Key: flavor-vbp-2024`
+Header: `X-VBP-Key: <API_KEY>` (ver sección anterior)
 
 | Endpoint | Método | Descripción |
 |----------|--------|-------------|
@@ -163,7 +215,7 @@ Header: `X-VBP-Key: flavor-vbp-2024`
 
 ### Visual Builder Pro API (Claude)
 Base: `/wp-json/flavor-vbp/v1/claude/`
-Header: `X-VBP-Key: flavor-vbp-2024`
+Header: `X-VBP-Key: <API_KEY>` (ver sección "Configuración de API Key")
 
 | Endpoint | Método | Descripción |
 |----------|--------|-------------|
@@ -199,8 +251,9 @@ wp plugin is-active flavor-chat-ia && echo "OK: Plugin"
 [ "$(wp option get template)" = "flavor-starter" ] && echo "OK: Tema activo"
 
 # API responde
+API_KEY=$(wp eval 'echo flavor_get_vbp_api_key();')
 curl -s "http://SITIO/wp-json/flavor-site-builder/v1/system/health" \
-  -H "X-VBP-Key: flavor-vbp-2024" | grep -q "ok" && echo "OK: API"
+  -H "X-VBP-Key: $API_KEY" | grep -q "ok" && echo "OK: API"
 ```
 
 ### 2. Si el Tema No Está Instalado
@@ -223,7 +276,7 @@ wp theme activate flavor-starter
 
 ```bash
 curl -X POST "http://SITIO/wp-json/flavor-site-builder/v1/site/validate" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template": "grupos_consumo",
@@ -237,7 +290,7 @@ curl -X POST "http://SITIO/wp-json/flavor-site-builder/v1/site/validate" \
 
 ```bash
 curl -X POST "http://SITIO/wp-json/flavor-site-builder/v1/site/create" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template": "grupos_consumo",
@@ -254,7 +307,7 @@ curl -X POST "http://SITIO/wp-json/flavor-site-builder/v1/site/create" \
 
 ```bash
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Inicio",
@@ -312,7 +365,7 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
 
 ```bash
 curl -X POST "http://SITIO/wp-json/flavor-site-builder/v1/menu" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Menu Principal",
@@ -340,7 +393,7 @@ El footer se configura mediante widgets de WordPress y opciones de tema:
 ```bash
 # Crear menú de footer
 curl -X POST "http://SITIO/wp-json/flavor-site-builder/v1/menu" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Menu Footer",
@@ -354,7 +407,7 @@ curl -X POST "http://SITIO/wp-json/flavor-site-builder/v1/menu" \
 
 # Configurar colores de footer via tema
 curl -X POST "http://SITIO/wp-json/flavor-site-builder/v1/theme/apply" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "footer_bg_color": "#1f2937",
@@ -406,7 +459,7 @@ Para landings, páginas informativas, home:
 ```bash
 # SIEMPRE usar la API de VBP Claude
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Mi Página",
@@ -418,7 +471,7 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
 
 # O para página simple
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Mi Página",
@@ -454,7 +507,7 @@ wp plugin is-active flavor-multilingual || wp option get flavor_multilingual_set
 
 # Via API
 curl -s "http://SITIO/wp-json/flavor-multilingual/v1/languages" \
-  -H "X-VBP-Key: flavor-vbp-2024"
+  -H "X-VBP-Key: $API_KEY"
 ```
 
 ### API de Traducción
@@ -485,13 +538,13 @@ Base: `/wp-json/flavor-multilingual/v1/`
 ```bash
 # Activar idiomas
 curl -X POST "http://SITIO/wp-json/flavor-multilingual/v1/languages/activate" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"languages": ["es", "eu", "en"]}'
 
 # Establecer idioma por defecto
 curl -X POST "http://SITIO/wp-json/flavor-multilingual/v1/settings" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -d '{"default_language": "es", "url_mode": "directory"}'
 ```
 
@@ -500,7 +553,7 @@ curl -X POST "http://SITIO/wp-json/flavor-multilingual/v1/settings" \
 ```bash
 # Traducir texto libre
 curl -X POST "http://SITIO/wp-json/flavor-multilingual/v1/translate" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "text": "Bienvenidos a nuestra cooperativa",
@@ -510,7 +563,7 @@ curl -X POST "http://SITIO/wp-json/flavor-multilingual/v1/translate" \
 
 # Traducir post completo
 curl -X POST "http://SITIO/wp-json/flavor-multilingual/v1/translate/post/123" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"to_lang": "eu"}'
 ```
@@ -520,17 +573,17 @@ curl -X POST "http://SITIO/wp-json/flavor-multilingual/v1/translate/post/123" \
 ```bash
 # 1. Crear página en idioma base
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -d '{"title": "Inicio", "slug": "inicio", "content": {...}}'
 
 # 2. Traducir a otros idiomas
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/123/translate" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -d '{"target_lang": "eu"}'
 
 # 3. O traducir a todos los idiomas activos
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/123/translate-all" \
-  -H "X-VBP-Key: flavor-vbp-2024"
+  -H "X-VBP-Key: $API_KEY"
 ```
 
 ### Flujo Multiidioma Completo
@@ -560,7 +613,7 @@ MODULOS=$(wp option get flavor_active_modules --format=json 2>/dev/null | jq len
 [ "$MODULOS" -lt 20 ] && echo "✓ Módulos: $MODULOS"
 
 # 3. Páginas con VBP
-VBP=$(wp db query "SELECT COUNT(*) FROM wp_postmeta WHERE meta_key='_vbp_content'" --skip-column-names)
+VBP=$(wp db query "SELECT COUNT(*) FROM wp_postmeta WHERE meta_key='_flavor_vbp_data'" --skip-column-names)
 [ "$VBP" -gt 0 ] && echo "✓ Páginas VBP: $VBP"
 
 # 4. Menús asignados
@@ -587,7 +640,7 @@ fi
 |------------|---------|----------|
 | Tema | `wp option get template` | `flavor-starter` |
 | Módulos | `wp option get flavor_active_modules` | < 20 activos |
-| VBP | Query `_vbp_content` | > 0 páginas |
+| VBP | Query `_flavor_vbp_data` | > 0 páginas |
 | Menús | `wp menu location list` | primary, footer asignados |
 | Homepage | `wp option get page_on_front` | ID > 0 |
 | Multilingual | API `/languages` | Idiomas configurados |
@@ -616,7 +669,7 @@ Para configurar las apps Flutter según los módulos activados en el sitio.
 ### API de Configuración de Apps
 
 Base: `/wp-json/flavor-vbp/v1/app/`
-Header: `X-VBP-Key: flavor-vbp-2024`
+Header: `X-VBP-Key: <API_KEY>`
 
 | Endpoint | Método | Descripción |
 |----------|--------|-------------|
@@ -647,11 +700,11 @@ Header: `X-VBP-Key: flavor-vbp-2024`
 ```bash
 # 1. Obtener configuración actual
 curl -s "http://SITIO/wp-json/flavor-vbp/v1/app/config" \
-  -H "X-VBP-Key: flavor-vbp-2024"
+  -H "X-VBP-Key: $API_KEY"
 
 # 2. Configurar branding
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/branding" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "app_name": "Mi Cooperativa",
@@ -662,7 +715,7 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/branding" \
 
 # 3. Seleccionar tema de colores
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/theme" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "preset": "emerald-green",
@@ -674,7 +727,7 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/theme" \
 
 # 4. Activar módulos para la app
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/modules" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "modules": ["eventos", "socios", "marketplace", "grupos-consumo", "foros"]
@@ -696,7 +749,7 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/modules" \
 ```bash
 # Configurar tipo de navegación
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/config" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "navigation_style": "bottom_tabs",
@@ -715,7 +768,7 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/config" \
 ```bash
 # Configurar página de información
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/config" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "info_page": {
@@ -740,7 +793,7 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/config" \
 
 1. **Verificar módulos activos en el sitio**
    ```bash
-   curl -s "http://SITIO/wp-json/flavor-site-builder/v1/modules" -H "X-VBP-Key: flavor-vbp-2024"
+   curl -s "http://SITIO/wp-json/flavor-site-builder/v1/modules" -H "X-VBP-Key: $API_KEY"
    ```
 
 2. **Obtener menús del sitio**
@@ -758,7 +811,7 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/config" \
 
 5. **Verificar configuración**
    ```bash
-   curl -s "http://SITIO/wp-json/flavor-vbp/v1/app/config" -H "X-VBP-Key: flavor-vbp-2024" | jq
+   curl -s "http://SITIO/wp-json/flavor-vbp/v1/app/config" -H "X-VBP-Key: $API_KEY" | jq
    ```
 
 ### Sincronizar App con Sitio Web
@@ -776,7 +829,7 @@ IMPORTANTE: La app debe reflejar la configuración del sitio:
 ```bash
 # Comando para sincronizar todo
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/app/sync-from-site" \
-  -H "X-VBP-Key: flavor-vbp-2024"
+  -H "X-VBP-Key: $API_KEY"
 ```
 
 ---
@@ -859,7 +912,7 @@ bash tools/apk-inventory.sh "http://SITIO" "mobile-apps"  # Solo APKs
 ```bash
 # ✅ CORRECTO: Usar VBP styled pages
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Apoya Nuestros Proyectos",
@@ -899,7 +952,7 @@ Para crear cualquier página con diseño visual:
 ```bash
 # ✅ CORRECTO: Visual Builder Pro
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"title": "...", "preset": "...", "sections": [...], "status": "publish"}'
 
@@ -932,8 +985,9 @@ CONTEXTO:
 bash tools/vbp-inventory.sh "http://SITIO"
 
 # 2. O consultas específicas:
-curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/blocks" -H "X-VBP-Key: flavor-vbp-2024"
-curl -s "http://SITIO/wp-json/flavor-site-builder/v1/modules" -H "X-VBP-Key: flavor-vbp-2024" | jq '.[] | select(.active==true)'
+API_KEY=$(wp eval 'echo flavor_get_vbp_api_key();')
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/blocks" -H "X-VBP-Key: $API_KEY"
+curl -s "http://SITIO/wp-json/flavor-site-builder/v1/modules" -H "X-VBP-Key: $API_KEY" | jq '.[] | select(.active==true)'
 ```
 
 ### Paso 3: Listar qué vas a usar
@@ -962,7 +1016,7 @@ VOY A USAR:
 
 ```bash
 curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
-  -H "X-VBP-Key: flavor-vbp-2024" \
+  -H "X-VBP-Key: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "...",
@@ -971,6 +1025,58 @@ curl -X POST "http://SITIO/wp-json/flavor-vbp/v1/claude/pages/styled" \
     "status": "publish"
   }'
 ```
+
+---
+
+## Configuración de API Key
+
+### Gestión Visual (Admin)
+
+La API key se puede gestionar desde el panel de administración:
+- **Menú**: Flavor Platform → Config. VBP
+- **Acciones**: Ver, copiar, regenerar API key
+
+### Obtener API Key programáticamente
+
+```bash
+# Via WP-CLI
+wp eval "echo flavor_get_vbp_api_key();"
+
+# Verificar que la key funciona
+API_KEY=$(wp eval "echo flavor_get_vbp_api_key();")
+curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/status" \
+  -H "X-VBP-Key: $API_KEY"
+```
+
+### Funciones PHP disponibles
+
+```php
+// Obtener la API key actual
+$api_key = flavor_get_vbp_api_key();
+
+// Verificar si una key es válida
+$es_valida = flavor_verify_vbp_api_key( $mi_key );
+
+// Regenerar API key (admin only)
+$nueva_key = flavor_regenerate_vbp_api_key();
+```
+
+### Configuración en wp-config.php
+
+```php
+// Permitir key legacy en desarrollo (NO usar en producción)
+define( 'FLAVOR_VBP_ALLOW_LEGACY_KEY', true );
+```
+
+### Opciones de Configuración VBP
+
+La página de configuración permite ajustar:
+
+| Opción | Descripción |
+|--------|-------------|
+| **API Key** | Ver/copiar/regenerar la key de autenticación |
+| **Reemplazar Gutenberg** | Usar VBP en lugar de Gutenberg para pages/posts |
+| **Historial de versiones** | Guardar versiones anteriores de páginas VBP |
 
 ---
 
