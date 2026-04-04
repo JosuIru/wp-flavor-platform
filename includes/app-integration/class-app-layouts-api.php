@@ -675,15 +675,14 @@ class Flavor_App_Layouts_API {
 
     /**
      * Obtener plantillas disponibles
+     *
+     * @since 3.4.0 Usa VBP como fuente de templates
      */
     public function get_templates($request) {
         $sector_filter = $request->get_param('sector');
 
-        $page_builder = Flavor_Page_Builder::get_instance();
-        $reflection = new ReflectionClass($page_builder);
-        $method = $reflection->getMethod('get_template_library');
-        $method->setAccessible(true);
-        $templates = $method->invoke($page_builder);
+        // Usar VBP REST API para obtener templates
+        $templates = $this->get_vbp_templates();
 
         $result = [];
 
@@ -696,17 +695,17 @@ class Flavor_App_Layouts_API {
             foreach ($sector_data['templates'] as $template_id => $template) {
                 $sector_templates[] = [
                     'id' => $template_id,
-                    'name' => $template['name'],
-                    'description' => $template['description'],
-                    'icon' => $template['icon'],
-                    'components_count' => count($template['layout']),
+                    'name' => $template['name'] ?? $template['title'] ?? $template_id,
+                    'description' => $template['description'] ?? '',
+                    'icon' => $template['icon'] ?? 'dashicons-layout',
+                    'components_count' => count($template['elements'] ?? $template['blocks'] ?? []),
                     'preview_url' => $template['preview'] ?? null,
                 ];
             }
 
             $result[] = [
                 'sector_id' => $sector_id,
-                'sector_name' => $sector_data['label'],
+                'sector_name' => $sector_data['label'] ?? $sector_id,
                 'templates' => $sector_templates,
             ];
         }
@@ -719,16 +718,67 @@ class Flavor_App_Layouts_API {
     }
 
     /**
+     * Obtiene templates desde VBP
+     *
+     * @return array
+     */
+    private function get_vbp_templates() {
+        // Intentar obtener desde VBP REST API
+        if (class_exists('Flavor_VBP_REST_API')) {
+            $vbp_api = Flavor_VBP_REST_API::get_instance();
+            if (method_exists($vbp_api, 'get_library_templates')) {
+                $templates = $vbp_api->get_library_templates();
+                if (!empty($templates)) {
+                    return $this->format_vbp_templates($templates);
+                }
+            }
+        }
+
+        // Fallback: templates básicos
+        return [
+            'general' => [
+                'label' => __('General', 'flavor-chat-ia'),
+                'templates' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Formatea templates de VBP al formato esperado
+     *
+     * @param array $vbp_templates Templates de VBP
+     * @return array
+     */
+    private function format_vbp_templates($vbp_templates) {
+        $formatted = [];
+
+        foreach ($vbp_templates as $template) {
+            $category = $template['category'] ?? 'general';
+
+            if (!isset($formatted[$category])) {
+                $formatted[$category] = [
+                    'label' => ucfirst($category),
+                    'templates' => [],
+                ];
+            }
+
+            $template_id = $template['id'] ?? sanitize_title($template['title'] ?? 'template');
+            $formatted[$category]['templates'][$template_id] = $template;
+        }
+
+        return $formatted;
+    }
+
+    /**
      * Obtener plantilla específica con layout nativo
+     *
+     * @since 3.4.0 Usa VBP como fuente de templates
      */
     public function get_template($request) {
         $template_id = $request->get_param('template_id');
 
-        $page_builder = Flavor_Page_Builder::get_instance();
-        $reflection = new ReflectionClass($page_builder);
-        $method = $reflection->getMethod('get_template_library');
-        $method->setAccessible(true);
-        $templates = $method->invoke($page_builder);
+        // Usar VBP templates
+        $templates = $this->get_vbp_templates();
 
         // Buscar la plantilla en todos los sectores
         $found_template = null;
@@ -739,7 +789,7 @@ class Flavor_App_Layouts_API {
                 $found_template = $sector_data['templates'][$template_id];
                 $found_sector = [
                     'id' => $sector_id,
-                    'name' => $sector_data['label'],
+                    'name' => $sector_data['label'] ?? $sector_id,
                 ];
                 break;
             }
@@ -749,17 +799,20 @@ class Flavor_App_Layouts_API {
             return new WP_Error('template_not_found', 'Plantilla no encontrada', ['status' => 404]);
         }
 
+        // Obtener layout desde VBP (elements o blocks)
+        $layout = $found_template['elements'] ?? $found_template['blocks'] ?? $found_template['layout'] ?? [];
+
         // Convertir layout a formato nativo
-        $native_layout = $this->convert_layout_to_native($found_template['layout']);
+        $native_layout = $this->convert_layout_to_native($layout);
 
         return rest_ensure_response([
             'success' => true,
             'schema_version' => self::SCHEMA_VERSION,
             'template' => [
                 'id' => $template_id,
-                'name' => $found_template['name'],
-                'description' => $found_template['description'],
-                'icon' => $found_template['icon'],
+                'name' => $found_template['name'] ?? $found_template['title'] ?? $template_id,
+                'description' => $found_template['description'] ?? '',
+                'icon' => $found_template['icon'] ?? 'dashicons-layout',
                 'sector' => $found_sector,
                 'layout' => $native_layout,
             ],
@@ -768,6 +821,8 @@ class Flavor_App_Layouts_API {
 
     /**
      * Obtener layout de una landing publicada
+     *
+     * @since 3.4.0 Prioriza VBP data sobre legacy
      */
     public function get_landing_layout($request) {
         $post_id = $request->get_param('id');
@@ -777,7 +832,19 @@ class Flavor_App_Layouts_API {
             return new WP_Error('landing_not_found', 'Landing no encontrada', ['status' => 404]);
         }
 
-        $layout = get_post_meta($post_id, '_flavor_page_layout', true);
+        // Priorizar el documento VBP actual y extraer sus elementos.
+        $layout = get_post_meta($post_id, '_flavor_vbp_data', true);
+        if (is_array($layout) && isset($layout['elements']) && is_array($layout['elements'])) {
+            $layout = $layout['elements'];
+        }
+        if (empty($layout)) {
+            $layout = get_post_meta($post_id, '_vbp_content', true);
+        }
+        // Fallback a legacy (para contenido no migrado)
+        if (empty($layout)) {
+            $layout = get_post_meta($post_id, '_flavor_page_layout', true);
+        }
+
         if (!is_array($layout)) {
             $layout = [];
         }
@@ -997,9 +1064,16 @@ class Flavor_App_Layouts_API {
     private function convert_layout_to_native($layout) {
         $native_layout = [];
 
-        foreach ($layout as $index => $component) {
+        $flat_components = $this->flatten_layout_components($layout);
+
+        foreach ($flat_components as $index => $component) {
+            $component_id = $this->resolve_component_id($component);
+            if ($component_id === '') {
+                continue;
+            }
+
             $native_component = $this->convert_component_to_native(
-                $component['component_id'],
+                $component_id,
                 $component
             );
             $native_component['order'] = $index;
@@ -1007,6 +1081,94 @@ class Flavor_App_Layouts_API {
         }
 
         return $native_layout;
+    }
+
+    /**
+     * Aplana layouts VBP modernos y layouts legacy a una lista de componentes renderizables.
+     *
+     * El VBP actual guarda muchos elementos estructurales (`section`, `container`, `row`, etc.)
+     * con hijos anidados. Para la API pública nos interesan sobre todo los bloques con contenido.
+     *
+     * @param array $layout
+     * @return array
+     */
+    private function flatten_layout_components($layout) {
+        $flat = [];
+
+        if (!is_array($layout)) {
+            return $flat;
+        }
+
+        foreach ($layout as $component) {
+            if (!is_array($component)) {
+                continue;
+            }
+
+            $children = isset($component['children']) && is_array($component['children'])
+                ? $component['children']
+                : [];
+
+            $type = sanitize_key((string) ($component['type'] ?? ''));
+            $is_structural = in_array($type, ['section', 'container', 'columns', 'row', 'grid', 'column', 'group'], true);
+            $component_id = $this->resolve_component_id($component);
+
+            if ($component_id !== '' && (!$is_structural || empty($children))) {
+                $flat[] = $component;
+            }
+
+            if (!empty($children)) {
+                $flat = array_merge($flat, $this->flatten_layout_components($children));
+            }
+        }
+
+        return $flat;
+    }
+
+    /**
+     * Resuelve el identificador público de componente desde layouts legacy o VBP.
+     *
+     * @param array $component
+     * @return string
+     */
+    private function resolve_component_id($component) {
+        if (!is_array($component)) {
+            return '';
+        }
+
+        $component_id = sanitize_key((string) ($component['component_id'] ?? ''));
+        if ($component_id !== '') {
+            return $component_id;
+        }
+
+        $type = sanitize_key((string) ($component['type'] ?? ''));
+        if ($type === '') {
+            return '';
+        }
+
+        $type_map = [
+            'hero' => 'hero-basic',
+            'text' => 'text-basic',
+            'paragraph' => 'text-basic',
+            'heading' => 'heading-basic',
+            'image' => 'image-basic',
+            'button' => 'button-basic',
+            'video' => 'video-basic',
+            'cta' => 'cta-basic',
+            'gallery' => 'galeria-basic',
+            'galeria' => 'galeria-basic',
+            'list' => 'lista-basic',
+            'lista' => 'lista-basic',
+            'testimonial' => 'testimonios-basic',
+            'testimonials' => 'testimonios-basic',
+            'team' => 'equipo-basic',
+            'pricing' => 'tarifas-basic',
+        ];
+
+        if (isset($type_map[$type])) {
+            return $type_map[$type];
+        }
+
+        return $type . '-basic';
     }
 
     /**
@@ -1026,7 +1188,7 @@ class Flavor_App_Layouts_API {
         }
 
         // Convertir settings
-        $settings = $component['settings'] ?? [];
+        $settings = $component['settings'] ?? ($component['styles'] ?? []);
         $native_settings = $this->convert_settings_to_native($settings);
 
         // Añadir endpoint de datos si es un componente que requiere datos dinámicos
@@ -1109,6 +1271,10 @@ class Flavor_App_Layouts_API {
     private function convert_settings_to_native($settings) {
         $native_settings = [];
 
+        if (!is_array($settings)) {
+            return $native_settings;
+        }
+
         // Mapeo de valores de padding/margin
         $spacing_map = [
             'none' => 0,
@@ -1128,6 +1294,18 @@ class Flavor_App_Layouts_API {
 
         if (isset($settings['background'])) {
             $native_settings['background'] = $settings['background'];
+        }
+
+        if (isset($settings['backgroundColor'])) {
+            $native_settings['background'] = $settings['backgroundColor'];
+        }
+
+        if (isset($settings['spacing']['padding'])) {
+            $native_settings['padding'] = $settings['spacing']['padding'];
+        }
+
+        if (isset($settings['spacing']['margin'])) {
+            $native_settings['margin'] = $settings['spacing']['margin'];
         }
 
         return $native_settings;

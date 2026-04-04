@@ -26,17 +26,18 @@ class Flavor_VBP_Editor {
      *
      * @var string
      */
-    const VERSION = '2.0.22';
+    const VERSION = '2.2.4';
 
     /**
      * Post types soportados
      *
      * Solo flavor_landing usa el VBP por defecto.
-     * Las páginas normales usan Gutenberg.
+     * Extendido para soportar page y post además de flavor_landing.
+     * Las páginas/posts pueden usar VBP o Gutenberg según configuración.
      *
      * @var array
      */
-    const POST_TYPES_SOPORTADOS = array( 'flavor_landing' );
+    const POST_TYPES_SOPORTADOS = array( 'flavor_landing', 'page', 'post' );
 
     /**
      * Meta key para datos del builder
@@ -134,19 +135,44 @@ class Flavor_VBP_Editor {
     /**
      * Deshabilita el editor Gutenberg para los post types soportados
      *
+     * NOTA: Por defecto solo se deshabilita para 'flavor_landing' (CPT propio).
+     * Para 'page' y 'post', es opt-in vía filtro o opción.
+     *
      * @param bool   $usar_block_editor Si usar el editor de bloques.
      * @param string $tipo_post         El tipo de post.
      * @return bool
      */
     public function deshabilitar_gutenberg( $usar_block_editor, $tipo_post ) {
-        if ( in_array( $tipo_post, self::POST_TYPES_SOPORTADOS, true ) ) {
+        // Siempre deshabilitar para flavor_landing (CPT propio del plugin)
+        if ( 'flavor_landing' === $tipo_post ) {
             return false;
         }
+
+        // Para page/post, respetar Gutenberg por defecto (opt-in para VBP)
+        // Solo deshabilitar si está explícitamente configurado
+        $settings = get_option( 'flavor_vbp_settings', array() );
+        $reemplazar_gutenberg = isset( $settings['replace_gutenberg'] ) && $settings['replace_gutenberg'];
+
+        /**
+         * Filtro para controlar si VBP reemplaza Gutenberg para un post type
+         *
+         * @param bool   $reemplazar Si reemplazar Gutenberg con VBP.
+         * @param string $tipo_post  El tipo de post.
+         */
+        $reemplazar_gutenberg = apply_filters( 'flavor_vbp_replace_gutenberg', $reemplazar_gutenberg, $tipo_post );
+
+        if ( $reemplazar_gutenberg && in_array( $tipo_post, array( 'page', 'post' ), true ) ) {
+            return false;
+        }
+
         return $usar_block_editor;
     }
 
     /**
      * Redirige al editor fullscreen cuando se edita un flavor_landing
+     *
+     * NOTA: Por defecto solo redirige para 'flavor_landing'.
+     * Para 'page' y 'post', es opt-in vía opción o filtro.
      */
     public function redirigir_a_editor_fullscreen() {
         global $pagenow;
@@ -169,8 +195,25 @@ class Flavor_VBP_Editor {
             }
         }
 
-        // Redirigir automáticamente para todos los tipos soportados
-        if ( in_array( $tipo_post, self::POST_TYPES_SOPORTADOS, true ) ) {
+        // Determinar si debemos redirigir
+        $debe_redirigir = false;
+
+        // Siempre redirigir para flavor_landing (CPT propio)
+        if ( 'flavor_landing' === $tipo_post ) {
+            $debe_redirigir = true;
+        }
+
+        // Para page/post, solo si está configurado (opt-in)
+        if ( in_array( $tipo_post, array( 'page', 'post' ), true ) ) {
+            $settings = get_option( 'flavor_vbp_settings', array() );
+            $debe_redirigir = isset( $settings['replace_gutenberg'] ) && $settings['replace_gutenberg'];
+
+            /** Filtro para controlar redirección */
+            $debe_redirigir = apply_filters( 'flavor_vbp_redirect_to_editor', $debe_redirigir, $tipo_post, $post_id );
+        }
+
+        // Redirigir si corresponde
+        if ( $debe_redirigir ) {
             // Si es post nuevo, primero crear el post
             if ( 'post-new.php' === $pagenow ) {
                 $titulo_nuevo = 'page' === $tipo_post
@@ -246,7 +289,7 @@ class Flavor_VBP_Editor {
                 $landings = get_posts(
                     array(
                         'post_type'      => 'flavor_landing',
-                        'posts_per_page' => -1,
+                        'posts_per_page' => 100,
                         'post_status'    => array( 'publish', 'draft', 'pending' ),
                         'orderby'        => 'modified',
                         'order'          => 'DESC',
@@ -324,37 +367,66 @@ class Flavor_VBP_Editor {
         $this->esta_en_editor = true;
         $post_id              = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : 0;
         $this->post_id_actual = $post_id;
+        $editor_features      = $this->obtener_feature_flags_editor( $post_id );
 
         // Obtener URLs base
-        $url_css = FLAVOR_CHAT_IA_URL . 'assets/vbp/css/';
-        $url_js  = FLAVOR_CHAT_IA_URL . 'assets/vbp/js/';
+        $url_css    = FLAVOR_CHAT_IA_URL . 'assets/vbp/css/';
+        $url_js     = FLAVOR_CHAT_IA_URL . 'assets/vbp/js/';
+        $url_vendor = FLAVOR_CHAT_IA_URL . 'assets/vbp/vendor/';
 
-        // SortableJS desde CDN (se carga primero, sin dependencias)
+        // SortableJS local (sin CDN para mejor rendimiento y privacidad)
         wp_enqueue_script(
             'sortablejs',
-            'https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js',
+            $url_vendor . 'sortable.min.js',
             array(),
             '1.15.2',
             true
         );
 
         // Alpine.js Collapse plugin (debe cargarse antes de Alpine.js)
+        // Incluir solo handles siempre registrados o añadidos explícitamente por feature.
+        $alpine_component_dependencies = array(
+            'vbp-store',
+            'vbp-app',
+            'vbp-app-commands',
+            'vbp-layers',
+            'vbp-inspector',
+            'vbp-text-editor',
+        );
+
+        if ( ! empty( $editor_features['collaboration'] ) ) {
+            $alpine_component_dependencies[] = 'vbp-app-collaboration';
+        }
+
+        if ( ! empty( $editor_features['audit_log'] ) ) {
+            $alpine_component_dependencies[] = 'vbp-app-audit-log';
+        }
+
+        if ( ! empty( $editor_features['workflows'] ) ) {
+            $alpine_component_dependencies[] = 'vbp-app-workflows';
+        }
+
+        if ( ! empty( $editor_features['multisite'] ) ) {
+            $alpine_component_dependencies[] = 'vbp-app-multisite';
+        }
+
+        // Incluir módulos de app como dependencias para que estén disponibles cuando Alpine inicialice
         wp_enqueue_script(
             'alpinejs-collapse',
-            'https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js',
-            array( 'vbp-store', 'vbp-app', 'vbp-layers', 'vbp-inspector', 'vbp-text-editor' ),
-            '3.14.0',
+            $url_vendor . 'alpine-collapse.min.js',
+            $alpine_component_dependencies,
+            '3.14.3',
             true
         );
 
-        // Alpine.js desde CDN
+        // Alpine.js local
         // Se carga DESPUÉS de todos los scripts VBP que definen componentes
         // WordPress lo resolverá automáticamente por las dependencias
         wp_enqueue_script(
             'alpinejs',
-            'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js',
+            $url_vendor . 'alpine.min.js',
             array( 'alpinejs-collapse' ),
-            '3.14.0',
+            '3.14.3',
             true
         );
 
@@ -391,35 +463,66 @@ class Flavor_VBP_Editor {
             'editor-selectors'       => 'editor-selectors.css',
             'editor-richtext'        => 'editor-richtext.css',
             'editor-command-palette' => 'editor-command-palette.css',
-            'editor-minimap'         => 'editor-minimap.css',
             'editor-statusbar'       => 'editor-statusbar.css',
             'editor-tooltips'        => 'editor-tooltips.css',
             'editor-toast'           => 'editor-toast.css',
-            'editor-ai-assistant'    => 'editor-ai-assistant.css',
+            'vbp-design-tokens'      => 'vbp-design-tokens.css',
+            'vbp-mobile'             => 'vbp-mobile.css',
+            'vbp-blocks-enhanced'    => 'vbp-blocks-enhanced.css',
+            'editor-preview-sections' => 'editor-preview-sections.css',
+            'editor-ux-improvements' => 'editor-ux-improvements.css',
+            'editor-help-system'     => 'editor-help-system.css',
         );
 
-        // Cargar Material Icons font
+        if ( ! empty( $editor_features['minimap'] ) ) {
+            $archivos_css['editor-minimap'] = 'editor-minimap.css';
+        }
+
+        if ( ! empty( $editor_features['ai'] ) ) {
+            $archivos_css['editor-ai-assistant'] = 'editor-ai-assistant.css';
+        }
+
+        if ( ! empty( $editor_features['collaboration'] ) ) {
+            $archivos_css['vbp-collaboration'] = 'vbp-collaboration.css';
+        }
+
+        if ( ! empty( $editor_features['audit_log'] ) ) {
+            $archivos_css['vbp-audit-log'] = 'vbp-audit-log.css';
+        }
+
+        if ( ! empty( $editor_features['workflows'] ) ) {
+            $archivos_css['vbp-workflows'] = 'vbp-workflows.css';
+        }
+
+        if ( ! empty( $editor_features['multisite'] ) ) {
+            $archivos_css['vbp-multisite'] = 'vbp-multisite.css';
+        }
+
+        // Cargar Material Icons font (local para mejor rendimiento y privacidad)
         wp_enqueue_style(
             'material-icons',
-            'https://fonts.googleapis.com/icon?family=Material+Icons',
+            $url_vendor . 'material-icons.css',
             array(),
-            null
+            '142'
         );
 
-        // Cargar Font Awesome 6 Free
+        // Cargar Font Awesome 6 Free (local para mejor rendimiento y privacidad)
         wp_enqueue_style(
             'fontawesome',
-            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
+            $url_vendor . 'fontawesome.min.css',
             array(),
             '6.5.1'
         );
 
         // Cargar emoji-picker-element desde CDN
+        // NOTA: Se mantiene CDN porque es un ES6 module con múltiples dependencias internas.
+        // No es crítico para seguridad, solo funcionalidad de emojis en comentarios.
+        // TODO: Evaluar alternativa local o lazy-load bajo demanda.
         wp_enqueue_script(
             'emoji-picker-element',
             'https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.js',
             array(),
-            '1.0.0',
+            '1.21.3',
             true
         );
         // Agregar type="module" al script de emoji-picker
@@ -460,29 +563,68 @@ class Flavor_VBP_Editor {
         $archivos_js = array(
             'theme'        => array( 'vbp-theme.js', array() ), // Gestión de tema claro/oscuro (primero para evitar flash)
             'performance'  => array( 'vbp-performance.js', array() ), // Utilidades de performance primero
-            'store'        => array( 'vbp-store.js', array( 'vbp-performance' ) ),
+            'store-catalog'=> array( 'vbp-store-catalog.js', array() ),
+            'store-style-helpers' => array( 'vbp-store-style-helpers.js', array() ),
+            'store-tree-helpers' => array( 'vbp-store-tree-helpers.js', array() ),
+            'store-mutation-helpers' => array( 'vbp-store-mutation-helpers.js', array() ),
+            'store-history-helpers' => array( 'vbp-store-history-helpers.js', array() ),
+            'store'        => array( 'vbp-store.js', array( 'vbp-performance', 'vbp-store-catalog', 'vbp-store-style-helpers', 'vbp-store-tree-helpers', 'vbp-store-mutation-helpers', 'vbp-store-history-helpers' ) ),
+            'store-modals' => array( 'vbp-store-modals.js', array( 'vbp-store' ) ),
             'app'          => array( 'vbp-app.js', array( 'vbp-performance' ) ),
+            'app-modular'  => array( 'vbp-app-modular.js', array( 'vbp-app' ) ), // Cargador de módulos de app
+            // Módulos de app (deben cargarse síncronamente antes de Alpine)
+            'app-split-screen'   => array( 'modules/vbp-app-split-screen.js', array( 'vbp-app-modular' ) ),
+            'app-page-settings'  => array( 'modules/vbp-app-page-settings.js', array( 'vbp-app-modular' ) ),
+            'app-templates'      => array( 'modules/vbp-app-templates.js', array( 'vbp-app-modular' ) ),
+            'app-version-history'=> array( 'modules/vbp-app-version-history.js', array( 'vbp-app-modular' ) ),
+            'app-unsplash'       => array( 'modules/vbp-app-unsplash.js', array( 'vbp-app-modular' ) ),
+            'app-revisions'      => array( 'modules/vbp-app-revisions.js', array( 'vbp-app-modular' ) ),
+            'app-import-export'  => array( 'modules/vbp-app-import-export.js', array( 'vbp-app-modular' ) ),
+            'app-commands'       => array( 'modules/vbp-app-commands.js', array( 'vbp-app-modular' ) ),
+            'app-mobile'         => array( 'modules/vbp-app-mobile.js', array( 'vbp-app-modular' ) ),
             'layers'       => array( 'vbp-layers.js', array() ),
             'inspector'    => array( 'vbp-inspector.js', array() ),
+            'inspector-media' => array( 'vbp-inspector-media.js', array( 'vbp-inspector' ) ),
             'inspector-utils' => array( 'vbp-inspector-utils.js', array() ), // Utilidades: copiar/pegar estilos
+            'inspector-modals' => array( 'vbp-inspector-modals.js', array( 'vbp-inspector-utils' ) ),
             'link-search'  => array( 'vbp-link-search.js', array() ), // Autocompletado de enlaces
             'richtext'     => array( 'vbp-richtext.js', array() ), // Editor de texto enriquecido
             'command-palette' => array( 'vbp-command-palette.js', array() ), // Paleta de comandos Ctrl+/
-            'canvas'       => array( 'vbp-canvas.js', array( 'sortablejs', 'vbp-performance' ) ),
+            'canvas-utils' => array( 'vbp-canvas-utils.js', array( 'vbp-performance' ) ),
+            'canvas'       => array( 'vbp-canvas.js', array( 'sortablejs', 'vbp-performance', 'vbp-canvas-utils' ) ),
+            'canvas-resize'=> array( 'vbp-canvas-resize.js', array( 'vbp-canvas' ) ),
             'rulers'       => array( 'vbp-rulers.js', array() ),
             'text-editor'  => array( 'vbp-text-editor.js', array() ),
             'keyboard'     => array( 'vbp-keyboard-modular.js', array() ), // Versión modularizada para carga optimizada
             'history'      => array( 'vbp-history.js', array() ),
             'api'          => array( 'vbp-api.js', array() ),
-            'minimap'      => array( 'vbp-minimap.js', array() ), // Mini mapa de navegación
             'breadcrumbs'  => array( 'vbp-breadcrumbs.js', array() ), // Breadcrumbs y zoom
             'toast'        => array( 'vbp-toast.js', array() ), // Sistema de notificaciones
-            'ai-assistant' => array( 'vbp-ai-assistant.js', array() ), // Asistente de IA
-            'comments'     => array( 'vbp-comments.js', array() ), // Sistema de comentarios colaborativos
-            'component-library' => array( 'vbp-component-library.js', array() ), // Biblioteca de componentes reutilizables
             'module-preview' => array( 'vbp-module-preview.js', array() ), // Sistema de preview de módulos en canvas
             'inline-editor' => array( 'vbp-inline-editor.js', array() ), // WYSIWYG inline editing en canvas
+            'accessibility' => array( 'vbp-accessibility.js', array() ), // Mejoras UX: teclado, ARIA, confirm dialog, indicadores
         );
+
+        if ( ! empty( $editor_features['collaboration'] ) ) {
+            $archivos_js['app-collaboration'] = array( 'modules/vbp-app-collaboration.js', array( 'vbp-app-modular' ) );
+            $archivos_js['comments']          = array( 'vbp-comments.js', array() );
+        }
+
+        if ( ! empty( $editor_features['audit_log'] ) ) {
+            $archivos_js['app-audit-log'] = array( 'modules/vbp-app-audit-log.js', array( 'vbp-app-modular' ) );
+        }
+
+        if ( ! empty( $editor_features['workflows'] ) ) {
+            $archivos_js['app-workflows'] = array( 'modules/vbp-app-workflows.js', array( 'vbp-app-modular' ) );
+        }
+
+        if ( ! empty( $editor_features['multisite'] ) ) {
+            $archivos_js['app-multisite'] = array( 'modules/vbp-app-multisite.js', array( 'vbp-app-modular' ) );
+        }
+
+        if ( ! empty( $editor_features['minimap'] ) ) {
+            $archivos_js['minimap'] = array( 'vbp-minimap.js', array() );
+        }
 
         // Usar versiones minificadas en producción
         $usar_minificado = ! defined( 'SCRIPT_DEBUG' ) || ! SCRIPT_DEBUG;
@@ -537,6 +679,9 @@ class Flavor_VBP_Editor {
         $datos_localizados = array(
             'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
             'restUrl'        => rest_url( 'flavor-vbp/v1/' ),
+            'assetsUrl'      => FLAVOR_CHAT_IA_URL . 'assets/vbp/',
+            'settingsUrl'    => admin_url( 'admin.php?page=flavor-settings' ),
+            'siteUrl'        => home_url(),
             'nonce'          => wp_create_nonce( 'vbp_editor_nonce' ),
             'restNonce'      => wp_create_nonce( 'wp_rest' ),
             'postId'         => $post_id,
@@ -546,6 +691,17 @@ class Flavor_VBP_Editor {
             'viewUrl'        => $post_id ? get_permalink( $post_id ) : '',
             'userId'         => get_current_user_id(),
             'isAdmin'        => current_user_can( 'manage_options' ),
+            'userCan'        => array(
+                'edit_others_posts' => current_user_can( 'edit_others_posts' ),
+                'manage_options'    => current_user_can( 'manage_options' ),
+            ),
+            'features'       => $editor_features,
+            'optionalScripts' => array(
+                'componentLibrary' => FLAVOR_CHAT_IA_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/vbp-component-library.min.js' ) ? 'vbp-component-library.min.js' : 'vbp-component-library.js' ),
+                'helpSystem'       => FLAVOR_CHAT_IA_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/vbp-help-system.min.js' ) ? 'vbp-help-system.min.js' : 'vbp-help-system.js' ),
+                'designTokens'     => FLAVOR_CHAT_IA_URL . 'assets/vbp/js/modules/' . ( $usar_minificado && file_exists( FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/modules/vbp-app-design-tokens.min.js' ) ? 'vbp-app-design-tokens.min.js' : 'vbp-app-design-tokens.js' ),
+                'aiAssistant'      => FLAVOR_CHAT_IA_URL . 'assets/vbp/js/' . ( $usar_minificado && file_exists( FLAVOR_CHAT_IA_PATH . 'assets/vbp/js/vbp-ai-assistant.min.js' ) ? 'vbp-ai-assistant.min.js' : 'vbp-ai-assistant.js' ),
+            ),
             'designSettings' => $design_settings,
             'blocks'         => $bloques_categorias,
             'templates'      => $templates_libreria,
@@ -591,24 +747,40 @@ class Flavor_VBP_Editor {
                     'improveText'  => __( 'Mejorar', 'flavor-chat-ia' ),
                 ),
             ),
-            // Configuración de exportación de código
+            // Configuración de exportación de código (consolidado v3.4.0)
             'codeExport'     => array(
-                'enabled'   => true,
+                'enabled'   => class_exists( 'Flavor_VBP_Code_Exporter' ),
                 'endpoints' => array(
                     'export'  => rest_url( 'flavor-vbp/v1/export-code' ),
                     'preview' => rest_url( 'flavor-vbp/v1/preview-code' ),
                     'formats' => rest_url( 'flavor-vbp/v1/export-formats' ),
+                ),
+                'frameworks' => array(
+                    'react' => array(
+                        'id'    => 'react',
+                        'name'  => 'React',
+                        'ext'   => 'jsx',
+                        'styles' => array( 'css', 'tailwind', 'styled-components' ),
+                    ),
+                    'vue'   => array(
+                        'id'    => 'vue',
+                        'name'  => 'Vue 3',
+                        'ext'   => 'vue',
+                        'styles' => array( 'css', 'tailwind' ),
+                    ),
                 ),
                 'strings'   => array(
                     'exporting'       => __( 'Exportando código...', 'flavor-chat-ia' ),
                     'exportSuccess'   => __( 'Código exportado', 'flavor-chat-ia' ),
                     'downloadReady'   => __( 'Descarga lista', 'flavor-chat-ia' ),
                     'selectFramework' => __( 'Selecciona framework', 'flavor-chat-ia' ),
+                    'selectStyle'     => __( 'Estilo CSS', 'flavor-chat-ia' ),
                 ),
             ),
-            // Configuración de importación Figma
+            // Configuración de importación Figma (consolidado v3.4.0)
             'figmaImport'    => array(
                 'enabled'   => $this->figma_esta_configurado(),
+                'available' => class_exists( 'Flavor_VBP_Figma_Importer' ),
                 'endpoints' => array(
                     'import'  => rest_url( 'flavor-vbp/v1/import-figma' ),
                     'preview' => rest_url( 'flavor-vbp/v1/preview-figma' ),
@@ -618,12 +790,62 @@ class Flavor_VBP_Editor {
                     'importing'     => __( 'Importando desde Figma...', 'flavor-chat-ia' ),
                     'importSuccess' => __( 'Diseño importado', 'flavor-chat-ia' ),
                     'pasteUrl'      => __( 'Pega URL de Figma', 'flavor-chat-ia' ),
-                    'notConfigured' => __( 'Configura tu token de Figma en Ajustes', 'flavor-chat-ia' ),
+                    'notConfigured' => __( 'Configura tu token de Figma en Ajustes > Chat IA', 'flavor-chat-ia' ),
+                    'configure'     => __( 'Configurar Figma', 'flavor-chat-ia' ),
                 ),
+            ),
+            // Configuración de historial de versiones (consolidado)
+            'versionHistory' => array(
+                'enabled'   => true,
+                'maxVersions' => 20,
+                'endpoints' => array(
+                    'list'    => rest_url( 'flavor-vbp/v1/versions/{post_id}' ),
+                    'get'     => rest_url( 'flavor-vbp/v1/versions/{post_id}/{version_id}' ),
+                    'create'  => rest_url( 'flavor-vbp/v1/versions/{post_id}' ),
+                    'restore' => rest_url( 'flavor-vbp/v1/versions/{post_id}/{version_id}/restore' ),
+                    'compare' => rest_url( 'flavor-vbp/v1/versions/{post_id}/compare' ),
+                    'delete'  => rest_url( 'flavor-vbp/v1/versions/{post_id}/{version_id}' ),
+                    'label'   => rest_url( 'flavor-vbp/v1/versions/{post_id}/{version_id}/label' ),
+                ),
+                'strings'   => array(
+                    'loading'      => __( 'Cargando versiones...', 'flavor-chat-ia' ),
+                    'noVersions'   => __( 'Sin versiones guardadas', 'flavor-chat-ia' ),
+                    'restoring'    => __( 'Restaurando...', 'flavor-chat-ia' ),
+                    'restored'     => __( 'Versión restaurada', 'flavor-chat-ia' ),
+                    'comparing'    => __( 'Comparando versiones...', 'flavor-chat-ia' ),
+                    'confirmRestore' => __( '¿Restaurar esta versión? Se guardará la versión actual antes.', 'flavor-chat-ia' ),
+                    'labelUpdated' => __( 'Etiqueta actualizada', 'flavor-chat-ia' ),
+                    'versionSaved' => __( 'Versión guardada', 'flavor-chat-ia' ),
+                    'saveVersion'  => __( 'Guardar versión', 'flavor-chat-ia' ),
+                    'viewHistory'  => __( 'Ver historial', 'flavor-chat-ia' ),
+                ),
+            ),
+            'collaboration'  => array(
+                'enabled'  => ! empty( $editor_features['collaboration'] ),
+                'userRole' => current_user_can( 'edit_post', $post_id ) ? 'editor' : ( current_user_can( 'read_post', $post_id ) ? 'viewer' : 'viewer' ),
             ),
         );
 
         wp_localize_script( 'vbp-store', 'VBP_Config', $datos_localizados );
+    }
+
+    /**
+     * Obtiene las feature flags activas para el editor actual.
+     *
+     * @param int $post_id ID del post actual.
+     * @return array
+     */
+    private function obtener_feature_flags_editor( $post_id ) {
+        return array(
+            'ai'                => $this->ai_esta_habilitado(),
+            'minimap'           => true,
+            'help_system'       => true,
+            'component_library' => class_exists( 'Flavor_VBP_Component_Library' ),
+            'collaboration'     => class_exists( 'Flavor_VBP_Comments' ) && class_exists( 'Flavor_VBP_Collaboration_API' ) && current_user_can( 'edit_post', $post_id ),
+            'audit_log'         => class_exists( 'Flavor_VBP_Audit_Log' ) && current_user_can( 'manage_options' ),
+            'workflows'         => class_exists( 'Flavor_VBP_Workflows' ) && current_user_can( 'edit_others_posts' ),
+            'multisite'         => is_multisite() && class_exists( 'Flavor_VBP_Multisite' ),
+        );
     }
 
     /**
@@ -951,6 +1173,19 @@ class Flavor_VBP_Editor {
             }
         }
 
+        $datos_actuales = get_post_meta( $post_id, self::META_DATA, true );
+        $datos_comparables = $datos;
+        $actuales_comparables = is_array( $datos_actuales ) ? $datos_actuales : array();
+
+        $datos_comparables['version'] = self::VERSION;
+        unset( $datos_comparables['updatedAt'] );
+        unset( $actuales_comparables['updatedAt'] );
+
+        $sin_cambios = ! empty( $actuales_comparables ) && $actuales_comparables === $datos_comparables;
+        if ( $sin_cambios ) {
+            return true;
+        }
+
         // Agregar versión y timestamp
         $datos['version']   = self::VERSION;
         $datos['updatedAt'] = current_time( 'mysql' );
@@ -960,6 +1195,20 @@ class Flavor_VBP_Editor {
 
         // Actualizar versión
         update_post_meta( $post_id, self::META_VERSION, self::VERSION );
+
+        // Disparar hook para versionado automático y otras integraciones
+        if ( false !== $resultado ) {
+            /**
+             * Hook: vbp_content_saved
+             *
+             * Se dispara cuando se guarda contenido VBP exitosamente.
+             * Usado por el sistema de versionado automático.
+             *
+             * @param int   $post_id ID del post.
+             * @param array $datos   Datos guardados.
+             */
+            do_action( 'vbp_content_saved', $post_id, $datos );
+        }
 
         return false !== $resultado;
     }
@@ -1073,8 +1322,16 @@ class Flavor_VBP_Editor {
         check_ajax_referer( 'vbp_editor_nonce', 'nonce' );
 
         $post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
-        $datos   = isset( $_POST['data'] ) ? json_decode( stripslashes( $_POST['data'] ), true ) : array();
         $titulo  = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
+
+        // Decodificar JSON de forma segura
+        $datos = array();
+        if ( isset( $_POST['data'] ) ) {
+            $decoded = json_decode( wp_unslash( $_POST['data'] ), true );
+            if ( is_array( $decoded ) && JSON_ERROR_NONE === json_last_error() ) {
+                $datos = $decoded;
+            }
+        }
 
         if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
             wp_send_json_error( array( 'message' => __( 'Sin permiso', 'flavor-chat-ia' ) ) );
@@ -1117,8 +1374,21 @@ class Flavor_VBP_Editor {
             wp_send_json_error( array( 'message' => __( 'Sin permiso', 'flavor-chat-ia' ) ) );
         }
 
-        $post  = get_post( $post_id );
-        $datos = $this->obtener_datos_documento( $post_id );
+        $post     = get_post( $post_id );
+        $datos    = $this->obtener_datos_documento( $post_id );
+        $autosave = get_post_meta( $post_id, '_vbp_autosave', true );
+        $autosave_time = get_post_meta( $post_id, '_vbp_autosave_time', true );
+
+        if ( ! is_array( $autosave ) ) {
+            $autosave = null;
+        }
+
+        $autosave_disponible = false;
+        if ( $autosave && ! empty( $autosave_time ) ) {
+            $documento_time = isset( $datos['updatedAt'] ) ? strtotime( $datos['updatedAt'] ) : 0;
+            $snapshot_time  = strtotime( $autosave_time );
+            $autosave_disponible = $snapshot_time && $snapshot_time > $documento_time;
+        }
 
         wp_send_json_success(
             array(
@@ -1128,6 +1398,11 @@ class Flavor_VBP_Editor {
                     'status' => $post->post_status,
                 ),
                 'data'  => $datos,
+                'autosave' => array(
+                    'available' => $autosave_disponible,
+                    'time'      => $autosave_time ? $autosave_time : null,
+                    'data'      => $autosave_disponible ? $autosave : null,
+                ),
             )
         );
     }
@@ -1139,13 +1414,26 @@ class Flavor_VBP_Editor {
         check_ajax_referer( 'vbp_editor_nonce', 'nonce' );
 
         $post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
-        $datos   = isset( $_POST['data'] ) ? json_decode( stripslashes( $_POST['data'] ), true ) : array();
+
+        // Decodificar JSON de forma segura
+        $datos = array();
+        if ( isset( $_POST['data'] ) ) {
+            $decoded = json_decode( wp_unslash( $_POST['data'] ), true );
+            if ( is_array( $decoded ) && JSON_ERROR_NONE === json_last_error() ) {
+                $datos = $decoded;
+            }
+        }
 
         if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
             wp_send_json_error( array( 'message' => __( 'Sin permiso', 'flavor-chat-ia' ) ) );
         }
 
-        // Guardar en meta temporal para autosave
+        $guardado = $this->guardar_datos_documento( $post_id, $datos );
+        if ( ! $guardado ) {
+            wp_send_json_error( array( 'message' => __( 'Error al guardar autosave', 'flavor-chat-ia' ) ) );
+        }
+
+        // Mantener snapshot temporal para posible recuperación/diagnóstico
         update_post_meta( $post_id, '_vbp_autosave', $datos );
         update_post_meta( $post_id, '_vbp_autosave_time', current_time( 'mysql' ) );
 
@@ -1163,8 +1451,16 @@ class Flavor_VBP_Editor {
     public function ajax_render_elemento() {
         check_ajax_referer( 'vbp_editor_nonce', 'nonce' );
 
-        $elemento = isset( $_POST['element'] ) ? json_decode( stripslashes( $_POST['element'] ), true ) : array();
         $preview_mode = isset( $_POST['preview_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['preview_mode'] ) ) : 'card';
+
+        // Decodificar JSON de forma segura
+        $elemento = array();
+        if ( isset( $_POST['element'] ) ) {
+            $decoded = json_decode( wp_unslash( $_POST['element'] ), true );
+            if ( is_array( $decoded ) && JSON_ERROR_NONE === json_last_error() ) {
+                $elemento = $decoded;
+            }
+        }
 
         if ( empty( $elemento ) ) {
             wp_send_json_error( array( 'message' => __( 'Elemento no válido', 'flavor-chat-ia' ) ) );
@@ -1238,7 +1534,20 @@ class Flavor_VBP_Editor {
 
         $post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 
-        if ( ! $post_id || ! current_user_can( 'publish_posts' ) ) {
+        if ( ! $post_id ) {
+            wp_send_json_error( array( 'message' => __( 'ID de post requerido', 'flavor-chat-ia' ) ) );
+        }
+
+        // Verificar permiso correcto según el tipo de post
+        $post = get_post( $post_id );
+        if ( ! $post ) {
+            wp_send_json_error( array( 'message' => __( 'Post no encontrado', 'flavor-chat-ia' ) ) );
+        }
+
+        $post_type_obj = get_post_type_object( $post->post_type );
+        $capability = $post_type_obj ? $post_type_obj->cap->publish_posts : 'publish_posts';
+
+        if ( ! current_user_can( $capability ) ) {
             wp_send_json_error( array( 'message' => __( 'Sin permiso para publicar', 'flavor-chat-ia' ) ) );
         }
 
@@ -1267,8 +1576,16 @@ class Flavor_VBP_Editor {
     public function ajax_exportar_template() {
         check_ajax_referer( 'vbp_editor_nonce', 'nonce' );
 
-        $elements = isset( $_POST['elements'] ) ? json_decode( stripslashes( $_POST['elements'] ), true ) : array();
-        $nombre   = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : __( 'Mi Template', 'flavor-chat-ia' );
+        $nombre = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : __( 'Mi Template', 'flavor-chat-ia' );
+
+        // Decodificar JSON de forma segura
+        $elements = array();
+        if ( isset( $_POST['elements'] ) ) {
+            $decoded = json_decode( wp_unslash( $_POST['elements'] ), true );
+            if ( is_array( $decoded ) && JSON_ERROR_NONE === json_last_error() ) {
+                $elements = $decoded;
+            }
+        }
 
         if ( empty( $elements ) ) {
             wp_send_json_error( array( 'message' => __( 'No hay elementos para exportar', 'flavor-chat-ia' ) ) );

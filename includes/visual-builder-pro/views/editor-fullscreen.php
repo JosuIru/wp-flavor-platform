@@ -30,6 +30,10 @@ $datos_json = wp_json_encode( $datos );
     <title><?php echo esc_html( $post->post_title ); ?> - Visual Builder Pro</title>
     <?php wp_head(); ?>
     <style id="vbp-fullscreen-overrides">
+        [x-cloak] {
+            display: none !important;
+        }
+
         /* === FORZAR FULLSCREEN - OCULTAR MENUS WP === */
         html.vbp-editor-html,
         body.vbp-editor-body {
@@ -78,7 +82,7 @@ $datos_json = wp_json_encode( $datos );
     <a href="#vbp-canvas-main" class="vbp-skip-link"><?php esc_html_e( 'Saltar al contenido del canvas', 'flavor-chat-ia' ); ?></a>
 
     <!-- Toolbar Superior -->
-    <header class="vbp-toolbar-top" role="banner" aria-label="<?php esc_attr_e( 'Barra de herramientas principal', 'flavor-chat-ia' ); ?>">
+    <header class="vbp-toolbar-top" :class="{ 'vbp-toolbar-top--basic': $store.vbp.inspectorMode === 'basic' }" role="banner" aria-label="<?php esc_attr_e( 'Barra de herramientas principal', 'flavor-chat-ia' ); ?>">
         <div class="vbp-toolbar-left">
             <div class="vbp-logo">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -88,7 +92,7 @@ $datos_json = wp_json_encode( $datos );
                 </svg>
             </div>
 
-            <button type="button" @click="showTemplatesModal = true" class="vbp-btn vbp-btn-secondary" title="<?php esc_attr_e( 'Templates predefinidos', 'flavor-chat-ia' ); ?>">
+            <button type="button" @click="openTemplatesModal()" class="vbp-btn vbp-btn-secondary" data-tooltip="<?php esc_attr_e( 'Templates predefinidos', 'flavor-chat-ia' ); ?>" data-tooltip-position="bottom">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
                 <span><?php esc_html_e( 'Templates', 'flavor-chat-ia' ); ?></span>
             </button>
@@ -120,15 +124,20 @@ $datos_json = wp_json_encode( $datos );
                 </button>
             </div>
 
+            <div class="vbp-focus-hint" x-show="$store.vbp.inspectorMode === 'basic'" x-cloak aria-live="polite">
+                <span class="vbp-focus-hint__eyebrow"><?php esc_html_e( 'Modo foco', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-focus-hint__text"><?php esc_html_e( 'Edita sobre el canvas y deja lo técnico para cuando haga falta.', 'flavor-chat-ia' ); ?></span>
+            </div>
+
             <!-- Split Screen Toggle -->
-            <button type="button" @click="toggleSplitScreen()" :class="{ 'active': splitScreenMode }" class="vbp-btn-icon vbp-split-screen-btn" data-tooltip="<?php esc_attr_e( 'Vista dividida', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+\\" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Activar/desactivar vista dividida', 'flavor-chat-ia' ); ?>" :aria-pressed="splitScreenMode">
+            <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click="toggleSplitScreen()" :class="{ 'active': splitScreenMode }" class="vbp-btn-icon vbp-split-screen-btn" data-tooltip="<?php esc_attr_e( 'Vista dividida', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+\\" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Activar/desactivar vista dividida', 'flavor-chat-ia' ); ?>" :aria-pressed="splitScreenMode">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <rect x="2" y="3" width="20" height="18" rx="2"/>
                     <path d="M12 3v18"/>
                 </svg>
             </button>
 
-            <div class="vbp-zoom-controls" role="group" aria-label="<?php esc_attr_e( 'Control de zoom', 'flavor-chat-ia' ); ?>" x-data="{ showSlider: false }">
+            <div class="vbp-zoom-controls" x-show="$store.vbp.inspectorMode === 'advanced'" role="group" aria-label="<?php esc_attr_e( 'Control de zoom', 'flavor-chat-ia' ); ?>" x-data="{ showSlider: false }">
                 <button type="button" @click="zoomOut()" class="vbp-btn-icon" data-tooltip="<?php esc_attr_e( 'Alejar', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+-" data-tooltip-position="bottom" aria-label="<?php esc_attr_e( 'Alejar zoom', 'flavor-chat-ia' ); ?>">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M8 11h6"/></svg>
                 </button>
@@ -170,6 +179,44 @@ $datos_json = wp_json_encode( $datos );
         </div>
 
         <div class="vbp-toolbar-right">
+            <div class="vbp-workspace-mode-toggle" role="group" aria-label="<?php esc_attr_e( 'Modo del editor', 'flavor-chat-ia' ); ?>">
+                <button type="button"
+                        @click="setWorkspaceMode('basic')"
+                        class="vbp-mode-toggle-btn"
+                        :class="{ 'is-advanced': $store.vbp.inspectorMode !== 'basic' }"
+                        :aria-pressed="$store.vbp.inspectorMode === 'basic'">
+                    <?php esc_html_e( 'Básico', 'flavor-chat-ia' ); ?>
+                </button>
+                <button type="button"
+                        @click="setWorkspaceMode('advanced')"
+                        class="vbp-mode-toggle-btn"
+                        :class="{ 'is-advanced': $store.vbp.inspectorMode === 'advanced' }"
+                        :aria-pressed="$store.vbp.inspectorMode === 'advanced'">
+                    <?php esc_html_e( 'Avanzado', 'flavor-chat-ia' ); ?>
+                </button>
+            </div>
+            <!-- Indicador de Usuarios Activos (Colaboración) -->
+            <div class="vbp-active-users" x-show="$store.vbp.inspectorMode === 'advanced' && collaborationEnabled && activeUsers.length > 0" x-cloak>
+                <div class="vbp-active-users-avatars">
+                    <template x-for="user in activeUsers.slice(0, 4)" :key="user.id">
+                        <div class="vbp-user-avatar" :class="{ 'is-editing': user.editing_element }" :style="'border-color: ' + getUserColor(user.id)">
+                            <img :src="getUserAvatar(user)" :alt="user.name">
+                            <div class="vbp-user-tooltip">
+                                <div class="vbp-user-tooltip-name" x-text="user.name"></div>
+                                <div class="vbp-user-tooltip-status" x-text="user.editing_element ? '<?php esc_attr_e( 'Editando...', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Viendo', 'flavor-chat-ia' ); ?>'"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <span class="vbp-users-count" x-show="activeUsers.length > 4" x-text="'+' + (activeUsers.length - 4)"></span>
+            </div>
+
+            <!-- Botón de Comentarios -->
+            <button type="button" @click="openCommentsPanel()" class="vbp-btn vbp-btn-icon" :class="{ 'has-badge': getUnresolvedCount() > 0 }" data-tooltip="<?php esc_attr_e( 'Comentarios', 'flavor-chat-ia' ); ?>" data-shortcut="C" data-tooltip-position="bottom" x-show="$store.vbp.inspectorMode === 'advanced' && (collaborationEnabled || comments.length > 0)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                <span class="vbp-badge" x-show="getUnresolvedCount() > 0" x-text="getUnresolvedCount()"></span>
+            </button>
+
             <!-- Indicador de Autosave Mejorado -->
             <div class="vbp-autosave-indicator" x-data="{ store: $store.vbp }">
                 <!-- Guardado -->
@@ -178,7 +225,7 @@ $datos_json = wp_json_encode( $datos );
                         <svg class="vbp-autosave__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <polyline points="20 6 9 17 4 12"/>
                         </svg>
-                        <span class="vbp-autosave__text"><?php esc_html_e( 'Guardado', 'flavor-chat-ia' ); ?></span>
+                        <span class="vbp-autosave__text" x-text="store.getSaveStatusText()"><?php esc_html_e( 'Guardado', 'flavor-chat-ia' ); ?></span>
                     </div>
                 </template>
                 <!-- Guardando -->
@@ -187,7 +234,7 @@ $datos_json = wp_json_encode( $datos );
                         <svg class="vbp-autosave__spinner" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
                         </svg>
-                        <span class="vbp-autosave__text"><?php esc_html_e( 'Guardando...', 'flavor-chat-ia' ); ?></span>
+                        <span class="vbp-autosave__text" x-text="store.getSaveStatusText()"><?php esc_html_e( 'Guardando...', 'flavor-chat-ia' ); ?></span>
                     </div>
                 </template>
                 <!-- Error -->
@@ -198,26 +245,42 @@ $datos_json = wp_json_encode( $datos );
                             <line x1="15" y1="9" x2="9" y2="15"/>
                             <line x1="9" y1="9" x2="15" y2="15"/>
                         </svg>
-                        <span class="vbp-autosave__text"><?php esc_html_e( 'Error - Reintentar', 'flavor-chat-ia' ); ?></span>
+                        <span class="vbp-autosave__text" x-text="store.getSaveStatusText()"><?php esc_html_e( 'Error - Reintentar', 'flavor-chat-ia' ); ?></span>
                     </div>
                 </template>
                 <!-- Sin guardar (dirty) -->
                 <template x-if="store.saveStatus === 'dirty'">
                     <div class="vbp-autosave vbp-autosave--dirty">
                         <span class="vbp-autosave__dot"></span>
-                        <span class="vbp-autosave__text"><?php esc_html_e( 'Sin guardar', 'flavor-chat-ia' ); ?></span>
+                        <span class="vbp-autosave__text" x-text="store.getSaveStatusText()"><?php esc_html_e( 'Sin guardar', 'flavor-chat-ia' ); ?></span>
                     </div>
                 </template>
             </div>
 
+            <div class="vbp-document-health" x-data="{ store: $store.vbp }">
+                <span class="vbp-document-health__label"><?php esc_html_e( 'Documento', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-document-health__status" :class="'is-' + store.saveStatus" x-text="store.saveStatus === 'dirty' ? '<?php esc_attr_e( 'Pendiente', 'flavor-chat-ia' ); ?>' : (store.saveStatus === 'error' ? '<?php esc_attr_e( 'Revisar', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Estable', 'flavor-chat-ia' ); ?>')"></span>
+            </div>
+
+            <div class="vbp-selection-indicator" x-show="getSelectionCount() > 0" x-cloak>
+                <div class="vbp-selection-indicator__meta">
+                    <span class="vbp-selection-indicator__eyebrow"><?php esc_html_e( 'Selección', 'flavor-chat-ia' ); ?></span>
+                    <span class="vbp-selection-indicator__label" x-text="getSelectionLabel()"></span>
+                </div>
+                <button type="button" class="vbp-selection-indicator__clear" @click="clearSelection()">
+                    <?php esc_html_e( 'Salir', 'flavor-chat-ia' ); ?>
+                </button>
+            </div>
+
             <!-- Theme Toggle -->
-            <div class="vbp-theme-toggle" x-data="{ showMenu: false }">
+            <div class="vbp-theme-toggle" x-show="$store.vbp.inspectorMode === 'advanced'" x-data="{ showMenu: false }">
                 <button
                     type="button"
                     @click="showMenu = !showMenu"
                     @click.away="showMenu = false"
                     class="vbp-btn vbp-btn-icon"
-                    :title="'<?php esc_attr_e( 'Tema:', 'flavor-chat-ia' ); ?> ' + $store.vbpTheme.getLabel()"
+                    :data-tooltip="'<?php esc_attr_e( 'Tema:', 'flavor-chat-ia' ); ?> ' + $store.vbpTheme.getLabel()"
+                    data-tooltip-position="bottom"
                     aria-haspopup="true"
                     :aria-expanded="showMenu"
                 >
@@ -298,13 +361,37 @@ $datos_json = wp_json_encode( $datos );
                 </div>
             </div>
 
-            <button type="button" @click="openRevisionsModal()" class="vbp-btn vbp-btn-secondary" data-tooltip="<?php esc_attr_e( 'Historial de revisiones', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+H" data-tooltip-position="bottom">
+            <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click="openRevisionsModal()" class="vbp-btn vbp-btn-secondary" data-tooltip="<?php esc_attr_e( 'Historial de revisiones', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+H" data-tooltip-position="bottom">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
             </button>
 
-            <button type="button" @click="openPageSettings()" class="vbp-btn vbp-btn-secondary" data-tooltip="<?php esc_attr_e( 'Configuración de página', 'flavor-chat-ia' ); ?>" data-tooltip-position="bottom">
+            <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click="openPageSettings()" class="vbp-btn vbp-btn-secondary" data-tooltip="<?php esc_attr_e( 'Configuración de página', 'flavor-chat-ia' ); ?>" data-tooltip-position="bottom">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
             </button>
+
+            <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click="openTokensPanel()" class="vbp-btn vbp-btn-secondary" data-tooltip="<?php esc_attr_e( 'Design Tokens', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+Shift+D" data-tooltip-position="bottom">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="10"/></svg>
+            </button>
+
+            <!-- Indicador de Estado de Workflow -->
+            <div class="vbp-workflow-indicator" x-show="$store.vbp.inspectorMode === 'advanced' && workflowStatus" @click="openWorkflowPanel()" x-cloak data-tooltip="<?php esc_attr_e( 'Estado del Workflow - Clic para gestionar', 'flavor-chat-ia' ); ?>" data-tooltip-position="bottom">
+                <span class="vbp-workflow-indicator-dot" :style="'background-color: ' + getWorkflowStatusColor(workflowStatus?.status)"></span>
+                <span class="vbp-workflow-indicator-label" x-text="workflowStatus?.status_label"></span>
+            </div>
+
+            <!-- Botón Workflow (con badge de pendientes) -->
+            <?php if ( current_user_can( 'edit_others_posts' ) ) : ?>
+            <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click="openWorkflowPanel()" class="vbp-btn vbp-btn-icon" :class="{ 'has-badge': pendingReviewsCount > 0 }" data-tooltip="<?php esc_attr_e( 'Workflow', 'flavor-chat-ia' ); ?>" data-tooltip-position="bottom" style="position: relative;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                <span class="vbp-workflow-pending-badge" x-show="pendingReviewsCount > 0" x-text="pendingReviewsCount"></span>
+            </button>
+            <?php endif; ?>
+
+            <?php if ( current_user_can( 'manage_options' ) ) : ?>
+            <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click="openAuditPanel()" class="vbp-btn vbp-btn-icon" data-tooltip="<?php esc_attr_e( 'Audit Log', 'flavor-chat-ia' ); ?>" data-tooltip-position="bottom">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8M16 17H8M10 9H8"/></svg>
+            </button>
+            <?php endif; ?>
 
             <a href="<?php echo esc_url( get_preview_post_link( $post_id ) ); ?>" target="_blank" class="vbp-btn vbp-btn-secondary" data-tooltip="<?php esc_attr_e( 'Ver preview en nueva pestaña', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+P" data-tooltip-position="bottom">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -316,12 +403,12 @@ $datos_json = wp_json_encode( $datos );
                 <span x-text="isSaving ? '<?php esc_attr_e( 'Guardando...', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Guardar', 'flavor-chat-ia' ); ?>'"></span>
             </button>
 
-            <button type="button" @click="publishDocument()" class="vbp-btn vbp-btn-success" data-tooltip="<?php esc_attr_e( 'Publicar página', 'flavor-chat-ia' ); ?>" data-shortcut="Ctrl+Shift+P" data-tooltip-position="bottom">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
-                <span><?php esc_html_e( 'Publicar', 'flavor-chat-ia' ); ?></span>
+            <button type="button" @click="publishDocument()" class="vbp-btn vbp-btn-success" :disabled="isSaving" :data-tooltip="getPrimaryActionTooltip()" data-shortcut="Ctrl+Shift+P" data-tooltip-position="bottom">
+                <span class="vbp-btn__icon" x-html="getPrimaryActionIcon()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg></span>
+                <span x-text="isSaving ? '<?php echo esc_js( __( 'Guardando...', 'flavor-chat-ia' ) ); ?>' : getPrimaryActionLabel()"><?php esc_html_e( 'Guardar y revisar', 'flavor-chat-ia' ); ?></span>
             </button>
 
-            <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=flavor_landing' ) ); ?>" class="vbp-btn vbp-btn-icon" title="<?php esc_attr_e( 'Cerrar', 'flavor-chat-ia' ); ?>">
+            <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=flavor_landing' ) ); ?>" class="vbp-btn vbp-btn-icon" data-tooltip="<?php esc_attr_e( 'Cerrar', 'flavor-chat-ia' ); ?>" data-tooltip-position="bottom">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
             </a>
         </div>
@@ -330,7 +417,7 @@ $datos_json = wp_json_encode( $datos );
     <!-- Contenedor Principal -->
     <main class="vbp-main" role="application" aria-label="<?php esc_attr_e( 'Editor Visual Builder Pro', 'flavor-chat-ia' ); ?>">
         <!-- Panel Izquierdo -->
-        <aside class="vbp-sidebar-left" :class="{ 'collapsed': !panels.blocks && !panels.layers }" role="complementary" aria-label="<?php esc_attr_e( 'Panel de bloques y capas', 'flavor-chat-ia' ); ?>">
+        <aside class="vbp-sidebar-left" :class="{ 'collapsed': !panels.blocks && !panels.layers, 'is-basic': $store.vbp.inspectorMode === 'basic' }" role="complementary" aria-label="<?php esc_attr_e( 'Panel de bloques y capas', 'flavor-chat-ia' ); ?>">
             <!-- Header móvil -->
             <div class="vbp-sidebar-mobile-header">
                 <span class="vbp-sidebar-title"><?php esc_html_e( 'Bloques', 'flavor-chat-ia' ); ?></span>
@@ -338,16 +425,20 @@ $datos_json = wp_json_encode( $datos );
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>
             </div>
+            <div class="vbp-sidebar-focus-intro" x-show="$store.vbp.inspectorMode === 'basic'" x-cloak>
+                <span class="vbp-sidebar-focus-intro__eyebrow"><?php esc_html_e( 'Añadir bloques', 'flavor-chat-ia' ); ?></span>
+                <p><?php esc_html_e( 'Usa primero secciones completas y después afina el contenido desde el inspector.', 'flavor-chat-ia' ); ?></p>
+            </div>
             <div class="vbp-sidebar-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Navegación del panel izquierdo', 'flavor-chat-ia' ); ?>">
-                <button type="button" @click="activeLeftTab = 'blocks'" :class="{ 'active': activeLeftTab === 'blocks' }" class="vbp-tab-btn" role="tab" :aria-selected="activeLeftTab === 'blocks'" aria-controls="vbp-panel-blocks" id="vbp-tab-blocks">
+                <button type="button" @click="setActiveLeftTab('blocks')" :class="{ 'active': activeLeftTab === 'blocks' }" class="vbp-tab-btn" role="tab" :aria-selected="activeLeftTab === 'blocks'" aria-controls="vbp-panel-blocks" id="vbp-tab-blocks">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                     <?php esc_html_e( 'Bloques', 'flavor-chat-ia' ); ?>
                 </button>
-                <button type="button" @click="activeLeftTab = 'layers'" :class="{ 'active': activeLeftTab === 'layers' }" class="vbp-tab-btn" role="tab" :aria-selected="activeLeftTab === 'layers'" aria-controls="vbp-panel-layers" id="vbp-tab-layers">
+                <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click="setActiveLeftTab('layers')" :class="{ 'active': activeLeftTab === 'layers' }" class="vbp-tab-btn" role="tab" :aria-selected="activeLeftTab === 'layers'" aria-controls="vbp-panel-layers" id="vbp-tab-layers">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12,2 2,7 12,12 22,7"/><polyline points="2,17 12,22 22,17"/><polyline points="2,12 12,17 22,12"/></svg>
                     <?php esc_html_e( 'Capas', 'flavor-chat-ia' ); ?>
                 </button>
-                <button type="button" @click="activeLeftTab = 'components'" :class="{ 'active': activeLeftTab === 'components' }" class="vbp-tab-btn" role="tab" :aria-selected="activeLeftTab === 'components'" aria-controls="vbp-panel-components" id="vbp-tab-components">
+                <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click="setActiveLeftTab('components')" :class="{ 'active': activeLeftTab === 'components' }" class="vbp-tab-btn" role="tab" :aria-selected="activeLeftTab === 'components'" aria-controls="vbp-panel-components" id="vbp-tab-components">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
                     <?php esc_html_e( 'Biblioteca', 'flavor-chat-ia' ); ?>
                 </button>
@@ -357,11 +448,11 @@ $datos_json = wp_json_encode( $datos );
                 <?php include __DIR__ . '/panel-blocks.php'; ?>
             </div>
 
-            <div x-show="activeLeftTab === 'layers'" class="vbp-panel vbp-layers-panel" role="tabpanel" id="vbp-panel-layers" aria-labelledby="vbp-tab-layers">
+            <div x-show="$store.vbp.inspectorMode === 'advanced' && activeLeftTab === 'layers'" class="vbp-panel vbp-layers-panel" role="tabpanel" id="vbp-panel-layers" aria-labelledby="vbp-tab-layers">
                 <?php include __DIR__ . '/panel-layers.php'; ?>
             </div>
 
-            <div x-show="activeLeftTab === 'components'" class="vbp-panel vbp-components-panel" role="tabpanel" id="vbp-panel-components" aria-labelledby="vbp-tab-components">
+            <div x-show="$store.vbp.inspectorMode === 'advanced' && activeLeftTab === 'components'" class="vbp-panel vbp-components-panel" role="tabpanel" id="vbp-panel-components" aria-labelledby="vbp-tab-components">
                 <?php include __DIR__ . '/panel-components.php'; ?>
             </div>
         </aside>
@@ -376,7 +467,7 @@ $datos_json = wp_json_encode( $datos );
             </div>
 
             <!-- Breadcrumbs de navegación -->
-            <nav class="vbp-breadcrumbs" aria-label="<?php esc_attr_e( 'Navegación de elementos', 'flavor-chat-ia' ); ?>" x-show="breadcrumbs.length > 0">
+            <nav class="vbp-breadcrumbs" aria-label="<?php esc_attr_e( 'Navegación de elementos', 'flavor-chat-ia' ); ?>" x-show="$store.vbp.inspectorMode === 'advanced' && breadcrumbs.length > 0">
                 <ol class="vbp-breadcrumbs-list">
                     <template x-for="(crumb, index) in breadcrumbs" :key="crumb.id">
                         <li class="vbp-breadcrumb-item" :class="{ 'vbp-breadcrumb-item--active': index === breadcrumbs.length - 1 }">
@@ -406,7 +497,7 @@ $datos_json = wp_json_encode( $datos );
                 <div class="vbp-canvas" :class="'vbp-canvas--' + devicePreview" :style="canvasStyles" x-ref="canvas" @dragover.prevent="handleDragOver($event)" @drop.prevent="handleDrop($event)" role="region" aria-label="<?php esc_attr_e( 'Canvas del diseño', 'flavor-chat-ia' ); ?>" aria-live="polite">
                     <template x-for="element in $store.vbp.elements" :key="element.id + '-' + (element._version || 0)">
                         <div class="vbp-element" :class="getElementClasses(element)" :data-element-id="element.id" :data-element-type="element.type" @click.stop="selectElement(element, $event)" @dblclick="editElement(element)" :draggable="!element.locked" @dragstart="handleElementDragStart($event, element)" @dragend="handleElementDragEnd($event)">
-                            <template x-if="isSelected(element.id) && !element.locked">
+                            <template x-if="isSelected(element.id) && !element.locked && $store.vbp.inspectorMode === 'advanced'">
                                 <div class="vbp-element-handles">
                                     <div class="vbp-handle vbp-handle-nw"></div>
                                     <div class="vbp-handle vbp-handle-n"></div>
@@ -419,9 +510,17 @@ $datos_json = wp_json_encode( $datos );
                                 </div>
                             </template>
                             <template x-if="isSelected(element.id)">
-                                <div class="vbp-element-toolbar">
-                                    <button type="button" @click.stop="moveElementUp(element)" class="vbp-element-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
-                                    <button type="button" @click.stop="moveElementDown(element)" class="vbp-element-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></button>
+                                <div class="vbp-element-toolbar" :class="{ 'is-basic': $store.vbp.inspectorMode === 'basic' }">
+                                    <div class="vbp-element-toolbar-badge">
+                                        <span class="vbp-element-toolbar-badge__icon" x-text="getTypeIcon(element.type)"></span>
+                                        <span class="vbp-element-toolbar-badge__label" x-text="getTypeLabel(element.type)"></span>
+                                    </div>
+                                    <button type="button" @click.stop="editElement(element)" class="vbp-element-action vbp-element-action--label" :aria-label="'Editar ' + getTypeLabel(element.type)">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+                                        <span x-show="$store.vbp.inspectorMode === 'basic'"><?php esc_html_e( 'Editar', 'flavor-chat-ia' ); ?></span>
+                                    </button>
+                                    <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click.stop="moveElementUp(element)" class="vbp-element-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+                                    <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click.stop="moveElementDown(element)" class="vbp-element-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></button>
                                     <button type="button" @click.stop="duplicateElement(element)" class="vbp-element-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
                                     <button type="button" @click.stop="deleteElement(element)" class="vbp-element-action vbp-element-action--danger"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
                                 </div>
@@ -430,7 +529,32 @@ $datos_json = wp_json_encode( $datos );
                         </div>
                     </template>
 
-                    <div class="vbp-drop-indicator" x-show="dropIndicator.visible" :style="{ top: dropIndicator.y + 'px' }"></div>
+                    <div class="vbp-drop-indicator" x-show="dropIndicator.visible" :class="'is-' + dropIndicator.position" :style="{ top: dropIndicator.y + 'px' }">
+                        <span class="vbp-drop-indicator__label" x-text="dropIndicator.label"></span>
+                    </div>
+
+                    <!-- Cursores Remotos (Colaboración) -->
+                    <template x-if="collaborationEnabled && Object.keys(userCursors).length > 0">
+                        <div class="vbp-remote-cursors">
+                            <template x-for="(cursor, odIdUsuario) in userCursors" :key="odIdUsuario">
+                                <div class="vbp-remote-cursor" :style="{ left: cursor.x + 'px', top: cursor.y + 'px', '--cursor-color': getUserColor(cursor.user_id) }">
+                                    <div class="vbp-remote-cursor-pointer"></div>
+                                    <div class="vbp-remote-cursor-label" x-text="cursor.user_name"></div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Marcadores de Comentarios en Canvas -->
+                    <template x-if="collaborationEnabled">
+                        <div class="vbp-comment-markers">
+                            <template x-for="comment in comments.filter(c => !c.resolved && c.position)" :key="comment.id">
+                                <div class="vbp-comment-marker" :class="{ 'resolved': comment.resolved }" :style="{ left: comment.position.x + 'px', top: comment.position.y + 'px' }" @click.stop="openCommentThread(comment.id)" :title="comment.text.substring(0, 50)">
+                                    <span x-text="comment.thread_index || '?'"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
 
                     <template x-if="$store.vbp.elements.length === 0">
                         <div class="vbp-canvas-empty">
@@ -438,15 +562,109 @@ $datos_json = wp_json_encode( $datos );
                                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
                             </div>
                             <h3><?php esc_html_e( 'Arrastra bloques aquí', 'flavor-chat-ia' ); ?></h3>
-                            <p><?php esc_html_e( 'Selecciona un bloque del panel izquierdo y arrástralo al canvas', 'flavor-chat-ia' ); ?></p>
+                            <p><?php esc_html_e( 'Empieza con una sección completa o abre la biblioteca de bloques para construir la página paso a paso.', 'flavor-chat-ia' ); ?></p>
+                            <div class="vbp-canvas-empty-actions">
+                                <button type="button" class="vbp-btn vbp-btn-primary" @click="openTemplatesModal()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                                    <span><?php esc_html_e( 'Empezar con template', 'flavor-chat-ia' ); ?></span>
+                                </button>
+                                <button type="button" class="vbp-btn vbp-btn-secondary" @click="panels.blocks = true; activeLeftTab = 'blocks'">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                                    <span><?php esc_html_e( 'Ver bloques', 'flavor-chat-ia' ); ?></span>
+                                </button>
+                            </div>
                         </div>
                     </template>
                 </div>
             </div>
+
+            <!-- Overlay de Modo Viewer (sin permisos de edición) -->
+            <div class="vbp-viewer-mode-overlay" x-show="collaborationEnabled && !canEdit" x-cloak>
+                <span class="vbp-viewer-mode-icon">👁</span>
+                <span><?php esc_html_e( 'Solo visualización - No puedes editar este documento', 'flavor-chat-ia' ); ?></span>
+            </div>
         </section>
 
+        <!-- Mini Mapa de Navegación -->
+        <template x-if="$store.vbp.inspectorMode === 'advanced' && $store.vbpMinimap.isVisible">
+        <div
+            class="vbp-minimap"
+            :class="{ 'hidden': !$store.vbpMinimap.isVisible }"
+            x-data="vbpMinimap()"
+            x-cloak
+        >
+            <div class="vbp-minimap-header">
+                <div class="vbp-minimap-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    <span><?php esc_html_e( 'Mini Mapa', 'flavor-chat-ia' ); ?></span>
+                </div>
+                <div class="vbp-minimap-actions">
+                    <div class="vbp-minimap-zoom">
+                        <button type="button" @click="zoomOut()" class="vbp-minimap-zoom-btn" data-tooltip="<?php esc_attr_e( 'Reducir', 'flavor-chat-ia' ); ?>">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </button>
+                        <span class="vbp-minimap-zoom-value" x-text="Math.round(scale * 1000) + '%'"></span>
+                        <button type="button" @click="zoomIn()" class="vbp-minimap-zoom-btn" data-tooltip="<?php esc_attr_e( 'Ampliar', 'flavor-chat-ia' ); ?>">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </button>
+                    </div>
+                    <button type="button" @click="$store.vbpMinimap.toggle()" class="vbp-minimap-btn" data-tooltip="<?php esc_attr_e( 'Ocultar', 'flavor-chat-ia' ); ?>">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div
+                class="vbp-minimap-content"
+                :class="{ 'dragging': isDragging }"
+                x-ref="minimap"
+                :style="{ height: Math.min(canvasHeight + 20, 300) + 'px' }"
+                @click="handleMinimapClick($event)"
+                @mousedown="startDrag($event)"
+                @mousemove="handleDrag($event)"
+                @mouseup="endDrag()"
+                @mouseleave="endDrag()"
+            >
+                <template x-if="elements.length === 0">
+                    <div class="vbp-minimap-empty">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+                        <div class="vbp-minimap-empty-text"><?php esc_html_e( 'Sin elementos', 'flavor-chat-ia' ); ?></div>
+                    </div>
+                </template>
+                <template x-for="el in elements" :key="el.id">
+                    <div
+                        class="vbp-minimap-element"
+                        :class="{ 'selected': el.selected }"
+                        :style="{ top: el.top + 'px', height: Math.max(el.height, 4) + 'px', backgroundColor: getElementColor(el.type) }"
+                        @click.stop="scrollToElement(el.id)"
+                        @mouseenter="showTooltip($event, el)"
+                        @mouseleave="hideTooltip()"
+                    ></div>
+                </template>
+                <div
+                    class="vbp-minimap-viewport"
+                    :style="{ top: viewportTop + 'px', height: viewportHeight + 'px' }"
+                ></div>
+            </div>
+        </div>
+        </template>
+
+        <!-- Botón para mostrar el Mini Mapa cuando está oculto -->
+        <button
+            type="button"
+            class="vbp-minimap-show-btn"
+            x-show="$store.vbp.inspectorMode === 'advanced' && !$store.vbpMinimap.isVisible"
+            @click="$store.vbpMinimap.toggle()"
+            data-tooltip="<?php esc_attr_e( 'Mostrar Mini Mapa', 'flavor-chat-ia' ); ?>"
+            data-tooltip-position="left"
+        >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </button>
+
+        <!-- Tooltip para elementos del minimapa -->
+        <div class="vbp-minimap-tooltip"></div>
+
         <!-- Panel Derecho -->
-        <aside class="vbp-sidebar-right" :class="{ 'collapsed': !panels.inspector }" role="complementary" aria-label="<?php esc_attr_e( 'Inspector de propiedades', 'flavor-chat-ia' ); ?>">
+        <aside class="vbp-sidebar-right" :class="{ 'collapsed': !panels.inspector, 'is-basic': $store.vbp.inspectorMode === 'basic' }" role="complementary" aria-label="<?php esc_attr_e( 'Inspector de propiedades', 'flavor-chat-ia' ); ?>">
             <!-- Header móvil -->
             <div class="vbp-sidebar-mobile-header">
                 <span class="vbp-sidebar-title"><?php esc_html_e( 'Inspector', 'flavor-chat-ia' ); ?></span>
@@ -459,6 +677,271 @@ $datos_json = wp_json_encode( $datos );
     </main>
 
     <?php include __DIR__ . '/toolbar-floating.php'; ?>
+
+    <!-- Panel de Design Tokens -->
+    <div
+        class="vbp-tokens-panel"
+        x-show="showTokensPanel"
+        x-cloak
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 translate-x-4"
+        x-transition:enter-end="opacity-100 translate-x-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-x-0"
+        x-transition:leave-end="opacity-0 translate-x-4"
+        @keydown.escape.window="closeTokensPanel()"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vbp-tokens-title"
+    >
+        <div class="vbp-tokens-header">
+            <h3 id="vbp-tokens-title" class="vbp-tokens-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="10"/></svg>
+                <?php esc_html_e( 'Design Tokens', 'flavor-chat-ia' ); ?>
+            </h3>
+            <button type="button" @click="closeTokensPanel()" class="vbp-tokens-close" aria-label="<?php esc_attr_e( 'Cerrar panel', 'flavor-chat-ia' ); ?>">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <!-- Tabs de Categorías -->
+        <div class="vbp-tokens-tabs" role="tablist">
+            <template x-for="category in getTokenCategories()" :key="category.id">
+                <button
+                    type="button"
+                    @click="activeTokenCategory = category.id"
+                    :class="{ 'active': activeTokenCategory === category.id }"
+                    class="vbp-tokens-tab"
+                    role="tab"
+                    :aria-selected="activeTokenCategory === category.id"
+                >
+                    <span x-text="category.icon"></span>
+                    <span x-text="category.label"></span>
+                </button>
+            </template>
+        </div>
+
+        <!-- Búsqueda -->
+        <div class="vbp-tokens-search">
+            <input
+                type="text"
+                x-model="tokenSearchQuery"
+                placeholder="<?php esc_attr_e( 'Buscar tokens...', 'flavor-chat-ia' ); ?>"
+                aria-label="<?php esc_attr_e( 'Buscar tokens', 'flavor-chat-ia' ); ?>"
+            >
+        </div>
+
+        <!-- Lista de Tokens -->
+        <div class="vbp-tokens-list">
+            <template x-for="token in getFilteredTokens()" :key="token.key">
+                <div class="vbp-token-item" :class="{ 'overridden': isTokenOverridden(token.key) }">
+                    <div
+                        class="vbp-token-preview"
+                        :class="{ 'checkerboard': token.type === 'color' }"
+                        @click="insertTokenVariable(token.key)"
+                        :title="'<?php esc_attr_e( 'Clic para copiar variable', 'flavor-chat-ia' ); ?>'"
+                    >
+                        <template x-if="token.type === 'color'">
+                            <div class="vbp-token-preview-color" :style="{ background: getTokenValue(token.key) }"></div>
+                        </template>
+                        <template x-if="token.type !== 'color'">
+                            <span class="vbp-token-preview-text" x-text="getTokenValue(token.key)"></span>
+                        </template>
+                    </div>
+                    <div class="vbp-token-info">
+                        <div class="vbp-token-label" x-text="token.label"></div>
+                        <div class="vbp-token-key" x-text="token.key"></div>
+                    </div>
+                    <div class="vbp-token-actions">
+                        <button
+                            type="button"
+                            class="vbp-token-action"
+                            @click="editTokenValue(token)"
+                            title="<?php esc_attr_e( 'Editar valor', 'flavor-chat-ia' ); ?>"
+                        >
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <template x-if="isTokenOverridden(token.key)">
+                            <button
+                                type="button"
+                                class="vbp-token-action reset"
+                                @click="resetToken(token.key)"
+                                title="<?php esc_attr_e( 'Resetear al valor del tema', 'flavor-chat-ia' ); ?>"
+                            >
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Estado Vacío -->
+            <template x-if="getFilteredTokens().length === 0">
+                <div class="vbp-tokens-empty">
+                    <div class="vbp-tokens-empty-icon">🔍</div>
+                    <p class="vbp-tokens-empty-text"><?php esc_html_e( 'No se encontraron tokens', 'flavor-chat-ia' ); ?></p>
+                </div>
+            </template>
+        </div>
+
+        <!-- Paleta Rápida -->
+        <div class="vbp-quick-palette">
+            <div class="vbp-quick-palette-label"><?php esc_html_e( 'Colores del Tema', 'flavor-chat-ia' ); ?></div>
+            <div class="vbp-quick-palette-colors">
+                <template x-for="color in getQuickColorPalette()" :key="color.key">
+                    <button
+                        type="button"
+                        class="vbp-quick-color"
+                        :style="{ background: color.value }"
+                        :data-label="color.label"
+                        @click="insertTokenVariable(color.key)"
+                        :title="color.label + ': ' + color.value"
+                    ></button>
+                </template>
+            </div>
+        </div>
+
+        <!-- Footer con Acciones -->
+        <div class="vbp-tokens-footer">
+            <button type="button" class="vbp-tokens-btn vbp-tokens-btn-secondary" @click="copyTokensCSS()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                <?php esc_html_e( 'Copiar CSS', 'flavor-chat-ia' ); ?>
+            </button>
+            <button type="button" class="vbp-tokens-btn vbp-tokens-btn-secondary" @click="resetAllTokens()">
+                <?php esc_html_e( 'Resetear Todo', 'flavor-chat-ia' ); ?>
+            </button>
+        </div>
+    </div>
+
+    <!-- Panel de Audit Log (Solo Administradores) -->
+    <?php if ( current_user_can( 'manage_options' ) ) : ?>
+    <div
+        class="vbp-audit-panel"
+        x-show="showAuditPanel"
+        x-cloak
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 translate-x-4"
+        x-transition:enter-end="opacity-100 translate-x-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-x-0"
+        x-transition:leave-end="opacity-0 translate-x-4"
+        @keydown.escape.window="closeAuditPanel()"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vbp-audit-title"
+    >
+        <div class="vbp-audit-header">
+            <h3 id="vbp-audit-title" class="vbp-audit-title">
+                <span class="vbp-audit-title-icon">📋</span>
+                <?php esc_html_e( 'Audit Log', 'flavor-chat-ia' ); ?>
+            </h3>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button type="button" @click="exportAuditLogs()" class="vbp-audit-export" title="<?php esc_attr_e( 'Exportar como CSV', 'flavor-chat-ia' ); ?>">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <?php esc_html_e( 'Exportar', 'flavor-chat-ia' ); ?>
+                </button>
+                <button type="button" @click="closeAuditPanel()" class="vbp-audit-close" aria-label="<?php esc_attr_e( 'Cerrar panel', 'flavor-chat-ia' ); ?>">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <template x-if="auditStats">
+            <div class="vbp-audit-stats">
+                <div class="vbp-audit-stat">
+                    <span class="vbp-audit-stat-value" x-text="auditStats.total || 0"></span>
+                    <span class="vbp-audit-stat-label"><?php esc_html_e( 'Total', 'flavor-chat-ia' ); ?></span>
+                </div>
+                <div class="vbp-audit-stat">
+                    <span class="vbp-audit-stat-value" x-text="auditStats.by_user ? auditStats.by_user.length : 0"></span>
+                    <span class="vbp-audit-stat-label"><?php esc_html_e( 'Usuarios', 'flavor-chat-ia' ); ?></span>
+                </div>
+            </div>
+        </template>
+
+        <!-- Filtros -->
+        <div class="vbp-audit-filters">
+            <div class="vbp-audit-filter-group">
+                <label class="vbp-audit-filter-label"><?php esc_html_e( 'Acción', 'flavor-chat-ia' ); ?></label>
+                <select x-model="auditFilter.actionType" @change="applyAuditFilters()" class="vbp-audit-filter-select">
+                    <option value=""><?php esc_html_e( 'Todas', 'flavor-chat-ia' ); ?></option>
+                    <template x-for="type in getAuditActionTypes()" :key="type.value">
+                        <option :value="type.value" x-text="type.label"></option>
+                    </template>
+                </select>
+            </div>
+            <div class="vbp-audit-filter-actions">
+                <button type="button" @click="clearAuditFilters()" class="vbp-btn vbp-btn-sm vbp-btn-secondary">
+                    <?php esc_html_e( 'Limpiar', 'flavor-chat-ia' ); ?>
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de Logs -->
+        <div class="vbp-audit-list">
+            <!-- Loading -->
+            <template x-if="auditLoading">
+                <div class="vbp-audit-loading">
+                    <div class="vbp-audit-loading-spinner"></div>
+                    <span><?php esc_html_e( 'Cargando...', 'flavor-chat-ia' ); ?></span>
+                </div>
+            </template>
+
+            <!-- Empty -->
+            <template x-if="!auditLoading && auditLogs.length === 0">
+                <div class="vbp-audit-empty">
+                    <div class="vbp-audit-empty-icon">📋</div>
+                    <p class="vbp-audit-empty-text"><?php esc_html_e( 'No hay registros de auditoría', 'flavor-chat-ia' ); ?></p>
+                </div>
+            </template>
+
+            <!-- Log Items -->
+            <template x-if="!auditLoading && auditLogs.length > 0">
+                <div>
+                    <template x-for="log in auditLogs" :key="log.id">
+                        <div class="vbp-audit-item">
+                            <div class="vbp-audit-icon" :style="{ background: getAuditActionColor(log.action_type) + '20' }">
+                                <span x-text="getAuditActionIcon(log.action_type)"></span>
+                            </div>
+                            <div class="vbp-audit-content">
+                                <div class="vbp-audit-action" x-text="log.action_label"></div>
+                                <div class="vbp-audit-meta">
+                                    <span class="vbp-audit-user">
+                                        <template x-if="log.user && log.user.avatar">
+                                            <img :src="log.user.avatar" :alt="log.user.name" class="vbp-audit-user-avatar">
+                                        </template>
+                                        <span x-text="log.user ? log.user.name : '<?php esc_attr_e( 'Sistema', 'flavor-chat-ia' ); ?>'"></span>
+                                    </span>
+                                    <span class="vbp-audit-time">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                                        <span x-text="log.time_ago + ' <?php esc_attr_e( 'atrás', 'flavor-chat-ia' ); ?>'"></span>
+                                    </span>
+                                </div>
+                                <template x-if="log.details">
+                                    <div class="vbp-audit-details" x-text="JSON.stringify(log.details, null, 2)"></div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+
+        <!-- Paginación -->
+        <template x-if="auditTotalPages > 1">
+            <div class="vbp-audit-pagination">
+                <button type="button" @click="auditPrevPage()" :disabled="auditFilter.page <= 1" class="vbp-audit-page-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+                </button>
+                <span class="vbp-audit-page-info" x-text="auditFilter.page + ' / ' + auditTotalPages"></span>
+                <button type="button" @click="auditNextPage()" :disabled="auditFilter.page >= auditTotalPages" class="vbp-audit-page-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+                </button>
+            </div>
+        </template>
+    </div>
+    <?php endif; ?>
 
     <!-- Modal de Ayuda -->
     <div class="vbp-modal-overlay" x-show="showHelpModal" x-cloak @click.self="showHelpModal = false" @keydown.escape.window="showHelpModal = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" role="dialog" aria-modal="true" aria-labelledby="vbp-help-modal-title">
@@ -475,6 +958,7 @@ $datos_json = wp_json_encode( $datos );
                         <h4><?php esc_html_e( 'Archivo', 'flavor-chat-ia' ); ?></h4>
                         <div class="vbp-shortcut"><kbd>Ctrl</kbd> + <kbd>S</kbd> <span><?php esc_html_e( 'Guardar', 'flavor-chat-ia' ); ?></span></div>
                         <div class="vbp-shortcut"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> <span><?php esc_html_e( 'Guardar como template', 'flavor-chat-ia' ); ?></span></div>
+                        <div class="vbp-shortcut"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> <span><?php esc_html_e( 'Design Tokens', 'flavor-chat-ia' ); ?></span></div>
                         <div class="vbp-shortcut"><kbd>Ctrl</kbd> + <kbd>P</kbd> <span><?php esc_html_e( 'Preview', 'flavor-chat-ia' ); ?></span></div>
                     </div>
                     <div class="vbp-shortcuts-group">
@@ -1287,6 +1771,226 @@ $datos_json = wp_json_encode( $datos );
     <?php include __DIR__ . '/modals/modal-command-palette.php'; ?>
     <?php include __DIR__ . '/modals/modal-ai-assistant.php'; ?>
     <?php include __DIR__ . '/modals/modal-comments.php'; ?>
+
+    <!-- Panel de Audit Log -->
+    <?php if ( current_user_can( 'manage_options' ) ) : ?>
+    <div class="vbp-audit-panel" x-show="showAuditPanel" x-cloak x-transition:enter="vbp-slide-enter" x-transition:leave="vbp-slide-leave" @keydown.escape.window="showAuditPanel && closeAuditPanel()">
+        <div class="vbp-audit-header">
+            <div class="vbp-audit-title">
+                <span class="vbp-audit-title-icon">📋</span>
+                <?php esc_html_e( 'Audit Log', 'flavor-chat-ia' ); ?>
+            </div>
+            <button type="button" @click="closeAuditPanel()" class="vbp-audit-close">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="vbp-audit-stats" x-show="auditStats">
+            <div class="vbp-audit-stat">
+                <span class="vbp-audit-stat-value" x-text="auditStats?.total_logs || 0"></span>
+                <span class="vbp-audit-stat-label"><?php esc_html_e( 'Total', 'flavor-chat-ia' ); ?></span>
+            </div>
+            <div class="vbp-audit-stat">
+                <span class="vbp-audit-stat-value" x-text="auditStats?.today_logs || 0"></span>
+                <span class="vbp-audit-stat-label"><?php esc_html_e( 'Hoy', 'flavor-chat-ia' ); ?></span>
+            </div>
+            <div class="vbp-audit-stat">
+                <span class="vbp-audit-stat-value" x-text="auditStats?.active_users || 0"></span>
+                <span class="vbp-audit-stat-label"><?php esc_html_e( 'Usuarios', 'flavor-chat-ia' ); ?></span>
+            </div>
+        </div>
+        <div class="vbp-audit-filters">
+            <div class="vbp-audit-filter-group">
+                <label class="vbp-audit-filter-label"><?php esc_html_e( 'Tipo', 'flavor-chat-ia' ); ?></label>
+                <select x-model="auditFilter.actionType" class="vbp-audit-filter-select">
+                    <option value=""><?php esc_html_e( 'Todos', 'flavor-chat-ia' ); ?></option>
+                    <template x-for="type in getAuditActionTypes()" :key="type.value">
+                        <option :value="type.value" x-text="type.label"></option>
+                    </template>
+                </select>
+            </div>
+            <div class="vbp-audit-filter-actions">
+                <button type="button" @click="applyAuditFilters()" class="vbp-btn vbp-btn-sm vbp-btn-primary"><?php esc_html_e( 'Filtrar', 'flavor-chat-ia' ); ?></button>
+                <button type="button" @click="exportAuditLogs()" class="vbp-audit-export"><?php esc_html_e( 'CSV', 'flavor-chat-ia' ); ?></button>
+            </div>
+        </div>
+        <div class="vbp-audit-list" x-show="!auditLoading && auditLogs.length > 0">
+            <template x-for="log in auditLogs" :key="log.id">
+                <div class="vbp-audit-item">
+                    <div class="vbp-audit-icon" :style="'background: ' + getAuditActionColor(log.action_type) + '20; color: ' + getAuditActionColor(log.action_type)">
+                        <span x-text="getAuditActionIcon(log.action_type)"></span>
+                    </div>
+                    <div class="vbp-audit-content">
+                        <div class="vbp-audit-action" x-text="log.action_label"></div>
+                        <div class="vbp-audit-meta">
+                            <span class="vbp-audit-user">
+                                <img :src="log.user_avatar" class="vbp-audit-user-avatar" :alt="log.user_name">
+                                <span x-text="log.user_name"></span>
+                            </span>
+                            <span class="vbp-audit-time" x-text="log.time_ago"></span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <div class="vbp-audit-loading" x-show="auditLoading">
+            <div class="vbp-audit-loading-spinner"></div>
+            <span><?php esc_html_e( 'Cargando...', 'flavor-chat-ia' ); ?></span>
+        </div>
+        <div class="vbp-audit-empty" x-show="!auditLoading && auditLogs.length === 0">
+            <span class="vbp-audit-empty-icon">📭</span>
+            <span class="vbp-audit-empty-text"><?php esc_html_e( 'No hay registros', 'flavor-chat-ia' ); ?></span>
+        </div>
+        <div class="vbp-audit-pagination" x-show="auditTotalPages > 1">
+            <button type="button" @click="auditPrevPage()" :disabled="auditFilter.page <= 1" class="vbp-audit-page-btn"><?php esc_html_e( 'Anterior', 'flavor-chat-ia' ); ?></button>
+            <span class="vbp-audit-page-info" x-text="auditFilter.page + ' / ' + auditTotalPages"></span>
+            <button type="button" @click="auditNextPage()" :disabled="auditFilter.page >= auditTotalPages" class="vbp-audit-page-btn"><?php esc_html_e( 'Siguiente', 'flavor-chat-ia' ); ?></button>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- Panel de Workflow -->
+    <div class="vbp-workflow-panel" x-show="showWorkflowPanel" x-cloak x-transition:enter="vbp-slide-enter" x-transition:leave="vbp-slide-leave" @keydown.escape.window="showWorkflowPanel && closeWorkflowPanel()">
+        <div class="vbp-workflow-header">
+            <div class="vbp-workflow-title">
+                <span>📋</span>
+                <?php esc_html_e( 'Workflow', 'flavor-chat-ia' ); ?>
+            </div>
+            <button type="button" @click="closeWorkflowPanel()" class="vbp-workflow-close">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <!-- Status Card -->
+        <div class="vbp-workflow-status-card" x-show="workflowStatus">
+            <div class="vbp-workflow-current-status">
+                <div class="vbp-workflow-status-icon" :style="'background: ' + getWorkflowStatusColor(workflowStatus?.status) + '20; color: ' + getWorkflowStatusColor(workflowStatus?.status)">
+                    <span x-text="getWorkflowStatusIcon(workflowStatus?.status)"></span>
+                </div>
+                <div class="vbp-workflow-status-info">
+                    <div class="vbp-workflow-status-label" x-text="workflowStatus?.status_label"></div>
+                    <div class="vbp-workflow-status-meta">
+                        <span x-show="workflowStatus?.scheduled_date" x-text="'<?php esc_attr_e( 'Programado:', 'flavor-chat-ia' ); ?> ' + workflowStatus?.scheduled_date"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transiciones disponibles -->
+            <div class="vbp-workflow-transitions" x-show="workflowStatus?.transitions?.length > 0">
+                <template x-for="transition in workflowStatus?.transitions" :key="transition.action">
+                    <button type="button" @click="executeTransition(transition.action)" class="vbp-workflow-transition-btn" :class="{ 'vbp-workflow-transition-primary': transition.action === 'publish' || transition.action === 'approve' }" :disabled="workflowLoading">
+                        <span class="vbp-workflow-transition-icon" x-text="transition.icon"></span>
+                        <span x-text="transition.label"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="vbp-workflow-tabs" x-data="{ activeTab: 'history' }">
+            <button type="button" @click="activeTab = 'history'" class="vbp-workflow-tab" :class="{ 'active': activeTab === 'history' }"><?php esc_html_e( 'Historial', 'flavor-chat-ia' ); ?></button>
+            <button type="button" @click="activeTab = 'reviewers'" class="vbp-workflow-tab" :class="{ 'active': activeTab === 'reviewers' }"><?php esc_html_e( 'Revisores', 'flavor-chat-ia' ); ?></button>
+            <?php if ( current_user_can( 'edit_others_posts' ) ) : ?>
+            <button type="button" @click="activeTab = 'pending'; loadPendingReviews()" class="vbp-workflow-tab" :class="{ 'active': activeTab === 'pending' }">
+                <?php esc_html_e( 'Pendientes', 'flavor-chat-ia' ); ?>
+                <span class="vbp-workflow-pending-badge" x-show="pendingReviewsCount > 0" x-text="pendingReviewsCount" style="position:static;margin-left:4px;"></span>
+            </button>
+            <?php endif; ?>
+        </div>
+
+        <!-- Contenido -->
+        <div class="vbp-workflow-content">
+            <!-- Tab: Historial -->
+            <div x-show="activeTab === 'history'">
+                <div class="vbp-workflow-history-list" x-show="workflowHistory.length > 0">
+                    <template x-for="entry in workflowHistory" :key="entry.timestamp">
+                        <div class="vbp-workflow-history-item">
+                            <div class="vbp-workflow-history-icon">
+                                <span x-text="getWorkflowActionIcon(entry.action)"></span>
+                            </div>
+                            <div class="vbp-workflow-history-content">
+                                <div class="vbp-workflow-history-action" x-text="entry.action_label"></div>
+                                <div class="vbp-workflow-history-meta">
+                                    <span class="vbp-workflow-history-user">
+                                        <img :src="entry.user.avatar" class="vbp-workflow-history-avatar" :alt="entry.user.name">
+                                        <span x-text="entry.user.name"></span>
+                                    </span>
+                                    <span x-text="entry.time_ago + ' <?php esc_attr_e( 'ago', 'flavor-chat-ia' ); ?>'"></span>
+                                </div>
+                                <div class="vbp-workflow-history-comment" x-show="entry.comment" x-text="entry.comment"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="vbp-workflow-empty" x-show="workflowHistory.length === 0">
+                    <span class="vbp-workflow-empty-icon">📭</span>
+                    <span class="vbp-workflow-empty-text"><?php esc_html_e( 'Sin historial aún', 'flavor-chat-ia' ); ?></span>
+                </div>
+            </div>
+
+            <!-- Tab: Revisores -->
+            <div x-show="activeTab === 'reviewers'">
+                <div class="vbp-workflow-reviewers">
+                    <div class="vbp-workflow-reviewers-title"><?php esc_html_e( 'Revisores asignados', 'flavor-chat-ia' ); ?></div>
+                    <div class="vbp-workflow-reviewers-list">
+                        <template x-for="reviewer in workflowStatus?.reviewers" :key="reviewer.id">
+                            <div class="vbp-workflow-reviewer">
+                                <img :src="reviewer.avatar" class="vbp-workflow-reviewer-avatar" :alt="reviewer.name">
+                                <span x-text="reviewer.name"></span>
+                            </div>
+                        </template>
+                        <?php if ( current_user_can( 'manage_options' ) ) : ?>
+                        <button type="button" class="vbp-workflow-add-reviewer" @click="showNotification('Función de añadir revisores próximamente', 'info')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                            <?php esc_html_e( 'Añadir', 'flavor-chat-ia' ); ?>
+                        </button>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Pendientes -->
+            <?php if ( current_user_can( 'edit_others_posts' ) ) : ?>
+            <div x-show="activeTab === 'pending'">
+                <div class="vbp-workflow-pending-list" x-show="pendingReviews.length > 0">
+                    <template x-for="review in pendingReviews" :key="review.id">
+                        <a :href="review.edit_url" class="vbp-workflow-pending-item">
+                            <img :src="review.author.avatar" class="vbp-workflow-pending-avatar" :alt="review.author.name">
+                            <div class="vbp-workflow-pending-info">
+                                <div class="vbp-workflow-pending-title" x-text="review.title"></div>
+                                <div class="vbp-workflow-pending-meta">
+                                    <span x-text="review.author.name"></span> · <span x-text="review.modified_ago"></span>
+                                </div>
+                            </div>
+                            <span class="vbp-workflow-pending-arrow">→</span>
+                        </a>
+                    </template>
+                </div>
+                <div class="vbp-workflow-empty" x-show="pendingReviews.length === 0">
+                    <span class="vbp-workflow-empty-icon">✅</span>
+                    <span class="vbp-workflow-empty-text"><?php esc_html_e( 'No hay revisiones pendientes', 'flavor-chat-ia' ); ?></span>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Modal de Programación -->
+    <div class="vbp-workflow-schedule-modal" x-show="showScheduleModal" x-cloak @click.self="cancelSchedule()" @keydown.escape.window="showScheduleModal && cancelSchedule()">
+        <div class="vbp-workflow-schedule-content">
+            <div class="vbp-workflow-schedule-header">
+                <span>📅</span>
+                <span><?php esc_html_e( 'Programar Publicación', 'flavor-chat-ia' ); ?></span>
+            </div>
+            <div class="vbp-workflow-schedule-body">
+                <label class="vbp-workflow-schedule-label"><?php esc_html_e( 'Fecha y hora de publicación', 'flavor-chat-ia' ); ?></label>
+                <input type="datetime-local" x-model="scheduledDate" :min="formatDateForInput(new Date())" class="vbp-workflow-schedule-input">
+            </div>
+            <div class="vbp-workflow-schedule-footer">
+                <button type="button" @click="cancelSchedule()" class="vbp-btn vbp-btn-secondary"><?php esc_html_e( 'Cancelar', 'flavor-chat-ia' ); ?></button>
+                <button type="button" @click="confirmSchedule()" class="vbp-btn vbp-btn-primary" :disabled="!scheduledDate"><?php esc_html_e( 'Programar', 'flavor-chat-ia' ); ?></button>
+            </div>
+        </div>
+    </div>
 
     <!-- Contenedor de notificaciones Toast -->
     <div class="vbp-toast-container" x-data="vbpToastContainer()" aria-live="polite" aria-label="<?php esc_attr_e( 'Notificaciones', 'flavor-chat-ia' ); ?>">

@@ -35,6 +35,13 @@ class Flavor_VBP_Audit_Log {
     private static $instance = null;
 
     /**
+     * Cache local para evitar comprobar la tabla en cada operación.
+     *
+     * @var bool|null
+     */
+    private $table_exists = null;
+
+    /**
      * Tipos de acciones registrables
      *
      * @var array
@@ -153,6 +160,49 @@ class Flavor_VBP_Audit_Log {
     }
 
     /**
+     * Garantiza que la tabla exista antes de operar contra ella.
+     *
+     * Nunca debe romper respuestas REST ni renderizados por errores de DB.
+     *
+     * @return bool
+     */
+    private function ensure_table_exists() {
+        global $wpdb;
+
+        if ( true === $this->table_exists ) {
+            return true;
+        }
+
+        $previous_suppression = $wpdb->suppress_errors( true );
+        $table_name           = $this->table_name;
+        $exists               = (bool) $wpdb->get_var(
+            $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name )
+        );
+        $wpdb->suppress_errors( $previous_suppression );
+
+        if ( $exists ) {
+            $this->table_exists = true;
+            return true;
+        }
+
+        self::create_table();
+
+        $previous_suppression = $wpdb->suppress_errors( true );
+        $exists               = (bool) $wpdb->get_var(
+            $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name )
+        );
+        $wpdb->suppress_errors( $previous_suppression );
+
+        $this->table_exists = $exists;
+
+        if ( ! $exists ) {
+            error_log( '[VBP Audit] Tabla no disponible: ' . $table_name );
+        }
+
+        return $exists;
+    }
+
+    /**
      * Registra rutas REST
      */
     public function register_rest_routes() {
@@ -248,6 +298,10 @@ class Flavor_VBP_Audit_Log {
     public function log( $action_type, $data = array() ) {
         global $wpdb;
 
+        if ( ! $this->ensure_table_exists() ) {
+            return false;
+        }
+
         $user_id = get_current_user_id();
         if ( ! $user_id && isset( $data['user_id'] ) ) {
             $user_id = absint( $data['user_id'] );
@@ -267,7 +321,9 @@ class Flavor_VBP_Audit_Log {
             'created_at'   => current_time( 'mysql' ),
         );
 
-        $result = $wpdb->insert( $this->table_name, $log_data );
+        $previous_suppression = $wpdb->suppress_errors( true );
+        $result               = $wpdb->insert( $this->table_name, $log_data );
+        $wpdb->suppress_errors( $previous_suppression );
 
         if ( false === $result ) {
             error_log( '[VBP Audit] Error inserting log: ' . $wpdb->last_error );
@@ -285,6 +341,19 @@ class Flavor_VBP_Audit_Log {
      */
     public function get_logs( $request ) {
         global $wpdb;
+
+        if ( ! $this->ensure_table_exists() ) {
+            return new WP_REST_Response(
+                array(
+                    'success' => true,
+                    'logs'    => array(),
+                    'total'   => 0,
+                    'pages'   => 0,
+                    'page'    => 1,
+                ),
+                200
+            );
+        }
 
         $per_page = min( $request->get_param( 'per_page' ), 100 );
         $page     = max( 1, $request->get_param( 'page' ) );
@@ -361,6 +430,16 @@ class Flavor_VBP_Audit_Log {
     public function get_log_entry( $request ) {
         global $wpdb;
 
+        if ( ! $this->ensure_table_exists() ) {
+            return new WP_REST_Response(
+                array(
+                    'success' => false,
+                    'message' => 'Audit log no disponible',
+                ),
+                404
+            );
+        }
+
         $id = absint( $request->get_param( 'id' ) );
 
         $entry = $wpdb->get_row(
@@ -398,6 +477,20 @@ class Flavor_VBP_Audit_Log {
      */
     public function get_stats( $request ) {
         global $wpdb;
+
+        if ( ! $this->ensure_table_exists() ) {
+            return new WP_REST_Response(
+                array(
+                    'success'     => true,
+                    'total'       => 0,
+                    'by_action'   => array(),
+                    'by_user'     => array(),
+                    'last_7_days' => array(),
+                    'top_pages'   => array(),
+                ),
+                200
+            );
+        }
 
         // Total de registros
         $total = $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table_name}" );
@@ -469,6 +562,17 @@ class Flavor_VBP_Audit_Log {
      */
     public function export_logs( $request ) {
         global $wpdb;
+
+        if ( ! $this->ensure_table_exists() ) {
+            return new WP_REST_Response(
+                array(
+                    'success'  => true,
+                    'data'     => array(),
+                    'filename' => 'vbp-audit-log-' . gmdate( 'Y-m-d' ) . '.csv',
+                ),
+                200
+            );
+        }
 
         $results = $wpdb->get_results(
             "SELECT * FROM {$this->table_name} ORDER BY created_at DESC LIMIT 10000",

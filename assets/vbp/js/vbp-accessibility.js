@@ -105,8 +105,14 @@
     // KEYBOARD NAVIGATION
     // ============================================
     window.vbpKeyboardNav = {
+        initialized: false,
+
         init: function() {
-            document.addEventListener('keydown', this.handleGlobalKeydown.bind(this));
+            if (!this.initialized) {
+                this._boundGlobalKeydown = this.handleGlobalKeydown.bind(this);
+                document.addEventListener('keydown', this._boundGlobalKeydown);
+                this.initialized = true;
+            }
             this.initBlocksList();
             this.initLayersList();
             this.initInspectorTabs();
@@ -127,7 +133,7 @@
 
         initBlocksList: function() {
             var blocksList = document.querySelector('.vbp-blocks-list');
-            if (!blocksList) return;
+            if (!blocksList || blocksList.dataset.vbpKeyboardBound === 'true') return;
 
             blocksList.addEventListener('keydown', function(e) {
                 var currentItem = document.activeElement;
@@ -163,11 +169,13 @@
                     item.setAttribute('tabindex', '0');
                 }
             });
+
+            blocksList.dataset.vbpKeyboardBound = 'true';
         },
 
         initLayersList: function() {
             var layersList = document.querySelector('.vbp-layers-list');
-            if (!layersList) return;
+            if (!layersList || layersList.dataset.vbpKeyboardBound === 'true') return;
 
             layersList.addEventListener('keydown', function(e) {
                 var currentItem = document.activeElement;
@@ -209,11 +217,13 @@
                     item.setAttribute('tabindex', '0');
                 }
             });
+
+            layersList.dataset.vbpKeyboardBound = 'true';
         },
 
         initInspectorTabs: function() {
             var tabsContainer = document.querySelector('.vbp-inspector-tabs');
-            if (!tabsContainer) return;
+            if (!tabsContainer || tabsContainer.dataset.vbpKeyboardBound === 'true') return;
 
             tabsContainer.addEventListener('keydown', function(e) {
                 var currentTab = document.activeElement;
@@ -237,6 +247,8 @@
                         break;
                 }
             });
+
+            tabsContainer.dataset.vbpKeyboardBound = 'true';
         }
     };
 
@@ -318,9 +330,11 @@
     // SEARCH RESULTS COUNTER
     // ============================================
     window.vbpSearchEnhanced = {
+        initialized: false,
+
         init: function() {
             var searchInput = document.querySelector('.vbp-search-input');
-            if (!searchInput) return;
+            if (!searchInput || this.initialized) return;
 
             var self = this;
             searchInput.addEventListener('input', function() {
@@ -346,6 +360,8 @@
                     });
                 }
             }
+
+            this.initialized = true;
         },
 
         updateResultsCount: function() {
@@ -370,10 +386,13 @@
     window.vbpColorEnhanced = {
         recentColors: [],
         maxRecent: 8,
+        initialized: false,
 
         init: function() {
+            if (this.initialized) return;
             this.loadRecentColors();
             this.enhanceColorPickers();
+            this.initialized = true;
         },
 
         loadRecentColors: function() {
@@ -420,9 +439,11 @@
             var self = this;
 
             document.querySelectorAll('.vbp-color-native').forEach(function(picker) {
+                if (picker.dataset.vbpColorEnhanced === 'true') return;
                 picker.addEventListener('change', function() {
                     self.addRecentColor(this.value);
                 });
+                picker.dataset.vbpColorEnhanced = 'true';
             });
         },
 
@@ -454,10 +475,14 @@
     window.vbpBreakpointIndicator = {
         currentBreakpoint: 'desktop',
         indicator: null,
+        initialized: false,
+        resizeObserver: null,
 
         init: function() {
+            if (this.initialized) return;
             this.createIndicator();
             this.bindEvents();
+            this.initialized = true;
         },
 
         createIndicator: function() {
@@ -483,7 +508,7 @@
             // También observar el canvas por cambios de ancho
             var canvas = document.querySelector('.vbp-canvas-container');
             if (canvas) {
-                var resizeObserver = new ResizeObserver(function(entries) {
+                this.resizeObserver = new ResizeObserver(function(entries) {
                     var width = entries[0].contentRect.width;
                     if (width <= 480) {
                         self.updateIndicator('mobile');
@@ -493,7 +518,7 @@
                         self.updateIndicator('desktop');
                     }
                 });
-                resizeObserver.observe(canvas);
+                this.resizeObserver.observe(canvas);
             }
         },
 
@@ -628,7 +653,10 @@
     function initAll() {
         // Esperar a que el DOM esté listo
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initAll);
+            if (!window.__vbpAccessibilityDomReadyBound) {
+                window.__vbpAccessibilityDomReadyBound = true;
+                document.addEventListener('DOMContentLoaded', initAll, { once: true });
+            }
             return;
         }
 
@@ -641,27 +669,42 @@
         vbpZoomIndicator.init();
 
         // Re-init cuando Alpine actualiza el DOM
-        document.addEventListener('alpine:initialized', function() {
-            setTimeout(function() {
-                vbpAria.init();
-                vbpKeyboardNav.initBlocksList();
-                vbpKeyboardNav.initLayersList();
-            }, 500);
-        });
+        if (!window.__vbpAccessibilityAlpineInitBound) {
+            window.__vbpAccessibilityAlpineInitBound = true;
+            document.addEventListener('alpine:initialized', function() {
+                requestAnimationFrame(function() {
+                    vbpAria.init();
+                    vbpKeyboardNav.initBlocksList();
+                    vbpKeyboardNav.initLayersList();
+                });
+            });
+        }
 
         // Observar cambios en el DOM para re-aplicar ARIA
-        var observer = new MutationObserver(function(mutations) {
-            var needsAriaUpdate = mutations.some(function(m) {
-                return m.addedNodes.length > 0;
-            });
-            if (needsAriaUpdate) {
-                vbpAria.addAriaToButtons();
-            }
-        });
+        if (!window.__vbpAccessibilityObserverBound) {
+            window.__vbpAccessibilityObserverBound = true;
+            var pendingAriaRefresh = false;
+            var observer = new MutationObserver(function(mutations) {
+                var needsAriaUpdate = mutations.some(function(m) {
+                    return m.addedNodes && m.addedNodes.length > 0;
+                });
+                if (!needsAriaUpdate || pendingAriaRefresh) {
+                    return;
+                }
 
-        var editorContainer = document.querySelector('.vbp-editor');
-        if (editorContainer) {
-            observer.observe(editorContainer, { childList: true, subtree: true });
+                pendingAriaRefresh = true;
+                requestAnimationFrame(function() {
+                    pendingAriaRefresh = false;
+                    vbpAria.addAriaToButtons();
+                    vbpAria.addAriaToLayers();
+                    vbpAria.addAriaToCategories();
+                });
+            });
+
+            var editorContainer = document.querySelector('.vbp-editor-body');
+            if (editorContainer) {
+                observer.observe(editorContainer, { childList: true, subtree: true });
+            }
         }
     }
 

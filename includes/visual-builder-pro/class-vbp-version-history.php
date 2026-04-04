@@ -21,6 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Flavor_VBP_Version_History {
 
     /**
+     * Meta key unificada del editor.
+     *
+     * @var string
+     */
+    const META_DATA = '_flavor_vbp_data';
+
+    /**
      * Número máximo de versiones por post
      *
      * @var int
@@ -109,9 +116,11 @@ class Flavor_VBP_Version_History {
 
     /**
      * Registra las rutas de la API
+     *
+     * NOTA: Unificado a flavor-vbp/v1 para consistencia con el resto del sistema.
      */
     public function registrar_rutas() {
-        $namespace = 'vbp/v1';
+        $namespace = 'flavor-vbp/v1';
 
         // Obtener historial de versiones
         register_rest_route(
@@ -230,6 +239,49 @@ class Flavor_VBP_Version_History {
      */
     public function guardar_version_automatica( $post_id, $content ) {
         $this->guardar_version( $post_id, $content );
+    }
+
+    /**
+     * Obtiene el documento VBP actual usando la persistencia activa.
+     *
+     * @param int $post_id ID del post.
+     * @return array|null
+     */
+    private function obtener_documento_actual( $post_id ) {
+        if ( class_exists( 'Flavor_VBP_Editor' ) ) {
+            return Flavor_VBP_Editor::get_instance()->obtener_datos_documento( $post_id );
+        }
+
+        $contenido = get_post_meta( $post_id, self::META_DATA, true );
+        if ( is_array( $contenido ) ) {
+            return $contenido;
+        }
+
+        $legacy = get_post_meta( $post_id, '_vbp_content', true );
+        if ( is_array( $legacy ) ) {
+            return array(
+                'version'  => 'legacy',
+                'elements' => $legacy,
+                'settings' => array(),
+            );
+        }
+
+        return null;
+    }
+
+    /**
+     * Guarda el documento VBP actual usando la persistencia activa.
+     *
+     * @param int   $post_id   ID del post.
+     * @param array $documento Documento a guardar.
+     * @return bool
+     */
+    private function guardar_documento_actual( $post_id, $documento ) {
+        if ( class_exists( 'Flavor_VBP_Editor' ) ) {
+            return Flavor_VBP_Editor::get_instance()->guardar_datos_documento( $post_id, $documento );
+        }
+
+        return false !== update_post_meta( $post_id, self::META_DATA, $documento );
     }
 
     /**
@@ -457,7 +509,15 @@ class Flavor_VBP_Version_History {
             return $resumen;
         }
 
-        $this->contar_elementos_recursivo( $contenido, $resumen );
+        $elementos = isset( $contenido['elements'] ) && is_array( $contenido['elements'] )
+            ? $contenido['elements']
+            : $contenido;
+
+        if ( ! is_array( $elementos ) ) {
+            return $resumen;
+        }
+
+        $this->contar_elementos_recursivo( $elementos, $resumen );
 
         return $resumen;
     }
@@ -497,7 +557,7 @@ class Flavor_VBP_Version_History {
         $label   = sanitize_text_field( $request->get_param( 'label' ) ?? '' );
 
         // Obtener contenido actual del post
-        $contenido = get_post_meta( $post_id, '_vbp_content', true );
+        $contenido = $this->obtener_documento_actual( $post_id );
 
         if ( empty( $contenido ) ) {
             return new WP_REST_Response(
@@ -557,7 +617,7 @@ class Flavor_VBP_Version_History {
         }
 
         // Guardar versión actual antes de restaurar
-        $contenido_actual = get_post_meta( $post_id, '_vbp_content', true );
+        $contenido_actual = $this->obtener_documento_actual( $post_id );
         if ( $contenido_actual ) {
             $this->guardar_version(
                 $post_id,
@@ -567,7 +627,7 @@ class Flavor_VBP_Version_History {
         }
 
         // Restaurar contenido
-        update_post_meta( $post_id, '_vbp_content', $contenido );
+        $this->guardar_documento_actual( $post_id, $contenido );
 
         // Guardar versión restaurada
         $this->guardar_version(

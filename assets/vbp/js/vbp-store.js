@@ -16,68 +16,6 @@ if (!window.vbpLog) {
 }
 
 document.addEventListener('alpine:init', () => {
-    // Store para modales de selectores
-    Alpine.store('vbpModals', {
-        iconSelector: {
-            open: false,
-            callback: null,
-            currentValue: '',
-            field: '',
-            itemIndex: null
-        },
-        emojiPicker: {
-            open: false,
-            callback: null,
-            position: { x: 0, y: 0 },
-            field: '',
-            itemIndex: null
-        },
-
-        openEmojiPicker: function(callback, position, field, itemIndex) {
-            this.emojiPicker.callback = callback;
-            this.emojiPicker.position = position || { x: 0, y: 0 };
-            this.emojiPicker.field = field || '';
-            this.emojiPicker.itemIndex = itemIndex !== undefined ? itemIndex : null;
-            this.emojiPicker.open = true;
-        },
-
-        closeEmojiPicker: function() {
-            this.emojiPicker.open = false;
-            this.emojiPicker.callback = null;
-        },
-
-        applyEmojiSelection: function(emoji) {
-            if (this.emojiPicker.callback) {
-                this.emojiPicker.callback(emoji);
-            }
-            this.closeEmojiPicker();
-        },
-        linkSearch: {
-            open: false,
-            callback: null
-        },
-
-        openIconSelector: function(callback, currentValue, field, itemIndex) {
-            this.iconSelector.callback = callback;
-            this.iconSelector.currentValue = currentValue || '';
-            this.iconSelector.field = field || 'icono';
-            this.iconSelector.itemIndex = itemIndex !== undefined ? itemIndex : null;
-            this.iconSelector.open = true;
-        },
-
-        closeIconSelector: function() {
-            this.iconSelector.open = false;
-            this.iconSelector.callback = null;
-        },
-
-        applyIconSelection: function(type, value) {
-            if (this.iconSelector.callback) {
-                this.iconSelector.callback(type, value);
-            }
-            this.closeIconSelector();
-        }
-    });
-
     // Índice de elementos para búsquedas O(1)
     const elementIndex = new Map();
 
@@ -361,34 +299,9 @@ document.addEventListener('alpine:init', () => {
          * Obtener elemento por ID incluyendo hijos de contenedores (recursivo)
          */
         getElementDeep(id) {
-            // Primero buscar en elementos principales
-            var element = this.getElement(id);
-            if (element) return element;
-
-            // Función recursiva para buscar en hijos anidados
-            function findInChildren(children) {
-                if (!children || children.length === 0) return null;
-                for (var j = 0; j < children.length; j++) {
-                    if (children[j].id === id) {
-                        return children[j];
-                    }
-                    // Buscar recursivamente en hijos anidados
-                    if (children[j].children && children[j].children.length > 0) {
-                        var found = findInChildren(children[j].children);
-                        if (found) return found;
-                    }
-                }
-                return null;
-            }
-
-            // Buscar en hijos de contenedores de nivel raíz
-            for (var i = 0; i < this.elements.length; i++) {
-                if (this.elements[i].children && this.elements[i].children.length > 0) {
-                    var found = findInChildren(this.elements[i].children);
-                    if (found) return found;
-                }
-            }
-            return null;
+            return window.VBPStoreTreeHelpers && typeof window.VBPStoreTreeHelpers.getElementDeep === 'function'
+                ? window.VBPStoreTreeHelpers.getElementDeep(this.elements, this.getElement.bind(this), id)
+                : null;
         },
 
         /**
@@ -397,41 +310,9 @@ document.addEventListener('alpine:init', () => {
          * @returns {Array} Array de objetos {id, name, type} desde la raíz hasta el elemento
          */
         getElementPath(id) {
-            var path = [];
-            var self = this;
-
-            // Añadir "Página" como raíz siempre
-            path.push({ id: 'root', name: 'Página', type: 'root' });
-
-            // Función recursiva para encontrar el camino
-            function findPath(elements, targetId, currentPath) {
-                for (var i = 0; i < elements.length; i++) {
-                    var el = elements[i];
-                    var newPath = currentPath.concat([{
-                        id: el.id,
-                        name: el.name || el.type,
-                        type: el.type
-                    }]);
-
-                    if (el.id === targetId) {
-                        return newPath;
-                    }
-
-                    // Buscar en hijos recursivamente
-                    if (el.children && el.children.length > 0) {
-                        var foundPath = findPath(el.children, targetId, newPath);
-                        if (foundPath) return foundPath;
-                    }
-                }
-                return null;
-            }
-
-            var elementPath = findPath(this.elements, id, []);
-            if (elementPath) {
-                path = path.concat(elementPath);
-            }
-
-            return path;
+            return window.VBPStoreTreeHelpers && typeof window.VBPStoreTreeHelpers.getElementPath === 'function'
+                ? window.VBPStoreTreeHelpers.getElementPath(this.elements, id)
+                : [{ id: 'root', name: 'Página', type: 'root' }];
         },
 
         /**
@@ -512,33 +393,14 @@ document.addEventListener('alpine:init', () => {
             }
 
             // Buscar en hijos de contenedores (recursivo para múltiples niveles)
-            var self = this;
-            function findAndUpdateChild(children, parentElement) {
-                if (!children || children.length === 0) return false;
-                for (var j = 0; j < children.length; j++) {
-                    if (children[j].id === id) {
-                        self.saveToHistory();
-                        // Actualizar el hijo
-                        var newChildVersion = (children[j]._version || 0) + 1;
-                        children[j] = { ...children[j], ...cambios, _version: newChildVersion };
-                        return true;
-                    }
-                    // Buscar recursivamente en hijos anidados
-                    if (children[j].children && children[j].children.length > 0) {
-                        if (findAndUpdateChild(children[j].children, children[j])) {
-                            // Actualizar versión del contenedor intermedio
-                            var intermediateVersion = (children[j]._version || 0) + 1;
-                            children[j] = { ...children[j], _version: intermediateVersion };
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
             for (var i = 0; i < this.elements.length; i++) {
                 if (this.elements[i].children && this.elements[i].children.length > 0) {
-                    if (findAndUpdateChild(this.elements[i].children, this.elements[i])) {
+                    if (window.VBPStoreMutationHelpers && typeof window.VBPStoreMutationHelpers.mutateChildren === 'function' &&
+                        window.VBPStoreMutationHelpers.mutateChildren(this.elements[i].children, id, (children, childIndex) => {
+                            this.saveToHistory();
+                            var newChildVersion = (children[childIndex]._version || 0) + 1;
+                            children[childIndex] = { ...children[childIndex], ...cambios, _version: newChildVersion };
+                        })) {
                         // Forzar re-render del contenedor padre raíz
                         var parentVersion = (this.elements[i]._version || 0) + 1;
                         this.elements[i] = { ...this.elements[i], _version: parentVersion };
@@ -567,31 +429,13 @@ document.addEventListener('alpine:init', () => {
             }
 
             // Buscar y eliminar de hijos de contenedores (recursivo)
-            var self = this;
-            function findAndRemoveChild(children) {
-                if (!children || children.length === 0) return false;
-                for (var j = 0; j < children.length; j++) {
-                    if (children[j].id === id) {
-                        self.saveToHistory();
-                        children.splice(j, 1);
-                        return true;
-                    }
-                    // Buscar recursivamente en hijos anidados
-                    if (children[j].children && children[j].children.length > 0) {
-                        if (findAndRemoveChild(children[j].children)) {
-                            // Actualizar versión del contenedor intermedio
-                            var intermediateVersion = (children[j]._version || 0) + 1;
-                            children[j] = { ...children[j], _version: intermediateVersion };
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
             for (var i = 0; i < this.elements.length; i++) {
                 if (this.elements[i].children && this.elements[i].children.length > 0) {
-                    if (findAndRemoveChild(this.elements[i].children)) {
+                    if (window.VBPStoreMutationHelpers && typeof window.VBPStoreMutationHelpers.mutateChildren === 'function' &&
+                        window.VBPStoreMutationHelpers.mutateChildren(this.elements[i].children, id, (children, childIndex) => {
+                            this.saveToHistory();
+                            children.splice(childIndex, 1);
+                        })) {
                         // Forzar re-render del contenedor padre raíz
                         var parentVersion = (this.elements[i]._version || 0) + 1;
                         this.elements[i] = { ...this.elements[i], _version: parentVersion };
@@ -805,33 +649,20 @@ document.addEventListener('alpine:init', () => {
         },
 
         pushHistory(description) {
-            var entry = {
-                state: JSON.stringify(this.elements),
-                description: description || 'Cambio',
-                timestamp: Date.now()
-            };
-            this.history.past.push(entry);
-            this.history.future = [];
-
-            if (this.history.past.length > this.maxHistorySize) {
-                this.history.past.shift();
+            if (window.VBPStoreHistoryHelpers && typeof window.VBPStoreHistoryHelpers.pushHistory === 'function') {
+                window.VBPStoreHistoryHelpers.pushHistory(this.history, this.elements, this.maxHistorySize, description || 'Cambio');
             }
         },
 
         undo() {
             if (!this.canUndo) return null;
-            var lastEntry = this.history.past.pop();
-            var currentEntry = {
-                state: JSON.stringify(this.elements),
-                description: lastEntry.description,
-                timestamp: Date.now()
-            };
-            this.history.future.unshift(currentEntry);
+            var result = window.VBPStoreHistoryHelpers && typeof window.VBPStoreHistoryHelpers.undo === 'function'
+                ? window.VBPStoreHistoryHelpers.undo(this.history, this.elements)
+                : null;
+            if (!result) return null;
 
-            // Compatibilidad: si es string antiguo, parsearlo directamente
-            var stateData = typeof lastEntry === 'string' ? lastEntry : lastEntry.state;
-            this.elements = JSON.parse(stateData);
-            this.lastUndoDescription = lastEntry.description || 'Cambio';
+            this.elements = result.elements;
+            this.lastUndoDescription = result.description;
 
             rebuildIndex(this.elements);
             this.markAsDirty();
@@ -840,18 +671,13 @@ document.addEventListener('alpine:init', () => {
 
         redo() {
             if (!this.canRedo) return null;
-            var nextEntry = this.history.future.shift();
-            var currentEntry = {
-                state: JSON.stringify(this.elements),
-                description: nextEntry.description,
-                timestamp: Date.now()
-            };
-            this.history.past.push(currentEntry);
+            var result = window.VBPStoreHistoryHelpers && typeof window.VBPStoreHistoryHelpers.redo === 'function'
+                ? window.VBPStoreHistoryHelpers.redo(this.history, this.elements)
+                : null;
+            if (!result) return null;
 
-            // Compatibilidad: si es string antiguo, parsearlo directamente
-            var stateData = typeof nextEntry === 'string' ? nextEntry : nextEntry.state;
-            this.elements = JSON.parse(stateData);
-            this.lastRedoDescription = nextEntry.description || 'Cambio';
+            this.elements = result.elements;
+            this.lastRedoDescription = result.description;
 
             rebuildIndex(this.elements);
             this.markAsDirty();
@@ -1008,558 +834,48 @@ document.addEventListener('alpine:init', () => {
 
         // Helpers
         getDefaultName(type) {
-            const nombres = {
-                // Secciones
-                hero: 'Hero',
-                features: 'Características',
-                testimonials: 'Testimonios',
-                pricing: 'Precios',
-                cta: 'Llamada a Acción',
-                faq: 'FAQ',
-                contact: 'Contacto',
-                team: 'Equipo',
-                stats: 'Estadísticas',
-                gallery: 'Galería',
-                blog: 'Blog',
-                'video-section': 'Sección Video',
-                // Básicos
-                heading: 'Encabezado',
-                text: 'Texto',
-                image: 'Imagen',
-                button: 'Botón',
-                divider: 'Separador',
-                spacer: 'Espaciador',
-                icon: 'Icono',
-                html: 'HTML',
-                shortcode: 'Shortcode',
-                // Layout
-                container: 'Contenedor',
-                columns: 'Columnas',
-                row: 'Fila',
-                grid: 'Grid',
-                // Formularios
-                form: 'Formulario',
-                input: 'Campo de texto',
-                textarea: 'Área de texto',
-                select: 'Selector',
-                checkbox: 'Checkbox',
-                // Media
-                'video-embed': 'Video Embed',
-                audio: 'Audio',
-                map: 'Mapa',
-                mapa: 'Mapa',
-                embed: 'Embed',
-                // Nuevos bloques
-                countdown: 'Cuenta Regresiva',
-                'social-icons': 'Iconos Sociales',
-                newsletter: 'Newsletter',
-                'logo-grid': 'Grid de Logos',
-                'icon-box': 'Caja de Icono',
-                accordion: 'Acordeón',
-                tabs: 'Pestañas',
-                'progress-bar': 'Barra de Progreso',
-                alert: 'Alerta',
-                'before-after': 'Antes/Después'
-            };
-            return nombres[type] || type;
+            return window.VBPStoreCatalog && typeof window.VBPStoreCatalog.getDefaultName === 'function'
+                ? window.VBPStoreCatalog.getDefaultName(type)
+                : type;
         },
 
         getDefaultData(type) {
-            const defaults = {
-                // Secciones
-                hero: {
-                    titulo: 'Título Principal',
-                    subtitulo: 'Subtítulo descriptivo que explica el valor de tu propuesta',
-                    boton_texto: 'Comenzar ahora',
-                    boton_url: '#',
-                    imagen_fondo: ''
-                },
-                features: {
-                    titulo: 'Nuestras Características',
-                    items: [
-                        { icono: '⚡', titulo: 'Rápido', descripcion: 'Implementación en minutos' },
-                        { icono: '🔒', titulo: 'Seguro', descripcion: 'Protección de datos garantizada' },
-                        { icono: '📱', titulo: 'Responsive', descripcion: 'Funciona en todos los dispositivos' }
-                    ]
-                },
-                testimonials: {
-                    titulo: 'Lo que dicen nuestros clientes',
-                    items: [
-                        { texto: 'Excelente servicio, muy recomendado. Ha superado todas nuestras expectativas.', autor: 'María García', cargo: 'CEO, Empresa X' }
-                    ]
-                },
-                pricing: {
-                    titulo: 'Planes y Precios',
-                    subtitulo: 'Elige el plan que mejor se adapte a tus necesidades',
-                    items: [
-                        { nombre: 'Básico', precio: '9', periodo: '/mes', caracteristicas: ['5 usuarios', '10GB almacenamiento', 'Soporte email'], destacado: false },
-                        { nombre: 'Pro', precio: '29', periodo: '/mes', caracteristicas: ['25 usuarios', '100GB almacenamiento', 'Soporte prioritario'], destacado: true },
-                        { nombre: 'Enterprise', precio: '99', periodo: '/mes', caracteristicas: ['Usuarios ilimitados', '1TB almacenamiento', 'Soporte 24/7'], destacado: false }
-                    ]
-                },
-                cta: {
-                    titulo: '¿Listo para empezar?',
-                    subtitulo: 'Únete a miles de usuarios que ya confían en nosotros',
-                    boton_texto: 'Empezar gratis',
-                    boton_url: '#'
-                },
-                faq: {
-                    titulo: 'Preguntas Frecuentes',
-                    items: [
-                        { pregunta: '¿Cómo funciona?', respuesta: 'Es muy sencillo, solo tienes que registrarte y empezar a usar la plataforma.' },
-                        { pregunta: '¿Puedo cancelar en cualquier momento?', respuesta: 'Sí, puedes cancelar tu suscripción cuando quieras sin penalizaciones.' },
-                        { pregunta: '¿Ofrecen soporte técnico?', respuesta: 'Sí, ofrecemos soporte técnico 24/7 para todos nuestros usuarios.' }
-                    ]
-                },
-                contact: {
-                    titulo: 'Contáctanos',
-                    subtitulo: 'Estaremos encantados de ayudarte'
-                },
-                team: {
-                    titulo: 'Nuestro Equipo',
-                    items: [
-                        { nombre: 'Ana García', cargo: 'CEO', bio: 'Fundadora con más de 10 años de experiencia.' },
-                        { nombre: 'Carlos López', cargo: 'CTO', bio: 'Experto en tecnología e innovación.' },
-                        { nombre: 'María Rodríguez', cargo: 'CMO', bio: 'Especialista en marketing digital.' }
-                    ]
-                },
-                stats: {
-                    items: [
-                        { numero: '10K+', label: 'Usuarios activos' },
-                        { numero: '99%', label: 'Satisfacción' },
-                        { numero: '24/7', label: 'Soporte' },
-                        { numero: '50+', label: 'Países' }
-                    ]
-                },
-                gallery: {
-                    titulo: 'Galería',
-                    items: []
-                },
-                blog: {
-                    titulo: 'Últimas Noticias'
-                },
-                'video-section': {
-                    titulo: 'Mira cómo funciona',
-                    descripcion: 'Descripción del video',
-                    video_url: ''
-                },
-                // Básicos
-                heading: { text: 'Escribe tu encabezado aquí', level: 'h2' },
-                text: { text: '<p>Escribe tu texto aquí. Puedes usar <strong>negrita</strong>, <em>cursiva</em> y más formatos usando la barra de herramientas flotante.</p>' },
-                image: { src: '', alt: '', caption: '' },
-                button: { text: 'Botón', url: '#', target: '_self', style: 'filled', align: 'left' },
-                divider: { style: 'solid', width: '1px', color: '#e0e0e0' },
-                spacer: { height: '60px' },
-                icon: { icon: '⭐', size: '48px' },
-                html: { code: '<!-- Tu código HTML aquí -->' },
-                shortcode: { shortcode: 'tu_shortcode' },
-                // Layout
-                container: { maxWidth: '1200px' },
-                columns: { columns: 2 },
-                row: { columns: 2 },
-                grid: {},
-                // Formularios
-                form: {
-                    titulo: 'Formulario',
-                    boton_texto: 'Enviar',
-                    boton_url: '',
-                    mensaje_exito: '¡Gracias! Tu mensaje ha sido enviado.',
-                    campos: [
-                        { tipo: 'text', label: 'Nombre', placeholder: 'Tu nombre', requerido: true },
-                        { tipo: 'email', label: 'Email', placeholder: 'tu@email.com', requerido: true },
-                        { tipo: 'textarea', label: 'Mensaje', placeholder: 'Escribe tu mensaje...', requerido: false }
-                    ]
-                },
-                input: { label: 'Campo', inputType: 'text', placeholder: 'Escribe aquí...' },
-                textarea: { label: 'Mensaje', placeholder: 'Escribe tu mensaje...' },
-                select: { label: 'Selecciona' },
-                checkbox: { label: 'Acepto los términos y condiciones' },
-                // Media
-                'video-embed': { url: '' },
-                audio: { src: '' },
-                map: { lat: '', lng: '', zoom: 14 },
-                mapa: { lat: '', lng: '', zoom: 14 },
-                embed: { code: '' },
-                // Nuevos bloques
-                countdown: {
-                    titulo: 'La oferta termina en',
-                    fecha: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                    hora: '23:59',
-                    mensaje_fin: '¡La oferta ha terminado!',
-                    mostrar_dias: true,
-                    mostrar_horas: true,
-                    mostrar_minutos: true,
-                    mostrar_segundos: true
-                },
-                'social-icons': {
-                    titulo: 'Síguenos',
-                    redes: [
-                        { red: 'facebook', url: '#', icono: '📘' },
-                        { red: 'twitter', url: '#', icono: '🐦' },
-                        { red: 'instagram', url: '#', icono: '📸' },
-                        { red: 'linkedin', url: '#', icono: '💼' }
-                    ],
-                    estilo: 'circle',
-                    tamano: 'medium',
-                    alineacion: 'center'
-                },
-                newsletter: {
-                    titulo: 'Suscríbete a nuestro newsletter',
-                    subtitulo: 'Recibe las últimas novedades directamente en tu email',
-                    placeholder_email: 'tu@email.com',
-                    boton_texto: 'Suscribirse',
-                    mostrar_nombre: false,
-                    mensaje_exito: '¡Gracias por suscribirte!'
-                },
-                'logo-grid': {
-                    titulo: 'Confían en nosotros',
-                    logos: [],
-                    columnas: 4,
-                    escala_grises: true,
-                    hover_color: true
-                },
-                'icon-box': {
-                    icono: '🚀',
-                    titulo: 'Título',
-                    descripcion: 'Descripción del servicio o característica',
-                    enlace_url: '',
-                    enlace_texto: 'Saber más',
-                    alineacion: 'center'
-                },
-                accordion: {
-                    titulo: 'Acordeón',
-                    items: [
-                        { titulo: 'Elemento 1', contenido: 'Contenido del elemento 1', abierto: true },
-                        { titulo: 'Elemento 2', contenido: 'Contenido del elemento 2', abierto: false },
-                        { titulo: 'Elemento 3', contenido: 'Contenido del elemento 3', abierto: false }
-                    ],
-                    multiples_abiertos: false
-                },
-                tabs: {
-                    items: [
-                        { titulo: 'Tab 1', contenido: 'Contenido de la pestaña 1' },
-                        { titulo: 'Tab 2', contenido: 'Contenido de la pestaña 2' },
-                        { titulo: 'Tab 3', contenido: 'Contenido de la pestaña 3' }
-                    ],
-                    tab_activa: 0,
-                    estilo: 'horizontal'
-                },
-                'progress-bar': {
-                    items: [
-                        { label: 'Diseño UI/UX', porcentaje: 90 },
-                        { label: 'Desarrollo Web', porcentaje: 85 },
-                        { label: 'Marketing Digital', porcentaje: 75 }
-                    ],
-                    mostrar_porcentaje: true,
-                    animado: true
-                },
-                alert: {
-                    tipo: 'info',
-                    titulo: 'Información importante',
-                    mensaje: 'Este es un mensaje de alerta para el usuario.',
-                    dismissible: true,
-                    icono: true
-                },
-                'before-after': {
-                    imagen_antes: '',
-                    imagen_despues: '',
-                    label_antes: 'Antes',
-                    label_despues: 'Después',
-                    posicion_inicial: 50,
-                    orientacion: 'horizontal'
-                },
-                timeline: {
-                    titulo: 'Línea de Tiempo',
-                    subtitulo: '',
-                    titulo_color: '#ffffff',
-                    subtitulo_color: '#9CA3AF',
-                    color_fondo: '#0f0f0f',
-                    linea_color: '#3b82f6',
-                    linea_posicion: 'center',
-                    eventos: [
-                        { fecha: '2020', titulo: 'Primer evento', descripcion: 'Descripción del primer evento', icono: '🚀' },
-                        { fecha: '2022', titulo: 'Segundo evento', descripcion: 'Descripción del segundo evento', icono: '📈' },
-                        { fecha: '2024', titulo: 'Tercer evento', descripcion: 'Descripción del tercer evento', icono: '🎯' }
-                    ]
-                },
-                carousel: {
-                    titulo: '',
-                    subtitulo: '',
-                    titulo_color: '#ffffff',
-                    subtitulo_color: '#9CA3AF',
-                    color_fondo: '#0f0f0f',
-                    autoplay: true,
-                    intervalo: 5,
-                    mostrar_flechas: true,
-                    mostrar_dots: true,
-                    loop: true,
-                    slides_visibles: 1,
-                    items: [
-                        { imagen: '', titulo: 'Slide 1', descripcion: 'Descripción del primer slide', enlace_url: '', enlace_texto: 'Ver más' },
-                        { imagen: '', titulo: 'Slide 2', descripcion: 'Descripción del segundo slide', enlace_url: '', enlace_texto: 'Ver más' }
-                    ]
-                }
-            };
-            return defaults[type] || {};
+            return window.VBPStoreCatalog && typeof window.VBPStoreCatalog.getDefaultData === 'function'
+                ? window.VBPStoreCatalog.getDefaultData(type)
+                : {};
         },
 
         getDefaultStyles() {
-            return {
-                spacing: {
-                    margin: { top: '', right: '', bottom: '', left: '' },
-                    padding: { top: '', right: '', bottom: '', left: '' }
-                },
-                colors: { background: '', text: '' },
-                background: {
-                    type: '',
-                    gradientDirection: 'to bottom',
-                    gradientStart: '#3b82f6',
-                    gradientEnd: '#8b5cf6',
-                    image: '',
-                    size: 'cover',
-                    position: 'center',
-                    repeat: 'no-repeat',
-                    fixed: false,
-                    overlayOpacity: 0
-                },
-                typography: { fontSize: '', fontWeight: '', lineHeight: '', textAlign: '' },
-                borders: { radius: '', width: '', color: '', style: '' },
-                shadows: { boxShadow: '' },
-                layout: { display: '', flexDirection: '', justifyContent: '', alignItems: '', flexWrap: '', gap: '', gridTemplateColumns: '', gridTemplateRows: '' },
-                dimensions: { width: '', height: '', minHeight: '', maxWidth: '' },
-                position: {
-                    position: '',
-                    top: '',
-                    right: '',
-                    bottom: '',
-                    left: '',
-                    zIndex: ''
-                },
-                transform: {
-                    rotate: '',
-                    scale: '',
-                    translateX: '',
-                    translateY: '',
-                    skewX: '',
-                    skewY: ''
-                },
-                overflow: '',
-                opacity: '',
-                // Estilos para estados interactivos (hover, active, focus)
-                states: {
-                    hover: {
-                        enabled: false,
-                        background: '',
-                        color: '',
-                        borderColor: '',
-                        boxShadow: '',
-                        transform: '',
-                        opacity: ''
-                    },
-                    active: {
-                        enabled: false,
-                        background: '',
-                        color: '',
-                        borderColor: '',
-                        boxShadow: '',
-                        transform: '',
-                        opacity: ''
-                    },
-                    focus: {
-                        enabled: false,
-                        background: '',
-                        color: '',
-                        borderColor: '',
-                        boxShadow: '',
-                        outline: '',
-                        outlineOffset: ''
-                    }
-                },
-                // Transiciones para estados
-                transition: {
-                    enabled: false,
-                    property: 'all',
-                    duration: '0.3s',
-                    timing: 'ease',
-                    delay: ''
-                },
-                advanced: {
-                    cssId: '',
-                    cssClasses: '',
-                    customCss: '',
-                    entranceAnimation: '',
-                    hoverAnimation: '',
-                    loopAnimation: '',
-                    parallaxEnabled: false,
-                    parallaxSpeed: 0.5
-                }
-            };
+            return window.VBPStoreCatalog && typeof window.VBPStoreCatalog.getDefaultStyles === 'function'
+                ? window.VBPStoreCatalog.getDefaultStyles()
+                : {};
         },
 
         /**
          * Asegurar que un elemento tiene la estructura completa de estilos
          */
         ensureStylesComplete(element) {
-            if (!element) return element;
-
-            var defaults = this.getDefaultStyles();
-
-            if (!element.styles) {
-                element.styles = defaults;
-                return element;
-            }
-
-            // Merge profundo para cada sección
-            var sections = ['spacing', 'colors', 'background', 'typography', 'borders', 'shadows', 'layout', 'dimensions', 'position', 'transform', 'states', 'transition', 'advanced'];
-            var self = this;
-
-            sections.forEach(function(section) {
-                if (!element.styles[section]) {
-                    element.styles[section] = defaults[section];
-                } else if (typeof defaults[section] === 'object') {
-                    // Merge de subobjetos
-                    Object.keys(defaults[section]).forEach(function(key) {
-                        if (element.styles[section][key] === undefined) {
-                            element.styles[section][key] = defaults[section][key];
-                        }
-                    });
-                }
-            });
-
-            // Asegurar subobjetos de spacing
-            if (element.styles.spacing) {
-                if (!element.styles.spacing.margin) {
-                    element.styles.spacing.margin = { top: '', right: '', bottom: '', left: '' };
-                }
-                if (!element.styles.spacing.padding) {
-                    element.styles.spacing.padding = { top: '', right: '', bottom: '', left: '' };
-                }
-            }
-
-            // Asegurar propiedades simples
-            if (element.styles.overflow === undefined) {
-                element.styles.overflow = '';
-            }
-            if (element.styles.opacity === undefined) {
-                element.styles.opacity = '';
-            }
-
-            return element;
+            return window.VBPStoreStyleHelpers && typeof window.VBPStoreStyleHelpers.ensureStylesComplete === 'function'
+                ? window.VBPStoreStyleHelpers.ensureStylesComplete(element, this.getDefaultStyles())
+                : element;
         },
 
         /**
          * Obtener variante por defecto según tipo
          */
         getDefaultVariant(type) {
-            const defaults = {
-                hero: 'centered',
-                features: 'grid',
-                testimonials: 'cards',
-                pricing: 'columns',
-                cta: 'centered',
-                faq: 'simple',
-                contact: 'simple',
-                team: 'grid',
-                button: 'filled',
-                divider: 'solid',
-                'icon-box': 'vertical',
-                accordion: 'simple',
-                tabs: 'horizontal',
-                alert: 'info',
-                newsletter: 'inline'
-            };
-            return defaults[type] || 'default';
+            return window.VBPStoreCatalog && typeof window.VBPStoreCatalog.getDefaultVariant === 'function'
+                ? window.VBPStoreCatalog.getDefaultVariant(type)
+                : 'default';
         },
 
         /**
          * Obtener variantes disponibles para un tipo
          */
         getVariantsForType(type) {
-            const variants = {
-                hero: [
-                    { id: 'centered', name: 'Centrado', icon: '⊡' },
-                    { id: 'left', name: 'Izquierda', icon: '⊟' },
-                    { id: 'split', name: 'Dividido', icon: '⊞' },
-                    { id: 'video-bg', name: 'Video fondo', icon: '▶' },
-                    { id: 'minimal', name: 'Minimalista', icon: '―' }
-                ],
-                features: [
-                    { id: 'grid', name: 'Grid', icon: '⊞' },
-                    { id: 'list', name: 'Lista', icon: '≡' },
-                    { id: 'icons', name: 'Iconos', icon: '◎' },
-                    { id: 'cards', name: 'Tarjetas', icon: '▢' }
-                ],
-                testimonials: [
-                    { id: 'cards', name: 'Tarjetas', icon: '▢' },
-                    { id: 'carousel', name: 'Carrusel', icon: '↔' },
-                    { id: 'quotes', name: 'Citas', icon: '❝' },
-                    { id: 'minimal', name: 'Mínimo', icon: '―' }
-                ],
-                pricing: [
-                    { id: 'columns', name: 'Columnas', icon: '▥' },
-                    { id: 'cards', name: 'Tarjetas', icon: '▢' },
-                    { id: 'toggle', name: 'Toggle', icon: '⇄' }
-                ],
-                cta: [
-                    { id: 'centered', name: 'Centrado', icon: '⊡' },
-                    { id: 'split', name: 'Dividido', icon: '⊞' },
-                    { id: 'banner', name: 'Banner', icon: '▭' }
-                ],
-                faq: [
-                    { id: 'simple', name: 'Simple', icon: '≡' },
-                    { id: 'accordion', name: 'Acordeón', icon: '▼' },
-                    { id: 'tabs', name: 'Pestañas', icon: '⊟' }
-                ],
-                contact: [
-                    { id: 'simple', name: 'Simple', icon: '▢' },
-                    { id: 'split', name: 'Dividido', icon: '⊞' },
-                    { id: 'minimal', name: 'Mínimo', icon: '―' }
-                ],
-                team: [
-                    { id: 'grid', name: 'Grid', icon: '⊞' },
-                    { id: 'cards', name: 'Tarjetas', icon: '▢' },
-                    { id: 'list', name: 'Lista', icon: '≡' }
-                ],
-                button: [
-                    { id: 'filled', name: 'Relleno', icon: '▮' },
-                    { id: 'outline', name: 'Contorno', icon: '▯' },
-                    { id: 'ghost', name: 'Ghost', icon: '◇' },
-                    { id: 'link', name: 'Enlace', icon: '―' }
-                ],
-                divider: [
-                    { id: 'solid', name: 'Sólido', icon: '―' },
-                    { id: 'dashed', name: 'Guiones', icon: '- -' },
-                    { id: 'dotted', name: 'Puntos', icon: '···' },
-                    { id: 'gradient', name: 'Gradiente', icon: '▬' }
-                ],
-                'icon-box': [
-                    { id: 'vertical', name: 'Vertical', icon: '⊡' },
-                    { id: 'horizontal', name: 'Horizontal', icon: '⊟' },
-                    { id: 'left', name: 'Izquierda', icon: '◀' }
-                ],
-                accordion: [
-                    { id: 'simple', name: 'Simple', icon: '≡' },
-                    { id: 'bordered', name: 'Bordeado', icon: '▢' },
-                    { id: 'filled', name: 'Relleno', icon: '▮' }
-                ],
-                tabs: [
-                    { id: 'horizontal', name: 'Horizontal', icon: '⊟' },
-                    { id: 'vertical', name: 'Vertical', icon: '⊡' },
-                    { id: 'pills', name: 'Pills', icon: '◯' }
-                ],
-                alert: [
-                    { id: 'info', name: 'Info', icon: 'ℹ' },
-                    { id: 'success', name: 'Éxito', icon: '✓' },
-                    { id: 'warning', name: 'Aviso', icon: '⚠' },
-                    { id: 'error', name: 'Error', icon: '✗' }
-                ],
-                newsletter: [
-                    { id: 'inline', name: 'En línea', icon: '⊟' },
-                    { id: 'stacked', name: 'Apilado', icon: '⊡' },
-                    { id: 'minimal', name: 'Mínimo', icon: '―' }
-                ]
-            };
-            return variants[type] || [];
+            return window.VBPStoreCatalog && typeof window.VBPStoreCatalog.getVariantsForType === 'function'
+                ? window.VBPStoreCatalog.getVariantsForType(type)
+                : [];
         },
 
         /**
@@ -1639,53 +955,27 @@ document.addEventListener('alpine:init', () => {
          * Combinar estilos base con overrides
          */
         mergeStyles(base, overrides) {
-            var result = JSON.parse(JSON.stringify(base));
-
-            for (var key in overrides) {
-                if (overrides.hasOwnProperty(key)) {
-                    if (typeof overrides[key] === 'object' && overrides[key] !== null && !Array.isArray(overrides[key])) {
-                        result[key] = this.mergeStyles(result[key] || {}, overrides[key]);
-                    } else if (overrides[key] !== '' && overrides[key] !== null && overrides[key] !== undefined) {
-                        result[key] = overrides[key];
-                    }
-                }
-            }
-
-            return result;
+            return window.VBPStoreStyleHelpers && typeof window.VBPStoreStyleHelpers.mergeStyles === 'function'
+                ? window.VBPStoreStyleHelpers.mergeStyles(base, overrides)
+                : base;
         },
 
         /**
          * Establecer valor en objeto anidado usando path tipo 'spacing.padding.top'
          */
         setNestedValue(obj, path, value) {
-            var parts = path.split('.');
-            var current = obj;
-
-            for (var i = 0; i < parts.length - 1; i++) {
-                if (!current[parts[i]]) {
-                    current[parts[i]] = {};
-                }
-                current = current[parts[i]];
+            if (window.VBPStoreStyleHelpers && typeof window.VBPStoreStyleHelpers.setNestedValue === 'function') {
+                window.VBPStoreStyleHelpers.setNestedValue(obj, path, value);
             }
-
-            current[parts[parts.length - 1]] = value;
         },
 
         /**
          * Obtener valor de objeto anidado
          */
         getNestedValue(obj, path) {
-            var parts = path.split('.');
-            var current = obj;
-
-            for (var i = 0; i < parts.length; i++) {
-                if (!current || !current.hasOwnProperty(parts[i])) {
-                    return undefined;
-                }
-                current = current[parts[i]];
-            }
-
-            return current;
+            return window.VBPStoreStyleHelpers && typeof window.VBPStoreStyleHelpers.getNestedValue === 'function'
+                ? window.VBPStoreStyleHelpers.getNestedValue(obj, path)
+                : undefined;
         },
 
         /**

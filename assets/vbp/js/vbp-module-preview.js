@@ -22,6 +22,8 @@
      * Sistema de preview de módulos
      */
     window.vbpModulePreview = {
+        __advanced: true,
+
         // Cache de previews renderizados
         cache: new Map(),
 
@@ -90,22 +92,136 @@
         },
 
         /**
+         * Localizar contenedor visible de preview para un módulo
+         */
+        getPreviewContainer: function(elementId) {
+            var container = document.querySelector('.vbp-module-preview-container[data-element-id="' + elementId + '"]');
+            if (container) {
+                return container;
+            }
+
+            var iframe = document.querySelector('.vbp-canvas-iframe');
+            if (iframe && iframe.contentDocument) {
+                container = iframe.contentDocument.querySelector('.vbp-module-preview-container[data-element-id="' + elementId + '"]');
+                if (container) {
+                    return container;
+                }
+            }
+
+            return document.querySelector('[data-element-id="' + elementId + '"]');
+        },
+
+        /**
+         * Extraer atributos reales desde el elemento
+         */
+        getElementAttributes: function(element) {
+            var attributes = {};
+
+            if (!element || !element.data) {
+                return attributes;
+            }
+
+            Object.keys(element.data).forEach(function(key) {
+                if (key !== 'shortcode' && element.data[key] !== undefined) {
+                    attributes[key] = element.data[key];
+                }
+            });
+
+            return attributes;
+        },
+
+        /**
+         * Leer atributos serializados en el DOM
+         */
+        getContainerAttributes: function(elementId) {
+            var container = this.getPreviewContainer(elementId);
+            if (!container || !container.dataset.attributes) {
+                return {};
+            }
+
+            try {
+                return JSON.parse(container.dataset.attributes);
+            } catch (error) {
+                vbpLog.warn('ModulePreview: no se pudieron parsear atributos del contenedor', error);
+                return {};
+            }
+        },
+
+        /**
+         * Normalizar payload de preview para firma antigua y nueva
+         */
+        normalizePreviewRequest: function(elementOrId, shortcodeOrForceRefresh, attributesOrForceRefresh) {
+            var isLegacyElement = elementOrId && typeof elementOrId === 'object';
+            var element = isLegacyElement ? elementOrId : this.getElementById(elementOrId);
+            var forceRefresh = false;
+            var elementId;
+            var shortcode;
+            var attributes;
+
+            if (isLegacyElement) {
+                elementId = element.id;
+                forceRefresh = shortcodeOrForceRefresh === true;
+                shortcode = element.shortcode ||
+                    (element.data && element.data.shortcode) ||
+                    element.module ||
+                    '';
+                attributes = this.getElementAttributes(element);
+            } else {
+                elementId = elementOrId;
+                forceRefresh = attributesOrForceRefresh === true;
+                shortcode = shortcodeOrForceRefresh ||
+                    (element && (element.shortcode || (element.data && element.data.shortcode) || element.module)) ||
+                    '';
+                attributes = attributesOrForceRefresh && typeof attributesOrForceRefresh === 'object'
+                    ? attributesOrForceRefresh
+                    : this.getContainerAttributes(elementId);
+
+                if ((!attributes || !Object.keys(attributes).length) && element) {
+                    attributes = this.getElementAttributes(element);
+                }
+            }
+
+            return {
+                element: element,
+                elementId: elementId,
+                shortcode: shortcode,
+                attributes: attributes || {},
+                forceRefresh: forceRefresh
+            };
+        },
+
+        /**
          * Obtener la clave de cache para un elemento
          */
-        getCacheKey: function(element) {
-            var shortcode = element.shortcode ||
-                           (element.data && element.data.shortcode) ||
-                           element.module || '';
-            var attributes = element.data || {};
+        getCacheKey: function(elementOrShortcode, explicitAttributes) {
+            var shortcode = '';
+            var attributes = explicitAttributes || {};
+
+            if (typeof elementOrShortcode === 'string') {
+                shortcode = elementOrShortcode;
+            } else if (elementOrShortcode) {
+                shortcode = elementOrShortcode.shortcode ||
+                    (elementOrShortcode.data && elementOrShortcode.data.shortcode) ||
+                    elementOrShortcode.module || '';
+                attributes = this.getElementAttributes(elementOrShortcode);
+            }
+
             return shortcode + ':' + JSON.stringify(attributes);
         },
 
         /**
          * Cargar preview de un elemento
          */
-        loadPreview: function(element, forceRefresh) {
+        loadPreview: function(elementOrId, shortcodeOrForceRefresh, attributesOrForceRefresh) {
             var self = this;
-            var elementId = element.id;
+            var request = this.normalizePreviewRequest(elementOrId, shortcodeOrForceRefresh, attributesOrForceRefresh);
+            var elementId = request.elementId;
+            var shortcode = request.shortcode;
+            var attributes = request.attributes;
+
+            if (!elementId || !shortcode) {
+                return Promise.resolve(null);
+            }
 
             // Verificar si ya está cargando
             if (this.loadingElements.has(elementId)) {
@@ -113,8 +229,8 @@
             }
 
             // Verificar cache
-            var cacheKey = this.getCacheKey(element);
-            if (!forceRefresh && this.cache.has(cacheKey)) {
+            var cacheKey = this.getCacheKey(shortcode, attributes);
+            if (!request.forceRefresh && this.cache.has(cacheKey)) {
                 var cached = this.cache.get(cacheKey);
                 if (Date.now() - cached.timestamp < this.config.cacheTimeout) {
                     this.applyPreview(elementId, cached.html);
@@ -125,21 +241,6 @@
             // Marcar como cargando
             this.loadingElements.add(elementId);
             this.showLoadingState(elementId);
-
-            // Preparar datos para la petición
-            var shortcode = element.shortcode ||
-                           (element.data && element.data.shortcode) ||
-                           element.module || '';
-            var attributes = {};
-
-            // Extraer atributos del elemento
-            if (element.data) {
-                Object.keys(element.data).forEach(function(key) {
-                    if (key !== 'shortcode' && element.data[key] !== undefined) {
-                        attributes[key] = element.data[key];
-                    }
-                });
-            }
 
             // Realizar petición AJAX
             return this.fetchPreview(shortcode, attributes)
@@ -221,24 +322,29 @@
          * Aplicar preview HTML al elemento en el canvas
          */
         applyPreview: function(elementId, html) {
-            var elementWrapper = document.querySelector('[data-element-id="' + elementId + '"]');
+            var elementWrapper = this.getPreviewContainer(elementId);
             if (!elementWrapper) return;
 
-            var contentArea = elementWrapper.querySelector('.vbp-element-content');
-            if (!contentArea) {
-                contentArea = elementWrapper.querySelector('.vbp-module-content');
-            }
-            if (!contentArea) {
-                contentArea = elementWrapper;
-            }
+            var previewContainer = elementWrapper.classList && elementWrapper.classList.contains('vbp-module-preview-container')
+                ? elementWrapper.querySelector('.vbp-module-preview-content')
+                : null;
 
-            // Crear contenedor de preview si no existe
-            var previewContainer = contentArea.querySelector('.vbp-module-preview');
             if (!previewContainer) {
-                previewContainer = document.createElement('div');
-                previewContainer.className = 'vbp-module-preview';
-                contentArea.innerHTML = '';
-                contentArea.appendChild(previewContainer);
+                var contentArea = elementWrapper.querySelector('.vbp-element-content');
+                if (!contentArea) {
+                    contentArea = elementWrapper.querySelector('.vbp-module-content');
+                }
+                if (!contentArea) {
+                    contentArea = elementWrapper;
+                }
+
+                previewContainer = contentArea.querySelector('.vbp-module-preview');
+                if (!previewContainer) {
+                    previewContainer = document.createElement('div');
+                    previewContainer.className = 'vbp-module-preview';
+                    contentArea.innerHTML = '';
+                    contentArea.appendChild(previewContainer);
+                }
             }
 
             // Insertar HTML del preview
@@ -257,19 +363,25 @@
          * Mostrar estado de carga
          */
         showLoadingState: function(elementId) {
-            var elementWrapper = document.querySelector('[data-element-id="' + elementId + '"]');
+            var elementWrapper = this.getPreviewContainer(elementId);
             if (!elementWrapper) return;
 
-            var contentArea = elementWrapper.querySelector('.vbp-element-content') ||
-                             elementWrapper.querySelector('.vbp-module-content') ||
-                             elementWrapper;
+            var previewContainer = elementWrapper.classList && elementWrapper.classList.contains('vbp-module-preview-container')
+                ? elementWrapper.querySelector('.vbp-module-preview-content')
+                : null;
 
-            var previewContainer = contentArea.querySelector('.vbp-module-preview');
             if (!previewContainer) {
-                previewContainer = document.createElement('div');
-                previewContainer.className = 'vbp-module-preview';
-                contentArea.innerHTML = '';
-                contentArea.appendChild(previewContainer);
+                var contentArea = elementWrapper.querySelector('.vbp-element-content') ||
+                    elementWrapper.querySelector('.vbp-module-content') ||
+                    elementWrapper;
+
+                previewContainer = contentArea.querySelector('.vbp-module-preview');
+                if (!previewContainer) {
+                    previewContainer = document.createElement('div');
+                    previewContainer.className = 'vbp-module-preview';
+                    contentArea.innerHTML = '';
+                    contentArea.appendChild(previewContainer);
+                }
             }
 
             previewContainer.innerHTML = '<div class="vbp-module-preview__loader">' +
@@ -284,19 +396,25 @@
          * Mostrar error
          */
         showError: function(elementId, message) {
-            var elementWrapper = document.querySelector('[data-element-id="' + elementId + '"]');
+            var elementWrapper = this.getPreviewContainer(elementId);
             if (!elementWrapper) return;
 
-            var contentArea = elementWrapper.querySelector('.vbp-element-content') ||
-                             elementWrapper.querySelector('.vbp-module-content') ||
-                             elementWrapper;
+            var previewContainer = elementWrapper.classList && elementWrapper.classList.contains('vbp-module-preview-container')
+                ? elementWrapper.querySelector('.vbp-module-preview-content')
+                : null;
 
-            var previewContainer = contentArea.querySelector('.vbp-module-preview');
             if (!previewContainer) {
-                previewContainer = document.createElement('div');
-                previewContainer.className = 'vbp-module-preview';
-                contentArea.innerHTML = '';
-                contentArea.appendChild(previewContainer);
+                var contentArea = elementWrapper.querySelector('.vbp-element-content') ||
+                    elementWrapper.querySelector('.vbp-module-content') ||
+                    elementWrapper;
+
+                previewContainer = contentArea.querySelector('.vbp-module-preview');
+                if (!previewContainer) {
+                    previewContainer = document.createElement('div');
+                    previewContainer.className = 'vbp-module-preview';
+                    contentArea.innerHTML = '';
+                    contentArea.appendChild(previewContainer);
+                }
             }
 
             var elementData = this.getElementById(elementId);
@@ -324,11 +442,13 @@
          * Reintentar cargar preview
          */
         retry: function(elementId) {
-            var element = this.getElementById(elementId);
-            if (element) {
-                this.invalidateCache(elementId);
-                this.loadPreview(element, true);
+            var request = this.normalizePreviewRequest(elementId);
+            if (!request.elementId || !request.shortcode) {
+                return;
             }
+
+            this.invalidateCache(elementId);
+            this.loadPreview(request.elementId, request.shortcode, request.attributes);
         },
 
         /**
@@ -348,11 +468,13 @@
          * Invalidar cache para un elemento
          */
         invalidateCache: function(elementId) {
-            var element = this.getElementById(elementId);
-            if (element) {
-                var cacheKey = this.getCacheKey(element);
-                this.cache.delete(cacheKey);
+            var request = this.normalizePreviewRequest(elementId);
+            if (!request.shortcode) {
+                return;
             }
+
+            var cacheKey = this.getCacheKey(request.shortcode, request.attributes);
+            this.cache.delete(cacheKey);
         },
 
         /**
@@ -369,9 +491,9 @@
             // Crear nuevo timer
             var timer = setTimeout(function() {
                 self.debounceTimers.delete(elementId);
-                var element = self.getElementById(elementId);
-                if (element && self.isPreviewableElement(element)) {
-                    self.loadPreview(element, true);
+                var request = self.normalizePreviewRequest(elementId);
+                if (request.shortcode) {
+                    self.loadPreview(elementId, request.shortcode, request.attributes);
                 }
             }, this.config.debounceDelay);
 
@@ -406,14 +528,14 @@
          */
         reloadAll: function() {
             var self = this;
-            var moduleElements = document.querySelectorAll('[data-element-type="shortcode"], [data-element-type="module-shortcode"], [data-element-type="widget"]');
+            var moduleElements = document.querySelectorAll('.vbp-module-preview-container[data-element-id], [data-element-type="shortcode"], [data-element-type="module-shortcode"], [data-element-type="widget"]');
 
             moduleElements.forEach(function(el) {
                 var elementId = el.dataset.elementId;
                 if (elementId) {
-                    var element = self.getElementById(elementId);
-                    if (element) {
-                        self.loadPreview(element, true);
+                    var request = self.normalizePreviewRequest(elementId);
+                    if (request.shortcode) {
+                        self.loadPreview(elementId, request.shortcode, request.attributes);
                     }
                 }
             });

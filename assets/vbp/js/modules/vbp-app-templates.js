@@ -13,6 +13,8 @@ window.VBPAppTemplates = {
     templateCategory: '',
     templates: [],
     userTemplates: [],
+    templatesLoaded: false,
+    templatesLoading: false,
     selectedTemplate: null,
     newTemplateName: '',
     newTemplateCategory: 'landing',
@@ -20,10 +22,14 @@ window.VBPAppTemplates = {
     isSavingTemplate: false,
     showTemplatesModal: false,
     showSaveTemplateModal: false,
+    importDragOver: false,
+    importJsonText: '',
 
     // Estado Global Widgets
     globalWidgets: [],
     globalWidgetsLoaded: false,
+    globalWidgetsLoading: false,
+    globalWidgetsPromise: null,
     showGlobalWidgetsModal: false,
     showSaveGlobalWidgetModal: false,
     newGlobalWidgetName: '',
@@ -34,13 +40,20 @@ window.VBPAppTemplates = {
 
     loadTemplates: function() {
         var self = this;
-        // Cargar templates desde VBP_Config si están disponibles
+        if (this.templatesLoaded || this.templatesLoading) {
+            return Promise.resolve(this.templates);
+        }
+
+        this.templatesLoading = true;
+
         if (typeof VBP_Config !== 'undefined' && VBP_Config.templates) {
             this.templates = VBP_Config.templates.library || [];
             this.userTemplates = VBP_Config.templates.user || [];
+            this.templatesLoaded = true;
+            this.templatesLoading = false;
+            return Promise.resolve(this.templates);
         } else {
-            // Cargar desde REST API si no están en config
-            fetch(VBP_Config.restUrl + 'templates', {
+            return fetch(VBP_Config.restUrl + 'templates', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -60,13 +73,32 @@ window.VBPAppTemplates = {
             .then(function(data) {
                 self.templates = data.library || [];
                 self.userTemplates = data.user || [];
+                self.templatesLoaded = true;
+                return self.templates;
             })
             .catch(function(error) {
                 vbpLog.warn('Error cargando templates (usando librería vacía):', error.message);
                 self.templates = [];
                 self.userTemplates = [];
+                self.templatesLoaded = true;
+                return self.templates;
+            })
+            .finally(function() {
+                self.templatesLoading = false;
             });
         }
+    },
+
+    openTemplatesModal: function() {
+        var self = this;
+        return this.loadTemplates()
+            .catch(function(error) {
+                vbpLog.warn('Error preparando templates:', error);
+            })
+            .then(function() {
+                self.showTemplatesModal = true;
+                return true;
+            });
     },
 
     get filteredTemplates() {
@@ -182,6 +214,7 @@ window.VBPAppTemplates = {
                 self.showSaveTemplateModal = false;
                 self.newTemplateName = '';
                 self.newTemplateDescription = '';
+                self.templatesLoaded = false;
                 self.loadTemplates();
             } else {
                 throw new Error(result.message || 'Error al guardar template');
@@ -209,6 +242,7 @@ window.VBPAppTemplates = {
         .then(function(result) {
             if (result.success) {
                 self.showNotification('Template eliminado', 'success');
+                self.templatesLoaded = false;
                 self.loadTemplates();
             } else {
                 throw new Error(result.message || 'Error al eliminar template');
@@ -223,7 +257,15 @@ window.VBPAppTemplates = {
 
     loadGlobalWidgets: function() {
         var self = this;
-        fetch(VBP_Config.restUrl + 'global-widgets', {
+        if (this.globalWidgetsLoaded && !this.globalWidgetsLoading) {
+            return Promise.resolve(this.globalWidgets);
+        }
+        if (this.globalWidgetsPromise) {
+            return this.globalWidgetsPromise;
+        }
+
+        this.globalWidgetsLoading = true;
+        this.globalWidgetsPromise = fetch(VBP_Config.restUrl + 'global-widgets', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -240,11 +282,20 @@ window.VBPAppTemplates = {
         .then(function(data) {
             self.globalWidgets = Array.isArray(data) ? data : [];
             self.globalWidgetsLoaded = true;
+            return self.globalWidgets;
         })
         .catch(function(error) {
             vbpLog.warn('Error cargando widgets globales:', error.message);
             self.globalWidgets = [];
+            self.globalWidgetsLoaded = true;
+            return self.globalWidgets;
+        })
+        .finally(function() {
+            self.globalWidgetsLoading = false;
+            self.globalWidgetsPromise = null;
         });
+
+        return this.globalWidgetsPromise;
     },
 
     saveAsGlobalWidget: function() {
@@ -308,6 +359,7 @@ window.VBPAppTemplates = {
                 self.showNotification('Widget global guardado correctamente', 'success');
                 self.showSaveGlobalWidgetModal = false;
                 self.newGlobalWidgetName = '';
+                self.globalWidgetsLoaded = false;
                 self.loadGlobalWidgets();
             } else {
                 throw new Error(result.error || 'Error al guardar widget global');
@@ -382,5 +434,81 @@ window.VBPAppTemplates = {
         .catch(function(error) {
             self.showNotification('Error: ' + error.message, 'error');
         });
+    },
+
+    get filteredGlobalWidgets() {
+        var search = (this.blockSearch || '').toLowerCase();
+        if (!search) return this.globalWidgets;
+        return this.globalWidgets.filter(function(widget) {
+            return widget.title.toLowerCase().includes(search) ||
+                   widget.type.toLowerCase().includes(search);
+        });
+    },
+
+    // ============ IMPORT ============
+
+    handleImportDrop: function(event) {
+        this.importDragOver = false;
+        var files = event.dataTransfer.files;
+        if (files.length > 0 && files[0].type === 'application/json') {
+            this.readImportFile(files[0]);
+        }
+    },
+
+    handleImportFile: function(event) {
+        var files = event.target.files;
+        if (files.length > 0) {
+            this.readImportFile(files[0]);
+        }
+    },
+
+    readImportFile: function(file) {
+        var self = this;
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            try {
+                var data = JSON.parse(e.target.result);
+                self.importData(data);
+            } catch (error) {
+                self.showNotification('Archivo JSON inválido', 'error');
+            }
+        };
+
+        reader.readAsText(file);
+    },
+
+    importFromJson: function() {
+        if (!this.importJsonText.trim()) return;
+
+        try {
+            var data = JSON.parse(this.importJsonText);
+            this.importData(data);
+        } catch (error) {
+            this.showNotification('JSON inválido: ' + error.message, 'error');
+        }
+    },
+
+    importData: function(data) {
+        if (!data.elements && !data.settings) {
+            this.showNotification('Formato de datos inválido', 'error');
+            return;
+        }
+
+        if (!confirm(VBP_Config.strings.confirmImport || '¿Importar este diseño? Se reemplazará el contenido actual.')) {
+            return;
+        }
+
+        if (data.elements) {
+            Alpine.store('vbp').elements = sanitizeElements(data.elements);
+        }
+        if (data.settings) {
+            Alpine.store('vbp').settings = data.settings;
+        }
+
+        Alpine.store('vbp').isDirty = true;
+        this.showNotification('Diseño importado correctamente', 'success');
+        this.showTemplatesModal = false;
+        this.importJsonText = '';
     }
 };

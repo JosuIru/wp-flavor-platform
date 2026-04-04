@@ -571,6 +571,101 @@ class Flavor_VBP_Canvas {
     }
 
     /**
+     * Atributos para edición inline en contexto editor.
+     *
+     * @param string $field Campo a editar.
+     * @return string
+     */
+    private function get_editor_contenteditable_attr( $field ) {
+        if ( ! $this->is_editor_context() ) {
+            return '';
+        }
+
+        return ' contenteditable="true" data-field="' . esc_attr( $field ) . '" spellcheck="false"';
+    }
+
+    /**
+     * Atributos para edición inline con ruta anidada en contexto editor.
+     *
+     * @param string $path Ruta del dato a editar.
+     * @return string
+     */
+    private function get_editor_contenteditable_path_attr( $path ) {
+        if ( ! $this->is_editor_context() ) {
+            return '';
+        }
+
+        return ' contenteditable="true" data-path="' . esc_attr( $path ) . '" spellcheck="false"';
+    }
+
+    /**
+     * Atributos seguros para enlaces editables en contexto editor.
+     *
+     * @param string $field Campo a editar.
+     * @return string
+     */
+    private function get_editor_link_attr( $field ) {
+        if ( ! $this->is_editor_context() ) {
+            return '';
+        }
+
+        return ' contenteditable="true" data-field="' . esc_attr( $field ) . '" spellcheck="false" tabindex="-1" onclick="return false;"';
+    }
+
+    /**
+     * Atributos seguros para enlaces editables con ruta anidada.
+     *
+     * @param string $path Ruta del dato a editar.
+     * @return string
+     */
+    private function get_editor_link_path_attr( $path ) {
+        if ( ! $this->is_editor_context() ) {
+            return '';
+        }
+
+        return ' contenteditable="true" data-path="' . esc_attr( $path ) . '" spellcheck="false" tabindex="-1" onclick="return false;"';
+    }
+
+    /**
+     * Renderiza un encabezado de sección homogéneo y editable en contexto editor.
+     *
+     * @param string $titulo           Título.
+     * @param string $subtitulo        Subtítulo.
+     * @param string $titulo_color     Color del título.
+     * @param string $subtitulo_color  Color del subtítulo.
+     * @param string $titulo_path      Campo o ruta del título.
+     * @param string $subtitulo_path   Campo o ruta del subtítulo.
+     * @return string
+     */
+    private function render_section_header( $titulo, $subtitulo, $titulo_color = '', $subtitulo_color = '', $titulo_path = 'titulo', $subtitulo_path = 'subtitulo' ) {
+        if ( empty( $titulo ) && empty( $subtitulo ) ) {
+            return '';
+        }
+
+        $html = '<div class="vbp-section__header">';
+
+        if ( ! empty( $titulo ) ) {
+            $titulo_style = $titulo_color ? ' style="color: ' . esc_attr( $titulo_color ) . ';"' : '';
+            $titulo_attr  = strpos( $titulo_path, '.' ) !== false
+                ? $this->get_editor_contenteditable_path_attr( $titulo_path )
+                : $this->get_editor_contenteditable_attr( $titulo_path );
+            $html        .= '<h2 class="vbp-section__title"' . $titulo_style . $titulo_attr . '>' . esc_html( $titulo ) . '</h2>';
+        }
+
+        if ( ! empty( $subtitulo ) ) {
+            $subtitulo_style = $subtitulo_color ? ' style="color: ' . esc_attr( $subtitulo_color ) . ';"' : '';
+            $subtitulo_attr  = strpos( $subtitulo_path, '.' ) !== false
+                ? $this->get_editor_contenteditable_path_attr( $subtitulo_path )
+                : $this->get_editor_contenteditable_attr( $subtitulo_path );
+            $html           .= '<p class="vbp-section__subtitle"' . $subtitulo_style . $subtitulo_attr . '>' . esc_html( $subtitulo ) . '</p>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
      * Renderiza una preview card para widgets de módulos
      *
      * @param array $elemento Datos del elemento.
@@ -1461,19 +1556,19 @@ class Flavor_VBP_Canvas {
         // Título con color
         if ( $titulo ) {
             $estilo_titulo = $titulo_color ? ' style="color: ' . esc_attr( $titulo_color ) . ';"' : '';
-            $html .= '<h1 class="vbp-hero__title"' . $estilo_titulo . '>' . wp_kses_post( $titulo ) . '</h1>';
+            $html .= '<h1 class="vbp-hero__title"' . $estilo_titulo . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h1>';
         }
 
         // Subtítulo con color
         if ( $subtitulo ) {
             $estilo_subtitulo = $subtitulo_color ? ' style="color: ' . esc_attr( $subtitulo_color ) . ';"' : '';
-            $html .= '<p class="vbp-hero__subtitle"' . $estilo_subtitulo . '>' . wp_kses_post( $subtitulo ) . '</p>';
+            $html .= '<p class="vbp-hero__subtitle"' . $estilo_subtitulo . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
         // Descripción con color
         if ( $descripcion ) {
             $estilo_descripcion = $descripcion_color ? ' style="color: ' . esc_attr( $descripcion_color ) . ';"' : '';
-            $html .= '<p class="vbp-hero__description"' . $estilo_descripcion . '>' . wp_kses_post( $descripcion ) . '</p>';
+            $html .= '<p class="vbp-hero__description"' . $estilo_descripcion . $this->get_editor_contenteditable_attr( 'descripcion' ) . '>' . wp_kses_post( $descripcion ) . '</p>';
         }
 
         // Contenedor de botones
@@ -1490,7 +1585,7 @@ class Flavor_VBP_Canvas {
                     $estilos_boton[] = 'background-color: ' . esc_attr( $boton_color_fondo );
                 }
                 $estilo_boton = ! empty( $estilos_boton ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton ) ) . '"' : '';
-                $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-hero__button vbp-hero__button--primary"' . $estilo_boton . '>' . esc_html( $boton_texto ) . '</a>';
+                $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-hero__button vbp-hero__button--primary"' . $estilo_boton . $this->get_editor_link_attr( 'boton_texto' ) . '>' . esc_html( $boton_texto ) . '</a>';
             }
 
             // Botón secundario
@@ -1508,7 +1603,7 @@ class Flavor_VBP_Canvas {
                     $estilos_boton_2[] = 'border: 2px solid ' . esc_attr( $boton_2_color_borde );
                 }
                 $estilo_boton_2 = ! empty( $estilos_boton_2 ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton_2 ) ) . '"' : '';
-                $html .= '<a href="' . esc_url( $boton_2_url ) . '" class="vbp-hero__button vbp-hero__button--secondary"' . $estilo_boton_2 . '>' . esc_html( $boton_2_texto ) . '</a>';
+                $html .= '<a href="' . esc_url( $boton_2_url ) . '" class="vbp-hero__button vbp-hero__button--secondary"' . $estilo_boton_2 . $this->get_editor_link_attr( 'boton_2_texto' ) . '>' . esc_html( $boton_2_texto ) . '</a>';
             }
 
             $html .= '</div>';
@@ -1554,20 +1649,20 @@ class Flavor_VBP_Canvas {
         // Título con color
         if ( $titulo ) {
             $estilo_titulo = $titulo_color ? ' style="color: ' . esc_attr( $titulo_color ) . ';"' : '';
-            $html .= '<h2 class="vbp-features__title"' . $estilo_titulo . '>' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-features__title"' . $estilo_titulo . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         // Subtítulo con color
         if ( $subtitulo ) {
             $estilo_subtitulo = $subtitulo_color ? ' style="color: ' . esc_attr( $subtitulo_color ) . ';"' : '';
-            $html .= '<p class="vbp-features__subtitle"' . $estilo_subtitulo . '>' . wp_kses_post( $subtitulo ) . '</p>';
+            $html .= '<p class="vbp-features__subtitle"' . $estilo_subtitulo . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
         if ( ! empty( $items ) ) {
             $estilo_grid = '--features-columns: ' . intval( $columnas ) . ';';
             $html .= '<div class="vbp-features__grid" style="' . esc_attr( $estilo_grid ) . '">';
 
-            foreach ( $items as $item ) {
+            foreach ( $items as $index => $item ) {
                 $icono_color = $item['icono_color'] ?? '';
                 $html .= '<div class="vbp-feature-card">';
                 if ( ! empty( $item['icono'] ) ) {
@@ -1582,8 +1677,8 @@ class Flavor_VBP_Canvas {
                     }
                     $html .= '</div>';
                 }
-                $html .= '<h3 class="vbp-feature-card__title">' . esc_html( $item['titulo'] ?? $item['title'] ?? '' ) . '</h3>';
-                $html .= '<p class="vbp-feature-card__description">' . esc_html( $item['descripcion'] ?? $item['description'] ?? '' ) . '</p>';
+                $html .= '<h3 class="vbp-feature-card__title"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.titulo' ) . '>' . esc_html( $item['titulo'] ?? $item['title'] ?? '' ) . '</h3>';
+                $html .= '<p class="vbp-feature-card__description"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.descripcion' ) . '>' . esc_html( $item['descripcion'] ?? $item['description'] ?? '' ) . '</p>';
                 $html .= '</div>';
             }
 
@@ -1611,7 +1706,7 @@ class Flavor_VBP_Canvas {
         $estilo_all = trim( $estilos_css . ( $estilos_anim ? '; ' . $estilos_anim : '' ) );
         $clases     = trim( 'vbp-text ' . $clases_anim );
 
-        return '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos_anim . '>' . wp_kses_post( $texto ) . '</div>';
+        return '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos_anim . $this->get_editor_contenteditable_attr( 'text' ) . '>' . wp_kses_post( $texto ) . '</div>';
     }
 
     /**
@@ -1631,7 +1726,7 @@ class Flavor_VBP_Canvas {
         $estilo_all = trim( $estilos_css . ( $estilos_anim ? '; ' . $estilos_anim : '' ) );
         $clases     = trim( 'vbp-heading ' . $clases_anim );
 
-        return '<' . $nivel . ' class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos_anim . '>' . wp_kses_post( $texto ) . '</' . $nivel . '>';
+        return '<' . $nivel . ' class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos_anim . $this->get_editor_contenteditable_attr( 'text' ) . '>' . wp_kses_post( $texto ) . '</' . $nivel . '>';
     }
 
     /**
@@ -1651,10 +1746,22 @@ class Flavor_VBP_Canvas {
         $clases     = trim( 'vbp-image ' . $clases_anim );
 
         if ( ! $src ) {
+            if ( $this->is_editor_context() ) {
+                return '<figure class="' . esc_attr( $clases . ' vbp-image--empty' ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos_anim . '><div class="vbp-image__placeholder">Imagen</div></figure>';
+            }
             return '';
         }
 
-        return '<figure class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos_anim . '><img src="' . esc_url( $src ) . '" alt="' . esc_attr( $alt ) . '"></figure>';
+        $html = '<figure class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos_anim . '>';
+        $html .= '<img src="' . esc_url( $src ) . '" alt="' . esc_attr( $alt ) . '">';
+
+        if ( ! empty( $data['caption'] ) ) {
+            $html .= '<figcaption class="vbp-image__caption"' . $this->get_editor_contenteditable_attr( 'caption' ) . '>' . wp_kses_post( $data['caption'] ) . '</figcaption>';
+        }
+
+        $html .= '</figure>';
+
+        return $html;
     }
 
     /**
@@ -1674,7 +1781,7 @@ class Flavor_VBP_Canvas {
         $estilo_all = trim( $estilos_css . ( $estilos_anim ? '; ' . $estilos_anim : '' ) );
         $clases     = trim( 'vbp-button-wrapper ' . $clases_anim );
 
-        return '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos_anim . '><a href="' . esc_url( $url ) . '" target="' . esc_attr( $target ) . '" class="vbp-button">' . esc_html( $texto ) . '</a></div>';
+        return '<div class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo_all ) . '" ' . $atributos_anim . '><a href="' . esc_url( $url ) . '" target="' . esc_attr( $target ) . '" class="vbp-button"' . $this->get_editor_link_attr( 'text' ) . '>' . esc_html( $texto ) . '</a></div>';
     }
 
     /**
@@ -1746,12 +1853,12 @@ class Flavor_VBP_Canvas {
 
         if ( $titulo ) {
             $estilo_titulo = $titulo_color ? ' style="color: ' . esc_attr( $titulo_color ) . ';"' : '';
-            $html .= '<h2 class="vbp-cta__title"' . $estilo_titulo . '>' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-cta__title"' . $estilo_titulo . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( $subtitulo ) {
             $estilo_subtitulo = $subtitulo_color ? ' style="color: ' . esc_attr( $subtitulo_color ) . ';"' : '';
-            $html .= '<p class="vbp-cta__subtitle"' . $estilo_subtitulo . '>' . wp_kses_post( $subtitulo ) . '</p>';
+            $html .= '<p class="vbp-cta__subtitle"' . $estilo_subtitulo . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
         // Contenedor de botones
@@ -1768,7 +1875,7 @@ class Flavor_VBP_Canvas {
                     $estilos_boton[] = 'background-color: ' . esc_attr( $boton_color_fondo );
                 }
                 $estilo_boton = ! empty( $estilos_boton ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton ) ) . '"' : '';
-                $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-cta__button vbp-cta__button--primary"' . $estilo_boton . '>' . esc_html( $boton_texto ) . '</a>';
+                $html .= '<a href="' . esc_url( $boton_url ) . '" class="vbp-cta__button vbp-cta__button--primary"' . $estilo_boton . $this->get_editor_link_attr( 'boton_texto' ) . '>' . esc_html( $boton_texto ) . '</a>';
             }
 
             // Botón secundario
@@ -1786,7 +1893,7 @@ class Flavor_VBP_Canvas {
                     $estilos_boton_2[] = 'border: 2px solid ' . esc_attr( $boton_2_color_borde );
                 }
                 $estilo_boton_2 = ! empty( $estilos_boton_2 ) ? ' style="' . esc_attr( implode( '; ', $estilos_boton_2 ) ) . '"' : '';
-                $html .= '<a href="' . esc_url( $boton_2_url ) . '" class="vbp-cta__button vbp-cta__button--secondary"' . $estilo_boton_2 . '>' . esc_html( $boton_2_texto ) . '</a>';
+                $html .= '<a href="' . esc_url( $boton_2_url ) . '" class="vbp-cta__button vbp-cta__button--secondary"' . $estilo_boton_2 . $this->get_editor_link_attr( 'boton_2_texto' ) . '>' . esc_html( $boton_2_texto ) . '</a>';
             }
 
             $html .= '</div>';
@@ -1813,20 +1920,20 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-testimonials vbp-testimonials--' . esc_attr( $variante ) . '" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-testimonials__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-testimonials__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( ! empty( $items ) ) {
             $html .= '<div class="vbp-testimonials__grid">';
 
-            foreach ( $items as $item ) {
+            foreach ( $items as $index => $item ) {
                 $html .= '<div class="vbp-testimonial-card">';
-                $html .= '<blockquote class="vbp-testimonial-card__quote">' . wp_kses_post( $item['texto'] ?? '' ) . '</blockquote>';
+                $html .= '<blockquote class="vbp-testimonial-card__quote"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.texto' ) . '>' . wp_kses_post( $item['texto'] ?? '' ) . '</blockquote>';
                 $html .= '<div class="vbp-testimonial-card__author">';
-                $html .= '<span class="vbp-testimonial-card__name">' . esc_html( $item['autor'] ?? '' ) . '</span>';
+                $html .= '<span class="vbp-testimonial-card__name"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.autor' ) . '>' . esc_html( $item['autor'] ?? '' ) . '</span>';
 
                 if ( ! empty( $item['cargo'] ) ) {
-                    $html .= '<span class="vbp-testimonial-card__role">' . esc_html( $item['cargo'] ) . '</span>';
+                    $html .= '<span class="vbp-testimonial-card__role"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.cargo' ) . '>' . esc_html( $item['cargo'] ) . '</span>';
                 }
 
                 $html .= '</div>';
@@ -1856,26 +1963,26 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-pricing" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-pricing__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-pricing__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( $subtitulo ) {
-            $html .= '<p class="vbp-pricing__subtitle">' . wp_kses_post( $subtitulo ) . '</p>';
+            $html .= '<p class="vbp-pricing__subtitle"' . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
         if ( ! empty( $items ) ) {
             $html .= '<div class="vbp-pricing__grid">';
 
-            foreach ( $items as $item ) {
+            foreach ( $items as $index => $item ) {
                 $destacado = ! empty( $item['destacado'] ) ? ' vbp-pricing-card--featured' : '';
 
                 $html .= '<div class="vbp-pricing-card' . $destacado . '">';
-                $html .= '<h3 class="vbp-pricing-card__name">' . esc_html( $item['nombre'] ?? '' ) . '</h3>';
+                $html .= '<h3 class="vbp-pricing-card__name"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.nombre' ) . '>' . esc_html( $item['nombre'] ?? '' ) . '</h3>';
                 $html .= '<div class="vbp-pricing-card__price">';
-                $html .= '<span class="vbp-pricing-card__amount">$' . esc_html( $item['precio'] ?? '0' ) . '</span>';
+                $html .= '<span class="vbp-pricing-card__amount" data-strip-prefix="$"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.precio' ) . '>$' . esc_html( $item['precio'] ?? '0' ) . '</span>';
 
                 if ( ! empty( $item['periodo'] ) ) {
-                    $html .= '<span class="vbp-pricing-card__period">' . esc_html( $item['periodo'] ) . '</span>';
+                    $html .= '<span class="vbp-pricing-card__period"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.periodo' ) . '>' . esc_html( $item['periodo'] ) . '</span>';
                 }
 
                 $html .= '</div>';
@@ -1921,7 +2028,7 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-faq" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-faq__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-faq__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( ! empty( $items ) ) {
@@ -1929,8 +2036,8 @@ class Flavor_VBP_Canvas {
 
             foreach ( $items as $index => $item ) {
                 $html .= '<details class="vbp-faq-item">';
-                $html .= '<summary class="vbp-faq-item__question">' . esc_html( $item['pregunta'] ?? '' ) . '</summary>';
-                $html .= '<div class="vbp-faq-item__answer">' . wp_kses_post( $item['respuesta'] ?? '' ) . '</div>';
+                $html .= '<summary class="vbp-faq-item__question"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.pregunta' ) . '>' . esc_html( $item['pregunta'] ?? '' ) . '</summary>';
+                $html .= '<div class="vbp-faq-item__answer"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.respuesta' ) . '>' . wp_kses_post( $item['respuesta'] ?? '' ) . '</div>';
                 $html .= '</details>';
             }
 
@@ -1956,13 +2063,13 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-team" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-team__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-team__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( ! empty( $items ) ) {
             $html .= '<div class="vbp-team__grid">';
 
-            foreach ( $items as $item ) {
+            foreach ( $items as $index => $item ) {
                 $html .= '<div class="vbp-team-member">';
 
                 if ( ! empty( $item['foto'] ) ) {
@@ -1972,14 +2079,14 @@ class Flavor_VBP_Canvas {
                     $html   .= '<div class="vbp-team-member__avatar">' . esc_html( $inicial ) . '</div>';
                 }
 
-                $html .= '<h3 class="vbp-team-member__name">' . esc_html( $item['nombre'] ?? '' ) . '</h3>';
+                $html .= '<h3 class="vbp-team-member__name"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.nombre' ) . '>' . esc_html( $item['nombre'] ?? '' ) . '</h3>';
 
                 if ( ! empty( $item['cargo'] ) ) {
-                    $html .= '<p class="vbp-team-member__role">' . esc_html( $item['cargo'] ) . '</p>';
+                    $html .= '<p class="vbp-team-member__role"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.cargo' ) . '>' . esc_html( $item['cargo'] ) . '</p>';
                 }
 
                 if ( ! empty( $item['bio'] ) ) {
-                    $html .= '<p class="vbp-team-member__bio">' . wp_kses_post( $item['bio'] ) . '</p>';
+                    $html .= '<p class="vbp-team-member__bio"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.bio' ) . '>' . wp_kses_post( $item['bio'] ) . '</p>';
                 }
 
                 $html .= '</div>';
@@ -2008,19 +2115,19 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-stats" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-stats__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-stats__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( ! empty( $items ) ) {
             $html .= '<div class="vbp-stats__grid">';
 
-            foreach ( $items as $item ) {
+            foreach ( $items as $index => $item ) {
                 $html .= '<div class="vbp-stat-item">';
                 if ( ! empty( $item['icono'] ) ) {
                     $html .= '<div class="vbp-stat-item__icon"><i class="fas fa-' . esc_attr( $item['icono'] ) . '"></i></div>';
                 }
-                $html .= '<span class="vbp-stat-item__number">' . esc_html( $item['numero'] ?? $item['number'] ?? '0' ) . '</span>';
-                $html .= '<span class="vbp-stat-item__label">' . esc_html( $item['label'] ?? $item['texto'] ?? '' ) . '</span>';
+                $html .= '<span class="vbp-stat-item__number"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.numero' ) . '>' . esc_html( $item['numero'] ?? $item['number'] ?? '0' ) . '</span>';
+                $html .= '<span class="vbp-stat-item__label"' . $this->get_editor_contenteditable_path_attr( 'items.' . $index . '.label' ) . '>' . esc_html( $item['label'] ?? $item['texto'] ?? '' ) . '</span>';
                 $html .= '</div>';
             }
 
@@ -2046,7 +2153,7 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-gallery" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-gallery__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-gallery__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( ! empty( $items ) ) {
@@ -2110,11 +2217,11 @@ class Flavor_VBP_Canvas {
         $html = '<section id="' . esc_attr( $blog_id ) . '" class="vbp-blog vbp-blog--cols-' . esc_attr( $columnas ) . '" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-blog__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-blog__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( $subtitulo ) {
-            $html .= '<p class="vbp-blog__subtitle">' . wp_kses_post( $subtitulo ) . '</p>';
+            $html .= '<p class="vbp-blog__subtitle"' . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
         $html .= '<div class="vbp-blog__grid">';
@@ -2210,11 +2317,11 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-contact" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-contact__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-contact__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( $subtitulo ) {
-            $html .= '<p class="vbp-contact__subtitle">' . wp_kses_post( $subtitulo ) . '</p>';
+            $html .= '<p class="vbp-contact__subtitle"' . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
         // Formulario funcional con AJAX
@@ -2254,7 +2361,7 @@ class Flavor_VBP_Canvas {
 
         // Botón de envío
         $html .= '<button type="submit" class="vbp-contact__submit">';
-        $html .= '<span class="vbp-btn-text">' . esc_html( $boton_texto ) . '</span>';
+        $html .= '<span class="vbp-btn-text"' . $this->get_editor_contenteditable_attr( 'boton_texto' ) . '>' . esc_html( $boton_texto ) . '</span>';
         $html .= '<span class="vbp-btn-loading" style="display:none;">';
         $html .= '<svg class="vbp-spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">';
         $html .= '<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>';
@@ -2291,6 +2398,9 @@ class Flavor_VBP_Canvas {
         $url = $data['video_url'] ?? '';
 
         if ( ! $url ) {
+            if ( $this->is_editor_context() ) {
+                return '<div class="vbp-video vbp-video--empty" style="' . esc_attr( $estilos_css ) . '"><div class="vbp-video__placeholder">Añade un video desde la biblioteca o pega una URL</div></div>';
+            }
             return '<div class="vbp-video vbp-video--empty" style="' . esc_attr( $estilos_css ) . '">No video URL</div>';
         }
 
@@ -2319,11 +2429,11 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-video-section" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-video-section__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-video-section__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( $descripcion ) {
-            $html .= '<p class="vbp-video-section__description">' . wp_kses_post( $descripcion ) . '</p>';
+            $html .= '<p class="vbp-video-section__description"' . $this->get_editor_contenteditable_attr( 'descripcion' ) . '>' . wp_kses_post( $descripcion ) . '</p>';
         }
 
         if ( $url ) {
@@ -2724,14 +2834,14 @@ class Flavor_VBP_Canvas {
 
         if ( $titulo ) {
             if ( $enlace ) {
-                $html .= '<h3 class="vbp-card__title"><a href="' . esc_url( $enlace ) . '">' . esc_html( $titulo ) . '</a></h3>';
+                $html .= '<h3 class="vbp-card__title"><a href="' . esc_url( $enlace ) . '"' . $this->get_editor_link_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</a></h3>';
             } else {
-                $html .= '<h3 class="vbp-card__title">' . esc_html( $titulo ) . '</h3>';
+                $html .= '<h3 class="vbp-card__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
             }
         }
 
         if ( $descripcion ) {
-            $html .= '<p class="vbp-card__description">' . wp_kses_post( $descripcion ) . '</p>';
+            $html .= '<p class="vbp-card__description"' . $this->get_editor_contenteditable_attr( 'descripcion' ) . '>' . wp_kses_post( $descripcion ) . '</p>';
         }
 
         // Renderizar hijos
@@ -2778,15 +2888,15 @@ class Flavor_VBP_Canvas {
         $html .= '<div class="vbp-section__container flavor-container">';
 
         if ( $titulo ) {
-            $html .= '<h2 class="vbp-section__title">' . wp_kses_post( $titulo ) . '</h2>';
+            $html .= '<h2 class="vbp-section__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . wp_kses_post( $titulo ) . '</h2>';
         }
 
         if ( $subtitulo ) {
-            $html .= '<p class="vbp-section__subtitle">' . wp_kses_post( $subtitulo ) . '</p>';
+            $html .= '<p class="vbp-section__subtitle"' . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . wp_kses_post( $subtitulo ) . '</p>';
         }
 
         if ( $contenido ) {
-            $html .= '<div class="vbp-section__content">' . wp_kses_post( $contenido ) . '</div>';
+            $html .= '<div class="vbp-section__content"' . $this->get_editor_contenteditable_attr( 'contenido' ) . '>' . wp_kses_post( $contenido ) . '</div>';
         }
 
         if ( $html_custom ) {
@@ -2829,7 +2939,7 @@ class Flavor_VBP_Canvas {
 
         $html = '<div class="vbp-product-grid vbp-product-grid--cols-' . intval( $columnas ) . '" style="' . esc_attr( $estilos_css ) . '">';
 
-        foreach ( $items as $item ) {
+        foreach ( $items as $indice => $item ) {
             $nombre    = $item['nombre'] ?? '';
             $precio    = $item['precio'] ?? '';
             $imagen    = $item['imagen'] ?? '';
@@ -2842,12 +2952,12 @@ class Flavor_VBP_Canvas {
                 $html .= '</div>';
             }
             $html .= '<div class="vbp-product-card__content">';
-            $html .= '<h4 class="vbp-product-card__title">' . esc_html( $nombre ) . '</h4>';
+            $html .= '<h4 class="vbp-product-card__title"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.nombre' ) . '>' . esc_html( $nombre ) . '</h4>';
             if ( $productor ) {
-                $html .= '<p class="vbp-product-card__producer">' . esc_html( $productor ) . '</p>';
+                $html .= '<p class="vbp-product-card__producer"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.productor' ) . '>' . esc_html( $productor ) . '</p>';
             }
             if ( $precio ) {
-                $html .= '<span class="vbp-product-card__price">' . esc_html( $precio ) . '</span>';
+                $html .= '<span class="vbp-product-card__price"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.precio' ) . '>' . esc_html( $precio ) . '</span>';
             }
             $html .= '</div>';
             $html .= '</div>';
@@ -2874,7 +2984,7 @@ class Flavor_VBP_Canvas {
 
         $html = '<div class="vbp-blog-grid vbp-blog-grid--cols-' . intval( $columnas ) . '" style="' . esc_attr( $estilos_css ) . '">';
 
-        foreach ( $items as $item ) {
+        foreach ( $items as $indice => $item ) {
             $titulo    = $item['titulo'] ?? '';
             $extracto  = $item['extracto'] ?? '';
             $imagen    = $item['imagen'] ?? '';
@@ -2886,17 +2996,17 @@ class Flavor_VBP_Canvas {
                 $html .= '<div class="vbp-blog-card__image">';
                 $html .= '<img src="' . esc_url( $imagen ) . '" alt="' . esc_attr( $titulo ) . '" loading="lazy" />';
                 if ( $categoria ) {
-                    $html .= '<span class="vbp-blog-card__category">' . esc_html( $categoria ) . '</span>';
+                    $html .= '<span class="vbp-blog-card__category"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.categoria' ) . '>' . esc_html( $categoria ) . '</span>';
                 }
                 $html .= '</div>';
             }
             $html .= '<div class="vbp-blog-card__content">';
-            $html .= '<h4 class="vbp-blog-card__title">' . esc_html( $titulo ) . '</h4>';
+            $html .= '<h4 class="vbp-blog-card__title"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.titulo' ) . '>' . esc_html( $titulo ) . '</h4>';
             if ( $fecha ) {
-                $html .= '<time class="vbp-blog-card__date">' . esc_html( $fecha ) . '</time>';
+                $html .= '<time class="vbp-blog-card__date"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.fecha' ) . '>' . esc_html( $fecha ) . '</time>';
             }
             if ( $extracto ) {
-                $html .= '<p class="vbp-blog-card__excerpt">' . esc_html( $extracto ) . '</p>';
+                $html .= '<p class="vbp-blog-card__excerpt"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.extracto' ) . '>' . esc_html( $extracto ) . '</p>';
             }
             $html .= '</div>';
             $html .= '</article>';
@@ -2925,10 +3035,10 @@ class Flavor_VBP_Canvas {
 
         $html = '<div class="vbp-two-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: ' . $gap . 'px; ' . esc_attr( $estilos_css ) . '">';
         $html .= '<div class="vbp-two-columns__left">';
-        $html .= $this->render_column_content( $col_izquierda );
+        $html .= $this->render_column_content( $col_izquierda, 'columna_izquierda.data' );
         $html .= '</div>';
         $html .= '<div class="vbp-two-columns__right">';
-        $html .= $this->render_column_content( $col_derecha );
+        $html .= $this->render_column_content( $col_derecha, 'columna_derecha.data' );
         $html .= '</div>';
         $html .= '</div>';
 
@@ -2941,7 +3051,7 @@ class Flavor_VBP_Canvas {
      * @param array $col_data Datos de la columna.
      * @return string
      */
-    private function render_column_content( $col_data ) {
+    private function render_column_content( $col_data, $base_path = '' ) {
         if ( empty( $col_data ) || empty( $col_data['type'] ) ) {
             return '';
         }
@@ -2959,7 +3069,7 @@ class Flavor_VBP_Canvas {
 
             case 'text':
                 $texto = $contenido['contenido'] ?? '';
-                return '<div class="vbp-column-text">' . wp_kses_post( $texto ) . '</div>';
+                return '<div class="vbp-column-text"' . ( $base_path ? $this->get_editor_contenteditable_path_attr( $base_path . '.contenido' ) : '' ) . '>' . wp_kses_post( $texto ) . '</div>';
 
             case 'image':
                 $src = $contenido['src'] ?? '';
@@ -2993,22 +3103,22 @@ class Flavor_VBP_Canvas {
         $html = '<div class="vbp-benefits" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h3 class="vbp-benefits__title">' . esc_html( $titulo ) . '</h3>';
+            $html .= '<h3 class="vbp-benefits__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
         }
 
         $html .= '<ul class="vbp-benefits__list">';
-        foreach ( $items as $item ) {
+        foreach ( $items as $indice => $item ) {
             $icono = $item['icono'] ?? '✓';
             $texto = $item['texto'] ?? '';
             $html .= '<li class="vbp-benefits__item">';
             $html .= '<span class="vbp-benefits__icon">' . esc_html( $icono ) . '</span>';
-            $html .= '<span class="vbp-benefits__text">' . esc_html( $texto ) . '</span>';
+            $html .= '<span class="vbp-benefits__text"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.texto' ) . '>' . esc_html( $texto ) . '</span>';
             $html .= '</li>';
         }
         $html .= '</ul>';
 
         if ( $nota ) {
-            $html .= '<p class="vbp-benefits__note">' . esc_html( $nota ) . '</p>';
+            $html .= '<p class="vbp-benefits__note"' . $this->get_editor_contenteditable_attr( 'nota' ) . '>' . esc_html( $nota ) . '</p>';
         }
 
         $html .= '</div>';
@@ -3035,7 +3145,7 @@ class Flavor_VBP_Canvas {
         $html = '<div class="vbp-form vbp-registration-form" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h3 class="vbp-form__title">' . esc_html( $titulo ) . '</h3>';
+            $html .= '<h3 class="vbp-form__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
         }
 
         $html .= '<form class="vbp-form__form" action="" method="post">';
@@ -3072,14 +3182,14 @@ class Flavor_VBP_Canvas {
 
         if ( $checkbox_text ) {
             $html .= '<div class="vbp-form__field vbp-form__checkbox-field">';
-            $html .= '<label class="vbp-form__checkbox-label">';
+            $html .= '<label class="vbp-form__checkbox-label"' . $this->get_editor_contenteditable_attr( 'checkbox' ) . '>';
             $html .= '<input type="checkbox" name="acepto" required class="vbp-form__checkbox" />';
             $html .= ' ' . esc_html( $checkbox_text );
             $html .= '</label>';
             $html .= '</div>';
         }
 
-        $html .= '<button type="submit" class="vbp-form__submit vbp-button">' . esc_html( $boton_texto ) . '</button>';
+        $html .= '<button type="submit" class="vbp-form__submit vbp-button"' . $this->get_editor_link_attr( 'boton_texto' ) . '>' . esc_html( $boton_texto ) . '</button>';
         $html .= '</form>';
         $html .= '</div>';
 
@@ -3113,11 +3223,11 @@ class Flavor_VBP_Canvas {
         $html = '<div class="vbp-contact-info" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h3 class="vbp-contact-info__title">' . esc_html( $titulo ) . '</h3>';
+            $html .= '<h3 class="vbp-contact-info__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
         }
 
         $html .= '<ul class="vbp-contact-info__list">';
-        foreach ( $items as $item ) {
+        foreach ( $items as $indice => $item ) {
             $icono  = $item['icono'] ?? '';
             $titulo_item = $item['titulo'] ?? '';
             $valor  = $item['valor'] ?? '';
@@ -3128,9 +3238,9 @@ class Flavor_VBP_Canvas {
             }
             $html .= '<div class="vbp-contact-info__content">';
             if ( $titulo_item ) {
-                $html .= '<strong class="vbp-contact-info__label">' . esc_html( $titulo_item ) . '</strong>';
+                $html .= '<strong class="vbp-contact-info__label"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.titulo' ) . '>' . esc_html( $titulo_item ) . '</strong>';
             }
-            $html .= '<span class="vbp-contact-info__value">' . esc_html( $valor ) . '</span>';
+            $html .= '<span class="vbp-contact-info__value"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.valor' ) . '>' . esc_html( $valor ) . '</span>';
             $html .= '</div>';
             $html .= '</li>';
         }
@@ -3157,21 +3267,21 @@ class Flavor_VBP_Canvas {
         $html = '<div class="vbp-process" style="' . esc_attr( $estilos_css ) . '">';
 
         if ( $titulo ) {
-            $html .= '<h3 class="vbp-process__title">' . esc_html( $titulo ) . '</h3>';
+            $html .= '<h3 class="vbp-process__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
         }
 
         $html .= '<div class="vbp-process__steps">';
-        foreach ( $items as $item ) {
+        foreach ( $items as $indice => $item ) {
             $paso = $item['paso'] ?? '';
             $titulo_step = $item['titulo'] ?? '';
             $desc = $item['descripcion'] ?? '';
 
             $html .= '<div class="vbp-process__step">';
-            $html .= '<div class="vbp-process__number">' . esc_html( $paso ) . '</div>';
+            $html .= '<div class="vbp-process__number"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.paso' ) . '>' . esc_html( $paso ) . '</div>';
             $html .= '<div class="vbp-process__content">';
-            $html .= '<h4 class="vbp-process__step-title">' . esc_html( $titulo_step ) . '</h4>';
+            $html .= '<h4 class="vbp-process__step-title"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.titulo' ) . '>' . esc_html( $titulo_step ) . '</h4>';
             if ( $desc ) {
-                $html .= '<p class="vbp-process__step-desc">' . esc_html( $desc ) . '</p>';
+                $html .= '<p class="vbp-process__step-desc"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.descripcion' ) . '>' . esc_html( $desc ) . '</p>';
             }
             $html .= '</div>';
             $html .= '</div>';
@@ -3207,10 +3317,10 @@ class Flavor_VBP_Canvas {
         if ( shortcode_exists( 'rs_feed' ) ) {
             $html = '<div class="vbp-social-feed-wrapper" style="' . esc_attr( $estilos_css ) . '">';
             if ( $titulo ) {
-                $html .= '<h3 class="vbp-section__title">' . esc_html( $titulo ) . '</h3>';
+                $html .= '<h3 class="vbp-section__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
             }
             if ( $subtitulo ) {
-                $html .= '<p class="vbp-section__subtitle">' . esc_html( $subtitulo ) . '</p>';
+                $html .= '<p class="vbp-section__subtitle"' . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . esc_html( $subtitulo ) . '</p>';
             }
             $html .= do_shortcode( '[rs_feed limite="' . intval( $limite ) . '" tipo="' . esc_attr( $tipo ) . '"]' );
             $html .= '</div>';
@@ -3220,7 +3330,7 @@ class Flavor_VBP_Canvas {
         // Fallback: mostrar mensaje de placeholder
         $html = '<div class="vbp-social-feed vbp-placeholder" style="' . esc_attr( $estilos_css ) . '">';
         if ( $titulo ) {
-            $html .= '<h3 class="vbp-section__title">' . esc_html( $titulo ) . '</h3>';
+            $html .= '<h3 class="vbp-section__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
         }
         $html .= '<p class="vbp-placeholder__message">' . __( 'Activa el módulo Red Social para ver el feed.', 'flavor-chat-ia' ) . '</p>';
         $html .= '</div>';
@@ -3252,10 +3362,10 @@ class Flavor_VBP_Canvas {
         if ( shortcode_exists( 'sello_conciencia' ) ) {
             $html = '<div class="vbp-sello-wrapper" style="' . esc_attr( $estilos_css ) . '">';
             if ( $titulo ) {
-                $html .= '<h3 class="vbp-section__title">' . esc_html( $titulo ) . '</h3>';
+                $html .= '<h3 class="vbp-section__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
             }
             if ( $subtitulo ) {
-                $html .= '<p class="vbp-section__subtitle">' . esc_html( $subtitulo ) . '</p>';
+                $html .= '<p class="vbp-section__subtitle"' . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . esc_html( $subtitulo ) . '</p>';
             }
             $html .= do_shortcode( '[sello_conciencia]' );
             $html .= '</div>';
@@ -3265,10 +3375,10 @@ class Flavor_VBP_Canvas {
         // Fallback con sellos manuales
         $html = '<div class="vbp-sellos" style="' . esc_attr( $estilos_css ) . '; padding: 3rem 2rem;">';
         if ( $titulo ) {
-            $html .= '<h3 class="vbp-section__title" style="text-align: center; margin-bottom: 0.5rem;">' . esc_html( $titulo ) . '</h3>';
+            $html .= '<h3 class="vbp-section__title" style="text-align: center; margin-bottom: 0.5rem;"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
         }
         if ( $subtitulo ) {
-            $html .= '<p class="vbp-section__subtitle" style="text-align: center; margin-bottom: 2rem; color: var(--flavor-text-muted, #666);">' . esc_html( $subtitulo ) . '</p>';
+            $html .= '<p class="vbp-section__subtitle" style="text-align: center; margin-bottom: 2rem; color: var(--flavor-text-muted, #666);"' . $this->get_editor_contenteditable_attr( 'subtitulo' ) . '>' . esc_html( $subtitulo ) . '</p>';
         }
 
         if ( ! empty( $sellos ) ) {
@@ -3344,12 +3454,12 @@ class Flavor_VBP_Canvas {
 
         // Columna izquierda
         $html .= '<div class="vbp-column vbp-column--left">';
-        $html .= $this->render_column_content( $col_izquierda );
+        $html .= $this->render_column_content( $col_izquierda, 'columna_izquierda.data' );
         $html .= '</div>';
 
         // Columna derecha
         $html .= '<div class="vbp-column vbp-column--right">';
-        $html .= $this->render_column_content( $col_derecha );
+        $html .= $this->render_column_content( $col_derecha, 'columna_derecha.data' );
         $html .= '</div>';
 
         $html .= '</div>';
@@ -3370,7 +3480,7 @@ class Flavor_VBP_Canvas {
         $html = '<div class="vbp-contact-info">';
 
         if ( $titulo ) {
-            $html .= '<h3 class="vbp-contact-info__title">' . esc_html( $titulo ) . '</h3>';
+            $html .= '<h3 class="vbp-contact-info__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
         }
 
         if ( ! empty( $items ) ) {
@@ -3416,7 +3526,7 @@ class Flavor_VBP_Canvas {
         $html = '<div class="vbp-contact-form">';
 
         if ( $titulo ) {
-            $html .= '<h3 class="vbp-contact-form__title">' . esc_html( $titulo ) . '</h3>';
+            $html .= '<h3 class="vbp-contact-form__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</h3>';
         }
 
         $html .= '<form class="vbp-contact-form__form" method="post">';
@@ -3454,7 +3564,7 @@ class Flavor_VBP_Canvas {
             $html .= '</div>';
         }
 
-        $html .= '<button type="submit" class="vbp-contact-form__submit">' . esc_html( $boton_texto ) . '</button>';
+        $html .= '<button type="submit" class="vbp-contact-form__submit"' . $this->get_editor_link_attr( 'boton_texto' ) . '>' . esc_html( $boton_texto ) . '</button>';
         $html .= '</form>';
         $html .= '</div>';
 
@@ -3483,7 +3593,7 @@ class Flavor_VBP_Canvas {
         $html = '<div ' . $attrs_html . '>';
 
         if ( $titulo ) {
-            $html .= '<div class="vbp-audio__title">' . esc_html( $titulo ) . '</div>';
+            $html .= '<div class="vbp-audio__title"' . $this->get_editor_contenteditable_attr( 'titulo' ) . '>' . esc_html( $titulo ) . '</div>';
         }
 
         if ( $src ) {
@@ -3707,14 +3817,14 @@ class Flavor_VBP_Canvas {
             if ( ! empty( $item['titulo'] ) || ! empty( $item['descripcion'] ) ) {
                 $html .= '<div class="vbp-carousel__content">';
                 if ( ! empty( $item['titulo'] ) ) {
-                    $html .= '<h3 class="vbp-carousel__title">' . esc_html( $item['titulo'] ) . '</h3>';
+                    $html .= '<h3 class="vbp-carousel__title"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.titulo' ) . '>' . esc_html( $item['titulo'] ) . '</h3>';
                 }
                 if ( ! empty( $item['descripcion'] ) ) {
-                    $html .= '<p class="vbp-carousel__description">' . wp_kses_post( $item['descripcion'] ) . '</p>';
+                    $html .= '<p class="vbp-carousel__description"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.descripcion' ) . '>' . wp_kses_post( $item['descripcion'] ) . '</p>';
                 }
                 if ( ! empty( $item['enlace_url'] ) ) {
                     $texto_enlace = ! empty( $item['enlace_texto'] ) ? $item['enlace_texto'] : __( 'Ver más', 'flavor-chat-ia' );
-                    $html .= '<a href="' . esc_url( $item['enlace_url'] ) . '" class="vbp-carousel__link">' . esc_html( $texto_enlace ) . '</a>';
+                    $html .= '<a href="' . esc_url( $item['enlace_url'] ) . '" class="vbp-carousel__link"' . $this->get_editor_link_path_attr( 'items.' . $indice . '.enlace_texto' ) . '>' . esc_html( $texto_enlace ) . '</a>';
                 }
                 $html .= '</div>';
             }
@@ -3782,17 +3892,7 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-section vbp-section--tabs" style="background-color: ' . esc_attr( $color_fondo ) . '; ' . esc_attr( $estilos_css ) . '">';
         $html .= '<div class="vbp-container">';
 
-        // Encabezado de la sección.
-        if ( ! empty( $titulo ) || ! empty( $subtitulo ) ) {
-            $html .= '<div class="vbp-section__header">';
-            if ( ! empty( $titulo ) ) {
-                $html .= '<h2 class="vbp-section__title" style="color: ' . esc_attr( $titulo_color ) . ';">' . esc_html( $titulo ) . '</h2>';
-            }
-            if ( ! empty( $subtitulo ) ) {
-                $html .= '<p class="vbp-section__subtitle" style="color: ' . esc_attr( $subtitulo_color ) . ';">' . esc_html( $subtitulo ) . '</p>';
-            }
-            $html .= '</div>';
-        }
+        $html .= $this->render_section_header( $titulo, $subtitulo, $titulo_color, $subtitulo_color );
 
         // Tabs content.
         $html .= '<div class="' . esc_attr( $clases_tabs ) . '" id="' . esc_attr( $id_unico ) . '">';
@@ -3808,7 +3908,7 @@ class Flavor_VBP_Canvas {
             if ( ! empty( $tab['icono'] ) ) {
                 $html .= '<span class="vbp-tabs__icon material-icons">' . esc_html( $tab['icono'] ) . '</span>';
             }
-            $html .= '<span class="vbp-tabs__label">' . esc_html( $tab['titulo'] ?? __( 'Tab', 'flavor-chat-ia' ) ) . '</span>';
+            $html .= '<span class="vbp-tabs__label"' . $this->get_editor_contenteditable_path_attr( 'tabs.' . $indice . '.titulo' ) . '>' . esc_html( $tab['titulo'] ?? __( 'Tab', 'flavor-chat-ia' ) ) . '</span>';
             $html .= '</button>';
         }
         $html .= '</div>';
@@ -3820,7 +3920,7 @@ class Flavor_VBP_Canvas {
             $html .= '<div class="vbp-tabs__panel' . $activa . '" role="tabpanel"';
             $html .= ' id="' . esc_attr( $id_unico . '-panel-' . $indice ) . '"';
             $html .= ' aria-hidden="' . ( $indice === $tab_activa ? 'false' : 'true' ) . '">';
-            $html .= wp_kses_post( $tab['contenido'] ?? '' );
+            $html .= '<div class="vbp-tabs__panel-body"' . $this->get_editor_contenteditable_path_attr( 'tabs.' . $indice . '.contenido' ) . '>' . wp_kses_post( $tab['contenido'] ?? '' ) . '</div>';
             $html .= '</div>';
         }
         $html .= '</div>';
@@ -3866,17 +3966,7 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-section vbp-section--accordion" style="background-color: ' . esc_attr( $color_fondo ) . '; ' . esc_attr( $estilos_css ) . '">';
         $html .= '<div class="vbp-container">';
 
-        // Encabezado de la sección.
-        if ( ! empty( $titulo ) || ! empty( $subtitulo ) ) {
-            $html .= '<div class="vbp-section__header">';
-            if ( ! empty( $titulo ) ) {
-                $html .= '<h2 class="vbp-section__title" style="color: ' . esc_attr( $titulo_color ) . ';">' . esc_html( $titulo ) . '</h2>';
-            }
-            if ( ! empty( $subtitulo ) ) {
-                $html .= '<p class="vbp-section__subtitle" style="color: ' . esc_attr( $subtitulo_color ) . ';">' . esc_html( $subtitulo ) . '</p>';
-            }
-            $html .= '</div>';
-        }
+        $html .= $this->render_section_header( $titulo, $subtitulo, $titulo_color, $subtitulo_color );
 
         // Accordion content.
         $html .= '<div class="' . esc_attr( $clases_accordion ) . '"';
@@ -3894,11 +3984,11 @@ class Flavor_VBP_Canvas {
             if ( ! empty( $item['icono'] ) ) {
                 $html .= '<span class="vbp-accordion__item-icon">' . wp_kses_post( $item['icono'] ) . '</span>';
             }
-            $html .= '<span class="vbp-accordion__title">' . esc_html( $item['titulo'] ?? '' ) . '</span>';
+            $html .= '<span class="vbp-accordion__title"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.titulo' ) . '>' . esc_html( $item['titulo'] ?? '' ) . '</span>';
             $html .= '<span class="vbp-accordion__icon">' . $icono_svg . '</span>';
             $html .= '</button>';
             $html .= '<div class="vbp-accordion__content"' . ( $abierto ? '' : ' style="display: none;"' ) . '>';
-            $html .= '<div class="vbp-accordion__body">' . wp_kses_post( $item['contenido'] ?? '' ) . '</div>';
+            $html .= '<div class="vbp-accordion__body"' . $this->get_editor_contenteditable_path_attr( 'items.' . $indice . '.contenido' ) . '>' . wp_kses_post( $item['contenido'] ?? '' ) . '</div>';
             $html .= '</div>';
             $html .= '</div>';
         }
@@ -3964,17 +4054,7 @@ class Flavor_VBP_Canvas {
         $html = '<section class="vbp-section vbp-section--timeline" style="background-color: ' . esc_attr( $color_fondo ) . '; ' . esc_attr( $estilos_css ) . '">';
         $html .= '<div class="vbp-container">';
 
-        // Encabezado de la sección.
-        if ( ! empty( $titulo ) || ! empty( $subtitulo ) ) {
-            $html .= '<div class="vbp-section__header">';
-            if ( ! empty( $titulo ) ) {
-                $html .= '<h2 class="vbp-section__title" style="color: ' . esc_attr( $titulo_color ) . ';">' . esc_html( $titulo ) . '</h2>';
-            }
-            if ( ! empty( $subtitulo ) ) {
-                $html .= '<p class="vbp-section__subtitle" style="color: ' . esc_attr( $subtitulo_color ) . ';">' . esc_html( $subtitulo ) . '</p>';
-            }
-            $html .= '</div>';
-        }
+        $html .= $this->render_section_header( $titulo, $subtitulo, $titulo_color, $subtitulo_color );
 
         // Timeline content.
         $html .= '<div class="' . esc_attr( $clases_timeline ) . '" style="' . esc_attr( $estilos_timeline ) . '">';
@@ -4007,13 +4087,13 @@ class Flavor_VBP_Canvas {
             // Contenido.
             $html .= '<div class="vbp-timeline__content">';
             if ( ! empty( $evento['fecha'] ) ) {
-                $html .= '<span class="vbp-timeline__date">' . esc_html( $evento['fecha'] ) . '</span>';
+                $html .= '<span class="vbp-timeline__date"' . $this->get_editor_contenteditable_path_attr( 'eventos.' . $indice . '.fecha' ) . '>' . esc_html( $evento['fecha'] ) . '</span>';
             }
             if ( ! empty( $evento['titulo'] ) ) {
-                $html .= '<h4 class="vbp-timeline__title">' . esc_html( $evento['titulo'] ) . '</h4>';
+                $html .= '<h4 class="vbp-timeline__title"' . $this->get_editor_contenteditable_path_attr( 'eventos.' . $indice . '.titulo' ) . '>' . esc_html( $evento['titulo'] ) . '</h4>';
             }
             if ( ! empty( $evento['descripcion'] ) ) {
-                $html .= '<p class="vbp-timeline__description">' . wp_kses_post( $evento['descripcion'] ) . '</p>';
+                $html .= '<p class="vbp-timeline__description"' . $this->get_editor_contenteditable_path_attr( 'eventos.' . $indice . '.descripcion' ) . '>' . wp_kses_post( $evento['descripcion'] ) . '</p>';
             }
             if ( ! empty( $evento['imagen'] ) ) {
                 $html .= '<img src="' . esc_url( $evento['imagen'] ) . '" alt="' . esc_attr( $evento['titulo'] ?? '' ) . '" class="vbp-timeline__image">';
@@ -4072,17 +4152,7 @@ class Flavor_VBP_Canvas {
         $html = '<section class="' . esc_attr( $clases_base ) . '" style="background-color: ' . esc_attr( $color_fondo ) . '; ' . esc_attr( $estilos_css ) . '">';
         $html .= '<div class="vbp-container">';
 
-        // Encabezado de la sección.
-        if ( ! empty( $titulo ) || ! empty( $subtitulo ) ) {
-            $html .= '<div class="vbp-section__header">';
-            if ( ! empty( $titulo ) ) {
-                $html .= '<h2 class="vbp-section__title" style="color: ' . esc_attr( $titulo_color ) . ';">' . esc_html( $titulo ) . '</h2>';
-            }
-            if ( ! empty( $subtitulo ) ) {
-                $html .= '<p class="vbp-section__subtitle" style="color: ' . esc_attr( $subtitulo_color ) . ';">' . esc_html( $subtitulo ) . '</p>';
-            }
-            $html .= '</div>';
-        }
+        $html .= $this->render_section_header( $titulo, $subtitulo, $titulo_color, $subtitulo_color );
 
         // Contenido del shortcode.
         $html .= '<div class="vbp-eventos-listado__content">';
@@ -4129,17 +4199,7 @@ class Flavor_VBP_Canvas {
         $html = '<section class="' . esc_attr( $clases_base ) . '" style="background-color: ' . esc_attr( $color_fondo ) . '; ' . esc_attr( $estilos_css ) . '">';
         $html .= '<div class="vbp-container">';
 
-        // Encabezado de la sección.
-        if ( ! empty( $titulo ) || ! empty( $subtitulo ) ) {
-            $html .= '<div class="vbp-section__header">';
-            if ( ! empty( $titulo ) ) {
-                $html .= '<h2 class="vbp-section__title" style="color: ' . esc_attr( $titulo_color ) . ';">' . esc_html( $titulo ) . '</h2>';
-            }
-            if ( ! empty( $subtitulo ) ) {
-                $html .= '<p class="vbp-section__subtitle" style="color: ' . esc_attr( $subtitulo_color ) . ';">' . esc_html( $subtitulo ) . '</p>';
-            }
-            $html .= '</div>';
-        }
+        $html .= $this->render_section_header( $titulo, $subtitulo, $titulo_color, $subtitulo_color );
 
         // Contenido del shortcode.
         $html .= '<div class="vbp-eventos-calendario__content">';

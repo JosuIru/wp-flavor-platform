@@ -220,7 +220,7 @@ class Flavor_VBP_Single_Templates {
     public function rest_list_templates( $request ) {
         $args = array(
             'post_type'      => self::POST_TYPE,
-            'posts_per_page' => -1,
+            'posts_per_page' => 100,
             'post_status'    => 'publish',
             'orderby'        => 'title',
             'order'          => 'ASC',
@@ -525,7 +525,7 @@ class Flavor_VBP_Single_Templates {
             'post_type'  => get_post_meta( $post->ID, self::META_TARGET_CPT, true ),
             'created'    => $post->post_date,
             'modified'   => $post->post_modified,
-            'edit_url'   => admin_url( 'admin.php?page=flavor-vbp-editor&post_id=' . $post->ID . '&type=single_template' ),
+            'edit_url'   => admin_url( 'admin.php?page=vbp-editor&post_id=' . $post->ID . '&type=single_template' ),
         );
 
         if ( $include_canvas ) {

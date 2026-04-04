@@ -84,6 +84,53 @@ document.addEventListener('alpine:init', function() {
         },
 
         /**
+         * Normaliza el contenido editable según el tipo de nodo/campo.
+         */
+        getEditableContent(editableElement) {
+            if (!editableElement) return '';
+
+            var preferText = editableElement.dataset.contentMode === 'text' ||
+                /^(summary|h[1-6]|span|a)$/i.test(editableElement.tagName);
+
+            if (preferText) {
+                var text = editableElement.textContent || '';
+                text = text.replace(/\u00a0/g, ' ').trim();
+
+                if (editableElement.dataset.stripPrefix && text.indexOf(editableElement.dataset.stripPrefix) === 0) {
+                    text = text.slice(editableElement.dataset.stripPrefix.length).trim();
+                }
+
+                return text;
+            }
+
+            return editableElement.innerHTML;
+        },
+
+        /**
+         * Actualiza data plana o anidada del elemento.
+         */
+        updateEditableValue(store, elemento, editableElement) {
+            if (!store || !elemento || !editableElement) return;
+
+            var datosActualizados = JSON.parse(JSON.stringify(elemento.data || {}));
+            var contenido = this.getEditableContent(editableElement);
+            var path = editableElement.dataset.path;
+            var field = editableElement.dataset.field || 'text';
+
+            if (path) {
+                if (typeof store.setNestedValue === 'function') {
+                    store.setNestedValue(datosActualizados, path, contenido);
+                } else {
+                    return;
+                }
+            } else {
+                datosActualizados[field] = contenido;
+            }
+
+            store.updateElement(elemento.id, { data: datosActualizados });
+        },
+
+        /**
          * Guarda el contenido de un elemento específico
          */
         saveContentFromElement(editableElement) {
@@ -96,18 +143,12 @@ document.addEventListener('alpine:init', function() {
             var elementId = vbpElement.dataset.elementId;
             if (!elementId) return;
 
-            // Obtener el campo que se está editando
-            var campo = editableElement.dataset.field || 'text';
-            var contenido = editableElement.innerHTML;
-
             // Actualizar el elemento en el store
             var store = Alpine.store('vbp');
             var elemento = store.getElement(elementId);
 
             if (elemento) {
-                var datosActualizados = Object.assign({}, elemento.data);
-                datosActualizados[campo] = contenido;
-                store.updateElement(elementId, { data: datosActualizados });
+                this.updateEditableValue(store, elemento, editableElement);
             }
         },
 
@@ -279,19 +320,12 @@ document.addEventListener('alpine:init', function() {
             const elementId = vbpElement.dataset.elementId;
             if (!elementId) return;
 
-            // Obtener el campo que se está editando
-            const campo = editableElement.dataset.field || 'text';
-            const contenido = editableElement.innerHTML;
-
             // Actualizar el elemento en el store
             const store = Alpine.store('vbp');
             const elemento = store.getElement(elementId);
 
             if (elemento) {
-                const datosActualizados = { ...elemento.data };
-                datosActualizados[campo] = contenido;
-
-                store.updateElement(elementId, { data: datosActualizados });
+                this.updateEditableValue(store, elemento, editableElement);
             }
         },
 

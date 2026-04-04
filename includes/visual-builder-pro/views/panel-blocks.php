@@ -1,10 +1,11 @@
 <?php
 /**
- * Visual Builder Pro - Panel de Bloques
+ * Visual Builder Pro - Panel de Bloques Mejorado
+ * Con vista grid/lista, favoritos, filtros rápidos y descripciones
  *
  * @package Flavor_Chat_IA
  * @subpackage Visual_Builder_Pro
- * @since 2.0.0
+ * @since 2.3.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,6 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div class="vbp-blocks-container" x-data="vbpBlocksPanel()" role="region" aria-label="<?php esc_attr_e( 'Panel de bloques disponibles', 'flavor-chat-ia' ); ?>">
+    <div class="vbp-basic-panel-hint" x-show="$store.vbp.inspectorMode === 'basic'">
+        <span class="vbp-basic-panel-hint__eyebrow"><?php esc_html_e( 'Modo básico', 'flavor-chat-ia' ); ?></span>
+        <p><?php esc_html_e( 'Empieza arrastrando bloques de contenido. Las capas, componentes y herramientas avanzadas aparecen al cambiar de modo.', 'flavor-chat-ia' ); ?></p>
+    </div>
+
     <!-- Buscador -->
     <div class="vbp-blocks-search" role="search">
         <input
@@ -21,13 +27,108 @@ if ( ! defined( 'ABSPATH' ) ) {
             class="vbp-search-input"
             aria-label="<?php esc_attr_e( 'Buscar bloques', 'flavor-chat-ia' ); ?>"
             aria-describedby="vbp-search-results"
+            @keydown.escape="searchQuery = ''"
         >
         <svg class="vbp-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8"/>
             <path d="M21 21l-4.35-4.35"/>
         </svg>
+        <button type="button" class="vbp-search-clear" x-show="searchQuery" @click="searchQuery = ''" aria-label="<?php esc_attr_e( 'Limpiar búsqueda', 'flavor-chat-ia' ); ?>">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
     </div>
-    <div id="vbp-search-results" class="vbp-sr-only" aria-live="polite" x-text="searchQuery ? (filteredCategories.reduce((acc, cat) => acc + cat.blocks.length, 0) + ' bloques encontrados') : ''"></div>
+    <div id="vbp-search-results" class="vbp-sr-only" aria-live="polite" x-text="searchQuery ? (totalFilteredBlocks + ' bloques encontrados') : ''"></div>
+
+    <!-- Barra de herramientas -->
+    <div class="vbp-blocks-toolbar">
+        <!-- Modos de vista -->
+        <div class="vbp-blocks-toolbar-group">
+            <button type="button"
+                class="vbp-view-mode-btn"
+                :class="{ 'active': viewMode === 'list' }"
+                @click="setViewMode('list')"
+                data-tooltip="<?php esc_attr_e( 'Vista lista', 'flavor-chat-ia' ); ?>"
+                aria-label="<?php esc_attr_e( 'Vista lista', 'flavor-chat-ia' ); ?>"
+            >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+            </button>
+            <button type="button"
+                class="vbp-view-mode-btn"
+                :class="{ 'active': viewMode === 'grid' }"
+                @click="setViewMode('grid')"
+                data-tooltip="<?php esc_attr_e( 'Vista cuadrícula', 'flavor-chat-ia' ); ?>"
+                aria-label="<?php esc_attr_e( 'Vista cuadrícula', 'flavor-chat-ia' ); ?>"
+            >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                </svg>
+            </button>
+            <button type="button"
+                class="vbp-view-mode-btn"
+                :class="{ 'active': viewMode === 'compact' }"
+                @click="setViewMode('compact')"
+                data-tooltip="<?php esc_attr_e( 'Vista compacta', 'flavor-chat-ia' ); ?>"
+                aria-label="<?php esc_attr_e( 'Vista compacta', 'flavor-chat-ia' ); ?>"
+            >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="vbp-blocks-toolbar-separator"></div>
+
+        <!-- Expandir/Colapsar -->
+        <div class="vbp-blocks-toolbar-group">
+            <button type="button" class="vbp-toggle-all-btn" @click="expandAllCategories()" data-tooltip="<?php esc_attr_e( 'Expandir todo', 'flavor-chat-ia' ); ?>">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+            </button>
+            <button type="button" class="vbp-toggle-all-btn" @click="collapseAllCategories()" data-tooltip="<?php esc_attr_e( 'Colapsar todo', 'flavor-chat-ia' ); ?>">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18,15 12,9 6,15"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Filtros rápidos -->
+    <div class="vbp-blocks-filters" x-show="!searchQuery">
+        <button type="button"
+            class="vbp-filter-chip"
+            :class="{ 'active': activeFilter === 'all' }"
+            @click="setFilter('all')"
+        >
+            <?php esc_html_e( 'Todos', 'flavor-chat-ia' ); ?>
+            <span class="vbp-filter-chip-count" x-text="totalBlocks"></span>
+        </button>
+        <button type="button"
+            class="vbp-filter-chip"
+            :class="{ 'active': activeFilter === 'favorites' }"
+            @click="setFilter('favorites')"
+            x-show="favoriteBlocks.length > 0"
+        >
+            <span class="vbp-filter-chip-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+            </span>
+            <?php esc_html_e( 'Favoritos', 'flavor-chat-ia' ); ?>
+            <span class="vbp-filter-chip-count" x-text="favoriteBlocks.length"></span>
+        </button>
+        <template x-for="cat in mainFilterCategories" :key="cat.id">
+            <button type="button"
+                class="vbp-filter-chip"
+                :class="{ 'active': activeFilter === cat.id }"
+                @click="setFilter(cat.id)"
+            >
+                <span class="vbp-filter-chip-icon" x-html="cat.icon"></span>
+                <span x-text="cat.name"></span>
+                <span class="vbp-filter-chip-count" x-text="cat.blocks.length"></span>
+            </button>
+        </template>
+    </div>
 
     <!-- Estado vacío si no hay categorías -->
     <template x-if="categories.length === 0">
@@ -41,11 +142,72 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
     </template>
 
+    <!-- Estado vacío de búsqueda -->
+    <div class="vbp-blocks-empty-search" x-show="searchQuery && totalFilteredBlocks === 0">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <div class="vbp-blocks-empty-search-title"><?php esc_html_e( 'Sin resultados', 'flavor-chat-ia' ); ?></div>
+        <div class="vbp-blocks-empty-search-hint">
+            <?php esc_html_e( 'No se encontraron bloques para', 'flavor-chat-ia' ); ?> "<span x-text="searchQuery"></span>"
+        </div>
+    </div>
+
     <!-- Lista de categorías y bloques -->
-    <div class="vbp-blocks-list" role="tree" aria-label="<?php esc_attr_e( 'Categorías de bloques', 'flavor-chat-ia' ); ?>" x-show="categories.length > 0">
+    <div class="vbp-blocks-list" :class="'view-' + viewMode" role="tree" aria-label="<?php esc_attr_e( 'Categorías de bloques', 'flavor-chat-ia' ); ?>" x-show="categories.length > 0 && (totalFilteredBlocks > 0 || !searchQuery)">
+
+        <!-- Bloques Favoritos -->
+        <div class="vbp-block-category vbp-favorites-category" role="treeitem" :aria-expanded="openCategories.includes('favorites')" x-show="activeFilter === 'all' && favoriteBlocks.length > 0 && !searchQuery">
+            <button
+                type="button"
+                @click="toggleCategory('favorites')"
+                class="vbp-category-header vbp-category-header--favorites"
+                :class="{ 'open': openCategories.includes('favorites') }"
+                :aria-expanded="openCategories.includes('favorites')"
+            >
+                <span class="vbp-category-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                </span>
+                <span class="vbp-category-name"><?php esc_html_e( 'Favoritos', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-category-count" x-text="favoriteBlocks.length"></span>
+                <svg class="vbp-category-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="6,9 12,15 18,9"/>
+                </svg>
+            </button>
+
+            <div class="vbp-category-blocks" x-show="openCategories.includes('favorites')" x-collapse>
+                <template x-for="block in favoriteBlocks" :key="'fav-' + block.type">
+                    <div
+                        class="vbp-block-item"
+                        :data-block-type="block.type"
+                        draggable="true"
+                        @dragstart="handleDragStart($event, block)"
+                        @dragend="handleDragEnd($event)"
+                        @click="addBlock(block)"
+                        @mouseenter="showBlockPreview($event, block)"
+                        @mouseleave="hideBlockPreview()"
+                        role="treeitem"
+                        tabindex="0"
+                        @keydown.enter="addBlock(block)"
+                        @keydown.space.prevent="addBlock(block)"
+                        style="position: relative;"
+                    >
+                        <button type="button" class="vbp-favorite-btn is-favorite" @click.stop="toggleFavorite(block)" aria-label="<?php esc_attr_e( 'Quitar de favoritos', 'flavor-chat-ia' ); ?>">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </button>
+                        <span class="vbp-block-icon" x-html="block.icon" aria-hidden="true"></span>
+                        <span class="vbp-block-name" x-text="block.name"></span>
+                    </div>
+                </template>
+            </div>
+        </div>
 
         <!-- Bloques Recientes -->
-        <div class="vbp-block-category vbp-recent-blocks-category" role="treeitem" :aria-expanded="openCategories.includes('recent')" x-show="recentBlocks.length > 0 && !searchQuery">
+        <div class="vbp-block-category vbp-recent-blocks-category" role="treeitem" :aria-expanded="openCategories.includes('recent')" x-show="activeFilter === 'all' && recentBlocks.length > 0 && !searchQuery">
             <button
                 type="button"
                 @click="toggleCategory('recent')"
@@ -59,7 +221,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <polyline points="12 6 12 12 16 14"/>
                     </svg>
                 </span>
-                <span class="vbp-category-name"><?php esc_html_e( 'Recientes', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-category-name"><?php esc_html_e( 'Usados recientemente', 'flavor-chat-ia' ); ?></span>
                 <span class="vbp-category-count" x-text="recentBlocks.length"></span>
                 <svg class="vbp-category-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <polyline points="6,9 12,15 18,9"/>
@@ -75,11 +237,19 @@ if ( ! defined( 'ABSPATH' ) ) {
                         @dragstart="handleDragStart($event, block)"
                         @dragend="handleDragEnd($event)"
                         @click="addBlock(block)"
+                        @mouseenter="showBlockPreview($event, block)"
+                        @mouseleave="hideBlockPreview()"
                         role="treeitem"
                         tabindex="0"
                         @keydown.enter="addBlock(block)"
                         @keydown.space.prevent="addBlock(block)"
+                        style="position: relative;"
                     >
+                        <button type="button" class="vbp-favorite-btn" :class="{ 'is-favorite': isFavorite(block.type) }" @click.stop="toggleFavorite(block)" :aria-label="isFavorite(block.type) ? '<?php esc_attr_e( 'Quitar de favoritos', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Añadir a favoritos', 'flavor-chat-ia' ); ?>'">
+                            <svg width="12" height="12" viewBox="0 0 24 24" :fill="isFavorite(block.type) ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </button>
                         <span class="vbp-block-icon" x-html="block.icon" aria-hidden="true"></span>
                         <span class="vbp-block-name" x-text="block.name"></span>
                     </div>
@@ -87,8 +257,9 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
         </div>
 
-        <template x-for="category in filteredCategories" :key="category.id">
-            <div class="vbp-block-category" role="treeitem" :aria-expanded="openCategories.includes(category.id)">
+        <!-- Categorías normales -->
+        <template x-for="category in displayedCategories" :key="category.id">
+            <div class="vbp-block-category" :data-category="category.id" role="treeitem" :aria-expanded="openCategories.includes(category.id)" x-show="category.blocks.length > 0">
                 <button
                     type="button"
                     @click="toggleCategory(category.id)"
@@ -99,6 +270,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 >
                     <span class="vbp-category-icon" x-html="category.icon" aria-hidden="true"></span>
                     <span class="vbp-category-name" x-text="category.name"></span>
+                    <span class="vbp-category-count" x-text="category.blocks.length"></span>
                     <svg class="vbp-category-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <polyline points="6,9 12,15 18,9"/>
                     </svg>
@@ -109,18 +281,30 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <div
                             class="vbp-block-item"
                             :data-block-type="block.type"
+                            :style="'--block-category-color: ' + getCategoryColor(category.id)"
                             draggable="true"
                             @dragstart="handleDragStart($event, block)"
                             @dragend="handleDragEnd($event)"
                             @click="addBlock(block)"
+                            @mouseenter="showBlockPreview($event, block)"
+                            @mouseleave="hideBlockPreview()"
                             role="treeitem"
                             tabindex="0"
                             @keydown.enter="addBlock(block)"
                             @keydown.space.prevent="addBlock(block)"
                             :aria-label="block.name + ' - ' + '<?php esc_attr_e( 'Clic o arrastra para añadir', 'flavor-chat-ia' ); ?>'"
+                            style="position: relative;"
                         >
+                            <button type="button" class="vbp-favorite-btn" :class="{ 'is-favorite': isFavorite(block.type) }" @click.stop="toggleFavorite(block)" :aria-label="isFavorite(block.type) ? '<?php esc_attr_e( 'Quitar de favoritos', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Añadir a favoritos', 'flavor-chat-ia' ); ?>'">
+                                <svg width="12" height="12" viewBox="0 0 24 24" :fill="isFavorite(block.type) ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                            </button>
                             <span class="vbp-block-icon" x-html="block.icon" aria-hidden="true"></span>
                             <span class="vbp-block-name" x-text="block.name"></span>
+                            <template x-if="block.module">
+                                <span class="vbp-block-module-badge" x-text="block.module"></span>
+                            </template>
                         </div>
                     </template>
                 </div>
@@ -128,7 +312,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         </template>
 
         <!-- Widgets Globales -->
-        <div class="vbp-block-category vbp-global-widgets-category" role="treeitem" :aria-expanded="openCategories.includes('global-widgets')" x-show="globalWidgets.length > 0 || !globalWidgetsLoaded">
+        <div class="vbp-block-category vbp-global-widgets-category" role="treeitem" :aria-expanded="openCategories.includes('global-widgets')" x-show="(activeFilter === 'all' || activeFilter === 'global-widgets') && (globalWidgets.length > 0 || !globalWidgetsLoaded)">
             <button
                 type="button"
                 @click="toggleCategory('global-widgets')"
@@ -187,6 +371,27 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
         </div>
     </div>
+
+    <!-- Contador de bloques -->
+    <div class="vbp-blocks-count" x-show="!searchQuery">
+        <strong x-text="totalBlocks"></strong> <?php esc_html_e( 'bloques en', 'flavor-chat-ia' ); ?>
+        <strong x-text="categories.length"></strong> <?php esc_html_e( 'categorías', 'flavor-chat-ia' ); ?>
+    </div>
+</div>
+
+<!-- Tooltip de Preview -->
+<div id="vbp-block-preview-tooltip" class="vbp-block-preview-tooltip" x-data="{ visible: false }" x-show="visible" style="display: none;">
+    <div class="vbp-block-preview-tooltip-header">
+        <div class="vbp-block-preview-tooltip-icon" id="preview-icon"></div>
+        <div>
+            <div class="vbp-block-preview-tooltip-name" id="preview-name"></div>
+            <div class="vbp-block-preview-tooltip-type" id="preview-type"></div>
+        </div>
+    </div>
+    <div class="vbp-block-preview-tooltip-description" id="preview-description"></div>
+    <div class="vbp-block-preview-tooltip-hint">
+        <kbd>Clic</kbd> <?php esc_html_e( 'para añadir', 'flavor-chat-ia' ); ?> · <kbd>Arrastra</kbd> <?php esc_html_e( 'al canvas', 'flavor-chat-ia' ); ?>
+    </div>
 </div>
 
 <script>
@@ -201,16 +406,61 @@ document.addEventListener('alpine:init', () => {
 
     Alpine.data('vbpBlocksPanel', () => ({
         searchQuery: '',
-        openCategories: ['recent', 'sections', 'basic'],
+        viewMode: 'list', // 'list', 'grid', 'compact'
+        activeFilter: 'all',
+        openCategories: ['favorites', 'recent', 'sections', 'basic'],
         globalWidgets: [],
         globalWidgetsLoaded: false,
         recentBlocks: [],
+        favoriteBlocks: [],
         maxRecentBlocks: 8,
+        previewTimeout: null,
+
+        // Colores por categoría
+        categoryColors: {
+            'sections': '#6366f1',
+            'layout': '#8b5cf6',
+            'basic': '#3b82f6',
+            'media': '#10b981',
+            'forms': '#f59e0b',
+            'modules': '#ef4444',
+            'interactive': '#ec4899',
+            'advanced': '#64748b',
+            'default': '#6366f1'
+        },
+
+        // Descripciones de bloques
+        blockDescriptions: {
+            'hero': '<?php echo esc_js( __( 'Sección principal con imagen de fondo, título y llamada a la acción', 'flavor-chat-ia' ) ); ?>',
+            'features': '<?php echo esc_js( __( 'Grid de características o servicios con iconos', 'flavor-chat-ia' ) ); ?>',
+            'cta': '<?php echo esc_js( __( 'Llamada a la acción con botón destacado', 'flavor-chat-ia' ) ); ?>',
+            'heading': '<?php echo esc_js( __( 'Encabezado de texto H1-H6', 'flavor-chat-ia' ) ); ?>',
+            'text': '<?php echo esc_js( __( 'Bloque de párrafo con texto enriquecido', 'flavor-chat-ia' ) ); ?>',
+            'image': '<?php echo esc_js( __( 'Imagen con opciones de tamaño y alineación', 'flavor-chat-ia' ) ); ?>',
+            'button': '<?php echo esc_js( __( 'Botón personalizable con enlace', 'flavor-chat-ia' ) ); ?>',
+            'video': '<?php echo esc_js( __( 'Reproductor de vídeo embebido', 'flavor-chat-ia' ) ); ?>',
+            'gallery': '<?php echo esc_js( __( 'Galería de imágenes con lightbox', 'flavor-chat-ia' ) ); ?>',
+            'columns': '<?php echo esc_js( __( 'Layout de columnas flexible', 'flavor-chat-ia' ) ); ?>',
+            'container': '<?php echo esc_js( __( 'Contenedor con ancho máximo centrado', 'flavor-chat-ia' ) ); ?>',
+            'spacer': '<?php echo esc_js( __( 'Espaciador vertical ajustable', 'flavor-chat-ia' ) ); ?>',
+            'divider': '<?php echo esc_js( __( 'Línea divisoria horizontal', 'flavor-chat-ia' ) ); ?>',
+            'accordion': '<?php echo esc_js( __( 'Panel colapsable tipo FAQ', 'flavor-chat-ia' ) ); ?>',
+            'tabs': '<?php echo esc_js( __( 'Contenido en pestañas', 'flavor-chat-ia' ) ); ?>',
+            'form': '<?php echo esc_js( __( 'Formulario de contacto', 'flavor-chat-ia' ) ); ?>',
+            'map': '<?php echo esc_js( __( 'Mapa de Google embebido', 'flavor-chat-ia' ) ); ?>',
+            'testimonials': '<?php echo esc_js( __( 'Carrusel de testimonios', 'flavor-chat-ia' ) ); ?>',
+            'pricing': '<?php echo esc_js( __( 'Tabla de precios', 'flavor-chat-ia' ) ); ?>',
+            'team': '<?php echo esc_js( __( 'Grid de miembros del equipo', 'flavor-chat-ia' ) ); ?>',
+            'countdown': '<?php echo esc_js( __( 'Contador regresivo animado', 'flavor-chat-ia' ) ); ?>',
+            'icon': '<?php echo esc_js( __( 'Icono decorativo o funcional', 'flavor-chat-ia' ) ); ?>',
+            'social': '<?php echo esc_js( __( 'Enlaces a redes sociales', 'flavor-chat-ia' ) ); ?>',
+            'slider': '<?php echo esc_js( __( 'Carrusel de imágenes o contenido', 'flavor-chat-ia' ) ); ?>',
+            'module_shortcode': '<?php echo esc_js( __( 'Shortcode de módulo Flavor', 'flavor-chat-ia' ) ); ?>'
+        },
 
         // Cargar categorías desde VBP_Config si están disponibles, con fallback
         categories: (typeof VBP_Config !== 'undefined' && VBP_Config.blocks && VBP_Config.blocks.length > 0)
             ? VBP_Config.blocks.map(function(cat) {
-                // Formatear los bloques para compatibilidad con el panel
                 return {
                     id: cat.id,
                     name: cat.name,
@@ -221,21 +471,22 @@ document.addEventListener('alpine:init', () => {
                             name: block.name,
                             icon: block.icon || '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>',
                             shortcode: block.shortcode || '',
-                            module: block.module || ''
+                            module: block.module || '',
+                            category: cat.id
                         };
                     })
                 };
             })
             : [
-                // Fallback a categorías básicas si VBP_Config no está disponible
+                // Fallback a categorías básicas
                 {
                     id: 'sections',
                     name: '<?php echo esc_js( __( 'Secciones', 'flavor-chat-ia' ) ); ?>',
                     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>',
                     blocks: [
-                        { type: 'hero', name: 'Hero', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>' },
-                        { type: 'features', name: 'Features', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>' },
-                        { type: 'cta', name: 'CTA', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>' }
+                        { type: 'hero', name: 'Hero', category: 'sections', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>' },
+                        { type: 'features', name: 'Features', category: 'sections', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>' },
+                        { type: 'cta', name: 'CTA', category: 'sections', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>' }
                     ]
                 },
                 {
@@ -243,27 +494,83 @@ document.addEventListener('alpine:init', () => {
                     name: '<?php echo esc_js( __( 'Básicos', 'flavor-chat-ia' ) ); ?>',
                     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>',
                     blocks: [
-                        { type: 'heading', name: 'Encabezado', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v16M18 4v16M6 12h12"/></svg>' },
-                        { type: 'text', name: 'Texto', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4,7 4,4 20,4 20,7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>' },
-                        { type: 'image', name: 'Imagen', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>' },
-                        { type: 'button', name: 'Botón', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="8" rx="2"/></svg>' }
+                        { type: 'heading', name: 'Encabezado', category: 'basic', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v16M18 4v16M6 12h12"/></svg>' },
+                        { type: 'text', name: 'Texto', category: 'basic', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4,7 4,4 20,4 20,7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>' },
+                        { type: 'image', name: 'Imagen', category: 'basic', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>' },
+                        { type: 'button', name: 'Botón', category: 'basic', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="8" rx="2"/></svg>' }
                     ]
                 }
             ],
 
-        get filteredCategories() {
-            if (!this.searchQuery) {
-                return this.categories;
+        // Filtros principales (primeras 4 categorías)
+        get mainFilterCategories() {
+            return this.categories.slice(0, 4);
+        },
+
+        // Total de bloques
+        get totalBlocks() {
+            return this.categories.reduce((sum, cat) => sum + cat.blocks.length, 0);
+        },
+
+        // Total de bloques filtrados
+        get totalFilteredBlocks() {
+            return this.displayedCategories.reduce((sum, cat) => sum + cat.blocks.length, 0);
+        },
+
+        // Categorías a mostrar según filtros
+        get displayedCategories() {
+            let cats = this.categories;
+
+            // Filtrar por búsqueda
+            if (this.searchQuery) {
+                const query = this.searchQuery.toLowerCase();
+                cats = cats.map(cat => ({
+                    ...cat,
+                    blocks: cat.blocks.filter(block =>
+                        block.name.toLowerCase().includes(query) ||
+                        block.type.toLowerCase().includes(query) ||
+                        (this.blockDescriptions[block.type] || '').toLowerCase().includes(query)
+                    )
+                })).filter(cat => cat.blocks.length > 0);
+                return cats;
             }
 
-            const query = this.searchQuery.toLowerCase();
-            return this.categories.map(cat => ({
-                ...cat,
-                blocks: cat.blocks.filter(block => 
-                    block.name.toLowerCase().includes(query) ||
-                    block.type.toLowerCase().includes(query)
-                )
-            })).filter(cat => cat.blocks.length > 0);
+            // Filtrar por categoría
+            if (this.activeFilter !== 'all' && this.activeFilter !== 'favorites') {
+                cats = cats.filter(cat => cat.id === this.activeFilter);
+            }
+
+            return cats;
+        },
+
+        get filteredCategories() {
+            return this.displayedCategories;
+        },
+
+        // Setters
+        setViewMode(mode) {
+            this.viewMode = mode;
+            localStorage.setItem('vbp_blocks_view_mode', mode);
+        },
+
+        setFilter(filter) {
+            this.activeFilter = filter;
+            // Auto-expandir categoría seleccionada
+            if (filter !== 'all' && filter !== 'favorites' && !this.openCategories.includes(filter)) {
+                this.openCategories.push(filter);
+            }
+            if (filter === 'global-widgets') {
+                this.ensureGlobalWidgetsLoaded();
+            }
+        },
+
+        expandAllCategories() {
+            this.openCategories = ['favorites', 'recent', 'global-widgets', ...this.categories.map(c => c.id)];
+            this.ensureGlobalWidgetsLoaded();
+        },
+
+        collapseAllCategories() {
+            this.openCategories = [];
         },
 
         toggleCategory(categoryId) {
@@ -272,9 +579,104 @@ document.addEventListener('alpine:init', () => {
                 this.openCategories.splice(index, 1);
             } else {
                 this.openCategories.push(categoryId);
+                if (categoryId === 'global-widgets') {
+                    this.ensureGlobalWidgetsLoaded();
+                }
             }
         },
 
+        getCategoryColor(categoryId) {
+            return this.categoryColors[categoryId] || this.categoryColors.default;
+        },
+
+        // Favoritos
+        isFavorite(blockType) {
+            return this.favoriteBlocks.some(b => b.type === blockType);
+        },
+
+        toggleFavorite(block) {
+            const index = this.favoriteBlocks.findIndex(b => b.type === block.type);
+            if (index > -1) {
+                this.favoriteBlocks.splice(index, 1);
+            } else {
+                this.favoriteBlocks.push({
+                    type: block.type,
+                    name: block.name,
+                    icon: block.icon,
+                    category: block.category
+                });
+            }
+            this.saveFavorites();
+        },
+
+        loadFavorites() {
+            try {
+                const stored = localStorage.getItem('vbp_favorite_blocks');
+                if (stored) {
+                    this.favoriteBlocks = JSON.parse(stored);
+                }
+            } catch (e) {
+                console.warn('Error cargando favoritos:', e);
+            }
+        },
+
+        saveFavorites() {
+            try {
+                localStorage.setItem('vbp_favorite_blocks', JSON.stringify(this.favoriteBlocks));
+            } catch (e) {
+                console.warn('Error guardando favoritos:', e);
+            }
+        },
+
+        // Preview tooltip
+        showBlockPreview(event, block) {
+            const self = this;
+            clearTimeout(this.previewTimeout);
+
+            this.previewTimeout = setTimeout(function() {
+                const tooltip = document.getElementById('vbp-block-preview-tooltip');
+                if (!tooltip) return;
+
+                // Actualizar contenido
+                const iconEl = tooltip.querySelector('#preview-icon');
+                const nameEl = tooltip.querySelector('#preview-name');
+                const typeEl = tooltip.querySelector('#preview-type');
+                const descEl = tooltip.querySelector('#preview-description');
+
+                if (iconEl) iconEl.innerHTML = block.icon;
+                if (nameEl) nameEl.textContent = block.name;
+                if (typeEl) typeEl.textContent = block.type;
+                if (descEl) descEl.textContent = self.blockDescriptions[block.type] || '<?php echo esc_js( __( 'Bloque de contenido', 'flavor-chat-ia' ) ); ?>';
+
+                // Posicionar
+                const rect = event.target.closest('.vbp-block-item').getBoundingClientRect();
+                tooltip.style.left = (rect.right + 10) + 'px';
+                tooltip.style.top = rect.top + 'px';
+
+                // Si se sale por la derecha, mostrar a la izquierda
+                if (rect.right + 300 > window.innerWidth) {
+                    tooltip.style.left = (rect.left - 290) + 'px';
+                }
+
+                tooltip.style.display = 'block';
+                setTimeout(function() {
+                    tooltip.classList.add('visible');
+                }, 10);
+            }, 400);
+        },
+
+        hideBlockPreview() {
+            clearTimeout(this.previewTimeout);
+            const tooltip = document.getElementById('vbp-block-preview-tooltip');
+            if (tooltip) {
+                tooltip.classList.remove('visible');
+                setTimeout(function() {
+                    tooltip.style.display = 'none';
+                }, 200);
+            }
+        },
+
+        // Drag & Drop
         handleDragStart(event, block) {
             event.dataTransfer.setData('text/vbp-block-type', block.type);
             event.dataTransfer.setData('application/json', JSON.stringify(block));
@@ -294,25 +696,19 @@ document.addEventListener('alpine:init', () => {
         },
 
         addToRecent(block) {
-            // Evitar duplicados
             var existingIndex = this.recentBlocks.findIndex(b => b.type === block.type);
             if (existingIndex > -1) {
                 this.recentBlocks.splice(existingIndex, 1);
             }
-
-            // Agregar al inicio
             this.recentBlocks.unshift({
                 type: block.type,
                 name: block.name,
-                icon: block.icon
+                icon: block.icon,
+                category: block.category
             });
-
-            // Limitar cantidad
             if (this.recentBlocks.length > this.maxRecentBlocks) {
                 this.recentBlocks = this.recentBlocks.slice(0, this.maxRecentBlocks);
             }
-
-            // Guardar en localStorage
             this.saveRecentBlocks();
         },
 
@@ -338,7 +734,13 @@ document.addEventListener('alpine:init', () => {
         // Inicialización
         init() {
             this.loadRecentBlocks();
-            this.loadGlobalWidgets();
+            this.loadFavorites();
+
+            // Cargar preferencias de vista
+            const savedViewMode = localStorage.getItem('vbp_blocks_view_mode');
+            if (savedViewMode) {
+                this.viewMode = savedViewMode;
+            }
         },
 
         get filteredGlobalWidgets() {
@@ -352,14 +754,26 @@ document.addEventListener('alpine:init', () => {
             );
         },
 
+        ensureGlobalWidgetsLoaded(force = false) {
+            if (force) {
+                this.globalWidgetsLoaded = false;
+            }
+
+            if (this.globalWidgetsLoaded) {
+                return Promise.resolve(this.globalWidgets);
+            }
+
+            return this.loadGlobalWidgets();
+        },
+
         loadGlobalWidgets() {
             var self = this;
             if (typeof VBP_Config === 'undefined' || !VBP_Config.restUrl) {
                 self.globalWidgetsLoaded = true;
-                return;
+                return Promise.resolve([]);
             }
 
-            fetch(VBP_Config.restUrl + 'global-widgets', {
+            return fetch(VBP_Config.restUrl + 'global-widgets', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -376,11 +790,13 @@ document.addEventListener('alpine:init', () => {
             .then(function(data) {
                 self.globalWidgets = Array.isArray(data) ? data : [];
                 self.globalWidgetsLoaded = true;
+                return self.globalWidgets;
             })
             .catch(function(error) {
                 console.warn('Error cargando widgets globales:', error.message);
                 self.globalWidgets = [];
                 self.globalWidgetsLoaded = true;
+                return self.globalWidgets;
             });
         },
 
@@ -397,10 +813,8 @@ document.addEventListener('alpine:init', () => {
         },
 
         insertGlobalWidget(widget) {
-            var self = this;
             var store = Alpine.store('vbp');
 
-            // Crear elemento de tipo global_widget
             var newElement = {
                 id: 'el_' + Date.now(),
                 type: 'global_widget',
@@ -416,7 +830,6 @@ document.addEventListener('alpine:init', () => {
 
             store.addElement(newElement);
 
-            // Notificar si hay acceso al sistema de notificaciones
             if (window.vbpApp && window.vbpApp.showNotification) {
                 window.vbpApp.showNotification('<?php echo esc_js( __( 'Widget global insertado', 'flavor-chat-ia' ) ); ?>', 'success');
             }

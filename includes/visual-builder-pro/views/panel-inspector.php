@@ -11,14 +11,38 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 ?>
-<div class="vbp-inspector-container" x-data="vbpInspector()">
-    <template x-if="!selectedElement">
+<div class="vbp-inspector-container" x-data="vbpInspector()" :data-inspector-mode="$store.vbp.inspectorMode" x-effect="if ($store.vbp.inspectorMode === 'basic' && activeTab !== 'content' && activeTab !== 'styles') activeTab = 'content'">
+    <template x-if="selectionCount === 0">
         <div class="vbp-inspector-empty">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
                 <circle cx="12" cy="12" r="10"/>
                 <path d="M12 16v-4M12 8h.01"/>
             </svg>
             <p><?php esc_html_e( 'Selecciona un elemento para editarlo', 'flavor-chat-ia' ); ?></p>
+            <small><?php esc_html_e( 'Haz clic en un bloque del canvas para ver sus ajustes.', 'flavor-chat-ia' ); ?></small>
+        </div>
+    </template>
+
+    <template x-if="hasMultipleSelection">
+        <div class="vbp-inspector-empty vbp-inspector-empty--multi">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <rect x="3" y="5" width="10" height="10" rx="2"></rect>
+                <rect x="11" y="9" width="10" height="10" rx="2"></rect>
+            </svg>
+            <p><span x-text="selectionCount"></span> <?php esc_html_e( 'elementos seleccionados', 'flavor-chat-ia' ); ?></p>
+            <small><?php esc_html_e( 'La edición detallada del inspector se activa con una sola selección. Aquí puedes aplicar acciones rápidas al conjunto.', 'flavor-chat-ia' ); ?></small>
+            <div class="vbp-inspector-multi-summary" x-show="selectedElementsSummary">
+                <span class="vbp-inspector-multi-summary__label"><?php esc_html_e( 'Selección', 'flavor-chat-ia' ); ?></span>
+                <span class="vbp-inspector-multi-summary__text" x-text="selectedElementsSummary"></span>
+            </div>
+            <div class="vbp-inspector-multi-actions">
+                <button type="button" class="vbp-btn vbp-btn-secondary" @click="clearSelection()">
+                    <?php esc_html_e( 'Deseleccionar', 'flavor-chat-ia' ); ?>
+                </button>
+                <button type="button" class="vbp-btn vbp-btn-danger" @click="deleteSelectedElements()">
+                    <?php esc_html_e( 'Eliminar selección', 'flavor-chat-ia' ); ?>
+                </button>
+            </div>
         </div>
     </template>
 
@@ -28,9 +52,9 @@ if ( ! defined( 'ABSPATH' ) ) {
             <div class="vbp-inspector-header">
                 <div class="vbp-inspector-header-info">
                     <span class="vbp-inspector-type" x-text="getTypeName(selectedElement.type)"></span>
-                    <span class="vbp-inspector-id" x-text="selectedElement.id"></span>
+                    <span class="vbp-inspector-id" x-show="$store.vbp.inspectorMode === 'advanced'" x-text="selectedElement.id"></span>
                 </div>
-                <div class="vbp-inspector-actions">
+                <div class="vbp-inspector-actions" x-show="$store.vbp.inspectorMode === 'advanced'">
                     <button type="button" @click="toggleVisibility()" class="vbp-btn-icon-sm" :title="selectedElement.visible ? '<?php esc_attr_e( 'Ocultar', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Mostrar', 'flavor-chat-ia' ); ?>'">
                         <svg x-show="selectedElement.visible" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         <svg x-show="!selectedElement.visible" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -38,6 +62,115 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <button type="button" @click="toggleLock()" class="vbp-btn-icon-sm" :title="selectedElement.locked ? '<?php esc_attr_e( 'Desbloquear', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Bloquear', 'flavor-chat-ia' ); ?>'">
                         <svg x-show="!selectedElement.locked" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
                         <svg x-show="selectedElement.locked" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="vbp-inspector-basic-intro" x-show="$store.vbp.inspectorMode === 'basic'">
+                <span class="vbp-inspector-basic-intro__eyebrow"><?php esc_html_e( 'Edición rápida', 'flavor-chat-ia' ); ?></span>
+                <p><?php esc_html_e( 'Primero contenido y apariencia. La estructura, estados y ajustes técnicos quedan fuera del camino hasta que cambies a Avanzado.', 'flavor-chat-ia' ); ?></p>
+            </div>
+
+            <div class="vbp-inspector-context-card" :class="{ 'is-structure': isStructuralSelection }">
+                <div class="vbp-inspector-context-card__header">
+                    <span class="vbp-inspector-context-card__eyebrow" x-text="selectionContextEyebrow"></span>
+                    <span class="vbp-inspector-context-card__pill" x-text="$store.vbp.inspectorMode === 'basic' ? '<?php echo esc_js( __( 'Modo foco', 'flavor-chat-ia' ) ); ?>' : '<?php echo esc_js( __( 'Inspector completo', 'flavor-chat-ia' ) ); ?>'"></span>
+                </div>
+                <div class="vbp-inspector-context-card__title" x-text="selectionContextTitle"></div>
+                <p class="vbp-inspector-context-card__text" x-text="selectionContextDescription"></p>
+                <div class="vbp-inspector-breadcrumb" x-show="selectedElementPath.length > 0">
+                    <span class="vbp-inspector-breadcrumb__label"><?php esc_html_e( 'Ruta', 'flavor-chat-ia' ); ?></span>
+                    <div class="vbp-inspector-breadcrumb__trail">
+                        <template x-for="(node, index) in selectedElementPath" :key="node.id + '-' + index">
+                            <div class="vbp-inspector-breadcrumb__item">
+                                <button type="button"
+                                        class="vbp-inspector-breadcrumb__node"
+                                        :class="{ 'is-current': selectedElement && node.id === selectedElement.id, 'is-root': node.id === 'root' }"
+                                        @click="selectPathNode(node.id)"
+                                        :disabled="node.id === 'root'">
+                                    <span x-text="node.name || node.type || node.id"></span>
+                                </button>
+                                <span class="vbp-inspector-breadcrumb__separator" x-show="index < selectedElementPath.length - 1">/</span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                <div class="vbp-inspector-structure-quick" x-show="isStructuralSelection">
+                    <span class="vbp-inspector-structure-quick__label"><?php esc_html_e( 'Acciones rápidas', 'flavor-chat-ia' ); ?></span>
+
+                    <div class="vbp-inspector-structure-quick__group" x-show="isContainerSelection">
+                        <div class="vbp-btn-group vbp-btn-group-full">
+                            <button type="button" @click="setContainerWidthPreset('full')" :class="{ 'active': (selectedElement.data.max_width || 'full') === 'full' }" class="vbp-btn-toggle"><?php esc_html_e( 'Full', 'flavor-chat-ia' ); ?></button>
+                            <button type="button" @click="setContainerWidthPreset('1200px')" :class="{ 'active': selectedElement.data.max_width === '1200px' }" class="vbp-btn-toggle">1200</button>
+                            <button type="button" @click="setContainerWidthPreset('960px')" :class="{ 'active': selectedElement.data.max_width === '960px' }" class="vbp-btn-toggle">960</button>
+                        </div>
+                        <div class="vbp-btn-group vbp-btn-group-full">
+                            <button type="button" @click="setContainerAlignmentQuick('left')" :class="{ 'active': selectedElement.data.align === 'left' }" class="vbp-btn-toggle"><?php esc_html_e( 'Izq', 'flavor-chat-ia' ); ?></button>
+                            <button type="button" @click="setContainerAlignmentQuick('center')" :class="{ 'active': !selectedElement.data.align || selectedElement.data.align === 'center' }" class="vbp-btn-toggle"><?php esc_html_e( 'Centro', 'flavor-chat-ia' ); ?></button>
+                            <button type="button" @click="setContainerAlignmentQuick('right')" :class="{ 'active': selectedElement.data.align === 'right' }" class="vbp-btn-toggle"><?php esc_html_e( 'Der', 'flavor-chat-ia' ); ?></button>
+                        </div>
+                        <button type="button" class="vbp-btn vbp-btn-secondary vbp-btn-sm" @click="toggleContainerFullHeightQuick()">
+                            <span x-text="selectedElement.data.full_height ? '<?php echo esc_js( __( 'Quitar altura completa', 'flavor-chat-ia' ) ); ?>' : '<?php echo esc_js( __( 'Altura completa', 'flavor-chat-ia' ) ); ?>'"></span>
+                        </button>
+                    </div>
+
+                    <div class="vbp-inspector-structure-quick__group" x-show="isColumnsLikeSelection">
+                        <div class="vbp-btn-group vbp-btn-group-full">
+                            <template x-for="n in [2, 3, 4]" :key="'quick-cols-' + n">
+                                <button type="button" @click="setQuickColumnsCount(n)" :class="{ 'active': currentStructureColumnsCount === n }" class="vbp-btn-toggle" x-text="n + ' col'"></button>
+                            </template>
+                        </div>
+                        <div class="vbp-inspector-structure-presets">
+                            <button type="button" class="vbp-layout-preset" @click="applyStructureLayoutPreset('equal-2')" title="50 / 50">
+                                <div class="vbp-preset-preview"><span style="flex: 1"></span><span style="flex: 1"></span></div>
+                            </button>
+                            <button type="button" class="vbp-layout-preset" @click="applyStructureLayoutPreset('sidebar-left')" title="33 / 67">
+                                <div class="vbp-preset-preview"><span style="flex: 1"></span><span style="flex: 2"></span></div>
+                            </button>
+                            <button type="button" class="vbp-layout-preset" @click="applyStructureLayoutPreset('sidebar-right')" title="67 / 33">
+                                <div class="vbp-preset-preview"><span style="flex: 2"></span><span style="flex: 1"></span></div>
+                            </button>
+                            <button type="button" class="vbp-layout-preset" @click="applyStructureLayoutPreset('equal-3')" title="33 / 33 / 34">
+                                <div class="vbp-preset-preview"><span style="flex: 1"></span><span style="flex: 1"></span><span style="flex: 1"></span></div>
+                            </button>
+                        </div>
+                        <div class="vbp-btn-group vbp-btn-group-full">
+                            <button type="button" @click="setQuickGap('0px')" :class="{ 'active': (selectedElement.data.gap || '20px') === '0px' }" class="vbp-btn-toggle">0</button>
+                            <button type="button" @click="setQuickGap('20px')" :class="{ 'active': (selectedElement.data.gap || '20px') === '20px' }" class="vbp-btn-toggle">20</button>
+                            <button type="button" @click="setQuickGap('40px')" :class="{ 'active': selectedElement.data.gap === '40px' }" class="vbp-btn-toggle">40</button>
+                        </div>
+                        <button type="button" class="vbp-btn vbp-btn-secondary vbp-btn-sm" @click="toggleMobileStackQuick()">
+                            <span x-text="selectedElement.data.stackOnMobile === false ? '<?php echo esc_js( __( 'Activar apilado móvil', 'flavor-chat-ia' ) ); ?>' : '<?php echo esc_js( __( 'No apilar en móvil', 'flavor-chat-ia' ) ); ?>'"></span>
+                        </button>
+                    </div>
+
+                    <div class="vbp-inspector-structure-quick__group" x-show="isGridSelection">
+                        <div class="vbp-btn-group vbp-btn-group-full">
+                            <template x-for="n in [2, 3, 4]" :key="'quick-grid-' + n">
+                                <button type="button" @click="setQuickColumnsCount(n)" :class="{ 'active': currentStructureColumnsCount === n && !selectedElement.data.auto_fit }" class="vbp-btn-toggle" x-text="n + ' col'"></button>
+                            </template>
+                        </div>
+                        <div class="vbp-btn-group vbp-btn-group-full">
+                            <button type="button" @click="applyStructureLayoutPreset('grid-2')" class="vbp-btn-toggle"><?php esc_html_e( 'Grid 2', 'flavor-chat-ia' ); ?></button>
+                            <button type="button" @click="applyStructureLayoutPreset('grid-3')" class="vbp-btn-toggle"><?php esc_html_e( 'Grid 3', 'flavor-chat-ia' ); ?></button>
+                            <button type="button" @click="applyStructureLayoutPreset('grid-auto')" :class="{ 'active': selectedElement.data.auto_fit === 'auto-fit' }" class="vbp-btn-toggle"><?php esc_html_e( 'Auto-fit', 'flavor-chat-ia' ); ?></button>
+                        </div>
+                        <div class="vbp-btn-group vbp-btn-group-full">
+                            <button type="button" @click="setQuickGap('12px')" :class="{ 'active': (selectedElement.data.gap || '') === '12px' }" class="vbp-btn-toggle">12</button>
+                            <button type="button" @click="setQuickGap('20px')" :class="{ 'active': (selectedElement.data.gap || '') === '20px' }" class="vbp-btn-toggle">20</button>
+                            <button type="button" @click="setQuickGap('32px')" :class="{ 'active': selectedElement.data.gap === '32px' }" class="vbp-btn-toggle">32</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="vbp-inspector-context-card__actions">
+                    <button type="button" class="vbp-btn vbp-btn-secondary" @click="focusSelectedElement()">
+                        <?php esc_html_e( 'Ver en canvas', 'flavor-chat-ia' ); ?>
+                    </button>
+                    <button type="button" class="vbp-btn vbp-btn-secondary" @click="duplicateCurrentElement()">
+                        <?php esc_html_e( 'Duplicar', 'flavor-chat-ia' ); ?>
+                    </button>
+                    <button type="button" class="vbp-btn vbp-btn-danger" @click="deleteCurrentElement()">
+                        <?php esc_html_e( 'Eliminar', 'flavor-chat-ia' ); ?>
                     </button>
                 </div>
             </div>
@@ -61,15 +194,30 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </template>
 
+            <!-- Toggle Modo Básico/Avanzado -->
+            <div class="vbp-inspector-mode-toggle" x-show="$store.vbp.inspectorMode === 'advanced'">
+                <button type="button"
+                        @click="setWorkspaceMode($store.vbp.inspectorMode === 'basic' ? 'advanced' : 'basic')"
+                        class="vbp-mode-toggle-btn"
+                        :class="{ 'is-advanced': $store.vbp.inspectorMode === 'advanced' }"
+                        :title="$store.vbp.inspectorMode === 'basic' ? '<?php esc_attr_e( 'Cambiar a modo avanzado', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Cambiar a modo básico', 'flavor-chat-ia' ); ?>'">
+                    <span class="vbp-mode-label" x-text="$store.vbp.inspectorMode === 'basic' ? '<?php esc_attr_e( 'Básico', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Avanzado', 'flavor-chat-ia' ); ?>'"></span>
+                    <span class="vbp-mode-icon">
+                        <svg x-show="$store.vbp.inspectorMode === 'basic'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                        <svg x-show="$store.vbp.inspectorMode === 'advanced'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </span>
+                </button>
+            </div>
+
             <!-- Tabs -->
             <div class="vbp-inspector-tabs">
                 <button type="button" @click="activeTab = 'content'" :class="{ 'active': activeTab === 'content' }" class="vbp-inspector-tab">
                     <?php esc_html_e( 'Contenido', 'flavor-chat-ia' ); ?>
                 </button>
                 <button type="button" @click="activeTab = 'styles'" :class="{ 'active': activeTab === 'styles' }" class="vbp-inspector-tab">
-                    <?php esc_html_e( 'Estilos', 'flavor-chat-ia' ); ?>
+                    <span x-text="$store.vbp.inspectorMode === 'basic' ? '<?php esc_attr_e( 'Apariencia', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Estilos', 'flavor-chat-ia' ); ?>'"></span>
                 </button>
-                <button type="button" @click="activeTab = 'advanced'" :class="{ 'active': activeTab === 'advanced' }" class="vbp-inspector-tab">
+                <button type="button" x-show="$store.vbp.inspectorMode === 'advanced'" @click="activeTab = 'advanced'" :class="{ 'active': activeTab === 'advanced' }" class="vbp-inspector-tab">
                     <?php esc_html_e( 'Avanzado', 'flavor-chat-ia' ); ?>
                 </button>
             </div>
@@ -79,7 +227,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <!-- ============================================ -->
             <div x-show="activeTab === 'content'" class="vbp-inspector-panel">
                 <!-- Nombre del elemento (común) -->
-                <div class="vbp-field-group">
+                <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                     <label class="vbp-field-label"><?php esc_html_e( 'Nombre', 'flavor-chat-ia' ); ?></label>
                     <input type="text" x-model="selectedElement.name" @input="updateElement('name', $event.target.value)" class="vbp-field-input">
                 </div>
@@ -215,7 +363,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Texto alternativo', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.alt" @input="updateElementData('alt', $event.target.value)" class="vbp-field-input" placeholder="Descripción de la imagen">
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Pie de foto', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.caption" @input="updateElementData('caption', $event.target.value)" class="vbp-field-input">
                         </div>
@@ -246,7 +394,17 @@ if ( ! defined( 'ABSPATH' ) ) {
                                        @blur="closeDropdown()"
                                        @link-selected.window="updateElementData('url', $event.detail.url)"
                                        class="vbp-field-input"
+                                       :class="getValidationClass()"
                                        placeholder="<?php esc_attr_e( 'Escribe para buscar o pega URL...', 'flavor-chat-ia' ); ?>">
+                                <!-- Error de validación -->
+                                <div class="vbp-field-error" x-show="hasValidationError()" x-text="validationError" x-cloak></div>
+                                <!-- Botones de acciones rápidas -->
+                                <div class="vbp-link-actions" x-show="$store.vbp.inspectorMode === 'advanced'">
+                                    <button type="button" @click="openFileSelector()" class="vbp-btn-icon vbp-btn-xs" title="<?php esc_attr_e( 'Archivo', 'flavor-chat-ia' ); ?>">📎</button>
+                                    <button type="button" @click="insertAnchor()" class="vbp-btn-icon vbp-btn-xs" title="<?php esc_attr_e( 'Ancla', 'flavor-chat-ia' ); ?>">⚓</button>
+                                    <button type="button" @click="insertEmail()" class="vbp-btn-icon vbp-btn-xs" title="<?php esc_attr_e( 'Email', 'flavor-chat-ia' ); ?>">✉️</button>
+                                    <button type="button" @click="insertPhone()" class="vbp-btn-icon vbp-btn-xs" title="<?php esc_attr_e( 'Teléfono', 'flavor-chat-ia' ); ?>">📞</button>
+                                </div>
                                 <div class="vbp-autocomplete-dropdown" x-show="isOpen" x-cloak>
                                     <div class="vbp-autocomplete-loading" x-show="isLoading">
                                         <?php esc_html_e( 'Buscando...', 'flavor-chat-ia' ); ?>
@@ -254,12 +412,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <template x-if="!isLoading && results.length === 0">
                                         <div class="vbp-autocomplete-empty"><?php esc_html_e( 'No se encontraron resultados', 'flavor-chat-ia' ); ?></div>
                                     </template>
-                                    <template x-for="(result, idx) in results" :key="result.id">
+                                    <template x-for="(result, idx) in results" :key="result.id || idx">
                                         <button type="button"
                                                 class="vbp-autocomplete-item"
                                                 :class="{ 'active': activeIndex === idx }"
                                                 @click="selectResult(result)">
-                                            <span class="vbp-autocomplete-icon" x-text="result.icon"></span>
+                                            <span class="vbp-autocomplete-icon" x-text="getTypeIcon(result.type)"></span>
                                             <span class="vbp-autocomplete-info">
                                                 <span class="vbp-autocomplete-title" x-text="result.title"></span>
                                                 <span class="vbp-autocomplete-type" x-text="getTypeLabel(result.type)"></span>
@@ -270,7 +428,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </div>
                         <div class="vbp-field-row">
-                            <div class="vbp-field-group vbp-field-half">
+                            <div class="vbp-field-group vbp-field-half" x-show="$store.vbp.inspectorMode === 'advanced'">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Abrir en', 'flavor-chat-ia' ); ?></label>
                                 <select x-model="selectedElement.data.target" @change="updateElementData('target', $event.target.value)" class="vbp-field-select">
                                     <option value="_self"><?php esc_html_e( 'Misma ventana', 'flavor-chat-ia' ); ?></option>
@@ -286,7 +444,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 </select>
                             </div>
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Alineación', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-btn-group">
                                 <button type="button" @click="updateElementData('align', 'left')" :class="{ 'active': selectedElement.data.align === 'left' }" class="vbp-btn-icon"><?php esc_html_e( 'Izq', 'flavor-chat-ia' ); ?></button>
@@ -333,8 +491,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <!-- Colores de texto -->
-                        <h4 class="vbp-section-title">🎨 <?php esc_html_e( 'Colores de Texto', 'flavor-chat-ia' ); ?></h4>
-                        <div class="vbp-field-row">
+                        <h4 class="vbp-section-title" x-show="$store.vbp.inspectorMode === 'advanced'">🎨 <?php esc_html_e( 'Colores de Texto', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-row" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <div class="vbp-field-half" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.titulo_color || '#ffffff')">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
                                 <div class="vbp-color-input-wrapper">
@@ -520,14 +678,130 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                         <!-- Fondo -->
                         <h4 class="vbp-section-title">🖼️ <?php esc_html_e( 'Fondo', 'flavor-chat-ia' ); ?></h4>
+
+                        <!-- Tipo de fondo -->
                         <div class="vbp-field-group">
+                            <label class="vbp-field-label"><?php esc_html_e( 'Tipo de fondo', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-btn-group vbp-btn-group-3">
+                                <button type="button"
+                                        class="vbp-btn-group-item"
+                                        :class="{ 'active': !selectedElement.data.fondo_tipo || selectedElement.data.fondo_tipo === 'imagen' }"
+                                        @click="updateElementData('fondo_tipo', 'imagen')">
+                                    🖼️ <?php esc_html_e( 'Imagen', 'flavor-chat-ia' ); ?>
+                                </button>
+                                <button type="button"
+                                        class="vbp-btn-group-item"
+                                        :class="{ 'active': selectedElement.data.fondo_tipo === 'video' }"
+                                        @click="updateElementData('fondo_tipo', 'video')">
+                                    🎬 <?php esc_html_e( 'Video', 'flavor-chat-ia' ); ?>
+                                </button>
+                                <button type="button"
+                                        class="vbp-btn-group-item"
+                                        :class="{ 'active': selectedElement.data.fondo_tipo === 'color' }"
+                                        @click="updateElementData('fondo_tipo', 'color')">
+                                    🎨 <?php esc_html_e( 'Color', 'flavor-chat-ia' ); ?>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Imagen de fondo -->
+                        <div class="vbp-field-group" x-show="!selectedElement.data.fondo_tipo || selectedElement.data.fondo_tipo === 'imagen'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Imagen de fondo', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-image-preview vbp-image-preview-bg" x-show="selectedElement.data.imagen_fondo" :style="{ backgroundImage: 'url(' + selectedElement.data.imagen_fondo + ')' }">
                                 <button type="button" @click="updateElementData('imagen_fondo', '')" class="vbp-image-remove">×</button>
                             </div>
-                            <button type="button" @click="openMediaLibrary('imagen_fondo')" class="vbp-btn vbp-btn-secondary vbp-btn-block">
-                                <?php esc_html_e( 'Seleccionar imagen', 'flavor-chat-ia' ); ?>
-                            </button>
+                            <div class="vbp-btn-row">
+                                <button type="button" @click="openMediaLibrary('imagen_fondo')" class="vbp-btn vbp-btn-secondary vbp-btn-sm">
+                                    📁 <?php esc_html_e( 'Biblioteca', 'flavor-chat-ia' ); ?>
+                                </button>
+                                <button type="button" @click="openUnsplash(selectedElement)" class="vbp-btn vbp-btn-secondary vbp-btn-sm">
+                                    📷 Unsplash
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Video de fondo -->
+                        <div x-show="selectedElement.data.fondo_tipo === 'video'" class="vbp-video-background-config">
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Fuente del video', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-btn-group vbp-btn-group-2">
+                                    <button type="button"
+                                            class="vbp-btn-group-item"
+                                            :class="{ 'active': !selectedElement.data.video_fuente || selectedElement.data.video_fuente === 'url' }"
+                                            @click="updateElementData('video_fuente', 'url')">
+                                        🔗 URL
+                                    </button>
+                                    <button type="button"
+                                            class="vbp-btn-group-item"
+                                            :class="{ 'active': selectedElement.data.video_fuente === 'archivo' }"
+                                            @click="updateElementData('video_fuente', 'archivo')">
+                                        📁 <?php esc_html_e( 'Archivo', 'flavor-chat-ia' ); ?>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- URL de video (YouTube, Vimeo, etc) -->
+                            <div class="vbp-field-group" x-show="!selectedElement.data.video_fuente || selectedElement.data.video_fuente === 'url'">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Video externo', 'flavor-chat-ia' ); ?></label>
+                                <input type="url"
+                                       x-model="selectedElement.data.video_url"
+                                       @input="updateElementData('video_url', $event.target.value)"
+                                       class="vbp-field-input"
+                                       placeholder="https://youtube.com/watch?v=... o https://vimeo.com/...">
+                                <small class="vbp-field-hint"><?php esc_html_e( 'Usa una URL de YouTube, Vimeo o un archivo directo. Si prefieres un archivo de WordPress, cambia a "Archivo".', 'flavor-chat-ia' ); ?></small>
+                            </div>
+
+                            <!-- Archivo de video desde biblioteca -->
+                            <div class="vbp-field-group" x-show="selectedElement.data.video_fuente === 'archivo'">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Video de la biblioteca', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-video-preview" x-show="selectedElement.data.video_archivo">
+                                    <video :src="selectedElement.data.video_archivo" muted loop style="max-width: 100%; max-height: 120px; border-radius: 6px;"></video>
+                                    <button type="button" @click="updateElementData('video_archivo', '')" class="vbp-image-remove">×</button>
+                                </div>
+                                <button type="button" @click="openMediaLibrary('video_archivo', 'video')" class="vbp-btn vbp-btn-secondary vbp-btn-block">
+                                    📁 <?php esc_html_e( 'Seleccionar video', 'flavor-chat-ia' ); ?>
+                                </button>
+                            </div>
+
+                            <!-- Imagen de respaldo para video -->
+                            <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Imagen de respaldo', 'flavor-chat-ia' ); ?></label>
+                                <small class="vbp-field-hint" style="margin-bottom: 8px; display: block;"><?php esc_html_e( 'Se muestra mientras carga el video o en móviles', 'flavor-chat-ia' ); ?></small>
+                                <div class="vbp-image-preview vbp-image-preview-bg" x-show="selectedElement.data.video_poster" :style="{ backgroundImage: 'url(' + selectedElement.data.video_poster + ')' }">
+                                    <button type="button" @click="updateElementData('video_poster', '')" class="vbp-image-remove">×</button>
+                                </div>
+                                <button type="button" @click="openMediaLibrary('video_poster')" class="vbp-btn vbp-btn-secondary vbp-btn-sm">
+                                    <?php esc_html_e( 'Seleccionar imagen', 'flavor-chat-ia' ); ?>
+                                </button>
+                            </div>
+
+                            <!-- Opciones de video -->
+                            <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Opciones de reproducción', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-checkbox-group">
+                                    <label class="vbp-checkbox-label">
+                                        <input type="checkbox"
+                                               :checked="selectedElement.data.video_autoplay !== false"
+                                               @change="updateElementData('video_autoplay', $event.target.checked)"
+                                               class="vbp-checkbox">
+                                        <span><?php esc_html_e( 'Reproducir automáticamente', 'flavor-chat-ia' ); ?></span>
+                                    </label>
+                                    <label class="vbp-checkbox-label">
+                                        <input type="checkbox"
+                                               :checked="selectedElement.data.video_loop !== false"
+                                               @change="updateElementData('video_loop', $event.target.checked)"
+                                               class="vbp-checkbox">
+                                        <span><?php esc_html_e( 'Reproducir en bucle', 'flavor-chat-ia' ); ?></span>
+                                    </label>
+                                    <label class="vbp-checkbox-label">
+                                        <input type="checkbox"
+                                               :checked="selectedElement.data.video_muted !== false"
+                                               @change="updateElementData('video_muted', $event.target.checked)"
+                                               class="vbp-checkbox">
+                                        <span><?php esc_html_e( 'Sin sonido', 'flavor-chat-ia' ); ?></span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                         <div class="vbp-field-group" x-data="vbpColorPicker()" x-init="initColor(selectedElement.data.color_fondo || '#1a1a2e')">
                             <label class="vbp-field-label"><?php esc_html_e( 'Color de fondo', 'flavor-chat-ia' ); ?></label>
@@ -565,8 +839,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <!-- Layout -->
-                        <h4 class="vbp-section-title">📐 <?php esc_html_e( 'Layout', 'flavor-chat-ia' ); ?></h4>
-                        <div class="vbp-field-row">
+                        <h4 class="vbp-section-title" x-show="$store.vbp.inspectorMode === 'advanced'">📐 <?php esc_html_e( 'Layout', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-row" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <div class="vbp-field-half">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Altura', 'flavor-chat-ia' ); ?></label>
                                 <select x-model="selectedElement.data.altura" @change="updateElementData('altura', $event.target.value)" class="vbp-field-select">
@@ -657,10 +931,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <div class="vbp-items-header">
-                            <h4 class="vbp-section-title"><?php esc_html_e( 'Características', 'flavor-chat-ia' ); ?></h4>
+                            <h4 class="vbp-section-title"><?php esc_html_e( 'Lista de características', 'flavor-chat-ia' ); ?></h4>
                             <button type="button" @click="addItem('features')" class="vbp-btn-add">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
+                        </div>
+                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                            <p><?php esc_html_e( 'Añade características una a una. En modo básico te centras en título y descripción; el icono queda en avanzado.', 'flavor-chat-ia' ); ?></p>
                         </div>
 
                         <div class="vbp-items-list">
@@ -676,7 +953,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </div>
                                     </div>
                                     <div class="vbp-item-content" x-show="editingItemIndex === index" x-collapse>
-                                        <div class="vbp-field-group">
+                                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                                             <label class="vbp-field-label"><?php esc_html_e( 'Icono', 'flavor-chat-ia' ); ?></label>
                                             <div class="vbp-field-with-selector">
                                                 <input type="text" x-model="item.icono" @input="updateItem(index, 'icono', $event.target.value)" class="vbp-field-input" placeholder="home">
@@ -773,10 +1050,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <div class="vbp-items-header">
-                            <h4 class="vbp-section-title"><?php esc_html_e( 'Planes', 'flavor-chat-ia' ); ?></h4>
+                            <h4 class="vbp-section-title"><?php esc_html_e( 'Planes y precios', 'flavor-chat-ia' ); ?></h4>
                             <button type="button" @click="addItem('pricing')" class="vbp-btn-add">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
+                        </div>
+                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                            <p><?php esc_html_e( 'Crea los planes que quieras mostrar. Los ajustes comerciales finos, como destacado o período, quedan en avanzado.', 'flavor-chat-ia' ); ?></p>
                         </div>
 
                         <div class="vbp-items-list">
@@ -797,12 +1077,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                 <label class="vbp-field-label"><?php esc_html_e( 'Nombre', 'flavor-chat-ia' ); ?></label>
                                                 <input type="text" x-model="item.nombre" @input="updateItem(index, 'nombre', $event.target.value)" class="vbp-field-input">
                                             </div>
-                                            <div class="vbp-field-group vbp-field-half">
+                                            <div class="vbp-field-group vbp-field-half" x-show="$store.vbp.inspectorMode === 'advanced'">
                                                 <label class="vbp-field-label"><?php esc_html_e( 'Precio', 'flavor-chat-ia' ); ?></label>
                                                 <input type="text" x-model="item.precio" @input="updateItem(index, 'precio', $event.target.value)" class="vbp-field-input">
                                             </div>
                                         </div>
-                                        <div class="vbp-field-group">
+                                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                                             <label class="vbp-field-label"><?php esc_html_e( 'Período', 'flavor-chat-ia' ); ?></label>
                                             <input type="text" x-model="item.periodo" @input="updateItem(index, 'periodo', $event.target.value)" class="vbp-field-input" placeholder="/mes">
                                         </div>
@@ -810,7 +1090,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <label class="vbp-field-label"><?php esc_html_e( 'Características (una por línea)', 'flavor-chat-ia' ); ?></label>
                                             <textarea x-model="item.caracteristicas_text" @input="updatePricingFeatures(index, $event.target.value)" class="vbp-field-textarea" rows="4" :placeholder="'<?php esc_attr_e( 'Característica 1\nCaracterística 2\nCaracterística 3', 'flavor-chat-ia' ); ?>'"></textarea>
                                         </div>
-                                        <div class="vbp-field-group">
+                                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                                             <label class="vbp-checkbox-label">
                                                 <input type="checkbox" x-model="item.destacado" @change="updateItem(index, 'destacado', item.destacado)">
                                                 <?php esc_html_e( 'Plan destacado', 'flavor-chat-ia' ); ?>
@@ -832,10 +1112,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <div class="vbp-items-header">
-                            <h4 class="vbp-section-title"><?php esc_html_e( 'Preguntas', 'flavor-chat-ia' ); ?></h4>
+                            <h4 class="vbp-section-title"><?php esc_html_e( 'Preguntas frecuentes', 'flavor-chat-ia' ); ?></h4>
                             <button type="button" @click="addItem('faq')" class="vbp-btn-add">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
+                        </div>
+                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                            <p><?php esc_html_e( 'Añade preguntas y respuestas. En básico solo editas el contenido; el comportamiento por defecto vive en avanzado.', 'flavor-chat-ia' ); ?></p>
                         </div>
 
                         <div class="vbp-items-list">
@@ -1045,10 +1328,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <div class="vbp-items-header">
-                            <h4 class="vbp-section-title"><?php esc_html_e( 'Imágenes', 'flavor-chat-ia' ); ?></h4>
+                            <h4 class="vbp-section-title"><?php esc_html_e( 'Galería de imágenes', 'flavor-chat-ia' ); ?></h4>
                             <button type="button" @click="addGalleryImage()" class="vbp-btn-add">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
+                        </div>
+                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                            <p><?php esc_html_e( 'Empieza añadiendo imágenes. Después podrás reordenarlas o eliminarlas desde la cuadrícula.', 'flavor-chat-ia' ); ?></p>
                         </div>
 
                         <div class="vbp-gallery-grid">
@@ -1076,7 +1362,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.subtitulo" @input="updateElementData('subtitulo', $event.target.value)" class="vbp-field-input">
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Categoría', 'flavor-chat-ia' ); ?></label>
                             <select x-model="selectedElement.data.categoria" @change="updateElementData('categoria', $event.target.value)" class="vbp-field-select">
                                 <option value=""><?php esc_html_e( 'Todas las categorías', 'flavor-chat-ia' ); ?></option>
@@ -1099,7 +1385,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <option value="12">12</option>
                                 </select>
                             </div>
-                            <div class="vbp-field-group vbp-field-half">
+                            <div class="vbp-field-group vbp-field-half" x-show="$store.vbp.inspectorMode === 'advanced'">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Columnas', 'flavor-chat-ia' ); ?></label>
                                 <div class="vbp-btn-group vbp-btn-group-full">
                                     <template x-for="n in [2, 3, 4]">
@@ -1108,7 +1394,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 </div>
                             </div>
                         </div>
-                        <div class="vbp-field-row">
+                        <div class="vbp-field-row" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <div class="vbp-field-group vbp-field-half">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Ordenar por', 'flavor-chat-ia' ); ?></label>
                                 <select x-model="selectedElement.data.ordenar_por" @change="updateElementData('ordenar_por', $event.target.value)" class="vbp-field-select">
@@ -1126,7 +1412,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 </select>
                             </div>
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <h4 class="vbp-section-title"><?php esc_html_e( 'Opciones de visualización', 'flavor-chat-ia' ); ?></h4>
                             <label class="vbp-checkbox-label">
                                 <input type="checkbox" :checked="selectedElement.data.mostrar_extracto !== false" @change="updateElementData('mostrar_extracto', $event.target.checked)">
@@ -1159,7 +1445,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Texto del botón', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.boton_texto" @input="updateElementData('boton_texto', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Enviar mensaje', 'flavor-chat-ia' ); ?>">
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Mensaje de éxito', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.mensaje_exito" @input="updateElementData('mensaje_exito', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( '¡Mensaje enviado correctamente!', 'flavor-chat-ia' ); ?>">
                         </div>
@@ -1218,7 +1504,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Título (opcional)', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.titulo" @input="updateElementData('titulo', $event.target.value)" class="vbp-field-input" placeholder="Síguenos">
                         </div>
-                        <div class="vbp-field-row">
+                        <div class="vbp-field-row" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <div class="vbp-field-group vbp-field-half">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Estilo', 'flavor-chat-ia' ); ?></label>
                                 <select x-model="selectedElement.data.estilo" @change="updateElementData('estilo', $event.target.value)" class="vbp-field-select">
@@ -1235,7 +1521,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 </select>
                             </div>
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Alineación', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-btn-group">
                                 <button type="button" @click="updateElementData('alineacion', 'flex-start')" :class="{ 'active': selectedElement.data.alineacion === 'flex-start' }" class="vbp-btn-icon"><?php esc_html_e( 'Izq', 'flavor-chat-ia' ); ?></button>
@@ -1244,10 +1530,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </div>
                         <div class="vbp-items-header">
-                            <h4 class="vbp-section-title"><?php esc_html_e( 'Redes sociales', 'flavor-chat-ia' ); ?></h4>
+                            <h4 class="vbp-section-title"><?php esc_html_e( 'Perfiles sociales', 'flavor-chat-ia' ); ?></h4>
                             <button type="button" @click="addItem('social-icons')" class="vbp-btn-add">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
+                        </div>
+                        <div class="vbp-inline-help" x-show="!selectedElement.data.redes || selectedElement.data.redes.length === 0">
+                            <p><?php esc_html_e( 'Añade cada red con su nombre y URL. El estilo visual y la alineación están en avanzado.', 'flavor-chat-ia' ); ?></p>
                         </div>
                         <div class="vbp-items-list">
                             <template x-for="(red, index) in selectedElement.data.redes" :key="index">
@@ -1260,7 +1549,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </div>
                                     </div>
                                     <div class="vbp-item-content" x-show="editingItemIndex === index" x-collapse>
-                                        <div class="vbp-field-group">
+                                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                                             <label class="vbp-field-label"><?php esc_html_e( 'Icono', 'flavor-chat-ia' ); ?></label>
                                             <div class="vbp-field-with-selector">
                                                 <input type="text" x-model="red.icono" @input="updateSocialItem(index, 'icono', $event.target.value)" class="vbp-field-input" placeholder="link">
@@ -1303,13 +1592,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Texto del botón', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.boton_texto" @input="updateElementData('boton_texto', $event.target.value)" class="vbp-field-input">
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-checkbox-label">
                                 <input type="checkbox" x-model="selectedElement.data.mostrar_nombre" @change="updateElementData('mostrar_nombre', selectedElement.data.mostrar_nombre)">
                                 <?php esc_html_e( 'Mostrar campo de nombre', 'flavor-chat-ia' ); ?>
                             </label>
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Mensaje de éxito', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.mensaje_exito" @input="updateElementData('mensaje_exito', $event.target.value)" class="vbp-field-input">
                         </div>
@@ -1323,7 +1612,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Título', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.titulo" @input="updateElementData('titulo', $event.target.value)" class="vbp-field-input" placeholder="Confían en nosotros">
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Columnas', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-btn-group vbp-btn-group-full">
                                 <template x-for="n in [3, 4, 5, 6]">
@@ -1331,13 +1620,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 </template>
                             </div>
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-checkbox-label">
                                 <input type="checkbox" x-model="selectedElement.data.escala_grises" @change="updateElementData('escala_grises', selectedElement.data.escala_grises)">
                                 <?php esc_html_e( 'Escala de grises', 'flavor-chat-ia' ); ?>
                             </label>
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-checkbox-label">
                                 <input type="checkbox" x-model="selectedElement.data.hover_color" @change="updateElementData('hover_color', selectedElement.data.hover_color)">
                                 <?php esc_html_e( 'Color al pasar el ratón', 'flavor-chat-ia' ); ?>
@@ -1366,7 +1655,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <!-- ========== ICON BOX ========== -->
                 <template x-if="selectedElement.type === 'icon-box'">
                     <div class="vbp-inspector-section">
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Icono', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-field-with-selector">
                                 <div class="vbp-icon-field-preview">
@@ -1388,7 +1677,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <label class="vbp-field-label"><?php esc_html_e( 'Descripción', 'flavor-chat-ia' ); ?></label>
                             <textarea x-model="selectedElement.data.descripcion" @input="updateElementData('descripcion', $event.target.value)" class="vbp-field-textarea" rows="3"></textarea>
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Alineación', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-btn-group">
                                 <button type="button" @click="updateElementData('alineacion', 'left')" :class="{ 'active': selectedElement.data.alineacion === 'left' }" class="vbp-btn-icon"><?php esc_html_e( 'Izq', 'flavor-chat-ia' ); ?></button>
@@ -1396,11 +1685,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <button type="button" @click="updateElementData('alineacion', 'right')" :class="{ 'active': selectedElement.data.alineacion === 'right' }" class="vbp-btn-icon"><?php esc_html_e( 'Der', 'flavor-chat-ia' ); ?></button>
                             </div>
                         </div>
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Texto enlace', 'flavor-chat-ia' ); ?></label>
                             <input type="text" x-model="selectedElement.data.enlace_texto" @input="updateElementData('enlace_texto', $event.target.value)" class="vbp-field-input" placeholder="Saber más">
                         </div>
-                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()">
+                        <div class="vbp-field-group" x-data="vbpLinkAutocomplete()" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'URL enlace', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-link-autocomplete">
                                 <input type="url"
@@ -1445,7 +1734,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <label class="vbp-field-label"><?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?></label>
                                 <input type="text" x-model="selectedElement.data.subtitulo" @input="updateElementData('subtitulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Subtítulo opcional', 'flavor-chat-ia' ); ?>">
                             </div>
-                            <div class="vbp-field-row">
+                            <div class="vbp-field-row" x-show="$store.vbp.inspectorMode === 'advanced'">
                                 <div class="vbp-field-group vbp-field-half">
                                     <label class="vbp-field-label"><?php esc_html_e( 'Color título', 'flavor-chat-ia' ); ?></label>
                                     <input type="color" :value="normalizeColorForInput(selectedElement.data.titulo_color, '#ffffff')" @input="updateElementData('titulo_color', $event.target.value)" class="vbp-field-color">
@@ -1455,24 +1744,27 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="color" :value="normalizeColorForInput(selectedElement.data.subtitulo_color, '#9CA3AF')" @input="updateElementData('subtitulo_color', $event.target.value)" class="vbp-field-color">
                                 </div>
                             </div>
-                            <div class="vbp-field-group">
+                            <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Color de fondo', 'flavor-chat-ia' ); ?></label>
                                 <input type="color" :value="normalizeColorForInput(selectedElement.data.color_fondo, '#0f0f0f')" @input="updateElementData('color_fondo', $event.target.value)" class="vbp-field-color">
                             </div>
                         </div>
 
-                        <h4 class="vbp-section-title"><?php esc_html_e( '⚙️ Configuración', 'flavor-chat-ia' ); ?></h4>
-                        <div class="vbp-field-group">
+                        <h4 class="vbp-section-title" x-show="$store.vbp.inspectorMode === 'advanced'"><?php esc_html_e( '⚙️ Configuración', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-checkbox-label">
                                 <input type="checkbox" x-model="selectedElement.data.multiples_abiertos" @change="updateElementData('multiples_abiertos', selectedElement.data.multiples_abiertos)">
                                 <?php esc_html_e( 'Permitir múltiples abiertos', 'flavor-chat-ia' ); ?>
                             </label>
                         </div>
                         <div class="vbp-items-header">
-                            <h4 class="vbp-section-title"><?php esc_html_e( 'Elementos', 'flavor-chat-ia' ); ?></h4>
+                            <h4 class="vbp-section-title"><?php esc_html_e( 'Items del acordeón', 'flavor-chat-ia' ); ?></h4>
                             <button type="button" @click="addItem('accordion')" class="vbp-btn-add">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
+                        </div>
+                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                            <p><?php esc_html_e( 'Añade bloques desplegables de pregunta y respuesta. El estado inicial de apertura está en avanzado.', 'flavor-chat-ia' ); ?></p>
                         </div>
                         <div class="vbp-items-list">
                             <template x-for="(item, index) in selectedElement.data.items" :key="index">
@@ -1495,7 +1787,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <label class="vbp-field-label"><?php esc_html_e( 'Contenido', 'flavor-chat-ia' ); ?></label>
                                             <textarea x-model="item.contenido" @input="updateItem(index, 'contenido', $event.target.value)" class="vbp-field-textarea" rows="3"></textarea>
                                         </div>
-                                        <div class="vbp-field-group">
+                                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                                             <label class="vbp-checkbox-label">
                                                 <input type="checkbox" x-model="item.abierto" @change="updateItem(index, 'abierto', item.abierto)">
                                                 <?php esc_html_e( 'Abierto por defecto', 'flavor-chat-ia' ); ?>
@@ -1522,7 +1814,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <label class="vbp-field-label"><?php esc_html_e( 'Subtítulo', 'flavor-chat-ia' ); ?></label>
                                 <input type="text" x-model="selectedElement.data.subtitulo" @input="updateElementData('subtitulo', $event.target.value)" class="vbp-field-input" placeholder="<?php esc_attr_e( 'Subtítulo opcional', 'flavor-chat-ia' ); ?>">
                             </div>
-                            <div class="vbp-field-row">
+                            <div class="vbp-field-row" x-show="$store.vbp.inspectorMode === 'advanced'">
                                 <div class="vbp-field-group vbp-field-half">
                                     <label class="vbp-field-label"><?php esc_html_e( 'Color título', 'flavor-chat-ia' ); ?></label>
                                     <input type="color" :value="normalizeColorForInput(selectedElement.data.titulo_color, '#ffffff')" @input="updateElementData('titulo_color', $event.target.value)" class="vbp-field-color">
@@ -1532,14 +1824,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <input type="color" :value="normalizeColorForInput(selectedElement.data.subtitulo_color, '#9CA3AF')" @input="updateElementData('subtitulo_color', $event.target.value)" class="vbp-field-color">
                                 </div>
                             </div>
-                            <div class="vbp-field-group">
+                            <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                                 <label class="vbp-field-label"><?php esc_html_e( 'Color de fondo', 'flavor-chat-ia' ); ?></label>
                                 <input type="color" :value="normalizeColorForInput(selectedElement.data.color_fondo, '#0f0f0f')" @input="updateElementData('color_fondo', $event.target.value)" class="vbp-field-color">
                             </div>
                         </div>
 
-                        <h4 class="vbp-section-title"><?php esc_html_e( '⚙️ Configuración', 'flavor-chat-ia' ); ?></h4>
-                        <div class="vbp-field-group">
+                        <h4 class="vbp-section-title" x-show="$store.vbp.inspectorMode === 'advanced'"><?php esc_html_e( '⚙️ Configuración', 'flavor-chat-ia' ); ?></h4>
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Estilo', 'flavor-chat-ia' ); ?></label>
                             <select x-model="selectedElement.data.estilo" @change="updateElementData('estilo', $event.target.value)" class="vbp-field-select">
                                 <option value="horizontal"><?php esc_html_e( 'Horizontal', 'flavor-chat-ia' ); ?></option>
@@ -1547,10 +1839,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </select>
                         </div>
                         <div class="vbp-items-header">
-                            <h4 class="vbp-section-title"><?php esc_html_e( 'Pestañas', 'flavor-chat-ia' ); ?></h4>
+                            <h4 class="vbp-section-title"><?php esc_html_e( 'Contenido por pestañas', 'flavor-chat-ia' ); ?></h4>
                             <button type="button" @click="addItem('tabs')" class="vbp-btn-add">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                             </button>
+                        </div>
+                        <div class="vbp-inline-help" x-show="!selectedElement.data.items || selectedElement.data.items.length === 0">
+                            <p><?php esc_html_e( 'Añade pestañas con su título y contenido. La orientación general del componente está en avanzado.', 'flavor-chat-ia' ); ?></p>
                         </div>
                         <div class="vbp-items-list">
                             <template x-for="(item, index) in selectedElement.data.items" :key="index">
@@ -1997,7 +2292,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <template x-if="selectedElement.type === 'columns' || selectedElement.type === 'row'">
                     <div class="vbp-inspector-section">
                         <!-- Presets rápidos -->
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Presets de layout', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-layout-presets">
                                 <!-- 2 columnas -->
@@ -2040,10 +2335,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <button type="button" @click="updateColumnsCount(n)" :class="{ 'active': (selectedElement.data.columnas || selectedElement.data.columns || 2) == n }" class="vbp-btn-toggle" x-text="n"></button>
                                 </template>
                             </div>
+                            <small class="vbp-field-hint" x-show="$store.vbp.inspectorMode === 'basic'"><?php esc_html_e( 'Usa avanzado si necesitas anchos distintos por columna o presets complejos.', 'flavor-chat-ia' ); ?></small>
                         </div>
 
                         <!-- Anchos de columnas individuales -->
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Anchos de columnas', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-columns-widths">
                                 <template x-for="(width, index) in getColumnWidths()" :key="index">
@@ -2084,7 +2380,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <!-- Alineación vertical -->
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-field-label"><?php esc_html_e( 'Alineación vertical', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-btn-group">
                                 <button type="button" @click="updateElementData('verticalAlign', 'start')" :class="{ 'active': selectedElement.data.verticalAlign === 'start' || !selectedElement.data.verticalAlign }" class="vbp-btn-icon" title="<?php esc_attr_e( 'Arriba', 'flavor-chat-ia' ); ?>">↑</button>
@@ -2095,7 +2391,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <!-- Responsive: apilar en móvil -->
-                        <div class="vbp-field-group">
+                        <div class="vbp-field-group" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <label class="vbp-checkbox-label">
                                 <input type="checkbox" :checked="selectedElement.data.stackOnMobile !== false" @change="updateElementData('stackOnMobile', $event.target.checked)">
                                 <?php esc_html_e( 'Apilar en móvil', 'flavor-chat-ia' ); ?>
@@ -2103,7 +2399,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
 
                         <!-- Acciones de columnas -->
-                        <div class="vbp-columns-actions">
+                        <div class="vbp-columns-actions" x-show="$store.vbp.inspectorMode === 'advanced'">
                             <button type="button" @click="reverseColumns()" class="vbp-btn vbp-btn-secondary vbp-btn-sm" title="<?php esc_attr_e( 'Invertir orden de columnas', 'flavor-chat-ia' ); ?>">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"/></svg>
                                 <?php esc_html_e( 'Invertir', 'flavor-chat-ia' ); ?>
@@ -2203,9 +2499,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </template>
                         <div class="vbp-field-group">
-                            <label class="vbp-field-label"><?php esc_html_e( 'URL del video', 'flavor-chat-ia' ); ?></label>
-                            <input type="url" x-model="selectedElement.data.video_url" @input="updateElementData('video_url', $event.target.value)" class="vbp-field-input" placeholder="https://youtube.com/watch?v=...">
-                            <small class="vbp-field-hint"><?php esc_html_e( 'YouTube, Vimeo o URL de video directo', 'flavor-chat-ia' ); ?></small>
+                            <label class="vbp-field-label"><?php esc_html_e( 'Video', 'flavor-chat-ia' ); ?></label>
+                            <div class="vbp-field-with-button">
+                                <input type="url" x-model="selectedElement.data.video_url" @input="updateElementData('video_url', $event.target.value)" class="vbp-field-input" placeholder="https://youtube.com/watch?v=...">
+                                <button type="button" @click="openMediaLibrary('video_url', 'video')" class="vbp-btn vbp-btn-secondary vbp-btn-sm" title="<?php esc_attr_e( 'Seleccionar de biblioteca', 'flavor-chat-ia' ); ?>">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                </button>
+                            </div>
+                            <small class="vbp-field-hint"><?php esc_html_e( 'Puedes pegar una URL externa o elegir un video desde la biblioteca de medios.', 'flavor-chat-ia' ); ?></small>
                         </div>
                     </div>
                 </template>
@@ -2931,8 +3232,17 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <template x-if="selectedElement.data.columna_izquierda && selectedElement.data.columna_izquierda.type === 'image'">
                                 <div class="vbp-column-editor">
                                     <div class="vbp-field-group">
-                                        <label class="vbp-field-label"><?php esc_html_e( 'URL de imagen', 'flavor-chat-ia' ); ?></label>
-                                        <input type="url" x-model="selectedElement.data.columna_izquierda.data.src" @input="updateColumnData('columna_izquierda', 'src', $event.target.value)" class="vbp-field-input">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Imagen', 'flavor-chat-ia' ); ?></label>
+                                        <div class="vbp-image-preview" x-show="selectedElement.data.columna_izquierda.data.src">
+                                            <img :src="selectedElement.data.columna_izquierda.data.src" alt="">
+                                            <button type="button" @click="updateColumnData('columna_izquierda', 'src', '')" class="vbp-image-remove">×</button>
+                                        </div>
+                                        <div class="vbp-field-with-button">
+                                            <input type="url" x-model="selectedElement.data.columna_izquierda.data.src" @input="updateColumnData('columna_izquierda', 'src', $event.target.value)" class="vbp-field-input">
+                                            <button type="button" @click="openColumnMediaLibrary('columna_izquierda', 'src')" class="vbp-btn vbp-btn-secondary vbp-btn-sm" title="<?php esc_attr_e( 'Seleccionar de biblioteca', 'flavor-chat-ia' ); ?>">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="vbp-field-group">
                                         <label class="vbp-field-label"><?php esc_html_e( 'Texto alternativo', 'flavor-chat-ia' ); ?></label>
@@ -3044,8 +3354,17 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <template x-if="selectedElement.data.columna_derecha && selectedElement.data.columna_derecha.type === 'image'">
                                 <div class="vbp-column-editor">
                                     <div class="vbp-field-group">
-                                        <label class="vbp-field-label"><?php esc_html_e( 'URL de imagen', 'flavor-chat-ia' ); ?></label>
-                                        <input type="url" x-model="selectedElement.data.columna_derecha.data.src" @input="updateColumnData('columna_derecha', 'src', $event.target.value)" class="vbp-field-input">
+                                        <label class="vbp-field-label"><?php esc_html_e( 'Imagen', 'flavor-chat-ia' ); ?></label>
+                                        <div class="vbp-image-preview" x-show="selectedElement.data.columna_derecha.data.src">
+                                            <img :src="selectedElement.data.columna_derecha.data.src" alt="">
+                                            <button type="button" @click="updateColumnData('columna_derecha', 'src', '')" class="vbp-image-remove">×</button>
+                                        </div>
+                                        <div class="vbp-field-with-button">
+                                            <input type="url" x-model="selectedElement.data.columna_derecha.data.src" @input="updateColumnData('columna_derecha', 'src', $event.target.value)" class="vbp-field-input">
+                                            <button type="button" @click="openColumnMediaLibrary('columna_derecha', 'src')" class="vbp-btn vbp-btn-secondary vbp-btn-sm" title="<?php esc_attr_e( 'Seleccionar de biblioteca', 'flavor-chat-ia' ); ?>">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="vbp-field-group">
                                         <label class="vbp-field-label"><?php esc_html_e( 'Texto alternativo', 'flavor-chat-ia' ); ?></label>
@@ -3061,14 +3380,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <template x-if="selectedElement.type === 'audio'">
                     <div class="vbp-inspector-section">
                         <div class="vbp-field-group">
-                            <label class="vbp-field-label"><?php esc_html_e( 'URL del audio', 'flavor-chat-ia' ); ?></label>
+                            <label class="vbp-field-label"><?php esc_html_e( 'Audio', 'flavor-chat-ia' ); ?></label>
                             <div class="vbp-field-with-button">
                                 <input type="url" x-model="selectedElement.data.src" @input="updateElementData('src', $event.target.value)" class="vbp-field-input" placeholder="https://ejemplo.com/audio.mp3">
-                                <button type="button" @click="openMediaLibrary('audio')" class="vbp-btn vbp-btn-secondary vbp-btn-sm" title="<?php esc_attr_e( 'Seleccionar de biblioteca', 'flavor-chat-ia' ); ?>">
+                                <button type="button" @click="openMediaLibrary('src', 'audio')" class="vbp-btn vbp-btn-secondary vbp-btn-sm" title="<?php esc_attr_e( 'Seleccionar de biblioteca', 'flavor-chat-ia' ); ?>">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                                 </button>
                             </div>
-                            <small class="vbp-field-hint"><?php esc_html_e( 'Formatos: MP3, WAV, OGG', 'flavor-chat-ia' ); ?></small>
+                            <small class="vbp-field-hint"><?php esc_html_e( 'Puedes elegir un archivo de la biblioteca o pegar una URL directa. Formatos: MP3, WAV, OGG.', 'flavor-chat-ia' ); ?></small>
                         </div>
                         <div class="vbp-field-group">
                             <label class="vbp-field-label"><?php esc_html_e( 'Título (opcional)', 'flavor-chat-ia' ); ?></label>
@@ -3202,7 +3521,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
 
                 <!-- Selector de Breakpoints -->
-                <div class="vbp-breakpoint-selector">
+                <div class="vbp-breakpoint-selector vbp-field-advanced" x-show="$store.vbp.inspectorMode === 'advanced'">
                     <div class="vbp-breakpoint-tabs">
                         <button type="button"
                                 @click="setBreakpoint('desktop')"
@@ -3258,9 +3577,345 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </div>
 
+                <!-- Selector de Estados Interactivos -->
+                <div class="vbp-state-selector" x-show="$store.vbp.inspectorMode === 'advanced'">
+                    <div class="vbp-state-header">
+                        <h4 class="vbp-section-title"><?php esc_html_e( 'Estado Interactivo', 'flavor-chat-ia' ); ?></h4>
+                    </div>
+                    <div class="vbp-state-tabs">
+                        <button type="button"
+                                @click="$store.vbp.setStyleState('normal')"
+                                :class="{ 'active': $store.vbp.activeStyleState === 'normal' }"
+                                class="vbp-state-btn">
+                            <?php esc_html_e( 'Normal', 'flavor-chat-ia' ); ?>
+                        </button>
+                        <button type="button"
+                                @click="$store.vbp.setStyleState('hover')"
+                                :class="{ 'active': $store.vbp.activeStyleState === 'hover', 'has-styles': $store.vbp.hasStateStyles && $store.vbp.hasStateStyles(selectedElement.id, 'hover') }"
+                                class="vbp-state-btn vbp-state-hover">
+                            <?php esc_html_e( 'Hover', 'flavor-chat-ia' ); ?>
+                        </button>
+                        <button type="button"
+                                @click="$store.vbp.setStyleState('active')"
+                                :class="{ 'active': $store.vbp.activeStyleState === 'active', 'has-styles': $store.vbp.hasStateStyles && $store.vbp.hasStateStyles(selectedElement.id, 'active') }"
+                                class="vbp-state-btn vbp-state-active">
+                            <?php esc_html_e( 'Active', 'flavor-chat-ia' ); ?>
+                        </button>
+                        <button type="button"
+                                @click="$store.vbp.setStyleState('focus')"
+                                :class="{ 'active': $store.vbp.activeStyleState === 'focus', 'has-styles': $store.vbp.hasStateStyles && $store.vbp.hasStateStyles(selectedElement.id, 'focus') }"
+                                class="vbp-state-btn vbp-state-focus">
+                            <?php esc_html_e( 'Focus', 'flavor-chat-ia' ); ?>
+                        </button>
+                    </div>
+
+                    <!-- Configuración de Transiciones -->
+                    <template x-if="$store.vbp.activeStyleState !== 'normal' && selectedElement.styles.states && selectedElement.styles.states[$store.vbp.activeStyleState]">
+                        <div class="vbp-transition-config">
+                            <div class="vbp-transition-toggle">
+                                <label class="vbp-checkbox-label">
+                                    <input type="checkbox"
+                                           x-model="selectedElement.styles.states[$store.vbp.activeStyleState].enabled"
+                                           @change="$store.vbp.updateStateStyle(selectedElement.id, $store.vbp.activeStyleState, 'enabled', $event.target.checked)"
+                                           class="vbp-checkbox">
+                                    <span><?php esc_html_e( 'Activar estilos para este estado', 'flavor-chat-ia' ); ?></span>
+                                </label>
+                            </div>
+
+                        <template x-if="selectedElement.styles.states && selectedElement.styles.states[$store.vbp.activeStyleState] && selectedElement.styles.states[$store.vbp.activeStyleState].enabled">
+                            <div class="vbp-state-properties">
+                                <!-- Color de fondo -->
+                                <div class="vbp-field-row">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Fondo', 'flavor-chat-ia' ); ?></label>
+                                    <div class="vbp-color-field">
+                                        <input type="color"
+                                               :value="selectedElement.styles.states[$store.vbp.activeStyleState].background || '#ffffff'"
+                                               @input="$store.vbp.updateStateStyle(selectedElement.id, $store.vbp.activeStyleState, 'background', $event.target.value)"
+                                               class="vbp-color-input">
+                                        <input type="text"
+                                               :value="selectedElement.styles.states[$store.vbp.activeStyleState].background || ''"
+                                               @input="$store.vbp.updateStateStyle(selectedElement.id, $store.vbp.activeStyleState, 'background', $event.target.value)"
+                                               class="vbp-field-input"
+                                               placeholder="<?php esc_attr_e( 'Color o var(--)', 'flavor-chat-ia' ); ?>">
+                                    </div>
+                                </div>
+
+                                <!-- Color de texto -->
+                                <div class="vbp-field-row">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Texto', 'flavor-chat-ia' ); ?></label>
+                                    <div class="vbp-color-field">
+                                        <input type="color"
+                                               :value="selectedElement.styles.states[$store.vbp.activeStyleState].color || '#000000'"
+                                               @input="$store.vbp.updateStateStyle(selectedElement.id, $store.vbp.activeStyleState, 'color', $event.target.value)"
+                                               class="vbp-color-input">
+                                        <input type="text"
+                                               :value="selectedElement.styles.states[$store.vbp.activeStyleState].color || ''"
+                                               @input="$store.vbp.updateStateStyle(selectedElement.id, $store.vbp.activeStyleState, 'color', $event.target.value)"
+                                               class="vbp-field-input"
+                                               placeholder="<?php esc_attr_e( 'Color o var(--)', 'flavor-chat-ia' ); ?>">
+                                    </div>
+                                </div>
+
+                                <!-- Transform -->
+                                <div class="vbp-field-row">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Transform', 'flavor-chat-ia' ); ?></label>
+                                    <select class="vbp-field-select"
+                                            :value="selectedElement.styles.states[$store.vbp.activeStyleState].transform || ''"
+                                            @change="$store.vbp.updateStateStyle(selectedElement.id, $store.vbp.activeStyleState, 'transform', $event.target.value)">
+                                        <option value=""><?php esc_html_e( 'Ninguno', 'flavor-chat-ia' ); ?></option>
+                                        <option value="scale(1.05)"><?php esc_html_e( 'Escalar +5%', 'flavor-chat-ia' ); ?></option>
+                                        <option value="scale(1.1)"><?php esc_html_e( 'Escalar +10%', 'flavor-chat-ia' ); ?></option>
+                                        <option value="scale(0.95)"><?php esc_html_e( 'Escalar -5%', 'flavor-chat-ia' ); ?></option>
+                                        <option value="translateY(-2px)"><?php esc_html_e( 'Subir 2px', 'flavor-chat-ia' ); ?></option>
+                                        <option value="translateY(-4px)"><?php esc_html_e( 'Subir 4px', 'flavor-chat-ia' ); ?></option>
+                                        <option value="rotate(5deg)"><?php esc_html_e( 'Rotar 5°', 'flavor-chat-ia' ); ?></option>
+                                    </select>
+                                </div>
+
+                                <!-- Opacidad -->
+                                <div class="vbp-field-row">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Opacidad', 'flavor-chat-ia' ); ?></label>
+                                    <input type="range"
+                                           min="0" max="1" step="0.1"
+                                           :value="selectedElement.styles.states[$store.vbp.activeStyleState].opacity || 1"
+                                           @input="$store.vbp.updateStateStyle(selectedElement.id, $store.vbp.activeStyleState, 'opacity', $event.target.value)"
+                                           class="vbp-range-input">
+                                </div>
+                            </div>
+                        </template>
+                        </div>
+                    </template>
+
+                    <!-- Transición Global -->
+                    <div class="vbp-transition-global" x-show="$store.vbp.activeStyleState === 'normal'">
+                        <label class="vbp-checkbox-label">
+                            <input type="checkbox"
+                                   x-model="selectedElement.styles.transition.enabled"
+                                   @change="$store.vbp.updateTransition(selectedElement.id, { enabled: $event.target.checked })"
+                                   class="vbp-checkbox">
+                            <span><?php esc_html_e( 'Animación de transición', 'flavor-chat-ia' ); ?></span>
+                        </label>
+
+                        <template x-if="selectedElement.styles.transition.enabled">
+                            <div class="vbp-transition-fields">
+                                <div class="vbp-field-row">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Duración', 'flavor-chat-ia' ); ?></label>
+                                    <select class="vbp-field-select"
+                                            x-model="selectedElement.styles.transition.duration"
+                                            @change="$store.vbp.updateTransition(selectedElement.id, { duration: $event.target.value })">
+                                        <option value="0.15s"><?php esc_html_e( 'Rápida (0.15s)', 'flavor-chat-ia' ); ?></option>
+                                        <option value="0.3s"><?php esc_html_e( 'Normal (0.3s)', 'flavor-chat-ia' ); ?></option>
+                                        <option value="0.5s"><?php esc_html_e( 'Lenta (0.5s)', 'flavor-chat-ia' ); ?></option>
+                                    </select>
+                                </div>
+                                <div class="vbp-field-row">
+                                    <label class="vbp-field-label"><?php esc_html_e( 'Curva', 'flavor-chat-ia' ); ?></label>
+                                    <select class="vbp-field-select"
+                                            x-model="selectedElement.styles.transition.timing"
+                                            @change="$store.vbp.updateTransition(selectedElement.id, { timing: $event.target.value })">
+                                        <option value="ease"><?php esc_html_e( 'Ease', 'flavor-chat-ia' ); ?></option>
+                                        <option value="ease-in"><?php esc_html_e( 'Ease In', 'flavor-chat-ia' ); ?></option>
+                                        <option value="ease-out"><?php esc_html_e( 'Ease Out', 'flavor-chat-ia' ); ?></option>
+                                        <option value="ease-in-out"><?php esc_html_e( 'Ease In Out', 'flavor-chat-ia' ); ?></option>
+                                        <option value="linear"><?php esc_html_e( 'Linear', 'flavor-chat-ia' ); ?></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Auto-Layout Visual (para contenedores) -->
+                <div class="vbp-inspector-section vbp-field-advanced" x-show="$store.vbp.inspectorMode === 'advanced' && ['container', 'section', 'columns', 'row', 'grid', 'hero'].indexOf(selectedElement.type) !== -1">
+                    <h4 class="vbp-section-title" style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <path d="M3 9h18M9 21V9"/>
+                        </svg>
+                        <?php esc_html_e( 'Auto-Layout', 'flavor-chat-ia' ); ?>
+                    </h4>
+
+                    <div class="vbp-autolayout-panel">
+                        <!-- Toggle Auto-Layout -->
+                        <div class="vbp-autolayout-toggle">
+                            <span class="vbp-autolayout-toggle-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                                    <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                                </svg>
+                                <?php esc_html_e( 'Activar', 'flavor-chat-ia' ); ?>
+                            </span>
+                            <button type="button"
+                                class="vbp-autolayout-toggle-switch"
+                                :class="{ 'active': selectedElement.styles.layout && selectedElement.styles.layout.display === 'flex' }"
+                                @click="toggleAutoLayout()">
+                            </button>
+                        </div>
+
+                        <!-- Controles (solo si está activo) -->
+                        <template x-if="selectedElement.styles.layout && selectedElement.styles.layout.display === 'flex'">
+                            <div>
+                                <!-- Dirección -->
+                                <div class="vbp-autolayout-direction">
+                                    <button type="button" class="vbp-direction-btn"
+                                        :class="{ 'active': !selectedElement.styles.layout.flexDirection || selectedElement.styles.layout.flexDirection === 'row' }"
+                                        @click="updateStyle('layout.flexDirection', 'row')"
+                                        data-tooltip="<?php esc_attr_e( 'Horizontal', 'flavor-chat-ia' ); ?>">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="vbp-direction-btn"
+                                        :class="{ 'active': selectedElement.styles.layout.flexDirection === 'column' }"
+                                        @click="updateStyle('layout.flexDirection', 'column')"
+                                        data-tooltip="<?php esc_attr_e( 'Vertical', 'flavor-chat-ia' ); ?>">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 5v14M5 12l7 7 7-7"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="vbp-direction-btn"
+                                        :class="{ 'active': selectedElement.styles.layout.flexWrap === 'wrap' }"
+                                        @click="updateStyle('layout.flexWrap', selectedElement.styles.layout.flexWrap === 'wrap' ? 'nowrap' : 'wrap')"
+                                        data-tooltip="<?php esc_attr_e( 'Wrap', 'flavor-chat-ia' ); ?>">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M3 6h18M3 12h12M3 18h18"/>
+                                            <path d="M15 12v3a3 3 0 003 3h3"/>
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <!-- Alignment Grid Visual -->
+                                <div class="vbp-alignment-grid" data-tooltip="<?php esc_attr_e( 'Alineación', 'flavor-chat-ia' ); ?>">
+                                    <?php
+                                    $alignments = [
+                                        ['flex-start', 'flex-start'],
+                                        ['center', 'flex-start'],
+                                        ['flex-end', 'flex-start'],
+                                        ['flex-start', 'center'],
+                                        ['center', 'center'],
+                                        ['flex-end', 'center'],
+                                        ['flex-start', 'flex-end'],
+                                        ['center', 'flex-end'],
+                                        ['flex-end', 'flex-end'],
+                                    ];
+                                    foreach ($alignments as $align) :
+                                        $justify = $align[0];
+                                        $items = $align[1];
+                                    ?>
+                                    <button type="button" class="vbp-alignment-cell"
+                                        :class="{ 'active': selectedElement.styles.layout.justifyContent === '<?php echo $justify; ?>' && selectedElement.styles.layout.alignItems === '<?php echo $items; ?>' }"
+                                        @click="setAlignment('<?php echo $justify; ?>', '<?php echo $items; ?>')">
+                                    </button>
+                                    <?php endforeach; ?>
+                                </div>
+
+                                <!-- Distribution -->
+                                <div class="vbp-distribution-row">
+                                    <button type="button" class="vbp-distribution-btn"
+                                        :class="{ 'active': selectedElement.styles.layout.justifyContent === 'space-between' }"
+                                        @click="updateStyle('layout.justifyContent', 'space-between')"
+                                        data-tooltip="<?php esc_attr_e( 'Space Between', 'flavor-chat-ia' ); ?>">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="8" width="4" height="8"/>
+                                            <rect x="17" y="8" width="4" height="8"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="vbp-distribution-btn"
+                                        :class="{ 'active': selectedElement.styles.layout.justifyContent === 'space-around' }"
+                                        @click="updateStyle('layout.justifyContent', 'space-around')"
+                                        data-tooltip="<?php esc_attr_e( 'Space Around', 'flavor-chat-ia' ); ?>">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="5" y="8" width="4" height="8"/>
+                                            <rect x="15" y="8" width="4" height="8"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="vbp-distribution-btn"
+                                        :class="{ 'active': selectedElement.styles.layout.justifyContent === 'space-evenly' }"
+                                        @click="updateStyle('layout.justifyContent', 'space-evenly')"
+                                        data-tooltip="<?php esc_attr_e( 'Space Evenly', 'flavor-chat-ia' ); ?>">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="4" y="8" width="4" height="8"/>
+                                            <rect x="10" y="8" width="4" height="8"/>
+                                            <rect x="16" y="8" width="4" height="8"/>
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <!-- Gap -->
+                                <div class="vbp-autolayout-spacing">
+                                    <div class="vbp-spacing-control">
+                                        <span class="vbp-spacing-label"><?php esc_html_e( 'Gap', 'flavor-chat-ia' ); ?></span>
+                                        <input type="text"
+                                            x-model="selectedElement.styles.layout.gap"
+                                            @input="updateStyle('layout.gap', $event.target.value)"
+                                            class="vbp-spacing-input"
+                                            placeholder="16px">
+                                    </div>
+                                    <div class="vbp-spacing-control">
+                                        <span class="vbp-spacing-label"><?php esc_html_e( 'Padding', 'flavor-chat-ia' ); ?></span>
+                                        <input type="text"
+                                            x-model="selectedElement.styles.spacing.padding.all"
+                                            @input="updateStyle('spacing.padding.all', $event.target.value)"
+                                            class="vbp-spacing-input"
+                                            placeholder="20px">
+                                    </div>
+                                </div>
+
+                                <!-- Preview miniatura -->
+                                <div class="vbp-autolayout-preview"
+                                    :class="{
+                                        'direction-column': selectedElement.styles.layout.flexDirection === 'column',
+                                        'wrap-enabled': selectedElement.styles.layout.flexWrap === 'wrap'
+                                    }"
+                                    :style="{
+                                        'justify-content': selectedElement.styles.layout.justifyContent || 'flex-start',
+                                        'align-items': selectedElement.styles.layout.alignItems || 'stretch',
+                                        'gap': selectedElement.styles.layout.gap || '4px'
+                                    }">
+                                    <div class="vbp-preview-item"></div>
+                                    <div class="vbp-preview-item"></div>
+                                    <div class="vbp-preview-item"></div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
                 <!-- Spacing -->
                 <div class="vbp-inspector-section">
                     <h4 class="vbp-section-title"><?php esc_html_e( 'Espaciado', 'flavor-chat-ia' ); ?></h4>
+
+                    <!-- Presets de espaciado rápido -->
+                    <div class="vbp-spacing-presets">
+                        <div class="vbp-spacing-preset-row">
+                            <span class="vbp-preset-label"><?php esc_html_e( 'Padding', 'flavor-chat-ia' ); ?></span>
+                            <div class="vbp-preset-buttons">
+                                <?php foreach ([0, 4, 8, 16, 24, 32, 48] as $size) : ?>
+                                <button type="button"
+                                        class="vbp-preset-btn"
+                                        :class="{ 'active': isPaddingPresetActive('<?php echo $size; ?>px') }"
+                                        @click="applyPaddingPreset('<?php echo $size; ?>px')"
+                                        title="<?php echo $size; ?>px">
+                                    <?php echo $size; ?>
+                                </button>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div class="vbp-spacing-preset-row">
+                            <span class="vbp-preset-label"><?php esc_html_e( 'Margin', 'flavor-chat-ia' ); ?></span>
+                            <div class="vbp-preset-buttons">
+                                <?php foreach ([0, 4, 8, 16, 24, 32, 48] as $size) : ?>
+                                <button type="button"
+                                        class="vbp-preset-btn"
+                                        :class="{ 'active': isMarginPresetActive('<?php echo $size; ?>px') }"
+                                        @click="applyMarginPreset('<?php echo $size; ?>px')"
+                                        title="<?php echo $size; ?>px">
+                                    <?php echo $size; ?>
+                                </button>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="vbp-spacing-editor">
                         <div class="vbp-spacing-box">
@@ -3351,9 +4006,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </div>
 
-                <!-- Background Avanzado -->
+                <!-- Background -->
                 <div class="vbp-inspector-section">
-                    <h4 class="vbp-section-title"><?php esc_html_e( 'Fondo avanzado', 'flavor-chat-ia' ); ?></h4>
+                    <h4 class="vbp-section-title"><?php esc_html_e( 'Fondo', 'flavor-chat-ia' ); ?></h4>
 
                     <div class="vbp-field-group">
                         <label class="vbp-field-label"><?php esc_html_e( 'Tipo de fondo', 'flavor-chat-ia' ); ?></label>
@@ -3507,8 +4162,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </div>
 
-                <!-- Layout (para contenedores) -->
-                <div class="vbp-inspector-section" x-show="['container', 'columns', 'row', 'grid'].indexOf(selectedElement.type) !== -1">
+                <!-- Layout (para contenedores - solo en modo avanzado) -->
+                <div class="vbp-inspector-section vbp-field-advanced" x-show="$store.vbp.inspectorMode === 'advanced' && ['container', 'columns', 'row', 'grid'].indexOf(selectedElement.type) !== -1">
                     <h4 class="vbp-section-title"><?php esc_html_e( 'Layout', 'flavor-chat-ia' ); ?></h4>
                     <div class="vbp-field-row">
                         <div class="vbp-field-group vbp-field-half">
@@ -3562,8 +4217,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
 
                 <!-- Borders -->
-                <div class="vbp-inspector-section">
-                    <h4 class="vbp-section-title"><?php esc_html_e( 'Bordes', 'flavor-chat-ia' ); ?></h4>
+                <div class="vbp-inspector-section vbp-field-advanced" x-show="$store.vbp.inspectorMode === 'advanced'">
+                    <h4 class="vbp-section-title"><?php esc_html_e( 'Bordes', 'flavor-chat-ia' ); ?> <span class="vbp-advanced-badge">PRO</span></h4>
                     <div class="vbp-field-row">
                         <div class="vbp-field-group vbp-field-half">
                             <label class="vbp-field-label"><?php esc_html_e( 'Radio', 'flavor-chat-ia' ); ?></label>
@@ -3595,8 +4250,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
 
                 <!-- Shadows -->
-                <div class="vbp-inspector-section">
-                    <h4 class="vbp-section-title"><?php esc_html_e( 'Sombras', 'flavor-chat-ia' ); ?></h4>
+                <div class="vbp-inspector-section vbp-field-advanced" x-show="$store.vbp.inspectorMode === 'advanced'">
+                    <h4 class="vbp-section-title"><?php esc_html_e( 'Sombras', 'flavor-chat-ia' ); ?> <span class="vbp-advanced-badge">PRO</span></h4>
                     <div class="vbp-field-group">
                         <label class="vbp-field-label"><?php esc_html_e( 'Presets', 'flavor-chat-ia' ); ?></label>
                         <div class="vbp-shadow-presets">
@@ -3621,7 +4276,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
 
                 <!-- Dimensions -->
-                <div class="vbp-inspector-section">
+                <div class="vbp-inspector-section vbp-field-advanced" x-show="$store.vbp.inspectorMode === 'advanced'">
                     <h4 class="vbp-section-title"><?php esc_html_e( 'Dimensiones', 'flavor-chat-ia' ); ?></h4>
                     <div class="vbp-field-row">
                         <div class="vbp-field-group vbp-field-half">
@@ -3646,7 +4301,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
 
                 <!-- Overflow y Opacity -->
-                <div class="vbp-inspector-section">
+                <div class="vbp-inspector-section vbp-field-advanced" x-show="$store.vbp.inspectorMode === 'advanced'">
                     <h4 class="vbp-section-title"><?php esc_html_e( 'Efectos visuales', 'flavor-chat-ia' ); ?></h4>
                     <div class="vbp-field-row">
                         <div class="vbp-field-group vbp-field-half">
@@ -3669,7 +4324,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
 
                 <!-- Position -->
-                <div class="vbp-inspector-section">
+                <div class="vbp-inspector-section vbp-field-advanced" x-show="$store.vbp.inspectorMode === 'advanced'">
                     <h4 class="vbp-section-title"><?php esc_html_e( 'Posición', 'flavor-chat-ia' ); ?></h4>
                     <div class="vbp-field-group">
                         <label class="vbp-field-label"><?php esc_html_e( 'Tipo', 'flavor-chat-ia' ); ?></label>
@@ -3712,7 +4367,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
 
                 <!-- Transform -->
-                <div class="vbp-inspector-section">
+                <div class="vbp-inspector-section vbp-field-advanced" x-show="$store.vbp.inspectorMode === 'advanced'">
                     <h4 class="vbp-section-title"><?php esc_html_e( 'Transformaciones', 'flavor-chat-ia' ); ?></h4>
                     <div class="vbp-field-row">
                         <div class="vbp-field-group vbp-field-half">
@@ -3757,6 +4412,180 @@ if ( ! defined( 'ABSPATH' ) ) {
             <!-- Tab: Avanzado -->
             <!-- ============================================ -->
             <div x-show="activeTab === 'advanced'" class="vbp-inspector-panel">
+                <!-- Auto-layout (Flexbox/Grid) -->
+                <div class="vbp-inspector-section">
+                    <h4 class="vbp-section-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+                        <?php esc_html_e( 'Auto-layout', 'flavor-chat-ia' ); ?>
+                    </h4>
+
+                    <!-- Display Mode -->
+                    <div class="vbp-field-group">
+                        <label class="vbp-field-label"><?php esc_html_e( 'Display', 'flavor-chat-ia' ); ?></label>
+                        <div class="vbp-btn-group vbp-btn-group-full">
+                            <button type="button"
+                                    @click="updateStyle('layout.display', 'block')"
+                                    :class="{ 'active': (selectedElement.styles.layout?.display || 'block') === 'block' }"
+                                    class="vbp-btn-toggle"
+                                    title="<?php esc_attr_e( 'Block', 'flavor-chat-ia' ); ?>">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                            </button>
+                            <button type="button"
+                                    @click="updateStyle('layout.display', 'flex')"
+                                    :class="{ 'active': selectedElement.styles.layout?.display === 'flex' }"
+                                    class="vbp-btn-toggle"
+                                    title="<?php esc_attr_e( 'Flex', 'flavor-chat-ia' ); ?>">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="11" y="3" width="4" height="18" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+                            </button>
+                            <button type="button"
+                                    @click="updateStyle('layout.display', 'grid')"
+                                    :class="{ 'active': selectedElement.styles.layout?.display === 'grid' }"
+                                    class="vbp-btn-toggle"
+                                    title="<?php esc_attr_e( 'Grid', 'flavor-chat-ia' ); ?>">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Flex Options -->
+                    <template x-if="selectedElement.styles.layout?.display === 'flex'">
+                        <div class="vbp-layout-flex-options">
+                            <!-- Direction -->
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Dirección', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-btn-group">
+                                    <button type="button"
+                                            @click="updateStyle('layout.flexDirection', 'row')"
+                                            :class="{ 'active': (selectedElement.styles.layout?.flexDirection || 'row') === 'row' }"
+                                            class="vbp-btn-toggle"
+                                            title="<?php esc_attr_e( 'Horizontal', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                                    </button>
+                                    <button type="button"
+                                            @click="updateStyle('layout.flexDirection', 'column')"
+                                            :class="{ 'active': selectedElement.styles.layout?.flexDirection === 'column' }"
+                                            class="vbp-btn-toggle"
+                                            title="<?php esc_attr_e( 'Vertical', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                                    </button>
+                                    <button type="button"
+                                            @click="updateStyle('layout.flexDirection', 'row-reverse')"
+                                            :class="{ 'active': selectedElement.styles.layout?.flexDirection === 'row-reverse' }"
+                                            class="vbp-btn-toggle"
+                                            title="<?php esc_attr_e( 'Horizontal inverso', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 5 5 12 12 19"/></svg>
+                                    </button>
+                                    <button type="button"
+                                            @click="updateStyle('layout.flexDirection', 'column-reverse')"
+                                            :class="{ 'active': selectedElement.styles.layout?.flexDirection === 'column-reverse' }"
+                                            class="vbp-btn-toggle"
+                                            title="<?php esc_attr_e( 'Vertical inverso', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Justify Content -->
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Distribución', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-btn-group">
+                                    <button type="button" @click="updateStyle('layout.justifyContent', 'flex-start')" :class="{ 'active': (selectedElement.styles.layout?.justifyContent || 'flex-start') === 'flex-start' }" class="vbp-btn-toggle" title="<?php esc_attr_e( 'Inicio', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="4" height="12"/><rect x="9" y="6" width="4" height="12"/></svg>
+                                    </button>
+                                    <button type="button" @click="updateStyle('layout.justifyContent', 'center')" :class="{ 'active': selectedElement.styles.layout?.justifyContent === 'center' }" class="vbp-btn-toggle" title="<?php esc_attr_e( 'Centro', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="6" width="4" height="12"/><rect x="13" y="6" width="4" height="12"/></svg>
+                                    </button>
+                                    <button type="button" @click="updateStyle('layout.justifyContent', 'flex-end')" :class="{ 'active': selectedElement.styles.layout?.justifyContent === 'flex-end' }" class="vbp-btn-toggle" title="<?php esc_attr_e( 'Fin', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="11" y="6" width="4" height="12"/><rect x="17" y="6" width="4" height="12"/></svg>
+                                    </button>
+                                    <button type="button" @click="updateStyle('layout.justifyContent', 'space-between')" :class="{ 'active': selectedElement.styles.layout?.justifyContent === 'space-between' }" class="vbp-btn-toggle" title="<?php esc_attr_e( 'Space Between', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="4" height="12"/><rect x="17" y="6" width="4" height="12"/></svg>
+                                    </button>
+                                    <button type="button" @click="updateStyle('layout.justifyContent', 'space-around')" :class="{ 'active': selectedElement.styles.layout?.justifyContent === 'space-around' }" class="vbp-btn-toggle" title="<?php esc_attr_e( 'Space Around', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="6" width="4" height="12"/><rect x="15" y="6" width="4" height="12"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Align Items -->
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Alineación', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-btn-group">
+                                    <button type="button" @click="updateStyle('layout.alignItems', 'flex-start')" :class="{ 'active': selectedElement.styles.layout?.alignItems === 'flex-start' }" class="vbp-btn-toggle" title="<?php esc_attr_e( 'Arriba', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="10"/><rect x="14" y="4" width="4" height="6"/></svg>
+                                    </button>
+                                    <button type="button" @click="updateStyle('layout.alignItems', 'center')" :class="{ 'active': (selectedElement.styles.layout?.alignItems || 'center') === 'center' }" class="vbp-btn-toggle" title="<?php esc_attr_e( 'Centro', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="7" width="4" height="10"/><rect x="14" y="9" width="4" height="6"/></svg>
+                                    </button>
+                                    <button type="button" @click="updateStyle('layout.alignItems', 'flex-end')" :class="{ 'active': selectedElement.styles.layout?.alignItems === 'flex-end' }" class="vbp-btn-toggle" title="<?php esc_attr_e( 'Abajo', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="10" width="4" height="10"/><rect x="14" y="14" width="4" height="6"/></svg>
+                                    </button>
+                                    <button type="button" @click="updateStyle('layout.alignItems', 'stretch')" :class="{ 'active': selectedElement.styles.layout?.alignItems === 'stretch' }" class="vbp-btn-toggle" title="<?php esc_attr_e( 'Estirar', 'flavor-chat-ia' ); ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Wrap -->
+                            <div class="vbp-field-group">
+                                <label class="vbp-checkbox-label">
+                                    <input type="checkbox"
+                                           :checked="selectedElement.styles.layout?.flexWrap === 'wrap'"
+                                           @change="updateStyle('layout.flexWrap', $event.target.checked ? 'wrap' : 'nowrap')"
+                                           class="vbp-checkbox">
+                                    <span><?php esc_html_e( 'Permitir saltos de línea (wrap)', 'flavor-chat-ia' ); ?></span>
+                                </label>
+                            </div>
+
+                            <!-- Gap -->
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Espacio entre elementos', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-input-with-unit">
+                                    <input type="number"
+                                           :value="parseInt(selectedElement.styles.layout?.gap || '0')"
+                                           @input="updateStyle('layout.gap', $event.target.value + 'px')"
+                                           class="vbp-field-input"
+                                           min="0"
+                                           step="4"
+                                           placeholder="0">
+                                    <span class="vbp-input-unit">px</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Grid Options -->
+                    <template x-if="selectedElement.styles.layout?.display === 'grid'">
+                        <div class="vbp-layout-grid-options">
+                            <!-- Grid Columns -->
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Columnas', 'flavor-chat-ia' ); ?></label>
+                                <select @change="updateStyle('layout.gridTemplateColumns', $event.target.value)" class="vbp-field-select">
+                                    <option value="repeat(2, 1fr)" :selected="selectedElement.styles.layout?.gridTemplateColumns === 'repeat(2, 1fr)'">2 columnas</option>
+                                    <option value="repeat(3, 1fr)" :selected="selectedElement.styles.layout?.gridTemplateColumns === 'repeat(3, 1fr)'">3 columnas</option>
+                                    <option value="repeat(4, 1fr)" :selected="selectedElement.styles.layout?.gridTemplateColumns === 'repeat(4, 1fr)'">4 columnas</option>
+                                    <option value="repeat(auto-fit, minmax(200px, 1fr))" :selected="selectedElement.styles.layout?.gridTemplateColumns?.includes('auto-fit')">Auto-fit (responsive)</option>
+                                </select>
+                            </div>
+
+                            <!-- Grid Gap -->
+                            <div class="vbp-field-group">
+                                <label class="vbp-field-label"><?php esc_html_e( 'Espacio entre celdas', 'flavor-chat-ia' ); ?></label>
+                                <div class="vbp-input-with-unit">
+                                    <input type="number"
+                                           :value="parseInt(selectedElement.styles.layout?.gap || '0')"
+                                           @input="updateStyle('layout.gap', $event.target.value + 'px')"
+                                           class="vbp-field-input"
+                                           min="0"
+                                           step="4"
+                                           placeholder="0">
+                                    <span class="vbp-input-unit">px</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
                 <div class="vbp-inspector-section">
                     <h4 class="vbp-section-title"><?php esc_html_e( 'Atributos', 'flavor-chat-ia' ); ?></h4>
                     <div class="vbp-field-group">
@@ -3989,6 +4818,54 @@ if ( ! defined( 'ABSPATH' ) ) {
             <button type="button" class="vbp-mini-color-picker__btn vbp-mini-color-picker__btn--close" @click="closeColorPicker()">
                 <?php esc_html_e( 'Cerrar', 'flavor-chat-ia' ); ?>
             </button>
+        </div>
+    </div>
+
+    <!-- Modal de URL Fallback (cuando wp.media no está disponible) -->
+    <div x-show="urlModal.isOpen"
+         x-cloak
+         class="vbp-url-modal-overlay"
+         @click.self="closeUrlModal()"
+         @keydown.escape.window="closeUrlModal()">
+        <div class="vbp-url-modal"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 transform scale-95"
+             x-transition:enter-end="opacity-100 transform scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 transform scale-100"
+             x-transition:leave-end="opacity-0 transform scale-95">
+            <div class="vbp-url-modal__header">
+                <h3 x-text="urlModal.title"><?php esc_html_e( 'Introducir URL', 'flavor-chat-ia' ); ?></h3>
+                <button type="button" class="vbp-url-modal__close" @click="closeUrlModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="vbp-url-modal__body">
+                <p class="vbp-url-modal__hint">
+                    <?php esc_html_e( 'La biblioteca de medios no está disponible. Introduce la URL directamente.', 'flavor-chat-ia' ); ?>
+                </p>
+                <div class="vbp-field-group">
+                    <label class="vbp-field-label"><?php esc_html_e( 'URL del archivo', 'flavor-chat-ia' ); ?></label>
+                    <input type="url"
+                           x-model="urlModal.url"
+                           :placeholder="getUrlPlaceholder()"
+                           class="vbp-field-input"
+                           :class="{ 'vbp-input-error': urlModal.error }"
+                           @keydown.enter="confirmUrlModal()"
+                           x-ref="urlModalInput">
+                    <div x-show="urlModal.error" class="vbp-field-error" x-text="urlModal.error"></div>
+                </div>
+            </div>
+            <div class="vbp-url-modal__footer">
+                <button type="button" class="vbp-btn vbp-btn-secondary" @click="closeUrlModal()">
+                    <?php esc_html_e( 'Cancelar', 'flavor-chat-ia' ); ?>
+                </button>
+                <button type="button" class="vbp-btn vbp-btn-primary" @click="confirmUrlModal()">
+                    <?php esc_html_e( 'Aplicar', 'flavor-chat-ia' ); ?>
+                </button>
+            </div>
         </div>
     </div>
 </div>

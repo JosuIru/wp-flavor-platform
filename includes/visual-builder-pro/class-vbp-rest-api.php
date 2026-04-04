@@ -28,6 +28,14 @@ class Flavor_VBP_REST_API {
     const NAMESPACE = 'flavor-vbp/v1';
 
     /**
+     * Meta key unificada para datos VBP (misma que usa el Editor)
+     * IMPORTANTE: Usar siempre esta constante, NO self::META_DATA (legacy)
+     *
+     * @var string
+     */
+    const META_DATA = '_flavor_vbp_data';
+
+    /**
      * Instancia singleton
      *
      * @var Flavor_VBP_REST_API|null
@@ -566,6 +574,18 @@ class Flavor_VBP_REST_API {
                 );
             }
 
+            // Registrar en audit log
+            if ( function_exists( 'vbp_audit_log' ) ) {
+                $elementos_count = isset( $datos['elements'] ) ? count( $datos['elements'] ) : 0;
+                vbp_audit_log( 'page_updated', array(
+                    'post_id' => $post_id,
+                    'details' => array(
+                        'elements_count' => $elementos_count,
+                        'has_settings'   => isset( $datos['settings'] ),
+                    ),
+                ) );
+            }
+
             return new WP_REST_Response(
                 array(
                     'success'   => true,
@@ -619,6 +639,16 @@ class Flavor_VBP_REST_API {
         $restaurado = wp_restore_post_revision( $revision_id );
 
         if ( $restaurado ) {
+            // Registrar en audit log
+            if ( function_exists( 'vbp_audit_log' ) ) {
+                vbp_audit_log( 'revision_restored', array(
+                    'post_id' => $post_id,
+                    'details' => array(
+                        'revision_id' => $revision_id,
+                    ),
+                ) );
+            }
+
             return new WP_REST_Response(
                 array(
                     'success' => true,
@@ -932,7 +962,7 @@ class Flavor_VBP_REST_API {
         $user_templates = get_posts(
             array(
                 'post_type'      => 'vbp_template',
-                'posts_per_page' => -1,
+                'posts_per_page' => 100,
                 'orderby'        => 'date',
                 'order'          => 'DESC',
                 'author'         => $current_user_id,
@@ -1948,14 +1978,163 @@ class Flavor_VBP_REST_API {
      */
     public function verificar_api_key_claude( $request ) {
         $api_key = $request->get_header( 'X-VBP-Key' );
-        $valid_key = 'flavor-vbp-2024';
+
+        // Obtener key desde opciones (configurable) con fallback seguro
+        $settings = get_option( 'flavor_vbp_settings', array() );
+        $valid_key = isset( $settings['api_key'] ) && ! empty( $settings['api_key'] )
+            ? $settings['api_key']
+            : wp_hash( 'flavor-vbp-' . NONCE_SALT ); // Genera key única por instalación
+
+        // En desarrollo local, permitir key legacy (solo si está explícitamente habilitado)
+        $allow_legacy = defined( 'FLAVOR_VBP_ALLOW_LEGACY_KEY' ) && FLAVOR_VBP_ALLOW_LEGACY_KEY;
+        if ( $allow_legacy && $api_key === 'flavor-vbp-2024' ) {
+            // Log de advertencia
+            if ( function_exists( 'flavor_log_debug' ) ) {
+                flavor_log_debug( 'VBP API: Usando key legacy - configure una key segura en Ajustes > VBP', 'VBP-Security' );
+            }
+            return true;
+        }
 
         if ( $api_key === $valid_key ) {
             return true;
         }
 
-        // Fallback: verificar permisos normales
+        // Fallback: verificar permisos normales (usuario autenticado)
         return current_user_can( 'edit_posts' );
+    }
+
+    /**
+     * Obtener la API key actual (para mostrar en ajustes)
+     *
+     * @return string
+     */
+    public static function obtener_api_key() {
+        $settings = get_option( 'flavor_vbp_settings', array() );
+        if ( isset( $settings['api_key'] ) && ! empty( $settings['api_key'] ) ) {
+            return $settings['api_key'];
+        }
+        return wp_hash( 'flavor-vbp-' . NONCE_SALT );
+    }
+
+    /**
+     * Regenerar API key
+     *
+     * @return string Nueva key
+     */
+    public static function regenerar_api_key() {
+        $nueva_key = wp_generate_password( 32, false, false );
+        $settings = get_option( 'flavor_vbp_settings', array() );
+        $settings['api_key'] = $nueva_key;
+        update_option( 'flavor_vbp_settings', $settings );
+        return $nueva_key;
+    }
+
+    /**
+     * Obtiene el documento VBP normalizado para operaciones batch.
+     *
+     * @param int $post_id ID del post.
+     * @return array
+     */
+    private function obtener_documento_batch( $post_id ) {
+        if ( class_exists( 'Flavor_VBP_Editor' ) ) {
+            return Flavor_VBP_Editor::get_instance()->obtener_datos_documento( $post_id );
+        }
+
+        $documento = get_post_meta( $post_id, self::META_DATA, true );
+        if ( is_array( $documento ) ) {
+            return $documento;
+        }
+
+        return array(
+            'version'  => '2.2.4',
+            'elements' => array(),
+            'settings' => array(
+                'pageWidth'       => 1200,
+                'backgroundColor' => '#ffffff',
+                'customCss'       => '',
+            ),
+        );
+    }
+
+    /**
+     * Guarda un documento VBP desde operaciones batch.
+     *
+     * @param int   $post_id   ID del post.
+     * @param array $documento Documento a guardar.
+     * @return bool
+     */
+    private function guardar_documento_batch( $post_id, $documento ) {
+        if ( ! is_array( $documento ) ) {
+            return false;
+        }
+
+        if ( class_exists( 'Flavor_VBP_Editor' ) ) {
+            $guardado_editor = Flavor_VBP_Editor::get_instance()->guardar_datos_documento( $post_id, $documento );
+            if ( $guardado_editor ) {
+                return true;
+            }
+        }
+
+        // Las rutas batch autenticadas por API key no siempre tienen un usuario WP activo,
+        // así que el guardado debe poder persistir el documento aunque falle current_user_can().
+        $documento['updatedAt'] = current_time( 'mysql' );
+        if ( empty( $documento['version'] ) || ! is_string( $documento['version'] ) ) {
+            $documento['version'] = defined( 'Flavor_VBP_Editor::VERSION' ) ? Flavor_VBP_Editor::VERSION : '2.2.4';
+        }
+
+        $resultado = update_post_meta( $post_id, self::META_DATA, $documento );
+        update_post_meta( $post_id, '_flavor_vbp_version', $documento['version'] );
+
+        if ( false !== $resultado ) {
+            do_action( 'vbp_content_saved', $post_id, $documento );
+        }
+
+        return false !== $resultado;
+    }
+
+    /**
+     * Normaliza el payload batch al esquema que usa el editor.
+     *
+     * @param array $payload        Bloques o documento parcial.
+     * @param array $documento_base Documento actual.
+     * @return array
+     */
+    private function normalizar_documento_batch( $payload, $documento_base = array() ) {
+        $documento = wp_parse_args(
+            is_array( $documento_base ) ? $documento_base : array(),
+            array(
+                'version'  => '2.2.4',
+                'elements' => array(),
+                'settings' => array(
+                    'pageWidth'       => 1200,
+                    'backgroundColor' => '#ffffff',
+                    'customCss'       => '',
+                ),
+            )
+        );
+
+        if ( ! is_array( $payload ) ) {
+            return $documento;
+        }
+
+        if ( isset( $payload['elements'] ) || isset( $payload['settings'] ) ) {
+            if ( isset( $payload['elements'] ) && is_array( $payload['elements'] ) ) {
+                $documento['elements'] = $payload['elements'];
+            }
+
+            if ( isset( $payload['settings'] ) && is_array( $payload['settings'] ) ) {
+                $documento['settings'] = array_merge( $documento['settings'], $payload['settings'] );
+            }
+
+            if ( isset( $payload['version'] ) && is_string( $payload['version'] ) ) {
+                $documento['version'] = $payload['version'];
+            }
+
+            return $documento;
+        }
+
+        $documento['elements'] = $payload;
+        return $documento;
     }
 
     /**
@@ -2107,9 +2286,10 @@ class Flavor_VBP_REST_API {
             );
         }
 
-        // Guardar bloques VBP
+        // Guardar documento VBP con el mismo esquema que consume el editor.
         if ( ! empty( $blocks ) ) {
-            update_post_meta( $post_id, '_vbp_content', wp_json_encode( $blocks ) );
+            $documento = $this->normalizar_documento_batch( $blocks );
+            $this->guardar_documento_batch( $post_id, $documento );
         }
 
         return array(
@@ -2150,9 +2330,11 @@ class Flavor_VBP_REST_API {
             wp_update_post( $actualizar );
         }
 
-        // Actualizar bloques VBP
+        // Actualizar documento VBP con el mismo esquema que consume el editor.
         if ( $blocks !== null ) {
-            update_post_meta( $page_id, '_vbp_content', wp_json_encode( $blocks ) );
+            $documento = $this->obtener_documento_batch( $page_id );
+            $documento = $this->normalizar_documento_batch( $blocks, $documento );
+            $this->guardar_documento_batch( $page_id, $documento );
         }
 
         return array(
@@ -2207,8 +2389,8 @@ class Flavor_VBP_REST_API {
             );
         }
 
-        $contenido = get_post_meta( $page_id, '_vbp_content', true );
-        $elementos = $contenido ? json_decode( $contenido, true ) : array();
+        $documento = $this->obtener_documento_batch( $page_id );
+        $elementos = isset( $documento['elements'] ) && is_array( $documento['elements'] ) ? $documento['elements'] : array();
 
         // Generar ID único
         if ( empty( $elemento['id'] ) ) {
@@ -2222,7 +2404,8 @@ class Flavor_VBP_REST_API {
             $elementos[] = $elemento;
         }
 
-        update_post_meta( $page_id, '_vbp_content', wp_json_encode( $elementos ) );
+        $documento['elements'] = $elementos;
+        $this->guardar_documento_batch( $page_id, $documento );
 
         return array(
             'id'         => $op_id,
@@ -2250,8 +2433,8 @@ class Flavor_VBP_REST_API {
             );
         }
 
-        $contenido = get_post_meta( $page_id, '_vbp_content', true );
-        $elementos = $contenido ? json_decode( $contenido, true ) : array();
+        $documento = $this->obtener_documento_batch( $page_id );
+        $elementos = isset( $documento['elements'] ) && is_array( $documento['elements'] ) ? $documento['elements'] : array();
 
         $encontrado = $this->actualizar_elemento_recursivo( $elementos, $element_id, $updates );
 
@@ -2264,7 +2447,8 @@ class Flavor_VBP_REST_API {
             );
         }
 
-        update_post_meta( $page_id, '_vbp_content', wp_json_encode( $elementos ) );
+        $documento['elements'] = $elementos;
+        $this->guardar_documento_batch( $page_id, $documento );
 
         return array(
             'id'         => $op_id,
@@ -2308,8 +2492,8 @@ class Flavor_VBP_REST_API {
             );
         }
 
-        $contenido = get_post_meta( $page_id, '_vbp_content', true );
-        $elementos = $contenido ? json_decode( $contenido, true ) : array();
+        $documento = $this->obtener_documento_batch( $page_id );
+        $elementos = isset( $documento['elements'] ) && is_array( $documento['elements'] ) ? $documento['elements'] : array();
 
         $encontrado = $this->eliminar_elemento_recursivo( $elementos, $element_id );
 
@@ -2322,7 +2506,8 @@ class Flavor_VBP_REST_API {
             );
         }
 
-        update_post_meta( $page_id, '_vbp_content', wp_json_encode( $elementos ) );
+        $documento['elements'] = $elementos;
+        $this->guardar_documento_batch( $page_id, $documento );
 
         return array(
             'id'         => $op_id,
@@ -2368,9 +2553,9 @@ class Flavor_VBP_REST_API {
         }
 
         // Actualizar solo los estilos del elemento
-        $updates = array( 'styles' => $estilos );
-        $contenido = get_post_meta( $page_id, '_vbp_content', true );
-        $elementos = $contenido ? json_decode( $contenido, true ) : array();
+        $updates   = array( 'styles' => $estilos );
+        $documento = $this->obtener_documento_batch( $page_id );
+        $elementos = isset( $documento['elements'] ) && is_array( $documento['elements'] ) ? $documento['elements'] : array();
 
         $encontrado = $this->actualizar_elemento_recursivo( $elementos, $element_id, $updates );
 
@@ -2383,7 +2568,8 @@ class Flavor_VBP_REST_API {
             );
         }
 
-        update_post_meta( $page_id, '_vbp_content', wp_json_encode( $elementos ) );
+        $documento['elements'] = $elementos;
+        $this->guardar_documento_batch( $page_id, $documento );
 
         return array(
             'id'         => $op_id,
@@ -2493,8 +2679,8 @@ class Flavor_VBP_REST_API {
             );
         }
 
-        $contenido       = get_post_meta( $page_id, '_vbp_content', true );
-        $elementos_actual = $contenido ? json_decode( $contenido, true ) : array();
+        $documento        = $this->obtener_documento_batch( $page_id );
+        $elementos_actual = isset( $documento['elements'] ) && is_array( $documento['elements'] ) ? $documento['elements'] : array();
 
         $resultados = array();
         $exitos     = 0;
@@ -2532,8 +2718,9 @@ class Flavor_VBP_REST_API {
             }
         }
 
-        // Guardar cambios
-        update_post_meta( $page_id, '_vbp_content', wp_json_encode( $elementos_actual ) );
+        // Guardar cambios en el mismo formato que usa el editor.
+        $documento['elements'] = $elementos_actual;
+        $this->guardar_documento_batch( $page_id, $documento );
 
         return new WP_REST_Response(
             array(

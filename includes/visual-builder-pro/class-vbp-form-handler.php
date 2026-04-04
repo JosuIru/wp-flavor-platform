@@ -178,9 +178,16 @@ class Flavor_VBP_Form_Handler {
 
         // Campos adicionales personalizados
         $campos_excluidos = array( 'form_id', 'post_id', 'name', 'email', 'message', 'action', '_wpnonce', 'website_url' );
-        foreach ( $_POST as $key => $value ) {
+        $post_data = wp_unslash( $_POST );
+        foreach ( $post_data as $key => $value ) {
             if ( ! in_array( $key, $campos_excluidos, true ) ) {
-                $form_data[ sanitize_key( $key ) ] = sanitize_text_field( wp_unslash( $value ) );
+                $sanitized_key = sanitize_key( $key );
+                // Manejar arrays anidados de forma segura
+                if ( is_array( $value ) ) {
+                    $form_data[ $sanitized_key ] = array_map( 'sanitize_text_field', $value );
+                } else {
+                    $form_data[ $sanitized_key ] = sanitize_text_field( $value );
+                }
             }
         }
 

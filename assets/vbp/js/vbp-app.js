@@ -249,6 +249,9 @@ function vbpApp() {
             }
         },
         splitScreenMode: false,
+        workspaceChromeState: {
+            showRulers: true
+        },
         splitScreenSyncScroll: true,
         splitScreenDevices: ['desktop', 'mobile'],
         showRulers: true,
@@ -257,12 +260,16 @@ function vbpApp() {
         showFloatingToolbar: false,
         floatingToolbarPosition: { x: 0, y: 0 },
         notifications: [],
-        dropIndicator: { visible: false, y: 0 },
+        dropIndicator: { visible: false, y: 0, index: -1, position: 'end', label: '' },
         draggedElement: null,
         autosaveTimer: null,
         autosaveInterval: 30000,
         countdownTimer: null,
         optionalScriptPromises: {},
+        beforeAfterListenersInitialized: false,
+        serverRenderCache: {},
+        serverRenderPending: {},
+        serverRenderNonce: 0,
 
         // Sistema de cleanup para evitar memory leaks
         _eventHandlers: {},
@@ -270,118 +277,12 @@ function vbpApp() {
 
         // Modales
         showHelpModal: false,
-        showCommandPalette: false,
-        showTemplatesModal: false,
-        showExportModal: false,
-        showSaveTemplateModal: false,
-        showRevisionsModal: false,
-        commandSearch: '',
-        commandIndex: 0,
-
-        // Revisiones
-        revisions: [],
-        isLoadingRevisions: false,
-        isRestoringRevision: false,
-
-        // Templates
-        templatesTab: 'library',
-        templateSearch: '',
-        templateCategory: '',
-        templates: [],
-        userTemplates: [],
-        templatesLoaded: false,
-        templatesLoading: false,
-        selectedTemplate: null,
-        newTemplateName: '',
-        newTemplateCategory: 'landing',
-        newTemplateDescription: '',
-        isSavingTemplate: false,
-        importDragOver: false,
-        importJsonText: '',
-
-        // Widgets Globales
-        globalWidgets: [],
-        globalWidgetsLoaded: false,
-        globalWidgetsLoading: false,
-        globalWidgetsPromise: null,
-        showSaveGlobalWidgetModal: false,
-        newGlobalWidgetName: '',
-        newGlobalWidgetCategory: 'general',
-        isSavingGlobalWidget: false,
-
-        // Unsplash
-        showUnsplashModal: false,
-        unsplashConfigured: true,
-        unsplashQuery: '',
-        unsplashOrientation: '',
-        unsplashImages: [],
-        unsplashPage: 1,
-        unsplashTotalPages: 0,
-        isSearchingUnsplash: false,
-        unsplashTargetElement: null,
-
-        // Historial de versiones
-        showVersionHistoryModal: false,
-        showVersionDiffModal: false,
-        versions: [],
-        isLoadingVersions: false,
-        selectedVersionA: null,
-        selectedVersionB: null,
-        versionDiff: null,
-        isRestoringVersion: false,
-        newVersionLabel: '',
 
         // Clipboard de estilos y elementos
         copiedElement: null,
         copiedStyles: null,
         eyedropperActive: false,
         eyedropperCallback: null,
-
-        commands: [
-            { id: 'save', name: 'Guardar', shortcut: 'Ctrl+S', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/></svg>', action: 'save' },
-            { id: 'undo', name: 'Deshacer', shortcut: 'Ctrl+Z', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>', action: 'undo' },
-            { id: 'redo', name: 'Rehacer', shortcut: 'Ctrl+Shift+Z', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"/></svg>', action: 'redo' },
-            { id: 'copy', name: 'Copiar', shortcut: 'Ctrl+C', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>', action: 'copy' },
-            { id: 'paste', name: 'Pegar', shortcut: 'Ctrl+V', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>', action: 'paste' },
-            { id: 'duplicate', name: 'Duplicar', shortcut: 'Ctrl+D', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>', action: 'duplicate' },
-            { id: 'copyStyles', name: 'Copiar estilos', shortcut: 'Ctrl+Alt+C', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>', action: 'copyStyles' },
-            { id: 'pasteStyles', name: 'Pegar estilos', shortcut: 'Ctrl+Alt+V', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>', action: 'pasteStyles' },
-            { id: 'eyedropper', name: 'Cuentagotas de color', shortcut: 'I', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 22l1-1h3l9-9"/><path d="M3 21v-3l9-9"/><circle cx="17" cy="7" r="3"/><path d="M20 4l-1.5 1.5"/></svg>', action: 'eyedropper' },
-            { id: 'saveAsGlobal', name: 'Guardar como widget global', shortcut: 'Ctrl+Shift+G', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>', action: 'saveAsGlobal' },
-            { id: 'delete', name: 'Eliminar', shortcut: 'Delete', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>', action: 'delete' },
-            { id: 'selectAll', name: 'Seleccionar todo', shortcut: 'Ctrl+A', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>', action: 'selectAll' },
-            { id: 'deselect', name: 'Deseleccionar', shortcut: 'Esc', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>', action: 'deselect' },
-            { id: 'zoomIn', name: 'Acercar', shortcut: 'Ctrl++', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>', action: 'zoomIn' },
-            { id: 'zoomOut', name: 'Alejar', shortcut: 'Ctrl+-', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M8 11h6"/></svg>', action: 'zoomOut' },
-            { id: 'zoomReset', name: 'Zoom 100%', shortcut: 'Ctrl+0', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>', action: 'zoomReset' },
-            { id: 'preview', name: 'Previsualizar', shortcut: 'Ctrl+P', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>', action: 'preview' },
-            { id: 'help', name: 'Mostrar ayuda', shortcut: '?', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>', action: 'help' },
-            { id: 'togglePanels', name: 'Toggle paneles', shortcut: 'Ctrl+\\', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>', action: 'togglePanels' },
-            { id: 'addHero', name: 'Añadir Hero', shortcut: '', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>', action: 'addHero' },
-            { id: 'addText', name: 'Añadir Texto', shortcut: '', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>', action: 'addText' },
-            { id: 'addImage', name: 'Añadir Imagen', shortcut: '', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>', action: 'addImage' },
-            { id: 'addButton', name: 'Añadir Botón', shortcut: '', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="8" rx="4"/></svg>', action: 'addButton' },
-            { id: 'templates', name: 'Templates', shortcut: 'Ctrl+T', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>', action: 'templates' },
-            { id: 'export', name: 'Exportar diseño', shortcut: 'Ctrl+E', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17,8 12,3 7,8"/><path d="M12 3v12"/></svg>', action: 'export' },
-            { id: 'unsplash', name: 'Buscar en Unsplash', shortcut: 'Ctrl+U', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 6.75V0h9v6.75h-9zm9 3.75H24V24H0V10.5h7.5v6.75h9V10.5z"/></svg>', action: 'unsplash' },
-            { id: 'versionHistory', name: 'Historial de versiones', shortcut: 'Ctrl+H', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>', action: 'versionHistory' }
-        ],
-        filteredCommands: [],
-
-        // Panel de configuración de página
-        showPageSettings: false,
-        pageSettingsTab: 'general',
-        pageSettings: {
-            seoTitle: '',
-            seoDescription: '',
-            ogImage: '',
-            ogTitle: '',
-            ogDescription: '',
-            customCss: '',
-            customJs: '',
-            pageClass: '',
-            pageId: ''
-        },
 
         // === VALORES POR DEFECTO PARA MÓDULOS ENTERPRISE ===
         // Estos valores se sobrescriben cuando los módulos cargan
@@ -517,11 +418,63 @@ function vbpApp() {
         getWorkflowActionIcon: function(action) {
             var icons = {
                 'submit': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
+                'submit_review': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
                 'approve': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
                 'reject': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>',
-                'publish': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>'
+                'publish': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>',
+                'schedule': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
             };
             return icons[action] || icons['submit'];
+        },
+
+        getPrimaryWorkflowTransition: function() {
+            var transitions = this.workflowStatus && Array.isArray(this.workflowStatus.transitions)
+                ? this.workflowStatus.transitions
+                : [];
+            var preferredOrder = ['publish', 'approve', 'submit_review', 'submit', 'schedule'];
+
+            for (var i = 0; i < preferredOrder.length; i++) {
+                var preferredAction = preferredOrder[i];
+                var matched = transitions.find(function(transition) {
+                    return transition && transition.action === preferredAction;
+                });
+
+                if (matched) {
+                    return matched;
+                }
+            }
+
+            return transitions.length > 0 ? transitions[0] : null;
+        },
+
+        getPrimaryActionLabel: function() {
+            var transition = this.getPrimaryWorkflowTransition();
+
+            if (transition) {
+                return transition.label || 'Revisar flujo';
+            }
+
+            return 'Guardar y revisar';
+        },
+
+        getPrimaryActionTooltip: function() {
+            var transition = this.getPrimaryWorkflowTransition();
+
+            if (transition) {
+                return 'Guardar cambios y continuar con el flujo de publicación';
+            }
+
+            return 'Guardar cambios y revisar la página antes de publicar';
+        },
+
+        getPrimaryActionIcon: function() {
+            var transition = this.getPrimaryWorkflowTransition();
+
+            if (transition && transition.action) {
+                return this.getWorkflowActionIcon(transition.action);
+            }
+
+            return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
         },
 
         getAuditActionIcon: function(action) {
@@ -533,16 +486,6 @@ function vbpApp() {
                 'login': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><path d="M15 12H3"/></svg>'
             };
             return icons[action] || icons['update'];
-        },
-
-        getDiffChangeTypeLabel: function(type) {
-            var labels = {
-                'added': 'Añadido',
-                'removed': 'Eliminado',
-                'modified': 'Modificado',
-                'unchanged': 'Sin cambios'
-            };
-            return labels[type] || type;
         },
 
         // Stubs para Design Tokens (se sobrescriben cuando el módulo carga)
@@ -660,21 +603,6 @@ function vbpApp() {
             this.showScheduleModal = false;
         },
 
-        getElementClasses: function(element) {
-            if (!element || !element.styles) return '';
-            return element.styles.customClasses || '';
-        },
-
-        getDiffChangeTypeClass: function(type) {
-            var classes = {
-                'added': 'vbp-diff-added',
-                'removed': 'vbp-diff-removed',
-                'modified': 'vbp-diff-modified',
-                'unchanged': 'vbp-diff-unchanged'
-            };
-            return classes[type] || '';
-        },
-
         getTypeClass: function(type) {
             return 'vbp-type-' + (type || 'default');
         },
@@ -705,6 +633,37 @@ function vbpApp() {
                 return this[action](params);
             }
             vbpLog.log('Acción no reconocida:', action);
+        },
+
+        documentHasElementType: function(targetTypes) {
+            var types = Array.isArray(targetTypes) ? targetTypes : [targetTypes];
+            var store = Alpine.store('vbp');
+            var elements = store && Array.isArray(store.elements) ? store.elements : [];
+
+            function walk(items) {
+                if (!Array.isArray(items)) {
+                    return false;
+                }
+
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    if (!item) {
+                        continue;
+                    }
+
+                    if (types.indexOf(item.type) !== -1) {
+                        return true;
+                    }
+
+                    if (walk(item.children)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            return walk(elements);
         },
 
         loadOptionalScript: function(scriptKey) {
@@ -839,7 +798,6 @@ function vbpApp() {
             this.loadDocument();
             this.initBeforeUnload();
             this.initZoomWheel();
-            this.initCountdownTimer();
             this.initInteractiveElements();
             // Inicializar sistema de colaboración si está disponible
             if (typeof this.initCollaboration === 'function') {
@@ -857,17 +815,40 @@ function vbpApp() {
             if (typeof this.initMultisite === 'function') {
                 this.initMultisite();
             }
+            this.syncInteractiveEnhancements();
+            var watchSelf = this;
+            this.$watch('$store.vbp.elements', function() {
+                watchSelf.syncInteractiveEnhancements();
+            });
             var self = this;
             this.$nextTick(function() { self.drawRulers(); });
         },
 
-        // Timer para actualizar countdowns cada segundo
-        countdownTimer: null,
-        initCountdownTimer: function() {
+        syncInteractiveEnhancements: function() {
+            this.ensureCountdownTimerState();
+            this.ensureBeforeAfterListenersState();
+        },
+
+        ensureCountdownTimerState: function() {
+            var hasCountdowns = this.documentHasElementType('countdown');
+
+            if (!hasCountdowns) {
+                if (this.countdownTimer) {
+                    clearInterval(this.countdownTimer);
+                    this.countdownTimer = null;
+                }
+                return;
+            }
+
+            if (this.countdownTimer) {
+                return;
+            }
+
             var self = this;
             this.countdownTimer = setInterval(function() {
                 self.updateCountdowns();
             }, 1000);
+            this.updateCountdowns();
         },
 
         updateCountdowns: function() {
@@ -910,6 +891,19 @@ function vbpApp() {
 
             // Handler para clicks delegados (accordion, tabs, elementos hijos)
             var handleDelegatedClick = function(e) {
+                var structureAction = e.target.closest('.vbp-structure-action');
+                if (structureAction) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var action = structureAction.getAttribute('data-action');
+                    var containerId = structureAction.getAttribute('data-container-id');
+                    var columnIndex = parseInt(structureAction.getAttribute('data-column-index') || '0', 10);
+
+                    self.handleStructureAction(action, containerId, columnIndex);
+                    return;
+                }
+
                 // Selección de elementos hijos dentro de contenedores
                 var childElement = e.target.closest('.vbp-element-child');
                 if (childElement) {
@@ -968,7 +962,7 @@ function vbpApp() {
                         self.openHelpModal();
                         break;
                     case 'settings':
-                        self.showPageSettings = true;
+                        self.openPageSettings();
                         break;
                 }
             };
@@ -997,13 +991,124 @@ function vbpApp() {
             this._eventHandlers.openModal = handleOpenModal;
             this._eventHandlers.notification = handleNotification;
             this._eventHandlers.aiAssist = handleAIAssist;
+        },
 
-            // Before/After slider interactivity
-            self.initBeforeAfterSliders();
+        focusBlocksPanel: function() {
+            this.panels.blocks = true;
+            this.activeLeftTab = 'blocks';
+        },
+
+        focusElementForEditing: function(element) {
+            if (!element || !element.id) {
+                return;
+            }
+
+            var self = this;
+            var store = Alpine.store('vbp');
+            if (store) {
+                store.setSelection([element.id]);
+            }
+
+            this.panels.inspector = true;
+            document.dispatchEvent(new CustomEvent('vbp:editElement', {
+                detail: {
+                    id: element.id,
+                    type: element.type,
+                    source: 'quick-create'
+                }
+            }));
+
+            this.$nextTick(function() {
+                var elementWrapper = document.querySelector('[data-element-id="' + element.id + '"]');
+                if (!elementWrapper) {
+                    return;
+                }
+
+                elementWrapper.classList.add('vbp-element-created');
+                window.setTimeout(function() {
+                    elementWrapper.classList.remove('vbp-element-created');
+                }, 1800);
+
+                elementWrapper.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+
+                var editable = elementWrapper.querySelector('[contenteditable]');
+                if (editable) {
+                    editable.focus();
+
+                    var selection = window.getSelection();
+                    if (selection) {
+                        var range = document.createRange();
+                        range.selectNodeContents(editable);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }
+                    return;
+                }
+
+                if (element.type === 'image') {
+                    self.showNotification('Imagen añadida. Selecciónala para elegir el archivo en el inspector.', 'info');
+                }
+            });
+        },
+
+        addQuickElementToStructure: function(type, containerId, columnIndex, options) {
+            var store = Alpine.store('vbp');
+            if (!store || !containerId || !type) {
+                return null;
+            }
+
+            var element = store.addElementToContainer(type, containerId, columnIndex || 0);
+            if (element) {
+                if (options && options.data && store.updateElement) {
+                    store.updateElement(element.id, {
+                        data: Object.assign({}, element.data || {}, options.data)
+                    });
+
+                    element = store.getElementDeep(element.id) || element;
+                }
+
+                this.showNotification('Elemento añadido', 'success');
+                this.focusElementForEditing(element);
+            }
+
+            return element;
+        },
+
+        handleStructureAction: function(action, containerId, columnIndex) {
+            switch (action) {
+                case 'open-blocks':
+                    this.focusBlocksPanel();
+                    this.showNotification('Biblioteca de bloques abierta', 'info');
+                    return;
+                case 'add-columns':
+                    this.addQuickElementToStructure('columns', containerId, 0);
+                    return;
+                case 'add-heading':
+                    this.addQuickElementToStructure('heading', containerId, columnIndex || 0, {
+                        data: {
+                            text: 'Escribe un título'
+                        }
+                    });
+                    return;
+                case 'add-image':
+                    this.addQuickElementToStructure('image', containerId, columnIndex || 0);
+                    return;
+                case 'add-card-title':
+                    this.addQuickElementToStructure('heading', containerId, columnIndex || 0, {
+                        data: {
+                            text: 'Título de bloque'
+                        }
+                    });
+                    return;
+            }
         },
 
         // Inicializar sliders Before/After (optimizado con RAF y cleanup)
         initBeforeAfterSliders: function() {
+            if (this.beforeAfterListenersInitialized) {
+                return;
+            }
+
             var self = this;
             var isDragging = false;
             var currentSlider = null;
@@ -1116,6 +1221,31 @@ function vbpApp() {
             this._eventHandlers.baSliderMouseDown = handleMouseDown;
             this._eventHandlers.baSliderMouseMove = handleMouseMove;
             this._eventHandlers.baSliderMouseUp = handleMouseUp;
+            this.beforeAfterListenersInitialized = true;
+        },
+
+        destroyBeforeAfterSliders: function() {
+            if (this._eventHandlers.baSliderMouseDown) {
+                document.removeEventListener('mousedown', this._eventHandlers.baSliderMouseDown);
+                delete this._eventHandlers.baSliderMouseDown;
+            }
+            if (this._eventHandlers.baSliderMouseMove) {
+                document.removeEventListener('mousemove', this._eventHandlers.baSliderMouseMove);
+                delete this._eventHandlers.baSliderMouseMove;
+            }
+            if (this._eventHandlers.baSliderMouseUp) {
+                document.removeEventListener('mouseup', this._eventHandlers.baSliderMouseUp);
+                delete this._eventHandlers.baSliderMouseUp;
+            }
+            this.beforeAfterListenersInitialized = false;
+        },
+
+        ensureBeforeAfterListenersState: function() {
+            if (this.documentHasElementType('before-after')) {
+                this.initBeforeAfterSliders();
+            } else if (this.beforeAfterListenersInitialized) {
+                this.destroyBeforeAfterSliders();
+            }
         },
 
         /**
@@ -1325,6 +1455,7 @@ function vbpApp() {
             store.setInspectorMode(mode);
 
             if (mode === 'basic') {
+                this.workspaceChromeState.showRulers = this.showRulers;
                 if (this.activeLeftTab === 'components' || this.activeLeftTab === 'layers') {
                     this.activeLeftTab = 'blocks';
                 }
@@ -1332,8 +1463,14 @@ function vbpApp() {
                     this.splitScreenMode = false;
                 }
                 this.showTokensPanel = false;
+                this.showRulers = false;
+                this.panels.blocks = true;
+                this.panels.inspector = true;
                 this.panels.layers = false;
             } else {
+                this.showRulers = this.workspaceChromeState.showRulers !== false;
+                this.panels.blocks = true;
+                this.panels.inspector = true;
                 this.panels.layers = true;
             }
         },
@@ -1380,15 +1517,17 @@ function vbpApp() {
         },
 
         saveDocument: function() {
-            if (this.isSaving) return;
+            if (this.isSaving) {
+                return Alpine.store('vbp') ? Alpine.store('vbp').savePromise : Promise.resolve({ success: false, skipped: true });
+            }
 
             var store = Alpine.store('vbp');
-            if (!store) return;
+            if (!store) return Promise.resolve({ success: false, message: 'Store no disponible' });
 
             this.isSaving = true;
             var self = this;
 
-            store.saveDocument({
+            return store.saveDocument({
                 title: this.documentTitle
             })
             .then(function(result) {
@@ -1412,8 +1551,42 @@ function vbpApp() {
         },
 
         publishDocument: function() {
-            this.saveDocument();
-            this.showNotification('Documento publicado', 'success');
+            var self = this;
+
+            return this.saveDocument()
+                .then(function(result) {
+                    if (!result || !result.success) {
+                        return result;
+                    }
+
+                    var transition = self.getPrimaryWorkflowTransition();
+
+                    if (transition) {
+                        self.openWorkflowPanel();
+                        self.showNotification(
+                            'Cambios guardados. Continúa con "' + (transition.label || 'el flujo de publicación') + '".',
+                            'info'
+                        );
+
+                        return Object.assign({}, result, {
+                            workflowAction: transition.action || null
+                        });
+                    }
+
+                    self.showNotification('Cambios guardados. Revisa la preview antes de publicar.', 'info');
+                    return result;
+                })
+                .catch(function(error) {
+                    self.showNotification(
+                        'No se pudo preparar la publicación: ' + ((error && error.message) || 'error desconocido'),
+                        'error'
+                    );
+
+                    return {
+                        success: false,
+                        message: (error && error.message) || 'No se pudo preparar la publicación'
+                    };
+                });
         },
 
         startAutosave: function() {
@@ -1459,672 +1632,6 @@ function vbpApp() {
                 this.setZoom(Math.min(fitZoom, 100));
             }
         },
-        setDevicePreview: function(device) {
-            var store = Alpine.store('vbp');
-            // Sincronizar devicePreview y activeBreakpoint para que inspector y canvas estén siempre alineados
-            this.devicePreview = device;
-            store.devicePreview = device;
-            store.activeBreakpoint = device;
-            // Ajustar ancho del canvas según dispositivo
-            var widths = { desktop: 1200, tablet: 768, mobile: 375 };
-            if (widths[device]) {
-                store.settings.previewWidth = widths[device];
-            }
-        },
-
-        // ============ SPLIT SCREEN / RESPONSIVE PREVIEW ============
-
-        /**
-         * Activa/desactiva el modo split-screen
-         */
-        toggleSplitScreen: function() {
-            this.splitScreenMode = !this.splitScreenMode;
-
-            if (this.splitScreenMode) {
-                this.initSplitScreen();
-                this.showNotification('Modo split-screen activado', 'info');
-            } else {
-                this.destroySplitScreen();
-                this.showNotification('Modo split-screen desactivado', 'info');
-            }
-        },
-
-        /**
-         * Inicializa el modo split-screen
-         */
-        initSplitScreen: function() {
-            var self = this;
-            var devices = this.splitScreenDevices;
-
-            this.$nextTick(function() {
-                var canvasArea = document.querySelector('.vbp-canvas-area');
-                var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
-                var canvas = document.querySelector('.vbp-canvas');
-
-                if (!canvasArea || !canvasWrapper || !canvas) return;
-
-                // Guardar referencia al canvas original
-                self._originalCanvasParent = canvasWrapper;
-                self._originalCanvas = canvas.cloneNode(true);
-
-                // Añadir clase split-screen
-                canvasArea.classList.add('vbp-split-screen-active');
-
-                // Crear panel izquierdo (primer dispositivo)
-                var panelLeft = document.createElement('div');
-                panelLeft.className = 'vbp-split-panel';
-                panelLeft.setAttribute('data-device', self.getDeviceLabel(devices[0]));
-                panelLeft.style.cssText = 'flex: 1; overflow: auto; background: var(--vbp-bg-secondary, #f9fafb); border-radius: 12px; position: relative;';
-
-                // Crear canvas para panel izquierdo
-                var canvasLeft = document.createElement('div');
-                canvasLeft.className = 'vbp-canvas vbp-canvas--' + devices[0];
-                canvasLeft.style.cssText = 'width: ' + self.getDeviceWidth(devices[0]) + 'px; max-width: 100%; margin: 16px auto; background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.1); border-radius: 8px;';
-                canvasLeft.innerHTML = canvas.innerHTML;
-                panelLeft.appendChild(canvasLeft);
-
-                // Crear panel derecho (segundo dispositivo)
-                var panelRight = document.createElement('div');
-                panelRight.className = 'vbp-split-panel';
-                panelRight.setAttribute('data-device', self.getDeviceLabel(devices[1]));
-                panelRight.style.cssText = 'width: 420px; flex-shrink: 0; overflow: auto; background: var(--vbp-bg-secondary, #f9fafb); border-radius: 12px; position: relative;';
-
-                // Crear canvas para panel derecho
-                var canvasRight = document.createElement('div');
-                canvasRight.className = 'vbp-canvas vbp-canvas--' + devices[1];
-                canvasRight.style.cssText = 'width: ' + self.getDeviceWidth(devices[1]) + 'px; max-width: 100%; margin: 16px auto; background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.1); border-radius: 8px;';
-                canvasRight.innerHTML = canvas.innerHTML;
-                panelRight.appendChild(canvasRight);
-
-                // Limpiar y añadir paneles
-                canvasWrapper.style.display = 'none';
-                canvasArea.appendChild(panelLeft);
-                canvasArea.appendChild(panelRight);
-
-                // Inicializar sincronización de scroll
-                if (self.splitScreenSyncScroll) {
-                    self.initSplitScreenScrollSync();
-                }
-
-                // Crear indicador de sincronización
-                var syncIndicator = document.createElement('div');
-                syncIndicator.className = 'vbp-split-sync-indicator' + (self.splitScreenSyncScroll ? ' active' : '');
-                syncIndicator.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> <span>Scroll sincronizado</span>';
-                syncIndicator.style.cursor = 'pointer';
-                syncIndicator.addEventListener('click', function() {
-                    self.toggleSplitScreenSyncScroll();
-                    syncIndicator.classList.toggle('active', self.splitScreenSyncScroll);
-                });
-                document.body.appendChild(syncIndicator);
-                self._splitSyncIndicator = syncIndicator;
-            });
-        },
-
-        /**
-         * Destruye el modo split-screen
-         */
-        destroySplitScreen: function() {
-            var canvasArea = document.querySelector('.vbp-canvas-area');
-            var canvasWrapper = document.querySelector('.vbp-canvas-wrapper');
-
-            if (canvasArea) {
-                canvasArea.classList.remove('vbp-split-screen-active');
-
-                // Remover paneles split
-                var paneles = canvasArea.querySelectorAll('.vbp-split-panel');
-                paneles.forEach(function(panel) {
-                    panel.remove();
-                });
-
-                // Mostrar canvas wrapper original
-                if (canvasWrapper) {
-                    canvasWrapper.style.display = '';
-                }
-            }
-
-            // Remover indicador de sincronización
-            if (this._splitSyncIndicator) {
-                this._splitSyncIndicator.remove();
-                this._splitSyncIndicator = null;
-            }
-
-            // Remover listeners de scroll
-            this.removeSplitScreenScrollSync();
-        },
-
-        /**
-         * Cambia los dispositivos mostrados en split-screen
-         */
-        setSplitScreenDevices: function(device1, device2) {
-            this.splitScreenDevices = [device1, device2];
-        },
-
-        /**
-         * Toggle sincronización de scroll en split-screen
-         */
-        toggleSplitScreenSyncScroll: function() {
-            this.splitScreenSyncScroll = !this.splitScreenSyncScroll;
-
-            if (this.splitScreenSyncScroll) {
-                this.initSplitScreenScrollSync();
-                this.showNotification('Sincronización de scroll activada', 'info');
-            } else {
-                this.removeSplitScreenScrollSync();
-                this.showNotification('Sincronización de scroll desactivada', 'info');
-            }
-        },
-
-        /**
-         * Inicializa la sincronización de scroll entre paneles
-         */
-        initSplitScreenScrollSync: function() {
-            var self = this;
-            var paneles = document.querySelectorAll('.vbp-split-panel');
-
-            if (paneles.length < 2) return;
-
-            this._splitScrollHandler = function(event) {
-                if (self._isSyncingScroll) return;
-                self._isSyncingScroll = true;
-
-                var sourcePanel = event.target;
-                var scrollPercentage = sourcePanel.scrollTop / (sourcePanel.scrollHeight - sourcePanel.clientHeight);
-
-                paneles.forEach(function(panel) {
-                    if (panel !== sourcePanel) {
-                        var targetScrollTop = scrollPercentage * (panel.scrollHeight - panel.clientHeight);
-                        panel.scrollTop = targetScrollTop;
-                    }
-                });
-
-                requestAnimationFrame(function() {
-                    self._isSyncingScroll = false;
-                });
-            };
-
-            paneles.forEach(function(panel) {
-                panel.addEventListener('scroll', self._splitScrollHandler);
-            });
-        },
-
-        /**
-         * Remueve la sincronización de scroll
-         */
-        removeSplitScreenScrollSync: function() {
-            var self = this;
-            var paneles = document.querySelectorAll('.vbp-split-panel');
-
-            if (this._splitScrollHandler) {
-                paneles.forEach(function(panel) {
-                    panel.removeEventListener('scroll', self._splitScrollHandler);
-                });
-                this._splitScrollHandler = null;
-            }
-        },
-
-        /**
-         * Obtiene el ancho para un dispositivo
-         */
-        getDeviceWidth: function(device) {
-            var widths = {
-                desktop: 1200,
-                laptop: 1024,
-                tablet: 768,
-                mobile: 375
-            };
-            return widths[device] || 1200;
-        },
-
-        /**
-         * Obtiene la etiqueta para un dispositivo
-         */
-        getDeviceLabel: function(device) {
-            var labels = {
-                desktop: 'Escritorio (1200px)',
-                laptop: 'Portátil (1024px)',
-                tablet: 'Tablet (768px)',
-                mobile: 'Móvil (375px)'
-            };
-            return labels[device] || device;
-        },
-
-        /**
-         * Obtiene el icono SVG para un dispositivo
-         */
-        getDeviceIcon: function(device) {
-            var icons = {
-                desktop: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
-                laptop: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8H4V6z"/><path d="M2 18h20"/></svg>',
-                tablet: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>',
-                mobile: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></svg>'
-            };
-            return icons[device] || icons.desktop;
-        },
-
-        // Page Settings
-        openPageSettings: function() {
-            this.showPageSettings = true;
-        },
-
-        savePageSettings: function() {
-            var settings = Alpine.store('vbp').settings;
-            settings.pageSettings = this.pageSettings;
-            Alpine.store('vbp').settings = settings;
-            Alpine.store('vbp').isDirty = true;
-            this.showPageSettings = false;
-            this.showNotification('Configuración de página guardada', 'success');
-        },
-
-        // ============ TEMPLATES ============
-        loadTemplates: function() {
-            var self = this;
-            if (this.templatesLoaded || this.templatesLoading) {
-                return Promise.resolve(this.templates);
-            }
-
-            this.templatesLoading = true;
-            // Cargar templates desde VBP_Config si están disponibles
-            if (typeof VBP_Config !== 'undefined' && VBP_Config.templates) {
-                this.templates = VBP_Config.templates.library || [];
-                this.userTemplates = VBP_Config.templates.user || [];
-                this.templatesLoaded = true;
-                this.templatesLoading = false;
-                return Promise.resolve(this.templates);
-            } else {
-                // Cargar desde REST API si no están en config
-                return fetch(VBP_Config.restUrl + 'templates', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-WP-Nonce': VBP_Config.restNonce
-                    }
-                })
-                .then(function(response) {
-                    // Verificar que la respuesta sea OK y contenga JSON
-                    var contentType = response.headers.get('content-type');
-                    if (!response.ok) {
-                        throw new Error('Error HTTP: ' + response.status);
-                    }
-                    if (!contentType || !contentType.includes('application/json')) {
-                        throw new Error('Respuesta no es JSON válido');
-                    }
-                    return response.json();
-                })
-                .then(function(data) {
-                    self.templates = data.library || [];
-                    self.userTemplates = data.user || [];
-                    self.templatesLoaded = true;
-                    return self.templates;
-                })
-                .catch(function(error) {
-                    vbpLog.warn('Error cargando templates (usando librería vacía):', error.message);
-                    self.templates = [];
-                    self.userTemplates = [];
-                    self.templatesLoaded = true;
-                    return self.templates;
-                })
-                .finally(function() {
-                    self.templatesLoading = false;
-                });
-            }
-        },
-
-        openTemplatesModal: function() {
-            var self = this;
-            return this.loadTemplates()
-                .catch(function(error) {
-                    vbpLog.warn('Error preparando templates:', error);
-                })
-                .then(function() {
-                    self.showTemplatesModal = true;
-                    return true;
-                });
-        },
-
-        get filteredTemplates() {
-            var self = this;
-            var results = this.templates.slice();
-
-            // Filtrar por búsqueda
-            if (this.templateSearch) {
-                var searchLower = this.templateSearch.toLowerCase();
-                results = results.filter(function(template) {
-                    return template.title.toLowerCase().indexOf(searchLower) !== -1 ||
-                           (template.description && template.description.toLowerCase().indexOf(searchLower) !== -1);
-                });
-            }
-
-            // Filtrar por categoría
-            if (this.templateCategory) {
-                results = results.filter(function(template) {
-                    return template.category === self.templateCategory;
-                });
-            }
-
-            return results;
-        },
-
-        selectTemplate: function(template) {
-            if (confirm('¿Deseas aplicar este template? Se reemplazará el contenido actual.')) {
-                this.applyTemplate(template);
-            }
-        },
-
-        previewTemplate: function(template) {
-            if (template.preview_url) {
-                window.open(template.preview_url, '_blank');
-            } else {
-                this.showNotification('Vista previa no disponible para este template', 'info');
-            }
-        },
-
-        applyTemplate: function(template) {
-            var self = this;
-
-            // Si el template tiene elementos directamente, aplicarlos
-            if (template.elements) {
-                Alpine.store('vbp').elements = sanitizeElements(template.elements);
-                if (template.settings) {
-                    Alpine.store('vbp').settings = Object.assign({}, Alpine.store('vbp').settings, template.settings);
-                }
-                Alpine.store('vbp').isDirty = true;
-                this.showTemplatesModal = false;
-                this.showNotification('Template aplicado correctamente', 'success');
-                return;
-            }
-
-            // Si es un template de usuario o librería, aplicar via API
-            var templateId = template.id;
-
-            fetch(VBP_Config.restUrl + 'documents/' + VBP_Config.postId + '/apply-template', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                },
-                body: JSON.stringify({ template_id: templateId })
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.success && result.document) {
-                    Alpine.store('vbp').elements = sanitizeElements(result.document.elements || []);
-                    if (result.document.settings) {
-                        Alpine.store('vbp').settings = Object.assign({}, Alpine.store('vbp').settings, result.document.settings);
-                    }
-                    Alpine.store('vbp').isDirty = true;
-                    self.showTemplatesModal = false;
-                    self.showNotification('Template aplicado correctamente', 'success');
-                } else {
-                    throw new Error(result.message || 'Error al aplicar template');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error al aplicar template: ' + error.message, 'error');
-            });
-        },
-
-        saveAsTemplate: function() {
-            this.newTemplateName = this.documentTitle || '';
-            this.showSaveTemplateModal = true;
-        },
-
-        confirmSaveTemplate: function() {
-            var self = this;
-            if (!this.newTemplateName.trim()) return;
-
-            this.isSavingTemplate = true;
-
-            fetch(VBP_Config.restUrl + 'templates', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                },
-                body: JSON.stringify({
-                    post_id: VBP_Config.postId,
-                    name: this.newTemplateName,
-                    category: this.newTemplateCategory,
-                    description: this.newTemplateDescription
-                })
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.success) {
-                    self.showNotification('Template guardado correctamente', 'success');
-                    self.showSaveTemplateModal = false;
-                    self.newTemplateName = '';
-                    self.newTemplateDescription = '';
-                    // Recargar templates
-                    self.templatesLoaded = false;
-                    self.loadTemplates();
-                } else {
-                    throw new Error(result.message || 'Error al guardar template');
-                }
-                self.isSavingTemplate = false;
-            })
-            .catch(function(error) {
-                self.showNotification('Error al guardar template: ' + error.message, 'error');
-                self.isSavingTemplate = false;
-            });
-        },
-
-        deleteTemplate: function(template) {
-            var self = this;
-            if (!confirm('¿Estás seguro de eliminar este template?')) return;
-
-            fetch(VBP_Config.restUrl + 'templates/' + template.id, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.success) {
-                    self.showNotification('Template eliminado', 'success');
-                    self.templatesLoaded = false;
-                    self.loadTemplates();
-                } else {
-                    throw new Error(result.message || 'Error al eliminar template');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error: ' + error.message, 'error');
-            });
-        },
-
-        // ============ GLOBAL WIDGETS ============
-        globalWidgets: [],
-        showGlobalWidgetsModal: false,
-        showSaveGlobalWidgetModal: false,
-        newGlobalWidgetName: '',
-        newGlobalWidgetCategory: 'general',
-        isSavingGlobalWidget: false,
-
-        loadGlobalWidgets: function() {
-            var self = this;
-            fetch(VBP_Config.restUrl + 'global-widgets', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) {
-                var contentType = response.headers.get('content-type');
-                if (!response.ok || !contentType || !contentType.includes('application/json')) {
-                    throw new Error('Error al cargar widgets globales');
-                }
-                return response.json();
-            })
-            .then(function(data) {
-                self.globalWidgets = Array.isArray(data) ? data : [];
-            })
-            .catch(function(error) {
-                vbpLog.warn('Error cargando widgets globales:', error.message);
-                self.globalWidgets = [];
-            });
-        },
-
-        saveAsGlobalWidget: function() {
-            var store = Alpine.store('vbp');
-            var selectedIds = store.selection.elementIds;
-
-            if (selectedIds.length === 0) {
-                this.showNotification('Selecciona un elemento para guardarlo como widget global', 'warning');
-                return;
-            }
-
-            if (selectedIds.length > 1) {
-                this.showNotification('Solo puedes guardar un elemento a la vez como widget global', 'warning');
-                return;
-            }
-
-            var element = store.getElementById(selectedIds[0]);
-            if (!element) {
-                this.showNotification('No se encontró el elemento seleccionado', 'error');
-                return;
-            }
-
-            this.newGlobalWidgetName = element.name || element.type;
-            this.showSaveGlobalWidgetModal = true;
-        },
-
-        confirmSaveGlobalWidget: function() {
-            var self = this;
-            if (!this.newGlobalWidgetName.trim()) return;
-
-            var store = Alpine.store('vbp');
-            var selectedId = store.selection.elementIds[0];
-            var element = store.getElementById(selectedId);
-
-            if (!element) {
-                this.showNotification('No se encontró el elemento', 'error');
-                return;
-            }
-
-            this.isSavingGlobalWidget = true;
-
-            // Clonar el elemento para guardarlo
-            var elementToSave = JSON.parse(JSON.stringify(element));
-            delete elementToSave.id; // Remover ID para evitar conflictos
-
-            fetch(VBP_Config.restUrl + 'global-widgets', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                },
-                body: JSON.stringify({
-                    title: this.newGlobalWidgetName,
-                    element: elementToSave,
-                    category: this.newGlobalWidgetCategory
-                })
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.id) {
-                    self.showNotification('Widget global guardado correctamente', 'success');
-                    self.showSaveGlobalWidgetModal = false;
-                    self.newGlobalWidgetName = '';
-                    self.loadGlobalWidgets();
-                } else {
-                    throw new Error(result.error || 'Error al guardar widget global');
-                }
-                self.isSavingGlobalWidget = false;
-            })
-            .catch(function(error) {
-                self.showNotification('Error: ' + error.message, 'error');
-                self.isSavingGlobalWidget = false;
-            });
-        },
-
-        insertGlobalWidget: function(widget) {
-            var self = this;
-            var store = Alpine.store('vbp');
-
-            // Obtener los datos completos del widget
-            fetch(VBP_Config.restUrl + 'global-widgets/' + widget.id, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.element) {
-                    // Crear un nuevo elemento de tipo global_widget
-                    var newElement = {
-                        id: 'el_' + Date.now(),
-                        type: 'global_widget',
-                        name: widget.title,
-                        data: {
-                            globalWidgetId: widget.id,
-                            originalType: data.element.type
-                        },
-                        styles: {},
-                        visible: true,
-                        locked: false
-                    };
-
-                    store.addElement(newElement);
-                    self.showNotification('Widget global insertado', 'success');
-                    self.showGlobalWidgetsModal = false;
-                } else {
-                    throw new Error('No se encontraron datos del widget');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error al insertar widget: ' + error.message, 'error');
-            });
-        },
-
-        deleteGlobalWidget: function(widget) {
-            var self = this;
-            if (!confirm('¿Estás seguro de eliminar este widget global? Se usará en ' + (widget.usageCount || 0) + ' páginas.')) return;
-
-            fetch(VBP_Config.restUrl + 'global-widgets/' + widget.id, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.message) {
-                    self.showNotification('Widget global eliminado', 'success');
-                    self.loadGlobalWidgets();
-                } else {
-                    throw new Error(result.error || 'Error al eliminar widget');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error: ' + error.message, 'error');
-            });
-        },
-
-        selectOgImage: function() {
-            var self = this;
-            if (typeof wp !== 'undefined' && wp.media) {
-                var mediaUploader = wp.media({
-                    title: 'Seleccionar imagen para redes sociales',
-                    button: { text: 'Usar esta imagen' },
-                    multiple: false,
-                    library: { type: 'image' }
-                });
-
-                mediaUploader.on('select', function() {
-                    var attachment = mediaUploader.state().get('selection').first().toJSON();
-                    self.pageSettings.ogImage = attachment.url;
-                });
-
-                mediaUploader.open();
-            }
-        },
-
         selectElement: function(element, event) {
             if (element.locked) return;
             var multiSelect = event.ctrlKey || event.metaKey || event.shiftKey;
@@ -2138,6 +1645,31 @@ function vbpApp() {
         editElement: function(element) {
             var elementEl = document.querySelector('[data-element-id="' + element.id + '"] [contenteditable]');
             if (elementEl) { elementEl.focus(); }
+        },
+
+        getSelectionCount: function() {
+            var store = Alpine.store('vbp');
+            return store && store.selection && Array.isArray(store.selection.elementIds)
+                ? store.selection.elementIds.length
+                : 0;
+        },
+
+        getSelectionLabel: function() {
+            var store = Alpine.store('vbp');
+            if (!store || !store.selection || !store.selection.elementIds.length) {
+                return '';
+            }
+
+            if (store.selection.elementIds.length === 1) {
+                var element = store.getElementDeep(store.selection.elementIds[0]) || store.getElement(store.selection.elementIds[0]);
+                if (!element) {
+                    return '1 elemento';
+                }
+
+                return this.getTypeLabel(element.type);
+            }
+
+            return store.selection.elementIds.length + ' elementos';
         },
 
         deleteElement: function(element) {
@@ -2327,75 +1859,80 @@ function vbpApp() {
             return { 'selected': this.isSelected(element.id), 'hidden': element.visible === false, 'locked': element.locked };
         },
 
-        // ============ RENDER TWO COLUMN CONTENT ============
-        // Renderiza el contenido de una columna en bloques two_columns
-        renderTwoColumnContent: function(colData, lado) {
-            if (!colData || !colData.type) {
-                return '<div style="text-align: center; color: #6b7280; padding: 20px; font-size: 12px;">📥 Columna ' + lado + '</div>';
+        shouldStackLayoutOnCurrentDevice: function(stackMode) {
+            if (!stackMode || stackMode === false || stackMode === 'none') {
+                return false;
             }
 
-            var colType = colData.type;
-            var colContent = colData.data || {};
-            var ds = (typeof VBP_Config !== 'undefined' && VBP_Config.designSettings) ? VBP_Config.designSettings : {};
-            var primaryColor = ds.primary_color || '#3b82f6';
-            var textColor = ds.text_color || '#1f2937';
-            var textMutedColor = ds.text_muted_color || '#6b7280';
-            var buttonRadius = (ds.button_border_radius || 8) + 'px';
-
-            // Contact Info
-            if (colType === 'contact_info') {
-                var infoHtml = '<div class="vbp-contact-info">';
-                infoHtml += '<h3 contenteditable="true" style="margin: 0 0 16px; font-size: 20px; color: ' + textColor + ';">' + (colContent.titulo || 'Información') + '</h3>';
-                var items = colContent.items || [];
-                for (var i = 0; i < items.length; i++) {
-                    var item = items[i];
-                    infoHtml += '<div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px solid #eee;">';
-                    infoHtml += '<span style="font-size: 20px;">' + (item.icono || '📌') + '</span>';
-                    infoHtml += '<div>';
-                    infoHtml += '<div style="font-weight: 600; color: ' + textColor + '; font-size: 14px;">' + (item.titulo || 'Campo') + '</div>';
-                    infoHtml += '<div style="color: ' + textMutedColor + '; font-size: 13px;">' + (item.valor || '') + '</div>';
-                    infoHtml += '</div></div>';
-                }
-                if (items.length === 0) {
-                    infoHtml += '<div style="color: ' + textMutedColor + '; padding: 12px; text-align: center;">Sin información</div>';
-                }
-                infoHtml += '</div>';
-                return infoHtml;
+            if (stackMode === true || stackMode === 'always') {
+                return true;
             }
 
-            // Contact Form
-            if (colType === 'contact_form') {
-                var formHtml = '<div class="vbp-contact-form">';
-                formHtml += '<h3 contenteditable="true" style="margin: 0 0 16px; font-size: 20px; color: ' + textColor + ';">' + (colContent.titulo || 'Formulario') + '</h3>';
-                formHtml += '<form style="display: flex; flex-direction: column; gap: 12px;" onsubmit="return false;">';
-                var campos = colContent.campos || [];
-                for (var ci = 0; ci < campos.length; ci++) {
-                    var campo = campos[ci];
-                    var inputStyle = 'width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: ' + buttonRadius + '; font-size: 14px; box-sizing: border-box;';
-                    formHtml += '<div>';
-                    formHtml += '<label style="display: block; margin-bottom: 4px; font-weight: 500; font-size: 13px; color: ' + textColor + ';">' + (campo.label || campo.nombre || 'Campo') + (campo.requerido ? ' *' : '') + '</label>';
-                    if (campo.tipo === 'textarea') {
-                        formHtml += '<textarea rows="3" style="' + inputStyle + ' resize: vertical;" placeholder="' + (campo.placeholder || '') + '"></textarea>';
-                    } else if (campo.tipo === 'select') {
-                        formHtml += '<select style="' + inputStyle + '">';
-                        formHtml += '<option value="">Selecciona...</option>';
-                        var opciones = campo.opciones || [];
-                        for (var oi = 0; oi < opciones.length; oi++) {
-                            formHtml += '<option>' + opciones[oi] + '</option>';
-                        }
-                        formHtml += '</select>';
-                    } else {
-                        formHtml += '<input type="' + (campo.tipo || 'text') + '" style="' + inputStyle + '" placeholder="' + (campo.placeholder || '') + '">';
+            if (stackMode === 'tablet' && (this.devicePreview === 'tablet' || this.devicePreview === 'mobile')) {
+                return true;
+            }
+
+            if (stackMode === 'mobile' && this.devicePreview === 'mobile') {
+                return true;
+            }
+
+            return false;
+        },
+
+        getResponsiveGridTemplate: function(data, fallbackCount) {
+            var count = fallbackCount || 2;
+
+            if (this.shouldStackLayoutOnCurrentDevice(data.stack_on || data.stackOnMobile)) {
+                return '1fr';
+            }
+
+            if (data.gridTemplateColumns) {
+                return data.gridTemplateColumns;
+            }
+
+            if (data.columnWidths && data.columnWidths.length === count) {
+                return data.columnWidths.join(' ');
+            }
+
+            return 'repeat(' + count + ', 1fr)';
+        },
+
+        shouldUseServerRenderedPreview: function(element) {
+            return ['hero', 'heading', 'text', 'image', 'button', 'features', 'cta', 'pricing', 'faq', 'testimonials', 'team', 'stats', 'gallery', 'timeline'].indexOf(element.type) !== -1;
+        },
+
+        getServerRenderCacheKey: function(element) {
+            return JSON.stringify({
+                type: element.type || '',
+                variant: element.variant || '',
+                data: element.data || {},
+                styles: element.styles || {}
+            });
+        },
+
+        queueServerRenderedPreview: function(element) {
+            var self = this;
+            var cacheKey = this.getServerRenderCacheKey(element);
+
+            if (this.serverRenderPending[cacheKey] || !window.vbpApi || typeof window.vbpApi.previewElement !== 'function') {
+                return;
+            }
+
+            this.serverRenderPending[cacheKey] = true;
+
+            window.vbpApi.previewElement(element)
+                .then(function(response) {
+                    if (response && response.success && response.data && response.data.html) {
+                        self.serverRenderCache[cacheKey] = response.data.html;
+                        self.serverRenderNonce += 1;
                     }
-                    formHtml += '</div>';
-                }
-                formHtml += '<button type="button" style="padding: 12px 24px; background: ' + primaryColor + '; color: #fff; border: none; border-radius: ' + buttonRadius + '; cursor: pointer; font-weight: 600;">' + (colContent.boton_texto || 'Enviar') + '</button>';
-                formHtml += '</form></div>';
-                return formHtml;
-            }
-
-            // Generic/Unknown type
-            return '<div style="padding: 16px; background: #f0f0f0; border-radius: 8px; text-align: center; color: ' + textMutedColor + ';">Tipo: ' + colType + '</div>';
+                })
+                .catch(function(error) {
+                    vbpLog.warn('No se pudo cargar preview renderizado por servidor', error);
+                })
+                .finally(function() {
+                    delete self.serverRenderPending[cacheKey];
+                });
         },
 
         // ============ RENDER ELEMENT - TODOS LOS BLOQUES ============
@@ -2404,6 +1941,15 @@ function vbpApp() {
             var data = element.data || {};
             var styles = element.styles || {};
             var customStyle = this.buildInlineStyles(styles);
+            var serverRenderNonce = this.serverRenderNonce;
+
+            if (this.shouldUseServerRenderedPreview(element)) {
+                var cacheKey = this.getServerRenderCacheKey(element);
+                if (this.serverRenderCache[cacheKey]) {
+                    return this.serverRenderCache[cacheKey];
+                }
+                this.queueServerRenderedPreview(element);
+            }
 
             // ============ SECCIONES ============
             // Obtener colores de Design Settings
@@ -3277,9 +2823,10 @@ function vbpApp() {
                 else if (containerAlign === 'right') containerMargin = '0 0 0 auto';
 
                 // Altura completa
-                var containerMinHeight = containerFullHeight ? '100vh' : '100px';
+                var containerMinHeight = containerFullHeight ? '100vh' : (containerChildren.length ? 'auto' : '120px');
+                var containerBorder = containerChildren.length ? '1px solid rgba(148, 163, 184, 0.18)' : '1px dashed rgba(148, 163, 184, 0.45)';
 
-                var containerHtml = '<div class="vbp-container vbp-container-dropzone flavor-container" data-container-id="' + element.id + '" style="max-width: ' + containerMaxWidth + '; margin: ' + containerMargin + '; padding: ' + containerPadding + '; background: ' + containerBg + '; border: 2px dashed ' + primaryColor + '40; min-height: ' + containerMinHeight + '; border-radius: ' + cardRadius + '; ' + customStyle + '">';
+                var containerHtml = '<div class="vbp-container vbp-container-dropzone flavor-container" data-container-id="' + element.id + '" style="max-width: ' + containerMaxWidth + '; margin: ' + containerMargin + '; padding: ' + containerPadding + '; background: ' + containerBg + '; border: ' + containerBorder + '; min-height: ' + containerMinHeight + '; border-radius: ' + cardRadius + '; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02); ' + customStyle + '">';
 
                 if (containerChildren.length > 0) {
                     containerHtml += '<div style="display: flex; flex-direction: column; gap: 16px;">';
@@ -3288,7 +2835,19 @@ function vbpApp() {
                     }
                     containerHtml += '</div>';
                 } else {
-                    containerHtml += '<div style="text-align: center; color: ' + textMutedColor + '; padding: 40px;">📦 Contenedor - Arrastra elementos aquí</div>';
+                    containerHtml += '<div class="vbp-structure-empty vbp-structure-empty--container">' +
+                        '<div class="vbp-structure-empty__badge">Contenedor</div>' +
+                        '<div class="vbp-structure-empty__title">Suelta bloques o estructuras aquí</div>' +
+                        '<div class="vbp-structure-empty__text">Úsalo para agrupar secciones, controlar ancho y construir una composición más limpia.</div>' +
+                        '<div class="vbp-structure-empty__meta">' +
+                            '<span>' + (containerMaxWidth === '100%' ? 'Ancho completo' : 'Máx. ' + containerMaxWidth) + '</span>' +
+                            '<span>' + (containerAlign === 'left' ? 'Alineado a la izquierda' : (containerAlign === 'right' ? 'Alineado a la derecha' : 'Alineado al centro')) + '</span>' +
+                        '</div>' +
+                        '<div class="vbp-structure-empty__actions">' +
+                            '<button type="button" class="vbp-structure-action vbp-structure-action--primary" data-action="add-columns" data-container-id="' + element.id + '">Añadir columnas</button>' +
+                            '<button type="button" class="vbp-structure-action" data-action="open-blocks" data-container-id="' + element.id + '">Abrir bloques</button>' +
+                        '</div>' +
+                    '</div>';
                 }
                 containerHtml += '</div>';
                 return containerHtml;
@@ -3302,31 +2861,31 @@ function vbpApp() {
                 var children = element.children || [];
                 var self = this;
 
-                // Determinar grid-template-columns: usar anchos personalizados o iguales
-                var gridCols;
-                if (data.gridTemplateColumns) {
-                    gridCols = data.gridTemplateColumns;
-                } else if (data.columnWidths && data.columnWidths.length === cols) {
-                    gridCols = data.columnWidths.join(' ');
-                } else {
-                    gridCols = 'repeat(' + cols + ', 1fr)';
-                }
-
-                var html = '<div class="vbp-columns vbp-container-dropzone" data-container-id="' + element.id + '" style="display: grid; grid-template-columns: ' + gridCols + '; gap: ' + colsGap + '; align-items: ' + colsAlign + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; border-radius: ' + cardRadius + '; min-height: 100px; ' + colsReverse + customStyle + '">';
+                var gridCols = this.getResponsiveGridTemplate(data, cols);
+                var layoutBorder = children.length ? '1px solid rgba(148, 163, 184, 0.18)' : '1px dashed rgba(148, 163, 184, 0.45)';
+                var html = '<div class="vbp-columns vbp-container-dropzone" data-container-id="' + element.id + '" data-device="' + this.devicePreview + '" style="display: grid; grid-template-columns: ' + gridCols + '; gap: ' + colsGap + '; align-items: ' + colsAlign + '; padding: 16px; border: ' + layoutBorder + '; border-radius: ' + cardRadius + '; min-height: 100px; background: rgba(255,255,255,0.02); ' + colsReverse + customStyle + '">';
                 for (var ci = 0; ci < cols; ci++) {
                     // Filtrar hijos para esta columna
                     var columnChildren = children.filter(function(child) {
                         return (child._columnIndex || 0) === ci;
                     });
 
-                    html += '<div class="vbp-column-dropzone" data-container-id="' + element.id + '" data-column-index="' + ci + '" style="min-height: 80px; background: rgba(248,249,250,0.5); border-radius: ' + buttonRadius + '; padding: 8px; border: 1px dashed #dee2e6; display: flex; flex-direction: column; gap: 8px;">';
+                    html += '<div class="vbp-column-dropzone" data-container-id="' + element.id + '" data-column-index="' + ci + '" style="min-height: 80px; background: rgba(255,255,255,0.03); border-radius: ' + buttonRadius + '; padding: 10px; border: ' + (columnChildren.length ? '1px solid rgba(148, 163, 184, 0.16)' : '1px dashed rgba(148, 163, 184, 0.35)') + '; display: flex; flex-direction: column; gap: 12px;">';
 
                     if (columnChildren.length > 0) {
                         for (var cci = 0; cci < columnChildren.length; cci++) {
                             html += '<div class="vbp-element vbp-element-child" data-element-id="' + columnChildren[cci].id + '">' + self.renderElement(columnChildren[cci]) + '</div>';
                         }
                     } else {
-                        html += '<div style="text-align: center; color: ' + textMutedColor + '; padding: 20px; font-size: 12px;">📥 Col ' + (ci+1) + '</div>';
+                        html += '<div class="vbp-structure-empty vbp-structure-empty--column">' +
+                            '<div class="vbp-structure-empty__badge">Columna ' + (ci + 1) + '</div>' +
+                            '<div class="vbp-structure-empty__title">Suelta bloques aquí</div>' +
+                            '<div class="vbp-structure-empty__text">Ideal para texto, media o CTAs dentro de esta estructura.</div>' +
+                            '<div class="vbp-structure-empty__actions">' +
+                                '<button type="button" class="vbp-structure-action vbp-structure-action--primary" data-action="add-heading" data-container-id="' + element.id + '" data-column-index="' + ci + '">Añadir título</button>' +
+                                '<button type="button" class="vbp-structure-action" data-action="open-blocks" data-container-id="' + element.id + '" data-column-index="' + ci + '">Abrir bloques</button>' +
+                            '</div>' +
+                        '</div>';
                     }
                     html += '</div>';
                 }
@@ -3371,17 +2930,31 @@ function vbpApp() {
                 if (gridAutoFit) {
                     gridColsTemplate = 'repeat(' + gridAutoFit + ', minmax(' + gridMinColWidth + ', 1fr))';
                 } else {
-                    gridColsTemplate = 'repeat(' + gridColsNum + ', 1fr)';
+                    gridColsTemplate = this.shouldStackLayoutOnCurrentDevice(data.stack_on || data.stackOnMobile)
+                        ? '1fr'
+                        : 'repeat(' + gridColsNum + ', 1fr)';
                 }
 
-                var gridHtml = '<div class="vbp-grid vbp-container-dropzone flavor-grid" data-container-id="' + element.id + '" style="display: grid; grid-template-columns: ' + gridColsTemplate + '; grid-template-rows: ' + gridRows + '; gap: ' + gridGapValue + '; padding: 16px; border: 2px dashed ' + primaryColor + '40; min-height: 100px; border-radius: ' + cardRadius + '; ' + customStyle + '">';
+                var gridHtml = '<div class="vbp-grid vbp-container-dropzone flavor-grid" data-container-id="' + element.id + '" data-device="' + this.devicePreview + '" style="display: grid; grid-template-columns: ' + gridColsTemplate + '; grid-template-rows: ' + gridRows + '; gap: ' + gridGapValue + '; padding: 16px; border: ' + (gridChildren.length ? '1px solid rgba(148, 163, 184, 0.18)' : '1px dashed rgba(148, 163, 184, 0.45)') + '; min-height: 100px; border-radius: ' + cardRadius + '; background: rgba(255,255,255,0.02); ' + customStyle + '">';
 
                 if (gridChildren.length > 0) {
                     for (var gi = 0; gi < gridChildren.length; gi++) {
                         gridHtml += '<div class="vbp-element vbp-element-child" data-element-id="' + gridChildren[gi].id + '">' + gridSelf.renderElement(gridChildren[gi]) + '</div>';
                     }
                 } else {
-                    gridHtml += '<div style="text-align: center; color: ' + textMutedColor + '; padding: 40px; grid-column: 1/-1;">🔲 Grid - Arrastra elementos aquí</div>';
+                    gridHtml += '<div class="vbp-structure-empty vbp-structure-empty--grid" style="grid-column: 1/-1;">' +
+                        '<div class="vbp-structure-empty__badge">Grid</div>' +
+                        '<div class="vbp-structure-empty__title">Arrastra elementos para llenar la malla</div>' +
+                        '<div class="vbp-structure-empty__text">Perfecto para cards, logos, estadísticas o cualquier layout repetitivo.</div>' +
+                        '<div class="vbp-structure-empty__meta">' +
+                            '<span>' + (gridAutoFit ? 'Auto-fit' : (gridColsNum + ' columnas')) + '</span>' +
+                            '<span>Gap ' + gridGapValue + '</span>' +
+                        '</div>' +
+                        '<div class="vbp-structure-empty__actions">' +
+                            '<button type="button" class="vbp-structure-action vbp-structure-action--primary" data-action="add-card-title" data-container-id="' + element.id + '">Añadir título</button>' +
+                            '<button type="button" class="vbp-structure-action" data-action="open-blocks" data-container-id="' + element.id + '">Abrir bloques</button>' +
+                        '</div>' +
+                    '</div>';
                 }
                 gridHtml += '</div>';
                 return gridHtml;
@@ -4013,28 +3586,26 @@ function vbpApp() {
                 var timelineTitleColor = data.titulo_color || textColor;
                 var timelineTextColor = data.texto_color || textMutedColor;
                 var timelineDateColor = data.fecha_color || primaryColor;
+                var timelineAlternating = timelineVariant === 'alternating';
+                var timelineLineLeft = timelineAlternating ? '50%' : '24px';
+                var timelineMarkerLeft = timelineAlternating ? '50%' : '24px';
 
                 var timelineHtml = '<div class="vbp-timeline vbp-timeline--' + timelineVariant + ' flavor-component" style="position: relative; padding: 24px 0; ' + customStyle + '">';
 
                 // Línea central
-                if (timelineVariant === 'alternating') {
-                    timelineHtml += '<div class="vbp-timeline__line" style="position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: ' + timelineLineColor + '; transform: translateX(-50%);"></div>';
-                } else {
-                    timelineHtml += '<div class="vbp-timeline__line" style="position: absolute; left: 24px; top: 0; bottom: 0; width: 3px; background: ' + timelineLineColor + ';"></div>';
-                }
+                timelineHtml += '<div class="vbp-timeline__line" style="position: absolute; left: ' + timelineLineLeft + '; top: 0; bottom: 0; width: 3px; background: ' + timelineLineColor + '; transform: translateX(-50%);"></div>';
 
                 for (var ti = 0; ti < timelineItems.length; ti++) {
                     var tItem = timelineItems[ti];
                     var isOdd = ti % 2 === 0;
 
-                    if (timelineVariant === 'alternating') {
-                        var alignSide = isOdd ? 'right' : 'left';
-                        var paddingSide = isOdd ? 'padding-right: calc(50% + 32px);' : 'padding-left: calc(50% + 32px);';
+                    if (timelineAlternating) {
+                        var columnStart = isOdd ? '1' : '2';
                         var textAlign = isOdd ? 'text-align: right;' : 'text-align: left;';
 
-                        timelineHtml += '<div class="vbp-timeline__item" style="position: relative; margin-bottom: 32px; ' + paddingSide + '">' +
-                            '<div class="vbp-timeline__marker" style="position: absolute; left: 50%; transform: translateX(-50%); width: 44px; height: 44px; background: ' + timelineMarkerColor + '; border: 4px solid ' + timelineCardBg + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 0 4px ' + timelineMarkerColor + '30; z-index: 1;">' + (tItem.icono || '📌') + '</div>' +
-                            '<div class="vbp-timeline__content" style="background: ' + timelineCardBg + '; border: 1px solid ' + timelineCardBorder + '; border-radius: ' + cardRadius + '; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); ' + textAlign + '">' +
+                        timelineHtml += '<div class="vbp-timeline__item" style="position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: start; margin-bottom: 32px;">' +
+                            '<div class="vbp-timeline__marker" style="position: absolute; top: 8px; left: ' + timelineMarkerLeft + '; transform: translateX(-50%); width: 44px; height: 44px; background: ' + timelineMarkerColor + '; border: 4px solid ' + timelineCardBg + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 0 4px ' + timelineMarkerColor + '30; z-index: 1;">' + (tItem.icono || '📌') + '</div>' +
+                            '<div class="vbp-timeline__content" style="grid-column: ' + columnStart + '; background: ' + timelineCardBg + '; border: 1px solid ' + timelineCardBorder + '; border-radius: ' + cardRadius + '; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); ' + textAlign + '">' +
                             '<div class="vbp-timeline__date" style="font-size: 14px; color: ' + timelineDateColor + '; font-weight: 600; margin-bottom: 8px;">' + (tItem.fecha || '') + '</div>' +
                             '<h4 contenteditable="true" class="vbp-timeline__title" style="font-size: 18px; font-weight: 600; color: ' + timelineTitleColor + '; margin: 0 0 8px;">' + (tItem.titulo || 'Título') + '</h4>' +
                             '<p contenteditable="true" class="vbp-timeline__description" style="color: ' + timelineTextColor + '; margin: 0; line-height: 1.6;">' + (tItem.descripcion || '') + '</p>' +
@@ -4042,7 +3613,7 @@ function vbpApp() {
                     } else {
                         // Variante vertical (izquierda)
                         timelineHtml += '<div class="vbp-timeline__item" style="position: relative; margin-bottom: 32px; padding-left: 64px;">' +
-                            '<div class="vbp-timeline__marker" style="position: absolute; left: 8px; width: 36px; height: 36px; background: ' + timelineMarkerColor + '; border: 4px solid ' + timelineCardBg + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 0 0 3px ' + timelineMarkerColor + '30; z-index: 1;">' + (tItem.icono || '📌') + '</div>' +
+                            '<div class="vbp-timeline__marker" style="position: absolute; left: ' + timelineMarkerLeft + '; top: 8px; transform: translateX(-50%); width: 36px; height: 36px; background: ' + timelineMarkerColor + '; border: 4px solid ' + timelineCardBg + '; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 0 0 3px ' + timelineMarkerColor + '30; z-index: 1;">' + (tItem.icono || '📌') + '</div>' +
                             '<div class="vbp-timeline__content" style="background: ' + timelineCardBg + '; border: 1px solid ' + timelineCardBorder + '; border-radius: ' + cardRadius + '; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">' +
                             '<div class="vbp-timeline__date" style="font-size: 13px; color: ' + timelineDateColor + '; font-weight: 600; margin-bottom: 6px;">' + (tItem.fecha || '') + '</div>' +
                             '<h4 contenteditable="true" class="vbp-timeline__title" style="font-size: 16px; font-weight: 600; color: ' + timelineTitleColor + '; margin: 0 0 6px;">' + (tItem.titulo || 'Título') + '</h4>' +
@@ -4110,6 +3681,13 @@ function vbpApp() {
                 var elementId = element.id || 'temp_' + Date.now();
                 var moduleType = element.module || type || '';
                 var moduleName = element.name || shortcodeTag;
+                var previewAttributes = {};
+
+                Object.keys(data).forEach(function(key) {
+                    if (key !== 'shortcode' && data[key] !== undefined && data[key] !== null && data[key] !== '') {
+                        previewAttributes[key] = data[key];
+                    }
+                });
 
                 // Generar preview estática según tipo de módulo
                 var modulePreview = this.generateModulePreview(moduleType, shortcodeTag, moduleName, {
@@ -4124,10 +3702,10 @@ function vbpApp() {
 
                 // Marcar el elemento para carga diferida de previsualización real
                 setTimeout(function() {
-                    window.vbpModulePreview && window.vbpModulePreview.loadPreview(elementId, shortcodeTag);
+                    window.vbpModulePreview && window.vbpModulePreview.loadPreview(elementId, shortcodeTag, previewAttributes);
                 }, 100);
 
-                return '<div class="vbp-module-block vbp-module-preview-container" data-element-id="' + elementId + '" data-shortcode="' + shortcodeTag + '" data-module="' + moduleType + '" style="' + customStyle + '">' +
+                return '<div class="vbp-module-block vbp-module-preview-container" data-element-id="' + elementId + '" data-shortcode="' + shortcodeTag + '" data-module="' + moduleType + '" data-module-name="' + moduleName.replace(/"/g, '&quot;') + '" data-attributes=\'' + JSON.stringify(previewAttributes).replace(/'/g, '&#39;') + '\' style="' + customStyle + '">' +
                     '<div class="vbp-module-preview-content" style="min-height: 100px; position: relative;">' +
                     modulePreview +
                     '</div></div>';
@@ -4276,6 +3854,47 @@ function vbpApp() {
                 'tabs': '📑', 'progress-bar': '📊', 'alert': '⚠️', 'map': '🗺️'
             };
             return icons[type] || '📦';
+        },
+
+        getTypeLabel: function(type) {
+            var labels = {
+                'hero': 'Hero',
+                'features': 'Características',
+                'testimonials': 'Testimonios',
+                'pricing': 'Precios',
+                'cta': 'CTA',
+                'faq': 'FAQ',
+                'contact': 'Contacto',
+                'team': 'Equipo',
+                'stats': 'Estadísticas',
+                'gallery': 'Galería',
+                'blog': 'Blog',
+                'video-section': 'Video',
+                'heading': 'Encabezado',
+                'text': 'Texto',
+                'image': 'Imagen',
+                'button': 'Botón',
+                'divider': 'Separador',
+                'spacer': 'Espaciador',
+                'icon': 'Icono',
+                'html': 'HTML',
+                'shortcode': 'Shortcode',
+                'container': 'Contenedor',
+                'columns': 'Columnas',
+                'row': 'Fila',
+                'grid': 'Grid',
+                'form': 'Formulario',
+                'input': 'Campo',
+                'countdown': 'Cuenta regresiva',
+                'newsletter': 'Newsletter',
+                'social-icons': 'Redes',
+                'accordion': 'Acordeón',
+                'tabs': 'Pestañas',
+                'progress-bar': 'Progreso',
+                'alert': 'Alerta',
+                'map': 'Mapa'
+            };
+            return labels[type] || (type || 'Elemento');
         },
 
         /**
@@ -4826,61 +4445,62 @@ function vbpApp() {
             if (dropzone) {
                 // Estamos sobre un contenedor - mostrar indicador en el contenedor
                 this.dropIndicator.visible = false;
+                this.dropIndicator.label = dropzone.classList.contains('vbp-column-dropzone')
+                    ? 'Soltar dentro de esta columna'
+                    : 'Soltar dentro de este contenedor';
                 dropzone.classList.add('vbp-dropzone-active');
+                dropzone.classList.toggle('vbp-dropzone-active--column', dropzone.classList.contains('vbp-column-dropzone'));
+                dropzone.classList.toggle('vbp-dropzone-active--container', !dropzone.classList.contains('vbp-column-dropzone'));
 
                 // Remover clase de otros dropzones
                 document.querySelectorAll('.vbp-dropzone-active').forEach(function(el) {
-                    if (el !== dropzone) el.classList.remove('vbp-dropzone-active');
+                    if (el !== dropzone) {
+                        el.classList.remove('vbp-dropzone-active', 'vbp-dropzone-active--column', 'vbp-dropzone-active--container');
+                    }
                 });
             } else {
                 // Drop en canvas principal
                 document.querySelectorAll('.vbp-dropzone-active').forEach(function(el) {
-                    el.classList.remove('vbp-dropzone-active');
+                    el.classList.remove('vbp-dropzone-active', 'vbp-dropzone-active--column', 'vbp-dropzone-active--container');
                 });
 
                 var canvasRect = this.$refs.canvas.getBoundingClientRect();
                 var y = event.clientY - canvasRect.top;
+                var placement = this.getDragPlacementInfo(event.clientY);
                 this.dropIndicator.visible = true;
                 this.dropIndicator.y = this.getDropPosition(y);
+                this.dropIndicator.index = placement.index;
+                this.dropIndicator.position = placement.position;
+                this.dropIndicator.label = this.getDropIndicatorLabel(placement.position);
 
                 // Añadir clase drag-over a elemento más cercano
-                this.updateDragOverElement(event);
+                this.updateDragOverElement(placement.closestElement, placement.position);
             }
         },
 
-        updateDragOverElement: function(event) {
-            var canvas = this.$refs.canvas;
-            var canvasRect = canvas.getBoundingClientRect();
-            var y = event.clientY - canvasRect.top;
-
+        updateDragOverElement: function(closestElement, position) {
             // Remover clase drag-over de todos los elementos
             document.querySelectorAll('.vbp-element.drag-over').forEach(function(el) {
-                el.classList.remove('drag-over');
-            });
-
-            // Encontrar el elemento más cercano
-            var elements = canvas.querySelectorAll('.vbp-element');
-            var closestElement = null;
-            var minDistance = Infinity;
-
-            elements.forEach(function(el) {
-                var rect = el.getBoundingClientRect();
-                var elY = rect.top - canvasRect.top + rect.height / 2;
-                var distance = Math.abs(y - elY);
-                if (distance < minDistance && distance < 100) {
-                    minDistance = distance;
-                    closestElement = el;
-                }
+                el.classList.remove('drag-over', 'drag-over-before', 'drag-over-after');
             });
 
             if (closestElement) {
                 closestElement.classList.add('drag-over');
+                closestElement.classList.toggle('drag-over-before', position === 'before');
+                closestElement.classList.toggle('drag-over-after', position === 'after');
             }
+        },
+
+        getDropIndicatorLabel: function(position) {
+            if (position === 'before') return 'Insertar antes';
+            if (position === 'after') return 'Insertar después';
+            return 'Soltar aquí';
         },
 
         handleDrop: function(event) {
             event.preventDefault();
             this.dropIndicator.visible = false;
+            this.dropIndicator.label = '';
 
             // Limpiar todas las clases de drag
             this.cleanupDragClasses();
@@ -4917,7 +4537,35 @@ function vbpApp() {
             }
 
             // Drop en canvas principal
-            var index = this.getDropIndex(event.clientY);
+            var placement = this.getDragPlacementInfo(event.clientY);
+            var index = placement.index;
+
+            if (block.isExisting && block.id) {
+                var fromIndex = store.getElementIndex(block.id);
+                if (fromIndex !== -1) {
+                    var targetIndex = index;
+
+                    if (targetIndex > fromIndex) {
+                        targetIndex -= 1;
+                    }
+
+                    if (targetIndex < 0) {
+                        targetIndex = 0;
+                    }
+
+                    if (targetIndex >= store.elements.length) {
+                        targetIndex = store.elements.length - 1;
+                    }
+
+                    if (targetIndex !== fromIndex) {
+                        store.moveElement(fromIndex, targetIndex);
+                        this.showNotification('Elemento reordenado', 'success');
+                    }
+
+                    return;
+                }
+            }
+
             store.addElement(block.type, index);
         },
 
@@ -4933,17 +4581,39 @@ function vbpApp() {
             return position;
         },
 
-        getDropIndex: function(clientY) {
+        getDragPlacementInfo: function(clientY) {
             var canvas = this.$refs.canvas;
             var canvasRect = canvas.getBoundingClientRect();
             var y = clientY - canvasRect.top;
-            var index = Alpine.store('vbp').elements.length;
-            canvas.querySelectorAll('.vbp-element').forEach(function(el, i) {
+            var elements = canvas.querySelectorAll('.vbp-element');
+            var closestElement = null;
+            var closestIndex = Alpine.store('vbp').elements.length;
+            var position = 'end';
+            var minDistance = Infinity;
+
+            elements.forEach(function(el, i) {
                 var rect = el.getBoundingClientRect();
-                var elY = rect.top - canvasRect.top + rect.height / 2;
-                if (y < elY && index === Alpine.store('vbp').elements.length) { index = i; }
+                var top = rect.top - canvasRect.top;
+                var middle = top + rect.height / 2;
+                var distance = Math.abs(y - middle);
+
+                if (distance < minDistance && distance < 120) {
+                    minDistance = distance;
+                    closestElement = el;
+                    closestIndex = y < middle ? i : i + 1;
+                    position = y < middle ? 'before' : 'after';
+                }
             });
-            return index;
+
+            return {
+                index: closestIndex,
+                position: position,
+                closestElement: closestElement
+            };
+        },
+
+        getDropIndex: function(clientY) {
+            return this.getDragPlacementInfo(clientY).index;
         },
 
         handleElementDragStart: function(event, element) {
@@ -4972,6 +4642,7 @@ function vbpApp() {
         handleElementDragEnd: function(event) {
             this.draggedElement = null;
             this.dropIndicator.visible = false;
+            this.dropIndicator.label = '';
 
             // Limpiar todas las clases de drag
             this.cleanupDragClasses();
@@ -4985,18 +4656,20 @@ function vbpApp() {
 
             // Remover clases de elementos
             document.querySelectorAll('.vbp-element.dragging, .vbp-element.drag-source, .vbp-element.drag-over').forEach(function(el) {
-                el.classList.remove('dragging', 'drag-source', 'drag-over');
+                el.classList.remove('dragging', 'drag-source', 'drag-over', 'drag-over-before', 'drag-over-after');
             });
 
             // Remover indicadores de dropzone
             document.querySelectorAll('.vbp-dropzone-active').forEach(function(el) {
-                el.classList.remove('vbp-dropzone-active');
+                el.classList.remove('vbp-dropzone-active', 'vbp-dropzone-active--column', 'vbp-dropzone-active--container');
             });
 
             // Remover clases de bloques en biblioteca
             document.querySelectorAll('.vbp-block-item.dragging').forEach(function(el) {
                 el.classList.remove('dragging');
             });
+
+            this.dropIndicator.label = '';
         },
 
         drawRulers: function() {
@@ -5222,862 +4895,6 @@ function vbpApp() {
             );
         },
 
-        // ============ COMMAND PALETTE ============
-        openCommandPalette: function() {
-            this.showCommandPalette = true;
-            this.commandSearch = '';
-            this.commandIndex = 0;
-            this.filteredCommands = this.commands.slice();
-            var self = this;
-            this.$nextTick(function() {
-                if (self.$refs.commandInput) {
-                    self.$refs.commandInput.focus();
-                }
-            });
-        },
-
-        filterCommands: function() {
-            var search = this.commandSearch.toLowerCase();
-            if (!search) {
-                this.filteredCommands = this.commands.slice();
-            } else {
-                this.filteredCommands = this.commands.filter(function(cmd) {
-                    return cmd.name.toLowerCase().includes(search) || cmd.id.toLowerCase().includes(search);
-                });
-            }
-            this.commandIndex = 0;
-        },
-
-        executeCommand: function(cmd) {
-            if (!cmd) return;
-            this.showCommandPalette = false;
-            var self = this;
-            var store = Alpine.store('vbp');
-
-            switch (cmd.action) {
-                case 'save': this.saveDocument(); break;
-                case 'undo':
-                    var undoDescription = store.undo();
-                    if (undoDescription) self.showNotification('Deshacer: ' + undoDescription, 'info');
-                    break;
-                case 'redo':
-                    var redoDescription = store.redo();
-                    if (redoDescription) self.showNotification('Rehacer: ' + redoDescription, 'info');
-                    break;
-                case 'copy': this.copyElement(); break;
-                case 'copyStyles': this.copyStyles(); break;
-                case 'pasteStyles': this.pasteStyles(); break;
-                case 'eyedropper': this.activateEyedropper(); break;
-                case 'paste': this.pasteElement(); break;
-                case 'duplicate':
-                    store.selection.elementIds.forEach(function(id) { store.duplicateElement(id); });
-                    break;
-                case 'delete':
-                    store.selection.elementIds.forEach(function(id) { store.removeElement(id); });
-                    break;
-                case 'saveAsGlobal':
-                    this.saveAsGlobalWidget();
-                    break;
-                case 'selectAll':
-                    store.setSelection(store.elements.map(function(el) { return el.id; }));
-                    break;
-                case 'deselect': store.clearSelection(); break;
-                case 'zoomIn': this.zoomIn(); break;
-                case 'zoomOut': this.zoomOut(); break;
-                case 'zoomReset': this.zoom = 100; store.zoom = 100; break;
-                case 'preview':
-                    if (VBP_Config.previewUrl) { window.open(VBP_Config.previewUrl, '_blank'); }
-                    break;
-                case 'help': this.openHelpModal(); break;
-                case 'togglePanels':
-                    var allVisible = this.panels.blocks && this.panels.inspector && this.panels.layers;
-                    this.panels.blocks = !allVisible;
-                    this.panels.inspector = !allVisible;
-                    this.panels.layers = !allVisible;
-                    break;
-                case 'addHero': store.addElement('hero'); break;
-                case 'addText': store.addElement('text'); break;
-                case 'addImage': store.addElement('image'); break;
-                case 'addButton': store.addElement('button'); break;
-                case 'templates': this.openTemplatesModal(); break;
-                case 'export': this.showExportModal = true; break;
-                case 'unsplash': this.openUnsplash(); break;
-                case 'versionHistory': this.openVersionHistory(); break;
-            }
-        },
-
-        // ============ IMPORT/EXPORT ============
-
-        handleImportDrop: function(event) {
-            this.importDragOver = false;
-            var files = event.dataTransfer.files;
-            if (files.length > 0 && files[0].type === 'application/json') {
-                this.readImportFile(files[0]);
-            }
-        },
-
-        handleImportFile: function(event) {
-            var files = event.target.files;
-            if (files.length > 0) {
-                this.readImportFile(files[0]);
-            }
-        },
-
-        readImportFile: function(file) {
-            var self = this;
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-                try {
-                    var data = JSON.parse(e.target.result);
-                    self.importData(data);
-                } catch (error) {
-                    self.showNotification('Archivo JSON inválido', 'error');
-                }
-            };
-
-            reader.readAsText(file);
-        },
-
-        importFromJson: function() {
-            if (!this.importJsonText.trim()) return;
-
-            try {
-                var data = JSON.parse(this.importJsonText);
-                this.importData(data);
-            } catch (error) {
-                this.showNotification('JSON inválido: ' + error.message, 'error');
-            }
-        },
-
-        importData: function(data) {
-            if (!data.elements && !data.settings) {
-                this.showNotification('Formato de datos inválido', 'error');
-                return;
-            }
-
-            if (!confirm(VBP_Config.strings.confirmImport || '¿Importar este diseño? Se reemplazará el contenido actual.')) {
-                return;
-            }
-
-            if (data.elements) {
-                Alpine.store('vbp').elements = sanitizeElements(data.elements);
-            }
-            if (data.settings) {
-                Alpine.store('vbp').settings = data.settings;
-            }
-
-            Alpine.store('vbp').isDirty = true;
-            this.showNotification('Diseño importado correctamente', 'success');
-            this.showTemplatesModal = false;
-            this.importJsonText = '';
-        },
-
-        getExportJson: function() {
-            var data = {
-                version: '2.0',
-                exported: new Date().toISOString(),
-                elements: Alpine.store('vbp').elements,
-                settings: Alpine.store('vbp').settings
-            };
-            return JSON.stringify(data, null, 2);
-        },
-
-        exportAsJson: function() {
-            var json = this.getExportJson();
-            var blob = new Blob([json], { type: 'application/json' });
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = this.documentTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase() + '-vbp-export.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            this.showNotification('Archivo JSON descargado', 'success');
-        },
-
-        copyJsonToClipboard: function() {
-            var self = this;
-            var json = this.getExportJson();
-
-            navigator.clipboard.writeText(json).then(function() {
-                self.showNotification('JSON copiado al portapapeles', 'success');
-            }).catch(function() {
-                // Fallback para navegadores antiguos
-                var textarea = document.createElement('textarea');
-                textarea.value = json;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                self.showNotification('JSON copiado al portapapeles', 'success');
-            });
-        },
-
-        exportAsHtml: function() {
-            var self = this;
-
-            fetch(VBP_Config.restUrl + 'documents/' + VBP_Config.postId + '/export-html', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.html) {
-                    var blob = new Blob([result.html], { type: 'text/html' });
-                    var url = URL.createObjectURL(blob);
-                    var a = document.createElement('a');
-                    a.href = url;
-                    a.download = self.documentTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase() + '.html';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    self.showNotification('HTML exportado correctamente', 'success');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error exportando HTML', 'error');
-            });
-        },
-
-        // ============ REVISIONES ============
-
-        openRevisionsModal: function() {
-            this.showRevisionsModal = true;
-            this.loadRevisions();
-        },
-
-        loadRevisions: function() {
-            var self = this;
-            this.isLoadingRevisions = true;
-            this.revisions = [];
-
-            fetch(VBP_Config.restUrl + 'documents/' + VBP_Config.postId + '/revisions', {
-                method: 'GET',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (Array.isArray(data)) {
-                    self.revisions = data.map(function(rev, index) {
-                        return {
-                            id: rev.id,
-                            date: rev.date,
-                            author: rev.author || 'Usuario',
-                            title: rev.title || '',
-                            isCurrent: index === 0
-                        };
-                    });
-                }
-            })
-            .catch(function(error) {
-                console.error('Error cargando revisiones:', error);
-                self.showNotification('Error cargando revisiones', 'error');
-            })
-            .finally(function() {
-                self.isLoadingRevisions = false;
-            });
-        },
-
-        formatRevisionDate: function(dateString) {
-            if (!dateString) return '';
-
-            var date = new Date(dateString);
-            var now = new Date();
-            var diffMs = now - date;
-            var diffMins = Math.floor(diffMs / 60000);
-            var diffHours = Math.floor(diffMs / 3600000);
-            var diffDays = Math.floor(diffMs / 86400000);
-
-            if (diffMins < 1) {
-                return 'Ahora mismo';
-            } else if (diffMins < 60) {
-                return 'Hace ' + diffMins + ' minuto' + (diffMins === 1 ? '' : 's');
-            } else if (diffHours < 24) {
-                return 'Hace ' + diffHours + ' hora' + (diffHours === 1 ? '' : 's');
-            } else if (diffDays < 7) {
-                return 'Hace ' + diffDays + ' día' + (diffDays === 1 ? '' : 's');
-            } else {
-                return date.toLocaleDateString('es-ES', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            }
-        },
-
-        restoreRevision: function(revision) {
-            if (!confirm(VBP_Config.strings.confirmRestoreRevision || '¿Restaurar esta versión? Se perderán los cambios no guardados.')) {
-                return;
-            }
-
-            var self = this;
-            this.isRestoringRevision = true;
-
-            fetch(VBP_Config.restUrl + 'documents/' + VBP_Config.postId + '/revisions/' + revision.id + '/restore', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.success) {
-                    self.showNotification('Revisión restaurada correctamente', 'success');
-                    self.showRevisionsModal = false;
-                    // Recargar el documento
-                    self.loadDocument();
-                } else {
-                    throw new Error(result.message || 'Error desconocido');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error restaurando revisión: ' + error.message, 'error');
-            })
-            .finally(function() {
-                self.isRestoringRevision = false;
-            });
-        },
-
-        // ===== WIDGETS GLOBALES =====
-
-        loadGlobalWidgets: function() {
-            var self = this;
-            if (this.globalWidgetsLoaded && !this.globalWidgetsLoading) {
-                return Promise.resolve(this.globalWidgets);
-            }
-            if (this.globalWidgetsPromise) {
-                return this.globalWidgetsPromise;
-            }
-
-            this.globalWidgetsLoading = true;
-            this.globalWidgetsPromise = fetch(VBP_Config.restUrl.replace('flavor-vbp/v1/', 'flavor-vbp/v1/') + 'global-widgets', {
-                method: 'GET',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) {
-                var contentType = response.headers.get('content-type');
-                if (!response.ok) {
-                    throw new Error('Error HTTP: ' + response.status);
-                }
-                if (!contentType || !contentType.includes('application/json')) {
-                    throw new Error('Respuesta no es JSON válido');
-                }
-                return response.json();
-            })
-            .then(function(widgets) {
-                self.globalWidgets = widgets || [];
-                self.globalWidgetsLoaded = true;
-                return self.globalWidgets;
-            })
-            .catch(function(error) {
-                vbpLog.warn('Error cargando widgets globales:', error.message);
-                self.globalWidgets = [];
-                self.globalWidgetsLoaded = true;
-                return self.globalWidgets;
-            })
-            .finally(function() {
-                self.globalWidgetsLoading = false;
-                self.globalWidgetsPromise = null;
-            });
-
-            return this.globalWidgetsPromise;
-        },
-
-        saveAsGlobalWidget: function() {
-            var store = Alpine.store('vbp');
-            if (!store.selectedElementId) {
-                this.showNotification('Selecciona un elemento primero', 'warning');
-                return;
-            }
-            var element = store.elements.find(function(el) { return el.id === store.selectedElementId; });
-            if (!element) {
-                this.showNotification('Elemento no encontrado', 'error');
-                return;
-            }
-            this.newGlobalWidgetName = element.name || element.type || 'Widget';
-            this.newGlobalWidgetCategory = 'general';
-            this.showSaveGlobalWidgetModal = true;
-        },
-
-        confirmSaveGlobalWidget: function() {
-            if (!this.newGlobalWidgetName.trim()) {
-                this.showNotification('Ingresa un nombre para el widget', 'warning');
-                return;
-            }
-
-            var store = Alpine.store('vbp');
-            var element = store.elements.find(function(el) { return el.id === store.selectedElementId; });
-            if (!element) {
-                this.showNotification('Elemento no encontrado', 'error');
-                return;
-            }
-
-            var self = this;
-            this.isSavingGlobalWidget = true;
-
-            // Clonar el elemento sin el ID original
-            var elementClone = JSON.parse(JSON.stringify(element));
-            delete elementClone.id;
-
-            fetch(VBP_Config.restUrl.replace('flavor-vbp/v1/', 'flavor-vbp/v1/') + 'global-widgets', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                },
-                body: JSON.stringify({
-                    title: this.newGlobalWidgetName,
-                    element: elementClone,
-                    category: this.newGlobalWidgetCategory
-                })
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.id) {
-                    self.showNotification('Widget global guardado correctamente', 'success');
-                    self.showSaveGlobalWidgetModal = false;
-                    self.globalWidgetsLoaded = false;
-                    self.loadGlobalWidgets();
-                } else {
-                    throw new Error(result.error || 'Error desconocido');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error guardando widget: ' + error.message, 'error');
-            })
-            .finally(function() {
-                self.isSavingGlobalWidget = false;
-            });
-        },
-
-        insertGlobalWidget: function(widget) {
-            var self = this;
-
-            fetch(VBP_Config.restUrl.replace('flavor-vbp/v1/', 'flavor-vbp/v1/') + 'global-widgets/' + widget.id, {
-                method: 'GET',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.element) {
-                    var store = Alpine.store('vbp');
-                    var newElement = JSON.parse(JSON.stringify(data.element));
-                    newElement.id = generateElementId();
-                    newElement.data = newElement.data || {};
-                    newElement.data.globalWidgetId = widget.id;
-                    newElement.name = widget.title;
-                    store.elements.push(newElement);
-                    store.selectedElementId = newElement.id;
-                    store.saveHistory();
-                    self.showNotification('Widget insertado', 'success');
-                } else {
-                    throw new Error('Widget no encontrado');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error insertando widget: ' + error.message, 'error');
-            });
-        },
-
-        deleteGlobalWidget: function(widget) {
-            if (!confirm('¿Eliminar este widget global? Esta acción no se puede deshacer.')) {
-                return;
-            }
-
-            var self = this;
-
-            fetch(VBP_Config.restUrl.replace('flavor-vbp/v1/', 'flavor-vbp/v1/') + 'global-widgets/' + widget.id, {
-                method: 'DELETE',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(result) {
-                if (result.message) {
-                    self.globalWidgets = self.globalWidgets.filter(function(w) { return w.id !== widget.id; });
-                    self.showNotification('Widget eliminado', 'success');
-                } else if (result.error) {
-                    throw new Error(result.error);
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error eliminando widget: ' + error.message, 'error');
-            });
-        },
-
-        get filteredGlobalWidgets() {
-            var self = this;
-            var search = (this.blockSearch || '').toLowerCase();
-            if (!search) return this.globalWidgets;
-            return this.globalWidgets.filter(function(widget) {
-                return widget.title.toLowerCase().includes(search) ||
-                       widget.type.toLowerCase().includes(search);
-            });
-        },
-
-        // ===== UNSPLASH =====
-
-        openUnsplash: function(targetElement) {
-            this.unsplashTargetElement = targetElement || null;
-            this.showUnsplashModal = true;
-            this.checkUnsplashStatus();
-        },
-
-        checkUnsplashStatus: function() {
-            var self = this;
-            fetch(VBP_Config.restUrl + 'unsplash/status', {
-                method: 'GET',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                self.unsplashConfigured = data.configured || false;
-            })
-            .catch(function() {
-                self.unsplashConfigured = false;
-            });
-        },
-
-        searchUnsplash: function() {
-            if (!this.unsplashQuery.trim()) return;
-
-            var self = this;
-            this.isSearchingUnsplash = true;
-            this.unsplashPage = 1;
-
-            var url = VBP_Config.restUrl + 'unsplash/search?' + new URLSearchParams({
-                query: this.unsplashQuery,
-                page: this.unsplashPage,
-                per_page: 20,
-                orientation: this.unsplashOrientation
-            });
-
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                self.unsplashImages = data.results || [];
-                self.unsplashTotalPages = data.totalPages || 0;
-            })
-            .catch(function(error) {
-                self.showNotification('Error buscando imágenes: ' + error.message, 'error');
-                self.unsplashImages = [];
-            })
-            .finally(function() {
-                self.isSearchingUnsplash = false;
-            });
-        },
-
-        unsplashNextPage: function() {
-            if (this.unsplashPage >= this.unsplashTotalPages) return;
-            this.unsplashPage++;
-            this.loadUnsplashPage();
-        },
-
-        unsplashPrevPage: function() {
-            if (this.unsplashPage <= 1) return;
-            this.unsplashPage--;
-            this.loadUnsplashPage();
-        },
-
-        loadUnsplashPage: function() {
-            var self = this;
-            this.isSearchingUnsplash = true;
-
-            var url = VBP_Config.restUrl + 'unsplash/search?' + new URLSearchParams({
-                query: this.unsplashQuery,
-                page: this.unsplashPage,
-                per_page: 20,
-                orientation: this.unsplashOrientation
-            });
-
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                self.unsplashImages = data.results || [];
-            })
-            .catch(function(error) {
-                self.showNotification('Error cargando página', 'error');
-            })
-            .finally(function() {
-                self.isSearchingUnsplash = false;
-            });
-        },
-
-        selectUnsplashImage: function(image) {
-            var self = this;
-
-            // Registrar la descarga (requerido por Unsplash API)
-            fetch(VBP_Config.restUrl + 'unsplash/photos/' + image.id + '/download', {
-                method: 'POST',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            }).catch(function() {
-                // Ignorar errores de tracking
-            });
-
-            // Si hay un elemento objetivo, actualizar su imagen
-            if (this.unsplashTargetElement) {
-                var store = Alpine.store('vbp');
-                var element = store.getElement(this.unsplashTargetElement);
-                if (element) {
-                    var data = JSON.parse(JSON.stringify(element.data || {}));
-                    data.src = image.urls.regular;
-                    data.alt = image.description || 'Imagen de ' + image.user.name + ' en Unsplash';
-                    data.unsplashId = image.id;
-                    data.unsplashAuthor = image.user.name;
-                    data.unsplashAuthorUrl = image.user.link;
-                    store.updateElement(this.unsplashTargetElement, { data: data });
-                    this.showNotification('Imagen actualizada', 'success');
-                }
-            } else {
-                // Crear nuevo elemento de imagen
-                var store = Alpine.store('vbp');
-                store.addElement('image', {
-                    src: image.urls.regular,
-                    alt: image.description || 'Imagen de ' + image.user.name + ' en Unsplash',
-                    unsplashId: image.id,
-                    unsplashAuthor: image.user.name,
-                    unsplashAuthorUrl: image.user.link
-                });
-                this.showNotification('Imagen insertada', 'success');
-            }
-
-            this.showUnsplashModal = false;
-            this.unsplashTargetElement = null;
-        },
-
-        // === HISTORIAL DE VERSIONES ===
-        openVersionHistory: function() {
-            this.showVersionHistoryModal = true;
-            this.loadVersions();
-        },
-
-        loadVersions: function() {
-            var self = this;
-            this.isLoadingVersions = true;
-
-            fetch(VBP_Config.restUrl + 'versions/' + VBP_Config.postId, {
-                method: 'GET',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.success) {
-                    self.versions = data.versiones;
-                } else {
-                    self.showNotification('Error cargando versiones', 'error');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error: ' + error.message, 'error');
-            })
-            .finally(function() {
-                self.isLoadingVersions = false;
-            });
-        },
-
-        createVersionSnapshot: function() {
-            var self = this;
-            var label = this.newVersionLabel.trim() || '';
-
-            fetch(VBP_Config.restUrl + 'versions/' + VBP_Config.postId, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                },
-                body: JSON.stringify({ label: label })
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.success) {
-                    self.showNotification('Versión guardada correctamente', 'success');
-                    self.newVersionLabel = '';
-                    self.loadVersions();
-                } else {
-                    throw new Error(data.message || 'Error al crear versión');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error: ' + error.message, 'error');
-            });
-        },
-
-        restoreVersion: function(version) {
-            var self = this;
-            if (!confirm('¿Restaurar a la versión #' + version.version_number + '? Se guardará una copia del estado actual.')) {
-                return;
-            }
-
-            this.isRestoringVersion = true;
-
-            fetch(VBP_Config.restUrl + 'versions/' + VBP_Config.postId + '/' + version.id + '/restore', {
-                method: 'POST',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.success) {
-                    self.showNotification('Versión restaurada correctamente', 'success');
-                    // Recargar el contenido en el store
-                    var store = Alpine.store('vbp');
-                    if (store && data.content) {
-                        store.elements = sanitizeElements(data.content);
-                    }
-                    self.showVersionHistoryModal = false;
-                    self.loadVersions();
-                } else {
-                    throw new Error(data.message || 'Error al restaurar versión');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error: ' + error.message, 'error');
-            })
-            .finally(function() {
-                self.isRestoringVersion = false;
-            });
-        },
-
-        selectVersionForCompare: function(version, slot) {
-            if (slot === 'A') {
-                this.selectedVersionA = version;
-            } else {
-                this.selectedVersionB = version;
-            }
-        },
-
-        compareVersions: function() {
-            var self = this;
-            if (!this.selectedVersionA || !this.selectedVersionB) {
-                this.showNotification('Selecciona dos versiones para comparar', 'warning');
-                return;
-            }
-
-            fetch(VBP_Config.restUrl + 'versions/' + VBP_Config.postId + '/compare?version_a=' + this.selectedVersionA.id + '&version_b=' + this.selectedVersionB.id, {
-                method: 'GET',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.success) {
-                    self.versionDiff = data;
-                    self.showVersionDiffModal = true;
-                } else {
-                    throw new Error(data.message || 'Error al comparar versiones');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error: ' + error.message, 'error');
-            });
-        },
-
-        updateVersionLabel: function(version, newLabel) {
-            var self = this;
-
-            fetch(VBP_Config.restUrl + 'versions/' + VBP_Config.postId + '/' + version.id + '/label', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': VBP_Config.restNonce
-                },
-                body: JSON.stringify({ label: newLabel })
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.success) {
-                    self.showNotification('Etiqueta actualizada', 'success');
-                    version.label = newLabel;
-                } else {
-                    throw new Error(data.message || 'Error al actualizar etiqueta');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error: ' + error.message, 'error');
-            });
-        },
-
-        deleteVersion: function(version) {
-            var self = this;
-            if (!confirm('¿Eliminar la versión #' + version.version_number + '? Esta acción no se puede deshacer.')) {
-                return;
-            }
-
-            fetch(VBP_Config.restUrl + 'versions/' + VBP_Config.postId + '/' + version.id, {
-                method: 'DELETE',
-                headers: {
-                    'X-WP-Nonce': VBP_Config.restNonce
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.success) {
-                    self.showNotification('Versión eliminada', 'success');
-                    self.loadVersions();
-                } else {
-                    throw new Error(data.message || 'Error al eliminar versión');
-                }
-            })
-            .catch(function(error) {
-                self.showNotification('Error: ' + error.message, 'error');
-            });
-        },
-
-        getDiffChangeTypeClass: function(type) {
-            var classes = {
-                added: 'vbp-diff-added',
-                removed: 'vbp-diff-removed',
-                modified: 'vbp-diff-modified'
-            };
-            return classes[type] || '';
-        },
-
-        getDiffChangeTypeLabel: function(type) {
-            var labels = {
-                added: 'Añadido',
-                removed: 'Eliminado',
-                modified: 'Modificado'
-            };
-            return labels[type] || type;
-        },
-
         // ============ RESPONSIVE PREVIEW ============
 
         /**
@@ -6109,162 +4926,6 @@ function vbpApp() {
             this.showNotification('Vista: ' + deviceNames[device], 'info');
         },
 
-        /**
-         * Activa/desactiva el modo split-screen (Desktop + Mobile lado a lado)
-         */
-        toggleSplitScreen: function() {
-            this.splitScreenMode = !this.splitScreenMode;
-
-            var canvasArea = document.querySelector('.vbp-canvas-area');
-            var splitButton = document.querySelector('.vbp-split-screen-btn');
-
-            if (this.splitScreenMode) {
-                // Activar split-screen
-                if (canvasArea) {
-                    canvasArea.classList.add('vbp-split-screen-active');
-                }
-                if (splitButton) {
-                    splitButton.classList.add('active');
-                }
-                this.initSplitScreen();
-                this.showNotification('Vista dividida activada: Desktop + Mobile', 'success');
-            } else {
-                // Desactivar split-screen
-                if (canvasArea) {
-                    canvasArea.classList.remove('vbp-split-screen-active');
-                }
-                if (splitButton) {
-                    splitButton.classList.remove('active');
-                }
-                this.destroySplitScreen();
-                this.showNotification('Vista dividida desactivada', 'info');
-            }
-        },
-
-        /**
-         * Inicializa los paneles de split-screen
-         */
-        initSplitScreen: function() {
-            var self = this;
-            var canvasArea = document.querySelector('.vbp-canvas-area');
-            if (!canvasArea) return;
-
-            // Limpiar contenido existente del canvas (temporalmente ocultarlo)
-            var existingCanvas = canvasArea.querySelector('.vbp-canvas');
-            if (existingCanvas) {
-                existingCanvas.style.display = 'none';
-            }
-
-            // Crear panel izquierdo (desktop)
-            var panelLeft = document.createElement('div');
-            panelLeft.className = 'vbp-split-panel vbp-split-panel-left';
-            panelLeft.innerHTML = '<div class="vbp-split-panel-header">' +
-                '<span class="vbp-split-device-label">🖥️ Desktop</span>' +
-                '<span class="vbp-split-device-size">1920px</span>' +
-                '</div>' +
-                '<div class="vbp-split-panel-content vbp-device-desktop"></div>';
-
-            // Crear panel derecho (mobile)
-            var panelRight = document.createElement('div');
-            panelRight.className = 'vbp-split-panel vbp-split-panel-right';
-            panelRight.innerHTML = '<div class="vbp-split-panel-header">' +
-                '<span class="vbp-split-device-label">📱 Mobile</span>' +
-                '<span class="vbp-split-device-size">375px</span>' +
-                '</div>' +
-                '<div class="vbp-split-panel-content vbp-device-mobile"></div>';
-
-            // Crear indicador de sincronización
-            var syncIndicator = document.createElement('div');
-            syncIndicator.className = 'vbp-split-sync-indicator';
-            syncIndicator.innerHTML = '<span class="vbp-sync-icon">🔗</span> <span>Scroll sincronizado</span>';
-            syncIndicator.onclick = function() {
-                self.splitScreenSyncScroll = !self.splitScreenSyncScroll;
-                syncIndicator.classList.toggle('disabled', !self.splitScreenSyncScroll);
-                syncIndicator.querySelector('span:last-child').textContent =
-                    self.splitScreenSyncScroll ? 'Scroll sincronizado' : 'Scroll independiente';
-            };
-
-            // Insertar paneles
-            canvasArea.appendChild(panelLeft);
-            canvasArea.appendChild(panelRight);
-            canvasArea.appendChild(syncIndicator);
-
-            // Clonar contenido del canvas en ambos paneles
-            this.$nextTick(function() {
-                self.renderSplitPanels();
-                self.setupSplitScrollSync();
-            });
-        },
-
-        /**
-         * Renderiza el contenido en los paneles de split-screen
-         */
-        renderSplitPanels: function() {
-            var store = Alpine.store('vbp');
-            var elements = store && store.elements ? store.elements : [];
-
-            var leftContent = document.querySelector('.vbp-split-panel-left .vbp-split-panel-content');
-            var rightContent = document.querySelector('.vbp-split-panel-right .vbp-split-panel-content');
-
-            if (leftContent && rightContent) {
-                var html = '';
-                for (var i = 0; i < elements.length; i++) {
-                    html += this.renderElement(elements[i]);
-                }
-
-                leftContent.innerHTML = '<div class="vbp-split-canvas">' + html + '</div>';
-                rightContent.innerHTML = '<div class="vbp-split-canvas">' + html + '</div>';
-            }
-        },
-
-        /**
-         * Configura la sincronización de scroll entre paneles
-         */
-        setupSplitScrollSync: function() {
-            var self = this;
-            var leftPanel = document.querySelector('.vbp-split-panel-left .vbp-split-panel-content');
-            var rightPanel = document.querySelector('.vbp-split-panel-right .vbp-split-panel-content');
-
-            if (!leftPanel || !rightPanel) return;
-
-            var syncing = false;
-
-            leftPanel.addEventListener('scroll', function() {
-                if (syncing || !self.splitScreenSyncScroll) return;
-                syncing = true;
-                var scrollPercent = leftPanel.scrollTop / (leftPanel.scrollHeight - leftPanel.clientHeight);
-                rightPanel.scrollTop = scrollPercent * (rightPanel.scrollHeight - rightPanel.clientHeight);
-                setTimeout(function() { syncing = false; }, 10);
-            });
-
-            rightPanel.addEventListener('scroll', function() {
-                if (syncing || !self.splitScreenSyncScroll) return;
-                syncing = true;
-                var scrollPercent = rightPanel.scrollTop / (rightPanel.scrollHeight - rightPanel.clientHeight);
-                leftPanel.scrollTop = scrollPercent * (leftPanel.scrollHeight - leftPanel.clientHeight);
-                setTimeout(function() { syncing = false; }, 10);
-            });
-        },
-
-        /**
-         * Destruye los paneles de split-screen y restaura el canvas original
-         */
-        destroySplitScreen: function() {
-            var canvasArea = document.querySelector('.vbp-canvas-area');
-            if (!canvasArea) return;
-
-            // Eliminar paneles de split
-            var panels = canvasArea.querySelectorAll('.vbp-split-panel, .vbp-split-sync-indicator');
-            panels.forEach(function(panel) {
-                panel.remove();
-            });
-
-            // Restaurar canvas original
-            var existingCanvas = canvasArea.querySelector('.vbp-canvas');
-            if (existingCanvas) {
-                existingCanvas.style.display = '';
-            }
-        }
     };
 
     // Extender con módulos si están disponibles
@@ -6284,11 +4945,46 @@ window.vbpModulePreview = {
     retryCount: {},
     maxRetries: 2,
 
+    getContainer: function(elementId) {
+        var container = document.querySelector('.vbp-module-preview-container[data-element-id="' + elementId + '"]');
+        if (!container) {
+            var iframe = document.querySelector('.vbp-canvas-iframe');
+            if (iframe && iframe.contentDocument) {
+                container = iframe.contentDocument.querySelector('.vbp-module-preview-container[data-element-id="' + elementId + '"]');
+            }
+        }
+        return container;
+    },
+
+    getAttributes: function(elementId, explicitAttributes) {
+        if (explicitAttributes && typeof explicitAttributes === 'object') {
+            return explicitAttributes;
+        }
+
+        var container = this.getContainer(elementId);
+        if (!container || !container.dataset.attributes) {
+            return {};
+        }
+
+        try {
+            return JSON.parse(container.dataset.attributes);
+        } catch (error) {
+            vbpLog.warn('No se pudieron parsear atributos de módulo', error);
+            return {};
+        }
+    },
+
+    getCacheKey: function(shortcode, attributes) {
+        return shortcode + ':' + JSON.stringify(attributes || {});
+    },
+
     /**
      * Carga la previsualización de un módulo
      */
-    loadPreview: function(elementId, shortcode) {
+    loadPreview: function(elementId, shortcode, attributes) {
         var self = this;
+        var resolvedAttributes = this.getAttributes(elementId, attributes);
+        var cacheKey = this.getCacheKey(shortcode, resolvedAttributes);
 
         // Evitar cargas duplicadas
         if (this.loading[elementId]) {
@@ -6296,8 +4992,8 @@ window.vbpModulePreview = {
         }
 
         // Usar caché si existe
-        if (this.cache[shortcode]) {
-            this.applyPreview(elementId, this.cache[shortcode]);
+        if (this.cache[cacheKey]) {
+            this.applyPreview(elementId, this.cache[cacheKey]);
             return;
         }
 
@@ -6318,14 +5014,14 @@ window.vbpModulePreview = {
             },
             body: JSON.stringify({
                 shortcode: shortcode,
-                attributes: {}
+                attributes: resolvedAttributes
             })
         })
         .then(function(response) { return response.json(); })
         .then(function(data) {
             if (data.success && data.html) {
                 // Guardar en caché
-                self.cache[shortcode] = data.html;
+                self.cache[cacheKey] = data.html;
                 self.applyPreview(elementId, data.html);
             } else {
                 throw new Error('Respuesta inválida');
@@ -6339,7 +5035,7 @@ window.vbpModulePreview = {
             if (self.retryCount[elementId] < self.maxRetries) {
                 setTimeout(function() {
                     self.loading[elementId] = false;
-                    self.loadPreview(elementId, shortcode);
+                    self.loadPreview(elementId, shortcode, resolvedAttributes);
                 }, 1000);
             } else {
                 self.showError(elementId, shortcode, error.message);
@@ -6354,14 +5050,7 @@ window.vbpModulePreview = {
      * Aplica la previsualización al elemento
      */
     applyPreview: function(elementId, html) {
-        var container = document.querySelector('.vbp-module-preview-container[data-element-id="' + elementId + '"]');
-        if (!container) {
-            // Intentar encontrar en el iframe del canvas
-            var iframe = document.querySelector('.vbp-canvas-iframe');
-            if (iframe && iframe.contentDocument) {
-                container = iframe.contentDocument.querySelector('.vbp-module-preview-container[data-element-id="' + elementId + '"]');
-            }
-        }
+        var container = this.getContainer(elementId);
 
         if (container) {
             var contentDiv = container.querySelector('.vbp-module-preview-content');
@@ -6376,13 +5065,7 @@ window.vbpModulePreview = {
      * Muestra un error de previsualización
      */
     showError: function(elementId, shortcode, message) {
-        var container = document.querySelector('.vbp-module-preview-container[data-element-id="' + elementId + '"]');
-        if (!container) {
-            var iframe = document.querySelector('.vbp-canvas-iframe');
-            if (iframe && iframe.contentDocument) {
-                container = iframe.contentDocument.querySelector('.vbp-module-preview-container[data-element-id="' + elementId + '"]');
-            }
-        }
+        var container = this.getContainer(elementId);
 
         if (container) {
             var contentDiv = container.querySelector('.vbp-module-preview-content');
@@ -6404,10 +5087,11 @@ window.vbpModulePreview = {
      */
     retry: function(elementId, shortcode) {
         this.retryCount[elementId] = 0;
-        delete this.cache[shortcode];
+        var resolvedAttributes = this.getAttributes(elementId);
+        delete this.cache[this.getCacheKey(shortcode, resolvedAttributes)];
 
         // Mostrar loader de nuevo
-        var container = document.querySelector('.vbp-module-preview-container[data-element-id="' + elementId + '"]');
+        var container = this.getContainer(elementId);
         if (container) {
             var contentDiv = container.querySelector('.vbp-module-preview-content');
             if (contentDiv) {
@@ -6418,7 +5102,7 @@ window.vbpModulePreview = {
             }
         }
 
-        this.loadPreview(elementId, shortcode);
+        this.loadPreview(elementId, shortcode, resolvedAttributes);
     },
 
     /**
@@ -6440,7 +5124,7 @@ window.vbpModulePreview = {
             var elementId = container.dataset.elementId;
             var shortcode = container.dataset.shortcode;
             if (elementId && shortcode) {
-                self.loadPreview(elementId, shortcode);
+                self.loadPreview(elementId, shortcode, self.getAttributes(elementId));
             }
         });
     }

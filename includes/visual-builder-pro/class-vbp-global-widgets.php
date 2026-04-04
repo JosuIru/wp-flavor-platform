@@ -173,7 +173,7 @@ class Flavor_VBP_Global_Widgets {
         $widgets = get_posts(
             array(
                 'post_type'      => self::POST_TYPE,
-                'posts_per_page' => -1,
+                'posts_per_page' => 100,
                 'orderby'        => 'title',
                 'order'          => 'ASC',
             )

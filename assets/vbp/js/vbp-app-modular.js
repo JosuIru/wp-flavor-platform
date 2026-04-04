@@ -23,7 +23,12 @@
      */
     var APP_MODULES = [
         { name: 'vbp-app-split-screen', feature: null },
+        { name: 'vbp-app-page-settings', feature: null },
         { name: 'vbp-app-templates', feature: null },
+        { name: 'vbp-app-version-history', feature: null },
+        { name: 'vbp-app-unsplash', feature: null },
+        { name: 'vbp-app-revisions', feature: null },
+        { name: 'vbp-app-import-export', feature: null },
         { name: 'vbp-app-commands', feature: null },
         { name: 'vbp-app-collaboration', feature: 'collaboration' },
         { name: 'vbp-app-audit-log', feature: 'audit_log' },
@@ -187,8 +192,23 @@
         if (window.VBPAppSplitScreen) {
             safeExtend(appObject, window.VBPAppSplitScreen);
         }
+        if (window.VBPAppPageSettings) {
+            safeExtend(appObject, window.VBPAppPageSettings);
+        }
         if (window.VBPAppTemplates) {
             safeExtend(appObject, window.VBPAppTemplates);
+        }
+        if (window.VBPAppVersionHistory) {
+            safeExtend(appObject, window.VBPAppVersionHistory);
+        }
+        if (window.VBPAppUnsplash) {
+            safeExtend(appObject, window.VBPAppUnsplash);
+        }
+        if (window.VBPAppRevisions) {
+            safeExtend(appObject, window.VBPAppRevisions);
+        }
+        if (window.VBPAppImportExport) {
+            safeExtend(appObject, window.VBPAppImportExport);
         }
         if (window.VBPAppCommands) {
             safeExtend(appObject, window.VBPAppCommands);

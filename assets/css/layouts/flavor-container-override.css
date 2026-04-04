@@ -17,8 +17,7 @@
     position: relative;
 }
 
-/* Container interno con padding */
-.flavor-landing > *:not(section):not(style),
+/* Container interno con padding - excluye flavor-landing del plugin flavor-landing */
 .flavor-servicios-landing > *:not(section):not(style) {
     max-width: 1400px;
     margin-left: auto;

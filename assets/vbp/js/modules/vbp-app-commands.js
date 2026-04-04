@@ -15,30 +15,33 @@ window.VBPAppCommands = {
 
     // Lista de comandos disponibles
     commands: [
-        { id: 'save', name: 'Guardar documento', icon: '💾', action: 'save', shortcut: 'Ctrl+S' },
+        { id: 'save', name: 'Guardar', icon: '💾', action: 'save', shortcut: 'Ctrl+S' },
         { id: 'undo', name: 'Deshacer', icon: '↩️', action: 'undo', shortcut: 'Ctrl+Z' },
-        { id: 'redo', name: 'Rehacer', icon: '↪️', action: 'redo', shortcut: 'Ctrl+Y' },
-        { id: 'copy', name: 'Copiar elemento', icon: '📋', action: 'copy', shortcut: 'Ctrl+C' },
-        { id: 'paste', name: 'Pegar elemento', icon: '📄', action: 'paste', shortcut: 'Ctrl+V' },
-        { id: 'duplicate', name: 'Duplicar selección', icon: '📑', action: 'duplicate', shortcut: 'Ctrl+D' },
-        { id: 'delete', name: 'Eliminar selección', icon: '🗑️', action: 'delete', shortcut: 'Delete' },
-        { id: 'saveAsGlobal', name: 'Guardar como widget global', icon: '🌍', action: 'saveAsGlobal' },
+        { id: 'redo', name: 'Rehacer', icon: '↪️', action: 'redo', shortcut: 'Ctrl+Shift+Z' },
+        { id: 'copy', name: 'Copiar', icon: '📋', action: 'copy', shortcut: 'Ctrl+C' },
+        { id: 'paste', name: 'Pegar', icon: '📄', action: 'paste', shortcut: 'Ctrl+V' },
+        { id: 'duplicate', name: 'Duplicar', icon: '📑', action: 'duplicate', shortcut: 'Ctrl+D' },
+        { id: 'copyStyles', name: 'Copiar estilos', icon: '🎨', action: 'copyStyles', shortcut: 'Ctrl+Alt+C' },
+        { id: 'pasteStyles', name: 'Pegar estilos', icon: '🖌️', action: 'pasteStyles', shortcut: 'Ctrl+Alt+V' },
+        { id: 'eyedropper', name: 'Cuentagotas de color', icon: '🧪', action: 'eyedropper', shortcut: 'I' },
+        { id: 'delete', name: 'Eliminar', icon: '🗑️', action: 'delete', shortcut: 'Delete' },
+        { id: 'saveAsGlobal', name: 'Guardar como widget global', icon: '🌍', action: 'saveAsGlobal', shortcut: 'Ctrl+Shift+G' },
         { id: 'selectAll', name: 'Seleccionar todo', icon: '☑️', action: 'selectAll', shortcut: 'Ctrl+A' },
         { id: 'deselect', name: 'Deseleccionar', icon: '⬜', action: 'deselect', shortcut: 'Esc' },
-        { id: 'zoomIn', name: 'Acercar zoom', icon: '🔍', action: 'zoomIn', shortcut: 'Ctrl++' },
-        { id: 'zoomOut', name: 'Alejar zoom', icon: '🔍', action: 'zoomOut', shortcut: 'Ctrl+-' },
-        { id: 'zoomReset', name: 'Restablecer zoom', icon: '🔍', action: 'zoomReset', shortcut: 'Ctrl+0' },
-        { id: 'preview', name: 'Vista previa', icon: '👁️', action: 'preview', shortcut: 'Ctrl+P' },
-        { id: 'help', name: 'Ayuda y atajos', icon: '❓', action: 'help', shortcut: 'F1' },
-        { id: 'togglePanels', name: 'Mostrar/ocultar paneles', icon: '📐', action: 'togglePanels', shortcut: 'Ctrl+\\' },
+        { id: 'zoomIn', name: 'Acercar', icon: '🔍', action: 'zoomIn', shortcut: 'Ctrl++' },
+        { id: 'zoomOut', name: 'Alejar', icon: '🔍', action: 'zoomOut', shortcut: 'Ctrl+-' },
+        { id: 'zoomReset', name: 'Zoom 100%', icon: '🔍', action: 'zoomReset', shortcut: 'Ctrl+0' },
+        { id: 'preview', name: 'Previsualizar', icon: '👁️', action: 'preview', shortcut: 'Ctrl+P' },
+        { id: 'help', name: 'Mostrar ayuda', icon: '❓', action: 'help', shortcut: '?' },
+        { id: 'togglePanels', name: 'Toggle paneles', icon: '📐', action: 'togglePanels', shortcut: 'Ctrl+\\' },
         { id: 'addHero', name: 'Añadir Hero', icon: '🦸', action: 'addHero' },
         { id: 'addText', name: 'Añadir Texto', icon: '📝', action: 'addText' },
         { id: 'addImage', name: 'Añadir Imagen', icon: '🖼️', action: 'addImage' },
         { id: 'addButton', name: 'Añadir Botón', icon: '🔘', action: 'addButton' },
-        { id: 'templates', name: 'Abrir plantillas', icon: '📋', action: 'templates' },
-        { id: 'export', name: 'Exportar', icon: '📤', action: 'export' },
-        { id: 'unsplash', name: 'Buscar en Unsplash', icon: '📷', action: 'unsplash' },
-        { id: 'versionHistory', name: 'Historial de versiones', icon: '📜', action: 'versionHistory' }
+        { id: 'templates', name: 'Templates', icon: '📋', action: 'templates', shortcut: 'Ctrl+T' },
+        { id: 'export', name: 'Exportar diseño', icon: '📤', action: 'export', shortcut: 'Ctrl+E' },
+        { id: 'unsplash', name: 'Buscar en Unsplash', icon: '📷', action: 'unsplash', shortcut: 'Ctrl+U' },
+        { id: 'versionHistory', name: 'Historial de versiones', icon: '📜', action: 'versionHistory', shortcut: 'Ctrl+H' }
     ],
 
     /**
@@ -115,16 +118,31 @@ window.VBPAppCommands = {
                 this.saveDocument();
                 break;
             case 'undo':
-                store.undo();
+                var undoDescription = store.undo();
+                if (undoDescription) {
+                    this.showNotification('Deshacer: ' + undoDescription, 'info');
+                }
                 break;
             case 'redo':
-                store.redo();
+                var redoDescription = store.redo();
+                if (redoDescription) {
+                    this.showNotification('Rehacer: ' + redoDescription, 'info');
+                }
                 break;
             case 'copy':
-                document.dispatchEvent(new CustomEvent('vbp:command', { detail: { action: 'copy' } }));
+                this.copyElement();
                 break;
             case 'paste':
-                document.dispatchEvent(new CustomEvent('vbp:command', { detail: { action: 'paste' } }));
+                this.pasteElement();
+                break;
+            case 'copyStyles':
+                this.copyStyles();
+                break;
+            case 'pasteStyles':
+                this.pasteStyles();
+                break;
+            case 'eyedropper':
+                this.activateEyedropper();
                 break;
             case 'duplicate':
                 store.selection.elementIds.forEach(function(id) { store.duplicateElement(id); });
@@ -157,7 +175,7 @@ window.VBPAppCommands = {
                 }
                 break;
             case 'help':
-                this.showHelpModal = true;
+                this.openHelpModal();
                 break;
             case 'togglePanels':
                 var allVisible = this.panels.blocks && this.panels.inspector && this.panels.layers;
@@ -178,7 +196,7 @@ window.VBPAppCommands = {
                 store.addElement('button');
                 break;
             case 'templates':
-                this.showTemplatesModal = true;
+                this.openTemplatesModal();
                 break;
             case 'export':
                 this.showExportModal = true;
@@ -187,7 +205,7 @@ window.VBPAppCommands = {
                 this.openUnsplash();
                 break;
             case 'versionHistory':
-                this.openRevisionsModal();
+                this.openVersionHistory();
                 break;
         }
     },

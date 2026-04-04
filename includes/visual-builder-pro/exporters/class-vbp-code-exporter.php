@@ -470,6 +470,3 @@ class Flavor_VBP_Code_Exporter {
         );
     }
 }
-
-// Inicializar
-Flavor_VBP_Code_Exporter::get_instance();

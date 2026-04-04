@@ -175,7 +175,7 @@ class Flavor_VBP_Popup_Builder {
         $popups = get_posts(
             array(
                 'post_type'      => self::POST_TYPE,
-                'posts_per_page' => -1,
+                'posts_per_page' => 100,
                 'orderby'        => 'title',
                 'order'          => 'ASC',
             )
@@ -482,7 +482,7 @@ class Flavor_VBP_Popup_Builder {
         $todos_los_popups = get_posts(
             array(
                 'post_type'      => self::POST_TYPE,
-                'posts_per_page' => -1,
+                'posts_per_page' => 100,
                 'post_status'    => 'publish',
             )
         );
