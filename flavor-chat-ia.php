@@ -60,7 +60,7 @@ if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY) {
 }
 
 // Constantes del plugin
-define('FLAVOR_CHAT_IA_VERSION', '3.3.0');
+define('FLAVOR_CHAT_IA_VERSION', '3.5.0');
 define('FLAVOR_CHAT_IA_PATH', plugin_dir_path(__FILE__));
 define('FLAVOR_CHAT_IA_URL', plugin_dir_url(__FILE__));
 define('FLAVOR_CHAT_IA_BASENAME', plugin_basename(__FILE__));
@@ -134,6 +134,81 @@ function flavor_log_debug( $message, $module = '' ) {
  */
 function flavor_log_error( $message, $module = '' ) {
     flavor_chat_ia_log( $message, 'error', $module );
+}
+
+/**
+ * Obtiene la API key de VBP de forma segura
+ *
+ * Prioridad:
+ * 1. Key configurada en opciones (flavor_vbp_settings['api_key'])
+ * 2. Key única generada por instalación (usando NONCE_SALT)
+ * 3. En desarrollo con FLAVOR_VBP_ALLOW_LEGACY_KEY: permite 'flavor-vbp-2024'
+ *
+ * @return string La API key válida
+ */
+function flavor_get_vbp_api_key() {
+    static $cached_key = null;
+
+    if ( null !== $cached_key ) {
+        return $cached_key;
+    }
+
+    $settings = get_option( 'flavor_vbp_settings', array() );
+
+    // Prioridad 1: Key configurada explícitamente
+    if ( ! empty( $settings['api_key'] ) ) {
+        $cached_key = $settings['api_key'];
+        return $cached_key;
+    }
+
+    // Prioridad 2: Key única por instalación (segura)
+    $cached_key = wp_hash( 'flavor-vbp-' . NONCE_SALT );
+    return $cached_key;
+}
+
+/**
+ * Verifica si una API key es válida para VBP
+ *
+ * @param string $key Key a verificar.
+ * @return bool True si la key es válida.
+ */
+function flavor_verify_vbp_api_key( $key ) {
+    if ( empty( $key ) ) {
+        return false;
+    }
+
+    // Verificar contra key configurada
+    $valid_key = flavor_get_vbp_api_key();
+    if ( $key === $valid_key ) {
+        return true;
+    }
+
+    // En desarrollo, permitir key legacy si está habilitado
+    if ( defined( 'FLAVOR_VBP_ALLOW_LEGACY_KEY' ) && FLAVOR_VBP_ALLOW_LEGACY_KEY ) {
+        if ( $key === 'flavor-vbp-2024' ) {
+            flavor_log_debug( 'VBP API: Key legacy usada - configure una key segura', 'Security' );
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Regenera la API key de VBP
+ *
+ * @return string Nueva API key generada.
+ */
+function flavor_regenerate_vbp_api_key() {
+    $nueva_key = wp_generate_password( 32, false, false );
+    $settings = get_option( 'flavor_vbp_settings', array() );
+    $settings['api_key'] = $nueva_key;
+    update_option( 'flavor_vbp_settings', $settings );
+
+    // Limpiar cache
+    wp_cache_delete( 'flavor_vbp_api_key', 'flavor' );
+
+    return $nueva_key;
 }
 
 /**

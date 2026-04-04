@@ -249,7 +249,8 @@ class Flavor_Visual_Builder {
      */
     public function add_meta_boxes() {
         // No registrar si VBP (Visual Builder Pro) está activo
-        if (class_exists('Flavor_VBP_Editor') || class_exists('Flavor_Page_Builder') || class_exists('Flavor_VBP_Page_Builder')) {
+        // VBP es el único editor oficial desde v3.4.0
+        if (class_exists('Flavor_VBP_Editor')) {
             return;
         }
 
@@ -631,8 +632,9 @@ class Flavor_Visual_Builder {
     public function enqueue_admin_assets($hook) {
         global $post;
 
-        // No cargar si Page Builder Pro está activo (usa sus propios assets)
-        if (class_exists('Flavor_Page_Builder') || class_exists('Flavor_VBP_Page_Builder')) {
+        // No cargar si VBP Editor está activo (usa sus propios assets)
+        // VBP es el único editor oficial desde v3.4.0
+        if (class_exists('Flavor_VBP_Editor')) {
             return;
         }
 

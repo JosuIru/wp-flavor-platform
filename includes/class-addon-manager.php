@@ -115,8 +115,8 @@ class Flavor_Addon_Manager {
         // Hook para admin notices
         add_action('admin_notices', [$this, 'show_addon_notices']);
 
-        // Página de administración
-        add_action('admin_menu', [$this, 'register_admin_menu'], 90);
+        // Página de administración DESACTIVADA - Ahora se gestiona centralmente desde Admin_Menu_Manager
+        // add_action('admin_menu', [$this, 'register_admin_menu'], 90);
 
         // Handler de acciones de formulario
         add_action('admin_init', [$this, 'handle_addon_actions']);

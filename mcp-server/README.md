@@ -21,7 +21,7 @@ Añadir a `~/.claude/settings.json`:
       "args": ["/ruta/a/flavor-chat-ia/mcp-server/index.js"],
       "env": {
         "SITE_URL": "http://sitio-prueba.local",
-        "VBP_API_KEY": "flavor-vbp-2024"
+        "VBP_API_KEY": "<tu-api-key>"
       }
     }
   }

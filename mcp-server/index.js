@@ -26,7 +26,7 @@ const __dirname = path.dirname(__filename);
 // Configuración
 const CONFIG = {
   siteUrl: process.env.SITE_URL || 'http://sitio-prueba.local',
-  apiKey: process.env.VBP_API_KEY || 'flavor-vbp-2024',
+  apiKey: process.env.VBP_API_KEY || '',
   pluginPath: path.resolve(__dirname, '..'),
   schemaPath: path.resolve(__dirname, '..', 'vbp-schema.json'),
 };
@@ -1063,6 +1063,10 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 
 // Iniciar servidor
 async function main() {
+  if (!CONFIG.apiKey) {
+    throw new Error('VBP_API_KEY es obligatoria. Configure una key válida de la instalación actual.');
+  }
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('Flavor VBP MCP Server v2.0 iniciado');
