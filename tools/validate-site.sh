@@ -18,9 +18,21 @@ NC='\033[0m' # No Color
 
 SITE_URL="${1:-}"
 WP_PATH="${2:-$(pwd)}"
-API_KEY="flavor-vbp-2024"
+API_KEY="${3:-}"  # Opcional: se puede pasar como tercer argumento
 ERRORS=0
 WARNINGS=0
+
+# Obtener API key dinámicamente si no se proporcionó
+if [ -z "$API_KEY" ]; then
+    if command -v wp &> /dev/null && [ -f "$WP_PATH/wp-config.php" ]; then
+        API_KEY=$(cd "$WP_PATH" && wp eval "echo flavor_get_vbp_api_key();" 2>/dev/null || echo "")
+    fi
+    if [ -z "$API_KEY" ]; then
+        echo -e "${RED}ERROR: No se pudo obtener la API key automáticamente.${NC}"
+        echo "Pasa la key como 3er argumento: ./validate-site.sh URL RUTA_WP API_KEY"
+        exit 1
+    fi
+fi
 
 echo "=============================================="
 echo "  Flavor Platform - Validador de Sitio"

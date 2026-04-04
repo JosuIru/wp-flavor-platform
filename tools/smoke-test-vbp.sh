@@ -6,9 +6,45 @@ SITE_URL="${1:-http://sitio-prueba.local}"
 WP_PATH="${2:-$(pwd)}"
 API_KEY="${3:-}"
 
+discover_wp_path() {
+    local base="${1:-$(pwd)}"
+    local candidate=""
+    local current=""
+
+    if [ -n "$base" ] && [ -d "$base" ]; then
+        current="$(cd "$base" 2>/dev/null && pwd -P)"
+    else
+        current="$(pwd -P)"
+    fi
+
+    while [ -n "$current" ] && [ "$current" != "/" ]; do
+        for candidate in \
+            "$current" \
+            "$current/public" \
+            "$current/app" \
+            "$current/app/public"
+        do
+            if [ -f "$candidate/wp-config.php" ]; then
+                printf '%s\n' "$candidate"
+                return 0
+            fi
+        done
+        current="$(dirname "$current")"
+    done
+
+    return 1
+}
+
 if ! command -v curl >/dev/null 2>&1; then
     echo "ERROR: curl no está disponible."
     exit 1
+fi
+
+if [ ! -f "$WP_PATH/wp-config.php" ]; then
+    DISCOVERED_WP_PATH="$(discover_wp_path "$WP_PATH" || true)"
+    if [ -n "$DISCOVERED_WP_PATH" ]; then
+        WP_PATH="$DISCOVERED_WP_PATH"
+    fi
 fi
 
 if [ -z "$API_KEY" ] && command -v wp >/dev/null 2>&1 && [ -f "$WP_PATH/wp-config.php" ]; then
@@ -17,6 +53,7 @@ fi
 
 if [ -z "$API_KEY" ]; then
     echo "ERROR: No se pudo obtener la API key automáticamente."
+    echo "WP_PATH detectado: $WP_PATH"
     echo "Uso: bash tools/smoke-test-vbp.sh URL WP_PATH API_KEY"
     exit 1
 fi
@@ -90,6 +127,38 @@ echo
 PING_FILE="$TMP_DIR/ping.json"
 status=$(request_json "GET" "$SITE_URL/wp-json/flavor-vbp/v1/ping" "" "$PING_FILE")
 assert_http_ok "$status" "Ping público VBP" "$PING_FILE"
+
+RENDER_FILE="$TMP_DIR/render-element.json"
+RENDER_BODY=$(cat <<'JSON'
+{
+  "id": "timeline-smoke",
+  "type": "timeline",
+  "variant": "vertical",
+  "data": {
+    "titulo": "Timeline Smoke",
+    "subtitulo": "Renderer REST",
+    "eventos": [
+      {
+        "fecha": "2026",
+        "titulo": "Evento smoke",
+        "descripcion": "Validación del renderer del canvas"
+      }
+    ]
+  },
+  "styles": {}
+}
+JSON
+)
+status=$(request_json "POST" "$SITE_URL/wp-json/flavor-vbp/v1/render-element" "$RENDER_BODY" "$RENDER_FILE")
+assert_http_ok "$status" "Render REST de elemento especial" "$RENDER_FILE"
+
+if jq -e '.html | contains("vbp-section--timeline") and contains("Timeline Smoke") and contains("Evento smoke")' "$RENDER_FILE" >/dev/null 2>&1; then
+    echo "OK: El renderer REST devuelve HTML consistente para timeline"
+else
+    echo "ERROR: El renderer REST no devolvió el HTML esperado para timeline."
+    cat "$RENDER_FILE"
+    exit 1
+fi
 
 CREATE_FILE="$TMP_DIR/create.json"
 CREATE_BODY=$(cat <<'JSON'
@@ -202,5 +271,5 @@ fi
 echo
 echo "Smoke test completado."
 echo "Notas:"
-echo "- Este script valida ping, creación batch, actualización batch y lectura pública del layout nativo."
+echo "- Este script valida ping, renderer REST del canvas, creación batch, actualización batch y lectura pública del layout nativo."
 echo "- No valida versionado REST porque esas rutas exigen usuario autenticado de WordPress, no solo X-VBP-Key."

@@ -1913,10 +1913,13 @@ class Flavor_Admin_Menu_Manager {
         }
     }
 
+    /**
+     * @deprecated 3.4.0 Redirige a VBP Editor
+     */
     public function callback_landing_editor() {
-        if (class_exists('Flavor_Landing_Editor')) {
-            Flavor_Landing_Editor::get_instance()->render_editor_page();
-        }
+        // Redirigir a VBP Editor (el único editor oficial)
+        wp_safe_redirect( admin_url( 'admin.php?page=vbp-editor' ) );
+        exit;
     }
 
     public function callback_permissions() {

@@ -196,6 +196,10 @@ class Flavor_Admin_Shell {
 
         $page_prefixes = apply_filters('flavor_admin_shell_page_prefixes', self::PAGE_PREFIXES);
 
+        if ($page !== '' && $this->is_registered_flavor_admin_page($page)) {
+            return true;
+        }
+
         // Verificar prefijos de páginas del ecosistema Flavor y dashboards de módulos
         foreach ($page_prefixes as $prefix) {
             if (strpos($page, $prefix) === 0) {
@@ -242,6 +246,77 @@ class Flavor_Admin_Shell {
     }
 
     /**
+     * Determina si un slug pertenece a la navegación admin registrada del plugin.
+     *
+     * Esto evita depender solo de prefijos hardcodeados cuando existen páginas
+     * canónicas o subpáginas registradas fuera de los patrones legacy.
+     *
+     * @param string $page Slug actual de admin.php?page=...
+     * @return bool
+     */
+    private function is_registered_flavor_admin_page($page) {
+        $page = sanitize_key((string) $page);
+        if ($page === '') {
+            return false;
+        }
+
+        if (has_action('admin_page_' . $page)) {
+            return true;
+        }
+
+        if (class_exists('Flavor_Admin_Navigation_Registry')) {
+            $admin_registry = Flavor_Admin_Navigation_Registry::get_instance();
+            if ($admin_registry->resolve_canonical_slug($page) !== '') {
+                return true;
+            }
+        }
+
+        if (class_exists('Flavor_Shell_Navigation_Registry')) {
+            $shell_registry = Flavor_Shell_Navigation_Registry::get_instance();
+
+            if ($shell_registry->get_parent_dashboard($page) !== null) {
+                return true;
+            }
+        }
+
+        $registered_modules = apply_filters('flavor_admin_panel_modules', []);
+        if (is_array($registered_modules)) {
+            foreach ($registered_modules as $module_config) {
+                $pages = isset($module_config['paginas']) && is_array($module_config['paginas'])
+                    ? $module_config['paginas']
+                    : [];
+
+                foreach ($pages as $module_page) {
+                    $module_slug = isset($module_page['slug']) ? sanitize_key((string) $module_page['slug']) : '';
+                    if ($module_slug !== '' && $module_slug === $page) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        global $menu, $submenu;
+
+        foreach ((array) $menu as $menu_item) {
+            $menu_slug = isset($menu_item[2]) ? sanitize_key((string) $menu_item[2]) : '';
+            if ($menu_slug !== '' && $menu_slug === $page) {
+                return true;
+            }
+        }
+
+        foreach ((array) $submenu as $submenu_group) {
+            foreach ((array) $submenu_group as $submenu_item) {
+                $submenu_slug = isset($submenu_item[2]) ? sanitize_key((string) $submenu_item[2]) : '';
+                if ($submenu_slug !== '' && $submenu_slug === $page) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Verifica si el shell está habilitado para el usuario actual
      *
      * @return bool
@@ -252,10 +327,28 @@ class Flavor_Admin_Shell {
             return false;
         }
 
+        // En administración del plugin preferimos no dejar a los admins "bloqueados"
+        // fuera del shell por un meta obsoleto tras migraciones o merges.
+        if (current_user_can('manage_options')) {
+            return true;
+        }
+
         // Verificar si el usuario lo ha deshabilitado
         $is_disabled = get_user_meta($user_id, self::USER_META_KEY, true);
 
         return !$is_disabled;
+    }
+
+    /**
+     * Verifica si estamos en el editor Visual Builder Pro
+     *
+     * @return bool
+     */
+    public function is_vbp_editor() {
+        $page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+
+        // El editor VBP usa page=vbp-editor
+        return $page === 'vbp-editor';
     }
 
     /**
@@ -264,6 +357,11 @@ class Flavor_Admin_Shell {
      * @return bool
      */
     public function should_show_shell() {
+        // No mostrar shell en el editor VBP (tiene su propia interfaz fullscreen)
+        if ($this->is_vbp_editor()) {
+            return false;
+        }
+
         return $this->is_flavor_page() && $this->is_shell_enabled();
     }
 
@@ -289,7 +387,7 @@ class Flavor_Admin_Shell {
         if (!wp_script_is('alpine', 'enqueued')) {
             wp_enqueue_script(
                 'alpine',
-                'https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js',
+                FLAVOR_CHAT_IA_URL . 'assets/vbp/vendor/alpine.min.js',
                 [],
                 '3.14.3',
                 true

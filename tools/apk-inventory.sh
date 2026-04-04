@@ -25,11 +25,24 @@ NC='\033[0m' # No Color
 # Configuración
 SITE=${1:-"http://localhost"}
 MOBILE_PATH=${2:-"mobile-apps"}
-KEY="flavor-vbp-2024"
+WP_PATH=${3:-$(pwd)}
+KEY=${4:-""}
 TIMEOUT=10
 
 # Limpiar URL
 SITE="${SITE%/}"
+
+# Obtener API key dinámicamente si no se proporcionó
+if [ -z "$KEY" ]; then
+    if command -v wp &> /dev/null && [ -f "$WP_PATH/wp-config.php" ]; then
+        KEY=$(cd "$WP_PATH" && wp eval "echo flavor_get_vbp_api_key();" 2>/dev/null || echo "")
+    fi
+    if [ -z "$KEY" ]; then
+        echo -e "${RED}ERROR: No se pudo obtener la API key automáticamente.${NC}"
+        echo "Pase WP_PATH y API_KEY: bash tools/apk-inventory.sh URL MOBILE_PATH WP_PATH API_KEY"
+        exit 1
+    fi
+fi
 
 echo ""
 echo -e "${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"

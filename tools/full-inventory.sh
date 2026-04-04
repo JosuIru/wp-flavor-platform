@@ -26,10 +26,23 @@ NC='\033[0m'
 SITE=${1:-"http://localhost"}
 WP_PATH=${2:-"."}
 MOBILE_PATH=${3:-"mobile-apps"}
+API_KEY=${4:-""}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Limpiar URL
 SITE="${SITE%/}"
+
+# Obtener API key dinámicamente si no se proporcionó
+if [ -z "$API_KEY" ]; then
+    if command -v wp &> /dev/null && [ -f "$WP_PATH/wp-config.php" ]; then
+        API_KEY=$(cd "$WP_PATH" && wp eval "echo flavor_get_vbp_api_key();" 2>/dev/null || echo "")
+    fi
+    if [ -z "$API_KEY" ]; then
+        echo -e "${RED}ERROR: No se pudo obtener la API key automáticamente.${NC}"
+        echo "Pase API_KEY como 4to argumento: bash tools/full-inventory.sh URL WP_PATH MOBILE_PATH API_KEY"
+        exit 1
+    fi
+fi
 
 # Timestamp
 TIMESTAMP=$(date '+%Y-%m-%d_%H-%M-%S')
@@ -62,7 +75,7 @@ echo ""
 
 # Verificar conectividad
 echo -n "  Conectividad API... "
-health=$(curl -s --max-time 5 "$SITE/wp-json/flavor-vbp/v1/claude/status" -H "X-VBP-Key: flavor-vbp-2024" 2>/dev/null)
+health=$(curl -s --max-time 5 "$SITE/wp-json/flavor-vbp/v1/claude/status" -H "X-VBP-Key: $API_KEY" 2>/dev/null)
 if [ -n "$health" ] && ! echo "$health" | grep -q "error"; then
     echo -e "${GREEN}OK${NC}"
 else
@@ -98,7 +111,7 @@ echo -e "${CYAN}  FASE 2: INVENTARIO VISUAL BUILDER PRO${NC}"
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
-KEY="flavor-vbp-2024"
+KEY="$API_KEY"
 
 # Bloques
 echo -n "  Bloques disponibles... "

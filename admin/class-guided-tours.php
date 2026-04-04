@@ -362,7 +362,7 @@ class Flavor_Guided_Tours {
             'descripcion' => __('Crea páginas de aterrizaje para tus aplicaciones', 'flavor-chat-ia'),
             'icono' => 'dashicons-welcome-widgets-menus',
             'duracion' => '5 min',
-            'paginas' => ['flavor-platform_page_flavor-landing-editor', 'toplevel_page_flavor-landing-editor'],
+            'paginas' => ['flavor-platform_page_vbp-editor', 'toplevel_page_vbp-editor'],
             'video_url' => '',
             'pasos' => [
                 [

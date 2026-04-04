@@ -20,8 +20,21 @@ NC='\033[0m' # No Color
 
 # Configuración
 SITE=${1:-"http://localhost"}
-KEY="flavor-vbp-2024"
+WP_PATH=${2:-$(pwd)}
+KEY=${3:-""}
 TIMEOUT=10
+
+# Obtener API key dinámicamente si no se proporcionó
+if [ -z "$KEY" ]; then
+    if command -v wp &> /dev/null && [ -f "$WP_PATH/wp-config.php" ]; then
+        KEY=$(cd "$WP_PATH" && wp eval "echo flavor_get_vbp_api_key();" 2>/dev/null || echo "")
+    fi
+    if [ -z "$KEY" ]; then
+        echo -e "${RED}ERROR: No se pudo obtener la API key automáticamente.${NC}"
+        echo "Use: bash tools/vbp-inventory.sh URL WP_PATH API_KEY"
+        exit 1
+    fi
+fi
 
 # Limpiar URL
 SITE="${SITE%/}"
@@ -235,8 +248,11 @@ echo "  4. Si necesitas algo que no existe, pregunta antes de improvisar"
 echo ""
 echo -e "${YELLOW}EJEMPLO DE USO CORRECTO:${NC}"
 echo ""
+echo '  # Obtener API key'
+echo '  API_KEY=$(wp eval "echo flavor_get_vbp_api_key();")'
+echo '  '
 echo '  curl -X POST "$SITE/wp-json/flavor-vbp/v1/claude/pages/styled" \'
-echo '    -H "X-VBP-Key: flavor-vbp-2024" \'
+echo '    -H "X-VBP-Key: $API_KEY" \'
 echo '    -H "Content-Type: application/json" \'
 echo '    -d '"'"'{"title": "Mi Página", "preset": "community", ...}'"'"
 echo ""

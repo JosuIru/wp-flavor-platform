@@ -613,14 +613,14 @@ class Flavor_APK_Builder {
      * Generar archivos de configuración
      */
     private function generate_config_files($config) {
-        // Generar app_config.dart
+        // Generar app_config.dart consumido por Flutter
         $dart_config = $this->generate_dart_config($config);
-        $config_path = $this->flutter_path . '/lib/core/config/generated_config.dart';
+        $config_path = $this->flutter_path . '/lib/core/config/app_config.dart';
         file_put_contents($config_path, $dart_config);
 
-        // Generar colors.dart
+        // Generar app_colors.dart consumido por Flutter
         $colors_config = $this->generate_colors_config($config);
-        $colors_path = $this->flutter_path . '/lib/core/theme/generated_colors.dart';
+        $colors_path = $this->flutter_path . '/lib/core/theme/app_colors.dart';
         file_put_contents($colors_path, $colors_config);
 
         // Actualizar pubspec.yaml version
@@ -634,42 +634,74 @@ class Flavor_APK_Builder {
      * Generar configuración Dart
      */
     private function generate_dart_config($config) {
-        $modules_list = implode("', '", $config['modules']);
+        $modules = array_map(function ($module) {
+            return "    '" . $this->escape_dart_string($module) . "'";
+        }, $config['modules']);
+        $modules_list = empty($modules) ? '' : implode(",\n", $modules);
+        $app_name = $this->escape_dart_string($config['app_name']);
+        $app_id = $this->escape_dart_string($config['app_id']);
+        $package_name = $this->escape_dart_string(
+            $config['app_id'] . ($config['flavor'] === 'admin' ? '.admin' : '.client')
+        );
+        $site_url = rtrim($config['site_url'], '/');
+        $site_url_escaped = $this->escape_dart_string($site_url);
+        $api_url = $this->escape_dart_string($site_url . '/wp-json/chat-ia-mobile/v1');
+        $api_key = $this->escape_dart_string($config['api_key']);
+        $client_app_name = $this->escape_dart_string($config['app_name']);
+        $admin_app_name = $this->escape_dart_string($config['app_name'] . ' Admin');
 
         return <<<DART
 // ARCHIVO GENERADO AUTOMÁTICAMENTE - NO EDITAR MANUALMENTE
 // Generado por Flavor APK Builder el {$this->get_current_datetime()}
 
-/// Configuración generada desde WordPress Admin
-class GeneratedConfig {
-  /// Nombre de la aplicación
-  static const String appName = '{$config['app_name']}';
+import 'package:url_launcher/url_launcher.dart';
 
-  /// ID de la aplicación (package name)
-  static const String appId = '{$config['app_id']}';
-
-  /// Versión de la aplicación
-  static const String appVersion = '{$config['app_version']}';
-
-  /// Número de build
+class AppConfig {
+  static const String appName = '{$app_name}';
+  static const String clientAppName = '{$client_app_name}';
+  static const String adminAppName = '{$admin_app_name}';
+  static const String appId = '{$app_id}';
+  static const String packageName = '{$package_name}';
+  static const String siteUrl = '{$site_url_escaped}';
+  static const String serverUrl = '{$site_url_escaped}';
+  static const String apiUrl = '{$api_url}';
+  static const String apiKey = '{$api_key}';
+  static const String apiVersion = '2.1.0';
+  static const String appVersion = '{$config['app_version']}+{$config['app_build']}';
   static const int appBuild = {$config['app_build']};
-
-  /// URL del sitio WordPress
-  static const String siteUrl = '{$config['site_url']}';
-
-  /// API Key para autenticación
-  static const String apiKey = '{$config['api_key']}';
-
-  /// Módulos habilitados
-  static const List<String> enabledModules = ['{$modules_list}'];
-
-  /// Opciones de funcionalidad
+  static const String flavor = '{$this->escape_dart_string($config['flavor'])}';
+  static const bool isAdminApp = {$this->bool_to_dart($config['flavor'] === 'admin')};
+  static const bool isDebug = false;
+  static const int httpTimeout = 30;
+  static const String? userId = null;
+  static const String developerName = 'Flavor';
+  static const String developerEmail = 'soporte@flavorchatia.local';
+  static const String developerPhone = '+34 600 000 000';
+  static const String appStoreId = '';
+  static const String themeMode = 'system';
   static const bool enableOffline = {$this->bool_to_dart($config['enable_offline'])};
   static const bool enablePush = {$this->bool_to_dart($config['enable_push'])};
   static const bool enableBiometric = {$this->bool_to_dart($config['enable_biometric'])};
 
-  /// Variante de la app
-  static const String flavor = '{$config['flavor']}';
+  static const List<String> enabledModules = [
+{$modules_list}
+  ];
+
+  static Future<bool> openClientApp() async {
+    final uri = Uri.parse('flavorchat://client');
+    if (await canLaunchUrl(uri)) {
+      return launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+    return false;
+  }
+
+  static Future<bool> openAdminApp() async {
+    final uri = Uri.parse('flavorchat://admin');
+    if (await canLaunchUrl(uri)) {
+      return launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+    return false;
+  }
 }
 DART;
     }
@@ -681,34 +713,53 @@ DART;
         $primary = $this->hex_to_dart_color($config['color_primary']);
         $secondary = $this->hex_to_dart_color($config['color_secondary']);
         $accent = $this->hex_to_dart_color($config['color_accent']);
+        $primary_variant = $this->adjust_hex_color($config['color_primary'], -18);
+        $secondary_variant = $this->adjust_hex_color($config['color_secondary'], -18);
+        $background = '0xFFFFFFFF';
+        $surface = '0xFFF8FAFC';
+        $error = '0xFFEF4444';
+        $on_dark = '0xFF0F172A';
+        $on_light = '0xFFFFFFFF';
+        $primary_dark = $this->adjust_hex_color($config['color_primary'], 20);
+        $secondary_dark = $this->adjust_hex_color($config['color_secondary'], 20);
+        $background_dark = '0xFF0F172A';
+        $surface_dark = '0xFF1E293B';
+        $error_dark = '0xFFF87171';
 
         return <<<DART
-// ARCHIVO GENERADO AUTOMÁTICAMENTE - NO EDITAR MANUALMENTE
-// Generado por Flavor APK Builder el {$this->get_current_datetime()}
-
 import 'package:flutter/material.dart';
 
-/// Colores generados desde WordPress Admin
-class GeneratedColors {
-  static const Color primary = Color({$primary});
-  static const Color secondary = Color({$secondary});
-  static const Color accent = Color({$accent});
+// Colores generados automáticamente
+// Generado: {$this->get_current_datetime()}
 
-  static const MaterialColor primarySwatch = MaterialColor(
-    {$primary},
-    <int, Color>{
-      50: Color(0xFFE3F2FD),
-      100: Color(0xFFBBDEFB),
-      200: Color(0xFF90CAF9),
-      300: Color(0xFF64B5F6),
-      400: Color(0xFF42A5F5),
-      500: Color({$primary}),
-      600: Color(0xFF1E88E5),
-      700: Color(0xFF1976D2),
-      800: Color(0xFF1565C0),
-      900: Color(0xFF0D47A1),
-    },
-  );
+class AppColors {
+  // Light Theme
+  static const Color primary = Color({$primary});
+  static const Color primaryVariant = Color({$primary_variant});
+  static const Color secondary = Color({$secondary});
+  static const Color secondaryVariant = Color({$secondary_variant});
+  static const Color background = Color({$background});
+  static const Color surface = Color({$surface});
+  static const Color error = Color({$error});
+  static const Color onPrimary = Color({$on_light});
+  static const Color onSecondary = Color({$on_light});
+  static const Color onBackground = Color({$on_dark});
+  static const Color onSurface = Color({$on_dark});
+  static const Color onError = Color({$on_light});
+
+  // Dark Theme
+  static const Color primaryDark = Color({$primary_dark});
+  static const Color primaryVariantDark = Color({$primary});
+  static const Color secondaryDark = Color({$secondary_dark});
+  static const Color secondaryVariantDark = Color({$secondary});
+  static const Color backgroundDark = Color({$background_dark});
+  static const Color surfaceDark = Color({$surface_dark});
+  static const Color errorDark = Color({$error_dark});
+  static const Color onPrimaryDark = Color({$on_dark});
+  static const Color onSecondaryDark = Color({$on_dark});
+  static const Color onBackgroundDark = Color(0xFFF1F5F9);
+  static const Color onSurfaceDark = Color(0xFFCBD5E1);
+  static const Color onErrorDark = Color({$on_dark});
 }
 DART;
     }
@@ -722,10 +773,39 @@ DART;
     }
 
     /**
+     * Ajustar un color hex sumando/restando luminosidad.
+     */
+    private function adjust_hex_color($hex, $amount) {
+        $hex = ltrim((string) $hex, '#');
+        if (strlen($hex) !== 6) {
+            return '0xFF3B82F6';
+        }
+
+        $channels = str_split($hex, 2);
+        $adjusted = array_map(function ($channel) use ($amount) {
+            $value = hexdec($channel);
+            $value = max(0, min(255, $value + $amount));
+            return str_pad(strtoupper(dechex($value)), 2, '0', STR_PAD_LEFT);
+        }, $channels);
+
+        return '0xFF' . implode('', $adjusted);
+    }
+
+    /**
      * Convertir bool a Dart
      */
     private function bool_to_dart($value) {
         return $value ? 'true' : 'false';
+    }
+
+    /**
+     * Escapar cadenas para literales simples de Dart.
+     */
+    private function escape_dart_string($value) {
+        $value = (string) $value;
+        $value = str_replace('\\', '\\\\', $value);
+        $value = str_replace("'", "\\'", $value);
+        return str_replace(array("\r", "\n"), array('\\r', '\\n'), $value);
     }
 
     /**
@@ -766,15 +846,15 @@ DART;
 
         // Actualizar applicationId
         $content = preg_replace(
-            '/applicationId\s+"[^"]+"/m',
-            'applicationId "' . $config['app_id'] . '"',
+            '/applicationId\s*=\s*"[^"]+"/m',
+            'applicationId = "' . $config['app_id'] . '"',
             $content
         );
 
-        // Actualizar minSdkVersion
+        // Actualizar minSdk del Gradle moderno
         $content = preg_replace(
-            '/minSdkVersion\s+\d+/m',
-            'minSdkVersion ' . $config['min_android_version'],
+            '/minSdk\s*=\s*\d+/m',
+            'minSdk = ' . $config['min_android_version'],
             $content
         );
 
@@ -812,7 +892,17 @@ DART;
         // Comando de build
         $build_type = $config['build_type'] === 'appbundle' ? 'appbundle' : 'apk';
         $flavor = $config['flavor'];
-        $command = "cd {$this->flutter_path} && flutter build {$build_type} --flavor {$flavor} --release 2>&1";
+        $target = $this->get_flutter_target_for_flavor($flavor);
+
+        $this->prepare_keystore_for_build();
+
+        $command = sprintf(
+            'cd %s && flutter build %s --flavor %s -t %s --release 2>&1',
+            escapeshellarg($this->flutter_path),
+            escapeshellarg($build_type),
+            escapeshellarg($flavor),
+            escapeshellarg($target)
+        );
 
         // Guardar info del build
         $build_info = array(
@@ -874,11 +964,12 @@ DART;
             $build_info['status'] = 'success';
             $build_info['completed_at'] = current_time('mysql');
 
-            // Buscar APK generada
-            $apk_path = $this->find_built_apk($build_info['config']);
-            if ($apk_path) {
-                $build_info['apk_path'] = $apk_path;
-                $build_info['apk_size'] = filesize($apk_path);
+            // Buscar artefacto generado
+            $artifact_path = $this->find_built_artifact($build_info['config']);
+            if ($artifact_path) {
+                $build_info['artifact_path'] = $artifact_path;
+                $build_info['apk_path'] = $artifact_path;
+                $build_info['apk_size'] = filesize($artifact_path);
             }
 
             update_option('flavor_current_build', null);
@@ -899,14 +990,20 @@ DART;
     }
 
     /**
-     * Buscar APK generada
+     * Buscar artefacto generado
      */
-    private function find_built_apk($config) {
+    private function find_built_artifact($config) {
         $flavor = $config['flavor'];
-        $patterns = array(
-            $this->flutter_path . "/build/app/outputs/flutter-apk/app-{$flavor}-release.apk",
-            $this->flutter_path . "/build/app/outputs/apk/{$flavor}/release/app-{$flavor}-release.apk",
-        );
+        $build_type = $config['build_type'] === 'appbundle' ? 'appbundle' : 'apk';
+        $patterns = $build_type === 'appbundle'
+            ? array(
+                $this->flutter_path . "/build/app/outputs/bundle/{$flavor}Release/app-{$flavor}-release.aab",
+                $this->flutter_path . "/build/app/outputs/bundle/release/app-release.aab",
+            )
+            : array(
+                $this->flutter_path . "/build/app/outputs/flutter-apk/app-{$flavor}-release.apk",
+                $this->flutter_path . "/build/app/outputs/apk/{$flavor}/release/app-{$flavor}-release.apk",
+            );
 
         foreach ($patterns as $pattern) {
             if (file_exists($pattern)) {
@@ -915,6 +1012,35 @@ DART;
         }
 
         return null;
+    }
+
+    /**
+     * Obtener target Dart según flavor.
+     */
+    private function get_flutter_target_for_flavor($flavor) {
+        return $flavor === 'admin' ? 'lib/main_admin.dart' : 'lib/main_client.dart';
+    }
+
+    /**
+     * Preparar key.properties si existe un keystore por defecto.
+     */
+    private function prepare_keystore_for_build() {
+        if (!class_exists('Flavor_Keystore_Manager')) {
+            return;
+        }
+
+        $manager = Flavor_Keystore_Manager::get_instance();
+        if (!method_exists($manager, 'generate_key_properties')) {
+            return;
+        }
+
+        $key_properties = $manager->generate_key_properties();
+        if ($key_properties === false || empty($key_properties)) {
+            return;
+        }
+
+        $key_properties_path = $this->flutter_path . '/android/key.properties';
+        file_put_contents($key_properties_path, $key_properties);
     }
 
     /**
@@ -1007,8 +1133,8 @@ DART;
 
 ## 2. Configuración
 Los archivos de configuración han sido generados en:
-- lib/core/config/generated_config.dart
-- lib/core/theme/generated_colors.dart
+- lib/core/config/app_config.dart
+- lib/core/theme/app_colors.dart
 
 ## 3. Comandos de compilación
 
@@ -1016,8 +1142,8 @@ Los archivos de configuración han sido generados en:
 cd mobile-apps
 flutter pub get
 
-# Compilar APK de cliente
-flutter build {$build_type} --flavor {$flavor} --release
+# Compilar artefacto
+flutter build {$build_type} --flavor {$flavor} -t {$this->get_flutter_target_for_flavor($flavor)} --release
 
 # La APK se generará en:
 # build/app/outputs/flutter-apk/app-{$flavor}-release.apk
