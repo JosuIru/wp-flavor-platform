@@ -164,26 +164,44 @@ class Flavor_AI_Template_Assistant {
 
     /**
      * Obtener plantillas existentes para referencia
+     *
+     * @since 3.4.0 Usa VBP como fuente de templates
      */
     private function get_existing_templates_for_prompt() {
-        $page_builder = Flavor_Page_Builder::get_instance();
-        $reflection = new ReflectionClass($page_builder);
-        $method = $reflection->getMethod('get_template_library');
-        $method->setAccessible(true);
-        $templates = $method->invoke($page_builder);
+        $templates = [];
+
+        // Usar VBP REST API para obtener templates
+        if (class_exists('Flavor_VBP_REST_API')) {
+            $vbp_api = Flavor_VBP_REST_API::get_instance();
+            if (method_exists($vbp_api, 'get_library_templates')) {
+                $vbp_templates = $vbp_api->get_library_templates();
+                foreach ($vbp_templates as $template) {
+                    $category = $template['category'] ?? 'general';
+                    if (!isset($templates[$category])) {
+                        $templates[$category] = [
+                            'label' => ucfirst($category),
+                            'templates' => [],
+                        ];
+                    }
+                    $template_id = $template['id'] ?? sanitize_title($template['title'] ?? 'template');
+                    $templates[$category]['templates'][$template_id] = $template;
+                }
+            }
+        }
 
         $template_examples = [];
         foreach ($templates as $sector => $sector_data) {
             $template_examples[] = "### Sector: {$sector_data['label']}";
             foreach ($sector_data['templates'] as $template_id => $template) {
-                $components_count = count($template['layout']);
-                $component_ids = array_column($template['layout'], 'component_id');
+                $elements = $template['elements'] ?? $template['blocks'] ?? [];
+                $components_count = count($elements);
+                $component_types = array_column($elements, 'type');
                 $template_examples[] = sprintf(
                     "- %s: %s (%d componentes: %s)",
                     $template_id,
-                    $template['name'],
+                    $template['name'] ?? $template['title'] ?? $template_id,
                     $components_count,
-                    implode(', ', array_slice($component_ids, 0, 4)) . (count($component_ids) > 4 ? '...' : '')
+                    implode(', ', array_slice($component_types, 0, 4)) . (count($component_types) > 4 ? '...' : '')
                 );
             }
         }

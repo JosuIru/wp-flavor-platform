@@ -429,8 +429,9 @@ class Flavor_Multilingual {
 
         // Frontend
         if (!is_admin()) {
-            require_once FLAVOR_MULTILINGUAL_PATH . 'frontend/class-frontend-controller.php';
+            // Cargar primero language-switcher porque define Flavor_Language_Switcher_Widget
             require_once FLAVOR_MULTILINGUAL_PATH . 'frontend/class-language-switcher.php';
+            require_once FLAVOR_MULTILINGUAL_PATH . 'frontend/class-frontend-controller.php';
         }
 
         // API

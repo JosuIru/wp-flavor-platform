@@ -55,6 +55,80 @@ class Flavor_ML_VBP_Integration {
     }
 
     /**
+     * Obtiene el documento VBP actual normalizado.
+     *
+     * @param int $post_id ID del post.
+     * @return array|null
+     */
+    private function get_vbp_document($post_id) {
+        if (class_exists('Flavor_VBP_Editor')) {
+            return Flavor_VBP_Editor::get_instance()->obtener_datos_documento($post_id);
+        }
+
+        $document = get_post_meta($post_id, '_flavor_vbp_data', true);
+        if (is_array($document)) {
+            return $document;
+        }
+
+        $legacy = get_post_meta($post_id, '_vbp_content', true);
+        if (is_array($legacy)) {
+            return array(
+                'version'  => 'legacy',
+                'elements' => isset($legacy['blocks']) && is_array($legacy['blocks']) ? $legacy['blocks'] : $legacy,
+                'settings' => array(),
+            );
+        }
+
+        return null;
+    }
+
+    /**
+     * Devuelve la lista de bloques/elementos traducibles desde un documento.
+     *
+     * @param array $document Documento VBP.
+     * @return array
+     */
+    private function get_translatable_blocks($document) {
+        if (!is_array($document)) {
+            return array();
+        }
+
+        if (isset($document['elements']) && is_array($document['elements'])) {
+            return $document['elements'];
+        }
+
+        if (isset($document['blocks']) && is_array($document['blocks'])) {
+            return $document['blocks'];
+        }
+
+        return array();
+    }
+
+    /**
+     * Reconstruye el documento tras traducir sus bloques/elementos.
+     *
+     * @param array $document          Documento original.
+     * @param array $translated_blocks Bloques traducidos.
+     * @param string $from_lang        Idioma origen.
+     * @return array
+     */
+    private function build_translated_document($document, $translated_blocks, $from_lang) {
+        $translated = is_array($document) ? $document : array();
+
+        if (isset($translated['elements']) && is_array($translated['elements'])) {
+            $translated['elements'] = $translated_blocks;
+        } else {
+            $translated['blocks'] = $translated_blocks;
+        }
+
+        $translated['version'] = $translated['version'] ?? '1.0';
+        $translated['translated'] = true;
+        $translated['from_lang'] = $from_lang;
+
+        return $translated;
+    }
+
+    /**
      * Inicializa los hooks
      */
     private function init_hooks() {
@@ -518,17 +592,14 @@ class Flavor_ML_VBP_Integration {
             wp_send_json_error(__('Parámetros inválidos', 'flavor-multilingual'));
         }
 
-        // Obtener contenido VBP del post
-        $vbp_content = get_post_meta($post_id, '_vbp_content', true);
-
-        if (empty($vbp_content)) {
+        // Obtener documento VBP del post.
+        $content_data = $this->get_vbp_document($post_id);
+        if (empty($content_data)) {
             wp_send_json_error(__('No hay contenido VBP en esta página', 'flavor-multilingual'));
         }
 
-        // Decodificar JSON
-        $content_data = is_string($vbp_content) ? json_decode($vbp_content, true) : $vbp_content;
-
-        if (!$content_data || !isset($content_data['blocks'])) {
+        $blocks = $this->get_translatable_blocks($content_data);
+        if (empty($blocks)) {
             wp_send_json_error(__('Contenido VBP inválido', 'flavor-multilingual'));
         }
 
@@ -536,16 +607,11 @@ class Flavor_ML_VBP_Integration {
         $core = Flavor_Multilingual_Core::get_instance();
         $from_lang = $core->get_default_language();
 
-        $translated_blocks = $this->translate_blocks_recursive($content_data['blocks'], $from_lang, $to_lang);
+        $translated_blocks = $this->translate_blocks_recursive($blocks, $from_lang, $to_lang);
 
         // Guardar traducción
         $storage = Flavor_Translation_Storage::get_instance();
-        $translated_content = array(
-            'blocks'     => $translated_blocks,
-            'version'    => $content_data['version'] ?? '1.0',
-            'translated' => true,
-            'from_lang'  => $from_lang,
-        );
+        $translated_content = $this->build_translated_document($content_data, $translated_blocks, $from_lang);
 
         $storage->save_translation('vbp', $post_id, $to_lang, 'content_json', wp_json_encode($translated_content), array(
             'auto'   => true,
@@ -697,9 +763,8 @@ class Flavor_ML_VBP_Integration {
             ));
         } else {
             // Devolver contenido original
-            $vbp_content = get_post_meta($post_id, '_vbp_content', true);
             wp_send_json_success(array(
-                'content'  => is_string($vbp_content) ? json_decode($vbp_content, true) : $vbp_content,
+                'content'  => $this->get_vbp_document($post_id),
                 'original' => true,
             ));
         }
@@ -929,30 +994,23 @@ class Flavor_ML_VBP_Integration {
      * @return array|WP_Error
      */
     private function translate_vbp_page_internal($post_id, $to_lang) {
-        $vbp_content = get_post_meta($post_id, '_vbp_content', true);
-
-        if (empty($vbp_content)) {
+        $content_data = $this->get_vbp_document($post_id);
+        if (empty($content_data)) {
             return new WP_Error('no_content', __('No hay contenido VBP', 'flavor-multilingual'));
         }
 
-        $content_data = is_string($vbp_content) ? json_decode($vbp_content, true) : $vbp_content;
-
-        if (!$content_data || !isset($content_data['blocks'])) {
+        $blocks = $this->get_translatable_blocks($content_data);
+        if (empty($blocks)) {
             return new WP_Error('invalid_content', __('Contenido VBP inválido', 'flavor-multilingual'));
         }
 
         $core = Flavor_Multilingual_Core::get_instance();
         $from_lang = $core->get_default_language();
 
-        $translated_blocks = $this->translate_blocks_recursive($content_data['blocks'], $from_lang, $to_lang);
+        $translated_blocks = $this->translate_blocks_recursive($blocks, $from_lang, $to_lang);
 
         $storage = Flavor_Translation_Storage::get_instance();
-        $translated_content = array(
-            'blocks'     => $translated_blocks,
-            'version'    => $content_data['version'] ?? '1.0',
-            'translated' => true,
-            'from_lang'  => $from_lang,
-        );
+        $translated_content = $this->build_translated_document($content_data, $translated_blocks, $from_lang);
 
         $storage->save_translation('vbp', $post_id, $to_lang, 'content_json', wp_json_encode($translated_content), array(
             'auto'   => true,
