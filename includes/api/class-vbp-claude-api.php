@@ -11839,7 +11839,7 @@ class Flavor_VBP_Claude_API {
         $pages = get_posts( array(
             'post_type'      => 'flavor_landing',
             'post_status'    => 'any',
-            'posts_per_page' => -1,
+            'posts_per_page' => flavor_safe_posts_limit( -1 ),
         ) );
 
         $presets_usage = array();
@@ -12545,7 +12545,7 @@ class Flavor_VBP_Claude_API {
         $pages = get_posts( array(
             'post_type'      => 'flavor_landing',
             'post_status'    => $post_statuses,
-            'posts_per_page' => -1,
+            'posts_per_page' => flavor_safe_posts_limit( -1 ),
             'orderby'        => 'menu_order title',
             'order'          => 'ASC',
         ) );
@@ -16337,7 +16337,7 @@ class Flavor_VBP_Claude_API {
         $pages = get_posts( array(
             'post_type'      => 'flavor_landing',
             'post_status'    => 'future',
-            'posts_per_page' => -1,
+            'posts_per_page' => flavor_safe_posts_limit( -1 ),
             'orderby'        => 'date',
             'order'          => 'ASC',
         ) );
@@ -16955,7 +16955,7 @@ class Flavor_VBP_Claude_API {
         $pages = get_posts( array(
             'post_type'      => 'flavor_landing',
             'post_status'    => $statuses,
-            'posts_per_page' => -1,
+            'posts_per_page' => flavor_safe_posts_limit( -1 ),
             'orderby'        => 'date',
             'order'          => 'ASC',
         ) );
@@ -19480,7 +19480,7 @@ class Flavor_VBP_Claude_API {
         $pages = get_posts( array(
             'post_type'      => 'flavor_landing',
             'post_status'    => 'any',
-            'posts_per_page' => -1,
+            'posts_per_page' => flavor_safe_posts_limit( -1 ),
         ) );
 
         $total_blocks = 0;
@@ -19533,7 +19533,7 @@ class Flavor_VBP_Claude_API {
         $pages = get_posts( array(
             'post_type'      => 'flavor_landing',
             'post_status'    => 'publish',
-            'posts_per_page' => -1,
+            'posts_per_page' => flavor_safe_posts_limit( -1 ),
         ) );
 
         $regenerated = 0;
@@ -21912,7 +21912,7 @@ class Flavor_VBP_Claude_API {
 
         $pages_query = new WP_Query( array(
             'post_type'      => 'flavor_landing',
-            'posts_per_page' => -1,
+            'posts_per_page' => flavor_safe_posts_limit( -1 ),
             'fields'         => 'ids',
         ) );
 
@@ -23854,7 +23854,7 @@ class Flavor_VBP_Claude_API {
         // Obtener todas las páginas VBP
         $pages = get_posts( array(
             'post_type'      => 'flavor_landing',
-            'posts_per_page' => -1,
+            'posts_per_page' => flavor_safe_posts_limit( -1 ),
             'post_status'    => 'publish',
         ) );
 
@@ -24855,7 +24855,7 @@ class Flavor_VBP_Claude_API {
         if ( empty( $pages_to_search ) ) {
             $all_pages = get_posts( array(
                 'post_type'      => 'flavor_landing',
-                'posts_per_page' => -1,
+                'posts_per_page' => flavor_safe_posts_limit( -1 ),
                 'fields'         => 'ids',
             ) );
             $pages_to_search = $all_pages;
@@ -24946,7 +24946,7 @@ class Flavor_VBP_Claude_API {
         if ( empty( $pages_to_search ) ) {
             $all_pages = get_posts( array(
                 'post_type'      => 'flavor_landing',
-                'posts_per_page' => -1,
+                'posts_per_page' => flavor_safe_posts_limit( -1 ),
                 'fields'         => 'ids',
             ) );
             $pages_to_search = $all_pages;
