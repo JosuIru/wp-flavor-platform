@@ -194,7 +194,7 @@ class Flavor_Marketplace_Frontend_Controller {
             'post_type' => 'marketplace_item',
             'post_status' => 'publish',
             'author' => get_current_user_id(),
-            'posts_per_page' => -1,
+            'posts_per_page' => function_exists('flavor_safe_posts_limit') ? flavor_safe_posts_limit(-1) : 200,
             'fields' => 'ids',
         ]));
     }
@@ -943,7 +943,7 @@ class Flavor_Marketplace_Frontend_Controller {
             'post_type' => 'marketplace_item',
             'post_status' => ['publish', 'pending', 'draft'],
             'author' => $usuario_id,
-            'posts_per_page' => -1,
+            'posts_per_page' => function_exists('flavor_safe_posts_limit') ? flavor_safe_posts_limit(-1) : 200,
             'orderby' => 'date',
             'order' => 'DESC',
         ]);
@@ -1044,7 +1044,7 @@ class Flavor_Marketplace_Frontend_Controller {
                 'post_type' => 'marketplace_item',
                 'post_status' => 'publish',
                 'post__in' => $favoritos_ids,
-                'posts_per_page' => -1,
+                'posts_per_page' => function_exists('flavor_safe_posts_limit') ? flavor_safe_posts_limit(-1) : 200,
                 'orderby' => 'post__in',
             ]);
         }

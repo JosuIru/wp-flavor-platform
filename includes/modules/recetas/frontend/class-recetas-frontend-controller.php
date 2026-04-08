@@ -182,7 +182,7 @@ class Flavor_Recetas_Frontend_Controller {
             'post_type' => $this->post_type,
             'author' => $user_id,
             'post_status' => 'any',
-            'posts_per_page' => -1,
+            'posts_per_page' => function_exists('flavor_safe_posts_limit') ? flavor_safe_posts_limit(-1) : 200,
             'fields' => 'ids',
         ]));
 
@@ -539,7 +539,7 @@ class Flavor_Recetas_Frontend_Controller {
         $recetas = get_posts([
             'post_type' => $this->post_type,
             'author' => $user_id,
-            'posts_per_page' => -1,
+            'posts_per_page' => function_exists('flavor_safe_posts_limit') ? flavor_safe_posts_limit(-1) : 200,
             'post_status' => ['publish', 'draft', 'pending'],
         ]);
 
@@ -633,7 +633,7 @@ class Flavor_Recetas_Frontend_Controller {
                 $recetas = get_posts([
                     'post_type' => $this->post_type,
                     'post__in' => $favoritos,
-                    'posts_per_page' => -1,
+                    'posts_per_page' => function_exists('flavor_safe_posts_limit') ? flavor_safe_posts_limit(-1) : 200,
                 ]);
             ?>
                 <div class="flavor-recetas-grid">
@@ -794,7 +794,7 @@ class Flavor_Recetas_Frontend_Controller {
         // Obtener productos disponibles
         $productos_gc = get_posts([
             'post_type' => 'gc_producto',
-            'posts_per_page' => -1,
+            'posts_per_page' => function_exists('flavor_safe_posts_limit') ? flavor_safe_posts_limit(-1) : 200,
             'post_status' => 'publish',
             'orderby' => 'title',
             'order' => 'ASC',
@@ -1397,7 +1397,7 @@ class Flavor_Recetas_Frontend_Controller {
             'post_type' => $this->post_type,
             'author' => $user_id,
             'post_status' => 'any',
-            'posts_per_page' => -1,
+            'posts_per_page' => function_exists('flavor_safe_posts_limit') ? flavor_safe_posts_limit(-1) : 200,
             'fields' => 'ids',
         ]));
 

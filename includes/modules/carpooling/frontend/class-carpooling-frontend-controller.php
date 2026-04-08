@@ -172,7 +172,7 @@ class Flavor_Carpooling_Frontend_Controller {
             'post_type' => 'carpooling_viaje',
             'post_status' => 'publish',
             'author' => get_current_user_id(),
-            'posts_per_page' => -1,
+            'posts_per_page' => function_exists('flavor_safe_posts_limit') ? flavor_safe_posts_limit(-1) : 200,
             'fields' => 'ids',
             'meta_query' => [
                 [
@@ -858,7 +858,7 @@ class Flavor_Carpooling_Frontend_Controller {
             'post_type' => 'carpooling_viaje',
             'post_status' => ['publish', 'draft'],
             'author' => $usuario_id,
-            'posts_per_page' => -1,
+            'posts_per_page' => function_exists('flavor_safe_posts_limit') ? flavor_safe_posts_limit(-1) : 200,
             'meta_key' => '_carpooling_fecha',
             'orderby' => 'meta_value',
             'order' => 'DESC',
