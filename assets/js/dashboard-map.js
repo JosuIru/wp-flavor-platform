@@ -6,313 +6,313 @@
  *
  * @package FlavorChatIA
  */
-(function($) {
-    'use strict';
+(function ($) {
+	'use strict';
 
-    /**
+	/**
      * Modulo del Mapa del Dashboard
      */
-    var FlavorDashboardMap = {
-        /**
+	var FlavorDashboardMap = {
+		/**
          * Instancia del mapa Leaflet
          */
-        mapa: null,
+		mapa: null,
 
-        /**
+		/**
          * Layer group de clusters
          */
-        clusterMarcadores: null,
+		clusterMarcadores: null,
 
-        /**
+		/**
          * Todos los marcadores cargados
          */
-        marcadores: [],
+		marcadores: [],
 
-        /**
+		/**
          * Marcadores visibles actualmente
          */
-        marcadoresVisibles: [],
+		marcadoresVisibles: [],
 
-        /**
+		/**
          * Configuracion del mapa
          */
-        configuracion: {
-            lat: 40.4168,
-            lng: -3.7038,
-            zoom: 13,
-            minZoom: 5,
-            maxZoom: 18,
-            tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            tileAttribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        },
+		configuracion: {
+			lat: 40.4168,
+			lng: -3.7038,
+			zoom: 13,
+			minZoom: 5,
+			maxZoom: 18,
+			tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+			tileAttribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		},
 
-        /**
+		/**
          * Categoria filtro activa
          */
-        categoriaActiva: 'todos',
+		categoriaActiva: 'todos',
 
-        /**
+		/**
          * Marcador de ubicacion del usuario
          */
-        marcadorUsuario: null,
+		marcadorUsuario: null,
 
-        /**
+		/**
          * Iconos SVG por categoria
          */
-        iconosSVG: {
-            bicicletas: '<path d="M18.5 17.5A3.5 3.5 0 1015 14a3.5 3.5 0 003.5 3.5zm0 0"/><path d="M5.5 17.5A3.5 3.5 0 102 14a3.5 3.5 0 003.5 3.5zm0 0"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h3"/>',
-            parkings: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 17V7h4a3 3 0 010 6H9"/>',
-            huertos: '<path d="M11 20A7 7 0 019.84 6.34L12 3l2.16 3.34A7 7 0 0111 20z"/><path d="M6.87 14.13l5.17-4.13"/>',
-            reciclaje: '<path d="M7 19H4.815a1.83 1.83 0 01-1.57-.881 1.785 1.785 0 01-.004-1.784L7.196 9.5"/><path d="M11 19h5.816a1.83 1.83 0 001.57-.881 1.785 1.785 0 00.004-1.784L14.433 9.5"/><path d="M14 16l3 3-3 3"/><path d="M8.5 9.5L12 2l3.5 7.5"/><path d="M14 10l-2 2-2-2"/>',
-            espacios: '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'
-        },
+		iconosSVG: {
+			bicicletas: '<path d="M18.5 17.5A3.5 3.5 0 1015 14a3.5 3.5 0 003.5 3.5zm0 0"/><path d="M5.5 17.5A3.5 3.5 0 102 14a3.5 3.5 0 003.5 3.5zm0 0"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h3"/>',
+			parkings: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 17V7h4a3 3 0 010 6H9"/>',
+			huertos: '<path d="M11 20A7 7 0 019.84 6.34L12 3l2.16 3.34A7 7 0 0111 20z"/><path d="M6.87 14.13l5.17-4.13"/>',
+			reciclaje: '<path d="M7 19H4.815a1.83 1.83 0 01-1.57-.881 1.785 1.785 0 01-.004-1.784L7.196 9.5"/><path d="M11 19h5.816a1.83 1.83 0 001.57-.881 1.785 1.785 0 00.004-1.784L14.433 9.5"/><path d="M14 16l3 3-3 3"/><path d="M8.5 9.5L12 2l3.5 7.5"/><path d="M14 10l-2 2-2-2"/>',
+			espacios: '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'
+		},
 
-        /**
+		/**
          * Colores por categoria
          */
-        coloresCategoria: {
-            bicicletas: '#10b981',
-            parkings: '#3b82f6',
-            huertos: '#84cc16',
-            reciclaje: '#f59e0b',
-            espacios: '#8b5cf6'
-        },
+		coloresCategoria: {
+			bicicletas: '#10b981',
+			parkings: '#3b82f6',
+			huertos: '#84cc16',
+			reciclaje: '#f59e0b',
+			espacios: '#8b5cf6'
+		},
 
-        /**
+		/**
          * Inicializa el mapa
          */
-        init: function() {
-            var contenedorMapa = document.getElementById('flavor-dashboard-map');
-            if (!contenedorMapa) {
-                return;
-            }
+		init: function () {
+			var contenedorMapa = document.getElementById('flavor-dashboard-map');
+			if (!contenedorMapa) {
+				return;
+			}
 
-            // Verificar que Leaflet esta cargado
-            if (typeof L === 'undefined') {
-                console.warn('FlavorDashboardMap: Leaflet no esta cargado');
-                return;
-            }
+			// Verificar que Leaflet esta cargado
+			if (typeof L === 'undefined') {
+				console.warn('FlavorDashboardMap: Leaflet no esta cargado');
+				return;
+			}
 
-            this.cargarConfiguracion(contenedorMapa);
-            this.crearMapa(contenedorMapa);
-            this.cargarMarcadores(contenedorMapa);
-            this.vincularEventos();
+			this.cargarConfiguracion(contenedorMapa);
+			this.crearMapa(contenedorMapa);
+			this.cargarMarcadores(contenedorMapa);
+			this.vincularEventos();
 
-            // Marcar como cargado
-            $(contenedorMapa).addClass('loaded');
+			// Marcar como cargado
+			$(contenedorMapa).addClass('loaded');
 
-            // Emitir evento
-            $(document).trigger('flavorDashboardMap:ready', [this]);
-        },
+			// Emitir evento
+			$(document).trigger('flavorDashboardMap:ready', [this]);
+		},
 
-        /**
+		/**
          * Carga configuracion desde el contenedor
          */
-        cargarConfiguracion: function(contenedor) {
-            var latitud = contenedor.dataset.lat;
-            var longitud = contenedor.dataset.lng;
-            var nivelZoom = contenedor.dataset.zoom;
+		cargarConfiguracion: function (contenedor) {
+			var latitud = contenedor.dataset.lat;
+			var longitud = contenedor.dataset.lng;
+			var nivelZoom = contenedor.dataset.zoom;
 
-            if (latitud && longitud) {
-                this.configuracion.lat = parseFloat(latitud);
-                this.configuracion.lng = parseFloat(longitud);
-            }
+			if (latitud && longitud) {
+				this.configuracion.lat = parseFloat(latitud);
+				this.configuracion.lng = parseFloat(longitud);
+			}
 
-            if (nivelZoom) {
-                this.configuracion.zoom = parseInt(nivelZoom, 10);
-            }
-        },
+			if (nivelZoom) {
+				this.configuracion.zoom = parseInt(nivelZoom, 10);
+			}
+		},
 
-        /**
+		/**
          * Crea el mapa Leaflet
          */
-        crearMapa: function(contenedor) {
-            var self = this;
+		crearMapa: function (contenedor) {
+			var self = this;
 
-            // Crear instancia del mapa
-            this.mapa = L.map(contenedor, {
-                center: [this.configuracion.lat, this.configuracion.lng],
-                zoom: this.configuracion.zoom,
-                minZoom: this.configuracion.minZoom,
-                maxZoom: this.configuracion.maxZoom,
-                zoomControl: true,
-                scrollWheelZoom: true,
-                attributionControl: true
-            });
+			// Crear instancia del mapa
+			this.mapa = L.map(contenedor, {
+				center: [this.configuracion.lat, this.configuracion.lng],
+				zoom: this.configuracion.zoom,
+				minZoom: this.configuracion.minZoom,
+				maxZoom: this.configuracion.maxZoom,
+				zoomControl: true,
+				scrollWheelZoom: true,
+				attributionControl: true
+			});
 
-            // Agregar capa de tiles
-            L.tileLayer(this.configuracion.tileUrl, {
-                attribution: this.configuracion.tileAttribution,
-                maxZoom: this.configuracion.maxZoom
-            }).addTo(this.mapa);
+			// Agregar capa de tiles
+			L.tileLayer(this.configuracion.tileUrl, {
+				attribution: this.configuracion.tileAttribution,
+				maxZoom: this.configuracion.maxZoom
+			}).addTo(this.mapa);
 
-            // Crear cluster de marcadores
-            if (typeof L.markerClusterGroup !== 'undefined') {
-                this.clusterMarcadores = L.markerClusterGroup({
-                    showCoverageOnHover: false,
-                    maxClusterRadius: 50,
-                    spiderfyOnMaxZoom: true,
-                    disableClusteringAtZoom: 16,
-                    iconCreateFunction: function(cluster) {
-                        var conteo = cluster.getChildCount();
-                        var tamanoClase = conteo < 10 ? 'small' : (conteo < 50 ? 'medium' : 'large');
-                        return L.divIcon({
-                            html: '<div>' + conteo + '</div>',
-                            className: 'marker-cluster marker-cluster-' + tamanoClase,
-                            iconSize: L.point(40, 40)
-                        });
-                    }
-                });
-                this.mapa.addLayer(this.clusterMarcadores);
-            }
+			// Crear cluster de marcadores
+			if (typeof L.markerClusterGroup !== 'undefined') {
+				this.clusterMarcadores = L.markerClusterGroup({
+					showCoverageOnHover: false,
+					maxClusterRadius: 50,
+					spiderfyOnMaxZoom: true,
+					disableClusteringAtZoom: 16,
+					iconCreateFunction: function (cluster) {
+						var conteo = cluster.getChildCount();
+						var tamanoClase = conteo < 10 ? 'small' : (conteo < 50 ? 'medium' : 'large');
+						return L.divIcon({
+							html: '<div>' + conteo + '</div>',
+							className: 'marker-cluster marker-cluster-' + tamanoClase,
+							iconSize: L.point(40, 40)
+						});
+					}
+				});
+				this.mapa.addLayer(this.clusterMarcadores);
+			}
 
-            // Invalidar tamano al cargar
-            setTimeout(function() {
-                self.mapa.invalidateSize();
-            }, 100);
-        },
+			// Invalidar tamano al cargar
+			setTimeout(function () {
+				self.mapa.invalidateSize();
+			}, 100);
+		},
 
-        /**
+		/**
          * Carga marcadores desde el data attribute o AJAX
          */
-        cargarMarcadores: function(contenedor) {
-            var self = this;
-            var marcadoresData = contenedor.dataset.markers;
+		cargarMarcadores: function (contenedor) {
+			var self = this;
+			var marcadoresData = contenedor.dataset.markers;
 
-            if (marcadoresData) {
-                try {
-                    var marcadores = JSON.parse(marcadoresData);
-                    this.procesarMarcadores(marcadores);
-                } catch (errorParseJSON) {
-                    console.warn('Error al parsear marcadores:', errorParseJSON);
-                    this.cargarMarcadoresAJAX();
-                }
-            } else {
-                this.cargarMarcadoresAJAX();
-            }
-        },
+			if (marcadoresData) {
+				try {
+					var marcadores = JSON.parse(marcadoresData);
+					this.procesarMarcadores(marcadores);
+				} catch (errorParseJSON) {
+					console.warn('Error al parsear marcadores:', errorParseJSON);
+					this.cargarMarcadoresAJAX();
+				}
+			} else {
+				this.cargarMarcadoresAJAX();
+			}
+		},
 
-        /**
+		/**
          * Carga marcadores via AJAX
          */
-        cargarMarcadoresAJAX: function() {
-            var self = this;
+		cargarMarcadoresAJAX: function () {
+			var self = this;
 
-            if (typeof flavorDashboardMap === 'undefined') {
-                return;
-            }
+			if (typeof flavorDashboardMap === 'undefined') {
+				return;
+			}
 
-            $.ajax({
-                url: flavorDashboardMap.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'flavor_client_dashboard_map_markers',
-                    nonce: flavorDashboardMap.nonce,
-                    categoria: this.categoriaActiva
-                },
-                success: function(respuesta) {
-                    if (respuesta.success && respuesta.data.marcadores) {
-                        self.procesarMarcadores(respuesta.data.marcadores);
-                    }
-                },
-                error: function(errorXHR) {
-                    console.warn('Error al cargar marcadores:', errorXHR);
-                }
-            });
-        },
+			$.ajax({
+				url: flavorDashboardMap.ajaxUrl,
+				type: 'POST',
+				data: {
+					action: 'flavor_client_dashboard_map_markers',
+					nonce: flavorDashboardMap.nonce,
+					categoria: this.categoriaActiva
+				},
+				success: function (respuesta) {
+					if (respuesta.success && respuesta.data.marcadores) {
+						self.procesarMarcadores(respuesta.data.marcadores);
+					}
+				},
+				error: function (errorXHR) {
+					console.warn('Error al cargar marcadores:', errorXHR);
+				}
+			});
+		},
 
-        /**
+		/**
          * Procesa y agrega marcadores al mapa
          */
-        procesarMarcadores: function(datos) {
-            var self = this;
+		procesarMarcadores: function (datos) {
+			var self = this;
 
-            if (!Array.isArray(datos)) {
-                return;
-            }
+			if (!Array.isArray(datos)) {
+				return;
+			}
 
-            // Limpiar marcadores existentes
-            this.limpiarMarcadores();
+			// Limpiar marcadores existentes
+			this.limpiarMarcadores();
 
-            // Guardar datos originales
-            this.marcadores = datos;
+			// Guardar datos originales
+			this.marcadores = datos;
 
-            // Crear marcadores
-            datos.forEach(function(datosMarcador) {
-                if (!datosMarcador.lat || !datosMarcador.lng) {
-                    return;
-                }
+			// Crear marcadores
+			datos.forEach(function (datosMarcador) {
+				if (!datosMarcador.lat || !datosMarcador.lng) {
+					return;
+				}
 
-                var marcador = self.crearMarcador(datosMarcador);
-                if (marcador) {
-                    self.marcadoresVisibles.push({
-                        leaflet: marcador,
-                        datos: datosMarcador
-                    });
+				var marcador = self.crearMarcador(datosMarcador);
+				if (marcador) {
+					self.marcadoresVisibles.push({
+						leaflet: marcador,
+						datos: datosMarcador
+					});
 
-                    if (self.clusterMarcadores) {
-                        self.clusterMarcadores.addLayer(marcador);
-                    } else {
-                        marcador.addTo(self.mapa);
-                    }
-                }
-            });
+					if (self.clusterMarcadores) {
+						self.clusterMarcadores.addLayer(marcador);
+					} else {
+						marcador.addTo(self.mapa);
+					}
+				}
+			});
 
-            // Ajustar vista si hay marcadores
-            if (this.marcadoresVisibles.length > 0) {
-                this.ajustarVista();
-            }
-        },
+			// Ajustar vista si hay marcadores
+			if (this.marcadoresVisibles.length > 0) {
+				this.ajustarVista();
+			}
+		},
 
-        /**
+		/**
          * Crea un marcador individual
          */
-        crearMarcador: function(datos) {
-            var self = this;
-            var categoria = datos.categoria || 'default';
-            var colorMarcador = this.coloresCategoria[categoria] || '#4f46e5';
-            var iconoSVG = this.iconosSVG[categoria] || '';
+		crearMarcador: function (datos) {
+			var self = this;
+			var categoria = datos.categoria || 'default';
+			var colorMarcador = this.coloresCategoria[categoria] || '#4f46e5';
+			var iconoSVG = this.iconosSVG[categoria] || '';
 
-            // Crear icono personalizado
-            var htmlIcono = '<div class="flavor-map-marker flavor-map-marker--' + categoria + '">' +
+			// Crear icono personalizado
+			var htmlIcono = '<div class="flavor-map-marker flavor-map-marker--' + categoria + '">' +
                 '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                 iconoSVG +
                 '</svg></div>';
 
-            var icono = L.divIcon({
-                html: htmlIcono,
-                className: 'flavor-map-marker-wrapper',
-                iconSize: [32, 32],
-                iconAnchor: [16, 16],
-                popupAnchor: [0, -16]
-            });
+			var icono = L.divIcon({
+				html: htmlIcono,
+				className: 'flavor-map-marker-wrapper',
+				iconSize: [32, 32],
+				iconAnchor: [16, 16],
+				popupAnchor: [0, -16]
+			});
 
-            // Crear marcador
-            var marcador = L.marker([datos.lat, datos.lng], {
-                icon: icono,
-                title: datos.titulo || ''
-            });
+			// Crear marcador
+			var marcador = L.marker([datos.lat, datos.lng], {
+				icon: icono,
+				title: datos.titulo || ''
+			});
 
-            // Crear popup
-            var contenidoPopup = this.crearContenidoPopup(datos);
-            marcador.bindPopup(contenidoPopup, {
-                maxWidth: 280,
-                minWidth: 200,
-                className: 'flavor-map-popup-wrapper'
-            });
+			// Crear popup
+			var contenidoPopup = this.crearContenidoPopup(datos);
+			marcador.bindPopup(contenidoPopup, {
+				maxWidth: 280,
+				minWidth: 200,
+				className: 'flavor-map-popup-wrapper'
+			});
 
-            return marcador;
-        },
+			return marcador;
+		},
 
-        /**
+		/**
          * Crea el contenido HTML del popup
          */
-        crearContenidoPopup: function(datos) {
-            var categoria = datos.categoria || 'default';
-            var iconoSVG = this.iconosSVG[categoria] || '';
-            var textoI18n = (typeof flavorDashboardMap !== 'undefined') ? flavorDashboardMap.i18n : {};
+		crearContenidoPopup: function (datos) {
+			var categoria = datos.categoria || 'default';
+			var iconoSVG = this.iconosSVG[categoria] || '';
+			var textoI18n = (typeof flavorDashboardMap !== 'undefined') ? flavorDashboardMap.i18n : {};
 
-            var html = '<div class="flavor-map-popup">' +
+			var html = '<div class="flavor-map-popup">' +
                 '<div class="flavor-map-popup__header">' +
                 '<div class="flavor-map-popup__icon flavor-map-popup__icon--' + categoria + '">' +
                 '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
@@ -322,249 +322,249 @@
                 '<div>' +
                 '<h4 class="flavor-map-popup__title">' + this.escaparHTML(datos.titulo || '') + '</h4>';
 
-            if (datos.info) {
-                html += '<p class="flavor-map-popup__info">' + this.escaparHTML(datos.info) + '</p>';
-            }
+			if (datos.info) {
+				html += '<p class="flavor-map-popup__info">' + this.escaparHTML(datos.info) + '</p>';
+			}
 
-            html += '</div></div>';
+			html += '</div></div>';
 
-            if (datos.url) {
-                html += '<a href="' + this.escaparHTML(datos.url) + '" class="flavor-map-popup__link">' +
+			if (datos.url) {
+				html += '<a href="' + this.escaparHTML(datos.url) + '" class="flavor-map-popup__link">' +
                     (textoI18n.ver_detalle || 'Ver detalle') +
                     '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
                     '<path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>' +
                     '<polyline points="15 3 21 3 21 9"/>' +
                     '<line x1="10" y1="14" x2="21" y2="3"/>' +
                     '</svg></a>';
-            }
+			}
 
-            html += '</div>';
+			html += '</div>';
 
-            return html;
-        },
+			return html;
+		},
 
-        /**
+		/**
          * Escapa HTML para evitar XSS
          */
-        escaparHTML: function(texto) {
-            if (!texto) return '';
-            var div = document.createElement('div');
-            div.textContent = texto;
-            return div.innerHTML;
-        },
+		escaparHTML: function (texto) {
+			if (!texto) {return '';}
+			var div = document.createElement('div');
+			div.textContent = texto;
+			return div.innerHTML;
+		},
 
-        /**
+		/**
          * Limpia todos los marcadores del mapa
          */
-        limpiarMarcadores: function() {
-            if (this.clusterMarcadores) {
-                this.clusterMarcadores.clearLayers();
-            }
-            this.marcadoresVisibles = [];
-        },
+		limpiarMarcadores: function () {
+			if (this.clusterMarcadores) {
+				this.clusterMarcadores.clearLayers();
+			}
+			this.marcadoresVisibles = [];
+		},
 
-        /**
+		/**
          * Ajusta la vista para mostrar todos los marcadores
          */
-        ajustarVista: function() {
-            if (this.marcadoresVisibles.length === 0) {
-                return;
-            }
+		ajustarVista: function () {
+			if (this.marcadoresVisibles.length === 0) {
+				return;
+			}
 
-            if (this.marcadoresVisibles.length === 1) {
-                var marcadorUnico = this.marcadoresVisibles[0].datos;
-                this.mapa.setView([marcadorUnico.lat, marcadorUnico.lng], 15);
-                return;
-            }
+			if (this.marcadoresVisibles.length === 1) {
+				var marcadorUnico = this.marcadoresVisibles[0].datos;
+				this.mapa.setView([marcadorUnico.lat, marcadorUnico.lng], 15);
+				return;
+			}
 
-            // Calcular bounds
-            var coordenadas = this.marcadoresVisibles.map(function(item) {
-                return [item.datos.lat, item.datos.lng];
-            });
+			// Calcular bounds
+			var coordenadas = this.marcadoresVisibles.map(function (item) {
+				return [item.datos.lat, item.datos.lng];
+			});
 
-            var bounds = L.latLngBounds(coordenadas);
-            this.mapa.fitBounds(bounds, {
-                padding: [30, 30],
-                maxZoom: 15
-            });
-        },
+			var bounds = L.latLngBounds(coordenadas);
+			this.mapa.fitBounds(bounds, {
+				padding: [30, 30],
+				maxZoom: 15
+			});
+		},
 
-        /**
+		/**
          * Vincula eventos de la interfaz
          */
-        vincularEventos: function() {
-            var self = this;
+		vincularEventos: function () {
+			var self = this;
 
-            // Filtros de categoria
-            $(document).on('click', '.flavor-widget-map__filter-btn', function(evento) {
-                evento.preventDefault();
-                var botonFiltro = $(this);
-                var categoria = botonFiltro.data('category');
+			// Filtros de categoria
+			$(document).on('click', '.flavor-widget-map__filter-btn', function (evento) {
+				evento.preventDefault();
+				var botonFiltro = $(this);
+				var categoria = botonFiltro.data('category');
 
-                // Actualizar estado visual
-                $('.flavor-widget-map__filter-btn').removeClass('flavor-widget-map__filter-btn--active');
-                botonFiltro.addClass('flavor-widget-map__filter-btn--active');
+				// Actualizar estado visual
+				$('.flavor-widget-map__filter-btn').removeClass('flavor-widget-map__filter-btn--active');
+				botonFiltro.addClass('flavor-widget-map__filter-btn--active');
 
-                // Filtrar marcadores
-                self.filtrarPorCategoria(categoria);
-            });
+				// Filtrar marcadores
+				self.filtrarPorCategoria(categoria);
+			});
 
-            // Boton de ubicacion
-            $(document).on('click', '#flavor-map-locate', function(evento) {
-                evento.preventDefault();
-                self.localizarUsuario();
-            });
+			// Boton de ubicacion
+			$(document).on('click', '#flavor-map-locate', function (evento) {
+				evento.preventDefault();
+				self.localizarUsuario();
+			});
 
-            // Refrescar mapa cuando el widget se expande
-            $(document).on('flavorClientDashboard:widgetExpanded', function(e, widgetId) {
-                if (widgetId === 'widget-map' && self.mapa) {
-                    setTimeout(function() {
-                        self.mapa.invalidateSize();
-                    }, 100);
-                }
-            });
-        },
+			// Refrescar mapa cuando el widget se expande
+			$(document).on('flavorClientDashboard:widgetExpanded', function (e, widgetId) {
+				if (widgetId === 'widget-map' && self.mapa) {
+					setTimeout(function () {
+						self.mapa.invalidateSize();
+					}, 100);
+				}
+			});
+		},
 
-        /**
+		/**
          * Filtra marcadores por categoria
          */
-        filtrarPorCategoria: function(categoria) {
-            var self = this;
-            this.categoriaActiva = categoria;
+		filtrarPorCategoria: function (categoria) {
+			var self = this;
+			this.categoriaActiva = categoria;
 
-            // Limpiar marcadores actuales
-            this.limpiarMarcadores();
+			// Limpiar marcadores actuales
+			this.limpiarMarcadores();
 
-            // Filtrar datos originales
-            var marcadoresFiltrados = this.marcadores;
-            if (categoria !== 'todos') {
-                marcadoresFiltrados = this.marcadores.filter(function(marcador) {
-                    return marcador.categoria === categoria;
-                });
-            }
+			// Filtrar datos originales
+			var marcadoresFiltrados = this.marcadores;
+			if (categoria !== 'todos') {
+				marcadoresFiltrados = this.marcadores.filter(function (marcador) {
+					return marcador.categoria === categoria;
+				});
+			}
 
-            // Agregar marcadores filtrados
-            marcadoresFiltrados.forEach(function(datosMarcador) {
-                if (!datosMarcador.lat || !datosMarcador.lng) {
-                    return;
-                }
+			// Agregar marcadores filtrados
+			marcadoresFiltrados.forEach(function (datosMarcador) {
+				if (!datosMarcador.lat || !datosMarcador.lng) {
+					return;
+				}
 
-                var marcador = self.crearMarcador(datosMarcador);
-                if (marcador) {
-                    self.marcadoresVisibles.push({
-                        leaflet: marcador,
-                        datos: datosMarcador
-                    });
+				var marcador = self.crearMarcador(datosMarcador);
+				if (marcador) {
+					self.marcadoresVisibles.push({
+						leaflet: marcador,
+						datos: datosMarcador
+					});
 
-                    if (self.clusterMarcadores) {
-                        self.clusterMarcadores.addLayer(marcador);
-                    } else {
-                        marcador.addTo(self.mapa);
-                    }
-                }
-            });
+					if (self.clusterMarcadores) {
+						self.clusterMarcadores.addLayer(marcador);
+					} else {
+						marcador.addTo(self.mapa);
+					}
+				}
+			});
 
-            // Ajustar vista
-            if (this.marcadoresVisibles.length > 0) {
-                this.ajustarVista();
-            }
-        },
+			// Ajustar vista
+			if (this.marcadoresVisibles.length > 0) {
+				this.ajustarVista();
+			}
+		},
 
-        /**
+		/**
          * Localiza al usuario con Geolocation API
          */
-        localizarUsuario: function() {
-            var self = this;
-            var botonLocalizar = $('#flavor-map-locate');
-            var textoI18n = (typeof flavorDashboardMap !== 'undefined') ? flavorDashboardMap.i18n : {};
+		localizarUsuario: function () {
+			var self = this;
+			var botonLocalizar = $('#flavor-map-locate');
+			var textoI18n = (typeof flavorDashboardMap !== 'undefined') ? flavorDashboardMap.i18n : {};
 
-            if (!navigator.geolocation) {
-                alert(textoI18n.error_ubicacion || 'Tu navegador no soporta geolocalizacion');
-                return;
-            }
+			if (!navigator.geolocation) {
+				alert(textoI18n.error_ubicacion || 'Tu navegador no soporta geolocalizacion');
+				return;
+			}
 
-            botonLocalizar.addClass('locating');
+			botonLocalizar.addClass('locating');
 
-            navigator.geolocation.getCurrentPosition(
-                function(posicion) {
-                    botonLocalizar.removeClass('locating');
+			navigator.geolocation.getCurrentPosition(
+				function (posicion) {
+					botonLocalizar.removeClass('locating');
 
-                    var latUsuario = posicion.coords.latitude;
-                    var lngUsuario = posicion.coords.longitude;
+					var latUsuario = posicion.coords.latitude;
+					var lngUsuario = posicion.coords.longitude;
 
-                    // Remover marcador anterior si existe
-                    if (self.marcadorUsuario) {
-                        self.mapa.removeLayer(self.marcadorUsuario);
-                    }
+					// Remover marcador anterior si existe
+					if (self.marcadorUsuario) {
+						self.mapa.removeLayer(self.marcadorUsuario);
+					}
 
-                    // Crear icono de ubicacion del usuario
-                    var iconoUsuario = L.divIcon({
-                        html: '<div class="flavor-map-user-location"></div>',
-                        className: 'flavor-map-user-marker',
-                        iconSize: [20, 20],
-                        iconAnchor: [10, 10]
-                    });
+					// Crear icono de ubicacion del usuario
+					var iconoUsuario = L.divIcon({
+						html: '<div class="flavor-map-user-location"></div>',
+						className: 'flavor-map-user-marker',
+						iconSize: [20, 20],
+						iconAnchor: [10, 10]
+					});
 
-                    // Agregar marcador
-                    self.marcadorUsuario = L.marker([latUsuario, lngUsuario], {
-                        icon: iconoUsuario,
-                        zIndexOffset: 1000
-                    }).addTo(self.mapa);
+					// Agregar marcador
+					self.marcadorUsuario = L.marker([latUsuario, lngUsuario], {
+						icon: iconoUsuario,
+						zIndexOffset: 1000
+					}).addTo(self.mapa);
 
-                    // Centrar mapa
-                    self.mapa.setView([latUsuario, lngUsuario], 15, {
-                        animate: true
-                    });
-                },
-                function(error) {
-                    botonLocalizar.removeClass('locating');
-                    console.warn('Error de geolocalizacion:', error);
-                    alert(textoI18n.error_ubicacion || 'No se pudo obtener tu ubicacion');
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 60000
-                }
-            );
-        },
+					// Centrar mapa
+					self.mapa.setView([latUsuario, lngUsuario], 15, {
+						animate: true
+					});
+				},
+				function (error) {
+					botonLocalizar.removeClass('locating');
+					console.warn('Error de geolocalizacion:', error);
+					alert(textoI18n.error_ubicacion || 'No se pudo obtener tu ubicacion');
+				},
+				{
+					enableHighAccuracy: true,
+					timeout: 10000,
+					maximumAge: 60000
+				}
+			);
+		},
 
-        /**
+		/**
          * Actualiza marcadores desde el servidor
          */
-        refrescarMarcadores: function() {
-            this.cargarMarcadoresAJAX();
-        },
+		refrescarMarcadores: function () {
+			this.cargarMarcadoresAJAX();
+		},
 
-        /**
+		/**
          * Destruye el mapa y limpia recursos
          */
-        destruir: function() {
-            if (this.mapa) {
-                this.mapa.remove();
-                this.mapa = null;
-            }
-            this.clusterMarcadores = null;
-            this.marcadores = [];
-            this.marcadoresVisibles = [];
-            this.marcadorUsuario = null;
-        }
-    };
+		destruir: function () {
+			if (this.mapa) {
+				this.mapa.remove();
+				this.mapa = null;
+			}
+			this.clusterMarcadores = null;
+			this.marcadores = [];
+			this.marcadoresVisibles = [];
+			this.marcadorUsuario = null;
+		}
+	};
 
-    // Inicializar cuando el DOM este listo
-    $(document).ready(function() {
-        // Esperar a que Leaflet este listo
-        if (typeof L !== 'undefined') {
-            FlavorDashboardMap.init();
-        } else {
-            // Reintentar despues de un momento
-            setTimeout(function() {
-                FlavorDashboardMap.init();
-            }, 500);
-        }
-    });
+	// Inicializar cuando el DOM este listo
+	$(document).ready(function () {
+		// Esperar a que Leaflet este listo
+		if (typeof L !== 'undefined') {
+			FlavorDashboardMap.init();
+		} else {
+			// Reintentar despues de un momento
+			setTimeout(function () {
+				FlavorDashboardMap.init();
+			}, 500);
+		}
+	});
 
-    // Exponer modulo globalmente
-    window.FlavorDashboardMap = FlavorDashboardMap;
+	// Exponer modulo globalmente
+	window.FlavorDashboardMap = FlavorDashboardMap;
 
 })(jQuery);

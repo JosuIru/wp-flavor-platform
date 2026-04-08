@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
@@ -24,6 +25,10 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
   double _volumen = 0.7;
   String? _streamUrl;
 
+  // Stream subscriptions para evitar memory leaks
+  StreamSubscription<bool>? _playingSubscription;
+  StreamSubscription<ProcessingState>? _processingSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -33,13 +38,13 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
   }
 
   void _setupAudioListeners() {
-    _audioPlayer.playingStream.listen((playing) {
+    _playingSubscription = _audioPlayer.playingStream.listen((playing) {
       if (mounted) {
         setState(() => _estaReproduciendo = playing);
       }
     });
 
-    _audioPlayer.processingStateStream.listen((state) {
+    _processingSubscription = _audioPlayer.processingStateStream.listen((state) {
       if (mounted) {
         setState(() {
           _cargandoAudio = state == ProcessingState.loading ||
@@ -51,6 +56,9 @@ class _RadioScreenState extends ConsumerState<RadioScreen> {
 
   @override
   void dispose() {
+    // Cancelar subscriptions antes de dispose del player
+    _playingSubscription?.cancel();
+    _processingSubscription?.cancel();
     _audioPlayer.dispose();
     super.dispose();
   }

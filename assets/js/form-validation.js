@@ -6,576 +6,576 @@
  * @package Flavor_Chat_IA
  * @since 1.0.0
  */
-(function() {
-    'use strict';
+(function () {
+	'use strict';
 
-    /**
+	/**
      * Contador para generar IDs unicos de error
      * @type {number}
      */
-    let errorIdCounter = 0;
+	let errorIdCounter = 0;
 
-    /**
+	/**
      * Sistema global de validacion de formularios
      * @namespace FlavorValidation
      */
-    window.FlavorValidation = {
-        /**
+	window.FlavorValidation = {
+		/**
          * Configuracion por defecto
          */
-        config: {
-            errorClass: 'flavor-input--error',
-            successClass: 'flavor-input--success',
-            errorMessageClass: 'flavor-field-error',
-            validateAttribute: 'data-validate',
-            formAttribute: 'data-flavor-validate',
-            debounceDelay: 300,
-            errorIdPrefix: 'flavor-error'
-        },
+		config: {
+			errorClass: 'flavor-input--error',
+			successClass: 'flavor-input--success',
+			errorMessageClass: 'flavor-field-error',
+			validateAttribute: 'data-validate',
+			formAttribute: 'data-flavor-validate',
+			debounceDelay: 300,
+			errorIdPrefix: 'flavor-error'
+		},
 
-        /**
+		/**
          * Mensajes de error personalizables
          */
-        messages: {
-            required: 'Este campo es requerido',
-            email: 'Por favor, introduce un email valido',
-            min: 'Debe tener al menos {param} caracteres',
-            max: 'No puede exceder {param} caracteres',
-            numeric: 'Solo se permiten numeros',
-            url: 'Por favor, introduce una URL valida',
-            phone: 'Por favor, introduce un telefono valido',
-            date: 'Por favor, introduce una fecha valida',
-            match: 'Los campos no coinciden',
-            pattern: 'El formato no es valido',
-            minValue: 'El valor minimo es {param}',
-            maxValue: 'El valor maximo es {param}',
-            integer: 'Debe ser un numero entero',
-            alphanumeric: 'Solo se permiten letras y numeros',
-            noSpaces: 'No se permiten espacios',
-            fileSize: 'El archivo excede el tamano maximo de {param}MB',
-            fileType: 'Tipo de archivo no permitido'
-        },
+		messages: {
+			required: 'Este campo es requerido',
+			email: 'Por favor, introduce un email valido',
+			min: 'Debe tener al menos {param} caracteres',
+			max: 'No puede exceder {param} caracteres',
+			numeric: 'Solo se permiten numeros',
+			url: 'Por favor, introduce una URL valida',
+			phone: 'Por favor, introduce un telefono valido',
+			date: 'Por favor, introduce una fecha valida',
+			match: 'Los campos no coinciden',
+			pattern: 'El formato no es valido',
+			minValue: 'El valor minimo es {param}',
+			maxValue: 'El valor maximo es {param}',
+			integer: 'Debe ser un numero entero',
+			alphanumeric: 'Solo se permiten letras y numeros',
+			noSpaces: 'No se permiten espacios',
+			fileSize: 'El archivo excede el tamano maximo de {param}MB',
+			fileType: 'Tipo de archivo no permitido'
+		},
 
-        /**
+		/**
          * Inicializa el sistema de validacion
          * @param {Object} customConfig - Configuracion personalizada opcional
          */
-        init: function(customConfig) {
-            if (customConfig) {
-                this.config = Object.assign({}, this.config, customConfig);
-            }
-            this.setupForms();
-            this.setupRealTimeValidation();
-            this.setupCustomValidators();
-        },
+		init: function (customConfig) {
+			if (customConfig) {
+				this.config = Object.assign({}, this.config, customConfig);
+			}
+			this.setupForms();
+			this.setupRealTimeValidation();
+			this.setupCustomValidators();
+		},
 
-        /**
+		/**
          * Configura los formularios para validacion en submit
          */
-        setupForms: function() {
-            const validationForms = document.querySelectorAll('form[' + this.config.formAttribute + ']');
-            validationForms.forEach(form => {
-                form.addEventListener('submit', this.handleSubmit.bind(this));
-                form.setAttribute('novalidate', 'true');
-            });
-        },
+		setupForms: function () {
+			const validationForms = document.querySelectorAll('form[' + this.config.formAttribute + ']');
+			validationForms.forEach(form => {
+				form.addEventListener('submit', this.handleSubmit.bind(this));
+				form.setAttribute('novalidate', 'true');
+			});
+		},
 
-        /**
+		/**
          * Configura la validacion en tiempo real
          */
-        setupRealTimeValidation: function() {
-            const validateFields = document.querySelectorAll('[' + this.config.validateAttribute + ']');
-            validateFields.forEach(input => {
-                // Validar al perder el foco
-                input.addEventListener('blur', () => this.validateField(input));
+		setupRealTimeValidation: function () {
+			const validateFields = document.querySelectorAll('[' + this.config.validateAttribute + ']');
+			validateFields.forEach(input => {
+				// Validar al perder el foco
+				input.addEventListener('blur', () => this.validateField(input));
 
-                // Limpiar error al escribir (con debounce)
-                let debounceTimer;
-                input.addEventListener('input', () => {
-                    clearTimeout(debounceTimer);
-                    debounceTimer = setTimeout(() => {
-                        if (input.classList.contains(this.config.errorClass)) {
-                            this.validateField(input);
-                        } else {
-                            this.clearError(input);
-                        }
-                    }, this.config.debounceDelay);
-                });
+				// Limpiar error al escribir (con debounce)
+				let debounceTimer;
+				input.addEventListener('input', () => {
+					clearTimeout(debounceTimer);
+					debounceTimer = setTimeout(() => {
+						if (input.classList.contains(this.config.errorClass)) {
+							this.validateField(input);
+						} else {
+							this.clearError(input);
+						}
+					}, this.config.debounceDelay);
+				});
 
-                // Manejar cambios en selects y checkboxes
-                if (input.type === 'checkbox' || input.type === 'radio' || input.tagName === 'SELECT') {
-                    input.addEventListener('change', () => this.validateField(input));
-                }
-            });
-        },
+				// Manejar cambios en selects y checkboxes
+				if (input.type === 'checkbox' || input.type === 'radio' || input.tagName === 'SELECT') {
+					input.addEventListener('change', () => this.validateField(input));
+				}
+			});
+		},
 
-        /**
+		/**
          * Registra validadores personalizados
          */
-        setupCustomValidators: function() {
-            this.customValidators = {};
-        },
+		setupCustomValidators: function () {
+			this.customValidators = {};
+		},
 
-        /**
+		/**
          * Registra un validador personalizado
          * @param {string} validatorName - Nombre del validador
          * @param {Function} validatorFunction - Funcion de validacion
          * @param {string} validatorMessage - Mensaje de error
          */
-        registerValidator: function(validatorName, validatorFunction, validatorMessage) {
-            this.customValidators[validatorName] = {
-                validate: validatorFunction,
-                message: validatorMessage
-            };
-        },
+		registerValidator: function (validatorName, validatorFunction, validatorMessage) {
+			this.customValidators[validatorName] = {
+				validate: validatorFunction,
+				message: validatorMessage
+			};
+		},
 
-        /**
+		/**
          * Valida un campo individual
          * @param {HTMLElement} field - Campo a validar
          * @returns {boolean} - true si es valido
          */
-        validateField: function(field) {
-            const validationRules = field.getAttribute(this.config.validateAttribute);
-            if (!validationRules) return true;
+		validateField: function (field) {
+			const validationRules = field.getAttribute(this.config.validateAttribute);
+			if (!validationRules) {return true;}
 
-            const rules = validationRules.split('|');
-            const fieldValue = this.getFieldValue(field);
+			const rules = validationRules.split('|');
+			const fieldValue = this.getFieldValue(field);
 
-            for (const rule of rules) {
-                const validationError = this.checkRule(rule, fieldValue, field);
-                if (validationError) {
-                    this.showError(field, validationError);
-                    return false;
-                }
-            }
+			for (const rule of rules) {
+				const validationError = this.checkRule(rule, fieldValue, field);
+				if (validationError) {
+					this.showError(field, validationError);
+					return false;
+				}
+			}
 
-            this.showSuccess(field);
-            return true;
-        },
+			this.showSuccess(field);
+			return true;
+		},
 
-        /**
+		/**
          * Obtiene el valor de un campo
          * @param {HTMLElement} field - Campo
          * @returns {string|boolean|Array} - Valor del campo
          */
-        getFieldValue: function(field) {
-            if (field.type === 'checkbox') {
-                return field.checked;
-            }
-            if (field.type === 'radio') {
-                const radioGroup = document.querySelectorAll('input[name="' + field.name + '"]');
-                for (const radio of radioGroup) {
-                    if (radio.checked) return radio.value;
-                }
-                return '';
-            }
-            if (field.type === 'file') {
-                return field.files;
-            }
-            if (field.tagName === 'SELECT' && field.multiple) {
-                return Array.from(field.selectedOptions).map(opt => opt.value);
-            }
-            return field.value.trim();
-        },
+		getFieldValue: function (field) {
+			if (field.type === 'checkbox') {
+				return field.checked;
+			}
+			if (field.type === 'radio') {
+				const radioGroup = document.querySelectorAll('input[name="' + field.name + '"]');
+				for (const radio of radioGroup) {
+					if (radio.checked) {return radio.value;}
+				}
+				return '';
+			}
+			if (field.type === 'file') {
+				return field.files;
+			}
+			if (field.tagName === 'SELECT' && field.multiple) {
+				return Array.from(field.selectedOptions).map(opt => opt.value);
+			}
+			return field.value.trim();
+		},
 
-        /**
+		/**
          * Verifica una regla de validacion
          * @param {string} rule - Regla a verificar
          * @param {*} value - Valor del campo
          * @param {HTMLElement} field - Campo
          * @returns {string|null} - Mensaje de error o null si es valido
          */
-        checkRule: function(rule, value, field) {
-            const [ruleName, ruleParam] = rule.split(':');
+		checkRule: function (rule, value, field) {
+			const [ruleName, ruleParam] = rule.split(':');
 
-            // Validadores integrados
-            switch(ruleName) {
-                case 'required':
-                    if (field.type === 'checkbox' && !value) {
-                        return this.messages.required;
-                    }
-                    if (field.type === 'file' && (!value || value.length === 0)) {
-                        return this.messages.required;
-                    }
-                    if (Array.isArray(value) && value.length === 0) {
-                        return this.messages.required;
-                    }
-                    if (typeof value === 'string' && !value) {
-                        return this.messages.required;
-                    }
-                    break;
+			// Validadores integrados
+			switch (ruleName) {
+				case 'required':
+					if (field.type === 'checkbox' && !value) {
+						return this.messages.required;
+					}
+					if (field.type === 'file' && (!value || value.length === 0)) {
+						return this.messages.required;
+					}
+					if (Array.isArray(value) && value.length === 0) {
+						return this.messages.required;
+					}
+					if (typeof value === 'string' && !value) {
+						return this.messages.required;
+					}
+					break;
 
-                case 'email':
-                    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                        return this.messages.email;
-                    }
-                    break;
+				case 'email':
+					if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+						return this.messages.email;
+					}
+					break;
 
-                case 'min':
-                    if (value && value.length < parseInt(ruleParam, 10)) {
-                        return this.messages.min.replace('{param}', ruleParam);
-                    }
-                    break;
+				case 'min':
+					if (value && value.length < parseInt(ruleParam, 10)) {
+						return this.messages.min.replace('{param}', ruleParam);
+					}
+					break;
 
-                case 'max':
-                    if (value && value.length > parseInt(ruleParam, 10)) {
-                        return this.messages.max.replace('{param}', ruleParam);
-                    }
-                    break;
+				case 'max':
+					if (value && value.length > parseInt(ruleParam, 10)) {
+						return this.messages.max.replace('{param}', ruleParam);
+					}
+					break;
 
-                case 'numeric':
-                    if (value && !/^\d+$/.test(value)) {
-                        return this.messages.numeric;
-                    }
-                    break;
+				case 'numeric':
+					if (value && !/^\d+$/.test(value)) {
+						return this.messages.numeric;
+					}
+					break;
 
-                case 'integer':
-                    if (value && !/^-?\d+$/.test(value)) {
-                        return this.messages.integer;
-                    }
-                    break;
+				case 'integer':
+					if (value && !/^-?\d+$/.test(value)) {
+						return this.messages.integer;
+					}
+					break;
 
-                case 'url':
-                    if (value && !/^https?:\/\/[^\s]+$/.test(value)) {
-                        return this.messages.url;
-                    }
-                    break;
+				case 'url':
+					if (value && !/^https?:\/\/[^\s]+$/.test(value)) {
+						return this.messages.url;
+					}
+					break;
 
-                case 'phone':
-                    if (value && !/^[\d\s\-\+\(\)]{9,20}$/.test(value)) {
-                        return this.messages.phone;
-                    }
-                    break;
+				case 'phone':
+					if (value && !/^[\d\s\-\+\(\)]{9,20}$/.test(value)) {
+						return this.messages.phone;
+					}
+					break;
 
-                case 'date':
-                    if (value && isNaN(Date.parse(value))) {
-                        return this.messages.date;
-                    }
-                    break;
+				case 'date':
+					if (value && isNaN(Date.parse(value))) {
+						return this.messages.date;
+					}
+					break;
 
-                case 'match':
-                    const matchField = document.querySelector('[name="' + ruleParam + '"]');
-                    if (matchField && value !== matchField.value) {
-                        return this.messages.match;
-                    }
-                    break;
+				case 'match':
+					const matchField = document.querySelector('[name="' + ruleParam + '"]');
+					if (matchField && value !== matchField.value) {
+						return this.messages.match;
+					}
+					break;
 
-                case 'pattern':
-                    try {
-                        const patternRegex = new RegExp(ruleParam);
-                        if (value && !patternRegex.test(value)) {
-                            return this.messages.pattern;
-                        }
-                    } catch (patternError) {
-                        console.error('FlavorValidation: Patron invalido', ruleParam);
-                    }
-                    break;
+				case 'pattern':
+					try {
+						const patternRegex = new RegExp(ruleParam);
+						if (value && !patternRegex.test(value)) {
+							return this.messages.pattern;
+						}
+					} catch (patternError) {
+						console.error('FlavorValidation: Patron invalido', ruleParam);
+					}
+					break;
 
-                case 'minValue':
-                    if (value && parseFloat(value) < parseFloat(ruleParam)) {
-                        return this.messages.minValue.replace('{param}', ruleParam);
-                    }
-                    break;
+				case 'minValue':
+					if (value && parseFloat(value) < parseFloat(ruleParam)) {
+						return this.messages.minValue.replace('{param}', ruleParam);
+					}
+					break;
 
-                case 'maxValue':
-                    if (value && parseFloat(value) > parseFloat(ruleParam)) {
-                        return this.messages.maxValue.replace('{param}', ruleParam);
-                    }
-                    break;
+				case 'maxValue':
+					if (value && parseFloat(value) > parseFloat(ruleParam)) {
+						return this.messages.maxValue.replace('{param}', ruleParam);
+					}
+					break;
 
-                case 'alphanumeric':
-                    if (value && !/^[a-zA-Z0-9]+$/.test(value)) {
-                        return this.messages.alphanumeric;
-                    }
-                    break;
+				case 'alphanumeric':
+					if (value && !/^[a-zA-Z0-9]+$/.test(value)) {
+						return this.messages.alphanumeric;
+					}
+					break;
 
-                case 'noSpaces':
-                    if (value && /\s/.test(value)) {
-                        return this.messages.noSpaces;
-                    }
-                    break;
+				case 'noSpaces':
+					if (value && /\s/.test(value)) {
+						return this.messages.noSpaces;
+					}
+					break;
 
-                case 'fileSize':
-                    if (value && value.length > 0) {
-                        const maxSizeBytes = parseFloat(ruleParam) * 1024 * 1024;
-                        for (const file of value) {
-                            if (file.size > maxSizeBytes) {
-                                return this.messages.fileSize.replace('{param}', ruleParam);
-                            }
-                        }
-                    }
-                    break;
+				case 'fileSize':
+					if (value && value.length > 0) {
+						const maxSizeBytes = parseFloat(ruleParam) * 1024 * 1024;
+						for (const file of value) {
+							if (file.size > maxSizeBytes) {
+								return this.messages.fileSize.replace('{param}', ruleParam);
+							}
+						}
+					}
+					break;
 
-                case 'fileType':
-                    if (value && value.length > 0) {
-                        const allowedTypes = ruleParam.split(',');
-                        for (const file of value) {
-                            const fileExtension = file.name.split('.').pop().toLowerCase();
-                            if (!allowedTypes.includes(fileExtension)) {
-                                return this.messages.fileType;
-                            }
-                        }
-                    }
-                    break;
+				case 'fileType':
+					if (value && value.length > 0) {
+						const allowedTypes = ruleParam.split(',');
+						for (const file of value) {
+							const fileExtension = file.name.split('.').pop().toLowerCase();
+							if (!allowedTypes.includes(fileExtension)) {
+								return this.messages.fileType;
+							}
+						}
+					}
+					break;
 
-                default:
-                    // Verificar validadores personalizados
-                    if (this.customValidators[ruleName]) {
-                        const customValidator = this.customValidators[ruleName];
-                        if (!customValidator.validate(value, ruleParam, field)) {
-                            return customValidator.message.replace('{param}', ruleParam);
-                        }
-                    }
-                    break;
-            }
+				default:
+					// Verificar validadores personalizados
+					if (this.customValidators[ruleName]) {
+						const customValidator = this.customValidators[ruleName];
+						if (!customValidator.validate(value, ruleParam, field)) {
+							return customValidator.message.replace('{param}', ruleParam);
+						}
+					}
+					break;
+			}
 
-            return null;
-        },
+			return null;
+		},
 
-        /**
+		/**
          * Genera un ID unico para mensajes de error
          * @param {HTMLElement} field - Campo asociado
          * @returns {string} - ID unico
          */
-        generateErrorId: function(field) {
-            errorIdCounter++;
-            const fieldIdentifier = field.id || field.name || '';
-            const sanitizedIdentifier = fieldIdentifier.replace(/[^a-zA-Z0-9-_]/g, '-');
-            return this.config.errorIdPrefix + '-' + sanitizedIdentifier + '-' + errorIdCounter;
-        },
+		generateErrorId: function (field) {
+			errorIdCounter++;
+			const fieldIdentifier = field.id || field.name || '';
+			const sanitizedIdentifier = fieldIdentifier.replace(/[^a-zA-Z0-9-_]/g, '-');
+			return this.config.errorIdPrefix + '-' + sanitizedIdentifier + '-' + errorIdCounter;
+		},
 
-        /**
+		/**
          * Obtiene los aria-describedby existentes del campo (excluyendo errores previos)
          * @param {HTMLElement} field - Campo
          * @returns {string} - IDs existentes separados por espacio
          */
-        getExistingAriaDescribedBy: function(field) {
-            const currentDescribedBy = field.getAttribute('data-original-describedby');
-            return currentDescribedBy || '';
-        },
+		getExistingAriaDescribedBy: function (field) {
+			const currentDescribedBy = field.getAttribute('data-original-describedby');
+			return currentDescribedBy || '';
+		},
 
-        /**
+		/**
          * Guarda el aria-describedby original del campo
          * @param {HTMLElement} field - Campo
          */
-        saveOriginalAriaDescribedBy: function(field) {
-            if (!field.hasAttribute('data-original-describedby')) {
-                const existingDescribedBy = field.getAttribute('aria-describedby') || '';
-                field.setAttribute('data-original-describedby', existingDescribedBy);
-            }
-        },
+		saveOriginalAriaDescribedBy: function (field) {
+			if (!field.hasAttribute('data-original-describedby')) {
+				const existingDescribedBy = field.getAttribute('aria-describedby') || '';
+				field.setAttribute('data-original-describedby', existingDescribedBy);
+			}
+		},
 
-        /**
+		/**
          * Muestra un error en el campo
          * Cumple con WCAG 3.3.1: Identificacion de errores
          * @param {HTMLElement} field - Campo
          * @param {string} errorMessage - Mensaje de error
          */
-        showError: function(field, errorMessage) {
-            // Guardar aria-describedby original antes de modificar
-            this.saveOriginalAriaDescribedBy(field);
+		showError: function (field, errorMessage) {
+			// Guardar aria-describedby original antes de modificar
+			this.saveOriginalAriaDescribedBy(field);
 
-            this.clearError(field);
-            field.classList.add(this.config.errorClass);
-            field.classList.remove(this.config.successClass);
+			this.clearError(field);
+			field.classList.add(this.config.errorClass);
+			field.classList.remove(this.config.successClass);
 
-            // WCAG 3.3.1: Establecer aria-invalid para indicar error
-            field.setAttribute('aria-invalid', 'true');
+			// WCAG 3.3.1: Establecer aria-invalid para indicar error
+			field.setAttribute('aria-invalid', 'true');
 
-            // Crear elemento de error con atributos de accesibilidad
-            const errorElement = document.createElement('span');
-            errorElement.className = this.config.errorMessageClass;
+			// Crear elemento de error con atributos de accesibilidad
+			const errorElement = document.createElement('span');
+			errorElement.className = this.config.errorMessageClass;
 
-            // WCAG: role="alert" anuncia inmediatamente el error
-            errorElement.setAttribute('role', 'alert');
+			// WCAG: role="alert" anuncia inmediatamente el error
+			errorElement.setAttribute('role', 'alert');
 
-            // WCAG: aria-live="assertive" para errores (mas urgente que polite)
-            errorElement.setAttribute('aria-live', 'assertive');
+			// WCAG: aria-live="assertive" para errores (mas urgente que polite)
+			errorElement.setAttribute('aria-live', 'assertive');
 
-            // WCAG: aria-atomic asegura que se lea el mensaje completo
-            errorElement.setAttribute('aria-atomic', 'true');
+			// WCAG: aria-atomic asegura que se lea el mensaje completo
+			errorElement.setAttribute('aria-atomic', 'true');
 
-            errorElement.textContent = errorMessage;
+			errorElement.textContent = errorMessage;
 
-            // WCAG 3.3.1: Generar ID unico garantizado para el mensaje de error
-            const errorId = this.generateErrorId(field);
-            errorElement.id = errorId;
+			// WCAG 3.3.1: Generar ID unico garantizado para el mensaje de error
+			const errorId = this.generateErrorId(field);
+			errorElement.id = errorId;
 
-            // WCAG 3.3.1: Conectar el error con el campo usando aria-describedby
-            // Preservar aria-describedby existentes (ej: instrucciones del campo)
-            const existingDescribedBy = this.getExistingAriaDescribedBy(field);
-            const newDescribedBy = existingDescribedBy
-                ? existingDescribedBy + ' ' + errorId
-                : errorId;
-            field.setAttribute('aria-describedby', newDescribedBy);
+			// WCAG 3.3.1: Conectar el error con el campo usando aria-describedby
+			// Preservar aria-describedby existentes (ej: instrucciones del campo)
+			const existingDescribedBy = this.getExistingAriaDescribedBy(field);
+			const newDescribedBy = existingDescribedBy
+				? existingDescribedBy + ' ' + errorId
+				: errorId;
+			field.setAttribute('aria-describedby', newDescribedBy);
 
-            // Insertar despues del campo o su contenedor
-            const fieldContainer = field.closest('.flavor-field') || field.parentNode;
-            fieldContainer.appendChild(errorElement);
+			// Insertar despues del campo o su contenedor
+			const fieldContainer = field.closest('.flavor-field') || field.parentNode;
+			fieldContainer.appendChild(errorElement);
 
-            // Disparar evento personalizado
-            field.dispatchEvent(new CustomEvent('flavor:validation:error', {
-                detail: { message: errorMessage, field: field, errorId: errorId },
-                bubbles: true
-            }));
-        },
+			// Disparar evento personalizado
+			field.dispatchEvent(new CustomEvent('flavor:validation:error', {
+				detail: { message: errorMessage, field: field, errorId: errorId },
+				bubbles: true
+			}));
+		},
 
-        /**
+		/**
          * Muestra indicador de exito en el campo
          * @param {HTMLElement} field - Campo
          */
-        showSuccess: function(field) {
-            this.clearError(field);
-            field.classList.add(this.config.successClass);
-            field.classList.remove(this.config.errorClass);
+		showSuccess: function (field) {
+			this.clearError(field);
+			field.classList.add(this.config.successClass);
+			field.classList.remove(this.config.errorClass);
 
-            // WCAG 3.3.1: Indicar que el campo ya no tiene error
-            field.setAttribute('aria-invalid', 'false');
+			// WCAG 3.3.1: Indicar que el campo ya no tiene error
+			field.setAttribute('aria-invalid', 'false');
 
-            // Disparar evento personalizado
-            field.dispatchEvent(new CustomEvent('flavor:validation:success', {
-                detail: { field: field },
-                bubbles: true
-            }));
-        },
+			// Disparar evento personalizado
+			field.dispatchEvent(new CustomEvent('flavor:validation:success', {
+				detail: { field: field },
+				bubbles: true
+			}));
+		},
 
-        /**
+		/**
          * Limpia errores de un campo
          * Restaura los atributos ARIA al estado original
          * @param {HTMLElement} field - Campo
          */
-        clearError: function(field) {
-            field.classList.remove(this.config.errorClass, this.config.successClass);
+		clearError: function (field) {
+			field.classList.remove(this.config.errorClass, this.config.successClass);
 
-            // WCAG 3.3.1: Remover aria-invalid cuando se corrige el error
-            field.removeAttribute('aria-invalid');
+			// WCAG 3.3.1: Remover aria-invalid cuando se corrige el error
+			field.removeAttribute('aria-invalid');
 
-            // WCAG 3.3.1: Restaurar aria-describedby original o removerlo
-            const originalDescribedBy = field.getAttribute('data-original-describedby');
-            if (originalDescribedBy) {
-                field.setAttribute('aria-describedby', originalDescribedBy);
-            } else {
-                field.removeAttribute('aria-describedby');
-            }
+			// WCAG 3.3.1: Restaurar aria-describedby original o removerlo
+			const originalDescribedBy = field.getAttribute('data-original-describedby');
+			if (originalDescribedBy) {
+				field.setAttribute('aria-describedby', originalDescribedBy);
+			} else {
+				field.removeAttribute('aria-describedby');
+			}
 
-            // Eliminar el elemento de error del DOM
-            const fieldContainer = field.closest('.flavor-field') || field.parentNode;
-            const existingError = fieldContainer.querySelector('.' + this.config.errorMessageClass);
-            if (existingError) {
-                existingError.remove();
-            }
-        },
+			// Eliminar el elemento de error del DOM
+			const fieldContainer = field.closest('.flavor-field') || field.parentNode;
+			const existingError = fieldContainer.querySelector('.' + this.config.errorMessageClass);
+			if (existingError) {
+				existingError.remove();
+			}
+		},
 
-        /**
+		/**
          * Maneja el envio del formulario
          * @param {Event} submitEvent - Evento submit
          */
-        handleSubmit: function(submitEvent) {
-            const form = submitEvent.target;
-            let isFormValid = true;
-            const validationErrors = [];
+		handleSubmit: function (submitEvent) {
+			const form = submitEvent.target;
+			let isFormValid = true;
+			const validationErrors = [];
 
-            const formFields = form.querySelectorAll('[' + this.config.validateAttribute + ']');
-            formFields.forEach(field => {
-                if (!this.validateField(field)) {
-                    isFormValid = false;
-                    validationErrors.push({
-                        field: field,
-                        name: field.name || field.id
-                    });
-                }
-            });
+			const formFields = form.querySelectorAll('[' + this.config.validateAttribute + ']');
+			formFields.forEach(field => {
+				if (!this.validateField(field)) {
+					isFormValid = false;
+					validationErrors.push({
+						field: field,
+						name: field.name || field.id
+					});
+				}
+			});
 
-            if (!isFormValid) {
-                submitEvent.preventDefault();
+			if (!isFormValid) {
+				submitEvent.preventDefault();
 
-                // Enfocar primer campo con error
-                const firstErrorField = form.querySelector('.' + this.config.errorClass);
-                if (firstErrorField) {
-                    firstErrorField.focus();
-                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+				// Enfocar primer campo con error
+				const firstErrorField = form.querySelector('.' + this.config.errorClass);
+				if (firstErrorField) {
+					firstErrorField.focus();
+					firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				}
 
-                // Disparar evento de formulario invalido
-                form.dispatchEvent(new CustomEvent('flavor:validation:invalid', {
-                    detail: { errors: validationErrors },
-                    bubbles: true
-                }));
-            } else {
-                // Disparar evento de formulario valido
-                form.dispatchEvent(new CustomEvent('flavor:validation:valid', {
-                    detail: { form: form },
-                    bubbles: true
-                }));
-            }
-        },
+				// Disparar evento de formulario invalido
+				form.dispatchEvent(new CustomEvent('flavor:validation:invalid', {
+					detail: { errors: validationErrors },
+					bubbles: true
+				}));
+			} else {
+				// Disparar evento de formulario valido
+				form.dispatchEvent(new CustomEvent('flavor:validation:valid', {
+					detail: { form: form },
+					bubbles: true
+				}));
+			}
+		},
 
-        /**
+		/**
          * Valida todo el formulario programaticamente
          * @param {HTMLElement|string} form - Formulario o selector
          * @returns {boolean} - true si es valido
          */
-        validateForm: function(form) {
-            if (typeof form === 'string') {
-                form = document.querySelector(form);
-            }
-            if (!form) return false;
+		validateForm: function (form) {
+			if (typeof form === 'string') {
+				form = document.querySelector(form);
+			}
+			if (!form) {return false;}
 
-            let isFormValid = true;
-            const formFields = form.querySelectorAll('[' + this.config.validateAttribute + ']');
-            formFields.forEach(field => {
-                if (!this.validateField(field)) {
-                    isFormValid = false;
-                }
-            });
-            return isFormValid;
-        },
+			let isFormValid = true;
+			const formFields = form.querySelectorAll('[' + this.config.validateAttribute + ']');
+			formFields.forEach(field => {
+				if (!this.validateField(field)) {
+					isFormValid = false;
+				}
+			});
+			return isFormValid;
+		},
 
-        /**
+		/**
          * Resetea la validacion de un formulario
          * @param {HTMLElement|string} form - Formulario o selector
          */
-        resetValidation: function(form) {
-            if (typeof form === 'string') {
-                form = document.querySelector(form);
-            }
-            if (!form) return;
+		resetValidation: function (form) {
+			if (typeof form === 'string') {
+				form = document.querySelector(form);
+			}
+			if (!form) {return;}
 
-            const formFields = form.querySelectorAll('[' + this.config.validateAttribute + ']');
-            formFields.forEach(field => {
-                this.clearError(field);
-            });
-        },
+			const formFields = form.querySelectorAll('[' + this.config.validateAttribute + ']');
+			formFields.forEach(field => {
+				this.clearError(field);
+			});
+		},
 
-        /**
+		/**
          * Actualiza los mensajes de error
          * @param {Object} customMessages - Mensajes personalizados
          */
-        setMessages: function(customMessages) {
-            this.messages = Object.assign({}, this.messages, customMessages);
-        },
+		setMessages: function (customMessages) {
+			this.messages = Object.assign({}, this.messages, customMessages);
+		},
 
-        /**
+		/**
          * Obtiene el estado de validacion de un campo
          * @param {HTMLElement} field - Campo
          * @returns {Object} - Estado del campo
          */
-        getFieldState: function(field) {
-            return {
-                isValid: !field.classList.contains(this.config.errorClass),
-                hasSuccess: field.classList.contains(this.config.successClass),
-                hasError: field.classList.contains(this.config.errorClass)
-            };
-        }
-    };
+		getFieldState: function (field) {
+			return {
+				isValid: !field.classList.contains(this.config.errorClass),
+				hasSuccess: field.classList.contains(this.config.successClass),
+				hasError: field.classList.contains(this.config.errorClass)
+			};
+		}
+	};
 
-    // Inicializar automaticamente cuando el DOM este listo
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            FlavorValidation.init();
-        });
-    } else {
-        FlavorValidation.init();
-    }
+	// Inicializar automaticamente cuando el DOM este listo
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', function () {
+			FlavorValidation.init();
+		});
+	} else {
+		FlavorValidation.init();
+	}
 
 })();

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
@@ -242,6 +243,12 @@ class _EpisodioDetalleScreenState extends ConsumerState<EpisodioDetalleScreen> {
   Duration _posicionActual = Duration.zero;
   double _velocidad = 1.0;
 
+  // Stream subscriptions para evitar memory leaks
+  StreamSubscription<bool>? _playingSubscription;
+  StreamSubscription<Duration?>? _durationSubscription;
+  StreamSubscription<Duration>? _positionSubscription;
+  StreamSubscription<ProcessingState>? _processingSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -251,25 +258,25 @@ class _EpisodioDetalleScreenState extends ConsumerState<EpisodioDetalleScreen> {
   }
 
   void _configurarListeners() {
-    _audioPlayer.playingStream.listen((reproduciendo) {
+    _playingSubscription = _audioPlayer.playingStream.listen((reproduciendo) {
       if (mounted) {
         setState(() => _estaReproduciendo = reproduciendo);
       }
     });
 
-    _audioPlayer.durationStream.listen((duracion) {
+    _durationSubscription = _audioPlayer.durationStream.listen((duracion) {
       if (mounted && duracion != null) {
         setState(() => _duracionTotal = duracion);
       }
     });
 
-    _audioPlayer.positionStream.listen((posicion) {
+    _positionSubscription = _audioPlayer.positionStream.listen((posicion) {
       if (mounted) {
         setState(() => _posicionActual = posicion);
       }
     });
 
-    _audioPlayer.processingStateStream.listen((estado) {
+    _processingSubscription = _audioPlayer.processingStateStream.listen((estado) {
       if (mounted) {
         setState(() {
           _cargandoAudio = estado == ProcessingState.loading ||
@@ -341,6 +348,11 @@ class _EpisodioDetalleScreenState extends ConsumerState<EpisodioDetalleScreen> {
 
   @override
   void dispose() {
+    // Cancelar subscriptions antes de dispose del player
+    _playingSubscription?.cancel();
+    _durationSubscription?.cancel();
+    _positionSubscription?.cancel();
+    _processingSubscription?.cancel();
     _audioPlayer.dispose();
     super.dispose();
   }

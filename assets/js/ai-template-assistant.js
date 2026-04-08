@@ -4,210 +4,210 @@
  * @package Flavor_Chat_IA
  */
 
-(function($) {
-    'use strict';
+(function ($) {
+	'use strict';
 
-    const FlavorAITemplateAssistant = {
-        conversationHistory: [],
-        currentTemplate: null,
-        isProcessing: false,
+	const FlavorAITemplateAssistant = {
+		conversationHistory: [],
+		currentTemplate: null,
+		isProcessing: false,
 
-        /**
+		/**
          * Inicializar
          */
-        init: function() {
-            this.bindEvents();
-            this.initPanel();
-        },
+		init: function () {
+			this.bindEvents();
+			this.initPanel();
+		},
 
-        /**
+		/**
          * Vincular eventos
          */
-        bindEvents: function() {
-            const self = this;
+		bindEvents: function () {
+			const self = this;
 
-            // Enviar mensaje
-            $(document).on('click', '#flavor-ai-send', function() {
-                self.sendMessage();
-            });
+			// Enviar mensaje
+			$(document).on('click', '#flavor-ai-send', function () {
+				self.sendMessage();
+			});
 
-            // Enter para enviar
-            $(document).on('keydown', '#flavor-ai-input', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    self.sendMessage();
-                }
-            });
+			// Enter para enviar
+			$(document).on('keydown', '#flavor-ai-input', function (e) {
+				if (e.key === 'Enter' && !e.shiftKey) {
+					e.preventDefault();
+					self.sendMessage();
+				}
+			});
 
-            // Aplicar plantilla
-            $(document).on('click', '#flavor-ai-apply', function() {
-                self.applyTemplate();
-            });
+			// Aplicar plantilla
+			$(document).on('click', '#flavor-ai-apply', function () {
+				self.applyTemplate();
+			});
 
-            // Refinar plantilla
-            $(document).on('click', '#flavor-ai-refine', function() {
-                self.startRefineMode();
-            });
+			// Refinar plantilla
+			$(document).on('click', '#flavor-ai-refine', function () {
+				self.startRefineMode();
+			});
 
-            // Toggle panel
-            $(document).on('click', '.flavor-ai-assistant-toggle', function() {
-                self.togglePanel();
-            });
+			// Toggle panel
+			$(document).on('click', '.flavor-ai-assistant-toggle', function () {
+				self.togglePanel();
+			});
 
-            // Botón abrir asistente (en toolbar del page builder)
-            $(document).on('click', '#flavor-pb-ai-assistant-btn', function() {
-                self.showPanel();
-            });
-        },
+			// Botón abrir asistente (en toolbar del page builder)
+			$(document).on('click', '#flavor-pb-ai-assistant-btn', function () {
+				self.showPanel();
+			});
+		},
 
-        /**
+		/**
          * Inicializar panel
          */
-        initPanel: function() {
-            // Añadir botón en la toolbar del page builder si existe
-            const toolbar = $('.flavor-pb-toolbar-actions');
-            if (toolbar.length && !$('#flavor-pb-ai-assistant-btn').length) {
-                toolbar.prepend(`
+		initPanel: function () {
+			// Añadir botón en la toolbar del page builder si existe
+			const toolbar = $('.flavor-pb-toolbar-actions');
+			if (toolbar.length && !$('#flavor-pb-ai-assistant-btn').length) {
+				toolbar.prepend(`
                     <button type="button" id="flavor-pb-ai-assistant-btn" class="button button-secondary">
                         <span class="dashicons dashicons-superhero-alt"></span>
                         Asistente IA
                     </button>
                 `);
-            }
-        },
+			}
+		},
 
-        /**
+		/**
          * Enviar mensaje
          */
-        sendMessage: function() {
-            if (this.isProcessing) return;
+		sendMessage: function () {
+			if (this.isProcessing) {return;}
 
-            const input = $('#flavor-ai-input');
-            const message = input.val().trim();
+			const input = $('#flavor-ai-input');
+			const message = input.val().trim();
 
-            if (!message) return;
+			if (!message) {return;}
 
-            this.isProcessing = true;
-            this.addMessage(message, 'user');
-            input.val('');
+			this.isProcessing = true;
+			this.addMessage(message, 'user');
+			input.val('');
 
-            this.showThinking();
+			this.showThinking();
 
-            const isFirstMessage = this.conversationHistory.length === 0;
-            const endpoint = isFirstMessage ? 'flavor_ai_template_suggest' : 'flavor_ai_template_chat';
+			const isFirstMessage = this.conversationHistory.length === 0;
+			const endpoint = isFirstMessage ? 'flavor_ai_template_suggest' : 'flavor_ai_template_chat';
 
-            const requestData = {
-                action: endpoint,
-                nonce: flavorAITemplateAssistant.nonce
-            };
+			const requestData = {
+				action: endpoint,
+				nonce: flavorAITemplateAssistant.nonce
+			};
 
-            if (isFirstMessage) {
-                requestData.description = message;
-            } else {
-                requestData.message = message;
-                requestData.conversation_history = JSON.stringify(this.conversationHistory);
-                if (this.currentTemplate) {
-                    requestData.current_template = JSON.stringify(this.currentTemplate);
-                }
-            }
+			if (isFirstMessage) {
+				requestData.description = message;
+			} else {
+				requestData.message = message;
+				requestData.conversation_history = JSON.stringify(this.conversationHistory);
+				if (this.currentTemplate) {
+					requestData.current_template = JSON.stringify(this.currentTemplate);
+				}
+			}
 
-            $.ajax({
-                url: flavorAITemplateAssistant.ajaxUrl,
-                type: 'POST',
-                data: requestData,
-                success: (response) => {
-                    this.hideThinking();
+			$.ajax({
+				url: flavorAITemplateAssistant.ajaxUrl,
+				type: 'POST',
+				data: requestData,
+				success: (response) => {
+					this.hideThinking();
 
-                    if (response.success) {
-                        this.handleResponse(response.data);
-                    } else {
-                        this.addMessage(response.data?.message || flavorAITemplateAssistant.strings.error, 'error');
-                    }
+					if (response.success) {
+						this.handleResponse(response.data);
+					} else {
+						this.addMessage(response.data?.message || flavorAITemplateAssistant.strings.error, 'error');
+					}
 
-                    this.isProcessing = false;
-                },
-                error: () => {
-                    this.hideThinking();
-                    this.addMessage(flavorAITemplateAssistant.strings.error, 'error');
-                    this.isProcessing = false;
-                }
-            });
-        },
+					this.isProcessing = false;
+				},
+				error: () => {
+					this.hideThinking();
+					this.addMessage(flavorAITemplateAssistant.strings.error, 'error');
+					this.isProcessing = false;
+				}
+			});
+		},
 
-        /**
+		/**
          * Manejar respuesta de la IA
          */
-        handleResponse: function(data) {
-            // Actualizar historial
-            if (data.conversation_history) {
-                this.conversationHistory = data.conversation_history;
-            } else {
-                this.conversationHistory.push(
-                    { role: 'user', content: $('#flavor-ai-input').val() },
-                    { role: 'assistant', content: data.message }
-                );
-            }
+		handleResponse: function (data) {
+			// Actualizar historial
+			if (data.conversation_history) {
+				this.conversationHistory = data.conversation_history;
+			} else {
+				this.conversationHistory.push(
+					{ role: 'user', content: $('#flavor-ai-input').val() },
+					{ role: 'assistant', content: data.message }
+				);
+			}
 
-            // Mostrar mensaje (sin el JSON)
-            const cleanMessage = this.cleanMessageForDisplay(data.message);
-            this.addMessage(cleanMessage, 'assistant');
+			// Mostrar mensaje (sin el JSON)
+			const cleanMessage = this.cleanMessageForDisplay(data.message);
+			this.addMessage(cleanMessage, 'assistant');
 
-            // Si hay plantilla, mostrar preview
-            if (data.template) {
-                this.currentTemplate = data.template;
-                this.showTemplatePreview(data.template);
-            }
-        },
+			// Si hay plantilla, mostrar preview
+			if (data.template) {
+				this.currentTemplate = data.template;
+				this.showTemplatePreview(data.template);
+			}
+		},
 
-        /**
+		/**
          * Limpiar mensaje para mostrar (quitar bloques JSON)
          */
-        cleanMessageForDisplay: function(message) {
-            // Quitar bloques de código JSON
-            return message.replace(/```json[\s\S]*?```/g, '')
-                         .replace(/\{[\s\S]*"layout"[\s\S]*\}/g, '[Plantilla generada - ver preview abajo]')
-                         .trim();
-        },
+		cleanMessageForDisplay: function (message) {
+			// Quitar bloques de código JSON
+			return message.replace(/```json[\s\S]*?```/g, '')
+				.replace(/\{[\s\S]*"layout"[\s\S]*\}/g, '[Plantilla generada - ver preview abajo]')
+				.trim();
+		},
 
-        /**
+		/**
          * Añadir mensaje al chat
          */
-        addMessage: function(content, type) {
-            const messagesContainer = $('#flavor-ai-chat-messages');
-            const messageClass = `flavor-ai-message-${type}`;
+		addMessage: function (content, type) {
+			const messagesContainer = $('#flavor-ai-chat-messages');
+			const messageClass = `flavor-ai-message-${type}`;
 
-            // Convertir markdown básico a HTML
-            const htmlContent = this.markdownToHtml(content);
+			// Convertir markdown básico a HTML
+			const htmlContent = this.markdownToHtml(content);
 
-            const messageHtml = `
+			const messageHtml = `
                 <div class="flavor-ai-message ${messageClass}">
                     <div class="flavor-ai-message-content">${htmlContent}</div>
                 </div>
             `;
 
-            messagesContainer.append(messageHtml);
-            messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
-        },
+			messagesContainer.append(messageHtml);
+			messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+		},
 
-        /**
+		/**
          * Conversión básica de markdown a HTML
          */
-        markdownToHtml: function(text) {
-            return text
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/`(.*?)`/g, '<code>$1</code>')
-                .replace(/\n/g, '<br>')
-                .replace(/- (.*?)(?=<br>|$)/g, '<li>$1</li>')
-                .replace(/(<li>.*<\/li>)+/g, '<ul>$&</ul>');
-        },
+		markdownToHtml: function (text) {
+			return text
+				.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+				.replace(/\*(.*?)\*/g, '<em>$1</em>')
+				.replace(/`(.*?)`/g, '<code>$1</code>')
+				.replace(/\n/g, '<br>')
+				.replace(/- (.*?)(?=<br>|$)/g, '<li>$1</li>')
+				.replace(/(<li>.*<\/li>)+/g, '<ul>$&</ul>');
+		},
 
-        /**
+		/**
          * Mostrar indicador de pensando
          */
-        showThinking: function() {
-            const messagesContainer = $('#flavor-ai-chat-messages');
-            messagesContainer.append(`
+		showThinking: function () {
+			const messagesContainer = $('#flavor-ai-chat-messages');
+			messagesContainer.append(`
                 <div class="flavor-ai-message flavor-ai-message-thinking" id="flavor-ai-thinking">
                     <div class="flavor-ai-message-content">
                         <span class="flavor-ai-thinking-dots">
@@ -217,150 +217,150 @@
                     </div>
                 </div>
             `);
-            messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
-        },
+			messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+		},
 
-        /**
+		/**
          * Ocultar indicador de pensando
          */
-        hideThinking: function() {
-            $('#flavor-ai-thinking').remove();
-        },
+		hideThinking: function () {
+			$('#flavor-ai-thinking').remove();
+		},
 
-        /**
+		/**
          * Mostrar preview de plantilla
          */
-        showTemplatePreview: function(template) {
-            const previewContainer = $('#flavor-ai-preview');
-            const componentsContainer = $('#flavor-ai-preview-components');
+		showTemplatePreview: function (template) {
+			const previewContainer = $('#flavor-ai-preview');
+			const componentsContainer = $('#flavor-ai-preview-components');
 
-            componentsContainer.empty();
+			componentsContainer.empty();
 
-            if (template.template_name) {
-                componentsContainer.append(`
+			if (template.template_name) {
+				componentsContainer.append(`
                     <div class="flavor-ai-preview-header">
                         <strong>${template.template_name}</strong>
                         ${template.template_description ? `<p>${template.template_description}</p>` : ''}
                     </div>
                 `);
-            }
+			}
 
-            const componentsList = $('<div class="flavor-ai-preview-list"></div>');
+			const componentsList = $('<div class="flavor-ai-preview-list"></div>');
 
-            template.layout.forEach((component, index) => {
-                const componentHtml = `
+			template.layout.forEach((component, index) => {
+				const componentHtml = `
                     <div class="flavor-ai-preview-component" data-index="${index}">
                         <span class="flavor-ai-component-order">${index + 1}</span>
                         <span class="flavor-ai-component-id">${component.component_id}</span>
                         ${component.data?.titulo ? `<span class="flavor-ai-component-title">${component.data.titulo}</span>` : ''}
                     </div>
                 `;
-                componentsList.append(componentHtml);
-            });
+				componentsList.append(componentHtml);
+			});
 
-            componentsContainer.append(componentsList);
-            previewContainer.slideDown();
-        },
+			componentsContainer.append(componentsList);
+			previewContainer.slideDown();
+		},
 
-        /**
+		/**
          * Aplicar plantilla al page builder
          */
-        applyTemplate: function() {
-            if (!this.currentTemplate || !this.currentTemplate.layout) {
-                alert('No hay plantilla para aplicar');
-                return;
-            }
+		applyTemplate: function () {
+			if (!this.currentTemplate || !this.currentTemplate.layout) {
+				alert('No hay plantilla para aplicar');
+				return;
+			}
 
-            // Verificar si existe el page builder con el nuevo método
-            if (typeof window.FlavorPageBuilder !== 'undefined' && typeof window.FlavorPageBuilder.loadLayoutFromData === 'function') {
-                const success = window.FlavorPageBuilder.loadLayoutFromData(this.currentTemplate.layout);
-                if (success) {
-                    this.addMessage('Plantilla aplicada correctamente. Puedes ver y editar los componentes en el canvas.', 'assistant');
-                    // Ocultar el preview
-                    $('#flavor-ai-preview').slideUp();
-                }
-            } else if (typeof window.FlavorPageBuilder !== 'undefined') {
-                // Fallback al método antiguo si existe
-                window.FlavorPageBuilder.layout = JSON.parse(JSON.stringify(this.currentTemplate.layout));
-                window.FlavorPageBuilder.saveLayout();
-                window.FlavorPageBuilder.refreshCanvas();
-                this.addMessage('Plantilla aplicada correctamente. Puedes ver y editar los componentes en el canvas.', 'assistant');
-                $('#flavor-ai-preview').slideUp();
-            } else {
-                // Fallback: guardar en campo oculto
-                const layoutField = $('input[name="flavor_page_layout"]');
-                if (layoutField.length) {
-                    layoutField.val(JSON.stringify(this.currentTemplate.layout));
-                    this.addMessage('Plantilla guardada. Guarda la página para aplicar los cambios.', 'assistant');
-                    // Refrescar el canvas si es posible
-                    location.reload();
-                } else {
-                    // Copiar al portapapeles
-                    const jsonString = JSON.stringify(this.currentTemplate, null, 2);
-                    navigator.clipboard.writeText(jsonString).then(() => {
-                        this.addMessage('Plantilla copiada al portapapeles. Puedes pegarla manualmente en el editor.', 'assistant');
-                    }).catch(() => {
-                        this.addMessage('No se pudo copiar automáticamente. Por favor, revisa la consola del navegador.', 'error');
-                        console.log('Plantilla generada:', this.currentTemplate);
-                    });
-                }
-            }
-        },
+			// Verificar si existe el page builder con el nuevo método
+			if (typeof window.FlavorPageBuilder !== 'undefined' && typeof window.FlavorPageBuilder.loadLayoutFromData === 'function') {
+				const success = window.FlavorPageBuilder.loadLayoutFromData(this.currentTemplate.layout);
+				if (success) {
+					this.addMessage('Plantilla aplicada correctamente. Puedes ver y editar los componentes en el canvas.', 'assistant');
+					// Ocultar el preview
+					$('#flavor-ai-preview').slideUp();
+				}
+			} else if (typeof window.FlavorPageBuilder !== 'undefined') {
+				// Fallback al método antiguo si existe
+				window.FlavorPageBuilder.layout = JSON.parse(JSON.stringify(this.currentTemplate.layout));
+				window.FlavorPageBuilder.saveLayout();
+				window.FlavorPageBuilder.refreshCanvas();
+				this.addMessage('Plantilla aplicada correctamente. Puedes ver y editar los componentes en el canvas.', 'assistant');
+				$('#flavor-ai-preview').slideUp();
+			} else {
+				// Fallback: guardar en campo oculto
+				const layoutField = $('input[name="flavor_page_layout"]');
+				if (layoutField.length) {
+					layoutField.val(JSON.stringify(this.currentTemplate.layout));
+					this.addMessage('Plantilla guardada. Guarda la página para aplicar los cambios.', 'assistant');
+					// Refrescar el canvas si es posible
+					location.reload();
+				} else {
+					// Copiar al portapapeles
+					const jsonString = JSON.stringify(this.currentTemplate, null, 2);
+					navigator.clipboard.writeText(jsonString).then(() => {
+						this.addMessage('Plantilla copiada al portapapeles. Puedes pegarla manualmente en el editor.', 'assistant');
+					}).catch(() => {
+						this.addMessage('No se pudo copiar automáticamente. Por favor, revisa la consola del navegador.', 'error');
+						console.log('Plantilla generada:', this.currentTemplate);
+					});
+				}
+			}
+		},
 
-        /**
+		/**
          * Iniciar modo de refinamiento
          */
-        startRefineMode: function() {
-            const input = $('#flavor-ai-input');
-            input.attr('placeholder', 'Describe los cambios que quieres hacer...');
-            input.focus();
+		startRefineMode: function () {
+			const input = $('#flavor-ai-input');
+			input.attr('placeholder', 'Describe los cambios que quieres hacer...');
+			input.focus();
 
-            this.addMessage('¿Qué cambios te gustaría hacer en la plantilla? Por ejemplo: "Añade una sección de testimonios" o "Cambia el hero por uno con video".', 'assistant');
-        },
+			this.addMessage('¿Qué cambios te gustaría hacer en la plantilla? Por ejemplo: "Añade una sección de testimonios" o "Cambia el hero por uno con video".', 'assistant');
+		},
 
-        /**
+		/**
          * Toggle panel
          */
-        togglePanel: function() {
-            const panel = $('#flavor-ai-template-assistant');
-            const body = panel.find('.flavor-ai-assistant-body');
-            const toggle = panel.find('.flavor-ai-assistant-toggle');
-            const icon = toggle.find('.dashicons');
+		togglePanel: function () {
+			const panel = $('#flavor-ai-template-assistant');
+			const body = panel.find('.flavor-ai-assistant-body');
+			const toggle = panel.find('.flavor-ai-assistant-toggle');
+			const icon = toggle.find('.dashicons');
 
-            body.slideToggle(200);
+			body.slideToggle(200);
 
-            if (icon.hasClass('dashicons-arrow-up-alt2')) {
-                icon.removeClass('dashicons-arrow-up-alt2').addClass('dashicons-arrow-down-alt2');
-                toggle.attr('aria-expanded', 'false');
-            } else {
-                icon.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
-                toggle.attr('aria-expanded', 'true');
-            }
-        },
+			if (icon.hasClass('dashicons-arrow-up-alt2')) {
+				icon.removeClass('dashicons-arrow-up-alt2').addClass('dashicons-arrow-down-alt2');
+				toggle.attr('aria-expanded', 'false');
+			} else {
+				icon.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
+				toggle.attr('aria-expanded', 'true');
+			}
+		},
 
-        /**
+		/**
          * Mostrar panel
          */
-        showPanel: function() {
-            const panel = $('#flavor-ai-template-assistant');
+		showPanel: function () {
+			const panel = $('#flavor-ai-template-assistant');
 
-            if (!panel.length) {
-                // Crear panel si no existe
-                this.createPanel();
-            }
+			if (!panel.length) {
+				// Crear panel si no existe
+				this.createPanel();
+			}
 
-            panel.addClass('active');
-            const body = panel.find('.flavor-ai-assistant-body');
-            if (body.is(':hidden')) {
-                body.slideDown(200);
-            }
-        },
+			panel.addClass('active');
+			const body = panel.find('.flavor-ai-assistant-body');
+			if (body.is(':hidden')) {
+				body.slideDown(200);
+			}
+		},
 
-        /**
+		/**
          * Crear panel dinámicamente
          */
-        createPanel: function() {
-            const panelHtml = `
+		createPanel: function () {
+			const panelHtml = `
                 <div id="flavor-ai-template-assistant" class="flavor-ai-assistant-panel">
                     <div class="flavor-ai-assistant-header">
                         <h3>
@@ -415,22 +415,22 @@
                 </div>
             `;
 
-            // Insertar después del sidebar del page builder o al final del wrap
-            const sidebar = $('.flavor-pb-sidebar');
-            if (sidebar.length) {
-                sidebar.after(panelHtml);
-            } else {
-                $('.wrap').append(panelHtml);
-            }
-        }
-    };
+			// Insertar después del sidebar del page builder o al final del wrap
+			const sidebar = $('.flavor-pb-sidebar');
+			if (sidebar.length) {
+				sidebar.after(panelHtml);
+			} else {
+				$('.wrap').append(panelHtml);
+			}
+		}
+	};
 
-    // Inicializar cuando el DOM esté listo
-    $(document).ready(function() {
-        FlavorAITemplateAssistant.init();
-    });
+	// Inicializar cuando el DOM esté listo
+	$(document).ready(function () {
+		FlavorAITemplateAssistant.init();
+	});
 
-    // Exponer globalmente
-    window.FlavorAITemplateAssistant = FlavorAITemplateAssistant;
+	// Exponer globalmente
+	window.FlavorAITemplateAssistant = FlavorAITemplateAssistant;
 
 })(jQuery);
