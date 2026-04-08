@@ -176,7 +176,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/reservas', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_reservas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'verificar_usuario_autenticado'],
             'args' => [
                 'estado' => [
                     'type' => 'string',
@@ -197,7 +197,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/reservas/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'api_obtener_reserva'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'verificar_usuario_autenticado'],
             'args' => [
                 'id' => [
                     'required' => true,
@@ -210,7 +210,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/reservas', [
             'methods' => 'POST',
             'callback' => [$this, 'api_crear_reserva'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
             'args' => [
                 'tipo_servicio' => [
                     'type' => 'string',
@@ -254,7 +254,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/reservas/(?P<id>\d+)', [
             'methods' => 'PUT',
             'callback' => [$this, 'api_modificar_reserva'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'verificar_usuario_autenticado'],
             'args' => [
                 'id' => [
                     'required' => true,
@@ -280,7 +280,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/reservas/(?P<id>\d+)/cancelar', [
             'methods' => 'POST',
             'callback' => [$this, 'api_cancelar_reserva'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'verificar_usuario_autenticado'],
             'args' => [
                 'id' => [
                     'required' => true,
@@ -293,7 +293,7 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/reservas/disponibilidad', [
             'methods' => 'GET',
             'callback' => [$this, 'api_disponibilidad'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
             'args' => [
                 'fecha_reserva' => [
                     'required' => true,
@@ -317,8 +317,34 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/reservas/config', [
             'methods' => 'GET',
             'callback' => [$this, 'api_obtener_config'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
+    }
+
+    /**
+     * Permisos públicos de lectura/consulta.
+     *
+     * @return bool
+     */
+    public function public_read_permission() {
+        return true;
+    }
+
+    /**
+     * Verifica autenticación para rutas privadas de reservas.
+     *
+     * @return bool|\WP_Error
+     */
+    public function verificar_usuario_autenticado() {
+        if (!is_user_logged_in()) {
+            return new \WP_Error(
+                'rest_not_logged_in',
+                __('Debes iniciar sesión para acceder a tus reservas.', 'flavor-chat-ia'),
+                ['status' => 401]
+            );
+        }
+
+        return true;
     }
 
     // =========================================================================
@@ -357,6 +383,14 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
 
         if (!$reserva) {
             return new WP_REST_Response(['success' => false, 'error' => 'Reserva no encontrada'], 404);
+        }
+
+        $usuario_actual = get_current_user_id();
+        $es_propietario = $reserva->user_id && (int) $reserva->user_id === $usuario_actual;
+        $es_admin = current_user_can('manage_options');
+
+        if (!$es_propietario && !$es_admin) {
+            return new WP_REST_Response(['success' => false, 'error' => 'No tienes permisos para ver esta reserva'], 403);
         }
 
         return new WP_REST_Response([
@@ -2374,7 +2408,11 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         $es_propietario   = ($reserva_encontrada->user_id && (int) $reserva_encontrada->user_id === $identificador_usuario_actual);
         $es_administrador = current_user_can('manage_options');
 
-        if (!$es_propietario && !$es_administrador && $identificador_usuario_actual) {
+        if (!$identificador_usuario_actual && !$es_administrador) {
+            return ['success' => false, 'error' => __('Debes iniciar sesion para cancelar esta reserva.', 'flavor-chat-ia')];
+        }
+
+        if (!$es_propietario && !$es_administrador) {
             return ['success' => false, 'error' => __('No tienes permisos para cancelar esta reserva.', 'flavor-chat-ia')];
         }
 
@@ -2421,11 +2459,8 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         if ($identificador_usuario_actual) {
             $condiciones_where[]  = 'user_id = %d';
             $valores_preparados[] = $identificador_usuario_actual;
-        } elseif (!empty($params['email'])) {
-            $condiciones_where[]  = 'email_cliente = %s';
-            $valores_preparados[] = sanitize_email($params['email']);
         } else {
-            return ['success' => false, 'error' => __('Debes iniciar sesion o proporcionar un email.', 'flavor-chat-ia')];
+            return ['success' => false, 'error' => __('Debes iniciar sesion para ver tus reservas.', 'flavor-chat-ia')];
         }
 
         if (!empty($params['estado'])) {
@@ -2523,7 +2558,11 @@ class Flavor_Chat_Reservas_Module extends Flavor_Chat_Module_Base {
         $es_propietario   = ($reserva_encontrada->user_id && (int) $reserva_encontrada->user_id === $identificador_usuario_actual);
         $es_administrador = current_user_can('manage_options');
 
-        if (!$es_propietario && !$es_administrador && $identificador_usuario_actual) {
+        if (!$identificador_usuario_actual && !$es_administrador) {
+            return ['success' => false, 'error' => __('Debes iniciar sesion para modificar esta reserva.', 'flavor-chat-ia')];
+        }
+
+        if (!$es_propietario && !$es_administrador) {
             return ['success' => false, 'error' => __('No tienes permisos para modificar esta reserva.', 'flavor-chat-ia')];
         }
 

@@ -27,13 +27,9 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
     public function __construct() {
         // Auto-registered AJAX handlers
         add_action('wp_ajax_comunidades_unirse', [$this, 'ajax_unirse']);
-        add_action('wp_ajax_nopriv_comunidades_unirse', [$this, 'ajax_unirse']);
         add_action('wp_ajax_comunidades_salir', [$this, 'ajax_salir']);
-        add_action('wp_ajax_nopriv_comunidades_salir', [$this, 'ajax_salir']);
         add_action('wp_ajax_comunidades_publicar', [$this, 'ajax_publicar']);
-        add_action('wp_ajax_nopriv_comunidades_publicar', [$this, 'ajax_publicar']);
         add_action('wp_ajax_comunidades_invitar', [$this, 'ajax_invitar']);
-        add_action('wp_ajax_nopriv_comunidades_invitar', [$this, 'ajax_invitar']);
 
         $this->id = 'comunidades';
         $this->name = 'Comunidades'; // Translation loaded on init
@@ -2644,7 +2640,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/comunidades', [
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [$this, 'api_listar_comunidades'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'api_verificar_lectura_publica_comunidades'],
             'args'                => [
                 'tipo' => [
                     'type'              => 'string',
@@ -2671,7 +2667,7 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/comunidades/(?P<id>\d+)', [
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [$this, 'api_obtener_comunidad'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'api_verificar_lectura_comunidad'],
             'args'                => [
                 'id' => [
                     'required'          => true,
@@ -2753,6 +2749,79 @@ class Flavor_Chat_Comunidades_Module extends Flavor_Chat_Module_Base {
             );
         }
         return true;
+    }
+
+    /**
+     * Permite listar solo comunidades públicas/visibles por diseño.
+     *
+     * @return bool
+     */
+    public function api_verificar_lectura_publica_comunidades() {
+        return true;
+    }
+
+    /**
+     * Verifica acceso a una comunidad concreta.
+     *
+     * Las comunidades secretas no deben exponerse públicamente.
+     *
+     * @param WP_REST_Request $request
+     * @return bool|\WP_Error
+     */
+    public function api_verificar_lectura_comunidad($request) {
+        global $wpdb;
+        $tabla_comunidades = $wpdb->prefix . 'flavor_comunidades';
+        $tabla_miembros = $wpdb->prefix . 'flavor_comunidades_miembros';
+
+        $comunidad_id = absint($request->get_param('id'));
+        if (!$comunidad_id) {
+            return new \WP_Error(
+                'comunidad_invalida',
+                __('ID de comunidad no valido.', 'flavor-chat-ia'),
+                ['status' => 400]
+            );
+        }
+
+        $comunidad = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, tipo, estado FROM {$tabla_comunidades} WHERE id = %d",
+            $comunidad_id
+        ));
+
+        if (!$comunidad || $comunidad->estado !== 'activa') {
+            return new \WP_Error(
+                'comunidad_no_encontrada',
+                __('Comunidad no encontrada.', 'flavor-chat-ia'),
+                ['status' => 404]
+            );
+        }
+
+        if ($comunidad->tipo !== 'secreta') {
+            return true;
+        }
+
+        if (!is_user_logged_in()) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __('No tienes permiso para ver esta comunidad.', 'flavor-chat-ia'),
+                ['status' => 403]
+            );
+        }
+
+        $es_miembro = (bool) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$tabla_miembros} WHERE comunidad_id = %d AND user_id = %d AND estado = 'activo'",
+            $comunidad_id,
+            get_current_user_id()
+        ));
+
+        if ($es_miembro || current_user_can('manage_options')) {
+            return true;
+        }
+
+        return new \WP_Error(
+            'rest_forbidden',
+            __('No tienes permiso para ver esta comunidad.', 'flavor-chat-ia'),
+            ['status' => 403]
+        );
     }
 
     /**

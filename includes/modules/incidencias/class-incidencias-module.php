@@ -35,13 +35,9 @@ class Flavor_Chat_Incidencias_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_incidencias_detalle_incidencia', [$this, 'ajax_detalle_incidencia']);
         add_action('wp_ajax_nopriv_incidencias_detalle_incidencia', [$this, 'ajax_detalle_incidencia']);
         add_action('wp_ajax_incidencias_votar_incidencia', [$this, 'ajax_votar_incidencia']);
-        add_action('wp_ajax_nopriv_incidencias_votar_incidencia', [$this, 'ajax_votar_incidencia']);
         add_action('wp_ajax_incidencias_comentar_incidencia', [$this, 'ajax_comentar_incidencia']);
-        add_action('wp_ajax_nopriv_incidencias_comentar_incidencia', [$this, 'ajax_comentar_incidencia']);
         add_action('wp_ajax_incidencias_asignar_responsable', [$this, 'ajax_asignar_responsable']);
-        add_action('wp_ajax_nopriv_incidencias_asignar_responsable', [$this, 'ajax_asignar_responsable']);
         add_action('wp_ajax_incidencias_eliminar_incidencia', [$this, 'ajax_eliminar_incidencia']);
-        add_action('wp_ajax_nopriv_incidencias_eliminar_incidencia', [$this, 'ajax_eliminar_incidencia']);
 
         $this->id = 'incidencias';
         $this->name = 'Incidencias Urbanas'; // Translation loaded on init

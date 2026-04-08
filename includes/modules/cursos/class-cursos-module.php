@@ -25,7 +25,6 @@ class Flavor_Chat_Cursos_Module extends Flavor_Chat_Module_Base {
     public function __construct() {
         // Auto-registered AJAX handlers
         add_action('wp_ajax_cursos_admin_guardar_curso', [$this, 'ajax_admin_guardar_curso']);
-        add_action('wp_ajax_nopriv_cursos_admin_guardar_curso', [$this, 'ajax_admin_guardar_curso']);
 
         $this->id = 'cursos';
         $this->name = 'Cursos y Formación'; // Translation loaded on init

@@ -5,7 +5,7 @@
 Los dashboards de Flavor Platform ahora incluyen un sistema completo de **interconexión horizontal y vertical** entre módulos, que detecta automáticamente módulos activos relacionados y muestra widgets contextuales de conexión.
 
 **Fecha:** 22 de marzo de 2026
-**Versión:** 3.3.0
+**Versión:** 3.5.0
 **Estado:** ✅ Implementado
 
 ---
@@ -403,5 +403,5 @@ El sistema de interconexión de módulos transforma Flavor Platform de una colec
 ---
 
 **Documento generado:** 22 de marzo de 2026
-**Versión Flavor Platform:** 3.3.0
+**Versión Flavor Platform:** 3.5.0
 **Mantenedor:** Flavor Team

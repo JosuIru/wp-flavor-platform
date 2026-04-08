@@ -52,8 +52,9 @@
 
             // Escuchar cambios en elementos
             document.addEventListener('vbp:element:updated', function(e) {
-                var elementId = e.detail && e.detail.id;
-                if (elementId) {
+                var detail = e.detail || {};
+                var elementId = detail.id;
+                if (elementId && self.shouldRefreshFromUpdate(detail)) {
                     self.invalidateCache(elementId);
                     self.debounceRefresh(elementId);
                 }
@@ -128,6 +129,23 @@
             });
 
             return attributes;
+        },
+
+        shouldRefreshFromUpdate: function(detail) {
+            if (!detail) {
+                return false;
+            }
+
+            var element = detail.element || this.getElementById(detail.id);
+            if (!this.isPreviewableElement(element)) {
+                return false;
+            }
+
+            var changes = detail.changes || {};
+            var relevantKeys = ['data', 'shortcode', 'module', 'type', 'preview_html', 'forcePreviewRefresh'];
+            return relevantKeys.some(function(key) {
+                return Object.prototype.hasOwnProperty.call(changes, key);
+            });
         },
 
         /**
@@ -274,8 +292,12 @@
             attempt = attempt || 1;
 
             return new Promise(function(resolve, reject) {
-                var apiUrl = (window.vbpData && window.vbpData.restUrl) || '/wp-json/flavor-vbp/v1/';
-                var nonce = (window.vbpData && window.vbpData.nonce) || '';
+                var apiUrl = (window.VBP_Config && window.VBP_Config.restUrl) ||
+                    (window.vbpData && window.vbpData.restUrl) ||
+                    '/wp-json/flavor-vbp/v1/';
+                var nonce = (window.VBP_Config && window.VBP_Config.restNonce) ||
+                    (window.vbpData && window.vbpData.nonce) ||
+                    '';
 
                 fetch(apiUrl + 'preview-shortcode', {
                     method: 'POST',
@@ -347,8 +369,8 @@
                 }
             }
 
-            // Insertar HTML del preview
-            previewContainer.innerHTML = html;
+            // Insertar HTML del preview con controles homogéneos del editor
+            previewContainer.innerHTML = this.buildPreviewFrame(elementId, html);
             previewContainer.classList.remove('vbp-module-preview--loading', 'vbp-module-preview--error');
             previewContainer.classList.add('vbp-module-preview--loaded');
 
@@ -421,7 +443,7 @@
             var shortcodeName = elementData ?
                 (elementData.shortcode || elementData.module || 'módulo') : 'módulo';
 
-            previewContainer.innerHTML = '<div class="vbp-module-preview__error">' +
+            previewContainer.innerHTML = this.buildPreviewFrame(elementId, '<div class="vbp-module-preview__error">' +
                 '<svg class="vbp-module-preview__error-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
                 '<circle cx="12" cy="12" r="10"/>' +
                 '<line x1="12" y1="8" x2="12" y2="12"/>' +
@@ -433,9 +455,32 @@
                 '<button type="button" class="vbp-module-preview__retry" onclick="window.vbpModulePreview.retry(\'' + elementId + '\')">' +
                 'Reintentar' +
                 '</button>' +
-                '</div>';
+                '</div>');
             previewContainer.classList.add('vbp-module-preview--error');
             previewContainer.classList.remove('vbp-module-preview--loaded', 'vbp-module-preview--loading');
+        },
+
+        buildPreviewFrame: function(elementId, html) {
+            var elementData = this.getElementById(elementId) || {};
+            var moduleName = elementData.name ||
+                elementData.module ||
+                elementData.shortcode ||
+                (elementData.data && elementData.data.shortcode) ||
+                'Módulo';
+
+            return '<div class="vbp-module-preview__frame">' +
+                '<div class="vbp-module-badge">' +
+                '<span class="vbp-module-badge__icon">⚡</span>' +
+                '<span>' + this.escapeHtml(moduleName) + '</span>' +
+                '</div>' +
+                '<div class="vbp-module-preview__refresh-overlay">' +
+                '<button type="button" class="vbp-module-preview__refresh-btn" onclick="window.vbpModulePreview.retry(\'' + elementId + '\')">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0020.49 15"/></svg>' +
+                '<span>Actualizar preview</span>' +
+                '</button>' +
+                '</div>' +
+                html +
+                '</div>';
         },
 
         /**
@@ -457,8 +502,16 @@
         getElementById: function(elementId) {
             if (typeof Alpine !== 'undefined' && Alpine.store) {
                 var store = Alpine.store('vbp');
-                if (store && typeof store.getElementById === 'function') {
-                    return store.getElementById(elementId);
+                if (store) {
+                    if (typeof store.getElementById === 'function') {
+                        return store.getElementById(elementId);
+                    }
+                    if (typeof store.getElementDeep === 'function') {
+                        return store.getElementDeep(elementId);
+                    }
+                    if (typeof store.getElement === 'function') {
+                        return store.getElement(elementId);
+                    }
                 }
             }
             return null;

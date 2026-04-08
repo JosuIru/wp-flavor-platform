@@ -69,12 +69,8 @@ class Flavor_Analytics_API {
      * Verificar permisos de API
      */
     public function check_api_permission( $request ) {
-        $api_key = $request->get_header( 'X-VBP-Key' );
-        if ( empty( $api_key ) ) {
-            $api_key = $request->get_param( 'api_key' );
-        }
-        // Usar helper centralizado para verificar API key
-        if ( ! flavor_verify_vbp_api_key( $api_key ) ) {
+        $api_key = flavor_get_vbp_api_key_from_request( $request );
+        if ( ! flavor_check_vbp_automation_access( $api_key, 'analytics_admin' ) ) {
             return new WP_Error( 'rest_forbidden', 'API key inválida', array( 'status' => 403 ) );
         }
         return true;

@@ -32,6 +32,13 @@ class Flavor_Keystore_Manager {
     private $keystore_dir;
 
     /**
+     * Comandos del sistema permitidos para esta clase.
+     *
+     * @var bool|null
+     */
+    private $command_execution_available = null;
+
+    /**
      * Obtiene la instancia singleton
      *
      * @return Flavor_Keystore_Manager
@@ -225,6 +232,14 @@ class Flavor_Keystore_Manager {
             wp_send_json_error(__('La contraseña debe tener al menos 6 caracteres', 'flavor-chat-ia'));
         }
 
+        if ( ! $this->can_execute_commands() ) {
+            wp_send_json_error(__('La ejecución de comandos del sistema no está disponible en este entorno', 'flavor-chat-ia'));
+        }
+
+        if ( ! preg_match( '/^[a-zA-Z0-9._-]+$/', $params['alias'] ) ) {
+            wp_send_json_error(__('El alias contiene caracteres no permitidos', 'flavor-chat-ia'));
+        }
+
         // Verificar keytool disponible
         $keytool = $this->find_keytool();
         if (!$keytool) {
@@ -248,14 +263,14 @@ class Flavor_Keystore_Manager {
 
         // Comando keytool
         $command = sprintf(
-            '%s -genkeypair -v -keystore %s -keyalg RSA -keysize 2048 -validity %d -alias %s -storepass %s -keypass %s -dname "%s" 2>&1',
-            escapeshellcmd($keytool),
+            '%s -genkeypair -v -keystore %s -keyalg RSA -keysize 2048 -validity %d -alias %s -storepass %s -keypass %s -dname %s 2>&1',
+            escapeshellarg($keytool),
             escapeshellarg($filepath),
             $params['validity'],
             escapeshellarg($params['alias']),
             escapeshellarg($params['store_password']),
             escapeshellarg($params['key_password'] ?: $params['store_password']),
-            $dname
+            escapeshellarg($dname)
         );
 
         $output = [];
@@ -317,6 +332,10 @@ class Flavor_Keystore_Manager {
             wp_send_json_error(__('Archivo de keystore no encontrado', 'flavor-chat-ia'));
         }
 
+        if ( ! $this->can_execute_commands() ) {
+            wp_send_json_error(__('La ejecución de comandos del sistema no está disponible en este entorno', 'flavor-chat-ia'));
+        }
+
         $keytool = $this->find_keytool();
         if (!$keytool) {
             wp_send_json_error(__('keytool no encontrado', 'flavor-chat-ia'));
@@ -327,7 +346,7 @@ class Flavor_Keystore_Manager {
         // Verificar keystore
         $command = sprintf(
             '%s -list -v -keystore %s -storepass %s 2>&1',
-            escapeshellcmd($keytool),
+            escapeshellarg($keytool),
             escapeshellarg($filepath),
             escapeshellarg($store_pass)
         );
@@ -459,11 +478,40 @@ class Flavor_Keystore_Manager {
             }
         }
 
-        // Intentar con which/where
-        $command = PHP_OS_FAMILY === 'Windows' ? 'where keytool' : 'which keytool';
-        $result = trim(shell_exec($command) ?? '');
+        if ( ! $this->can_execute_commands() ) {
+            return null;
+        }
 
-        return !empty($result) ? $result : null;
+        // Intentar con where/command -v si existe shell disponible.
+        $output = array();
+        $return_var = 1;
+        $command = PHP_OS_FAMILY === 'Windows' ? 'where keytool 2>NUL' : 'command -v keytool 2>/dev/null';
+        exec( $command, $output, $return_var );
+
+        if ( 0 !== $return_var || empty( $output[0] ) ) {
+            return null;
+        }
+
+        $resolved = trim( (string) $output[0] );
+        return $resolved !== '' ? $resolved : null;
+    }
+
+    /**
+     * Verifica si el entorno permite ejecutar comandos locales.
+     *
+     * @return bool
+     */
+    private function can_execute_commands() {
+        if ( null !== $this->command_execution_available ) {
+            return $this->command_execution_available;
+        }
+
+        $disabled = array_map( 'trim', explode( ',', (string) ini_get( 'disable_functions' ) ) );
+        $blocked  = array( 'exec', 'shell_exec', 'popen', 'proc_open', 'passthru' );
+
+        $this->command_execution_available = count( array_intersect( $blocked, $disabled ) ) < 1;
+
+        return $this->command_execution_available;
     }
 
     /**

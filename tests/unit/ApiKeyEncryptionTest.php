@@ -23,9 +23,11 @@ class ApiKeyEncryptionTest extends Flavor_TestCase {
         parent::setUp();
 
         // Cargar la clase
-        require_once FLAVOR_PLUGIN_DIR . '/includes/security/class-api-key-encryption.php';
+        if ( ! class_exists( 'Flavor_API_Key_Encryption', false ) ) {
+            require_once FLAVOR_PLUGIN_DIR . '/includes/security/class-api-key-encryption.php';
+        }
 
-        $this->encryption = Flavor_Api_Key_Encryption::get_instance();
+        $this->encryption = Flavor_API_Key_Encryption::get_instance();
     }
 
     public function test_singleton_returns_same_instance() {

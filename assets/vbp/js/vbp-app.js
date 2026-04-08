@@ -264,6 +264,11 @@ function vbpApp() {
         draggedElement: null,
         autosaveTimer: null,
         autosaveInterval: 30000,
+        autosaveRecovery: {
+            available: false,
+            time: null,
+            data: null
+        },
         countdownTimer: null,
         optionalScriptPromises: {},
         beforeAfterListenersInitialized: false,
@@ -1477,43 +1482,46 @@ function vbpApp() {
 
         maybeOfferAutosaveRecovery: function(autosave) {
             if (!autosave || !autosave.available || !autosave.data) {
+                this.dismissAutosaveRecovery();
                 return;
             }
 
-            var self = this;
-            var message = 'Hay un autosave más reciente';
-            if (autosave.time) {
-                message += ' (' + autosave.time + ')';
-            }
-            message += '. ¿Quieres recuperarlo?';
-
-            var restoreAutosave = function() {
-                var store = Alpine.store('vbp');
-                if (!store) return;
-
-                store.elements = sanitizeElements((autosave.data && autosave.data.elements) || []);
-                store.settings = Object.assign({}, store.settings || {}, (autosave.data && autosave.data.settings) || {});
-                store.markAsDirty();
-                self.showNotification('Autosave recuperado. Revisa y guarda los cambios.', 'info');
+            this.autosaveRecovery = {
+                available: true,
+                time: autosave.time || null,
+                data: autosave.data || null
             };
+            this.showNotification('Hay un autosave más reciente disponible para recuperar.', 'info');
+        },
 
-            if (window.vbpConfirm && typeof window.vbpConfirm.show === 'function') {
-                window.vbpConfirm.show({
-                    title: 'Recuperar autosave',
-                    message: message,
-                    confirmText: 'Recuperar',
-                    cancelText: 'Mantener actual'
-                }).then(function(confirmed) {
-                    if (confirmed) {
-                        restoreAutosave();
-                    }
-                });
+        restoreAutosaveRecovery: function() {
+            var store = Alpine.store('vbp');
+            var autosave = this.autosaveRecovery;
+            if (!store || !autosave || !autosave.available || !autosave.data) {
                 return;
             }
 
-            if (confirm(message)) {
-                restoreAutosave();
+            store.saveToHistory('Recuperar autosave');
+            if (typeof store.initElements === 'function') {
+                store.initElements(sanitizeElements((autosave.data.elements) || []));
+            } else {
+                store.elements = sanitizeElements((autosave.data.elements) || []);
             }
+            store.settings = Object.assign({}, store.settings || {}, (autosave.data.settings) || {});
+            if (typeof store.clearSelection === 'function') {
+                store.clearSelection();
+            }
+            store.markAsDirty();
+            this.dismissAutosaveRecovery();
+            this.showNotification('Autosave recuperado. Revisa y guarda los cambios.', 'success');
+        },
+
+        dismissAutosaveRecovery: function() {
+            this.autosaveRecovery = {
+                available: false,
+                time: null,
+                data: null
+            };
         },
 
         saveDocument: function() {

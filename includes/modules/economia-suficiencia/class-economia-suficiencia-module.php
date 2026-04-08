@@ -246,15 +246,22 @@ class Flavor_Chat_Economia_Suficiencia_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/economia-suficiencia/comunidad', [
             'methods' => 'GET',
             'callback' => [$this, 'api_get_estadisticas_comunidad'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
 
         // Biblioteca de recursos
         register_rest_route($namespace, '/economia-suficiencia/biblioteca', [
             'methods' => 'GET',
             'callback' => [$this, 'api_get_biblioteca'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
+    }
+
+    /**
+     * Permite lecturas públicas explícitas.
+     */
+    public function public_read_permission(): bool {
+        return true;
     }
 
     /**

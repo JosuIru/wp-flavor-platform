@@ -354,7 +354,7 @@ class Flavor_Shared_Features {
         register_rest_route('flavor-features/v1', '/entity/(?P<type>[a-z_]+)/(?P<id>\d+)', [
             'methods'  => 'GET',
             'callback' => [$this, 'api_get_entity_interactions'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
 
         // Obtener interacciones del usuario actual
@@ -365,6 +365,13 @@ class Flavor_Shared_Features {
                 return is_user_logged_in();
             },
         ]);
+    }
+
+    /**
+     * Permite lecturas públicas explícitas.
+     */
+    public function public_read_permission() {
+        return true;
     }
 
     /**

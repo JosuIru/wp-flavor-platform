@@ -26,7 +26,6 @@ class Flavor_Chat_Talleres_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_talleres_proponer_taller', [$this, 'ajax_proponer_taller']);
         add_action('wp_ajax_nopriv_talleres_proponer_taller', [$this, 'ajax_proponer_taller']);
         add_action('wp_ajax_talleres_admin_guardar_taller', [$this, 'ajax_admin_guardar_taller']);
-        add_action('wp_ajax_nopriv_talleres_admin_guardar_taller', [$this, 'ajax_admin_guardar_taller']);
 
         $this->id = 'talleres';
         $this->name = 'Talleres Prácticos'; // Translation loaded on init

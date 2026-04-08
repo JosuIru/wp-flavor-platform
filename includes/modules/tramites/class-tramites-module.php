@@ -41,7 +41,6 @@ class Flavor_Chat_Tramites_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_tramites_crear_expediente', [$this, 'ajax_crear_expediente']);
         add_action('wp_ajax_nopriv_tramites_crear_expediente', [$this, 'ajax_crear_expediente']);
         add_action('wp_ajax_tramites_listar_expedientes', [$this, 'ajax_listar_expedientes']);
-        add_action('wp_ajax_nopriv_tramites_listar_expedientes', [$this, 'ajax_listar_expedientes']);
         add_action('wp_ajax_tramites_consultar_estado', [$this, 'ajax_consultar_estado']);
         add_action('wp_ajax_nopriv_tramites_consultar_estado', [$this, 'ajax_consultar_estado']);
 

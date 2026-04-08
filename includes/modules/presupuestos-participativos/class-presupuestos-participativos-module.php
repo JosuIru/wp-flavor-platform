@@ -35,21 +35,13 @@ class Flavor_Chat_Presupuestos_Participativos_Module extends Flavor_Chat_Module_
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
         // Auto-registered AJAX handlers
         add_action('wp_ajax_presupuestos_participativos_proponer_proyecto', [$this, 'ajax_proponer_proyecto']);
-        add_action('wp_ajax_nopriv_presupuestos_participativos_proponer_proyecto', [$this, 'ajax_proponer_proyecto']);
         add_action('wp_ajax_presupuestos_participativos_votar_proyecto', [$this, 'ajax_votar_proyecto']);
-        add_action('wp_ajax_nopriv_presupuestos_participativos_votar_proyecto', [$this, 'ajax_votar_proyecto']);
         add_action('wp_ajax_presupuestos_participativos_quitar_voto', [$this, 'ajax_quitar_voto']);
-        add_action('wp_ajax_nopriv_presupuestos_participativos_quitar_voto', [$this, 'ajax_quitar_voto']);
         add_action('wp_ajax_presupuestos_participativos_editar_propuesta', [$this, 'ajax_editar_propuesta']);
-        add_action('wp_ajax_nopriv_presupuestos_participativos_editar_propuesta', [$this, 'ajax_editar_propuesta']);
         add_action('wp_ajax_presupuestos_participativos_eliminar_propuesta', [$this, 'ajax_eliminar_propuesta']);
-        add_action('wp_ajax_nopriv_presupuestos_participativos_eliminar_propuesta', [$this, 'ajax_eliminar_propuesta']);
         add_action('wp_ajax_presupuestos_participativos_subir_imagen', [$this, 'ajax_subir_imagen']);
-        add_action('wp_ajax_nopriv_presupuestos_participativos_subir_imagen', [$this, 'ajax_subir_imagen']);
         add_action('wp_ajax_presupuestos_participativos_comentar_proyecto', [$this, 'ajax_comentar_proyecto']);
-        add_action('wp_ajax_nopriv_presupuestos_participativos_comentar_proyecto', [$this, 'ajax_comentar_proyecto']);
         add_action('wp_ajax_presupuestos_participativos_reportar_proyecto', [$this, 'ajax_reportar_proyecto']);
-        add_action('wp_ajax_nopriv_presupuestos_participativos_reportar_proyecto', [$this, 'ajax_reportar_proyecto']);
         add_action('wp_ajax_presupuestos_participativos_cargar_proyectos', [$this, 'ajax_cargar_proyectos']);
         add_action('wp_ajax_nopriv_presupuestos_participativos_cargar_proyectos', [$this, 'ajax_cargar_proyectos']);
         add_action('wp_ajax_presupuestos_participativos_obtener_proyecto', [$this, 'ajax_obtener_proyecto']);

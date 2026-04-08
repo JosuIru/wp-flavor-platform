@@ -186,9 +186,9 @@ class Flavor_VBP_Preview_API {
         // Solo permitir preview de landings publicadas o con API key válida
         if ( $post->post_status !== 'publish' ) {
             // Verificar si hay API key para permitir preview de drafts
-            $auth_header = $request->get_header( 'X-VBP-Key' );
+            $api_key = flavor_get_vbp_api_key_from_request( $request );
 
-            if ( ! flavor_verify_vbp_api_key( $auth_header ) ) {
+            if ( ! flavor_check_vbp_automation_access( $api_key, 'preview_draft' ) ) {
                 return new WP_Error(
                     'not_published',
                     'La landing no está publicada. Usa X-VBP-Key para preview de borradores.',

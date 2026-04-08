@@ -916,7 +916,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/colectivos', [
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [$this, 'api_listar_colectivos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'api_verificar_lectura_publica'],
             'args'                => [
                 'tipo' => [
                     'type'              => 'string',
@@ -943,7 +943,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/colectivos/(?P<id>\d+)', [
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [$this, 'api_obtener_colectivo'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'api_verificar_lectura_publica'],
             'args'                => [
                 'id' => [
                     'required'          => true,
@@ -977,7 +977,7 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/colectivos/(?P<id>\d+)/miembros', [
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => [$this, 'api_obtener_miembros'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'api_verificar_lectura_miembros'],
             'args'                => [
                 'id' => [
                     'required'          => true,
@@ -1024,6 +1024,32 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
                 ['status' => 401]
             );
         }
+        return true;
+    }
+
+    /**
+     * Permite lecturas públicas del catálogo de colectivos.
+     *
+     * @return bool
+     */
+    public function api_verificar_lectura_publica() {
+        return true;
+    }
+
+    /**
+     * Restringe la lectura del listado de miembros a usuarios autenticados.
+     *
+     * @return bool|\WP_Error
+     */
+    public function api_verificar_lectura_miembros() {
+        if (!is_user_logged_in()) {
+            return new \WP_Error(
+                'rest_not_logged_in',
+                __('Debes iniciar sesión para ver los miembros del colectivo.', 'flavor-chat-ia'),
+                ['status' => 401]
+            );
+        }
+
         return true;
     }
 
@@ -1075,6 +1101,13 @@ class Flavor_Chat_Colectivos_Module extends Flavor_Chat_Module_Base {
                 $resultado['error'],
                 ['status' => 404]
             );
+        }
+
+        if (!is_user_logged_in() && !empty($resultado['miembros'])) {
+            $resultado['miembros'] = array_map(function ($miembro) {
+                unset($miembro['email']);
+                return $miembro;
+            }, $resultado['miembros']);
         }
 
         return rest_ensure_response($resultado);

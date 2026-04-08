@@ -6,32 +6,47 @@
  * @subpackage Tests
  */
 
-class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
+require_once dirname(__DIR__) . '/bootstrap.php';
+
+class Flavor_Test_REST_Request {
+    private $headers;
+    private $params;
+    private $route;
+
+    public function __construct( array $headers = array(), array $params = array(), $route = '' ) {
+        $this->headers = $headers;
+        $this->params  = $params;
+        $this->route   = $route;
+    }
+
+    public function get_header( $name ) {
+        return $this->headers[ $name ] ?? null;
+    }
+
+    public function get_param( $name ) {
+        return $this->params[ $name ] ?? null;
+    }
+
+    public function get_route() {
+        return $this->route;
+    }
+}
+
+class ModuleCompatibilityAPITest extends Flavor_TestCase {
 
     private $api;
 
     public function setUp(): void {
         parent::setUp();
-        WP_Mock::setUp();
-
-        // Mock de rest_get_server
-        WP_Mock::userFunction('rest_get_server', [
-            'return' => Mockery::mock('WP_REST_Server')
-        ]);
-
-        WP_Mock::userFunction('register_rest_route', ['return' => true]);
-        WP_Mock::userFunction('rest_ensure_response', ['return_arg' => 0]);
-        WP_Mock::userFunction('current_time', ['return' => '2026-04-01 12:00:00']);
-        WP_Mock::userFunction('get_option', ['return' => []]);
-        WP_Mock::userFunction('get_site_url', ['return' => 'https://example.com']);
-        WP_Mock::userFunction('get_bloginfo', ['return' => '6.4']);
-        WP_Mock::userFunction('is_multisite', ['return' => false]);
-
+        global $flavor_test_rest_server;
+        $flavor_test_rest_server = new Flavor_Test_REST_Server();
         $this->api = Flavor_Module_Compatibility_API::get_instance();
     }
 
     public function tearDown(): void {
-        WP_Mock::tearDown();
+        global $flavor_test_rest_server, $wpdb;
+        unset( $flavor_test_rest_server );
+        $wpdb = null;
         parent::tearDown();
     }
 
@@ -49,15 +64,11 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: API key válida
      */
     public function test_check_api_key_valid() {
-        $request = Mockery::mock('WP_REST_Request');
-        $request->shouldReceive('get_header')
-            ->with('X-VBP-Key')
-            ->andReturn('flavor-vbp-2024');
-        $request->shouldReceive('get_param')
-            ->with('api_key')
-            ->andReturn(null);
-        $request->shouldReceive('get_route')
-            ->andReturn('/flavor-platform/v1/modules/compatibility');
+        $request = new Flavor_Test_REST_Request(
+            array( 'X-VBP-Key' => 'flavor-vbp-2024' ),
+            array(),
+            '/flavor-platform/v1/modules/compatibility'
+        );
 
         $result = $this->api->check_api_key($request);
 
@@ -68,15 +79,11 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: API key inválida
      */
     public function test_check_api_key_invalid() {
-        $request = Mockery::mock('WP_REST_Request');
-        $request->shouldReceive('get_header')
-            ->with('X-VBP-Key')
-            ->andReturn('wrong-key');
-        $request->shouldReceive('get_param')
-            ->with('api_key')
-            ->andReturn(null);
-        $request->shouldReceive('get_route')
-            ->andReturn('/flavor-platform/v1/modules/compatibility');
+        $request = new Flavor_Test_REST_Request(
+            array( 'X-VBP-Key' => 'wrong-key' ),
+            array(),
+            '/flavor-platform/v1/modules/compatibility'
+        );
 
         $result = $this->api->check_api_key($request);
 
@@ -87,15 +94,11 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Rutas públicas sin API key
      */
     public function test_public_routes_no_api_key() {
-        $request = Mockery::mock('WP_REST_Request');
-        $request->shouldReceive('get_header')
-            ->with('X-VBP-Key')
-            ->andReturn(null);
-        $request->shouldReceive('get_param')
-            ->with('api_key')
-            ->andReturn(null);
-        $request->shouldReceive('get_route')
-            ->andReturn('/flavor-platform/v1/modules/supported');
+        $request = new Flavor_Test_REST_Request(
+            array(),
+            array(),
+            '/flavor-platform/v1/modules/supported'
+        );
 
         $result = $this->api->check_api_key($request);
 
@@ -106,7 +109,7 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Matriz de compatibilidad estructura
      */
     public function test_compatibility_matrix_structure() {
-        $request = Mockery::mock('WP_REST_Request');
+        $request = new Flavor_Test_REST_Request();
 
         $result = $this->api->get_compatibility_matrix($request);
 
@@ -120,7 +123,7 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Resumen tiene contadores correctos
      */
     public function test_summary_has_counters() {
-        $request = Mockery::mock('WP_REST_Request');
+        $request = new Flavor_Test_REST_Request();
 
         $result = $this->api->get_compatibility_matrix($request);
 
@@ -133,7 +136,7 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Módulo conocido tiene estructura correcta
      */
     public function test_module_entry_structure() {
-        $request = Mockery::mock('WP_REST_Request');
+        $request = new Flavor_Test_REST_Request();
 
         $result = $this->api->get_compatibility_matrix($request);
 
@@ -153,10 +156,7 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Verificar módulo específico - existe
      */
     public function test_check_module_exists() {
-        $request = Mockery::mock('WP_REST_Request');
-        $request->shouldReceive('get_param')
-            ->with('id')
-            ->andReturn('eventos');
+        $request = new Flavor_Test_REST_Request( array(), array( 'id' => 'eventos' ) );
 
         $result = $this->api->check_module($request);
 
@@ -170,14 +170,7 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Verificar módulo específico - no existe
      */
     public function test_check_module_not_found() {
-        $request = Mockery::mock('WP_REST_Request');
-        $request->shouldReceive('get_param')
-            ->with('id')
-            ->andReturn('modulo-inexistente');
-
-        WP_Mock::userFunction('WP_Error', [
-            'return' => new stdClass()
-        ]);
+        $request = new Flavor_Test_REST_Request( array(), array( 'id' => 'modulo-inexistente' ) );
 
         $result = $this->api->check_module($request);
 
@@ -188,7 +181,7 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Obtener módulos soportados
      */
     public function test_get_supported_modules() {
-        $request = Mockery::mock('WP_REST_Request');
+        $request = new Flavor_Test_REST_Request();
 
         $result = $this->api->get_supported_modules($request);
 
@@ -204,11 +197,14 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      */
     public function test_diagnostics_structure() {
         global $wpdb;
-        $wpdb = Mockery::mock('wpdb');
-        $wpdb->prefix = 'wp_';
-        $wpdb->shouldReceive('get_results')->andReturn([]);
+        $wpdb = new class() {
+            public $prefix = 'wp_';
+            public function get_results() {
+                return array();
+            }
+        };
 
-        $request = Mockery::mock('WP_REST_Request');
+        $request = new Flavor_Test_REST_Request();
 
         $result = $this->api->get_diagnostics($request);
 
@@ -223,7 +219,7 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Recomendación para soporte completo
      */
     public function test_recommendation_full_support() {
-        $request = Mockery::mock('WP_REST_Request');
+        $request = new Flavor_Test_REST_Request();
 
         $result = $this->api->get_compatibility_matrix($request);
 
@@ -241,7 +237,7 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Categorías de módulos
      */
     public function test_module_categories() {
-        $request = Mockery::mock('WP_REST_Request');
+        $request = new Flavor_Test_REST_Request();
 
         $result = $this->api->get_compatibility_matrix($request);
 
@@ -259,7 +255,7 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Flutter folder mapping
      */
     public function test_flutter_folder_mapping() {
-        $request = Mockery::mock('WP_REST_Request');
+        $request = new Flavor_Test_REST_Request();
 
         $result = $this->api->get_compatibility_matrix($request);
 
@@ -274,7 +270,7 @@ class ModuleCompatibilityAPITest extends WP_Mock_TestCase {
      * Test: Support text format
      */
     public function test_support_text_format() {
-        $request = Mockery::mock('WP_REST_Request');
+        $request = new Flavor_Test_REST_Request();
 
         $result = $this->api->get_compatibility_matrix($request);
 

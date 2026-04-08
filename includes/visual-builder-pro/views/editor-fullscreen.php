@@ -257,6 +257,21 @@ $datos_json = wp_json_encode( $datos );
                 </template>
             </div>
 
+            <div class="vbp-recovery-chip" x-show="autosaveRecovery.available" x-cloak>
+                <div class="vbp-recovery-chip__meta">
+                    <span class="vbp-recovery-chip__eyebrow"><?php esc_html_e( 'Recuperación', 'flavor-chat-ia' ); ?></span>
+                    <span class="vbp-recovery-chip__label" x-text="autosaveRecovery.time ? '<?php echo esc_js( __( 'Autosave', 'flavor-chat-ia' ) ); ?> ' + autosaveRecovery.time : '<?php echo esc_js( __( 'Autosave disponible', 'flavor-chat-ia' ) ); ?>'"></span>
+                </div>
+                <div class="vbp-recovery-chip__actions">
+                    <button type="button" class="vbp-recovery-chip__action is-primary" @click="restoreAutosaveRecovery()">
+                        <?php esc_html_e( 'Recuperar', 'flavor-chat-ia' ); ?>
+                    </button>
+                    <button type="button" class="vbp-recovery-chip__action" @click="dismissAutosaveRecovery()">
+                        <?php esc_html_e( 'Ignorar', 'flavor-chat-ia' ); ?>
+                    </button>
+                </div>
+            </div>
+
             <div class="vbp-document-health" x-data="{ store: $store.vbp }">
                 <span class="vbp-document-health__label"><?php esc_html_e( 'Documento', 'flavor-chat-ia' ); ?></span>
                 <span class="vbp-document-health__status" :class="'is-' + store.saveStatus" x-text="store.saveStatus === 'dirty' ? '<?php esc_attr_e( 'Pendiente', 'flavor-chat-ia' ); ?>' : (store.saveStatus === 'error' ? '<?php esc_attr_e( 'Revisar', 'flavor-chat-ia' ); ?>' : '<?php esc_attr_e( 'Estable', 'flavor-chat-ia' ); ?>')"></span>

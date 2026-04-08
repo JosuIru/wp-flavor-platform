@@ -67,15 +67,8 @@ class Flavor_Media_API {
      * @return bool
      */
     public function check_permission( $request ) {
-        // Verificar header X-VBP-Key usando helper centralizado
-        $auth_header = $request->get_header( 'X-VBP-Key' );
-        if ( flavor_verify_vbp_api_key( $auth_header ) ) {
-            return true;
-        }
-
-        // Verificar parámetro api_key usando helper centralizado
-        $key_param = $request->get_param( 'api_key' );
-        if ( flavor_verify_vbp_api_key( $key_param ) ) {
+        $api_key = flavor_get_vbp_api_key_from_request( $request );
+        if ( flavor_check_vbp_automation_access( $api_key, 'media_manager' ) ) {
             return true;
         }
 

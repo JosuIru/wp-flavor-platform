@@ -56,7 +56,7 @@ class Flavor_Encuestas_API {
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'listar_encuestas'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_read_permission'],
                 'args'                => $this->get_listar_args(),
             ],
         ]);
@@ -66,7 +66,7 @@ class Flavor_Encuestas_API {
             [
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => [$this, 'obtener_encuesta'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_survey'],
                 'args'                => [
                     'id' => [
                         'validate_callback' => function($param) {
@@ -102,7 +102,7 @@ class Flavor_Encuestas_API {
         register_rest_route(self::NAMESPACE, '/' . self::REST_BASE . '/(?P<id>[\d]+)/responder', [
             'methods'             => WP_REST_Server::CREATABLE,
             'callback'            => [$this, 'responder_encuesta'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_answer_survey'],
             'args'                => [
                 'respuestas' => [
                     'required'    => true,
@@ -130,7 +130,7 @@ class Flavor_Encuestas_API {
         register_rest_route(self::NAMESPACE, '/' . self::REST_BASE . '/contexto/(?P<tipo>[a-z_]+)/(?P<contexto_id>[\d]+)', [
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => [$this, 'listar_por_contexto'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
             'args'                => [
                 'estado' => [
                     'default' => 'activa',
@@ -155,7 +155,7 @@ class Flavor_Encuestas_API {
         register_rest_route(self::NAMESPACE, '/' . self::REST_BASE . '/(?P<id>[\d]+)/participacion', [
             'methods'             => WP_REST_Server::READABLE,
             'callback'            => [$this, 'verificar_participacion'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_check_participation'],
         ]);
     }
 
@@ -492,6 +492,60 @@ class Flavor_Encuestas_API {
      */
     public function check_create_permission($request) {
         return is_user_logged_in();
+    }
+
+    /**
+     * Lectura pública explícita.
+     *
+     * @param WP_REST_Request $request
+     * @return bool
+     */
+    public function public_read_permission($request) {
+        return true;
+    }
+
+    /**
+     * Permite leer encuestas visibles públicamente o editables por el usuario.
+     *
+     * @param WP_REST_Request $request
+     * @return bool
+     */
+    public function can_read_survey($request) {
+        $encuesta_id = absint($request->get_param('id'));
+        $encuesta = $this->module->obtener_encuesta($encuesta_id);
+
+        if (!$encuesta) {
+            return false;
+        }
+
+        return $encuesta->estado !== 'borrador' || $this->module->puede_editar_encuesta($encuesta_id);
+    }
+
+    /**
+     * Permite responder solo encuestas activas o visibles por edición.
+     *
+     * @param WP_REST_Request $request
+     * @return bool
+     */
+    public function can_answer_survey($request) {
+        $encuesta_id = absint($request->get_param('id'));
+        $encuesta = $this->module->obtener_encuesta($encuesta_id);
+
+        if (!$encuesta) {
+            return false;
+        }
+
+        return $encuesta->estado === 'activa' || $this->module->puede_editar_encuesta($encuesta_id);
+    }
+
+    /**
+     * Permite comprobar participación solo sobre encuestas visibles.
+     *
+     * @param WP_REST_Request $request
+     * @return bool
+     */
+    public function can_check_participation($request) {
+        return $this->can_read_survey($request);
     }
 
     /**

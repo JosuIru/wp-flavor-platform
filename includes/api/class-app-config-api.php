@@ -76,14 +76,9 @@ class Flavor_App_Config_API {
      * @return bool|WP_Error
      */
     public function check_api_permission( $request ) {
-        $api_key = $request->get_header( 'X-VBP-Key' );
+        $api_key = flavor_get_vbp_api_key_from_request( $request );
 
-        if ( empty( $api_key ) ) {
-            $api_key = $request->get_param( 'api_key' );
-        }
-
-        // Usar helper centralizado para verificar API key
-        if ( ! flavor_verify_vbp_api_key( $api_key ) ) {
+        if ( ! flavor_check_vbp_automation_access( $api_key, 'app_config' ) ) {
             return new WP_Error(
                 'rest_forbidden',
                 __( 'API key inválida', 'flavor-chat-ia' ),

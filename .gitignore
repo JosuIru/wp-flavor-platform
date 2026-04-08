@@ -57,6 +57,7 @@ mobile-apps/.flutter-plugins-dependencies
 coverage.xml
 reports/coverage-html/
 reports/junit.xml
+reports/phpstan-cache/
 
 # Build artifacts
 dist/

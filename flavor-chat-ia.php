@@ -195,6 +195,113 @@ function flavor_verify_vbp_api_key( $key ) {
 }
 
 /**
+ * Indica si la automatización VBP externa está habilitada para un scope.
+ *
+ * Scopes actuales:
+ * - site_builder: creación/configuración remota de sitios
+ * - claude_batch: operaciones batch del editor VBP
+ *
+ * @param string $scope Scope a consultar.
+ * @return bool
+ */
+function flavor_vbp_automation_enabled( $scope = 'default' ) {
+    $settings = get_option( 'flavor_vbp_settings', array() );
+
+    $enabled = true;
+    if ( array_key_exists( 'enable_automation_api', $settings ) ) {
+        $enabled = ! empty( $settings['enable_automation_api'] );
+    }
+
+    /**
+     * Permite desactivar scopes concretos desde código sin tocar la UI.
+     *
+     * @param bool   $enabled  Estado calculado.
+     * @param string $scope    Scope solicitado.
+     * @param array  $settings Ajustes actuales de VBP.
+     */
+    return (bool) apply_filters( 'flavor_vbp_automation_enabled', $enabled, $scope, $settings );
+}
+
+/**
+ * Devuelve los scopes permitidos para la API de automatización VBP.
+ *
+ * @return string[]
+ */
+function flavor_get_vbp_automation_scopes() {
+    $settings = get_option( 'flavor_vbp_settings', array() );
+    $scopes   = $settings['automation_scopes'] ?? array( 'site_builder', 'claude_batch' );
+
+    if ( ! is_array( $scopes ) ) {
+        $scopes = array( 'site_builder', 'claude_batch' );
+    }
+
+    $scopes = array_filter( array_map( 'sanitize_key', $scopes ) );
+
+    /**
+     * Permite ajustar scopes autorizados para la API externa.
+     *
+     * @param string[] $scopes   Scopes autorizados.
+     * @param array    $settings Ajustes actuales de VBP.
+     */
+    $scopes = apply_filters( 'flavor_vbp_automation_scopes', $scopes, $settings );
+
+    if ( ! is_array( $scopes ) ) {
+        return array( 'site_builder', 'claude_batch' );
+    }
+
+    return array_values( array_unique( array_filter( array_map( 'sanitize_key', $scopes ) ) ) );
+}
+
+/**
+ * Verifica acceso a automatización VBP por clave y scope.
+ *
+ * @param string $key   API key recibida.
+ * @param string $scope Scope solicitado.
+ * @return bool
+ */
+function flavor_check_vbp_automation_access( $key, $scope ) {
+    $scope = sanitize_key( (string) $scope );
+    if ( '' === $scope ) {
+        return false;
+    }
+
+    if ( ! flavor_vbp_automation_enabled( $scope ) ) {
+        return false;
+    }
+
+    if ( ! flavor_verify_vbp_api_key( $key ) ) {
+        return false;
+    }
+
+    return in_array( $scope, flavor_get_vbp_automation_scopes(), true );
+}
+
+/**
+ * Extrae la API key VBP de una petición REST.
+ *
+ * Prioriza el header `X-VBP-Key` y mantiene compatibilidad con `api_key`.
+ *
+ * @param WP_REST_Request $request Petición REST.
+ * @return string
+ */
+function flavor_get_vbp_api_key_from_request( $request ) {
+    if ( ! is_object( $request ) || ! method_exists( $request, 'get_header' ) ) {
+        return '';
+    }
+
+    $api_key = (string) $request->get_header( 'X-VBP-Key' );
+    if ( '' !== $api_key ) {
+        return $api_key;
+    }
+
+    if ( method_exists( $request, 'get_param' ) ) {
+        return (string) $request->get_param( 'api_key' );
+    }
+
+    return '';
+}
+
+/**
  * Regenera la API key de VBP
  *
  * @return string Nueva API key generada.
@@ -930,7 +1037,13 @@ add_filter('doing_it_wrong_trigger_error', function($trigger, $function_name) {
 add_action('plugins_loaded', 'flavor_chat_ia', 1);
 
 // DEBUG TEMPORAL - Diagnóstico del portal layout (ELIMINAR DESPUÉS DE USAR)
-if (is_admin() && file_exists(__DIR__ . '/debug-portal-layout.php')) {
+if (
+    is_admin() &&
+    defined( 'WP_DEBUG' ) &&
+    WP_DEBUG &&
+    current_user_can( 'manage_options' ) &&
+    file_exists(__DIR__ . '/debug-portal-layout.php')
+) {
     require_once __DIR__ . '/debug-portal-layout.php';
 }
 
@@ -952,6 +1065,12 @@ add_action('wp_enqueue_scripts', function() {
 }, 20);
 
 // Cargar diagnóstico de performance (solo si se solicita con ?flavor_perf=1)
-if (isset($_GET['flavor_perf'])) {
+if (
+    isset( $_GET['flavor_perf'] ) &&
+    defined( 'WP_DEBUG' ) &&
+    WP_DEBUG &&
+    function_exists( 'current_user_can' ) &&
+    current_user_can( 'manage_options' )
+) {
     require_once FLAVOR_CHAT_IA_PATH . 'diagnostico-performance.php';
 }

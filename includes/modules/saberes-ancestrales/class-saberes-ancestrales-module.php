@@ -206,7 +206,7 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/saberes', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_saberes'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
             'args' => [
                 'categoria' => ['type' => 'string'],
                 'limite' => ['type' => 'integer', 'default' => 20],
@@ -217,7 +217,7 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/saberes/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'api_obtener_saber'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_saber'],
         ]);
 
         // Registrar nuevo saber
@@ -231,7 +231,7 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/saberes/talleres', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_talleres'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
 
         // Inscribirse en taller
@@ -247,6 +247,40 @@ class Flavor_Chat_Saberes_Ancestrales_Module extends Flavor_Chat_Module_Base {
             'callback' => [$this, 'api_mis_aprendizajes'],
             'permission_callback' => 'is_user_logged_in',
         ]);
+    }
+
+    /**
+     * Permisos de lectura pública para recursos publicados del módulo.
+     *
+     * @return bool
+     */
+    public function public_read_permission(): bool {
+        return true;
+    }
+
+    /**
+     * Verifica que un saber concreto sea públicamente visible.
+     *
+     * @param WP_REST_Request $request
+     * @return bool|\WP_Error
+     */
+    public function can_read_saber($request) {
+        $id = absint($request->get_param('id'));
+        $saber = get_post($id);
+
+        if (!$saber || $saber->post_type !== 'sa_saber') {
+            return new \WP_Error('not_found', __('Saber no encontrado', 'flavor-chat-ia'), ['status' => 404]);
+        }
+
+        if ($saber->post_status === 'publish') {
+            return true;
+        }
+
+        if (is_user_logged_in() && current_user_can('edit_post', $id)) {
+            return true;
+        }
+
+        return new \WP_Error('rest_forbidden', __('No tienes permiso para ver este saber.', 'flavor-chat-ia'), ['status' => 403]);
     }
 
     /**

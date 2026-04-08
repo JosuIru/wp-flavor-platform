@@ -106,9 +106,8 @@ class Flavor_VBP_Diagnostics {
      * @return bool
      */
     public function check_admin_permission( $request ) {
-        // Verificar API key en header (misma que usa Claude API)
-        $auth_header = $request->get_header( 'X-VBP-Key' );
-        if ( flavor_verify_vbp_api_key( $auth_header ) ) {
+        $api_key = flavor_get_vbp_api_key_from_request( $request );
+        if ( flavor_check_vbp_automation_access( $api_key, 'diagnostics_admin' ) ) {
             return true;
         }
 

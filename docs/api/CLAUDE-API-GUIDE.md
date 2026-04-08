@@ -4,7 +4,7 @@ Esta guía documenta todas las APIs REST disponibles en Flavor Chat IA para que 
 
 ## Autenticación
 
-Todas las APIs requieren autenticación mediante una clave de API.
+Las APIs de automatización usan una clave de API por instalación, pero el acceso ya no es uniforme para todos los endpoints.
 
 ### Métodos de autenticación
 
@@ -21,7 +21,12 @@ curl "https://tu-sitio.com/wp-json/flavor-vbp/v1/endpoint?api_key=<tu-api-key>"
 ### Clave de API
 
 La clave de API debe obtenerse desde la instalación actual. Puede consultarse o regenerarse en:
-- Ajustes del plugin > API Settings > VBP API Key
+- Ajustes del plugin > Config. VBP > API Key
+
+Además:
+- la automatización externa puede desactivarse por completo;
+- cada familia de endpoints puede limitarse por `scope`;
+- algunos endpoints exigen sesión WordPress aunque exista `X-VBP-Key`.
 
 ---
 

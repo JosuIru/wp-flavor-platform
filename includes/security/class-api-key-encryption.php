@@ -214,6 +214,22 @@ class Flavor_API_Key_Encryption {
     }
 
     /**
+     * Enmascara una API key para mostrarla de forma segura en UI/logs.
+     *
+     * @param string $api_key API key en texto plano.
+     * @return string
+     */
+    public function mask_key( $api_key ) {
+        $api_key = (string) $api_key;
+
+        if ( strlen( $api_key ) < 8 ) {
+            return '****';
+        }
+
+        return substr( $api_key, 0, 3 ) . '****' . substr( $api_key, -3 );
+    }
+
+    /**
      * Encriptación fallback para sistemas sin AES-256-GCM
      *
      * @param string $api_key

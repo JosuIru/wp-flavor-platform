@@ -178,14 +178,20 @@ curl -s "http://SITIO/wp-json/flavor-vbp/v1/claude/status" \
 
 ### Modo desarrollo (solo local)
 
-Para usar la key legacy `flavor-vbp-2024` en desarrollo:
+La key legacy ya no debe usarse como flujo normal. En local, la práctica recomendada es regenerar una key propia y limitar los scopes desde Ajustes > VBP o con filtros de entorno.
 
 ```php
-// wp-config.php
-define( 'FLAVOR_VBP_ALLOW_LEGACY_KEY', true );
+// wp-config.php o mu-plugin
+add_filter( 'flavor_vbp_automation_enabled', function( $enabled, $scope ) {
+    if ( wp_get_environment_type() !== 'local' ) {
+        return $enabled;
+    }
+
+    return $scope !== 'site_builder' ? $enabled : false;
+}, 10, 2 );
 ```
 
-> **ADVERTENCIA**: Nunca habilitar `FLAVOR_VBP_ALLOW_LEGACY_KEY` en producción.
+> **ADVERTENCIA**: No documentar ni reutilizar keys compartidas entre instalaciones.
 
 ---
 
@@ -1064,8 +1070,10 @@ $nueva_key = flavor_regenerate_vbp_api_key();
 ### Configuración en wp-config.php
 
 ```php
-// Permitir key legacy en desarrollo (NO usar en producción)
-define( 'FLAVOR_VBP_ALLOW_LEGACY_KEY', true );
+// Desactivar automatización en producción salvo scopes permitidos
+add_filter( 'flavor_vbp_automation_enabled', function( $enabled ) {
+    return wp_get_environment_type() === 'local' ? $enabled : false;
+} );
 ```
 
 ### Opciones de Configuración VBP
@@ -1075,6 +1083,8 @@ La página de configuración permite ajustar:
 | Opción | Descripción |
 |--------|-------------|
 | **API Key** | Ver/copiar/regenerar la key de autenticación |
+| **Automatización externa** | Activar o desactivar autenticación por `X-VBP-Key` |
+| **Scopes permitidos** | Limitar qué grupos de endpoints aceptan la key |
 | **Reemplazar Gutenberg** | Usar VBP en lugar de Gutenberg para pages/posts |
 | **Historial de versiones** | Guardar versiones anteriores de páginas VBP |
 

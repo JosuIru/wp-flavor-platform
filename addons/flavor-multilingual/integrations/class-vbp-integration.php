@@ -823,7 +823,7 @@ class Flavor_ML_VBP_Integration {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'api_get_vbp_translations'),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array($this, 'can_read_vbp_translations'),
             ),
         ));
 
@@ -832,7 +832,7 @@ class Flavor_ML_VBP_Integration {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'api_get_vbp_translation_lang'),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array($this, 'can_read_vbp_translations'),
             ),
             array(
                 'methods'             => WP_REST_Server::CREATABLE,
@@ -864,6 +864,31 @@ class Flavor_ML_VBP_Integration {
                 },
             ),
         ));
+    }
+
+    /**
+     * Verifica si puede leer traducciones VBP del post indicado.
+     *
+     * @param WP_REST_Request $request Request actual.
+     * @return bool
+     */
+    public function can_read_vbp_translations($request) {
+        $post_id = (int) $request->get_param('id');
+        $post = get_post($post_id);
+
+        if (!$post) {
+            return false;
+        }
+
+        if (current_user_can('read_post', $post_id) || current_user_can('edit_post', $post_id)) {
+            return true;
+        }
+
+        $post_type_object = get_post_type_object($post->post_type);
+
+        return $post->post_status === 'publish'
+            && $post_type_object
+            && !empty($post_type_object->public);
     }
 
     /**

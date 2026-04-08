@@ -21,7 +21,7 @@
 
 | Documento | Descripción |
 |-----------|-------------|
-| [CATALOGO-MODULOS.md](CATALOGO-MODULOS.md) | Lista completa (43 módulos) |
+| [CATALOGO-MODULOS.md](CATALOGO-MODULOS.md) | Catálogo completo de módulos |
 | [ESTANDARES-MODULOS.md](ESTANDARES-MODULOS.md) | Estándares de desarrollo |
 | [EJEMPLO-MODULO-COMPLETO.md](EJEMPLO-MODULO-COMPLETO.md) | Tutorial crear módulo |
 | [modulos/](modulos/) | Documentación por módulo |

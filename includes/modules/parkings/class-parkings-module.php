@@ -50,21 +50,14 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
         add_action('wp_ajax_parkings_obtener_plaza', [$this, 'ajax_obtener_plaza']);
         add_action('wp_ajax_nopriv_parkings_obtener_plaza', [$this, 'ajax_obtener_plaza']);
         add_action('wp_ajax_parkings_reservar_plaza', [$this, 'ajax_reservar_plaza']);
-        add_action('wp_ajax_nopriv_parkings_reservar_plaza', [$this, 'ajax_reservar_plaza']);
         add_action('wp_ajax_parkings_cancelar_reserva', [$this, 'ajax_cancelar_reserva']);
-        add_action('wp_ajax_nopriv_parkings_cancelar_reserva', [$this, 'ajax_cancelar_reserva']);
         add_action('wp_ajax_parkings_solicitar_plaza', [$this, 'ajax_solicitar_plaza']);
-        add_action('wp_ajax_nopriv_parkings_solicitar_plaza', [$this, 'ajax_solicitar_plaza']);
         add_action('wp_ajax_parkings_cancelar_solicitud', [$this, 'ajax_cancelar_solicitud']);
-        add_action('wp_ajax_nopriv_parkings_cancelar_solicitud', [$this, 'ajax_cancelar_solicitud']);
         add_action('wp_ajax_parkings_obtener_disponibilidad', [$this, 'ajax_obtener_disponibilidad']);
         add_action('wp_ajax_nopriv_parkings_obtener_disponibilidad', [$this, 'ajax_obtener_disponibilidad']);
         add_action('wp_ajax_parkings_liberar_plaza', [$this, 'ajax_liberar_plaza']);
-        add_action('wp_ajax_nopriv_parkings_liberar_plaza', [$this, 'ajax_liberar_plaza']);
         add_action('wp_ajax_parkings_registrar_entrada', [$this, 'ajax_registrar_entrada']);
-        add_action('wp_ajax_nopriv_parkings_registrar_entrada', [$this, 'ajax_registrar_entrada']);
         add_action('wp_ajax_parkings_registrar_salida', [$this, 'ajax_registrar_salida']);
-        add_action('wp_ajax_nopriv_parkings_registrar_salida', [$this, 'ajax_registrar_salida']);
 
         global $wpdb;
 
@@ -1101,9 +1094,28 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
     }
 
     /**
+     * Verifica el nonce AJAX del módulo sin abortar la ejecución.
+     *
+     * @return array|null
+     */
+    private function validar_nonce_ajax() {
+        $nonce = sanitize_text_field($_POST['nonce'] ?? '');
+        if (!$nonce || !wp_verify_nonce($nonce, 'flavor_parkings_nonce')) {
+            return ['success' => false, 'message' => __('Nonce inválido', 'flavor-chat-ia')];
+        }
+
+        return null;
+    }
+
+    /**
      * AJAX: Obtener detalle de plaza
      */
     private function ajax_obtener_plaza() {
+        $nonce_error = $this->validar_nonce_ajax();
+        if ($nonce_error) {
+            return $nonce_error;
+        }
+
         $plaza_id = intval($_POST['plaza_id'] ?? 0);
         $plaza = $this->obtener_plaza($plaza_id);
 
@@ -1156,6 +1168,11 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * AJAX: Reservar plaza
      */
     private function ajax_reservar_plaza() {
+        $nonce_error = $this->validar_nonce_ajax();
+        if ($nonce_error) {
+            return $nonce_error;
+        }
+
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
             return ['success' => false, 'message' => __('Debes iniciar sesion', 'flavor-chat-ia')];
@@ -1223,6 +1240,11 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * AJAX: Cancelar reserva
      */
     private function ajax_cancelar_reserva() {
+        $nonce_error = $this->validar_nonce_ajax();
+        if ($nonce_error) {
+            return $nonce_error;
+        }
+
         $usuario_id = get_current_user_id();
         $reserva_id = intval($_POST['reserva_id'] ?? 0);
         $motivo = sanitize_textarea_field($_POST['motivo'] ?? '');
@@ -1266,6 +1288,11 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * AJAX: Solicitar plaza (lista de espera)
      */
     private function ajax_solicitar_plaza() {
+        $nonce_error = $this->validar_nonce_ajax();
+        if ($nonce_error) {
+            return $nonce_error;
+        }
+
         $usuario_id = get_current_user_id();
         if (!$usuario_id) {
             return ['success' => false, 'message' => __('Debes iniciar sesion', 'flavor-chat-ia')];
@@ -1312,6 +1339,11 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * AJAX: Cancelar solicitud de lista de espera
      */
     private function ajax_cancelar_solicitud() {
+        $nonce_error = $this->validar_nonce_ajax();
+        if ($nonce_error) {
+            return $nonce_error;
+        }
+
         $usuario_id = get_current_user_id();
         $solicitud_id = intval($_POST['solicitud_id'] ?? 0);
 
@@ -1339,6 +1371,11 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * AJAX: Obtener disponibilidad
      */
     private function ajax_obtener_disponibilidad() {
+        $nonce_error = $this->validar_nonce_ajax();
+        if ($nonce_error) {
+            return $nonce_error;
+        }
+
         $parking_id = intval($_POST['parking_id'] ?? 0);
         $fecha = sanitize_text_field($_POST['fecha'] ?? date('Y-m-d'));
         $dias = intval($_POST['dias'] ?? 7);
@@ -1355,6 +1392,11 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * AJAX: Liberar plaza
      */
     private function ajax_liberar_plaza() {
+        $nonce_error = $this->validar_nonce_ajax();
+        if ($nonce_error) {
+            return $nonce_error;
+        }
+
         $usuario_id = get_current_user_id();
         $reserva_id = intval($_POST['reserva_id'] ?? 0);
 
@@ -1383,6 +1425,11 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * AJAX: Registrar entrada
      */
     private function ajax_registrar_entrada() {
+        $nonce_error = $this->validar_nonce_ajax();
+        if ($nonce_error) {
+            return $nonce_error;
+        }
+
         $usuario_id = get_current_user_id();
         $reserva_id = intval($_POST['reserva_id'] ?? 0);
 
@@ -1410,6 +1457,11 @@ class Flavor_Chat_Parkings_Module extends Flavor_Chat_Module_Base {
      * AJAX: Registrar salida
      */
     private function ajax_registrar_salida() {
+        $nonce_error = $this->validar_nonce_ajax();
+        if ($nonce_error) {
+            return $nonce_error;
+        }
+
         return $this->ajax_liberar_plaza();
     }
 

@@ -322,8 +322,53 @@ class Flavor_Feature_Flags {
         register_rest_route('flavor-app/v2', '/feature-flags', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_get_flags'],
-            'permission_callback' => '__return_true', // Público para las apps
+            'permission_callback' => [$this, 'check_app_read_access'],
         ]);
+    }
+
+    /**
+     * Verificar acceso de lectura para apps y admins.
+     *
+     * Acepta sesión WordPress, token Bearer móvil válido,
+     * token de app registrado o secreto admin del sitio.
+     *
+     * @param WP_REST_Request $request
+     * @return bool|WP_Error
+     */
+    public function check_app_read_access($request) {
+        if (is_user_logged_in()) {
+            return true;
+        }
+
+        if (class_exists('Chat_IA_Mobile_API')) {
+            $mobile_api = Chat_IA_Mobile_API::get_instance();
+            if ($mobile_api && $mobile_api->check_auth_token($request)) {
+                return true;
+            }
+        }
+
+        $app_token = $request->get_header('X-Flavor-Token');
+        if (is_string($app_token) && '' !== $app_token) {
+            $valid_tokens = get_option('flavor_apps_tokens', []);
+            foreach ($valid_tokens as $token_data) {
+                if (isset($token_data['token']) && hash_equals((string) $token_data['token'], $app_token)) {
+                    return true;
+                }
+            }
+
+            if (class_exists('Flavor_App_Config_Admin')) {
+                $admin_secret = Flavor_App_Config_Admin::get_admin_site_secret();
+                if (is_string($admin_secret) && '' !== $admin_secret && hash_equals($admin_secret, $app_token)) {
+                    return true;
+                }
+            }
+        }
+
+        return new WP_Error(
+            'rest_forbidden',
+            __('Autenticación de app requerida.', 'flavor-chat-ia'),
+            ['status' => 401]
+        );
     }
 
     /**

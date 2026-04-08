@@ -203,7 +203,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/economia-don/dones', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_dones'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
             'args' => [
                 'categoria' => ['type' => 'string'],
                 'limite' => ['type' => 'integer', 'default' => 20],
@@ -214,7 +214,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/economia-don/dones/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'api_obtener_don'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_don'],
         ]);
 
         // Publicar nuevo don
@@ -249,8 +249,34 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/economia-don/gratitudes', [
             'methods' => 'GET',
             'callback' => [$this, 'api_muro_gratitud'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
+    }
+
+    /**
+     * Permite lecturas públicas explícitas.
+     */
+    public function public_read_permission() {
+        return true;
+    }
+
+    /**
+     * Permite leer un don solo si es público o si pertenece al usuario actual.
+     */
+    public function can_read_don($request) {
+        $don_id = absint($request->get_param('id'));
+        $don = get_post($don_id);
+
+        if (!$don || $don->post_type !== 'ed_don') {
+            return false;
+        }
+
+        if ($don->post_status === 'publish' && get_post_meta($don_id, '_ed_estado', true) === 'disponible') {
+            return true;
+        }
+
+        $user_id = get_current_user_id();
+        return $user_id > 0 && ($user_id === (int) $don->post_author || current_user_can('manage_options'));
     }
 
     /**
@@ -312,6 +338,14 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
             return new \WP_REST_Response(['success' => false, 'error' => 'Don no encontrado'], 404);
         }
 
+        $estado = get_post_meta($don->ID, '_ed_estado', true);
+        if (($don->post_status ?? '') !== 'publish' || $estado !== 'disponible') {
+            $user_id = get_current_user_id();
+            if ($user_id <= 0 || ($user_id !== (int) $don->post_author && !current_user_can('manage_options'))) {
+                return new \WP_REST_Response(['success' => false, 'error' => 'Don no disponible'], 404);
+            }
+        }
+
         $cat_key = get_post_meta($don->ID, '_ed_categoria', true);
         $anonimo = get_post_meta($don->ID, '_ed_anonimo', true);
 
@@ -323,7 +357,7 @@ class Flavor_Chat_Economia_Don_Module extends Flavor_Chat_Module_Base {
                 'contenido' => $don->post_content,
                 'categoria' => $cat_key,
                 'categoria_nombre' => self::CATEGORIAS_DON[$cat_key]['nombre'] ?? $cat_key,
-                'estado' => get_post_meta($don->ID, '_ed_estado', true),
+                'estado' => $estado,
                 'ubicacion' => get_post_meta($don->ID, '_ed_ubicacion', true),
                 'disponibilidad' => get_post_meta($don->ID, '_ed_disponibilidad', true),
                 'condiciones' => get_post_meta($don->ID, '_ed_condiciones', true),

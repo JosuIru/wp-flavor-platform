@@ -152,8 +152,8 @@ class Flavor_Lazy_Loading_API {
      * Verifica permisos
      */
     public function check_permission($request) {
-        $api_key = $request->get_header('X-VBP-Key');
-        return flavor_verify_vbp_api_key( $api_key ) || is_user_logged_in();
+        $api_key = flavor_get_vbp_api_key_from_request( $request );
+        return flavor_check_vbp_automation_access( $api_key, 'lazy_loading' ) || is_user_logged_in();
     }
 
     /**

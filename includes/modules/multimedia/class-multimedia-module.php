@@ -155,13 +155,9 @@ class Flavor_Chat_Multimedia_Module extends Flavor_Chat_Module_Base {
         add_action('admin_menu', [$this, 'registrar_paginas_admin']);
         // Auto-registered AJAX handlers
         add_action('wp_ajax_multimedia_subir_archivo', [$this, 'ajax_subir_archivo']);
-        add_action('wp_ajax_nopriv_multimedia_subir_archivo', [$this, 'ajax_subir_archivo']);
         add_action('wp_ajax_multimedia_eliminar_archivo', [$this, 'ajax_eliminar_archivo']);
-        add_action('wp_ajax_nopriv_multimedia_eliminar_archivo', [$this, 'ajax_eliminar_archivo']);
         add_action('wp_ajax_multimedia_editar_archivo', [$this, 'ajax_editar_archivo']);
-        add_action('wp_ajax_nopriv_multimedia_editar_archivo', [$this, 'ajax_editar_archivo']);
         add_action('wp_ajax_multimedia_reportar_archivo', [$this, 'ajax_reportar_archivo']);
-        add_action('wp_ajax_nopriv_multimedia_reportar_archivo', [$this, 'ajax_reportar_archivo']);
         add_action('wp_ajax_multimedia_galeria_publica', [$this, 'ajax_galeria_publica']);
         add_action('wp_ajax_nopriv_multimedia_galeria_publica', [$this, 'ajax_galeria_publica']);
         add_action('wp_ajax_multimedia_detalle_archivo', [$this, 'ajax_detalle_archivo']);

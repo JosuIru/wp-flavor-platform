@@ -68,6 +68,12 @@ document.addEventListener('alpine:init', () => {
         }, 3000)
         : function() {};
 
+    function dispatchElementEvent(name, detail) {
+        document.dispatchEvent(new CustomEvent(name, {
+            detail: detail || {}
+        }));
+    }
+
     Alpine.store('vbp', {
         // Documento
         postId: 0,
@@ -83,6 +89,7 @@ document.addEventListener('alpine:init', () => {
         // Estado de guardado automático
         saveStatus: 'saved', // 'saved' | 'saving' | 'error' | 'dirty'
         lastSaved: null,
+        lastSaveWasAutosave: false,
         saveError: null,
         savePromise: null,
 
@@ -197,6 +204,11 @@ document.addEventListener('alpine:init', () => {
 
             this.markAsDirty();
             this.setSelection([nuevoElemento.id]);
+            dispatchElementEvent('vbp:element:added', {
+                element: nuevoElemento,
+                parentId: null,
+                index: index
+            });
 
             // Trigger autosave debounced
             debouncedSave(this);
@@ -289,6 +301,11 @@ document.addEventListener('alpine:init', () => {
 
             this.markAsDirty();
             this.setSelection([nuevoElemento.id]);
+            dispatchElementEvent('vbp:element:added', {
+                element: nuevoElemento,
+                parentId: containerId,
+                columnIndex: columnIndex
+            });
 
             debouncedSave(this);
 
@@ -367,6 +384,10 @@ document.addEventListener('alpine:init', () => {
             return this.elements.find(el => el.id === id);
         },
 
+        getElementById(id) {
+            return this.getElementDeep(id) || this.getElement(id);
+        },
+
         // Obtener índice de elemento O(1)
         getElementIndex(id) {
             var cached = elementIndex.get(id);
@@ -387,6 +408,12 @@ document.addEventListener('alpine:init', () => {
                 // Actualizar índice con el elemento modificado
                 elementIndex.set(id, { element: this.elements[index], index: index });
                 this.markAsDirty();
+                dispatchElementEvent('vbp:element:updated', {
+                    id: id,
+                    element: this.elements[index],
+                    changes: cambios,
+                    location: 'root'
+                });
                 // Trigger autosave debounced
                 debouncedSave(this);
                 return;
@@ -406,6 +433,13 @@ document.addEventListener('alpine:init', () => {
                         this.elements[i] = { ...this.elements[i], _version: parentVersion };
                         elementIndex.set(this.elements[i].id, { element: this.elements[i], index: i });
                         this.markAsDirty();
+                        dispatchElementEvent('vbp:element:updated', {
+                            id: id,
+                            element: this.getElementDeep(id),
+                            changes: cambios,
+                            parentId: this.elements[i].id,
+                            location: 'child'
+                        });
                         debouncedSave(this);
                         return;
                     }
@@ -423,6 +457,10 @@ document.addEventListener('alpine:init', () => {
                 rebuildIndex(this.elements);
                 this.markAsDirty();
                 this.clearSelection();
+                dispatchElementEvent('vbp:element:removed', {
+                    id: id,
+                    location: 'root'
+                });
                 // Trigger autosave debounced
                 debouncedSave(this);
                 return;
@@ -442,6 +480,11 @@ document.addEventListener('alpine:init', () => {
                         elementIndex.set(this.elements[i].id, { element: this.elements[i], index: i });
                         this.markAsDirty();
                         this.clearSelection();
+                        dispatchElementEvent('vbp:element:removed', {
+                            id: id,
+                            parentId: this.elements[i].id,
+                            location: 'child'
+                        });
                         debouncedSave(this);
                         return;
                     }
@@ -461,6 +504,12 @@ document.addEventListener('alpine:init', () => {
                 this.elements[index] = { ...this.elements[index], _version: newVersion };
                 // Actualizar índice con el elemento modificado
                 elementIndex.set(id, { element: this.elements[index], index: index });
+                dispatchElementEvent('vbp:element:updated', {
+                    id: id,
+                    element: this.elements[index],
+                    changes: { _version: newVersion, forcePreviewRefresh: true },
+                    location: 'root'
+                });
             }
         },
 
@@ -482,6 +531,11 @@ document.addEventListener('alpine:init', () => {
             rebuildIndex(this.elements);
             this.markAsDirty();
             this.setSelection([duplicado.id]);
+            dispatchElementEvent('vbp:element:added', {
+                element: duplicado,
+                sourceId: id,
+                duplicated: true
+            });
             // Trigger autosave debounced
             debouncedSave(this);
             return duplicado;
@@ -495,6 +549,12 @@ document.addEventListener('alpine:init', () => {
             // Reconstruir índice
             rebuildIndex(this.elements);
             this.markAsDirty();
+            dispatchElementEvent('vbp:element:moved', {
+                id: elemento && elemento.id,
+                element: elemento,
+                fromIndex: fromIndex,
+                toIndex: toIndex
+            });
             // Trigger autosave debounced
             debouncedSave(this);
         },
@@ -715,6 +775,7 @@ document.addEventListener('alpine:init', () => {
 
             self.saveStatus = 'saving';
             self.saveError = null;
+            self.lastSaveWasAutosave = !!options.autosave;
 
             document.dispatchEvent(new CustomEvent('vbp:beforeSave', {
                 detail: {
@@ -747,6 +808,7 @@ document.addEventListener('alpine:init', () => {
                 self.isDirty = false;
                 self.saveStatus = 'saved';
                 self.lastSaved = new Date();
+                self.lastSaveWasAutosave = !!options.autosave;
                 self.saveError = null;
 
                 document.dispatchEvent(new CustomEvent('vbp:afterSave', {
@@ -763,6 +825,7 @@ document.addEventListener('alpine:init', () => {
             .catch(function(error) {
                 console.warn('[VBP] Save error:', error);
                 self.saveStatus = 'error';
+                self.lastSaveWasAutosave = !!options.autosave;
                 self.saveError = error.message || 'Error al guardar';
 
                 document.dispatchEvent(new CustomEvent('vbp:saveError', {
@@ -800,13 +863,16 @@ document.addEventListener('alpine:init', () => {
                     if (this.lastSaved) {
                         var ahora = new Date();
                         var diferencia = Math.floor((ahora - this.lastSaved) / 1000);
-                        if (diferencia < 60) return 'Guardado hace ' + diferencia + 's';
-                        if (diferencia < 3600) return 'Guardado hace ' + Math.floor(diferencia / 60) + 'm';
-                        return 'Guardado hace ' + Math.floor(diferencia / 3600) + 'h';
+                        var prefijo = this.lastSaveWasAutosave ? 'Autosave hace ' : 'Guardado hace ';
+                        if (diferencia < 60) return prefijo + diferencia + 's';
+                        if (diferencia < 3600) return prefijo + Math.floor(diferencia / 60) + 'm';
+                        return prefijo + Math.floor(diferencia / 3600) + 'h';
                     }
-                    return 'Guardado';
+                    return this.lastSaveWasAutosave ? 'Autosave listo' : 'Guardado';
                 case 'error':
-                    return this.saveError || 'Error al guardar';
+                    return this.lastSaveWasAutosave
+                        ? (this.saveError || 'Error en autosave')
+                        : (this.saveError || 'Error al guardar');
                 case 'dirty':
                     return 'Sin guardar';
                 default:

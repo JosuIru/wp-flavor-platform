@@ -122,12 +122,6 @@ class Flavor_Module_Compatibility_API {
      * Verificar API key
      */
     public function check_api_key($request) {
-        $api_key = $request->get_header('X-VBP-Key');
-
-        if (empty($api_key)) {
-            $api_key = $request->get_param('api_key');
-        }
-
         // Permitir acceso público para diagnósticos básicos
         $public_routes = array('/modules/supported', '/diagnostics');
         $route = $request->get_route();
@@ -138,7 +132,8 @@ class Flavor_Module_Compatibility_API {
             }
         }
 
-        return flavor_verify_vbp_api_key( $api_key );
+        $api_key = flavor_get_vbp_api_key_from_request( $request );
+        return flavor_check_vbp_automation_access( $api_key, 'diagnostics_admin' );
     }
 
     /**

@@ -48,7 +48,7 @@ class Flavor_Eventos_API {
         register_rest_route(self::API_NAMESPACE, '/eventos', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_eventos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
             'args' => [
                 'page' => [
                     'default' => 1,
@@ -69,7 +69,7 @@ class Flavor_Eventos_API {
         register_rest_route(self::API_NAMESPACE, '/eventos/(?P<id>\d+)', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'get_evento_detail'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
             'args' => [
                 'id' => [
                     'required' => true,
@@ -139,6 +139,15 @@ class Flavor_Eventos_API {
 
         // Registrar AJAX handler para crear eventos (compatibilidad con formularios)
         add_action('wp_ajax_eventos_crear_evento_ajax', [$this, 'ajax_crear_evento']);
+    }
+
+    /**
+     * Permisos públicos de lectura del catálogo publicado.
+     *
+     * @return bool
+     */
+    public function public_read_permission() {
+        return true;
     }
 
     /**
@@ -273,7 +282,7 @@ class Flavor_Eventos_API {
         $table_name = $wpdb->prefix . 'flavor_eventos';
 
         // Query base
-        $where = "WHERE 1=1";
+        $where = "WHERE estado = 'publicado'";
         $params = [];
 
         // Búsqueda
@@ -325,7 +334,7 @@ class Flavor_Eventos_API {
         $table_name = $wpdb->prefix . 'flavor_eventos';
 
         $evento = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $evento_id),
+            $wpdb->prepare("SELECT * FROM $table_name WHERE id = %d AND estado = 'publicado'", $evento_id),
             ARRAY_A
         );
 

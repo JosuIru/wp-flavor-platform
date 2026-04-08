@@ -229,7 +229,7 @@ class Flavor_Site_Builder_API {
     public function check_permission( $request ) {
         // Verificar header X-VBP-Key usando helper centralizado
         $auth_header = $request->get_header( 'X-VBP-Key' );
-        if ( flavor_verify_vbp_api_key( $auth_header ) ) {
+        if ( flavor_check_vbp_automation_access( $auth_header, 'site_builder' ) ) {
             return true;
         }
 

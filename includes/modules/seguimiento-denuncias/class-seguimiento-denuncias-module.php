@@ -612,21 +612,45 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
             register_rest_route('flavor/v1', '/denuncias', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_listar'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_read_permission'],
             ]);
 
             register_rest_route('flavor/v1', '/denuncias/(?P<id>\d+)', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_obtener'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_denuncia'],
             ]);
 
             register_rest_route('flavor/v1', '/denuncias/(?P<id>\d+)/timeline', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_timeline'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_denuncia'],
             ]);
         });
+    }
+
+    /**
+     * Lectura pública explícita.
+     */
+    public function public_read_permission() {
+        return true;
+    }
+
+    /**
+     * Permite leer una denuncia pública o privada solo a usuarios autenticados.
+     */
+    public function can_read_denuncia($request) {
+        $denuncia = $this->obtener_denuncia($request['id']);
+
+        if (!$denuncia) {
+            return false;
+        }
+
+        if ($denuncia->visibilidad === 'publica') {
+            return true;
+        }
+
+        return is_user_logged_in();
     }
 
     /**
@@ -664,6 +688,11 @@ class Flavor_Chat_Seguimiento_Denuncias_Module extends Flavor_Chat_Module_Base {
      * API: Timeline
      */
     public function api_timeline($request) {
+        $denuncia = $this->obtener_denuncia($request['id']);
+        if (!$denuncia || ($denuncia->visibilidad !== 'publica' && !is_user_logged_in())) {
+            return new WP_Error('not_found', 'Denuncia no encontrada', ['status' => 404]);
+        }
+
         global $wpdb;
         $tabla = $wpdb->prefix . 'flavor_seguimiento_denuncias_eventos';
 

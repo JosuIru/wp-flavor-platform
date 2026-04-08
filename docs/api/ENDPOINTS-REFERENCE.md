@@ -4,9 +4,14 @@ Tabla exhaustiva de todos los endpoints REST disponibles en Flavor Chat IA.
 
 ## Autenticación
 
-Todos los endpoints requieren autenticación:
+No todos los endpoints comparten el mismo modelo de acceso. Los endpoints de automatización pueden aceptar:
 - **Header:** `X-VBP-Key: <tu-api-key>`
 - **Parámetro:** `?api_key=<tu-api-key>`
+
+La aceptación de `X-VBP-Key` depende de la configuración actual de VBP:
+- la automatización externa puede estar desactivada globalmente;
+- cada grupo de endpoints puede estar limitado por `scope`;
+- algunos endpoints siguen requiriendo usuario WordPress autenticado aunque exista API key.
 
 ---
 

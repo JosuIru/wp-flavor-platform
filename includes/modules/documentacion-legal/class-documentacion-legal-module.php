@@ -603,27 +603,36 @@ class Flavor_Chat_Documentacion_Legal_Module extends Flavor_Chat_Module_Base {
             register_rest_route('flavor/v1', '/documentacion-legal', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_listar'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_read_permission'],
             ]);
 
             register_rest_route('flavor/v1', '/documentacion-legal/(?P<id>\d+)', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_obtener'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_read_permission'],
             ]);
 
             register_rest_route('flavor/v1', '/documentacion-legal/buscar', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_buscar'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_read_permission'],
             ]);
 
             register_rest_route('flavor/v1', '/documentacion-legal/categorias', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_categorias'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_read_permission'],
             ]);
         });
+    }
+
+    /**
+     * Permisos de lectura pública para catálogo legal publicado.
+     *
+     * @return bool
+     */
+    public function public_read_permission() {
+        return true;
     }
 
     /**

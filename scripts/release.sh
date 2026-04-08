@@ -34,6 +34,7 @@ ARCHIVO_PRINCIPAL="${DIRECTORIO_PLUGIN}/flavor-chat-ia.php"
 ARCHIVO_PACKAGE="${DIRECTORIO_PLUGIN}/package.json"
 ARCHIVO_CHANGELOG="${DIRECTORIO_PLUGIN}/CHANGELOG.md"
 DIRECTORIO_DIST="${DIRECTORIO_PLUGIN}/dist"
+ARCHIVO_DISTIGNORE="${DIRECTORIO_PLUGIN}/.distignore"
 
 # Variables de version
 VERSION_ACTUAL=""
@@ -255,38 +256,40 @@ generar_zip_distribucion() {
     rm -rf "${DIRECTORIO_TEMPORAL}"
     mkdir -p "${DIRECTORIO_TEMPORAL}"
 
-    # Copiar archivos del plugin (excluyendo desarrollo)
-    rsync -av --progress "${DIRECTORIO_PLUGIN}/" "${DIRECTORIO_TEMPORAL}/" \
-        --exclude='.git' \
-        --exclude='.gitignore' \
-        --exclude='.github' \
-        --exclude='.husky' \
-        --exclude='.claude' \
-        --exclude='node_modules' \
-        --exclude='vendor' \
-        --exclude='tests' \
-        --exclude='dev-scripts' \
-        --exclude='scripts' \
-        --exclude='docs' \
-        --exclude='reports' \
-        --exclude='dist' \
-        --exclude='*.md' \
-        --exclude='*.log' \
-        --exclude='*.map' \
-        --exclude='package.json' \
-        --exclude='package-lock.json' \
-        --exclude='composer.json' \
-        --exclude='composer.lock' \
-        --exclude='phpunit.xml' \
-        --exclude='postcss.config.js' \
-        --exclude='.eslintrc*' \
-        --exclude='.stylelintrc*' \
-        --exclude='jest.config.js' \
-        --exclude='*.php' --include='*.php' \
+    if [[ ! -f "${ARCHIVO_DISTIGNORE}" ]]; then
+        imprimir_mensaje error "No se encontro .distignore"
+        exit 1
+    fi
+
+    # Copiar archivos del plugin usando una lista central de exclusiones.
+    rsync -a --delete "${DIRECTORIO_PLUGIN}/" "${DIRECTORIO_TEMPORAL}/" \
+        --exclude-from="${ARCHIVO_DISTIGNORE}" \
         2>/dev/null
 
     # Copiar README.md (es necesario para WordPress)
     cp "${DIRECTORIO_PLUGIN}/README.md" "${DIRECTORIO_TEMPORAL}/" 2>/dev/null || true
+
+    # Verificaciones minimas del paquete para evitar zips contaminados.
+    local RUTAS_BLOQUEADAS=(
+        "node_modules"
+        "vendor"
+        "tests"
+        "docs"
+        "archive"
+        "reports"
+        "mobile-apps"
+        "mcp-server"
+        "addons"
+        "dev-scripts"
+        "scripts"
+    )
+
+    for RUTA in "${RUTAS_BLOQUEADAS[@]}"; do
+        if [[ -e "${DIRECTORIO_TEMPORAL}/${RUTA}" ]]; then
+            imprimir_mensaje error "El paquete contiene una ruta excluida: ${RUTA}"
+            exit 1
+        fi
+    done
 
     # Crear ZIP
     cd "${DIRECTORIO_DIST}"

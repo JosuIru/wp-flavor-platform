@@ -65,21 +65,13 @@ class Flavor_Chat_Estados_Module extends Flavor_Chat_Module_Base {
     public function __construct() {
         // Auto-registered AJAX handlers
         add_action('wp_ajax_chat_estados_crear_estado', [$this, 'ajax_crear_estado']);
-        add_action('wp_ajax_nopriv_chat_estados_crear_estado', [$this, 'ajax_crear_estado']);
         add_action('wp_ajax_chat_estados_obtener_estados', [$this, 'ajax_obtener_estados']);
-        add_action('wp_ajax_nopriv_chat_estados_obtener_estados', [$this, 'ajax_obtener_estados']);
         add_action('wp_ajax_chat_estados_marcar_visto', [$this, 'ajax_marcar_visto']);
-        add_action('wp_ajax_nopriv_chat_estados_marcar_visto', [$this, 'ajax_marcar_visto']);
         add_action('wp_ajax_chat_estados_eliminar_estado', [$this, 'ajax_eliminar_estado']);
-        add_action('wp_ajax_nopriv_chat_estados_eliminar_estado', [$this, 'ajax_eliminar_estado']);
         add_action('wp_ajax_chat_estados_silenciar_usuario', [$this, 'ajax_silenciar_usuario']);
-        add_action('wp_ajax_nopriv_chat_estados_silenciar_usuario', [$this, 'ajax_silenciar_usuario']);
         add_action('wp_ajax_chat_estados_upload_media', [$this, 'ajax_upload_media']);
-        add_action('wp_ajax_nopriv_chat_estados_upload_media', [$this, 'ajax_upload_media']);
         add_action('wp_ajax_chat_estados_obtener_visualizaciones', [$this, 'ajax_obtener_visualizaciones']);
-        add_action('wp_ajax_nopriv_chat_estados_obtener_visualizaciones', [$this, 'ajax_obtener_visualizaciones']);
         add_action('wp_ajax_chat_estados_reportar_estado', [$this, 'ajax_reportar_estado']);
-        add_action('wp_ajax_nopriv_chat_estados_reportar_estado', [$this, 'ajax_reportar_estado']);
 
         global $wpdb;
         $this->prefix = $wpdb->prefix . 'flavor_';

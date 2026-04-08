@@ -33,11 +33,11 @@ curl -X POST "http://tu-sitio.local/wp-json/flavor-site-builder/v1/site/create" 
 ```
 flavor-chat-ia/
 ├── includes/
-│   ├── modules/           # 43 módulos disponibles
+│   ├── modules/           # Catálogo principal de módulos
 │   ├── visual-builder-pro/ # Page builder
 │   └── api/               # REST APIs
 ├── mobile-apps/           # Apps Flutter
-│   └── lib/features/modules/  # 55 templates
+│   └── lib/features/modules/  # Pantallas y módulos Flutter
 ├── addons/                # Extensiones opcionales
 │   └── flavor-multilingual/   # Multiidioma
 └── tools/                 # Scripts de utilidad
@@ -57,8 +57,8 @@ flavor-chat-ia/
 
 ## Requisitos
 
-- WordPress 6.0+
-- PHP 8.0+
+- WordPress 5.8+
+- PHP 7.4+
 - Para apps: Flutter 3.19+
 
 ## Auditoría de Estado

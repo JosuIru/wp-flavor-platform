@@ -245,14 +245,14 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/huella-ecologica/comunidad', [
             'methods' => 'GET',
             'callback' => [$this, 'api_get_estadisticas_comunidad'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
 
         // Proyectos de compensación
         register_rest_route($namespace, '/huella-ecologica/proyectos', [
             'methods' => 'GET',
             'callback' => [$this, 'api_get_proyectos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
 
         // Logros del usuario
@@ -266,7 +266,7 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/huella-ecologica/calcular', [
             'methods' => 'POST',
             'callback' => [$this, 'api_calcular_huella'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
     }
 
@@ -275,6 +275,13 @@ class Flavor_Chat_Huella_Ecologica_Module extends Flavor_Chat_Module_Base {
      */
     public function check_user_logged_in(): bool {
         return is_user_logged_in();
+    }
+
+    /**
+     * Permite lecturas públicas explícitas.
+     */
+    public function public_read_permission(): bool {
+        return true;
     }
 
     /**

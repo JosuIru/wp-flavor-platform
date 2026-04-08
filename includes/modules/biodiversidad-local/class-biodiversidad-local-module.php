@@ -313,21 +313,21 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/biodiversidad/especies', [
             'methods' => 'GET',
             'callback' => [$this, 'api_get_especies'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
 
         // Obtener especie
         register_rest_route($namespace, '/biodiversidad/especies/(?P<id>\d+)', [
             'methods' => 'GET',
             'callback' => [$this, 'api_get_especie'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'can_read_species'],
         ]);
 
         // Listar avistamientos
         register_rest_route($namespace, '/biodiversidad/avistamientos', [
             'methods' => 'GET',
             'callback' => [$this, 'api_get_avistamientos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
 
         // Mis avistamientos
@@ -341,7 +341,7 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/biodiversidad/proyectos', [
             'methods' => 'GET',
             'callback' => [$this, 'api_get_proyectos'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'public_read_permission'],
         ]);
     }
 
@@ -350,6 +350,31 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
      */
     public function check_user_logged_in(): bool {
         return is_user_logged_in();
+    }
+
+    /**
+     * Permite lecturas públicas explícitas.
+     */
+    public function public_read_permission(): bool {
+        return true;
+    }
+
+    /**
+     * Permite leer una especie publicada o editable por el usuario actual.
+     */
+    public function can_read_species(\WP_REST_Request $request): bool {
+        $species_id = absint($request->get_param('id'));
+        $species = get_post($species_id);
+
+        if (!$species || $species->post_type !== 'bl_especie') {
+            return false;
+        }
+
+        if (($species->post_status ?? '') === 'publish') {
+            return true;
+        }
+
+        return current_user_can('edit_post', $species_id);
     }
 
     /**
@@ -394,6 +419,10 @@ class Flavor_Chat_Biodiversidad_Local_Module extends Flavor_Chat_Module_Base {
         $especie = get_post($especie_id);
 
         if (!$especie || $especie->post_type !== 'bl_especie') {
+            return new \WP_REST_Response(['error' => 'Especie no encontrada'], 404);
+        }
+
+        if (($especie->post_status ?? '') !== 'publish' && !current_user_can('edit_post', $especie_id)) {
             return new \WP_REST_Response(['error' => 'Especie no encontrada'], 404);
         }
 

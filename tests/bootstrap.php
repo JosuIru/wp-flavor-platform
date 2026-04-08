@@ -6,15 +6,29 @@
  */
 
 // Define test constants
-define('FLAVOR_TESTING', true);
-define('FLAVOR_TEST_DIR', __DIR__);
-define('FLAVOR_PLUGIN_DIR', dirname(__DIR__));
+if ( ! defined( 'FLAVOR_TESTING' ) ) {
+    define( 'FLAVOR_TESTING', true );
+}
+
+if ( ! defined( 'FLAVOR_TEST_DIR' ) ) {
+    define( 'FLAVOR_TEST_DIR', __DIR__ );
+}
+
+if ( ! defined( 'FLAVOR_PLUGIN_DIR' ) ) {
+    define( 'FLAVOR_PLUGIN_DIR', dirname( __DIR__ ) );
+}
+
+if ( ! defined( 'FLAVOR_CHAT_IA_PATH' ) ) {
+    define( 'FLAVOR_CHAT_IA_PATH', FLAVOR_PLUGIN_DIR . '/' );
+}
 
 // Cargar autoloader de Composer si existe
 $composer_autoload = FLAVOR_PLUGIN_DIR . '/vendor/autoload.php';
 if (file_exists($composer_autoload)) {
     require_once $composer_autoload;
 }
+
+require_once FLAVOR_PLUGIN_DIR . '/includes/api/class-module-compatibility-api.php';
 
 // Mock de funciones de WordPress para tests unitarios
 if (!function_exists('__')) {
@@ -68,8 +82,24 @@ if (!function_exists('current_time')) {
     }
 }
 
+if (!function_exists('wp_salt')) {
+    function wp_salt($scheme = 'auth') {
+        $salts = array(
+            'auth'        => defined('AUTH_SALT') ? AUTH_SALT : 'test-auth-salt',
+            'secure_auth' => 'test-secure-auth-salt',
+            'logged_in'   => 'test-logged-in-salt',
+        );
+
+        return $salts[$scheme] ?? 'test-generic-salt';
+    }
+}
+
 if (!defined('ABSPATH')) {
     define('ABSPATH', '/tmp/wordpress/');
+}
+
+if ( ! defined( 'WP_CONTENT_DIR' ) ) {
+    define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
 }
 
 // Mock de get_option para tests
@@ -77,6 +107,52 @@ if (!function_exists('get_option')) {
     function get_option($optionName, $default = false) {
         static $optionsMock = [];
         return $optionsMock[$optionName] ?? $default;
+    }
+}
+
+if (!function_exists('rest_ensure_response')) {
+    function rest_ensure_response($response) {
+        return $response;
+    }
+}
+
+if (!function_exists('register_rest_route')) {
+    function register_rest_route($namespace, $route, $args = array(), $override = false) {
+        return true;
+    }
+}
+
+if (!function_exists('get_site_url')) {
+    function get_site_url($blog_id = null, $path = '', $scheme = null) {
+        return 'https://example.com';
+    }
+}
+
+if (!function_exists('get_bloginfo')) {
+    function get_bloginfo($show = '', $filter = 'raw') {
+        if ($show === 'version') {
+            return '6.4';
+        }
+
+        return 'Flavor Test Site';
+    }
+}
+
+if (!function_exists('is_multisite')) {
+    function is_multisite() {
+        return false;
+    }
+}
+
+if (!function_exists('rest_get_server')) {
+    function rest_get_server() {
+        global $flavor_test_rest_server;
+
+        if ( isset( $flavor_test_rest_server ) ) {
+            return $flavor_test_rest_server;
+        }
+
+        return new Flavor_Test_REST_Server();
     }
 }
 
@@ -231,7 +307,21 @@ if (!function_exists('wp_remote_retrieve_body')) {
 // Mock de is_wp_error para tests
 if (!function_exists('is_wp_error')) {
     function is_wp_error($thing) {
-        return false;
+        return $thing instanceof WP_Error;
+    }
+}
+
+if ( ! class_exists( 'WP_Error' ) ) {
+    class WP_Error {
+        public $code;
+        public $message;
+        public $data;
+
+        public function __construct( $code = '', $message = '', $data = null ) {
+            $this->code    = $code;
+            $this->message = $message;
+            $this->data    = $data;
+        }
     }
 }
 
@@ -257,7 +347,40 @@ if (!function_exists('flavor_log_error')) {
     }
 }
 
+if ( ! function_exists( 'flavor_get_vbp_api_key_from_request' ) ) {
+    function flavor_get_vbp_api_key_from_request( $request ) {
+        if ( is_object( $request ) && method_exists( $request, 'get_header' ) ) {
+            $api_key = $request->get_header( 'X-VBP-Key' );
+            if ( ! empty( $api_key ) ) {
+                return $api_key;
+            }
+        }
+
+        if ( is_object( $request ) && method_exists( $request, 'get_param' ) ) {
+            return $request->get_param( 'api_key' );
+        }
+
+        return '';
+    }
+}
+
+if ( ! function_exists( 'flavor_check_vbp_automation_access' ) ) {
+    function flavor_check_vbp_automation_access( $key, $scope ) {
+        return $key === 'flavor-vbp-2024';
+    }
+}
+
 // Clase base para tests
+class Flavor_Test_REST_Server {
+    public function get_routes( $namespace = null ) {
+        return array(
+            '/flavor-eventos/v1/items' => array(),
+            '/flavor-socios/v1/items'  => array(),
+            '/flavor-foros/v1/items'   => array(),
+        );
+    }
+}
+
 abstract class Flavor_TestCase extends \PHPUnit\Framework\TestCase {
 
     /**

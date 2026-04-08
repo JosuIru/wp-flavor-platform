@@ -37,6 +37,13 @@ class Flavor_APK_Builder {
     private $builds_path;
 
     /**
+     * Cache de disponibilidad de comandos locales.
+     *
+     * @var bool|null
+     */
+    private $command_execution_available = null;
+
+    /**
      * Constructor
      */
     private function __construct() {
@@ -487,9 +494,24 @@ class Flavor_APK_Builder {
      * Verificar Flutter SDK
      */
     private function check_flutter() {
+        if ( ! $this->can_execute_commands() ) {
+            return array(
+                'status' => 'error',
+                'message' => 'La ejecución de comandos del sistema no está disponible',
+            );
+        }
+
+        $flutter_binary = $this->find_binary( 'flutter' );
+        if ( ! $flutter_binary ) {
+            return array(
+                'status' => 'error',
+                'message' => 'Flutter no encontrado',
+            );
+        }
+
         $output = array();
         $return_var = 0;
-        exec('flutter --version 2>&1', $output, $return_var);
+        exec(escapeshellarg($flutter_binary) . ' --version 2>&1', $output, $return_var);
 
         if ($return_var === 0 && !empty($output)) {
             preg_match('/Flutter (\d+\.\d+\.\d+)/', implode(' ', $output), $matches);
@@ -509,9 +531,24 @@ class Flavor_APK_Builder {
      * Verificar Dart SDK
      */
     private function check_dart() {
+        if ( ! $this->can_execute_commands() ) {
+            return array(
+                'status' => 'error',
+                'message' => 'La ejecución de comandos del sistema no está disponible',
+            );
+        }
+
+        $dart_binary = $this->find_binary( 'dart' );
+        if ( ! $dart_binary ) {
+            return array(
+                'status' => 'error',
+                'message' => 'Dart no encontrado',
+            );
+        }
+
         $output = array();
         $return_var = 0;
-        exec('dart --version 2>&1', $output, $return_var);
+        exec(escapeshellarg($dart_binary) . ' --version 2>&1', $output, $return_var);
 
         if ($return_var === 0 && !empty($output)) {
             preg_match('/Dart SDK version: (\d+\.\d+\.\d+)/', implode(' ', $output), $matches);
@@ -871,6 +908,10 @@ DART;
             wp_send_json_error('Sin permisos');
         }
 
+        if ( ! $this->can_execute_commands() ) {
+            wp_send_json_error('La ejecución de comandos del sistema no está disponible en este entorno');
+        }
+
         $config = $this->get_saved_config();
         $build_id = 'build_' . time();
         $log_file = $this->builds_path . '/' . $build_id . '.log';
@@ -893,12 +934,26 @@ DART;
         $build_type = $config['build_type'] === 'appbundle' ? 'appbundle' : 'apk';
         $flavor = $config['flavor'];
         $target = $this->get_flutter_target_for_flavor($flavor);
+        $flutter_binary = $this->find_binary( 'flutter' );
+
+        if ( ! $flutter_binary ) {
+            wp_send_json_error(array(
+                'message' => 'Flutter no está instalado o no está en el PATH',
+                'instructions' => $this->get_manual_build_instructions($config),
+            ));
+        }
+
+        $flutter_path = realpath( $this->flutter_path );
+        if ( false === $flutter_path || ! is_dir( $flutter_path ) ) {
+            wp_send_json_error( 'Proyecto Flutter no encontrado' );
+        }
 
         $this->prepare_keystore_for_build();
 
         $command = sprintf(
-            'cd %s && flutter build %s --flavor %s -t %s --release 2>&1',
-            escapeshellarg($this->flutter_path),
+            'cd %s && %s build %s --flavor %s -t %s --release',
+            escapeshellarg($flutter_path),
+            escapeshellarg($flutter_binary),
             escapeshellarg($build_type),
             escapeshellarg($flavor),
             escapeshellarg($target)
@@ -927,12 +982,19 @@ DART;
      * Ejecutar build en background
      */
     private function run_build_background($command, $log_file, $build_id) {
+        $log_dir = realpath( $this->builds_path );
+        if ( false === $log_dir ) {
+            return;
+        }
+
+        $resolved_log = $log_dir . '/' . basename( $log_file );
+
         // En Linux/Mac
         if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
-            exec("nohup {$command} > {$log_file} 2>&1 &");
+            exec("nohup {$command} > " . escapeshellarg( $resolved_log ) . " 2>&1 &");
         } else {
             // En Windows
-            pclose(popen("start /B {$command} > {$log_file} 2>&1", 'r'));
+            pclose(popen("start /B {$command} > " . escapeshellarg( $resolved_log ) . " 2>&1", 'r'));
         }
     }
 
@@ -1041,6 +1103,56 @@ DART;
 
         $key_properties_path = $this->flutter_path . '/android/key.properties';
         file_put_contents($key_properties_path, $key_properties);
+    }
+
+    /**
+     * Verifica si el entorno permite ejecutar comandos locales.
+     *
+     * @return bool
+     */
+    private function can_execute_commands() {
+        if ( null !== $this->command_execution_available ) {
+            return $this->command_execution_available;
+        }
+
+        $disabled = array_map( 'trim', explode( ',', (string) ini_get( 'disable_functions' ) ) );
+        $blocked  = array( 'exec', 'shell_exec', 'popen', 'proc_open', 'passthru' );
+
+        $this->command_execution_available = count( array_intersect( $blocked, $disabled ) ) < 1;
+
+        return $this->command_execution_available;
+    }
+
+    /**
+     * Busca un binario permitido en el sistema.
+     *
+     * @param string $binary Nombre del binario.
+     * @return string|null
+     */
+    private function find_binary( $binary ) {
+        if ( ! $this->can_execute_commands() ) {
+            return null;
+        }
+
+        $binary = sanitize_key( $binary );
+        if ( ! in_array( $binary, array( 'flutter', 'dart' ), true ) ) {
+            return null;
+        }
+
+        $output = array();
+        $return_var = 1;
+        $command = PHP_OS_FAMILY === 'Windows'
+            ? 'where ' . escapeshellarg( $binary ) . ' 2>NUL'
+            : 'command -v ' . escapeshellarg( $binary ) . ' 2>/dev/null';
+
+        exec( $command, $output, $return_var );
+
+        if ( 0 !== $return_var || empty( $output[0] ) ) {
+            return null;
+        }
+
+        $resolved = trim( (string) $output[0] );
+        return $resolved !== '' ? $resolved : null;
     }
 
     /**

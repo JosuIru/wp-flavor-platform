@@ -565,7 +565,7 @@ class Flavor_ML_Media_Integration {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'api_get_translations'),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array($this, 'can_read_media_translations'),
             ),
             array(
                 'methods'             => WP_REST_Server::CREATABLE,
@@ -585,6 +585,38 @@ class Flavor_ML_Media_Integration {
                 },
             ),
         ));
+    }
+
+    /**
+     * Verifica si una traducción de media puede exponerse públicamente.
+     *
+     * @param WP_REST_Request $request Request actual.
+     * @return bool
+     */
+    public function can_read_media_translations($request) {
+        $attachment_id = (int) $request->get_param('id');
+        $attachment = get_post($attachment_id);
+
+        if (!$attachment || $attachment->post_type !== 'attachment') {
+            return false;
+        }
+
+        if (current_user_can('read_post', $attachment_id) || current_user_can('upload_files')) {
+            return true;
+        }
+
+        $parent_id = (int) $attachment->post_parent;
+        if ($parent_id > 0) {
+            $parent = get_post($parent_id);
+            $parent_type = $parent ? get_post_type_object($parent->post_type) : null;
+
+            return $parent
+                && $parent->post_status === 'publish'
+                && $parent_type
+                && !empty($parent_type->public);
+        }
+
+        return false;
     }
 
     /**

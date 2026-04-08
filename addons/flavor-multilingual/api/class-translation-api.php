@@ -78,7 +78,7 @@ class Flavor_Translation_API {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_post_translations'),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array($this, 'can_read_post_translations'),
                 'args'                => array(
                     'id' => array(
                         'required'          => true,
@@ -103,7 +103,7 @@ class Flavor_Translation_API {
             array(
                 'methods'             => WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_post_translation'),
-                'permission_callback' => '__return_true',
+                'permission_callback' => array($this, 'can_read_post_translations'),
             ),
             array(
                 'methods'             => WP_REST_Server::EDITABLE,
@@ -596,6 +596,34 @@ class Flavor_Translation_API {
      */
     public function can_edit_translations() {
         return current_user_can('edit_posts');
+    }
+
+    /**
+     * Verifica si puede leer traducciones de un post.
+     *
+     * Permite contenido publico publicado y, en cualquier otro caso,
+     * exige capacidad de lectura sobre el post concreto.
+     *
+     * @param WP_REST_Request $request Request actual.
+     * @return bool
+     */
+    public function can_read_post_translations($request) {
+        $post_id = (int) $request->get_param('id');
+        $post = get_post($post_id);
+
+        if (!$post) {
+            return false;
+        }
+
+        if (current_user_can('read_post', $post_id) || current_user_can('edit_post', $post_id)) {
+            return true;
+        }
+
+        $post_type_object = get_post_type_object($post->post_type);
+
+        return $post->post_status === 'publish'
+            && $post_type_object
+            && !empty($post_type_object->public);
     }
 
     /**

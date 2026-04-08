@@ -654,19 +654,19 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
             register_rest_route('flavor/v1', '/campanias', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_listar'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'public_read_permission'],
             ]);
 
             register_rest_route('flavor/v1', '/campanias/(?P<id>\d+)', [
                 'methods' => 'GET',
                 'callback' => [$this, 'api_obtener'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_read_campaign'],
             ]);
 
             register_rest_route('flavor/v1', '/campanias/(?P<id>\d+)/firmar', [
                 'methods' => 'POST',
                 'callback' => [$this, 'api_firmar'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'can_sign_campaign'],
             ]);
 
             register_rest_route('flavor/v1', '/campanias/(?P<id>\d+)/participar', [
@@ -682,6 +682,64 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
      */
     public function api_verificar_autenticacion() {
         return is_user_logged_in();
+    }
+
+    /**
+     * Permiso de lectura pública para campañas listables.
+     *
+     * @return bool
+     */
+    public function public_read_permission() {
+        return true;
+    }
+
+    /**
+     * Verifica que una campaña concreta sea visible.
+     *
+     * @param WP_REST_Request $request
+     * @return bool|WP_Error
+     */
+    public function can_read_campaign($request) {
+        $campania = $this->obtener_campania($request['id']);
+
+        if (!$campania) {
+            return new WP_Error('not_found', 'Campania no encontrada', ['status' => 404]);
+        }
+
+        if (($campania->visibilidad ?? '') === 'publica') {
+            return true;
+        }
+
+        if (is_user_logged_in() && (int) get_current_user_id() === (int) ($campania->creador_id ?? 0)) {
+            return true;
+        }
+
+        return new WP_Error('rest_forbidden', 'No tienes permiso para ver esta campania', ['status' => 403]);
+    }
+
+    /**
+     * Verifica que una campaña pública pueda recibir firmas.
+     *
+     * @param WP_REST_Request $request
+     * @return bool|WP_Error
+     */
+    public function can_sign_campaign($request) {
+        $permission = $this->can_read_campaign($request);
+        if (is_wp_error($permission)) {
+            return $permission;
+        }
+
+        $campania = $this->obtener_campania($request['id']);
+        if (!$campania || ($campania->estado ?? '') !== 'activa') {
+            return new WP_Error('campaign_inactive', 'La campania no esta activa', ['status' => 403]);
+        }
+
+        $rate_limit = Flavor_API_Rate_Limiter::check_rate_limit('post');
+        if (is_wp_error($rate_limit)) {
+            return $rate_limit;
+        }
+
+        return true;
     }
 
     /**
@@ -732,18 +790,61 @@ class Flavor_Chat_Campanias_Module extends Flavor_Chat_Module_Base {
      * API: Firmar campania
      */
     public function api_firmar($request) {
-        $_POST = $request->get_params();
-        $_POST['campania_id'] = $request['id'];
+        global $wpdb;
+        $tabla = $wpdb->prefix . 'flavor_campanias_firmas';
+        $tabla_campanias = $wpdb->prefix . 'flavor_campanias';
 
-        // Simular nonce para el handler AJAX
-        $_POST['nonce'] = wp_create_nonce('flavor_campanias_nonce');
-        $_REQUEST['nonce'] = $_POST['nonce'];
+        $campania_id = absint($request['id']);
+        $nombre = sanitize_text_field($request->get_param('nombre'));
+        $email = sanitize_email($request->get_param('email'));
+        $localidad = sanitize_text_field($request->get_param('localidad'));
+        $comentario = sanitize_textarea_field($request->get_param('comentario'));
 
-        ob_start();
-        $this->ajax_firmar();
-        $response = ob_get_clean();
+        if (empty($campania_id) || empty($nombre) || empty($email)) {
+            return new WP_Error('invalid_signature_data', 'Nombre y email son obligatorios.', ['status' => 400]);
+        }
 
-        return rest_ensure_response(json_decode($response, true));
+        $existe = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $tabla WHERE campania_id = %d AND email = %s",
+            $campania_id,
+            $email
+        ));
+
+        if ($existe) {
+            return new WP_Error('already_signed', 'Ya has firmado esta campania.', ['status' => 409]);
+        }
+
+        $user_id = is_user_logged_in() ? get_current_user_id() : null;
+
+        $resultado = $wpdb->insert($tabla, [
+            'campania_id' => $campania_id,
+            'user_id' => $user_id,
+            'nombre' => $nombre,
+            'email' => $email,
+            'localidad' => $localidad,
+            'comentario' => $comentario,
+            'ip_hash' => hash('sha256', $_SERVER['REMOTE_ADDR'] ?? ''),
+        ]);
+
+        if ($resultado === false) {
+            return new WP_Error('signature_insert_failed', 'Error al registrar la firma.', ['status' => 500]);
+        }
+
+        $wpdb->query($wpdb->prepare(
+            "UPDATE $tabla_campanias SET firmas_actuales = firmas_actuales + 1 WHERE id = %d",
+            $campania_id
+        ));
+
+        $total_firmas = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT firmas_actuales FROM $tabla_campanias WHERE id = %d",
+            $campania_id
+        ));
+
+        return rest_ensure_response([
+            'success' => true,
+            'mensaje' => 'Gracias por firmar.',
+            'total_firmas' => $total_firmas,
+        ]);
     }
 
     /**

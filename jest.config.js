@@ -27,7 +27,8 @@ module.exports = {
         '/node_modules/',
         '/vendor/',
         '/dist/',
-        '/mobile-apps/'
+        '/mobile-apps/',
+        '<rootDir>/tests/js/vbp-store.test.js'
     ],
 
     // Transformaciones

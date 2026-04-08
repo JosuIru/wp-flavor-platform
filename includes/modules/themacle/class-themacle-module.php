@@ -83,7 +83,7 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/themacle/componentes', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_componentes'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'check_component_library_access'],
             'args' => [
                 'categoria' => [
                     'type' => 'string',
@@ -96,7 +96,7 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/themacle/componentes/(?P<id>[a-z0-9_]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'api_obtener_componente'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'check_component_library_access'],
             'args' => [
                 'id' => [
                     'required' => true,
@@ -110,15 +110,24 @@ class Flavor_Chat_Themacle_Module extends Flavor_Chat_Module_Base {
         register_rest_route($namespace, '/themacle/categorias', [
             'methods' => 'GET',
             'callback' => [$this, 'api_listar_categorias'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'check_component_library_access'],
         ]);
 
         // Obtener estadísticas del módulo
         register_rest_route($namespace, '/themacle/estadisticas', [
             'methods' => 'GET',
             'callback' => [$this, 'api_obtener_estadisticas'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'check_component_library_access'],
         ]);
+    }
+
+    /**
+     * Restringe la librería interna de componentes a usuarios con edición.
+     *
+     * @return bool
+     */
+    public function check_component_library_access() {
+        return current_user_can('edit_posts');
     }
 
     // =========================================================================
