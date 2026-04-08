@@ -59,14 +59,24 @@ if (defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY) {
     }
 }
 
-// Constantes del plugin
-define('FLAVOR_CHAT_IA_VERSION', '3.5.0');
-define('FLAVOR_CHAT_IA_PATH', plugin_dir_path(__FILE__));
-define('FLAVOR_CHAT_IA_URL', plugin_dir_url(__FILE__));
-define('FLAVOR_CHAT_IA_BASENAME', plugin_basename(__FILE__));
+// Constantes del plugin (con checks para evitar redefinición en tests)
+if (!defined('FLAVOR_CHAT_IA_VERSION')) {
+    define('FLAVOR_CHAT_IA_VERSION', '3.5.0');
+}
+if (!defined('FLAVOR_CHAT_IA_PATH')) {
+    define('FLAVOR_CHAT_IA_PATH', plugin_dir_path(__FILE__));
+}
+if (!defined('FLAVOR_CHAT_IA_URL')) {
+    define('FLAVOR_CHAT_IA_URL', plugin_dir_url(__FILE__));
+}
+if (!defined('FLAVOR_CHAT_IA_BASENAME')) {
+    define('FLAVOR_CHAT_IA_BASENAME', plugin_basename(__FILE__));
+}
 
 // Modo debug
-define('FLAVOR_CHAT_IA_DEBUG', defined('WP_DEBUG') && WP_DEBUG);
+if (!defined('FLAVOR_CHAT_IA_DEBUG')) {
+    define('FLAVOR_CHAT_IA_DEBUG', defined('WP_DEBUG') && WP_DEBUG);
+}
 
 // Límite máximo de posts por query (evita cargas masivas de memoria)
 // Puede sobrescribirse en wp-config.php: define('FLAVOR_MAX_POSTS_PER_QUERY', 500);
@@ -329,21 +339,23 @@ function flavor_get_vbp_automation_scopes() {
  * @param string $scope Scope solicitado.
  * @return bool
  */
-function flavor_check_vbp_automation_access( $key, $scope ) {
-    $scope = sanitize_key( (string) $scope );
-    if ( '' === $scope ) {
-        return false;
-    }
+if ( ! function_exists( 'flavor_check_vbp_automation_access' ) ) {
+    function flavor_check_vbp_automation_access( $key, $scope ) {
+        $scope = sanitize_key( (string) $scope );
+        if ( '' === $scope ) {
+            return false;
+        }
 
-    if ( ! flavor_vbp_automation_enabled( $scope ) ) {
-        return false;
-    }
+        if ( ! flavor_vbp_automation_enabled( $scope ) ) {
+            return false;
+        }
 
-    if ( ! flavor_verify_vbp_api_key( $key ) ) {
-        return false;
-    }
+        if ( ! flavor_verify_vbp_api_key( $key ) ) {
+            return false;
+        }
 
-    return in_array( $scope, flavor_get_vbp_automation_scopes(), true );
+        return in_array( $scope, flavor_get_vbp_automation_scopes(), true );
+    }
 }
 
 /**
@@ -354,21 +366,23 @@ function flavor_check_vbp_automation_access( $key, $scope ) {
  * @param WP_REST_Request $request Petición REST.
  * @return string
  */
-function flavor_get_vbp_api_key_from_request( $request ) {
-    if ( ! is_object( $request ) || ! method_exists( $request, 'get_header' ) ) {
+if ( ! function_exists( 'flavor_get_vbp_api_key_from_request' ) ) {
+    function flavor_get_vbp_api_key_from_request( $request ) {
+        if ( ! is_object( $request ) || ! method_exists( $request, 'get_header' ) ) {
+            return '';
+        }
+
+        $api_key = (string) $request->get_header( 'X-VBP-Key' );
+        if ( '' !== $api_key ) {
+            return $api_key;
+        }
+
+        if ( method_exists( $request, 'get_param' ) ) {
+            return (string) $request->get_param( 'api_key' );
+        }
+
         return '';
     }
-
-    $api_key = (string) $request->get_header( 'X-VBP-Key' );
-    if ( '' !== $api_key ) {
-        return $api_key;
-    }
-
-    if ( method_exists( $request, 'get_param' ) ) {
-        return (string) $request->get_param( 'api_key' );
-    }
-
-    return '';
 }
 
 /**

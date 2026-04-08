@@ -22,13 +22,42 @@ if ( ! defined( 'FLAVOR_CHAT_IA_PATH' ) ) {
     define( 'FLAVOR_CHAT_IA_PATH', FLAVOR_PLUGIN_DIR . '/' );
 }
 
+// Definir ABSPATH antes de cargar archivos del plugin (requerido por WordPress security checks)
+if (!defined('ABSPATH')) {
+    define('ABSPATH', '/tmp/wordpress/');
+}
+
+if ( ! defined( 'WP_CONTENT_DIR' ) ) {
+    define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
+}
+
+// WordPress salts y keys para tests
+if (!defined('NONCE_SALT')) {
+    define('NONCE_SALT', 'test-nonce-salt-for-testing-12345');
+}
+
+if (!defined('AUTH_SALT')) {
+    define('AUTH_SALT', 'test-auth-salt-for-testing-12345');
+}
+
+if (!defined('SECURE_AUTH_SALT')) {
+    define('SECURE_AUTH_SALT', 'test-secure-auth-salt-12345');
+}
+
+if (!defined('LOGGED_IN_SALT')) {
+    define('LOGGED_IN_SALT', 'test-logged-in-salt-12345');
+}
+
+// Constantes de Flavor Platform
+if (!defined('FLAVOR_MAX_POSTS_PER_QUERY')) {
+    define('FLAVOR_MAX_POSTS_PER_QUERY', 200);
+}
+
 // Cargar autoloader de Composer si existe
 $composer_autoload = FLAVOR_PLUGIN_DIR . '/vendor/autoload.php';
 if (file_exists($composer_autoload)) {
     require_once $composer_autoload;
 }
-
-require_once FLAVOR_PLUGIN_DIR . '/includes/api/class-module-compatibility-api.php';
 
 // Mock de funciones de WordPress para tests unitarios
 if (!function_exists('__')) {
@@ -92,14 +121,6 @@ if (!function_exists('wp_salt')) {
 
         return $salts[$scheme] ?? 'test-generic-salt';
     }
-}
-
-if (!defined('ABSPATH')) {
-    define('ABSPATH', '/tmp/wordpress/');
-}
-
-if ( ! defined( 'WP_CONTENT_DIR' ) ) {
-    define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
 }
 
 // Mock de get_option para tests
@@ -325,50 +346,188 @@ if ( ! class_exists( 'WP_Error' ) ) {
     }
 }
 
-// Mock de flavor_chat_ia_log para tests
-if (!function_exists('flavor_chat_ia_log')) {
-    function flavor_chat_ia_log($message, $level = 'info', $module = '') {
-        // No hacer nada en tests, o descomentar para debug:
-        // echo "[{$level}] {$module}: {$message}\n";
+// Mock de wp_hash para tests
+if (!function_exists('wp_hash')) {
+    function wp_hash($data, $scheme = 'auth') {
+        $salt = wp_salt($scheme);
+        return hash_hmac('md5', $data, $salt);
     }
 }
 
-// Mock de flavor_log_debug para tests
-if (!function_exists('flavor_log_debug')) {
-    function flavor_log_debug($message, $module = '') {
-        // No hacer nada en tests
+// Mock de sanitize_key para tests
+if (!function_exists('sanitize_key')) {
+    function sanitize_key($key) {
+        return preg_replace('/[^a-z0-9_\-]/', '', strtolower($key));
     }
 }
 
-// Mock de flavor_log_error para tests
-if (!function_exists('flavor_log_error')) {
-    function flavor_log_error($message, $module = '') {
-        // No hacer nada en tests
+// Mock de wp_cache_delete para tests
+if (!function_exists('wp_cache_delete')) {
+    function wp_cache_delete($key, $group = '') {
+        return true;
     }
 }
 
-if ( ! function_exists( 'flavor_get_vbp_api_key_from_request' ) ) {
-    function flavor_get_vbp_api_key_from_request( $request ) {
-        if ( is_object( $request ) && method_exists( $request, 'get_header' ) ) {
-            $api_key = $request->get_header( 'X-VBP-Key' );
-            if ( ! empty( $api_key ) ) {
+// Mock de wp_cache_get para tests
+if (!function_exists('wp_cache_get')) {
+    function wp_cache_get($key, $group = '', $force = false, &$found = null) {
+        $found = false;
+        return false;
+    }
+}
+
+// Mock de wp_cache_set para tests
+if (!function_exists('wp_cache_set')) {
+    function wp_cache_set($key, $data, $group = '', $expire = 0) {
+        return true;
+    }
+}
+
+// Mock de home_url para tests
+if (!function_exists('home_url')) {
+    function home_url($path = '', $scheme = null) {
+        return 'https://example.com' . $path;
+    }
+}
+
+// Mock de _e para tests
+if (!function_exists('_e')) {
+    function _e($text, $domain = 'default') {
+        echo $text;
+    }
+}
+
+// Mock de esc_html__ para tests
+if (!function_exists('esc_html__')) {
+    function esc_html__($text, $domain = 'default') {
+        return esc_html($text);
+    }
+}
+
+// Mock de esc_attr__ para tests
+if (!function_exists('esc_attr__')) {
+    function esc_attr__($text, $domain = 'default') {
+        return esc_attr($text);
+    }
+}
+
+// Mock de wp_get_environment_type para tests
+if (!function_exists('wp_get_environment_type')) {
+    function wp_get_environment_type() {
+        return 'local';
+    }
+}
+
+// Mock de load_plugin_textdomain para tests
+if (!function_exists('load_plugin_textdomain')) {
+    function load_plugin_textdomain($domain, $deprecated = false, $plugin_rel_path = false) {
+        return true;
+    }
+}
+
+// Mock de register_activation_hook para tests
+if (!function_exists('register_activation_hook')) {
+    function register_activation_hook($file, $callback) {
+        return true;
+    }
+}
+
+// Mock de register_deactivation_hook para tests
+if (!function_exists('register_deactivation_hook')) {
+    function register_deactivation_hook($file, $callback) {
+        return true;
+    }
+}
+
+// Mock de wp_enqueue_style para tests
+if (!function_exists('wp_enqueue_style')) {
+    function wp_enqueue_style($handle, $src = '', $deps = array(), $ver = false, $media = 'all') {
+        return true;
+    }
+}
+
+// Mock de wp_enqueue_script para tests
+if (!function_exists('wp_enqueue_script')) {
+    function wp_enqueue_script($handle, $src = '', $deps = array(), $ver = false, $in_footer = false) {
+        return true;
+    }
+}
+
+// Mock de wp_register_style para tests
+if (!function_exists('wp_register_style')) {
+    function wp_register_style($handle, $src, $deps = array(), $ver = false, $media = 'all') {
+        return true;
+    }
+}
+
+// Mock de wp_register_script para tests
+if (!function_exists('wp_register_script')) {
+    function wp_register_script($handle, $src, $deps = array(), $ver = false, $in_footer = false) {
+        return true;
+    }
+}
+
+// Mock de wp_localize_script para tests
+if (!function_exists('wp_localize_script')) {
+    function wp_localize_script($handle, $object_name, $l10n) {
+        return true;
+    }
+}
+
+// Mock de wp_create_nonce para tests
+if (!function_exists('wp_create_nonce')) {
+    function wp_create_nonce($action = -1) {
+        return 'test_nonce_' . md5($action);
+    }
+}
+
+// Mock de wp_verify_nonce para tests
+if (!function_exists('wp_verify_nonce')) {
+    function wp_verify_nonce($nonce, $action = -1) {
+        return strpos($nonce, 'test_nonce_') === 0;
+    }
+}
+
+// Mock de check_ajax_referer para tests
+if (!function_exists('check_ajax_referer')) {
+    function check_ajax_referer($action = -1, $query_arg = false, $die = true) {
+        return true;
+    }
+}
+
+// Mock de admin_url para tests
+if (!function_exists('admin_url')) {
+    function admin_url($path = '', $scheme = 'admin') {
+        return 'https://example.com/wp-admin/' . $path;
+    }
+}
+
+// Mocks de funciones flavor_* necesarias para cargar clases del plugin
+if (!function_exists('flavor_get_vbp_api_key_from_request')) {
+    function flavor_get_vbp_api_key_from_request($request) {
+        if (is_object($request) && method_exists($request, 'get_header')) {
+            $api_key = $request->get_header('X-VBP-Key');
+            if (!empty($api_key)) {
                 return $api_key;
             }
         }
-
-        if ( is_object( $request ) && method_exists( $request, 'get_param' ) ) {
-            return $request->get_param( 'api_key' );
+        if (is_object($request) && method_exists($request, 'get_param')) {
+            return $request->get_param('api_key');
         }
-
         return '';
     }
 }
 
-if ( ! function_exists( 'flavor_check_vbp_automation_access' ) ) {
-    function flavor_check_vbp_automation_access( $key, $scope ) {
-        return $key === 'flavor-vbp-2024';
+if (!function_exists('flavor_check_vbp_automation_access')) {
+    function flavor_check_vbp_automation_access($key, $scope) {
+        // En tests, aceptar la key de test
+        return $key === 'test-vbp-key-12345' || $key === 'flavor-vbp-2024';
     }
 }
+
+// Cargar clases del plugin que se testean directamente
+// (después de que todos los mocks estén definidos)
+require_once FLAVOR_PLUGIN_DIR . '/includes/api/class-module-compatibility-api.php';
 
 // Clase base para tests
 class Flavor_Test_REST_Server {
