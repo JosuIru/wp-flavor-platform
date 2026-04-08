@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-env node */
 /**
  * Build Script para Flavor Platform
  *
@@ -234,6 +235,7 @@ async function procesarJavascript() {
 
     const patronesJs = [
         'assets/js/**/*.js',
+        'assets/vbp/js/**/*.js',
         'admin/js/**/*.js',
         'addons/*/assets/js/**/*.js'
     ];
@@ -253,6 +255,7 @@ async function procesarCss() {
 
     const patronesCss = [
         'assets/css/**/*.css',
+        'assets/vbp/css/**/*.css',
         'admin/css/**/*.css',
         'addons/*/assets/css/**/*.css'
     ];

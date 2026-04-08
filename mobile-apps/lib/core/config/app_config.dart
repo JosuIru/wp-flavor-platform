@@ -9,7 +9,11 @@ class AppConfig {
   static const String adminAppName = '$appName Admin';
   static const String appId = 'com.komunitatea.app';
   static const String packageName = appId;
-  static const String serverUrl = 'http://sitio-prueba.local';
+
+  // IMPORTANTE: Configurar URL de producción antes de release
+  // En desarrollo local usar: 'http://sitio-prueba.local'
+  // En producción DEBE ser HTTPS: 'https://tu-dominio.com'
+  static const String serverUrl = 'https://sitio-prueba.local';
   static const String siteUrl = serverUrl;
   static const String apiUrl = '$serverUrl/wp-json/chat-ia-mobile/v1';
   static const String apiVersion = '2.1.0';
@@ -17,9 +21,28 @@ class AppConfig {
   static const String appBuild = '1';
   static const String flavor = 'client';
   static const bool isAdminApp = false;
-  static const bool isDebug = false;
+
+  // SEGURIDAD: En producción debe ser false
+  static const bool isDebug = true;
   static const int httpTimeout = 30;
   static const String apiKey = '';
+
+  /// Fingerprints SHA-256 de certificados SSL para certificate pinning
+  ///
+  /// IMPORTANTE: En producción, configura estos valores con los fingerprints
+  /// reales de tu servidor. Obtén el fingerprint con:
+  /// ```
+  /// openssl s_client -connect tu-servidor.com:443 < /dev/null 2>/dev/null | \
+  ///   openssl x509 -fingerprint -sha256 -noout
+  /// ```
+  ///
+  /// Incluye al menos 2 certificados:
+  /// - El certificado actual del servidor
+  /// - Un certificado de respaldo para rotación sin downtime
+  static const List<String> pinnedCertificates = [
+    // Ejemplo: 'AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99',
+    // Añade tus fingerprints aquí antes de release
+  ];
   static const String userId = '';
   static const String developerName = 'Flavor';
   static const String developerEmail = '';

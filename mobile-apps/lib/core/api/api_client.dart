@@ -27,6 +27,11 @@ class ApiClient {
       },
     ));
 
+    // Configurar certificate pinning si hay certificados definidos
+    if (AppConfig.pinnedCertificates.isNotEmpty) {
+      HttpSecurity.setPinnedCertificates(AppConfig.pinnedCertificates);
+    }
+
     // Aplicar configuración de seguridad HTTP
     if (enableSecurityFeatures) {
       _dio.applySecurityConfig(enablePinning: !AppConfig.isDebug);

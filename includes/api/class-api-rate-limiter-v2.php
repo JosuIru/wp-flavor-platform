@@ -453,8 +453,10 @@ class Flavor_API_Rate_Limiter_V2 {
                 $value = sanitize_text_field(wp_unslash($_SERVER[$header]));
                 
                 if ($header === 'HTTP_X_FORWARDED_FOR') {
+                    // SEGURIDAD: Usar última IP para evitar spoofing via X-Forwarded-For
+                    // La última IP es la añadida por el proxy más cercano (más confiable)
                     $ips = explode(',', $value);
-                    $ip = trim($ips[0]);
+                    $ip = trim(end($ips));
                 } else {
                     $ip = trim($value);
                 }
@@ -511,8 +513,8 @@ class Flavor_API_Rate_Limiter_V2 {
      * Verifica permisos admin
      */
     public function check_admin_permission($request) {
-        $api_key = $request->get_header('X-VBP-Key');
-        return flavor_verify_vbp_api_key( $api_key );
+        $api_key = flavor_get_vbp_api_key_from_request( $request );
+        return flavor_check_vbp_automation_access( $api_key, 'diagnostics_admin' );
     }
 
     /**

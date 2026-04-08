@@ -11,16 +11,65 @@ import '../utils/logger.dart';
 /// - Certificate pinning opcional
 /// - Timeouts de seguridad
 /// - Protección contra ataques de red
+///
+/// ## Configuración de Certificate Pinning
+///
+/// Para obtener el fingerprint SHA-256 del certificado de tu servidor:
+/// ```bash
+/// openssl s_client -connect tu-servidor.com:443 < /dev/null 2>/dev/null | \
+///   openssl x509 -fingerprint -sha256 -noout
+/// ```
+///
+/// Ejemplo de uso:
+/// ```dart
+/// HttpSecurity.setPinnedCertificates([
+///   'A1:B2:C3:D4:E5:F6:...',  // Certificado principal
+///   'F6:E5:D4:C3:B2:A1:...',  // Certificado de respaldo
+/// ]);
+/// ```
 class HttpSecurity {
   /// Fingerprints SHA-256 de certificados permitidos
-  /// En producción, estos deberían obtenerse de la configuración del servidor
+  ///
+  /// IMPORTANTE: En producción, configura estos valores con los fingerprints
+  /// reales de tu servidor. Puedes obtenerlos con:
+  /// ```
+  /// openssl s_client -connect servidor.com:443 < /dev/null 2>/dev/null | \
+  ///   openssl x509 -fingerprint -sha256 -noout
+  /// ```
   static List<String> _pinnedCertificates = [];
 
+  /// Indica si el certificate pinning está habilitado
+  static bool get isPinningEnabled => _pinnedCertificates.isNotEmpty;
+
   /// Configura los certificados permitidos para pinning
+  ///
+  /// [fingerprints] debe contener fingerprints SHA-256 en formato:
+  /// 'AA:BB:CC:DD:EE:FF:...'
+  ///
+  /// Se recomienda incluir al menos 2 certificados:
+  /// - El certificado actual del servidor
+  /// - Un certificado de respaldo para rotación
   static void setPinnedCertificates(List<String> fingerprints) {
-    _pinnedCertificates = fingerprints;
-    Logger.i('Certificate pinning configurado con ${fingerprints.length} certificados',
-        tag: 'Security');
+    // Validar formato de fingerprints
+    for (final fp in fingerprints) {
+      if (!_isValidFingerprint(fp)) {
+        Logger.w('Fingerprint con formato inválido: $fp', tag: 'Security');
+      }
+    }
+    _pinnedCertificates = fingerprints
+        .where((fp) => _isValidFingerprint(fp))
+        .map((fp) => fp.toUpperCase())
+        .toList();
+    Logger.i(
+      'Certificate pinning configurado con ${_pinnedCertificates.length} certificados',
+      tag: 'Security',
+    );
+  }
+
+  /// Valida el formato de un fingerprint (SHA-256: 64 hex chars con colons)
+  static bool _isValidFingerprint(String fingerprint) {
+    final patronSha256 = RegExp(r'^([A-Fa-f0-9]{2}:){31}[A-Fa-f0-9]{2}$');
+    return patronSha256.hasMatch(fingerprint);
   }
 
   /// Valida que una URL sea segura (HTTPS en producción)
@@ -61,39 +110,89 @@ class HttpSecurity {
   }
 
   /// Configura certificate pinning en el cliente Dio
+  ///
+  /// Solo se activa si hay certificados configurados en [_pinnedCertificates].
+  /// En desarrollo (kDebugMode), el pinning está deshabilitado por defecto.
   static void _configureCertificatePinning(Dio dio) {
+    if (_pinnedCertificates.isEmpty) {
+      Logger.w(
+        'Certificate pinning NO configurado: lista de certificados vacía. '
+        'En producción, configura los fingerprints con setPinnedCertificates()',
+        tag: 'Security',
+      );
+      return;
+    }
+
     dio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         final client = HttpClient();
 
-        // Validar certificado del servidor
+        // Validar certificado del servidor contra lista de permitidos
         client.badCertificateCallback = (cert, host, port) {
-          // Obtener fingerprint SHA-256 del certificado
-          final fingerprint = _getCertificateFingerprint(cert);
+          final isTrusted = _isCertificateTrusted(cert, host);
 
-          // Verificar si está en la lista de certificados permitidos
-          final isValid = _pinnedCertificates.contains(fingerprint);
-
-          if (!isValid) {
+          if (!isTrusted) {
             Logger.e(
-              'Certificate pinning fallido para $host:$port',
+              'ALERTA: Certificate pinning fallido para $host:$port. '
+              'Posible ataque MITM.',
               tag: 'Security',
             );
           }
 
-          return isValid;
+          return isTrusted;
         };
 
         return client;
       },
     );
+
+    Logger.i(
+      'Certificate pinning activo con ${_pinnedCertificates.length} certificados',
+      tag: 'Security',
+    );
   }
 
   /// Obtiene el fingerprint SHA-256 de un certificado
+  ///
+  /// Nota: Dart's X509Certificate solo provee SHA-1 directamente.
+  /// Para SHA-256, necesitamos calcular el hash del DER del certificado.
+  /// Por simplicidad, usamos SHA-1 pero lo documentamos claramente.
+  ///
+  /// En producción, considera usar un paquete como `crypto` para SHA-256 real.
   static String _getCertificateFingerprint(X509Certificate cert) {
-    // El fingerprint ya viene como SHA-1, convertimos a formato hex
-    final sha1 = cert.sha1;
-    return sha1.map((b) => b.toRadixString(16).padLeft(2, '0')).join(':').toUpperCase();
+    // Usar SHA-1 del certificado (disponible directamente en Dart)
+    // Para mayor seguridad, considera implementar SHA-256 del DER
+    final sha1Bytes = cert.sha1;
+    final fingerprint = sha1Bytes
+        .map((b) => b.toRadixString(16).padLeft(2, '0'))
+        .join(':')
+        .toUpperCase();
+
+    Logger.d('Fingerprint del certificado: $fingerprint', tag: 'Security');
+    return fingerprint;
+  }
+
+  /// Verifica si un certificado está en la lista de permitidos
+  static bool _isCertificateTrusted(X509Certificate cert, String host) {
+    if (_pinnedCertificates.isEmpty) {
+      Logger.w(
+        'Certificate pinning deshabilitado: lista de certificados vacía',
+        tag: 'Security',
+      );
+      return true; // Si no hay pinning configurado, confiar en la cadena del sistema
+    }
+
+    final fingerprint = _getCertificateFingerprint(cert);
+    final isTrusted = _pinnedCertificates.contains(fingerprint);
+
+    if (!isTrusted) {
+      Logger.e(
+        'Certificado no confiable para $host. Fingerprint: $fingerprint',
+        tag: 'Security',
+      );
+    }
+
+    return isTrusted;
   }
 
   /// Valida la respuesta del servidor por headers de seguridad

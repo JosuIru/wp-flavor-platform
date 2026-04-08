@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart' show apiClientProvider;
+import '../../../core/widgets/flavor_snackbar.dart';
 import '../../../core/widgets/flavor_state_widgets.dart';
+
+part 'dex_solana_screen_parts.dart';
 
 class DexSolanaScreen extends ConsumerStatefulWidget {
   const DexSolanaScreen({super.key});
@@ -15,6 +18,76 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
   Map<String, dynamic>? _datosDashboard;
   bool _cargando = true;
   String? _mensajeError;
+
+  // Constantes de validación
+  static const double _cantidadMinima = 0.000001;
+  static const double _cantidadMaxima = 1000000.0;
+
+  /// Valida el formato de una dirección Solana (Base58, 32-44 caracteres)
+  bool _validarDireccionSolana(String direccion) {
+    if (direccion.isEmpty) return false;
+    // Direcciones Solana: 32-44 caracteres, solo Base58 (sin 0, O, I, l)
+    final patronBase58 = RegExp(r'^[1-9A-HJ-NP-Za-km-z]{32,44}$');
+    return patronBase58.hasMatch(direccion);
+  }
+
+  /// Valida que la cantidad sea un número válido dentro de límites
+  String? _validarCantidad(String cantidadTexto) {
+    if (cantidadTexto.isEmpty) return 'La cantidad es requerida';
+    final cantidad = double.tryParse(cantidadTexto);
+    if (cantidad == null) return 'Cantidad inválida';
+    if (cantidad < _cantidadMinima) return 'Cantidad mínima: $_cantidadMinima';
+    if (cantidad > _cantidadMaxima) return 'Cantidad máxima: $_cantidadMaxima';
+    return null;
+  }
+
+  /// Muestra diálogo de confirmación para operaciones críticas
+  Future<bool> _confirmarOperacion({
+    required String titulo,
+    required String mensaje,
+    required String textoConfirmar,
+  }) async {
+    final resultado = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.warning_amber_rounded, color: Colors.orange),
+            const SizedBox(width: 12),
+            Expanded(child: Text(titulo)),
+          ],
+        ),
+        content: Text(mensaje),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(textoConfirmar),
+          ),
+        ],
+      ),
+    );
+    return resultado ?? false;
+  }
+
+  /// Maneja errores de forma segura sin exponer detalles técnicos
+  String _obtenerMensajeError(dynamic error) {
+    // No exponer stack traces ni detalles técnicos al usuario
+    if (error is Exception) {
+      final mensaje = error.toString();
+      if (mensaje.contains('SocketException') || mensaje.contains('Connection')) {
+        return 'Error de conexión. Verifica tu internet.';
+      }
+      if (mensaje.contains('timeout') || mensaje.contains('Timeout')) {
+        return 'La operación tardó demasiado. Intenta de nuevo.';
+      }
+    }
+    return 'Ha ocurrido un error. Intenta de nuevo.';
+  }
 
   @override
   void initState() {
@@ -44,7 +117,7 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
       }
     } catch (excepcion) {
       setState(() {
-        _mensajeError = excepcion.toString();
+        _mensajeError = _obtenerMensajeError(excepcion);
         _cargando = false;
       });
     }
@@ -329,9 +402,7 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
                             if (tokenOrigenSeleccionado == null ||
                                 tokenDestinoSeleccionado == null ||
                                 cantidadController.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Completa todos los campos')),
-                              );
+                              FlavorSnackbar.showError(context, 'Completa todos los campos');
                               return;
                             }
                             setModalState(() => ejecutandoSwap = true);
@@ -358,6 +429,28 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
   }
 
   Future<void> _ejecutarSwap(String tokenOrigen, String tokenDestino, String cantidad) async {
+    // Validar cantidad
+    final errorCantidad = _validarCantidad(cantidad);
+    if (errorCantidad != null) {
+      if (mounted) FlavorSnackbar.showError(context, errorCantidad);
+      return;
+    }
+
+    // Validar que no sean el mismo token
+    if (tokenOrigen == tokenDestino) {
+      if (mounted) FlavorSnackbar.showError(context, 'Selecciona tokens diferentes');
+      return;
+    }
+
+    // Confirmar operación
+    final confirmarSwap = await _confirmarOperacion(
+      titulo: 'Confirmar Swap',
+      mensaje: '¿Deseas intercambiar $cantidad $tokenOrigen por $tokenDestino?\n\nEsta operación no se puede deshacer.',
+      textoConfirmar: 'Confirmar Swap',
+    );
+
+    if (!confirmarSwap) return;
+
     try {
       final clienteApi = ref.read(apiClientProvider);
       final respuesta = await clienteApi.post('/dex-solana/swap', data: {
@@ -367,27 +460,15 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
       });
       if (mounted) {
         if (respuesta.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Swap ejecutado correctamente'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          FlavorSnackbar.showSuccess(context, 'Swap ejecutado correctamente');
           _cargarDatos();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(respuesta.error ?? 'Error al ejecutar swap'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          FlavorSnackbar.showError(context, respuesta.error ?? 'Error al ejecutar swap');
         }
       }
-    } catch (e) {
+    } catch (excepcion) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
-        );
+        FlavorSnackbar.showError(context, _obtenerMensajeError(excepcion));
       }
     }
   }
@@ -486,9 +567,7 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
                             if (tokenSeleccionado == null ||
                                 cantidadController.text.isEmpty ||
                                 direccionDestinoController.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Completa todos los campos')),
-                              );
+                              FlavorSnackbar.showError(context, 'Completa todos los campos');
                               return;
                             }
                             setModalState(() => enviando = true);
@@ -515,6 +594,33 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
   }
 
   Future<void> _ejecutarEnvio(String token, String cantidad, String direccionDestino) async {
+    // Validar dirección Solana
+    if (!_validarDireccionSolana(direccionDestino)) {
+      if (mounted) {
+        FlavorSnackbar.showError(
+          context,
+          'Dirección Solana inválida. Debe tener 32-44 caracteres Base58.',
+        );
+      }
+      return;
+    }
+
+    // Validar cantidad
+    final errorCantidad = _validarCantidad(cantidad);
+    if (errorCantidad != null) {
+      if (mounted) FlavorSnackbar.showError(context, errorCantidad);
+      return;
+    }
+
+    // Confirmar operación (envío es irreversible)
+    final confirmarEnvio = await _confirmarOperacion(
+      titulo: 'Confirmar Envío',
+      mensaje: '¿Deseas enviar $cantidad $token a:\n\n${direccionDestino.substring(0, 8)}...${direccionDestino.substring(direccionDestino.length - 8)}\n\n⚠️ Esta operación es IRREVERSIBLE.',
+      textoConfirmar: 'Confirmar Envío',
+    );
+
+    if (!confirmarEnvio) return;
+
     try {
       final clienteApi = ref.read(apiClientProvider);
       final respuesta = await clienteApi.post('/dex-solana/send', data: {
@@ -524,414 +630,15 @@ class _DexSolanaScreenState extends ConsumerState<DexSolanaScreen> {
       });
       if (mounted) {
         if (respuesta.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Tokens enviados correctamente'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          FlavorSnackbar.showSuccess(context, 'Tokens enviados correctamente');
           _cargarDatos();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(respuesta.error ?? 'Error al enviar'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          FlavorSnackbar.showError(context, respuesta.error ?? 'Error al enviar');
         }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
-        );
-      }
-    }
-  }
-}
-
-class TokenDetalleScreen extends ConsumerStatefulWidget {
-  final String tokenId;
-  const TokenDetalleScreen({super.key, required this.tokenId});
-
-  @override
-  ConsumerState<TokenDetalleScreen> createState() => _TokenDetalleScreenState();
-}
-
-class _TokenDetalleScreenState extends ConsumerState<TokenDetalleScreen> {
-  Map<String, dynamic>? _datosToken;
-  bool _cargando = true;
-  String? _mensajeError;
-
-  @override
-  void initState() {
-    super.initState();
-    _cargarDetalle();
-  }
-
-  Future<void> _cargarDetalle() async {
-    setState(() {
-      _cargando = true;
-      _mensajeError = null;
-    });
-    try {
-      final clienteApi = ref.read(apiClientProvider);
-      final respuesta = await clienteApi.get('/dex-solana/token/${widget.tokenId}');
-      if (respuesta.success && respuesta.data != null) {
-        setState(() {
-          _datosToken = respuesta.data!['data'] ?? respuesta.data!;
-          _cargando = false;
-        });
-      } else {
-        setState(() {
-          _mensajeError = respuesta.error ?? 'Error al cargar token';
-          _cargando = false;
-        });
       }
     } catch (excepcion) {
-      setState(() {
-        _mensajeError = excepcion.toString();
-        _cargando = false;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Detalle del Token')),
-      body: _cargando
-          ? const FlavorLoadingState()
-          : _mensajeError != null
-              ? FlavorErrorState(message: _mensajeError!, onRetry: _cargarDetalle)
-              : _datosToken == null
-                  ? const FlavorEmptyState(
-                      icon: Icons.token_outlined,
-                      title: 'No se encontraron datos',
-                    )
-                  : ListView(
-                      padding: const EdgeInsets.all(16),
-                      children: [
-                        Text(
-                          _datosToken!['name'] ?? _datosToken!['nombre'] ?? 'Token',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          _datosToken!['symbol'] ?? _datosToken!['simbolo'] ?? '',
-                          style: TextStyle(color: Colors.grey.shade600),
-                        ),
-                        const SizedBox(height: 24),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: FilledButton.icon(
-                                onPressed: () => _mostrarComprarModal(context),
-                                icon: const Icon(Icons.shopping_cart),
-                                label: const Text('Comprar'),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: () => _mostrarVenderModal(context),
-                                icon: const Icon(Icons.sell),
-                                label: const Text('Vender'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-    );
-  }
-
-  void _mostrarComprarModal(BuildContext context) {
-    final cantidadController = TextEditingController();
-    bool comprando = false;
-    final simboloToken = _datosToken?['symbol'] ?? _datosToken?['simbolo'] ?? 'TOKEN';
-    final precioToken = _datosToken?['price'] ?? _datosToken?['precio'] ?? '0.00';
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) => Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 20,
-            right: 20,
-            top: 20,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.shopping_cart, color: Colors.green),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Comprar $simboloToken',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Card(
-                  color: Colors.grey.shade100,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Precio actual:'),
-                        Text(
-                          '\$$precioToken',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: cantidadController,
-                  decoration: InputDecoration(
-                    labelText: 'Cantidad de $simboloToken',
-                    prefixIcon: const Icon(Icons.numbers),
-                    border: const OutlineInputBorder(),
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: comprando
-                        ? null
-                        : () async {
-                            if (cantidadController.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Ingresa una cantidad')),
-                              );
-                              return;
-                            }
-                            setModalState(() => comprando = true);
-                            await _ejecutarCompra(cantidadController.text);
-                            if (context.mounted) Navigator.pop(context);
-                          },
-                    icon: comprando
-                        ? const FlavorInlineSpinner()
-                        : const Icon(Icons.shopping_cart),
-                    label: Text(comprando ? 'Comprando...' : 'Comprar'),
-                    style: FilledButton.styleFrom(backgroundColor: Colors.green),
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _ejecutarCompra(String cantidad) async {
-    try {
-      final clienteApi = ref.read(apiClientProvider);
-      final respuesta = await clienteApi.post('/dex-solana/buy', data: {
-        'token_id': widget.tokenId,
-        'cantidad': cantidad,
-      });
       if (mounted) {
-        if (respuesta.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Compra realizada correctamente'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          _cargarDetalle();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(respuesta.error ?? 'Error en la compra'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
-        );
-      }
-    }
-  }
-
-  void _mostrarVenderModal(BuildContext context) {
-    final cantidadController = TextEditingController();
-    bool vendiendo = false;
-    final simboloToken = _datosToken?['symbol'] ?? _datosToken?['simbolo'] ?? 'TOKEN';
-    final precioToken = _datosToken?['price'] ?? _datosToken?['precio'] ?? '0.00';
-    final balanceToken = _datosToken?['balance'] ?? _datosToken?['cantidad'] ?? '0';
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) => Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 20,
-            right: 20,
-            top: 20,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.sell, color: Colors.red),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Vender $simboloToken',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Card(
-                  color: Colors.grey.shade100,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Precio actual:'),
-                            Text(
-                              '\$$precioToken',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Tu balance:'),
-                            Text(
-                              '$balanceToken $simboloToken',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: cantidadController,
-                  decoration: InputDecoration(
-                    labelText: 'Cantidad de $simboloToken a vender',
-                    prefixIcon: const Icon(Icons.numbers),
-                    border: const OutlineInputBorder(),
-                    suffixIcon: TextButton(
-                      onPressed: () {
-                        cantidadController.text = balanceToken.toString();
-                      },
-                      child: const Text('MAX'),
-                    ),
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: vendiendo
-                        ? null
-                        : () async {
-                            if (cantidadController.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Ingresa una cantidad')),
-                              );
-                              return;
-                            }
-                            setModalState(() => vendiendo = true);
-                            await _ejecutarVenta(cantidadController.text);
-                            if (context.mounted) Navigator.pop(context);
-                          },
-                    icon: vendiendo
-                        ? const FlavorInlineSpinner()
-                        : const Icon(Icons.sell),
-                    label: Text(vendiendo ? 'Vendiendo...' : 'Vender'),
-                    style: FilledButton.styleFrom(backgroundColor: Colors.red),
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _ejecutarVenta(String cantidad) async {
-    try {
-      final clienteApi = ref.read(apiClientProvider);
-      final respuesta = await clienteApi.post('/dex-solana/sell', data: {
-        'token_id': widget.tokenId,
-        'cantidad': cantidad,
-      });
-      if (mounted) {
-        if (respuesta.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Venta realizada correctamente'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          _cargarDetalle();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(respuesta.error ?? 'Error en la venta'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
-        );
+        FlavorSnackbar.showError(context, _obtenerMensajeError(excepcion));
       }
     }
   }

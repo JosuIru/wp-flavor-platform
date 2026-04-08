@@ -189,7 +189,7 @@ class Flavor_Privacy_Manager {
         register_rest_route($namespace, '/privacidad/descargar/(?P<token>[a-zA-Z0-9]+)', [
             'methods' => 'GET',
             'callback' => [$this, 'rest_download_export'],
-            'permission_callback' => '__return_true'
+            'permission_callback' => [$this, 'check_download_token_permission']
         ]);
 
         // Solicitar rectificación de datos
@@ -219,6 +219,16 @@ class Flavor_Privacy_Manager {
      */
     public function check_admin_permission() {
         return current_user_can('manage_options');
+    }
+
+    /**
+     * Verifica si el token de descarga corresponde a una exportación válida.
+     *
+     * @param WP_REST_Request $request Request actual.
+     * @return bool
+     */
+    public function check_download_token_permission($request) {
+        return (bool) $this->find_export_request_by_token($request->get_param('token'));
     }
 
     // =========================================================================
@@ -1087,8 +1097,66 @@ class Flavor_Privacy_Manager {
      */
     public function rest_download_export(WP_REST_Request $request) {
         $token = $request->get_param('token');
+        $match = $this->find_export_request_by_token($token);
 
-        // Buscar solicitud por token
+        if ($match) {
+            $datos = $match['datos'];
+            $archivo = $datos['archivo'] ?? '';
+
+            if (!file_exists($archivo)) {
+                return new WP_REST_Response([
+                    'success' => false,
+                    'message' => 'El archivo de exportación ya no está disponible'
+                ], 404);
+            }
+
+            // SEGURIDAD: Validar que el archivo está en directorio permitido (prevenir Path Traversal)
+            $upload_dir = wp_upload_dir();
+            $directorio_permitido = realpath($upload_dir['basedir'] . '/flavor-exports');
+            $ruta_real_archivo = realpath($archivo);
+
+            if (!$directorio_permitido || !$ruta_real_archivo || strpos($ruta_real_archivo, $directorio_permitido) !== 0) {
+                error_log('[Flavor Privacy] Intento de Path Traversal bloqueado: ' . $archivo);
+                return new WP_REST_Response([
+                    'success' => false,
+                    'message' => 'Archivo no permitido'
+                ], 403);
+            }
+
+            if (isset($datos['expira']) && strtotime($datos['expira']) < time()) {
+                return new WP_REST_Response([
+                    'success' => false,
+                    'message' => 'El enlace de descarga ha expirado'
+                ], 410);
+            }
+
+            // Sanitizar nombre de archivo para header
+            $nombre_archivo_seguro = 'mis-datos-' . gmdate('Y-m-d') . '.zip';
+
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename="' . $nombre_archivo_seguro . '"');
+            header('Content-Length: ' . filesize($ruta_real_archivo));
+            readfile($ruta_real_archivo);
+            exit;
+        }
+
+        return new WP_REST_Response([
+            'success' => false,
+            'message' => 'Enlace de descarga inválido o expirado'
+        ], 404);
+    }
+
+    /**
+     * Busca una solicitud de exportación válida a partir de un token.
+     *
+     * @param string $token Token en claro recibido por request.
+     * @return array|null
+     */
+    private function find_export_request_by_token($token) {
+        if (!is_string($token) || strlen($token) < 24) {
+            return null;
+        }
+
         global $wpdb;
         $tabla_solicitudes = $this->prefix . 'privacy_requests';
 
@@ -1106,37 +1174,14 @@ class Flavor_Privacy_Manager {
             }
 
             if (wp_check_password($token, $datos['token_hash'])) {
-                // Token válido, servir archivo
-                $archivo = $datos['archivo'];
-
-                if (!file_exists($archivo)) {
-                    return new WP_REST_Response([
-                        'success' => false,
-                        'message' => 'El archivo de exportación ya no está disponible'
-                    ], 404);
-                }
-
-                // Verificar expiración
-                if (isset($datos['expira']) && strtotime($datos['expira']) < time()) {
-                    return new WP_REST_Response([
-                        'success' => false,
-                        'message' => 'El enlace de descarga ha expirado'
-                    ], 410);
-                }
-
-                // Servir archivo
-                header('Content-Type: application/zip');
-                header('Content-Disposition: attachment; filename="mis-datos-' . date('Y-m-d') . '.zip"');
-                header('Content-Length: ' . filesize($archivo));
-                readfile($archivo);
-                exit;
+                return [
+                    'solicitud' => $solicitud,
+                    'datos' => $datos,
+                ];
             }
         }
 
-        return new WP_REST_Response([
-            'success' => false,
-            'message' => 'Enlace de descarga inválido o expirado'
-        ], 404);
+        return null;
     }
 
     /**
