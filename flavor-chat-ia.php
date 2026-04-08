@@ -153,7 +153,7 @@ function flavor_get_vbp_api_key() {
         return $cached_key;
     }
 
-    $settings = get_option( 'flavor_vbp_settings', array() );
+    $settings = flavor_get_cached_settings( 'vbp' );
 
     // Prioridad 1: Key configurada explícitamente
     if ( ! empty( $settings['api_key'] ) ) {
@@ -195,6 +195,50 @@ function flavor_verify_vbp_api_key( $key ) {
 }
 
 /**
+ * Obtiene los settings del plugin con cache estático
+ *
+ * Evita múltiples llamadas a get_option() en la misma request.
+ * WordPress ya cachea opciones, pero esto elimina overhead adicional.
+ *
+ * @param string $option_name Nombre de la opción ('vbp' o 'main').
+ * @return array Settings cacheados.
+ */
+function flavor_get_cached_settings( $option_name = 'main' ) {
+    static $cached_settings = array();
+
+    if ( isset( $cached_settings[ $option_name ] ) ) {
+        return $cached_settings[ $option_name ];
+    }
+
+    switch ( $option_name ) {
+        case 'vbp':
+            $cached_settings[ $option_name ] = get_option( 'flavor_vbp_settings', array() );
+            break;
+        case 'main':
+        default:
+            $cached_settings[ $option_name ] = get_option( 'flavor_chat_ia_settings', array() );
+            break;
+    }
+
+    return $cached_settings[ $option_name ];
+}
+
+/**
+ * Invalida el cache de settings (usar después de update_option)
+ *
+ * @param string $option_name Nombre de la opción a invalidar, o 'all'.
+ */
+function flavor_invalidate_settings_cache( $option_name = 'all' ) {
+    static $cached_settings = array();
+
+    if ( $option_name === 'all' ) {
+        $cached_settings = array();
+    } else {
+        unset( $cached_settings[ $option_name ] );
+    }
+}
+
+/**
  * Indica si la automatización VBP externa está habilitada para un scope.
  *
  * Scopes actuales:
@@ -205,7 +249,7 @@ function flavor_verify_vbp_api_key( $key ) {
  * @return bool
  */
 function flavor_vbp_automation_enabled( $scope = 'default' ) {
-    $settings = get_option( 'flavor_vbp_settings', array() );
+    $settings = flavor_get_cached_settings( 'vbp' );
 
     $enabled = true;
     if ( array_key_exists( 'enable_automation_api', $settings ) ) {
@@ -228,7 +272,7 @@ function flavor_vbp_automation_enabled( $scope = 'default' ) {
  * @return string[]
  */
 function flavor_get_vbp_automation_scopes() {
-    $settings = get_option( 'flavor_vbp_settings', array() );
+    $settings = flavor_get_cached_settings( 'vbp' );
     $scopes   = $settings['automation_scopes'] ?? array( 'site_builder', 'claude_batch' );
 
     if ( ! is_array( $scopes ) ) {
@@ -1060,8 +1104,28 @@ add_action('wp_enqueue_scripts', function() {
         [],
         FLAVOR_CHAT_IA_VERSION
     );
-    // Encolar siempre en el frontend (es ligero y necesario para módulos con estilos VBP)
-    wp_enqueue_style('flavor-vbp-visual-styles');
+
+    // Solo encolar si la página usa VBP o es una landing
+    $should_enqueue = false;
+
+    if ( is_singular() ) {
+        global $post;
+        // Encolar si es una landing VBP
+        if ( $post && $post->post_type === 'flavor_landing' ) {
+            $should_enqueue = true;
+        }
+        // O si tiene datos VBP
+        if ( $post && get_post_meta( $post->ID, '_flavor_vbp_data', true ) ) {
+            $should_enqueue = true;
+        }
+    }
+
+    // Permitir forzar via filtro (para módulos que lo necesiten)
+    $should_enqueue = apply_filters( 'flavor_enqueue_vbp_styles', $should_enqueue );
+
+    if ( $should_enqueue ) {
+        wp_enqueue_style('flavor-vbp-visual-styles');
+    }
 }, 20);
 
 // Cargar diagnóstico de performance (solo si se solicita con ?flavor_perf=1)
