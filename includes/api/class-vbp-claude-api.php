@@ -11750,11 +11750,19 @@ class Flavor_VBP_Claude_API {
      * @return WP_REST_Response
      */
     public function get_blocks_usage_stats() {
+        // Usar límite seguro para evitar cargas masivas de memoria
+        $limit = flavor_safe_posts_limit( -1 );
+
         $pages = get_posts( array(
             'post_type'      => 'flavor_landing',
             'post_status'    => array( 'publish', 'draft' ),
-            'posts_per_page' => -1,
+            'posts_per_page' => $limit,
         ) );
+
+        // Verificar si hay más páginas
+        $total_pages = wp_count_posts( 'flavor_landing' );
+        $total_count = ( $total_pages->publish ?? 0 ) + ( $total_pages->draft ?? 0 );
+        $is_partial  = $total_count > $limit;
 
         $block_usage = array();
         $total_blocks = 0;
@@ -11780,12 +11788,14 @@ class Flavor_VBP_Claude_API {
         }
 
         return new WP_REST_Response( array(
-            'success'      => true,
-            'total_pages'  => count( $pages ),
-            'total_blocks' => $total_blocks,
-            'unique_types' => count( $block_usage ),
-            'blocks'       => $stats,
-            'top_5'        => array_slice( $stats, 0, 5 ),
+            'success'       => true,
+            'total_pages'   => count( $pages ),
+            'total_blocks'  => $total_blocks,
+            'unique_types'  => count( $block_usage ),
+            'blocks'        => $stats,
+            'top_5'         => array_slice( $stats, 0, 5 ),
+            'is_partial'    => $is_partial,
+            'pages_in_site' => $total_count,
         ), 200 );
     }
 
@@ -21743,9 +21753,12 @@ class Flavor_VBP_Claude_API {
     public function detect_unused_widgets( $request ) {
         $widgets = get_option( 'flavor_vbp_widgets', array() );
 
+        // Usar límite seguro para evitar cargas masivas
+        $limit = flavor_safe_posts_limit( -1 );
+
         $pages_query = new WP_Query( array(
             'post_type'      => 'flavor_landing',
-            'posts_per_page' => -1,
+            'posts_per_page' => $limit,
             'fields'         => 'ids',
         ) );
 
@@ -21816,11 +21829,11 @@ class Flavor_VBP_Claude_API {
 
         update_option( 'flavor_vbp_widgets', $widgets );
 
-        // Buscar páginas que usan este widget
+        // Buscar páginas que usan este widget (con límite seguro)
         $affected_pages = array();
         $pages_query = new WP_Query( array(
             'post_type'      => 'flavor_landing',
-            'posts_per_page' => -1,
+            'posts_per_page' => flavor_safe_posts_limit( -1 ),
             'fields'         => 'ids',
         ) );
 
@@ -24739,10 +24752,10 @@ class Flavor_VBP_Claude_API {
         }
 
         if ( in_array( 'blocks', $search_in, true ) ) {
-            // Buscar en contenido de bloques
+            // Buscar en contenido de bloques (con límite seguro)
             $all_pages = get_posts( array(
                 'post_type'      => 'flavor_landing',
-                'posts_per_page' => -1,
+                'posts_per_page' => flavor_safe_posts_limit( -1 ),
                 'post_status'    => 'any',
             ) );
 

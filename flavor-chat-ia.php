@@ -68,6 +68,12 @@ define('FLAVOR_CHAT_IA_BASENAME', plugin_basename(__FILE__));
 // Modo debug
 define('FLAVOR_CHAT_IA_DEBUG', defined('WP_DEBUG') && WP_DEBUG);
 
+// Límite máximo de posts por query (evita cargas masivas de memoria)
+// Puede sobrescribirse en wp-config.php: define('FLAVOR_MAX_POSTS_PER_QUERY', 500);
+if (!defined('FLAVOR_MAX_POSTS_PER_QUERY')) {
+    define('FLAVOR_MAX_POSTS_PER_QUERY', 200);
+}
+
 /**
  * Logging seguro con niveles y control por entorno
  *
@@ -236,6 +242,26 @@ function flavor_invalidate_settings_cache( $option_name = 'all' ) {
     } else {
         unset( $cached_settings[ $option_name ] );
     }
+}
+
+/**
+ * Obtiene el límite seguro de posts por query
+ *
+ * Evita cargas masivas de memoria en queries sin límite.
+ * Usar en lugar de posts_per_page => -1 en APIs y admin.
+ *
+ * @param int $requested Límite solicitado (-1 para "todos").
+ * @param int $max       Límite máximo personalizado (opcional).
+ * @return int Límite seguro a usar.
+ */
+function flavor_safe_posts_limit( $requested = -1, $max = null ) {
+    $max_limit = $max ?? FLAVOR_MAX_POSTS_PER_QUERY;
+
+    if ( $requested === -1 || $requested > $max_limit ) {
+        return $max_limit;
+    }
+
+    return max( 1, (int) $requested );
 }
 
 /**
